@@ -141,6 +141,10 @@ until it is approved or edited. This is what makes free-form structure safe with
 a small local model — strictly better than presets, which guess in advance and
 are wrong half the time.
 
+`planDeck()` in `src/ai/generate.js` already returns the plan as a discrete,
+reviewable artefact (`{title, sections, slides:[{type, section, purpose}]}`), so
+this item is now UI work over an existing API rather than new pipeline work.
+
 ### [ ] Application shell — collapsible rails
 Left navigation collapses to an icon rail; right panel (chat) collapses to an
 edge tab. Both states persist. The centre column is the deck grid and must stay
@@ -207,14 +211,34 @@ orchestrator, before either caller exists.
 
 ## 4. Generation pipeline
 
-### [ ] Local search
-SearXNG in Docker + a custom `search()` / `fetch_page()` tool. Fully local,
-no API keys.
+### [x] Local search
+SearXNG in Docker + `src/search.js`. Fully local, no API keys.
 
-### [ ] Ollama orchestrator
-Plain Node over Ollama's HTTP API — deliberately not LangChain/LangGraph. The
-pipeline is fixed, not open-ended, so a framework adds indirection without
-adding capability, and small local models need every prompt token visible.
+> **Learned.** SearXNG ships with only the `html` output format enabled; the
+> JSON API returns 403 until `formats: [html, json]` is set in settings.yml.
+>
+> Raw results need two passes before a model sees them: dedupe by URL, then cap
+> per host — the raw response returns eight pages from one domain and a report
+> sourced entirely from one site follows. Extraction matters more than ranking:
+> Readability output costs a fraction of the context that raw HTML does, and
+> stops the model quoting cookie banners.
+
+### [x] Ollama orchestrator + turn primitive
+`src/ai/` — role-addressed client, ops layer, turn primitive, two-stage
+generator. Plain Node over the HTTP API; no framework.
+
+> **Learned.** The dominant constraint is not prompting, it is *grammar size*.
+> Constrained decoding masks illegal tokens, so a large schema pushes the model
+> off distribution — the full failure taxonomy is in `docs/TRAPS.md`. Two stages
+> with small schemas beat one call with a large one, and swapping the author
+> model to a coder model (JSON in-distribution) mattered more than any prompt
+> change. End-to-end: 9 slides, 24s, zero skipped, rendered and inspected.
+>
+> **Look-ahead applied.** `runTurn` is deliberately the shared primitive for
+> chat and the vision critic, so neither needs a new path. `generateDeck` does
+> not use it yet — planning and per-slide writing have their own narrow schemas,
+> which is the point — so the seam is: turn = *edit an existing deck*,
+> generate = *build one from empty*. Chat uses `runTurn`; the critic will too.
 
 Role split (24 GB VRAM ceiling, `OLLAMA_MAX_LOADED_MODELS=2`):
 
@@ -227,7 +251,13 @@ Role split (24 GB VRAM ceiling, `OLLAMA_MAX_LOADED_MODELS=2`):
 
 ### [ ] Vision critic loop
 Feed rendered PNGs back to a vision model; catch overflow, clipping and
-contrast that schema validation cannot see.
+contrast that schema validation cannot see. Implemented as a `runTurn` call
+whose instruction comes from the critic rather than a human.
+
+Note: the author role is now a coder model with no vision. The critic needs a
+separate vision-capable role — `gemma4:26b-a4b-it` or `qwen3.6:27b`, both
+already configured. Keep the critic's output schema small (a bounded list of
+findings), since gemma degrades on large grammars.
 
 ### [ ] Freeform slides
 `type: freeform` with an `html` field, rendered via headless Chrome. Unlimited
