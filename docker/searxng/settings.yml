@@ -1,0 +1,63 @@
+# SearXNG instance for local research. Not exposed beyond localhost.
+#
+# The JSON format is the whole reason this file exists — SearXNG ships with only
+# `html` enabled, and the API returns 403 until `json` is added here.
+
+use_default_settings: true
+
+general:
+  instance_name: "forge-search"
+  # No usage stats, no public instance behaviour.
+  enable_metrics: false
+
+server:
+  # Overridden by SEARXNG_SECRET in docker-compose; this is the fallback.
+  secret_key: "change-me-set-SEARXNG_SECRET"
+  limiter: false           # single local client, no need to rate-limit ourselves
+  public_instance: false
+  image_proxy: false
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+ui:
+  default_locale: "en"
+
+outgoing:
+  request_timeout: 6.0
+  max_request_timeout: 12.0
+  pool_connections: 100
+  pool_maxsize: 20
+  # Some engines block the default; a plain desktop UA gets far fewer refusals.
+  useragent_suffix: ""
+
+engines:
+  # Engines that rate-limit aggressively or need keys are disabled so a query
+  # never stalls on them. Re-enable individually if results look thin.
+  - name: google
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: wikidata
+    disabled: false
+  - name: arxiv
+    disabled: false
+  - name: crossref
+    disabled: false
+  - name: semantic scholar
+    disabled: false
+  - name: github
+    disabled: false
+  - name: stackoverflow
+    disabled: false

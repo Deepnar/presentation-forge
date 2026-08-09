@@ -1,0 +1,39 @@
+# Local research backend. Bound to 127.0.0.1 only — this is a personal instance,
+# not a public metasearch node.
+#
+#   docker compose -f docker/docker-compose.yml up -d
+#
+# Port 8888 is deliberate: 8080 collides with the open-webui container already
+# running on this machine.
+
+services:
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: forge_searxng
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_SECRET=${SEARXNG_SECRET:-forge-local-development-secret}
+      - UWSGI_WORKERS=4
+      - UWSGI_THREADS=4
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "1"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
