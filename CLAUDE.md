@@ -55,6 +55,44 @@ because the pipeline has to run headless.
 4. **No AI attribution.** No `Co-Authored-By` trailers, no "generated with", no
    tool names anywhere in commit messages or code comments.
 
+## Working the roadmap
+
+`docs/ROADMAP.md` is both the plan and the progress tracker. It is not a spec.
+
+- **Entries are intent + rationale, not specs.** When an item's turn comes,
+  discuss the concrete implementation before writing code. Never build straight
+  from the entry text.
+- **No first versions.** Build the robust, thought-through version — real
+  algorithms, edge cases handled, end-state in mind. Not a throwaway MVP. If an
+  item is too large for one pass, split it into robust sub-items rather than
+  shipping something knowingly temporary.
+- **Look ahead before building.** Scan the roadmap for later items in the same
+  subsystem and design the current work to be forward-compatible — build on the
+  primitive those will need. If they genuinely conflict, decide explicitly
+  (do the later one first, or record the exact seam). Never implement something
+  a known-future item will have to tear out. Note the look-ahead result in the
+  completion entry.
+- **Earn the checkmark.** Mark an item done only after its full original scope
+  is implemented *and behaviourally validated* — a real run, not a syntax check.
+  Audit against the entry text, not memory of it. Before starting anything, spot
+  check that previously ticked items in the same area are genuinely done.
+- **Propagate on completion.** After finishing an item, scan the still-unchecked
+  items for any describing the *old* behaviour of what just changed, and update
+  them to the new reality and the new dependency. A shipped feature that leaves
+  later items describing the pre-change world silently misleads the next
+  session. Do this before ticking the box.
+- **Record what was learned.** Each completed item gets a `> **Learned.**` block
+  covering what was not obvious beforehand. Reusable failure modes go in
+  `docs/TRAPS.md` instead — the roadmap is per-feature, TRAPS is cross-cutting.
+- **Keep `docs/ARCHITECTURE.md` in sync.** A brand-new subsystem gets a new
+  section; a reworked one gets its existing section updated. The architecture
+  doc must keep describing the system as built, not as designed.
+
+## Ending a session
+
+Overwrite `docs/HANDOFF.md` with the current state and commit it. Git history
+preserves previous handoffs. The next session is told to read it first.
+
 ## Conventions
 
 - ES modules throughout, Node 24. No TypeScript.
