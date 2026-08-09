@@ -1,0 +1,38 @@
+{
+  "name": "presentation-forge",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "render": "node src/render.js",
+    "preview": "node src/preview.js",
+    "fonts": "node tools/install-fonts.mjs",
+    "brand": "node tools/prep-brand.mjs",
+    "api": "node --watch app/server/index.js",
+    "web": "vite --config app/web/vite.config.js --port 5173 --strictPort",
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm:api\" \"npm:web\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "cors": "^2.8.6",
+    "docx": "^9.7.1",
+    "express": "^5.2.1",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.35.3",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.0.5",
+    "concurrently": "^10.0.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.1"
+  }
+}

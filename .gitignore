@@ -1,0 +1,17 @@
+node_modules/
+
+# Generated artefacts — reproducible from sources, never committed.
+decks/*/out/
+brand/generated/
+brand/fonts/
+*.pptx
+*.docx
+!reference/*.docx
+*.pdf
+!reference/*.pdf
+
+# LibreOffice scratch profiles created during rasterisation.
+**/.lo-profile/
+
+.env
+.DS_Store
