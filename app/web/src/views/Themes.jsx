@@ -1,0 +1,145 @@
+import { useEffect, useState } from "react";
+import { api } from "../api.js";
+import { Empty } from "../components/ui.jsx";
+
+export default function Themes() {
+  const [themes, setThemes] = useState(null);
+
+  useEffect(() => {
+    api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
+  }, []);
+
+  return (
+    <div className="mx-auto max-w-6xl px-8 py-9">
+      <header className="mb-7">
+        <h1 className="text-[1.7rem] font-semibold tracking-tight">Themes</h1>
+        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-fg-muted">
+          One YAML file each, split in two halves that never overlap:{" "}
+          <code className="text-fg-faint">tokens</code> drive the renderer,{" "}
+          <code className="text-fg-faint">voice</code> guides the model. Every card
+          below is drawn live from its own tokens, so it cannot drift from what
+          actually renders.
+        </p>
+      </header>
+
+      {themes === null && (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {[0, 1, 2].map((i) => <div key={i} className="skeleton h-72 rounded-card" />)}
+        </div>
+      )}
+
+      {themes?.length === 0 && <Empty title="No themes found" hint="Add a YAML file under themes/." />}
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {themes?.map((t) => <ThemeCard key={t.name} theme={t} />)}
+      </div>
+    </div>
+  );
+}
+
+function ThemeCard({ theme }) {
+  const p = theme.palette;
+  const title = theme.surfaces?.title ?? {};
+  const swatches = [p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean);
+
+  return (
+    <div className="overflow-hidden rounded-card border border-line bg-panel transition hover:border-line-strong">
+      {/* Two specimens: the title treatment and a standard content page. Between
+          them they show almost everything a theme decides. */}
+      <div className="flex aspect-[16/7] flex-col justify-end px-4 pb-3 pt-3" style={{ background: title.bg ?? p.ink }}>
+        <div
+          style={{
+            color: title.ink ?? p.surface,
+            fontFamily: `"${theme.fonts.heading}", serif`,
+            fontWeight: 800,
+            fontSize: 17,
+            lineHeight: 1.15,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Compare GPU Architecture
+        </div>
+        <div
+          className="mt-1"
+          style={{
+            color: title.muted ?? p.ink_muted,
+            fontFamily: `"${theme.fonts.body}", sans-serif`,
+            fontSize: 10,
+            fontStyle: "italic",
+          }}
+        >
+          Two bets on parallelism
+        </div>
+      </div>
+
+      <div className="px-4 py-4" style={{ background: p.bg, color: p.ink }}>
+        <div className="flex items-center gap-2">
+          <span
+            className="rounded-full px-2 py-[3px] text-[8px] font-bold"
+            style={{ background: p.accent, color: p.on_accent ?? "#fff", letterSpacing: "0.1em" }}
+          >
+            01
+          </span>
+          <span
+            className="text-[8px] font-bold uppercase"
+            style={{ color: p.ink_muted, letterSpacing: "0.14em", fontFamily: `"${theme.fonts.body}", sans-serif` }}
+          >
+            The silicon philosophy
+          </span>
+        </div>
+
+        <div
+          className="mt-2 leading-tight"
+          style={{ fontFamily: `"${theme.fonts.heading}", serif`, fontWeight: 700, fontSize: 15 }}
+        >
+          Two companies, two bets
+        </div>
+
+        <div className="mt-2.5 grid grid-cols-2 gap-2">
+          {["NVIDIA", "AMD"].map((n) => (
+            <div
+              key={n}
+              className="px-2.5 py-2"
+              style={{
+                background: p.surface,
+                borderRadius: 6,
+                fontFamily: `"${theme.fonts.body}", sans-serif`,
+              }}
+            >
+              <div style={{ fontSize: 9, fontWeight: 700 }}>{n}</div>
+              <div style={{ fontSize: 7.5, color: p.ink_muted, marginTop: 2, lineHeight: 1.4 }}>
+                A closed stack for maximum performance.
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <div className="text-[15px] font-medium text-fg">{theme.label}</div>
+          <code className="shrink-0 font-mono text-[10px] text-fg-faint">{theme.name}</code>
+        </div>
+        {theme.summary && (
+          <p className="mt-1 text-xs leading-relaxed text-fg-muted">{theme.summary}</p>
+        )}
+
+        <div className="mt-3.5 flex items-center justify-between gap-3">
+          <div className="flex gap-1">
+            {swatches.map((c) => (
+              <div
+                key={c}
+                title={c}
+                className="h-4 w-4 rounded-[3px] ring-1 ring-inset ring-white/10"
+                style={{ background: c }}
+              />
+            ))}
+          </div>
+          <div className="truncate text-[10.5px] text-fg-faint">
+            {theme.fonts.heading} <span className="text-line-strong">/</span> {theme.fonts.body}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
