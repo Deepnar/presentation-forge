@@ -1,0 +1,223 @@
+import YAML from "yaml";
+import { chatJSON } from "./ollama.js";
+import { buildOpsSchema, applyOps, diffDecks } from "./ops.js";
+import { slideCatalog, deckSchema } from "./catalog.js";
+import { validateDeck } from "../validate.js";
+
+/**
+ * The turn primitive.
+ *
+ * Everything that changes a deck goes through here: first generation, a chat
+ * instruction, a critic's fix list. A turn takes the current deck plus an
+ * instruction and returns a *validated* new deck and a diff.
+ *
+ * Generation is not a special case — it is a turn against an empty deck. Adding
+ * a separate one-shot generate path would duplicate prompt construction,
+ * validation and repair, and the two would drift.
+ */
+
+const MAX_REPAIR = 2;
+
+function systemPrompt({ catalog, theme, identity, decisions }) {
+  const voice = theme?.voice ?? {};
+  const lines = [
+    "You write presentation CONTENT. You never control layout.",
+    "",
+    "Colours, fonts, sizes, spacing and positions belong to the theme and the",
+    "renderer. Never emit them, never ask for them, never describe them. If a",
+    "slide seems to need a layout that does not exist, choose the closest type",
+    "and write better content for it.",
+    "",
+    "You reply with a JSON object of edit operations against the current deck.",
+    "Do not restate unchanged slides.",
+    "",
+    "Emit EVERY operation the instruction requires, in one response. If it asks",
+    "for six slides, the ops array contains six append_slide operations. Stopping",
+    "after the first is the most common failure — the response is not a sample.",
+    "",
+    "Operations:",
+    '- set_meta {meta:{title,subtitle,sections}}',
+    '- append_slide {slide}',
+    '- insert_slide {index, slide}   index is where it lands, 0-based',
+    '- replace_slide {index, slide}',
+    '- update_slide {index, patch}   patch merges over the slide; use for small edits',
+    '- delete_slide {index}',
+    '- move_slide {index, to}',
+    "",
+    "Indices refer to the deck as it evolves: an insert shifts later slides.",
+    "",
+    catalog,
+  ];
+
+  if (voice.feel || voice.prefers || voice.avoid) {
+    lines.push("", "House style for this deck:");
+    if (voice.feel) lines.push(`- Tone: ${voice.feel}`);
+    if (voice.headline_style) lines.push(`- Headlines: ${voice.headline_style.trim()}`);
+    if (voice.body_style) lines.push(`- Body: ${voice.body_style.trim()}`);
+    if (voice.prefers?.length) lines.push(`- Prefer: ${voice.prefers.join("; ")}`);
+    if (voice.avoid?.length) lines.push(`- Avoid: ${voice.avoid.join("; ")}`);
+    if (voice.density) lines.push(`- Density: ${voice.density}`);
+  }
+
+  const subject = identity?.academic?.subject;
+  if (subject) lines.push("", `Subject context: ${subject}.`);
+
+  if (decisions?.trim()) {
+    lines.push(
+      "",
+      "Standing decisions from earlier in this deck's history. These are",
+      "instructions, and they still apply:",
+      decisions.trim(),
+    );
+  }
+
+  lines.push(
+    "",
+    "Write specific, declarative prose. Lead with the claim, then the evidence.",
+    "Never write filler like 'This slide discusses…'. Never invent statistics.",
+  );
+
+  return lines.join("\n");
+}
+
+/** The deck as the model sees it: compact, indexed, no rendering detail. */
+function deckState(deck) {
+  if (!deck?.slides?.length) {
+    return (
+      "The deck is EMPTY — it has 0 slides.\n" +
+      "Build it from scratch: call set_meta once for the title and sections, then\n" +
+      "append_slide once per slide, in presentation order. There is nothing to\n" +
+      "update or replace yet."
+    );
+  }
+  const head = [
+    `title: ${deck.title ?? "(unset)"}`,
+    deck.subtitle ? `subtitle: ${deck.subtitle}` : null,
+    deck.sections?.length ? `sections: ${deck.sections.map((s, i) => `${i}=${s}`).join(", ")}` : null,
+  ].filter(Boolean).join("\n");
+
+  const slides = deck.slides
+    .map((s, i) => `[${i}] ${YAML.stringify(s).trim().replace(/\n/g, "\n    ")}`)
+    .join("\n");
+
+  return `${head}\n\nSlides (0-based):\n${slides}`;
+}
+
+/**
+ * Run one turn.
+ *
+ * On validation failure the schema errors are fed straight back — they are
+ * written as correction instructions for exactly this loop. Repair attempts are
+ * capped: a model that has failed twice is not converging, and returning the
+ * errors to the caller beats burning minutes.
+ */
+export async function runTurn({
+  deck,
+  instruction,
+  role = "author",
+  theme,
+  identity,
+  decisions = "",
+  history = [],
+  research = "",
+  images,
+  model,
+  onToken,
+  signal,
+}) {
+  const catalog = await slideCatalog();
+  const base = deck ?? { title: "", slides: [] };
+  // Schema is rebuilt per turn so the op set matches what this deck can accept.
+  const schema = buildOpsSchema(await deckSchema(), { slideCount: base.slides?.length ?? 0 });
+
+  const messages = [
+    { role: "system", content: systemPrompt({ catalog, theme, identity, decisions }) },
+    ...history,
+    {
+      role: "user",
+      content: [
+        "CURRENT DECK",
+        deckState(base),
+        research ? `\nRESEARCH NOTES\n${research}` : "",
+        "\nINSTRUCTION",
+        instruction,
+      ].filter(Boolean).join("\n"),
+    },
+  ];
+
+  const attempts = [];
+
+  for (let attempt = 0; attempt <= MAX_REPAIR; attempt++) {
+    const res = await chatJSON({
+      role,
+      model,
+      messages,
+      schema,
+      images: attempt === 0 ? images : undefined,
+      onToken: attempt === 0 ? onToken : undefined,
+      signal,
+    });
+
+    const ops = res.data?.ops ?? [];
+    attempts.push({ ops: ops.length, model: res.model });
+
+    if (!ops.length) {
+      return {
+        ok: false, deck: base, changes: [], diff: [], ops: [],
+        errors: ["The model proposed no changes."],
+        reasoning: res.data?.reasoning ?? "", stats: statsOf(res), attempts,
+      };
+    }
+
+    const applied = applyOps(base, ops);
+    const problems = [...applied.errors];
+
+    if (applied.ok) {
+      const { ok, errors } = await validateDeck(applied.deck);
+      if (ok) {
+        return {
+          ok: true,
+          deck: applied.deck,
+          changes: applied.changes,
+          diff: diffDecks(base, applied.deck),
+          ops,
+          errors: [],
+          reasoning: res.data?.reasoning ?? "",
+          stats: statsOf(res),
+          attempts,
+        };
+      }
+      problems.push(...errors);
+    }
+
+    if (attempt === MAX_REPAIR) {
+      return {
+        ok: false, deck: base, changes: applied.changes, diff: [], ops,
+        errors: problems, reasoning: res.data?.reasoning ?? "",
+        stats: statsOf(res), attempts,
+      };
+    }
+
+    // Feed the failure back as the next user turn.
+    messages.push(
+      { role: "assistant", content: JSON.stringify(res.data) },
+      {
+        role: "user",
+        content:
+          `Those operations were rejected:\n` +
+          problems.map((p) => `- ${p}`).join("\n") +
+          `\n\nEmit a corrected operation list. Fix only what is listed; ` +
+          `do not restate operations that were already fine.`,
+      },
+    );
+  }
+}
+
+function statsOf(res) {
+  return {
+    model: res.model,
+    fellBack: res.fellBack ?? false,
+    promptTokens: res.promptCount ?? 0,
+    outputTokens: res.evalCount ?? 0,
+  };
+}
