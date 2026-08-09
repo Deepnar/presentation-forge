@@ -119,10 +119,17 @@ Grid, theme switcher, render, download, zoom modal.
 - [x] Slide grid with type labels
 - [x] Theme switcher + re-render
 - [x] `.pptx` download
-- [x] Lightbox with keyboard navigation (← → Esc)
+- [x] Lightbox with keyboard navigation (← → Home End Esc) + filmstrip
 - [ ] Inline field editing (headline, bullets, card text)
 - [ ] Per-slide presenter assignment
 - [ ] Slide reorder / delete / duplicate
+
+> **Learned.** Relative navigation must use the functional state updater.
+> Reading the current index from the effect's closure loses keystrokes —
+> several `keydown` events fire before React re-renders, each computes from the
+> same stale value, and a held arrow key silently skips slides. It looks correct
+> under single slow presses, which is exactly how it gets missed: stepping from
+> slide 5 with three left presses landed on 4 instead of 2.
 
 ### [ ] Intake wizard
 Collect team, subject, guide, year, brief and sources before generation.
