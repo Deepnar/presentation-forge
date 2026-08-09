@@ -7,40 +7,30 @@ handoffs.
 
 ## Session summary
 
-State at handoff: tree clean, 15 commits, no remote configured (local only).
-`npm run dev` serves API on **:5174** and UI on **:5173**.
+State at handoff: tree clean, 22 commits, no remote (local only).
+`npm run dev` serves API on **:5174**, UI on **:5173**.
+SearXNG runs at **:8888** — `docker compose -f docker/docker-compose.yml up -d`.
 
-This was the **foundation session** — the project did not exist at the start of
-it. Shipped end to end: a deck renders from semantic YAML to a themed `.pptx`,
-rasterises to PNGs, and is browsable in a local web UI.
+Two arcs. First the **foundation**: fonts, brand normalisation, theme system,
+content schema, renderer, rasterisation, API and web UI (commits `acff5ec`
+through `7d5d8c8`). Then the **generation pipeline** (`218c927` through
+`76ceec8`): local metasearch, a role-addressed Ollama client, a deck-operation
+layer, the turn primitive, and a two-stage generator.
 
-1. **Font pipeline** (`3111792`) — 27 Google families / 76 weights via a manifest.
-   The machine had only Noto/DejaVu/Liberation.
-2. **Brand normalisation** (`6de0470`) — white-keying, trim, and a knockout
-   variant for dark backgrounds, from whatever raw files land in `brand/logos/`.
-3. **Theme system** (`b507149`) — `tokens` (renderer-only) / `voice` (model-only)
-   split. One theme shipped: `warm-humanist`, ported from `design_system.txt`.
-4. **Content schema + validator** (`cc154c9`) — 15 slide types, per-type
-   conditional rules, errors phrased as correction prompts for a small model.
-5. **Renderer** (`6a79d05`) — 15 layouts with zero literals, locked chrome pass,
-   shrink-only text fitter.
-6. **Rasterisation** (`59b15ab`) — LibreOffice → PDF → PNG + 480px thumbs.
-7. **API + web UI** (`94c342f`, `6ed1fce`) — Express over `src/`; React views for
-   decks, themes, identity.
-8. **Lightbox** (`7d5d8c8`) — keyboard-driven slide review, plus a real bug fix
-   (see Gotchas).
-9. **Docs** (`fad71dc`, this commit) — architecture, roadmap, traps, handoff.
+**End-to-end validated.** From a one-line brief the pipeline planned and wrote a
+9-slide deck in 24s with zero slides skipped, which then rendered and rasterised;
+slides were inspected individually. Content is model-written, correctly themed,
+chrome intact. Sample output is committed at `decks/raytracing-ai/`.
 
-**Validated behaviourally**, not just compiled: the 12-slide smoke deck renders,
-rasterises, and was inspected slide by slide; four defects were found that way
-and fixed (crest alpha, dark-background wordmark, crest legibility at 0.62in,
-single-series chart colours). Lightbox keyboard nav was driven through the DOM
-and asserted (5 → three lefts → 02, clamping at both ends, Esc closes).
+The hard-won part was constrained decoding. A single large-schema call failed in
+escalating stages — token loops, runaway nesting, confabulated content, then an
+outline that ran to 8192 tokens. None of it was fixed by sampling parameters.
+The causes were grammar size, unbounded collections, and model choice. Full
+taxonomy in `docs/TRAPS.md`; it is the most reusable thing here.
 
 **Not validated:** the visual result of the UI redesign. The screenshot tool
-failed for the back half of the session (see TRAPS). Structure, tokens and fonts
-were confirmed via `read_page` / `javascript_tool`; nobody has actually looked at
-the redesigned interface.
+failed for most of the session. Structure, tokens and fonts were confirmed via
+`read_page` / `javascript_tool`; nobody has looked at the redesigned interface.
 
 ## Context to read before starting
 
@@ -56,35 +46,34 @@ the redesigned interface.
   literal colours and font names.
 - `reference/` — the institutional templates output is checked against.
 
-## NEXT TASK — **generation pipeline**, in this order
+## NEXT TASK — wire the pipeline into the UI
 
-The UI is a viewer with nothing behind it. The pipeline is what makes the rest
-worth having. Per CLAUDE.md, **discuss the concrete implementation before
-building** — the roadmap entries below are intent, not specs.
+The pipeline works from Node but the UI cannot reach it. Per CLAUDE.md,
+**discuss the concrete implementation before building**.
 
-1. **Local search** (`roadmap §4`) — SearXNG in Docker + a `search()` /
-   `fetch_page()` module. Docker already runs on this machine.
-2. **Ollama orchestrator** (`roadmap §4`) — plain Node over the HTTP API, role
-   split across models. Deliberately not LangChain; see ARCHITECTURE.
-3. **Outline review gate** (`roadmap §2`) — the human approval step. This is what
-   makes free-form structure safe with a small model, and it is a *prerequisite*
-   for chat, not a nice-to-have after it.
-4. **Vision critic loop** (`roadmap §4`) — feed rendered PNGs back for overflow
-   and contrast defects.
+1. **API endpoints for generation** — `POST /api/decks` (brief → plan),
+   `POST /api/decks/:slug/generate` (plan → deck). Both are long-running, so
+   decide the transport up front: SSE is the natural fit and the chat panel will
+   need streaming anyway. Do not add a polling endpoint chat will replace.
+2. **Outline review UI** (`roadmap §2`) — `planDeck()` already returns a
+   reviewable plan; this is now UI over an existing API. It gates generation, so
+   it comes before chat.
+3. **Collapsible rails** (`roadmap §2`) — build the right rail as a generic slot.
+4. **Chat panel** (`roadmap §2`) — uses `runTurn`, per-deck threads, memory model
+   already specified in the roadmap entry.
+5. **Vision critic** (`roadmap §4`) — needs a vision-capable role; the author
+   role is now a coder model with no vision.
 
-**Look-ahead already done for this work:** the chat panel (§2) and the critic
-loop (§4) both need a conversation/turn primitive and a deck-mutation primitive.
-Build the orchestrator so a "turn" is a first-class thing that takes the current
-`deck.yaml` plus an instruction and returns a validated new `deck.yaml` — the
-critic is then just a turn whose instruction comes from a vision model instead of
-a human. Do not build a one-shot generate-only path that chat will have to tear
-out.
+**Look-ahead for step 1:** the streaming transport chosen here is the one the
+chat panel inherits. `chat()` in `src/ai/ollama.js` already takes `onToken`, so
+the plumbing exists — expose it as SSE once, not twice.
 
 ## Remaining known items
 
 See `docs/ROADMAP.md` for the full list with rationale.
 
-- **Generation pipeline** — search, orchestrator, outline gate, vision critic.
+- **Generation in the UI** — endpoints, outline review, chat panel.
+- **Vision critic** — needs its own vision-capable role.
 - **19 remaining themes** — 15 native, 4 requiring the HTML plate renderer.
 - **HTML plate renderer** — headless Chrome for blur/mesh effects OOXML cannot
   express; also unblocks `type: freeform`.
@@ -116,3 +105,9 @@ Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
   not.
 - **Only one theme exists.** Anything that assumes a populated gallery will look
   broken until more land.
+- **SearXNG must be running** for research: `docker compose -f
+  docker/docker-compose.yml up -d`. `searxngHealthy()` checks it.
+- **Read `docs/TRAPS.md` before touching anything schema-constrained.** Every
+  failure there cost real time and none were guessable.
+- **The author role has no vision** (`qwen3-coder`). Anything reading images
+  must request a vision-capable role explicitly.

@@ -1,0 +1,188 @@
+title: "Real-Time Ray Tracing: Revolutionizing Computer Graphics"
+theme: warm-humanist
+sections:
+  - Introduction to Ray Tracing
+  - Technical Fundamentals
+  - Hardware Evolution
+  - Future Directions
+slides:
+  - type: title
+    section: 0
+    headline: "Real-Time Ray Tracing: Revolutionizing Computer Graphics"
+    standfirst: From cinematic renderings to interactive experiences, real-time ray
+      tracing is transforming how we create and consume visual content.
+    notes: This opening slide sets the stage for the entire presentation by
+      establishing the topic and its broad impact on computer graphics. The
+      headline is declarative and specific, avoiding generic phrases like
+      'Introduction to Ray Tracing.' The standfirst emphasizes both the
+      technical advancement and its practical implications.
+    cites: []
+  - type: section
+    section: 0
+    headline: "From Scene to Screen: How Ray Tracing Works"
+    standfirst: A foundational overview of the ray tracing process and its
+      computational demands
+    notes: This slide sets the stage for understanding how ray tracing operates in
+      computer graphics, introducing core concepts that will be expanded upon in
+      subsequent slides.
+    cites: []
+  - type: bullets
+    headline: Ray Tracing Fundamentals
+    bullets:
+      - Ray tracing is a rendering technique that simulates the physical path of
+        light to generate realistic images.
+      - It traces rays from the camera through each pixel, calculating how light
+        interacts with objects in the scene.
+      - Core principles include reflection, refraction, shadows, and global
+        illumination for photorealistic results.
+      - Each ray computes not just color, but also lighting effects like soft
+        shadows and caustics.
+      - Traditionally computationally expensive, requiring thousands of
+        calculations per pixel for high fidelity.
+      - Real-time ray tracing accelerates this process through hardware support
+        and algorithmic optimizations.
+    section: 0
+    standfirst: Defining the core concepts behind ray tracing
+    notes: This slide establishes foundational understanding of ray tracing
+      principles without technical jargon.
+    cites: []
+  - type: compare
+    headline: "Rasterization vs. Ray Tracing: A Fundamental Divide"
+    left:
+      title: Rasterization
+      body: Converts 3D geometry into 2D pixels through mathematical projection and
+        shading calculations. Uses precomputed lighting and reflections,
+        prioritizing speed over visual fidelity.
+      points:
+        - Mathematical projection of 3D models
+        - Precomputed lighting and reflections
+        - High performance, low computational cost
+        - Limited realism in lighting effects
+      image: rasterization_diagram.png
+    right:
+      title: Ray Tracing
+      body: Simulates light paths by tracing rays from the camera through each pixel
+        to determine color and illumination. Accurately models light behavior
+        for photorealistic results.
+      points:
+        - Simulates light path behavior
+        - Accurate reflection, refraction, and shadows
+        - High visual fidelity, computationally intensive
+        - Real-time lighting effects
+      image: ray_tracing_diagram.png
+    verdict: Rasterization prioritizes speed for real-time applications, while ray
+      tracing delivers superior visual quality by accurately simulating light
+      behavior. The choice between them defines the balance of performance and
+      realism in rendering.
+  - type: flow
+    headline: "From Ray to Reality: The Ray Tracing Pipeline"
+    steps:
+      - title: Ray Generation
+        body: The process begins with casting rays from the camera through each pixel of
+          the image plane into the 3D scene.
+      - title: Intersection Testing
+        body: Each ray is tested against all objects in the scene to find the closest
+          intersection point, determining what the ray 'se
+      - title: Shading Calculation
+        body: "At the intersection point, the surface properties are evaluated using
+          material definitions and lighting calculations to "
+      - title: Recursive Ray Tracing
+        body: "For reflective or refractive surfaces, additional rays are cast to
+          simulate light bouncing through the scene, creating "
+      - title: Final Color Computation
+        body: "The contributions from all rays and light sources are combined to produce
+          the final pixel color, incorporating ambient "
+      - title: Image Assembly
+        body: All processed pixels are assembled into a complete image, ready for
+          display or further post-processing.
+    section: 1
+    standfirst: A detailed walkthrough of how rays interact with a scene to generate
+      photorealistic images.
+    notes: This flow chart illustrates the core stages in a ray tracing pipeline.
+      Each step builds upon the previous one, culminating in the final rendered
+      image.
+    cites:
+      - url: https://www.cs.cmu.edu/~ph/texbook/node20.html
+        title: Ray Tracing Fundamentals
+  - type: section
+    section: 1
+    headline: "Technical Foundations: The Core of Ray Tracing"
+    standfirst: Understanding the mathematical and computational principles that
+      enable real-time ray tracing.
+    notes: This slide introduces the core technical concepts that underpin ray
+      tracing. It sets the stage for deeper exploration in subsequent slides,
+      focusing on how light interacts with surfaces and how this interaction is
+      mathematically modeled.
+    cites: []
+  - type: cards
+    headline: "Modern Ray Tracing Systems: Core Architectural Components"
+    cards:
+      - title: Acceleration Structures
+        body: Optimized data structures that organize scene geometry to enable fast
+          ray-intersection tests. These include BVHs (Bounding Volume
+          Hierarchies) and LBVHs (Linear Bounding Volume Hierarchies), which
+          dramatically reduce the number of intersection candidates per ray.
+        kicker: Geometry Organization
+      - title: Ray Tracing Cores
+        body: Specialized hardware units designed to accelerate ray-scene intersections.
+          Found in modern GPUs, these cores process rays in parallel and handle
+          complex shading operations, enabling real-time performance for
+          interactive applications.
+        kicker: Hardware Acceleration
+      - title: Shader Execution Units
+        body: Compute units that execute shading programs for each ray hit. These are
+          capable of processing lighting, reflections, and refractions with high
+          fidelity, contributing to the photorealistic output that defines ray
+          tracing.
+        kicker: Lighting Calculation
+      - title: Memory Hierarchy
+        body: High-speed memory systems including L1/L2 caches and global memory
+          optimized for fast access patterns. Efficient memory management is
+          critical in ray tracing, as it affects both the traversal of
+          acceleration structures and the retrieval of material properties.
+        kicker: Performance Optimization
+    section: 2
+    standfirst: Key components driving modern real-time ray tracing systems.
+    notes: These components work in concert to deliver real-time ray tracing. Each
+      plays a distinct role in optimizing performance while maintaining visual
+      fidelity.
+    cites:
+      - url: https://developer.nvidia.com/rtx
+        title: NVIDIA RTX Technology
+      - url: https://www.khronos.org/vulkan/
+        title: Vulkan Ray Tracing Specification
+  - type: stats
+    stats:
+      - value: 10x
+        label: Performance improvement in ray tracing speed
+        sub: Between 2020 and 2023
+      - value: 47%
+        label: Of gamers using ray-traced graphics
+        sub: In 2023, according to Steam
+      - value: 85%
+        label: of new gaming laptops support RT cores
+        sub: As of 2024 Q1
+      - value: 2.3x
+        label: Increase in ray-traced content in AAA titles
+        sub: From 2022 to 2024
+    section: 2
+    headline: Hardware Adoption and Performance Gains
+    standfirst: Real-time ray tracing hardware has seen rapid adoption and
+      performance enhancements across the industry.
+    notes: These metrics highlight both the growing integration of ray tracing
+      technology in consumer hardware and the dramatic speed improvements that
+      have made real-time rendering feasible for mainstream use.
+    cites:
+      - url: https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam
+        title: Steam Hardware Survey
+      - url: https://www.anandtech.com/show/20983/nvidia-rtx-4090-review/11
+        title: "AnandTech: RTX 4090 Performance Analysis"
+  - type: section
+    section: 3
+    headline: "Beyond the Horizon: Future Directions in Ray Tracing"
+    standfirst: As hardware and software continue to evolve, ray tracing is poised
+      for unprecedented expansion into new domains and applications.
+    notes: This slide sets the stage for the final section of the presentation,
+      emphasizing forward-looking developments rather than retrospective
+      analysis.
+    cites: []
