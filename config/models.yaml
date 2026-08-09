@@ -1,0 +1,68 @@
+# Which local model plays which role.
+#
+# Sized against a 24 GB VRAM ceiling. The two MoE models are ~17-18 GB but only
+# activate 3-4B parameters per token, so they run at small-model speed with
+# large-model quality. Keep `utility` tiny — it runs often and its jobs are
+# trivial.
+#
+#   export OLLAMA_MAX_LOADED_MODELS=2
+#
+# so a big model and the utility model stay resident together instead of
+# thrashing on every role switch.
+
+host: http://localhost:11434
+
+roles:
+  # Tool-calling and query formulation. Strong instruction-following matters
+  # more than prose quality.
+  research:
+    model: qwen3-coder:30b-a3b-q4_K_M
+    temperature: 0.3
+    num_ctx: 32768
+
+  # Outline and slide content. This one writes everything the audience reads.
+  #
+  # Measured on the same outline prompt under constrained decoding:
+  #   qwen3-coder:30b-a3b   7 slides, 332 tok,  11.8s, coherent
+  #   qwen3.6:27b           6 slides, 370 tok, 210.5s, coherent (dense, 18x slower)
+  #   gemma4:26b-a4b-it     structurally valid, prose degenerated into token
+  #                         loops ("im_er_al", "enlarge-enlarge")
+  #
+  # A coder model is the right instinct for schema-constrained output: JSON is
+  # in-distribution for it, so the grammar rarely has to mask its next choice.
+  author:
+    model: qwen3-coder:30b-a3b-q4_K_M
+    temperature: 0.7
+    top_k: 20
+    top_p: 0.8
+    repeat_penalty: 1.05
+    num_ctx: 32768
+    # A response that hits this cap is truncated mid-JSON and fails as
+    # "malformed output". done_reason=length in the error distinguishes the two.
+    num_predict: 8192
+
+  # Reads rendered slide PNGs. Must be a vision model.
+  critic:
+    model: gemma4:26b-a4b-it-q4_K_M
+    temperature: 0.2
+    num_ctx: 16384
+    vision: true
+
+  # Classification, title-casing, dedupe, summarisation of old chat turns.
+  utility:
+    model: qwen3:4b-instruct
+    temperature: 0.2
+    num_ctx: 8192
+
+# Fallbacks used when a role's model is not installed. Checked in order.
+fallbacks:
+  - gemma4:12b
+  - qwen3.6:27b
+  - gpt-oss:latest
+
+defaults:
+  # Ollama unloads after this idle period. Long enough to survive a user reading
+  # an outline before replying.
+  keep_alive: "15m"
+  request_timeout_ms: 300000
+  max_retries: 2
