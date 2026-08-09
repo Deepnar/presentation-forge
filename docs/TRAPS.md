@@ -109,6 +109,59 @@ full plate only in the lightbox.
 
 ---
 
+## Constrained decoding (Ollama `format`, and structured output generally)
+
+Passing a JSON Schema as `format` compiles it to a grammar and masks any token
+that would violate it. Output is guaranteed to *parse*. Everything below follows
+from what that guarantee does not cover — and this applies equally to OpenAI's
+structured outputs and Anthropic's tool schemas, it is not an Ollama quirk.
+
+**It guarantees shape, not sense.** A deck titled ".NET Core 6.0 release notes"
+satisfies the schema perfectly. Constraint cannot supply knowledge.
+
+**A large grammar degrades output.** Every masked token pushes the model to its
+second or third choice; enough of those and it leaves the distribution entirely.
+A schema unioning all 28 slide fields produced, in escalating order: token loops
+(`_er_er_er…`), infinitely nested `{"patch_details":{"patch_details":…}}`, and
+then confabulated content. Those were not three bugs. They were one cause.
+**The fix is a smaller schema, not better sampling parameters** — `repeat_penalty`
+and `top_k` were tried first and changed nothing.
+
+**Never declare a bare `{type: "object"}`.** With no `properties`, the grammar
+permits arbitrary keys nested arbitrarily deep, and a small model will fall in
+and stay there. Enumerate the key space even when values stay polymorphic.
+
+**Never declare an unbounded array.** Without `maxItems` the grammar never
+*requires* a closing bracket, so generation runs to the token ceiling. A
+six-slide outline consumed 8192 tokens this way. Bound every collection and put
+`maxLength` on every string.
+
+**Inline every `$ref`, at any depth.** Ollama has no document to resolve
+against; one surviving `#/definitions/…` — including inside `items` — fails the
+whole request.
+
+**Constrain the op set to what the state allows.** Against an empty deck the
+model reliably emitted `update_slide`, then failed to recover through two repair
+rounds. Removing those ops from the enum made the mistake unrepresentable, which
+beats explaining it in the prompt.
+
+**Always capture `done_reason`.** `length` means truncated; anything else means
+the model genuinely produced that. Without it, a response cut off mid-JSON is
+indistinguishable from malformed output, and the obvious fix (raise
+`num_predict`) is exactly wrong when the real cause is a runaway grammar.
+
+**Model choice matters more than prompt engineering here.** On an identical
+outline prompt: `qwen3-coder:30b-a3b` 11.8s and coherent; `qwen3.6:27b` 210s and
+coherent (dense, not MoE); `gemma4:26b-a4b-it` structurally valid but prose
+degenerated into `im_er_al`/`enlarge-enlarge` fragments. JSON is in-distribution
+for a coder model, so the grammar rarely has to mask its next choice. Try
+swapping the model before tuning anything else.
+
+**Decompose rather than constrain harder.** Two stages — a three-key outline,
+then one slide per call constrained to that single type — replaced a single
+large call and fixed the degeneration, the truncation and the completeness
+problem at once. Small grammars are the whole trick.
+
 ## Session / tooling
 
 **The browser screenshot tool can fail mid-session and stay failed.** It timed
