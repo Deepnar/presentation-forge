@@ -1,0 +1,97 @@
+# Warm Humanist — the reference theme.
+# Ported from design_system.txt, which produced the GPU Architectures deck.
+#
+# FORMAT CONTRACT (every theme in this folder follows it):
+#   tokens:  exact machine values. The renderer reads ONLY this. No adjectives,
+#            no "or similar" — every value must be directly usable.
+#   voice:   guidance for the LLM. The model reads ONLY this. No hex, no
+#            geometry — the model must never be in a position to invent layout.
+# Keeping these disjoint is what lets a 12B model drive without wrecking design.
+
+name: warm-humanist
+label: Warm Humanist
+summary: Calm editorial warmth. Bone paper, terracotta accent, serif headlines.
+
+tokens:
+  # ---- colour ------------------------------------------------------------
+  # Deliberately no pure #FFFFFF page and no pure #000000 ink.
+  palette:
+    bg: "#EBEBE6"          # bone / warm platinum
+    surface: "#FFFFFF"     # cards float above the bone, so pure white is fine here
+    ink: "#2D2D2A"         # charcoal
+    ink_muted: "#5C5C59"   # warm grey
+    accent: "#C05D4E"      # terracotta
+    accent_alt: "#D97706"  # amber
+    rule: "#D8D8D2"        # hairline separators
+    on_accent: "#FFFFFF"
+
+  # Slides that break out of the standard page: the opening title and section
+  # dividers. Themes state these explicitly rather than the renderer guessing,
+  # because "invert the palette" is right for some designs and wrong for others.
+  surfaces:
+    title:   { bg: "#2D2D2A", ink: "#FFFFFF", muted: "#A8A8A2", accent: "#D97706" }
+    section: { bg: "#C05D4E", ink: "#FFFFFF", muted: "#F2DCD7" }
+
+  dark:
+    bg: "#202020"
+    surface: "#2C2C2C"
+    ink: "#E6E6E6"
+    ink_muted: "#B0B0B0"
+    accent: "#C05D4E"
+    accent_alt: "#D97706"
+    rule: "#FFFFFF1A"      # 10% white — the only place borders are allowed
+    on_accent: "#FFFFFF"
+
+  # ---- type --------------------------------------------------------------
+  # size = points at 16:9 / 13.333in wide. The fitter may shrink, never grow.
+  type:
+    display:  { family: Merriweather, weight: 900, size: 40, line: 1.12, tracking: -0.5 }
+    heading:  { family: Merriweather, weight: 700, size: 30, line: 1.18, tracking: -0.3 }
+    subhead:  { family: Inter,        weight: 400, size: 15, line: 1.45, tracking: 0 }
+    body:     { family: Inter,        weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,        weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,        weight: 700, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
+    stat:     { family: Merriweather, weight: 900, size: 54, line: 1.0,  tracking: -1.0 }
+
+  # ---- geometry (inches; 16:9 canvas is 13.333 x 7.5) --------------------
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    # Vertical anchors so every slide agrees where the title band ends.
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.24, pill: 0.40, chip: 0.12 }   # inches
+    border: { width: 0, color: "#00000000" }         # borders avoided by design
+    card_pad: 0.30
+
+  # PowerPoint shadows are a weak approximation of the CSS spec in the .txt,
+  # but soft + wide + low-opacity reads correctly at presentation distance.
+  shadow:
+    card: { type: outer, blur: 18, offset: 5, angle: 90, color: "2D2D2A", opacity: 0.10 }
+
+  # ---- decorative background plate ---------------------------------------
+  # This theme is flat, so no pre-rendered plate is needed. Themes that rely on
+  # blur or mesh gradients set `plate.enabled: true` and supply plate.css.
+  plate:
+    enabled: false
+
+voice:
+  feel: calm, editorial, unhurried, confident without shouting
+  density: medium              # ~55 words/slide budget
+  prefers:
+    - two-column comparison cards
+    - a single framework/takeaway bar closing a section
+    - pull-quotes and generous whitespace
+    - stat trios for quantitative beats
+  avoid:
+    - neon or saturated primary colours
+    - dense bullet walls (>5 bullets)
+    - clip-art, gradients, drop shadows on text
+  headline_style: >
+    Declarative and specific. "Two Companies, Two Bets on Parallelism"
+    over "Introduction to GPU Vendors". Never a bare noun phrase.
+  body_style: >
+    Full sentences, not fragments. Lead with the claim, then the evidence.
+    Bold at most one phrase per paragraph.
