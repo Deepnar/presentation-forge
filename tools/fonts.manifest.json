@@ -1,0 +1,33 @@
+{
+  "_comment": "Typefaces required by themes/. Re-run `node tools/install-fonts.mjs` after editing.",
+  "_source": "Google Fonts (fonts.googleapis.com CSS2 API -> fonts.gstatic.com TTF)",
+  "families": {
+    "Inter":              { "weights": [400, 500, 600, 700, 900], "used_by": ["warm-humanist", "notion-clean", "flat-2"] },
+    "Merriweather":       { "weights": [300, 400, 700, 900],      "used_by": ["warm-humanist"] },
+    "Playfair Display":   { "weights": [400, 700, 900],           "used_by": ["editorial-magazine", "art-deco"] },
+    "Space Grotesk":      { "weights": [400, 500, 700],           "used_by": ["neubrutalism", "linear-dark"] },
+    "Archivo":            { "weights": [400, 600, 700],           "used_by": ["swiss-international"] },
+    "Archivo Black":      { "weights": [400],                     "used_by": ["neubrutalism", "bauhaus"] },
+    "DM Sans":            { "weights": [400, 500, 700],           "used_by": ["minimal-muji", "notion-clean"] },
+    "Poppins":            { "weights": [400, 500, 600, 700],      "used_by": ["memphis-postmodern", "corporate-alegria"] },
+    "IBM Plex Sans":      { "weights": [400, 500, 700],           "used_by": ["material-you", "flat-2"] },
+    "IBM Plex Mono":      { "weights": [400, 700],                "used_by": ["retro-terminal", "dark-neon"] },
+    "Libre Baskerville":  { "weights": [400, 700],                "used_by": ["newsprint", "academic"] },
+    "Lora":               { "weights": [400, 500, 700],           "used_by": ["editorial-magazine"] },
+    "Roboto":             { "weights": [300, 400, 500, 700, 900], "used_by": ["material-you"] },
+    "Work Sans":          { "weights": [400, 500, 700],           "used_by": ["aurora-mesh", "glassmorphism"] },
+    "Outfit":             { "weights": [400, 500, 700],           "used_by": ["claymorphism", "neumorphism"] },
+    "Source Serif 4":     { "weights": [400, 600, 700],           "used_by": ["editorial-magazine", "academic"] },
+    "Bebas Neue":         { "weights": [400],                     "used_by": ["newsprint", "bauhaus"] },
+    "Oswald":             { "weights": [400, 500, 700],           "used_by": ["newsprint"] },
+    "Fraunces":           { "weights": [400, 700, 900],           "used_by": ["editorial-magazine"] },
+    "Instrument Serif":   { "weights": [400],                     "used_by": ["minimal-muji", "art-deco"] },
+    "Bodoni Moda":        { "weights": [400, 700, 900],           "used_by": ["art-deco"] },
+    "Manrope":            { "weights": [400, 500, 700, 800],      "used_by": ["linear-dark", "aurora-mesh"] },
+    "Syne":               { "weights": [400, 700, 800],           "used_by": ["memphis-postmodern"] },
+    "Cormorant Garamond": { "weights": [400, 600, 700],           "used_by": ["art-deco", "academic"] },
+    "Anton":              { "weights": [400],                     "used_by": ["neubrutalism", "bauhaus"] },
+    "Karla":              { "weights": [400, 700],                "used_by": ["swiss-international", "minimal-muji"] },
+    "Public Sans":        { "weights": [400, 700],                "used_by": ["notion-clean", "flat-2"] }
+  }
+}
