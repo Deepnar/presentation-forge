@@ -141,9 +141,50 @@ until it is approved or edited. This is what makes free-form structure safe with
 a small local model — strictly better than presets, which guess in advance and
 are wrong half the time.
 
-### [ ] Chat editing
-"make slide 4 punchier", "add a slide on FSR after 6". Edits `deck.yaml`,
-re-renders, shows the diff.
+### [ ] Application shell — collapsible rails
+Left navigation collapses to an icon rail; right panel (chat) collapses to an
+edge tab. Both states persist. The centre column is the deck grid and must stay
+the focus — the rails serve it, not the other way round.
+
+Depends on nothing; blocks the chat panel, which needs the right rail to exist.
+Build the rail as a generic slot, not a chat-specific drawer.
+
+### [ ] Chat panel — the AI wrapper
+A real conversational surface in the right rail: streamed tokens, stop, retry,
+edit-and-resend, visible tool calls, model picker, context-usage indicator.
+
+**Scope: per deck.** Each deck owns its thread. A deck is the unit of work and
+the unit of context — a global assistant would need to re-establish which deck is
+being discussed on every turn, and cross-deck memory is a liability rather than a
+feature (last month's GPU deck should not leak into this month's).
+
+**Memory model — state over transcript.** The naive design replays the whole
+conversation and burns context re-deriving what the file already says. Instead,
+three tiers:
+
+| Tier | Holds | Lives in |
+|---|---|---|
+| State | current `deck.yaml` + theme `voice` + `meta.yaml` | the files themselves |
+| Recent | last ~10 turns verbatim | `decks/<slug>/chat.jsonl` |
+| Durable | extracted standing preferences | `decks/<slug>/decisions.md` |
+
+The key point: **`deck.yaml` is the memory.** After "make slide 4 punchier" the
+model never needs to recall having done it — the result is in the file it reads
+every turn. Transcript only carries intent that has not yet been materialised
+("keep it under 12 slides"), and once such an instruction proves durable it is
+promoted into `decisions.md` and dropped from the replay window.
+
+Older turns collapse into a rolling summary rather than being truncated, so a
+long session degrades gracefully instead of forgetting its first half.
+
+**Turn primitive.** A turn takes `(current deck.yaml, instruction, context)` and
+returns a *validated* new `deck.yaml` plus a diff. This is the same primitive the
+vision critic uses — the critic is simply a turn whose instruction came from a
+model looking at PNGs rather than from a human. Build it once, in the
+orchestrator, before either caller exists.
+
+> **Look-ahead note.** Do not build a one-shot generate-only path. Generation is
+> the first turn on an empty deck, not a separate code path.
 
 ---
 
