@@ -108,7 +108,9 @@ export default function Decks() {
 function DeckDetail({ slug, onBack }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
+  const [styles, setStyles] = useState([]);
   const [theme, setTheme] = useState("");
+  const [style, setStyle] = useState("");
   const [busy, setBusy] = useState(false);
   const [problems, setProblems] = useState([]);
   const [zoom, setZoom] = useState(null);
@@ -117,15 +119,17 @@ function DeckDetail({ slug, onBack }) {
     api.deck(slug).then((r) => {
       setData(r);
       setTheme(r.deck.theme ?? "");
+      setStyle(r.deck.style ?? "");
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
+    api.styles().then((r) => setStyles(r.styles)).catch(() => {});
   }, [slug]);
 
   async function rerender() {
     setBusy(true);
     setProblems([]);
     try {
-      const r = await api.renderDeck(slug, { theme: theme || undefined });
+      const r = await api.renderDeck(slug, { theme: theme || undefined, style: style || undefined });
       const stamp = Date.now();
       setData((d) => ({
         ...d,
@@ -191,6 +195,23 @@ function DeckDetail({ slug, onBack }) {
               <option value="">from deck.yaml</option>
               {themes.map((t) => (
                 <option key={t.name} value={t.name}>{t.label}</option>
+              ))}
+            </select>
+            <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+
+          <div className="relative">
+            <select
+              value={style}
+              onChange={(e) => setStyle(e.target.value)}
+              title="Style — a cross-cutting density/layout variant on top of the theme"
+              className="appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-sm text-fg outline-none transition hover:border-line-strong focus:border-accent"
+            >
+              <option value="">theme default</option>
+              {styles.map((s) => (
+                <option key={s.name} value={s.name}>{s.label}</option>
               ))}
             </select>
             <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

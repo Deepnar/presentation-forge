@@ -77,6 +77,7 @@ export const api = {
   saveIdentity: (identity) =>
     call("/api/identity", { method: "PUT", body: JSON.stringify({ identity }) }),
   types: () => call("/api/types"),
+  styles: () => call("/api/styles"),
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),

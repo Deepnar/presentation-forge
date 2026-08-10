@@ -4,7 +4,7 @@ import { readFile, writeFile, readdir, mkdir, stat } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT, DECKS, THEMES, CONFIG } from "../../src/paths.js";
-import { loadTheme, listThemes } from "../../src/theme.js";
+import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
@@ -93,6 +93,14 @@ app.get("/api/themes/:name/thumb.png", wrap(async (req, res) => {
   }
 }));
 
+app.get("/api/styles", wrap(async (_req, res) => {
+  const styles = await Promise.all((await listStyles()).map(async (name) => {
+    const s = await loadStyle(name);
+    return { name: s.name, label: s.label };
+  }));
+  ok(res, { styles });
+}));
+
 /* ------------------------------------------------------------------- decks */
 
 async function deckMeta(slug) {
@@ -179,9 +187,10 @@ app.post("/api/decks/:slug/render", wrap(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug);
   const deckFile = path.join(dir, "deck.yaml");
   const themeName = req.body?.theme;
+  const style = req.body?.style;
   const mode = req.body?.mode ?? "light";
 
-  const r = await render({ deckFile, themeName, mode });
+  const r = await render({ deckFile, themeName, style, mode });
   const p = await preview(r.outFile, { dpi: req.body?.dpi ?? 110 });
   const base = `/api/decks/${req.params.slug}/preview`;
 
