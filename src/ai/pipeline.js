@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { DECKS, CONFIG } from "../paths.js";
 import { researchQuery, fetchPage } from "../search.js";
 import { planDeck, generateDeck } from "./generate.js";
+import { critiqueDeck } from "./critic.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -123,10 +124,11 @@ export async function createDeck({
 /**
  * Stage 2 — approved outline → deck. Writes deck.yaml, then renders and
  * rasterises so the result is inspectable immediately, not after a human opens
- * PowerPoint.
+ * PowerPoint. With `critic`, the rendered slides are run through the vision
+ * critic loop and the deck is re-rendered from whatever it fixes.
  */
 export async function generateFromPlan({
-  slug, plan, theme = null, model, identity, onProgress, signal,
+  slug, plan, theme = null, model, identity, onProgress, signal, critic = false,
 }) {
   const dir = path.join(DECKS, slug);
   let meta = {};
@@ -170,15 +172,32 @@ export async function generateFromPlan({
   const r = await render({ deckFile: path.join(dir, "deck.yaml"), themeName: res.deck.theme });
   const p = await preview(r.outFile, { dpi: 110 });
 
+  let criticReport = null;
+  if (critic) {
+    criticReport = await critiqueDeck({
+      slug,
+      deck: res.deck,
+      model,
+      signal,
+      onProgress: (e) => onProgress?.({ status: "critiquing", ...e }),
+    });
+    if (criticReport.deck) {
+      await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(criticReport.deck), "utf8");
+      meta.status = "ready";
+      await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+    }
+  }
+
   return {
     slug,
-    deck: res.deck,
+    deck: criticReport?.deck ?? res.deck,
     plan: res.plan,
-    slides: p.pages.map((f) => path.basename(f)),
-    thumbs: p.thumbs.map((f) => path.basename(f)),
-    problems: r.problems ?? [],
+    slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
+    thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
+    problems: criticReport?.problems ?? r.problems ?? [],
     skipped: res.skipped ?? [],
     stats: res.stats,
+    critic: criticReport,
   };
 }
 
@@ -189,14 +208,16 @@ Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
                         [--research] [--max-slides <n>] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
-                        [--plan <plan.yaml>] [--no-render]
+                        [--plan <plan.yaml>] [--no-render] [--critic]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
   generate  approved outline → deck.yaml, rendered and rasterised
+            --critic  also run the vision critic loop: detect visual defects in
+                      the rendered slides and fix them via a content turn
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
-  node src/ai/pipeline.js generate raytracing-ai
+  node src/ai/pipeline.js generate raytracing-ai --critic
 `;
 
 function parseArgs(argv) {
@@ -212,6 +233,7 @@ function parseArgs(argv) {
       while (argv[i + 1] && !argv[i + 1].startsWith("--")) opts.sources.push(argv[++i]);
     } else if (a === "--research") opts.research = true;
     else if (a === "--no-render") opts.render = false;
+    else if (a === "--critic") opts.critic = true;
     else if (a === "--help" || a === "-h") { console.log(USAGE); process.exit(0); }
     else opts._.push(a);
   }
@@ -234,12 +256,26 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const planFile = opts.plan ?? path.join(DECKS, opts.slug, "plan.yaml");
       const plan = YAML.parse(await readFile(planFile, "utf8"));
       const r = await generateFromPlan({
-        slug: opts.slug, plan, theme: opts.theme, model: opts.model, onProgress: progress,
+        slug: opts.slug, plan, theme: opts.theme, model: opts.model,
+        onProgress: progress, critic: opts.critic,
       });
       process.stdout.write(`ready decks/${opts.slug}/deck.yaml — ${r.deck.slides.length} slides`);
       if (r.skipped.length) process.stdout.write(`, ${r.skipped.length} skipped`);
       process.stdout.write("\n");
       for (const s of r.skipped) process.stdout.write(`  skipped [${s.index}] ${s.type}: ${s.reason}\n`);
+      if (r.critic) {
+        process.stdout.write("critic:\n");
+        for (const rd of r.critic.rounds) {
+          if (rd.clean) { process.stdout.write(`  round ${rd.round + 1}: clean\n`); continue; }
+          process.stdout.write(`  round ${rd.round + 1}: ${rd.findings.length} finding(s)\n`);
+          for (const f of rd.findings) {
+            process.stdout.write(`    slide ${f.slide} ${f.kind}: ${f.detail}\n`);
+          }
+          if (rd.fixFailed) process.stdout.write(`    fix failed: ${rd.fixFailed.join("; ")}\n`);
+          else if (rd.fixed) process.stdout.write(`    fixed: ${(rd.changes ?? []).join("; ")}\n`);
+          if (rd.unfixed) process.stdout.write(`    NOT fixed: ${rd.unfixed.map((f) => `slide ${f.slide} ${f.kind}`).join(", ")}\n`);
+        }
+      }
     } else {
       console.error(USAGE);
       process.exit(2);
