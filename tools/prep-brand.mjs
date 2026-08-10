@@ -88,9 +88,12 @@ async function main() {
   );
 
   if (!crestSrc && !bannerSrc && !watermarkSrc) {
-    console.error(`No logo sources found in ${path.relative(ROOT, SRC)}/`);
-    console.error(`Expected files named crest.*, banner.*, watermark.*`);
-    process.exit(1);
+    // A fresh clone has no marks — real ones are trademarks and stay out of the
+    // repository. Generate neutral stand-ins so the renderer works immediately
+    // rather than failing on a missing asset.
+    console.log("  no marks in brand/logos — generating placeholders\n");
+    await import("./make-placeholder-brand.mjs");
+    return main();
   }
 
   if (crestSrc) {
@@ -112,11 +115,13 @@ async function main() {
 
   if (watermarkSrc) {
     const keyed = await keyWhite(watermarkSrc);
-    const buf = await keyed.toBuffer();
-    const { width, height } = await sharp(buf).metadata();
+    // Trim BEFORE measuring: the fade overlay must match the trimmed canvas, and
+    // sharp rejects a composite larger than its base. A source with no white
+    // margin trims to nothing, which hides this.
+    const trimmed = await sharp(await keyed.toBuffer()).trim({ threshold: 1 }).png().toBuffer();
+    const { width, height } = await sharp(trimmed).metadata();
     // Fade to a page-safe intensity so body text stays readable over it.
-    const faded = await sharp(buf)
-      .trim({ threshold: 1 })
+    const faded = sharp(trimmed)
       .composite([{
         input: { create: { width, height, channels: 4, background: { r: 255, g: 255, b: 255, alpha: 0.90 } } },
         blend: "dest-out",
