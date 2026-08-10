@@ -1,5 +1,5 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
-import { fitScale, fitScaleAll } from "./fit.js";
+import { fitScale, fitScaleAll, lineCount, measure } from "./fit.js";
 import { CANVAS, reservedTopRight } from "./chrome.js";
 
 /**
@@ -86,14 +86,21 @@ function heading(slide, ctx) {
   if (data.headline) {
     const st = theme.type.heading;
     const scale = fitScale(data.headline, box.titleW, 1.05, st);
-    const h = Math.max(0.5, (st.size * scale) / 72 * (st.line ?? 1.2) * 2);
+    const size = st.size * scale;
+    // The headline may wrap; the standfirst must start after however many lines
+    // are actually rendered. Counting at the fitted size (with a small width
+    // safety so an underestimated line can never collide) is what keeps a
+    // wrapped headline from running into the standfirst below it.
+    const fits = lineCount(data.headline, box.titleW, { ...st, size }) === 1 &&
+      measure(data.headline, { ...st, size }) <= box.titleW * 0.95;
+    const lines = fits ? 1 : 2;
+    const h = (size * (st.line ?? 1.2) / 72) * lines;
     slide.addText(data.headline, {
       x: box.x, y, w: box.titleW, h,
       ...textStyle(theme, "heading", { scale }),
       valign: "top",
     });
-    y += Math.min(h, (st.size * scale) / 72 * (st.line ?? 1.2) *
-      (fitScale(data.headline, box.titleW, 99, st) < 1 ? 2 : 1)) + 0.08;
+    y += h + 0.08;
   }
 
   if (data.standfirst) {
@@ -242,9 +249,13 @@ export const layouts = {
       card(slide, theme, { x, y, w: cw, h: ch });
 
       let ty = y + pad;
+      // The title must stay on ONE line — a wrapped title renders its second
+      // line below the 0.42in box, straight into the body. Shrink it until it
+      // fits the line instead; the body box below assumes a single title line.
+      const titleScale = fitScale(c.title, cw - pad * 2, 0.42, theme.type.subhead, { min: 0.55 });
       slide.addText(c.title, {
         x: x + pad, y: ty, w: cw - pad * 2, h: 0.42,
-        ...textStyle(theme, "subhead", { bold: true }),
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
         valign: "top",
       });
       ty += 0.44;
@@ -282,9 +293,16 @@ export const layouts = {
       card(slide, theme, { x, y, w: cw, h: ch });
 
       let ty = y + pad;
+      // Same one-line rule as cards: a wrapped side title would collide with
+      // the body beneath it, so shrink to fit a single line, never below the
+      // theme's intended 0.6 heading scale.
+      const titleScale = Math.min(
+        0.6,
+        fitScale(side.title, cw - pad * 2, 0.45, theme.type.heading, { min: 0.55 }),
+      );
       slide.addText(side.title, {
         x: x + pad, y: ty, w: cw - pad * 2, h: 0.45,
-        ...textStyle(theme, "heading", { scale: 0.6 }),
+        ...textStyle(theme, "heading", { scale: titleScale }),
         valign: "top",
       });
       ty += 0.48;
@@ -340,14 +358,19 @@ export const layouts = {
 
     data.stats.forEach((s, i) => {
       const x = box.x + i * (cw + gut);
+      // Value and label are stacked at fixed offsets (y, y+1.2, y+1.68); a
+      // wrapped value would overflow its box into the label. Shrink to one
+      // line rather than letting it collide.
+      const valueScale = fitScale(s.value, cw, 0.75, theme.type.stat, { min: 0.6 });
       slide.addText(s.value, {
         x, y, w: cw, h: 1.15,
-        ...textStyle(theme, "stat", { color: accents[i % accents.length] }),
+        ...textStyle(theme, "stat", { color: accents[i % accents.length], scale: valueScale }),
         valign: "top",
       });
+      const labelScale = fitScale(s.label, cw, 0.45, theme.type.subhead, { min: 0.7 });
       slide.addText(s.label, {
         x, y: y + 1.2, w: cw, h: 0.45,
-        ...textStyle(theme, "subhead", { bold: true }),
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         valign: "top",
       });
       if (s.sub) {
