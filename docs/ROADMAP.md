@@ -314,7 +314,7 @@ generator. Plain Node over the HTTP API; no framework.
 > chat and the vision critic, so neither needs a new path. `generateDeck` does
 > not use it yet — planning and per-slide writing have their own narrow schemas,
 > which is the point — so the seam is: turn = *edit an existing deck*,
-> generate = *build one from empty*. Chat uses `runTurn`; the critic will too.
+> generate = *build one from empty*. Chat uses `runTurn`; the critic does too.
 
 Role split (24 GB VRAM ceiling, `OLLAMA_MAX_LOADED_MODELS=2`):
 
@@ -325,35 +325,42 @@ Role split (24 GB VRAM ceiling, `OLLAMA_MAX_LOADED_MODELS=2`):
 | vision critic | `gemma4:26b-a4b-it` |
 | cheap utilities | `qwen3:4b-instruct` |
 
-### [ ] Vision critic loop
+### [x] Vision critic loop
 Feed rendered PNGs back to a vision model; catch overflow, clipping and contrast
 that schema validation cannot see. This is the thing that closes the loop — a
 deck can be perfectly valid YAML and still have a headline running off the slide.
 
-Implemented as a `runTurn` call whose instruction comes from the critic rather
-than a human, so no new code path.
+`src/ai/critic.js` is the loop: render → critique each slide PNG against a
+small bounded findings schema → convert findings into a `runTurn` instruction →
+re-render → re-critique, capped at two rounds. Wired into `generateFromPlan`
+and the CLI as `forge generate <slug> --critic`. It reuses the turn primitive
+exactly as planned — the critic's instruction is just a turn — so no separate
+fix code path exists.
 
-The manual prototype is proven: a text-only session fed slide PNGs to a vision
-model through `chat({ role: "critic", model, images })` in `src/ai/ollama.js`.
-It caught the card-title wrap, the wrapped-headline/standfirst overlap, and
-verified the fixes — all defects the 8B model reported "clean". What remains is
-turning the manual pass into the loop: a bounded findings schema, a
-vision-capable role, a two-round fix cap, and a surface to run it from.
+> **Learned.** Per-slide critique (one image per call) is the only reliable
+> mode for small vision models — batch several images and they lazily pass the
+> whole set. The findings schema must stay tiny (three keys, `maxItems` 3,
+> `maxLength` 160); `gemma4:26b-a4b-it` handles it under `format` with an
+> image attached, which is the combination that usually fails.
+>
+> On warm-humanist the fitter is defensive enough that a deterministic overflow
+> is hard to force — the critic's real value is catching what the fitter's
+> width heuristic cannot (font-metric mismatch, real renderer differences,
+> contrast calls). Validated both halves behaviourally: the full loop ran clean
+> on a real deck, and `runTurn` applied a valid edit from a critic-style
+> instruction. A side effect worth keeping: the loop re-renders each round and
+> returns the final preview, so callers show the fixed slides, not the
+> pre-critique ones.
 
-Constraints already known:
-- The author role is now `qwen3-coder`, which has **no vision**. The critic needs
-  its own role. `qwen3-vl:8b-thinking` gave **false-clean** verdicts on real
-  overlap — do not use it for QA. `gemma4:26b-a4b-it-q4_K_M` (25.8B) and
-  `qwen3.6:27b` are far more reliable and are configured; the strongest results
-  came from `opencode-go/mimo-v2.5` (subscription), which is now the persisted
-  vision choice.
-- Keep the findings schema **small and bounded** (`maxItems`, `maxLength` on
-  every field). gemma degrades badly on large grammars; see `docs/TRAPS.md`.
-- Cap the fix loop at two rounds. A critic that has not converged twice is
-  arguing with itself, and each round costs a full re-render.
-- Pixel analysis (text-band gaps) is a good *targeter* for a vision model but a
-  poor sole judge — it flags design-intended eyebrow/heading spacing and
-  card-boundary adjacency as "near-overlap".
+Constraints held:
+- The critic role is `gemma4:26b-a4b-it-q4_K_M` (local, vision). `qwen3-vl:8b-thinking`
+  gives false-clean verdicts — do not use it. Cloud is opt-in via a `model`
+  override or a `provider:` on the role.
+- Fix loop capped at two rounds. A critic that has not converged twice is
+  arguing with itself, and each round costs a full re-render plus one vision
+  pass per slide.
+- Pixel band-analysis is a good *targeter* but a poor sole judge — it flags
+  design-intended eyebrow/heading spacing and card-boundary adjacency.
 
 ### [ ] Freeform slides — the "completely free" mode
 `type: freeform` with an `html` field, rendered via the HTML plate renderer.

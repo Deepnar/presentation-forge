@@ -49,6 +49,16 @@ it to target a vision model, not as the sole judge. `decks/zz-overlap-test/`
 (the reproduction fixture) was removed; the layout is verified by the real
 decks.
 
+**Vision critic loop (built).** `src/ai/critic.js` turns the manual QA into the
+integrated loop: render → critique each slide PNG against a small bounded
+findings schema → convert findings into a `runTurn` instruction → re-render →
+re-critique, capped at two rounds. Wired into `generateFromPlan` and the CLI:
+`forge generate <slug> --critic`. Reuses the turn primitive (no separate fix
+path). Default critic is local `gemma4:26b-a4b-it-q4_K_M`; cloud opt-in via
+model override. Validated both halves: full loop ran clean on a real deck
+(~24s for 2 slides), and `runTurn` applied a valid edit from a critic-style
+instruction. The loop returns the final preview so callers show fixed slides.
+
 **Cloud backends (new).** `src/ai/ollama.js` is now backend-aware. Each role in
 `config/models.yaml` resolves to local Ollama by default or an opt-in
 `openai-compatible` provider (`provider: <name>`), which speaks
@@ -77,39 +87,51 @@ more themes land.
 - The generation pipeline and outline review from the previous session
   (`src/ai/pipeline.js`, `app/server/index.js`, `app/web/src/views/Outline.jsx`).
 
-## NEXT TASK — build the real vision critic
+## NEXT TASK — intake wizard, then the shell/rails and chat
 
-The manual QA loop this session used is the prototype for the roadmap item.
-Concrete shape to discuss before building:
+The outline gate and the vision critic are both live; the roadmap's remaining
+UI items stand in dependency order. **Discuss the concrete implementation
+before building.**
 
-1. **Critic role + bounded findings schema.** Reuse `chat({ role: "critic",
-   model, images })`. Default model should be the persisted vision choice
-   (`opencode-go/mimo-v2.5`) with a local fallback (`gemma4:26b-a4b-it-q4_K_M`).
-   Findings schema small and bounded (`maxItems`, `maxLength` on every field).
-2. **Wiring.** Feed rendered PNGs to the critic after `generateFromPlan`, apply
-   fixes via `runTurn` (the seam: critic's instruction is a turn), cap at two
-   rounds, re-render between rounds.
-3. **Surface.** A CLI flag and a button in the deck detail UI. The pipeline must
-   stay headless-first (`app/server` is a thin transport).
+1. **Intake wizard.** `NewDeck.jsx` already collects brief + sources + theme.
+   The roadmap item needs the identity half: team, subject, guide, academic
+   year, pre-filled from `config/identity.yaml`, frozen into `meta.yaml`. The
+   pipeline's `createDeck` already writes `meta.yaml` — extend it, don't bypass
+   it.
+2. **Application shell — collapsible rails.** Left nav collapses to an icon
+   rail; right panel (chat) collapses to an edge tab; both persist. Build the
+   right rail as a *generic slot*, not a chat drawer. Blocks chat.
+3. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
+   specified in the roadmap (state over transcript; `deck.yaml` is memory,
+   `chat.jsonl` for recent turns, `decisions.md` for durable prefs). Inherits
+   the SSE transport from `startSSE`.
+4. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
+   reorder/delete/duplicate — separate from chat, writes `deck.yaml` directly.
+5. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
+   each before ticking it; re-check heading spacing per theme.
 
-Then the roadmap's remaining UI items in dependency order: intake wizard
-identity half, collapsible rails, chat panel, inline editing / presenter
-assignment / slide reorder.
+**Look-ahead already recorded:** `runTurn` is the shared primitive for chat and
+the critic (both now proven). `generateDeck` deliberately does *not* use it —
+the seam is: **turn = edit an existing deck; generate = build one from empty.**
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Vision critic loop** — prototype proven; integrate the loop.
-- **Intake wizard** — identity half (team, subject, guide, year) of the entry
-  form; brief+sources+theme already exists (`NewDeck.jsx`).
+- **Intake wizard** — identity half of the entry form still to build.
 - **Collapsible rails** — blocks the chat panel.
-- **Chat panel** — uses `runTurn`; inherits the SSE transport from `startSSE`.
+- **Chat panel** — streamed tokens, stop, retry, visible tool calls, model
+  picker, context indicator.
 - **Inline editing + presenter assignment + slide reorder/delete/duplicate.**
 - **19 remaining themes** — 15 native (mostly YAML), 4 blocked on the plate
-  renderer. Render each before ticking it; re-check heading spacing per theme.
-- **HTML plate renderer**, **freeform slides**, **report renderer**,
-  **shared research** (research artefact exists at `decks/<slug>/research/`).
+  renderer. Render each before ticking it.
+- **HTML plate renderer** — headless Chrome; unblocks both the four blur-based
+  themes *and* freeform slides. Build once, for both callers.
+- **Freeform slides** — the "completely free" mode, per-slide and whole-deck.
+- **Report renderer** — donor-`.docx`, fixed section order, no themes. A
+  different review surface from the deck grid.
+- **Shared research** — one brief feeding both deck and report; the research
+  artefact now exists at `decks/<slug>/research/`.
 
 ## Gotchas
 
