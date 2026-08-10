@@ -49,6 +49,15 @@ it to target a vision model, not as the sole judge. `decks/zz-overlap-test/`
 (the reproduction fixture) was removed; the layout is verified by the real
 decks.
 
+**Cloud backends (new).** `src/ai/ollama.js` is now backend-aware. Each role in
+`config/models.yaml` resolves to local Ollama by default or an opt-in
+`openai-compatible` provider (`provider: <name>`), which speaks
+`/chat/completions` with `response_format: json_object` instead of a decoding
+grammar. Streaming and image parts work on both. Keys come from env
+(`env:OPENAI_API_KEY`), never the config. Verified against Ollama's own `/v1`
+endpoint: non-stream chatJSON, streaming, and a full `forge new` plan all pass;
+the default Ollama path is unchanged. README + ARCHITECTURE updated.
+
 **Not validated:** the visual result of the UI, and anything not on the
 `warm-humanist` theme (the only theme that exists). The heading change moves
 2-line-headline content down slightly — fine on warm-humanist, re-check when
