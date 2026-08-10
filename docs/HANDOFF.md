@@ -1,124 +1,127 @@
 # Handoff — for the next session
 
-Read `CLAUDE.md` (repo root) first — the three-layer rule, commands, roadmap
+Read `AGENTS.md` (repo root) first — the three-layer rule, commands, roadmap
 discipline, commit rules. Then `docs/TRAPS.md`, which will save you hours. Then
 the sections below. This file is overwritten at the end of every session; git
 history preserves older handoffs.
 
-## Session summary (committed & pushed)
+## Session summary (uncommitted)
 
-State at handoff: **tree clean, 32 commits, pushed to
-https://github.com/Deepnar/presentation-forge** (public).
-`npm run dev` serves API on **:5174**, UI on **:5173**.
-SearXNG on **:8888** — `npm run searxng`.
+State at handoff: **uncommitted work staged in the working tree.** The previous
+state was tree-clean and pushed to https://github.com/Deepnar/presentation-forge.
 
-This session took the project from nothing to a working end-to-end generator.
+This session renamed the agent instructions and wired the generation pipeline
+into the UI.
 
-**Foundation** (`acff5ec`…`7d5d8c8`) — 27 typefaces installed from a manifest;
-brand-mark normalisation with white-keying and a reversed variant; the
-`tokens`/`voice` theme format; a 15-type content schema whose validation errors
-are written as model correction prompts; the renderer with a locked chrome pass
-and a shrink-only text fitter; LibreOffice rasterisation; Express API; React UI
-for decks, themes and identity; a keyboard-driven slide lightbox.
+**Agent instructions** (`CLAUDE.md` → `AGENTS.md`). `CLAUDE.md` moved to
+`AGENTS.md` so any agent that reads the standard file name gets the working
+agreement; `docs/HANDOFF.md` references updated.
 
-**Generation pipeline** (`218c927`…`76ceec8`) — SearXNG metasearch with
-Readability extraction; a role-addressed Ollama client; a transactional deck
-*operations* layer; the `runTurn` primitive; and a two-stage generator
-(plan → write one slide per call).
+**Generation endpoints + outline review — the vertical slice.** The pipeline
+previously ran only from Node; this session gave it the human gate in the UI.
 
-**Publication** (`a7868a1`…`a9d9a9f`) — identity and brand marks moved out of the
-repository behind a committed template and a placeholder generator; history
-scrubbed; institution-specific details removed from source; README and MIT
-licence.
+- `src/ai/generate.js` — `generateDeck` now takes an explicit `plan` and runs
+  `sanitizePlan` over both the planner's output and a human-edited outline, so
+  the two cannot drift.
+- `src/ai/pipeline.js` (new) — shared orchestration for CLI and API:
+  `createDeck` (slug → research → plan, saved as `plan.yaml`), `generateFromPlan`
+  (slides → validated `deck.yaml` → render → rasterise). `loadIdentity`,
+  `runResearch`, `slugify`, `uniqueSlug`. Research persists as a first-class
+  artefact at `decks/<slug>/research/notes.md` + `sources.json` — the primitive
+  the roadmap's "shared research" item will need.
+- `app/server/index.js` — `POST /api/decks` and `POST /api/decks/:slug/generate`
+  stream Server-Sent Events over a POST body; `GET /api/types` returns the slide
+  type enum for the review UI. Socket close aborts the pipeline via a
+  request-scoped `AbortController`.
+- `app/web/src/api.js` — `stream()` SSE client (fetch reader, dispatch per
+  event, `error` frame rejects, returns `{promise, abort}`), plus
+  `createDeck` / `generate` / `types`.
+- `app/web/src/views/NewDeck.jsx` — brief form (brief, source URLs, theme, max
+  slides, research toggle) streaming research/planning progress.
+- `app/web/src/views/Outline.jsx` — the human gate: editable title, sections,
+  per-slide type/section/purpose, reorder, approve → streamed generation.
+- `app/web/src/views/Decks.jsx` — "New deck" entry, phase routing
+  (list → new → outline → detail), empty-state action.
+- `package.json` — `npm run forge` CLI (`node src/ai/pipeline.js`) for headless
+  parity: `forge new "<brief>"`, `forge generate <slug>`.
 
-**Validated behaviourally, not just compiled.** From a one-line brief the
-pipeline planned and wrote a 9-slide deck in **24s, zero slides skipped**, which
-rendered and rasterised; slides were inspected individually. Sample committed at
-`decks/raytracing-ai/`. Six defects were found *by looking at rendered output*
-and fixed: crest alpha, dark-background wordmark, crest legibility at 0.62in,
-single-series chart colours, a lightbox keystroke-dropping bug, and a watermark
-composite that sized its overlay from the untrimmed canvas.
+**Validated behaviourally.** Ollama and SearXNG were both running. CLI
+`forge new` planned a deck in ~8s; `forge generate` wrote and rendered 4 slides
+in ~7s. API tested with curl: create (with and without a research pass),
+generate (streamed `status` events → `result` with slide URLs), error path
+(blank brief → `event: error`), and abort-on-disconnect (curl killed mid-run;
+server survived and the deck stayed in `status: planned` with no `deck.yaml`).
+SSE verified through the Vite dev proxy. `vite build` passes. Test decks were
+removed; only the committed samples (`raytracing-ai`, `gpu-demo`) remain.
 
-**The expensive lesson was constrained decoding.** A single large-schema call
-failed in escalating stages — token loops, runaway nesting, confabulated
-content, then an outline that consumed 8192 tokens. *None* of it was fixed by
-sampling parameters. The causes were grammar size, unbounded collections, and
-model choice. Full taxonomy in `docs/TRAPS.md`; it is the most reusable artefact
-here and applies to OpenAI and Anthropic structured output equally.
-
-**Not validated:** the visual result of the UI redesign. The browser screenshot
-tool failed for most of the session. Structure, design tokens, fonts and
-keyboard behaviour were confirmed via `read_page` / `javascript_tool` / `curl`,
-but nobody has *looked* at the redesigned interface. Treat it as unverified.
-
-**A mistake worth not repeating:** `git filter-repo --force` was run with
-uncommitted changes and reset the working tree, destroying local copies of
-`reference/`, `brand/logos/`, `config/identity.yaml` and four un-committed
-edits. All were recovered (reference material from `~/Downloads`, brand marks
-re-extracted from the report `.docx`), but **commit before any history rewrite**.
+**Not validated:** the *visual* result of the new views and the rendered decks.
+The authoring model on this session cannot read images, so the rendered PNGs
+were never looked at. Do `npm run preview` and inspect before trusting the
+outline-review result. The browser-screenshot route may also be dead again —
+fall back to structural checks.
 
 ## Context to read before starting
 
-- `CLAUDE.md` — the three-layer rule is the thing that must not be violated.
+- `AGENTS.md` — the three-layer rule is the thing that must not be violated.
 - `docs/TRAPS.md` — read *before* debugging anything schema-constrained or
   render-related. Several failures present as a different problem than they are.
-- `docs/ARCHITECTURE.md` — pipeline shape, the two rendering paths, deck/report
-  asymmetry, why not LangChain.
-- `src/ai/ops.js` — `buildOpsSchema` derives the model's grammar from
-  `deck.schema.json` per turn, narrowed by deck state and slide type. The
-  narrowing is load-bearing, not an optimisation.
-- `src/ai/generate.js` — the two-stage generator, and the comment explaining
-  why it is two stages.
+- `docs/ARCHITECTURE.md` — pipeline shape, the two rendering paths, the
+  plan-as-disk-boundary lifecycle.
+- `src/ai/pipeline.js` — the orchestrator both front-ends share; `createDeck`
+  and `generateFromPlan` are the seams new endpoints and the intake wizard hang
+  off.
+- `src/ai/generate.js` — `sanitizePlan` is the single shape both the planner's
+  output and human-edited outlines pass through.
 - `src/ai/turn.js` — the shared primitive chat and the critic both use.
-- `themes/warm-humanist.yaml` — the format contract every theme follows.
-- `src/layouts.js` — note the total absence of literal colours and font names.
+- `app/server/index.js` — `startSSE` is the transport contract; the chat panel
+  inherits it, so change it only if chat forces the issue.
+- `app/web/src/views/NewDeck.jsx` and `Outline.jsx` — the review surface.
 
-## NEXT TASK — wire the pipeline into the UI
+## NEXT TASK — the rest of the generation surface
 
-The pipeline works from Node but the UI cannot reach it. Per `CLAUDE.md`,
-**discuss the concrete implementation before building** — the roadmap entries
-are intent, not specs.
+The outline gate is in; the roadmap's remaining UI items stand in dependency
+order. **Discuss the concrete implementation before building.**
 
-1. **Generation endpoints.** `POST /api/decks` (brief → plan) and
-   `POST /api/decks/:slug/generate` (plan → deck). Both are long-running.
-   **Decide the streaming transport first** — it is the one the chat panel
-   inherits, so choosing it twice means rewriting one. SSE is the natural fit;
-   `chat()` in `src/ai/ollama.js` already takes an `onToken` callback, so the
-   plumbing exists. Do not add a polling endpoint chat will replace.
-2. **Outline review UI.** The human gate. `planDeck()` already returns a
-   reviewable plan (`{title, sections, slides:[{type, section, purpose}]}`), so
-   this is UI over an existing API. It gates generation, so it lands before chat.
-3. **Collapsible rails.** Left nav to an icon strip, right panel to an edge tab,
-   both persisted. Build the right rail as a *generic slot*, not a chat drawer.
-4. **Chat panel.** Uses `runTurn`. Per-deck threads. Memory model is already
-   specified in the roadmap — state over transcript, `deck.yaml` read fresh each
-   turn, durable preferences promoted into `decisions.md`.
-5. **Vision critic.** Needs its own vision-capable role and a small bounded
-   findings schema.
+1. **Intake wizard.** `NewDeck.jsx` already collects brief + sources + theme.
+   The roadmap item needs the identity half: team, subject, guide, academic
+   year, pre-filled from `config/identity.yaml`, frozen into `meta.yaml`. The
+   pipeline's `createDeck` already writes `meta.yaml` — extend it, don't bypass
+   it.
+2. **Application shell — collapsible rails.** Left nav collapses to an icon
+   rail; right panel (chat) collapses to an edge tab; both persist. Build the
+   right rail as a *generic slot*, not a chat drawer. Blocks chat.
+3. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
+   specified in the roadmap (state over transcript). Inherits the SSE transport
+   from `startSSE`.
+4. **Vision critic.** A `runTurn` call whose instruction comes from a vision
+   model looking at rendered PNGs. Needs `gemma4:26b-a4b-it` (vision role),
+   a small bounded findings schema, and a two-round cap.
+5. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
+   reorder/delete/duplicate — separate from chat, writes `deck.yaml` directly.
 
 **Look-ahead already recorded:** `runTurn` is the shared primitive for chat and
-the critic. `generateDeck` deliberately does *not* use it — planning and
-per-slide writing need their own narrow schemas, which is the entire reason the
-two-stage design works. The seam is: **turn = edit an existing deck; generate =
-build one from empty.**
+the critic. `generateDeck` deliberately does *not* use it — the seam is: **turn
+= edit an existing deck; generate = build one from empty.**
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Generation in the UI** — endpoints, outline review, chat, inline editing.
+- **Intake wizard** — identity half of the entry form still to build.
 - **Collapsible rails** — blocks the chat panel.
+- **Chat panel** — streamed tokens, stop, retry, visible tool calls, model
+  picker, context indicator.
+- **Vision critic** — closes the quality loop.
+- **Inline editing + presenter assignment + slide reorder/delete/duplicate.**
 - **19 remaining themes** — 15 native (mostly YAML), 4 blocked on the plate
   renderer. Render each before ticking it.
 - **HTML plate renderer** — headless Chrome; unblocks both the four blur-based
   themes *and* freeform slides. Build once, for both callers.
 - **Freeform slides** — the "completely free" mode, per-slide and whole-deck.
 - **Report renderer** — donor-`.docx`, fixed section order, no themes. A
-  different review surface from the deck grid, not the same one with new data.
-- **Shared research** — one brief feeding both deck and report.
-- **Per-slide presenter assignment** — free ranges, not an even split.
-- **Intake wizard** — replaces hand-written `meta.yaml`.
-- **Vision critic** — closes the quality loop.
+  different review surface from the deck grid.
+- **Shared research** — one brief feeding both deck and report; the research
+  artefact now exists at `decks/<slug>/research/`.
 
 ## Gotchas
 
@@ -126,29 +129,28 @@ Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
 - **Commit before any history rewrite.** `filter-repo --force` resets the
   working tree and discards uncommitted work. This already cost one recovery.
+- **The plan is a disk boundary.** A planned deck has no `deck.yaml`; if the
+  UI's list doesn't show a planned deck that's correct behaviour, not a bug.
 - **API binds `FORGE_API_PORT` (5174), never `PORT`.** Dev harnesses inject
   `PORT` for the frontend; an API that claims it leaves the browser hitting
-  Express with `Cannot GET /`, which reads as a routing bug.
+  Express with `Cannot GET /`.
 - **Express needs `node --watch`** (already wired). A stale API 404s new routes
   with no hint that it is stale.
 - **A written `.pptx` proves nothing.** Always `npm run preview` and *look* at
   the PNG. Valid YAML, passing schema and a written file all pass while the
-  output is unusable.
+  output is unusable. The authoring model on the last session could not read
+  images — this check is still owed.
 - **Never add an unbounded array or a bare `{type:"object"}` to a model-facing
-  schema.** Both produce runaway generation under constrained decoding. Bound
-  every collection, `maxLength` every string.
+  schema.** Both produce runaway generation under constrained decoding.
 - **Always check `done_reason`.** `length` means truncated; anything else means
-  the model meant it. Without it, a runaway grammar looks like malformed output
-  and the obvious fix is exactly backwards.
+  the model meant it.
 - **The author role (`qwen3-coder`) has no vision.** Anything reading images
   must request a vision-capable role explicitly.
-- **`brand/logos/`, `config/identity.yaml` and `reference/` are gitignored** and
-  exist only locally. `npm run brand` generates neutral placeholders when marks
-  are absent, so a clone renders — if the crest looks like a plain shield, that
-  is the placeholder, not a bug.
+- **SSE over POST:** keep the server's `startSSE` guards (`writableEnded` /
+  `destroyed`) and the client's frame parser intact — dropping either makes a
+  cancelled request crash or hang the response.
 - **Only one theme exists.** Anything assuming a populated gallery looks broken.
 - **SearXNG must be running** for research (`npm run searxng`).
-  `searxngHealthy()` checks it.
 - **The browser screenshot tool may be dead** for a whole session. Fall back to
-  `read_page` / `javascript_tool` / `curl`, and never report a UI as visually
-  verified when it was only checked structurally.
+  structural checks and never report a UI as visually verified when it was only
+  checked structurally.

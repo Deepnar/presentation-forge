@@ -133,6 +133,18 @@ is the actual submission workflow.
 holds no logic; the CLI must be able to do everything the UI can, because the
 pipeline has to run headless.
 
+The orchestrator (`src/ai/pipeline.js`) is where the CLI and the API meet:
+`createDeck` (brief → research → outline) and `generateFromPlan` (outline →
+deck → render → rasterise) are shared, and the `forge` CLI plus the server's
+SSE endpoints are thin wrappers. Long-running calls stream Server-Sent Events
+over a POST body; dropping the socket aborts the request via an
+`AbortController`, so a vanished client stops the model call.
+
+A deck has a lifecycle that is also a disk boundary: `planning` means
+`meta.yaml` + `plan.yaml` exist and no `deck.yaml` does, which is what makes the
+outline gate enforceable — nothing renders until a human approves, and an
+aborted generation can never leave a half-written deck.
+
 ## Data locations
 
 | Path | Committed | Notes |

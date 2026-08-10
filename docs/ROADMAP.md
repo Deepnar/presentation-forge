@@ -147,23 +147,47 @@ assigning any selection of slides to any member. Reaches the chrome layer via
 Collect team, subject, guide, year, brief and sources before generation, then
 hand the result to the pipeline as part of the model's brief.
 
+The brief + sources + theme entry point already exists (`NewDeck.jsx`, backed by
+`createDeck` in `src/ai/pipeline.js`), and what each deck used already freezes
+into `decks/<slug>/meta.yaml`. What remains is the identity half: team, subject,
+guide and academic year pre-filled from `config/identity.yaml`.
+
 `config/identity.yaml` is *remembered defaults*, not the source of truth: the
 wizard pre-fills from it and saves back, so the first run asks everything and
-later runs only need the year or subject changed. What each deck actually used
-freezes into `decks/<slug>/meta.yaml`.
+later runs only need the year or subject changed.
 
 Every field stays free text. Team size, designations and academic year change
 every submission, so nothing here becomes an enum.
 
-### [ ] Outline review
+### [x] Outline review
 The human-in-the-loop guardrail. Model proposes the slide plan; nothing renders
 until it is approved or edited. This is what makes free-form structure safe with
 a small local model — strictly better than presets, which guess in advance and
 are wrong half the time.
 
 `planDeck()` in `src/ai/generate.js` already returns the plan as a discrete,
-reviewable artefact (`{title, sections, slides:[{type, section, purpose}]}`), so
-this item is now UI work over an existing API rather than new pipeline work.
+reviewable artefact (`{title, sections, slides:[{type, section, purpose}]}`).
+Shipped as one vertical slice with the generation endpoints and the UI: a brief
+form (`NewDeck.jsx`) streams a plan, the review view (`Outline.jsx`) edits and
+approves it, and generation streams slide-writing progress into a rendered deck.
+
+> **Learned.** The plan gate had to be a *disk-level* boundary, not just a UI
+> stop. A planned deck is `meta.yaml` + `plan.yaml` with no `deck.yaml`, so a
+> closed browser leaves the outline reviewable and resumable, and an aborted
+> generation can never leave a half-written deck — `deck.yaml` is written only
+> after a fully validated run. Orchestration for both callers lives in
+> `src/ai/pipeline.js` (`createDeck`, `generateFromPlan`); the server and the
+> `forge` CLI are transports over it.
+>
+> The outline needs an explicit-plan path in the generator. `generateDeck` now
+> takes a `plan`, and `sanitizePlan` coerces both the planner's output and a
+> human-edited outline through the same shape (type enum, title-slide
+> guarantee), so the two can never drift.
+>
+> SSE had to be chosen once because the chat panel inherits it. It streams
+> cleanly over a POST body through the Vite dev proxy; no polling endpoint was
+> added. Dropped sockets abort the pipeline via a request-scoped
+> `AbortController`, so a vanished client stops burning model time.
 
 ### [ ] Application shell — collapsible rails
 Left navigation collapses to an icon rail; right panel (chat) collapses to an
