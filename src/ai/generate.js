@@ -175,13 +175,47 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
 }
 
 /**
+ * Coerce a plan into the shape the writer loop needs. Types are free-form in
+ * the outline schema on purpose — a tight enum made the model abandon planning
+ * to satisfy the grammar — so both the planning output and a human-edited plan
+ * from the outline review pass through here.
+ */
+async function sanitizePlan(plan, types) {
+  const slides = (plan.slides ?? [])
+    .filter((s) => s?.purpose)
+    .map((s) => ({
+      type: types.includes(s.type) ? s.type : "bullets",
+      section: Number.isInteger(s.section) ? s.section : 0,
+      purpose: s.purpose,
+    }));
+  if (slides.length && slides[0].type !== "title") {
+    slides.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
+  }
+  return { ...plan, slides };
+}
+
+/**
  * Full generation. Returns a validated deck plus a per-slide report, so a slide
  * the model could not write degrades that slide rather than failing the deck.
+ *
+ * `plan` is the human-approved outline; when given, planning is skipped and the
+ * plan is written against directly. Without it, planning runs first and its
+ * output is the plan — the same path a headless run uses.
  */
 export async function generateDeck({
-  brief, theme, identity, research = "", maxSlides = 24, model, signal, onProgress,
+  brief, theme, identity, research = "", maxSlides = 24, model, signal, onProgress, plan: givenPlan,
 }) {
-  const { plan, stats } = await planDeck({ brief, theme, identity, research, maxSlides, model, signal });
+  const schema = await deckSchema();
+  const types = schema.definitions.slide.properties.type.enum;
+
+  let plan = givenPlan ? await sanitizePlan(givenPlan, types) : null;
+  let stats = {};
+
+  if (!plan) {
+    const planned = await planDeck({ brief, theme, identity, research, maxSlides, model, signal });
+    plan = await sanitizePlan(planned.plan, types);
+    stats = planned.stats;
+  }
 
   if (!plan.slides?.length) {
     return { ok: false, errors: ["The model produced no outline."], plan, deck: null };
