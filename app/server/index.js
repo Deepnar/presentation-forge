@@ -236,10 +236,10 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, theme, maxSlides, model } = req.body ?? {};
+  const { brief, sources, research, theme, maxSlides, model, identity } = req.body ?? {};
   (async () => {
     const r = await createDeck({
-      brief, sources, research, theme, maxSlides, model,
+      brief, sources, research, theme, maxSlides, model, identity,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
     });

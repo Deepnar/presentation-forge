@@ -19,12 +19,35 @@ import { preview } from "../preview.js";
  * gate is the boundary between the two.
  */
 
-export async function loadIdentity() {
+export async function loadIdentity(deckDir) {
+  // identity.yaml carries real personal and institutional details and is
+  // gitignored, so a fresh clone falls back to the committed template.
+  let base;
   try {
-    return YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
+    base = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
   } catch {
-    return YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
+    base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
   }
+  // Per-deck meta.yaml wins over the standing defaults, key by key — the same
+  // merge the renderer performs, so what the model planned with matches what
+  // gets drawn.
+  if (deckDir) {
+    try {
+      const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
+      return deepMerge(base, over);
+    } catch { /* no meta yet */ }
+  }
+  return base;
+}
+
+function deepMerge(a, b) {
+  if (Array.isArray(b)) return b;               // arrays replace, never merge
+  if (b && typeof b === "object" && a && typeof a === "object") {
+    const out = { ...a };
+    for (const [k, v] of Object.entries(b)) out[k] = deepMerge(a[k], v);
+    return out;
+  }
+  return b === undefined ? a : b;
 }
 
 export function slugify(text, max = 44) {
@@ -84,10 +107,23 @@ export async function createDeck({
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
 
+  // The intake wizard's identity snapshot: what each deck used freezes into
+  // meta.yaml (the renderer already merges meta over config/identity.yaml), and
+  // planning sees the merged identity so the model knows the subject, guide and
+  // team it is writing for.
+  const snapshot = identity && typeof identity === "object"
+    ? {
+        academic: identity.academic ?? {},
+        guide: identity.guide ?? {},
+        team: identity.team ?? {},
+      }
+    : {};
+
   const meta = {
     slug, brief, sources, research, theme, maxSlides,
     status: "planning",
     createdAt: new Date().toISOString(),
+    ...snapshot,
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
@@ -105,7 +141,7 @@ export async function createDeck({
   }
 
   onProgress?.({ status: "planning" });
-  const identityObj = identity ?? (await loadIdentity());
+  const identityObj = deepMerge(await loadIdentity(), identity ?? {});
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
     brief: brief.trim(), theme: themeObj, identity: identityObj,
@@ -136,7 +172,7 @@ export async function generateFromPlan({
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* planned deck written before meta existed — carry on */ }
 
-  const identityObj = identity ?? (await loadIdentity());
+  const identityObj = identity ?? (await loadIdentity(dir));
   const themeObj = theme ? await loadTheme(theme) : undefined;
 
   let researchText = "";
