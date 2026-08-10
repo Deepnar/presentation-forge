@@ -49,6 +49,17 @@ it to target a vision model, not as the sole judge. `decks/zz-overlap-test/`
 (the reproduction fixture) was removed; the layout is verified by the real
 decks.
 
+**Intake wizard (built).** `NewDeck.jsx` now collects the full identity:
+subject, academic year, semester, exam type, guide name + designation, team
+label, and a member list with a "presents" tick. Pre-fills from
+`config/identity.yaml`, saves back as remembered defaults, and the snapshot is
+frozen into `decks/<slug>/meta.yaml` (academic/guide/team). `pipeline.js`
+`loadIdentity(deckDir)` now merges meta over config (matching `render.js`), so
+planning sees the per-deck subject and the renderer draws the per-deck team and
+guide with zero renderer changes. Verified end-to-end: created a deck with an
+identity snapshot, generated, and the title slide carried team, guide, subject
+and year while content-slide chrome showed the presenting member.
+
 **Vision critic loop (built).** `src/ai/critic.js` turns the manual QA into the
 integrated loop: render → critique each slide PNG against a small bounded
 findings schema → convert findings into a `runTurn` instruction → re-render →
@@ -87,27 +98,22 @@ more themes land.
 - The generation pipeline and outline review from the previous session
   (`src/ai/pipeline.js`, `app/server/index.js`, `app/web/src/views/Outline.jsx`).
 
-## NEXT TASK — intake wizard, then the shell/rails and chat
+## NEXT TASK — collapsible rails, then chat
 
-The outline gate and the vision critic are both live; the roadmap's remaining
-UI items stand in dependency order. **Discuss the concrete implementation
-before building.**
+The outline gate, the vision critic and the intake wizard are all live; the
+roadmap's remaining UI items stand in dependency order. **Discuss the concrete
+implementation before building.**
 
-1. **Intake wizard.** `NewDeck.jsx` already collects brief + sources + theme.
-   The roadmap item needs the identity half: team, subject, guide, academic
-   year, pre-filled from `config/identity.yaml`, frozen into `meta.yaml`. The
-   pipeline's `createDeck` already writes `meta.yaml` — extend it, don't bypass
-   it.
-2. **Application shell — collapsible rails.** Left nav collapses to an icon
+1. **Application shell — collapsible rails.** Left nav collapses to an icon
    rail; right panel (chat) collapses to an edge tab; both persist. Build the
    right rail as a *generic slot*, not a chat drawer. Blocks chat.
-3. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
+2. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
    specified in the roadmap (state over transcript; `deck.yaml` is memory,
    `chat.jsonl` for recent turns, `decisions.md` for durable prefs). Inherits
    the SSE transport from `startSSE`.
-4. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
+3. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
    reorder/delete/duplicate — separate from chat, writes `deck.yaml` directly.
-5. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
+4. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
    each before ticking it; re-check heading spacing per theme.
 
 **Look-ahead already recorded:** `runTurn` is the shared primitive for chat and
@@ -118,7 +124,6 @@ the seam is: **turn = edit an existing deck; generate = build one from empty.**
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Intake wizard** — identity half of the entry form still to build.
 - **Collapsible rails** — blocks the chat panel.
 - **Chat panel** — streamed tokens, stop, retry, visible tool calls, model
   picker, context indicator.

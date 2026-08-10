@@ -150,21 +150,30 @@ assigning any selection of slides to any member. Reaches the chrome layer via
 > under single slow presses, which is exactly how it gets missed: stepping from
 > slide 5 with three left presses landed on 4 instead of 2.
 
-### [ ] Intake wizard
+### [x] Intake wizard
 Collect team, subject, guide, year, brief and sources before generation, then
 hand the result to the pipeline as part of the model's brief.
 
-The brief + sources + theme entry point already exists (`NewDeck.jsx`, backed by
-`createDeck` in `src/ai/pipeline.js`), and what each deck used already freezes
-into `decks/<slug>/meta.yaml`. What remains is the identity half: team, subject,
-guide and academic year pre-filled from `config/identity.yaml`.
+`NewDeck.jsx` is the full entry form: brief, sources, theme, max slides, and an
+identity panel (subject, academic year, semester, exam type, guide name +
+designation, team label, and a member list with a "presents" tick). The
+identity pre-fills from `config/identity.yaml`, saves back as remembered
+defaults, and freezes into `decks/<slug>/meta.yaml`. The wizard snapshot flows
+to planning (the model sees the subject), and the renderer's existing
+meta-over-config merge puts the per-deck team, guide and year on the slides.
+
+> **Learned.** The renderer already merged `decks/<slug>/meta.yaml` over
+> `config/identity.yaml`, so "freeze what each deck used" turned out to be just
+> *writing the wizard snapshot into meta.yaml* — zero renderer changes needed.
+> The presenter on content slides is simply the member with `presenting: true`
+> in that snapshot. Identity lives in three places by design: remembered
+> defaults (config), per-deck truth (meta), and the model's brief (planning
+> prompt). Every field is free text — nothing here can be an enum, because team
+> size, designations and years change every submission.
 
 `config/identity.yaml` is *remembered defaults*, not the source of truth: the
 wizard pre-fills from it and saves back, so the first run asks everything and
 later runs only need the year or subject changed.
-
-Every field stays free text. Team size, designations and academic year change
-every submission, so nothing here becomes an enum.
 
 ### [x] Outline review
 The human-in-the-loop guardrail. Model proposes the slide plan; nothing renders
