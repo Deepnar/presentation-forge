@@ -124,6 +124,18 @@ Grid, theme switcher, render, download, zoom modal.
 - [ ] Per-slide presenter assignment
 - [ ] Slide reorder / delete / duplicate
 
+**Inline editing** is deliberately separate from chat. Clicking a headline and
+typing must not wake a 26B model — that path writes `deck.yaml` directly and
+re-renders. `POST /api/validate` already exists so the editor can show schema
+errors while typing. Chat is for structural change only.
+
+**Presenter assignment** is a free per-slide field, not a computed split. The
+real distribution is unpredictable — one person may take one slide or five — so
+the model proposes an even split as a starting point and the UI allows
+assigning any selection of slides to any member. Reaches the chrome layer via
+`identity.team`; `applyContentChrome` currently renders whoever is marked
+`presenting`, so this needs a per-slide override to take precedence.
+
 > **Learned.** Relative navigation must use the functional state updater.
 > Reading the current index from the effect's closure loses keystrokes —
 > several `keydown` events fire before React re-renders, each computes from the
@@ -132,8 +144,16 @@ Grid, theme switcher, render, download, zoom modal.
 > slide 5 with three left presses landed on 4 instead of 2.
 
 ### [ ] Intake wizard
-Collect team, subject, guide, year, brief and sources before generation.
-Pre-fills from `config/identity.yaml`, saves back as new defaults.
+Collect team, subject, guide, year, brief and sources before generation, then
+hand the result to the pipeline as part of the model's brief.
+
+`config/identity.yaml` is *remembered defaults*, not the source of truth: the
+wizard pre-fills from it and saves back, so the first run asks everything and
+later runs only need the year or subject changed. What each deck actually used
+freezes into `decks/<slug>/meta.yaml`.
+
+Every field stays free text. Team size, designations and academic year change
+every submission, so nothing here becomes an enum.
 
 ### [ ] Outline review
 The human-in-the-loop guardrail. Model proposes the slide plan; nothing renders
@@ -194,18 +214,43 @@ orchestrator, before either caller exists.
 
 ## 3. Themes
 
-- [x] `warm-humanist` — reference implementation
-- [ ] Flat / native-renderable: `swiss-international`, `editorial-magazine`,
-      `minimal-muji`, `neubrutalism`, `bauhaus`, `memphis-postmodern`,
-      `art-deco`, `dark-neon`, `linear-dark`, `material-you`, `flat-2`,
-      `retro-terminal`, `newsprint`, `notion-clean`, `corporate-alegria`
-- [ ] Plate-dependent: `glassmorphism`, `claymorphism`, `neumorphism`,
-      `aurora-mesh`
+Target is 20, drawn from recognised design languages so the choice means
+something to a viewer rather than being twenty arbitrary palettes.
 
-> **Note, not yet learned.** The four plate-dependent themes need real backdrop
-> blur and mesh gradients, which OOXML cannot express. Plan: pre-render
-> decorative backgrounds to PNG with headless Chrome and place them as slide
-> background plates, keeping all *text* native so the deck stays editable.
+### [x] `warm-humanist` — reference implementation
+The format contract every other theme follows. Ported from `design_system.txt`.
+
+### [ ] Native-renderable themes (15)
+Expressible with pptxgenjs shapes alone, so text stays editable in PowerPoint.
+
+`swiss-international` · `editorial-magazine` · `minimal-muji` · `neubrutalism`
+`bauhaus` · `memphis-postmodern` · `art-deco` · `dark-neon` · `linear-dark`
+`material-you` · `flat-2` · `retro-terminal` · `newsprint` · `notion-clean`
+`corporate-alegria`
+
+Mostly YAML now that the format is proven. Build in batches of three or four
+and **render each one before ticking it** — a theme that validates but produces
+unreadable contrast is not done. Each needs its `surfaces.title` and
+`surfaces.section` set explicitly; the derived fallback is correct for
+warm-humanist and wrong for anything inverted.
+
+### [ ] Plate-dependent themes (4)
+`glassmorphism` · `claymorphism` · `neumorphism` · `aurora-mesh`
+
+Blocked on the HTML plate renderer below. These depend on backdrop blur,
+layered transparency and multi-stop mesh gradients, none of which OOXML can
+express. Native shapes give a flat approximation that misses the entire point of
+the style, so do not ship them as native — that is precisely the
+knowingly-temporary version the working agreement forbids.
+
+### [ ] HTML plate renderer
+Headless Chrome renders decorative CSS backgrounds to PNG at build time; the
+renderer places them as slide background plates with all *text* still native.
+
+Unblocks the four themes above **and** `freeform` slides (§4), so build the
+primitive once with both callers in mind: input is HTML + viewport, output is a
+cached PNG keyed by content hash. Do not build a theme-only version that
+freeform then has to tear out.
 
 ---
 
@@ -250,36 +295,72 @@ Role split (24 GB VRAM ceiling, `OLLAMA_MAX_LOADED_MODELS=2`):
 | cheap utilities | `qwen3:4b-instruct` |
 
 ### [ ] Vision critic loop
-Feed rendered PNGs back to a vision model; catch overflow, clipping and
-contrast that schema validation cannot see. Implemented as a `runTurn` call
-whose instruction comes from the critic rather than a human.
+Feed rendered PNGs back to a vision model; catch overflow, clipping and contrast
+that schema validation cannot see. This is the thing that closes the loop — a
+deck can be perfectly valid YAML and still have a headline running off the slide.
 
-Note: the author role is now a coder model with no vision. The critic needs a
-separate vision-capable role — `gemma4:26b-a4b-it` or `qwen3.6:27b`, both
-already configured. Keep the critic's output schema small (a bounded list of
-findings), since gemma degrades on large grammars.
+Implemented as a `runTurn` call whose instruction comes from the critic rather
+than a human, so no new code path.
 
-### [ ] Freeform slides
-`type: freeform` with an `html` field, rendered via headless Chrome. Unlimited
-creative freedom for hero slides. Trade-off: rasterised, so not editable in
-PowerPoint — correct for one or two slides, wrong for a whole deck.
+Constraints already known:
+- The author role is now `qwen3-coder`, which has **no vision**. The critic needs
+  its own role — `gemma4:26b-a4b-it` or `qwen3.6:27b`, both configured.
+- Keep the findings schema **small and bounded** (`maxItems`, `maxLength` on
+  every field). gemma degrades badly on large grammars; see `docs/TRAPS.md`.
+- Cap the fix loop at two rounds. A critic that has not converged twice is
+  arguing with itself, and each round costs a full re-render.
+
+### [ ] Freeform slides — the "completely free" mode
+`type: freeform` with an `html` field, rendered via the HTML plate renderer.
+The model writes arbitrary HTML/CSS; no layout vocabulary at all.
+
+Two granularities, both wanted:
+- **Per slide** — a mostly-native deck with one or two hero slides.
+- **Whole deck** — maximum visual impact, editability deliberately traded away.
+
+Trade-off is real and drives the default: freeform slides rasterise, so nobody
+can fix a typo in PowerPoint afterwards. Correct for a hero moment, wrong for a
+whole graded submission. The UI must state this at the point of choosing, not
+bury it.
+
+Depends on the HTML plate renderer (§3). Constrain the model's HTML to a
+sandboxed subset — no network, no scripts — since it renders in a real browser.
 
 ---
 
 ## 5. Reports
 
 ### [ ] DOCX renderer
-Template-donor approach: strip the body from `reference/IE REPORT …docx`, keep
+Template-donor approach: strip the body from the institutional `.docx`, keep
 headers, footers, styles, watermark and media, inject generated content.
 
 > **Note, not yet learned.** Verified the donor is viable — `header1/2/3.xml`,
 > `footer1.xml`, `styles.xml` and all five media assets survive extraction.
 > Rebuilding a VML watermark by hand is the alternative and is much worse.
 
+The report is the **opposite** of the deck: rigid where the deck is free. No
+themes apply. The whole job is matching a template exactly, because that is what
+is graded. Reviewing it means reading sections, not looking at slides, so the UI
+is a different surface — not the deck grid with different data.
+
+Note the donor `.docx` lives in gitignored `reference/`, so the renderer must
+fail with a clear message when it is absent rather than half-working.
+
 Fixed section order (non-negotiable, this is what is graded):
 Abstract → Acknowledgement → Introduction → Theoretical Background →
 Application → Future Scope → Conclusion → References.
 
 ### [ ] Shared research
-One brief → one research pass → both deck and report. This is the actual IE
-submission workflow.
+One brief → one research pass → both deck and report. This is the actual
+submission workflow: the same material is needed in both forms, and researching
+twice wastes minutes and risks the two artefacts disagreeing on facts.
+
+Implies research output is a first-class artefact (`decks/<slug>/research/`)
+rather than a transient value inside a generate call — build it that way from
+the start.
+
+### [ ] Report content depth
+Reports go deep where decks stay terse. Same content tree, two density budgets:
+the deck gets a headline and three supporting sentences where the report gets
+four paragraphs and a table. Depth is a parameter on the generator, not a
+different generator.
