@@ -1,13 +1,20 @@
 # Presentation Forge
 
 Local-first generator for academic presentations and reports. A brief goes in,
-a themed `.pptx` comes out. Node + pptxgenjs + local models via Ollama — no
-cloud LLM anywhere in the pipeline.
+a themed `.pptx` comes out. Node + pptxgenjs + local models via Ollama by
+default, with an optional cloud backend per role.
 
 ```
 brief ──► research ──► outline ──► [you approve] ──► content ──► render ──► critique
           SearXNG      plan.yaml                     deck.yaml   .pptx      vision
 ```
+
+Models are local by default: every role resolves to an Ollama model and
+nothing leaves the machine unless you opt in. To use a cloud model for a role,
+add a provider under `providers:` in `config/models.yaml` and set
+`provider:` on that role — OpenAI-compatible endpoints only, key read from an
+environment variable. Local and cloud roles can mix (e.g. local author, cloud
+critic), and the rest of this README assumes the local default.
 
 ## The idea
 

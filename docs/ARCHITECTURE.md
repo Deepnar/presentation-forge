@@ -92,6 +92,23 @@ capability. With small local models every prompt token matters and needs to be
 directly visible and editable — frameworks hide exactly that. Plain Node over
 Ollama's HTTP API is less code and far easier to debug.
 
+## Model backends
+
+`src/ai/ollama.js` is a role-addressed client, not an Ollama-only client. Each
+role in `config/models.yaml` resolves to a backend:
+
+- **`ollama`** (default) — native `/api/chat`, with `format` compiled to a
+  decoding grammar. This is the constrained-decoding path the whole pipeline
+  is built around.
+- **`openai-compatible`** (opt-in, per role via `provider:`) — `/chat/completions`,
+  `response_format: json_object` instead of a grammar. Streaming and image
+  parts work the same; a cloud role simply relies on a strong model obeying
+  JSON rather than a decoder forcing it.
+
+Everything downstream (`chat`/`chatJSON`, generate, turn, pipeline, CLI, API)
+is backend-agnostic — only the role's provider changes. The default stays
+local; nothing calls a cloud endpoint unless a role opts in.
+
 ## Why the human gate replaces presets
 
 Presets guess the deck's structure in advance and are wrong whenever the
