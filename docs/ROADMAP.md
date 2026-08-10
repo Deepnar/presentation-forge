@@ -62,6 +62,13 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 >
 > Single-series charts must not vary colour per bar: it encodes a distinction
 > that does not exist and pulls low-contrast palette entries onto the plot.
+>
+> Every text element in a stacked layout must be fit-scaled or reserve the real
+> rendered line count. The `cards`/`compare` titles and the `stats` value/label
+> were not fit — a title long enough to wrap rendered its second line over the
+> body, and a wrapping stat value hit its label. Found only by looking at
+> rasterised output. Fitted titles now stay contained in their boxes, and the
+> heading reserves the number of lines it actually renders.
 
 ### [x] Text fitting
 `src/fit.js` — heuristic advance-width estimation, shrink-only.
@@ -326,13 +333,27 @@ deck can be perfectly valid YAML and still have a headline running off the slide
 Implemented as a `runTurn` call whose instruction comes from the critic rather
 than a human, so no new code path.
 
+The manual prototype is proven: a text-only session fed slide PNGs to a vision
+model through `chat({ role: "critic", model, images })` in `src/ai/ollama.js`.
+It caught the card-title wrap, the wrapped-headline/standfirst overlap, and
+verified the fixes — all defects the 8B model reported "clean". What remains is
+turning the manual pass into the loop: a bounded findings schema, a
+vision-capable role, a two-round fix cap, and a surface to run it from.
+
 Constraints already known:
 - The author role is now `qwen3-coder`, which has **no vision**. The critic needs
-  its own role — `gemma4:26b-a4b-it` or `qwen3.6:27b`, both configured.
+  its own role. `qwen3-vl:8b-thinking` gave **false-clean** verdicts on real
+  overlap — do not use it for QA. `gemma4:26b-a4b-it-q4_K_M` (25.8B) and
+  `qwen3.6:27b` are far more reliable and are configured; the strongest results
+  came from `opencode-go/mimo-v2.5` (subscription), which is now the persisted
+  vision choice.
 - Keep the findings schema **small and bounded** (`maxItems`, `maxLength` on
   every field). gemma degrades badly on large grammars; see `docs/TRAPS.md`.
 - Cap the fix loop at two rounds. A critic that has not converged twice is
   arguing with itself, and each round costs a full re-render.
+- Pixel analysis (text-band gaps) is a good *targeter* for a vision model but a
+  poor sole judge — it flags design-intended eyebrow/heading spacing and
+  card-boundary adjacency as "near-overlap".
 
 ### [ ] Freeform slides — the "completely free" mode
 `type: freeform` with an `html` field, rendered via the HTML plate renderer.

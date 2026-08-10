@@ -164,6 +164,44 @@ problem at once. Small grammars are the whole trick.
 
 ## Session / tooling
 
+**A vision model saying "clean" proves nothing until you verify it can see.**
+`qwen3-vl:8b-thinking` reported every rendered slide "clean" on a deck the user
+reported as overlapping — a false-clean verdict, not a check. It also returned
+empty content on some calls. On the same images, `gemma4:26b-a4b-it-q4_K_M`
+(25.8B) gave detailed verbatim read-backs of headlines, and a subscription
+model (`opencode-go/mimo-v2.5`) caught a wrap-and-overlap the pixel analysis
+also missed initially. When a vision model's verdict contradicts a human's,
+distrust the model first, and prefer the biggest model available for QA.
+
+**Pixel analysis of text bands is a useful check but has false positives.** A
+column-strip heuristic (dark rows → bands → gap ≤ 2px flagged) correctly found
+the wrapped card title, but also flagged the eyebrow-above-headline (which is
+the intended design) and card-boundary adjacency. Never trust it as the sole
+verdict; use it to *target* a vision model at a suspect region.
+
+**Layout text that is not fit-scaled will wrap into the element below.** In
+`src/layouts.js`, `cards` and `compare` titles had no `fitScale` — a title long
+enough to wrap rendered its second line over the body. `stats` stacked
+value/label at fixed offsets with no fit, so a wrapping value hit its label.
+Every text element in a stacked layout must either be fit to its box or reserve
+space for the real rendered line count. Fit is shrink-only: it may look small,
+it must never overlap.
+
+**A `fitScale(…, 99, …)` height never returns < 1.** Used to mean "detect
+whether this wraps" it cannot work — with a huge height the height constraint
+never binds, so scale stays 1 and the wrap is invisible. To detect wrapping,
+count lines at the fitted size (`lineCount` + `measure` with a width safety),
+don't probe with an unbounded height.
+
+**The opencode-vision plugin's delegation is disabled when the configured main
+model can see images.** It registers `vision-*` subagents only when the config
+`model` is not vision-capable; setting `model: ollama/qwen3-vl:8b-thinking`
+made it register nothing while the session actually ran a text-only model.
+Also, registering a model in provider config needs `modalities.input: ["image",
+"text"]` (not just `attachment: true`) for the runtime to accept image file
+parts — `attachment` alone surfaces it in the picker but the read tool still
+rejects the image.
+
 **The browser screenshot tool can fail mid-session and stay failed.** It timed
 out on every call for the back half of one session, including on pages it had
 captured minutes earlier, with no console errors and a healthy server. Fall back
