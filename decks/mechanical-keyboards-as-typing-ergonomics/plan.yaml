@@ -1,0 +1,28 @@
+title: "Mechanical Keyboards: A Deep Dive into Typing Ergonomics"
+sections:
+  - Introduction to Mechanical Keyboards
+  - Ergonomic Benefits and Design Principles
+  - Key Switch Types and Their Impact on Typ
+  - "Comparative Analysis: Mechanical vs. Mem"
+slides:
+  - type: title
+    section: 0
+    purpose: Establish the presentation's focus on mechanical keyboards and their
+      ergonomic advantages
+  - type: section
+    section: 0
+    purpose: Introduce the concept of mechanical keyboards and their relevance to
+      typing ergonomics
+  - type: bullets
+    section: 0
+    purpose: Outline the core concepts that define mechanical keyboards
+  - type: cards
+    section: 1
+    purpose: Present key advantages of mechanical keyboards over traditional
+      membrane keyboards
+  - type: section
+    section: 1
+    purpose: Examine how mechanical keyboards contribute to better typing ergonomics
+  - type: stats
+    section: 1
+    purpose: Demonstrate measurable ergonomic improvements with mechanical keyboards

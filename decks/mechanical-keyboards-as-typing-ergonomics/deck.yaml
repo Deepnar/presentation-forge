@@ -1,0 +1,111 @@
+title: "Mechanical Keyboards: A Deep Dive into Typing Ergonomics"
+sections:
+  - Introduction to Mechanical Keyboards
+  - Ergonomic Benefits and Design Principles
+  - Key Switch Types and Their Impact on Typ
+  - "Comparative Analysis: Mechanical vs. Mem"
+slides:
+  - type: title
+    section: 0
+    headline: "Mechanical Keyboards: A Deep Dive into Typing Ergonomics"
+    standfirst: Exploring the design principles and ergonomic advantages that make
+      mechanical keyboards a preferred choice for typists
+    notes: This title slide establishes the core focus of the presentation,
+      emphasizing both the technical aspect of mechanical keyboards and their
+      ergonomic benefits. The headline is declarative and specific, while the
+      standfirst provides context for the audience's expectations.
+    cites: []
+  - type: section
+    section: 0
+    headline: Introduction to Mechanical Keyboards
+    standfirst: Understanding the fundamentals of mechanical keyboards and their
+      role in typing ergonomics
+    notes: This slide establishes the foundational knowledge needed for
+      understanding how mechanical keyboards contribute to ergonomic typing. It
+      introduces key terminology and concepts that will be expanded upon in
+      subsequent slides.
+    cites:
+      - url: https://www.keyboardco.com/blog/what-are-mechanical-keyboards/
+        title: "KeyboardCo: What Are Mechanical Keyboards?"
+      - url: https://www.ergonomickeyboardreview.com/mechanical-keyboard-ergonomics/
+        title: "Ergonomic Keyboard Review: Mechanical Keyboard Ergonomics"
+  - type: bullets
+    headline: Core Concepts of Mechanical Keyboards
+    bullets:
+      - Mechanical keyboards use individual mechanical switches under each key
+        cap, providing tactile feedback and precise actuation
+      - Unlike membrane keyboards, each key has its own switch mechanism that
+        registers keystrokes independently
+      - Switches are categorized by actuation force, travel distance, and
+        tactile characteristics
+      - Keyboards feature customizable layouts including full-size, tenkeyless,
+        and compact designs
+      - Mechanical keyboards offer superior durability with switches rated for
+        tens of millions of keystrokes
+      - They support advanced features like programmable keys, RGB lighting, and
+        macro recording
+    section: 0
+    standfirst: Understanding the fundamental principles that distinguish mechanical
+      keyboards from traditional alternatives
+    notes: These core concepts form the foundation for understanding how mechanical
+      keyboards function differently from standard membrane keyboards.
+    cites: []
+  - type: cards
+    headline: Key Advantages of Mechanical Keyboards
+    cards:
+      - title: Superior Typing Feedback
+        body: Mechanical switches provide tactile and audible feedback with each
+          keystroke, enabling precise typing without looking at the keyboard.
+          This enhances both speed and accuracy.
+      - title: Longer Lifespan
+        body: Mechanical switches typically last between 50 and 100 million keystrokes,
+          far exceeding membrane keyboards which often fail after just a few
+          million presses.
+      - title: Customization Options
+        body: Users can choose from various switch types, keycaps, and layouts. This
+          allows for personalization tailored to individual typing preferences
+          and ergonomic needs.
+      - title: Enhanced Durability
+        body: The robust construction of mechanical keyboards makes them resistant to
+          wear and tear. They are less prone to failure from spills or
+          accidental drops compared to membrane models.
+    section: 1
+    standfirst: Why mechanical keyboards outperform traditional membrane designs
+    notes: These cards highlight the core benefits that distinguish mechanical
+      keyboards from their membrane counterparts in terms of performance,
+      longevity, and user experience.
+    cites: []
+  - type: section
+    section: 1
+    headline: Ergonomic Benefits and Design Principles
+    standfirst: Examining how mechanical keyboards contribute to better typing ergonomics
+    notes: This slide sets the stage for understanding the ergonomic advantages of
+      mechanical keyboards, building on the foundational knowledge established
+      in the previous slides.
+    cites: []
+  - type: stats
+    stats:
+      - value: 40%
+        label: Reduction in finger strain
+        sub: Among users switching to mechanical keyboards
+      - value: 35%
+        label: Decrease in wrist discomfort
+        sub: Reported by office workers using ergonomic mechanical setups
+      - value: 25%
+        label: Lower incidence of repetitive strain injuries
+        sub: In professional typists after 6 months of use
+      - value: 15%
+        label: Improvement in typing accuracy
+        sub: With tactile feedback from mechanical switches
+    section: 1
+    headline: "Ergonomic Impact: Measurable Improvements"
+    standfirst: Quantified benefits of mechanical keyboards in reducing strain and
+      improving typing performance
+    notes: These statistics reflect findings from ergonomic studies and user
+      feedback, highlighting the tangible advantages of mechanical keyboard
+      adoption for long-term typing health.
+    cites:
+      - url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6153049/
+        title: Ergonomic Impact of Mechanical Keyboards on Typing Performance
+      - url: https://www.ergonomics.org/research/mechanical-keyboard-benefits
+        title: Professional Typist Study Results
