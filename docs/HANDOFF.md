@@ -1,132 +1,122 @@
 # Handoff — for the next session
 
 Read `AGENTS.md` (repo root) first — the three-layer rule, commands, roadmap
-discipline, commit rules. Then `docs/TRAPS.md`, then the sections below. This
-file is overwritten at the end of every session; git history preserves older
-handoffs.
+discipline, commit rules. Then `docs/TRAPS.md`, which will save you hours. Then
+the sections below. This file is overwritten at the end of every session; git
+history preserves older handoffs.
 
 ## Session summary
 
-State at handoff: **work-in-progress, mid-investigation.** The previous session
-wired generation + outline review into the UI (committed). This session added
-local vision QA and set up the vision MCP; an overlap investigation is
-**unresolved** and needs a vision-capable look at two slides.
+State at handoff: **committed.** Vision QA is working and the reported layout
+overlap is fixed and verified.
 
-**Vision MCP setup (needs opencode restart to take effect).**
-`~/.config/opencode/config.json` now registers the local vision models on the
-ollama provider with `attachment: true`:
+**Vision MCP — working.** The opencode-vision plugin now delegates visual checks
+to `opencode-go/mimo-v2.5` (persisted in
+`~/.config/opencode/vision-model-image.txt`). Two config lessons were needed:
 
-- `qwen3-vl:8b-thinking` — vision, 8.8B
-- `gemma4:26b-a4b-it-q4_K_M` — vision, 25.8B (this is the repo's designated
-  critic role in `config/models.yaml`)
-- `qwen3.6:27b` — vision, 27.8B
+- `~/.config/opencode/opencode.jsonc` `model` must be a **non-vision** model
+  (`opencode-go/deepseek-v4-flash`) — the plugin skips registering `vision-*`
+  subagents when the configured main model can see images.
+- `~/.config/opencode/config.json` registers the ollama vision models with
+  `modalities: { input: ["image", "text"] }` — `attachment: true` alone puts
+  them in the picker but the read tool still rejects the image.
 
-The vision plugin's picker now offers `ollama/qwen3-vl:8b-thinking` and
-`ollama/gemma4:26b-a4b-it-q4_K_M` (capped at two per provider), and
-`ollama/gemma4:26b-a4b-it-q4_K_M` is persisted as the choice in
-`~/.config/opencode/vision-model-image.txt`. **After restarting opencode**, the
-`vision-ollama-*` subagents will be registered and visual checks can be
-delegated via the plugin; until then the task tool rejects them
-("Unknown agent type").
+The delegation is exercised via `task({ subagent_type: "vision-opencode-go-mimo-v2.5", ... })`
+with a prompt-local JSON response template. Local models (`gemma4:26b-a4b-it-q4_K_M`,
+`qwen3.6:27b`) are registered too; **`qwen3-vl:8b-thinking` is unreliable for QA**
+(false-clean verdicts) and should not be used.
 
-**Vision QA so far.** The authoring model on this session is text-only, so
-rendered slides were checked via local vision models called directly through
-`src/ai/ollama.js` (the repo's own client). Results:
+**Overlap fixed.** The user reported slides 4–5 of a generated deck overlapping
+in LibreOffice. Root causes, all in `src/layouts.js`:
 
-- `qwen3-vl:8b-thinking` is **unreliable for QA**: it reported all slides
-  "clean" on a render the user says had real overlap. Do not trust it for
-  defect-finding.
-- `gemma4:26b-a4b-it-q4_K_M` and `qwen3.6:27b` are larger and more detailed,
-  but they also reported the current renders clean.
-- One-off QA scripts live in `/tmp/opencode/` (`qa-model.mjs` calls a named
-  model on one image; `qa-all.mjs` loops a deck's slides against expected
-  headlines).
+- `cards` and `compare` card titles were **not fit-scaled** — a title long
+  enough to wrap rendered its second line over the body. Now fit to stay within
+  their boxes (shrink-only, min 0.55).
+- `stats` stacked value/label/sub at fixed offsets with no fit — a wrapping
+  value hit its label. Value and label now fit.
+- `heading()` advanced y by one line even when the headline wrapped: its
+  wrap-detection used `fitScale(text, w, 99, st)`, which can never return < 1
+  (a huge height never binds), so a 2-line headline's standfirst overlapped its
+  own second line. Now counts lines at the fitted size and reserves the real
+  height. **Lesson:** never "detect wrapping" with an unbounded-height
+  `fitScale` — count lines instead.
 
-**The overlap problem — unresolved.** The user reported that slides 4 and 5 of
-the FIRST `mechanical-keyboards-as-typing-ergonomics` render (slide 4 = `cards`,
-slide 5 = `stats`) had overlapping text, seen by opening the `.pptx` in
-LibreOffice. That render was deleted; a regenerated deck has different content
-(current slide 5 is a `section`), so the exact reproduction is gone.
+**Verified.** All decks re-rendered and inspected. MiMo confirmed clean on the
+reproduction (long card title), raytracing-ai cards/compare, and
+mechanical-keyboards cards/stats. Pixel band-analysis found the bugs and the
+fixes but has false positives (eyebrow-above-headline, card boundaries) — use
+it to target a vision model, not as the sole judge. `decks/zz-overlap-test/`
+(the reproduction fixture) was removed; the layout is verified by the real
+decks.
 
-A deliberate reproduction deck exists at `decks/zz-overlap-test/` — a `cards`
-slide whose first card title is 39 chars ("Superior Typing Feedback Mechanisms
-for"). **Pixel analysis of `decks/zz-overlap-test/out/preview/slide-2.png`
-showed the title on ONE line, no overlap in that render.** So the bug did not
-reproduce at the schema max of 40 chars on warm-humanist.
-
-**Root-cause hypothesis (code-level, unconfirmed visually):** in
-`src/layouts.js`, the `cards` title (line 246) and `compare` titles are NOT
-fit-scaled — only the body is. A title long enough to wrap in a card column
-renders its second line into the body box (body starts at `ty+0.54`), which
-would overlap. The `stats` layout (line 331) stacks value/label/sub at fixed
-offsets with no fit; a value that wraps in a narrow column could collide with
-its label. **Confirm by looking at a wrapped-title reproduction** (crop a card
-column at `src/layouts.js` card geometry and inspect), then fix by fitting the
-titles to one line (shrink-only) so a wrap is impossible.
-
-**Next actions after restart:**
-
-1. Confirm the `vision-ollama-*` subagents are registered (persisted model =
-   `ollama/gemma4:26b-a4b-it-q4_K_M`).
-2. Look at `decks/zz-overlap-test/out/preview/slide-2.png` (first card) and the
-   current `mechanical-keyboards-as-typing-ergonomics` slides 4–5 and settle
-   whether overlap is actually present.
-3. If the cards-title wrap reproduces (try ~40 chars with several narrow cards,
-   or check the `stats` value wrap), fix `src/layouts.js` and re-render + verify.
-4. Reconcile the discrepancy: the preview PNGs ARE LibreOffice-rendered (soffice
-   → PDF → PNG), so if the user saw overlap in LibreOffice the PNG should show
-   it too — unless the `.pptx` they opened was rendered differently (theme
-   switch, mode, or an older file). Get the exact file/slide from the user if
-   the reproduction keeps failing to match their report.
-5. Delete `decks/zz-overlap-test/` when the investigation is done.
+**Not validated:** the visual result of the UI, and anything not on the
+`warm-humanist` theme (the only theme that exists). The heading change moves
+2-line-headline content down slightly — fine on warm-humanist, re-check when
+more themes land.
 
 ## Context to read before starting
 
 - `AGENTS.md` — the three-layer rule is the thing that must not be violated.
-- `docs/TRAPS.md` — read before debugging anything schema-constrained or
-  render-related.
-- `src/layouts.js` — `cards` (line 226) and `stats` (line 331) are the two
-  layouts under suspicion. Note the total absence of literal colours/fonts.
-- `src/ai/ollama.js` — `chat({ role: "critic", model, images })` is how a local
-  vision model is called directly; `model` overrides the role default.
-- `config/models.yaml` — critic role already points at gemma4:26b-a4b-it-q4_K_M
-  with `vision: true`.
-- The previous session's work: generation endpoints + outline review are live
-  (see `docs/ROADMAP.md` §2, `src/ai/pipeline.js`, `app/server/index.js`,
-  `app/web/src/views/Outline.jsx`).
+- `docs/TRAPS.md` — new entries on vision-model trust, pixel-analysis limits,
+  unfitted stacked text, and the opencode-vision config traps.
+- `src/layouts.js` — `heading()` (~line 82), `cards` (~226), `compare` (~270),
+  `stats` (~330): the layouts touched this session. Note the total absence of
+  literal colours/fonts.
+- `src/fit.js` — `fitScale`/`fitScaleAll`/`lineCount`/`measure`.
+- `docs/ROADMAP.md` §4 "Vision critic loop" — the manual QA prototype is proven;
+  the item is the integrated loop.
+- The generation pipeline and outline review from the previous session
+  (`src/ai/pipeline.js`, `app/server/index.js`, `app/web/src/views/Outline.jsx`).
+
+## NEXT TASK — build the real vision critic
+
+The manual QA loop this session used is the prototype for the roadmap item.
+Concrete shape to discuss before building:
+
+1. **Critic role + bounded findings schema.** Reuse `chat({ role: "critic",
+   model, images })`. Default model should be the persisted vision choice
+   (`opencode-go/mimo-v2.5`) with a local fallback (`gemma4:26b-a4b-it-q4_K_M`).
+   Findings schema small and bounded (`maxItems`, `maxLength` on every field).
+2. **Wiring.** Feed rendered PNGs to the critic after `generateFromPlan`, apply
+   fixes via `runTurn` (the seam: critic's instruction is a turn), cap at two
+   rounds, re-render between rounds.
+3. **Surface.** A CLI flag and a button in the deck detail UI. The pipeline must
+   stay headless-first (`app/server` is a thin transport).
+
+Then the roadmap's remaining UI items in dependency order: intake wizard
+identity half, collapsible rails, chat panel, inline editing / presenter
+assignment / slide reorder.
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Vision critic loop** — closes the quality loop; this session's QA work is
-  the manual prototype. Needs a small bounded findings schema and a two-round
-  cap. The local models and the direct-Ollama call path are proven.
+- **Vision critic loop** — prototype proven; integrate the loop.
 - **Intake wizard** — identity half (team, subject, guide, year) of the entry
-  form still to build; brief+sources+theme already exists (`NewDeck.jsx`).
+  form; brief+sources+theme already exists (`NewDeck.jsx`).
 - **Collapsible rails** — blocks the chat panel.
-- **Chat panel** — uses `runTurn`; inherits the SSE transport.
+- **Chat panel** — uses `runTurn`; inherits the SSE transport from `startSSE`.
 - **Inline editing + presenter assignment + slide reorder/delete/duplicate.**
-- **19 remaining themes**, **HTML plate renderer**, **freeform slides**,
-  **report renderer**, **shared research** (research artefact exists).
+- **19 remaining themes** — 15 native (mostly YAML), 4 blocked on the plate
+  renderer. Render each before ticking it; re-check heading spacing per theme.
+- **HTML plate renderer**, **freeform slides**, **report renderer**,
+  **shared research** (research artefact exists at `decks/<slug>/research/`).
 
 ## Gotchas
 
 Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
-- **The vision subagents need an opencode restart** to register; config is not
-  hot-reloaded. Until then `task({ subagent_type: "vision-ollama-*" })` fails
-  with "Unknown agent type".
-- **The authoring model is text-only.** Anything claiming a slide "looks fine"
-  must be backed by a vision-capable model or pixel analysis, and even then
-  verify against the user's report.
-- **`qwen3-vl:8b-thinking` gives false-clean verdicts** on layout QA. Prefer
-  gemma4:26b-a4b-it-q4_K_M or qwen3.6:27b.
-- **A written `.pptx` proves nothing.** Rasterise and look.
-- **The preview PNGs are LibreOffice's own render** — if the user's LibreOffice
-  differs from the PNGs, suspect a different file/theme/mode, not the pipeline.
-- **Commit before any history rewrite.** `filter-repo --force` resets the
-  working tree.
+- **Vision QA:** prefer `opencode-go/mimo-v2.5` or `gemma4:26b-a4b-it-q4_K_M`;
+  never trust `qwen3-vl:8b-thinking` for defect-finding (false-clean).
+- **Vision plugin needs a restart** to pick up config; the `model` in
+  `opencode.jsonc` must stay non-vision or no subagents register, and the ollama
+  vision entries need `modalities.input: ["image", "text"]`.
+- **A written `.pptx` proves nothing.** Rasterise and look (the preview PNGs are
+  LibreOffice's own render, so they match what LibreOffice shows).
+- **Stacked text must be fit-scaled or line-counted.** A text box with a fixed
+  height and un-shrunk content wraps into whatever is below it.
+- **Never `fitScale(text, w, 99, st)` to detect wrapping.** Count lines.
+- **Commit before any history rewrite.** `filter-repo --force` resets the tree.
 - **API binds `FORGE_API_PORT` (5174), never `PORT`.** Express needs
   `node --watch`.
 - **Never add an unbounded array or a bare `{type:"object"}` to a model-facing
