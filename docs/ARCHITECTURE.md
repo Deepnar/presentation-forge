@@ -77,6 +77,13 @@ deliberately break out of the standard page.
 The disjointness is load-bearing. If the model can see hex values it starts
 inventing them; if the renderer can see adjectives it starts guessing.
 
+**Styles layer over themes.** `styles/*.yaml` are cross-cutting token
+overrides — deep-merged over a theme's tokens at load time, with voice merged
+the same way — so a deck renders as *theme × style* without theme copies. A
+style never declares a whole theme; it adjusts density, type scale or margins
+on top of whichever theme is chosen. `loadTheme(name, { style })` is the single
+place this happens.
+
 ### content — the model's job
 `schema/deck.schema.json`. Semantic slide data: type, headline, bullets, card
 bodies, chart series. No coordinates, colours, fonts or sizes anywhere.

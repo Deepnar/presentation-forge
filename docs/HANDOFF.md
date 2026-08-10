@@ -49,6 +49,17 @@ it to target a vision model, not as the sole judge. `decks/zz-overlap-test/`
 (the reproduction fixture) was removed; the layout is verified by the real
 decks.
 
+**Styles + collapsible rails (built).** A `style` layer now sits over themes:
+`styles/*.yaml` deep-merge token/voice overrides onto any theme, so a deck
+renders as theme × style. `loadTheme(name, { style })` is the merge point;
+`render`, the API (`POST /api/decks/:slug/render`), the CLI (`--style`), and a
+deck's own `style` field all accept it. `tools/compare.mjs` renders the full
+theme × style matrix as an HTML contact sheet (`npm run compare
+decks/<slug>/deck.yaml`). `App.jsx` has collapsible rails: left nav collapses
+to an icon rail, right rail is a *generic slot* that collapses to an edge tab —
+both persisted to `localStorage` (`forge.leftNav`, `forge.rightRail`), ready
+for the chat panel.
+
 **Intake wizard (built).** `NewDeck.jsx` now collects the full identity:
 subject, academic year, semester, exam type, guide name + designation, team
 label, and a member list with a "presents" tick. Pre-fills from
@@ -98,23 +109,21 @@ more themes land.
 - The generation pipeline and outline review from the previous session
   (`src/ai/pipeline.js`, `app/server/index.js`, `app/web/src/views/Outline.jsx`).
 
-## NEXT TASK — collapsible rails, then chat
+## NEXT TASK — the chat panel, then inline editing
 
-The outline gate, the vision critic and the intake wizard are all live; the
-roadmap's remaining UI items stand in dependency order. **Discuss the concrete
-implementation before building.**
+The outline gate, vision critic, intake wizard, styles and the collapsible
+rails are all live. The right rail is an empty generic slot waiting for chat.
+**Discuss the concrete implementation before building.**
 
-1. **Application shell — collapsible rails.** Left nav collapses to an icon
-   rail; right panel (chat) collapses to an edge tab; both persist. Build the
-   right rail as a *generic slot*, not a chat drawer. Blocks chat.
-2. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
+1. **Chat panel.** Uses `runTurn` on `deck.yaml`. Memory model already
    specified in the roadmap (state over transcript; `deck.yaml` is memory,
    `chat.jsonl` for recent turns, `decisions.md` for durable prefs). Inherits
-   the SSE transport from `startSSE`.
-3. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
+   the SSE transport from `startSSE`. Per-deck threads. The right rail is the
+   slot — this is now pure content, not a shell refactor.
+2. **Inline editing** (deck detail), **per-slide presenter assignment**, slide
    reorder/delete/duplicate — separate from chat, writes `deck.yaml` directly.
-4. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
-   each before ticking it; re-check heading spacing per theme.
+3. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
+   each before ticking it; re-check heading spacing per theme and per style.
 
 **Look-ahead already recorded:** `runTurn` is the shared primitive for chat and
 the critic (both now proven). `generateDeck` deliberately does *not* use it —
@@ -124,9 +133,8 @@ the seam is: **turn = edit an existing deck; generate = build one from empty.**
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Collapsible rails** — blocks the chat panel.
 - **Chat panel** — streamed tokens, stop, retry, visible tool calls, model
-  picker, context indicator.
+  picker, context indicator; fills the right rail.
 - **Inline editing + presenter assignment + slide reorder/delete/duplicate.**
 - **19 remaining themes** — 15 native (mostly YAML), 4 blocked on the plate
   renderer. Render each before ticking it.

@@ -205,13 +205,23 @@ approves it, and generation streams slide-writing progress into a rendered deck.
 > added. Dropped sockets abort the pipeline via a request-scoped
 > `AbortController`, so a vanished client stops burning model time.
 
-### [ ] Application shell — collapsible rails
+### [x] Application shell — collapsible rails
 Left navigation collapses to an icon rail; right panel (chat) collapses to an
 edge tab. Both states persist. The centre column is the deck grid and must stay
 the focus — the rails serve it, not the other way round.
 
+`App.jsx` now has a left rail that collapses to icons (labels/hints hidden,
+tooltips instead) and a right rail built as a *generic slot* — an empty panel
+that collapses to an edge tab, ready for the chat panel. Both states persist to
+`localStorage` (`forge.leftNav`, `forge.rightRail`).
+
+> **Learned.** The right rail is a container, not a feature: it exists so the
+> chat panel has somewhere to live, and building it as a slot first means the
+> chat panel later is pure content, not another shell refactor. Left-rail
+> persistence matters more than it looks — a collapsed-by-default state that
+> resets every load makes the icon rail feel like a bug, not a preference.
+
 Depends on nothing; blocks the chat panel, which needs the right rail to exist.
-Build the rail as a generic slot, not a chat-specific drawer.
 
 ### [ ] Chat panel — the AI wrapper
 A real conversational surface in the right rail: streamed tokens, stop, retry,
@@ -259,6 +269,21 @@ something to a viewer rather than being twenty arbitrary palettes.
 
 ### [x] `warm-humanist` — reference implementation
 The format contract every other theme follows. Ported from `design_system.txt`.
+
+### [x] Styles — cross-cutting token variants
+`styles/*.yaml` deep-merge token (and voice) overrides over *any* theme, so a
+deck renders as **theme × style**. `loadTheme(name, { style })` applies the
+merge; `render`, the API and the CLI accept `--style`; a deck may set a default
+`style` in `deck.yaml`. `tools/compare.mjs` renders a deck across the full
+theme × style matrix as an HTML contact sheet (`npm run compare <deck.yaml>`),
+and the deck detail UI has a style selector beside the theme selector.
+
+> **Learned.** A style is a *subset* of tokens that overrides the theme's, so
+> the merge must be deep (objects merge, arrays replace) or a one-key style
+> drops entire theme blocks. Styles and `voice` merge the same way, which is
+> why "compact" can set `voice.density: dense` without restating the theme's
+> tone. The `band` anchors live under `grid`, so a style that tightens margins
+> should tighten `band` too or the title band no longer matches the margins.
 
 ### [ ] Native-renderable themes (15)
 Expressible with pptxgenjs shapes alone, so text stays editable in PowerPoint.
