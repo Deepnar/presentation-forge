@@ -1,7 +1,7 @@
 {
   "name": "presentation-forge",
   "version": "0.1.0",
-  "description": "",
+  "description": "Local-first generator for academic presentations and reports. Node + pptxgenjs + Ollama.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
