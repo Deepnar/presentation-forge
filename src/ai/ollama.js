@@ -4,18 +4,44 @@ import YAML from "yaml";
 import { CONFIG } from "../paths.js";
 
 /**
- * Ollama client, role-addressed.
+ * Model client, role-addressed, with an optional cloud backend.
  *
  * Callers ask for a *role* ("author") rather than a model id, so swapping the
- * model behind a role is a config edit. Deliberately thin — no agent framework.
- * The pipeline is a fixed sequence, and with small local models every prompt
- * token needs to stay visible and editable.
+ * model behind a role is a config edit. Roles resolve to the local Ollama
+ * backend by default; a role may opt into an OpenAI-compatible cloud provider
+ * via `provider:` in config/models.yaml. Deliberately thin — no agent
+ * framework. The pipeline is a fixed sequence, and every prompt token needs to
+ * stay visible and editable.
  */
 
 let _cfg;
 async function config() {
   if (!_cfg) _cfg = YAML.parse(await readFile(path.join(CONFIG, "models.yaml"), "utf8"));
   return _cfg;
+}
+
+/** Resolve an `env:NAME` apiKey reference from the environment. */
+function resolveEnv(value) {
+  const m = typeof value === "string" && value.match(/^env:(.+)$/);
+  return m ? (process.env[m[1]] ?? "") : (value ?? "");
+}
+
+/**
+ * The transport a role's model runs on. No `provider` on the role means the
+ * local Ollama backend; anything else must be a defined `providers:` entry.
+ */
+async function backendFor(cfg, spec) {
+  if (!spec.provider) return { type: "ollama", baseURL: cfg.host };
+  const p = cfg.providers?.[spec.provider];
+  if (!p) {
+    throw new Error(
+      `Role uses provider "${spec.provider}" but models.yaml has no such entry under providers:.`,
+    );
+  }
+  if (p.type !== "openai-compatible") {
+    throw new Error(`models.yaml: unknown provider type "${p.type}" for "${spec.provider}".`);
+  }
+  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: resolveEnv(p.apiKey) };
 }
 
 let _installed;
@@ -35,20 +61,30 @@ async function installed(host) {
 }
 
 /**
- * Resolve a role to a model that is actually pulled, falling back rather than
- * failing — a missing model should degrade quality, not abort a deck.
+ * Resolve a role to the model it runs on and the backend that serves it.
+ * For Ollama the model must be pulled, falling back rather than failing — a
+ * missing model should degrade quality, not abort a deck. Cloud backends skip
+ * the installed check; a missing key surfaces as a request error.
  */
 export async function resolveRole(role) {
   const cfg = await config();
   const spec = cfg.roles?.[role];
   if (!spec) throw new Error(`Unknown role "${role}". Known: ${Object.keys(cfg.roles ?? {}).join(", ")}`);
 
+  const backend = await backendFor(cfg, spec);
+
+  if (backend.type !== "ollama") {
+    return { ...spec, role, backend, model: spec.model, fellBack: false };
+  }
+
   const have = await installed(cfg.host);
-  if (have.has(spec.model)) return { ...spec, role, host: cfg.host, fellBack: false };
+  if (have.has(spec.model)) {
+    return { ...spec, role, backend, model: spec.model, fellBack: false };
+  }
 
   for (const alt of cfg.fallbacks ?? []) {
     if (have.has(alt)) {
-      return { ...spec, role, host: cfg.host, model: alt, fellBack: spec.model };
+      return { ...spec, role, backend, model: alt, fellBack: spec.model };
     }
   }
   throw new Error(
@@ -59,11 +95,12 @@ export async function resolveRole(role) {
 }
 
 /**
- * One chat completion.
+ * One chat completion against whatever backend the role resolves to.
  *
- * `format` accepts a JSON Schema (Ollama's structured-output mode). Passing the
- * schema rather than begging for JSON in the prompt is what makes a 4B model's
- * output parseable — it constrains decoding instead of hoping.
+ * Local Ollama gets `format` (a JSON Schema compiled to a decoding grammar).
+ * Cloud (OpenAI-compatible) gets `response_format: json_object` and relies on
+ * the model being strong enough to obey it — so prefer big cloud models and
+ * keep the schema small. `model` overrides the role's default on either.
  */
 export async function chat({
   role,
@@ -77,42 +114,43 @@ export async function chat({
   signal,
 }) {
   const cfg = await config();
-  // `model` overrides the role's default — used by the UI model picker and for
-  // A/B testing a role against another local model without editing config.
   const spec = model
     ? { ...(await resolveRole(role)), model }
     : await resolveRole(role);
   const stream = typeof onToken === "function";
-
-  // Vision models take images on the last user message.
-  const payload = {
-    model: spec.model,
-    messages: images?.length
-      ? messages.map((m, i) => (i === messages.length - 1 ? { ...m, images } : m))
-      : messages,
-    stream,
-    keep_alive: cfg.defaults?.keep_alive ?? "15m",
-    options: {
-      temperature: temperature ?? spec.temperature ?? 0.7,
-      num_ctx: spec.num_ctx ?? 8192,
-      // Only send what the role declares — Ollama's own defaults are sane, and
-      // overriding them blindly is how sampling bugs get introduced.
-      ...(spec.top_k != null ? { top_k: spec.top_k } : {}),
-      ...(spec.top_p != null ? { top_p: spec.top_p } : {}),
-      ...(spec.repeat_penalty != null ? { repeat_penalty: spec.repeat_penalty } : {}),
-      ...(spec.num_predict != null ? { num_predict: spec.num_predict } : {}),
-    },
-  };
-  if (format) payload.format = format;
-  if (tools?.length) payload.tools = tools;
-
   const timeout = cfg.defaults?.request_timeout_ms ?? 300_000;
   const maxRetries = cfg.defaults?.max_retries ?? 2;
 
   let lastErr;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await once(spec, payload, { stream, onToken, timeout, signal });
+      if (spec.backend.type === "ollama") {
+        const payload = {
+          model: spec.model,
+          messages: images?.length
+            ? messages.map((m, i) => (i === messages.length - 1 ? { ...m, images } : m))
+            : messages,
+          stream,
+          keep_alive: cfg.defaults?.keep_alive ?? "15m",
+          options: {
+            temperature: temperature ?? spec.temperature ?? 0.7,
+            num_ctx: spec.num_ctx ?? 8192,
+            // Only send what the role declares — Ollama's own defaults are sane,
+            // and overriding them blindly is how sampling bugs get introduced.
+            ...(spec.top_k != null ? { top_k: spec.top_k } : {}),
+            ...(spec.top_p != null ? { top_p: spec.top_p } : {}),
+            ...(spec.repeat_penalty != null ? { repeat_penalty: spec.repeat_penalty } : {}),
+            ...(spec.num_predict != null ? { num_predict: spec.num_predict } : {}),
+          },
+        };
+        if (format) payload.format = format;
+        if (tools?.length) payload.tools = tools;
+        return await once(spec, payload, { stream, onToken, timeout, signal });
+      }
+      return await cloudChat(spec, {
+        messages, format, tools, images, temperature,
+        stream, onToken, timeout, signal,
+      });
     } catch (err) {
       // A caller-initiated abort is intentional; never retry it.
       if (err.name === "AbortError" && signal?.aborted) throw err;
@@ -120,7 +158,124 @@ export async function chat({
       if (attempt < maxRetries) await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
     }
   }
-  throw new Error(`Ollama request failed after ${maxRetries + 1} attempts: ${lastErr.message}`);
+  throw new Error(`Model request failed after ${maxRetries + 1} attempts: ${lastErr.message}`);
+}
+
+/** OpenAI-compatible /chat/completions transport (stream and non-stream). */
+async function cloudChat(spec, {
+  messages, format, tools, images, temperature,
+  stream, onToken, timeout, signal,
+}) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeout);
+  const onAbort = () => ctrl.abort();
+  signal?.addEventListener("abort", onAbort);
+
+  const body = {
+    model: spec.model,
+    messages: cloudMessages(messages, images),
+    stream,
+    temperature: temperature ?? spec.temperature ?? 0.7,
+    ...(spec.num_predict ? { max_tokens: spec.num_predict } : {}),
+    ...(spec.top_p != null ? { top_p: spec.top_p } : {}),
+    // The cloud transport cannot compile a decoding grammar; json_object is the
+    // closest universal guarantee, and chatJSON's salvage covers the rest.
+    ...(format ? { response_format: { type: "json_object" } } : {}),
+    ...(tools?.length ? { tools } : {}),
+  };
+  const headers = {
+    "Content-Type": "application/json",
+    ...(spec.backend.apiKey ? { Authorization: `Bearer ${spec.backend.apiKey}` } : {}),
+  };
+
+  try {
+    const url = `${String(spec.backend.baseURL).replace(/\/+$/, "")}/chat/completions`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    if (!res.ok) throw new Error(`Cloud ${res.status}: ${(await res.text()).slice(0, 200)}`);
+
+    if (!stream) {
+      const data = await res.json();
+      const msg = data.choices?.[0]?.message ?? {};
+      return {
+        content: msg.content ?? "",
+        toolCalls: msg.tool_calls ?? [],
+        model: data.model ?? spec.model,
+        role: spec.role,
+        fellBack: spec.fellBack,
+        evalCount: data.usage?.completion_tokens ?? 0,
+        promptCount: data.usage?.prompt_tokens ?? 0,
+        // "stop" = finished; "length" = hit max_tokens — the same truncation
+        // signal chatJSON checks for on the Ollama side.
+        doneReason: data.choices?.[0]?.finish_reason ?? null,
+      };
+    }
+
+    // SSE: one `data: {json}` per line, `data: [DONE]` at the end.
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let content = "";
+    let toolCalls = [];
+    let evalCount = 0;
+    let promptCount = 0;
+    let doneReason = null;
+    let finished = false;
+
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done || finished) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      let idx;
+      while (!finished && (idx = buffer.indexOf("\n")) !== -1) {
+        const line = buffer.slice(0, idx).trim();
+        buffer = buffer.slice(idx + 1);
+        if (!line.startsWith("data:")) continue;
+        const payload = line.slice(5).trim();
+        if (payload === "[DONE]") { finished = true; break; }
+        let obj;
+        try { obj = JSON.parse(payload); } catch { continue; }
+        const choice = obj.choices?.[0];
+        if (!choice) continue;
+        const delta = choice.delta ?? {};
+        if (delta.content) { content += delta.content; onToken(delta.content); }
+        if (delta.tool_calls?.length) toolCalls = delta.tool_calls;
+        if (choice.finish_reason) doneReason = choice.finish_reason;
+        if (obj.usage?.completion_tokens) evalCount = obj.usage.completion_tokens;
+        if (obj.usage?.prompt_tokens) promptCount = obj.usage.prompt_tokens;
+      }
+    }
+
+    return {
+      content, toolCalls,
+      model: spec.model, role: spec.role, fellBack: spec.fellBack,
+      evalCount, promptCount, doneReason,
+    };
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", onAbort);
+  }
+}
+
+/** Cloud messages: images ride on the last user message as data-URL parts. */
+function cloudMessages(messages, images) {
+  const out = messages.map((m) => ({ role: m.role, content: m.content }));
+  if (images?.length) {
+    const last = out[out.length - 1];
+    last.content = [
+      { type: "text", text: last.content },
+      ...images.map((b64) => ({
+        type: "image_url",
+        image_url: { url: `data:image/png;base64,${b64}` },
+      })),
+    ];
+  }
+  return out;
 }
 
 async function once(spec, payload, { stream, onToken, timeout, signal }) {
@@ -130,7 +285,7 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
   signal?.addEventListener("abort", onAbort);
 
   try {
-    const res = await fetch(`${spec.host}/api/chat`, {
+    const res = await fetch(`${spec.backend.baseURL}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

@@ -1,4 +1,8 @@
-# Which local model plays which role.
+# Which model plays which role, and which backend serves it.
+#
+# Local-first by default: every role resolves to a local Ollama model. Cloud
+# backends are opt-in — define one under `providers:`, then point a role at it
+# with `provider: <name>`. Nothing uses a cloud model unless a role says so.
 #
 # Sized against a 24 GB VRAM ceiling. The two MoE models are ~17-18 GB but only
 # activate 3-4B parameters per token, so they run at small-model speed with
@@ -11,6 +15,20 @@
 # thrashing on every role switch.
 
 host: http://localhost:11434
+
+# Optional cloud backends. `type: openai-compatible` speaks the same
+# /chat/completions wire format as Ollama's /v1 endpoint, so it works with
+# OpenAI, OpenRouter, Together, vLLM, LM Studio and most hosted APIs.
+# `apiKey` reads from an environment variable (env:NAME) — never commit a key.
+providers:
+  openai:
+    type: openai-compatible
+    baseURL: https://api.openai.com/v1
+    apiKey: env:OPENAI_API_KEY
+  # openrouter:
+  #   type: openai-compatible
+  #   baseURL: https://openrouter.ai/api/v1
+  #   apiKey: env:OPENROUTER_API_KEY
 
 roles:
   # Tool-calling and query formulation. Strong instruction-following matters
@@ -30,6 +48,14 @@ roles:
   #
   # A coder model is the right instinct for schema-constrained output: JSON is
   # in-distribution for it, so the grammar rarely has to mask its next choice.
+  #
+  # To route this role to a cloud model instead (OpenAI-compatible provider
+  # defined above, key in OPENAI_API_KEY):
+  #   author:
+  #     provider: openai
+  #     model: gpt-4.1
+  # Cloud providers get `response_format: json_object` rather than Ollama's
+  # grammar, so prefer a strong model and keep schemas small.
   author:
     model: qwen3-coder:30b-a3b-q4_K_M
     temperature: 0.7
