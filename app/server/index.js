@@ -8,6 +8,8 @@ import { loadTheme, listThemes } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
+import { deckSchema } from "../../src/ai/catalog.js";
+import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -27,6 +29,34 @@ const fail = (res, code, message) => res.status(code).json({ ok: false, error: m
 
 const wrap = (fn) => (req, res) =>
   Promise.resolve(fn(req, res)).catch((err) => fail(res, 500, err.message));
+
+/**
+ * Server-sent events over a POST body. The chat panel inherits this transport,
+ * so it is chosen once here rather than as a per-endpoint hack.
+ *
+ * `send` is a no-op once the socket is gone, which lets a cancelled request
+ * unwind without throwing; `done` rejects on disconnect so the pipeline can be
+ * aborted instead of burning a model for a client that left.
+ */
+function startSSE(res) {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("X-Accel-Buffering", "no");
+  res.flushHeaders();
+
+  const send = (event, data) => {
+    if (res.writableEnded || res.destroyed) return;
+    res.write(`event: ${event}\n`);
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
+  const done = new Promise((resolve, reject) => {
+    res.on("close", () => reject(new Error("client disconnected")));
+    res.on("error", reject);
+  });
+  const close = () => { if (!res.destroyed) res.end(); };
+  return { send, done, close };
+}
 
 /* ------------------------------------------------------------------ themes */
 
@@ -192,6 +222,70 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
     res.status(404).end();
   }
 }));
+
+/* ------------------------------------------------------------- generation */
+
+app.get("/api/types", wrap(async (_req, res) => {
+  const schema = await deckSchema();
+  ok(res, { types: schema.definitions.slide.properties.type.enum });
+}));
+
+/** Brief → outline. Long-running; streams research/planning progress as SSE. */
+app.post("/api/decks", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { brief, sources, research, theme, maxSlides, model } = req.body ?? {};
+  (async () => {
+    const r = await createDeck({
+      brief, sources, research, theme, maxSlides, model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
+/** Approved outline → deck, rendered and rasterised. Same SSE transport. */
+app.post("/api/decks/:slug/generate", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { plan, theme, model } = req.body ?? {};
+  if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) {
+    sse.send("error", { error: "body must include an approved `plan` with slides" });
+    return sse.close();
+  }
+
+  (async () => {
+    const r = await generateFromPlan({
+      slug: req.params.slug, plan, theme, model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    const base = `/api/decks/${req.params.slug}/preview`;
+    sse.send("result", {
+      slug: r.slug,
+      slides: r.slides.map((f) => `${base}/${f}`),
+      thumbs: r.thumbs.map((f) => `${base}/thumbs/${f}`),
+      problems: r.problems,
+      skipped: r.skipped,
+      stats: r.stats,
+    });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
 
 /* ---------------------------------------------------------------- identity */
 
