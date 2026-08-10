@@ -72,7 +72,7 @@ export default function Identity() {
       </Section>
 
       <Section title="Guide">
-        <Field label="Name" placeholder="Mr. Shushant Sawant"
+        <Field label="Name" placeholder="Dr. A. Sharma"
           value={id.guide?.name} onChange={(v) => set("guide.name", v)} />
         <Field label="Designation" placeholder="Assistant Professor"
           value={id.guide?.designation} onChange={(v) => set("guide.designation", v)} />

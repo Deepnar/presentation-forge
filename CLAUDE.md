@@ -1,6 +1,6 @@
 # Presentation Forge — working agreement
 
-Local-first generator for TCET presentations and reports. Node + pptxgenjs +
+Local-first generator for academic presentations and reports. Node + pptxgenjs +
 local Ollama models. No cloud LLM in the pipeline.
 
 ## The one rule that governs everything

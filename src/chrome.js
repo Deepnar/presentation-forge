@@ -17,7 +17,7 @@ const CANVAS = { w: 13.333, h: 7.5 };
 
 const BANNER = { maxW: 6.4, y: 0.30 };   // title slide, horizontally centred
 // 0.62in rendered the wordmark as mush at projector distance; 0.82 is the
-// smallest size where "THAKUR COLLEGE OF ENGINEERING & TECHNOLOGY" stays legible.
+// smallest size at which a crest's wordmark stays legible at projector distance.
 const CREST = { h: 0.82, right: 0.55, y: 0.26 };
 const FOOT = { y: 6.92, h: 0.3 };
 

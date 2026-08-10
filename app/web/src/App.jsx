@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "./api.js";
 import Decks from "./views/Decks.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
@@ -11,6 +12,15 @@ const NAV = [
 
 export default function App() {
   const [view, setView] = useState("decks");
+  // The institution comes from config, never from source — src/ must stay free
+  // of any one school's details so the tool is reusable.
+  const [org, setOrg] = useState("");
+
+  useEffect(() => {
+    api.identity()
+      .then((r) => setOrg(r.identity?.institution?.short ?? ""))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="flex h-full">
@@ -21,7 +31,7 @@ export default function App() {
           </div>
           <div className="leading-tight">
             <div className="text-[13px] font-semibold tracking-tight">Presentation Forge</div>
-            <div className="text-[10px] text-fg-faint">local · TCET</div>
+            <div className="text-[10px] text-fg-faint">{org ? `local · ${org}` : "local"}</div>
           </div>
         </div>
 
