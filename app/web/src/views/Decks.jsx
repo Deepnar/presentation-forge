@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
+import NewDeck from "./NewDeck.jsx";
+import Outline from "./Outline.jsx";
 
 export default function Decks() {
   const [decks, setDecks] = useState(null);
   const [open, setOpen] = useState(null);
+  const [phase, setPhase] = useState("list"); // "list" | "new" | "outline"
+  const [draft, setDraft] = useState(null);
 
   useEffect(() => {
     api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
@@ -13,14 +17,49 @@ export default function Decks() {
 
   if (open) return <DeckDetail slug={open} onBack={() => setOpen(null)} />;
 
+  if (phase === "new") {
+    return (
+      <NewDeck
+        onPlanned={(slug, plan, theme) => {
+          setDraft({ slug, plan, theme });
+          setPhase("outline");
+        }}
+        onBack={() => setPhase("list")}
+      />
+    );
+  }
+
+  if (phase === "outline") {
+    return (
+      <Outline
+        slug={draft.slug}
+        plan={draft.plan}
+        initialTheme={draft.theme}
+        onDone={(slug) => {
+          setPhase("list");
+          setOpen(slug);
+        }}
+        onBack={() => setPhase("new")}
+      />
+    );
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-8 py-9">
-      <header className="mb-7">
-        <h1 className="text-[1.7rem] font-semibold tracking-tight">Decks</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Each deck is a folder under <code className="text-fg-faint">decks/</code> holding
-          a <code className="text-fg-faint">deck.yaml</code>.
-        </p>
+      <header className="mb-7 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[1.7rem] font-semibold tracking-tight">Decks</h1>
+          <p className="mt-1 text-sm text-fg-muted">
+            Each deck is a folder under <code className="text-fg-faint">decks/</code> holding
+            a <code className="text-fg-faint">deck.yaml</code>.
+          </p>
+        </div>
+        <Button variant="primary" onClick={() => setPhase("new")}>
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          New deck
+        </Button>
       </header>
 
       {decks === null && (
@@ -32,7 +71,8 @@ export default function Decks() {
       {decks?.length === 0 && (
         <Empty
           title="No decks yet"
-          hint="The intake wizard will create these once the generation pipeline lands. Until then, a deck is any folder under decks/ containing a deck.yaml."
+          hint="Start with a brief — the outline review gate keeps the model's structure from reaching the renderer until you approve it."
+          action={<Button variant="primary" onClick={() => setPhase("new")}>New deck</Button>}
         />
       )}
 

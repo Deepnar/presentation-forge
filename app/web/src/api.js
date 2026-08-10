@@ -13,6 +13,58 @@ async function call(url, options) {
   return body;
 }
 
+/**
+ * Server-sent events over a POST body. Dispatches each frame to
+ * `handlers[event]`; an `error` frame rejects the promise. Returns
+ * `{ promise, abort }` so a long generation can be cancelled — the server
+ * aborts the underlying model call when the socket closes.
+ */
+function stream(url, body, handlers = {}) {
+  const ctrl = new AbortController();
+  const promise = (async () => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    if (!res.ok || !res.body) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error ?? `HTTP ${res.status}`);
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    const pump = async () => {
+      const { done, value } = await reader.read();
+      if (done) return;
+      buffer += decoder.decode(value, { stream: true });
+      const frames = buffer.split("\n\n");
+      buffer = frames.pop() ?? "";
+      for (const frame of frames) dispatch(frame);
+      await pump();
+    };
+    const dispatch = (frame) => {
+      const ev = parseFrame(frame);
+      if (!ev) return;
+      if (ev.event === "error") throw new Error(ev.data?.error ?? "generation failed");
+      handlers[ev.event]?.(ev.data);
+    };
+    await pump();
+    if (buffer.trim()) dispatch(buffer); // trailing partial frame
+  })();
+  return { promise, abort: () => ctrl.abort() };
+}
+
+function parseFrame(frame) {
+  const event = frame.match(/^event:\s*(.+)$/m)?.[1];
+  const data = frame.match(/^data:\s*(.*)$/m)?.[1];
+  if (data == null) return null;
+  let parsed = data;
+  try { parsed = JSON.parse(data); } catch { /* keep raw */ }
+  return { event, data: parsed };
+}
+
 export const api = {
   themes: () => call("/api/themes"),
   decks: () => call("/api/decks"),
@@ -24,4 +76,8 @@ export const api = {
   identity: () => call("/api/identity"),
   saveIdentity: (identity) =>
     call("/api/identity", { method: "PUT", body: JSON.stringify({ identity }) }),
+  types: () => call("/api/types"),
+  createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
+  generate: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/generate`, payload, handlers),
 };

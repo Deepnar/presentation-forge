@@ -1,5 +1,8 @@
 node_modules/
 
+# Vite build output.
+app/web/dist/
+
 # Generated artefacts — reproducible from sources, never committed.
 decks/*/out/
 brand/generated/
