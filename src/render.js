@@ -38,11 +38,14 @@ function deepMerge(a, b) {
   return b === undefined ? a : b;
 }
 
-export async function render({ deckFile, themeName, mode = "light", out }) {
+export async function render({ deckFile, themeName, mode = "light", out, style }) {
   const deckDir = path.dirname(deckFile);
   const deck = await loadDeck(deckFile);
   const identity = await loadIdentity(deckDir);
-  const theme = await loadTheme(themeName ?? deck.theme ?? "warm-humanist", { mode });
+  const theme = await loadTheme(themeName ?? deck.theme ?? "warm-humanist", {
+    mode,
+    style: style ?? deck.style,
+  });
   const brand = await loadBrand(identity);
 
   if (brand.missing.length) {
@@ -121,6 +124,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--theme") args.themeName = argv[++i];
+    else if (a === "--style") args.style = argv[++i];
     else if (a === "--mode") args.mode = argv[++i];
     else if (a === "--out") args.out = argv[++i];
     else rest.push(a);
@@ -132,7 +136,7 @@ function parseArgs(argv) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = parseArgs(process.argv.slice(2));
   if (!args.deckFile) {
-    console.error("usage: node src/render.js <deck.yaml> [--theme name] [--mode light|dark] [--out file.pptx]");
+    console.error("usage: node src/render.js <deck.yaml> [--theme name] [--style name] [--mode light|dark] [--out file.pptx]");
     process.exit(2);
   }
   try {

@@ -1,0 +1,24 @@
+# Airy — a style, not a theme.
+#
+# The opposite pole from compact: generous whitespace, larger type, fewer words
+# per slide. Overrides any theme's tokens the same way compact does.
+
+name: airy
+label: Airy
+summary: Generous whitespace and larger type — fewer words per slide.
+
+tokens:
+  type:
+    heading: { size: 32, line: 1.2 }
+    subhead: { size: 16, line: 1.5 }
+    body: { size: 14, line: 1.6 }
+    caption: { size: 10, line: 1.4 }
+  grid:
+    margin: { top: 0.75, right: 0.85, bottom: 0.65, left: 0.85 }
+    gutter: 0.4
+  shape:
+    radius: { card: 0.3, pill: 0.44 }
+    card_pad: 0.36
+
+voice:
+  density: sparse

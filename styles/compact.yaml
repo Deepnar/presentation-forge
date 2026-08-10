@@ -1,0 +1,27 @@
+# Compact — a style, not a theme.
+#
+# A style is a cross-cutting set of TOKEN OVERRIDES applied on top of any theme
+# (deep-merged over the theme's tokens) plus optional voice adjustments. A deck
+# can render as warm-humanist × compact, or swiss-international × compact, and
+# so on — theme owns the design language, style owns the density.
+
+name: compact
+label: Compact
+summary: Tighter grids and smaller type — more content per slide.
+
+tokens:
+  type:
+    heading: { size: 26, line: 1.12 }
+    subhead: { size: 13, line: 1.3 }
+    body: { size: 12, line: 1.35 }
+    caption: { size: 9, line: 1.2 }
+  grid:
+    margin: { top: 0.5, right: 0.6, bottom: 0.45, left: 0.6 }
+    gutter: 0.2
+    band: { eyebrow_y: 0.5, title_y: 1.1, body_y: 2.2 }
+  shape:
+    radius: { card: 0.16, pill: 0.32 }
+    card_pad: 0.24
+
+voice:
+  density: dense

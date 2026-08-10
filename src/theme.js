@@ -22,7 +22,34 @@ export async function listThemes() {
   return files.filter((f) => f.endsWith(".yaml") && !f.startsWith("_")).map((f) => f.replace(/\.yaml$/, ""));
 }
 
-export async function loadTheme(name, { mode = "light" } = {}) {
+export async function listStyles() {
+  const files = await readdir(path.join(ROOT, "styles"));
+  return files.filter((f) => f.endsWith(".yaml") && !f.startsWith("_")).map((f) => f.replace(/\.yaml$/, ""));
+}
+
+export async function loadStyle(name) {
+  let raw;
+  try {
+    raw = YAML.parse(await readFile(path.join(ROOT, "styles", `${name}.yaml`), "utf8"));
+  } catch {
+    const available = await listStyles();
+    throw new Error(`Unknown style "${name}". Available: ${available.join(", ")}`);
+  }
+  return { name: raw.name ?? name, label: raw.label ?? name, tokens: raw.tokens ?? {}, voice: raw.voice ?? {} };
+}
+
+/** Arrays replace, objects merge — a style must not drop a whole theme block. */
+function deepMerge(a, b) {
+  if (Array.isArray(b)) return b;
+  if (b && typeof b === "object" && a && typeof a === "object") {
+    const out = { ...a };
+    for (const [k, v] of Object.entries(b)) out[k] = deepMerge(a[k], v);
+    return out;
+  }
+  return b === undefined ? a : b;
+}
+
+export async function loadTheme(name, { mode = "light", style } = {}) {
   const file = path.join(ROOT, "themes", `${name}.yaml`);
   let raw;
   try {
@@ -32,6 +59,15 @@ export async function loadTheme(name, { mode = "light" } = {}) {
     throw new Error(`Unknown theme "${name}". Available: ${available.join(", ")}`);
   }
   const t = YAML.parse(raw);
+
+  // A style is a cross-cutting override: its tokens deep-merge over the theme's
+  // and its voice merges over the theme's, so any theme can be rendered in any
+  // style without a theme copy.
+  if (style) {
+    const s = await loadStyle(style);
+    t.tokens = deepMerge(t.tokens ?? {}, s.tokens);
+    t.voice = { ...(t.voice ?? {}), ...s.voice };
+  }
 
   if (!t?.tokens?.palette) throw new Error(`Theme "${name}" is missing tokens.palette`);
   if (!t?.tokens?.type) throw new Error(`Theme "${name}" is missing tokens.type`);
