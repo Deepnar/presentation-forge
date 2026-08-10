@@ -15,3 +15,15 @@ brand/fonts/
 
 .env
 .DS_Store
+
+# Institutional marks are trademarks — `npm run brand` generates neutral
+# placeholders when this directory is empty.
+brand/logos/
+!brand/logos/README.md
+
+# Real identity details. config/identity.example.yaml is the committed template.
+config/identity.yaml
+
+# Source institutional templates: these carry third-party names and roll
+# numbers, and are reference material rather than source.
+reference/

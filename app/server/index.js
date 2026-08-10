@@ -196,8 +196,15 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
 /* ---------------------------------------------------------------- identity */
 
 app.get("/api/identity", wrap(async (_req, res) => {
-  const identity = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8"));
-  ok(res, { identity });
+  // Falls back to the committed template: identity.yaml is gitignored because
+  // it holds real personal and institutional details.
+  let raw;
+  try {
+    raw = await readFile(path.join(CONFIG, "identity.yaml"), "utf8");
+  } catch {
+    raw = await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8");
+  }
+  ok(res, { identity: YAML.parse(raw) });
 }));
 
 app.put("/api/identity", wrap(async (req, res) => {

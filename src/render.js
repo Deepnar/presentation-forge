@@ -10,7 +10,15 @@ import { layouts, content } from "./layouts.js";
 import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrome.js";
 
 async function loadIdentity(deckDir) {
-  const base = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8"));
+  // identity.yaml carries real personal and institutional details and is
+  // gitignored, so a fresh clone falls back to the committed template.
+  let raw;
+  try {
+    raw = await readFile(path.join(CONFIG, "identity.yaml"), "utf8");
+  } catch {
+    raw = await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8");
+  }
+  const base = YAML.parse(raw);
   // Per-deck meta.yaml wins over the standing defaults, key by key.
   try {
     const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};

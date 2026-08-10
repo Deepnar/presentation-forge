@@ -1,0 +1,47 @@
+# TEMPLATE. Copy to config/identity.yaml and fill in — that file is gitignored
+# so personal and institutional details never reach the repository.
+#
+# Standing defaults for every deck and report. Everything here is overridable
+# per-deck in decks/<slug>/meta.yaml — nothing is hardcoded in the renderer.
+# Leave a field blank ("") and it is simply omitted from the output.
+
+institution:
+  name: "Example Institute of Technology"
+  short: "EIT"
+  department: "Department of Computer Engineering"
+  scheme: ""
+  autonomy: ""
+  university: ""
+
+academic:
+  year: ""
+  semester: ""
+  subject: ""            # e.g. "Computer Graphics" — usually set per deck
+  exam_type: "Innovative Examination (IE)"
+
+guide:
+  name: ""               # e.g. "Mr. Shushant Sawant"
+  designation: "Assistant Professor"
+
+# Team is an open list — 1 member or 10, add/remove freely.
+# `presenting: true` marks who appears in the deck's slide chrome.
+team:
+  label: ""              # e.g. "Group no. 2b [18-24]" — blank to omit
+  members:
+    - { name: "", roll: "", presenting: true }
+
+# Which brand marks the locked chrome layer applies. Paths are relative to the
+# project root and point at brand/generated/ — the normalised output of
+# `node tools/prep-brand.mjs`. Drop raw files (any format) into brand/logos/
+# named crest.*, banner.*, watermark.* and re-run that tool.
+# Missing files are warned about, not fatal.
+brand:
+  banner: "brand/generated/banner.png"        # wide dept strip — title slide + report header
+  crest: "brand/generated/crest.png"          # shield — top-right of content slides
+  crest_light: "brand/generated/crest-light.png"  # reversed mark, used on dark backgrounds
+  watermark: "brand/generated/watermark.png"  # faded crest — report body background
+
+chrome:
+  slide_numbers: true
+  presenter_on_slides: true
+  crest_on_content_slides: true
