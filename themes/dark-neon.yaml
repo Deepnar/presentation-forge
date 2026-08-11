@@ -1,0 +1,75 @@
+# Dark Neon — electric colour on near-black.
+# Cyan and magenta neon on a dark slate, with soft glow shadows around the
+# cards — an outer shadow in the accent colour reads as real glow, all native.
+
+name: dark-neon
+label: Dark Neon
+summary: Electric cyan and magenta on near-black with soft neon glow.
+
+tokens:
+  palette:
+    bg: "#0B0E14"          # near-black slate
+    surface: "#151B26"
+    ink: "#E8ECF4"
+    ink_muted: "#8A93A6"
+    accent: "#00E5FF"      # cyan
+    accent_alt: "#FF2E88"  # magenta
+    rule: "#FFFFFF1A"
+    on_accent: "#0B0E14"
+
+  surfaces:
+    title:   { bg: "#070A0F", ink: "#FFFFFF", muted: "#9AA5B8", accent: "#00E5FF" }
+    section: { bg: "#160B2E", ink: "#FFFFFF", muted: "#B9A6E8", accent: "#FF2E88" }
+
+  dark:
+    bg: "#05070B"
+    surface: "#10141D"
+    ink: "#E8ECF4"
+    ink_muted: "#7E879A"
+    accent: "#00E5FF"
+    accent_alt: "#FF2E88"
+    rule: "#FFFFFF14"
+    on_accent: "#05070B"
+
+  type:
+    display:  { family: "Space Grotesk", weight: 700, size: 40, line: 1.08, tracking: -0.6 }
+    heading:  { family: "Space Grotesk", weight: 700, size: 30, line: 1.12, tracking: -0.4 }
+    subhead:  { family: Inter,           weight: 500, size: 15, line: 1.4,  tracking: 0.1 }
+    body:     { family: Inter,           weight: 400, size: 13, line: 1.55, tracking: 0.1 }
+    caption:  { family: Inter,           weight: 500, size: 10, line: 1.35, tracking: 0.3 }
+    eyebrow:  { family: "Space Grotesk", weight: 700, size: 10, line: 1.2,  tracking: 1.8, transform: upper }
+    stat:     { family: "Space Grotesk", weight: 700, size: 54, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.16, pill: 0.40, chip: 0.10 }
+    border: { width: 1, color: "#FFFFFF2B" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 22, offset: 0, angle: 90, color: "00E5FF", opacity: 0.22 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: electric, futuristic, confident, night-mode
+  density: medium
+  prefers:
+    - bold declarative claims
+    - tech-forward, precise language
+    - short punchy support lines
+  avoid:
+    - soft corporate hedging
+    - pastel or low-energy language
+    - long dense paragraphs
+  headline_style: >
+    Sharp and current. "Rendering in the Dark" over "An Introduction to Ray
+    Tracing". Sound like a product, not a textbook.
+  body_style: >
+    Short, technical, precise sentences.
