@@ -8,6 +8,7 @@
   --color-sunken: #0a0a0b;
   --color-panel: #151517;
   --color-raised: #1c1c1f;
+  --color-prompt: #1d1d20;
   --color-hover: #232327;
 
   /* Hairlines. Two weights is enough; more reads as noise. */
@@ -28,6 +29,7 @@
   --color-danger: #d9584e;
 
   --radius-card: 0.75rem;
+  --radius-lg: 1.125rem;
 
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-serif: Merriweather, ui-serif, Georgia, serif;
@@ -83,6 +85,33 @@ body {
   transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.045), transparent);
   animation: shimmer 1.4s infinite;
+}
+
+/* Capsule pill — mode toggles, suggestion chips, model chip. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* Thumbnail fallback tile — shown when a deck has no rendered preview on disk.
+   Tonal step, no gradient, centred initial; never a broken <img>. */
+.thumb-fallback {
+  display: grid;
+  place-items: center;
+  background: var(--color-raised);
+  color: var(--color-fg-faint);
+}
+
+/* Horizontal scroller with a hidden scrollbar — the home carousel. */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes fade-in {
