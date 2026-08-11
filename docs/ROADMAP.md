@@ -120,28 +120,61 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 > browser. With 480px thumbs at ~28 kB, `loading="lazy"` is worse than useless:
 > it adds an intersection-observer dependency to save nothing.
 
-### [~] Deck detail view
-Grid, theme switcher, render, download, zoom modal.
+### [x] Deck detail view
+Grid, theme switcher, render, download, zoom modal, inline editing.
 
 - [x] Slide grid with type labels
 - [x] Theme switcher + re-render
 - [x] `.pptx` download
 - [x] Lightbox with keyboard navigation (← → Home End Esc) + filmstrip
-- [ ] Inline field editing (headline, bullets, card text)
-- [ ] Per-slide presenter assignment
-- [ ] Slide reorder / delete / duplicate
+- [x] Inline field editing (headline, bullets, card text)
+- [x] Per-slide presenter assignment
+- [x] Slide reorder / delete / duplicate
 
 **Inline editing** is deliberately separate from chat. Clicking a headline and
-typing must not wake a 26B model — that path writes `deck.yaml` directly and
-re-renders. `POST /api/validate` already exists so the editor can show schema
-errors while typing. Chat is for structural change only.
+typing must not wake a model — `app/web/src/components/SlideEditor.jsx` writes
+`deck.yaml` directly (through the existing validated PUT) and re-renders. A
+per-type descriptor map drives the form; every keystroke re-validates the draft
+through `POST /api/validate`, so schema errors surface while typing and a bad
+save is blocked. Title slides edit `deck.title`/`subtitle` because that is what
+the title layout draws. Chart series data is the one deliberate gap — the
+editor says so and points at chat.
 
-**Presenter assignment** is a free per-slide field, not a computed split. The
-real distribution is unpredictable — one person may take one slide or five — so
-the model proposes an even split as a starting point and the UI allows
-assigning any selection of slides to any member. Reaches the chrome layer via
-`identity.team`; `applyContentChrome` currently renders whoever is marked
-`presenting`, so this needs a per-slide override to take precedence.
+**Presenter assignment** is a free per-slide `presenter` string, not a computed
+split. The real distribution is unpredictable — one person may take one slide
+or five — so the field is free text (a datalist suggests team members) and the
+UI allows assigning any slide to anyone. The chrome footer reads
+`slide.presenter` ahead of whoever is marked `presenting` and the team label.
+Being a schema field means the model's ops/catalog know it too, so chat can
+propose an even split as a starting point.
+
+**Reorder / delete / duplicate** are pure immutable ops
+(`app/web/src/lib/slides.js`, unit-tested): move, deep-copy duplicate, delete
+that refuses to empty a deck. Each persists deck.yaml immediately and re-renders
+on a short debounce so rapid operations coalesce.
+
+> **Learned.** The slides are raster images, so "click-to-edit" cannot mean
+> contenteditable on the slide — the editor is a form modal. The per-type field
+> map has to mirror deck.schema.json's own maxLengths or the form can offer a
+> field the schema rejects; the schema is the single source both derive from.
+>
+> The grid must iterate the deck, never the raster previews: right after a
+> delete or duplicate the PNG set lags the content by one render, so a fresh
+> duplicate would show a stale thumbnail (or a gap). A skeleton fallback for a
+> missing frame keeps the count correct before the re-render lands.
+>
+> A slide card was a single `<button>`; adding interactive children to a button
+> is invalid HTML. The card had to become an image-button plus a controls row,
+> which is why the whole grid restructure landed with the editing feature.
+>
+> Empty optional fields are stripped on save, so clearing a field really removes
+> it and required fields then fail validation with the reason visible — the
+> alternative (save empty strings) renders blank headlines that only the vision
+> critic would ever see.
+>
+> The presenter override is content, not layout: a free string on the slide, and
+> the chrome reads it first. Putting it in the schema rather than a UI-only
+> overlay is what lets chat propose assignments too.
 
 > **Learned.** Relative navigation must use the functional state updater.
 > Reading the current index from the effect's closure loses keystrokes —

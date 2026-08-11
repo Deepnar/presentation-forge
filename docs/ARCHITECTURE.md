@@ -65,6 +65,11 @@ The crest variant is chosen by the luminance of the background the layout
 painted — not by the palette — because section dividers and title slides
 deliberately break out of the standard page.
 
+The content-slide footer's presenter is per-slide: `slide.presenter` (free text,
+declared in the schema so the model's ops know it too) overrides whoever the
+identity marks `presenting`, which only falls back to the team label. This is
+content, not layout — the chrome reads the string, it never decides it.
+
 ### theme — free
 `themes/*.yaml`, two disjoint halves:
 
@@ -204,6 +209,14 @@ applied changes, the diff, token stats and the re-rendered previews. A dropped
 socket aborts the turn via the shared `AbortController`, exactly like
 generation. The `forge chat <slug> "<instruction>"` CLI command is the same
 orchestrator headless.
+
+**Inline editing is a separate, model-free surface.** `SlideEditor.jsx` edits
+one slide's content through the same validated `PUT /api/decks/:slug` and
+re-renders; it shares no code with the turn path. The two layers are
+deliberate: chat is structural, inline is precision. Every mutation the deck
+detail performs — edit, presenter assign, reorder, delete, duplicate — goes
+through the immutable ops in `app/web/src/lib/slides.js`, persists deck.yaml
+immediately, and re-renders on a short debounce.
 
 ## Data locations
 
