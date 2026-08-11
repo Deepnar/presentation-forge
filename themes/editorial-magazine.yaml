@@ -1,0 +1,76 @@
+# Editorial Magazine — a long-form publication look.
+# Serif display headlines (Playfair Display), paper-white pages, a deep red
+# accent and letter-spaced eyebrows — like a print magazine's feature section.
+
+name: editorial-magazine
+label: Editorial Magazine
+summary: Print-magazine typography — serif headlines, paper white, deep red.
+
+tokens:
+  palette:
+    bg: "#FAF7F0"          # warm paper
+    surface: "#FFFFFF"
+    ink: "#1B1B1B"
+    ink_muted: "#6E6A61"
+    accent: "#B0322A"      # deep red
+    accent_alt: "#2F4B6E"  # navy
+    rule: "#E4DED2"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1B1B1B", ink: "#FFFFFF", muted: "#C9C4B8", accent: "#B0322A" }
+    section: { bg: "#B0322A", ink: "#FFFFFF", muted: "#F2D4D1" }
+
+  dark:
+    bg: "#201F1D"
+    surface: "#2B2A27"
+    ink: "#F0EDE6"
+    ink_muted: "#ABA79C"
+    accent: "#D04A41"
+    accent_alt: "#6E8BB4"
+    rule: "#FFFFFF26"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: "Playfair Display", weight: 700, size: 42, line: 1.1,  tracking: -0.8 }
+    heading:  { family: "Playfair Display", weight: 700, size: 31, line: 1.15, tracking: -0.4 }
+    subhead:  { family: Inter,              weight: 400, size: 15, line: 1.45, tracking: 0 }
+    body:     { family: Inter,              weight: 400, size: 13, line: 1.6,  tracking: 0 }
+    caption:  { family: Inter,              weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,              weight: 600, size: 10, line: 1.2,  tracking: 2.2, transform: upper }
+    stat:     { family: "Playfair Display", weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.06, pill: 0.40, chip: 0.06 }
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 14, offset: 3, angle: 90, color: "1B1B1B", opacity: 0.07 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: considered, authoritative, literary, unhurried
+  density: medium
+  prefers:
+    - a strong lede and a clear takeaway
+    - pull-quotes and standfirsts
+    - stat trios with a narrative
+  avoid:
+    - bullet spam and jargon
+    - loud saturated colour beyond the red accent
+    - bullet-point soup without a through-line
+  headline_style: >
+    Write like a magazine cover line: specific, evocative, confident. "The
+    Quiet Price of Real-Time Light" over "Introduction to Ray Tracing".
+  body_style: >
+    Full sentences with a point of view. Every paragraph earns its place; cut
+    anything that merely fills space.
