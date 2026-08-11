@@ -99,6 +99,11 @@
           "maxLength": 220,
           "description": "One-line deck under the headline"
         },
+        "presenter": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Who presents this slide. Free text; the chrome footer shows it instead of the deck's presenting member."
+        },
         "notes": {
           "type": "string",
           "description": "Speaker notes; never rendered on the slide"

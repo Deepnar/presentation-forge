@@ -90,8 +90,13 @@ export function applyTitleChrome(slide, { brand }) {
 /**
  * Content slides: crest top-right, plus the footer line.
  * `reserved` tells the theme how much top-right space to keep clear.
+ *
+ * The footer's presenter is per-slide when the slide says so: a slide with a
+ * `presenter` field overrides whoever the deck marks as presenting (and the
+ * team label). Assignment is free text — one person may take one slide or five —
+ * so it cannot be computed from a fixed split.
  */
-export function applyContentChrome(slide, { brand, theme, identity, index, total, bg }) {
+export function applyContentChrome(slide, { brand, theme, identity, data, index, total, bg }) {
   const cfg = identity.chrome ?? {};
   const mark = crestFor(brand, bg ?? theme.palette.bg);
 
@@ -116,9 +121,10 @@ export function applyContentChrome(slide, { brand, theme, identity, index, total
 
   if (cfg.presenter_on_slides !== false) {
     const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
-    const who = presenting.length
+    const fallback = presenting.length
       ? presenting.map((m) => m.name).join(" · ")
       : identity.team?.label || "";
+    const who = data?.presenter?.trim() || fallback;
     if (who) {
       slide.addText(who, {
         x: 0.7, y: FOOT.y, w: 6.5, h: FOOT.h,

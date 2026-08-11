@@ -103,7 +103,7 @@ export async function render({ deckFile, themeName, mode = "light", out, style }
     if (isTitle) {
       applyTitleChrome(slide, { brand });
     } else {
-      applyContentChrome(slide, { brand, theme, identity, index: i + 1, total, bg });
+      applyContentChrome(slide, { brand, theme, identity, data, index: i + 1, total, bg });
     }
 
     if (data.notes) slide.addNotes(data.notes);
