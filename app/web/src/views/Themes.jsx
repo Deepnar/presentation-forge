@@ -125,9 +125,9 @@ function ThemeCard({ theme }) {
 
         <div className="mt-3.5 flex items-center justify-between gap-3">
           <div className="flex gap-1">
-            {swatches.map((c) => (
+            {swatches.map((c, i) => (
               <div
-                key={c}
+                key={`${c}-${i}`}
                 title={c}
                 className="h-4 w-4 rounded-[3px] ring-1 ring-inset ring-white/10"
                 style={{ background: c }}
