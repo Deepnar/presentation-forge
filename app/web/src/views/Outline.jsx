@@ -209,13 +209,34 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
               placeholder="What this slide must convey…"
               className="w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm leading-relaxed text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
             />
+            {s.type === "freeform" && (
+              <div className="mt-2 rounded-card border border-amber/30 bg-amber/5 px-3 py-2 text-[11.5px] leading-relaxed text-amber">
+                <span className="font-semibold">Freeform slide.</span> The model writes this slide as raw
+                HTML and it rasterises to an image — nobody can fix a typo or edit the text in PowerPoint
+                afterwards. Right for a hero moment, wrong for graded text.
+              </div>
+            )}
           </Panel>
         ))}
       </div>
 
-      <div className="mt-3">
+      <div className="mt-3 flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={() => setSlides((x) => [...x, { type: "bullets", section: null, purpose: "" }])}>
           + Add slide
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (window.confirm(
+              "Convert the WHOLE deck to freeform? Every slide becomes rasterised HTML — no text will be " +
+              "editable in PowerPoint afterwards. Maximum visual impact, editability deliberately traded away. Continue?",
+            )) {
+              setSlides((x) => x.map((sl) => ({ ...sl, type: "freeform" })));
+            }
+          }}
+        >
+          Whole deck → freeform
         </Button>
       </div>
 

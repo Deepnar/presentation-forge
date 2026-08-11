@@ -118,6 +118,9 @@ const TYPE_FIELDS = {
     { key: "aside", label: "Aside", kind: "list", item: "Aside", maxLength: 120, maxItems: 3 },
   ],
   title: [],
+  freeform: [
+    { key: "html", label: "HTML", kind: "code", maxLength: 24000 },
+  ],
 };
 
 export default function SlideEditor({ deck, index, members, onSave, onClose }) {
@@ -226,6 +229,14 @@ export default function SlideEditor({ deck, index, members, onSave, onClose }) {
               </p>
             )}
 
+            {slide.type === "freeform" && (
+              <div className="rounded-card border border-amber/30 bg-amber/5 px-3 py-2.5 text-[11.5px] leading-relaxed text-amber">
+                <span className="font-semibold">Rasterises.</span> This slide becomes an image — a typo or a
+                wrong word can't be fixed in PowerPoint afterwards. Text must be real HTML, and scripts or
+                network requests won't run.
+              </div>
+            )}
+
             <div className="border-t border-line pt-4">
               <Field label="Presenter" hint="Who presents this slide — free text. Leave empty for the deck's presenting member.">
                 <input className={inputCls} list="forge-presenter-options" value={slideDraft.presenter ?? ""}
@@ -294,6 +305,14 @@ function FieldEditor({ field, value, onChange }) {
       return (
         <Field label={field.label} maxLength={field.maxLength}>
           <textarea className={`${inputCls} resize-y`} rows={3} value={value ?? ""} maxLength={field.maxLength}
+            onChange={(e) => onChange(e.target.value)} />
+        </Field>
+      );
+    case "code":
+      return (
+        <Field label={field.label} maxLength={field.maxLength} hint="Full-bleed 16:9 (1280×720). Inline CSS only; scripts and network are blocked by the renderer's sandbox. Leave the top-right and bottom ~50px clear for the crest and footer.">
+          <textarea className={`${inputCls} resize-y font-mono text-[12px] leading-relaxed`} rows={14}
+            value={value ?? ""} maxLength={field.maxLength}
             onChange={(e) => onChange(e.target.value)} />
         </Field>
       );
