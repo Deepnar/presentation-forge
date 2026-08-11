@@ -336,15 +336,64 @@ unreadable contrast is not done. Each needs its `surfaces.title` and
 `surfaces.section` set explicitly; the derived fallback is correct for
 warm-humanist and wrong for anything inverted.
 
-### [ ] Plate-dependent themes (4)
+### [x] Plate-dependent themes (4)
 `glassmorphism` · `claymorphism` · `neumorphism` · `aurora-mesh`
 
-**Unblocked** — the HTML plate renderer (§3) has landed: these themes now
-declare `tokens.plate.enabled: true` + `plate.html` (and per-surface variants)
-interpolating their own tokens, exactly the mechanism the primitive verified.
-Native shapes still give a flat approximation that misses the entire point, so
-they render as plates, not as native. The next task is to build the four themes
-themselves on the verified seam.
+Each is a YAML theme with `tokens.plate.enabled: true` plus a `plate.html`
+template (and `plate.surfaces.title/section` variants) that interpolates the
+theme's own tokens as `{{tokens.palette.accent}}` — no hardcoded hex in any
+template. All four use real CSS effects on the plate:
+
+- **glassmorphism** — translucent colour blobs blurred behind a frosted
+  content-zone panel (`backdrop-filter: blur`); native cards are translucent
+  white via `shape.card_fill`, a second glass layer.
+- **aurora-mesh** — multi-stop radial mesh built from accent/alt/ink/surface
+  tones with a soft white halo behind the content area.
+- **claymorphism** — a rounded translucent clay board (inset highlight + soft
+  shadow) behind the content, warm clay native cards.
+- **neumorphism** — one embossed content-zone field whose dual shadows (light
+  top-left, dark bottom-right) are a CSS box-shadow OOXML cannot express;
+  native cards are near-invisible so the field's shadows are the surface.
+
+The two renderer affordances this needed were small and shared: `card()`
+honours a theme `shape.card_fill` transparency (so native panels can frost or
+vanish), and plate templates receive `{{box.*}}` — the content region in CSS
+pixels — so a template can panel exactly the area the native content draws.
+
+> **Learned.** Five things were not obvious beforehand.
+>
+> The content box is the seam: `content()` returns `bottom` and `y` but not
+> `h`, so `{{box.h}}` interpolated to `NaN` and every content-zone panel —
+> frost, board, embossed field, halo — rendered invisible while the mesh
+> background still looked right. The first four themes were "verified" with
+> their central effect silently missing; a plate template can only trust a
+> value it can prove is real.
+>
+> fitScale's height budget lets a title wrap to two lines inside the box and
+> then breaks a long word mid-word at six narrow flow steps. Forcing one line
+> needs a width-based shrink (measured width, pessimistic safety factor), not a
+> height probe.
+>
+> Neumorphism's dual shadows must be proportionate to the field (~1146px) and
+> use the ink tone for the dark side: ink_muted is too close to the page gray
+> and the whole emboss vanishes at preview resolution. Verified by pixel
+> sampling the plate PNG, not just by eye.
+>
+> A relative cacheDir produces a malformed `file://.plate-cache/…` URL (the
+> directory becomes the URL host) and Chrome screenshots a blank dark page.
+> Resolve the cache dir absolutely before building the URL.
+>
+> `surfaces.title` and `surfaces.section` really do need setting explicitly —
+> the derived fallback inverts ink/bg for dark and colourful heroes, exactly
+> the trap the roadmap warned about. Each theme's title plate, text tokens and
+> section surface were designed together.
+
+Verified per theme by rendering `decks/raytracing-ai` through the full
+Chrome → pptx → LibreOffice → PNG pipeline and vision-checking with
+`mimo-v2.5`: frosted panels and blur (glass), the multi-stop mesh (aurora), the
+clay board with inset highlight (clay), and the embossed field with visible
+dual shadows (neumorphism) all rendered with native text readable on every
+slide.
 
 ### [x] HTML plate renderer
 Headless Chrome renders decorative CSS backgrounds to PNG at build time; the

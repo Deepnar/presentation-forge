@@ -82,6 +82,19 @@ content, not layout — the chrome reads the string, it never decides it.
 The disjointness is load-bearing. If the model can see hex values it starts
 inventing them; if the renderer can see adjectives it starts guessing.
 
+A theme is either **native** (pptxgenjs shapes and text only) or **plated**: it
+declares `tokens.plate.enabled: true` plus a `plate.html` template (and optional
+`plate.surfaces.title/section/content` variants) that interpolates its own
+tokens as `{{tokens.palette.bg}}` — the renderer rasterises the template
+through headless Chrome and uses it as the slide background, so a theme can
+express effects OOXML cannot (backdrop blur, dual shadows, mesh gradients) while
+all text stays native. The four plate themes (glassmorphism, claymorphism,
+neumorphism, aurora-mesh) are the gallery's reference implementations of the
+contract. Plate templates also receive `{{box.*}}` — the content region in CSS
+pixels — so a theme can panel exactly the area the native content draws, and
+native panels can be made translucent through `shape.card_fill` so they layer
+over the plate instead of covering it.
+
 **Styles layer over themes.** `styles/*.yaml` are cross-cutting token
 overrides — deep-merged over a theme's tokens at load time, with voice merged
 the same way — so a deck renders as *theme × style* without theme copies. A
