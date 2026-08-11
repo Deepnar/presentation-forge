@@ -136,6 +136,17 @@ and stay there. Enumerate the key space even when values stay polymorphic.
 six-slide outline consumed 8192 tokens this way. Bound every collection and put
 `maxLength` on every string.
 
+**Never put `maxLength: 2000` (or more) on a string item — Ollama's grammar
+dies there silently.** `maxLength: 1999` works; `2000` is the exact breaking
+point, and the failure looks nothing like a grammar error: Ollama simply stops
+enforcing the grammar and the model free-writes its preferred shape (a coder
+model reliably emits `{"section": …}` instead of the constrained keys), which
+then fails JSON parsing or your own validation. No error is surfaced anywhere.
+The deck schema's own fields cap at 320, which is why the deck writer never hit
+it; the first report generator capped full-depth paragraphs at 2000 and every
+section "failed" until the cap dropped to 1500. Guard with a test that walks
+every generated schema asserting no `maxLength >= 2000`.
+
 **Inline every `$ref`, at any depth.** Ollama has no document to resolve
 against; one surviving `#/definitions/…` — including inside `items` — fails the
 whole request.
