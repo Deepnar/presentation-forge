@@ -1,0 +1,111 @@
+# Neumorphism — soft UI with dual shadows on same-colour surfaces.
+#
+# The defining technique — a light top-left and a dark bottom-right shadow on a
+# surface the same colour as the page — is a CSS box-shadow that OOXML cannot
+# express, so the plate draws one soft embossed field exactly behind the content
+# area. Native cards are rendered nearly invisible (tokens.shape.card_fill at
+# high transparency) so the field's dual shadows are the surface; text stays
+# native.
+
+name: neumorphism
+label: Neumorphism
+summary: Soft UI with dual shadows and same-colour surfaces — calm, minimal.
+
+tokens:
+  palette:
+    bg: "#E3E7EE"          # neutral gray
+    surface: "#F3F6FA"     # highlight tone (lighter than bg, for the light shadow)
+    ink: "#3B4453"         # slate
+    ink_muted: "#7E8898"   # doubles as the dark shadow tone
+    accent: "#5A7DF0"      # soft blue
+    accent_alt: "#9FAED8"
+    rule: "#D4DAE4"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#3B4453", ink: "#FFFFFF", muted: "#B7C0CF", accent: "#5A7DF0" }
+    section: { bg: "#5A7DF0", ink: "#FFFFFF", muted: "#DAE2FB" }
+
+  dark:
+    bg: "#232830"
+    surface: "#2B313B"
+    ink: "#E3E7EE"
+    ink_muted: "#98A2B2"
+    accent: "#7E9BFF"
+    accent_alt: "#8FA0C8"
+    rule: "#FFFFFF1A"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: Manrope, weight: 700, size: 38, line: 1.1,  tracking: -0.5 }
+    heading:  { family: Manrope, weight: 700, size: 29, line: 1.15, tracking: -0.3 }
+    subhead:  { family: Inter,   weight: 500, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,   weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,   weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
+    stat:     { family: Manrope, weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.32, pill: 0.40, chip: 0.12 }
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+    # Cards vanish into the plate's embossed field — the field carries the
+    # shadows, native shapes must not paint over them.
+    card_fill: { color: "#E3E7EE", transparency: 88 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .bg{position:absolute;inset:0;background:
+          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .field{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+          border-radius:48px;background:{{tokens.palette.bg}};
+          box-shadow:
+            -40px -40px 72px {{tokens.palette.surface}}e6,
+            40px 40px 72px {{tokens.palette.ink}}59,
+            inset -20px -20px 40px {{tokens.palette.ink}}40,
+            inset 20px 20px 40px {{tokens.palette.surface}}e6;}
+      </style>
+      <div class="bg"></div>
+      <div class="field"></div>
+    surfaces:
+      title: |
+        <style>
+          .hero{position:absolute;inset:0;background:
+            radial-gradient(70% 60% at 18% 18%, {{tokens.palette.accent}}77 0%, transparent 55%),
+            radial-gradient(60% 50% at 84% 26%, {{tokens.palette.accent_alt}}66 0%, transparent 55%),
+            linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+        </style>
+        <div class="hero"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            radial-gradient(70% 60% at 18% 20%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
+            radial-gradient(60% 50% at 84% 80%, {{tokens.palette.accent_alt}}77 0%, transparent 55%),
+            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+        </style>
+        <div class="sec"></div>
+
+voice:
+  feel: calm, minimal, quiet, software that recedes
+  density: low
+  prefers:
+    - generous whitespace
+    - one idea per slide
+    - soft, understated emphasis
+  avoid:
+    - loud gradients or saturated colour
+    - dense bullet walls
+    - anything that shouts
+  headline_style: >
+    Short, calm, confident. "Soft Interfaces" over "An Introduction to Soft
+    Interfaces". Fewer words than you think you need.
+  body_style: >
+    Full sentences, quiet tone. Give the surface room to breathe.
