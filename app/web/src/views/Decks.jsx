@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
+import SlideEditor from "../components/SlideEditor.jsx";
+import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import NewDeck from "./NewDeck.jsx";
 import Outline from "./Outline.jsx";
 
@@ -128,8 +130,12 @@ function DeckDetail({ slug, onBack, refreshToken }) {
   const [theme, setTheme] = useState("");
   const [style, setStyle] = useState("");
   const [busy, setBusy] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [problems, setProblems] = useState([]);
   const [zoom, setZoom] = useState(null);
+  const [editing, setEditing] = useState(null); // slide index in the editor
+  const [identity, setIdentity] = useState(null);
+  const renderTimer = useRef(null);
 
   useEffect(() => {
     // refreshToken bumps after a chat turn, so a deck edited in the right rail
@@ -146,25 +152,53 @@ function DeckDetail({ slug, onBack, refreshToken }) {
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
+    // Team members for the presenter picker; the deck's own meta snapshot wins.
+    api.identity().then((r) => setIdentity(r.identity ?? {})).catch(() => {});
   }, [slug, refreshToken]);
 
-  async function rerender() {
+  const members = (data?.meta?.team?.members?.length
+    ? data.meta.team.members
+    : identity?.team?.members) ?? [];
+
+  /**
+   * Persist a deck mutation directly to deck.yaml (never through a model), then
+   * re-render. The grid updates optimistically so the change is visible
+   * immediately; the rasterised preview catches up within a beat.
+   */
+  function commitDeck(nextDeck) {
+    setData((d) => (d ? { ...d, deck: nextDeck } : d));
+    api.saveDeck(slug, nextDeck, data?.meta)
+      .then(() => {
+        clearTimeout(renderTimer.current);
+        setSyncing(true);
+        renderTimer.current = setTimeout(runRender, 450);
+      })
+      .catch((err) => setProblems([err.message, ...(err.errors ?? [])]));
+  }
+
+  async function runRender() {
     setBusy(true);
-    setProblems([]);
     try {
       const r = await api.renderDeck(slug, { theme: theme || undefined, style: style || undefined });
       const stamp = Date.now();
-      setData((d) => ({
+      setData((d) => (d ? {
         ...d,
         slides: r.slides.map((s) => `${s}?t=${stamp}`),
         thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
-      }));
+      } : d));
       setProblems(r.problems ?? []);
     } catch (err) {
       setProblems([err.message, ...(err.errors ?? [])]);
     } finally {
       setBusy(false);
+      setSyncing(false);
     }
+  }
+
+  function rerender() {
+    clearTimeout(renderTimer.current);
+    setSyncing(true);
+    runRender();
   }
 
   if (!data) {
@@ -178,7 +212,23 @@ function DeckDetail({ slug, onBack, refreshToken }) {
     );
   }
 
-  const types = data.deck.slides.map((s) => s.type);
+  const deck = data.deck;
+  const slides = deck.slides;
+  const types = slides.map((s) => s.type);
+
+  function onMove(i, dir) {
+    const next = moveSlide(slides, i, dir);
+    if (next !== slides) commitDeck({ ...deck, slides: next });
+  }
+  function onDuplicate(i) {
+    commitDeck({ ...deck, slides: duplicateSlide(slides, i) });
+  }
+  function onDelete(i) {
+    commitDeck({ ...deck, slides: deleteSlide(slides, i) });
+  }
+  function onPresenter(i, presenter) {
+    commitDeck({ ...deck, slides: setPresenter(slides, i, presenter) });
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-9">
@@ -195,15 +245,20 @@ function DeckDetail({ slug, onBack, refreshToken }) {
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
           <h1 className="text-[1.7rem] font-semibold leading-tight tracking-tight">
-            {data.deck.title}
+            {deck.title}
           </h1>
           <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] text-fg-muted">
-            <span className="tabular-nums">{data.deck.slides.length} slides</span>
-            {data.deck.sections?.length > 0 && (
+            <span className="tabular-nums">{slides.length} slides</span>
+            {deck.sections?.length > 0 && (
               <>
                 <span className="text-line-strong">·</span>
-                <span className="tabular-nums">{data.deck.sections.length} sections</span>
+                <span className="tabular-nums">{deck.sections.length} sections</span>
               </>
+            )}
+            {syncing && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-fg-faint">
+                <Spinner /> rendering…
+              </span>
             )}
           </p>
         </div>
@@ -280,32 +335,64 @@ function DeckDetail({ slug, onBack, refreshToken }) {
         </div>
       ) : (
         <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {data.slides.map((src, i) => (
-            <button
-              key={src}
-              onClick={() => setZoom(i)}
-              className="group text-left"
-            >
-              <div className="slide-frame overflow-hidden rounded-lg ring-accent transition group-hover:ring-2">
-                {/* 480px thumb in the grid; the lightbox loads the full plate.
-                    No lazy-loading — at ~28 kB each, fetching the deck outright
-                    beats gating on intersection observers. */}
-                <img
-                  src={data.thumbs?.[i] ?? src}
-                  alt={`Slide ${i + 1}`}
-                  className="block w-full"
-                />
+          {slides.map((slide, i) => {
+            const src = data.slides[i];
+            return (
+              <div key={i} className="rounded-card border border-line bg-panel p-2">
+                <button
+                  onClick={() => setZoom(i)}
+                  className="block w-full text-left"
+                  title="View full size"
+                >
+                  <div className="slide-frame overflow-hidden rounded-lg ring-accent transition group-hover:ring-2">
+                    {/* Iterate over the deck, not the previews: right after a
+                        delete/duplicate the rasterised set lags the content by
+                        a beat, so a missing frame is a skeleton, not a gap.
+                        480px thumbs in the grid; the lightbox loads the full
+                        plate. No lazy-loading — at ~28 kB each, fetching the
+                        deck outright beats gating on observers. */}
+                    {src ? (
+                      <img
+                        src={data.thumbs?.[i] ?? src}
+                        alt={`Slide ${i + 1}`}
+                        className="block w-full"
+                      />
+                    ) : (
+                      <div className="skeleton aspect-video" />
+                    )}
+                  </div>
+                </button>
+
+                <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+                  <span className="font-mono tabular-nums text-fg-faint">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="truncate text-fg-faint">{slide?.type}</span>
+                  <select
+                    value={slide?.presenter ?? ""}
+                    onChange={(e) => onPresenter(i, e.target.value)}
+                    title="Who presents this slide"
+                    className="ml-auto max-w-[7rem] appearance-none rounded border border-line bg-sunken px-1.5 py-0.5 text-[10.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+                  >
+                    <option value="">auto</option>
+                    {members.map((m) => <option key={m.name} value={m.name}>{m.name}</option>)}
+                  </select>
+                </div>
+
+                <div className="mt-1 flex items-center justify-between">
+                  <div className="flex items-center gap-0.5">
+                    <CardBtn onClick={() => setEditing(i)} title="Edit content"><EditIcon /></CardBtn>
+                    <CardBtn onClick={() => onMove(i, -1)} disabled={i === 0} title="Move left"><UpIcon /></CardBtn>
+                    <CardBtn onClick={() => onMove(i, 1)} disabled={i === slides.length - 1} title="Move right"><DownIcon /></CardBtn>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    <CardBtn onClick={() => onDuplicate(i)} title="Duplicate"><CopyIcon /></CardBtn>
+                    <CardBtn onClick={() => onDelete(i)} disabled={slides.length <= 1} title="Delete"><TrashIcon /></CardBtn>
+                  </div>
+                </div>
               </div>
-              <div className="mt-2 flex items-center gap-2 text-[11px]">
-                <span className="font-mono tabular-nums text-fg-faint">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="truncate text-fg-faint transition group-hover:text-fg-muted">
-                  {types[i]}
-                </span>
-              </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -319,6 +406,64 @@ function DeckDetail({ slug, onBack, refreshToken }) {
           onClose={() => setZoom(null)}
         />
       )}
+
+      {editing !== null && (
+        <SlideEditor
+          deck={deck}
+          index={editing}
+          members={members}
+          onSave={(nextDeck) => {
+            commitDeck(nextDeck);
+            setEditing(null);
+          }}
+          onClose={() => setEditing(null)}
+        />
+      )}
     </div>
   );
 }
+
+function CardBtn({ children, ...props }) {
+  return (
+    <button
+      {...props}
+      className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg disabled:pointer-events-none disabled:opacity-30"
+    >
+      {children}
+    </button>
+  );
+}
+
+const icon = {
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.8,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
+const EditIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+  </svg>
+);
+const UpIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <path d="m6 15 6-6 6 6" />
+  </svg>
+);
+const DownIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
+const CopyIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <rect x="9" y="9" width="12" height="12" rx="2.5" />
+    <path d="M5 15H4.5A2.5 2.5 0 0 1 2 12.5v-8A2.5 2.5 0 0 1 4.5 2h8A2.5 2.5 0 0 1 15 4.5V5" />
+  </svg>
+);
+const TrashIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <path d="M3 6h18M8 6V4h8v2m1 0-1 14H8L7 6M10 11v6M14 11v6" />
+  </svg>
+);
