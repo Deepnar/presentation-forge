@@ -51,6 +51,7 @@ test("plateHtmlFor: slide html overrides the theme, surfaces pick variants", () 
   const t = {
     tokens: { palette: { bg: "#FFFFFF", accent: "#123456" } },
     plate: {
+      enabled: true,
       html: "<style>.b{background:{{tokens.palette.bg}}}</style><div class=b></div>",
       surfaces: { title: "TITLE {{tokens.palette.accent}}" },
     },
@@ -63,7 +64,9 @@ test("plateHtmlFor: slide html overrides the theme, surfaces pick variants", () 
   const over = plateHtmlFor({ theme: t, surface: "content", slide: { html: "<b>free</b>" } });
   assert.equal(over.kind, "slide");
   assert.equal(over.html, "<b>free</b>");
-  assert.equal(plateHtmlFor({ theme: t, surface: "content", slide: {} }), null);
+  // A theme with no plate at all, or one explicitly disabled, yields no plate.
+  assert.equal(plateHtmlFor({ theme: {}, surface: "content", slide: {} }), null);
+  assert.equal(plateHtmlFor({ theme: { plate: { enabled: false } }, surface: "content", slide: {} }), null);
 });
 
 test("a content box without an h field still interpolates a real height", () => {
