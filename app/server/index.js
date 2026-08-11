@@ -116,12 +116,15 @@ async function deckMeta(slug) {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* optional */ }
   const s = await stat(deckFile);
+  let report = false;
+  try { await access(path.join(dir, "report.yaml")); report = true; } catch { /* none */ }
   return {
     slug,
     title: deck.title,
     theme: deck.theme,
     slides: deck.slides?.length ?? 0,
     updated: s.mtime,
+    report,
     meta,
   };
 }
@@ -240,7 +243,12 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
 
 app.get("/api/decks/:slug/report", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "report.yaml");
-  const report = YAML.parse(await readFile(file, "utf8"));
+  let report;
+  try {
+    report = YAML.parse(await readFile(file, "utf8"));
+  } catch {
+    return fail(res, 404, "no report.yaml saved for this deck");
+  }
   ok(res, { report });
 }));
 
@@ -456,6 +464,12 @@ app.put("/api/identity", wrap(async (req, res) => {
 }));
 
 /* -------------------------------------------------------------------- boot */
+
+/** README as plain text — the shell's docs modal renders it with no parser. */
+app.get("/api/docs", wrap(async (_req, res) => {
+  const text = await readFile(path.join(ROOT, "README.md"), "utf8");
+  res.type("text/plain").send(text);
+}));
 
 app.get("/api/health", (_req, res) => ok(res, { root: ROOT }));
 
