@@ -628,37 +628,80 @@ luminance. The sandbox is proven by the same test that guards the CSP.
 
 ## 5. Reports
 
-### [ ] DOCX renderer
+### [x] DOCX renderer
 Template-donor approach: strip the body from the institutional `.docx`, keep
 headers, footers, styles, watermark and media, inject generated content.
 
-> **Note, not yet learned.** Verified the donor is viable — `header1/2/3.xml`,
-> `footer1.xml`, `styles.xml` and all five media assets survive extraction.
-> Rebuilding a VML watermark by hand is the alternative and is much worse.
-
-The report is the **opposite** of the deck: rigid where the deck is free. No
-themes apply. The whole job is matching a template exactly, because that is what
-is graded. Reviewing it means reading sections, not looking at slides, so the UI
-is a different surface — not the deck grid with different data.
+> **Learned.** Six things were not obvious beforehand.
+>
+> The `docx` package is generation-only — it cannot open or parse an existing
+> `.docx` — so the donor approach needs real zip read/write. jszip (already a
+> transitive dependency of docx) became the tool, and `word/document.xml` is
+> rebuilt by string surgery: keep the donor's `<w:document>` opening tag and
+> the body-level `<w:sectPr>` verbatim, replace only what sits between
+> `<w:body>` and the sectPr. That sectPr carries the header/footer references
+> and the page geometry; losing it loses the chrome. Every other part survives
+> byte-for-byte, which is what makes the watermark and banner "free".
+>
+> A table cell whose `<w:pPr>` sits outside `<w:p>` is silently dropped by
+> LibreOffice — the whole Table of Contents rendered as a bare heading for an
+> entire pass. Cells must wrap `pPr` + run in `<w:p>`; the names/content tables
+> had it right, only the TOC generator did not.
+>
+> The static TOC needs real page numbers, so the render is two-pass: first
+> pass to a temp .docx, LibreOffice → PDF, pdftotext, find which page each
+> numbered heading lands on, then rebuild with those numbers. The pass document
+> must not live in the converter's outDir — `libreofficeToPdf` clears it.
+>
+> Page numbers are engine-dependent. The donor's own hand-typed TOC (4,4,4,5,
+> 7,8,9,9) is stale against LibreOffice's pagination of the same file; the
+> two-pass numbers are at least internally consistent with the render we ship.
+> A heading the pass cannot find shows an em dash and a problem entry, never a
+> wrong number.
+>
+> The cover is identity-driven (meta.yaml over config/identity.yaml), so a
+> blank guide/subject/team leaves it sparse — that is content, not a rendering
+> defect. With a full identity snapshot the cover is visually
+> indistinguishable from the donor's, chrome included (vision-checked).
+>
+> LibreOffice renders Word's VML watermark from the header parts correctly, so
+> "keep the donor's headers" genuinely beats rebuilding a watermark by hand.
 
 Note the donor `.docx` lives in gitignored `reference/`, so the renderer must
-fail with a clear message when it is absent rather than half-working.
+fail with a clear message when it is absent rather than half-working — it does:
+`resolveDonor` throws unless exactly one `.docx` is present in `reference/`.
 
 Fixed section order (non-negotiable, this is what is graded):
 Abstract → Acknowledgement → Introduction → Theoretical Background →
 Application → Future Scope → Conclusion → References.
+
+The renderer (`src/report.js`) emits exactly that order regardless of the
+order the content file lists them in, numbering the present sections 1..N.
+Sections with no content are skipped gracefully, never a bare heading.
+Content is schema-validated `decks/<slug>/report.yaml` (sibling of deck.yaml,
+so shared research feeds both). CLI `forge report <slug>`, API
+`GET/PUT /api/decks/:slug/report` and `POST .../report/render`.
 
 ### [ ] Shared research
 One brief → one research pass → both deck and report. This is the actual
 submission workflow: the same material is needed in both forms, and researching
 twice wastes minutes and risks the two artefacts disagreeing on facts.
 
-Implies research output is a first-class artefact (`decks/<slug>/research/`)
-rather than a transient value inside a generate call — build it that way from
-the start.
+The placement is settled by what now exists: research is already a first-class
+artefact at `decks/<slug>/research/` (notes.md + sources.json, written by
+`createDeck`), and the report renderer draws from `decks/<slug>/report.yaml` as
+deck.yaml's sibling — the same folder, so the same research pass feeds both.
+What remains is the orchestration: one brief generating the deck *and* the
+report content from the same research, with a human gate before either renders.
 
 ### [ ] Report content depth
 Reports go deep where decks stay terse. Same content tree, two density budgets:
 the deck gets a headline and three supporting sentences where the report gets
 four paragraphs and a table. Depth is a parameter on the generator, not a
 different generator.
+
+The renderer is already depth-agnostic: a section is any mix of paragraphs and
+an optional table (schema: `paragraphs` + `table.header/rows` + `caption`), and
+empty sections are skipped. Depth is therefore purely a generator parameter —
+full depth writes four paragraphs and a table, brief depth writes a headline
+and three sentences, and both draw unchanged through `src/report.js`.

@@ -213,6 +213,47 @@ They are not two flavours of the same artefact.
 Both share the research and outline stages, so one brief produces both — which
 is the actual submission workflow.
 
+## The report renderer
+
+`src/report.js` is the opposite of the deck renderer. No themes, no layout
+vocabulary — the whole job is matching the institutional template exactly,
+because that is what is graded. The template's own `.docx` (gitignored
+`reference/`) is the *donor*:
+
+1. Load it with jszip (the `docx` package is generation-only and cannot open an
+   existing file).
+2. Take `word/document.xml` apart by string surgery: keep the `<w:document>`
+   opening tag and the body-level `<w:sectPr>` verbatim, discard the body
+   between them. The sectPr carries the header/footer references and the page
+   geometry, so it is the whole chrome in one element.
+3. Build a fresh body from schema-validated `decks/<slug>/report.yaml` plus the
+   merged identity (meta.yaml over config, the same merge the deck uses): a
+   cover page, a table of contents, and the fixed section order — Abstract →
+   Acknowledgement → Introduction → Theoretical Background → Application →
+   Future Scope → Conclusion → References. Sections with no content are skipped
+   gracefully; present sections are numbered 1..N.
+4. Rezip. Every part other than the body survives byte-for-byte, which is what
+   preserves the VML watermark and banner inside the headers, the footer's page
+   field, the styles the generated tables reference, and all media.
+
+The TOC's page numbers are real, not hand-typed: the render is two-pass. The
+first pass renders to a temp .docx, `libreofficeToPdf` (a helper shared with
+`src/preview.js`) converts it, pdftotext locates the page each numbered heading
+lands on, and the final pass writes those numbers. The first section starts on
+a fresh page like the donor's Abstract, and the two page-breaks after the cover
+reproduce the donor's blank second page.
+
+Content shape (`schema/report.schema.json`): each of the eight sections is
+`paragraphs` plus an optional borderless `table` (bold header, like the
+donor's own content table); `References` additionally accepts `entries`.
+The renderer is depth-agnostic, so "Report content depth" — the roadmap item
+after this one — is a pure generator parameter.
+
+Reachable like the deck path: `forge report <slug>` (CLI), and on the API
+`GET/PUT /api/decks/:slug/report` plus `POST /api/decks/:slug/report/render`
+returning the download URL — the server stays a transport. A missing donor
+(`reference/` empty or ambiguous) fails loudly rather than half-working.
+
 ## Shared core, two front-ends
 
 `src/` is the whole implementation. `app/server/` is a transport over it and
@@ -287,4 +328,5 @@ immediately, and re-renders on a short debounce.
 | `decks/<slug>/out/` | no | rendered artefacts |
 | `.plate-cache/` | no | headless-Chrome plate PNGs, keyed by content hash |
 | `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |
-| `reference/` | yes | institutional templates to check against |
+| `decks/<slug>/report.yaml` | yes | the report content (sibling of deck.yaml) |
+| `reference/` | no | institutional templates to check against — the report donor; gitignored because it carries third-party names |
