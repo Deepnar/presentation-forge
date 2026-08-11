@@ -1,0 +1,83 @@
+title: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+sections:
+  - Introduction to Water Electrolysis
+  - Historical Development and Key Milestone
+  - Electrolysis Technologies Overview
+  - Efficiency and Performance Comparison
+  - Market Trends and Future Outlook
+slides:
+  - type: title
+    section: 0
+    purpose: Establish the presentation's focus on comparing electrolysis
+      technologies for green hydrogen production
+  - type: section
+    section: 0
+    purpose: Set the stage by introducing fundamental concepts of water electrolysis
+  - type: bullets
+    section: 0
+    purpose: Outline key definitions and concepts in water electrolysis
+  - type: quote
+    section: 0
+    purpose: Provide expert perspective on the importance of electrolysis in
+      hydrogen production
+  - type: image-text
+    section: 0
+    purpose: Illustrate the basic water splitting reaction and its components
+  - type: section
+    section: 1
+    purpose: Trace the historical evolution of electrolysis from early experiments
+      to modern applications
+  - type: timeline
+    section: 1
+    purpose: Show key milestones in electrolysis development and invention
+  - type: cards
+    section: 1
+    purpose: Highlight important inventors and their contributions to electrolysis
+  - type: section
+    section: 2
+    purpose: Present an overview of the main electrolysis technologies currently in use
+  - type: compare
+    section: 2
+    purpose: Directly compare the three major electrolysis technologies based on key
+      characteristics
+  - type: cards
+    section: 2
+    purpose: Provide detailed descriptions of each technology type and their
+      specific applications
+  - type: callout
+    section: 2
+    purpose: Emphasize the significance of recent technological breakthroughs in
+      efficiency improvements
+  - type: section
+    section: 3
+    purpose: Analyze and compare the performance metrics, efficiency, and costs
+      across technologies
+  - type: stats
+    section: 3
+    purpose: Show quantitative performance data for different electrolysis technologies
+  - type: chart
+    section: 3
+    purpose: Visually represent the efficiency comparison of various electrolysis
+      methods
+  - type: compare
+    section: 3
+    purpose: Compare the cost implications and economic viability of different
+      technologies
+  - type: section
+    section: 4
+    purpose: Examine current market trends and future projections for electrolysis
+      technologies
+  - type: flow
+    section: 4
+    purpose: Illustrate the projected growth trajectory of electrolyzer capacity
+  - type: stats
+    section: 4
+    purpose: Present key market statistics for current and future electrolysis
+      installations
+  - type: quote
+    section: 4
+    purpose: Include a forward-looking perspective on the role of electrolysis in
+      clean energy transition
+  - type: references
+    section: 4
+    purpose: Provide sources for all information presented in the deck

@@ -1,0 +1,29 @@
+slug: green-hydrogen-production-how-electrolysis-t-2
+brief: "Green hydrogen production: how electrolysis technologies compare"
+sources:
+  - https://en.wikipedia.org/wiki/Hydrogen_electrolysis
+  - https://en.wikipedia.org/wiki/Electrolysis_of_water
+  - https://en.wikipedia.org/wiki/Proton_exchange_membrane_electrolysis
+research: true
+theme: warm-humanist
+maxSlides: 24
+status: ready
+createdAt: 2026-08-11T15:17:09.569Z
+updatedAt: 2026-08-11T15:21:37.755Z
+reportDepth: full
+
+academic:
+  year: "2026-2027"
+  semester: ""
+  subject: "Green Hydrogen Production"
+  exam_type: "Innovative Examination (IE)"
+
+guide:
+  name: "Mr. Shushant Sawant"
+  designation: "Assistant Professor"
+
+team:
+  label: "Group no. 2b [18-24] (ISE - III)"
+  members:
+    - { name: "Deepesh Sonar", roll: "21", presenting: true }
+    - { name: "Vedant Sud", roll: "23", presenting: false }

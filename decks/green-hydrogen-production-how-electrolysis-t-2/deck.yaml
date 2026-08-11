@@ -1,0 +1,421 @@
+title: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+sections:
+  - Introduction to Water Electrolysis
+  - Historical Development and Key Milestone
+  - Electrolysis Technologies Overview
+  - Efficiency and Performance Comparison
+  - Market Trends and Future Outlook
+slides:
+  - type: title
+    section: 0
+    headline: Green Hydrogen Production
+    standfirst: Comparing Electrolysis Technologies for Sustainable Hydrogen Generation
+    presenter: "Presented by: [Your Name/Organization]"
+    notes: This title slide sets the stage for our exploration of water electrolysis
+      technologies. We will examine how different electrolysis methods compare
+      in terms of efficiency, cost, and practical application for producing
+      green hydrogen.
+    cites: []
+  - type: section
+    section: 0
+    headline: Introduction to Water Electrolysis
+    standfirst: Understanding the fundamental principles and historical development
+      of hydrogen production through water splitting
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: This slide introduces the core concept of water electrolysis,
+      establishing the foundational knowledge for understanding different
+      electrolysis technologies. It covers both the basic science and historical
+      context to provide a comprehensive overview.
+    cites: []
+  - type: bullets
+    headline: Key Definitions and Concepts in Water Electrolysis
+    bullets:
+      - Water electrolysis uses electricity to split H2O into hydrogen (H2) and
+        oxygen (O2) gases
+      - Pure water conducts electricity poorly without added electrolyte (salt,
+        acid, or base)
+      - "Electrolysis occurs at two electrodes: cathode (negative) where H2 is
+        produced, anode (positive) where O2 is produced"
+      - Standard cell potential is 1.23 V, but real systems require higher
+        voltage due to overpotential
+      - Overpotential accounts for activation energy barriers and non-ideal
+        process losses
+      - Efficiency measures energy input per unit of hydrogen produced,
+        typically 50-80% for commercial systems
+    section: 0
+    standfirst: Foundational principles of water splitting technology
+    presenter: Research Analyst
+    notes: These concepts form the basis for understanding electrolyzer performance
+      and comparisons between technologies.
+    cites: []
+  - type: quote
+    quote: Water electrolysis stands as the cornerstone technology for producing
+      green hydrogen, offering a pathway to decarbonize industries where fossil
+      fuel alternatives are not viable.
+    attribution: International Energy Agency
+  - type: bullets
+    headline: Basic Water Splitting Reaction
+    caption: Diagram showing the fundamental electrochemical process of water
+      splitting into hydrogen and oxygen.
+    bullets:
+      - Water electrolysis splits H2O into hydrogen and oxygen gases.
+      - "At the cathode (negative electrode): H+ ions gain electrons to form H2
+        gas."
+      - "At the anode (positive electrode): Water molecules lose electrons to
+        form O2 gas."
+      - "The overall reaction is: 2H2O → 2H2 + O2"
+  - type: section
+    section: 1
+    headline: Historical Development and Key Milestones
+    standfirst: From early scientific experiments to modern industrial applications,
+      trace the evolution of water electrolysis technology
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: This slide provides a chronological overview of key milestones in
+      electrolysis development. It begins with early scientific discoveries in
+      the late 18th century and progresses through to modern industrial
+      applications. The timeline highlights the progression from laboratory
+      curiosity to practical implementation, showing how each advancement built
+      upon previous knowledge.
+    cites: []
+  - type: timeline
+    headline: Key Milestones in Electrolysis Development
+    events:
+      - when: "1789"
+        what: Jan Rudolph Deiman and Adriaan Paets van Troostwijk use electrostatic
+          machine to produce electricity for water electroly
+      - when: "1800"
+        what: Alessandro Volta invents the voltaic pile; William Nicholson and Anthony
+          Carlisle use it to electrolyze water
+      - when: "1806"
+        what: Humphry Davy reports water electrolysis experiments; nitric acid forms at
+          the anode from dissolved nitrogen
+      - when: "1869"
+        what: Zénobe Gramme invents the Gramme machine, making electrolysis a cheap
+          method for hydrogen production
+      - when: "1888"
+        what: Dmitry Lachinov develops industrial synthesis of hydrogen and oxygen
+          through electrolysis
+      - when: 1900s-1930s
+        what: Alkaline water electrolysis becomes established in chemical industry for
+          large-scale hydrogen production
+    section: 1
+    standfirst: From early experiments to industrial applications, these milestones
+      show the evolution of electrolysis technology.
+    presenter: Dr. Elena Rodriguez
+    notes: This timeline highlights key inventions and developments that shaped
+      modern electrolysis. The progression from experimental work in the late
+      18th century to industrial applications by the early 20th century
+      demonstrates the technology's maturation and increasing practical utility.
+    cites:
+      - url: https://www.britannica.com/science/Electrolysis
+        title: Electrolysis - Britannica
+      - url: https://en.wikipedia.org/wiki/History_of_electrolysis
+        title: History of Electrolysis - Wikipedia
+  - type: cards
+    headline: Pioneers of Electrolysis
+    cards:
+      - title: Johann Wilhelm Ritter
+        body: Invented the first electrolyser device in 1800, laying the groundwork for
+          modern water electrolysis.
+        kicker: Early Innovator
+      - title: Alessandro Volta
+        body: Invented the voltaic pile, providing the electrical power needed for water
+          electrolysis experiments.
+        kicker: Electrical Power Source
+      - title: William Nicholson & Anthony Carlisle
+        body: First successfully demonstrated water electrolysis using Volta's battery
+          in 1800.
+        kicker: Practical Demonstration
+      - title: Humphry Davy
+        body: Conducted extensive distilled water electrolysis experiments, identifying
+          key chemical processes and proposing nitric acid formation at the
+          anode.
+        kicker: Scientific Analysis
+    section: 1
+    standfirst: Key figures who advanced our understanding and application of water
+      electrolysis
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: These inventors laid the foundation for modern electrolysis techniques,
+      moving from theoretical concepts to practical applications. Ritter's early
+      device, Volta's battery, and Nicholson & Carlisle's successful
+      demonstration were crucial stepping stones.
+    cites:
+      - url: https://en.wikipedia.org/wiki/Electrolysis
+        title: Electrolysis - Wikipedia
+      - url: https://www.britannica.com/science/electrolysis
+        title: Electrolysis | Definition, Uses, & Facts | Britannica
+  - type: section
+    section: 2
+    headline: Electrolysis Technologies Overview
+    standfirst: An overview of the main electrolysis technologies currently in use
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: "This slide introduces the three primary electrolysis technologies used
+      today: alkaline, proton exchange membrane (PEM), and solid oxide. It sets
+      the stage for comparing their characteristics, efficiencies, and
+      applications in hydrogen production."
+    cites: []
+  - type: compare
+    headline: Comparing Major Electrolysis Technologies
+    left:
+      title: Alkaline Electrolysis
+      body: Uses alkaline electrolyte (KOH or NaOH) in liquid form. Operates at lower
+        temperatures (60-80°C) and pressures (10-20 bar). Employes nickel-based
+        catalysts, making it cost-effective but less efficient. Requires
+        diaphragm to separate gases.
+      points:
+        - "Operating temperature: 60-80°C"
+        - "Pressure: 10-20 bar"
+        - "Catalyst: Nickel-based"
+        - "Efficiency: ~70-75% (lower)"
+      image: alkaline_electrolyzer.jpg
+    right:
+      title: PEM Electrolysis
+      body: Uses proton exchange membrane (PEM) to separate reactants and transport
+        protons. Operates at higher temperatures (60-80°C) but can handle higher
+        pressures (up to 200 bar). Employs platinum-based catalysts, offering
+        higher efficiency but at increased cost. No diaphragm required.
+      points:
+        - "Operating temperature: 60-80°C"
+        - "Pressure: Up to 200 bar"
+        - "Catalyst: Platinum-group metals"
+        - "Efficiency: ~75-80% (higher)"
+      image: PEM_electrolyzer.jpg
+    verdict: PEM electrolysis offers higher efficiency and pressure capability but
+      requires expensive catalysts. Alkaline electrolysis is cheaper but less
+      efficient and requires diaphragms.
+  - type: cards
+    headline: "Electrolysis Technologies: Detailed Overview"
+    cards:
+      - title: Alkaline Water Electrolysis
+        body: Uses alkaline electrolytes (KOH or NaOH) in liquid form. Features a
+          diaphragm separating electrodes and transports hydroxide ions. Known
+          for long history, robustness, and cost-effectiveness, though less
+          efficient than PEM technology.
+        kicker: Established Technology
+        image: alkaline-electrolysis.png
+      - title: Proton Exchange Membrane (PEM)
+        body: Employs a solid polymer membrane that conducts protons while blocking
+          electrons. Uses expensive platinum catalysts but offers high
+          efficiency, fast response, and ability to operate at higher current
+          densities. Suitable for applications requiring rapid load changes.
+        kicker: High Efficiency Technology
+        image: peem-electrolysis.png
+      - title: Anion Exchange Membrane (AEM)
+        body: Utilizes an anion-exchange membrane allowing hydroxide ion conduction.
+          Eliminates need for expensive noble metal catalysts, using
+          cost-effective transition metals instead. Offers potential for lower
+          costs and improved sustainability in large-scale applications.
+        kicker: Cost-Effective Alternative
+        image: aem-electrolysis.png
+      - title: Supercritical Water Electrolysis (SWE)
+        body: Operates water in supercritical state (>375°C), reducing energy
+          requirements and increasing efficiency. Offers high current density
+          operation and reduced dependence on precious metal catalysts, though
+          commercial availability is limited as of 2021.
+        kicker: Emerging High-Temperature Solution
+        image: supercritical-electrolysis.png
+    section: 2
+    standfirst: Detailed descriptions of major electrolysis technologies and their
+      specific applications in green hydrogen production.
+    presenter: Dr. Sarah Mitchell
+    notes: This slide provides a comprehensive overview of each electrolysis
+      technology, highlighting key characteristics, advantages, and application
+      suitability for different industrial needs.
+    cites:
+      - url: https://www.sciencedirect.com/science/article/pii/S0016308X22001907
+        title: "Water electrolysis: from textbook knowledge to the latest scientific
+          strategies and industrial developments"
+      - url: https://www.nrel.gov/docs/fy22osti/83379.pdf
+        title: Electrolyzer Technology Maturation
+  - type: callout
+    body: Recent breakthroughs in electrolysis have dramatically improved
+      efficiency. Hysata's capillary-fed design achieves 95% efficiency, while
+      nanogap cells enable electrolyte-free pure water splitting at ambient
+      temperature, lowering the energy barrier
+    label: Efficiency Breakthroughs
+  - type: section
+    section: 3
+    headline: Performance Metrics and Cost Analysis Across Technologies
+    standfirst: Comparing efficiency, energy consumption, and economic viability of
+      major electrolysis technologies
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: This slide presents a comparative analysis of the performance metrics
+      across different electrolysis technologies. It focuses on key indicators
+      such as electrical efficiency, energy consumption for hydrogen production,
+      and cost considerations to help understand which technologies offer
+      optimal performance for commercial deployment.
+    cites:
+      - url: https://www.sciencedirect.com/science/article/pii/S030626192100758X
+        title: "Water electrolysis: From textbook knowledge to the latest scientific
+          strategies and industrial developments"
+      - url: https://www.nrel.gov/docs/fy17osti/68424.pdf
+        title: Electrolyzer Technologies and Cost Projections
+      - url: https://www.iea.org/reports/global-hydrogen-technology-roadmap-2023
+        title: Hydrogen Technology Roadmap 2023
+  - type: stats
+    stats:
+      - value: 70%
+        label: Alkaline Electrolysis Efficiency
+        sub: Typical industrial efficiency
+      - value: 80%
+        label: PEM Electrolysis Efficiency
+        sub: Average working efficiency
+      - value: 95%
+        label: Hysata's Capillary-fed Cell Efficiency
+        sub: Record-breaking efficiency relative to HHV
+      - value: 53 kWh
+        label: Electricity Required per kg H2
+        sub: Average commercial electrolysis requirement
+    section: 3
+    headline: Performance Metrics Across Electrolysis Technologies
+    standfirst: Quantitative comparison of efficiency and energy requirements for
+      different electrolysis methods
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: Data reflects current commercial and experimental performance levels.
+      Efficiency figures represent electrical energy input relative to hydrogen
+      energy output. The Hysata cell represents a breakthrough in capillary-fed
+      design efficiency.
+    cites:
+      - url: https://www.sciencedirect.com/science/article/pii/S0022072899003654
+        title: Electrolysis of Water
+      - url: https://doi.org/10.1016/j.ijhydene.2013.01.151
+        title: A comprehensive review on PEM water electrolysis
+      - url: https://www.nature.com/articles/s41467-022-28953-x
+        title: A high-performance capillary-fed electrolysis cell
+      - url: https://www.rechargenews.com/analysis/2024/clean-hydrogen-remains-too-expensive-and-uncompetitive-how-can-costs-be-reduced
+        title: "Analysis: Clean hydrogen cost reduction"
+  - type: chart
+    headline: Electrolysis Efficiency Comparison
+    chart:
+      kind: bar
+      categories:
+        - Alkaline
+        - PEM
+        - AEM
+        - SOEC
+        - SWE
+      series:
+        - name: Efficiency (%)
+          values:
+            - 70
+            - 80
+            - 85
+            - 90
+            - 85
+      unit: "%"
+    aside:
+      - Data based on theoretical and practical performance metrics
+      - SOEC shows highest efficiency at high temperatures
+      - AEM represents emerging technology with promising results
+  - type: compare
+    headline: Cost Implications and Economic Viability
+    left:
+      title: Alkaline Electrolysis
+      body: Lower initial investment costs due to use of nickel catalysts. Less
+        efficient, requiring more energy input per kilogram of hydrogen
+        produced. Economically viable for large-scale, base-load operations
+        where electricity costs are low.
+      points:
+        - "Initial capital cost: $300-$500/kW"
+        - "Energy efficiency: ~70%"
+        - "Operating costs: Moderate"
+        - "Best for: Large-scale, stable production"
+      image: alkaline_electrolyzer.jpg
+    right:
+      title: PEM Electrolysis
+      body: Higher initial capital costs due to platinum-group metal catalysts. More
+        efficient and capable of higher current densities. Better suited for
+        variable renewable energy sources that require rapid response
+        capabilities.
+      points:
+        - "Initial capital cost: $1,200-$1,500/kW"
+        - "Energy efficiency: ~80%"
+        - "Operating costs: Higher due to catalysts"
+        - "Best for: Variable renewables, frequent ramping"
+      image: PEM_electrolyzer.jpg
+    verdict: Alkaline electrolysis is more cost-effective for large-scale, stable
+      operations, while PEM electrolysis offers better performance and
+      flexibility at higher capital costs. The choice depends on energy source
+      characteristics and operational requirements.
+  - type: section
+    section: 4
+    headline: Market Trends and Future Outlook
+    standfirst: Analyzing the commercial landscape and projected growth of
+      electrolysis technologies
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: This slide sets the stage for understanding the commercial viability and
+      future prospects of different electrolysis technologies. It provides
+      context for market dynamics, investment trends, and projected growth
+      trajectories that will shape the hydrogen economy.
+    cites:
+      - url: https://www.iea.org/reports/global-hydrogen-review-2023
+        title: IEA Global Hydrogen Review 2023
+      - url: https://www.bloombergnef.com/reports/2024-green-hydrogen-market-outlook/
+        title: BNEF Green Hydrogen Market Outlook 2024
+  - type: flow
+    headline: Projected Growth Trajectory of Electrolyzer Capacity
+    steps:
+      - title: Current Market Landscape
+        body: ~47 GW global capacity as of 2022, varying by region.
+      - title: Industry Projections
+        body: "Forecasts: 104 GW by 2030, up to 180 GW in some outlooks."
+      - title: Driving Factors
+        body: Policy support, cheaper renewables and green-hydrogen demand.
+      - title: Regional Growth
+        body: Asia-Pacific leads; China hosts the 150 MW Ningxia facility.
+    direction: ttb
+  - type: stats
+    stats:
+      - value: "150"
+        label: MW
+        sub: Largest operational alkaline electrolyzer capacity
+      - value: 23,000
+        label: tonnes/year
+        sub: Capacity of the Ningxia facility
+      - value: "47"
+        label: GW
+        sub: Projected electrolyzer capacity by 2030 (low estimate)
+      - value: "180"
+        label: GW
+        sub: Projected electrolyzer capacity by 2030 (high estimate)
+    section: 4
+    headline: Market Size and Growth Projections
+    standfirst: Current installations and future capacity forecasts
+    presenter: "Green Hydrogen Production: How Electrolysis Technologies Compare"
+    notes: These figures represent the scale of current installations and projected
+      growth in electrolyzer capacity by 2030. The Ningxia facility represents
+      the largest existing alkaline electrolyzer, while projections show
+      substantial growth in installed capacity.
+    cites:
+      - url: https://www.rechargenews.com/record-breaker-worlds-largest-green-hydrogen-project-with-150mw-electrolyser-brought-on-line-in-china
+        title: Record breaker | World's largest green hydrogen project, with 150MW
+          electrolyser, brought on line in China
+      - url: https://www.rechargenews.com/8000-growth-more-than-100gw-of-hydrogen-electrolysers-to-be-produced-annually-by-2031
+        title: 8,000% growth | 'More than 100GW of hydrogen electrolysers to be produced
+          annually by 2031'
+  - type: quote
+    quote: Electrolysis stands at the precipice of a transformative era, where
+      advances in technology and economies of scale will unlock hydrogen's
+      potential as a cornerstone fuel for decarbonizing heavy industry,
+      long-haul transport, and seasonal energy storage.
+    attribution: International Energy Agency
+  - type: references
+    items:
+      - 1. Encyclopedia Britannica. "Electrolysis | Definition, Uses, & Facts |
+        Britannica". Archived from the original on 4 February 2026.
+      - 2. Levie, R. de. "The electrolysis of water". Journal of
+        Electroanalytical Chemistry. 1999.
+      - 3. Davy, John, ed. "On Some Chemical Agencies of Electricity". The
+        Collected Works of Sir Humphry Davy. 1839.
+      - 4. "Lachinov Dmitry Aleksandrovich". Great Cyrill and Methodius
+        Encyclopedia (in Russian).
+      - 5. Carmo, M; Fritz D; Mergel J; Stolten D. "A comprehensive review on
+        PEM water electrolysis". Journal of Hydrogen Energy. 2013.
+      - 6. "Water quality standards" (PDF). Mary River Catchment Coordinating
+        Committee.
+    section: 4
+    headline: References
+    standfirst: Sources for all information presented in the deck
+    presenter: ""
+    notes: ""
+    cites: []
