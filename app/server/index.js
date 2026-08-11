@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { readFile, writeFile, readdir, mkdir, stat } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir, stat, access } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT, DECKS, THEMES, CONFIG } from "../../src/paths.js";
@@ -8,6 +8,7 @@ import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
+import { renderReport, validateReport } from "../../src/report.js";
 import { deckSchema } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
@@ -232,6 +233,46 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
   } catch {
     res.status(404).end();
   }
+}));
+
+/* ---------------------------------------------------------------- reports */
+
+app.get("/api/decks/:slug/report", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "report.yaml");
+  const report = YAML.parse(await readFile(file, "utf8"));
+  ok(res, { report });
+}));
+
+/** Validate and save report content — same shape as the deck PUT. */
+app.put("/api/decks/:slug/report", wrap(async (req, res) => {
+  const { report } = req.body ?? {};
+  if (!report) return fail(res, 400, "body must include `report`");
+
+  const { ok: valid, errors } = await validateReport(report);
+  if (!valid) return res.status(422).json({ ok: false, error: "validation failed", errors });
+
+  const dir = path.join(DECKS, req.params.slug);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "report.yaml"), YAML.stringify(report), "utf8");
+  ok(res, {});
+}));
+
+/** Draw report.yaml on the institutional donor → decks/<slug>/out/report.docx. */
+app.post("/api/decks/:slug/report/render", wrap(async (req, res) => {
+  const reportFile = path.join(DECKS, req.params.slug, "report.yaml");
+  let saved = true;
+  try { await access(reportFile); } catch { saved = false; }
+  if (!saved) {
+    return fail(res, 404, "no report.yaml saved for this deck — save report content first");
+  }
+  const toc = req.body?.toc !== false;
+  const r = await renderReport({ reportFile, toc });
+  ok(res, {
+    sections: r.sections,
+    pages: r.pages,
+    problems: r.problems,
+    docx: `/api/decks/${req.params.slug}/download/report.docx`,
+  });
 }));
 
 /* ------------------------------------------------------------- generation */
