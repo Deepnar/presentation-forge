@@ -6,6 +6,7 @@ import { researchQuery, fetchPage } from "../search.js";
 import { planDeck, generateDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
 import { runChatTurn } from "./chat.js";
+import { generateReport } from "./report.js";
 import { loadIdentity, deepMerge } from "./identity.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
@@ -218,7 +219,8 @@ Usage:
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
-  node src/ai/pipeline.js report <slug> [--donor <path>] [--no-toc]
+  node src/ai/pipeline.js report <slug> [--generate [--depth full|brief]]
+                        [--donor <path>] [--no-toc] [--no-render]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
   generate  approved outline → deck.yaml, rendered and rasterised
@@ -228,6 +230,12 @@ Usage:
             maintains the deck's thread (chat.jsonl, decisions.md) and renders
   report    draw decks/<slug>/report.yaml on the institutional .docx donor
             (gitignored reference/) → decks/<slug>/out/report.docx
+            --generate  first generate report.yaml from the deck's shared
+                        research/ and approved plan.yaml (the report's half of
+                        the submission workflow: one brief → deck + report)
+            --depth     full or brief report prose (default full; remembered
+                        in meta.yaml for later runs without --depth)
+            --no-render  generate report.yaml only, skip drawing the .docx
             --no-toc  skip the table of contents (and the LibreOffice pass)
 
 Examples:
@@ -248,7 +256,9 @@ function parseArgs(argv) {
     else if (a === "--donor") opts.donor = argv[++i];
     else if (a === "--sources") {
       while (argv[i + 1] && !argv[i + 1].startsWith("--")) opts.sources.push(argv[++i]);
-    } else if (a === "--research") opts.research = true;
+    }     else if (a === "--research") opts.research = true;
+    else if (a === "--generate") opts.generate = true;
+    else if (a === "--depth") opts.depth = argv[++i];
     else if (a === "--no-render") opts.render = false;
     else if (a === "--no-toc") opts.toc = false;
     else if (a === "--critic") opts.critic = true;
@@ -314,12 +324,27 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (r.summary) process.stdout.write(`summary: ${r.summary}\n`);
     } else if (cmd === "report") {
       if (!opts.slug) { console.error(USAGE); process.exit(2); }
-      const reportFile = path.join(DECKS, opts.slug, "report.yaml");
-      try {
-        await access(reportFile);
-      } catch {
-        process.stderr.write(`no decks/${opts.slug}/report.yaml — write the report content first\n`);
-        process.exit(2);
+      const deckDir = path.join(DECKS, opts.slug);
+      const reportFile = path.join(deckDir, "report.yaml");
+
+      if (opts.generate) {
+        let meta = {};
+        try { meta = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {}; } catch { /* optional */ }
+        const depth = opts.depth ?? meta.reportDepth ?? "full";
+        const g = await generateReport({ slug: opts.slug, depth, model: opts.model, onProgress: progress });
+        process.stdout.write(`report content decks/${opts.slug}/report.yaml — ${g.sections.join(" → ")} (${g.depth} depth)\n`);
+        for (const s of g.skipped) process.stdout.write(`  skipped [${s.section}]: ${s.reason}\n`);
+        if (depth !== meta.reportDepth) {
+          meta.reportDepth = depth;
+          await writeFile(path.join(deckDir, "meta.yaml"), YAML.stringify(meta), "utf8");
+        }
+        if (opts.render === false) { process.exit(0); }
+      } else {
+        try { await access(reportFile); }
+        catch {
+          process.stderr.write(`no decks/${opts.slug}/report.yaml — generate the report content first: forge report <slug> --generate\n`);
+          process.exit(2);
+        }
       }
       const r = await renderReport({ reportFile, donor: opts.donor, toc: opts.toc !== false });
       process.stdout.write(`report decks/${opts.slug}/out/report.docx — ${r.sections.join(" → ")}\n`);
