@@ -88,4 +88,13 @@ export const api = {
   clearChat: (slug) => call(`/api/decks/${slug}/chat`, { method: "DELETE" }),
   chatDeck: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/chat`, payload, handlers),
+  // README, served as plain text so the docs modal needs no markdown dependency.
+  docs: () =>
+    fetch("/api/docs").then((r) =>
+      r.ok ? r.text() : Promise.reject(new Error("docs unavailable"))),
+  report: (slug) => call(`/api/decks/${slug}/report`),
+  renderReport: (slug, opts = {}) =>
+    call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
+  generateReport: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/report/generate`, payload, handlers),
 };
