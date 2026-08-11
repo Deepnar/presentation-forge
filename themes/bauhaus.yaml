@@ -1,0 +1,75 @@
+# Bauhaus — strict modernist geometry in the primary triad.
+# Red, yellow and a little blue on warm cream; Poppins geometric type; sharp
+# edges. Functional, bold, no ornament.
+
+name: bauhaus
+label: Bauhaus
+summary: Modernist geometry — primary colours, sharp edges, Poppins type.
+
+tokens:
+  palette:
+    bg: "#FAF6EC"          # warm cream
+    surface: "#FFFFFF"
+    ink: "#1A1A1A"
+    ink_muted: "#6B645A"
+    accent: "#E53935"      # red
+    accent_alt: "#FDD835"  # yellow
+    rule: "#D9D2C4"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1A1A1A", ink: "#FFFFFF", muted: "#C4BEB4", accent: "#FDD835" }
+    section: { bg: "#E53935", ink: "#FFFFFF", muted: "#F8CFCE" }
+
+  dark:
+    bg: "#1A1A1A"
+    surface: "#262626"
+    ink: "#F2F0EA"
+    ink_muted: "#A9A39A"
+    accent: "#E53935"
+    accent_alt: "#FDD835"
+    rule: "#FFFFFF26"
+    on_accent: "#1A1A1A"
+
+  type:
+    display:  { family: Poppins, weight: 700, size: 40, line: 1.1,  tracking: -0.5 }
+    heading:  { family: Poppins, weight: 700, size: 30, line: 1.15, tracking: -0.3 }
+    subhead:  { family: Inter,   weight: 500, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,   weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Poppins, weight: 700, size: 10, line: 1.2,  tracking: 1.8, transform: upper }
+    stat:     { family: Poppins, weight: 700, size: 54, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0, pill: 0.40, chip: 0 }        # Bauhaus is angular
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "1A1A1A", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: geometric, functional, modernist, confident
+  density: medium
+  prefers:
+    - bold structural claims
+    - strong visual hierarchy
+    - colour used to signal, never to decorate
+  avoid:
+    - decoration and drop shadows
+    - more than the primary triad on one slide
+    - fiddly detail — the idea first, the words second
+  headline_style: >
+    Functional and absolute. "Form Follows Rendering" over "Introduction to
+    Ray Tracing". No hedging.
+  body_style: >
+    Plain, efficient sentences. Build the idea; strip the rest.
