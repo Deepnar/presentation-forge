@@ -115,7 +115,7 @@ export default function ChatPanel({ slug, onDeckChanged }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="flex flex-col gap-2 border-b border-line px-4 py-3">
+      <header className="flex h-12 shrink-0 flex-col justify-center gap-1.5 border-b border-line px-4">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0 leading-tight">
             <div className="truncate text-[13px] font-semibold text-fg">
@@ -164,9 +164,9 @@ export default function ChatPanel({ slug, onDeckChanged }) {
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {!slug && (
           <div className="rounded-card border border-dashed border-line p-4 text-center text-[11px] leading-relaxed text-fg-faint">
-            Pick a deck from the grid and it becomes the context here.
+            Pick a deck and it becomes the context here.
             <br />
-            Every turn edits its <code>deck.yaml</code>.
+            Every turn edits the deck's source.
           </div>
         )}
 
@@ -221,7 +221,7 @@ export default function ChatPanel({ slug, onDeckChanged }) {
             {render && !busy && (
               <div className="rounded-card border border-line bg-panel p-2.5">
                 <div className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">
-                  Rendered from deck.yaml
+                  Rendered slides
                 </div>
                 {render.thumbs.length ? (
                   <div className="flex gap-1.5 overflow-x-auto pb-0.5">
