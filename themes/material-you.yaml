@@ -1,0 +1,75 @@
+# Material You — tonal surfaces, soft colour, generous rounding.
+# Light page, subtly darker tonal cards, a soft violet primary and very large
+# corner radii — the friendly, human "tonal" Material look, native shapes.
+
+name: material-you
+label: Material You
+summary: Tonal surfaces and soft colour — rounded, gentle, human.
+
+tokens:
+  palette:
+    bg: "#FBFBFE"          # near-white
+    surface: "#EFEFF7"     # tonal surface — slightly darker than the page
+    ink: "#1D1B20"
+    ink_muted: "#6F6A76"
+    accent: "#7C6FF0"      # soft violet
+    accent_alt: "#F6AFC9"  # soft pink
+    rule: "#E4E1EC"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1D1B20", ink: "#FBFBFE", muted: "#C8C2CF", accent: "#BDB7F6" }
+    section: { bg: "#7C6FF0", ink: "#FFFFFF", muted: "#E1DCFB" }
+
+  dark:
+    bg: "#1A1921"
+    surface: "#242330"
+    ink: "#E7E2EF"
+    ink_muted: "#A39FAD"
+    accent: "#B0A6FA"
+    accent_alt: "#F6B6CE"
+    rule: "#FFFFFF1C"
+    on_accent: "#1A1921"
+
+  type:
+    display:  { family: Outfit, weight: 600, size: 40, line: 1.1,  tracking: -0.6 }
+    heading:  { family: Outfit, weight: 600, size: 30, line: 1.14, tracking: -0.3 }
+    subhead:  { family: Inter,  weight: 500, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,  weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,  weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,  weight: 600, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: Outfit, weight: 600, size: 54, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.50, pill: 0.40, chip: 0.12 }   # very rounded — Material
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 20, offset: 4, angle: 90, color: "1D1B20", opacity: 0.08 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: gentle, human, colourful, calm
+  density: medium
+  prefers:
+    - warm, approachable language
+    - friendly card breakdowns
+    - soft confidence without hype
+  avoid:
+    - harsh or technical jargon walls
+    - more than two accent colours
+    - anything that feels hostile or cold
+  headline_style: >
+    Friendly and clear. "Light, Made Approachable" over "Introduction to Ray
+    Tracing". Warm but never fluffy.
+  body_style: >
+    Full sentences with a human voice. Explain it like a good friend would.
