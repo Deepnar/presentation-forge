@@ -5,6 +5,7 @@ import { DECKS } from "../paths.js";
 import { chatJSON } from "./ollama.js";
 import { runTurn } from "./turn.js";
 import { loadIdentity } from "./identity.js";
+import { excerptResearch } from "./research.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -342,6 +343,7 @@ export async function runChatTurn({
   try {
     research = await readFile(path.join(dir, "research", "notes.md"), "utf8");
   } catch { /* no research pass */ }
+  research = excerptResearch(research);
 
   onProgress?.({ status: "reading" });
 

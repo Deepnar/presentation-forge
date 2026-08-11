@@ -3,6 +3,7 @@ import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { researchQuery, fetchPage } from "../search.js";
+import { excerptResearch } from "./research.js";
 import { planDeck, generateDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
 import { runChatTurn } from "./chat.js";
@@ -101,7 +102,10 @@ export async function createDeck({
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
   let researchText = "";
-  if (research) {
+  // Supplied sources imply a research pass: a brief with sources but no
+  // --research would otherwise silently skip research and later fail report
+  // generation with "no research/notes.md" for a reason nothing explains.
+  if (research || sources.length) {
     onProgress?.({ status: "researching" });
     const r = await runResearch(brief, sources);
     if (r.text) {
@@ -118,7 +122,7 @@ export async function createDeck({
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
     brief: brief.trim(), theme: themeObj, identity: identityObj,
-    research: researchText, maxSlides, model, signal,
+    research: excerptResearch(researchText), maxSlides, model, signal,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");
@@ -159,7 +163,7 @@ export async function generateFromPlan({
     plan,
     theme: themeObj,
     identity: identityObj,
-    research: researchText,
+    research: excerptResearch(researchText),
     maxSlides: meta.maxSlides ?? 24,
     model,
     signal,
