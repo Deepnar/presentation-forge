@@ -344,6 +344,35 @@ detail performs — edit, presenter assign, reorder, delete, duplicate — goes
 through the immutable ops in `app/web/src/lib/slides.js`, persists deck.yaml
 immediately, and re-renders on a short debounce.
 
+## The web shell
+
+The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
+thin transport and every control maps to a real endpoint. `App.jsx` owns the
+deck list (fetched once, re-fetched on a version bump) and routes between
+`home`, `deck`, `new`, `outline`, `themes` and `identity`:
+
+- **`HeaderBar`** — wordmark (home link) with a LOCAL badge, the sidebar
+  collapse toggle, a Docs modal (reads the repo README via `GET /api/docs`) and
+  the GitHub link. No avatar, no sync, no dead icons.
+- **`Sidebar`** — the persistent deck list, grouped by relative date, with a
+  real cover thumb per row (`DeckThumb`, fallback tile when no preview is on
+  disk). Tabs filter All decks / Reports using the `report` flag that
+  `deckMeta()` adds, search filters title/slug/theme client-side, and the rail
+  collapses to an icon strip. Both rails persist via localStorage.
+- **`Home`** — the prompt box is the generate surface. Deck mode streams a
+  brief to the outline gate (`POST /api/decks`, SSE); Report mode picks a deck
+  and depth and streams `POST /api/decks/:slug/report/generate`, landing in the
+  deck detail's **Report panel**. Suggestion pills fill the prompt; a
+  "Recent decks" carousel reuses the deck list.
+- **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
+  grid with lightbox/inline-editor/presenter ops, and the Report panel:
+  generate when no `report.yaml` exists, otherwise render `.docx` and download
+  it. `lib/time.js` supplies the relative timestamps used everywhere.
+
+The three-layer rule is unaffected: the shell is human-owned chrome, and
+`decks/<slug>/report.yaml` is written by the report generator exactly as
+`deck.yaml` is — nothing in the UI ever specifies geometry.
+
 ## Data locations
 
 | Path | Committed | Notes |
