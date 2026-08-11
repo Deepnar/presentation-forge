@@ -1,0 +1,75 @@
+# Newsprint — serif on paper, like a printed broadsheet.
+# Source Serif 4 on warm paper, near-black ink, a newsprint red, hairline
+# card rules and a masthead sense of permanence.
+
+name: newsprint
+label: Newsprint
+summary: Serif on paper — a printed-broadsheet sense of permanence.
+
+tokens:
+  palette:
+    bg: "#F7F3EA"          # warm paper
+    surface: "#FFFFFF"
+    ink: "#26221C"
+    ink_muted: "#6E675A"
+    accent: "#A63D2F"      # newsprint red
+    accent_alt: "#3B5B4A"  # forest
+    rule: "#D9D2C0"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#26221C", ink: "#F7F3EA", muted: "#B5AD9D", accent: "#A63D2F" }
+    section: { bg: "#A63D2F", ink: "#FFFFFF", muted: "#F0D3CE" }
+
+  dark:
+    bg: "#24211C"
+    surface: "#302C25"
+    ink: "#EDE8DE"
+    ink_muted: "#A8A093"
+    accent: "#C04A3A"
+    accent_alt: "#6E8A76"
+    rule: "#FFFFFF28"
+    on_accent: "#24211C"
+
+  type:
+    display:  { family: "Source Serif 4", weight: 700, size: 40, line: 1.1,  tracking: -0.5 }
+    heading:  { family: "Source Serif 4", weight: 700, size: 30, line: 1.15, tracking: -0.3 }
+    subhead:  { family: "Source Serif 4", weight: 400, size: 15, line: 1.5,  tracking: 0 }
+    body:     { family: "Source Serif 4", weight: 400, size: 13, line: 1.6,  tracking: 0 }
+    caption:  { family: Inter,            weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,            weight: 700, size: 10, line: 1.2,  tracking: 1.8, transform: upper }
+    stat:     { family: "Source Serif 4", weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.04, pill: 0.40, chip: 0.04 }
+    border: { width: 0.75, color: "#D9D2C0" }       # hairline card rules
+    card_pad: 0.28
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "26221C", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: journalistic, grounded, earnest, permanent
+  density: medium
+  prefers:
+    - a factual, reported tone
+    - a strong lede and clear attribution of ideas
+    - measured comparisons
+  avoid:
+    - hype and marketing language
+    - casual abbreviations
+    - decorative or fluffy phrasing
+  headline_style: >
+    Report the story. "Rendering's Long Tail" over "Introduction to Ray
+    Tracing". Precise, considered, complete.
+  body_style: >
+    Full, well-built sentences. Report, don't advertise.
