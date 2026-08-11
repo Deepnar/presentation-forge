@@ -7,134 +7,118 @@ history preserves older handoffs.
 
 ## Session summary
 
-State at handoff: **committed and pushed to `origin/main`.** The four
-plate-dependent themes are built, each verified visually through the full
-pipeline, and the roadmap item is ticked. The theme gallery now has five
-themes: warm-humanist (native) + glassmorphism, aurora-mesh, claymorphism,
-neumorphism (all plated).
+State at handoff: **committed and pushed to `origin/main`.** Freeform slides
+are live — schema, render path, model prompt and UI — and the roadmap item is
+ticked. The Gamma-like loop is complete: a topic in, a themed deck out, with
+genuinely free hero slides.
 
-**The four themes.** Each is `themes/<slug>.yaml` with the full tokens/voice
-split, explicit `surfaces.title` and `surfaces.section`, and
-`tokens.plate.enabled: true` + `plate.html` (+ per-surface variants) that
-interpolates the theme's own tokens — no hardcoded hex in any template:
+**Schema.** `type: freeform` joined the enum; the freeform `allOf` branch
+requires a non-empty `html` (minLength 1, maxLength 24000) and a slide-level
+`else: not required html` forbids `html` on every other type, so the freeform
+grammar never leaks into native slides. The catalog and ops schema derive from
+the branch, so the model sees freeform as an ordinary type. `validate.js` got
+clear `minLength` ("too short") and `not` ("field html is only allowed on type
+freeform slides") error messages.
 
-- **glassmorphism** — light slate mesh, three real blurred blobs, a frosted
-  content-zone panel (`backdrop-filter: blur`); native cards translucent white
-  (`shape.card_fill` transparency 42) as a second glass layer; dark hero with
-  violet/teal glows.
-- **aurora-mesh** — multi-stop radial mesh from accent/alt/ink/surface, soft
-  white halo behind the content; dark indigo hero with pink/violet glows.
-- **claymorphism** — warm cream, a rounded translucent clay board (inset top
-  highlight + bottom shade + soft outer shadow) behind the content, clay cards
-  at radius 0.55in; dark umber hero.
-- **neumorphism** — neutral gray, one embossed content-zone field whose dual
-  shadows (light top-left from `surface`, dark bottom-right from `ink`) are a
-  real CSS box-shadow; native cards near-invisible (transparency 88) so the
-  field's shadows are the surface.
+**Render.** A freeform slide has no native layout — `render.js` skips it and
+lets the plate primitive rasterise the whole slide from `html`, with the
+institutional chrome (crest, footer, slide number) drawn on top. Chrome
+legibility now samples the plate's own top-right corner luminance (sharp crop)
+to pick the crest variant — the theme palette says nothing about arbitrary
+freeform HTML, and this also sharpened the plated themes.
 
-**Renderer affordances added (one shared groundwork commit).** `card()` honours
-`shape.card_fill` with a `transparency`, so plated themes can frost or vanish
-their native panels. Plate templates receive `{{box.*}}` — the content region in
-CSS px — so a template can panel exactly the native content area.
+**Model prompt.** `writeSlide` branches for freeform: it is the one deliberate
+exception to the no-layout rule. The prompt describes the 1280×720 canvas, the
+sandboxed subset (inline CSS only; scripts and network blocked by the plate
+CSP), legible text sizes (44px+ headline, 18–24px body), and the chrome overlay
+margins. The planner is told to use freeform sparingly for hero moments.
 
-**Two real bugs found and fixed during verification.**
-1. `content()` returns `bottom`+`y`, not `h`, so `{{box.h}}` interpolated to
-   `NaN` and every content-zone panel (frost/board/field/halo) rendered
-   invisible while the mesh still looked right. `boxPx` now derives `h =
-   bottom - y`. (The first glass/clay/aurora vision passes passed *despite*
-   their central panel being missing.)
-2. A relative `cacheDir` produced a malformed `file://.plate-cache/…` URL (the
-   directory became the URL host) and Chrome screenshotted a blank dark page.
-   `renderPlate` now resolves the cache dir absolutely. This only bit
-   diagnostics that passed a relative dir; the pipeline's default is absolute.
+**UI.** The outline review offers the type with a per-slide rasterisation
+warning and a whole-deck conversion button that confirms the same trade-off
+("no text editable in PowerPoint afterwards — maximum visual impact,
+editability deliberately traded away"). The slide editor edits `html` in a
+monospace field and repeats the warning.
 
-Also fixed while verifying: flow-ltr step titles and bodies were never
-fit-scaled and wrapped/clipped at six steps (the same unfitted-text trap as the
-cards/compare titles). Titles now shrink by measured width with a pessimistic
-safety factor (fitScale's height logic lets a word break mid-word), bodies are
-fit-scaled to their box. This is a layout fix, not a theme fix, and benefits
-every theme.
+**Verified.** `npm test` 27/27 — added test/freeform.test.js: html-required,
+forbid-on-other-types, empty and oversized html errors, mixed native+freeform
+decks, and a sandbox test that renders a page whose `<script>` tries to paint
+it red and asserts the pixels stay blue. Rendered a real deck mixing a native
+title/section with a freeform hero through Chrome → pptx → LibreOffice → PNG
+and vision-checked with mimo-v2.5: the hero's gradient, frosted chip, headline
+and paragraph all present, native neighbours untouched, chrome footer overlaid.
+The crest on the dark hero initially rendered faint (full-colour mark on dark);
+chrome now samples the plate luminance and picks the reversed variant.
 
-**Verified per theme** by rendering `decks/raytracing-ai` through
-Chrome → pptx → LibreOffice → PNG and vision-checking with `mimo-v2.5`: frosted
-panels + blur (glass), the multi-stop mesh (aurora), the clay board with inset
-highlight (clay), and the embossed field with visible dual shadows (neumorphism)
-all render with native text readable on every slide. The neumorphic dual
-shadows initially read flat — ink_muted was too close to the page gray and the
-offsets too small for a ~1146px field; using `ink` for the dark shadow and
-40px/72px offsets fixed it, confirmed by pixel-sampling the plate PNG.
-
-`npm test` 21/21 (8 chat + 6 slides + 7 plate).
-
-**Honest limitation:** the four themes are verified on `warm-humanist`'s grid
-and `decks/raytracing-ai`'s slide mix only. Dark mode (`mode: dark`) reuses the
-same token-interpolated templates, so plates adapt by construction, but dark
-renders were not visually inspected. The 6-step LTR flow slide fits only
-because titles/bodies are now aggressively shrunk (small but contained) — a
-deck with more than six steps or very long step bodies will still exceed the
-flow layout's capacity; that is a layout-engine concern, not a theme one.
+**Honest limitations.** The crest's absolute legibility on a freeform plate is
+bounded by the placeholder brand assets, which are semi-transparent by design
+(the same "faded" crest appears on native dark section dividers) — the
+variant *selection* is verified, the asset opacity is a brand concern. The
+whole-deck freeform path (outline conversion) relies on the author model
+writing good HTML for every slide; quality of model-written freeform HTML was
+not visually verified this session (a hand-written hero was). No browser tool —
+UI verified structurally (build + all endpoints).
 
 ## Context to read before starting
 
 - `AGENTS.md` — the three-layer rule is the thing that must not be violated.
-- `docs/TRAPS.md` — fit traps, vision-model trust, and "chrome colour derives
-  from the painted background".
-- `themes/{glassmorphism,aurora-mesh,claymorphism,neumorphism}.yaml` — the
-  plate-theme contract references.
-- `src/plate.js` — `boxPx`, the `enabled` switch, the absolute cache-dir
-  resolve.
-- `src/layouts.js` — `card()` `card_fill`, the flow width-based title shrink.
-- `docs/ROADMAP.md` §3 "Plate-dependent themes (4)" (ticked, with Learned) and
-  "HTML plate renderer" (ticked).
+- `docs/TRAPS.md` — fit traps, vision-model trust, "chrome colour derives from
+  the painted background".
+- `schema/deck.schema.json` — the freeform branch + the `else: not` forbid.
+- `src/render.js` — the freeform layout skip and `plateChromeBg`.
+- `src/ai/generate.js` — the freeform writer branch + planner guidance.
+- `app/web/src/views/Outline.jsx`, `app/web/src/components/SlideEditor.jsx` —
+  the trade-off copy.
+- `docs/ROADMAP.md` §4 "Freeform slides" (ticked, with Learned).
 
-## NEXT TASK — freeform slides, then the 15 native themes
+## NEXT TASK — the 15 native themes, then reports
 
-The plate seam is proven and four themes ride it. Next in priority order:
+The deck pipeline is feature-complete (plan → gate → generate → chat → inline
+edit → freeform). Next in priority order:
 
-1. **Freeform slides** — add the `html` schema field + model prompt + UI. The
-   renderer already handles a slide-level `html` override (wins over the theme)
-   and the primitive is done; freeform is schema + generation + UI only.
-2. **15 native themes** — mostly YAML; render each before ticking it. The plate
-   themes are the reference for the plated contract; native themes follow the
-   warm-humanist contract.
-3. **Report renderer + shared research.**
+1. **15 native themes** — mostly YAML; render each before ticking it. The
+   plated themes (glassmorphism etc.) are the reference for the plate contract;
+   native themes follow the warm-humanist contract. Verify heading spacing per
+   theme/style.
+2. **Report renderer** — donor-`.docx`, fixed section order, no themes. A
+   different review surface.
+3. **Shared research** — one brief feeding both deck and report.
 
-**Look-ahead already recorded:** `slide.html` wins over `tokens.plate`, so
-freeform needs no primitive or renderer rework. Plate cache is keyed with a
-`plate-v1` version tag (bump to invalidate all cached plates).
+**Look-ahead already recorded:** `slide.html` wins over `tokens.plate`, and
+freeform is a first-class type. The plate cache version tag is `plate-v1`
+(bump to invalidate). `plateChromeBg` sampling is general — plate themes get it
+too.
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **Freeform slides** — per-slide and whole-deck, on the plate primitive.
 - **15 native themes** — render each before ticking it.
 - **Report renderer** — donor-`.docx`, fixed section order, no themes.
 - **Shared research** — one brief feeding both deck and report.
 - **Flow layout capacity** — six-step LTR cards are over-capacity for verbose
-  bodies; the fit-shrink contains them but a real fix is a layout question.
+  bodies; contained by fit-shrink, real fix is a layout question.
+- **Model-written freeform HTML quality** — worth a visual check once the
+  freeform generation path is exercised end to end.
 
 ## Gotchas
 
 Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
+- **`toBuffer()` returns a Buffer.** Destructuring `{ data }` off it yields
+  undefined and the surrounding try/catch swallows it — a helper silently
+  falls back. Use `toBuffer({ resolveWithObject: true })` or read the Buffer
+  directly.
 - **A written `.pptx` proves nothing.** Rasterise and look. For plates, the
-  PNGs ARE the proof — vision-check them, and pixel-sample the plate when a
-  subtle effect (dual shadows) may be invisible at preview resolution.
-- **`content()` has no `h`.** Derive `h = bottom - y` before templating; a
-  `NaN` in `{{box.h}}` silently kills the whole panel.
-- **A relative cacheDir breaks the file:// URL.** Always resolve plate cache
-  dirs absolutely.
-- **fitScale's height budget allows multi-line wraps.** For "one line" use a
-  width-based scale, not a height probe.
+  PNGs ARE the proof — vision-check them and pixel-sample subtle effects.
 - **Render + preview into a shared `out/preview/` overwrites the last theme.**
-  Verify one theme at a time, or you will be judging the wrong theme's slides.
+  Verify one theme/deck at a time.
+- **Chrome colour/legibility must derive from what is painted.** On freeform
+  plates that means sampling the raster, not reading the palette.
 - **Vision QA:** prefer `opencode-go/mimo-v2.5` or `gemma4:26b-a4b-it-q4_K_M`.
-- **Chrome colour/legibility must derive from what is painted.** On plate slides
-  the chrome falls back to `surfaces[surface].bg`.
+- **`content()` has no `h`.** Derive `h = bottom - y`; a `NaN` in `{{box.h}}`
+  silently kills the panel.
+- **A relative cacheDir breaks the plate file:// URL.** Resolve absolutely.
 - **No browser tool in this CLI.** UI claims must be structural unless a real
-  screenshot was inspected; backend rendering is verifiable via PNGs.
+  screenshot was inspected.
 - **API binds `FORGE_API_PORT` (5174), never `PORT`.**
-- **Only five themes exist now.** The gallery still has gaps (native themes
-  pending); a theme switcher showing empty entries is expected, not broken.
 - **SearXNG must be running** for research (`npm run searxng`).

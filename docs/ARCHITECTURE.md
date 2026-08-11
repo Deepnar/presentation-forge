@@ -177,10 +177,18 @@ or the slide, in that order of precedence:
   resolved theme (mode-adjusted), keeping the theme YAML the single source of
   colours.
 
+`type: freeform` is a real schema type, not a hidden flag: it requires a
+non-empty `html` field, every other type forbids it, the writer prompt
+describes the sandboxed subset, and the whole slide rasterises — there is no
+native layout at all. The outline review and slide editor state the trade-off
+(no text editing in PowerPoint afterwards) at the point of choosing.
+
 The plate is set as the true slide background (`slide.background = { data }`)
-after the layout paints, so it sits under every shape and the chrome — and the
-chrome derives its legibility on plate slides from the surface's declared `bg`,
-because the flat palette no longer describes what is actually painted.
+after the layout paints, so it sits under every shape and the chrome. Chrome
+legibility on a plate slide is derived from the plate's own top-right corner
+luminance (a sharp sample of the raster), falling back to the surface's
+declared `bg` — for a freeform plate the theme's flat palette says nothing
+about what was actually painted.
 
 ## Deck vs report asymmetry
 

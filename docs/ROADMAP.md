@@ -534,7 +534,7 @@ Constraints held:
 - Pixel band-analysis is a good *targeter* but a poor sole judge — it flags
   design-intended eyebrow/heading spacing and card-boundary adjacency.
 
-### [ ] Freeform slides — the "completely free" mode
+### [x] Freeform slides — the "completely free" mode
 `type: freeform` with an `html` field, rendered via the HTML plate renderer.
 The model writes arbitrary HTML/CSS; no layout vocabulary at all.
 
@@ -547,10 +547,41 @@ can fix a typo in PowerPoint afterwards. Correct for a hero moment, wrong for a
 whole graded submission. The UI must state this at the point of choosing, not
 bury it.
 
-**Unblocked** — the plate primitive (§3) already accepts a slide-level `html`
-override, so freeform is now: add the `html` schema field and the model prompt
-for it. Constrain the model's HTML to the sandboxed subset the primitive already
-enforces — no network, no scripts — since it renders in a real browser.
+Built on the plate primitive (§3), which already accepted a slide-level `html`
+override. `type: freeform` requires a non-empty `html` field in the schema and
+every other type forbids it, so the freeform grammar never leaks into native
+slides (the catalog and the ops schema derive from the schema branch, so the
+model sees it as an ordinary type). The writer prompt is the one deliberate
+exception to the no-layout rule: for a freeform slide it explains the 1280×720
+canvas, the sandboxed subset (inline CSS only — scripts and every network
+request are blocked by the plate CSP), legible text sizes, and the chrome
+overlay margins. The outline review offers the type with the rasterisation
+warning, plus a whole-deck conversion that confirms the same trade-off; the
+slide editor edits `html` directly.
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> Chrome's legibility on a freeform plate can only be known from the raster —
+> the theme's flat palette says nothing about arbitrary HTML. `render.js`
+> samples the plate's own top-right corner luminance (sharp, a small crop) and
+> lets the crest/footer pick their variant from the pixels actually painted,
+> which also sharpened the plated themes. The first version silently did
+> nothing: `toBuffer()` returns a Buffer and destructuring `{ data }` off it
+> yields undefined, so the helper always fell back. The threshold and the crop
+> region matter too — sampling a wide corner let a bright chip push a dark hero
+> plate across the line.
+>
+> "Other types forbid it" is a schema rule, not a prompt rule: html lives only
+> in the freeform branch, and a slide-level `else: not required html` makes the
+> mistake unrepresentable for every other type. The sandbox holds where it
+> matters — a test page whose `<script>` tries to paint itself red renders
+> blue.
+
+Verified by rendering a deck mixing a native title/section with a freeform hero
+through Chrome → pptx → LibreOffice → PNG: the hero's gradient, frosted chip,
+headline and paragraph all present, native neighbours untouched, chrome footer
+(presenter, slide number) overlaid, crest variant now chosen from the plate's
+luminance. The sandbox is proven by the same test that guards the CSP.
 
 ---
 
