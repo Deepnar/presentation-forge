@@ -28,15 +28,21 @@ async function which(bin) {
   }
 }
 
-export async function preview(pptxFile, { outDir, dpi = 110 } = {}) {
-  // Absolute throughout: soffice's -env:UserInstallation needs a real file://
-  // URL, and --outdir is resolved against soffice's cwd, not ours.
-  pptxFile = path.resolve(pptxFile);
-  await access(pptxFile);
-  const dir = path.resolve(outDir ?? path.join(path.dirname(pptxFile), "preview"));
+/**
+ * Convert any Office document to PDF via LibreOffice headless. The one
+ * trustworthy rendering primitive in the repo: the report's TOC page-number
+ * pass and the deck's rasterisation both need a real layout engine.
+ *
+ * Absolute throughout: soffice's -env:UserInstallation needs a real file://
+ * URL, and --outdir is resolved against soffice's cwd, not ours.
+ */
+export async function libreofficeToPdf(file, { outDir, timeout = 180_000 } = {}) {
+  file = path.resolve(file);
+  await access(file);
+  const dir = path.resolve(outDir ?? path.join(path.dirname(file), "preview"));
 
   if (!(await which("soffice"))) {
-    throw new Error("LibreOffice (soffice) not found — required to rasterise slides");
+    throw new Error("LibreOffice (soffice) not found — required to convert to PDF");
   }
 
   await rm(dir, { recursive: true, force: true });
@@ -50,21 +56,27 @@ export async function preview(pptxFile, { outDir, dpi = 110 } = {}) {
     "--headless", "--norestore", "--invisible",
     "--convert-to", "pdf",
     "--outdir", dir,
-    pptxFile,
-  ], { timeout: 180_000 });
+    file,
+  ], { timeout });
 
-  const pdf = path.join(dir, path.basename(pptxFile).replace(/\.pptx$/i, ".pdf"));
+  const pdf = path.join(dir, path.basename(file).replace(/\.(pptx|docx)$/i, ".pdf"));
   await access(pdf).catch(() => {
     throw new Error("LibreOffice produced no PDF — conversion failed");
   });
+
+  await rm(profile, { recursive: true, force: true });
+  return pdf;
+}
+
+export async function preview(pptxFile, { outDir, dpi = 110 } = {}) {
+  const dir = path.resolve(outDir ?? path.join(path.dirname(pptxFile), "preview"));
+  const pdf = await libreofficeToPdf(pptxFile, { outDir: dir });
 
   if (await which("pdftoppm")) {
     await run("pdftoppm", ["-png", "-r", String(dpi), pdf, path.join(dir, "slide")], { timeout: 180_000 });
   } else {
     throw new Error("pdftoppm not found (install poppler) — required to split the PDF into slides");
   }
-
-  await rm(profile, { recursive: true, force: true });
 
   const pngs = (await readdir(dir)).filter((f) => /^slide-\d+\.png$/.test(f)).sort();
 
