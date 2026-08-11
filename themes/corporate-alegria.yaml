@@ -1,0 +1,75 @@
+# Corporate Alegria — bold flat corporate optimism.
+# Bright blue and orange on white, chunky geometric sans, friendly shapes —
+# the "Alegria" flat-illustration aesthetic turned into a theme.
+
+name: corporate-alegria
+label: Corporate Alegria
+summary: Bold flat corporate optimism — bright blue and orange on white.
+
+tokens:
+  palette:
+    bg: "#FFFFFF"
+    surface: "#F0F4F8"
+    ink: "#1A2B4A"          # navy
+    ink_muted: "#5C6B84"
+    accent: "#2D6BFF"       # bright blue
+    accent_alt: "#FF7A00"   # orange
+    rule: "#E1E8F0"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1A2B4A", ink: "#FFFFFF", muted: "#B9C6DC", accent: "#FF7A00" }
+    section: { bg: "#2D6BFF", ink: "#FFFFFF", muted: "#D3E0FF" }
+
+  dark:
+    bg: "#101B30"
+    surface: "#1A2742"
+    ink: "#EDF1FA"
+    ink_muted: "#9AA8C4"
+    accent: "#4D83FF"
+    accent_alt: "#FF8C26"
+    rule: "#FFFFFF20"
+    on_accent: "#101B30"
+
+  type:
+    display:  { family: "IBM Plex Sans", weight: 700, size: 40, line: 1.08, tracking: -0.8 }
+    heading:  { family: "IBM Plex Sans", weight: 700, size: 30, line: 1.12, tracking: -0.4 }
+    subhead:  { family: Inter,           weight: 500, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,           weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,           weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Sans", weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "IBM Plex Sans", weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.16, pill: 0.40, chip: 0.10 }
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 12, offset: 3, angle: 90, color: "1A2B4A", opacity: 0.10 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: optimistic, energetic, friendly, corporate
+  density: medium
+  prefers:
+    - confident, forward-looking claims
+    - bright card breakdowns
+    - simple memorable phrasing
+  avoid:
+    - cynicism or negative framing
+    - jargon walls
+    - more than two accent colours
+  headline_style: >
+    Optimistic and bold. "Light, Faster, Together" over "An Introduction to
+    Ray Tracing". Say it like a team announcement.
+  body_style: >
+    Full sentences, warm and clear. End on a positive.
