@@ -1,0 +1,77 @@
+# Art Deco — gold, black and geometric luxury.
+# Bodoni Moda display serif, wide-tracked lettering, ivory pages and a gold
+# accent. Geometry and elegance; the title is black with gold, the section a
+# gold field with black text.
+
+name: art-deco
+label: Art Deco
+summary: Gold, black and geometric luxury — Bodoni Moda on ivory.
+
+tokens:
+  palette:
+    bg: "#F3EDDE"          # ivory
+    surface: "#FCF8EC"
+    ink: "#201D18"
+    ink_muted: "#716A5A"
+    accent: "#C9A227"      # gold
+    accent_alt: "#201D18"  # black
+    rule: "#D9CFB6"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#201D18", ink: "#F3EDDE", muted: "#C9C2B0", accent: "#C9A227" }
+    section: { bg: "#C9A227", ink: "#201D18", muted: "#6E5A12" }
+
+  dark:
+    bg: "#1E1C18"
+    surface: "#2A2721"
+    ink: "#F0EADA"
+    ink_muted: "#ACA594"
+    accent: "#D4B23A"
+    accent_alt: "#F0EADA"
+    rule: "#FFFFFF28"
+    on_accent: "#1E1C18"
+
+  type:
+    display:  { family: "Bodoni Moda", weight: 700, size: 40, line: 1.12, tracking: -0.5 }
+    heading:  { family: "Bodoni Moda", weight: 700, size: 30, line: 1.16, tracking: -0.3 }
+    subhead:  { family: Inter,         weight: 400, size: 15, line: 1.45, tracking: 0.2 }
+    body:     { family: Inter,         weight: 400, size: 13, line: 1.6,  tracking: 0.1 }
+    caption:  { family: Inter,         weight: 500, size: 10, line: 1.35, tracking: 0.5 }
+    eyebrow:  { family: Inter,         weight: 600, size: 10, line: 1.2,  tracking: 2.8, transform: upper }
+    stat:     { family: "Bodoni Moda", weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.06, pill: 0.40, chip: 0.06 }
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 14, offset: 3, angle: 90, color: "201D18", opacity: 0.07 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: elegant, luxurious, geometric, refined
+  density: medium
+  prefers:
+    - measured, confident claims
+    - structured comparisons
+    - a touch of ceremony in the wording
+  avoid:
+    - casual or slangy phrasing
+    - more than one accent colour
+    - crowded layouts — deco needs air
+  headline_style: >
+    Polished and exact. "The Geometry of Light" over "Introduction to Ray
+    Tracing". Fewer, finer words.
+  body_style: >
+    Full, well-constructed sentences. Proportion in the prose to match the
+    design.
