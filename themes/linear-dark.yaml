@@ -1,0 +1,75 @@
+# Linear Dark — a precise, product-grade dark UI.
+# Near-black canvas, subtle hairline borders, one violet accent, muted grays.
+# Like Linear's own interface: calm, technical, high-contrast where it counts.
+
+name: linear-dark
+label: Linear Dark
+summary: Precise dark product UI — near-black, hairline borders, violet accent.
+
+tokens:
+  palette:
+    bg: "#17181D"          # near-black
+    surface: "#202228"
+    ink: "#E6E9F0"
+    ink_muted: "#8A8F9C"
+    accent: "#5E6AD2"      # violet
+    accent_alt: "#7C8CF8"  # lighter violet
+    rule: "#FFFFFF14"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#14151A", ink: "#FFFFFF", muted: "#A0A5B1", accent: "#7C8CF8" }
+    section: { bg: "#23262E", ink: "#E6E9F0", muted: "#9AA0AD", accent: "#5E6AD2" }
+
+  dark:
+    bg: "#101116"
+    surface: "#191A20"
+    ink: "#E6E9F0"
+    ink_muted: "#7E8390"
+    accent: "#5E6AD2"
+    accent_alt: "#7C8CF8"
+    rule: "#FFFFFF10"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: Inter,   weight: 700, size: 40, line: 1.08, tracking: -0.8 }
+    heading:  { family: Inter,   weight: 600, size: 30, line: 1.12, tracking: -0.4 }
+    subhead:  { family: Inter,   weight: 400, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,   weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,   weight: 700, size: 10, line: 1.2,  tracking: 1.4, transform: upper }
+    stat:     { family: Inter,   weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.20, pill: 0.40, chip: 0.10 }
+    border: { width: 1, color: "#FFFFFF1F" }        # Linear's hairline borders
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 18, offset: 2, angle: 90, color: "000000", opacity: 0.30 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: precise, calm, technical, product-like
+  density: medium
+  prefers:
+    - sharp, specific claims
+    - structured comparisons and cards
+    - concise technical phrasing
+  avoid:
+    - enthusiasm and exclamation marks
+    - decorative language
+    - long paragraphs — this is an interface, not prose
+  headline_style: >
+    Precise and product-like. "Rendering, at Framer Speed" over "An
+    Introduction to Ray Tracing". Say it like a changelog: exact, brief.
+  body_style: >
+    Short, factual sentences. One idea each.
