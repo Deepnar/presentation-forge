@@ -3,6 +3,7 @@ import { readFile, mkdir, access } from "node:fs/promises";
 import path from "node:path";
 import PptxGenJS from "pptxgenjs";
 import YAML from "yaml";
+import sharp from "sharp";
 import { ROOT, CONFIG } from "./paths.js";
 import { loadTheme, hex } from "./theme.js";
 import { loadDeck } from "./validate.js";
@@ -37,6 +38,31 @@ function deepMerge(a, b) {
     return out;
   }
   return b === undefined ? a : b;
+}
+
+/**
+ * The plate's own top-right luminance, as a dark/light hex the chrome can read.
+ * The theme's flat palette says nothing about a freeform plate, so the crest
+ * and footer pick their legible variant from the pixels actually painted.
+ */
+async function plateChromeBg(png) {
+  try {
+    const meta = await sharp(png).metadata();
+    const w = meta.width, h = meta.height;
+    // The crest sits in the top-right corner; sample its footprint only, so a
+    // bright element lower down cannot push a dark plate across the threshold.
+    const data = await sharp(png)
+      .extract({ left: Math.floor(w * 0.84), top: 0, width: Math.floor(w * 0.16), height: Math.floor(h * 0.16) })
+      .raw()
+      .toBuffer();
+    let lum = 0;
+    for (let i = 0; i < data.length; i += 3) {
+      lum += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+    }
+    return lum / (data.length / 3) < 128 ? "#000000" : "#FFFFFF";
+  } catch {
+    return null;
+  }
 }
 
 export async function render({ deckFile, themeName, mode = "light", out, style, signal }) {
@@ -74,14 +100,15 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
 
   for (const [i, data] of deck.slides.entries()) {
     const layout = layouts[data.type];
-    if (!layout) {
+    if (!layout && data.type !== "freeform") {
       problems.push(`slide ${i + 1}: no renderer for type "${data.type}"`);
       continue;
     }
 
     const slide = pres.addSlide();
     const isTitle = data.type === "title";
-    const isFull = isTitle || data.type === "section" || data.type === "quote" || data.type === "image";
+    const isFreeform = data.type === "freeform";
+    const isFull = isTitle || isFreeform || data.type === "section" || data.type === "quote" || data.type === "image";
     const surface = isTitle ? "title" : data.type === "section" ? "section" : "content";
 
     // Track the background each layout actually paints, so the chrome layer can
@@ -97,7 +124,9 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
 
     try {
-      layout(slide, ctx);
+      // A freeform slide has no native layout — the whole slide rasterises
+      // from its html. Everything else draws natively as usual.
+      if (!isFreeform) layout(slide, ctx);
     } catch (err) {
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
@@ -116,9 +145,10 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
       applyTitleChrome(slide, { brand });
     } else {
       // Chrome picks its legible variant from what is actually painted. On a
-      // plate slide that is the plate, not the theme's flat palette, so it
-      // falls back to the surface's declared bg when one exists.
-      const chromeBg = plate ? (theme.surfaces?.[surface]?.bg ?? theme.palette.bg) : bg;
+      // plate slide the theme's flat palette no longer describes it: prefer
+      // the plate's own corner luminance, falling back to the surface's bg.
+      const plateBg = plate ? (await plateChromeBg(plate.png) ?? theme.surfaces?.[surface]?.bg ?? theme.palette.bg) : null;
+      const chromeBg = plateBg ?? bg;
       applyContentChrome(slide, { brand, theme, identity, data, index: i + 1, total, bg: chromeBg });
     }
 
