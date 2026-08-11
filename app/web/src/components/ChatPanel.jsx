@@ -23,7 +23,7 @@ function formatTokens(n) {
   return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
 }
 
-export default function ChatPanel({ slug, onDeckChanged }) {
+export default function ChatPanel({ slug, onDeckChanged, onClose }) {
   const [thread, setThread] = useState(null);
   const [models, setModels] = useState([]);
   const [defaultModel, setDefaultModel] = useState("");
@@ -125,17 +125,30 @@ export default function ChatPanel({ slug, onDeckChanged }) {
               {slug ? slug : "open a deck to talk about it"}
             </div>
           </div>
-          {slug && (
-            <button
-              onClick={clear}
-              title="Clear thread (keeps standing decisions)"
-              className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-            >
-              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 6h18M8 6V4h8v2m1 0-1 14H8L7 6M10 11v6M14 11v6" />
-              </svg>
-            </button>
-          )}
+          <div className="flex items-center gap-0.5">
+            {slug && (
+              <button
+                onClick={clear}
+                title="Clear thread (keeps standing decisions)"
+                className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M8 6V4h8v2m1 0-1 14H8L7 6M10 11v6M14 11v6" />
+                </svg>
+              </button>
+            )}
+            {onClose && (
+              <button
+                onClick={onClose}
+                title="Collapse panel"
+                className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

@@ -4,126 +4,16 @@ import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.j
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
-import NewDeck from "./NewDeck.jsx";
-import Outline from "./Outline.jsx";
+import { progressLabel } from "./NewDeck.jsx";
+import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 
-export default function Decks({ onDeckChange, refreshToken }) {
-  const [decks, setDecks] = useState(null);
-  const [open, setOpen] = useState(null);
-  const [phase, setPhase] = useState("list"); // "list" | "new" | "outline"
-  const [draft, setDraft] = useState(null);
-
-  useEffect(() => {
-    api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
-  }, []);
-
-  const openDeck = (slug) => {
-    setOpen(slug);
-    onDeckChange?.(slug);
-  };
-
-  if (open) {
-    return (
-      <DeckDetail
-        slug={open}
-        refreshToken={refreshToken}
-        onBack={() => {
-          setOpen(null);
-          onDeckChange?.(null);
-        }}
-      />
-    );
-  }
-
-  if (phase === "new") {
-    return (
-      <NewDeck
-        onPlanned={(slug, plan, theme) => {
-          setDraft({ slug, plan, theme });
-          setPhase("outline");
-        }}
-        onBack={() => setPhase("list")}
-      />
-    );
-  }
-
-  if (phase === "outline") {
-    return (
-      <Outline
-        slug={draft.slug}
-        plan={draft.plan}
-        initialTheme={draft.theme}
-        onDone={(slug) => {
-          setPhase("list");
-          openDeck(slug);
-        }}
-        onBack={() => setPhase("new")}
-      />
-    );
-  }
-
-  return (
-    <div className="mx-auto max-w-6xl px-8 py-9">
-      <header className="mb-7 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-[1.7rem] font-semibold tracking-tight">Decks</h1>
-          <p className="mt-1 text-sm text-fg-muted">
-            Each deck is a folder under <code className="text-fg-faint">decks/</code> holding
-            a <code className="text-fg-faint">deck.yaml</code>.
-          </p>
-        </div>
-        <Button variant="primary" onClick={() => setPhase("new")}>
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          New deck
-        </Button>
-      </header>
-
-      {decks === null && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {[0, 1, 2].map((i) => <div key={i} className="skeleton h-[7.5rem] rounded-card" />)}
-        </div>
-      )}
-
-      {decks?.length === 0 && (
-        <Empty
-          title="No decks yet"
-          hint="Start with a brief — the outline review gate keeps the model's structure from reaching the renderer until you approve it."
-          action={<Button variant="primary" onClick={() => setPhase("new")}>New deck</Button>}
-        />
-      )}
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {decks?.map((d) => (
-          <button
-            key={d.slug}
-            onClick={() => openDeck(d.slug)}
-            className="group rounded-card border border-line bg-panel p-4 text-left transition hover:border-line-strong hover:bg-raised"
-          >
-            <div className="line-clamp-2 text-[15px] font-medium leading-snug text-fg">
-              {d.title}
-            </div>
-            <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-fg-faint">
-              <span className="tabular-nums">{d.slides} slides</span>
-              {d.theme && (
-                <>
-                  <span className="text-line-strong">·</span>
-                  <span className="font-mono">{d.theme}</span>
-                </>
-              )}
-            </div>
-            <div className="mt-3 border-t border-line pt-2.5 text-[10.5px] text-fg-faint">
-              {new Date(d.updated).toLocaleString()}
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function DeckDetail({ slug, onBack, refreshToken }) {
+/**
+ * One deck: header with theme/style + render + download, a Report panel (the
+ * land target of the home Report mode), then the live slide grid with lightbox,
+ * inline editing and presenter picks. Rendering happens through the real API;
+ * "rendering…" and the problems list are sync feedback, not decoration.
+ */
+export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -135,11 +25,14 @@ function DeckDetail({ slug, onBack, refreshToken }) {
   const [zoom, setZoom] = useState(null);
   const [editing, setEditing] = useState(null); // slide index in the editor
   const [identity, setIdentity] = useState(null);
+  const [reportExists, setReportExists] = useState(hasReport);
   const renderTimer = useRef(null);
 
+  useEffect(() => setReportExists(hasReport), [hasReport]);
+
   useEffect(() => {
-    // refreshToken bumps after a chat turn, so a deck edited in the right rail
-    // shows its new slides here without a manual reload.
+    // refreshToken bumps after a chat turn or report generate, so a deck
+    // changed elsewhere shows its new slides here without a manual reload.
     api.deck(slug).then((r) => {
       const stamp = Date.now();
       setData({
@@ -203,7 +96,7 @@ function DeckDetail({ slug, onBack, refreshToken }) {
 
   if (!data) {
     return (
-      <div className="mx-auto max-w-6xl px-8 py-9">
+      <div className="mx-auto max-w-6xl px-10 py-10">
         <div className="skeleton h-8 w-80 rounded-lg" />
         <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2, 3, 4, 5].map((i) => <SlideSkeleton key={i} />)}
@@ -215,6 +108,8 @@ function DeckDetail({ slug, onBack, refreshToken }) {
   const deck = data.deck;
   const slides = deck.slides;
   const types = slides.map((s) => s.type);
+  const themeName = theme || deck.theme;
+  const themeLabel = themes.find((t) => t.name === themeName)?.label ?? themeName;
 
   function onMove(i, dir) {
     const next = moveSlide(slides, i, dir);
@@ -230,21 +125,24 @@ function DeckDetail({ slug, onBack, refreshToken }) {
     commitDeck({ ...deck, slides: setPresenter(slides, i, presenter) });
   }
 
+  const selectCls =
+    "appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-sm text-fg outline-none transition hover:border-line-strong focus:border-accent";
+
   return (
-    <div className="mx-auto max-w-6xl px-8 py-9">
+    <div className="mx-auto max-w-6xl px-10 py-10">
       <button
         onClick={onBack}
-        className="mb-4 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg"
+        className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 18 9 12l6-6" />
         </svg>
-        All decks
+        Home
       </button>
 
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <h1 className="text-[1.7rem] font-semibold leading-tight tracking-tight">
+          <h1 className="text-[1.5rem] font-semibold leading-tight tracking-tight">
             {deck.title}
           </h1>
           <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] text-fg-muted">
@@ -253,6 +151,12 @@ function DeckDetail({ slug, onBack, refreshToken }) {
               <>
                 <span className="text-line-strong">·</span>
                 <span className="tabular-nums">{deck.sections.length} sections</span>
+              </>
+            )}
+            {themeLabel && (
+              <>
+                <span className="text-line-strong">·</span>
+                <span>{themeLabel}</span>
               </>
             )}
             {syncing && (
@@ -268,16 +172,14 @@ function DeckDetail({ slug, onBack, refreshToken }) {
             <select
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
-              className="appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-sm text-fg outline-none transition hover:border-line-strong focus:border-accent"
+              className={selectCls}
             >
               <option value="">from deck.yaml</option>
               {themes.map((t) => (
                 <option key={t.name} value={t.name}>{t.label}</option>
               ))}
             </select>
-            <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
           </div>
 
           <div className="relative">
@@ -285,16 +187,14 @@ function DeckDetail({ slug, onBack, refreshToken }) {
               value={style}
               onChange={(e) => setStyle(e.target.value)}
               title="Style — a cross-cutting density/layout variant on top of the theme"
-              className="appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-sm text-fg outline-none transition hover:border-line-strong focus:border-accent"
+              className={selectCls}
             >
               <option value="">theme default</option>
               {styles.map((s) => (
                 <option key={s.name} value={s.name}>{s.label}</option>
               ))}
             </select>
-            <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
           </div>
 
           <Button variant="primary" onClick={rerender} disabled={busy}>
@@ -306,13 +206,21 @@ function DeckDetail({ slug, onBack, refreshToken }) {
             href={`/api/decks/${slug}/download/deck.pptx`}
             className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-sm text-fg-muted transition hover:border-line-strong hover:text-fg"
           >
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16" />
-            </svg>
+            <DownloadIcon className="h-3.5 w-3.5" />
             .pptx
           </a>
         </div>
       </header>
+
+      <ReportPanel
+        slug={slug}
+        hasReport={reportExists}
+        defaultDepth={data.meta?.reportDepth ?? "full"}
+        onGenerated={() => {
+          setReportExists(true);
+          onDeckChanged?.();
+        }}
+      />
 
       {problems.length > 0 && (
         <Panel className="mt-5 border-amber/30 bg-amber/5 p-3.5">
@@ -338,7 +246,7 @@ function DeckDetail({ slug, onBack, refreshToken }) {
           {slides.map((slide, i) => {
             const src = data.slides[i];
             return (
-              <div key={i} className="rounded-card border border-line bg-panel p-2">
+              <div key={i} className="rounded-[var(--radius-lg)] border border-line bg-panel p-2">
                 <button
                   onClick={() => setZoom(i)}
                   className="block w-full text-left"
@@ -420,6 +328,140 @@ function DeckDetail({ slug, onBack, refreshToken }) {
         />
       )}
     </div>
+  );
+}
+
+function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
+  const [models, setModels] = useState([]);
+  const [defaultModel, setDefaultModel] = useState("");
+  const [model, setModel] = useState("");
+  const [depth, setDepth] = useState(defaultDepth ?? "full");
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+  const [result, setResult] = useState(null);
+  const [job, setJob] = useState(null);
+
+  useEffect(() => {
+    api.models()
+      .then((r) => {
+        setModels(r.models ?? []);
+        setDefaultModel(r.default ?? "");
+      })
+      .catch(() => {});
+  }, []);
+
+  async function generate() {
+    setBusy(true);
+    setError("");
+    setStatus("Queued…");
+    const j = api.generateReport(
+      slug,
+      { depth, model: model || undefined },
+      { status: (p) => setStatus(progressLabel(p)) },
+    );
+    setJob(j);
+    try {
+      await j.promise;
+      onGenerated();
+    } catch (err) {
+      setError(err.name === "AbortError" ? "Cancelled." : err.message);
+      setStatus("");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function renderDoc() {
+    setBusy(true);
+    setError("");
+    try {
+      const r = await api.renderReport(slug);
+      setResult(r);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function stop() {
+    job?.abort();
+    setStatus("");
+  }
+
+  const selectCls =
+    "appearance-none rounded-lg border border-line bg-sunken py-1.5 pl-3 pr-8 text-[12.5px] text-fg outline-none transition hover:border-line-strong focus:border-accent";
+
+  return (
+    <Panel className="mt-6 p-4">
+      <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-fg-faint">Report</div>
+
+      {!hasReport ? (
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="text-[13px] text-fg-muted">Generate a graded report from this deck's research and outline.</span>
+          <div className="relative">
+            <select value={depth} onChange={(e) => setDepth(e.target.value)} title="Report depth" className={selectCls}>
+              <option value="full">Full depth</option>
+              <option value="brief">Brief</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+          </div>
+          <div className="relative">
+            <select value={model} onChange={(e) => setModel(e.target.value)} title="Which model writes the report" className={selectCls}>
+              <option value="">auto · {defaultModel}</option>
+              {models.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+          </div>
+          <Button variant="primary" size="sm" onClick={generate} disabled={busy}>
+            {busy && <Spinner />}
+            {busy ? "Generating…" : "Generate report"}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3">
+          {result ? (
+            <span className="text-[13px] tabular-nums text-fg-muted">
+              {result.sections.length} sections · {result.pages} pages
+            </span>
+          ) : (
+            <span className="text-[13px] text-fg-muted">A report already exists for this deck.</span>
+          )}
+          <Button variant="outline" size="sm" onClick={renderDoc} disabled={busy}>
+            {busy && <Spinner />}
+            {busy ? "Rendering…" : "Render .docx"}
+          </Button>
+          {result && (
+            <a
+              href={`/api/decks/${slug}/download/report.docx`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-[12.5px] text-fg-muted transition hover:border-line-strong hover:text-fg"
+            >
+              <DownloadIcon className="h-3.5 w-3.5" />
+              Download report.docx
+            </a>
+          )}
+        </div>
+      )}
+
+      {status && (
+        <div className="mt-2.5 flex items-center gap-2 text-[12px] text-fg-muted">
+          <Spinner /> {status}
+        </div>
+      )}
+
+      {error && (
+        <div className="mt-2.5 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">
+          {error}
+        </div>
+      )}
+
+      {result?.problems?.length > 0 && (
+        <ul className="mt-2.5 space-y-1 text-[11.5px] leading-relaxed text-amber">
+          {result.problems.map((p, i) => <li key={i}>{p}</li>)}
+        </ul>
+      )}
+    </Panel>
   );
 }
 
