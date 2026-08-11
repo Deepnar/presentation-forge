@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "report.schema.json",
+  "title": "Report content",
+  "description": "Content contract for a report drawn on the institutional .docx template. Unlike a deck there is no layout: the renderer injects these sections into the donor's body in the fixed order below, and that order is what is graded.",
+  "type": "object",
+  "required": ["title", "content"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 150,
+      "description": "Appears on the cover page, plain text like the template's own title line."
+    },
+    "subtitle": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Abstract": { "$ref": "#/definitions/section" },
+        "Acknowledgement": { "$ref": "#/definitions/section" },
+        "Introduction": { "$ref": "#/definitions/section" },
+        "Theoretical Background": { "$ref": "#/definitions/section" },
+        "Application": { "$ref": "#/definitions/section" },
+        "Future Scope": { "$ref": "#/definitions/section" },
+        "Conclusion": { "$ref": "#/definitions/section" },
+        "References": { "$ref": "#/definitions/section" }
+      }
+    }
+  },
+  "definitions": {
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paragraphs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": { "type": "string", "minLength": 1, "maxLength": 4000 }
+        },
+        "table": {
+          "$ref": "#/definitions/table"
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 40,
+          "items": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "description": "A list rendered as plain paragraphs; the References section uses this for its numbered source lines."
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["header", "rows"],
+      "properties": {
+        "caption": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Rendered centred and italic above the table, like the template's figure captions."
+        },
+        "header": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": { "type": "string", "maxLength": 800 }
+          }
+        }
+      }
+    }
+  }
+}

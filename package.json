@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test",
     "render": "node src/render.js",
+    "report": "node src/report.js",
     "preview": "node src/preview.js",
     "fonts": "node tools/install-fonts.mjs",
     "brand": "node tools/prep-brand.mjs",
