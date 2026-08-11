@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, readdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile, readdir, access } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
@@ -10,6 +10,7 @@ import { loadIdentity, deepMerge } from "./identity.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
+import { renderReport } from "../report.js";
 
 /**
  * Orchestration shared by the CLI and the API: creating a deck from a brief and
@@ -217,6 +218,7 @@ Usage:
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
+  node src/ai/pipeline.js report <slug> [--donor <path>] [--no-toc]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
   generate  approved outline → deck.yaml, rendered and rasterised
@@ -224,6 +226,9 @@ Usage:
                       the rendered slides and fix them via a content turn
   chat      one conversational turn against an existing deck: edits deck.yaml,
             maintains the deck's thread (chat.jsonl, decisions.md) and renders
+  report    draw decks/<slug>/report.yaml on the institutional .docx donor
+            (gitignored reference/) → decks/<slug>/out/report.docx
+            --no-toc  skip the table of contents (and the LibreOffice pass)
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
@@ -240,10 +245,12 @@ function parseArgs(argv) {
     else if (a === "--max-slides") opts.maxSlides = Number(argv[++i]);
     else if (a === "--model") opts.model = argv[++i];
     else if (a === "--plan") opts.plan = argv[++i];
+    else if (a === "--donor") opts.donor = argv[++i];
     else if (a === "--sources") {
       while (argv[i + 1] && !argv[i + 1].startsWith("--")) opts.sources.push(argv[++i]);
     } else if (a === "--research") opts.research = true;
     else if (a === "--no-render") opts.render = false;
+    else if (a === "--no-toc") opts.toc = false;
     else if (a === "--critic") opts.critic = true;
     else if (a === "--help" || a === "-h") { console.log(USAGE); process.exit(0); }
     else opts._.push(a);
@@ -305,6 +312,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       for (const c of r.changes) process.stdout.write(`  ${c}\n`);
       if (r.decisions?.length) process.stdout.write(`promoted: ${r.decisions.join("; ")}\n`);
       if (r.summary) process.stdout.write(`summary: ${r.summary}\n`);
+    } else if (cmd === "report") {
+      if (!opts.slug) { console.error(USAGE); process.exit(2); }
+      const reportFile = path.join(DECKS, opts.slug, "report.yaml");
+      try {
+        await access(reportFile);
+      } catch {
+        process.stderr.write(`no decks/${opts.slug}/report.yaml — write the report content first\n`);
+        process.exit(2);
+      }
+      const r = await renderReport({ reportFile, donor: opts.donor, toc: opts.toc !== false });
+      process.stdout.write(`report decks/${opts.slug}/out/report.docx — ${r.sections.join(" → ")}\n`);
+      for (const p of r.problems) process.stderr.write(`  ! ${p}\n`);
     } else {
       console.error(USAGE);
       process.exit(2);
