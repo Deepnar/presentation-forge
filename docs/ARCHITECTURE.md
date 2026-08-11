@@ -210,8 +210,36 @@ They are not two flavours of the same artefact.
 | Renderer | pptxgenjs from theme tokens | donor .docx, body injected |
 | Themes | 20 | not applicable |
 
-Both share the research and outline stages, so one brief produces both — which
-is the actual submission workflow.
+Both are generated from the same research pass, so one brief produces both —
+which is the actual submission workflow.
+
+## The report generator
+
+`src/ai/report.js` is the report's half of the generation pipeline, mirroring
+the deck writer's decomposition (`generate.js`): a plan call fixes the title
+and which of the eight fixed sections carry content, then one call per section
+constrained to that section's own grammar. Depth is a parameter, not a second
+generator — the same function with different schema bounds and a different
+prompt:
+
+- **full** — three-to-six paragraphs (target four) and a table where one earns
+  its place;
+- **brief** — a headline statement plus three short supporting sentences, never
+  a table, and References capped at six entries.
+
+Both densities write the same `decks/<slug>/report.yaml` shape and draw
+unchanged through the renderer. The depth used is remembered in `meta.yaml`
+(`reportDepth`) so a later `--generate` keeps the same budget.
+
+**Shared research orchestration.** The report generator reads the same
+`research/notes.md`, the same approved `plan.yaml` and the same merged identity
+the deck used, and refuses to run without them — the outline gate is the human
+gate for both artefacts. The model only ever sees a bounded excerpt of the
+research (`excerptResearch` in `src/ai/research.js`); the full artefact stays
+whole on disk, because a research pass can outgrow the model's context window
+and an unbounded prompt collapses generation. Reachable as
+`forge report <slug> --generate [--depth full|brief]` (CLI) and
+`POST /api/decks/:slug/report/generate` (API, SSE like deck generation).
 
 ## The report renderer
 
@@ -246,8 +274,8 @@ reproduce the donor's blank second page.
 Content shape (`schema/report.schema.json`): each of the eight sections is
 `paragraphs` plus an optional borderless `table` (bold header, like the
 donor's own content table); `References` additionally accepts `entries`.
-The renderer is depth-agnostic, so "Report content depth" — the roadmap item
-after this one — is a pure generator parameter.
+The renderer is depth-agnostic, so both report densities — full and brief —
+draw through it without knowing which they are.
 
 Reachable like the deck path: `forge report <slug>` (CLI), and on the API
 `GET/PUT /api/decks/:slug/report` plus `POST /api/decks/:slug/report/render`
@@ -325,6 +353,8 @@ immediately, and re-renders on a short debounce.
 | `brand/logos/` | yes | raw supplied marks |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
+| `decks/<slug>/plan.yaml` | yes | the approved outline |
+| `decks/<slug>/research/` | yes | the shared research pass (notes.md + sources.json) both artefacts draw from |
 | `decks/<slug>/out/` | no | rendered artefacts |
 | `.plate-cache/` | no | headless-Chrome plate PNGs, keyed by content hash |
 | `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |

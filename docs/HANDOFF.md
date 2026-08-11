@@ -5,125 +5,131 @@ discipline, commit rules. Then `docs/TRAPS.md`, which will save you hours. Then
 the sections below. This file is overwritten at the end of every session; git
 history preserves older handoffs.
 
+## THE ROADMAP IS COMPLETE
+
+Every roadmap item is ticked and behaviourally validated. `docs/ROADMAP.md`
+has no open entries. The product is end-to-end as the vision describes: a topic
+or pile of raw info goes in, a complete themed deck **and** a graded report
+come out, local-first, with a human gate at the outline before anything
+renders. The submission workflow is one command sequence:
+
+```
+forge new "topic" --research --sources <url...>   # research + outline (gate)
+forge generate <slug>                             # deck.yaml, rendered
+forge report <slug> --generate --depth full       # report.yaml, then the .docx
+```
+
 ## Session summary
 
-State at handoff: **committed and pushed to `origin/main`.** The DOCX report
-renderer is built, tested, and verified against the institutional donor; the
-roadmap item is ticked.
+State at handoff: **committed and pushed to `origin/main`.** The two final
+roadmap items — Shared research and Report content depth — are built, tested,
+and verified end-to-end.
 
-**The report renderer** (`src/report.js` + `schema/report.schema.json`):
+**The report content generator** (`src/ai/report.js`, `generateReport`):
 
-- **Donor approach.** Loads the gitignored `reference/` .docx with jszip,
-  keeps every part except the body byte-identical (headers carry the VML
-  watermark, footer, styles, settings, theme, all five media assets), and
-  rebuilds `word/document.xml` by string surgery: the `<w:document>` opening
-  tag and the body-level `<w:sectPr>` (header/footer refs + page geometry) are
-  preserved verbatim, only the body between them is replaced.
-- **Fixed section order** (the graded constant): Abstract → Acknowledgement →
-  Introduction → Theoretical Background → Application → Future Scope →
-  Conclusion → References. Emitted in that order regardless of file order,
-  present sections numbered 1..N, empty sections skipped gracefully.
-- **Cover page** is identity-driven (meta.yaml over config/identity.yaml):
-  title, "By {team.label}" (the donor's double line), names/roll/signature
-  table, "A {exam_type} Report", subject, guide, "A.Y. {year}".
-- **TOC with real page numbers** — two-pass render through
-  `libreofficeToPdf` (now a shared helper in `src/preview.js`) + pdftotext.
-  The pass file lives in a nested dir because the helper clears its outDir.
-- **CLI + API**: `forge report <slug>` (with `--donor`, `--no-toc`),
-  `GET/PUT /api/decks/:slug/report`, `POST .../report/render`, download via the
-  existing `.../download/report.docx`.
-- **Content shape** mirrors the deck pipeline: `decks/<slug>/report.yaml` is
-  deck.yaml's sibling (same folder as shared research), schema-validated, depth
-  agnostic — so the "Report content depth" item stays a pure generator
-  parameter.
+- Mirrors the deck writer's two-stage decomposition: a plan call fixes the
+  title and which of the eight fixed graded sections carry content (unknown
+  names coerced away, the Abstract/Introduction/Conclusion/References core
+  guaranteed), then one call per section constrained to that section's own
+  grammar. A section that violates its depth grammar is dropped, never fatal.
+- **Depth is a parameter**, not a second generator: full writes three-to-six
+  paragraphs (target four) plus a table where one earns its place; brief
+  writes a headline statement plus three short supporting sentences and never
+  a table (8 KB vs 33 KB for the same report). Remembered in `meta.yaml` as
+  `reportDepth` so a later `--generate` keeps the same budget.
+- **Shared research orchestration**: reads the same `research/notes.md`, the
+  same approved `plan.yaml` and the same merged identity the deck used, and
+  refuses to run without research or an approved plan (clear errors). The
+  existing outline gate is the human gate for both artefacts.
+- **CLI** `forge report <slug> --generate [--depth full|brief] [--no-render]`;
+  **API** `POST /api/decks/:slug/report/generate` (SSE, abort-on-disconnect).
 
-**Verified.** `npm test` 43/43 (10 new report tests). Rendered a real report
-end-to-end from `decks/gpu-demo/report.yaml` (full identity snapshot in a new
-`decks/gpu-demo/meta.yaml`): all 11 chrome parts byte-identical to the donor,
-media intact, document.xml well-formed, opens in LibreOffice, and vision-checked
-with mimo-v2.5 as **visually indistinguishable from the hand-filled donor
-template** — cover structure, TOC table with correct page numbers, headings,
-content table, watermark, banner, footer. Donor-missing and ambiguous-donor
-paths fail with clear messages. API endpoints smoke-tested via curl.
+**Verified end-to-end** on the committed example `decks/green-hydrogen-
+production-how-electrolysis-t-2` (one brief, three explicit sources, one
+research pass → 21-slide deck + full-depth 8-section report):
 
-**Honest limitations.** Word vs LibreOffice pagination can differ by a page, so
-the TOC page numbers are guaranteed consistent with the LibreOffice render, not
-with what Word will show (the donor's own hand-typed TOC is stale in the same
-way). A generated report has no figures — the donor's body images (rId13/14/15)
-are preserved in the zip but unreferenced. The report has no UI yet; only the
-API + CLI surface exists.
+- Deck rendered and vision-checked with mimo-v2.5 across title/cards/compare/
+  chart/timeline/callout/stats/flow/references — all clean after content fixes
+  (see "Honest limitations").
+- Report rendered on the real donor, converted via LibreOffice, vision-checked:
+  complete cover (team double line, names table, subject, guide, year), TOC
+  with correct page numbers on page 3, content tables, watermark + banner +
+  footer intact, References numbered.
+- **Fact agreement**: spot-checked 1789 / 1800 / 1806 / 1888 / 1.23 V /
+  53 kWh/kg / 180 GW by 2030 / voltaic pile / Troostwijk / Lachinov / nanogap /
+  PEM — deck and report agree on all of them.
+- Tests: 65 passing (report-generator 17 + research 4 + the previous 43).
+
+## Honest limitations
+
+- **Deck content quality is the pre-existing weak spot, not the report.** The
+  deck writer produced two slides with Chinese characters leaking in
+  (constrained-decoding pressure), a references slide with 98 sources, and the
+  known flow-layout capacity collision — all fixed by content edits on the
+  example deck, not in the writer. The flow-layout capacity item from the old
+  "remaining known" list is a real layout question that still deserves a pass.
+- **Deck vs report fact agreement is spot-checked, not exhaustive.** The report
+  is grounded (four paragraphs per section, real sources); the deck writer
+  still occasionally invents or mis-assigns (a stats slide said "47 GW" as the
+  "low estimate" — the research actually lists 104 GW as one 2030 projection
+  and 180 GW as another). The two artefacts agree where they overlap, but the
+  deck writer is the looser of the two.
+- **Word vs LibreOffice pagination** can differ by a page, so TOC page numbers
+  are consistent with the LibreOffice render, not Word. Known, expected.
+- **A generated report has no figures** — the donor's body images are preserved
+  in the zip but unreferenced.
+- **No report UI yet.** Only CLI + API exist; the roadmap's (untracked) idea of
+  a report section-reader surface is still open, as are dark-mode/style-variant
+  visual checks and the flow-layout capacity fix.
 
 ## Context to read before starting
 
-- `AGENTS.md` — the three-layer rule is the thing that must not be violated.
-- `docs/TRAPS.md` — fit traps, vision-model trust, "chrome colour derives from
-  the painted background".
-- `docs/ROADMAP.md` §5 "Reports" — the DOCX renderer item is ticked with
-  Learned; Shared research and Report content depth are the next two.
-- `src/report.js` — the renderer; the Learned block in the roadmap explains the
-  two non-obvious traps (jszip surgery, the pPr-outside-p cell drop).
-- `test/donor-fixture.js` + `test/report.test.js` — the synthetic donor and
-  the contract tests; `reference/` is gitignored so a fresh checkout has no
-  real donor and report tests must keep working off the fixture.
-- `decks/gpu-demo/report.yaml` + `meta.yaml` — the working end-to-end example.
+- `docs/ROADMAP.md` §5 "Reports" — both items ticked with Learned blocks that
+  record the two non-obvious traps (the `maxLength: 2000` grammar death, and
+  the unbounded-research context overflow).
+- `docs/TRAPS.md` — the maxLength-2000 entry is the newest; the constrained-
+  decoding section is the load-bearing one.
+- `src/ai/report.js` — the generator; `src/report.js` — the renderer.
+- `src/ai/research.js` — `excerptResearch`, the model-facing research cap.
+- `decks/green-hydrogen-production-how-electrolysis-t-2/` — the working
+  end-to-end example (deck + full report + research committed together).
+- `test/report-generator.test.js`, `test/research.test.js`, `test/report.test.js`
+  + `test/donor-fixture.js` — the contract tests; `reference/` is gitignored so
+  a fresh checkout has no real donor and report tests must keep working off the
+  fixture.
 
-## NEXT TASK — shared research, then report content depth
+## Known open work (not roadmap items)
 
-The deck pipeline and the report renderer are done. Next in priority order:
-
-1. **Shared research** — one brief → one research pass → both deck and report.
-   Placement is settled (research at `decks/<slug>/research/`, report at
-   `decks/<slug>/report.yaml`, both under the same folder); what remains is the
-   orchestration: a brief generating both content trees from the same research
-   with a human gate.
-2. **Report content depth** — depth as a generator parameter (full: four
-   paragraphs + table per section; brief: headline + three sentences). The
-   renderer is already depth-agnostic, so this is purely a generator change.
-3. **Flow layout capacity** — six-step LTR cards are over-capacity for verbose
-   bodies; the fit-shrink contains them, a real fix is a layout question.
-4. **A report UI surface** — the roadmap says reviewing a report means reading
-   sections, not looking at slides, so the UI should be a section reader, not
-   the deck grid. API endpoints exist and are unused.
-
-## Remaining known items
-
-Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
-
-- **Shared research** — one brief feeding both deck and report.
-- **Report content depth** — depth parameter on the generator.
-- **Report UI** — a section-reader surface for report.docx, not the deck grid.
-- **Flow layout capacity** — six-step LTR cards over-capacity for verbose
-  bodies.
-- **Dark-mode / style-variant visual checks** — render+look at each theme in
+- **Report UI** — a section-reader surface for report.docx; API endpoints exist
+  and are unused.
+- **Flow layout capacity** — six-step ttb cards collide with the footer even at
+  short bodies; four steps fit. A layout question, not content.
+- **Deck writer grounding** — occasional invented stats and non-Latin leaks
+  under grammar pressure; the report writer is noticeably tighter.
+- **Dark-mode / style-variant visual checks** — render + look at each theme in
   `dark` mode and under `airy`/`compact` styles.
 
 ## Gotchas
 
 Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
-- **The report donor is gitignored.** `src/report.js` fails loudly when
-  `reference/` has zero or several `.docx` files. Tests must use the synthetic
-  `test/donor-fixture.js`, never the real donor.
-- **`libreofficeToPdf` clears its outDir.** The TOC two-pass must keep the pass
-  document in a directory *above* the PDF outDir, or the pass file vanishes
-  before soffice runs.
-- **A table cell whose `<w:pPr>` escapes `<w:p>` is dropped wholesale.** The
-  whole TOC table rendered as a bare heading for one pass. Verify generated
-  tables by rendering, not by reading the XML.
-- **Page numbers are engine-dependent.** Two-pass TOC numbers are consistent
-  with LibreOffice only; Word may repaginate. Expected, not a bug.
-- **The fitter's family table is a theme dependency.** A new font family not in
-  `FAMILY_CLASS`/`WIDE_SANS` estimates at Inter width and its one-line titles
-  wrap. Add the family when you add the theme.
-- **Chrome contrast is a luminance knife edge.** `luminance(bg) < 0.45` decides
-  the crest/footer variant; a mid-tone accent near the boundary produces
-  gray-on-colour footer text.
-- **A written `.pptx` proves nothing.** Rasterise and look; vision-check each
-  theme on title/section/compare/cards/stats at minimum.
-- **`toBuffer()` returns a Buffer.** Destructuring `{ data }` off it yields
-  undefined and a swallowed try/catch.
-- **Vision QA:** prefer `opencode-go/mimo-v2.5` or `gemma4:26b-a4b-it-q4_K_M`.
-- **No browser tool in this CLI.** UI claims must be structural unless a real
-  screenshot was inspected.
-- **API binds `FORGE_API_PORT` (5174), never `PORT`.**
-- **SearXNG must be running** for research (`npm run searxng`).
+- **`maxLength: 2000` on a string item silently kills Ollama's grammar.** 1999
+  works; 2000 does not, with no error. Any schema work must stay under it and
+  keep the walk-the-schemas test.
+- **Research is unbounded; the model must not see all of it.** `excerptResearch`
+  caps the model-facing text at 80K chars. If you raise a role's `num_ctx`,
+  consider raising the cap too — never remove it.
+- **The report donor is gitignored.** `reference/` must have exactly one `.docx`
+  or the renderer fails loudly. Tests use `test/donor-fixture.js`, never the
+  real donor.
+- **`libreofficeToPdf` clears its outDir.** The report TOC two-pass keeps its
+  pass document above the PDF outDir.
+- **A table cell whose `<w:pPr>` escapes `<w:p>` is dropped wholesale.** Verify
+  generated tables by rendering, not by reading XML.
+- **`forge new` without `--research` gathers no research** — but sources now
+  imply research, so `--sources` alone is enough.
+- **Vision QA:** prefer `opencode-go/mimo-v2.5`; distrust qwen3-vl's false-clean
+  verdicts. Batch slides, never one image — it reports "clean" lazily.
+- **API binds `FORGE_API_PORT`, never `PORT`.**
+- **SearXNG must be running** for meta-search research (`npm run searxng`); the
+  container maps to `127.0.0.1:8888`.

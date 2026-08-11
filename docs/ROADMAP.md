@@ -682,26 +682,64 @@ Content is schema-validated `decks/<slug>/report.yaml` (sibling of deck.yaml,
 so shared research feeds both). CLI `forge report <slug>`, API
 `GET/PUT /api/decks/:slug/report` and `POST .../report/render`.
 
-### [ ] Shared research
+### [x] Shared research
 One brief → one research pass → both deck and report. This is the actual
 submission workflow: the same material is needed in both forms, and researching
 twice wastes minutes and risks the two artefacts disagreeing on facts.
 
-The placement is settled by what now exists: research is already a first-class
-artefact at `decks/<slug>/research/` (notes.md + sources.json, written by
-`createDeck`), and the report renderer draws from `decks/<slug>/report.yaml` as
-deck.yaml's sibling — the same folder, so the same research pass feeds both.
-What remains is the orchestration: one brief generating the deck *and* the
-report content from the same research, with a human gate before either renders.
+The orchestration is now complete. `forge report <slug> --generate` draws
+`decks/<slug>/report.yaml` from the same `research/notes.md` and the same
+approved `plan.yaml` the deck was built from (generator: `src/ai/report.js`,
+`generateReport`). The existing outline gate is the human gate for both — the
+report is never generated before the plan exists, and it renders only on the
+explicit `forge report` step. The API mirrors the CLI with
+`POST /api/decks/:slug/report/generate` (SSE, abort-on-disconnect).
+`--depth full|brief` is remembered in `meta.yaml`. Verified end-to-end on
+`decks/green-hydrogen-production-how-electrolysis-t-2`: one brief, three
+explicit sources, one research pass, and a 21-slide deck plus a full-depth
+8-section report that agree on spot-checked facts (1789, 1.23 V, 53 kWh/kg,
+180 GW by 2030).
 
-### [ ] Report content depth
+> **Learned.** Three things were not obvious beforehand.
+>
+> The research artefact is first-class but its size is unbounded — one pass
+> returned 138 KB of notes, ~40K tokens against the author role's 32K window.
+> Feeding that whole artefact into every model call overflowed context and
+> the model collapsed to a one-token reply. The artefact stays whole on disk;
+> the model sees a bounded excerpt (`src/ai/research.js`, `excerptResearch`).
+> Without the cap, planning itself fails, which looks like a model problem and
+> is a context problem.
+>
+> Supplied sources silently skipped research: `forge new <brief> --sources
+> <url>` without `--research` produced a deck with no research/ dir, and the
+> report generator then failed with "no research/notes.md" for a reason nothing
+> explained. Sources now imply a research pass.
+>
+> "One brief generating both" does not need a second human gate. The outline
+> gate already blocks rendering until a human approves; the report generator
+> simply refuses to run without an approved `plan.yaml` and `research/notes.md`,
+> so the seam stays a disk boundary like the deck's planning status.
+
+### [x] Report content depth
 Reports go deep where decks stay terse. Same content tree, two density budgets:
 the deck gets a headline and three supporting sentences where the report gets
 four paragraphs and a table. Depth is a parameter on the generator, not a
 different generator.
 
-The renderer is already depth-agnostic: a section is any mix of paragraphs and
-an optional table (schema: `paragraphs` + `table.header/rows` + `caption`), and
-empty sections are skipped. Depth is therefore purely a generator parameter —
-full depth writes four paragraphs and a table, brief depth writes a headline
-and three sentences, and both draw unchanged through `src/report.js`.
+The renderer was already depth-agnostic, so depth lives entirely in
+`src/ai/report.js` as the per-section schema bounds and the writer prompt.
+`--depth full|brief` (or the API body) selects the budget, remembered in
+`meta.yaml`: full writes three-to-six paragraphs (target four) and a table
+where one earns its place; brief writes a headline statement plus three short
+supporting sentences and never a table — 8 KB vs 33 KB for the same report.
+Both draw unchanged through `src/report.js`.
+
+> **Learned.** Two constrained-decoding traps, both found by watching a real
+> run fail. A string item with `maxLength: 2000` silently kills Ollama's
+> grammar (1999 works) — no error, just unconstrained output that fails
+> validation; full-depth paragraphs now cap at 1500, guarded by a test that
+> walks every schema. A hard 240 cap on brief sentences truncated them mid-word
+> and the pressure pushed the model into garbage characters (Chinese runs, a
+> citation echo); 450 fits a complete sentence while staying visibly lighter.
+> Brief depth also caps References at six entries, because a twelve-source list
+> is not a brief report.
