@@ -10,6 +10,8 @@ import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
 import { deckSchema } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
+import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
+import { modelChoices } from "../../src/ai/ollama.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -253,6 +255,72 @@ app.post("/api/decks", (req, res) => {
       onProgress: (p) => sse.send("status", p),
     });
     sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
+/* --------------------------------------------------------------- chat panel */
+
+app.get("/api/models", wrap(async (_req, res) => {
+  const { models, default: def } = await modelChoices();
+  ok(res, { models, default: def });
+}));
+
+/** The deck's thread: rolling summary, recent turns, durable decisions. */
+app.get("/api/decks/:slug/chat", wrap(async (req, res) => {
+  const thread = await loadThread(path.join(DECKS, req.params.slug));
+  ok(res, thread);
+}));
+
+/** Forget the transcript but keep standing decisions. */
+app.delete("/api/decks/:slug/chat", wrap(async (req, res) => {
+  await resetThread(path.join(DECKS, req.params.slug));
+  ok(res, {});
+}));
+
+/**
+ * One chat turn. Same SSE transport as generation — the pipeline aborts when
+ * the socket closes, so a vanished client stops burning model time.
+ */
+app.post("/api/decks/:slug/chat", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { instruction, model } = req.body ?? {};
+  if (!instruction?.trim()) {
+    sse.send("error", { error: "body must include an `instruction`" });
+    return sse.close();
+  }
+
+  (async () => {
+    const r = await runChatTurn({
+      slug: req.params.slug,
+      instruction,
+      model,
+      signal: ctrl.signal,
+      onToken: (text) => sse.send("token", { text }),
+      onProgress: (p) => sse.send("status", p),
+    });
+    if (!r.ok) {
+      sse.send("error", { error: r.errors?.join("; ") });
+      return sse.close();
+    }
+    const base = `/api/decks/${req.params.slug}/preview`;
+    sse.send("result", {
+      changes: r.changes,
+      diff: r.diff,
+      stats: r.stats,
+      decisions: r.decisions,
+      summary: r.summary,
+      slides: (r.slides ?? []).map((f) => `${base}/${f}`),
+      thumbs: (r.thumbs ?? []).map((f) => `${base}/thumbs/${f}`),
+      problems: r.problems,
+    });
     sse.close();
   })().catch((err) => {
     if (ctrl.signal.aborted) return;

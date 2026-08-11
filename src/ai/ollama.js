@@ -95,6 +95,22 @@ export async function resolveRole(role) {
 }
 
 /**
+ * The picker's options: every installed local model plus the author role's
+ * default. `model: null` in a request means "the role default", so the UI can
+ * present that as an explicit choice. Installed models are best-effort — a dead
+ * Ollama yields just the default, and requests fail loudly on their own.
+ */
+export async function modelChoices() {
+  const cfg = await config();
+  const def = cfg.roles?.author?.model ?? null;
+  let models = [];
+  try {
+    models = [...(await installed(cfg.host))].sort();
+  } catch { /* offline — the picker just shows the default */ }
+  return { models, default: def };
+}
+
+/**
  * One chat completion against whatever backend the role resolves to.
  *
  * Local Ollama gets `format` (a JSON Schema compiled to a decoding grammar).
