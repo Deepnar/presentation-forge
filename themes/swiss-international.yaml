@@ -1,0 +1,75 @@
+# Swiss International — the International Typographic Style.
+# Helvetica-like sans, strict grid, generous whitespace, hairline rules and a
+# single red accent. Flat and sharp: no rounded corners, no shadows.
+
+name: swiss-international
+label: Swiss International
+summary: Strict grid typography — black on white, hairline rules, one red accent.
+
+tokens:
+  palette:
+    bg: "#FFFFFF"
+    surface: "#F6F6F4"
+    ink: "#141414"
+    ink_muted: "#6B6B6B"
+    accent: "#E63946"      # international red
+    accent_alt: "#1D3557"  # deep blue
+    rule: "#D9D9D4"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#141414", ink: "#FFFFFF", muted: "#B9B9B9", accent: "#E63946" }
+    section: { bg: "#E63946", ink: "#FFFFFF", muted: "#F7C9CC" }
+
+  dark:
+    bg: "#141414"
+    surface: "#1F1F1F"
+    ink: "#F2F2F0"
+    ink_muted: "#A8A8A4"
+    accent: "#E63946"
+    accent_alt: "#6C8BBF"
+    rule: "#FFFFFF24"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: Inter,         weight: 700, size: 40, line: 1.08, tracking: -1.0 }
+    heading:  { family: Inter,         weight: 600, size: 30, line: 1.12, tracking: -0.5 }
+    subhead:  { family: Inter,         weight: 400, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,         weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,         weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,         weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: Inter,         weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0, pill: 0.40, chip: 0 }       # sharp — the style is the grid
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "141414", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: clinical, precise, objective, confident
+  density: medium
+  prefers:
+    - a strong opening claim
+    - data-driven statements
+    - clean two-column comparisons
+  avoid:
+    - decoration, clip-art, drop shadows
+    - more than one accent colour per slide
+    - casual or playful phrasing
+  headline_style: >
+    Declarative and noun-first. "Rasterisation Is the Bottleneck" over
+    "An Introduction to Rasterisation". Short, specific, matter-of-fact.
+  body_style: >
+    Full sentences, plain words. State the claim, give the evidence, stop.
