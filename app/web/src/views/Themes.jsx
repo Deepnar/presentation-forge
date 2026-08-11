@@ -10,15 +10,14 @@ export default function Themes() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-6xl px-8 py-9">
+    <div className="mx-auto max-w-6xl px-10 py-10">
       <header className="mb-7">
-        <h1 className="text-[1.7rem] font-semibold tracking-tight">Themes</h1>
+        <h1 className="text-[1.5rem] font-semibold tracking-tight">Themes</h1>
         <p className="mt-1 max-w-2xl text-sm leading-relaxed text-fg-muted">
-          One YAML file each, split in two halves that never overlap:{" "}
-          <code className="text-fg-faint">tokens</code> drive the renderer,{" "}
-          <code className="text-fg-faint">voice</code> guides the model. Every card
-          below is drawn live from its own tokens, so it cannot drift from what
-          actually renders.
+          A design language is one YAML file, kept in two halves that never
+          overlap: exact machine values drive the renderer, tone guidance steers
+          the model. Every card below is drawn live from the theme's own values,
+          so it cannot drift from what actually renders.
         </p>
       </header>
 

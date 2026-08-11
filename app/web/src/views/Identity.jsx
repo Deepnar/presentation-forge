@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { Button, Field, Spinner } from "../components/ui.jsx";
+import { Button, Field, Spinner, inputCls } from "../components/ui.jsx";
 
 /**
  * Edits config/identity.yaml — the remembered defaults every new deck starts
@@ -50,13 +50,13 @@ export default function Identity() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-8 py-9 pb-28">
+    <div className="mx-auto max-w-3xl px-10 py-10 pb-28">
       <header className="mb-7">
-        <h1 className="text-[1.7rem] font-semibold tracking-tight">Identity</h1>
+        <h1 className="text-[1.5rem] font-semibold tracking-tight">Identity</h1>
         <p className="mt-1 max-w-2xl text-sm leading-relaxed text-fg-muted">
           Defaults for new decks and reports. Any deck can override these in its
-          own <code className="text-fg-faint">meta.yaml</code>. Blank fields are
-          omitted from output rather than rendered empty.
+          own metadata. Blank fields are omitted from output rather than
+          rendered empty.
         </p>
       </header>
 
@@ -141,7 +141,7 @@ export default function Identity() {
 
       {/* Pinned so the action is reachable without scrolling back up. */}
       <div className="fixed inset-x-0 bottom-0 border-t border-line bg-panel/95 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 px-8 py-3.5">
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-10 py-3.5">
           <Button variant="primary" onClick={save} disabled={state.status === "saving"}>
             {state.status === "saving" && <Spinner />}
             Save defaults
@@ -160,9 +160,6 @@ export default function Identity() {
     </div>
   );
 }
-
-const inputCls =
-  "w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";
 
 function Section({ title, hint, children }) {
   return (
