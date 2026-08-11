@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import YAML from "yaml";
-import { validateReport } from "../src/report.js";
+import { REPORT_SECTIONS, validateReport } from "../src/report.js";
 import {
   sanitizeReportPlan,
   sectionSchema,
@@ -65,7 +65,7 @@ function fakeChat(log) {
     if (schema.required?.includes("entries")) {
       return { data: { entries: ["1. NVIDIA. (2022). Ada Lovelace Architecture Whitepaper.", "2. AMD. (2022). RDNA 3 Architecture Whitepaper.", "3. Kirk & Hwu. (2016). Programming Massively Parallel Processors.", "4. Hennessy & Patterson. (2019). Computer Architecture."] } };
     }
-    if (schema.properties?.paragraphs?.items?.maxLength <= 240) {
+    if (schema.properties?.paragraphs?.items?.maxLength < 1000) {
       return { data: { paragraphs: ["A headline statement of the section.", "One supporting sentence.", "A second supporting sentence.", "A third supporting sentence."] } };
     }
     return { data: {
@@ -115,11 +115,11 @@ test("brief depth forbids tables and caps paragraphs short; full depth allows bo
 
   assert.equal(brief.properties.table, undefined);
   assert.equal(brief.properties.paragraphs.maxItems, 4);
-  assert.equal(brief.properties.paragraphs.items.maxLength, 240);
+  assert.equal(brief.properties.paragraphs.items.maxLength, 450);
 
   assert.ok(full.properties.table);
   assert.equal(full.properties.paragraphs.maxItems, 6);
-  assert.equal(full.properties.paragraphs.items.maxLength, 2000);
+  assert.equal(full.properties.paragraphs.items.maxLength, 1500);
 });
 
 test("validateSection: a table is valid at full depth and rejected at brief", () => {
@@ -142,6 +142,19 @@ test("References are entries at any depth; Acknowledgement is short", () => {
   assert.equal(sectionSchema("References", "brief").properties.table, undefined);
   assert.ok(sectionSchema("Acknowledgement", "full").required.includes("paragraphs"));
   assert.equal(sectionSchema("Acknowledgement", "full").properties.table, undefined);
+});
+
+test("no section schema carries a maxLength at or above 2000 — Ollama's grammar silently dies there", () => {
+  for (const depth of ["full", "brief"]) {
+    for (const name of REPORT_SECTIONS) {
+      const big = [];
+      JSON.stringify(sectionSchema(name, depth), (k, v) => {
+        if (k === "maxLength" && v >= 2000) big.push(`${name}/${depth} maxLength ${v}`);
+        return v;
+      });
+      assert.deepEqual(big, []);
+    }
+  }
 });
 
 /* ------------------------------------------------------------- assembly */
@@ -220,7 +233,7 @@ test("generateReport: brief depth is visibly shorter — no tables, sentence-lev
     const sec = onDisk.content[name];
     if (name === "References") continue;
     assert.equal(sec.table, undefined, `${name} must have no table at brief depth`);
-    for (const p of sec.paragraphs) assert.ok(p.length <= 240, `${name} paragraph must be short`);
+    for (const p of sec.paragraphs) assert.ok(p.length <= 450, `${name} paragraph must be short`);
   }
   // And it is visibly lighter than the full report of the same fixture — read
   // the brief file before the full run overwrites it.

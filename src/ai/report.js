@@ -5,6 +5,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { chatJSON } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
+import { excerptResearch } from "./research.js";
 import { REPORT_SECTIONS, validateReport } from "../report.js";
 
 /**
@@ -104,12 +105,19 @@ export function sectionSchema(name, depth) {
       additionalProperties: false,
       required: ["entries"],
       properties: {
-        entries: {
-          type: "array",
-          minItems: 4,
-          maxItems: 12,
-          items: { type: "string", minLength: 1, maxLength: 600 },
-        },
+        entries: brief
+          ? {
+              type: "array",
+              minItems: 3,
+              maxItems: 6,
+              items: { type: "string", minLength: 1, maxLength: 600 },
+            }
+          : {
+              type: "array",
+              minItems: 4,
+              maxItems: 12,
+              items: { type: "string", minLength: 1, maxLength: 600 },
+            },
       },
     };
   }
@@ -140,13 +148,20 @@ export function sectionSchema(name, depth) {
             type: "array",
             minItems: 3,
             maxItems: 4,
-            items: { type: "string", minLength: 1, maxLength: 240 },
+            // 450 rather than 240: a hard 240 cap truncates a long sentence
+            // mid-word, and the resulting pressure pushes the model into
+            // garbage characters. 450 fits a complete sentence and still reads
+            // visibly lighter than a full-depth paragraph (1500).
+            items: { type: "string", minLength: 1, maxLength: 450 },
           }
         : {
             type: "array",
             minItems: 3,
             maxItems: 6,
-            items: { type: "string", minLength: 1, maxLength: 2000 },
+            // Capped well under 2000: Ollama's decoding grammar silently dies at
+            // maxLength 2000 on a string item — no error, just unconstrained
+            // output the model fills with its preferred shape. 1999 works.
+            items: { type: "string", minLength: 1, maxLength: 1500 },
           },
     },
   };
@@ -237,6 +252,8 @@ export async function resolveReportInputs(dir) {
       "research pass as the deck; create the deck with --research first",
     );
   }
+  // The model sees a bounded excerpt; the full artefact stays on disk.
+  research = excerptResearch(research);
 
   const identity = await loadIdentity(dir);
   return { meta, plan, research, identity };
@@ -312,7 +329,7 @@ async function writeSection({ spec, report, research, identity, depth, model, si
     : [
         "This is a BRIEF report — the deck's level of depth in report form. Write ONE headline",
         "statement followed by THREE short supporting sentences: four short items total, each a",
-        "sentence or two. Do not write long paragraphs, and do not add a table.",
+        "single complete sentence. Do not write long paragraphs, and do not add a table.",
       ];
 
   const isAck = spec.name === "Acknowledgement";
