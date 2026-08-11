@@ -28,9 +28,16 @@ function content(theme, brand, { full = false } = {}) {
 
 function card(slide, theme, { x, y, w, h }) {
   const sh = theme.shape ?? {};
+  // A theme may soften its panels (glass needs translucent frost, neumorphism
+  // needs to vanish into a plate-painted field). card_fill defaults to the
+  // opaque surface, which is exactly what every native theme today gets.
+  const fill = sh.card_fill ?? { color: theme.palette.surface };
   const opts = {
     x, y, w, h,
-    fill: { color: hex(theme.palette.surface) },
+    fill: {
+      color: hex(fill.color),
+      ...(fill.transparency != null ? { transparency: fill.transparency } : {}),
+    },
     line: (sh.border?.width ?? 0) > 0
       ? { color: hex(sh.border.color), width: sh.border.width }
       : { type: "none" },
@@ -580,12 +587,23 @@ export const layouts = {
         });
         slide.addText(s.title, {
           x: sx + 0.26, y: y + 0.78, w: sw - 0.52, h: 0.5,
-          ...textStyle(theme, "subhead", { bold: true }), valign: "top",
+          // Narrow ltr step cards are ~1.2in at six steps — an unshrunk subhead
+          // wraps into the body below. Shrink to one line (low min: the fitter
+          // is pessimistic on purpose, tiny beats overflowing).
+          ...textStyle(theme, "subhead", {
+            bold: true,
+            scale: fitScale(s.title, sw - 0.52, 0.5, theme.type.subhead, { min: 0.42 }),
+          }),
+          valign: "top",
         });
         if (s.body) {
           slide.addText(s.body, {
             x: sx + 0.26, y: y + 1.28, w: sw - 0.52, h: sh - 1.5,
-            ...textStyle(theme, "body", { scale: 0.85, color: theme.palette.ink_muted }), valign: "top",
+            ...textStyle(theme, "body", {
+              scale: fitScaleAll(data.steps.map((x) => x.body).filter(Boolean), sw - 0.52, sh - 1.5, theme.type.body, { min: 0.42 }),
+              color: theme.palette.ink_muted,
+            }),
+            valign: "top",
           });
         }
         if (i < n - 1) {

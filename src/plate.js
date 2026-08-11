@@ -138,7 +138,7 @@ export function interpolateTemplate(tpl, theme) {
 }
 
 /** Which plate a slide gets: a slide `html` override wins, then the theme. */
-export function plateHtmlFor({ theme, surface, slide }) {
+export function plateHtmlFor({ theme, surface, slide, box }) {
   if (typeof slide?.html === "string" && slide.html.trim()) {
     return { html: slide.html, kind: "slide" };
   }
@@ -146,12 +146,23 @@ export function plateHtmlFor({ theme, surface, slide }) {
   if (!plate || plate.enabled === false) return null;
   const tpl = (surface && plate.surfaces?.[surface]) || plate.html;
   if (!tpl) return null;
-  return { html: interpolateTemplate(tpl, theme), kind: "theme" };
+  return { html: interpolateTemplate(tpl, { ...theme, box: boxPx(box) }), kind: "theme" };
+}
+
+/**
+ * The content region in CSS pixels (1in = 96px at the plate's viewport), so a
+ * plate template can place a soft panel exactly behind where the native
+ * content draws. Without this the soft-UI themes could not frost/emboss the
+ * actual content area — they would only have a pretty border.
+ */
+function boxPx(box) {
+  if (!box) return null;
+  return { x: Math.round(box.x * 96), y: Math.round(box.y * 96), w: Math.round(box.w * 96), h: Math.round(box.h * 96) };
 }
 
 /** Resolve a plate's source into a rendered PNG path, or null if none. */
-export async function renderSlidePlate({ theme, surface, slide, signal }) {
-  const want = plateHtmlFor({ theme, surface, slide });
+export async function renderSlidePlate({ theme, surface, slide, box, signal }) {
+  const want = plateHtmlFor({ theme, surface, slide, box });
   if (!want) return null;
   if (signal?.aborted) throw new DOMException("aborted", "AbortError");
   const { path: png, cached } = await renderPlate(want.html);

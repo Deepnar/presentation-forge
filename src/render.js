@@ -104,8 +104,9 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
 
     // A plate replaces the flat background: headless Chrome rasterises the
     // theme's (or the slide's) HTML and the PNG becomes the true slide
-    // background, under every shape and the chrome. Text stays native.
-    const plate = await renderSlidePlate({ theme, surface, slide: data, signal });
+    // background, under every shape and the chrome. Text stays native. The
+    // content box rides along so a template can soft-panel the content area.
+    const plate = await renderSlidePlate({ theme, surface, slide: data, box, signal });
     if (plate) {
       const b64 = (await readFile(plate.png)).toString("base64");
       slide.background = { data: b64, path: "plate.png" };
