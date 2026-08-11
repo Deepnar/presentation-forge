@@ -169,6 +169,42 @@ A deck has a lifecycle that is also a disk boundary: `planning` means
 outline gate enforceable — nothing renders until a human approves, and an
 aborted generation can never leave a half-written deck.
 
+## The chat panel — a turn over a per-deck thread
+
+The chat panel is the conversational surface of the same generation pipeline,
+not a second one. `src/ai/chat.js` orchestrates one turn exactly as the vision
+critic does — the instruction is human-typed instead of vision-derived — and
+both call `runTurn` (`src/ai/turn.js`). The look-ahead seam is enforced in code:
+`runChatTurn` requires `deck.yaml` to exist, because *turn = edit an existing
+deck* and *generate = build from empty* are deliberately different paths.
+
+**Memory model — state over transcript.** The thread is three tiers:
+
+| Tier | Holds | Lives in |
+|---|---|---|
+| State | current `deck.yaml` + theme voice + `meta.yaml` | the files themselves |
+| Recent | last 10 turns verbatim | `decks/<slug>/chat.jsonl` |
+| Durable | extracted standing preferences | `decks/<slug>/decisions.md` |
+
+`deck.yaml` is the memory: after a turn the result is in the file the model
+reads every turn, so the transcript only carries intent that has not yet been
+materialised. `chat.jsonl` is one JSON object per line: a `summary` record
+followed by user/assistant pairs. Beyond the 10-turn window, the oldest turns
+collapse into the rolling summary (a `utility`-role call) instead of being
+dropped, so a long session degrades gracefully. Durable preferences are
+extracted each turn by the `utility` role with a tiny bounded schema — a
+one-off request is never promoted — and promoted instructions leave the replay
+window because they already sit in `decisions.md`, which `runTurn` feeds as
+system context.
+
+The server's `/api/decks/:slug/chat` endpoint is SSE over a POST body, the same
+transport generation uses: `token` frames stream the model's working, `status`
+frames report reading/editing/rendering, and the `result` frame carries the
+applied changes, the diff, token stats and the re-rendered previews. A dropped
+socket aborts the turn via the shared `AbortController`, exactly like
+generation. The `forge chat <slug> "<instruction>"` CLI command is the same
+orchestrator headless.
+
 ## Data locations
 
 | Path | Committed | Notes |
@@ -179,4 +215,5 @@ aborted generation can never leave a half-written deck.
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
 | `decks/<slug>/out/` | no | rendered artefacts |
+| `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |
 | `reference/` | yes | institutional templates to check against |

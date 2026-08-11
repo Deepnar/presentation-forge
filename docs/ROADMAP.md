@@ -223,42 +223,46 @@ that collapses to an edge tab, ready for the chat panel. Both states persist to
 
 Depends on nothing; blocks the chat panel, which needs the right rail to exist.
 
-### [ ] Chat panel — the AI wrapper
-A real conversational surface in the right rail: streamed tokens, stop, retry,
-edit-and-resend, visible tool calls, model picker, context-usage indicator.
+### [x] Chat panel — the AI wrapper
+A conversational surface in the right rail: streamed tokens, stop, retry,
+edit-and-resend, visible applied changes, model picker, context-usage
+indicator.
 
-**Scope: per deck.** Each deck owns its thread. A deck is the unit of work and
-the unit of context — a global assistant would need to re-establish which deck is
-being discussed on every turn, and cross-deck memory is a liability rather than a
-feature (last month's GPU deck should not leak into this month's).
+`src/ai/chat.js` orchestrates one turn over a per-deck thread using the same
+`runTurn` primitive the vision critic uses — a chat instruction and a critic fix
+are the same turn from different sources. The server exposes it as SSE over a
+POST body (`/api/decks/:slug/chat`) plus `GET`/`DELETE` for the thread; the CLI
+is `forge chat <slug> "<instruction>"`. The right-rail slot is now `ChatPanel`.
 
-**Memory model — state over transcript.** The naive design replays the whole
-conversation and burns context re-deriving what the file already says. Instead,
-three tiers:
+**Memory model — state over transcript.** deck.yaml is the memory. The thread
+has three tiers: the deck files themselves, `chat.jsonl` holding the last 10
+turns verbatim, and `decisions.md` for standing preferences extracted by the
+utility role (tiny bounded schema; one-off requests are never promoted). Older
+turns collapse into a rolling summary instead of being truncated, so a long
+session degrades gracefully rather than forgetting its first half.
 
-| Tier | Holds | Lives in |
-|---|---|---|
-| State | current `deck.yaml` + theme `voice` + `meta.yaml` | the files themselves |
-| Recent | last ~10 turns verbatim | `decks/<slug>/chat.jsonl` |
-| Durable | extracted standing preferences | `decks/<slug>/decisions.md` |
-
-The key point: **`deck.yaml` is the memory.** After "make slide 4 punchier" the
-model never needs to recall having done it — the result is in the file it reads
-every turn. Transcript only carries intent that has not yet been materialised
-("keep it under 12 slides"), and once such an instruction proves durable it is
-promoted into `decisions.md` and dropped from the replay window.
-
-Older turns collapse into a rolling summary rather than being truncated, so a
-long session degrades gracefully instead of forgetting its first half.
-
-**Turn primitive.** A turn takes `(current deck.yaml, instruction, context)` and
-returns a *validated* new `deck.yaml` plus a diff. This is the same primitive the
-vision critic uses — the critic is simply a turn whose instruction came from a
-model looking at PNGs rather than from a human. Build it once, in the
-orchestrator, before either caller exists.
-
-> **Look-ahead note.** Do not build a one-shot generate-only path. Generation is
-> the first turn on an empty deck, not a separate code path.
+> **Learned.** Three things were not obvious beforehand.
+>
+> The transcript a turn replays must carry *intent, not history*. The deck file
+> is the model's memory, so replaying the whole conversation burns context
+> re-deriving what the file already states. History is the rolling summary plus
+> recent user instructions, with promoted instructions dropped — they already
+> sit in decisions.md, which `runTurn` feeds as system context.
+>
+> Turn and generate are not "the same path at different input sizes". Planning
+> needs its own narrow schemas and writes `plan.yaml`; chat edits a deck that
+> must already exist. `runChatTurn` refuses a missing `deck.yaml`, keeping the
+> seam explicit rather than accidental.
+>
+> The deck is the unit of context, and that extends to research: feeding the
+> deck's `research/notes.md` into every turn grounds edits in the same material
+> the outline was approved on, so a chat edit cannot drift away from the brief.
+>
+> Verified behaviourally: SSE stream → render → preview round-tripped on a real
+> deck; a client abort at 2s stopped the model call with no unhandled error; 11
+> consecutive turns produced exactly the last 10 in `chat.jsonl` plus a summary
+> record; a durable instruction ("keep it under 12 slides") was promoted to
+> `decisions.md` while a one-off edit was not.
 
 ---
 
