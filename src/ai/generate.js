@@ -83,6 +83,8 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     "- `purpose` states what that slide must convey — specific, one sentence.",
     "  It is a brief for the writer, not slide text.",
     "- Vary the types. A deck of nothing but `bullets` is a failure.",
+    "- `freeform` renders the whole slide from the writer's HTML — use it sparingly",
+    "  for a hero moment, never for a whole deck of text.",
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
     voice.density ? `- Density: ${voice.density}.` : "",
   ].filter(Boolean).join("\n");
@@ -132,10 +134,29 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     .map((s, i) => `[${i}] ${s.type}: ${s.headline ?? s.quote ?? "—"}`)
     .join("\n") || "(none yet)";
 
+  // Freeform is the one deliberate exception to the no-layout rule: the model
+  // writes the whole slide as HTML, rasterised by headless Chrome. Everything
+  // else stays declarative content over the theme.
+  const isFreeform = spec.type === "freeform";
+
   const system = [
     "You write the content of ONE presentation slide.",
     "",
-    "Layout, colour, font and spacing are not yours — never mention them.",
+    ...(isFreeform
+      ? [
+          "This slide is FREEFORM: you write the ENTIRE slide as HTML/CSS in the `html` field. " +
+          "Layout, colour and typography are yours here — this is the one exception to the no-layout rule.",
+          "The page is 1280x720 (16:9), full-bleed. Write one self-contained slide:",
+          "- Inline CSS only, in a <style> tag or style attributes.",
+          "- NO <script> tags, no event handlers, no <iframe>, no <link>, no external images or fonts — " +
+            "the renderer's sandbox blocks scripts and every network request.",
+          "- Text must be real HTML text (it is rasterised, not editable later). Use legible sizes: " +
+            "a 44px+ headline, 18-24px body.",
+          "- The institution's crest, footer and slide number are drawn on top after you render, " +
+            "so keep important content out of the top-right corner and the bottom ~50px.",
+          "- One strong hero moment: a headline, one treatment, minimal copy. Impact over density.",
+        ]
+      : ["Layout, colour, font and spacing are not yours — never mention them."]),
     `Emit exactly one append_slide operation with type "${spec.type}".`,
     "",
     catalog,
