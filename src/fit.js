@@ -27,14 +27,20 @@ const FAMILY_CLASS = {
   "IBM Plex Mono": "mono", "JetBrainsMono NF": "mono",
   "Bebas Neue": "condensed", Oswald: "condensed", Anton: "condensed",
   "Archivo Black": "display",
+  // Wider geometric sans (the newer theme gallery). Slightly pessimistic
+  // advances: these run wide, and an underestimated width wraps a one-line
+  // title straight into the element below it.
+  Manrope: "sans", "Space Grotesk": "sans", Poppins: "sans", Outfit: "sans",
+  "DM Sans": "sans", "IBM Plex Sans": "sans",
 };
 
+const WIDE_SANS = new Set(["Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]);
 const classOf = (family) => FAMILY_CLASS[family] ?? "sans";
 
 /** Estimated rendered width, in inches, of a single line. */
 export function measure(text, { family, size, tracking = 0 }) {
   const em = size / 72;
-  const adv = ADVANCE[classOf(family)] * em;
+  const adv = ADVANCE[classOf(family)] * (WIDE_SANS.has(family) ? 1.08 : 1);
   const track = (tracking / 100) * em;
   return String(text).length * (adv + track);
 }
