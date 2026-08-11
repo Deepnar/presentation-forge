@@ -102,6 +102,9 @@ the TUI: they state intent, Hermes launches, monitors, and rotates sessions.
   ~1M (check `~/.hermes/scripts/opencode-sessions.sh <dir>`), do not push it:
   note what it achieved and start a new session with a carry-forward summary
   ("Previously completed: X. Continue with Y.").
+- **Push discipline.** Push to `origin/main` regularly — after each logical
+  commit or small group of commits, never hoard work locally. The remote is
+  the safety net and the user's visibility into progress.
 - **Self-contained prompts.** A fresh opencode session has no memory. Every
   prompt must point at `AGENTS.md`, `docs/HANDOFF.md`, `docs/TRAPS.md` and the
   relevant `docs/ROADMAP.md` item, and restate the task concretely.
