@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { Button, Panel, Spinner, Badge } from "../components/ui.jsx";
+import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import { progressLabel } from "./NewDeck.jsx";
 
 /**
@@ -82,11 +82,11 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-8 py-9">
+    <div className="mx-auto max-w-4xl px-10 py-10">
       <button
         onClick={onBack}
         disabled={busy}
-        className="mb-4 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+        className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg disabled:pointer-events-none disabled:opacity-40"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 18 9 12l6-6" />
@@ -97,7 +97,7 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="text-[1.7rem] font-semibold tracking-tight">Review the outline</h1>
+            <h1 className="text-[1.5rem] font-semibold tracking-tight">Review the outline</h1>
             <Badge className="bg-raised text-fg-faint">{slug}</Badge>
           </div>
           <p className="mt-1 text-sm text-fg-muted">
@@ -115,7 +115,7 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition hover:border-line-strong focus:border-accent"
+              className={inputCls}
             />
           </label>
           <label className="block">
@@ -124,7 +124,7 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
               placeholder="optional"
-              className="w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
+              className={inputCls}
             />
           </label>
         </div>
@@ -207,7 +207,7 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
               onChange={(e) => editSlide(i, { purpose: e.target.value })}
               rows={2}
               placeholder="What this slide must convey…"
-              className="w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm leading-relaxed text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
+              className={inputCls}
             />
             {s.type === "freeform" && (
               <div className="mt-2 rounded-card border border-amber/30 bg-amber/5 px-3 py-2 text-[11.5px] leading-relaxed text-amber">

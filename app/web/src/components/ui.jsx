@@ -81,3 +81,7 @@ export function Kbd({ children }) {
     </kbd>
   );
 }
+
+/** Shared text-input treatment so no view reinvents the field style. */
+export const inputCls =
+  "w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";

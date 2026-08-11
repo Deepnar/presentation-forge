@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { Button, Panel, Spinner } from "../components/ui.jsx";
+import { Button, Panel, Spinner, inputCls } from "../components/ui.jsx";
 
 /**
  * The brief → outline entry point. Streams research/planning progress and hands
@@ -79,23 +79,23 @@ export default function NewDeck({ onPlanned, onBack }) {
     setStatus("");
   }
 
-  const input = "w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";
+  const input = inputCls;
 
   return (
-    <div className="mx-auto max-w-2xl px-8 py-9">
+    <div className="mx-auto max-w-2xl px-10 py-10">
       <button
         onClick={onBack}
         disabled={busy}
-        className="mb-4 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+        className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg disabled:pointer-events-none disabled:opacity-40"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 18 9 12l6-6" />
         </svg>
-        All decks
+        Home
       </button>
 
       <header className="mb-7">
-        <h1 className="text-[1.7rem] font-semibold tracking-tight">New deck</h1>
+        <h1 className="text-[1.5rem] font-semibold tracking-tight">New deck</h1>
         <p className="mt-1 text-sm text-fg-muted">
           One brief builds the outline. You approve it before any slide is written.
         </p>
@@ -284,6 +284,8 @@ export function progressLabel(p) {
     case "planned": return "Outline ready.";
     case "writing": return `Writing slide ${(p.index ?? 0) + 1} of ${p.total ?? "…"}…`;
     case "rendering": return "Rendering slides…";
+    case "report_planning": return "Planning the report…";
+    case "report_writing": return `Writing section ${(p.index ?? 0) + 1} of ${p.total ?? "…"}…`;
     default: return "Working…";
   }
 }
