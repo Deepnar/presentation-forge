@@ -5,6 +5,11 @@ app/web/dist/
 
 # Generated artefacts — reproducible from sources, never committed.
 decks/*/out/
+
+# Per-deck chat state — conversation transcript and extracted standing
+# decisions, both derived from deck.yaml and the thread, never hand-edited.
+decks/*/chat.jsonl
+decks/*/decisions.md
 brand/generated/
 brand/fonts/
 *.pptx
