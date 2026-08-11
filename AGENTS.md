@@ -88,6 +88,30 @@ because the pipeline has to run headless.
   section; a reworked one gets its existing section updated. The architecture
   doc must keep describing the system as built, not as designed.
 
+## Orchestration — who drives what
+
+Hermes (the CLI agent) drives opencode for this repo. The human does not babysit
+the TUI: they state intent, Hermes launches, monitors, and rotates sessions.
+
+- **Only two models, ever.** Code: `opencode-go/deepseek-v4-flash`. Vision:
+  `opencode-go/mimo-v2.5` (via the opencode-vision plugin's subagents). Nothing
+  else, even when it looks convenient. The user pays for a Go subscription and
+  that is the budget.
+- **Session rotation.** Start a fresh `opencode run` for new work — clean
+  context by construction. When an interactive session's input tokens pass
+  ~1M (check `~/.hermes/scripts/opencode-sessions.sh <dir>`), do not push it:
+  note what it achieved and start a new session with a carry-forward summary
+  ("Previously completed: X. Continue with Y.").
+- **Self-contained prompts.** A fresh opencode session has no memory. Every
+  prompt must point at `AGENTS.md`, `docs/HANDOFF.md`, `docs/TRAPS.md` and the
+  relevant `docs/ROADMAP.md` item, and restate the task concretely.
+- **Product vision — Gamma-like.** The end state is: the user drops in a topic
+  or a pile of raw info, and a complete themed deck comes out — no follow-up
+  questions, no manual fixes. Local-first, free, no cloud LLM in the pipeline.
+  Every feature decision should move toward "topic in → deck out" with zero
+  hand-holding. The chat panel is the first real surface of this: it is where
+  the user talks to a deck the way they would talk to Gamma.
+
 ## Ending a session
 
 Overwrite `docs/HANDOFF.md` with the current state and commit it. Git history
