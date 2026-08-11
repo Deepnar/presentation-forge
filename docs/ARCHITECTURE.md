@@ -95,6 +95,15 @@ pixels — so a theme can panel exactly the area the native content draws, and
 native panels can be made translucent through `shape.card_fill` so they layer
 over the plate instead of covering it.
 
+The gallery is at the 20-theme target: one native reference (warm-humanist),
+fifteen native design languages (Swiss grid, editorial magazine, Muji,
+neubrutalism, Bauhaus, Memphis, Art Deco, dark-neon, Linear, Material You,
+flat, retro-terminal, newsprint, Notion, Alegria) and four plated ones. The
+fifteen native themes rely on the fitter's family table — its per-family
+advance estimates are what keep a one-line title on one line — and on their
+section-surface luminance, which the chrome's crest/footer variant derives
+from. A theme-contract test loads every theme and machine-checks the split.
+
 **Styles layer over themes.** `styles/*.yaml` are cross-cutting token
 overrides — deep-merged over a theme's tokens at load time, with voice merged
 the same way — so a deck renders as *theme × style* without theme copies. A

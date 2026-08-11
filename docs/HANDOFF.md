@@ -7,117 +7,124 @@ history preserves older handoffs.
 
 ## Session summary
 
-State at handoff: **committed and pushed to `origin/main`.** Freeform slides
-are live — schema, render path, model prompt and UI — and the roadmap item is
-ticked. The Gamma-like loop is complete: a topic in, a themed deck out, with
-genuinely free hero slides.
+State at handoff: **committed and pushed to `origin/main`.** All fifteen
+native-renderable themes are built, each rendered and vision-checked, and the
+roadmap item is ticked. The gallery is at the 20-theme target.
 
-**Schema.** `type: freeform` joined the enum; the freeform `allOf` branch
-requires a non-empty `html` (minLength 1, maxLength 24000) and a slide-level
-`else: not required html` forbids `html` on every other type, so the freeform
-grammar never leaks into native slides. The catalog and ops schema derive from
-the branch, so the model sees freeform as an ordinary type. `validate.js` got
-clear `minLength` ("too short") and `not` ("field html is only allowed on type
-freeform slides") error messages.
+**The fifteen themes** (`themes/*.yaml`, all `tokens.plate.enabled: false` —
+pure pptxgenjs shapes, so text stays editable in PowerPoint):
 
-**Render.** A freeform slide has no native layout — `render.js` skips it and
-lets the plate primitive rasterise the whole slide from `html`, with the
-institutional chrome (crest, footer, slide number) drawn on top. Chrome
-legibility now samples the plate's own top-right corner luminance (sharp crop)
-to pick the crest variant — the theme palette says nothing about arbitrary
-freeform HTML, and this also sharpened the plated themes.
+- **swiss-international** — Inter, black/white, one international-red accent,
+  zero radius and no shadow; sharp grid typography.
+- **editorial-magazine** — Playfair Display serif headlines on warm paper,
+  deep-red accent, wide-tracked eyebrows.
+- **minimal-muji** — greige paper, muted muji-red, Manrope, extra margins.
+- **neubrutalism** — cream, thick black borders, hard offset shadows (blur 0,
+  opacity 100), Archivo Black / Space Grotesk.
+- **bauhaus** — primary red/yellow on cream, Poppins, angular.
+- **memphis-postmodern** — teal and magenta on cream, rounded Outfit.
+- **art-deco** — Bodoni Moda on ivory, gold accent, black/gold title.
+- **dark-neon** — near-black, cyan/magenta neon, glow via a soft accent-colour
+  outer shadow (native — no plate needed).
+- **linear-dark** — near-black product UI, hairline borders, violet accent.
+- **material-you** — tonal surfaces (surface darker than page), soft violet,
+  very large radii.
+- **flat-2** — bold indigo on white, no shadows.
+- **retro-terminal** — green-on-black full IBM Plex Mono, amber/red highlights,
+  green terminal-window borders.
+- **newsprint** — Source Serif 4 on paper, newsprint red, hairline card rules.
+- **notion-clean** — white, Notion ink gray, one blue accent, thin borders.
+- **corporate-alegria** — bright blue/orange on white, chunky IBM Plex Sans.
 
-**Model prompt.** `writeSlide` branches for freeform: it is the one deliberate
-exception to the no-layout rule. The prompt describes the 1280×720 canvas, the
-sandboxed subset (inline CSS only; scripts and network blocked by the plate
-CSP), legible text sizes (44px+ headline, 18–24px body), and the chrome overlay
-margins. The planner is told to use freeform sparingly for hero moments.
+**Supporting changes.**
+- `src/fit.js`: added the new gallery's wide sans families (Manrope, Poppins,
+  Outfit, Space Grotesk, DM Sans, IBM Plex Sans) at ~8% wider advance — without
+  it, a one-line card title in those families wrapped into its kicker. Locked
+  by `test/fit.test.js`.
+- `test/themes.test.js`: a permanent theme-contract guard — loads every theme,
+  asserts palette/surfaces(title+section explicit)/type/grid/shape keys,
+  `plate.enabled` is a boolean, and machine-checks that `voice` contains no hex
+  or font/geometry vocabulary (the three-layer rule as a test).
+- `tools/compare.mjs` used as the one-pass structural check: all 20 themes ×
+  3 styles rendered with zero error cells.
 
-**UI.** The outline review offers the type with a per-slide rasterisation
-warning and a whole-deck conversion button that confirms the same trade-off
-("no text editable in PowerPoint afterwards — maximum visual impact,
-editability deliberately traded away"). The slide editor edits `html` in a
-monospace field and repeats the warning.
+**What the vision checks found and what was fixed** (each theme rendered on
+`decks/raytracing-ai`, rasterised, checked with mimo-v2.5; dark-neon also
+spot-checked on the mechanical-keyboards deck):
+- muji: a card title ("Memory Hierarchy") wrapped into its kicker — the
+  fitter's Manrope estimate; fixed in `src/fit.js`.
+- memphis: the teal section divider's footer/crest had low contrast (teal
+  luminance 0.52, just above the chrome's 0.45 dark-text threshold) — accent
+  darkened to #008A8A.
+- retro-terminal: the section standfirst was green-on-green — brighter muted;
+  verbose flow bodies at six steps still truncate (the known LTR capacity
+  limit, amplified by mono).
+- All other themes passed clean on title/section/compare/cards/stats.
 
-**Verified.** `npm test` 27/27 — added test/freeform.test.js: html-required,
-forbid-on-other-types, empty and oversized html errors, mixed native+freeform
-decks, and a sandbox test that renders a page whose `<script>` tries to paint
-it red and asserts the pixels stay blue. Rendered a real deck mixing a native
-title/section with a freeform hero through Chrome → pptx → LibreOffice → PNG
-and vision-checked with mimo-v2.5: the hero's gradient, frosted chip, headline
-and paragraph all present, native neighbours untouched, chrome footer overlaid.
-The crest on the dark hero initially rendered faint (full-colour mark on dark);
-chrome now samples the plate luminance and picks the reversed variant.
+`npm test` 32/32 (8 chat + 6 slides + 7 plate + 4 fit + 4 freeform + 3 themes
+contract + …).
 
-**Honest limitations.** The crest's absolute legibility on a freeform plate is
-bounded by the placeholder brand assets, which are semi-transparent by design
-(the same "faded" crest appears on native dark section dividers) — the
-variant *selection* is verified, the asset opacity is a brand concern. The
-whole-deck freeform path (outline conversion) relies on the author model
-writing good HTML for every slide; quality of model-written freeform HTML was
-not visually verified this session (a hand-written hero was). No browser tool —
-UI verified structurally (build + all endpoints).
+**Honest limitations.** Dark-mode renders and the `airy`/`compact` style
+variants were not vision-checked individually (the compare sheet confirms they
+render without errors). The flow-ltr 6-step body clip persists on several
+themes (retro-terminal worst) — a layout-capacity concern for a future pass,
+not a theme defect. The crest's faintness on mid-tone surfaces is the
+placeholder brand asset's own low opacity, not a theme bug.
 
 ## Context to read before starting
 
 - `AGENTS.md` — the three-layer rule is the thing that must not be violated.
 - `docs/TRAPS.md` — fit traps, vision-model trust, "chrome colour derives from
   the painted background".
-- `schema/deck.schema.json` — the freeform branch + the `else: not` forbid.
-- `src/render.js` — the freeform layout skip and `plateChromeBg`.
-- `src/ai/generate.js` — the freeform writer branch + planner guidance.
-- `app/web/src/views/Outline.jsx`, `app/web/src/components/SlideEditor.jsx` —
-  the trade-off copy.
-- `docs/ROADMAP.md` §4 "Freeform slides" (ticked, with Learned).
+- `themes/*.yaml` — the 20-theme gallery; warm-humanist is the native
+  contract reference, the plate themes the plated contract.
+- `src/fit.js` — the family/advance table the native themes depend on.
+- `test/themes.test.js` — the theme-contract guard.
+- `docs/ROADMAP.md` §3 "Native-renderable themes (15)" (ticked, with Learned).
 
-## NEXT TASK — the 15 native themes, then reports
+## NEXT TASK — reports, then shared research
 
-The deck pipeline is feature-complete (plan → gate → generate → chat → inline
-edit → freeform). Next in priority order:
+The deck pipeline and the full theme gallery are done. Next in priority order:
 
-1. **15 native themes** — mostly YAML; render each before ticking it. The
-   plated themes (glassmorphism etc.) are the reference for the plate contract;
-   native themes follow the warm-humanist contract. Verify heading spacing per
-   theme/style.
-2. **Report renderer** — donor-`.docx`, fixed section order, no themes. A
-   different review surface.
-3. **Shared research** — one brief feeding both deck and report.
+1. **Report renderer** — donor-`.docx`, fixed section order, no themes. A
+   different review surface from the deck grid. The donor `.docx` lives in
+   gitignored `reference/`; the renderer must fail clearly when absent.
+2. **Shared research** — one brief feeding both deck and report.
+3. **Flow layout capacity** — six-step LTR cards are over-capacity for verbose
+   bodies; the fit-shrink contains them, a real fix is a layout question.
 
-**Look-ahead already recorded:** `slide.html` wins over `tokens.plate`, and
-freeform is a first-class type. The plate cache version tag is `plate-v1`
-(bump to invalidate). `plateChromeBg` sampling is general — plate themes get it
-too.
+**Look-ahead already recorded:** the plate seam (`slide.html` override +
+`tokens.plate`), the freeform type, and the chrome-luminance sampling are all
+in place. Report rendering is deliberately NOT themed — it matches a template.
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **15 native themes** — render each before ticking it.
 - **Report renderer** — donor-`.docx`, fixed section order, no themes.
 - **Shared research** — one brief feeding both deck and report.
-- **Flow layout capacity** — six-step LTR cards are over-capacity for verbose
-  bodies; contained by fit-shrink, real fix is a layout question.
-- **Model-written freeform HTML quality** — worth a visual check once the
-  freeform generation path is exercised end to end.
+- **Flow layout capacity** — six-step LTR cards over-capacity for verbose
+  bodies.
+- **Dark-mode / style-variant visual checks** — render+look at each theme in
+  `dark` mode and under `airy`/`compact` styles.
 
 ## Gotchas
 
 Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
+- **The fitter's family table is a theme dependency.** A new font family not
+  in `FAMILY_CLASS`/`WIDE_SANS` estimates at Inter width and its one-line
+  titles wrap. Add the family when you add the theme.
+- **Chrome contrast is a luminance knife edge.** `luminance(bg) < 0.45` decides
+  the crest/footer variant; a mid-tone accent near the boundary (teal, gold)
+  produces gray-on-colour footer text. Darken the accent or brighten the muted.
+- **A written `.pptx` proves nothing.** Rasterise and look; vision-check each
+  theme on title/section/compare/cards/stats at minimum.
+- **Render + preview overwrites the shared `out/preview/`.** Verify one theme
+  at a time.
 - **`toBuffer()` returns a Buffer.** Destructuring `{ data }` off it yields
-  undefined and the surrounding try/catch swallows it — a helper silently
-  falls back. Use `toBuffer({ resolveWithObject: true })` or read the Buffer
-  directly.
-- **A written `.pptx` proves nothing.** Rasterise and look. For plates, the
-  PNGs ARE the proof — vision-check them and pixel-sample subtle effects.
-- **Render + preview into a shared `out/preview/` overwrites the last theme.**
-  Verify one theme/deck at a time.
-- **Chrome colour/legibility must derive from what is painted.** On freeform
-  plates that means sampling the raster, not reading the palette.
+  undefined and a swallowed try/catch.
 - **Vision QA:** prefer `opencode-go/mimo-v2.5` or `gemma4:26b-a4b-it-q4_K_M`.
-- **`content()` has no `h`.** Derive `h = bottom - y`; a `NaN` in `{{box.h}}`
-  silently kills the panel.
-- **A relative cacheDir breaks the plate file:// URL.** Resolve absolutely.
 - **No browser tool in this CLI.** UI claims must be structural unless a real
   screenshot was inspected.
 - **API binds `FORGE_API_PORT` (5174), never `PORT`.**

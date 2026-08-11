@@ -322,7 +322,7 @@ and the deck detail UI has a style selector beside the theme selector.
 > tone. The `band` anchors live under `grid`, so a style that tightens margins
 > should tighten `band` too or the title band no longer matches the margins.
 
-### [ ] Native-renderable themes (15)
+### [x] Native-renderable themes (15)
 Expressible with pptxgenjs shapes alone, so text stays editable in PowerPoint.
 
 `swiss-international` · `editorial-magazine` · `minimal-muji` · `neubrutalism`
@@ -330,11 +330,52 @@ Expressible with pptxgenjs shapes alone, so text stays editable in PowerPoint.
 `material-you` · `flat-2` · `retro-terminal` · `newsprint` · `notion-clean`
 `corporate-alegria`
 
-Mostly YAML now that the format is proven. Build in batches of three or four
-and **render each one before ticking it** — a theme that validates but produces
-unreadable contrast is not done. Each needs its `surfaces.title` and
-`surfaces.section` set explicitly; the derived fallback is correct for
-warm-humanist and wrong for anything inverted.
+All fifteen are native (no plate — `tokens.plate.enabled: false`), so every
+slide's text stays editable in PowerPoint. Each design language is a real
+token set, not warm-humanist with a new accent: Swiss grid discipline,
+Playfair Display magazine typography, Muji restraint, neubrutalism's hard
+shadows and black borders, Bauhaus primary geometry, Memphis teal/magenta
+play, Art Deco gold and black, dark-neon glow, Linear's hairline product UI,
+Material tonal surfaces, flat indigo, retro-terminal green-on-black mono,
+newsprint serif, Notion's neutral workspace, Alegria's bright corporate
+optimism. Dark-neon's glow is carried by a soft outer shadow in the accent
+colour — a native shadow reads as glow, so even it needed no plate.
+
+The gallery now sits at the 20-theme target: warm-humanist + the four plate
+themes + these fifteen.
+
+> **Learned.** Four things were not obvious beforehand.
+>
+> The fitter's family table silently decides whether a theme works. The newer
+> gallery's geometric sans (Manrope, Poppins, Outfit, Space Grotesk, DM Sans,
+> IBM Plex Sans) fell back to Inter's narrow advance, so a one-line card title
+> in those families wrapped into its kicker — a muji card did exactly this.
+> They now estimate ~8% wider. The fit is the theme's hidden dependency.
+>
+> Chrome's footer/crest contrast lives near a knife edge for mid-tone accents.
+> The chrome derives its legible variant from `luminance(bg) < 0.45`; a teal
+> at 0.52 gave gray-on-teal footer text. Memphis's teal had to be darkened to
+> #008A8A to cross the threshold. A theme author must think in luminance, not
+> hue, for its section surface.
+>
+> Mono is a force multiplier for the flow-ltr capacity limit. Retro-terminal's
+> IBM Plex Mono body text at six narrow steps truncates where warm-humanist's
+> Inter barely fits — the wide advance means fewer characters per line and
+> more overflow. The theme shrinks its body to compensate; the layout limit
+> itself remains a layout concern.
+>
+> A theme-contract test (load every theme, assert the surface/type keys, and
+> machine-check that `voice` contains no hex or font vocabulary) costs nothing
+> and turns the three-layer rule into a guard. The `tools/compare.mjs` contact
+> sheet is the one-pass structural check: all 20 themes × 3 styles rendered
+> with zero errors.
+
+Every theme was rendered on `decks/raytracing-ai`, rasterised and
+vision-checked with `mimo-v2.5` (title, section, compare, cards and stats),
+with a second deck spot-check for dark-neon. Contrast and overflow defects
+found and fixed: a muji card title wrapping into its kicker (fitter), the
+Memphis section footer/crest contrast (accent luminance), and the
+retro-terminal section standfirst (green-on-green).
 
 ### [x] Plate-dependent themes (4)
 `glassmorphism` · `claymorphism` · `neumorphism` · `aurora-mesh`
