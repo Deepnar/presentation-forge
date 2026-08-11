@@ -73,7 +73,9 @@ tokens:
 
   # ---- decorative background plate ---------------------------------------
   # This theme is flat, so no pre-rendered plate is needed. Themes that rely on
-  # blur or mesh gradients set `plate.enabled: true` and supply plate.css.
+  # blur or mesh gradients set `plate.enabled: true` and supply `plate.html`
+  # (and optional `plate.surfaces.title/section/content` variants), referencing
+  # their own tokens as {{tokens.palette.bg}} — the renderer interpolates them.
   plate:
     enabled: false
 

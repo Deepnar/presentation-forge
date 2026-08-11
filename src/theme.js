@@ -89,17 +89,23 @@ export async function loadTheme(name, { mode = "light", style } = {}) {
     },
   };
 
+  // The merged token set with the effective (mode-adjusted) palette, exposed so
+  // plate templates can interpolate {{tokens.palette.bg}} and see what will
+  // actually render. The renderer reads tokens; the model never does.
+  const tokens = { ...t.tokens, palette };
+
   return {
     name: t.name ?? name,
     label: t.label ?? name,
     mode,
     palette,
     surfaces,
+    tokens,
     type: t.tokens.type,
     grid: t.tokens.grid,
     shape: t.tokens.shape ?? {},
     shadow: t.tokens.shadow ?? {},
-    plate: t.tokens.plate ?? { enabled: false },
+    plate: tokens.plate ?? { enabled: false },
     voice: t.voice ?? {},
   };
 }
