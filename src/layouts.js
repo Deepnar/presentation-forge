@@ -587,12 +587,13 @@ export const layouts = {
         });
         slide.addText(s.title, {
           x: sx + 0.26, y: y + 0.78, w: sw - 0.52, h: 0.5,
-          // Narrow ltr step cards are ~1.2in at six steps — an unshrunk subhead
-          // wraps into the body below. Shrink to one line (low min: the fitter
-          // is pessimistic on purpose, tiny beats overflowing).
+          // Narrow ltr step cards are ~1.2in at six steps. fitScale's height
+          // logic returns a scale where two lines fit the 0.5in budget, which
+          // still breaks a long word mid-word; shrink by measured width with a
+          // pessimistic safety factor instead, so words never split.
           ...textStyle(theme, "subhead", {
             bold: true,
-            scale: fitScale(s.title, sw - 0.52, 0.5, theme.type.subhead, { min: 0.42 }),
+            scale: Math.min(1, Math.max(0.42, ((sw - 0.52) / measure(s.title, theme.type.subhead)) * 0.9)),
           }),
           valign: "top",
         });
