@@ -4,7 +4,7 @@
   "description": "Local-first generator for academic presentations and reports. Node + pptxgenjs + Ollama.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "render": "node src/render.js",
     "preview": "node src/preview.js",
     "fonts": "node tools/install-fonts.mjs",
