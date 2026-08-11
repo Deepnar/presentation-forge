@@ -1,10 +1,12 @@
 import { mkdir, readFile, writeFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { DECKS, CONFIG } from "../paths.js";
+import { DECKS } from "../paths.js";
 import { researchQuery, fetchPage } from "../search.js";
 import { planDeck, generateDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
+import { runChatTurn } from "./chat.js";
+import { loadIdentity, deepMerge } from "./identity.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -18,37 +20,6 @@ import { preview } from "../preview.js";
  * (deck.yaml exists). Only ready decks appear in the deck list; the outline
  * gate is the boundary between the two.
  */
-
-export async function loadIdentity(deckDir) {
-  // identity.yaml carries real personal and institutional details and is
-  // gitignored, so a fresh clone falls back to the committed template.
-  let base;
-  try {
-    base = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
-  } catch {
-    base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
-  }
-  // Per-deck meta.yaml wins over the standing defaults, key by key — the same
-  // merge the renderer performs, so what the model planned with matches what
-  // gets drawn.
-  if (deckDir) {
-    try {
-      const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
-      return deepMerge(base, over);
-    } catch { /* no meta yet */ }
-  }
-  return base;
-}
-
-function deepMerge(a, b) {
-  if (Array.isArray(b)) return b;               // arrays replace, never merge
-  if (b && typeof b === "object" && a && typeof a === "object") {
-    const out = { ...a };
-    for (const [k, v] of Object.entries(b)) out[k] = deepMerge(a[k], v);
-    return out;
-  }
-  return b === undefined ? a : b;
-}
 
 export function slugify(text, max = 44) {
   const slug = String(text ?? "")
@@ -245,15 +216,19 @@ Usage:
                         [--research] [--max-slides <n>] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
+  node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
   generate  approved outline → deck.yaml, rendered and rasterised
             --critic  also run the vision critic loop: detect visual defects in
                       the rendered slides and fix them via a content turn
+  chat      one conversational turn against an existing deck: edits deck.yaml,
+            maintains the deck's thread (chat.jsonl, decisions.md) and renders
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
   node src/ai/pipeline.js generate raytracing-ai --critic
+  node src/ai/pipeline.js chat raytracing-ai "Keep every slide under 12 words per line."
 `;
 
 function parseArgs(argv) {
@@ -275,6 +250,7 @@ function parseArgs(argv) {
   }
   opts.brief = opts._[0];
   opts.slug = opts._[0];
+  opts.instruction = opts._[1];
   return { cmd, opts };
 }
 
@@ -312,6 +288,23 @@ if (import.meta.url === `file://${process.argv[1]}`) {
           if (rd.unfixed) process.stdout.write(`    NOT fixed: ${rd.unfixed.map((f) => `slide ${f.slide} ${f.kind}`).join(", ")}\n`);
         }
       }
+    } else if (cmd === "chat") {
+      if (!opts.slug || !opts.instruction) { console.error(USAGE); process.exit(2); }
+      const r = await runChatTurn({
+        slug: opts.slug,
+        instruction: opts.instruction,
+        model: opts.model,
+        render: opts.render,
+        onProgress: progress,
+      });
+      if (!r.ok) {
+        process.stderr.write(`turn failed: ${r.errors?.join("; ") ?? "unknown"}\n`);
+        process.exit(1);
+      }
+      process.stdout.write(`applied ${r.changes.length} change(s) to decks/${opts.slug}/deck.yaml\n`);
+      for (const c of r.changes) process.stdout.write(`  ${c}\n`);
+      if (r.decisions?.length) process.stdout.write(`promoted: ${r.decisions.join("; ")}\n`);
+      if (r.summary) process.stdout.write(`summary: ${r.summary}\n`);
     } else {
       console.error(USAGE);
       process.exit(2);
