@@ -36,6 +36,8 @@ function describe(err, deck) {
       return `${where}: missing required field "${err.params.missingProperty}"`;
     case "maxLength":
       return `${where} at ${p}: too long — ${err.params.limit} chars max, shorten it`;
+    case "minLength":
+      return `${where} at ${p}: too short — needs at least ${err.params.limit} chars`;
     case "maxItems":
       return `${where} at ${p}: too many items — ${err.params.limit} max, split across slides`;
     case "minItems":
@@ -46,6 +48,8 @@ function describe(err, deck) {
       return `${where}: unknown field "${err.params.additionalProperty}" — not in the schema`;
     case "type":
       return `${where} at ${p}: must be ${err.params.type}`;
+    case "not":
+      return `${where}: field "html" is only allowed on type freeform slides`;
     default:
       return `${where} at ${p}: ${err.message}`;
   }

@@ -83,7 +83,8 @@
             "image",
             "image-text",
             "timeline",
-            "references"
+            "references",
+            "freeform"
           ]
         },
         "section": {
@@ -602,8 +603,45 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "freeform"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "html"
+            ],
+            "properties": {
+              "html": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000,
+                "description": "Freeform slide body: arbitrary HTML/CSS rendered full-bleed by headless Chrome. The slide rasterises — text is not editable in PowerPoint afterwards. Sandboxed: no scripts, no network, no external resources, inline styles only. The institutional chrome (crest, footer, slide number) overlays the render, so leave safe margins."
+              }
+            }
+          }
         }
       ]
+      ,
+      "if": {
+        "properties": {
+          "type": {
+            "const": "freeform"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "html"
+          ]
+        }
+      }
     },
     "side": {
       "type": "object",
