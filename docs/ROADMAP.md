@@ -339,20 +339,72 @@ warm-humanist and wrong for anything inverted.
 ### [ ] Plate-dependent themes (4)
 `glassmorphism` · `claymorphism` · `neumorphism` · `aurora-mesh`
 
-Blocked on the HTML plate renderer below. These depend on backdrop blur,
-layered transparency and multi-stop mesh gradients, none of which OOXML can
-express. Native shapes give a flat approximation that misses the entire point of
-the style, so do not ship them as native — that is precisely the
-knowingly-temporary version the working agreement forbids.
+**Unblocked** — the HTML plate renderer (§3) has landed: these themes now
+declare `tokens.plate.enabled: true` + `plate.html` (and per-surface variants)
+interpolating their own tokens, exactly the mechanism the primitive verified.
+Native shapes still give a flat approximation that misses the entire point, so
+they render as plates, not as native. The next task is to build the four themes
+themselves on the verified seam.
 
-### [ ] HTML plate renderer
+### [x] HTML plate renderer
 Headless Chrome renders decorative CSS backgrounds to PNG at build time; the
 renderer places them as slide background plates with all *text* still native.
 
-Unblocks the four themes above **and** `freeform` slides (§4), so build the
-primitive once with both callers in mind: input is HTML + viewport, output is a
-cached PNG keyed by content hash. Do not build a theme-only version that
-freeform then has to tear out.
+`src/plate.js` is the primitive, built once for both callers: input is an HTML
+document + viewport (1280×720 CSS px, 16:9, at scale 1.5 → 1920×1080), output is
+a PNG cached in `.plate-cache/` keyed by sha256 of (html + viewport + scale + a
+version tag). No npm dependency — it shells out to `google-chrome-stable`
+(`--headless=new --screenshot --window-size --force-device-scale-factor
+--virtual-time-budget`), with one restart retry on a crashed tab. The page is
+sandboxed by a CSP (`default-src 'none'`, inline styles + local data:/file:
+images and fonts only) so scripts and every network scheme are unrepresentable.
+
+Two caller seams, both ending at the same `renderPlate`:
+- **Theme plates.** A theme declares `tokens.plate.enabled: true` plus
+  `plate.html` (and optional `plate.surfaces.title/section/content` variants),
+  referencing its own tokens as `{{tokens.palette.bg}}` — the renderer
+  interpolates against the resolved theme (mode-adjusted palette), so the theme
+  YAML stays the single source of colours.
+- **Freeform.** A slide with an `html` field uses that as its plate, overriding
+  the theme. The freeform feature (schema field, model support, whole-deck mode)
+  is the next task — the primitive and the override seam already exist.
+
+`render.js` sets the plate as the true slide background (`slide.background =
+{ data }`) AFTER the layout runs, so it sits under every shape and the chrome;
+the chrome's legibility falls back to the surface's declared `bg` on plate
+slides because the flat palette no longer describes what is painted.
+
+> **Learned.** Four things were not obvious beforehand.
+>
+> The seat is `slide.background = { data }`, not an `addImage` placed first. The
+> layouts paint `slide.background = { color }` and pptxgenjs's background setter
+> replaces wholesale, so the plate must be assigned after the layout — last
+> write wins — and it lands under all shapes for free.
+>
+> Headless Chrome's `--screenshot` with `--window-size` + `--force-device-scale-
+> factor` + `--virtual-time-budget` is a deterministic raster with zero npm
+> moving parts — no puppeteer, no playwright. Virtual time settles CSS animations
+> and gradient rendering without real seconds. A CSP meta with
+> `default-src 'none'` genuinely blocks scripts: a test script that tried to
+> paint the page red was a no-op in the output.
+>
+> `loadTheme` returned a flattened theme with no `tokens` object, so
+> `{{tokens.palette.bg}}` interpolation silently failed at first. The resolved
+> theme now exposes `tokens` with the mode-adjusted `palette`, so a template sees
+> exactly what renders, dark mode included.
+>
+> The theme groundwork from an earlier session already declared
+> `tokens.plate.enabled: false` — the contract was anticipated before the
+> renderer existed. The switch is honoured: `enabled: false` (the default) means
+> no plate, which is also what keeps every existing deck's render bit-identical.
+>
+> Verified behaviourally on a fixture deck through the full
+> Chrome → pptx → LibreOffice → PNG pipeline: a multi-stop mesh gradient, a
+> glassmorphism card with real `backdrop-filter: blur` over two layered
+> translucent blobs, a neon glow on dark, and an aurora gradient all rendered
+> correctly with native text readable on top (vision-checked). The theme
+> interpolation path was verified separately with a scratch theme; both fixtures
+> were removed after.
 
 ---
 
@@ -446,8 +498,10 @@ can fix a typo in PowerPoint afterwards. Correct for a hero moment, wrong for a
 whole graded submission. The UI must state this at the point of choosing, not
 bury it.
 
-Depends on the HTML plate renderer (§3). Constrain the model's HTML to a
-sandboxed subset — no network, no scripts — since it renders in a real browser.
+**Unblocked** — the plate primitive (§3) already accepts a slide-level `html`
+override, so freeform is now: add the `html` schema field and the model prompt
+for it. Constrain the model's HTML to the sandboxed subset the primitive already
+enforces — no network, no scripts — since it renders in a real browser.
 
 ---
 

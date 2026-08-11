@@ -142,6 +142,33 @@ The trade-off is real and drives the default: plate slides are images, so text
 in them cannot be corrected by whoever opens the file later. Correct for one or
 two hero slides; wrong for a whole deck.
 
+### The plate primitive
+
+`src/plate.js` is the single seam both plate themes and freeform slides use:
+`renderPlate(html, { w, h, scale })` writes an HTML document to a temp file and
+screenshots it with system `google-chrome-stable` (`--headless=new`, no npm
+browser dependency), returning a PNG cached in `.plate-cache/` under a sha256 of
+`(html + viewport + scale + version)`. A changed document therefore gets a fresh
+plate automatically; an unchanged one is free on every later render. The page
+is sandboxed by a CSP that allows only inline styles and local data:/file:
+images and fonts, so scripts and all network schemes are unrepresentable — the
+HTML renders in a real browser, so anything not allowed is simply absent.
+
+Which plate a slide gets is decided in `render.js` and falls out of the theme
+or the slide, in that order of precedence:
+
+- a slide-level `html` override (the freeform seam) wins;
+- otherwise the theme's `tokens.plate`, when `enabled: true`, supplies
+  `plate.html` with optional `plate.surfaces.title/section/content` variants;
+  its template interpolates `{{tokens.palette.bg}}`-style paths against the
+  resolved theme (mode-adjusted), keeping the theme YAML the single source of
+  colours.
+
+The plate is set as the true slide background (`slide.background = { data }`)
+after the layout paints, so it sits under every shape and the chrome — and the
+chrome derives its legibility on plate slides from the surface's declared `bg`,
+because the flat palette no longer describes what is actually painted.
+
 ## Deck vs report asymmetry
 
 They are not two flavours of the same artefact.
@@ -228,5 +255,6 @@ immediately, and re-renders on a short debounce.
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
 | `decks/<slug>/out/` | no | rendered artefacts |
+| `.plate-cache/` | no | headless-Chrome plate PNGs, keyed by content hash |
 | `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |
 | `reference/` | yes | institutional templates to check against |

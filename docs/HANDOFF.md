@@ -7,93 +7,104 @@ history preserves older handoffs.
 
 ## Session summary
 
-State at handoff: **committed and pushed to `origin/main`.** The deck detail
-view is complete — inline editing, per-slide presenter assignment, and
-reorder/delete/duplicate are all live, verified, and ticked on the roadmap.
+State at handoff: **committed and pushed to `origin/main`.** The HTML plate
+renderer is built, verified visually through the whole pipeline, and ticked on
+the roadmap.
 
-**Inline editing (`app/web/src/components/SlideEditor.jsx`).** A modal that
-edits one slide's content straight into `deck.yaml` — no model anywhere in the
-path. A per-type descriptor map (maxLengths mirroring deck.schema.json) drives
-the form; every keystroke re-validates the draft deck through
-`POST /api/validate`, so schema errors show while typing and a bad save is
-blocked. Empty optional fields are stripped on save so clearing a field really
-removes it. Title slides edit `deck.title`/`subtitle` (that is what the title
-layout draws). Chart series data is the one deliberate gap, stated in the UI.
-`api.js` gained `validateDeck`.
+**The primitive (`src/plate.js`).** `renderPlate(html, { w, h, scale })` wraps
+the HTML in a CSP-sandboxed document and screenshots it with system
+`google-chrome-stable` (`--headless=new`, `--window-size`, `--force-device-
+scale-factor`, `--virtual-time-budget`) — zero npm browser dependency, one
+restart retry on a crashed tab. Output: a PNG cached in `.plate-cache/` (now
+gitignored) under sha256 of `(version + w×h@scale + html)`, so a changed
+document gets a fresh plate and unchanged ones are free. The CSP
+(`default-src 'none'`, inline styles + local data:/file: images/fonts) makes
+scripts and every network scheme unrepresentable — verified by a test script
+that failed to paint the page red.
 
-**Per-slide presenter.** A free `presenter` string on the slide (schema +
-ops/catalog, so chat can propose splits too). The chrome footer
-(`applyContentChrome`) reads `slide.presenter` ahead of the identity's
-`presenting` member, then the team label. Cards have a per-slide picker
-(datalist of team members in the editor; a `<select>` of members + "auto" in
-the card footer). Verified visually: the footer on a presenter-assigned slide
-read "Deepesh Sonar" (mimo-v2.5, confidence 0.95).
+**Theme plates.** `loadTheme` now exposes the merged `tokens` (with the
+mode-adjusted palette), so a theme declares
+`tokens.plate.enabled: true` + `plate.html` (optional
+`plate.surfaces.title/section/content`) referencing its own tokens as
+`{{tokens.palette.bg}}`. `warm-humanist.yaml` already had the `plate.enabled:
+false` groundwork from an earlier session; its comment was updated to the real
+contract. `enabled: false` is the default and every existing deck renders
+bit-identical.
 
-**Reorder / delete / duplicate.** Pure immutable ops in
-`app/web/src/lib/slides.js` (move, deep-copy duplicate, delete that refuses to
-empty a deck), unit-tested. Mutations persist deck.yaml immediately through the
-existing validated `PUT /api/decks/:slug` and re-render on a 450ms debounce so
-rapid presenter clicks coalesce. The grid iterates the deck (not the raster
-previews) with a skeleton fallback, because the PNG set lags the content by one
-render after a delete/duplicate.
+**The seam for freeform.** A slide-level `html` field is checked first and
+overrides the theme — this is the freeform seam, already wired in render.js.
+The freeform feature (schema field, model prompt, whole-deck mode) is the next
+task; the primitive needs no rework.
 
-**Verified behaviourally.** `npm test` 14/14 (8 chat + 6 slides). `vite build`
-clean; the dev stack boots and the proxy forwards (decks list + validate + the
-new module served by the dev server). Via the API against `decks/raytracing-ai`
-(then restored): presenter field validated legal, a 120-char headline rejected
-with the exact "slide N … 80 chars max" message the editor shows; a PUT carrying
-presenter + reorder + duplicate round-tripped into deck.yaml (reordered order,
-presenter on the moved slide); render produced 9 slides, zero problems. The
-per-slide footer was confirmed on the rasterised PNG by a vision model.
+**render.js integration.** The plate is set as the true slide background
+(`slide.background = { data }`) AFTER the layout paints — pptxgenjs's
+background setter replaces wholesale, so last-write-wins puts the plate under
+every shape. Chrome legibility on plate slides falls back to
+`surfaces[surface].bg` because the flat palette no longer describes the
+painted background. `render()` gained an optional `signal` threaded to the
+plate render so aborted requests stop launching Chrome.
 
-**Honest limitation:** no browser tool in this CLI — the UI was verified
-structurally (build, dev-server module transform, every endpoint it calls) plus
-one rasterised-PNG vision check; no screenshot of the actual deck-detail UI was
-taken or inspected. The edit/action buttons and the editor modal were NOT
-click-tested in a real browser.
+**Tests.** `npm test` 20/20 (8 chat + 6 slides + 6 plate), including a
+guarded headless-Chrome render test (skipped if the binary is absent).
+
+**Verified visually (the whole point — plates are backend, so PNGs are the
+proof).** A fixture deck (removed after) ran through Chrome → pptx →
+LibreOffice → PNG and was vision-checked (`mimo-v2.5`): slide 1 multi-stop
+mesh gradient, slide 2 glassmorphism card with real `backdrop-filter: blur`
+over two layered translucent blobs (native bullets readable), slide 3 neon
+glow on near-black (native cards readable), slide 4 aurora gradient — all
+`platePresent: true`, text readable, no defects except one fixture artifact
+(the stat value "1920×1080" is too wide for the native stats value box — a
+pre-existing layout fitter limit, not a plate bug). The theme-interpolation
+path was verified separately with a scratch `_scratch-plate` theme: the
+interpolated radial+linear gradient rendered with the theme's accent/bg/ink
+colours and readable title. Both fixtures deleted.
+
+**Structurally:** `vite build` untouched this session (no UI change). The API
+render endpoint is unchanged and calls the same `render()`, so plates work
+through the server transport without new code.
 
 ## Context to read before starting
 
 - `AGENTS.md` — the three-layer rule is the thing that must not be violated.
-- `docs/TRAPS.md` — fit traps, vision-model trust, and the browser-tool trap
-  (do not claim visual verification you did not do).
-- `app/web/src/components/SlideEditor.jsx` — the per-type field map; keep it in
-  sync with `schema/deck.schema.json` (maxLengths).
-- `app/web/src/lib/slides.js` — immutable slide ops, pure + tested.
-- `app/web/src/views/Decks.jsx` — DeckDetail: `commitDeck` (validated PUT +
-  debounced render) is the single mutation path.
-- `src/chrome.js` — the per-slide presenter override in `applyContentChrome`.
-- `docs/ROADMAP.md` §2 "Deck detail view" (ticked, with Learned).
+- `docs/TRAPS.md` — "chrome colour derives from the painted background" is the
+  trap the plate chrome-bg fallback exists for.
+- `src/plate.js` — the primitive (cache key, CSP wrapper, `plateHtmlFor`,
+  `renderSlidePlate`).
+- `src/theme.js` — the `tokens` exposure + `plate` switch.
+- `src/render.js` — the plate-after-layout integration and chrome `bg` fallback.
+- `docs/ROADMAP.md` §3 "HTML plate renderer" (ticked, with Learned) and the
+  now-unblocked "Plate-dependent themes (4)" + "Freeform slides" entries.
+- `themes/warm-humanist.yaml` — the `tokens.plate.enabled: false` contract
+  reference.
 
-## NEXT TASK — themes, then the plate renderer
+## NEXT TASK — the four plate themes, then freeform
 
-The deck lifecycle (plan → gate → generate → chat → inline edit) is complete.
-Next in priority order (from the roadmap):
+The plate primitive is proven; the next slice is its primary consumer:
 
-1. **Themes.** 15 native (mostly YAML), 4 blocked on the plate renderer. Render
-   each before ticking it; re-check heading spacing per theme and per style.
-   `tools/compare.mjs` renders the theme × style matrix.
-2. **HTML plate renderer** — headless Chrome; unblocks the four blur-based
-   themes and freeform slides. Build once, for both callers.
-3. **Freeform slides** — per-slide and whole-deck, on the plate renderer.
-4. **Report renderer** + **shared research.**
+1. **Plate-dependent themes (4):** `glassmorphism` · `claymorphism` ·
+   `neumorphism` · `aurora-mesh`. Each declares `tokens.plate.enabled: true` +
+   `plate.html` (+ per-surface variants) interpolating its own tokens. Render
+   each before ticking it — the whole point is that blur/transparency/mesh
+   gradients survive the pipeline, which is exactly what the primitive now
+   verifies. Re-check chrome legibility (`surfaces.*.bg`) and the section/title
+   surface variants.
+2. **Freeform slides** — add the `html` schema field + model prompt; the
+   renderer seam already handles `slide.html`. Per-slide and whole-deck modes.
+3. **15 native themes** — mostly YAML; render each before ticking it.
 
-**Look-ahead already recorded:** the seam holds — chat edits an existing deck
-(`deck.yaml` required), inline editing and slide ops write `deck.yaml` directly
-(no model), and generation builds from an approved plan. Keep the three paths
-separate. The chat panel's `refreshToken` still drives deck-detail re-fetching;
-a deck edited inline does not bump chat's thread (they are independent surfaces
-over the same file).
+**Look-ahead already recorded:** the plate seam is `slide.html` override wins,
+then theme `tokens.plate`. Freeform is schema + prompt + UI only. The plate
+cache (`PLATE_CACHE` in src/plate.js, `FORGE_CHROME` env override) is keyed by
+a `plate-v1` version tag — bump it to invalidate every cached plate at once.
 
 ## Remaining known items
 
 Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
-- **19 remaining themes** — 15 native (mostly YAML), 4 blocked on the plate
-  renderer. Render each before ticking it.
-- **HTML plate renderer** — headless Chrome; unblocks both the four blur-based
-  themes *and* freeform slides. Build once, for both callers.
-- **Freeform slides** — the "completely free" mode, per-slide and whole-deck.
+- **Plate-dependent themes (4)** — unblocked; build on the verified seam.
+- **Freeform slides** — per-slide and whole-deck, on the plate primitive.
+- **15 native themes** — render each before ticking it.
 - **Report renderer** — donor-`.docx`, fixed section order, no themes.
 - **Shared research** — one brief feeding both deck and report.
 
@@ -101,18 +112,20 @@ Full list with rationale in `docs/ROADMAP.md`. In rough priority order:
 
 Full list in `docs/TRAPS.md`. The ones most likely to bite immediately:
 
-- **No browser tool in this CLI.** UI claims must be structural (build, API
-  calls) unless a real screenshot was taken and inspected.
 - **A written `.pptx` proves nothing.** Rasterise and look (the preview PNGs are
-  LibreOffice's own render, so they match what LibreOffice shows).
+  LibreOffice's own render, so they match what LibreOffice shows). For plates,
+  the PNGs ARE the proof — vision-check them.
 - **Vision QA:** prefer `opencode-go/mimo-v2.5` or `gemma4:26b-a4b-it-q4_K_M`;
   never trust `qwen3-vl:8b-thinking` for defect-finding (false-clean).
-- **Stacked text must be fit-scaled or line-counted.** Never
-  `fitScale(text, w, 99, st)` to detect wrapping — count lines.
+- **Chrome colour/legibility must derive from what is painted, not the palette.**
+  On a plate slide the flat palette no longer describes the background — chrome
+  falls back to `surfaces[surface].bg`.
+- **`slide.background` replaces wholesale in pptxgenjs.** Set the plate AFTER
+  the layout or the layout's flat colour wipes it.
 - **`pkill -f` with a pattern that appears in the command's own line kills the
   shell.** Kill dev servers by port (`fuser -k 5173/tcp`) or PID instead.
-- **Background dev servers in this shell hang the next command.** Detach with
-  `setsid … &` + `disown`, or kill by port immediately after testing.
+- **No browser tool in this CLI.** UI claims must be structural unless a real
+  screenshot was inspected; backend rendering (this task) is verifiable via PNGs.
 - **API binds `FORGE_API_PORT` (5174), never `PORT`.** Express needs
   `node --watch`.
 - **Never add an unbounded array or a bare `{type:"object"}` to a model-facing
