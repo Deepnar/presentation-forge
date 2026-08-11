@@ -423,7 +423,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
         <div className="flex flex-wrap items-center gap-3">
           {result ? (
             <span className="text-[13px] tabular-nums text-fg-muted">
-              {result.sections.length} sections · {result.pages} pages
+              {result.sections.length} sections · {pageCount(result.pages)} pages
             </span>
           ) : (
             <span className="text-[13px] text-fg-muted">A report already exists for this deck.</span>
@@ -463,6 +463,11 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
       )}
     </Panel>
   );
+}
+
+function pageCount(pages) {
+  if (!pages || typeof pages !== "object") return 0;
+  return Math.max(0, ...Object.values(pages).map((v) => Number(v) || 0));
 }
 
 function CardBtn({ children, ...props }) {
