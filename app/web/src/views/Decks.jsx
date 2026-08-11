@@ -5,7 +5,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import NewDeck from "./NewDeck.jsx";
 import Outline from "./Outline.jsx";
 
-export default function Decks() {
+export default function Decks({ onDeckChange, refreshToken }) {
   const [decks, setDecks] = useState(null);
   const [open, setOpen] = useState(null);
   const [phase, setPhase] = useState("list"); // "list" | "new" | "outline"
@@ -15,7 +15,23 @@ export default function Decks() {
     api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
   }, []);
 
-  if (open) return <DeckDetail slug={open} onBack={() => setOpen(null)} />;
+  const openDeck = (slug) => {
+    setOpen(slug);
+    onDeckChange?.(slug);
+  };
+
+  if (open) {
+    return (
+      <DeckDetail
+        slug={open}
+        refreshToken={refreshToken}
+        onBack={() => {
+          setOpen(null);
+          onDeckChange?.(null);
+        }}
+      />
+    );
+  }
 
   if (phase === "new") {
     return (
@@ -37,7 +53,7 @@ export default function Decks() {
         initialTheme={draft.theme}
         onDone={(slug) => {
           setPhase("list");
-          setOpen(slug);
+          openDeck(slug);
         }}
         onBack={() => setPhase("new")}
       />
@@ -80,7 +96,7 @@ export default function Decks() {
         {decks?.map((d) => (
           <button
             key={d.slug}
-            onClick={() => setOpen(d.slug)}
+            onClick={() => openDeck(d.slug)}
             className="group rounded-card border border-line bg-panel p-4 text-left transition hover:border-line-strong hover:bg-raised"
           >
             <div className="line-clamp-2 text-[15px] font-medium leading-snug text-fg">
@@ -105,7 +121,7 @@ export default function Decks() {
   );
 }
 
-function DeckDetail({ slug, onBack }) {
+function DeckDetail({ slug, onBack, refreshToken }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -116,14 +132,21 @@ function DeckDetail({ slug, onBack }) {
   const [zoom, setZoom] = useState(null);
 
   useEffect(() => {
+    // refreshToken bumps after a chat turn, so a deck edited in the right rail
+    // shows its new slides here without a manual reload.
     api.deck(slug).then((r) => {
-      setData(r);
+      const stamp = Date.now();
+      setData({
+        ...r,
+        slides: r.slides.map((s) => `${s}?t=${stamp}`),
+        thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`),
+      });
       setTheme(r.deck.theme ?? "");
       setStyle(r.deck.style ?? "");
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
-  }, [slug]);
+  }, [slug, refreshToken]);
 
   async function rerender() {
     setBusy(true);

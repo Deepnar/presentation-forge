@@ -81,4 +81,9 @@ export const api = {
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),
+  models: () => call("/api/models"),
+  chatThread: (slug) => call(`/api/decks/${slug}/chat`),
+  clearChat: (slug) => call(`/api/decks/${slug}/chat`, { method: "DELETE" }),
+  chatDeck: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/chat`, payload, handlers),
 };

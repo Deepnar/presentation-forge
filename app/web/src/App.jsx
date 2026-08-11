@@ -3,6 +3,7 @@ import { api } from "./api.js";
 import Decks from "./views/Decks.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
+import ChatPanel from "./components/ChatPanel.jsx";
 
 const NAV = [
   { id: "decks", label: "Decks", hint: "Build and preview", icon: LayersIcon },
@@ -13,10 +14,10 @@ const NAV = [
 /**
  * Application shell with collapsible rails.
  *
- * Left: navigation that collapses to an icon rail. Right: a *generic slot*
- * (the chat panel will fill it later) that collapses to an edge tab. Both
- * states persist. The centre column is the deck grid and must stay the focus —
- * the rails serve it, not the other way round.
+ * Left: navigation that collapses to an icon rail. Right: the chat panel —
+ * deck-scoped, so it needs to know which deck is open. A chat turn bumps the
+ * deck version so the open deck detail re-fetches its previews. Both rails
+ * persist their open state.
  */
 export default function App() {
   const [view, setView] = useState("decks");
@@ -25,6 +26,8 @@ export default function App() {
   const [org, setOrg] = useState("");
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
   const [rightOpen, setRightOpen] = useState(() => localStorage.getItem("forge.rightRail") === "1");
+  const [activeSlug, setActiveSlug] = useState(null);
+  const [deckVersion, setDeckVersion] = useState(0);
 
   useEffect(() => {
     api.identity()
@@ -100,7 +103,12 @@ export default function App() {
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto">
-        {view === "decks" && <Decks />}
+        {view === "decks" && (
+          <Decks
+            onDeckChange={setActiveSlug}
+            refreshToken={deckVersion}
+          />
+        )}
         {view === "themes" && <Themes />}
         {view === "identity" && <Identity />}
       </main>
@@ -108,7 +116,7 @@ export default function App() {
       {rightOpen ? (
         <section className="flex w-80 shrink-0 flex-col border-l border-line bg-panel">
           <header className="flex items-center justify-between border-b border-line px-4 py-3">
-            <span className="text-[13px] font-semibold text-fg">Panel</span>
+            <span className="text-[13px] font-semibold text-fg">Chat</span>
             <button
               onClick={() => setRightOpen(false)}
               title="Collapse panel"
@@ -117,13 +125,8 @@ export default function App() {
               <ChevronRight />
             </button>
           </header>
-          <div className="flex-1 overflow-y-auto p-4">
-            {/* The generic slot the chat panel will live in. */}
-            <div className="rounded-card border border-dashed border-line p-6 text-center text-xs leading-relaxed text-fg-faint">
-              Reserved for the chat panel.
-              <br />
-              A deck-scoped conversational surface on <code>runTurn</code>.
-            </div>
+          <div className="flex-1 overflow-hidden">
+            <ChatPanel slug={activeSlug} onDeckChanged={() => setDeckVersion((v) => v + 1)} />
           </div>
         </section>
       ) : (
