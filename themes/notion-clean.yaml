@@ -1,0 +1,75 @@
+# Notion Clean — a neutral, quietly confident workspace.
+# White, Notion's ink gray, a single blue accent, thin card borders and almost
+# no shadow. The design recedes so the content is all you notice.
+
+name: notion-clean
+label: Notion Clean
+summary: Neutral workspace — white, gray ink, one blue accent, minimal.
+
+tokens:
+  palette:
+    bg: "#FFFFFF"
+    surface: "#FFFFFF"     # cards are white too — the border delineates them
+    ink: "#37352F"
+    ink_muted: "#787774"
+    accent: "#2383E2"      # notion blue
+    accent_alt: "#9C6CFE"  # purple
+    rule: "#E9E9E7"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#37352F", ink: "#FFFFFF", muted: "#C9C6C0", accent: "#2383E2" }
+    section: { bg: "#F1F1EF", ink: "#37352F", muted: "#787774", accent: "#2383E2" }
+
+  dark:
+    bg: "#191919"
+    surface: "#202020"
+    ink: "#EDEDEB"
+    ink_muted: "#A5A39C"
+    accent: "#4A9CF5"
+    accent_alt: "#B69DFA"
+    rule: "#FFFFFF1E"
+    on_accent: "#191919"
+
+  type:
+    display:  { family: Inter, weight: 700, size: 40, line: 1.08, tracking: -0.8 }
+    heading:  { family: Inter, weight: 600, size: 30, line: 1.12, tracking: -0.4 }
+    subhead:  { family: Inter, weight: 400, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter, weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter, weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter, weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
+    stat:     { family: Inter, weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.14, pill: 0.40, chip: 0.10 }
+    border: { width: 1, color: "#E9E9E7" }          # thin neutral card borders
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 1, angle: 90, color: "37352F", opacity: 3 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: neutral, calm, clear, unopinionated
+  density: medium
+  prefers:
+    - plain, direct statements
+    - clear structure over flourish
+    - a quietly confident tone
+  avoid:
+    - enthusiasm and marketing tone
+    - decorative language
+    - shouting
+  headline_style: >
+    Plain and exact. "Rendering Basics" over "An Introduction to Ray
+    Tracing". Say what it is, not what you feel about it.
+  body_style: >
+    Simple, clear sentences. No ornament.
