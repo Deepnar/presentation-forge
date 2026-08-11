@@ -1,0 +1,125 @@
+# Glassmorphism — frosted glass panels over blurred colour.
+#
+# The background is a real plate: translucent coloured blobs blurred behind a
+# frosted content panel. Native cards sit on top as a second layer of glass
+# (see tokens.shape.card_fill — translucent white), so the blur genuinely
+# shows through every panel. Text stays native pptxgenjs.
+
+name: glassmorphism
+label: Glassmorphism
+summary: Frosted glass panels over blurred colour — translucent, airy, modern.
+
+tokens:
+  palette:
+    bg: "#E9EEF6"          # calm pale slate
+    surface: "#FFFFFF"     # the frost tone
+    ink: "#1E2A3A"         # deep slate
+    ink_muted: "#5B6B80"
+    accent: "#6C5CE7"      # violet
+    accent_alt: "#00CEC9"  # teal
+    rule: "#D4DEEE"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1E2A3A", ink: "#FFFFFF", muted: "#B9C5D6", accent: "#00CEC9" }
+    section: { bg: "#6C5CE7", ink: "#FFFFFF", muted: "#DCD6FF" }
+
+  dark:
+    bg: "#141A24"
+    surface: "#232E3E"
+    ink: "#E7EDF5"
+    ink_muted: "#9AA9BC"
+    accent: "#8B7CF0"
+    accent_alt: "#35D6D2"
+    rule: "#FFFFFF1A"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: "Space Grotesk", weight: 700, size: 38, line: 1.1,  tracking: -0.5 }
+    heading:  { family: "Space Grotesk", weight: 600, size: 29, line: 1.15, tracking: -0.3 }
+    subhead:  { family: Inter,           weight: 500, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,           weight: 400, size: 13, line: 1.55, tracking: 0 }
+    caption:  { family: Inter,           weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: Inter,           weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
+    stat:     { family: "Space Grotesk", weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.30, pill: 0.40, chip: 0.12 }
+    border: { width: 1, color: "#FFFFFF80" }   # frosted edge, not a hard rule
+    card_pad: 0.30
+    # The native panels are the second glass layer over the plate's frost.
+    card_fill: { color: "#FFFFFF", transparency: 42 }
+
+  shadow:
+    card: { type: outer, blur: 16, offset: 4, angle: 90, color: "1E2A3A", opacity: 0.12 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .mesh{position:absolute;inset:0;background:
+          radial-gradient(70% 60% at 14% 16%, {{tokens.palette.accent}}44 0%, transparent 55%),
+          radial-gradient(60% 55% at 86% 22%, {{tokens.palette.accent_alt}}33 0%, transparent 55%),
+          radial-gradient(90% 80% at 50% 115%, {{tokens.palette.surface}}cc 0%, transparent 70%),
+          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.55}
+        .b1{left:6%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}55}
+        .b2{right:4%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}44}
+        .b3{left:26%;bottom:-10%;width:48%;height:38%;background:{{tokens.palette.ink_muted}}33}
+        .frost{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+          border-radius:26px;background:{{tokens.palette.surface}}47;
+          backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+          border:1px solid {{tokens.palette.surface}}99;
+          box-shadow:0 14px 44px {{tokens.palette.ink}}26;}
+      </style>
+      <div class="mesh"></div>
+      <div class="b1 blob"></div><div class="b2 blob"></div><div class="b3 blob"></div>
+      <div class="frost"></div>
+    surfaces:
+      title: |
+        <style>
+          .hero{position:absolute;inset:0;background:
+            radial-gradient(80% 70% at 18% 16%, {{tokens.palette.accent}}bb 0%, transparent 52%),
+            radial-gradient(65% 55% at 84% 24%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
+            radial-gradient(100% 90% at 50% 120%, {{tokens.surfaces.title.bg}} 0%, transparent 75%),
+            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.6}
+          .b1{left:8%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
+          .b2{right:6%;top:6%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}77}
+        </style>
+        <div class="hero"></div>
+        <div class="b b1"></div><div class="b b2"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            radial-gradient(75% 65% at 16% 20%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
+            radial-gradient(70% 60% at 85% 30%, {{tokens.palette.accent_alt}}88 0%, transparent 55%),
+            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+          .s{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45}
+          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}44}
+        </style>
+        <div class="sec"></div>
+        <div class="s s1"></div>
+
+voice:
+  feel: airy, modern, translucent, premium software
+  density: medium
+  prefers:
+    - card-based breakdowns
+    - concise, punchy headlines
+    - short body text that reads well over frost
+  avoid:
+    - dense paragraphs
+    - more than four cards on one slide
+    - low-contrast text on busy colour
+  headline_style: >
+    Short and direct. Seven words or fewer when you can. "Rendering, Frosted
+    Glass, One Pipeline" over "An Introduction to the Rendering Pipeline".
+  body_style: >
+    Full sentences, but trim. Lead with the claim. No filler, no throat-clearing.
