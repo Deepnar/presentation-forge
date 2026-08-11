@@ -97,17 +97,21 @@ export async function renderPlate(
   html,
   { w = PLATE_W, h = PLATE_H, scale = PLATE_SCALE, cacheDir = PLATE_CACHE } = {},
 ) {
+  // The screenshot URL is file://htmlFile; a relative cacheDir would make that
+  // a malformed file URL (host = ".plate-cache") and Chrome renders a blank
+  // error page. Resolve so the URL always names a real absolute path.
+  const dir = path.resolve(cacheDir);
   const key = plateCacheKey(html, { w, h, scale });
-  const outFile = path.join(cacheDir, `${key}.png`);
+  const outFile = path.join(dir, `${key}.png`);
   try {
     await access(outFile);
     return { path: outFile, cached: true, key };
   } catch { /* miss — render */ }
 
-  await mkdir(cacheDir, { recursive: true });
+  await mkdir(dir, { recursive: true });
   // A unique temp name keeps concurrent renders from deleting each other's
   // input; the keyed output is shared by design.
-  const htmlFile = path.join(cacheDir, `${key}.${process.pid}.${Math.random().toString(36).slice(2, 6)}.html`);
+  const htmlFile = path.join(dir, `${key}.${process.pid}.${Math.random().toString(36).slice(2, 6)}.html`);
   await writeFile(htmlFile, WRAPPER(html), "utf8");
   try {
     // One retry: a crashed tab produces no file, and a single restart is cheap.
@@ -157,7 +161,10 @@ export function plateHtmlFor({ theme, surface, slide, box }) {
  */
 function boxPx(box) {
   if (!box) return null;
-  return { x: Math.round(box.x * 96), y: Math.round(box.y * 96), w: Math.round(box.w * 96), h: Math.round(box.h * 96) };
+  // content() returns `bottom` and `y`, not `h` — derive it so a template's
+  // {{box.h}} is always a real number.
+  const h = box.h ?? box.bottom - box.y;
+  return { x: Math.round(box.x * 96), y: Math.round(box.y * 96), w: Math.round(box.w * 96), h: Math.round(h * 96) };
 }
 
 /** Resolve a plate's source into a rendered PNG path, or null if none. */

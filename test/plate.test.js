@@ -63,7 +63,17 @@ test("plateHtmlFor: slide html overrides the theme, surfaces pick variants", () 
   const over = plateHtmlFor({ theme: t, surface: "content", slide: { html: "<b>free</b>" } });
   assert.equal(over.kind, "slide");
   assert.equal(over.html, "<b>free</b>");
-  assert.equal(plateHtmlFor({ theme: {}, surface: "content", slide: {} }), null);
+  assert.equal(plateHtmlFor({ theme: t, surface: "content", slide: {} }), null);
+});
+
+test("a content box without an h field still interpolates a real height", () => {
+  const t = {
+    tokens: { palette: { bg: "#FFFFFF" } },
+    plate: { html: "{{box.x}},{{box.y}},{{box.w}},{{box.h}}" },
+  };
+  // content() returns bottom + y, not h — the derivation must kick in.
+  const html = plateHtmlFor({ theme: t, surface: "content", slide: {}, box: { x: 0.7, y: 0.62, w: 11.9, bottom: 6.95 } }).html;
+  assert.equal(html, "67,60,1142,608");
 });
 
 test("default plate geometry is 16:9", () => {
