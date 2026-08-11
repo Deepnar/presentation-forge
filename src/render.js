@@ -8,6 +8,7 @@ import { loadTheme, hex } from "./theme.js";
 import { loadDeck } from "./validate.js";
 import { layouts, content } from "./layouts.js";
 import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrome.js";
+import { renderSlidePlate } from "./plate.js";
 
 async function loadIdentity(deckDir) {
   // identity.yaml carries real personal and institutional details and is
@@ -38,7 +39,7 @@ function deepMerge(a, b) {
   return b === undefined ? a : b;
 }
 
-export async function render({ deckFile, themeName, mode = "light", out, style }) {
+export async function render({ deckFile, themeName, mode = "light", out, style, signal }) {
   const deckDir = path.dirname(deckFile);
   const deck = await loadDeck(deckFile);
   const identity = await loadIdentity(deckDir);
@@ -71,16 +72,17 @@ export async function render({ deckFile, themeName, mode = "light", out, style }
   const total = deck.slides.length;
   const problems = [];
 
-  deck.slides.forEach((data, i) => {
+  for (const [i, data] of deck.slides.entries()) {
     const layout = layouts[data.type];
     if (!layout) {
       problems.push(`slide ${i + 1}: no renderer for type "${data.type}"`);
-      return;
+      continue;
     }
 
     const slide = pres.addSlide();
     const isTitle = data.type === "title";
     const isFull = isTitle || data.type === "section" || data.type === "quote" || data.type === "image";
+    const surface = isTitle ? "title" : data.type === "section" ? "section" : "content";
 
     // Track the background each layout actually paints, so the chrome layer can
     // pick a crest variant that stays legible against it.
@@ -100,14 +102,27 @@ export async function render({ deckFile, themeName, mode = "light", out, style }
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
 
+    // A plate replaces the flat background: headless Chrome rasterises the
+    // theme's (or the slide's) HTML and the PNG becomes the true slide
+    // background, under every shape and the chrome. Text stays native.
+    const plate = await renderSlidePlate({ theme, surface, slide: data, signal });
+    if (plate) {
+      const b64 = (await readFile(plate.png)).toString("base64");
+      slide.background = { data: b64, path: "plate.png" };
+    }
+
     if (isTitle) {
       applyTitleChrome(slide, { brand });
     } else {
-      applyContentChrome(slide, { brand, theme, identity, data, index: i + 1, total, bg });
+      // Chrome picks its legible variant from what is actually painted. On a
+      // plate slide that is the plate, not the theme's flat palette, so it
+      // falls back to the surface's declared bg when one exists.
+      const chromeBg = plate ? (theme.surfaces?.[surface]?.bg ?? theme.palette.bg) : bg;
+      applyContentChrome(slide, { brand, theme, identity, data, index: i + 1, total, bg: chromeBg });
     }
 
     if (data.notes) slide.addNotes(data.notes);
-  });
+  }
 
   const outFile = out ?? path.join(deckDir, "out", "deck.pptx");
   await mkdir(path.dirname(outFile), { recursive: true });
