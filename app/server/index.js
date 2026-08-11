@@ -11,6 +11,7 @@ import { preview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { deckSchema } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
+import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 
@@ -274,6 +275,34 @@ app.post("/api/decks/:slug/report/render", wrap(async (req, res) => {
     docx: `/api/decks/${req.params.slug}/download/report.docx`,
   });
 }));
+
+/**
+ * Generate report.yaml from the deck's shared research and approved outline —
+ * the report's half of the submission workflow. Same SSE transport and
+ * abort-on-disconnect as deck generation.
+ */
+app.post("/api/decks/:slug/report/generate", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { depth, model } = req.body ?? {};
+  (async () => {
+    const r = await generateReport({
+      slug: req.params.slug,
+      depth,
+      model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", { sections: r.sections, skipped: r.skipped, depth: r.depth });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
 
 /* ------------------------------------------------------------- generation */
 
