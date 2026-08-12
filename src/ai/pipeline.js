@@ -74,7 +74,7 @@ export async function runResearch(brief, sources = []) {
  */
 export async function createDeck({
   brief, sources = [], research = false, theme = null, maxSlides = 24,
-  model, identity, onProgress, signal,
+  model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
@@ -98,6 +98,9 @@ export async function createDeck({
     slug, brief, sources, research, theme, maxSlides,
     status: "planning",
     createdAt: new Date().toISOString(),
+    // Per-user workspace: the owning account's email. Ownerless meta (legacy
+    // decks, CLI runs) is a shared deck visible to every logged-in user.
+    ...(owner ? { owner } : {}),
     ...snapshot,
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
@@ -145,7 +148,7 @@ export async function createDeck({
  */
 export async function createReport({
   brief, sources = [], research = false, depth = "full",
-  model, identity, onProgress, signal,
+  model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
@@ -161,6 +164,7 @@ export async function createReport({
     slug, brief, sources, research, depth,
     status: "report",
     createdAt: new Date().toISOString(),
+    ...(owner ? { owner } : {}),
     ...snapshot,
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");

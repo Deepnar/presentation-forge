@@ -54,6 +54,123 @@ function familyFor(type) {
   return null;
 }
 
+/**
+ * Plain-language slide descriptions for the outline review — "Stats — shows 4
+ * big numbers with captions". One source of truth: the in-chat outline renders
+ * exactly these, so a slide type reads as what it will contain rather than as a
+ * schema enum value. Every type in the enum must have an entry; the guard at
+ * the bottom of this file refuses to ship a drift.
+ */
+export const TYPE_DESCRIPTIONS = {
+  title: "the cover with your team and guide",
+  section: "a divider announcing the next part of the talk",
+  chapter: "a larger opener with an agenda of what follows",
+  closing: "the thank-you and wrap-up screen",
+  agenda: "the talk's roadmap as a numbered list",
+  bullets: "key points as short bullets",
+  "numbered-list": "steps or priorities in order",
+  checklist: "items with done-tick boxes",
+  "feature-grid": "features laid out in a grid of small cards",
+  "grid-items": "many small labelled tiles in rows",
+  "icon-list": "points with an icon per row",
+  "stacked-list": "rows stacked, each with a label and a detail line",
+  cards: "a set of cards, each a headline plus a line of text",
+  compare: "two options side by side, point for point",
+  "pros-cons": "the wins and costs of one option in two columns",
+  "before-after": "a change shown as two states",
+  framework: "a boxed diagram showing how the pieces fit",
+  matrix: "items scored against two axes",
+  scorecard: "criteria scored in a simple table",
+  vs: "two contenders head to head",
+  "side-by-side": "two panels compared, image or text",
+  stats: "big numbers with captions",
+  "big-number": "one number made the whole slide",
+  "kpi-dashboard": "a row of key-figure tiles",
+  "data-cards": "stat cards, one figure per card",
+  "progress-bars": "figures shown as filled bars",
+  "ranking-list": "an ordered list with a rank number per row",
+  "metric-comparison": "two sets of figures compared across metrics",
+  sparklines: "small trend lines under the numbers",
+  quote: "a quotation with its source",
+  testimonial: "someone in their own words",
+  "pull-quote": "one line pulled out for emphasis",
+  epigraph: "a short motto opening a section",
+  callout: "a highlighted note in its own box",
+  emphasis: "one idea made visually loud",
+  warning: "a caution the audience must not miss",
+  tip: "a practical hint worth taking away",
+  takeaway: "the one thing to remember",
+  table: "rows and columns of data",
+  "data-table": "figures laid out in a proper table",
+  "decision-matrix": "options scored against weighted criteria",
+  chart: "a live chart from the data",
+  flow: "steps connected by arrows",
+  cycle: "a loop of stages round a circle",
+  funnel: "stages narrowing as the audience narrows",
+  pipeline: "stages passing left to right into the next",
+  dependencies: "boxes linked by who needs whom",
+  "branching-flow": "one path splitting into branches",
+  "layered-architecture": "stacked tiers of a system",
+  image: "a full-width image with a caption",
+  "image-text": "an image beside supporting text",
+  "image-grid": "several images in a grid",
+  "hero-image": "one large image as the slide",
+  "split-screen": "two halves, an image and text",
+  timeline: "events in time along a line",
+  milestone: "key milestones marked in sequence",
+  roadmap: "phases mapped toward a goal",
+  journey: "a path travelled through stages",
+  chronology: "dates in order with their events",
+  references: "the sources cited",
+  diagram: "a custom diagram of boxes and links",
+  pyramid: "a hierarchy stacked from base to peak",
+  venn: "overlapping sets and their intersections",
+  hierarchy: "a tree of parent and child items",
+  "concept-map": "ideas linked around a central topic",
+  definition: "a term and what it means",
+  glossary: "terms and meanings in a list",
+  faq: "questions with short answers",
+  "team-grid": "the team with names and rolls",
+  attribution: "credit for sources and imagery",
+  contact: "reach details at a glance",
+  equation: "a formula presented alone",
+  bibliography: "full citations in a list",
+  "data-source": "where the figures came from",
+  freeform: "a fully custom design — rasterised, not editable in PowerPoint",
+};
+
+/** "flow" in the outline; "Flow — six steps connected by arrows". */
+export function describeType(type) {
+  const meta = TYPE_DESCRIPTIONS[type];
+  return meta ? `${meta}` : type;
+}
+
+export function typeLabel(type) {
+  const pretty = (String(type ?? "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
+  return pretty || "Slide";
+}
+
+/**
+ * The enum's plain-language descriptions, for the outline review and the inline
+ * editor. Walks the schema so the set never drifts from the vocabulary, and
+ * throws on a type the map has missed — the guard that keeps the two in lockstep.
+ */
+export async function typeDescriptions() {
+  const schema = await deckSchema();
+  const types = schema.definitions.slide.properties.type.enum;
+  const out = {};
+  for (const t of types) {
+    if (!TYPE_DESCRIPTIONS[t]) {
+      throw new Error(`TYPE_DESCRIPTIONS is missing an entry for "${t}"`);
+    }
+    out[t] = {
+      label: typeLabel(t),
+      description: TYPE_DESCRIPTIONS[t],
+    };
+  }
+  return out;
+}
+
 export async function slideCatalog() {
   if (_cache) return _cache;
 

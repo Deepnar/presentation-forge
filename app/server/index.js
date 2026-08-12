@@ -10,7 +10,7 @@ import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
-import { deckSchema } from "../../src/ai/catalog.js";
+import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, createReport, createDeckFromReport } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
@@ -37,6 +37,49 @@ const fail = (res, code, message) => res.status(code).json({ ok: false, error: m
 
 const wrap = (fn) => (req, res) =>
   Promise.resolve(fn(req, res)).catch((err) => fail(res, 500, err.message));
+
+/**
+ * Auth-first workspace. Everything under /api/decks and /api/reports needs a
+ * session, so an unauthenticated browser sees a login screen and can never
+ * reach the deck store. Two deliberate exemptions keep <img> tags working:
+ * the raster and download GET routes key off a slug that is only discoverable
+ * through the gated deck list, and a bare <img> cannot send the Authorization
+ * header — so those stay open and the UI is never told a URL it cannot load.
+ */
+const deckWorkspace = async (req, res, next) => {
+  if (/^\/([^/]+)\/(preview|download)\//.test(req.path)) return next();
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to use the deck workspace");
+  req.user = user;
+  next();
+};
+app.use("/api/decks", deckWorkspace);
+app.use("/api/reports", deckWorkspace);
+
+/**
+ * Per-slug ownership. An owned deck belongs to exactly one account; a folder
+ * whose meta.yaml has no owner is a legacy deck (or a headless CLI run) and is
+ * shared. The error is "no such deck", not "not yours", so a stranger cannot
+ * even learn a slug exists. Same preview/download exemption as the gate above.
+ */
+async function assertDeckAccess(slug, user) {
+  if (!slug || /[\/\\]|\.\./.test(slug)) throw new Error("no such deck");
+  const dir = path.join(DECKS, slug);
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* folder predates meta — legacy, shared */ }
+  if (meta.owner && meta.owner !== user.email) throw new Error("no such deck");
+}
+app.use("/api/decks/:slug", async (req, res, next) => {
+  if (/^\/(preview|download)\//.test(req.path)) return next();
+  try {
+    await assertDeckAccess(req.params.slug, req.user);
+    next();
+  } catch (err) {
+    fail(res, 404, err.message);
+  }
+});
 
 /**
  * Server-sent events over a POST body. The chat panel inherits this transport,
@@ -171,10 +214,11 @@ async function deckMeta(slug) {
     report,
     deck: Boolean(deck),
     meta,
+    owner: meta.owner ?? null,
   };
 }
 
-app.get("/api/decks", wrap(async (_req, res) => {
+app.get("/api/decks", wrap(async (req, res) => {
   let entries = [];
   try {
     entries = await readdir(DECKS, { withFileTypes: true });
@@ -185,7 +229,10 @@ app.get("/api/decks", wrap(async (_req, res) => {
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     try {
-      decks.push(await deckMeta(e.name));
+      const entry = await deckMeta(e.name);
+      // Per-user workspace: only your decks (and shared ownerless legacy decks).
+      if (entry.owner && entry.owner !== req.user.email) continue;
+      decks.push(entry);
     } catch { /* folder without a valid deck.yaml — skip */ }
   }
   decks.sort((a, b) => b.updated - a.updated);
@@ -400,6 +447,12 @@ app.post("/api/decks/search", wrap(async (req, res) => {
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     try {
+      // Search is scoped to your workspace like the list is.
+      let owner = null;
+      try {
+        owner = YAML.parse(await readFile(path.join(DECKS, e.name, "meta.yaml"), "utf8"))?.owner ?? null;
+      } catch { /* legacy folder */ }
+      if (owner && owner !== req.user.email) continue;
       const text = await readFile(path.join(DECKS, e.name, "deck.yaml"), "utf8");
       if (text.toLowerCase().includes(q)) hits.push(e.name);
     } catch { /* no deck.yaml */ }
@@ -529,7 +582,11 @@ app.post("/api/decks/:slug/report/generate", (req, res) => {
 
 app.get("/api/types", wrap(async (_req, res) => {
   const schema = await deckSchema();
-  ok(res, { types: schema.definitions.slide.properties.type.enum });
+  const descriptions = await typeDescriptions();
+  ok(res, {
+    types: schema.definitions.slide.properties.type.enum,
+    descriptions,
+  });
 }));
 
 /** Brief → outline. Long-running; streams research/planning progress as SSE. */
@@ -542,6 +599,7 @@ app.post("/api/decks", (req, res) => {
   (async () => {
     const r = await createDeck({
       brief, sources, research, theme, maxSlides, model, identity,
+      owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
     });
@@ -639,6 +697,7 @@ app.post("/api/reports", (req, res) => {
   (async () => {
     const r = await createReport({
       brief, sources, research, depth, model, identity,
+      owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
     });
