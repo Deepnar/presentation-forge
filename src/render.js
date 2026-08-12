@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFile, mkdir, access } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import PptxGenJS from "pptxgenjs";
 import YAML from "yaml";
@@ -89,10 +90,14 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
   pres.company = identity.institution?.short ?? "";
   pres.title = deck.title;
 
-  // Assets referenced by slides resolve relative to the deck folder.
+  // Assets referenced by slides resolve relative to the deck folder. A URL or a
+  // reference to a file that is not there returns null — every image layout
+  // draws a placeholder when the source is null, so an invented `image` field
+  // degrades one slide instead of crashing the whole deck at write time.
   const resolveAsset = (rel) => {
-    if (!rel) return null;
-    return path.isAbsolute(rel) ? rel : path.join(deckDir, rel);
+    if (!rel || /^[a-z][a-z0-9+.-]*:\/\//i.test(rel)) return null;
+    const abs = path.isAbsolute(rel) ? rel : path.join(deckDir, rel);
+    return existsSync(abs) ? abs : null;
   };
 
   const total = deck.slides.length;
