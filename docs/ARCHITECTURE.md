@@ -115,8 +115,25 @@ place this happens.
 `schema/deck.schema.json`. Semantic slide data: type, headline, bullets, card
 bodies, chart series. No coordinates, colours, fonts or sizes anywhere.
 
-The model chooses *what to say* and *which of 15 types fits each beat*, freely.
+The model chooses *what to say* and which of 15 types fits each beat, freely.
 It cannot choose where anything sits.
+
+The vocabulary is now the full 75-type enum: the sixteen original types, the
+six Tier-1 additions, and the rest of the plan's families (Foundation closers,
+List & Grid, Data & Stats, Comparison, Process & Flow, Timeline & Quote,
+Callout, Image & Visual, Table & Matrix, Diagram-ish, Definitions, Team and
+Special) plus `freeform` as the escape hatch. Each type is a conditional schema
+block declaring data only, a native layout in `src/layouts.js`, and an editor
+descriptor. The chart kind enum covers `scatter`, `radar` and `stacked-bar`
+alongside the originals, and a cross-cutting `speaker_note` field draws a note
+bar above the chrome footer on standard content slides.
+
+The layout discipline for the new types follows the Tier-1 lessons: every
+stacked element is fit-scaled or reserves its rendered line count, stat values
+use `fitOneLine` (width-based, pessimistic) because the height-based fitter is
+optimistic for wide digits, and the algorithmic diagram types (framework,
+cycle, dependencies, diagram, hierarchy, concept-map, venn) place nodes purely
+from angles, radii and topological depth — never from content.
 
 ## Why not LangChain / LangGraph
 
@@ -443,7 +460,23 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   YAML. Render `.docx` / download and a *Generate companion deck* button that
   plans from the report's sections and routes through the outline gate (the
   reverse flow). It is the land target of the sidebar's Reports tab and of the
-  home "from a brief" flow; a missing report renders an empty state.
+  home "from a brief" flow; a missing report renders an empty state. Each
+  section also offers *Add as slide*, which appends the section's prose as a
+  bullets slide of the companion deck — the report-as-deck hybrid (F20).
+- **Deck detail actions.** The header's action row wires the Part-2 features:
+  a Dark/Light toggle that remembers `meta.yaml`'s `mode`, PDF and Markdown
+  export (`src/export.js`, reusing the LibreOffice converter for the PDF),
+  a `.zip` sharing bundle (`POST /api/decks/:slug/bundle`, jszip over the deck
+  folder), Clone (`cloneDeck` in the pipeline — content files copied to a fresh
+  slug, meta re-stamped), and a Versions popover over the timestamped backups
+  written into `decks/<slug>/backups/` on every save. A "+ Add slide" menu
+  inserts slides from `templates/*.yaml` (`GET /api/templates`). Ctrl+Z/Ctrl+Y
+  walk a 20-deep deck-state undo stack; Ctrl+S re-renders.
+- **The outline's generation storyboard (F15).** While a plan generates, one
+  tile per planned slide appears in the review, the slide being written
+  highlighted as the SSE status frames stream in. This is the light form of the
+  stretch canvas builder: a live filmstrip of *rendered* slides as they land
+  would need a new SSE phase emitting each validated slide, which remains open.
 - **Model pickers filter by mode.** `lib/modelMode.js` is a tiny client
   pub/sub holding LOCAL or CLOUD (default LOCAL), rehydrated at boot from the
   persisted routing preference. `lib/useModels.js` fetches the grouped model
@@ -543,5 +576,7 @@ The three-layer rule is unaffected: the shell is human-owned chrome, and
 | `decks/<slug>/out/` | no | rendered artefacts |
 | `.plate-cache/` | no | headless-Chrome plate PNGs, keyed by content hash |
 | `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |
+| `decks/<slug>/backups/` | no | timestamped deck.yaml snapshots — the version history (F14) |
 | `decks/<slug>/report.yaml` | yes | the report content (sibling of deck.yaml) |
+| `templates/` | yes | reusable partial slides the "+ Add slide" menu inserts |
 | `reference/` | no | institutional templates to check against — the report donor; gitignored because it carries third-party names |

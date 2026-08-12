@@ -936,3 +936,132 @@ Both draw unchanged through `src/report.js`.
 > citation echo); 450 fits a complete sentence while staying visibly lighter.
 > Brief depth also caps References at six entries, because a twelve-source list
 > is not a brief report.
+
+## 6. Full slide vocabulary
+
+### [x] The complete 50-type vocabulary
+Every type in the product plan's Part 1 now lives in the schema, the catalog
+and the renderer — the six Tier-1 types shipped earlier plus the remaining
+types in batches by family. The enum holds 75 types (the 16 pre-plan types, the
+six Tier-1 additions, and the rest of the plan's families), each with its own
+conditional schema block, a native pptxgenjs layout, a SlideEditor descriptor
+and a demo deck that was rendered, rasterised and vision-checked with
+`mimo-v2.5` before the batch shipped. The chart kind enum gained `scatter`,
+`radar` and `stacked-bar`, and a cross-cutting `speaker_note` field draws a
+note bar above the chrome footer on standard content slides.
+
+Family batches (each committed and pushed with its own vision check):
+1. **Foundation + List & Grid** — chapter, closing, numbered-list, checklist,
+   feature-grid, grid-items, icon-list, stacked-list
+2. **Data & Stats + charts** — kpi-dashboard, data-cards, progress-bars,
+   ranking-list, metric-comparison, sparklines; scatter/radar/stacked-bar
+3. **Comparison** — before-after, framework, matrix, scorecard, vs, side-by-side
+4. **Process & Flow** — cycle, funnel, pipeline, dependencies,
+   branching-flow, layered-architecture
+5. **Timeline + Quote** — roadmap, journey, chronology, testimonial,
+   pull-quote, epigraph
+6. **Callout + Image + Table** — warning, tip, takeaway, image-grid,
+   hero-image, split-screen, data-table, decision-matrix
+7. **Diagram-ish** — diagram (vertical/horizontal/radial), pyramid, venn,
+   hierarchy, concept-map
+8. **Definitions + Team + Special** — glossary, faq, team-grid, attribution,
+   contact, equation, bibliography, data-source; plus the speaker-note bar
+
+> **Learned.** Eight things were not obvious beforehand.
+>
+> pptxgenjs scatters read their x coordinates from a synthetic first "X-Axis"
+> series (`data[0].values` are the x positions, every other series supplies y).
+> Feeding plain `{x, y}` objects wrote a scatter chart with zero series and an
+> empty plot — verified by unzipping the pptx, never by eye.
+>
+> `tree.push({ children: [...].map(build) })` evaluates the children map
+> BEFORE push runs, so a self-indexing tree builder appends grandchildren
+> before their parent and every index desyncs — the hierarchy type rendered
+> post-order and collapsed until the parent was pushed first.
+>
+> Rotated text wraps within the box's logical width before rotation. A narrow
+> vertical box meant for a rotated axis label wraps the string mid-word; the
+> box must be sized to the text's measured width, then rotated around its
+> centre.
+>
+> The fitter's height budget is optimistic for stat digits: "99.9%" at 54pt
+> "measured" one line and wrapped in LibreOffice, its `%` landing on the label
+> below. `fitOneLine` (a width-based shrink with a pessimistic safety factor)
+> now guards every stat value; it lives in `src/fit.js` and is the one-line
+> guarantee the whole data family leans on.
+>
+> A vertical flow card needs ~0.75in for a readable title + body. Six cards
+> cannot fit above the chrome footer at any readable size, so the TTB layout
+> renders title-only at five or more steps — a tiny unreadable body is worse
+> than none, and the plan's "cap TTB at 5" became "drop the body, keep the
+> card".
+>
+> LibreOffice clears its outDir when converting, so an export that hands it the
+> same directory as the freshly rendered pptx deletes its own input — the PDF
+> export converts in a subdir and renames the result up.
+>
+> The `grid-items`, `ranking-list`, `faq` and other dense rows need a one-line
+> fit or a real rendered line count, exactly like the Tier-1 lesson: every
+> stacked element is either fit-scaled or reserves its measured lines.
+>
+> Demo decks live per batch (`decks/type-batch1..8`) so a regression re-render
+> is one command per family, and the vocabulary test (`test/vocabulary.test.js`)
+> validates every type's payload, rejects wrong shapes, and guards the
+> `maxLength < 2000` grammar threshold.
+
+### [x] Slide-vocabulary UI + editor
+The inline editor gained descriptors for all 75 types, including composite
+field editors for nested types (matrix axes, roadmap phases with items,
+recursive hierarchy children, per-column data-table cells) and number/select/
+boolean field kinds.
+
+## 7. Part-2 features
+
+The plan's F3–F20 shipped in a focused tranche (F1 grounding, F2 research
+panel, F12 report viewer and the shell features were already done):
+
+- **F3** outline drag-and-drop reorder (HTML5 drag over the plan rows)
+- **F4** deck cloning (`POST /api/decks/:slug/clone`, `cloneDeck` in the
+  pipeline, "Clone" button in the deck detail that opens the copy)
+- **F5** slide templates (`templates/*.yaml` + `GET /api/templates` + the
+  detail view's "+ Add slide" menu)
+- **F6** vertical-flow capacity fix — title-only cards at 5+ steps, fit-scaled
+  titles otherwise (was colliding with the chrome footer)
+- **F7** keyboard shortcuts — Ctrl+K focus deck search, Ctrl+N new deck,
+  Ctrl+S re-render, Ctrl+Z/Ctrl+Y undo/redo, Escape closes modals
+- **F8** PDF + Markdown export (`src/export.js`, `--format pdf|markdown` on
+  the render CLI, `POST /api/decks/:slug/export`, PDF/.md buttons in the UI)
+- **F9** undo/redo in the deck editor — a 20-deep deck-state stack walked by
+  Ctrl+Z/Ctrl+Y, saving and re-rendering like any mutation
+- **F10** better empty states — the chat rail's first-run card with suggestion
+  pills ("Add a stats slide about the key figures", …)
+- **F11** sharing bundle — `POST /api/decks/:slug/bundle` zips the deck folder
+  (content files + pptx) via jszip for download
+- **F14** version history — timestamped `backups/deck.*.yaml` snapshots on
+  every save, a Versions popover listing them with Restore
+- **F15** canvas slide-builder (light) — a storyboard strip in the outline
+  review highlights each slide as the SSE stream writes it. The full live
+  per-slide rendering filmstrip remains future work (see Handoff).
+- **F17** per-deck dark mode — `meta.yaml`'s `mode` is the render default, and
+  the detail view toggles and remembers it
+- **F18** generation error recovery — a per-slide retry with the catalog
+  re-stated, then a placeholder bullets slide so a bad slide never leaves a gap
+- **F19** full-text deck search — `POST /api/decks/search` greps deck.yaml;
+  the sidebar's search merges content hits under the title filter
+- **F20** report-as-deck hybrid — "Add as slide" per report section appends a
+  bullets slide to the companion deck
+
+Hosting-readiness (Part 3, deployment itself shelved by the user): stateful
+directories (`decks`, `themes`, `brand`, `config`) and the plate cache are now
+env-overridable (`FORGE_*`), the plate cache and Chrome binary were already
+env-driven, and there are no secrets or machine paths in source.
+
+Not built: **F13 image grounding** (search/download of CC images for
+model-emitted filenames — design noted in Handoff) and **F16 i18n** (locale
+number formatting + RTL — design noted in Handoff).
+
+> **Learned.** The deck's PUT endpoint is the natural version-history seam:
+> snapshot the current deck.yaml before every overwrite, so undo-per-turn (chat)
+> and undo-per-session (F9) get a permanent sibling for free. And `readdir`
+> with `{ recursive: true }` made the sharing bundle a five-line zip instead of
+> a walk — worth remembering for any folder export.
