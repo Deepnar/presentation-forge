@@ -537,6 +537,85 @@ in the thread walks a guided briefing one question at a time and ends in a deck.
 > members out of the presenter options and keying the rest by index.
 > Behaviourally validated: the warning no longer appears on any surface.
 
+### [x] Chat-first batch 2 — the user review round
+The follow-up pass over the chat-first redesign, nine fixes from the user's
+review:
+
+- **Dividers are never assigned.** `title`/`section`/`chapter`/`closing` are
+  structure, not somebody's slide. The writer's ops grammar excludes
+  `presenter` for divider types (`buildOpsSchema` gains `excludeProps`), the
+  pipeline strips any stray value after generation, and the chrome footer stops
+  drawing a presenter line on divider surfaces. Content slides get the real
+  presenting-members list so assignment stays in the team. The briefing's
+  "slides per member" now means content slides.
+- **Sections scale with the team, both artefacts.** One major part per
+  presenting member, `clamp(members, 3, 8)` for a deck and floored at the
+  four-section graded core for a report; the planners' section caps are
+  tightened to the same number so the grammar cannot overshoot. The count
+  derives from the merged identity's team — no separate input.
+- **Deeper research.** The single SearXNG query became `deepResearch`: 2-4
+  subtopic queries from the research role (fallback to the brief alone), a
+  higher read budget per query, then a follow-up query per richest source.
+  ~21 pages in a real run instead of five.
+- **Content quality.** The writer prompt demands concrete claims drawn from the
+  research and forbids invented figures and invented image paths; the grounding
+  guard stays active and was verified live (a grounded "60%" passed, fabricated
+  stats flag).
+- **More briefing questions.** "Who is this for / what should they take away"
+  (audience) and "which parts matter most" (emphasis) fold into the planning
+  brief; blanks keep the fast path fast.
+- **A real team editor + saved defaults.** The team card is a proper form
+  (headers, rows, add/remove, Enter-to-add, live count); "Remember as
+  defaults" on the summary card writes the repeated set to config/identity.yaml
+  and pre-fills the next briefing from it.
+- **Runs survive navigation.** A generation's controller and status live in a
+  module-level `lib/runs.js` registry, so leaving the chat for the Identity tab
+  unmounts the view without touching the run; re-entry adopts the live run and
+  errors persist onto the chat.
+- **Report chats auto-name.** The same topic→title rename as deck chats
+  (report title flows through the SSE result), plus the root cause: `chatName`
+  used `??`, so an empty title never fell through to the topic.
+- **Sidebar row menus + delete deck.** Every chat/deck row gains a hover "⋯"
+  popover — chats delete locally, decks open or delete server-side behind a
+  confirm modal (`DELETE /api/decks/:slug`, a new endpoint gated by the
+  per-slug ownership check).
+
+> **Learned.** Six things were not obvious beforehand.
+>
+> "Unrepresentable beats scrubbed" holds here too: removing `presenter` from the
+> divider grammar is what actually stopped the model assigning dividers — a
+> prompt rule alone was too soft for a verbose cloud model. The chrome footer
+> had to learn the same rule independently, because the *fallback* (the whole
+> presenting team joined) would still have painted names on dividers.
+>
+> The cloud outline is verbose: a large-team plan runs to ~7K output tokens and
+> the old 8192 `num_predict` occasionally truncated it mid-JSON
+> (done_reason=length with the closing brace missing — the exact TRAPS failure).
+> Raising the cap to 12000 plus demanding one-sentence purposes fixed it; the
+> cap only ever bites a cloud run, since the local grammar keeps output bounded.
+>
+> A model will invent images. With no image-supply mechanism (F13 unbuilt), a
+> cloud writer put `https://example.com/x.jpg` in an image field, and the
+> renderer crashed at write time reading the joined bogus path. `resolveAsset`
+> now returns null for URLs and missing files, and every image layout already
+> drew a placeholder for null — one grey box, never a dead deck.
+>
+> Runs-as-module-state is the correct seam for "background" work in a SPA whose
+> views unmount: the component subscribes to a module-level registry rather than
+> owning the abort controller, so navigation is a subscription change, never a
+> cancellation. The server side was already abort-on-disconnect; the bug was
+> purely that the UI abandoned its own progress display.
+>
+> `??` is the wrong fallback for empty strings. `chatName(title ?? topic)` never
+> fell back for `title: ""`, so report chats — which name from the topic before
+> any title exists — stayed "New chat" forever. `(title?.trim() || topic)` is
+> the pattern.
+>
+> Section-count scaling has a budget interaction: the planner produces "about N"
+> sections but will legitimately use fewer when the slide budget is small — a
+> 10-slide deck from an 11-person team planned 4 sections, not 8. The cap is the
+> contract; the count is a target the model reconciles with `maxSlides`.
+
 ### [ ] (stretch) Canvas slide-builder
 Live slides appearing as they stream (status → plan → slides) as a
 filmstrip/storyboard the user can point the model at. Not built this session —

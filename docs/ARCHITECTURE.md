@@ -233,6 +233,21 @@ They are not two flavours of the same artefact.
 Both are generated from the same research pass, so one brief produces both —
 which is the actual submission workflow.
 
+**Structure is sized to the team.** Both planners derive their section count
+from the merged identity's team (`src/ai/team.js`): a deck gets `clamp(members,
+3, 8)` major parts (one per presenting member, capped at the renderer's
+8-section ceiling) and the outline grammar's sections cap is tightened to the
+same number; the report planner floors the same calculation at the four-section
+graded core. The count is the deck's own data, never a separate input.
+
+**Dividers carry no presenter.** `title`/`section`/`chapter`/`closing`/`epigraph`
+slides are structure, not a member's slide. The writer's ops grammar drops the
+`presenter` field for those types (unrepresentable beats scrubbed), the
+pipeline strips any stray value after generation, and the chrome footer skips
+the presenter line on divider surfaces. Content slides are handed the real
+presenting-members list so assignment stays grounded in the actual team rather
+than invented roles.
+
 ## The report generator
 
 `src/ai/report.js` is the report's half of the generation pipeline, mirroring
@@ -400,6 +415,21 @@ now user-editable from the deck detail's Research panel, the grounding contract
 is: the notes are the ground truth, the user owns them, and the model is
 flagged when it leaves them.
 
+**The research pass is deep, not one query.** `deepResearch` (`src/ai/research.js`)
+expands the brief into 2-4 subtopic queries via the research role (falling back
+to the brief alone when the model is unavailable), runs each at a higher read
+budget than the old single query, then follows up each of the three richest
+extracted sources with a query of its own — deduplicated, ~21 pages in a real
+run instead of five. The model only ever sees a bounded excerpt; the richer
+artefact stays whole on disk for the deck, the report and the user's edits.
+
+**Invented images degrade, never crash.** The renderer's `resolveAsset` returns
+null for URLs and for files that do not exist, and every image layout already
+draws a placeholder for a null source — so a model that puts
+`https://example.com/x.jpg` in an image field costs one grey box, not a whole
+deck that fails at write time. Both the planner and the writer are told to avoid
+image-requiring types unless the brief names real files.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
@@ -420,22 +450,26 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   one static frame under `prefers-reduced-motion`, no loop while the tab is
   hidden or a navigation rail is focused, and nothing at all when a 2d context
   is unavailable.
-- **`Sidebar`** — the persistent deck list, grouped by relative date, with a
-  real cover thumb per row (`DeckThumb`, fallback tile when no preview is on
-  disk). Tabs filter All decks / Reports using the `report` flag that
-  `deckMeta()` adds, search filters title/slug/theme client-side, and the rail
-  collapses to an icon strip. Both rails persist via localStorage. The Reports
-  tab is about the document, not the deck: its rows open the report's
-  full-document view even when the deck also has slides.
-- **`Home`** — the prompt box is the generate surface. Deck mode streams a
-  brief to the outline gate (`POST /api/decks`, SSE); Report mode streams a
-  report either from a deck (`POST /api/decks/:slug/report/generate`) or from a
-  brief alone (`POST /api/reports`, standalone — no deck required). Suggestion
-  pills fill the prompt. Everything that is not the brief lives in the config
-  popover behind the sliders button: audience and slide-count presets (deck
-  mode) fold into the brief and `maxSlides`; report mode's source, deck picker
-  and Full/Brief depth live there too. A "Recent decks" carousel reuses the
-  deck list.
+- **`Sidebar`** — the per-user navigation. Chats and Decks tabs (the old All
+  decks / Reports split is now the Decks tab, `report`-flagged rows open the
+  report's full-document view). Search filters title/slug/theme client-side
+  and greps content server-side; the rail collapses to an icon strip and both
+  states persist via localStorage. Every row — chat or deck — carries a hover
+  "⋯" popover: a chat deletes locally, a deck opens or deletes server-side
+  (`DELETE /api/decks/:slug`, behind a confirm modal). The one creation entry
+  app-wide lives here, "+ New chat".
+- **`ChatView`** — the chat window IS the app. A message thread with the input
+  bar at the bottom: send a topic, the assistant walks the guided briefing one
+  question at a time (each with a default), then a summary card whose "Plan the
+  deck" is the only trigger of research and planning; the outline lands back in
+  the thread for approval and "Open the deck" reaches the artefact. A
+  Chat/Report toggle flips the same input bar between products. The input bar's
+  model pill persists the pick on the chat. **Runs survive leaving the chat**:
+  a generation's `AbortController` and status live in the module-level
+  `lib/runs.js` registry, never in component state, so navigating to Identity
+  unmounts the view without touching the run — re-entering adopts the live run
+  (busy, live status, working Stop button) and errors are persisted onto the
+  chat so a failure that lands while the user is away is shown on return.
 - **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
   grid with lightbox/inline-editor/presenter ops, a per-slide "make it punchier"
   bolt (a scoped chat turn), the Report panel (generate when no `report.yaml`
