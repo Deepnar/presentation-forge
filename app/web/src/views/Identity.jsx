@@ -139,8 +139,10 @@ export default function Identity() {
         <Field label="University" value={id.institution?.university} onChange={(v) => set("institution.university", v)} />
       </Section>
 
-      {/* Pinned so the action is reachable without scrolling back up. */}
-      <div className="fixed inset-x-0 bottom-0 border-t border-line bg-panel/95 backdrop-blur">
+      {/* Sticky within the scroll column — the bar belongs to the form, never
+          the app chrome. A fixed full-width bar would cover the sidebar's
+          bottom nav, which is exactly the overlap this replaces. */}
+      <div className="sticky bottom-0 z-10 border-t border-line bg-panel/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-10 py-3.5">
           <Button variant="primary" onClick={save} disabled={state.status === "saving"}>
             {state.status === "saving" && <Spinner />}
