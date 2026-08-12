@@ -61,6 +61,8 @@ export function createChat({ kind = "deck" } = {}) {
       team: { label: "", members: [] },
       guide: { name: "", designation: "" },
       academic: { subject: "", year: "", semester: "", exam_type: "" },
+      audience: "",
+      emphasis: "",
       theme: "",
       maxSlides: 0,        // 0 = auto
       slidesPerMember: null,

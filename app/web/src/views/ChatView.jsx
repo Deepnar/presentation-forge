@@ -139,6 +139,8 @@ export default function ChatView({
     const notes = [];
     if (b.density !== "balanced") notes.push(`Keep the slides ${b.density} density — ${densityNote(b.density)}.`);
     if (b.slidesPerMember) notes.push(`Distribute the CONTENT slides (not section dividers) roughly evenly, about ${b.slidesPerMember} per presenting member.`);
+    if (b.audience?.trim()) notes.push(`The deck is for: ${b.audience.trim()}. Write to that audience and make sure they leave having absorbed it.`);
+    if (b.emphasis?.trim()) notes.push(`Emphasis: ${b.emphasis.trim()}. These parts matter most — give them the most slides and the deepest treatment.`);
     if (notes.length) brief = `${chat.topic}\n\n${notes.join(" ")}`;
 
     setBusy(true);
@@ -573,6 +575,22 @@ function QuestionCard({ q, chat, themes, themeLabel, onNext }) {
       {q.key === "team" && <TeamCard team={b.team} onNext={onNext} />}
       {q.key === "guide" && <GuideCard guide={b.guide} onNext={onNext} />}
       {q.key === "academic" && <AcademicCard academic={b.academic} onNext={onNext} />}
+      {q.key === "audience" && (
+        <FreeTextCard
+          field="audience"
+          value={b.audience}
+          placeholder="e.g. classmates and the guide — they should leave knowing how the parts fit"
+          onNext={onNext}
+        />
+      )}
+      {q.key === "emphasis" && (
+        <FreeTextCard
+          field="emphasis"
+          value={b.emphasis}
+          placeholder="e.g. the cost comparison and the environmental case"
+          onNext={onNext}
+        />
+      )}
       {q.key === "theme" && <ThemeCard themes={themes} value={b.theme} themeLabel={themeLabel} onNext={onNext} />}
       {q.key === "maxSlides" && <MaxSlidesCard value={b.maxSlides} onNext={onNext} />}
       {q.key === "slidesPerMember" && <SlidesPerMemberCard value={b.slidesPerMember} onNext={onNext} />}
@@ -603,6 +621,27 @@ function TitleCard({ value, onNext }) {
         className={inputCls}
       />
       <CardFooter onNext={() => onNext({ title: v.trim() || value })} />
+    </div>
+  );
+}
+
+/** A free-text briefing answer — type it or leave blank to move on. */
+function FreeTextCard({ field, value, onNext, placeholder = "" }) {
+  const [v, setV] = useState(value ?? "");
+  const submit = () => onNext({ [field]: v.trim() });
+  return (
+    <div>
+      <div className="mb-1.5 text-[11px] text-fg-faint">Skip to move on — an empty answer just uses the default.</div>
+      <textarea
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
+        rows={2}
+        placeholder={placeholder}
+        autoFocus
+        className={`${inputCls} resize-none`}
+      />
+      <CardFooter onNext={submit} nextLabel="Continue" />
     </div>
   );
 }
@@ -869,6 +908,12 @@ function SummaryLine({ chat, themeLabel }) {
         </span>
       )}
       <span className="mt-1 block text-[12px]">{bits.join(" · ")}</span>
+      {b.audience?.trim() && (
+        <span className="mt-1 block text-[12px]">For: <span className="text-fg-muted">{b.audience.trim()}</span></span>
+      )}
+      {b.emphasis?.trim() && (
+        <span className="mt-1 block text-[12px]">Emphasis: <span className="text-fg-muted">{b.emphasis.trim()}</span></span>
+      )}
     </div>
   );
 }

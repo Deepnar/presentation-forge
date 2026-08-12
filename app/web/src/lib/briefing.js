@@ -10,6 +10,8 @@ export const BRIEFING_QUESTIONS = [
   { key: "team", ask: "Who is on the team — and who presents?" },
   { key: "guide", ask: "Who is your guide?" },
   { key: "academic", ask: "Which subject and academic year is this for?" },
+  { key: "audience", ask: "Who is this for — and what should they take away?" },
+  { key: "emphasis", ask: "Which parts matter most?" },
   { key: "theme", ask: "Which visual style should it use?" },
   { key: "maxSlides", ask: "How many slides?" },
   { key: "slidesPerMember", ask: "Slides per presenting member?" },
@@ -36,6 +38,8 @@ export function initialBriefing(identity) {
       semester: acad.semester ?? "",
       exam_type: acad.exam_type ?? "",
     },
+    audience: "",
+    emphasis: "",
     theme: "",
     maxSlides: 0,        // 0 = auto
     slidesPerMember: null,
@@ -70,6 +74,8 @@ export function echoAnswer(briefing, key, opts = {}) {
       const s = b.academic?.subject?.trim();
       return s || "no subject set";
     }
+    case "audience": return b.audience?.trim() || "no audience set";
+    case "emphasis": return b.emphasis?.trim() || "no emphasis set";
     case "theme": return opts.themeLabel?.(b.theme) || "Default";
     case "maxSlides": return b.maxSlides ? `${b.maxSlides} slides` : "auto";
     case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
@@ -113,6 +119,10 @@ export function applyFreeText(briefing, key, text) {
     }
     case "academic":
       return { briefing: { ...b, academic: { ...b.academic, subject: t } }, echo: `Subject: ${t}` };
+    case "audience":
+      return { briefing: { ...b, audience: t }, echo: `For: ${t}` };
+    case "emphasis":
+      return { briefing: { ...b, emphasis: t }, echo: `Emphasis: ${t}` };
     case "maxSlides": {
       const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? 0 : NaN;
       if (Number.isNaN(n)) return null;
