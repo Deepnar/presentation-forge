@@ -93,6 +93,11 @@ export const api = {
     fetch("/api/docs").then((r) =>
       r.ok ? r.text() : Promise.reject(new Error("docs unavailable"))),
   report: (slug) => call(`/api/decks/${slug}/report`),
+  // The deck's research — the panel's view/edit surface over notes.md +
+  // sources.json. `exists: false` means no research pass ran yet.
+  research: (slug) => call(`/api/decks/${slug}/research`),
+  saveResearch: (slug, { notes, sources }) =>
+    call(`/api/decks/${slug}/research`, { method: "PUT", body: JSON.stringify({ notes, sources }) }),
   renderReport: (slug, opts = {}) =>
     call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
   generateReport: (slug, payload, handlers) =>

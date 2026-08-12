@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
@@ -237,15 +237,18 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         </div>
       </header>
 
-      <ReportPanel
-        slug={slug}
-        hasReport={reportExists}
-        defaultDepth={data.meta?.reportDepth ?? "full"}
-        onGenerated={() => {
-          setReportExists(true);
-          onDeckChanged?.();
-        }}
-      />
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ReportPanel
+          slug={slug}
+          hasReport={reportExists}
+          defaultDepth={data.meta?.reportDepth ?? "full"}
+          onGenerated={() => {
+            setReportExists(true);
+            onDeckChanged?.();
+          }}
+        />
+        <ResearchPanel slug={slug} />
+      </div>
 
       {problems.length > 0 && (
         <Panel className="mt-5 border-amber/30 bg-amber/5 p-3.5">
@@ -434,7 +437,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
     "appearance-none rounded-lg border border-line bg-sunken py-1.5 pl-3 pr-8 text-[12.5px] text-fg outline-none transition hover:border-line-strong focus:border-accent";
 
   return (
-    <Panel className="mt-6 p-4">
+    <Panel className="p-4">
       <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-fg-faint">Report</div>
 
       {!hasReport ? (
@@ -513,6 +516,116 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
 function pageCount(pages) {
   if (!pages || typeof pages !== "object") return 0;
   return Math.max(0, ...Object.values(pages).map((v) => Number(v) || 0));
+}
+
+/**
+ * The deck's research — what the writer draws from. Read-only code block with
+ * an Edit mode that saves back through PUT /research; sources.json collapses
+ * underneath. The point is trust: the user must be able to see and correct the
+ * notes the model writes from, and an edit here is what the next generation
+ * reads (generateFromPlan reads research/notes.md fresh at write time).
+ */
+function ResearchPanel({ slug }) {
+  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [] });
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(() => {
+    setState((s) => ({ ...s, loading: true }));
+    setError("");
+    api.research(slug)
+      .then((r) => setState({ loading: false, exists: r.exists, notes: r.notes ?? "", sources: r.sources ?? [] }))
+      .catch((err) => {
+        setState((s) => ({ ...s, loading: false }));
+        setError(err.message);
+      });
+  }, [slug]);
+
+  useEffect(() => load(), [load]);
+
+  async function save() {
+    setSaving(true);
+    setError("");
+    try {
+      await api.saveResearch(slug, { notes: draft });
+      setState((s) => ({ ...s, notes: draft, exists: true }));
+      setEditing(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Panel className="p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Research</div>
+        {state.exists && !editing && (
+          <Button size="sm" variant="outline" onClick={() => { setDraft(state.notes); setEditing(true); }}>
+            Edit
+          </Button>
+        )}
+      </div>
+
+      {state.loading ? (
+        <div className="flex items-center gap-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
+      ) : error ? (
+        <div className="rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">{error}</div>
+      ) : !state.exists ? (
+        <div className="text-[12px] leading-relaxed text-fg-muted">
+          No research yet. Create this deck with a research pass (or with sources) and this
+          panel shows the notes the model writes from.
+        </div>
+      ) : editing ? (
+        <div className="space-y-2">
+          <textarea
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            spellCheck={false}
+            className="h-56 w-full resize-y rounded-lg border border-line bg-sunken p-3 font-mono text-[11.5px] leading-relaxed text-fg outline-none transition focus:border-accent"
+          />
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="primary" onClick={save} disabled={saving}>
+              {saving && <Spinner />} Save
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setEditing(false)} disabled={saving}>Cancel</Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap break-words rounded-lg border border-line bg-sunken p-3 font-mono text-[11px] leading-relaxed text-fg-muted">
+            {state.notes}
+          </pre>
+          {state.sources.length > 0 && (
+            <details className="rounded-lg border border-line px-3 py-2">
+              <summary className="cursor-pointer text-[11px] font-medium uppercase tracking-wider text-fg-faint">
+                Sources ({state.sources.length})
+              </summary>
+              <ul className="mt-2 space-y-1.5">
+                {state.sources.map((s, i) => (
+                  <li key={i} className="text-[11.5px] leading-relaxed">
+                    {s.url ? (
+                      <a href={s.url} target="_blank" rel="noreferrer" className="break-all text-fg-muted underline-offset-2 hover:text-fg hover:underline">
+                        {s.title ?? s.url}
+                      </a>
+                    ) : (
+                      <span className="text-fg-muted">{s.title}</span>
+                    )}
+                    {typeof s.words === "number" && (
+                      <span className="ml-1.5 text-fg-faint">· {s.words} words</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      )}
+    </Panel>
+  );
 }
 
 function CardBtn({ children, ...props }) {

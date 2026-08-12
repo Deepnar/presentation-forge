@@ -269,6 +269,43 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
 
 /* ---------------------------------------------------------------- reports */
 
+/** The deck's research artefact — what the model is drawing from. The panel's
+ *  whole point is that the user must be able to see and correct it. No research
+ *  dir is not an error: it is the "research this deck" hint. */
+app.get("/api/decks/:slug/research", wrap(async (req, res) => {
+  const dir = path.join(DECKS, req.params.slug, "research");
+  let notes = null;
+  try {
+    notes = await readFile(path.join(dir, "notes.md"), "utf8");
+  } catch { /* no research pass yet */ }
+
+  let sources = [];
+  try {
+    sources = JSON.parse(await readFile(path.join(dir, "sources.json"), "utf8")) ?? [];
+  } catch { /* malformed or missing — the notes may still be valid */ }
+
+  ok(res, { exists: notes != null, notes, sources });
+}));
+
+/** Save research back to disk — the edit half of the panel. Either or both of
+ *  `notes` and `sources` may be given; the next generation reads notes.md, so
+ *  an edit here is what the writer sees. */
+app.put("/api/decks/:slug/research", wrap(async (req, res) => {
+  const { notes, sources } = req.body ?? {};
+  if (notes != null && typeof notes !== "string") {
+    return fail(res, 400, "notes must be a string");
+  }
+  if (sources != null && !Array.isArray(sources)) {
+    return fail(res, 400, "sources must be an array");
+  }
+
+  const dir = path.join(DECKS, req.params.slug, "research");
+  await mkdir(dir, { recursive: true });
+  if (notes != null) await writeFile(path.join(dir, "notes.md"), notes, "utf8");
+  if (sources != null) await writeFile(path.join(dir, "sources.json"), JSON.stringify(sources, null, 2), "utf8");
+  ok(res, { exists: true });
+}));
+
 app.get("/api/decks/:slug/report", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "report.yaml");
   let report;
