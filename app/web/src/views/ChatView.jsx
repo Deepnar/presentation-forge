@@ -40,7 +40,10 @@ function phaseOf(chat) {
  * names the chat so the list reads as "about what", never as "New chat".
  */
 function chatName(title, topic) {
-  const t = String(title ?? topic ?? "").replace(/\s+/g, " ").trim();
+  // The deck title wins once the briefing has one; an EMPTY title must still
+  // fall back to the topic — ?? treats "" as a real value and would leave a
+  // report chat named "New chat" forever.
+  const t = String((title ?? "").trim() || (topic ?? "").trim()).replace(/\s+/g, " ").trim();
   if (!t) return "New chat";
   return t.length > 48 ? `${t.slice(0, 45).trimEnd()}…` : t;
 }
