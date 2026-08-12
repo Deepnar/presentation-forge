@@ -37,6 +37,50 @@ function clean(v) {
 /** Editable fields per slide type; maxLengths mirror deck.schema.json. */
 const TYPE_FIELDS = {
   section: [{ key: "headline", label: "Headline", kind: "text", maxLength: 80 }],
+  agenda: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    {
+      key: "items", label: "Agenda items", kind: "items", maxItems: 8, itemLabel: "Item",
+      fields: [
+        { key: "title", maxLength: 40, placeholder: "Title" },
+        { key: "desc", kind: "textarea", maxLength: 120, placeholder: "Description (optional)" },
+      ],
+    },
+  ],
+  "big-number": [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    { key: "value", label: "Value", kind: "text", maxLength: 12 },
+    { key: "label", label: "Label", kind: "textarea", maxLength: 60 },
+    { key: "body", label: "Body", kind: "textarea", maxLength: 200 },
+    { key: "sub", label: "Sub", kind: "textarea", maxLength: 60 },
+  ],
+  "pros-cons": [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    { key: "pros", label: "Pros", kind: "list", item: "Pro", maxLength: 120, maxItems: 8 },
+    { key: "cons", label: "Cons", kind: "list", item: "Con", maxLength: 120, maxItems: 8 },
+  ],
+  milestone: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    {
+      key: "milestones", label: "Milestones", kind: "items", maxItems: 4, itemLabel: "Milestone",
+      fields: [
+        { key: "when", maxLength: 16, placeholder: "When" },
+        { key: "title", maxLength: 40, placeholder: "Title" },
+        { key: "body", kind: "textarea", maxLength: 120, placeholder: "Body (optional)" },
+      ],
+    },
+  ],
+  emphasis: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    { key: "label", label: "Label", kind: "text", maxLength: 24 },
+    { key: "body", label: "Body", kind: "textarea", maxLength: 200 },
+  ],
+  definition: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
+    { key: "term", label: "Term", kind: "text", maxLength: 40 },
+    { key: "definition", label: "Definition", kind: "textarea", maxLength: 200 },
+    { key: "example", label: "Example", kind: "textarea", maxLength: 120 },
+  ],
   bullets: [
     { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
     { key: "bullets", label: "Bullets", kind: "list", item: "Bullet", maxLength: 160, maxItems: 6 },
