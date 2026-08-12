@@ -137,7 +137,10 @@ role in `config/models.yaml` resolves to a backend:
 - **`openai-compatible`** (opt-in, per role via `provider:`) — `/chat/completions`,
   `response_format: json_object` instead of a grammar. Streaming and image
   parts work the same; a cloud role simply relies on a strong model obeying
-  JSON rather than a decoder forcing it.
+  JSON rather than a decoder forcing it. A `model` override naming one of a
+  provider's `models:` list routes that request to the provider — the picker's
+  cloud group — while keys resolve env-first then from the gitignored
+  `config/local.yaml` store (`src/cloud.js`).
 
 Everything downstream (`chat`/`chatJSON`, generate, turn, pipeline, CLI, API)
 is backend-agnostic — only the role's provider changes. The default stays
@@ -354,6 +357,11 @@ deck list (fetched once, re-fetched on a version bump) and routes between
 - **`HeaderBar`** — wordmark (home link) with a LOCAL badge, the sidebar
   collapse toggle, a Docs modal (reads the repo README via `GET /api/docs`) and
   the GitHub link. No avatar, no sync, no dead icons.
+- **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
+  capped set of dots drifts on slow sine paths and repels gently around the
+  pointer. It is ambience, never content — one static frame under
+  `prefers-reduced-motion`, no loop while the tab is hidden or a navigation
+  rail is focused, and nothing at all when a 2d context is unavailable.
 - **`Sidebar`** — the persistent deck list, grouped by relative date, with a
   real cover thumb per row (`DeckThumb`, fallback tile when no preview is on
   disk). Tabs filter All decks / Reports using the `report` flag that
@@ -368,6 +376,34 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   grid with lightbox/inline-editor/presenter ops, and the Report panel:
   generate when no `report.yaml` exists, otherwise render `.docx` and download
   it. `lib/time.js` supplies the relative timestamps used everywhere.
+
+### The cloud surface — opt-in hosted models
+
+The app is local-first by default and stays that way: nothing calls a hosted
+provider unless the user attaches one. `config/models.yaml` already allowed a
+role to opt into an `openai-compatible` provider; the shell now makes that
+usable end-to-end.
+
+- **`src/cloud.js`** owns the secret store and the provider surface. Keys
+  resolve environment-first, then from `config/local.yaml` — the gitignored
+  file the Settings panel writes — so attaching a key never requires exporting
+  anything. No code path returns a key value: status is booleans and labels,
+  and the connection test reports success/failure text only.
+- **The Settings/Cloud panel** (bottom of the Identity view) explains what the
+  key is for, shows the provider/baseURL/model list, and offers save, remove
+  and test actions wired to `GET/PUT/DELETE /api/cloud/key` and
+  `POST /api/cloud/test`. The write path lands in `config/local.yaml`, never
+  the repo.
+- **Routing.** A `model` override in a request that names one of a cloud
+  provider's `models:` list routes that request to the provider instead of a
+  (likely absent) local pull — that is how picking `deepseek-v4-flash` in the
+  prompt, chat or report picker sends the work to OpenCode Go. The model picker
+  lists the cloud models as a labelled group only when a key is present.
+- **The connection test is an authenticated probe.** `/models` lists are public
+  on some providers and prove nothing about a key, so the test issues a
+  one-token chat call against the provider's first listed model and checks the
+  status — a dummy key fails with the provider's 401, a real key reports the
+  authenticated model.
 
 The three-layer rule is unaffected: the shell is human-owned chrome, and
 `decks/<slug>/report.yaml` is written by the report generator exactly as
