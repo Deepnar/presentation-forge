@@ -21,11 +21,24 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
   const [reportSlug, setReportSlug] = useState("");
   const [reportSource, setReportSource] = useState("deck"); // deck | brief
   const [depth, setDepth] = useState("brief");
+  const [audience, setAudience] = useState("");
+  const [maxSlides, setMaxSlides] = useState(0); // 0 = unset, auto
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
   const taRef = useRef(null);
+
+  // Gamma-style quick presets, as affordances over the existing pipeline — no
+  // new flow. Audience is folded into the brief, slide count maps to the
+  // pipeline's maxSlides. Zero hand-holding, both optional.
+  const AUDIENCES = [
+    { id: "", label: "Class" },
+    { id: "audience: undergraduate class — assume little background, keep it clear.", label: "Students" },
+    { id: "audience: faculty exam panel — formal, graded, cite your sources.", label: "Panel" },
+    { id: "audience: a technical conference — assume domain fluency, go deep.", label: "Conf" },
+  ];
+  const SLIDE_COUNTS = [0, 8, 14, 20];
 
   useEffect(() => {
     api.models()
@@ -51,9 +64,12 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
     setBusy(true);
     setError("");
     setStatus("Queued…");
+    // The brief carries the audience preset when one is chosen; maxSlides maps
+    // to the pipeline's bound directly.
+    const fullBrief = audience ? `${brief.trim()}\n\n${audience}` : brief.trim();
     const j = mode === "deck"
       ? api.createDeck(
-          { brief, identity, model: model || undefined },
+          { brief: fullBrief, maxSlides: maxSlides || undefined, identity, model: model || undefined },
           {
             status: (p) => setStatus(progressLabel(p)),
             plan: (d) => onPlanReady({ slug: d.slug, plan: d.plan, theme: "" }),
@@ -160,6 +176,27 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
                 <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Gamma-style quick presets — audience and slide count, both optional,
+            both folded into the existing brief→pipeline flow. */}
+        {mode === "deck" && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5 px-1">
+            <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+              {AUDIENCES.map((a) => (
+                <ModePill key={a.id || "none"} active={audience === a.id} onClick={() => setAudience(a.id)}>
+                  {a.label}
+                </ModePill>
+              ))}
+            </div>
+            <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+              {SLIDE_COUNTS.map((n) => (
+                <ModePill key={n} active={maxSlides === n} onClick={() => setMaxSlides(n)}>
+                  {n === 0 ? "auto slides" : `${n} slides`}
+                </ModePill>
+              ))}
+            </div>
           </div>
         )}
 

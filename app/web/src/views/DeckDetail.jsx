@@ -26,6 +26,8 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [editing, setEditing] = useState(null); // slide index in the editor
   const [identity, setIdentity] = useState(null);
   const [reportExists, setReportExists] = useState(hasReport);
+  const [punch, setPunch] = useState(null); // slide index being punched up
+  const [punchErr, setPunchErr] = useState("");
   const renderTimer = useRef(null);
 
   useEffect(() => setReportExists(hasReport), [hasReport]);
@@ -52,6 +54,29 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const members = (data?.meta?.team?.members?.length
     ? data.meta.team.members
     : identity?.team?.members) ?? [];
+
+  /**
+   * Gamma-style per-slide quick action: "make this punchier" is a chat turn
+   * scoped to the slide, through the same runTurn pipeline the chat rail uses.
+   * The instruction names the slide's index so the structural command handling
+   * in runTurn resolves it; the deck re-renders when the turn lands.
+   */
+  function punchUp(i) {
+    if (punch !== null) return;
+    setPunch(i);
+    setPunchErr("");
+    const headline = slides[i]?.headline ?? slides[i]?.type;
+    api.chatDeck(slug, {
+      instruction:
+        `Make slide ${i + 1} punchier — tighten its wording and make the claim ` +
+        `("${headline}") sharper and more confident. Keep the slide type and ` +
+        `structure; edit only that slide.`,
+    }, {
+      result: () => onDeckChanged(),
+    }).promise.catch((err) => {
+      setPunchErr(err.message);
+    }).finally(() => setPunch(null));
+  }
 
   /**
    * Persist a deck mutation directly to deck.yaml (never through a model), then
@@ -233,6 +258,12 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         </Panel>
       )}
 
+      {punchErr && (
+        <Panel className="mt-5 border-amber/30 bg-amber/5 p-3.5">
+          <div className="text-xs leading-relaxed text-amber">{punchErr}</div>
+        </Panel>
+      )}
+
       {data.slides.length === 0 ? (
         <div className="mt-7">
           <Empty
@@ -294,6 +325,13 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                     <CardBtn onClick={() => onMove(i, 1)} disabled={i === slides.length - 1} title="Move right"><DownIcon /></CardBtn>
                   </div>
                   <div className="flex items-center gap-0.5">
+                    <CardBtn
+                      onClick={() => punchUp(i)}
+                      disabled={punch !== null}
+                      title="Make this slide punchier (chat turn)"
+                    >
+                      {punch === i ? <Spinner className="h-3 w-3 text-fg-faint" /> : <BoltIcon />}
+                    </CardBtn>
                     <CardBtn onClick={() => onDuplicate(i)} title="Duplicate"><CopyIcon /></CardBtn>
                     <CardBtn onClick={() => onDelete(i)} disabled={slides.length <= 1} title="Delete"><TrashIcon /></CardBtn>
                   </div>
@@ -514,6 +552,11 @@ const CopyIcon = () => (
   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
     <rect x="9" y="9" width="12" height="12" rx="2.5" />
     <path d="M5 15H4.5A2.5 2.5 0 0 1 2 12.5v-8A2.5 2.5 0 0 1 4.5 2h8A2.5 2.5 0 0 1 15 4.5V5" />
+  </svg>
+);
+const BoltIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
+    <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5Z" />
   </svg>
 );
 const TrashIcon = () => (
