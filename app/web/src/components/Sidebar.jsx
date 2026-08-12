@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { dateGroup, relative } from "../lib/time.js";
 import { api } from "../api.js";
 import DeckThumb from "./DeckThumb.jsx";
@@ -12,15 +12,19 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
  * in decks or reports) and Decks (your actual artefacts). Search filters the
  * deck list and greps content server-side; the chats need no search yet. The
  * one creation entry app-wide lives here — "+ New chat". Collapses to an icon
- * rail; Themes and Identity are compact rows at the bottom.
+ * rail; Themes and Identity are compact rows at the bottom. Each row carries a
+ * "⋯" menu on hover — delete a chat (local) or open/delete a deck (server-side,
+ * behind a confirm modal).
  */
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
-  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onView,
+  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onView, onDeleteChat, onDeleteDeck,
 }) {
   const [tab, setTab] = useState("chats"); // chats | decks
   const [query, setQuery] = useState("");
   const [contentHits, setContentHits] = useState([]);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     const q = query.trim().toLowerCase();
@@ -111,26 +115,34 @@ export default function Sidebar({
                       <div className="mb-1 px-1 text-[10px] font-semibold uppercase tracking-wider text-fg-faint">{g}</div>
                       <div className="space-y-0.5">
                         {list.map((c) => (
-                          <button
-                            key={c.id}
-                            onClick={() => onOpenChat(c.id)}
-                            title={c.title}
-                            className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
-                              activeChatId === c.id
-                                ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                                : "hover:bg-hover"
-                            }`}
-                          >
-                            <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${c.produced ? "border-accent/30 bg-accent/10 text-accent" : "border-line bg-sunken text-fg-faint"}`}>
-                              <span className="text-[13px] font-semibold uppercase">{(c.title?.[0] ?? "?").toUpperCase()}</span>
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate text-[12.5px] font-medium text-fg">{c.title}</span>
-                              <span className="block truncate text-[10.5px] text-fg-faint">
-                                {c.kind === "report" ? "report" : "deck"} · {c.produced ? "ready · " : ""}{relative(c.updatedAt)}
+                          <div key={c.id} className="group relative">
+                            <button
+                              onClick={() => onOpenChat(c.id)}
+                              title={c.title}
+                              className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
+                                activeChatId === c.id
+                                  ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                                  : "hover:bg-hover"
+                              }`}
+                            >
+                              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${c.produced ? "border-accent/30 bg-accent/10 text-accent" : "border-line bg-sunken text-fg-faint"}`}>
+                                <span className="text-[13px] font-semibold uppercase">{(c.title?.[0] ?? "?").toUpperCase()}</span>
                               </span>
-                            </span>
-                          </button>
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[12.5px] font-medium text-fg">{c.title}</span>
+                                <span className="block truncate text-[10.5px] text-fg-faint">
+                                  {c.kind === "report" ? "report" : "deck"} · {c.produced ? "ready · " : ""}{relative(c.updatedAt)}
+                                </span>
+                              </span>
+                            </button>
+                            <RowMenu
+                              open={openMenu === `c-${c.id}`}
+                              onToggle={(v) => setOpenMenu(v ? `c-${c.id}` : null)}
+                              items={[
+                                { label: "Delete chat", danger: true, onClick: () => onDeleteChat(c.id) },
+                              ]}
+                            />
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -151,25 +163,34 @@ export default function Sidebar({
               <>
                 <div className="space-y-0.5">
                   {filtered.map((d) => (
-                    <button
-                      key={d.slug}
-                      onClick={() => onOpenDeck(d.slug)}
-                      title={d.title}
-                      className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
-                        activeSlug === d.slug
-                          ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                          : "hover:bg-hover"
-                      }`}
-                    >
-                      <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
-                        <span className="block truncate text-[10.5px] text-fg-faint">
-                          {d.report ? "report" : `${d.slides} slides`} · {relative(d.updated)}
+                    <div key={d.slug} className="group relative">
+                      <button
+                        onClick={() => onOpenDeck(d.slug)}
+                        title={d.title}
+                        className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
+                          activeSlug === d.slug
+                            ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                            : "hover:bg-hover"
+                        }`}
+                      >
+                        <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
+                          <span className="block truncate text-[10.5px] text-fg-faint">
+                            {d.report ? "report" : `${d.slides} slides`} · {relative(d.updated)}
+                          </span>
                         </span>
-                      </span>
-                      {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
-                    </button>
+                        {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
+                      </button>
+                      <RowMenu
+                        open={openMenu === `d-${d.slug}`}
+                        onToggle={(v) => setOpenMenu(v ? `d-${d.slug}` : null)}
+                        items={[
+                          { label: "Open", onClick: () => onOpenDeck(d.slug) },
+                          { label: "Delete deck", danger: true, onClick: () => setConfirmDelete(d) },
+                        ]}
+                      />
+                    </div>
                   ))}
                 </div>
                 {filtered.length === 0 && (
@@ -206,7 +227,94 @@ export default function Sidebar({
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
         </div>
       )}
+
+      {confirmDelete && (
+        <ConfirmModal
+          deck={confirmDelete}
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={() => { onDeleteDeck(confirmDelete.slug); setConfirmDelete(null); }}
+        />
+      )}
     </aside>
+  );
+}
+
+/** The hover "⋯" popover on a sidebar row. Outside click closes it. */
+function RowMenu({ open, onToggle, items }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) onToggle(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open, onToggle]);
+
+  return (
+    <div ref={ref} className="absolute right-1.5 top-1/2 z-20 -translate-y-1/2">
+      <button
+        onClick={(e) => { e.stopPropagation(); onToggle(!open); }}
+        title="More"
+        aria-label="More"
+        className={`grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg ${
+          open ? "bg-hover text-fg opacity-100" : "opacity-0 group-hover:opacity-100"
+        }`}
+      >
+        <span className="text-[14px] leading-none">⋯</span>
+      </button>
+      {open && (
+        <div className="absolute right-0 top-7 min-w-36 rounded-card border border-line bg-panel py-1 shadow-[0_12px_28px_-12px_rgba(0,0,0,0.8)]">
+          {items.map((it, i) => (
+            <button
+              key={i}
+              onClick={(e) => { e.stopPropagation(); onToggle(false); it.onClick?.(); }}
+              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[12px] transition ${
+                it.danger ? "text-danger hover:bg-hover" : "text-fg-muted hover:bg-hover hover:text-fg"
+              }`}
+            >
+              {it.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Deck-delete confirmation — deleting decks/<slug> server-side is irreversible. */
+function ConfirmModal({ deck, onCancel, onConfirm }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onCancel(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-sm rounded-card border border-line bg-panel p-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-[14px] font-semibold text-fg">Delete this deck?</div>
+        <p className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">
+          Removes <code className="font-mono">decks/{deck.slug}</code> from the server —
+          slides, research and render included. This cannot be undone.
+        </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={onCancel}>Cancel</Button>
+          <button
+            onClick={onConfirm}
+            className="rounded-lg bg-danger px-2.5 py-1.5 text-xs font-medium text-white transition hover:opacity-90 active:translate-y-px"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

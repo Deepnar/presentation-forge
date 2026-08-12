@@ -88,6 +88,7 @@ export const api = {
   deck: (slug) => call(`/api/decks/${slug}`),
   saveDeck: (slug, deck, meta) =>
     call(`/api/decks/${slug}`, { method: "PUT", body: JSON.stringify({ deck, meta }) }),
+  deleteDeck: (slug) => call(`/api/decks/${slug}`, { method: "DELETE" }),
   validateDeck: (deck) =>
     call("/api/validate", { method: "POST", body: JSON.stringify({ deck }) }),
   renderDeck: (slug, opts = {}) =>

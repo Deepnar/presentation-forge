@@ -289,6 +289,16 @@ app.put("/api/decks/:slug", wrap(async (req, res) => {
   ok(res, {});
 }));
 
+/**
+ * Delete a deck (or report-only folder) server-side. The per-slug access gate
+ * above has already answered "no such deck" for anything that is not the
+ * owner's, so reaching here is an authorised removal.
+ */
+app.delete("/api/decks/:slug", wrap(async (req, res) => {
+  await rm(path.join(DECKS, req.params.slug), { recursive: true, force: true });
+  ok(res, {});
+}));
+
 /** The deck's version history — timestamped backups of deck.yaml, newest first. */
 app.get("/api/decks/:slug/versions", wrap(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug, "backups");

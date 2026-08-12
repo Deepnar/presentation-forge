@@ -12,7 +12,7 @@ import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
-import { loadChats, saveChat, createChat } from "./lib/chats.js";
+import { loadChats, saveChat, createChat, deleteChat as deleteChatStore } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 
 /**
@@ -120,6 +120,37 @@ export default function App() {
   const openDeck = (slug) => { setActiveSlug(slug); setView("deck"); };
   const openReport = (slug) => { setActiveSlug(slug); setView("report"); };
 
+  /** Delete a chat thread locally; if it was active, land on another. */
+  function handleDeleteChat(id) {
+    if (!user) return;
+    const remaining = deleteChatStore(user.email, id);
+    setChats(remaining);
+    if (activeChatId !== id) return;
+    const next = remaining[0] ?? null;
+    if (next) {
+      setActiveChatId(next.id);
+      setView("chat");
+    } else {
+      const c = createChat();
+      saveChat(user.email, c);
+      setChats([c]);
+      setActiveChatId(c.id);
+      setView("chat");
+    }
+  }
+
+  /** Delete decks/<slug> server-side, then leave it if it was open. */
+  async function handleDeleteDeck(slug) {
+    try {
+      await api.deleteDeck(slug);
+    } catch (err) {
+      window.alert(`Could not delete deck: ${err.message}`);
+      return;
+    }
+    bumpDeck();
+    if (activeSlug === slug && (view === "deck" || view === "report")) goHome();
+  }
+
   /**
    * The reverse flow's chat: a report's plan arrives already made, so the chat
    * skips the briefing and lands straight on the outline gate — same surface,
@@ -196,6 +227,8 @@ export default function App() {
               onOpenReport={openReport}
               onNewChat={newChat}
               onView={setView}
+              onDeleteChat={handleDeleteChat}
+              onDeleteDeck={handleDeleteDeck}
             />
           </div>
 
