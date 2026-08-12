@@ -97,4 +97,10 @@ export const api = {
     call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
   generateReport: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/report/generate`, payload, handlers),
+  // Opt-in cloud backend (Settings/Cloud). The key itself never travels back
+  // to the browser — status and test results are booleans and strings.
+  cloud: () => call("/api/cloud"),
+  cloudSaveKey: (key) => call("/api/cloud/key", { method: "PUT", body: JSON.stringify({ key }) }),
+  cloudClearKey: () => call("/api/cloud/key", { method: "DELETE" }),
+  cloudTest: () => call("/api/cloud/test", { method: "POST", body: JSON.stringify({}) }),
 };

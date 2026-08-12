@@ -14,6 +14,7 @@ import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection } from "../../src/cloud.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -344,8 +345,8 @@ app.post("/api/decks", (req, res) => {
 /* --------------------------------------------------------------- chat panel */
 
 app.get("/api/models", wrap(async (_req, res) => {
-  const { models, default: def } = await modelChoices();
-  ok(res, { models, default: def });
+  const { models, default: def, cloud } = await modelChoices();
+  ok(res, { models, default: def, cloud });
 }));
 
 /** The deck's thread: rolling summary, recent turns, durable decisions. */
@@ -461,6 +462,38 @@ app.put("/api/identity", wrap(async (req, res) => {
   if (!identity || typeof identity !== "object") return fail(res, 400, "body must include `identity`");
   await writeFile(path.join(CONFIG, "identity.yaml"), YAML.stringify(identity), "utf8");
   ok(res, {});
+}));
+
+/* ------------------------------------------------------------------- cloud */
+
+/**
+ * The opt-in cloud backend surface. The key is never returned — status gives
+ * booleans and labels, test gives a success/failure detail string. The write
+ * path lands in gitignored config/local.yaml via src/cloud.js.
+ */
+app.get("/api/cloud", wrap(async (_req, res) => {
+  ok(res, { cloud: await cloudStatus() });
+}));
+
+app.put("/api/cloud/key", wrap(async (req, res) => {
+  const { key } = req.body ?? {};
+  if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
+    return fail(res, 400, "key must look like an API key (starts with sk-, at least 8 chars)");
+  }
+  const name = await cloudKeyName();
+  if (!name) return fail(res, 400, "no cloud provider configured in config/models.yaml");
+  await setApiKey(name, key);
+  ok(res, {});
+}));
+
+app.delete("/api/cloud/key", wrap(async (_req, res) => {
+  const name = await cloudKeyName();
+  if (name) await clearApiKey(name);
+  ok(res, {});
+}));
+
+app.post("/api/cloud/test", wrap(async (_req, res) => {
+  ok(res, await testCloudConnection());
 }));
 
 /* -------------------------------------------------------------------- boot */
