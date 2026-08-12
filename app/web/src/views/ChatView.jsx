@@ -305,7 +305,7 @@ export default function ChatView({
             </Bubble>
           )}
 
-          {answered.map((q, i) => (
+          {!chat.plan && answered.map((q, i) => (
             <div key={q.key}>
               <Bubble role="assistant">
                 <div className="mb-0.5 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
