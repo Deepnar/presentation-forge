@@ -88,3 +88,18 @@ export function fitScale(text, width, height, style, { min = 0.62, step = 0.04 }
 export function fitScaleAll(texts, width, height, style, opts) {
   return Math.min(...texts.filter(Boolean).map((t) => fitScale(t, width, height, style, opts)), 1);
 }
+
+/**
+ * Shrink to fit exactly ONE rendered line.
+ *
+ * fitScale is height-driven and trusts the width heuristic; for wide Black
+ * weights (stat digits in Merriweather) the heuristic is optimistic, so a value
+ * can still wrap where the real renderer measures it wider — the fitter says
+ * one line, LibreOffice draws two. Scaling off the measured width with a
+ * pessimistic safety factor makes one line a guarantee, not an estimate.
+ */
+export function fitOneLine(text, width, style, { min = 0.5, safety = 0.88 } = {}) {
+  const w = measure(text, style);
+  if (w <= width * safety) return 1;
+  return Math.max(min, Math.round(((width * safety) / w) * 100) / 100);
+}

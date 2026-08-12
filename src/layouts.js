@@ -1,5 +1,5 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
-import { fitScale, fitScaleAll, lineCount, measure } from "./fit.js";
+import { fitScale, fitScaleAll, fitOneLine, lineCount, measure } from "./fit.js";
 import { CANVAS, reservedTopRight } from "./chrome.js";
 
 /**
@@ -757,22 +757,35 @@ export const layouts = {
     const cw = hasAside ? box.w * 0.63 : box.w;
     const ch = box.bottom - y - 0.1;
 
-    const series = c.series.map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
+    // pptxgenjs scatters read the x coordinates from a synthetic first "X-Axis"
+    // series (its values are the x positions); every real series supplies the
+    // y values. All other kinds share the category/value shape.
+    const raw = c.series.map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
+    const series = c.kind === "scatter"
+      ? [
+          { name: "X-Axis", values: c.categories.map((cat, i) => Number(cat) || i + 1) },
+          ...raw.map(({ name, values }) => ({ name, values })),
+        ]
+      : raw;
 
     // One series means one colour — varying hue across bars of a single series
     // encodes a distinction that does not exist, and drags in low-contrast
     // palette entries that were never meant to sit on the background.
     const ramp = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.ink, theme.palette.ink_muted, theme.palette.rule];
     const isCircular = c.kind === "pie" || c.kind === "doughnut";
-    const colors = (series.length === 1 && !isCircular ? [theme.palette.accent] : ramp).map((x) => hex(x));
+    const colors = (c.series.length === 1 && !isCircular ? [theme.palette.accent] : ramp).map((x) => hex(x));
 
-    const kindMap = { bar: "bar", hbar: "bar", line: "line", pie: "pie", doughnut: "doughnut", area: "area" };
+    const kindMap = {
+      bar: "bar", hbar: "bar", line: "line", pie: "pie", doughnut: "doughnut", area: "area",
+      scatter: "scatter", radar: "radar", "stacked-bar": "bar",
+    };
     slide.addChart(kindMap[c.kind] ?? "bar", series, {
       x: box.x, y, w: cw, h: ch,
       barDir: c.kind === "hbar" ? "bar" : "col",
+      barStacked: c.kind === "stacked-bar",
       chartColors: colors,
       varyColors: isCircular,
-      showLegend: series.length > 1,
+      showLegend: c.series.length > 1,
       legendPos: "b",
       legendFontFace: theme.type.caption.family,
       legendFontSize: theme.type.caption.size,
@@ -1291,6 +1304,316 @@ export const layouts = {
           valign: "top",
         });
       }
+    });
+  },
+
+  /**
+   * Side-by-side KPI cards with a trend indicator: an accent triangle rotated
+   * by direction, or a dash for flat, plus the change figure.
+   */
+  "kpi-dashboard"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.kpis.length;
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (n - 1)) / n;
+    const ch = box.bottom - y - 0.1;
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const valueScale = fitOneLine(
+      data.kpis.map((k) => k.value).reduce((a, b) => (b.length > a.length ? b : a)),
+      cw - pad * 2,
+      theme.type.stat,
+    );
+    const labelScale = fitScaleAll(data.kpis.map((k) => k.label), cw - pad * 2, 0.4, theme.type.caption);
+    data.kpis.forEach((k, i) => {
+      const x = box.x + i * (cw + gut);
+      card(slide, theme, { x, y, w: cw, h: ch });
+      slide.addText(k.label, {
+        x: x + pad, y: y + pad, w: cw - pad * 2, h: 0.4,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: labelScale }),
+        valign: "top",
+      });
+      slide.addText(k.value, {
+        x: x + pad, y: y + pad + 0.42, w: cw - pad * 2, h: 0.7,
+        ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
+        valign: "top",
+      });
+      const ty = y + ch - 0.6;
+      if (k.trend === "flat") {
+        slide.addShape("rect", {
+          x: x + pad, y: ty + 0.13, w: 0.26, h: 0.06,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        });
+      } else {
+        slide.addShape("triangle", {
+          x: x + pad, y: ty, w: 0.22, h: 0.22,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+          rotate: k.trend === "down" ? 180 : 0,
+        });
+      }
+      if (k.change) {
+        slide.addText(k.change, {
+          x: x + pad + 0.34, y: ty, w: cw - pad * 2 - 0.34, h: 0.24,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+          valign: "middle",
+        });
+      }
+    });
+  },
+
+  /**
+   * Cards carrying a hero value, a bold label and a body — stats with context.
+   * The value stays on one line by shrinking; the body fits the card remainder.
+   */
+  "data-cards"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.cards.length;
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (n - 1)) / n;
+    const ch = box.bottom - y - 0.1;
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const valueScale = fitOneLine(
+      data.cards.map((x) => x.value).reduce((a, b) => (b.length > a.length ? b : a)),
+      cw - pad * 2,
+      theme.type.stat,
+    );
+    const labelScale = fitScaleAll(data.cards.map((c) => c.label), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.65 });
+    const bodyScale = fitScaleAll(
+      data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, ch - pad - 1.4, theme.type.body,
+    );
+    data.cards.forEach((c, i) => {
+      const x = box.x + i * (cw + gut);
+      card(slide, theme, { x, y, w: cw, h: ch });
+      // The stat's rendered line box is taller than the point size (large
+      // ascenders/descenders), so the value reserves a full inch and the label
+      // starts well clear of it — a tight 0.7in box let the % touch the label.
+      slide.addText(c.value, {
+        x: x + pad, y: y + pad, w: cw - pad * 2, h: 0.85,
+        ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
+        valign: "top",
+      });
+      slide.addText(c.label, {
+        x: x + pad, y: y + pad + 0.9, w: cw - pad * 2, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+        valign: "top",
+      });
+      if (c.body) {
+        slide.addText(c.body, {
+          x: x + pad, y: y + pad + 1.4, w: cw - pad * 2, h: ch - pad - 1.4,
+          ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * Completion bars: a track, an accent fill proportional to value, a target
+   * marker, and the percentage. Pure shapes — no text-fitting risk.
+   */
+  "progress-bars"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.bars.length;
+    const rowH = (box.bottom - y - 0.1) / n;
+    const labelW = 2.2;
+    const barX = box.x + labelW + 0.4;
+    const barW = box.w - labelW - 0.4 - 1.3;
+    const barH = 0.22;
+    const labelScale = fitScaleAll(data.bars.map((b) => b.label), labelW, 0.4, theme.type.subhead, { min: 0.65 });
+    data.bars.forEach((b, i) => {
+      const ry = y + i * rowH;
+      const cy = ry + rowH / 2;
+      slide.addText(b.label, {
+        x: box.x, y: ry, w: labelW, h: rowH,
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+        valign: "middle",
+      });
+      slide.addShape("roundRect", {
+        x: barX, y: cy - barH / 2, w: barW, h: barH,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        rectRadius: barH / 2,
+      });
+      const fillW = Math.max(0.05, barW * (b.value / 100));
+      slide.addShape("roundRect", {
+        x: barX, y: cy - barH / 2, w: fillW, h: barH,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        rectRadius: barH / 2,
+      });
+      if (b.target != null) {
+        slide.addShape("rect", {
+          x: barX + barW * (b.target / 100) - 0.02, y: cy - 0.19, w: 0.04, h: 0.38,
+          fill: { color: hex(theme.palette.ink) }, line: { type: "none" },
+        });
+      }
+      slide.addText(`${Math.round(b.value)}%`, {
+        x: barX + barW + 0.15, y: ry, w: 1.15, h: rowH,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+        align: "right", valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * Top-N ranking: a rank pill (accent for the podium, rule otherwise), label
+   * with optional detail, and a right-aligned value. Hairlines separate rows.
+   */
+  "ranking-list"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const rowH = (box.bottom - y - 0.1 - 0.03 * (n - 1)) / n;
+    const vw = 1.6;
+    const tw = box.w - 0.55 - vw - 0.3;
+    const labelScale = fitScaleAll(data.items.map((i) => i.label), tw, rowH * 0.55, theme.type.subhead, { min: 0.65 });
+    const detailScale = fitScaleAll(
+      data.items.map((i) => i.detail).filter(Boolean), tw, rowH * 0.4, theme.type.caption,
+    );
+    data.items.forEach((it, i) => {
+      const ry = y + i * (rowH + 0.03);
+      const cy = ry + rowH / 2;
+      const rank = it.rank ?? i + 1;
+      const top = rank <= 3;
+      slide.addShape("ellipse", {
+        x: box.x, y: cy - 0.19, w: 0.38, h: 0.38,
+        fill: { color: hex(top ? theme.palette.accent : theme.palette.rule) }, line: { type: "none" },
+      });
+      slide.addText(String(rank), {
+        x: box.x, y: cy - 0.19, w: 0.38, h: 0.38,
+        ...textStyle(theme, "caption", { color: hex(top ? theme.palette.on_accent : theme.palette.ink_muted), bold: true }),
+        align: "center", valign: "middle",
+      });
+      slide.addText(it.label, {
+        x: box.x + 0.55, y: ry, w: tw, h: rowH * 0.55,
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+        valign: "top",
+      });
+      if (it.detail) {
+        slide.addText(it.detail, {
+          x: box.x + 0.55, y: ry + rowH * 0.55 + 0.02, w: tw, h: rowH * 0.4,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: detailScale }),
+          valign: "top",
+        });
+      }
+      if (it.value) {
+        slide.addText(it.value, {
+          x: box.x + 0.55 + tw, y: ry, w: vw, h: rowH,
+          ...textStyle(theme, "subhead", { bold: true, scale: 0.95 }),
+          align: "right", valign: "middle",
+        });
+      }
+      if (i < n - 1) {
+        slide.addShape("rect", {
+          x: box.x, y: ry + rowH + 0.015, w: box.w, h: 0.015,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+      }
+    });
+  },
+
+  /**
+   * X vs Y with a delta pill between: two half-width stat blocks and the change
+   * figure centred in an accent pill. A body paragraph sits below.
+   */
+  "metric-comparison"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const dW = 1.3;
+    const halfW = (box.w - dW) / 2;
+    const valScale = fitOneLine(
+      [data.left.value, data.right.value].reduce((a, b) => (b.length > a.length ? b : a)),
+      halfW,
+      theme.type.stat,
+    );
+    const labelScale = fitScaleAll([data.left.label, data.right.label], halfW, 0.4, theme.type.subhead, { min: 0.7 });
+    const block = (side, x) => {
+      slide.addText(side.value, {
+        x, y: y + 0.1, w: halfW, h: 1.2,
+        ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valScale }),
+        align: "center", valign: "middle",
+      });
+      slide.addText(side.label, {
+        x, y: y + 1.35, w: halfW, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+        align: "center", valign: "top",
+      });
+    };
+    block(data.left, box.x);
+    block(data.right, box.x + halfW + dW);
+    const dx = box.x + halfW;
+    slide.addShape("roundRect", {
+      x: dx, y: y + 0.35, w: dW, h: 0.62,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.pill ?? 0.3,
+    });
+    slide.addText(data.delta, {
+      x: dx, y: y + 0.35, w: dW, h: 0.62,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent }),
+      align: "center", valign: "middle",
+    });
+    if (data.body) {
+      const bScale = fitScale(data.body, box.w, 0.9, theme.type.body, { min: 0.75 });
+      slide.addText(data.body, {
+        x: box.x, y: y + 2.1, w: box.w, h: 0.9,
+        ...textStyle(theme, "body", { scale: bScale, color: theme.palette.ink_muted }),
+        align: "center", valign: "top",
+      });
+    }
+  },
+
+  /**
+   * Mini line charts on cards: a caption label, a bold value, and a small
+   * axis-less accent line chart — the native chart API at a tiny size.
+   */
+  sparklines(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const cols = Math.min(3, Math.max(2, Math.ceil(Math.sqrt(n))));
+    const rows = Math.ceil(n / cols);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const pad = theme.shape?.card_pad ?? 0.26;
+    data.items.forEach((it, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      card(slide, theme, { x, y: ry, w: cw, h: ch });
+      slide.addText(it.label, {
+        x: x + pad, y: ry + pad, w: cw - pad * 2, h: 0.32,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+        valign: "top",
+      });
+      if (it.value) {
+        slide.addText(it.value, {
+          x: x + pad, y: ry + pad, w: cw - pad * 2, h: 0.32,
+          ...textStyle(theme, "subhead", { bold: true }),
+          align: "right", valign: "top",
+        });
+      }
+      const cw2 = cw - pad * 2;
+      const chartH = Math.min(1.1, ch - pad * 2 - 0.45);
+      slide.addChart("line", [{ name: it.label, labels: it.values.map((_, j) => String(j + 1)), values: it.values }], {
+        x: x + pad, y: ry + pad + 0.42, w: cw2, h: chartH,
+        chartColors: [hex(theme.palette.accent)],
+        showLegend: false,
+        showTitle: false,
+        showValue: false,
+        catAxisHidden: true,
+        valAxisHidden: true,
+        catGridLine: { style: "none" },
+        valGridLine: { style: "none" },
+        lineSmooth: true,
+        lineSize: 2,
+      });
     });
   },
 };
