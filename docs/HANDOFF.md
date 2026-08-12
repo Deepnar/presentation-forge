@@ -7,139 +7,159 @@ history preserves older handoffs.
 
 ## Session summary
 
-**Frontend polish pass: the four queued UI bugs fixed, a reactive particle
-background and a depth pass added, and an OpenCode Go cloud backend with a
-Settings/Cloud key surface shipped. All committed and pushed to `origin/main`.**
-Renderer, themes, schema and deck content are untouched — the headless pipeline
-still works (`npm test` 65/65, `vite build` clean).
+**Ten queued items worked: the chat rail is now deck-only, chat handles
+structural slide commands, reports stand alone and spawn companion decks, the
+particle field and shell motion got richer, cloud routing has a header toggle,
+a brand upload surface exists, and the crest no longer renders as a ghost. All
+committed and pushed to `origin/main`.** `npm test` 73/73, `vite build` clean,
+and the live dev servers were CDP-checked with screenshots inspected by
+`mimo-v2.5` for the UI work and the crest.
 
 ### What changed
 
-**Part A — the four queued bugs (`/tmp/opencode/UI_BUGS.md`):**
+**Task 10 — the crest fix.** The root cause was *not* the knockout selection or
+the chrome luminance logic: `brand/logos/crest.png` itself shipped with every
+pixel at ~14/255 alpha (6%) — RGB fully intact, alpha meaningless. A viewer
+compositing it against white made it look normal; on any slide it was a ghost.
+`keyWhite` kept the source alpha for saturated pixels, so the defect survived
+normalisation. The keyer now rebuilds alpha from RGB: a pixel with alpha 0 stays
+a real cutout, everything else becomes saturated→opaque or neutral→lightness.
+Verified by rendering warm-humanist (full-colour crest visible) and dark-neon
+(the reversed white silhouette) and looking at both via `mimo-v2.5`.
 
-1. **Submit arrow anchored inside the prompt box.** The real cause was the
-   model picker sizing itself to its longest option — a 63-char pulled model
-   name (`hf.co/bartowski/Mistral-Small-…GGUF:Q5_K_M`) — which pushed the whole
-   right-hand cluster past the box's right edge so the circular arrow hung half
-   outside it. Capped the picker width (`max-w-[14rem]` in the prompt, same for
-   the report picker) and gave the box a `surface-well` treatment so it reads as
-   one defined surface. The arrow now sits fully inside the toolbar row.
-2. **Single chat surface.** Verified in HEAD: `App.jsx` already renders exactly
-   one surface via a ternary (panel when open, edge strip when closed). The
-   "two chatting things" was a stale review; no code change was needed, and the
-   open/closed states were both screenshot-verified.
-3. **Word overlap / truncation.** The one real overlap: a sidebar fallback
-   tile's theme label (`WARM-HUMANIST`) spilled past its 36px edge into the
-   row's meta text. Fallback tiles now clip at the tile (`overflow: hidden` +
-   width-constrained inner), the home carousel meta line truncates, deck titles
-   and chat bubbles wrap (`break-words` / `overflow-wrap:anywhere`).
-4. **Identity covered by the "create deck" UI.** The Identity view's save bar
-   was `position: fixed; inset-x-0`, a full-width bar that sat on top of the
-   sidebar's bottom "New deck" button and Themes/Identity rows. Now `sticky
-   bottom-0` inside the scroll column, so it belongs to the form and never
-   overlaps chrome.
+**Task 1 — chat rail is deck-only.** `App.jsx` mounts the rail (and its edge
+tab) only when `view === "deck"`; Home/Identity/Themes/NewDeck/Outline get the
+main column full-width. The rail stays mounted and animates its width on the
+shell easing instead of popping in.
 
-**Part B — rich, not dull, without new colours.**
+**Task 2 — structural chat commands.** `src/ai/ops.js` gains `duplicate_slide`;
+`runTurn`'s prompt now maps "add/delete/duplicate/move slide N" directly to ops
+and is told never to paraphrase or refuse. The server-side `delete_slide` now
+refuses to empty a deck, matching the editor's guard. New `test/ops.test.js`
+(6 tests). The deck detail's manual move/duplicate/delete buttons were already
+correct and are untouched.
 
-- **`ParticleField.jsx`** — an ambient dot field behind the whole shell. Capped
-  dot count by area, slow sine drift, gentle repulsion + parallax around the
-  pointer. Behaviourally verified (instrumented, not just screenshots): the
-  loop runs ~60fps, up to 7 dots respond to the cursor, reduced-motion draws
-  exactly one static frame, and the loop pauses on tab-hidden, window-blur and
-  rail-hover. Two traps worth remembering: `inset-0` does NOT stretch a canvas
-  (replaced element — it stays 300×150; you need an explicit `h-full w-full`),
-  and `/models`-style public endpoints can't validate keys.
-- **Depth pass** — panel/surface gradients + 1px inset highlights that catch
-  light, card lift on hover with a press-settle, a soft accent focus halo on
-  inputs, primary-button inner highlight, a light-catching header edge, and
-  designed empty states (icon in a ring). All white-on-black light and the
-  existing tokens; no new palette entries.
+**Task 3 — standalone reports + deck-from-report.** Two new doors on the same
+generator and the same research:
+- `forge report-new <brief>` / `POST /api/reports` — brief → research →
+  `report.yaml` → `.docx`, no deck. The fixed section order is the structure,
+  so no outline gate applies; `generateReport({ requirePlan: false })` derives
+  its plan from brief + research.
+- `forge deck-from-report <slug>` / `POST /api/decks/:slug/report/deck` — an
+  existing `report.yaml` plans a companion deck (`reportBrief()` feeds the
+  report's own sections to `planDeck`), through the ordinary outline gate and
+  `/generate` path.
+- Report-only decks (`deck: false`) appear in the list and open a new
+  `ReportView` (section cards, render/download, Generate-companion-deck button).
+  Home Report mode gained a From-a-deck / From-a-brief toggle.
+- **End-to-end proven on `decks/solar-water-pumping-for-irrigation`** — a
+  standalone report that gained a rendered 18-slide deck through the reverse
+  flow. This deck is committed as the demonstration.
 
-**Part C — OpenCode Go cloud backend.**
+**Task 4 — particle field.** More/smaller dots (area/4200, capped 260), and the
+idle motion is now a two-axis sine wander around a fixed home (figure-eight,
+not a sway). Capped at 60fps for high-refresh displays; reduced-motion static
+frame and hidden-tab pause kept. Behaviourally verified via CDP (frame counter,
+pointer stamp, pushed-dot count).
 
-- `config/models.yaml` gains an opt-in `opencode-go` provider (openai-
-  compatible, `https://opencode.ai/zen/go/v1`, key `env:OPENCODE_GO_API_KEY`)
-  with `models: [deepseek-v4-flash, qwen3.8-max, mimo-v2.5]`.
-- **`src/cloud.js`** — the secret store. Keys resolve env-first then from
-  gitignored `config/local.yaml` (the file the Settings panel writes). No code
-  path returns a key value.
-- **Routing** — a `model` override naming a provider's listed model routes that
-  request to the provider (this is how picking `deepseek-v4-flash` sends work
-  to OpenCode Go). `/api/models` now forwards a `cloud` group, shown as an
-  optgroup in the prompt, chat and report pickers only when a key is present.
-- **Server** — `GET /api/cloud`, `PUT/DELETE /api/cloud/key`, and
-  `POST /api/cloud/test`. The test is an *authenticated probe*: a one-token
-  chat call against the provider's first listed model. `/models` is public on
-  OpenCode Go and proved nothing — a dummy key now fails with the provider's
-  401, the real key reports the authenticated model.
-- **Settings/Cloud panel** — the bottom section of the Identity view: what the
-  key is for, provider/baseURL/models, save / remove / test, honest status.
+**Task 5 — fluid motion.** One easing everywhere —
+`--ease-shell: cubic-bezier(0.2,0.8,0.2,1)` — for view switches (keyed
+fade-and-rise on `main`), sidebar collapse, chat rail, card hover; a
+`prefers-reduced-motion` query collapses all transitions/animations to instant.
 
-### Verification (all behavioural, on the live dev servers)
+**Task 6 — cloud routing.** `config/local.yaml` gains `routing.default`
+(local|cloud). The header shows a CLOUD badge + LOCAL/CLOUD toggle when a key is
+attached (plain LOCAL otherwise); the Cloud panel has the same toggle. "auto" in
+every picker follows it (default label + actual routing), but **only the author
+role routes** — research/utility/critic stay on their configured backends.
 
-- `npm test` 65/65; `vite build` clean; the running API + Vite at :5174/:5173.
-- **Bug fixes** screenshot-verified with the mimo-v2.5 subagent: arrow inside
-  the box, one chat surface in both states, no sidebar tile spill, save bar
-  clear of the sidebar nav.
-- **Particle field** instrumented via CDP (frame counter, pointer stamp,
-  pushed-dot count, reduced-motion static frame, blur/focus and rail-hover
-  pauses) — all hold.
-- **Richness** — mimo confirmed the layered surfaces, and no text overlaps on
-  home / themes / deck detail / identity.
-- **Cloud** — the real key was saved through the actual UI path (PUT → wrote
-  `config/local.yaml`), `/api/cloud` reports it without ever returning it, and
-  `POST /api/cloud/test` connected live: *"connected — deepseek-v4-flash
-  authenticated"*. A dummy key flow was exercised end-to-end in the UI (typed,
-  saved, "key attached", 401 on test) and the real key was then restored. A
-  live model call through the pipeline with `model: deepseek-v4-flash` returned
-  "cloud ok" (done_reason stop). Per the discipline, no other cloud model was
-  ever invoked — mimo-v2.5 was used for vision checks only, and the cloud
-  models were listed but never called.
+**Task 8 — Gamma affordances.** Audience + slide-count presets fold into the
+existing brief flow (audience into the brief, count into `maxSlides`); a
+per-slide "make it punchier" bolt in deck detail runs a scoped chat turn through
+`runTurn`.
 
-### Known open work (unchanged from last session)
+**Task 9 — brand upload surface.** Identity's Brand section uploads
+crest/banner/watermark into gitignored `brand/logos/` and re-runs the same
+`normalizeBrand()` the CLI uses (now exported from `tools/prep-brand.mjs`).
+Uploads replace any earlier extension; remove falls back to placeholders. The
+report renderer needs nothing extra — it preserves the donor's own VML
+watermark byte-for-byte.
+
+### Cloud structured output — the cross-cutting fix
+
+Getting the standalone report working surfaced a real cloud-path bug: OpenAI-
+compatible `json_object` is not Ollama's grammar. It 400s unless the prompt
+contains the word "json" (the report planner never did), and even then only
+guarantees output parses — the section writer returned `{"introduction":[…]}`
+where the schema demanded `{"paragraphs":[…]}`. Both are fixed at the
+transport: `cloudMessages` prepends a system message stating the schema
+contract verbatim whenever `format` is set. In `docs/TRAPS.md`.
+
+### Verification (all behavioural)
+
+- `npm test` 73/73; `vite build` clean; the running API + Vite at :5174/:5173.
+- CDP on the live app: Home has no chat rail; deck view has it plus the punch
+  bolt; rail opens with the chat input; Identity shows Brand (Crest/Banner/
+  Watermark cards) and Cloud (key, routing toggle); header shows the badge.
+  All screenshots inspected with `mimo-v2.5` — no overlaps, clean layout.
+- Particle field instrumented: loop runs, pointer repulsion responds, 60fps cap
+  in place, reduced-motion static frame, hidden-tab pause.
+- Cloud routing: `modelChoices` default flips with the preference; an unpicked
+  author call routes to `deepseek-v4-flash`; utility stays local.
+- `/api/reports` and `/api/decks/:slug/report/deck` exercised live on
+  `deepseek-v4-flash`: a brief became an 8-section report (0 skipped) plus a
+  companion deck plan. The verification deck was then removed (only the
+  solar-water demonstration deck is committed).
+- Crest verified by rendering both themes and looking at the PNGs, twice.
+
+### Known open work
 
 - **Deck writer image grounding** — the model emits image filenames for
   `image`/`image-text`/`compare` slides without writing the files. Still open.
-- **Report UI** — generate/render/download surface exists; no section-reader
-  for the `.docx` content yet.
+- **Report UI section-reader** — generate/render/download exists (now including
+  the standalone Report view); no reader for the `.docx` content itself.
 - **Flow layout capacity** — six-step ttb cards still collide with the footer.
-- **Dark-mode / style-variant visual checks** for the renderer.
+- **Task 7 (stretch) canvas slide-builder** — designed but not built; see the
+  roadmap entry. It belongs over the existing `status: writing` SSE events, not
+  a new pipeline: `generateFromPlan` would emit each validated slide as it
+  lands and a storyboard view would render them.
 
 ### Gotchas
 
-Full list in `docs/TRAPS.md`. Ones that bit this session:
+Full list in `docs/TRAPS.md`. New this session:
 
-- **A `<canvas>` is a replaced element: `inset-0` leaves it at its intrinsic
-  300×150.** Stretch it explicitly (`h-full w-full`) or the particle field only
-  ever painted in the top-left corner — invisible everywhere else, and the
-  "fix" looked like it did nothing.
-- **`GET /models` on OpenCode Go is unauthenticated** — it returns the model
-  list for any key (or none). Any "connection test" built on it is a false
-  positive. The honest test is an authenticated one-token chat probe.
-- **React's `onMouseEnter` is mouseover-delegated.** Dispatching a synthetic
-  `mouseenter` to test rail-hover pause does nothing; move the real pointer via
-  CDP `Input.dispatchMouseEvent` instead.
-- **`node --watch` silently keeps stale module state.** The `/api/models`
-  route dropped the new `cloud` field for two restarts because the running
-  process still served the old handler — when an endpoint "works but the field
-  is missing", restart the API before debugging the data.
-- **`b.native click` vs CDP pointer events:** `el.click()` in an eval navigated
-  the app; a real mouse click at the same coordinates did not (offset). When in
-  doubt, drive React with `el.click()` and read state via eval polls.
+- **A supplied logo's alpha channel is not to be trusted — rebuild it from
+  RGB.** The crest shipped at ~6% alpha everywhere (RGB intact); keying that
+  keeps source alpha for saturated pixels preserves the defect. Real cutouts
+  are alpha 0; anything with content gets alpha from colour.
+- **`json_object` ≠ schema conformance.** Two traps on the cloud path: the
+  provider 400s without the word "json" in the prompt, and the output shape is
+  only "parses", not "matches the schema". Both fixed at the transport by
+  stating the schema verbatim in a prepended system message. Keep cloud schemas
+  small.
+- **The vision subagent can misread a synthetic composite** while the real
+  rendered artefact is correct — when an asset check and pixel data disagree,
+  trust the pixel data (white marks on black were pixel-confirmed) and re-check
+  against a real render.
 
 ## Context to read before starting
 
-- `docs/ARCHITECTURE.md` §"The web shell" and §"The cloud surface — opt-in
-  hosted models" describe the shell's new subsystems.
-- `docs/ROADMAP.md` — still fully ticked; nothing new was opened this session
-  (all four bugs and both features were fix/shine work on shipped items).
-- `config/models.yaml` — the `opencode-go` provider block and its `models:` list.
-- `src/cloud.js` — the secret store and the authenticated probe.
-- `app/web/src/components/ParticleField.jsx` — the ambient background.
+- `docs/ARCHITECTURE.md` §"The web shell", §"The cloud surface" and §"The brand
+  surface" describe the shell's new subsystems; §"The report generator" now
+  covers both extra doors.
+- `docs/ROADMAP.md` — new ticked items: "Standalone reports", "Deck-from-report",
+  "Structural chat commands", "Shell polish — rails, motion, cloud routing,
+  brand surface", and the unchecked "Canvas slide-builder (stretch)".
+- `src/ai/ops.js` — the ops layer including `duplicate_slide`.
+- `src/ai/pipeline.js` — `createReport` and `createDeckFromReport`.
+- `tools/prep-brand.mjs` — `normalizeBrand()` exported for the API.
+- `src/ai/ollama.js` — `cloudMessages` schema-hint injection and routing.
 
 ## End-of-session state
 
-- `config/local.yaml` (gitignored) currently holds the real OpenCode Go key,
-  saved via the Settings panel — the app works with the subscription out of the
-  box on this machine. Remove it (Settings → Cloud → Remove) to hand the repo
-  back to a machine without the subscription.
+- `config/local.yaml` (gitignored) holds the real OpenCode Go key, saved via
+  the Settings panel, plus `routing.default`. The app works with the
+  subscription out of the box on this machine. Remove it (Settings → Cloud →
+  Remove) to hand the repo back to a machine without the subscription.
+- `brand/logos/` holds the real marks (banner.jpeg, crest.png, watermark.png);
+  `brand/generated/` is the normalised output. Both gitignored.
