@@ -1,0 +1,110 @@
+title: "Batch 7 — Diagram types"
+theme: warm-humanist
+sections:
+  - Diagrams
+slides:
+  - type: title
+    section: 0
+  - type: diagram
+    headline: The data pipeline (vertical)
+    layout: vertical
+    nodes:
+      - id: a
+        label: Ingest
+        body: raw events
+      - id: b
+        label: Parse
+        body: normalise
+      - id: c
+        label: Load
+        body: to lake
+      - id: d
+        label: Serve
+        body: read models
+      - id: e
+        label: Alert
+        body: thresholds
+    edges:
+      - from: a
+        to: b
+      - from: b
+        to: c
+      - from: c
+        to: d
+      - from: c
+        to: e
+    section: 0
+  - type: diagram
+    headline: Dependencies (horizontal)
+    layout: horizontal
+    nodes:
+      - id: lib
+        label: Core library
+      - id: web
+        label: Web app
+      - id: cli
+        label: CLI
+      - id: mobile
+        label: Mobile
+    edges:
+      - from: lib
+        to: web
+      - from: lib
+        to: cli
+      - from: lib
+        to: mobile
+    section: 0
+  - type: pyramid
+    headline: The decision hierarchy
+    levels:
+      - label: Governance
+        body: policy and risk
+      - label: Architecture
+        body: principles and patterns
+      - label: Product
+        body: what we build
+      - label: Delivery
+        body: how we ship
+    section: 0
+  - type: venn
+    headline: Where the skills overlap
+    sets:
+      - label: Research
+        items: [Surveys, Interviews, Statistics]
+      - label: Design
+        items: [Wireframes, Prototypes, Testing]
+      - label: Engineering
+        items: [Systems, Data, Automation]
+    section: 0
+  - type: hierarchy
+    headline: The team structure
+    root:
+      label: Programme lead
+    children:
+      - label: Research
+        children:
+          - label: Fieldwork
+          - label: Analysis
+      - label: Delivery
+        children:
+          - label: Frontend
+          - label: Backend
+          - label: QA
+      - label: Operations
+        children:
+          - label: Support
+    section: 0
+  - type: concept-map
+    headline: The knowledge graph
+    centre:
+      label: Platform
+    branches:
+      - label: Identity
+        items: [SSO, MFA]
+      - label: Data
+        items: [Lake, Warehouse]
+      - label: Messaging
+        items: [Queues, Events]
+      - label: Serving
+        items: [APIs, Edge]
+    section: 0
