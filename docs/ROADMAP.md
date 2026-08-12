@@ -227,17 +227,24 @@ PUTting a distinctive fact and watching the cloud-written deck use it.
 > `exists: false` and the panel has four states — loading, error, no-research,
 > content.
 
-### [x] Intake wizard
+### [x] Intake wizard — superseded by the in-chat briefing
 Collect team, subject, guide, year, brief and sources before generation, then
 hand the result to the pipeline as part of the model's brief.
 
-`NewDeck.jsx` is the full entry form: brief, sources, theme, max slides, and an
+`NewDeck.jsx` was the full entry form: brief, sources, theme, max slides, and an
 identity panel (subject, academic year, semester, exam type, guide name +
 designation, team label, and a member list with a "presents" tick). The
 identity pre-fills from `config/identity.yaml`, saves back as remembered
 defaults, and freezes into `decks/<slug>/meta.yaml`. The wizard snapshot flows
 to planning (the model sees the subject), and the renderer's existing
 meta-over-config merge puts the per-deck team, guide and year on the slides.
+
+**Replaced by the chat-first redesign:** the form no longer exists. The same
+fields are now asked one at a time inside the chat thread
+(`app/web/src/lib/briefing.js` + the ChatView's question cards), writing the
+exact same deck params — the conversation is this form's data model, and the
+pipeline is untouched. `createDeck` still takes `identity`; the chat just
+assembles it.
 
 > **Learned.** The renderer already merged `decks/<slug>/meta.yaml` over
 > `config/identity.yaml`, so "freeze what each deck used" turned out to be just
@@ -260,9 +267,20 @@ are wrong half the time.
 
 `planDeck()` in `src/ai/generate.js` already returns the plan as a discrete,
 reviewable artefact (`{title, sections, slides:[{type, section, purpose}]}`).
-Shipped as one vertical slice with the generation endpoints and the UI: a brief
-form (`NewDeck.jsx`) streams a plan, the review view (`Outline.jsx`) edits and
-approves it, and generation streams slide-writing progress into a rendered deck.
+Originally shipped as one vertical slice with the generation endpoints and the
+UI: a brief form (`NewDeck.jsx`) streams a plan, the review view (`Outline.jsx`)
+edits and approves it, and generation streams slide-writing progress into a
+rendered deck.
+
+**Moved into the chat by the chat-first redesign.** The standalone `Outline.jsx`
+view is deleted; the outline review is now a card in the chat thread, every
+slide reading in plain language — "Stats — big numbers with captions" — from the
+`TYPE_DESCRIPTIONS` map in `src/ai/catalog.js` (one source, exposed through
+`/api/types`, guarded so the map can never drift from the schema enum). The
+purpose stays editable, the type switchable, rows movable; "Approve & generate"
+is still the only thing that writes slides. The report→companion-deck flow
+routes its pre-made plan into a chat that skips the briefing and lands straight
+on this same outline card.
 
 > **Learned.** The plan gate had to be a *disk-level* boundary, not just a UI
 > stop. A planned deck is `meta.yaml` + `plan.yaml` with no `deck.yaml`, so a
@@ -431,6 +449,89 @@ hand-holding":
 > both groups, so the mode read as cosmetic. Client-side filtering (a pub/sub
 > over the already-grouped `/api/models` response) made it honest without a
 > server round-trip per toggle.
+
+### [x] Chat-first creation — the conversation is the app
+The biggest UX change since the Stitch shell: the app is a chat window, not a
+form. Landing is log-in/register; the deck workspace is per-user; a topic sent
+in the thread walks a guided briefing one question at a time and ends in a deck.
+
+- **Auth-first, per-user workspace.** Every `/api/decks` and `/api/reports`
+  route requires a session (the 401 gate sits at the top of the server), new
+  decks stamp `meta.yaml` with the owning email, and the list, search and each
+  per-slug route enforce that ownership. Ownerless legacy decks stay shared.
+  Raster/download GET routes are exempt from the gate because an `<img>` cannot
+  send a bearer token — and their slugs are only discoverable through the gated
+  list, so the exemption leaks nothing in the UI.
+- **The chat window IS the app.** `ChatView` replaces Home: a thread with the
+  input bar at the bottom. "New chat" opens an empty thread ("What would you
+  like to present today?"). A topic (with optional extra text) starts the
+  briefing; everything defaults unless the user says otherwise.
+- **Guided briefing, one question at a time.** Title (pre-suggested from the
+  topic), team (name + roll, tick who presents — adding a member is a pure
+  local state change, verified at zero network requests), guide, subject/
+  academic, the theme chosen from a **visual gallery** (mini specimens drawn
+  live from each theme's own tokens — the "see the theme, not just names"
+  requirement), slide count, slides-per-member, word density and a research
+  pass. Only the summary card's "Plan the deck" starts research/planning.
+  The old `NewDeck.jsx` wizard form is deleted; the briefing writes the same
+  deck params the pipeline always consumed.
+- **Outline gate in the thread.** The standalone `Outline.jsx` view is deleted.
+  Each slide card reads in plain language (`TYPE_DESCRIPTIONS` in
+  `src/ai/catalog.js` — "Stats — big numbers with captions"), purpose editable,
+  type switchable, rows movable, "Approve & generate" the only writer. The
+  report→companion-deck flow routes its pre-made plan into a chat that skips
+  the briefing and lands straight on this outline.
+- **Chats persist per account** in localStorage (`lib/chats.js`) and link the
+  deck they produce; the sidebar is a Chats/Decks pair with one "New chat"
+  creation entry. The deck detail's six-action row folds into a single Export
+  menu (PDF / Markdown / Bundle / Clone / Versions / Dark mode) — Render and
+  `.pptx` stay primary.
+
+> **Learned.** Six things were not obvious beforehand.
+>
+> The briefing is a deterministic client state machine, not a model turn. The
+> conversation is the wizard's data model re-expressed — asking a local model
+> to "ask questions" would have been slower, flakier and untestable; the
+> questions, defaults and free-text answers all live in `lib/briefing.js` and
+> only the summary's Plan button touches the network. The member-add bug
+> ("adding a member starts work") was never a real code path — the briefing is
+> pure local state by construction — but the CDP assertion (network counter
+> flat across an add) is now the guard that proves it.
+>
+> Per-user work needs a disk boundary, not a UI filter. A sidebar that hides
+> another account's decks is cosmetic if the same deck is reachable by URL. The
+> separation is three layers: the 401 gate (nothing deck-shaped without a
+> session), the per-slug ownership check (an owned deck answers "no such deck",
+> not "not yours", so a stranger cannot even learn a slug exists), and the
+> list/search owner filter. The legacy-deck decision is explicit: ownerless
+> `meta.yaml` = shared demo/CLI deck; a fresh account sees them, and its own
+> creations stamp its email.
+>
+> localStorage is the right home for chats. The conversation is pure view
+> state; the artefact it produces (deck.yaml) is server truth. Persisting the
+> thread server-side would have needed a chat model, migrations and per-user
+> routing for zero benefit — a chat's deck link is the durable record. The
+> StrictMode double-mount of the boot effect is guarded by reading storage
+> rather than React state, or the first login would mint two empty chats.
+>
+> A theme gallery built from live tokens beats thumbnails or names. The
+> existing `/api/themes` specimen render (already used by the Themes gallery)
+> scaled down to a mini card for the briefing — impossible to be stale, free to
+> build, and it satisfies "I see the theme, not just names" without a stored
+> screenshot pipeline. The selected card's accent ring sits below the scroll of
+> the compact grid for the default theme (warm-humanist sorts last); acceptable,
+> but auto-scrolling the selection into view is a natural follow-up.
+>
+> Type descriptions belong beside the schema, not in the UI. `TYPE_DESCRIPTIONS`
+> in the catalog is derived-checked against the enum (it throws on a missing
+> entry), so the outline can never show a type the schema does not know or leave
+> one reading as a bare enum value. The `/api/types` payload now carries them.
+>
+> A React dev-only duplicate-key warning ("two children with the same key, `%s`")
+> appeared once across several full end-to-end runs and was never reproduced
+> (three subsequent clean runs, zero console errors). The literal `%s` implies a
+> lost key argument somewhere in React's own formatting; no code path with
+> colliding keys has been found. Tracked, not chased.
 
 ### [ ] (stretch) Canvas slide-builder
 Live slides appearing as they stream (status → plan → slides) as a

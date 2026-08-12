@@ -7,109 +7,127 @@ handoffs.
 
 ## Session summary
 
-**The product plan's Part 1 is complete: the full slide vocabulary now lives in
-the schema, the renderer and the editor — 75 types in the enum, each a native
-pptxgenjs layout, each rendered, rasterised and vision-checked with
-`mimo-v2.5` before its batch shipped. Part 2's remaining features (F3–F11,
-F14–F20, plus F17/F18) shipped as a focused tranche. Part 3's deployment is
-shelved by the user; hosting-readiness only (env-overridable stateful dirs).**
-`npm test` 153/153, `vite build` clean, every deck in the repo re-renders,
-features verified live over CDP and visually. Dev servers running at :5174/:5173.
+**The app is now chat-first: the chat window is the product. Log-in/register is
+the landing, the deck workspace is per-user, a topic sent in a thread walks a
+guided briefing one question at a time (visual theme gallery, defaults
+everywhere), and the outline gate lives in the chat with a plain-language card
+per slide. The old wizard form, home prompt box and standalone outline view are
+deleted. The deck detail's six-action row folds into one Export menu. Per-user
+ownership is enforced server-side (401 gate + per-slug checks + list filter).**
+`npm test` 153/153, `vite build` clean, the full create→brief→plan→approve→
+generate→open flow verified over CDP end-to-end twice with zero console errors,
+and the theme gallery + outline + de-clutter vision-checked with `mimo-v2.5`.
+Dev servers running at :5174/:5173.
 
-### Part 1 — the 50-type vocabulary (53 types added on top of the existing 22)
+## What shipped
 
-Eight batches, each one commit (or tight group) pushed, each batch built a demo
-deck that was rasterised and vision-checked:
+### Server (`app/server/index.js`, `src/ai/pipeline.js`, `src/ai/catalog.js`)
 
-| Batch | Families | Types |
-|---|---|---|
-| 1 | Foundation + List & Grid | chapter, closing, numbered-list, checklist, feature-grid, grid-items, icon-list, stacked-list |
-| 2 | Data & Stats + charts | kpi-dashboard, data-cards, progress-bars, ranking-list, metric-comparison, sparklines; chart kinds +scatter/radar/stacked-bar |
-| 3 | Comparison | before-after, framework, matrix, scorecard, vs, side-by-side |
-| 4 | Process & Flow | cycle, funnel, pipeline, dependencies, branching-flow, layered-architecture |
-| 5 | Timeline + Quote | roadmap, journey, chronology, testimonial, pull-quote, epigraph |
-| 6 | Callout + Image + Table | warning, tip, takeaway, image-grid, hero-image, split-screen, data-table, decision-matrix |
-| 7 | Diagram-ish | diagram (vertical/horizontal/radial), pyramid, venn, hierarchy, concept-map |
-| 8 | Definitions + Team + Special | glossary, faq, team-grid, attribution, contact, equation, bibliography, data-source; + `speaker_note` bar |
+- **Auth-first workspace.** `app.use("/api/decks", …)` and `/api/reports`
+  require a session (401 otherwise); the raster/download GET routes are exempt
+  because `<img>` tags cannot send a bearer token (their slugs are only
+  discoverable via the gated list). `createDeck`/`createReport` stamp
+  `meta.yaml` with `owner: <email>`. The deck list and `/api/decks/search`
+  filter by owner; every per-slug route checks ownership and answers "no such
+  deck" (never "not yours") for another account's deck.
+- **Legacy decks stay shared.** A folder whose `meta.yaml` has no `owner` is a
+  legacy/CLI deck, visible to every logged-in account. Existing committed demo
+  decks (type-batch*, flow-ttb, raytracing-ai, the user's exploring-* folders,
+  solar-water-copy) are all ownerless and behave this way. Migration note: if
+  the user wants old decks under one account only, that is a one-off re-stamp
+  of `meta.yaml` `owner:` fields — no code change needed.
+- **`TYPE_DESCRIPTIONS`** in `src/ai/catalog.js`: every one of the 75 slide
+  types gets a plain-language sentence ("Stats — big numbers with captions"),
+  guarded by `typeDescriptions()` which throws on a missing entry. Exposed via
+  `/api/types` alongside the enum; the in-chat outline renders these.
 
-Demo decks live at `decks/type-batch1..8` and `decks/flow-ttb`. The vocabulary
-test is `test/vocabulary.test.js` (valid payloads pass, wrong shapes reject,
-catalog derivation, ops-schema size, maxLength < 2000 guard). The inline editor
-gained descriptors for all 75 types with composite editors (matrix axes,
-roadmap phases, recursive hierarchy, per-column data-table cells).
+### Client (`app/web/src`)
 
-Vision findings fixed per batch (all re-verified clean): data-cards stat
-wrap (`fitOneLine` added to `src/fit.js` — width-based one-line fit for stat
-digits, used by data-cards/kpi/metric-comparison), empty scatter chart
-(pptxgenjs needs a synthetic X-Axis series), framework ring overlap (elliptical
-ring), matrix axis-label collisions (position + text-sized rotated boxes),
-cycle ring collapse (radius geometry), takeaway panel overflow, hierarchy
-post-order collapse (tree builder pushed children before parent — a real JS
-evaluation-order trap), concept-map leaf stacking (perpendicular fan + spread
-caps), decision-matrix total styling.
-
-### Part 2 — features (all shipped except F13/F16)
-
-F3 outline drag-reorder · F4 clone (`cloneDeck`, "Clone" button opens the copy)
-· F5 slide templates (`templates/*.yaml` + "+ Add slide" menu) · F6 vertical-flow
-capacity fix (title-only at 5+ steps) · F7 shortcuts (Ctrl+K/N/S, Ctrl+Z/Y,
-Escape) · F8 PDF/Markdown export (`src/export.js`, CLI `--format`, API, UI
-buttons) · F9 undo/redo (20-deep deck-state stack) · F10 chat empty state with
-suggestion pills · F11 sharing bundle (zip via jszip) · F14 version history
-(`backups/` snapshots + Versions popover with Restore) · F15 light storyboard
-in the outline · F17 per-deck dark mode (meta `mode`) · F18 per-slide retry +
-placeholder · F19 full-text deck search (API + sidebar merge) · F20 report
-section "Add as slide".
-
-**Not built, by design:**
-- **F13 image grounding** — the model still emits `image` filenames without
-  writing files. Design for a future session: the writer's schema already names
-  a path; a search-based pass (SearXNG query from the slide's headline, fetch a
-  CC-licensed match, download into `decks/<slug>/`) is the honest local-first
-  option. Generated images (cloud DALL-E/Stable Diffusion via opencode-go)
-  would violate the no-cloud-LM default; do search first.
-- **F16 i18n** — the renderer has no locale-aware number formatting and no RTL.
-  Design: `meta.yaml` gains `language`; the chrome strings ("Guide:", "Slide x / y",
-  "Presented by") move to per-language maps; number formatting via
-  `Intl.NumberFormat(locale)` in `layouts.js`; RTL is a pptxgenjs gap — do
-  non-RTL languages first and record the RTL seam explicitly.
-
-### Part 3 — hosting-readiness (deployment shelved)
-
-No `storage.js`/S3 (shelved). What changed: `src/paths.js` exposes
-`FORGE_DECKS_DIR / FORGE_THEMES_DIR / FORGE_BRAND_DIR / FORGE_CONFIG_DIR`, and
-`src/plate.js` reads `FORGE_PLATE_CACHE` — every stateful directory is
-env-overridable. `FORGE_CHROME`, `SEARXNG_URL` were already env-driven. No
-secrets in source; keys live in gitignored `config/local.yaml` (env-first in
-`src/cloud.js`).
+- **`LoginScreen.jsx`** — the auth-first landing; register/login, local
+  scrypt accounts (pre-existing auth.js), token in localStorage.
+- **`ChatView.jsx`** — the app. Thread + bottom input bar. Phases: greeting →
+  briefing (9 questions one at a time) → summary → planning → outline →
+  generating → done. Free-text answers in the input bar work for most questions
+  (`lib/briefing.js` `applyFreeText`); choice cards (theme gallery, density,
+  research, slide counts) have inline controls. Only the summary card's "Plan
+  the deck" starts research/planning. Approve streams "Writing slide N/M…";
+  "Open the deck" lands on the deck view. Report chats (welcome link / New chat
+  flow) go straight to `createReport` with no briefing.
+- **`lib/chats.js`** — per-account localStorage chat store; each chat knows the
+  deck/report it produced (`deckSlug`, `produced`).
+- **`lib/briefing.js`** — question list, identity pre-fill, title suggestion,
+  echo strings, free-text answers. The wizard's data model, as a conversation.
+- **`lib/progress.js`** — `progressLabel` moved out of the deleted NewDeck view.
+- **`ThemeMiniCard.jsx`** — a mini live specimen of a theme from its own tokens.
+- **`Sidebar.jsx`** — Chats / Decks tabs, per-user lists, one "+ New chat"
+  creation entry, Ctrl+K still focuses deck search.
+- **`App.jsx`** — chat-first routing (chat | deck | report | themes | identity),
+  boot-time session rehydration, initial-chat minting (StrictMode-safe via
+  storage reads), Ctrl+N → new chat, report→companion-deck flows into a chat
+  that skips the briefing (`startCompanionChat`).
+- **`DeckDetail.jsx`** — action row collapsed into one Export ▾ menu (PDF /
+  Markdown / Bundle / Clone / Versions / Dark mode); Render + .pptx stay in the
+  header. **Deleted:** `Home.jsx`, `NewDeck.jsx`, `Outline.jsx`, `PromptBox.jsx`.
 
 ## Verification notes
 
 - `npm test` 153/153; `npx vite build --config app/web/vite.config.js` clean.
-- All 10 committed decks re-render; spot-checked `type-batch4` on dark-neon and
-  `type-batch3` on glassmorphism — clean.
-- CDP (Node 24's global WebSocket, headless Chrome at
-  `--remote-debugging-port=0`): home loads, a deck opens, the action row
-  (PDF/.md/Bundle/Clone/Versions), template menu and chat suggestion pills all
-  present; deck + chat screenshots vision-checked clean.
-- Vision model: `opencode-go/mimo-v2.5` (persisted choice).
+- Full CDP flow (headless Chrome, Node 24's global WebSocket) run end-to-end
+  twice, clean: login screen → register → new chat → send topic → questions one
+  by one → **member add with the network counter flat (0 requests)** → theme
+  gallery shows visual mini cards → summary → Plan the deck → outline with
+  plain-language slide cards → Approve & generate → streaming status → Open the
+  deck. Deck view shows a single Export menu; no "+ New deck" anywhere.
+- Auth flow over CDP: logout → login screen; login → prior chat restored; Ctrl+N
+  mints a new chat.
+- Per-user separation over the API: user A's ready deck appears in A's list
+  (count 17) and not B's (16); B opening A's deck gets 404; `meta.yaml` owner
+  stamped correctly.
+- Generation tests ran with the cloud model (routing temporarily flipped to
+  `config/local.yaml` `default: cloud`, restored to `local` after). Local Ollama
+  untouched. `config/local.yaml` routing is back to `local`.
+- Vision (`mimo-v2.5`): login screen clean; theme gallery = real visual
+  previews (Art Deco / Aurora Mesh / Bauhaus specimens visible); outline rows
+  read "17 Scorecard — criteria scored in a simple table"; deck view has one
+  Export dropdown with the six plain labels, Render + .pptx present, no
+  creation entry beyond New chat.
 
-## What remains
+## Seams and leftovers
 
-- **F15 full form** — a live filmstrip of *rendered* slides streaming during
-  generation needs a new SSE phase in `generateFromPlan` that emits each
-  validated slide (render-per-slide or a storyboard of placeholders); the light
-  storyboard ships now.
-- **F13 image grounding** and **F16 i18n** — designs above.
-- **Chart expansion**: `scatter` is native-but-lineMarker (pptxgenjs bakes the
-  style in); true marker-only scatter would need XML surgery or a plate.
-- The fitter's unit pessimism (TRAPS) remains a deliberate non-goal.
+- **One React dev-only warning observed once, never reproduced:** "Encountered
+  two children with the same key, `%s`" appeared in a single full CDP run; three
+  subsequent full runs logged zero console errors. The literal `%s` suggests a
+  lost key argument in React's own formatting; no colliding-keys code path has
+  been found. Tracked in the ROADMAP entry, not chased.
+- **Briefing is forward-only.** "change" on an answered card rewinds
+  `briefStep` and re-asks from there (later answers are discarded). No
+  backward-only edit without re-answering — acceptable, but a per-field edit
+  would be smoother.
+- **Theme gallery default selection ring** sits below the compact grid's scroll
+  (warm-humanist sorts last). Auto-scrolling the selected card into view is a
+  natural follow-up.
+- **Slides-per-member is guidance, not enforcement.** It is appended to the
+  planning brief ("roughly N per presenting member") — the writer sees it, but
+  no code splits presenters. Real per-slide presenter distribution remains the
+  free-form field on the deck detail.
+- **Companion-deck flow** (report → "Generate companion deck") routes into a
+  chat pre-loaded with the plan (skips briefing). Verified by construction (it
+  reuses the verified outline card), not run end-to-end — running it writes
+  `plan.yaml`/`deck.yaml` into a committed report deck's folder.
+- **Density** is folded into the planning brief text; there is no schema field
+  for it.
+- **Auth-modal still exists** for the Identity view's cloud-key gate; the
+  landing is the new full-screen LoginScreen.
+- **F13 image grounding / F16 i18n** designs from the previous handoff are
+  unchanged and still not built.
 
 ## End-of-session state
 
 - Dev servers running: API `http://localhost:5174` (node --watch), UI
   `http://localhost:5173` (Vite). Restart with `npm run api` / `npm run web` if
-  down; the API can die mid-session on some edits (TRAPS) — check
-  `/api/health` before trusting an endpoint.
-- `config/local.yaml` holds the OpenCode Go key and `routing.default: local`.
-- All commits pushed to `origin/main` (last verified push: the docs commit).
+  down; check `/api/health` before trusting an endpoint.
+- `config/local.yaml`: cloud key attached, `routing.default: local`.
+- All commits pushed to `origin/main` (last push: the chat-first tranche; the
+  gating follow-up; docs). Server code is the thin transport as before — the
+  CLI (`forge new/generate/chat/report`) shares `src/ai/pipeline.js` and the
+  per-user owner field is simply absent on CLI runs, so those decks stay shared.
