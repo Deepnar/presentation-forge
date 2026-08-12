@@ -237,6 +237,273 @@ export const layouts = {
     );
   },
 
+  /**
+   * Deck agenda: numbered topics in a vertical list, each title bold with an
+   * optional description beneath. The whole list shares one horizontal fit for
+   * titles and one for descriptions so siblings stay uniform — the row budget
+   * reserves the real rendered line count, so a wrapped desc never meets the
+   * title of the row below it.
+   */
+  agenda(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const n = data.items.length;
+    const gut = 0.28;
+    const rowH = (box.bottom - y - 0.1 - gut * (n - 1)) / n;
+    const numW = 0.62;
+    const tw = box.w - numW - 0.25;
+    const titleScale = fitScaleAll(data.items.map((i) => i.title), tw, rowH * 0.5, theme.type.subhead);
+    const descScale = fitScaleAll(
+      data.items.map((i) => i.desc).filter(Boolean), tw, rowH * 0.45, theme.type.caption,
+    );
+
+    data.items.forEach((item, i) => {
+      const ry = y + i * (rowH + gut);
+      slide.addText(String(i + 1).padStart(2, "0"), {
+        x: box.x, y: ry, w: numW, h: rowH,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+        align: "left", valign: "top",
+      });
+      slide.addText(item.title, {
+        x: box.x + numW + 0.25, y: ry, w: tw, h: rowH * 0.5,
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+        valign: "top",
+      });
+      if (item.desc) {
+        slide.addText(item.desc, {
+          x: box.x + numW + 0.25, y: ry + rowH * 0.52, w: tw, h: rowH * 0.45,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: descScale }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * The one number that matters: a hero value on the stat type, its label, and
+   * a body anchored to the bottom of the content box. The value's 2.1in budget
+   * guarantees one rendered line; the label sits at a fixed offset under it,
+   * and the bottom block reserves its own measured height so a long body can
+   * never collide with the label or the chrome footer.
+   */
+  "big-number"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const valueScale = fitScale(data.value, box.w, 2.1, theme.type.stat, { min: 0.7 });
+    slide.addText(data.value, {
+      x: box.x, y, w: box.w, h: 2.1,
+      ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
+      valign: "top",
+    });
+
+    const labelScale = fitScale(data.label, box.w, 0.5, theme.type.subhead, { min: 0.7 });
+    slide.addText(data.label, {
+      x: box.x, y: y + 2.15, w: box.w, h: 0.5,
+      ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+      valign: "top",
+    });
+
+    // The caption is pinned to the content-box bottom — never to a value
+    // derived from the body's own estimated height, which is what pushed it
+    // onto the chrome footer. The body gets the fixed budget between the label
+    // and the caption and is fit-scaled to it, so however long it is, it can
+    // only get smaller, never collide.
+    const subH = 0.4;
+    const bodyTop = y + 2.6;
+    const subY = data.sub ? box.bottom - subH - 0.12 : box.bottom - 0.15;
+    const bodyBudget = Math.max(0.5, subY - bodyTop);
+    if (data.body) {
+      slide.addText(data.body, {
+        x: box.x, y: bodyTop, w: box.w, h: bodyBudget,
+        ...textStyle(theme, "body", {
+          scale: fitScale(data.body, box.w, bodyBudget, theme.type.body, { min: 0.7 }),
+          color: theme.palette.ink_muted,
+        }),
+        valign: "top",
+      });
+    }
+    if (data.sub) {
+      slide.addText(data.sub, {
+        x: box.x, y: subY, w: box.w, h: subH,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+        valign: "middle",
+      });
+    }
+  },
+
+  /** Pro/con analysis — two labelled columns with bulleted points. */
+  "pros-cons"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut) / 2;
+    const pad = 0.28;
+    const ch = box.bottom - y - 0.1;
+    const all = [...data.pros, ...data.cons];
+    const scale = fitScaleAll(all, cw - pad * 2, ch - 1.1, theme.type.body);
+
+    const header = (x, text, color, glyph) => {
+      slide.addText(glyph, {
+        x, y: y + 0.02, w: 0.5, h: 0.45,
+        ...textStyle(theme, "subhead", { bold: true, color }),
+        align: "left", valign: "middle",
+      });
+      slide.addText(text, {
+        x: x + 0.42, y, w: cw - 0.42, h: 0.5,
+        ...textStyle(theme, "eyebrow", { color }),
+        align: "left", valign: "middle",
+      });
+    };
+    header(box.x, "PROS", theme.palette.accent, "+");
+    header(box.x + cw + gut, "CONS", theme.palette.ink_muted, "−");
+
+    const points = (list, x) => slide.addText(
+      list.map((p) => ({ text: p, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
+      {
+        x: x + pad, y: y + 0.65, w: cw - pad * 2, h: ch - 0.7,
+        ...textStyle(theme, "body", { scale }),
+        paraSpaceAfter: 8, valign: "top",
+      },
+    );
+    points(data.pros, box.x);
+    points(data.cons, box.x + cw + gut);
+  },
+
+  /**
+   * Few emphasised milestones on a vertical rail. The date rides inside an
+   * accent node on the left rail; the title and body sit to its right. Title
+   * and body fit-share the row height so a long body can never run into the
+   * node above it.
+   */
+  milestone(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const n = data.milestones.length;
+    const gut = 0.35;
+    const rowH = (box.bottom - y - 0.1 - gut * (n - 1)) / n;
+    const railW = 1.5;
+    const nodeW = 1.1, nodeH = 0.62;
+    const rx = box.x + 0.32;
+    const tw = box.w - railW;
+    const titleScale = fitScaleAll(data.milestones.map((m) => m.title), tw, rowH * 0.45, theme.type.subhead);
+    const bodyScale = fitScaleAll(
+      data.milestones.map((m) => m.body).filter(Boolean), tw, rowH * 0.5, theme.type.body,
+    );
+
+    // The rail runs from the first node's centre to the last one's.
+    slide.addShape("rect", {
+      x: rx, y: y + rowH / 2, w: 0.03, h: box.bottom - y - rowH,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+
+    data.milestones.forEach((m, i) => {
+      const ry = y + i * (rowH + gut);
+      const cy = ry + rowH / 2;
+      const whenScale = fitScale(m.when, nodeW - 0.1, nodeH, theme.type.eyebrow);
+      slide.addShape("ellipse", {
+        x: rx - nodeW / 2 + 0.1, y: cy - nodeH / 2, w: nodeW, h: nodeH,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(m.when, {
+        x: rx - nodeW / 2 + 0.1, y: cy - nodeH / 2, w: nodeW, h: nodeH,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent, scale: whenScale }),
+        align: "center", valign: "middle",
+      });
+      slide.addText(m.title, {
+        x: box.x + railW, y: ry, w: tw, h: rowH * 0.45,
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+        valign: "top",
+      });
+      if (m.body) {
+        slide.addText(m.body, {
+          x: box.x + railW, y: ry + rowH * 0.45 + 0.04, w: tw, h: rowH * 0.5,
+          ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * A key-point panel — lighter than callout, more visual than a bullet: a
+   * surface panel with a thick accent left bar, an optional eyebrow label and
+   * the body centred inside.
+   */
+  emphasis(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const ph = 1.9;
+    const py = Math.max(y, 3.0);
+    slide.addShape("roundRect", {
+      x: box.x, y: py, w: box.w, h: ph,
+      fill: { color: hex(theme.palette.surface) },
+      line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    slide.addShape("rect", {
+      x: box.x, y: py, w: 0.08, h: ph,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+
+    const pad = 0.45;
+    const label = data.label ?? "Key point";
+    slide.addText(label, {
+      x: box.x + pad, y: py + 0.32, w: box.w - pad * 2, h: 0.4,
+      ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+      valign: "middle",
+    });
+    slide.addText(data.body, {
+      x: box.x + pad, y: py + 0.8, w: box.w - pad * 2, h: ph - 0.95,
+      ...textStyle(theme, "body", { scale: fitScale(data.body, box.w - pad * 2, ph - 0.95, theme.type.body) }),
+      align: "center", valign: "middle",
+    });
+  },
+
+  /** One term, its definition, and an optional example in a caption bar. */
+  definition(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const termScale = fitScale(data.term, box.w, 0.9, theme.type.heading, { min: 0.6 });
+    slide.addText(data.term, {
+      x: box.x, y, w: box.w, h: 0.9,
+      ...textStyle(theme, "heading", { color: theme.palette.accent, scale: termScale }),
+      valign: "top",
+    });
+
+    const example = data.example;
+    const budget = (example ? box.bottom - 1.25 : box.bottom) - y - 1.0;
+    slide.addText(data.definition, {
+      x: box.x, y: y + 1.05, w: box.w, h: Math.max(0.6, budget),
+      ...textStyle(theme, "body", { scale: fitScale(data.definition, box.w, budget, theme.type.body) }),
+      valign: "top",
+    });
+
+    if (example) {
+      const ey = box.bottom - 1.05;
+      slide.addShape("rect", {
+        x: box.x, y: ey + 0.06, w: 0.05, h: 0.62,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(example, {
+        x: box.x + 0.22, y: ey, w: box.w - 0.22, h: 0.75,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true }),
+        valign: "middle",
+      });
+    }
+  },
+
   cards(slide, ctx) {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);

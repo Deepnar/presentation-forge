@@ -34,7 +34,7 @@ const FAMILY_CLASS = {
   "DM Sans": "sans", "IBM Plex Sans": "sans",
 };
 
-const WIDE_SANS = new Set(["Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]);
+const WIDE_SANS = new Set(["Inter", "Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]);
 const classOf = (family) => FAMILY_CLASS[family] ?? "sans";
 
 /** Estimated rendered width, in inches, of a single line. */

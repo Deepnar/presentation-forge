@@ -3,10 +3,12 @@ import assert from "node:assert/strict";
 import { measure, fitScale, lineCount } from "../src/fit.js";
 
 test("wide geometric sans are measured wider than plain sans", () => {
-  const plain = measure("Ray Tracing", { family: "Inter", size: 15 });
-  for (const fam of ["Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]) {
+  // Inter itself is a wide geometric sans (the most common body family), so it
+  // must be in the wide set rather than the narrow baseline it used to be.
+  const plain = measure("Ray Tracing", { family: "Source Sans 3", size: 15 });
+  for (const fam of ["Inter", "Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]) {
     const wide = measure("Ray Tracing", { family: fam, size: 15 });
-    assert.ok(wide > plain, `${fam} should estimate wider than Inter`);
+    assert.ok(wide > plain, `${fam} should estimate wider than plain sans`);
   }
 });
 
