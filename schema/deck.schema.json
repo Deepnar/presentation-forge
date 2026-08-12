@@ -2426,8 +2426,22 @@
                   ],
                   "properties": {
                     "text": {
-                      "type": "string",
-                      "maxLength": 120
+                      "description": "The row's value. A single string for a two-column table, or an array of strings (one per column) for a multi-column one.",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 120
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 8,
+                          "items": {
+                            "type": "string",
+                            "maxLength": 120
+                          }
+                        }
+                      ]
                     },
                     "highlight": {
                       "type": "boolean",
