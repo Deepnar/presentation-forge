@@ -35,14 +35,21 @@ const OP_NAMES = [
  * @param {object} [opts]
  * @param {number} [opts.slideCount]  how many slides the deck currently has
  * @param {string[]} [opts.onlyTypes] restrict to these slide types
+ * @param {string[]} [opts.excludeProps]  shared fields the payload must not carry
  *
  * `onlyTypes` is the important lever. Unioning all 28 slide fields produces a
  * large grammar, and constrained decoding masks the model's preferred token far
  * more often against a large grammar than a small one — which is what pushes a
  * small model off-distribution into loops and confabulation. Narrowing to the
  * one type being written keeps the grammar tight.
+ *
+ * `excludeProps` removes shared fields entirely. A divider slide (title,
+ * section, chapter, closing) carries no presenter by rule — "the next part is
+ * the slide, not somebody's slide" — and the cleanest way to enforce that is
+ * to make a stray `presenter` unrepresentable in the grammar rather than
+ * scrubbing it after the fact.
  */
-export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null } = {}) {
+export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, excludeProps = null } = {}) {
   const slide = deckSchema.definitions.slide;
 
   // Constrain the op set to what the current deck can actually accept. Against
@@ -78,6 +85,7 @@ export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null } 
   // single type cuts the key space from ~28 to ~5.
   const props = {};
   for (const [name, spec] of Object.entries(slide.properties)) props[name] = deref(spec);
+  for (const name of excludeProps ?? []) delete props[name];
 
   const required = new Set(["type"]);
   for (const rule of slide.allOf ?? []) {

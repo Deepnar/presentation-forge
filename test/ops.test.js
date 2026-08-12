@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyOps, applyOp, buildOpsSchema, diffDecks } from "../src/ai/ops.js";
 import { deckSchema } from "../src/ai/catalog.js";
+import { DIVIDER_TYPES } from "../src/ai/team.js";
 
 const S = (type, i) => ({ type, headline: `slide ${i}`, notes: `n${i}` });
 const deck = { title: "t", slides: [S("bullets", 1), S("cards", 2), S("quote", 3)] };
@@ -41,6 +42,20 @@ test("buildOpsSchema includes duplicate_slide once a deck has slides", async () 
   const opEnums = (s) => s.properties.ops.items.properties.op.enum;
   assert.ok(!opEnums(forEmpty).includes("duplicate_slide"));
   assert.ok(opEnums(forDeck).includes("duplicate_slide"));
+});
+
+test("buildOpsSchema can remove a shared field — dividers lose presenter", async () => {
+  const schema = await deckSchema();
+  const slideProps = (s) => s.properties.ops.items.properties.slide.properties;
+  assert.ok(slideProps(buildOpsSchema(schema, { slideCount: 0, onlyTypes: ["bullets"] })).presenter);
+  assert.equal(
+    slideProps(buildOpsSchema(schema, { slideCount: 0, onlyTypes: ["section"], excludeProps: ["presenter"] })).presenter,
+    undefined,
+  );
+});
+
+test("the divider set covers the non-content types, and nothing else", () => {
+  assert.deepEqual([...DIVIDER_TYPES].sort(), ["chapter", "closing", "epigraph", "section", "title"]);
 });
 
 test("diffDecks reads a new slide as added", () => {

@@ -3,6 +3,7 @@ import path from "node:path";
 import sharp from "sharp";
 import { ROOT } from "./paths.js";
 import { hex } from "./theme.js";
+import { DIVIDER_TYPES } from "./ai/team.js";
 
 /**
  * The locked brand layer.
@@ -120,17 +121,23 @@ export function applyContentChrome(slide, { brand, theme, identity, data, index,
   const footFont = theme.type.caption?.family ?? "Inter";
 
   if (cfg.presenter_on_slides !== false) {
-    const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
-    const fallback = presenting.length
-      ? presenting.map((m) => m.name).join(" · ")
-      : identity.team?.label || "";
-    const who = data?.presenter?.trim() || fallback;
-    if (who) {
-      slide.addText(who, {
-        x: 0.7, y: FOOT.y, w: 6.5, h: FOOT.h,
-        fontFace: footFont, fontSize: 9, color: muted, transparency: footOpacity,
-        align: "left", valign: "middle",
-      });
+    // Dividers (section/chapter/closing/epigraph) are the structure between
+    // parts, not somebody's slide — they never carry a presenter line, however
+    // the deck is split. The title slide has its own chrome and never reaches
+    // this footer.
+    if (!DIVIDER_TYPES.has(data.type)) {
+      const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
+      const fallback = presenting.length
+        ? presenting.map((m) => m.name).join(" · ")
+        : identity.team?.label || "";
+      const who = data?.presenter?.trim() || fallback;
+      if (who) {
+        slide.addText(who, {
+          x: 0.7, y: FOOT.y, w: 6.5, h: FOOT.h,
+          fontFace: footFont, fontSize: 9, color: muted, transparency: footOpacity,
+          align: "left", valign: "middle",
+        });
+      }
     }
   }
 

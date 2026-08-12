@@ -2,6 +2,7 @@ import { chatJSON } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
+import { DIVIDER_TYPES, presentingNames } from "./team.js";
 
 /**
  * Two-stage deck generation: plan the whole deck, then write one slide per call.
@@ -125,11 +126,31 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
 }
 
 /** Stage 2 — write one slide. Grammar is limited to this type's own fields. */
-async function writeSlide({ spec, plan, deck, theme, research, model, signal }) {
+async function writeSlide({ spec, plan, deck, theme, research, model, signal, presenters }) {
   const catalog = await slideCatalog();
-  const schema = buildOpsSchema(await deckSchema(), {
+  const schema = await deckSchema();
+  const isDivider = DIVIDER_TYPES.has(spec.type);
+  // A divider is structure, not a member's slide — the presenter field is
+  // removed from its grammar so the model cannot assign one. Content slides
+  // keep it, and the prompt hands the model the real presenting members so the
+  // assignment stays grounded in the actual team rather than invented roles.
+  const presenterClause = isDivider
+    ? [
+        `This slide is a ${spec.type} divider — it announces structure, not content. ` +
+          "It is owned by NO single member, so you must not set a `presenter` field.",
+      ]
+    : presenters?.length
+      ? [
+          "Assign this content slide's `presenter` field to exactly one of these team members,",
+          `picking the next one in the presenting order: ${presenters.join(", ")}. ` +
+            "Distribute the deck's content slides evenly across them so each member presents",
+          "roughly the same number of slides. Never invent a name outside this list.",
+        ]
+      : [];
+  const buildOps = buildOpsSchema(schema, {
     slideCount: deck.slides.length,
     onlyTypes: [spec.type],
+    ...(isDivider ? { excludeProps: ["presenter"] } : {}),
   });
 
   const voice = theme?.voice ?? {};
@@ -168,7 +189,12 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
     voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
     "",
-    "Be specific and declarative. No filler, no invented statistics.",
+    ...presenterClause,
+    "",
+    "Be specific and declarative. Every statistic, number or date must come from the",
+    "RESEARCH NOTES below — quote figures verbatim, never approximate or invent one.",
+    "If the notes carry no figure for this slide's point, state it qualitatively.",
+    "No filler, no invented statistics, no rhetorical hedging.",
     "Do not repeat wording already used on an earlier slide.",
   ].filter(Boolean).join("\n");
 
@@ -176,7 +202,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     role: "author",
     model,
     signal,
-    schema,
+    schema: buildOps,
     messages: [
       { role: "system", content: system },
       {
@@ -255,6 +281,7 @@ export async function generateDeck({
   };
 
   const skipped = [];
+  const presenters = presentingNames(identity);
 
   for (const [i, spec] of plan.slides.entries()) {
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
@@ -262,10 +289,10 @@ export async function generateDeck({
       // Retry once with the catalog re-stated explicitly before giving up — a
       // first failure is often the grammar drifting, and a second pass with the
       // contract spelled out recovers most of them.
-      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, presenters });
       let applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
       if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
-        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, presenters });
         applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
       }
       if (!applied.ok) {
@@ -296,6 +323,13 @@ export async function generateDeck({
 
   const { ok, errors } = await validateDeck(deck);
   onProgress?.({ phase: "done", slides: deck.slides.length, skipped: skipped.length });
+
+  // Belt and braces behind the grammar: whatever the model tried to slip onto a
+  // divider, dividers carry no presenter. This runs before validation so a
+  // stray field can never ship.
+  for (const s of deck.slides) {
+    if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
+  }
 
   return { ok, deck, plan, skipped, errors, stats };
 }

@@ -138,7 +138,7 @@ export default function ChatView({
     let brief = chat.topic;
     const notes = [];
     if (b.density !== "balanced") notes.push(`Keep the slides ${b.density} density — ${densityNote(b.density)}.`);
-    if (b.slidesPerMember) notes.push(`Distribute the slides roughly evenly, about ${b.slidesPerMember} per presenting member.`);
+    if (b.slidesPerMember) notes.push(`Distribute the CONTENT slides (not section dividers) roughly evenly, about ${b.slidesPerMember} per presenting member.`);
     if (notes.length) brief = `${chat.topic}\n\n${notes.join(" ")}`;
 
     setBusy(true);
