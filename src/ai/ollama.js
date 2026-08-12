@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
-import { resolveSecret } from "../cloud.js";
+import { resolveSecret, routingPreference, cloudProvider } from "../cloud.js";
 
 /**
  * Model client, role-addressed, with an optional cloud backend.
@@ -107,6 +107,11 @@ export async function resolveRole(role) {
  * "the role default", so the UI can present that as an explicit choice.
  * Installed models are best-effort — a dead Ollama yields just the default, and
  * requests fail loudly on their own.
+ *
+ * The routing preference (gitignored config/local.yaml) chooses what "auto"
+ * means: local Ollama, or the attached cloud's first model. The picker's
+ * default label reflects it so the header's LOCAL/CLOUD toggle and the pickers
+ * stay in agreement.
  */
 export async function modelChoices() {
   const cfg = await config();
@@ -122,7 +127,11 @@ export async function modelChoices() {
     cloud = { provider: name, label: p.label ?? name, models: [...p.models] };
     break;
   }
-  return { models, default: def, cloud };
+  const route = await routingPreference();
+  const defaultModel = cloud && route === "cloud" && cloud.models.length
+    ? cloud.models[0]
+    : def;
+  return { models, default: defaultModel, cloud, route };
 }
 
 /**
@@ -168,6 +177,18 @@ export async function chat({
   signal,
 }) {
   const cfg = await config();
+  // Routing: when the user's preference is cloud and no explicit model was
+  // picked, the role's work goes to the attached cloud provider's first model.
+  // This is how the header's LOCAL/CLOUD toggle takes effect — "auto" follows
+  // the preference rather than the author role's local default. Vision stays
+  // local-only: the critic never routes through here for a cloud picker.
+  if (!model && role !== "critic") {
+    const route = await routingPreference();
+    if (route === "cloud") {
+      const cp = await cloudProvider();
+      if (cp?.models?.length) model = cp.models[0];
+    }
+  }
   const spec = model
     ? (await cloudSpec(cfg, model, role)) ?? { ...(await resolveRole(role)), model }
     : await resolveRole(role);

@@ -43,6 +43,21 @@ export async function clearApiKey(name) {
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, api_keys: keys }), "utf8");
 }
 
+/** Where the model pickers default: local Ollama or the attached cloud. The
+ *  preference lives in gitignored config/local.yaml — a machine choice, not a
+ *  repo one. */
+export async function routingPreference() {
+  return (await readYaml(LOCAL_FILE)).routing?.default ?? "local";
+}
+
+export async function setRoutingPreference(route) {
+  if (!["local", "cloud"].includes(route)) {
+    throw new Error(`routing default must be "local" or "cloud", got "${route}"`);
+  }
+  const cfg = await readYaml(LOCAL_FILE);
+  await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
+}
+
 /**
  * The first opt-in provider that declares a model list — the one the picker
  * exposes. Only openai-compatible providers with a `models:` array qualify.
@@ -83,6 +98,7 @@ export async function cloudStatus() {
     models: p.models,
     keyName: name,
     keySet: key.length > 0,
+    route: await routingPreference(),
   };
 }
 

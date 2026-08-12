@@ -24,7 +24,6 @@ export default function Identity() {
   useEffect(() => {
     api.cloud().then((r) => setCloud(r.cloud)).catch(() => {});
   }, []);
-
   if (!id) {
     return (
       <div className="mx-auto max-w-3xl px-8 py-9">
@@ -99,6 +98,21 @@ export default function Identity() {
       setCloudState(r.ok
         ? { status: "saved", message: r.detail }
         : { status: "error", message: r.detail });
+    } catch (err) {
+      setCloudState({ status: "error", message: err.message });
+    } finally {
+      setCloudBusy(false);
+    }
+  }
+
+  async function setRoute(route) {
+    setCloudBusy(true);
+    setCloudState({ status: "busy", message: "" });
+    try {
+      await api.cloudRoute(route);
+      const r = await api.cloud();
+      setCloud(r.cloud);
+      setCloudState({ status: "saved", message: `Default routing: ${route}` });
     } catch (err) {
       setCloudState({ status: "error", message: err.message });
     } finally {
@@ -250,6 +264,32 @@ export default function Identity() {
               {cloudState.status === "error" && (
                 <span className="text-[11.5px] text-danger">{cloudState.message}</span>
               )}
+            </div>
+
+            <div className="border-t border-line pt-3">
+              <div className="mb-1.5 text-[11px] font-medium text-fg-faint">
+                Default routing — where "auto" in the model pickers points
+              </div>
+              <div className="flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
+                <button
+                  onClick={() => setRoute("local")}
+                  disabled={cloudBusy}
+                  className={`pill px-2.5 py-1 text-[11.5px] font-medium transition disabled:opacity-50 ${
+                    cloud.route === "local" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
+                  }`}
+                >
+                  LOCAL
+                </button>
+                <button
+                  onClick={() => setRoute("cloud")}
+                  disabled={cloudBusy}
+                  className={`pill px-2.5 py-1 text-[11.5px] font-medium transition disabled:opacity-50 ${
+                    cloud.route === "cloud" ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
+                  }`}
+                >
+                  CLOUD
+                </button>
+              </div>
             </div>
           </div>
         ) : (

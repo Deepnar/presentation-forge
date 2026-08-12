@@ -108,4 +108,6 @@ export const api = {
   cloudSaveKey: (key) => call("/api/cloud/key", { method: "PUT", body: JSON.stringify({ key }) }),
   cloudClearKey: () => call("/api/cloud/key", { method: "DELETE" }),
   cloudTest: () => call("/api/cloud/test", { method: "POST", body: JSON.stringify({}) }),
+  // LOCAL/CLOUD routing preference — where "auto" in the model pickers points.
+  cloudRoute: (route) => call("/api/cloud/routing", { method: "PUT", body: JSON.stringify({ route }) }),
 };

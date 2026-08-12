@@ -10,11 +10,11 @@ import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { deckSchema } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, createReport, createDeckFromReport } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
-import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection } from "../../src/cloud.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -111,21 +111,47 @@ app.get("/api/styles", wrap(async (_req, res) => {
 async function deckMeta(slug) {
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
-  const deck = YAML.parse(await readFile(deckFile, "utf8"));
+
+  // A report-only folder (standalone report, no deck yet) is still a deck
+  // entry — it must show up in the Reports tab. Reads report.yaml instead.
+  let deck = null;
+  try {
+    deck = YAML.parse(await readFile(deckFile, "utf8"));
+  } catch { /* may be report-only */ }
+
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* optional */ }
-  const s = await stat(deckFile);
+
   let report = false;
+  let title = deck?.title;
   try { await access(path.join(dir, "report.yaml")); report = true; } catch { /* none */ }
+  if (!title) {
+    try {
+      const reportFile = YAML.parse(await readFile(path.join(dir, "report.yaml"), "utf8"));
+      title = reportFile.title;
+    } catch { /* nothing at all — skip below */ }
+  }
+  if (!deck && !report) throw new Error(`no deck.yaml or report.yaml for ${slug}`);
+
+  let updated = null;
+  for (const f of ["deck.yaml", "report.yaml", "meta.yaml"]) {
+    try {
+      const s = await stat(path.join(dir, f));
+      updated = s.mtime;
+      break;
+    } catch { /* try next */ }
+  }
+
   return {
     slug,
-    title: deck.title,
-    theme: deck.theme,
-    slides: deck.slides?.length ?? 0,
-    updated: s.mtime,
+    title,
+    theme: deck?.theme,
+    slides: deck?.slides?.length ?? 0,
+    updated,
     report,
+    deck: Boolean(deck),
     meta,
   };
 }
@@ -408,6 +434,69 @@ app.post("/api/decks/:slug/chat", (req, res) => {
   });
 });
 
+/**
+ * Standalone report — brief → research → report.yaml → .docx with NO deck.
+ * The Reports tab's "from a brief" path. Same SSE transport and
+ * abort-on-disconnect as the other long runs.
+ */
+app.post("/api/reports", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { brief, sources, research, depth, model, identity } = req.body ?? {};
+  if (!brief?.trim()) {
+    sse.send("error", { error: "body must include a `brief`" });
+    return sse.close();
+  }
+
+  (async () => {
+    const r = await createReport({
+      brief, sources, research, depth, model, identity,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", {
+      slug: r.slug,
+      sections: r.sections,
+      skipped: r.skipped,
+      depth: r.depth ?? depth,
+      docx: `/api/decks/${r.slug}/download/report.docx`,
+    });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
+/**
+ * Deck-from-report — the reverse flow. Given an existing report.yaml, plan a
+ * companion deck outline from the report's own sections, then route the user
+ * through the same outline gate and /generate path. Same SSE transport.
+ */
+app.post("/api/decks/:slug/report/deck", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { theme, model } = req.body ?? {};
+  (async () => {
+    const r = await createDeckFromReport({
+      slug: req.params.slug, theme, model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
 /** Approved outline → deck, rendered and rasterised. Same SSE transport. */
 app.post("/api/decks/:slug/generate", (req, res) => {
   const sse = startSSE(res);
@@ -494,6 +583,13 @@ app.delete("/api/cloud/key", wrap(async (_req, res) => {
 
 app.post("/api/cloud/test", wrap(async (_req, res) => {
   ok(res, await testCloudConnection());
+}));
+
+/** The LOCAL/CLOUD routing preference — a gitignored config/local.yaml value. */
+app.put("/api/cloud/routing", wrap(async (req, res) => {
+  const route = req.body?.route;
+  await setRoutingPreference(route);
+  ok(res, { route: await routingPreference() });
 }));
 
 /* -------------------------------------------------------------------- boot */
