@@ -2663,6 +2663,380 @@ export const layouts = {
       });
     }
   },
+
+  /**
+   * A caution panel: amber top and left borders on a surface panel, an eyebrow
+   * label and the body. The accent_alt token is the theme's warning colour
+   * (amber in most themes), falling back to the accent.
+   */
+  warning(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const ph = 2.0;
+    const py = Math.max(y, 3.0);
+    const warn = theme.palette.accent_alt ?? theme.palette.accent;
+    slide.addShape("roundRect", {
+      x: box.x, y: py, w: box.w, h: ph,
+      fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    slide.addShape("rect", {
+      x: box.x, y: py, w: box.w, h: 0.06,
+      fill: { color: hex(warn) }, line: { type: "none" },
+    });
+    slide.addShape("rect", {
+      x: box.x, y: py, w: 0.06, h: ph,
+      fill: { color: hex(warn) }, line: { type: "none" },
+    });
+    const pad = 0.5;
+    slide.addText(data.label ?? "⚠️", {
+      x: box.x + pad, y: py + 0.3, w: box.w - pad * 2, h: 0.4,
+      ...textStyle(theme, "eyebrow", { color: warn }),
+      valign: "middle",
+    });
+    slide.addText(data.body, {
+      x: box.x + pad, y: py + 0.78, w: box.w - pad * 2, h: ph - 0.9,
+      ...textStyle(theme, "body", { scale: fitScale(data.body, box.w - pad * 2, ph - 0.9, theme.type.body) }),
+      valign: "top",
+    });
+  },
+
+  /** A best-practice panel: accent left border, subtle surface fill, label + body. */
+  tip(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const ph = 1.9;
+    const py = Math.max(y, 3.0);
+    slide.addShape("roundRect", {
+      x: box.x, y: py, w: box.w, h: ph,
+      fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    slide.addShape("rect", {
+      x: box.x, y: py, w: 0.08, h: ph,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    const pad = 0.5;
+    slide.addText(data.label ?? "Tip", {
+      x: box.x + pad, y: py + 0.32, w: box.w - pad * 2, h: 0.4,
+      ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+      valign: "middle",
+    });
+    slide.addText(data.body, {
+      x: box.x + pad, y: py + 0.8, w: box.w - pad * 2, h: ph - 0.95,
+      ...textStyle(theme, "body", { scale: fitScale(data.body, box.w - pad * 2, ph - 0.95, theme.type.body) }),
+      valign: "top",
+    });
+  },
+
+  /**
+   * A key-takeaway panel: an ink-filled bar with the body in surface text and
+   * optional supporting points beneath — the strongest of the callout variants,
+   * so it carries the inverted treatment.
+   */
+  takeaway(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const hasPoints = Array.isArray(data.points) && data.points.length > 0;
+    // The panel must fit the body AND every point; the point rows are 0.36in
+    // apart, so the panel grows with the count rather than overflowing.
+    const ph = hasPoints ? 1.5 + 0.36 * data.points.length : 1.6;
+    const py = Math.max(y, 2.7);
+    slide.addShape("roundRect", {
+      x: box.x, y: py, w: box.w, h: ph,
+      fill: { color: hex(theme.palette.ink) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    const pad = 0.5;
+    slide.addText(data.label ?? "Key takeaway", {
+      x: box.x + pad, y: py + 0.26, w: box.w - pad * 2, h: 0.4,
+      ...textStyle(theme, "eyebrow", { color: theme.palette.accent_alt ?? theme.palette.accent }),
+      valign: "middle",
+    });
+    const bodyH = hasPoints ? 0.75 : ph - 0.85;
+    slide.addText(data.body, {
+      x: box.x + pad, y: py + 0.7, w: box.w - pad * 2, h: bodyH,
+      ...textStyle(theme, "body", {
+        color: theme.palette.surface,
+        scale: fitScale(data.body, box.w - pad * 2, bodyH, theme.type.body),
+      }),
+      valign: "top",
+    });
+    if (hasPoints) {
+      const pointScale = fitScaleAll(data.points, box.w - pad * 2 - 0.32, 0.32, theme.type.caption);
+      data.points.forEach((p, i) => {
+        const py2 = py + 1.5 + i * 0.36;
+        slide.addText("•", {
+          x: box.x + pad + 0.1, y: py2, w: 0.2, h: 0.32,
+          ...textStyle(theme, "caption", { color: theme.palette.accent_alt ?? theme.palette.accent }),
+          valign: "middle",
+        });
+        slide.addText(p, {
+          x: box.x + pad + 0.32, y: py2, w: box.w - pad * 2 - 0.32, h: 0.32,
+          ...textStyle(theme, "caption", { color: theme.palette.surface, scale: pointScale }),
+          valign: "middle",
+        });
+      });
+    }
+  },
+
+  /**
+   * A grid of cover-fit images with captions: 1×2 for two, 2 columns for
+   * three or four, 3 columns for five or six. A missing image renders a
+   * rule-coloured placeholder so the grid never collapses.
+   */
+  "image-grid"(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.images.length;
+    const cols = n <= 2 ? n : n <= 4 ? 2 : 3;
+    const rows = Math.ceil(n / cols);
+    const gut = theme.grid.gutter;
+    const capH = 0.34;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const imgH = ch - capH;
+    const capScale = fitScaleAll(
+      data.images.map((i) => i.caption).filter(Boolean), cw, capH - 0.04, theme.type.caption,
+    );
+    data.images.forEach((im, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      const src = resolveAsset(im.src);
+      if (src) {
+        slide.addImage({ path: src, x, y: ry, w: cw, h: imgH, sizing: { type: "cover", w: cw, h: imgH } });
+      } else {
+        slide.addShape("roundRect", {
+          x, y: ry, w: cw, h: imgH,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.card ?? 0.12,
+        });
+      }
+      if (im.caption) {
+        slide.addText(im.caption, {
+          x, y: ry + imgH + 0.04, w: cw, h: capH,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true, scale: capScale }),
+          align: "center", valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * A full-bleed image with a dark overlay on the bottom third carrying the
+   * headline and subtitle. The overlay is a single semi-transparent ink rect —
+   * pptxgenjs cannot express gradient fills natively, and the solid overlay is
+   * what keeps the hero type native.
+   */
+  "hero-image"(slide, ctx) {
+    const { theme, data, resolveAsset } = ctx;
+    const src = resolveAsset(data.image);
+    if (src) {
+      slide.addImage({
+        path: src, x: 0, y: 0, w: CANVAS.w, h: CANVAS.h,
+        sizing: { type: "cover", w: CANVAS.w, h: CANVAS.h },
+      });
+    } else {
+      slide.background = { color: hex(theme.palette.ink) };
+    }
+    const ovH = 2.6;
+    slide.addShape("rect", {
+      x: 0, y: CANVAS.h - ovH, w: CANVAS.w, h: ovH,
+      fill: { color: hex(theme.palette.ink), transparency: 45 }, line: { type: "none" },
+    });
+    const m = theme.grid.margin;
+    const w = CANVAS.w - m.left - m.right;
+    const scale = fitScale(data.headline, w, 1.2, theme.type.display, { min: 0.6 });
+    slide.addText(data.headline, {
+      x: m.left, y: CANVAS.h - ovH + 0.4, w, h: 1.2,
+      ...textStyle(theme, "display", { color: theme.palette.surface, scale }),
+      valign: "top",
+    });
+    if (data.subtitle) {
+      const sScale = fitScale(data.subtitle, w, 0.5, theme.type.subhead, { min: 0.75 });
+      slide.addText(data.subtitle, {
+        x: m.left, y: CANVAS.h - ovH + 1.62, w, h: 0.5,
+        ...textStyle(theme, "subhead", { color: theme.palette.surface, scale: sScale }),
+        valign: "top",
+      });
+    }
+  },
+
+  /**
+   * Two images splitting the content area equally with optional captions — a
+   * clean visual comparison, the split line being the images' shared edge.
+   */
+  "split-screen"(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const capH = data.left_caption || data.right_caption ? 0.34 : 0;
+    const imgH = box.bottom - y - capH - 0.05;
+    const halfW = box.w / 2;
+    const img = (src, x, caption) => {
+      const abs = resolveAsset(src);
+      if (abs) {
+        slide.addImage({
+          path: abs, x, y, w: halfW, h: imgH,
+          sizing: { type: "cover", w: halfW, h: imgH },
+        });
+      } else {
+        slide.addShape("roundRect", {
+          x, y, w: halfW, h: imgH,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.card ?? 0.1,
+        });
+      }
+      if (caption) {
+        slide.addText(caption, {
+          x, y: y + imgH + 0.04, w: halfW, h: 0.3,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true }),
+          align: "center", valign: "top",
+        });
+      }
+    };
+    img(data.left, box.x, data.left_caption);
+    img(data.right, box.x + halfW, data.right_caption);
+  },
+
+  /**
+   * A rich data table: per-column headers with alignment, an optional leading
+   * row-label column, and rows whose cells come from a single string or a
+   * per-column array. Highlighted rows carry an accent left bar.
+   */
+  "data-table"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const cols = data.columns;
+    const rows = data.rows;
+    const rowLabels = data.row_labels ?? [];
+    const hasLabels = rowLabels.length > 0;
+    const cellOf = (label, { bold = false, color, fill, align = "left" }) => ({
+      text: label,
+      options: {
+        bold,
+        align,
+        color: hex(color),
+        fill: { color: hex(fill) },
+        fontFace: theme.type.caption.family,
+        fontSize: Math.max(9, theme.type.caption.size),
+      },
+    });
+    const head = [
+      ...(hasLabels ? [cellOf("", { bold: true, color: theme.palette.on_accent, fill: theme.palette.accent })] : []),
+      ...cols.map((c) => cellOf(c.label, {
+        bold: true, color: theme.palette.on_accent, fill: theme.palette.accent, align: c.align ?? "left",
+      })),
+    ];
+    const body = rows.map((r, ri) => {
+      const cells = Array.isArray(r.text) ? r.text : [r.text];
+      const fillBase = ri % 2 ? theme.palette.bg : theme.palette.surface;
+      return [
+        ...(hasLabels ? [cellOf(rowLabels[ri] ?? "", { bold: true, color: theme.palette.ink, fill: fillBase })] : []),
+        ...cols.map((c, ci) => cellOf(cells[ci] ?? "", {
+          color: theme.palette.ink, fill: fillBase, align: c.align ?? "left",
+        })),
+      ];
+    });
+    slide.addTable([head, ...body], {
+      x: box.x, y, w: box.w,
+      border: { type: "solid", pt: 0.5, color: hex(theme.palette.rule) },
+      rowH: Math.min(0.5, Math.max(0.32, (box.bottom - y - 0.1) / (rows.length + 1))),
+      valign: "middle",
+      margin: 0.08,
+      autoPage: false,
+    });
+    // Accent left bar overlays highlighted rows.
+    const rowH = Math.min(0.5, Math.max(0.32, (box.bottom - y - 0.1) / (rows.length + 1)));
+    rows.forEach((r, ri) => {
+      if (r.highlight) {
+        slide.addShape("rect", {
+          x: box.x, y: y + rowH + ri * rowH + 0.02, w: 0.06, h: rowH - 0.04,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        });
+      }
+    });
+  },
+
+  /**
+   * A weighted decision matrix: criteria (with weights) as rows, options as
+   * columns, the best score per row bolded in the accent, and a weighted total
+   * row beneath.
+   */
+  "decision-matrix"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const criteria = data.criteria;
+    const options = data.options;
+    const nCrit = criteria.length;
+    const totalH = 0.55;
+    const rowH = (box.bottom - y - totalH - 0.1) / (nCrit + 1);
+    const labelW = 3.0;
+    const gut = theme.grid.gutter;
+    const colW = (box.w - labelW - gut * (options.length - 1)) / options.length;
+    const cellOpts = (text, { bold = false, color = theme.palette.ink, fill = null, align = "center" }) => ({
+      text,
+      options: {
+        bold, align,
+        color: hex(color),
+        ...(fill ? { fill: { color: hex(fill) } } : {}),
+        fontFace: theme.type.caption.family,
+        fontSize: Math.max(9, theme.type.caption.size),
+      },
+    });
+    const head = [
+      cellOpts("", { align: "left" }),
+      ...options.map((o) => cellOpts(o.name, { bold: true, color: theme.palette.on_accent, fill: theme.palette.accent })),
+    ];
+    const body = criteria.map((c, r) => {
+      const best = Math.max(...options.map((o) => o.scores?.[r] ?? 0));
+      const cells = [
+        cellOpts(`${c.label} (w ${String(c.weight ?? "")})`, { bold: true, align: "left" }),
+        ...options.map((o) => {
+          const score = o.scores?.[r];
+          const isBest = score != null && score === best;
+          return cellOpts(score == null ? "–" : String(score), {
+            bold: isBest, color: isBest ? theme.palette.accent : theme.palette.ink,
+            fill: r % 2 ? theme.palette.bg : theme.palette.surface,
+          });
+        }),
+      ];
+      return cells;
+    });
+    const totals = options.map((o) => {
+      const total = criteria.reduce((acc, c, r) => acc + (o.scores?.[r] ?? 0) * (c.weight ?? 0), 0);
+      return Math.round(total * 10) / 10;
+    });
+    const bestTotal = Math.max(...totals);
+    const table = [
+      head,
+      ...body,
+      [
+        cellOpts("Total", { bold: true, align: "left" }),
+        ...options.map((o, i) => cellOpts(String(totals[i]), {
+          // Only the winning total earns the accent — highlighting all of them
+          // would defeat the purpose of pointing at the best choice.
+          bold: totals[i] === bestTotal,
+          color: totals[i] === bestTotal ? theme.palette.accent : theme.palette.ink,
+        })),
+      ],
+    ];
+    slide.addTable(table, {
+      x: box.x, y, w: box.w,
+      border: { type: "solid", pt: 0.5, color: hex(theme.palette.rule) },
+      rowH: Math.min(0.5, Math.max(0.32, (box.bottom - y - 0.1) / (nCrit + 2))),
+      valign: "middle",
+      margin: 0.08,
+      autoPage: false,
+    });
+  },
 };
 
 export { content };
