@@ -1,16 +1,33 @@
 /** Tiny fetch wrapper. Every endpoint returns { ok, ... } or { ok:false, error }. */
 async function call(url, options) {
   const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeader() },
     ...options,
   });
   const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
   if (!body.ok) {
     const err = new Error(body.error ?? `HTTP ${res.status}`);
     err.errors = body.errors;
+    err.status = res.status;
     throw err;
   }
   return body;
+}
+
+const TOKEN_KEY = "forge.token";
+
+function authHeader() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function rememberToken(token) {
+  if (token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+
+function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
 }
 
 /**
@@ -24,7 +41,7 @@ function stream(url, body, handlers = {}) {
   const promise = (async () => {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader() },
       body: JSON.stringify(body),
       signal: ctrl.signal,
     });
@@ -122,7 +139,7 @@ export const api = {
     const ext = (file.name.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
     return fetch(`/api/brand/${name}`, {
       method: "POST",
-      headers: { "X-File-Ext": ext, "Content-Type": file.type || "application/octet-stream" },
+      headers: { "X-File-Ext": ext, "Content-Type": file.type || "application/octet-stream", ...authHeader() },
       body: file,
     }).then(async (res) => {
       const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
@@ -131,4 +148,16 @@ export const api = {
     });
   },
   brandRemove: (name) => call(`/api/brand/${name}`, { method: "DELETE" }),
+  // Local single-install accounts. The token is the only credential the browser
+  // holds; the password is never stored or returned.
+  register: (payload) =>
+    call("/api/auth/register", { method: "POST", body: JSON.stringify(payload) })
+      .then((r) => { rememberToken(r.token); return r.user; }),
+  login: (payload) =>
+    call("/api/auth/login", { method: "POST", body: JSON.stringify(payload) })
+      .then((r) => { rememberToken(r.token); return r.user; }),
+  logout: () =>
+    call("/api/auth/logout", { method: "POST", body: JSON.stringify({}) })
+      .finally(clearToken),
+  me: () => call("/api/auth/me"),
 };

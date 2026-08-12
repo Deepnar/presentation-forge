@@ -4,6 +4,7 @@ import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import DocsModal from "./components/DocsModal.jsx";
 import ChatPanel from "./components/ChatPanel.jsx";
+import AuthModal from "./components/AuthModal.jsx";
 import ParticleField from "./components/ParticleField.jsx";
 import { ChatIcon } from "./components/icons.jsx";
 import Home from "./views/Home.jsx";
@@ -21,6 +22,10 @@ import Identity from "./views/Identity.jsx";
  * a chat turn or report flow bumps the version so both re-fetch. The particle
  * field sits behind the whole shell as ambience, and pauses whenever the
  * pointer enters either rail so it never competes with navigation.
+ *
+ * Auth is a local single-install gate: the header's account entry opens
+ * Login/Register, and the session (a bearer token in localStorage) unlocks the
+ * Cloud-key section. Everything else stays open.
  */
 export default function App() {
   const [view, setView] = useState("home"); // home | deck | new | outline | themes | identity
@@ -35,11 +40,21 @@ export default function App() {
   const [draft, setDraft] = useState(null); // approved outline handoff
   const [docsOpen, setDocsOpen] = useState(false);
   const [railHover, setRailHover] = useState(false); // pause particles over a rail
+  const [user, setUser] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
     api.identity()
       .then((r) => setOrg(r.identity?.institution?.short ?? ""))
       .catch(() => {});
+  }, []);
+
+  // Rehydrate the session on boot: a stored token that no longer resolves is
+  // simply forgotten, leaving the user logged out.
+  useEffect(() => {
+    api.me()
+      .then((r) => setUser(r.user))
+      .catch(() => setUser(null));
   }, []);
 
   useEffect(() => {
@@ -86,6 +101,12 @@ export default function App() {
           onOpenDocs={() => setDocsOpen(true)}
           onHome={() => setView("home")}
           onOpenIdentity={() => setView("identity")}
+          user={user}
+          onAuthClick={() => setAuthOpen(true)}
+          onLogout={async () => {
+            try { await api.logout(); } catch { /* token already gone */ }
+            setUser(null);
+          }}
         />
 
         <div className="isolate flex min-h-0 flex-1">
@@ -145,7 +166,12 @@ export default function App() {
             />
           )}
           {view === "themes" && <Themes />}
-          {view === "identity" && <Identity />}
+          {view === "identity" && (
+            <Identity
+              user={user}
+              onAuthClick={() => setAuthOpen(true)}
+            />
+          )}
         </main>
 
         {/* The chat rail belongs to a deck — it edits deck.yaml. With no deck
@@ -182,6 +208,12 @@ export default function App() {
       </div>
 
       {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
+      {authOpen && (
+        <AuthModal
+          onDone={(u) => { setUser(u); setAuthOpen(false); }}
+          onClose={() => setAuthOpen(false)}
+        />
+      )}
       </div>
     </div>
   );

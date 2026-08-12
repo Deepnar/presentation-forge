@@ -8,9 +8,10 @@ import { setModelMode } from "../lib/modelMode.js";
  * from. Everything is free text on purpose: team size, designations and
  * academic year change every submission, so nothing here is a fixed enum.
  * The Cloud section below it attaches an opt-in hosted backend; its key lives
- * in gitignored config/local.yaml and never returns to this page.
+ * in gitignored config/local.yaml and never returns to this page. Managing
+ * the key requires a login (the key is the one sensitive thing on the box).
  */
-export default function Identity() {
+export default function Identity({ user, onAuthClick }) {
   const [id, setId] = useState(null);
   const [state, setState] = useState({ status: "idle", message: "" });
   const [cloud, setCloud] = useState(null);
@@ -331,7 +332,17 @@ export default function Identity() {
           </p>
         </div>
 
-        {cloud?.configured ? (
+        {!user ? (
+          <div className="rounded-lg border border-dashed border-line bg-sunken/40 px-4 py-5 text-center">
+            <div className="text-[12.5px] text-fg-muted">
+              The cloud API key is the one sensitive thing on this machine — log
+              in to manage it.
+            </div>
+            <Button variant="outline" size="sm" className="mt-3" onClick={onAuthClick}>
+              Log in / Register
+            </Button>
+          </div>
+        ) : cloud?.configured ? (
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2 text-[12px]">
               <Badge className="bg-raised text-fg-muted">{cloud.label}</Badge>

@@ -15,6 +15,7 @@ import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser } from "../../src/auth.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 
 /**
@@ -665,6 +666,54 @@ app.delete("/api/brand/:name", wrap(async (req, res) => {
   ok(res, { asset: name, removed, brand: await brandStatus() });
 }));
 
+/* ------------------------------------------------------------------- auth */
+
+/**
+ * Local single-install accounts. Sessions are bearer tokens held server-side;
+ * the token rides the Authorization header and nothing sensitive ever leaves
+ * the machine. These endpoints protect the Cloud-key surface (and future
+ * hosting), not the deck pipeline — everything else stays open.
+ */
+app.post("/api/auth/register", wrap(async (req, res) => {
+  const { name, email, password } = req.body ?? {};
+  try {
+    const user = await register({ name, email, password });
+    const token = await startSession(user);
+    ok(res, { token, user });
+  } catch (err) {
+    fail(res, 400, err.message);
+  }
+}));
+
+app.post("/api/auth/login", wrap(async (req, res) => {
+  const { email, password } = req.body ?? {};
+  const user = await authenticate(email, password);
+  if (!user) return fail(res, 401, "invalid email or password");
+  const token = await startSession(user);
+  ok(res, { token, user });
+}));
+
+app.post("/api/auth/logout", wrap(async (req, res) => {
+  await endSession(bearerToken(req.headers.authorization));
+  ok(res, {});
+}));
+
+app.get("/api/auth/me", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "not logged in");
+  ok(res, { user });
+}));
+
+/** The cloud-key gate — writes and tests require a logged-in session. */
+async function requireAuth(req, res) {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) {
+    res.status(401).json({ ok: false, error: "log in to manage the cloud key" });
+    return null;
+  }
+  return user;
+}
+
 /* ------------------------------------------------------------------- cloud */
 
 /**
@@ -677,6 +726,7 @@ app.get("/api/cloud", wrap(async (_req, res) => {
 }));
 
 app.put("/api/cloud/key", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res))) return;
   const { key } = req.body ?? {};
   if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
     return fail(res, 400, "key must look like an API key (starts with sk-, at least 8 chars)");
@@ -687,7 +737,8 @@ app.put("/api/cloud/key", wrap(async (req, res) => {
   ok(res, {});
 }));
 
-app.delete("/api/cloud/key", wrap(async (_req, res) => {
+app.delete("/api/cloud/key", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res))) return;
   const name = await cloudKeyName();
   if (name) await clearApiKey(name);
   ok(res, {});
