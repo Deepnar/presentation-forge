@@ -7,121 +7,140 @@ handoffs.
 
 ## Session summary
 
-**User-review pass over the chat-first redesign, six fixes.** Nothing scrolls
-anywhere → `main` is now the scroll container (the old `overflow-hidden`
-clipped every page-flow view: deck detail, report, themes, identity; only the
-chat scrolled). The chat input bar regains the old PromptBox's controls: a
-LOCAL/CLOUD-filtered model dropdown beside the send button (the picked model
-rides into `createDeck`/`createReport`/`generate` and persists on the chat), a
-Chat/Report mode toggle where the user types (the buried "Start a report chat"
-welcome link is gone), and the duplicate header "New chat" button is removed —
-the sidebar's one creation entry is the only one. Chats auto-name from the
-first topic message (48 chars) and take the deck title once the briefing/plan
-settles one. **Registration no longer auto-logs-in** — the server returns no
-token, the client stores none, and both auth surfaces switch to the login form
-with a success banner and the email pre-filled. Also root-caused and fixed the
-long-tracked dev-only "two children with the same key" warning: the deck
-detail's presenter picker keyed `<option>`s by `m.name` while the default
-identity team has empty-name placeholder members — every empty name collided,
-and the empty string is why the message read as a literal `%s`. `npm test`
-153/153, `vite build` clean, 24/24 CDP checks + zero console errors, and the
-fixes vision-checked with `mimo-v2.5`. Dev servers running at :5174/:5173.
+**Chat-first batch 2 — nine fixes from the user's review.** Section dividers
+no longer get assigned a presenter (grammar exclusion, pipeline strip and a
+chrome-footer rule, not a prompt nudge); deck and report sections now scale to
+the team (`clamp(members, 3, 8)`, report floored at the graded core); the
+research pass is deep — 2-4 subtopic queries plus follow-ups, ~21 pages in a
+real run instead of five; the writer must draw every figure from the research
+and never invent images, and the grounding guard was verified live; the
+briefing gained audience/emphasis questions, a rebuilt team editor and a
+"Remember as defaults" button that writes config/identity.yaml; generation
+runs survive leaving the chat (module-level runs registry, errors persisted);
+report chats auto-name (root cause: `??` on empty strings); the sidebar gained
+hover "⋯" row menus and `DELETE /api/decks/:slug` (new endpoint). Also fixed a
+cloud-revealed failure: a large-team outline occasionally truncated at the old
+8192 `num_predict` (now 12000), and invented image URLs crashed the render
+(now degrade to a placeholder). `npm test` 166/166, `vite build` clean, 17/17
+CDP checks, generation + vision checks passed with the cloud model
+(`deepseek-v4-flash`), local Ollama untouched. All commits pushed to
+`origin/main`.
 
 ## What shipped
 
-### Client
+### Pipeline (`src/ai/`)
 
-- **`App.jsx`** — `main` is `overflow-x-hidden overflow-y-auto` instead of
-  `overflow-hidden`. The chat view is `h-full` and keeps its own inner
-  scroller, so the footer stays pinned; every other view scrolls in `main`
-  (the report view's sticky action bar works against it too).
-- **`views/ChatView.jsx`** — the bottom bar is now a two-row well: textarea +
-  send on top; a Chat/Report mode toggle (visible only while no topic is sent;
-  flipping it just changes the greeting/placeholder) and the model dropdown on
-  the row below. `chatName(title, topic)` derives the sidebar name (deck title
-  wins once chosen, else the topic's first 48 chars). `model` is sent with
-  createDeck / createReport / generate and saved back onto the chat. The
-  header's "New chat" button and the Welcome's inline "Start a report chat"
-  link are deleted.
-- **`components/LoginScreen.jsx` + `components/AuthModal.jsx`** — register
-  success now flips to the login form ("Account created for X — log in to
-  start."), email pre-filled, password cleared; `onDone` is only reached by
-  login.
-- **`views/DeckDetail.jsx`** — the presenter dropdown filters out empty-name
-  team members and keys by index (the duplicate-key fix).
-- **`api.js`** — `api.register` no longer calls `rememberToken`.
+- **`team.js` (new)** — `presentingNames`, `teamSize`, `targetSections`,
+  `DIVIDER_TYPES`. Single source for the "who presents" rule and section caps;
+  filters the padding empty-name members of a fresh identity.
+- **`generate.js`** — `buildOpsSchema` call gains `excludeProps: ["presenter"]`
+  for divider types in `writeSlide`; `generateDeck` strips stray presenter off
+  dividers after the loop; `planDeck` sizes `sections` to
+  `targetSections(identity)` and tightens the outline schema's cap to match,
+  and instructs the planner about team size and avoiding image-requiring types;
+  `writeSlide` hands content slides the presenting-members list (grounded
+  assignments) and demands figures from the research and no invented image
+  paths.
+- **`ops.js`** — `buildOpsSchema({ excludeProps })` drops shared fields from the
+  payload grammar.
+- **`chrome.js`** — the footer's presenter line is suppressed on divider
+  surfaces (section/chapter/closing/epigraph; title never reaches it). The
+  fallback (whole presenting team) would have painted names on dividers too.
+- **`report.js`** — `planReport` sizes its section cap to the team (floor 4,
+  the graded core), schema and prompt both.
+- **`research.js`** — `deepResearch` (subtopic queries + follow-ups) and
+  `expandQueries` (research-role call, falls back to the brief alone). Excerpt
+  budget unchanged at 80K (local 32K window).
+- **`pipeline.js`** — `runResearch` takes `onProgress` and uses `deepResearch`;
+  `createReport` returns `title` so the server can name the chat.
 
 ### Server (`app/server/index.js`)
 
-- `POST /api/auth/register` returns `{ user }` with no session token; only
-  `login` mints one.
+- `DELETE /api/decks/:slug` — removes the deck folder, behind the same
+  per-slug ownership gate as every other route.
+- `/api/reports` SSE result now carries `title`.
+
+### Client (`app/web/src/`)
+
+- **`lib/runs.js` (new)** — module-level registry of live generation runs
+  `{abort, status, finished, subs}`; only subscriptions are tied to the
+  component, never the run.
+- **`views/ChatView.jsx`** — runs registered in `planDeck`/`approve`/`runReport`,
+  re-adopted on mount, errors persisted onto the chat; report chats rename from
+  the topic then the report title; `chatName` uses `(title?.trim() || topic)` —
+  `??` on an empty string was the report-naming bug; audience/emphasis questions
+  + `FreeTextCard`; rebuilt `TeamCard` (headers, add/remove, Enter-to-add, live
+  count, empty rows filtered); "Remember as defaults" writes config/identity.yaml
+  via `api.saveIdentity` and re-feeds the app.
+- **`lib/briefing.js`** — audience/emphasis questions, pre-fill filters
+  empty-name members.
+- **`components/Sidebar.jsx`** — hover "⋯" `RowMenu` per chat/deck row
+  (outside-click close), `ConfirmModal` for deck deletion.
+- **`App.jsx`** — `handleDeleteChat` / `handleDeleteDeck`, `onIdentityChanged`
+  passthrough to ChatView.
+- **`api.js`** — `deleteDeck`.
 
 ### Docs
 
-- `docs/ROADMAP.md` — the "two children with the same key, `%s`" Learned note
-  now records the root cause (empty-name presenter options) and the fix.
-- `docs/ARCHITECTURE.md` — auth paragraph states register mints no session.
+- `docs/ROADMAP.md` — new "Chat-first batch 2" item with a six-point Learned
+  block (grammar-exclusion, cloud outline verbosity, invented images,
+  module-state runs, `??` on empty strings, section-cap × slide-budget
+  interaction).
+- `docs/ARCHITECTURE.md` — web-shell section now describes ChatView/runs/sidebar
+  menus instead of the removed Home/prompt-box; new paragraphs on team-sized
+  structure, divider presenters, deep research, invented-image degrade.
 
 ## Verification notes
 
-- `npm test` 153/153; `npx vite build --config app/web/vite.config.js` clean.
-- **CDP (headless Chrome, 24/24):** register → still on the login screen, no
-  `forge.token` in localStorage, success banner shown, email pre-filled; manual
-  login then works and stores a token. Model dropdown present in the chat
-  input, Chat/Report toggle present, welcome swaps when toggled; zero header
-  "New chat" buttons and exactly one in the sidebar; the inline report link is
-  gone. Sending "Solar water pumping…" renames the sidebar row to the truncated
-  topic. Chat thread, sidebar list (13 chats), deck detail (11 slides), report
-  view and themes all have `scrollHeight > clientHeight` and a scrollTop that
-  changes. **Zero console errors** — the old `%s` key warning is gone.
-- **Model wiring:** picking `deepseek-v4-flash` in the pill persisted it on the
-  chat and the intercepted `POST /api/decks` body carried `"model":
-  "deepseek-v4-flash"` (fetch mocked in-page, request never reached the model
-  provider — local Ollama untouched; the intercepted run was also aborted and
-  its stray `decks/green-hydrogen-electrolysis-compared/` folder deleted).
-- **Vision (`mimo-v2.5`, confidence 0.97):** login screen with the success
-  banner and pre-filled email (not the app); chat input shows the sparkle
-  model pill ("auto · deepseek-v4-flash"), Chat/Report toggle, send button, no
-  header button; sidebar has one "+ New chat"; deck/report/themes each reach
-  the bottom of the viewport with full content visible.
-- `config/local.yaml` was left as `routing.default: cloud` (a generation-test
-  leftover); restored to `local` per the handoff's documented end state. Cloud
-  key untouched.
-- Generation itself was not re-run this session — only the deck render
-  (`POST /render`, no model) for the scroll test, plus the aborted mock.
+- `npm test` 166/166; `npx vite build --config app/web/vite.config.js` clean.
+- **CDP (headless Chrome, 17/17):** deck + chat "⋯" menus with the confirm
+  modal; team editor add/remove with zero network on add; "Remember as
+  defaults" persists; a run started from "Plan the deck" survives navigating to
+  Identity and back (status re-adopted, Stop works); report-chat topic renaming.
+  Harness: `/tmp/opencode/cdp.mjs` (not in the repo).
+- **Generation (cloud, `deepseek-v4-flash` via opencode-go):** 2 members → 3
+  sections, 8 members → 8 sections (plan only); a full 10-slide
+  "first impressions and networking" deck generated with research on — 5
+  dividers carry no presenter, content slides carry real team members'
+  presenters, no invented names, and the "60%" stat the writer used is grounded
+  in the notes. A standalone brief report (quantum dots) generated all 8 graded
+  sections and rendered to .docx.
+- **Vision (`mimo-v2.5`, confidence 0.85):** divider slides show no presenter
+  footer; content slides show the member's name; no overflow/overlap anywhere.
+  The one finding — grey placeholder image boxes on the side-by-side slide — is
+  the designed degrade path for the invented-URL case (the deck was generated
+  before the no-invented-images prompt landed).
+- The render crash that surfaced mid-test is fixed: `resolveAsset` returns null
+  for URLs/missing files, so a bogus `image` field is a placeholder, not a dead
+  deck.
 
 ## Seams and leftovers
 
-- **Chat input bar is busier than the old prompt box.** Textarea row + a
-  second row carrying the mode toggle and the model dropdown. Two rows reads
-  fine but the well is taller; if the user complains about vertical space, the
-  toggle could move into the header or into the welcome area.
-- **Model pill shows during the whole lifecycle** (disabled while busy / at
-  summary / outline / done). Fine, but a user mid-briefing can still flip it —
-  intended.
-- **`switchKind` only works on a topic-less thread** by design; a chat that
-  already has a topic can't become the other product.
-- **Auto-scroll effect fires on model change** (the `chat` dep), pulling the
-  thread to the bottom when the pill is used mid-thread. Harmless while typing,
-  mildly annoying if a user picks a model while reading up-thread.
-- **Briefing is forward-only** (from the previous handoff, unchanged): "change"
-  on an answered card rewinds `briefStep`; no per-field backward edit.
-- **Auth-modal still exists** for the Identity view's cloud-key gate; the
-  landing is the full-screen LoginScreen (both now share the no-autologin
-  register flow).
-- **F13 image grounding / F16 i18n** designs from the earlier handoff remain
-  unbuilt.
-- The `%s` duplicate-key warning is fixed, but a **code smell remains**: the
-  default identity team's placeholder members (empty names) exist only to pad
-  the team card. If that changes, the presenter-picker filter in DeckDetail is
-  the seam to recheck.
+- **Image-requiring slide types are effectively unusable until F13 lands.** The
+  planner is told to avoid them and the writer never to invent a path, but if a
+  user forces one (or an older deck has one), the slide renders as grey
+  placeholder boxes. The research panel is where real image supply would slot in.
+- **Cloud outline is slow (~80-100s).** deepseek-v4-flash writes verbose JSON;
+  the 12K cap guarantees completion but "Plan the deck" can feel slow. The
+  brevity prompt rules helped only somewhat — worth revisiting if the user
+  complains about wait time.
+- **`first-impressions-and-networking-how-people/`** is an untracked test deck
+  from this session's generation test (the user's own browser-test folders
+  `decks/exploring-first-impressions-*` and the stray
+  `decks/solar-water-pumping-for-irrigation-copy/` were left untouched, as
+  instructed). Decide whether to keep/commit the new one.
+- **Briefing is forward-only** (unchanged from previous handoffs): "change" on
+  an answered card rewinds `briefStep`; no per-field backward edit.
+- **`switchKind` only works on a topic-less thread** by design.
+- **F13 image grounding / F16 i18n** remain unbuilt.
 
 ## End-of-session state
 
 - Dev servers running: API `http://localhost:5174` (node --watch), UI
   `http://localhost:5173` (Vite). Restart with `npm run api` / `npm run web` if
   down; check `/api/health` before trusting an endpoint.
-- `config/local.yaml`: cloud key attached, `routing.default: local`.
-- All commits pushed to `origin/main` (last push: the six-fix tranche + docs).
-  Server code is the thin transport as before — the CLI shares
-  `src/ai/pipeline.js`, and CLI-created decks stay ownerless/shared.
+- `config/local.yaml`: cloud key attached, `routing.default: local` (restored
+  after the cloud generation tests).
+- All commits pushed to `origin/main` (last push: the batch-2 tranche + docs).
+  Server code is the thin transport as before — the CLI shares `src/ai/`, and
+  CLI-created decks stay ownerless/shared.
