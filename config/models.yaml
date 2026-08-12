@@ -79,7 +79,10 @@ roles:
     num_ctx: 32768
     # A response that hits this cap is truncated mid-JSON and fails as
     # "malformed output". done_reason=length in the error distinguishes the two.
-    num_predict: 8192
+    # 12K rather than 8K: a large-team outline (8 sections, ~12 slides) on the
+    # cloud transport can run to ~7K output tokens, and 8192 occasionally
+    # truncated it mid-JSON. The local grammar keeps output bounded regardless.
+    num_predict: 12000
 
   # Reads rendered slide PNGs. Must be a vision model.
   critic:
