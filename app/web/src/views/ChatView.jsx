@@ -284,7 +284,10 @@ export default function ChatView({
       {
         status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(c.id, { status: label }); },
         result: (d) => {
-          persist({ ...c, produced: true, deckSlug: d.slug, error: undefined, updatedAt: new Date().toISOString() });
+          // Reports auto-name like deck chats: the topic's first sentence first,
+          // then the report's title once it lands.
+          const named = chatName(d.title, c.topic);
+          persist({ ...c, produced: true, deckSlug: d.slug, title: named, error: undefined, updatedAt: new Date().toISOString() });
           onDeckChanged?.();
         },
       },

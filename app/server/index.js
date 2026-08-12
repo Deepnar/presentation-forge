@@ -703,6 +703,7 @@ app.post("/api/reports", (req, res) => {
     });
     sse.send("result", {
       slug: r.slug,
+      title: r.title,
       sections: r.sections,
       skipped: r.skipped,
       depth: r.depth ?? depth,

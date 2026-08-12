@@ -199,6 +199,7 @@ export async function createReport({
 
   return {
     slug,
+    title: g.report.title,
     sections: g.sections,
     skipped: g.skipped,
     reportFile: g.reportFile,
