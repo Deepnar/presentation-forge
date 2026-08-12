@@ -7,6 +7,7 @@ import { chatJSON } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
 import { REPORT_SECTIONS, validateReport } from "../report.js";
+import { targetSections } from "./team.js";
 
 /**
  * The report content generator — the deck pipeline's writer for the report
@@ -33,7 +34,7 @@ export const REPORT_DEPTHS = ["full", "brief"];
 /** The report's plan: title plus which fixed sections carry content and what
  *  each must say. Small grammar, and `name` is coerced after (the same reason
  *  the deck outline leaves `type` free). */
-const reportPlanSchema = {
+const reportPlanSchema = ({ maxSections = 8 } = {}) => ({
   type: "object",
   required: ["title", "sections"],
   properties: {
@@ -42,7 +43,7 @@ const reportPlanSchema = {
     sections: {
       type: "array",
       minItems: 3,
-      maxItems: 8,
+      maxItems: maxSections,
       items: {
         type: "object",
         required: ["name", "focus"],
@@ -53,7 +54,7 @@ const reportPlanSchema = {
       },
     },
   },
-};
+});
 
 /**
  * Coerce the planner's output onto the fixed graded order: unknown names
@@ -283,11 +284,16 @@ export function assembleReport(plan, sectionsData) {
 
 async function planReport({ brief, research, deckSections, identity, model, signal, chat }) {
   const subject = identity?.academic?.subject;
+  // Like the deck planner, the report is sized to the team: one substantive
+  // section per member, floored at the graded core (4) and capped at the
+  // fixed eight. The schema's maxItems is tightened to the same number so a
+  // small group cannot be handed a sprawling report.
+  const maxSections = targetSections(identity, { min: 4 });
   const res = await chat({
     role: "author",
     model,
     signal,
-    schema: reportPlanSchema,
+    schema: reportPlanSchema({ maxSections }),
     messages: [
       {
         role: "system",
@@ -296,8 +302,11 @@ async function planReport({ brief, research, deckSections, identity, model, sign
           "",
           REPORT_SECTIONS.map((s, i) => `${i + 1}. ${s}`).join("\n"),
           "",
-          "Choose which of these sections will contain content — usually all eight — and give",
-          "each a single specific focus sentence stating what that section must establish.",
+          `The team writing it has about ${maxSections} members, one substantive section each, so`,
+          `choose about ${maxSections} sections to carry real content (never more than that). The`,
+          "graded core — Abstract, Introduction, Conclusion, References — is always included.",
+          "Give each chosen section a single specific focus sentence stating what that section",
+          "must establish.",
           "The report must AGREE with the deck's approved outline below: the two artefacts are",
           "built from the same research and must not contradict each other.",
           "`name` must be one of the fixed section names above. Return {title, subtitle, sections}.",

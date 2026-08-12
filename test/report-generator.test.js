@@ -209,6 +209,57 @@ test("resolveReportInputs with requirePlan:false needs no plan.yaml — the stan
   assert.match(research, /Facts for the report/);
 });
 
+test("planReport sizes the section cap to the team — small team, small report", async (t) => {
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir);
+  // A two-person team: the graded core is the floor, never a sprawling report.
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({
+    slug: "fixture", brief: "x", status: "ready",
+    team: { label: "G", members: [
+      { name: "A", presenting: true },
+      { name: "B", presenting: true },
+    ] },
+  }));
+  const planSchemas = [];
+  const chat = async ({ schema }) => {
+    if (schema.properties?.sections) {
+      planSchemas.push(schema);
+      return { data: { title: "T", sections: [] } };
+    }
+    if (schema.required?.includes("entries")) {
+      return { data: { entries: ["1. S.", "2. S.", "3. S.", "4. S."] } };
+    }
+    return { data: { paragraphs: ["A.", "B.", "C.", "D."] } };
+  };
+  const r = await generateReport({ dir, depth: "brief", chat });
+  assert.equal(planSchemas.length, 1);
+  assert.equal(planSchemas[0].properties.sections.maxItems, 4);
+  // The graded core is guaranteed and fits inside the tightened cap.
+  assert.deepEqual(r.sections, ["Abstract", "Introduction", "Conclusion", "References"]);
+});
+
+test("planReport opens the section cap up to eight for a large team", async (t) => {
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir);
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({
+    slug: "fixture", brief: "x", status: "ready",
+    team: { label: "G", members: Array.from({ length: 11 }, (_, i) => ({ name: `M${i}`, presenting: true })) },
+  }));
+  const planSchemas = [];
+  const chat = async ({ schema }) => {
+    if (schema.properties?.sections) {
+      planSchemas.push(schema);
+      return { data: { title: "T", sections: [] } };
+    }
+    if (schema.required?.includes("entries")) {
+      return { data: { entries: ["1. S.", "2. S.", "3. S.", "4. S."] } };
+    }
+    return { data: { paragraphs: ["A.", "B.", "C.", "D."] } };
+  };
+  await generateReport({ dir, depth: "brief", chat });
+  assert.equal(planSchemas[0].properties.sections.maxItems, 8);
+});
+
 test("generateReport with requirePlan:false builds a standalone report with no deck", async (t) => {
   const dir = await fixtureDir(t);
   await mkdir(dir, { recursive: true });

@@ -2,7 +2,7 @@ import { chatJSON } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
-import { DIVIDER_TYPES, presentingNames } from "./team.js";
+import { DIVIDER_TYPES, presentingNames, targetSections } from "./team.js";
 
 /**
  * Two-stage deck generation: plan the whole deck, then write one slide per call.
@@ -30,7 +30,7 @@ import { DIVIDER_TYPES, presentingNames } from "./team.js";
  * tokens (done_reason=length) for a six-slide deck. Bounds give the grammar a
  * legal way to stop.
  */
-const outlineSchema = ({ maxSlides = 24 } = {}) => ({
+const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
   type: "object",
   required: ["title", "sections", "slides"],
   properties: {
@@ -39,7 +39,7 @@ const outlineSchema = ({ maxSlides = 24 } = {}) => ({
     sections: {
       type: "array",
       minItems: 1,
-      maxItems: 8,
+      maxItems: sectionCap,
       items: { type: "string", maxLength: 40 },
     },
     slides: {
@@ -70,6 +70,16 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
   const types = schema.definitions.slide.properties.type.enum;
 
   const voice = theme?.voice ?? {};
+  // The talk is sized to the team: one meaningful part per presenting member,
+  // never fewer than three, never more than the renderer's eight-section
+  // ceiling. The schema's sections cap is tightened to the same number so the
+  // model cannot casually draft more parts than there are people.
+  const sectionCap = targetSections(identity);
+  const presenters = presentingNames(identity);
+  const teamNote = presenters.length
+    ? `The team of ${presenters.length} presenting members (${presenters.join(", ")}) presents the deck together — one member per part, each member presenting only content slides, never the dividers.`
+    : "Plan the deck as three to eight major parts.";
+
   const system = [
     "You plan presentation decks. You do not write slide content yet.",
     "",
@@ -89,6 +99,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     "  type, a key moment → callout family, a stage in time → timeline family.",
     "- `freeform` renders the whole slide from the writer's HTML — use it sparingly",
     "  for a hero moment, never for a whole deck of text.",
+    `- Structure the talk as about ${sectionCap} major parts, each member taking one.`,
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
     voice.density ? `- Density: ${voice.density}.` : "",
   ].filter(Boolean).join("\n");
@@ -97,7 +108,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     role: "author",
     model,
     signal,
-    schema: outlineSchema({ maxSlides }),
+    schema: outlineSchema({ maxSlides, sectionCap }),
     messages: [
       { role: "system", content: system },
       {
@@ -106,6 +117,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
           research ? `RESEARCH NOTES\n${research}\n` : "",
           `BRIEF\n${brief}`,
           identity?.academic?.subject ? `\nSubject: ${identity.academic.subject}` : "",
+          `\n${teamNote}`,
         ].filter(Boolean).join("\n"),
       },
     ],
