@@ -87,8 +87,10 @@ export async function cloudStatus() {
 }
 
 /**
- * A live reachability check: a successful /models response is proof the key
- * authenticates. The detail string is safe to show — no key, no headers.
+ * A live authentication check. A /models list is public on some providers, so
+ * it proves nothing about a key — an authenticated chat probe does. Probes the
+ * provider's first listed model with a one-token call; for opencode-go that is
+ * deepseek-v4-flash. The detail string is safe to show — no key, no headers.
  */
 export async function testCloudConnection() {
   const p = await cloudProvider();
@@ -100,18 +102,23 @@ export async function testCloudConnection() {
   if (!key) {
     return { ok: false, detail: "no API key set — add one in Settings or export the env var" };
   }
+  const probe = p.models[0] ?? "gpt-4.1-mini";
   try {
-    const res = await fetch(`${p.baseURL}/models`, {
-      headers: { Authorization: `Bearer ${key}` },
-      signal: AbortSignal.timeout(15000),
+    const res = await fetch(`${p.baseURL}/chat/completions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: probe,
+        messages: [{ role: "user", content: "ping" }],
+        max_tokens: 1,
+      }),
+      signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) {
       const text = (await res.text()).slice(0, 160);
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }
-    const body = await res.json();
-    const count = body.data?.length ?? 0;
-    return { ok: true, detail: `connected — ${count} models available`, modelCount: count };
+    return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };
   } catch (err) {
     return { ok: false, detail: err.message };
   }
