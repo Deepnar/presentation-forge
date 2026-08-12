@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
+import { resolveSecret } from "../cloud.js";
 
 /**
  * Model client, role-addressed, with an optional cloud backend.
@@ -20,10 +21,15 @@ async function config() {
   return _cfg;
 }
 
-/** Resolve an `env:NAME` apiKey reference from the environment. */
-function resolveEnv(value) {
+/**
+ * Resolve an `env:NAME` apiKey reference: the environment first, then
+ * config/local.yaml — the gitignored file the Settings panel writes, so the UI
+ * can attach a key without the user exporting anything.
+ */
+async function resolveEnv(value) {
   const m = typeof value === "string" && value.match(/^env:(.+)$/);
-  return m ? (process.env[m[1]] ?? "") : (value ?? "");
+  if (!m) return value ?? "";
+  return resolveSecret(m[1]);
 }
 
 /**
@@ -41,7 +47,7 @@ async function backendFor(cfg, spec) {
   if (p.type !== "openai-compatible") {
     throw new Error(`models.yaml: unknown provider type "${p.type}" for "${spec.provider}".`);
   }
-  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: resolveEnv(p.apiKey) };
+  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: await resolveEnv(p.apiKey) };
 }
 
 let _installed;
@@ -95,10 +101,12 @@ export async function resolveRole(role) {
 }
 
 /**
- * The picker's options: every installed local model plus the author role's
- * default. `model: null` in a request means "the role default", so the UI can
- * present that as an explicit choice. Installed models are best-effort — a dead
- * Ollama yields just the default, and requests fail loudly on their own.
+ * The picker's options: every installed local model, plus the models of any
+ * opt-in cloud provider whose key is present (grouped separately so the UI can
+ * label them), plus the author role's default. `model: null` in a request means
+ * "the role default", so the UI can present that as an explicit choice.
+ * Installed models are best-effort — a dead Ollama yields just the default, and
+ * requests fail loudly on their own.
  */
 export async function modelChoices() {
   const cfg = await config();
@@ -107,7 +115,37 @@ export async function modelChoices() {
   try {
     models = [...(await installed(cfg.host))].sort();
   } catch { /* offline — the picker just shows the default */ }
-  return { models, default: def };
+  let cloud = null;
+  for (const [name, p] of Object.entries(cfg.providers ?? {})) {
+    if (p.type !== "openai-compatible" || !Array.isArray(p.models) || !p.models.length) continue;
+    if (!(await resolveEnv(p.apiKey))) continue; // only list cloud models with a key
+    cloud = { provider: name, label: p.label ?? name, models: [...p.models] };
+    break;
+  }
+  return { models, default: def, cloud };
+}
+
+/**
+ * A `model` override that names one of a cloud provider's listed models routes
+ * to that provider — this is how picking "deepseek-v4-flash" in the UI sends
+ * the request to OpenCode Go rather than to a (probably absent) local pull.
+ * Sampling defaults come from the author role, the only role the UI overrides.
+ */
+async function cloudSpec(cfg, model, role) {
+  for (const [name, p] of Object.entries(cfg.providers ?? {})) {
+    if (p.type !== "openai-compatible" || !Array.isArray(p.models) || !p.models.includes(model)) continue;
+    const author = cfg.roles?.author ?? {};
+    return {
+      role,
+      temperature: author.temperature,
+      top_p: author.top_p,
+      num_predict: author.num_predict,
+      backend: { type: "openai-compatible", baseURL: p.baseURL, apiKey: await resolveEnv(p.apiKey) },
+      model,
+      fellBack: false,
+    };
+  }
+  return null;
 }
 
 /**
@@ -131,7 +169,7 @@ export async function chat({
 }) {
   const cfg = await config();
   const spec = model
-    ? { ...(await resolveRole(role)), model }
+    ? (await cloudSpec(cfg, model, role)) ?? { ...(await resolveRole(role)), model }
     : await resolveRole(role);
   const stream = typeof onToken === "function";
   const timeout = cfg.defaults?.request_timeout_ms ?? 300_000;
