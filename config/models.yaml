@@ -25,6 +25,20 @@ providers:
     type: openai-compatible
     baseURL: https://api.openai.com/v1
     apiKey: env:OPENAI_API_KEY
+  # OpenCode Go — the subscription gateway. OpenAI-compatible; the key is read
+  # from the OPENCODE_GO_API_KEY env var or config/local.yaml (gitignored, the
+  # file the app's Settings panel writes). The `models` list is what the model
+  # picker offers once a key is present, and routes a `model` override to this
+  # provider instead of local Ollama.
+  opencode-go:
+    type: openai-compatible
+    baseURL: https://opencode.ai/zen/go/v1
+    apiKey: env:OPENCODE_GO_API_KEY
+    label: OpenCode Go
+    models:
+      - deepseek-v4-flash
+      - qwen3.8-max
+      - mimo-v2.5
   # openrouter:
   #   type: openai-compatible
   #   baseURL: https://openrouter.ai/api/v1

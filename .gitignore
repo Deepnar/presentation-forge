@@ -33,6 +33,10 @@ brand/logos/
 # Real identity details. config/identity.example.yaml is the committed template.
 config/identity.yaml
 
+# Local-only API keys written by the Settings/Cloud panel. Never committed;
+# models.yaml only references them as env:NAME.
+config/local.yaml
+
 # Source institutional templates: these carry third-party names and roll
 # numbers, and are reference material rather than source.
 reference/
