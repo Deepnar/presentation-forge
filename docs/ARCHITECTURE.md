@@ -392,8 +392,11 @@ deck list (fetched once, re-fetched on a version bump) and routes between
 
 - **`HeaderBar`** — wordmark (home link), the sidebar collapse toggle, a Docs
   modal (reads the repo README via `GET /api/docs`) and the GitHub link. When a
-  cloud key is attached it shows the routing badge and the LOCAL/CLOUD toggle;
-  otherwise a plain LOCAL badge. No avatar, no sync, no dead icons.
+  cloud provider is configured it shows the LOCAL/CLOUD toggle, which writes
+  the routing preference and flips the client model-mode store so every picker
+  filters to that mode; CLOUD is only reachable when a key is attached, and
+  without one the button points at Settings/Cloud. The account entry lives
+  here too: Login/Register when logged out, name + Logout when in.
 - **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
   fine stipple (more, smaller dots than before) drifts on two-axis sine wander
   so it moves without the pointer, and repels gently around it. Capped at 60fps,
@@ -404,13 +407,18 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   real cover thumb per row (`DeckThumb`, fallback tile when no preview is on
   disk). Tabs filter All decks / Reports using the `report` flag that
   `deckMeta()` adds, search filters title/slug/theme client-side, and the rail
-  collapses to an icon strip. Both rails persist via localStorage.
+  collapses to an icon strip. Both rails persist via localStorage. The Reports
+  tab is about the document, not the deck: its rows open the report's
+  full-document view even when the deck also has slides.
 - **`Home`** — the prompt box is the generate surface. Deck mode streams a
   brief to the outline gate (`POST /api/decks`, SSE); Report mode streams a
   report either from a deck (`POST /api/decks/:slug/report/generate`) or from a
   brief alone (`POST /api/reports`, standalone — no deck required). Suggestion
-  pills fill the prompt; audience and slide-count presets fold into the brief
-  and `maxSlides`. A "Recent decks" carousel reuses the deck list.
+  pills fill the prompt. Everything that is not the brief lives in the config
+  popover behind the sliders button: audience and slide-count presets (deck
+  mode) fold into the brief and `maxSlides`; report mode's source, deck picker
+  and Full/Brief depth live there too. A "Recent decks" carousel reuses the
+  deck list.
 - **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
   grid with lightbox/inline-editor/presenter ops, a per-slide "make it punchier"
   bolt (a scoped chat turn), the Report panel (generate when no `report.yaml`
@@ -424,15 +432,45 @@ deck list (fetched once, re-fetched on a version bump) and routes between
 - **The chat rail only exists on the deck view.** It edits `deck.yaml`, so with
   no deck open it would be dead weight; Home, Identity, Themes, the wizard and
   the outline review are full-width. The rail stays mounted and animates its
-  width on the shell's shared easing rather than popping in.
-- **`ReportView`** — the report-only deck's home: title, section cards, Render
-  `.docx` / download, and a *Generate companion deck* button that plans from the
-  report's sections and routes through the outline gate (the reverse flow).
+  width on the shell's shared easing rather than popping in. The shell's
+  content row isolates its stacking context and the header sits on its own
+  z-20 layer, so nothing a rail or panel renders can paint over the product
+  bar — the top-left escape that once pushed the chat rail over the header is
+  structurally unrepresentable.
+- **`ReportView`** — the full-document view of a report: a cover block (title,
+  subtitle, subject, guide, team from the merged identity), then every section
+  in the fixed graded order with paragraphs and tables rendered as prose, never
+  YAML. Render `.docx` / download and a *Generate companion deck* button that
+  plans from the report's sections and routes through the outline gate (the
+  reverse flow). It is the land target of the sidebar's Reports tab and of the
+  home "from a brief" flow; a missing report renders an empty state.
+- **Model pickers filter by mode.** `lib/modelMode.js` is a tiny client
+  pub/sub holding LOCAL or CLOUD (default LOCAL), rehydrated at boot from the
+  persisted routing preference. `lib/useModels.js` fetches the grouped model
+  list once and exposes it filtered to the active mode, so the header toggle
+  takes effect in the prompt, chat and report pickers without each re-fetching.
 - **Motion.** Every transition rides one easing
   (`cubic-bezier(0.2,0.8,0.2,1)`, `--ease-shell`) — view switches (a keyed
   fade-and-rise), the sidebar collapse, the chat rail, card hover, the carousel —
   animating transform/opacity only, and a `prefers-reduced-motion` media query
   collapses them all to instant state changes.
+
+### The auth gate — local single-install accounts
+
+Accounts are deliberately NOT a multi-user system: they exist so the Cloud-key
+section can be gated (the key is the one sensitive thing on the box) and to
+have a place for future hosting, and that is all. Everything else stays open.
+
+`src/auth.js` owns the logic, `app/server` transports it. Passwords are hashed
+with `crypto.scrypt` and a per-user random salt; the users file holds only
+salt+hash, and the password is never logged, stored, or returned. Sessions are
+opaque random bearer tokens held server-side in a gitignored sessions file —
+the browser only ever sees the token. `POST /api/auth/register|login|logout`
+and `GET /api/auth/me` back the header's account entry (Login/Register when
+logged out, name + Logout when in). `PUT/DELETE /api/cloud/key` return 401
+without a session, and the Identity view's Cloud section shows a login prompt
+until one exists. The AuthModal is the register/login surface; both
+`config/users.json` and `config/sessions.json` are gitignored.
 
 ### The cloud surface — opt-in hosted models
 
@@ -495,6 +533,8 @@ The three-layer rule is unaffected: the shell is human-owned chrome, and
 |---|---|---|
 | `themes/`, `schema/`, `src/`, `app/` | yes | source |
 | `config/identity.yaml` | yes | remembered defaults, user-editable |
+| `config/local.yaml` | no | cloud API keys + `routing.default` — written by the Cloud panel and header toggle |
+| `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `brand/logos/` | no | raw supplied marks — trademarks stay local; uploaded via the Brand panel |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |

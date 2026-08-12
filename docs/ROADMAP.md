@@ -369,10 +369,13 @@ A pass of Gamma-like affordances and shell refinement:
   `cubic-bezier(0.2,0.8,0.2,1)` on transform/opacity only, with a
   `prefers-reduced-motion` query that collapses everything to instant state.
 - **Cloud routing preference.** A gitignored `config/local.yaml` value decides
-  what "auto" means in the model pickers. The header shows a CLOUD badge and a
-  LOCAL/CLOUD toggle when a key is attached; an unpicked author-role model
-  routes to the attached provider's first model, while research/utility/critic
-  stay on their configured backends.
+  what "auto" means in the model pickers. The header shows a LOCAL/CLOUD
+  toggle; CLOUD is only reachable when a key is attached, and without one the
+  button points at Settings/Cloud. An unpicked author-role model routes to the
+  attached provider's first model, while research/utility/critic stay on their
+  configured backends. The toggle also drives the pickers' filtering — LOCAL
+  shows local models only, CLOUD cloud models only (see the shell follow-up
+  item).
 - **Brand upload surface.** The Identity view's Brand section uploads
   crest/banner/watermark into gitignored `brand/logos/` and re-runs the shared
   `normalizeBrand()`. Marks are trademarks and stay out of the repo — the
@@ -388,6 +391,46 @@ A pass of Gamma-like affordances and shell refinement:
 > be scoped to the author role deliberately: routing every unpicked role to the
 > cloud would silently move the internal plumbing (decision extraction, summary
 > folding) onto the subscription, which is not what "route my work" means.
+
+### [x] Shell follow-up — config popover, local auth, mode-filtered pickers, report viewer
+The Gamma-style surface moved closer to "topic in → deck out with zero
+hand-holding":
+
+- **Prompt box config popover.** The audience and slide-count presets left the
+  prompt surface for a config popover behind the sliders button; report mode's
+  source, deck picker and depth joined it. The sliders button no longer opens
+  the New-deck wizard — the top-right "+ New deck" is the wizard entry. The
+  main surface is just the brief, the Deck/Report toggle, the model pill and
+  the submit arrow.
+- **Local single-install accounts.** Register/login/logout with
+  `crypto.scrypt`-hashed passwords and server-side bearer-token sessions
+  (`src/auth.js`, gitignored `config/users.json` + `config/sessions.json`).
+  The header's account entry is Login/Register or name + Logout; the Cloud-key
+  section requires a session. Honest scope: accounts exist for the key gate and
+  future hosting, not multi-user.
+- **LOCAL/CLOUD toggle filters pickers.** A client model-mode store
+  (`lib/modelMode.js` + `lib/useModels.js`) makes the header toggle actually
+  switch every model picker — LOCAL shows local models, CLOUD shows cloud
+  models. CLOUD is unreachable without a key (hint points at Settings).
+- **Reports tab opens the document.** Clicking a report in the sidebar opens a
+  full-document view — cover block from the merged identity, then the fixed
+  graded section order with paragraphs and tables as prose, Render .docx /
+  download, and an empty state. Report-only decks and decks-with-slides both
+  land here from the Reports tab.
+- **Rail containment.** The content row isolates its stacking context and the
+  header sits on its own z-layer, so the chat rail can never paint over the
+  product bar.
+
+> **Learned.** Two things. "Chat with the doc" never existed in the repo — the
+> rail already said "Chat with the deck" — and CDP bounding-box measurements
+> showed zero overlap at every viewport; the user's screenshot was a transient
+> hot-reload state, not a live regression, but the stacking-context hardening
+> makes the whole class of escape unrepresentable rather than just unreproduced.
+> And "the toggle doesn't do anything" was a real bug hiding in plain sight:
+> the routing preference changed server-side but every picker still rendered
+> both groups, so the mode read as cosmetic. Client-side filtering (a pub/sub
+> over the already-grouped `/api/models` response) made it honest without a
+> server round-trip per toggle.
 
 ### [ ] (stretch) Canvas slide-builder
 Live slides appearing as they stream (status → plan → slides) as a
