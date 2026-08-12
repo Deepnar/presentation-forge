@@ -3037,6 +3037,371 @@ export const layouts = {
       autoPage: false,
     });
   },
+
+  /**
+   * A general-purpose graph. Vertical and horizontal layouts topologically
+   * layer the nodes by edge depth and distribute them within each layer; radial
+   * puts the first node at the centre and the rest on a ring. Edges are drawn
+   * as hairlines between node centres.
+   */
+  diagram(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const nodes = data.nodes;
+    const n = nodes.length;
+    const edges = data.edges ?? [];
+    const idIdx = new Map(nodes.map((nd, i) => [nd.id, i]));
+    const layout = data.layout ?? "vertical";
+    const top = Math.max(y, 2.6);
+    const nodeW = 2.2, nodeH = 0.8;
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.label), nodeW - 0.2, 0.35, theme.type.caption, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.35, theme.type.caption,
+    );
+    const node = (i, x, y2) => {
+      card(slide, theme, { x: x - nodeW / 2, y: y2 - nodeH / 2, w: nodeW, h: nodeH });
+      slide.addText(nodes[i].label, {
+        x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.08, w: nodeW - 0.2, h: 0.35,
+        ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+        align: "center", valign: "top",
+      });
+      if (nodes[i].body) {
+        slide.addText(nodes[i].body, {
+          x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.45, w: nodeW - 0.2, h: 0.32,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          align: "center", valign: "top",
+        });
+      }
+    };
+    const line = (ax, ay, bx, by) => {
+      const lx = Math.min(ax, bx), lw = Math.abs(bx - ax) || 0.02;
+      const ly = Math.min(ay, by), lh = Math.abs(by - ay) || 0.02;
+      slide.addShape("line", {
+        x: lx, y: ly, w: lw, h: lh,
+        line: { color: hex(theme.palette.rule), width: 1.1 },
+        flipH: bx < ax, flipV: by < ay,
+      });
+    };
+    const centres = new Array(n);
+
+    if (layout === "radial") {
+      const cx = box.x + box.w / 2;
+      const cy = (top + box.bottom) / 2;
+      const radius = Math.max(1.2, Math.min(box.w / 2 - nodeW / 2 - 0.5, (box.bottom - top) / 2 - nodeH / 2 - 0.4));
+      centres[0] = { x: cx, y: cy };
+      nodes.slice(1).forEach((nd, i) => {
+        const angle = (2 * Math.PI * i) / Math.max(1, n - 1) - Math.PI / 2;
+        const idx = nodes.indexOf(nd);
+        centres[idx] = { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+      });
+    } else {
+      const depth = Array(n).fill(0);
+      for (let pass = 0; pass < n; pass++) {
+        edges.forEach((e) => {
+          const f = idIdx.get(e.from), t = idIdx.get(e.to);
+          if (f != null && t != null && f !== t) depth[t] = Math.max(depth[t], depth[f] + 1);
+        });
+      }
+      const maxDepth = Math.max(0, ...depth);
+      const layers = Array.from({ length: maxDepth + 1 }, () => []);
+      nodes.forEach((nd, i) => layers[depth[i]].push(i));
+      const vertical = layout !== "horizontal";
+      layers.forEach((layer, li) => {
+        const along = vertical ? box.w : box.bottom - top;
+        const across = vertical ? box.bottom - top : box.w;
+        const per = along / layer.length;
+        layer.forEach((nodeIdx, ni) => {
+          const a = per * (ni + 0.5);
+          const c = across * (li + 0.5) / (maxDepth + 1);
+          centres[nodeIdx] = vertical
+            ? { x: box.x + a, y: top + c }
+            : { x: box.x + c, y: top + a };
+        });
+      });
+    }
+    centres.forEach((c, i) => node(i, c.x, c.y));
+    edges.forEach((e) => {
+      const f = idIdx.get(e.from), t = idIdx.get(e.to);
+      if (f == null || t == null || f === t) return;
+      line(centres[f].x, centres[f].y, centres[t].x, centres[t].y);
+    });
+  },
+
+  /**
+   * A hierarchy pyramid: levels narrowing from a wide base to a narrow top,
+   * alternating accent/surface fills, label centred in each level with a body
+   * beneath it.
+   */
+  pyramid(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const levels = data.levels;
+    const n = levels.length;
+    const gap = 0.12;
+    const levelH = (box.bottom - y - 0.1 - gap * (n - 1)) / n;
+    const maxW = box.w;
+    const minW = box.w * 0.4;
+    const labelScale = fitScaleAll(levels.map((l) => l.label), maxW - 0.7, 0.4, theme.type.subhead, { min: 0.5 });
+    const bodyScale = fitScaleAll(
+      levels.map((l) => l.body).filter(Boolean), maxW - 0.7, 0.3, theme.type.caption,
+    );
+    levels.forEach((l, i) => {
+      const w = maxW - (maxW - minW) * (i / (n - 1));
+      const x = box.x + (box.w - w) / 2;
+      const sy = y + i * (levelH + gap);
+      const accent = i % 2 === 0;
+      slide.addShape("roundRect", {
+        x, y: sy, w, h: levelH,
+        fill: { color: hex(accent ? theme.palette.accent : theme.palette.surface) },
+        line: { type: "none" }, rectRadius: theme.shape?.radius?.card ?? 0.12,
+      });
+      const ink = accent ? theme.palette.on_accent : theme.palette.ink;
+      slide.addText(l.label, {
+        x: x + 0.35, y: sy, w: w - 0.7, h: levelH * 0.5,
+        ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
+        align: "center", valign: "middle",
+      });
+      if (l.body) {
+        slide.addText(l.body, {
+          x: x + 0.35, y: sy + levelH * 0.52, w: w - 0.7, h: levelH * 0.42,
+          ...textStyle(theme, "caption", { color: ink, scale: bodyScale }),
+          align: "center", valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * Overlapping semi-transparent circles with set labels above and items listed
+   * inside each circle. 2, 3 and 4-set geometries are placed by arrangement, and
+   * the overlap regions carry no special text — the items sit within their set.
+   */
+  venn(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const sets = data.sets;
+    const n = sets.length;
+    const top = Math.max(y, 2.6);
+    const cx = box.x + box.w / 2;
+    const cy = (top + box.bottom) / 2;
+    const d = Math.min(3.2, box.w / 3.4, box.bottom - top - 1.1);
+    const transparency = 62;
+    const colours = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.ink, theme.palette.ink_muted, theme.palette.rule];
+    let centres;
+    if (n === 2) {
+      centres = [{ x: cx - d * 0.28, y: cy }, { x: cx + d * 0.28, y: cy }];
+    } else if (n === 3) {
+      const r = d * 0.34;
+      centres = [
+        { x: cx, y: cy - r * 0.75 },
+        { x: cx - r * 1.15, y: cy + r * 0.5 },
+        { x: cx + r * 1.15, y: cy + r * 0.5 },
+      ];
+    } else {
+      const o = d * 0.32;
+      centres = [
+        { x: cx - o, y: cy - o * 0.85 },
+        { x: cx + o, y: cy - o * 0.85 },
+        { x: cx - o, y: cy + o * 0.85 },
+        { x: cx + o, y: cy + o * 0.85 },
+      ];
+    }
+    const itemScale = fitScaleAll(sets.flatMap((s) => s.items ?? []), 2.2, 0.3, theme.type.caption);
+    sets.forEach((s, i) => {
+      const c = centres[i];
+      slide.addShape("ellipse", {
+        x: c.x - d / 2, y: c.y - d / 2, w: d, h: d,
+        fill: { color: hex(colours[i % colours.length]), transparency },
+        line: { type: "none" },
+      });
+      slide.addText(s.label, {
+        x: c.x - 1.2, y: c.y - d / 2 - 0.42, w: 2.4, h: 0.35,
+        ...textStyle(theme, "caption", { bold: true }),
+        align: "center", valign: "middle",
+      });
+      (s.items ?? []).forEach((it, j) => {
+        slide.addText(it, {
+          x: c.x - 1.1, y: c.y - d / 2 + 0.4 + j * 0.32, w: 2.2, h: 0.3,
+          ...textStyle(theme, "caption", { scale: itemScale }),
+          align: "center", valign: "middle",
+        });
+      });
+    });
+  },
+
+  /**
+   * A tree: leaves spread evenly across the width, internal nodes centred over
+   * their children, hairlines from each node's bottom to its children's tops.
+   * Depth maps to vertical position.
+   */
+  hierarchy(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const top = Math.max(y, 2.5);
+    const nodeW = 1.9, nodeH = 0.6;
+    const tree = [];
+    const build = (label, children, depth) => {
+      // Push the node first, THEN build its children: the children value is
+      // evaluated before push() runs, so building it inside the object literal
+      // would append the grandchildren before their parent and desync every
+      // index. (That bug made the whole tree render post-order and collapse.)
+      const idx = tree.length;
+      tree.push({ label, children: [], depth });
+      tree[idx].children = (children ?? []).map((c) => build(c.label, c.children, depth + 1));
+      return idx;
+    };
+    const rootIdx = build(data.root.label, data.children, 0);
+    let totalLeaves = 0;
+    const countLeaves = (i) => {
+      if (!tree[i].children.length) totalLeaves++;
+      else tree[i].children.forEach(countLeaves);
+    };
+    countLeaves(rootIdx);
+    const leafW = box.w / Math.max(1, totalLeaves);
+    const xs = new Array(tree.length);
+    let leaf = 0;
+    const place = (i) => {
+      if (!tree[i].children.length) {
+        xs[i] = box.x + leafW * (leaf++ + 0.5);
+        return xs[i];
+      }
+      const childXs = tree[i].children.map(place);
+      xs[i] = (Math.min(...childXs) + Math.max(...childXs)) / 2;
+      return xs[i];
+    };
+    place(rootIdx);
+    const maxDepth = Math.max(...tree.map((nd) => nd.depth));
+    const levelH = maxDepth ? (box.bottom - top - 0.1) / (maxDepth + 1) : 0;
+    const labelScale = fitScaleAll(tree.map((nd) => nd.label), nodeW - 0.2, 0.4, theme.type.caption, { min: 0.6 });
+    tree.forEach((nd, i) => {
+      const nx = xs[i] - nodeW / 2;
+      const ny = top + nd.depth * levelH + 0.05;
+      nd.children.forEach((ci) => {
+        const fromY = ny + nodeH;
+        const toY = top + tree[ci].depth * levelH + 0.05;
+        const lx = Math.min(xs[i], xs[ci]), lw = Math.abs(xs[ci] - xs[i]) || 0.02;
+        const ly = Math.min(fromY, toY), lh = Math.abs(toY - fromY) || 0.02;
+        slide.addShape("line", {
+          x: lx, y: ly, w: lw, h: lh,
+          line: { color: hex(theme.palette.rule), width: 1.1 },
+          flipH: xs[ci] < xs[i], flipV: toY < fromY,
+        });
+      });
+      card(slide, theme, { x: nx, y: ny, w: nodeW, h: nodeH });
+      slide.addText(nd.label, {
+        x: nx + 0.1, y: ny, w: nodeW - 0.2, h: nodeH,
+        ...textStyle(theme, "caption", { bold: true, scale: labelScale }),
+        align: "center", valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * A mind-map: an accent centre circle, thick accent branches radiating to
+   * sub-labels, and thinner hairlines from each sub-label to its leaf items.
+   */
+  "concept-map"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const top = Math.max(y, 2.6);
+    const cx = box.x + box.w / 2;
+    const cy = (top + box.bottom) / 2;
+    const branches = data.branches;
+    const n = branches.length;
+    const centreW = 1.5;
+    const centreScale = fitOneLine(data.centre.label, centreW - 0.3, theme.type.subhead, { min: 0.5 });
+    slide.addShape("ellipse", {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    slide.addText(data.centre.label, {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: centreScale }),
+      align: "center", valign: "middle",
+    });
+    const radius = Math.max(1.3, Math.min(box.w / 2 - 1.9, (box.bottom - top) / 2 - 0.95));
+    const labelScale = fitScaleAll(branches.map((b) => b.label), 1.7, 0.35, theme.type.caption, { min: 0.6 });
+    const itemScale = fitScaleAll(
+      branches.flatMap((b) => b.items ?? []), 1.7, 0.3, theme.type.caption,
+    );
+    const line = (ax, ay, bx, by, { width = 1.1, color = theme.palette.rule } = {}) => {
+      const lx = Math.min(ax, bx), lw = Math.abs(bx - ax) || 0.02;
+      const ly = Math.min(ay, by), lh = Math.abs(by - ay) || 0.02;
+      slide.addShape("line", {
+        x: lx, y: ly, w: lw, h: lh,
+        line: { color: hex(color), width },
+        flipH: bx < ax, flipV: by < ay,
+      });
+    };
+    // Lines first, then the centre circle on top — a branch drawn over the
+    // circle would slice through the centre label.
+    const spreadCap = (angle, ex, ey) => {
+      let cap = 1.15;
+      const s = Math.sin(angle), c = Math.cos(angle);
+      if (s > 0) cap = Math.min(cap, (box.bottom - 0.4 - ey) / s);
+      if (s < 0) cap = Math.min(cap, (ey - top - 0.3) / -s);
+      if (c > 0) cap = Math.min(cap, (box.right - 0.4 - ex) / c);
+      if (c < 0) cap = Math.min(cap, (ex - box.x - 0.4) / -c);
+      return cap;
+    };
+    branches.forEach((b, i) => {
+      const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+      const ex = cx + radius * Math.cos(angle);
+      const ey = cy + radius * Math.sin(angle);
+      const spread = spreadCap(angle, ex, ey);
+      line(cx, cy, ex, ey, { width: 2.2, color: theme.palette.accent });
+      (b.items ?? []).forEach((it, j) => {
+        // Leaves fan PERPENDICULAR to the branch (so a vertical branch fans
+        // horizontally), then extend along it. Clamping a downward fan would
+        // stack the labels on top of each other at the box edge.
+        const off = (j - (b.items.length - 1) / 2) * 0.46;
+        const perp = angle + Math.PI / 2;
+        let ix = ex + spread * Math.cos(angle) + off * Math.cos(perp);
+        let iy = ey + spread * Math.sin(angle) + off * Math.sin(perp);
+        ix = Math.max(box.x + 0.45, Math.min(box.right - 0.45, ix));
+        iy = Math.max(top + 0.35, Math.min(box.bottom - 0.35, iy));
+        line(ex, ey, ix, iy);
+      });
+    });
+    slide.addShape("ellipse", {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    slide.addText(data.centre.label, {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: centreScale }),
+      align: "center", valign: "middle",
+    });
+    branches.forEach((b, i) => {
+      const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+      const ex = cx + radius * Math.cos(angle);
+      const ey = cy + radius * Math.sin(angle);
+      const spread = spreadCap(angle, ex, ey);
+      slide.addText(b.label, {
+        x: ex - 0.85, y: ey - 0.3, w: 1.7, h: 0.35,
+        ...textStyle(theme, "caption", { bold: true, scale: labelScale }),
+        align: "center", valign: "middle",
+      });
+      (b.items ?? []).forEach((it, j) => {
+        const off = (j - (b.items.length - 1) / 2) * 0.46;
+        const perp = angle + Math.PI / 2;
+        let ix = ex + spread * Math.cos(angle) + off * Math.cos(perp);
+        let iy = ey + spread * Math.sin(angle) + off * Math.sin(perp);
+        ix = Math.max(box.x + 0.45, Math.min(box.right - 0.45, ix));
+        iy = Math.max(top + 0.35, Math.min(box.bottom - 0.35, iy));
+        slide.addText(it, {
+          x: ix - 0.85, y: iy - 0.12, w: 1.7, h: 0.3,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: itemScale }),
+          align: "center", valign: "middle",
+        });
+      });
+    });
+  },
 };
 
 export { content };
