@@ -73,6 +73,13 @@ export default function App() {
     setView(entry && entry.report && !entry.deck ? "report" : "deck");
   };
 
+  // The sidebar's Reports tab is about the document, not the deck: clicking a
+  // report opens its full-document view even when the deck also has slides.
+  const openReport = (slug) => {
+    setActiveSlug(slug);
+    setView("report");
+  };
+
   const handlePlanReady = ({ slug, plan, theme }) => {
     setDraft({ slug, plan, theme });
     setView("outline");
@@ -117,10 +124,11 @@ export default function App() {
           >
             <Sidebar
               decks={decks}
-              activeSlug={view === "deck" ? activeSlug : null}
+              activeSlug={view === "deck" || view === "report" ? activeSlug : null}
               view={view}
               open={leftOpen}
               onOpenDeck={openDeck}
+              onOpenReport={openReport}
               onNewDeck={() => setView("new")}
               onView={setView}
             />

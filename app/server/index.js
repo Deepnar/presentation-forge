@@ -9,6 +9,7 @@ import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
+import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, createReport, createDeckFromReport } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
@@ -308,14 +309,22 @@ app.put("/api/decks/:slug/research", wrap(async (req, res) => {
 }));
 
 app.get("/api/decks/:slug/report", wrap(async (req, res) => {
-  const file = path.join(DECKS, req.params.slug, "report.yaml");
+  const dir = path.join(DECKS, req.params.slug);
+  const file = path.join(dir, "report.yaml");
   let report;
   try {
     report = YAML.parse(await readFile(file, "utf8"));
   } catch {
     return fail(res, 404, "no report.yaml saved for this deck");
   }
-  ok(res, { report });
+  // The title-page facts (subject, guide, team) come from the merged identity —
+  // config/identity.yaml defaults overridden by meta.yaml, the same merge the
+  // .docx renderer performs. The viewer renders them as a cover block.
+  let identity = {};
+  try {
+    identity = await loadIdentity(dir);
+  } catch { /* identity may be absent on a bare clone */ }
+  ok(res, { report, identity });
 }));
 
 /** Validate and save report content — same shape as the deck PUT. */

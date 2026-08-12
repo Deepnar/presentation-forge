@@ -9,11 +9,13 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 /**
  * Persistent deck navigation. Tabs filter All decks / Reports (a real per-deck
  * flag), search filters title/slug/theme, and the list is grouped by relative
- * date with a cover thumb on every row. Collapses to an icon rail — both states
- * are persisted by App. The deck list is the product's navigation; Themes and
- * Identity are compact rows at the bottom.
+ * date with a cover thumb on every row. The Reports tab opens the report's
+ * document view directly — a deck that also has slides still opens its report
+ * here, because this tab is about the document, not the deck. Collapses to an
+ * icon rail — both states are persisted by App. Themes and Identity are compact
+ * rows at the bottom.
  */
-export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onNewDeck, onView }) {
+export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onOpenReport, onNewDeck, onView }) {
   const [tab, setTab] = useState("all");
   const [query, setQuery] = useState("");
 
@@ -79,7 +81,7 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
                     {list.map((d) => (
                       <button
                         key={d.slug}
-                        onClick={() => onOpenDeck(d.slug)}
+                        onClick={() => (tab === "reports" ? onOpenReport(d.slug) : onOpenDeck(d.slug))}
                         title={`${d.title}\n${new Date(d.updated).toLocaleString()}`}
                         className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
                           activeSlug === d.slug
@@ -91,7 +93,7 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
                           <span className="block truncate text-[10.5px] text-fg-faint">
-                            {d.slides} slides · {relative(d.updated)}
+                            {tab === "reports" ? "report" : `${d.slides} slides`} · {relative(d.updated)}
                           </span>
                         </span>
                         {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
@@ -108,7 +110,7 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
                   <SearchIcon className="h-3.5 w-3.5" />
                 </div>
                 {tab === "reports"
-                  ? <div>No reports yet — generate one from a deck's Report panel or the home prompt.</div>
+                  ? <div>No reports yet — generate one from a deck's Report panel or the home prompt (Report mode).</div>
                   : query.trim()
                     ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
                     : <div>No decks yet — start one from the home prompt.</div>}
