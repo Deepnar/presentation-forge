@@ -333,6 +333,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 
 function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
   const [models, setModels] = useState([]);
+  const [cloud, setCloud] = useState(null);
   const [defaultModel, setDefaultModel] = useState("");
   const [model, setModel] = useState("");
   const [depth, setDepth] = useState(defaultDepth ?? "full");
@@ -346,6 +347,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
     api.models()
       .then((r) => {
         setModels(r.models ?? []);
+        setCloud(r.cloud ?? null);
         setDefaultModel(r.default ?? "");
       })
       .catch(() => {});
@@ -411,6 +413,11 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
             <select value={model} onChange={(e) => setModel(e.target.value)} title="Which model writes the report" className={`${selectCls} max-w-[16rem]`}>
               <option value="">auto · {defaultModel}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
+              {cloud && (
+                <optgroup label={cloud.label}>
+                  {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
+                </optgroup>
+              )}
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>

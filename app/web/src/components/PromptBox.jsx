@@ -13,6 +13,7 @@ import { ChevronDown, DocIcon, LayersIcon, SlidersIcon, SparkleIcon, UpArrowIcon
  */
 export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onNewDeck, onPlanReady, onReportDone }) {
   const [models, setModels] = useState([]);
+  const [cloud, setCloud] = useState(null);
   const [defaultModel, setDefaultModel] = useState("");
   const [model, setModel] = useState("");
   const [identity, setIdentity] = useState(null);
@@ -28,6 +29,7 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
     api.models()
       .then((r) => {
         setModels(r.models ?? []);
+        setCloud(r.cloud ?? null);
         setDefaultModel(r.default ?? "");
       })
       .catch(() => {});
@@ -133,6 +135,11 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
               >
                 <option value="">auto · {defaultModel}</option>
                 {models.map((m) => <option key={m} value={m}>{m}</option>)}
+                {cloud && (
+                  <optgroup label={cloud.label}>
+                    {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
+                  </optgroup>
+                )}
               </select>
               <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
               <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />

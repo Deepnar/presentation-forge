@@ -26,6 +26,7 @@ function formatTokens(n) {
 export default function ChatPanel({ slug, onDeckChanged, onClose }) {
   const [thread, setThread] = useState(null);
   const [models, setModels] = useState([]);
+  const [cloud, setCloud] = useState(null);
   const [defaultModel, setDefaultModel] = useState("");
   const [model, setModel] = useState("");
   const [input, setInput] = useState("");
@@ -43,6 +44,7 @@ export default function ChatPanel({ slug, onDeckChanged, onClose }) {
   useEffect(() => {
     api.models().then((r) => {
       setModels(r.models ?? []);
+      setCloud(r.cloud ?? null);
       setDefaultModel(r.default ?? "");
     }).catch(() => {});
   }, []);
@@ -161,6 +163,11 @@ export default function ChatPanel({ slug, onDeckChanged, onClose }) {
             >
               <option value="">auto · {defaultModel}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
+              {cloud && (
+                <optgroup label={cloud.label}>
+                  {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
+                </optgroup>
+              )}
             </select>
             <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m6 9 6 6 6-6" />

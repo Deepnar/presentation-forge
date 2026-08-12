@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { Button, Field, Spinner, inputCls } from "../components/ui.jsx";
+import { Button, Badge, Field, Spinner, inputCls } from "../components/ui.jsx";
 
 /**
  * Edits config/identity.yaml — the remembered defaults every new deck starts
  * from. Everything is free text on purpose: team size, designations and
  * academic year change every submission, so nothing here is a fixed enum.
+ * The Cloud section below it attaches an opt-in hosted backend; its key lives
+ * in gitignored config/local.yaml and never returns to this page.
  */
 export default function Identity() {
   const [id, setId] = useState(null);
   const [state, setState] = useState({ status: "idle", message: "" });
+  const [cloud, setCloud] = useState(null);
+  const [keyDraft, setKeyDraft] = useState("");
+  const [cloudBusy, setCloudBusy] = useState(false);
+  const [cloudState, setCloudState] = useState({ status: "idle", message: "" });
 
   useEffect(() => {
     api.identity().then((r) => setId(r.identity));
+  }, []);
+
+  useEffect(() => {
+    api.cloud().then((r) => setCloud(r.cloud)).catch(() => {});
   }, []);
 
   if (!id) {
@@ -46,6 +56,53 @@ export default function Identity() {
       setState({ status: "saved", message: "Saved to config/identity.yaml" });
     } catch (err) {
       setState({ status: "error", message: err.message });
+    }
+  }
+
+  async function saveKey() {
+    setCloudBusy(true);
+    setCloudState({ status: "busy", message: "" });
+    try {
+      await api.cloudSaveKey(keyDraft.trim());
+      setKeyDraft("");
+      const r = await api.cloud();
+      setCloud(r.cloud);
+      setCloudState({ status: "saved", message: "Key saved to config/local.yaml" });
+    } catch (err) {
+      setCloudState({ status: "error", message: err.message });
+    } finally {
+      setCloudBusy(false);
+    }
+  }
+
+  async function removeKey() {
+    if (!window.confirm("Remove the cloud API key from config/local.yaml?")) return;
+    setCloudBusy(true);
+    setCloudState({ status: "busy", message: "" });
+    try {
+      await api.cloudClearKey();
+      const r = await api.cloud();
+      setCloud(r.cloud);
+      setCloudState({ status: "saved", message: "Key removed." });
+    } catch (err) {
+      setCloudState({ status: "error", message: err.message });
+    } finally {
+      setCloudBusy(false);
+    }
+  }
+
+  async function testKey() {
+    setCloudBusy(true);
+    setCloudState({ status: "busy", message: "Testing…" });
+    try {
+      const r = await api.cloudTest();
+      setCloudState(r.ok
+        ? { status: "saved", message: r.detail }
+        : { status: "error", message: r.detail });
+    } catch (err) {
+      setCloudState({ status: "error", message: err.message });
+    } finally {
+      setCloudBusy(false);
     }
   }
 
@@ -138,6 +195,71 @@ export default function Identity() {
         <Field label="Department" value={id.institution?.department} onChange={(v) => set("institution.department", v)} />
         <Field label="University" value={id.institution?.university} onChange={(v) => set("institution.university", v)} />
       </Section>
+
+      <section className="panel-surface mt-8 rounded-card border border-line bg-panel p-5">
+        <div className="mb-4">
+          <h2 className="text-[13px] font-semibold tracking-tight text-fg">Cloud</h2>
+          <p className="mt-0.5 max-w-2xl text-[11px] leading-relaxed text-fg-faint">
+            Attach your OpenCode Go subscription so the app can also use hosted
+            models — deepseek-v4-flash, qwen3.8-max, mimo-v2.5 — next to the
+            local ones. The key is stored in gitignored config/local.yaml, never
+            committed, and never sent back to this page after saving.
+          </p>
+        </div>
+
+        {cloud?.configured ? (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2 text-[12px]">
+              <Badge className="bg-raised text-fg-muted">{cloud.label}</Badge>
+              <span className="font-mono text-[10.5px] text-fg-faint">{cloud.baseURL}</span>
+              <span className={cloud.keySet ? "text-accent" : "text-amber"}>
+                {cloud.keySet ? "key attached" : "no key attached"}
+              </span>
+            </div>
+
+            <div className="mb-1.5 flex flex-wrap items-end gap-2">
+              <label className="min-w-0 flex-1">
+                <div className="mb-1.5 text-[11px] font-medium text-fg-faint">API key</div>
+                <input
+                  type="password"
+                  value={keyDraft}
+                  onChange={(e) => setKeyDraft(e.target.value)}
+                  placeholder="sk-…"
+                  autoComplete="off"
+                  className={`${inputCls} font-mono`}
+                />
+              </label>
+              <Button variant="primary" size="sm" onClick={saveKey} disabled={cloudBusy || !keyDraft.trim()}>
+                Save key
+              </Button>
+              {cloud.keySet && (
+                <Button variant="outline" size="sm" onClick={removeKey} disabled={cloudBusy}>
+                  Remove
+                </Button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" onClick={testKey} disabled={cloudBusy}>
+                Test connection
+              </Button>
+              {cloudBusy && <Spinner className="text-fg-faint" />}
+              {cloudState.status === "saved" && (
+                <span className="text-[11.5px] text-accent">{cloudState.message}</span>
+              )}
+              {cloudState.status === "error" && (
+                <span className="text-[11.5px] text-danger">{cloudState.message}</span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="text-[12px] leading-relaxed text-fg-faint">
+            No cloud provider configured — add one under <code className="font-mono">providers:</code> in
+            config/models.yaml with a <code className="font-mono">models:</code> list and an{" "}
+            <code className="font-mono">env:</code> key reference.
+          </div>
+        )}
+      </section>
 
       {/* Sticky within the scroll column — the bar belongs to the form, never
           the app chrome. A fixed full-width bar would cover the sidebar's
