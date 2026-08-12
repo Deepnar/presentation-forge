@@ -1616,6 +1616,411 @@ export const layouts = {
       });
     });
   },
+
+  /**
+   * Before/after: two state cards with a "Before"/"After" pill, a title, a body
+   * and a central transition arrow. The After pill carries the accent, the
+   * Before pill is muted — the direction of the change is the point.
+   */
+  "before-after"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const gut = theme.grid.gutter;
+    const arrow = 0.8;
+    const cw = (box.w - gut - arrow) / 2;
+    const ch = box.bottom - y - 0.1;
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const titleScale = fitScaleAll([data.before.title, data.after.title], cw - pad * 2, 0.5, theme.type.heading, { min: 0.55 });
+    const bodyScale = fitScaleAll([data.before.body, data.after.body], cw - pad * 2, 1.8, theme.type.body);
+    const pill = (x, text, filled) => {
+      const pw2 = Math.min(cw - pad * 2, measure(text, theme.type.eyebrow) + 0.5);
+      slide.addShape("roundRect", {
+        x, y: y + pad, w: pw2, h: 0.34,
+        fill: { color: hex(filled ? theme.palette.accent : theme.palette.rule) },
+        line: { type: "none" },
+        rectRadius: theme.shape?.radius?.pill ?? 0.17,
+      });
+      slide.addText(applyTransform(theme, "eyebrow", text), {
+        x, y: y + pad, w: pw2, h: 0.34,
+        ...textStyle(theme, "eyebrow", {
+          color: hex(filled ? theme.palette.on_accent : theme.palette.ink_muted),
+        }),
+        align: "center", valign: "middle",
+      });
+    };
+    const col = (side, x, isAfter) => {
+      card(slide, theme, { x, y, w: cw, h: ch });
+      pill(x + pad, isAfter ? "After" : "Before", isAfter);
+      let ty = y + pad + 0.5;
+      slide.addText(side.title, {
+        x: x + pad, y: ty, w: cw - pad * 2, h: 0.55,
+        ...textStyle(theme, "heading", { scale: titleScale }),
+        valign: "top",
+      });
+      ty += 0.6;
+      slide.addText(side.body, {
+        x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
+        ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+        valign: "top",
+      });
+    };
+    col(data.before, box.x, false);
+    col(data.after, box.x + cw + gut + arrow, true);
+    const ax = box.x + cw + gut / 2;
+    slide.addShape("triangle", {
+      x: ax + arrow / 2 - 0.15, y: y + ch / 2 - 0.15, w: 0.3, h: 0.3,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 90,
+    });
+  },
+
+  /**
+   * A central concept with supporting elements arranged in a ring, connected by
+   * hairlines. Positions come from angle and radius — pure geometry, nothing
+   * content-derived.
+   */
+  framework(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.elements.length;
+    const top = Math.max(y, 3.0);
+    const cx = box.x + box.w / 2;
+    const cy = (top + box.bottom) / 2;
+    // The ring is elliptical on purpose: the vertical run (heading to footer) is
+    // far tighter than the horizontal one, so a circular ring would either clip
+    // the top/bottom cards or overlap the central ellipse. A circular radius
+    // forced to the vertical constraint is what caused the overlap.
+    const radiusX = box.w / 2 - 1.5;
+    const radiusY = Math.max(0.95, (box.bottom - top) / 2 - 0.95);
+
+    const conceptScale = fitOneLine(data.concept.title, 2.0, theme.type.subhead, { min: 0.6 });
+    slide.addShape("ellipse", {
+      x: cx - 1.15, y: cy - 0.55, w: 2.3, h: 1.1,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    slide.addText(data.concept.title, {
+      x: cx - 1.1, y: cy - 0.52, w: 2.2, h: 0.5,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: conceptScale }),
+      align: "center", valign: "middle",
+    });
+    if (data.concept.body) {
+      slide.addText(data.concept.body, {
+        x: cx - 1.05, y: cy - 0.02, w: 2.1, h: 0.45,
+        ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.9 }),
+        align: "center", valign: "top",
+      });
+    }
+
+    const ew = 1.6, eh = 0.95;
+    const titleScale = fitScaleAll(data.elements.map((e) => e.title), ew - 0.25, 0.35, theme.type.caption, { min: 0.6 });
+    data.elements.forEach((e, i) => {
+      const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+      const ex = cx + radiusX * Math.cos(angle);
+      const ey = cy + radiusY * Math.sin(angle);
+      const lx = Math.min(cx, ex), lw = Math.abs(ex - cx) || 0.02;
+      const ly = Math.min(cy, ey), lh = Math.abs(ey - cy) || 0.02;
+      slide.addShape("line", {
+        x: lx, y: ly, w: lw, h: lh,
+        line: { color: hex(theme.palette.rule), width: 1.2 },
+        flipH: ex < cx, flipV: ey < cy,
+      });
+      card(slide, theme, { x: ex - ew / 2, y: ey - eh / 2, w: ew, h: eh });
+      slide.addText(e.title, {
+        x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.12, w: ew - 0.24, h: 0.35,
+        ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+        align: "center", valign: "top",
+      });
+      if (e.body) {
+        slide.addText(e.body, {
+          x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.5, w: ew - 0.24, h: eh - 0.62,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+          align: "center", valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * 2×2 quadrant matrix: axis hairlines split the content box into four, each
+   * quadrant carries a title and optional body, and the axes' low/high ends and
+   * labels are marked on the edges (the y-axis labels rotate 270°).
+   */
+  matrix(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const top = Math.max(y, 2.6);
+    const cx = box.x + box.w / 2;
+    const cy = (top + box.bottom) / 2;
+    const halfW = box.w / 2 - 0.35;
+    const halfH = (box.bottom - top) / 2 - 0.25;
+
+    slide.addShape("rect", {
+      x: box.x, y: cy - 0.015, w: box.w, h: 0.03,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    slide.addShape("rect", {
+      x: cx - 0.015, y: top, w: 0.03, h: box.bottom - top,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+
+    const spots = [
+      { x: box.x, y: top },
+      { x: cx, y: top },
+      { x: box.x, y: cy },
+      { x: cx, y: cy },
+    ];
+    const titleScale = fitScaleAll(data.quadrants.map((q) => q.title), halfW - 0.36, 0.4, theme.type.subhead, { min: 0.65 });
+    const bodyScale = fitScaleAll(
+      data.quadrants.map((q) => q.body).filter(Boolean), halfW - 0.36, halfH - 0.6, theme.type.caption,
+    );
+    spots.forEach((s, i) => {
+      const q = data.quadrants[i] ?? {};
+      if (q.title) {
+        slide.addText(q.title, {
+          x: s.x + 0.18, y: s.y + 0.12, w: halfW - 0.36, h: 0.4,
+          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+          valign: "top",
+        });
+      }
+      if (q.body) {
+        slide.addText(q.body, {
+          x: s.x + 0.18, y: s.y + 0.5, w: halfW - 0.36, h: halfH - 0.6,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          valign: "top",
+        });
+      }
+    });
+
+    const ax = data.axes ?? {};
+    // X-axis low/high sit just above the horizontal axis — below the top
+    // quadrants' content (which ends at cy - halfH + 0.1) and above the line.
+    if (ax.x) {
+      slide.addText(ax.x.low ?? "", {
+        x: box.x, y: cy - 0.4, w: 2.0, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "left", valign: "middle",
+      });
+      slide.addText(ax.x.high ?? "", {
+        x: box.x + box.w - 2.0, y: cy - 0.4, w: 2.0, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "right", valign: "middle",
+      });
+      slide.addText(ax.x.label ?? "", {
+        x: box.x, y: box.bottom - 0.42, w: box.w, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "center", valign: "middle",
+      });
+    }
+    // Y-axis low/high read vertically beside the axis. The boxes are small and
+    // placed left of the quadrant text column so their rotated footprints stay
+    // clear of the quadrant titles and the footer presenter.
+    if (ax.y) {
+      slide.addText(ax.y.high ?? "", {
+        x: box.x - 0.75, y: top + 0.05, w: 1.2, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "right", valign: "middle", rotate: 270,
+      });
+      slide.addText(ax.y.low ?? "", {
+        x: box.x - 0.75, y: box.bottom - 0.38, w: 1.2, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "right", valign: "middle", rotate: 270,
+      });
+      // The y-axis name reads vertically too. Its box is sized to the text's
+      // measured width so the string never wraps in the narrow gutter, and the
+      // centre is pinned left of the quadrant column so the rotated footprint
+      // (which equals the box's long dimension) stays clear of it.
+      const axisName = ax.y.label ?? "";
+      const nameW = Math.min(1.6, measure(axisName, theme.type.eyebrow) * 1.1);
+      slide.addText(axisName, {
+        x: box.x - 0.25 - nameW / 2, y: cy - 0.15, w: nameW, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        align: "center", valign: "middle", rotate: 270,
+      });
+    }
+  },
+
+  /**
+   * Criteria × options grid with a proportional bar per cell and a weighted
+   * total row. Cell bars scale against the highest score in the table; totals
+   * multiply each score by its criterion's percentage weight.
+   */
+  scorecard(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const options = data.options;
+    const criteria = data.criteria;
+    const nCrit = criteria.length;
+    const gut = 0.14;
+    const headH = 0.5;
+    const labelW = 2.5;
+    const totalH = 0.55;
+    const rowH = (box.bottom - y - headH - totalH - 0.15 - gut * (nCrit + 1)) / nCrit;
+    const colW = (box.w - labelW - gut * (options.length - 1)) / options.length;
+
+    options.forEach((o, i) => {
+      const x = box.x + labelW + i * (colW + gut);
+      slide.addText(o.name, {
+        x, y, w: colW, h: headH,
+        ...textStyle(theme, "subhead", { bold: true, scale: 0.85 }),
+        align: "center", valign: "middle",
+      });
+    });
+
+    const allScores = options.flatMap((o) => o.scores ?? []);
+    const maxScore = Math.max(1, ...allScores);
+    criteria.forEach((c, r) => {
+      const ry = y + headH + r * (rowH + gut);
+      slide.addText(c.label, {
+        x: box.x, y: ry, w: labelW, h: rowH,
+        ...textStyle(theme, "caption", { scale: 0.95 }),
+        valign: "middle",
+      });
+      options.forEach((o, i) => {
+        const x = box.x + labelW + i * (colW + gut);
+        const score = o.scores?.[r];
+        if (score == null) return;
+        const trackW = colW * 0.46;
+        const barW = Math.max(0.03, trackW * (score / maxScore));
+        const trackY = ry + rowH - 0.2;
+        slide.addShape("roundRect", {
+          x: x + (colW - trackW) / 2, y: trackY, w: trackW, h: 0.11,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" }, rectRadius: 0.055,
+        });
+        slide.addShape("roundRect", {
+          x: x + (colW - trackW) / 2, y: trackY, w: barW, h: 0.11,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rectRadius: 0.055,
+        });
+        slide.addText(String(score), {
+          x, y: ry, w: colW, h: rowH - 0.24,
+          ...textStyle(theme, "caption", { bold: true }),
+          align: "center", valign: "middle",
+        });
+      });
+    });
+
+    const ty = y + headH + nCrit * (rowH + gut);
+    slide.addShape("rect", {
+      x: box.x, y: ty - 0.08, w: box.w, h: 0.02,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    slide.addText("Total", {
+      x: box.x, y: ty, w: labelW, h: totalH,
+      ...textStyle(theme, "caption", { bold: true }),
+      valign: "middle",
+    });
+    options.forEach((o, i) => {
+      const x = box.x + labelW + i * (colW + gut);
+      const total = (criteria.reduce((acc, c, r) => {
+        const weight = parseFloat(String(c.weight ?? "1").replace("%", "")) || 0;
+        return acc + (o.scores?.[r] ?? 0) * weight;
+      }, 0));
+      slide.addText(String(Math.round(total * 10) / 10), {
+        x, y: ty, w: colW, h: totalH,
+        ...textStyle(theme, "caption", { bold: true, color: theme.palette.accent }),
+        align: "center", valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * Head-to-head: two centred titles with a "VS" pill between them and optional
+   * bodies below. Maximum contrast, minimum structure.
+   */
+  vs(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const pillW = 1.0;
+    const halfW = (box.w - pillW) / 2;
+    const longest = [data.left.title, data.right.title].reduce((a, b) => (b.length > a.length ? b : a));
+    const titleScale = fitOneLine(longest, halfW, theme.type.heading);
+    const block = (side, body, x) => {
+      slide.addText(side.title, {
+        x, y: y + 0.25, w: halfW, h: 1.3,
+        ...textStyle(theme, "heading", { scale: titleScale }),
+        align: "center", valign: "middle",
+      });
+      if (body) {
+        const bScale = fitScale(body, halfW - 0.4, 1.4, theme.type.body, { min: 0.75 });
+        slide.addText(body, {
+          x: x + 0.2, y: y + 1.75, w: halfW - 0.4, h: 1.4,
+          ...textStyle(theme, "body", { scale: bScale, color: theme.palette.ink_muted }),
+          align: "center", valign: "top",
+        });
+      }
+    };
+    block(data.left, data.left_body, box.x);
+    block(data.right, data.right_body, box.x + halfW + pillW);
+    const px = box.x + halfW;
+    slide.addShape("ellipse", {
+      x: px, y: y + 0.5, w: pillW, h: pillW,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    slide.addText("VS", {
+      x: px, y: y + 0.5, w: pillW, h: pillW,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent }),
+      align: "center", valign: "middle",
+    });
+  },
+
+  /**
+   * Two equal image panels: a cover-fit image at the top of each card, then a
+   * title and a body. A missing image renders a rule-coloured placeholder so
+   * the geometry never collapses.
+   */
+  "side-by-side"(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut) / 2;
+    const ch = box.bottom - y - 0.1;
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const imgH = 2.0;
+    const titleScale = fitScaleAll(
+      [data.left.title, data.right.title].filter(Boolean), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.65 },
+    );
+    const bodyScale = fitScaleAll(
+      [data.left.body, data.right.body].filter(Boolean), cw - pad * 2, 1.1, theme.type.body,
+    );
+    const col = (side, x) => {
+      card(slide, theme, { x, y, w: cw, h: ch });
+      const src = resolveAsset(side.image);
+      if (src) {
+        slide.addImage({
+          path: src, x: x + pad, y: y + pad, w: cw - pad * 2, h: imgH,
+          sizing: { type: "cover", w: cw - pad * 2, h: imgH },
+        });
+      } else {
+        slide.addShape("roundRect", {
+          x: x + pad, y: y + pad, w: cw - pad * 2, h: imgH,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.card ?? 0.12,
+        });
+      }
+      let ty = y + pad + imgH + 0.18;
+      if (side.title) {
+        slide.addText(side.title, {
+          x: x + pad, y: ty, w: cw - pad * 2, h: 0.4,
+          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+          valign: "top",
+        });
+        ty += 0.44;
+      }
+      if (side.body) {
+        slide.addText(side.body, {
+          x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
+          ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+          valign: "top",
+        });
+      }
+    };
+    col(data.left, box.x);
+    col(data.right, box.x + cw + gut);
+  },
 };
 
 export { content };
