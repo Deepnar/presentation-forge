@@ -120,7 +120,7 @@ export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, o
                   className="aspect-video w-full rounded-lg"
                 />
                 <div className="mt-2.5 truncate text-[13px] font-medium text-fg">{d.title}</div>
-                <div className="mt-0.5 text-[11px] text-fg-faint">
+                <div className="mt-0.5 truncate text-[11px] text-fg-faint">
                   {d.slides} slides{d.theme ? ` · ${themeLabel(d.theme)}` : ""}
                 </div>
               </button>

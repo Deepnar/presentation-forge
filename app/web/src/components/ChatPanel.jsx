@@ -313,7 +313,7 @@ function Turn({ turn, onEdit, isLast }) {
   if (turn.role === "user") {
     return (
       <div className="ml-auto max-w-[85%]">
-        <div className="rounded-xl rounded-br-sm bg-accent/10 px-3 py-2 text-[12.5px] leading-relaxed text-fg">
+        <div className="rounded-xl rounded-br-sm bg-accent/10 px-3 py-2 text-[12.5px] leading-relaxed break-words text-fg">
           {turn.instruction}
         </div>
         {onEdit && (
@@ -347,7 +347,7 @@ function Turn({ turn, onEdit, isLast }) {
             {changes.map((c, i) => (
               <li key={i} className="flex items-start gap-1.5 text-[12px] leading-snug text-fg-muted">
                 <span className="mt-0.5 text-accent">✓</span>
-                <span className="font-mono text-[11px]">{c}</span>
+                <span className="font-mono text-[11px] [overflow-wrap:anywhere]">{c}</span>
               </li>
             ))}
           </ul>

@@ -142,7 +142,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <h1 className="text-[1.5rem] font-semibold leading-tight tracking-tight">
+          <h1 className="break-words text-[1.5rem] font-semibold leading-tight tracking-tight">
             {deck.title}
           </h1>
           <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] text-fg-muted">

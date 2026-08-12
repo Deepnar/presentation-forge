@@ -11,12 +11,12 @@ export default function DeckThumb({ slug, title, theme, className = "", alt }) {
   if (failed) {
     return (
       <div className={`thumb-fallback ${className}`} title={title}>
-        <div className="min-w-0 text-center leading-none">
-          <div className="text-[13px] font-semibold uppercase tracking-wider">
+        <div className="min-w-0 w-full text-center leading-none">
+          <div className="truncate text-[13px] font-semibold uppercase tracking-wider">
             {(title?.[0] ?? "?").toUpperCase()}
           </div>
           {theme && (
-            <div className="mt-1 truncate px-1 text-[8px] uppercase tracking-wider opacity-70">{theme}</div>
+            <div className="mt-1 max-w-full truncate px-1 text-[8px] leading-none uppercase tracking-wider opacity-70">{theme}</div>
           )}
         </div>
       </div>
