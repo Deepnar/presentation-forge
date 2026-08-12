@@ -6,6 +6,7 @@ import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/ico
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, initialBriefing, suggestTitle, echoAnswer, applyFreeText } from "../lib/briefing.js";
+import { runs } from "../lib/runs.js";
 
 const DENSITIES = [
   { id: "sparse", note: "few words, mostly visuals" },
@@ -64,7 +65,7 @@ export default function ChatView({
   const [freeHint, setFreeHint] = useState("");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(chat.error ?? "");
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
   const [defaultsState, setDefaultsState] = useState({ status: "idle" });
@@ -75,6 +76,21 @@ export default function ChatView({
   const chatRef = useRef(chat);
 
   useEffect(() => { chatRef.current = chat; }, [chat]);
+
+  // A generation started while this chat was open keeps running after the view
+  // unmounts — the server pipeline persists plan/deck as it goes and the run
+  // lives in the module-level registry. On re-entry, adopt the live run so the
+  // user sees it working (or its persisted result) instead of a stale briefing.
+  useEffect(() => {
+    const run = runs.get(chat.id);
+    if (!run) return;
+    if (run.finished) { runs.end(chat.id); return; }
+    setBusy(true);
+    setStatus(run.status);
+    const onPatch = (patch) => { setBusy(true); if (patch.status != null) setStatus(patch.status); };
+    runs.subscribe(chat.id, onPatch);
+    return () => runs.unsubscribe(chat.id, onPatch);
+  }, [chat.id]);
 
   useEffect(() => {
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
@@ -150,6 +166,7 @@ export default function ChatView({
     setBusy(true);
     setError("");
     setStatus("Queued…");
+    runs.begin(chat.id, { abort: () => {}, status: "Queued…" });
     const j = api.createDeck(
       {
         brief,
@@ -160,8 +177,9 @@ export default function ChatView({
         model: model || undefined,
       },
       {
-        status: (p) => setStatus(progressLabel(p)),
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
         plan: (d) => {
+          runs.update(chat.id, { status: "Outline ready." });
           persist({
             ...chat,
             title: chatName(d.plan.title ?? b.title, chat.topic),
@@ -174,15 +192,22 @@ export default function ChatView({
             deckSlug: d.slug,
             deckThumbs: [],
             model: model || undefined,
+            error: undefined,
             updatedAt: new Date().toISOString(),
           });
         },
       },
     );
+    runs.update(chat.id, { abort: j.abort });
     setJob(j);
     j.promise
-      .catch((err) => { setError(err.name === "AbortError" ? "Cancelled." : err.message); setStatus(""); })
-      .finally(() => setBusy(false));
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
   }
 
   /** Approved outline → the writer streams. Lands on the finished deck. */
@@ -202,6 +227,7 @@ export default function ChatView({
     setBusy(true);
     setError("");
     setStatus("Approving…");
+    runs.begin(chat.id, { abort: () => {}, status: "Approving…" });
     const j = api.generate(
       chat.deckSlug,
       {
@@ -210,7 +236,7 @@ export default function ChatView({
         model: model || undefined,
       },
       {
-        status: (p) => setStatus(progressLabel(p)),
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
         result: (r) => {
           persist({
             ...chat,
@@ -218,16 +244,23 @@ export default function ChatView({
             produced: true,
             deckSlug: r.slug ?? chat.deckSlug,
             deckThumbs: (r.thumbs ?? []).slice(0, 8),
+            error: undefined,
             updatedAt: new Date().toISOString(),
           });
           onDeckChanged?.();
         },
       },
     );
+    runs.update(chat.id, { abort: j.abort });
     setJob(j);
     j.promise
-      .catch((err) => { setError(err.name === "AbortError" ? "Cancelled." : err.message); setStatus(""); })
-      .finally(() => setBusy(false));
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
   }
 
   function sendReportTopic(text) {
@@ -245,23 +278,30 @@ export default function ChatView({
       guide: identity?.guide ?? {},
       team: identity?.team ?? {},
     };
+    runs.begin(c.id, { abort: () => {}, status: "Queued…" });
     const j = api.createReport(
       { brief: c.topic, depth: "brief", research: true, identity: identityPayload, model: model || undefined },
       {
-        status: (p) => setStatus(progressLabel(p)),
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(c.id, { status: label }); },
         result: (d) => {
-          persist({ ...c, produced: true, deckSlug: d.slug, updatedAt: new Date().toISOString() });
+          persist({ ...c, produced: true, deckSlug: d.slug, error: undefined, updatedAt: new Date().toISOString() });
           onDeckChanged?.();
         },
       },
     );
+    runs.update(c.id, { abort: j.abort });
     setJob(j);
     j.promise
-      .catch((err) => { setError(err.name === "AbortError" ? "Cancelled." : err.message); setStatus(""); })
-      .finally(() => setBusy(false));
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(c.id, { finished: true }); });
   }
 
-  function stop() { job?.abort(); }
+  function stop() { runs.get(chat.id)?.abort?.() ?? job?.abort(); }
 
   /**
    * Persist the repeated set — guide, subject/year, team — as remembered
