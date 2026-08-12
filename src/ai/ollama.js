@@ -178,11 +178,13 @@ export async function chat({
 }) {
   const cfg = await config();
   // Routing: when the user's preference is cloud and no explicit model was
-  // picked, the role's work goes to the attached cloud provider's first model.
-  // This is how the header's LOCAL/CLOUD toggle takes effect — "auto" follows
-  // the preference rather than the author role's local default. Vision stays
-  // local-only: the critic never routes through here for a cloud picker.
-  if (!model && role !== "critic") {
+  // picked, the author role's work goes to the attached cloud provider's first
+  // model. This is how the header's LOCAL/CLOUD toggle takes effect — "auto"
+  // follows the preference rather than the author role's local default. Only
+  // the author role routes: that is what the pickers control, and the internal
+  // roles (research, utility, critic) stay on their configured backends —
+  // cloud routing is about where the user's work runs, not the plumbing.
+  if (!model && role === "author") {
     const route = await routingPreference();
     if (route === "cloud") {
       const cp = await cloudProvider();
