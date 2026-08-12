@@ -30,9 +30,20 @@ async function findSource(stem) {
 /**
  * Key out a white/grey background into alpha.
  *
- * Saturated pixels (the actual logo) stay fully opaque; unsaturated ones get
+ * Saturated pixels (the actual logo) become fully opaque; unsaturated ones get
  * alpha proportional to how dark they are, so white -> 0 and black -> 255.
  * This preserves antialiased edges instead of producing a jagged cutout.
+ *
+ * The source's own alpha channel is deliberately rebuilt from RGB, not trusted.
+ * Supplied logos are frequently "transparent" JPEG-like PNGs whose alpha is
+ * meaningless (one real crest shipped with every pixel at 14/255 — a ghost on
+ * any slide, and keying could not fix it because saturated pixels kept the
+ * broken alpha). The colour data is the truth; the alpha channel is not.
+ *
+ * A pixel that is fully transparent in the source stays transparent — that is
+ * a real cutout, not a broken alpha. Everything with any alpha at all is
+ * content: saturated pixels become opaque, neutral ones are keyed by lightness
+ * (white -> 0, grey -> partial), which is what preserves antialiased edges.
  */
 async function keyWhite(input, { satFloor = 28 } = {}) {
   const img = sharp(input).ensureAlpha();
@@ -45,10 +56,9 @@ async function keyWhite(input, { satFloor = 28 } = {}) {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     const sat = max - min;
-    if (sat <= satFloor) {
-      // Neutral pixel: treat lightness as transparency.
-      data[o + 3] = Math.min(data[o + 3], 255 - min);
-    }
+    if (data[o + 3] === 0) continue; // a real cutout — keep it transparent
+    // Neutral pixel: treat lightness as transparency. Saturated pixel: opaque.
+    data[o + 3] = sat <= satFloor ? 255 - min : 255;
   }
 
   return sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
