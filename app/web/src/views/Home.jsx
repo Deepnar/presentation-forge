@@ -65,7 +65,6 @@ export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, o
           brief={brief}
           setBrief={setBrief}
           focusSignal={focusSignal}
-          onNewDeck={onNewDeck}
           onPlanReady={onPlanReady}
           onReportDone={onReportDone}
           onStandaloneReport={onStandaloneReport}

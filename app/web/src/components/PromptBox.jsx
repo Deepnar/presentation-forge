@@ -10,10 +10,15 @@ import { ChevronDown, DocIcon, LayersIcon, SlidersIcon, SparkleIcon, UpArrowIcon
  * to the outline; Report mode streams a report that lands in the deck's Report
  * panel — from an existing deck, or from a brief alone (a standalone report
  * with no deck, the reverse flow's other door). All share the model pill and
- * the circular submit. The sliders icon opens the full wizard — nothing is
- * hidden behind this box, it is the fast path.
+ * the circular submit.
+ *
+ * The sliders icon opens the config popover — the presets (audience, slide
+ * count in deck mode; source, deck picker, depth in report mode) all live
+ * behind it. The main surface stays just the brief + the Deck/Report toggle +
+ * model + submit. The "+ New deck" wizard is the header/sidebar button, not
+ * this box.
  */
-export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onNewDeck, onPlanReady, onReportDone, onStandaloneReport }) {
+export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onPlanReady, onReportDone, onStandaloneReport }) {
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState("");
   const [identity, setIdentity] = useState(null);
@@ -26,7 +31,9 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
+  const [configOpen, setConfigOpen] = useState(false);
   const taRef = useRef(null);
+  const boxRef = useRef(null);
 
   // Gamma-style quick presets, as affordances over the existing pipeline — no
   // new flow. Audience is folded into the brief, slide count maps to the
@@ -46,6 +53,21 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
   useEffect(() => {
     if (focusSignal > 0 && mode === "deck") taRef.current?.focus();
   }, [focusSignal, mode]);
+
+  // The popover closes on outside click and Escape — one listener covers both.
+  useEffect(() => {
+    if (!configOpen) return;
+    const onDown = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setConfigOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setConfigOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [configOpen]);
 
   const canSubmit = busy ? false : mode === "deck"
     ? brief.trim().length > 0
@@ -101,95 +123,32 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
     setStatus("");
   }
 
+  const briefPlaceholder = mode === "report" && reportSource === "deck"
+    ? "Describe the report's angle… (or leave blank to follow the deck's research)"
+    : mode === "deck"
+      ? "Describe the presentation… (e.g. topic, angle, audience)"
+      : "Describe the report… (e.g. topic, depth, audience)";
+
   return (
     <div className="w-full max-w-2xl">
-      <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt p-3">
-        {mode === "deck" ? (
-          <textarea
-            ref={taRef}
-            value={brief}
-            onChange={(e) => setBrief(e.target.value)}
-            rows={3}
-            placeholder="Describe the presentation… (e.g. topic, angle, audience)"
-            className="w-full resize-none border-none bg-transparent px-2 py-1 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60"
-          />
-        ) : (
-          <div className="px-2 py-1">
-            <div className="mb-2 flex items-center gap-1">
-              <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-                <ModePill active={reportSource === "deck"} onClick={() => setReportSource("deck")}>
-                  From a deck
-                </ModePill>
-                <ModePill active={reportSource === "brief"} onClick={() => setReportSource("brief")}>
-                  From a brief
-                </ModePill>
-              </div>
-              <span className="ml-1.5 text-[11px] text-fg-faint">
-                {reportSource === "brief" ? "standalone — no deck required" : "same research as the deck"}
-              </span>
-            </div>
+      <div ref={boxRef} className="relative surface-well rounded-[var(--radius-lg)] border border-line bg-prompt p-3">
+        <textarea
+          ref={taRef}
+          value={brief}
+          onChange={(e) => setBrief(e.target.value)}
+          rows={3}
+          placeholder={briefPlaceholder}
+          className="w-full resize-none border-none bg-transparent px-2 py-1 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60"
+        />
 
-            {reportSource === "brief" ? (
-              <textarea
-                ref={taRef}
-                value={brief}
-                onChange={(e) => setBrief(e.target.value)}
-                rows={3}
-                placeholder="Describe the report… (e.g. topic, depth, audience)"
-                className="w-full resize-none border-none bg-transparent px-1 py-1 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60"
-              />
-            ) : (
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="relative min-w-[14rem] flex-1">
-                  <select
-                    value={reportSlug}
-                    onChange={(e) => setReportSlug(e.target.value)}
-                    disabled={!decks.length}
-                    title={decks.length ? "Which deck to write the report from" : "Create a deck first"}
-                    className="w-full appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-[13px] text-fg outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
-                  >
-                    <option value="">{decks.length ? "Choose a deck…" : "Create a deck first"}</option>
-                    {decks.map((d) => (
-                      <option key={d.slug} value={d.slug}>{d.title}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
-                </div>
-                <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-                  <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full</ModePill>
-                  <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
-                </div>
-              </div>
-            )}
-
-            {reportSource === "brief" && (
-              <div className="mt-2 flex items-center gap-0.5 rounded-full bg-panel p-0.5 self-start">
-                <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full depth</ModePill>
-                <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Gamma-style quick presets — audience and slide count, both optional,
-            both folded into the existing brief→pipeline flow. */}
-        {mode === "deck" && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5 px-1">
-            <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-              {AUDIENCES.map((a) => (
-                <ModePill key={a.id || "none"} active={audience === a.id} onClick={() => setAudience(a.id)}>
-                  {a.label}
-                </ModePill>
-              ))}
-            </div>
-            <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-              {SLIDE_COUNTS.map((n) => (
-                <ModePill key={n} active={maxSlides === n} onClick={() => setMaxSlides(n)}>
-                  {n === 0 ? "auto slides" : `${n} slides`}
-                </ModePill>
-              ))}
-            </div>
-          </div>
+        {mode === "report" && (
+          <p className="px-2 pb-1 text-[11px] text-fg-faint">
+            {reportSource === "brief"
+              ? "standalone report — no deck required"
+              : reportSlug
+                ? "written from the deck's shared research and outline"
+                : "pick a deck in the config (sliders)"}
+          </p>
         )}
 
         <div className="mt-2 flex items-center gap-1.5 border-t border-line/60 px-1 pt-2">
@@ -218,9 +177,12 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
             </div>
 
             <button
-              onClick={onNewDeck}
-              title="Advanced options — sources, research, team"
-              className="grid h-8 w-8 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg active:scale-95"
+              onClick={() => setConfigOpen((o) => !o)}
+              title="Config — audience, slide count, report source"
+              aria-expanded={configOpen}
+              className={`grid h-8 w-8 place-items-center rounded-full transition active:scale-95 ${
+                configOpen ? "bg-hover text-fg" : "text-fg-faint hover:bg-hover hover:text-fg"
+              }`}
             >
               <SlidersIcon className="h-4 w-4" />
             </button>
@@ -251,7 +213,115 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
             {error}
           </div>
         )}
+
+        {configOpen && (
+          <ConfigPopover
+            mode={mode}
+            reportSource={reportSource}
+            setReportSource={setReportSource}
+            decks={decks}
+            reportSlug={reportSlug}
+            setReportSlug={setReportSlug}
+            depth={depth}
+            setDepth={setDepth}
+            audience={audience}
+            setAudience={setAudience}
+            maxSlides={maxSlides}
+            setMaxSlides={setMaxSlides}
+          />
+        )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * The config popover — everything that is not the brief itself. Deck mode:
+ * audience + slide-count presets. Report mode: source (deck/brief), the deck
+ * picker when writing from a deck, and the Full/Brief depth. Opens above the
+ * footer from the sliders button; closes on outside click / Escape.
+ */
+function ConfigPopover({ mode, reportSource, setReportSource, decks, reportSlug, setReportSlug, depth, setDepth, audience, setAudience, maxSlides, setMaxSlides }) {
+  const AUDIENCES = [
+    { id: "", label: "Class" },
+    { id: "audience: undergraduate class — assume little background, keep it clear.", label: "Students" },
+    { id: "audience: faculty exam panel — formal, graded, cite your sources.", label: "Panel" },
+    { id: "audience: a technical conference — assume domain fluency, go deep.", label: "Conf" },
+  ];
+  const SLIDE_COUNTS = [0, 8, 14, 20];
+
+  return (
+    <div
+      className="fade-in absolute right-0 bottom-[3.25rem] z-20 w-72 rounded-[var(--radius-lg)] border border-line bg-panel p-3 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)]"
+      style={{ animationDuration: "120ms" }}
+    >
+      {mode === "deck" ? (
+        <>
+          <ConfigGroup label="Audience">
+            <div className="flex flex-wrap gap-1">
+              {AUDIENCES.map((a) => (
+                <ModePill key={a.id || "none"} active={audience === a.id} onClick={() => setAudience(a.id)}>
+                  {a.label}
+                </ModePill>
+              ))}
+            </div>
+          </ConfigGroup>
+          <ConfigGroup label="Slides">
+            <div className="flex flex-wrap gap-1">
+              {SLIDE_COUNTS.map((n) => (
+                <ModePill key={n} active={maxSlides === n} onClick={() => setMaxSlides(n)}>
+                  {n === 0 ? "auto" : `${n}`}
+                </ModePill>
+              ))}
+            </div>
+          </ConfigGroup>
+        </>
+      ) : (
+        <>
+          <ConfigGroup label="Source">
+            <div className="flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
+              <ModePill active={reportSource === "deck"} onClick={() => setReportSource("deck")}>From a deck</ModePill>
+              <ModePill active={reportSource === "brief"} onClick={() => setReportSource("brief")}>From a brief</ModePill>
+            </div>
+          </ConfigGroup>
+
+          {reportSource === "deck" && (
+            <ConfigGroup label="Deck">
+              <div className="relative">
+                <select
+                  value={reportSlug}
+                  onChange={(e) => setReportSlug(e.target.value)}
+                  disabled={!decks.length}
+                  title={decks.length ? "Which deck to write the report from" : "Create a deck first"}
+                  className="w-full appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-[13px] text-fg outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+                >
+                  <option value="">{decks.length ? "Choose a deck…" : "Create a deck first"}</option>
+                  {decks.map((d) => (
+                    <option key={d.slug} value={d.slug}>{d.title}</option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+              </div>
+            </ConfigGroup>
+          )}
+
+          <ConfigGroup label="Depth">
+            <div className="flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
+              <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full</ModePill>
+              <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
+            </div>
+          </ConfigGroup>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ConfigGroup({ label, children }) {
+  return (
+    <div className="py-1.5 first:pt-0 last:pb-0">
+      <div className="mb-1.5 px-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">{label}</div>
+      {children}
     </div>
   );
 }
