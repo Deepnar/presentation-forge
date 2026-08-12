@@ -110,4 +110,20 @@ export const api = {
   cloudTest: () => call("/api/cloud/test", { method: "POST", body: JSON.stringify({}) }),
   // LOCAL/CLOUD routing preference — where "auto" in the model pickers points.
   cloudRoute: (route) => call("/api/cloud/routing", { method: "PUT", body: JSON.stringify({ route }) }),
+  // Brand assets — institutional marks live in gitignored brand/logos/; the
+  // server writes uploads there and re-runs normalisation. Never in the repo.
+  brand: () => call("/api/brand"),
+  brandUpload: (name, file) => {
+    const ext = (file.name.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    return fetch(`/api/brand/${name}`, {
+      method: "POST",
+      headers: { "X-File-Ext": ext, "Content-Type": file.type || "application/octet-stream" },
+      body: file,
+    }).then(async (res) => {
+      const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
+      if (!body.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+      return body;
+    });
+  },
+  brandRemove: (name) => call(`/api/brand/${name}`, { method: "DELETE" }),
 };

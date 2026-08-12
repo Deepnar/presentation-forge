@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Badge, Field, Spinner, inputCls } from "../components/ui.jsx";
 
@@ -16,6 +16,10 @@ export default function Identity() {
   const [keyDraft, setKeyDraft] = useState("");
   const [cloudBusy, setCloudBusy] = useState(false);
   const [cloudState, setCloudState] = useState({ status: "idle", message: "" });
+  const [brand, setBrand] = useState(null);
+  const [brandBusy, setBrandBusy] = useState(false);
+  const [brandState, setBrandState] = useState({ status: "idle", message: "" });
+  const fileRefs = { crest: useRef(null), banner: useRef(null), watermark: useRef(null) };
 
   useEffect(() => {
     api.identity().then((r) => setId(r.identity));
@@ -23,6 +27,7 @@ export default function Identity() {
 
   useEffect(() => {
     api.cloud().then((r) => setCloud(r.cloud)).catch(() => {});
+    api.brand().then((r) => setBrand(r.brand)).catch(() => {});
   }, []);
   if (!id) {
     return (
@@ -120,6 +125,38 @@ export default function Identity() {
     }
   }
 
+  async function uploadBrand(name, file) {
+    if (!file) return;
+    setBrandBusy(true);
+    setBrandState({ status: "busy", message: `Uploading ${name}…` });
+    try {
+      await api.brandUpload(name, file);
+      const r = await api.brand();
+      setBrand(r.brand);
+      setBrandState({ status: "saved", message: `${name} uploaded and normalised.` });
+    } catch (err) {
+      setBrandState({ status: "error", message: err.message });
+    } finally {
+      setBrandBusy(false);
+      if (fileRefs[name]) fileRefs[name].value = "";
+    }
+  }
+
+  async function removeBrand(name) {
+    if (!window.confirm(`Remove the ${name} mark? It falls back to a placeholder.`)) return;
+    setBrandBusy(true);
+    setBrandState({ status: "busy", message: `Removing ${name}…` });
+    try {
+      const r = await api.brandRemove(name);
+      setBrand(r.brand);
+      setBrandState({ status: "saved", message: `${name} removed.` });
+    } catch (err) {
+      setBrandState({ status: "error", message: err.message });
+    } finally {
+      setBrandBusy(false);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-10 py-10 pb-28">
       <header className="mb-7">
@@ -209,6 +246,77 @@ export default function Identity() {
         <Field label="Department" value={id.institution?.department} onChange={(v) => set("institution.department", v)} />
         <Field label="University" value={id.institution?.university} onChange={(v) => set("institution.university", v)} />
       </Section>
+
+      <section className="panel-surface mt-8 rounded-card border border-line bg-panel p-5">
+        <div className="mb-4">
+          <h2 className="text-[13px] font-semibold tracking-tight text-fg">Brand</h2>
+          <p className="mt-0.5 max-w-2xl text-[11px] leading-relaxed text-fg-faint">
+            Institutional marks are trademarks and stay out of the repository.
+            Upload them here — the file lands in the gitignored{" "}
+            <code className="font-mono">brand/logos/</code> directory and the
+            normaliser re-runs automatically, so your marks appear on the next
+            render without touching the repo.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          {["crest", "banner", "watermark"].map((name) => {
+            const file = brand?.sources?.[name];
+            const label = name === "crest" ? "Crest" : name === "banner" ? "Banner" : "Watermark";
+            return (
+              <div key={name} className="rounded-lg border border-line bg-sunken p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-[12.5px] font-medium text-fg">{label}</div>
+                  {file ? (
+                    <Badge className="bg-accent/10 text-accent">set</Badge>
+                  ) : (
+                    <Badge className="bg-transparent text-fg-faint">missing</Badge>
+                  )}
+                </div>
+                <div className="mt-1 truncate font-mono text-[10.5px] text-fg-faint">
+                  {file ?? "placeholder"}
+                </div>
+                <div className="mt-3 flex items-center gap-1.5">
+                  <Button size="sm" variant="outline" disabled={brandBusy}
+                    onClick={() => fileRefs[name].click()}>
+                    Upload
+                  </Button>
+                  {file && (
+                    <Button size="sm" variant="outline" disabled={brandBusy}
+                      onClick={() => removeBrand(name)}>
+                      Remove
+                    </Button>
+                  )}
+                  <input
+                    ref={fileRefs[name]}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/tiff,image/gif"
+                    className="hidden"
+                    onChange={(e) => uploadBrand(name, e.target.files?.[0])}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {brand?.placeholder && (
+          <div className="mt-3 text-[11px] leading-relaxed text-amber">
+            No real marks found — the renderer is using neutral placeholders.
+          </div>
+        )}
+        {brandState.status === "busy" && (
+          <div className="mt-3 flex items-center gap-2 text-[11.5px] text-fg-faint">
+            <Spinner /> {brandState.message}
+          </div>
+        )}
+        {brandState.status === "saved" && (
+          <div className="mt-3 text-[11.5px] text-accent">{brandState.message}</div>
+        )}
+        {brandState.status === "error" && (
+          <div className="mt-3 text-[11.5px] text-danger">{brandState.message}</div>
+        )}
+      </section>
 
       <section className="panel-surface mt-8 rounded-card border border-line bg-panel p-5">
         <div className="mb-4">

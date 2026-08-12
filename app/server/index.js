@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import { readFile, writeFile, readdir, mkdir, stat, access } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir, stat, access, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { ROOT, DECKS, THEMES, CONFIG } from "../../src/paths.js";
+import { ROOT, DECKS, THEMES, CONFIG, BRAND } from "../../src/paths.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
@@ -15,6 +15,7 @@ import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
+import { normalizeBrand } from "../../tools/prep-brand.mjs";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -551,6 +552,80 @@ app.put("/api/identity", wrap(async (req, res) => {
   if (!identity || typeof identity !== "object") return fail(res, 400, "body must include `identity`");
   await writeFile(path.join(CONFIG, "identity.yaml"), YAML.stringify(identity), "utf8");
   ok(res, {});
+}));
+
+/* ------------------------------------------------------------------- brand */
+
+const BRAND_ASSETS = ["crest", "banner", "watermark"];
+const BRAND_SRC = path.join(BRAND, "logos");
+
+/** What the Brand panel renders: which marks exist, and whether placeholders
+ *  are in use (a fresh clone generates neutral stand-ins). */
+async function brandStatus() {
+  let entries = [];
+  try {
+    entries = await readdir(BRAND_SRC, { withFileTypes: true });
+  } catch { /* no logos dir yet */ }
+  const sources = {};
+  for (const name of BRAND_ASSETS) {
+    const hit = entries.find((e) => !e.isDirectory() && e.name.startsWith(`${name}.`));
+    sources[name] = hit ? hit.name : null;
+  }
+  const inv = await normalizeBrand();
+  return { sources, placeholder: inv.placeholder };
+}
+
+app.get("/api/brand", wrap(async (_req, res) => {
+  ok(res, { brand: await brandStatus() });
+}));
+
+/**
+ * Upload a source mark. The body is the raw image bytes; the extension comes
+ * from the request, so any raster format works (png/jpg/webp/tiff/gif). The
+ * file lands in gitignored brand/logos/ and normalisation re-runs, so the
+ * renderer picks it up on the next render — no repo edits, marks stay local.
+ */
+app.post("/api/brand/:name", (req, res, next) => {
+  const name = req.params.name;
+  if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
+  if (typeof req.headers["x-file-ext"] !== "string" || !/^[a-z0-9]{2,5}$/i.test(req.headers["x-file-ext"])) {
+    return fail(res, 400, "missing or invalid X-File-Ext header");
+  }
+  express.raw({ type: () => true, limit: "20mb" })(req, res, async () => {
+    try {
+      const ext = req.headers["x-file-ext"].toLowerCase();
+      const file = path.join(BRAND_SRC, `${name}.${ext}`);
+      await mkdir(BRAND_SRC, { recursive: true });
+      // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
+      const entries = await readdir(BRAND_SRC).catch(() => []);
+      for (const e of entries) {
+        if (e.startsWith(`${name}.`) && e !== path.basename(file)) {
+          await rm(path.join(BRAND_SRC, e), { force: true });
+        }
+      }
+      await writeFile(file, req.body);
+      const inv = await normalizeBrand();
+      ok(res, { asset: name, file: path.basename(file), brand: { sources: inv.sources, placeholder: false } });
+    } catch (err) {
+      fail(res, 500, err.message);
+    }
+  });
+});
+
+/** Remove a source mark and re-normalise — falls back to placeholders. */
+app.delete("/api/brand/:name", wrap(async (req, res) => {
+  const name = req.params.name;
+  if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
+  const entries = await readdir(BRAND_SRC).catch(() => []);
+  let removed = null;
+  for (const e of entries) {
+    if (e.startsWith(`${name}.`)) {
+      await rm(path.join(BRAND_SRC, e), { force: true });
+      removed = e;
+    }
+  }
+  const inv = await normalizeBrand();
+  ok(res, { asset: name, removed, brand: await brandStatus() });
 }));
 
 /* ------------------------------------------------------------------- cloud */

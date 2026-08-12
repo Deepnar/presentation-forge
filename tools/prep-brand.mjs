@@ -13,6 +13,7 @@
  */
 import { readdir, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import sharp from "sharp";
 import { ROOT } from "../src/paths.js";
 
@@ -91,35 +92,46 @@ async function emit(name, pipeline) {
 }
 
 async function main() {
+  const inv = await normalizeBrand();
+  if (inv.placeholder) console.log("  placeholder marks in use");
+  console.log(`\nwrote -> ${path.relative(ROOT, OUT)}/`);
+}
+
+/**
+ * Normalise whatever is in brand/logos/ into brand/generated/. Exported so the
+ * API can re-run it after an upload — one implementation, two callers.
+ * Returns what it produced so a caller can report on it.
+ */
+export async function normalizeBrand() {
   await mkdir(OUT, { recursive: true });
 
   const [crestSrc, bannerSrc, watermarkSrc] = await Promise.all(
     ["crest", "banner", "watermark"].map(findSource),
   );
 
+  let placeholder = false;
   if (!crestSrc && !bannerSrc && !watermarkSrc) {
     // A fresh clone has no marks — real ones are trademarks and stay out of the
     // repository. Generate neutral stand-ins so the renderer works immediately
     // rather than failing on a missing asset.
     console.log("  no marks in brand/logos — generating placeholders\n");
     await import("./make-placeholder-brand.mjs");
-    return main();
+    placeholder = true;
   }
-
   if (crestSrc) {
     const keyed = await keyWhite(crestSrc);
     const trimmed = await sharp(await keyed.toBuffer()).trim({ threshold: 1 }).png().toBuffer();
     await emit("crest", sharp(trimmed).png({ compressionLevel: 9 }));
     // Reversed mark for dark themes.
     await emit("crest-light", await monochrome(trimmed, { r: 255, g: 255, b: 255 }));
-  } else {
+  } else if (!placeholder) {
     console.log("  crest      — no source, skipped");
   }
 
   if (bannerSrc) {
     // The banner is a full-bleed strip with a rule; trim only flat margins.
     await emit("banner", sharp(bannerSrc).trim({ threshold: 12 }).png({ compressionLevel: 9 }));
-  } else {
+  } else if (!placeholder) {
     console.log("  banner     — no source, skipped");
   }
 
@@ -138,11 +150,19 @@ async function main() {
       }])
       .png({ compressionLevel: 9 });
     await emit("watermark", faded);
-  } else {
+  } else if (!placeholder) {
     console.log("  watermark  — no source, skipped");
   }
 
-  console.log(`\nwrote -> ${path.relative(ROOT, OUT)}/`);
+  return {
+    sources: {
+      crest: Boolean(crestSrc), banner: Boolean(bannerSrc), watermark: Boolean(watermarkSrc),
+    },
+    placeholder,
+  };
 }
 
-main();
+// CLI entry; the API imports normalizeBrand directly instead.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}
