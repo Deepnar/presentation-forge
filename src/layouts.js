@@ -2021,6 +2021,390 @@ export const layouts = {
     col(data.left, box.x);
     col(data.right, box.x + cw + gut);
   },
+
+  /**
+   * A cyclic process: steps on an elliptical ring around an accent centre. Each
+   * step carries a number node, a title and a body; small triangles between
+   * consecutive steps point along the ring to show the direction of travel.
+   */
+  cycle(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.steps.length;
+    const top = Math.max(y, 3.0);
+    const cx = box.x + box.w / 2;
+    const cy = (top + box.bottom) / 2;
+    const radiusX = box.w / 2 - 1.65;
+    // Each step's content spans ey-0.55 (number node) to ey+0.61 (body). The
+    // ring must keep the top step's content clear of the centre circle's top
+    // edge AND the bottom step's clear of the circle's bottom and the footer —
+    // the vertical run is tight, so the ring sits as low as that allows.
+    const radiusY = Math.max(1.15, Math.min((box.bottom - cy) - 0.62, cy - top + 0.5));
+
+    const centreW = 1.5;
+    slide.addShape("ellipse", {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    const label = data.label ?? `${n} steps`;
+    const labelScale = fitOneLine(label, centreW - 0.25, theme.type.subhead, { min: 0.45 });
+    slide.addText(label, {
+      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: labelScale }),
+      align: "center", valign: "middle",
+    });
+
+    const ew = 1.5, eh = 0.9;
+    const titleScale = fitScaleAll(data.steps.map((s) => s.title), ew - 0.2, 0.35, theme.type.caption, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      data.steps.map((s) => s.body).filter(Boolean), ew - 0.2, 0.45, theme.type.caption,
+    );
+    const centres = data.steps.map((s, i) => {
+      const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+      return { angle, ex: cx + radiusX * Math.cos(angle), ey: cy + radiusY * Math.sin(angle) };
+    });
+    centres.forEach((c, i) => {
+      slide.addShape("ellipse", {
+        x: c.ex - 0.21, y: c.ey - 0.55, w: 0.42, h: 0.42,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(String(i + 1), {
+        x: c.ex - 0.21, y: c.ey - 0.55, w: 0.42, h: 0.42,
+        ...textStyle(theme, "caption", { color: theme.palette.on_accent, bold: true }),
+        align: "center", valign: "middle",
+      });
+      slide.addText(data.steps[i].title, {
+        x: c.ex - ew / 2, y: c.ey - 0.05, w: ew, h: 0.35,
+        ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+        align: "center", valign: "top",
+      });
+      if (data.steps[i].body) {
+        slide.addText(data.steps[i].body, {
+          x: c.ex - ew / 2, y: c.ey + 0.33, w: ew, h: 0.28,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          align: "center", valign: "top",
+        });
+      }
+      const next = centres[(i + 1) % n];
+      const mx = (c.ex + next.ex) / 2;
+      const my = (c.ey + next.ey) / 2;
+      const ang = Math.atan2(next.ey - c.ey, next.ex - c.ex) * 180 / Math.PI;
+      slide.addShape("triangle", {
+        x: mx - 0.12, y: my - 0.12, w: 0.24, h: 0.24,
+        fill: { color: hex(theme.palette.ink_muted) }, line: { type: "none" },
+        rotate: ang + 90,
+      });
+    });
+  },
+
+  /**
+   * A funnel: stages as roundRects narrowing linearly from full width to a
+   * fraction, centred, with the value at the right of each stage.
+   */
+  funnel(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.stages.length;
+    const stageH = (box.bottom - y - 0.1 - 0.22 * (n - 1)) / n;
+    const maxW = box.w;
+    const minW = box.w * 0.3;
+    const labelScale = fitScaleAll(data.stages.map((s) => s.label), maxW - 2.0, 0.4, theme.type.subhead, { min: 0.5 });
+    data.stages.forEach((st, i) => {
+      const w = maxW - (maxW - minW) * (i / (n - 1));
+      const x = box.x + (box.w - w) / 2;
+      const sy = y + i * (stageH + 0.22);
+      const accent = i % 2 === 0;
+      slide.addShape("roundRect", {
+        x, y: sy, w, h: stageH,
+        fill: { color: hex(accent ? theme.palette.accent : theme.palette.surface) },
+        line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.12,
+      });
+      const ink = accent ? theme.palette.on_accent : theme.palette.ink;
+      slide.addText(st.label, {
+        x: x + 0.2, y: sy, w: w - 1.6, h: stageH,
+        ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
+        align: "center", valign: "middle",
+      });
+      if (st.value) {
+        slide.addText(st.value, {
+          x: x + w - 1.4, y: sy, w: 1.2, h: stageH,
+          ...textStyle(theme, "stat", { color: hex(ink), scale: 0.45 }),
+          align: "right", valign: "middle",
+        });
+      }
+    });
+  },
+
+  /**
+   * A horizontal pipeline: stage cards sitting above a baseline, gate pills
+   * below it, accent pipes connecting the stages and the vertical stubs that
+   * tie each card to the line.
+   */
+  pipeline(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.stages.length;
+    const top = Math.max(y, 2.85);
+    const cardH = 1.35;
+    const gut = 0.34;
+    const cw = (box.w - gut * (n - 1)) / n;
+    const lineY = top + cardH + 0.55;
+    const titleScale = fitScaleAll(data.stages.map((s) => s.title), cw - 0.3, 0.4, theme.type.subhead, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      data.stages.map((s) => s.body).filter(Boolean), cw - 0.3, 0.55, theme.type.caption,
+    );
+    slide.addShape("rect", {
+      x: box.x, y: lineY, w: box.w, h: 0.03,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    data.stages.forEach((st, i) => {
+      const x = box.x + i * (cw + gut);
+      if (i > 0) {
+        slide.addShape("rect", {
+          x: x - gut, y: lineY - 0.02, w: gut, h: 0.04,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        });
+      }
+      slide.addShape("rect", {
+        x: x + cw / 2 - 0.015, y: top + cardH, w: 0.03, h: lineY - top - cardH,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+      });
+      card(slide, theme, { x, y: top, w: cw, h: cardH });
+      slide.addText(st.title, {
+        x: x + 0.15, y: top + 0.15, w: cw - 0.3, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+        valign: "top",
+      });
+      if (st.body) {
+        slide.addText(st.body, {
+          x: x + 0.15, y: top + 0.58, w: cw - 0.3, h: 0.55,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          valign: "top",
+        });
+      }
+      if (st.gate) {
+        const gW = Math.min(cw, measure(st.gate, theme.type.caption) + 0.4);
+        slide.addShape("roundRect", {
+          x: x + (cw - gW) / 2, y: lineY + 0.18, w: gW, h: 0.32,
+          fill: { color: hex(theme.palette.ink) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.pill ?? 0.16,
+        });
+        slide.addText(st.gate, {
+          x: x + (cw - gW) / 2, y: lineY + 0.18, w: gW, h: 0.32,
+          ...textStyle(theme, "caption", { color: theme.palette.surface, scale: 0.85 }),
+          align: "center", valign: "middle",
+        });
+      }
+    });
+  },
+
+  /**
+   * A dependency graph: nodes sorted into layers by dependency depth (a node's
+   * layer is the longest path from any source to it), distributed horizontally
+   * within each layer, with hairlines from each node to its dependencies.
+   */
+  dependencies(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const nodes = data.nodes;
+    const n = nodes.length;
+    const depth = Array(n).fill(0);
+    // depends_on is a list of indices; propagate depth until it settles.
+    for (let pass = 0; pass < n; pass++) {
+      nodes.forEach((nd, i) => (nd.depends_on ?? []).forEach((d) => {
+        if (d >= 0 && d < n && d !== i) depth[i] = Math.max(depth[i], depth[d] + 1);
+      }));
+    }
+    const maxDepth = Math.max(0, ...depth);
+    const layers = Array.from({ length: maxDepth + 1 }, () => []);
+    nodes.forEach((nd, i) => layers[depth[i]].push(i));
+    const top = Math.max(y, 2.6);
+    const layerH = (box.bottom - top) / (maxDepth + 1);
+    const nodeW = 2.4, nodeH = 0.85;
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.title), nodeW - 0.2, 0.35, theme.type.caption, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.4, theme.type.caption,
+    );
+    const centres = nodes.map(() => ({ x: 0, y: 0 }));
+    layers.forEach((layer, li) => {
+      const lx = box.x + (box.w - (nodeW * layer.length + 0.35 * (layer.length - 1))) / 2;
+      layer.forEach((nodeIdx, ni) => {
+        const x = lx + ni * (nodeW + 0.35);
+        const nodeY = top + li * layerH + (layerH - nodeH) / 2;
+        centres[nodeIdx] = { x: x + nodeW / 2, y: nodeY + nodeH / 2 };
+        card(slide, theme, { x, y: nodeY, w: nodeW, h: nodeH });
+        slide.addText(nodes[nodeIdx].title, {
+          x: x + 0.1, y: nodeY + 0.1, w: nodeW - 0.2, h: 0.35,
+          ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+          align: "center", valign: "top",
+        });
+        if (nodes[nodeIdx].body) {
+          slide.addText(nodes[nodeIdx].body, {
+            x: x + 0.1, y: nodeY + 0.48, w: nodeW - 0.2, h: 0.35,
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+            align: "center", valign: "top",
+          });
+        }
+      });
+    });
+    nodes.forEach((nd, i) => (nd.depends_on ?? []).forEach((d) => {
+      if (d >= 0 && d < n && d !== i) {
+        const from = centres[d], to = centres[i];
+        const x1 = from.x, y1 = from.y + nodeH / 2;
+        const x2 = to.x, y2 = to.y - nodeH / 2;
+        const lx = Math.min(x1, x2), lw = Math.abs(x2 - x1) || 0.02;
+        const ly = Math.min(y1, y2), lh = Math.abs(y2 - y1) || 0.02;
+        // Edges are the diagram's grammar — a rule-coloured hairline reads as
+        // decoration, not as a dependency, so the accent marks the relationship.
+        slide.addShape("line", {
+          x: lx, y: ly, w: lw, h: lh,
+          line: { color: hex(theme.palette.accent), width: 1.3 },
+          flipH: x2 < x1, flipV: y2 < y1,
+        });
+      }
+    }));
+  },
+
+  /**
+   * An if/else flow: optional lead-in steps, an accent decision diamond, and
+   * branches fanning out below — each with a label pill and its own steps.
+   */
+  "branching-flow"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const top = Math.max(y, 2.55);
+    const decisionW = 1.4, decisionH = 0.95;
+    const dx = box.x + box.w / 2 - decisionW / 2;
+    const dy = top + 0.5;
+
+    slide.addShape("diamond", {
+      x: dx, y: dy, w: decisionW, h: decisionH,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    const decisionScale = fitScale(data.decision ?? "Decision", decisionW - 0.4, decisionH - 0.4, theme.type.caption, { min: 0.5 });
+    slide.addText(data.decision ?? "Decision", {
+      x: dx, y: dy, w: decisionW, h: decisionH,
+      ...textStyle(theme, "caption", { bold: true, color: theme.palette.on_accent, scale: decisionScale }),
+      align: "center", valign: "middle",
+    });
+
+    const pre = data.steps ?? [];
+    const stepW = 1.5, stepH = 0.7;
+    pre.forEach((s, i) => {
+      const x = box.x + box.w / 2 + (i - (pre.length - 1) / 2) * (stepW + 0.3) - stepW / 2;
+      const sy = top - 0.15;
+      card(slide, theme, { x, y: sy, w: stepW, h: stepH });
+      slide.addText(s.title, {
+        x: x + 0.1, y: sy + 0.1, w: stepW - 0.2, h: stepH - 0.2,
+        ...textStyle(theme, "caption", { bold: true, scale: 0.95 }),
+        align: "center", valign: "middle",
+      });
+      slide.addShape("line", {
+        x: x + stepW / 2 - 0.015, y: sy + stepH, w: 0.03, h: dy - sy - stepH,
+        line: { color: hex(theme.palette.rule), width: 1.1 },
+      });
+    });
+
+    const branches = data.branches ?? [];
+    const nb = branches.length;
+    const branchTop = dy + decisionH + 0.25;
+    branches.forEach((b, bi) => {
+      const bx = box.x + box.w * (bi + 1) / (nb + 1) - stepW / 2;
+      slide.addShape("line", {
+        x: dx + decisionW / 2 - 0.015, y: dy + decisionH, w: 0.03, h: branchTop - dy - decisionH,
+        line: { color: hex(theme.palette.rule), width: 1.1 },
+      });
+      slide.addShape("line", {
+        x: dx + decisionW / 2 - 0.015, y: branchTop, w: bx + stepW / 2 - dx - decisionW / 2, h: 0.03,
+        line: { color: hex(theme.palette.rule), width: 1.1 },
+      });
+      const lW = Math.min(1.3, measure(b.label, theme.type.caption) + 0.4);
+      slide.addShape("roundRect", {
+        x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        rectRadius: theme.shape?.radius?.pill ?? 0.15,
+      });
+      slide.addText(b.label, {
+        x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+        align: "center", valign: "middle",
+      });
+      (b.steps ?? []).forEach((s, si) => {
+        const sy2 = branchTop + 0.45 + si * (stepH + 0.2);
+        card(slide, theme, { x: bx, y: sy2, w: stepW, h: stepH });
+        slide.addText(s.title, {
+          x: bx + 0.1, y: sy2 + 0.1, w: stepW - 0.2, h: stepH - 0.2,
+          ...textStyle(theme, "caption", { bold: true, scale: 0.95 }),
+          align: "center", valign: "middle",
+        });
+      });
+    });
+  },
+
+  /**
+   * A stacked layer diagram: horizontal layer panels with an accent left border,
+   * a label on the left, a centred body and item pills packed from the right.
+   */
+  "layered-architecture"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.layers.length;
+    const gap = 0.09;
+    const layerH = (box.bottom - y - 0.1 - gap * (n - 1)) / n;
+    const labelScale = fitScaleAll(data.layers.map((l) => l.label), 3.2, 0.4, theme.type.subhead, { min: 0.65 });
+    const bodyScale = fitScaleAll(
+      data.layers.map((l) => l.body).filter(Boolean), 4.4, 0.35, theme.type.caption,
+    );
+    data.layers.forEach((l, i) => {
+      const ly = y + i * (layerH + gap);
+      slide.addShape("roundRect", {
+        x: box.x, y: ly, w: box.w, h: layerH,
+        fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.1,
+      });
+      slide.addShape("rect", {
+        x: box.x, y: ly, w: 0.06, h: layerH,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(l.label, {
+        x: box.x + 0.24, y: ly, w: 3.2, h: layerH,
+        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+        valign: "middle",
+      });
+      if (l.body) {
+        slide.addText(l.body, {
+          x: box.x + 3.5, y: ly, w: 4.4, h: layerH,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          valign: "middle",
+        });
+      }
+      const items = l.items ?? [];
+      let pillX = box.x + box.w - 0.18;
+      for (let j = items.length - 1; j >= 0; j--) {
+        const it = items[j];
+        const w2 = Math.min(2.3, measure(it, theme.type.caption) + 0.4);
+        pillX -= w2;
+        slide.addShape("roundRect", {
+          x: pillX, y: ly + (layerH - 0.3) / 2, w: w2, h: 0.3,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.pill ?? 0.15,
+        });
+        slide.addText(it, {
+          x: pillX, y: ly + (layerH - 0.3) / 2, w: w2, h: 0.3,
+          ...textStyle(theme, "caption", { color: theme.palette.ink, scale: 0.85 }),
+          align: "center", valign: "middle",
+        });
+        pillX -= 0.12;
+      }
+    });
+  },
 };
 
 export { content };
