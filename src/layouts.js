@@ -13,15 +13,18 @@ const path2 = (ctx) => ctx; // keep signature obvious at call sites
 
 /* ------------------------------------------------------------------ utils */
 
-function content(theme, brand, { full = false } = {}) {
+function content(theme, brand, { full = false, note = 0 } = {}) {
   const m = theme.grid.margin;
   const reserve = full ? 0 : reservedTopRight(brand);
+  // A speaker-note bar reserves height at the bottom of the content box; the
+  // bar itself is drawn by render.js in the space this frees.
+  const bottom = CANVAS.h - m.bottom - note;
   return {
     x: m.left,
     y: m.top,
     w: CANVAS.w - m.left - m.right,
     right: CANVAS.w - m.right,
-    bottom: CANVAS.h - m.bottom,
+    bottom,
     titleW: CANVAS.w - m.left - m.right - reserve,
   };
 }
@@ -975,6 +978,320 @@ export const layouts = {
         paraSpaceAfter: 6, valign: "top",
       },
     );
+  },
+
+  /**
+   * A lighter section divider: the section surface, a centred headline and an
+   * optional standfirst. No section number — chapter is for sub-parts within a
+   * major section, so numbering would duplicate the section eyebrow.
+   */
+  chapter(slide, ctx) {
+    const { theme, data } = ctx;
+    const s = theme.surfaces.section;
+    slide.background = { color: hex(s.bg) };
+    const m = theme.grid.margin;
+    const w = CANVAS.w - m.left - m.right;
+    const scale = fitScale(data.headline, w, 1.8, theme.type.display, { min: 0.55 });
+    slide.addText(data.headline, {
+      x: m.left, y: 2.35, w, h: 1.8,
+      ...textStyle(theme, "display", { color: s.ink, scale }),
+      align: "center", valign: "middle",
+    });
+    if (data.standfirst) {
+      const sfScale = fitScale(data.standfirst, w * 0.66, 0.9, theme.type.subhead, { min: 0.7 });
+      slide.addText(data.standfirst, {
+        x: (CANVAS.w - w * 0.66) / 2, y: 4.35, w: w * 0.66, h: 0.9,
+        ...textStyle(theme, "subhead", { color: s.muted, scale: sfScale }),
+        align: "center", valign: "top",
+      });
+    }
+  },
+
+  /**
+   * The final slide: a centred display headline on the title surface, an
+   * optional body, and an optional call-to-action pill at the bottom centre.
+   */
+  closing(slide, ctx) {
+    const { theme, data } = ctx;
+    const s = theme.surfaces.title;
+    slide.background = { color: hex(s.bg) };
+    const m = theme.grid.margin;
+    const w = CANVAS.w - m.left - m.right;
+    const scale = fitScale(data.headline, w, 2.2, theme.type.display, { min: 0.55 });
+    slide.addText(data.headline, {
+      x: m.left, y: 1.85, w, h: 2.2,
+      ...textStyle(theme, "display", { color: s.ink, scale }),
+      align: "center", valign: "middle",
+    });
+    let y = 4.35;
+    if (data.body) {
+      const bScale = fitScale(data.body, w * 0.72, 1.2, theme.type.body, { min: 0.75 });
+      slide.addText(data.body, {
+        x: (CANVAS.w - w * 0.72) / 2, y, w: w * 0.72, h: 1.2,
+        ...textStyle(theme, "body", { color: s.muted, scale: bScale }),
+        align: "center", valign: "top",
+      });
+      y += 1.4;
+    }
+    if (data.cta) {
+      const ctaW = Math.min(3.4, measure(data.cta, theme.type.subhead) + 1.3);
+      const cx = (CANVAS.w - ctaW) / 2;
+      const cy = Math.max(y + 0.35, 5.75);
+      slide.addShape("roundRect", {
+        x: cx, y: cy, w: ctaW, h: 0.6,
+        fill: { color: hex(s.accent ?? theme.palette.accent) },
+        line: { type: "none" },
+        rectRadius: theme.shape?.radius?.pill ?? 0.3,
+      });
+      slide.addText(data.cta, {
+        x: cx, y: cy, w: ctaW, h: 0.6,
+        ...textStyle(theme, "subhead", { color: theme.palette.on_accent }),
+        align: "center", valign: "middle",
+      });
+    }
+  },
+
+  /**
+   * Ordered steps with a number circle to the left of each item. Sequence is
+   * the whole point, so the circles carry the accent and the text shares one
+   * horizontal fit to keep sibling rows uniform.
+   */
+  "numbered-list"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const rowH = (box.bottom - y - 0.1) / n;
+    const cw = 0.5;
+    const tw = box.w - cw - 0.35;
+    const scale = fitScaleAll(data.items, tw, rowH * 0.85, theme.type.body);
+    data.items.forEach((it, i) => {
+      const ry = y + i * rowH;
+      const cy = ry + rowH / 2;
+      slide.addShape("ellipse", {
+        x: box.x, y: cy - 0.25, w: cw, h: 0.5,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(String(i + 1), {
+        x: box.x, y: cy - 0.25, w: cw, h: 0.5,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent }),
+        align: "center", valign: "middle",
+      });
+      slide.addText(it, {
+        x: box.x + cw + 0.35, y: ry, w: tw, h: rowH,
+        ...textStyle(theme, "body", { scale }),
+        valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * Requirement/verification list: each row is a checkbox square — accent-filled
+   * with a tick when checked, outlined when not — and the item text. Checked
+   * rows read as done (full ink), unchecked as pending (muted).
+   */
+  checklist(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const rowH = (box.bottom - y - 0.1) / n;
+    const cw = 0.45;
+    const tw = box.w - cw - 0.35;
+    const scale = fitScaleAll(data.items.map((i) => i.text), tw, rowH * 0.85, theme.type.body);
+    data.items.forEach((it, i) => {
+      const ry = y + i * rowH;
+      const cy = ry + rowH / 2;
+      const s = 0.34;
+      slide.addShape("roundRect", {
+        x: box.x, y: cy - s / 2, w: s, h: s,
+        fill: { color: hex(it.checked ? theme.palette.accent : theme.palette.surface) },
+        line: it.checked ? { type: "none" } : { color: hex(theme.palette.rule), width: 1.5 },
+        rectRadius: 0.06,
+      });
+      if (it.checked) {
+        slide.addText("✓", {
+          x: box.x, y: cy - s / 2, w: s, h: s,
+          ...textStyle(theme, "body", { color: theme.palette.on_accent, scale: 0.8 }),
+          align: "center", valign: "middle",
+        });
+      }
+      slide.addText(it.text, {
+        x: box.x + cw + 0.35, y: ry, w: tw, h: rowH,
+        ...textStyle(theme, "body", { scale, color: it.checked ? theme.palette.ink : theme.palette.ink_muted }),
+        valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * A grid of capability cards: icon, bold title, muted body. Column count is
+   * ceil(sqrt(n)) clamped to three, so 2..6 items form a near-square grid.
+   */
+  "feature-grid"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const cols = Math.min(3, Math.max(2, Math.ceil(Math.sqrt(n))));
+    const rows = Math.ceil(n / cols);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const titleScale = fitScaleAll(data.items.map((i) => i.title), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      data.items.map((i) => i.body).filter(Boolean), cw - pad * 2, ch - 1.25, theme.type.body,
+    );
+    data.items.forEach((it, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      card(slide, theme, { x, y: ry, w: cw, h: ch });
+      let ty = ry + pad;
+      if (it.icon) {
+        slide.addText(it.icon, {
+          x: x + pad, y: ty, w: cw - pad * 2, h: 0.42,
+          fontSize: Math.round(theme.type.heading.size * 0.85),
+          align: "left", valign: "top",
+        });
+        ty += 0.48;
+      }
+      slide.addText(it.title, {
+        x: x + pad, y: ty, w: cw - pad * 2, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+        valign: "top",
+      });
+      ty += 0.44;
+      if (it.body) {
+        slide.addText(it.body, {
+          x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - ry) - pad,
+          ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * Dense label/value pairs in a three- or four-column grid. The label is the
+   * eyebrow, the value is bold subhead; a divider sits under the heading.
+   */
+  "grid-items"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    slide.addShape("rect", {
+      x: box.x, y: y - 0.12, w: box.w, h: 0.03,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    const n = data.items.length;
+    const cols = n >= 8 ? 4 : 3;
+    const rows = Math.ceil(n / cols);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const valueScale = fitScaleAll(data.items.map((i) => i.value), cw, ch * 0.5, theme.type.subhead, { min: 0.6 });
+    data.items.forEach((it, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      slide.addText(it.label, {
+        x, y: ry, w: cw, h: ch * 0.42,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+        valign: "top",
+      });
+      slide.addText(it.value, {
+        x, y: ry + ch * 0.45, w: cw, h: ch * 0.5,
+        ...textStyle(theme, "subhead", { bold: true, scale: valueScale }),
+        valign: "top",
+      });
+    });
+  },
+
+  /**
+   * Items with a large icon/character prefix and the text to the right — more
+   * visual than numbered-list, so the prefixes sit larger and without circles.
+   */
+  "icon-list"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const rowH = (box.bottom - y - 0.1) / n;
+    const iw = 0.7;
+    const tw = box.w - iw - 0.3;
+    const scale = fitScaleAll(data.items.map((i) => i.text), tw, rowH * 0.85, theme.type.body);
+    data.items.forEach((it, i) => {
+      const ry = y + i * rowH;
+      slide.addText(it.icon ?? "•", {
+        x: box.x, y: ry, w: iw, h: rowH,
+        fontSize: Math.round(theme.type.heading.size * 0.9),
+        align: "left", valign: "middle",
+      });
+      slide.addText(it.text, {
+        x: box.x + iw + 0.3, y: ry, w: tw, h: rowH,
+        ...textStyle(theme, "body", { scale }),
+        valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * Left-to-right cards connected by a thin accent line: tag pill, bold title,
+   * muted body. The connectors draw first so the cards overlap their ends.
+   */
+  "stacked-list"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const gut = 0.32;
+    const cw = (box.w - gut * (n - 1)) / n;
+    const ch = Math.min(3.2, box.bottom - y - 0.2);
+    const pad = theme.shape?.card_pad ?? 0.28;
+    const titleScale = fitScaleAll(data.items.map((i) => i.title), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.6 });
+    const bodyScale = fitScaleAll(
+      data.items.map((i) => i.body).filter(Boolean), cw - pad * 2, ch - 1.5, theme.type.body,
+    );
+    for (let i = 0; i < n - 1; i++) {
+      slide.addShape("rect", {
+        x: box.x + i * (cw + gut) + cw, y: y + ch / 2 - 0.02, w: gut, h: 0.04,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+    }
+    data.items.forEach((it, i) => {
+      const x = box.x + i * (cw + gut);
+      card(slide, theme, { x, y, w: cw, h: ch });
+      let ty = y + pad;
+      if (it.tag) {
+        const tw2 = Math.min(cw - pad * 2, measure(it.tag, theme.type.caption) + 0.42);
+        slide.addShape("roundRect", {
+          x: x + pad, y: ty, w: tw2, h: 0.32,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+          rectRadius: theme.shape?.radius?.pill ?? 0.16,
+        });
+        slide.addText(it.tag, {
+          x: x + pad, y: ty, w: tw2, h: 0.32,
+          ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.85 }),
+          align: "center", valign: "middle",
+        });
+        ty += 0.42;
+      }
+      slide.addText(it.title, {
+        x: x + pad, y: ty, w: cw - pad * 2, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+        valign: "top",
+      });
+      ty += 0.44;
+      if (it.body) {
+        slide.addText(it.body, {
+          x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
+          ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+          valign: "top",
+        });
+      }
+    });
   },
 };
 

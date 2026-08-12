@@ -108,19 +108,31 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     const slide = pres.addSlide();
     const isTitle = data.type === "title";
     const isFreeform = data.type === "freeform";
-    const isFull = isTitle || isFreeform || data.type === "section" || data.type === "quote" || data.type === "image";
-    const surface = isTitle ? "title" : data.type === "section" ? "section" : "content";
+    // Types that paint a non-standard surface: section dividers and their
+    // lighter variants (chapter, epigraph) use the section surface; the closing
+    // slide borrows the title surface; quote and image are full-bleed by design.
+    const isFull =
+      isTitle || isFreeform || ["section", "quote", "image", "chapter", "closing", "epigraph", "hero-image"].includes(data.type);
+    const surface = isTitle || data.type === "closing" ? "title"
+      : ["section", "chapter", "epigraph"].includes(data.type) ? "section"
+      : "content";
 
     // Track the background each layout actually paints, so the chrome layer can
     // pick a crest variant that stays legible against it.
-    const bg = isTitle ? theme.palette.bg
-      : data.type === "section" ? theme.palette.accent
+    const bg = isTitle || data.type === "closing" ? theme.surfaces.title.bg
+      : ["section", "chapter", "epigraph"].includes(data.type) ? theme.surfaces.section.bg
       : data.type === "quote" ? theme.palette.surface
+      : data.type === "hero-image" ? theme.palette.ink
       : theme.palette.bg;
 
     if (!isFull) slide.background = { color: hex(theme.palette.bg) };
 
-    const box = content(theme, brand, { full: isFull });
+    // A speaker note reserves 0.7in of the content box bottom and draws a bar
+    // there, so no standard layout can collide with it and the chrome footer
+    // stays free. Full-bleed slides (title, section, quote, image, freeform)
+    // never take one — there is no standard content box to reserve.
+    const noteBar = data.speaker_note && !isFull;
+    const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0 });
     const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
 
     try {
@@ -139,6 +151,29 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     if (plate) {
       const b64 = (await readFile(plate.png)).toString("base64");
       slide.background = { data: b64, path: "plate.png" };
+    }
+
+    // A speaker note bar above the chrome footer: a thin accent-bordered panel
+    // holding the note text in italic caption, for instructions the audience
+    // may read. Drawn after the layout so it always sits on top, in the space
+    // the content box already reserved.
+    if (noteBar) {
+      const ny = box.bottom + 0.1;
+      slide.addShape("roundRect", {
+        x: box.x, y: ny, w: box.w, h: 0.52,
+        fill: { color: hex(theme.palette.surface) },
+        line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.1,
+      });
+      slide.addShape("rect", {
+        x: box.x, y: ny, w: 0.06, h: 0.52,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(data.speaker_note, {
+        x: box.x + 0.22, y: ny, w: box.w - 0.22, h: 0.52,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true }),
+        valign: "middle",
+      });
     }
 
     if (isTitle) {
