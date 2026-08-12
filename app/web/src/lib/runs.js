@@ -9,33 +9,33 @@
  * and the server-side pipeline are never aborted by navigating away.
  */
 
-const runs = new Map(); // chatId -> { abort, status, finished, subs:Set<fn> }
+const store = new Map(); // chatId -> { abort, status, finished, subs:Set<fn> }
 
 export const runs = {
   begin(chatId, run) {
-    runs.set(chatId, { ...run, status: run.status ?? "Queued…", finished: false, subs: new Set() });
+    store.set(chatId, { ...run, status: run.status ?? "Queued…", finished: false, subs: new Set() });
   },
 
   get(chatId) {
-    return runs.get(chatId);
+    return store.get(chatId);
   },
 
   update(chatId, patch) {
-    const r = runs.get(chatId);
+    const r = store.get(chatId);
     if (!r) return;
     Object.assign(r, patch);
     for (const fn of r.subs) fn(patch);
   },
 
   subscribe(chatId, fn) {
-    runs.get(chatId)?.subs.add(fn);
+    store.get(chatId)?.subs.add(fn);
   },
 
   unsubscribe(chatId, fn) {
-    runs.get(chatId)?.subs.delete(fn);
+    store.get(chatId)?.subs.delete(fn);
   },
 
   end(chatId) {
-    runs.delete(chatId);
+    store.delete(chatId);
   },
 };
