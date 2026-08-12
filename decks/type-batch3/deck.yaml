@@ -1,0 +1,87 @@
+title: "Batch 3 — Comparison types"
+theme: warm-humanist
+sections:
+  - Comparison
+slides:
+  - type: title
+    section: 0
+  - type: before-after
+    headline: What the redesign changed
+    before:
+      title: Monolithic deployment
+      body: A single server ran everything, so any change meant a full redeploy and
+        any outage was total.
+    after:
+      title: Service-oriented pipeline
+      body: Independent services deploy on their own cadence, fail in isolation,
+        and scale to the load actually present.
+    section: 0
+  - type: framework
+    headline: The operating model
+    concept:
+      title: Platform
+      body: shared foundation
+    elements:
+      - title: Identity
+      - title: Data
+        body: governed lake
+      - title: Messaging
+      - title: Observability
+        body: traces + logs
+      - title: Compute
+      - title: Edge
+    section: 0
+  - type: matrix
+    headline: Prioritisation grid
+    axes:
+      x: { label: Effort, low: Low effort, high: High effort }
+      y: { label: Impact, low: Low impact, high: High impact }
+    quadrants:
+      - title: Quick wins
+        body: High impact, low effort — do these first.
+      - title: Big bets
+        body: High impact, high effort — sequence carefully.
+      - title: Fill-ins
+        body: Low impact, low effort — slot in spare cycles.
+      - title: Time sinks
+        body: Low impact, high effort — deprioritise.
+    section: 0
+  - type: scorecard
+    headline: Vendor scorecard
+    criteria:
+      - label: Cost
+        weight: "30%"
+      - label: Time to value
+        weight: "25%"
+      - label: Fit with stack
+        weight: "25%"
+      - label: Support
+        weight: "20%"
+    options:
+      - name: Vendor A
+        scores: [4, 5, 3, 4]
+      - name: Vendor B
+        scores: [3, 3, 5, 4]
+      - name: Vendor C
+        scores: [5, 4, 2, 3]
+    section: 0
+  - type: vs
+    headline: Two roads
+    left:
+      title: Buy
+    right:
+      title: Build
+    left_body: Fastest to market, ongoing licensing, black-box behaviour.
+    right_body: Total control, real engineering cost, long runway.
+    section: 0
+  - type: side-by-side
+    headline: The two sites at a glance
+    left:
+      image: img-blue.png
+      title: North campus
+      body: The original cluster, now the disaster-recovery site.
+    right:
+      image: img-orange.png
+      title: South campus
+      body: The primary cluster with the newest hardware generation.
+    section: 0
