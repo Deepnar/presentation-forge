@@ -35,24 +35,37 @@ export default function ParticleField({ paused = false, className = "" }) {
     };
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 150;
+    const MAX = 260;
+    // 60fps cap: the rAF loop can run at display refresh (144Hz+ screens), but
+    // nothing here needs more than 60 and the dot field is ambience. Skip a
+    // frame when one has arrived early.
+    const FRAME_MS = 1000 / 60;
 
     const state = {
       dots: [],
       pointer: { x: -1, y: -1 },
       w: 0, h: 0, dpr: 1, frames: 0, running: false,
+      last: 0,
     };
 
     const makeDot = () => {
-      const r = 1 + Math.random() * 1.8;
+      const r = 0.6 + Math.random() * 1.4;
       return {
-        x: Math.random() * state.w,
-        y: Math.random() * state.h,
+        // Home position; drift wanders around it on two axes. Keeping the base
+        // fixed and adding sine offsets means the field never drifts off-screen
+        // over a long session — it breathes in place.
+        bx: Math.random() * state.w,
+        by: Math.random() * state.h,
         r,
-        base: 0.12 + Math.random() * 0.18,
+        base: 0.1 + Math.random() * 0.16,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.15 + Math.random() * 0.35,
-        accent: Math.random() < 0.16,
+        // Two incommensurate frequencies give a Perlin-ish wander on each axis
+        // — a figure-eight wobble rather than a single left-right sway.
+        fx: 0.10 + Math.random() * 0.18,
+        fy: 0.07 + Math.random() * 0.15,
+        ax: 8 + Math.random() * 16,
+        ay: 8 + Math.random() * 16,
+        accent: Math.random() < 0.14,
       };
     };
 
@@ -64,7 +77,8 @@ export default function ParticleField({ paused = false, className = "" }) {
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      const count = Math.max(24, Math.min(MAX, Math.round(area / 9000)));
+      // More dots than before, smaller, so the field reads as a fine stipple.
+      const count = Math.max(40, Math.min(MAX, Math.round(area / 4200)));
       state.dots = Array.from({ length: count }, makeDot);
       if (reduceMotion) drawFrame(performance.now());
     }
@@ -74,22 +88,22 @@ export default function ParticleField({ paused = false, className = "" }) {
       const { dpr, pointer } = state;
       let pushed = 0;
       for (const d of state.dots) {
-        // Idle drift rides a slow sine; the phase steps with wall-clock time so
-        // the motion is smooth regardless of frame rate.
-        d.phase += 0.004 * d.speed;
-        let x = d.x;
-        let y = d.y + Math.sin(d.phase) * 3.5 * dpr;
+        // Ambient drift: phase steps with wall-clock time so the motion stays
+        // smooth regardless of frame rate, and each axis rides its own sine.
+        d.phase += 0.0035;
+        let x = d.bx + Math.sin(d.phase * d.fx * 3) * d.ax;
+        let y = d.by + Math.sin(d.phase * d.fy * 3 + 1.3) * d.ay;
 
         // Gentle repulsion inside a radius around the pointer, easing back to
         // the sine path as the pointer moves away. Parallax, not physics.
         if (pointer.x >= 0) {
           const dx = x - pointer.x * dpr;
           const dy = y - pointer.y * dpr;
-          const radius = 130 * dpr;
+          const radius = 120 * dpr;
           const dist2 = dx * dx + dy * dy;
           if (dist2 > 0 && dist2 < radius * radius) {
             const dist = Math.sqrt(dist2);
-            const push = (1 - dist / radius) * 1.4;
+            const push = (1 - dist / radius) * 1.2;
             x += (dx / dist) * push * 6 * dpr;
             y += (dy / dist) * push * 6 * dpr;
             pushed += 1;
@@ -99,7 +113,7 @@ export default function ParticleField({ paused = false, className = "" }) {
         if (y > state.h + 8) y = -8;
         else if (y < -8) y = state.h + 8;
 
-        const twinkle = 0.75 + 0.25 * Math.sin(now * 0.001 + d.phase * 3);
+        const twinkle = 0.7 + 0.3 * Math.sin(now * 0.001 + d.phase * 3);
         ctx.globalAlpha = d.base * twinkle * (d.accent ? 1.3 : 1);
         ctx.fillStyle = d.accent ? fill.accent : fill.dot;
         ctx.beginPath();
@@ -118,7 +132,11 @@ export default function ParticleField({ paused = false, className = "" }) {
 
     function loop(now) {
       if (!state.running) return;
-      drawFrame(now);
+      // Cap the field at 60fps on high-refresh displays.
+      if (now - state.last >= FRAME_MS) {
+        drawFrame(now);
+        state.last = now;
+      }
       requestAnimationFrame(loop);
     }
     function start() {
