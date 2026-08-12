@@ -104,7 +104,7 @@ export default function App() {
             />
           </div>
 
-          <main className="min-w-0 flex-1 overflow-y-auto">
+          <main key={view} className="view-in min-w-0 flex-1 overflow-y-auto">
           {view === "home" && (
             <Home
               decks={decks}
@@ -149,29 +149,35 @@ export default function App() {
 
         {/* The chat rail belongs to a deck — it edits deck.yaml. With no deck
             open there is nothing to talk to, so the rail (and its edge tab) only
-            exists on the deck view and the main column goes full-width. */}
-        {view === "deck" && (rightOpen ? (
+            exists on the deck view and the main column goes full-width. The
+            section stays mounted and animates its width so collapsing reads as
+            one fluid motion, not a mount/unmount pop. */}
+        {view === "deck" && (
           <section
             onMouseEnter={() => setRailHover(true)}
             onMouseLeave={() => setRailHover(false)}
-            className="flex w-80 shrink-0 flex-col border-l border-line bg-panel"
+            className={`flex shrink-0 flex-col border-l border-line bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${
+              rightOpen ? "w-80" : "w-10"
+            }`}
           >
-            <div className="flex-1 overflow-hidden">
-              <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
-            </div>
+            {rightOpen ? (
+              <div className="flex-1 overflow-hidden">
+                <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
+              </div>
+            ) : (
+              <button
+                onClick={() => setRightOpen(true)}
+                title="Open chat"
+                className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-fg-faint transition hover:text-fg"
+              >
+                <ChatIcon className="h-4 w-4" />
+                <span className="text-[10px] font-medium uppercase tracking-wider" style={{ writingMode: "vertical-rl" }}>
+                  Chat
+                </span>
+              </button>
+            )}
           </section>
-        ) : (
-          <button
-            onClick={() => setRightOpen(true)}
-            title="Open chat"
-            className="flex w-10 shrink-0 flex-col items-center justify-center gap-1.5 border-l border-line bg-panel text-fg-faint transition hover:text-fg"
-          >
-            <ChatIcon className="h-4 w-4" />
-            <span className="text-[10px] font-medium uppercase tracking-wider" style={{ writingMode: "vertical-rl" }}>
-              Chat
-            </span>
-          </button>
-        ))}
+        )}
       </div>
 
       {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}

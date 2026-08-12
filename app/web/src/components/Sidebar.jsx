@@ -43,7 +43,7 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
   const reportCount = decks.filter((d) => d.report).length;
 
   return (
-    <aside className={`flex shrink-0 flex-col bg-panel transition-[width] ${open ? "w-64" : "w-14"}`}>
+    <aside className={`flex shrink-0 flex-col bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${open ? "w-64" : "w-14"}`}>
       {open ? (
         <>
           <div className="flex items-center gap-1 px-3 pt-3">

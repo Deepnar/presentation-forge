@@ -36,6 +36,14 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* The shell's one easing. Everything that moves — view switches, the rails,
+   card hover, the carousel — uses this same curve so motion reads as one
+   system rather than a set of unrelated tweens. */
+:root {
+  --ease-shell: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-shell: 220ms;
+}
+
 html,
 body,
 #root {
@@ -88,13 +96,14 @@ body {
 }
 
 /* Interactive cards (carousel, deck grid, theme cards): a slight lift with a
-   soft drop shadow on hover, and a settled press state. */
+   soft drop shadow on hover, and a settled press state. transform/opacity
+   only, on the shell's shared easing. */
 .card-hover {
   transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease,
-    box-shadow 160ms ease;
+    transform var(--dur-shell) var(--ease-shell),
+    border-color var(--dur-shell) var(--ease-shell),
+    background-color var(--dur-shell) var(--ease-shell),
+    box-shadow var(--dur-shell) var(--ease-shell);
 }
 .card-hover:hover {
   transform: translateY(-2px);
@@ -212,13 +221,38 @@ select:focus {
   display: none;
 }
 
+/* View switches: a short fade-and-rise on the shell's shared easing, driven by
+   React's key on the main column so each view change re-runs it. Only opacity
+   and transform animate. */
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+.view-in {
+  animation: view-in var(--dur-shell) var(--ease-shell) both;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
   }
 }
 .fade-in {
-  animation: fade-in 0.18s ease-out;
+  animation: fade-in var(--dur-shell) var(--ease-shell);
+}
+
+/* Reduced motion: the field already draws one static frame, and every
+   transform/opacity transition above collapses to an instant state change. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ::-webkit-scrollbar {
