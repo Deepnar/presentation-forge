@@ -79,7 +79,7 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="rounded-[var(--radius-lg)] border border-line bg-prompt p-3">
+      <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt p-3">
         {mode === "deck" ? (
           <textarea
             ref={taRef}
@@ -128,8 +128,8 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                title="Which local model does the work"
-                className="appearance-none rounded-full border border-line bg-sunken py-1.5 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+                title="Which model does the work"
+                className="appearance-none rounded-full border border-line bg-sunken py-1.5 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent max-w-[14rem]"
               >
                 <option value="">auto · {defaultModel}</option>
                 {models.map((m) => <option key={m} value={m}>{m}</option>)}

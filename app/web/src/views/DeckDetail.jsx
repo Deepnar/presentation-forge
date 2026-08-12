@@ -408,7 +408,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
           <div className="relative">
-            <select value={model} onChange={(e) => setModel(e.target.value)} title="Which model writes the report" className={selectCls}>
+            <select value={model} onChange={(e) => setModel(e.target.value)} title="Which model writes the report" className={`${selectCls} max-w-[16rem]`}>
               <option value="">auto · {defaultModel}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
             </select>
