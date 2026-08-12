@@ -22,6 +22,38 @@ export async function deckSchema() {
   return _schema;
 }
 
+/**
+ * Family grouping for the wider type vocabulary. Hand-maintained because the
+ * schema has no family concept and its only job is to make 50 choices
+ * navigable; the type *list* and every field still derive from the schema, so
+ * a typo here mislabels a type, never invents one. Types absent from every
+ * family (freeform) are the escape hatch, listed last.
+ */
+const FAMILIES = {
+  Foundation: ["title", "section", "chapter", "closing", "agenda", "references"],
+  "List & Grid": ["bullets", "numbered-list", "checklist", "feature-grid", "grid-items", "icon-list", "stacked-list"],
+  "Data & Stats": ["stats", "big-number", "kpi-dashboard", "data-cards", "progress-bars", "ranking-list", "metric-comparison", "sparklines"],
+  Comparison: ["compare", "pros-cons", "before-after", "framework", "matrix", "scorecard", "vs", "side-by-side"],
+  "Process & Flow": ["flow", "cycle", "funnel", "pipeline", "dependencies", "branching-flow", "layered-architecture"],
+  "Timeline & Milestone": ["timeline", "milestone", "roadmap", "journey", "chronology"],
+  "Quote & Testimonial": ["quote", "testimonial", "pull-quote", "epigraph"],
+  "Callout & Highlight": ["callout", "emphasis", "warning", "tip", "takeaway"],
+  "Image & Visual": ["image", "image-text", "image-grid", "hero-image", "split-screen"],
+  "Table & Matrix": ["table", "data-table", "decision-matrix"],
+  Chart: ["chart"],
+  "Diagram-ish": ["diagram", "pyramid", "venn", "hierarchy", "concept-map"],
+  "Definitions & FAQ": ["definition", "glossary", "faq"],
+  "Team & Attribution": ["team-grid", "attribution", "contact"],
+  Special: ["equation", "bibliography", "data-source"],
+};
+
+function familyFor(type) {
+  for (const [name, list] of Object.entries(FAMILIES)) {
+    if (list.includes(type)) return name;
+  }
+  return null;
+}
+
 export async function slideCatalog() {
   if (_cache) return _cache;
 
@@ -54,10 +86,23 @@ export async function slideCatalog() {
     return `- ${t}: ${fields}`;
   });
 
+  const byFamily = new Map();
+  const escape = [];
+  for (const t of types) {
+    const fam = familyFor(t);
+    if (!fam) escape.push(t);
+    else byFamily.set(fam, [...(byFamily.get(fam) ?? []), t]);
+  }
+  const familyLines = [
+    ...[...byFamily.entries()].map(([fam, ts]) => `${fam.toUpperCase()}: ${ts.join(", ")}`),
+    escape.length ? `ESCAPE HATCH (rasterised, text not editable): ${escape.join(", ")}` : null,
+  ].filter(Boolean).join("\n");
+
   _cache =
     `Shared fields on any slide: ${shared.join(", ")}.\n` +
     `"section" is a 0-based index into deck.sections.\n\n` +
-    `Slide types:\n${lines.join("\n")}`;
+    `Slide types by family:\n${familyLines}\n\n` +
+    `Per-type fields:\n${lines.join("\n")}`;
 
   return _cache;
 }
