@@ -554,7 +554,10 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                     className="ml-auto max-w-[7rem] appearance-none rounded border border-line bg-sunken px-1.5 py-0.5 text-[10.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
                   >
                     <option value="">auto</option>
-                    {members.map((m) => <option key={m.name} value={m.name}>{m.name}</option>)}
+                    {/* Empty-name members are placeholder rows on the team card;
+                        they are not presenters, and duplicate empty keys would
+                        collide in React's reconciliation. */}
+                    {members.filter((m) => m.name?.trim()).map((m, mi) => <option key={mi} value={m.name}>{m.name}</option>)}
                   </select>
                 </div>
 

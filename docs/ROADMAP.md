@@ -528,10 +528,14 @@ in the thread walks a guided briefing one question at a time and ends in a deck.
 > one reading as a bare enum value. The `/api/types` payload now carries them.
 >
 > A React dev-only duplicate-key warning ("two children with the same key, `%s`")
-> appeared once across several full end-to-end runs and was never reproduced
-> (three subsequent clean runs, zero console errors). The literal `%s` implies a
-> lost key argument somewhere in React's own formatting; no code path with
-> colliding keys has been found. Tracked, not chased.
+> appeared once across several full end-to-end runs and defied reproduction
+> until the deck detail's presenter picker was exercised with the default
+> identity team (config/identity.yaml carries placeholder members whose `name`
+> is `""`). The picker rendered one `<option key={m.name}>` per member, so every
+> empty-name member collided on the same key — and the empty string is exactly
+> why the message read as the literal `%s`. Fixed by filtering empty-name
+> members out of the presenter options and keying the rest by index.
+> Behaviourally validated: the warning no longer appears on any surface.
 
 ### [ ] (stretch) Canvas slide-builder
 Live slides appearing as they stream (status → plan → slides) as a
