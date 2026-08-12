@@ -227,7 +227,7 @@ async function cloudChat(spec, {
 
   const body = {
     model: spec.model,
-    messages: cloudMessages(messages, images),
+    messages: cloudMessages(messages, images, format),
     stream,
     temperature: temperature ?? spec.temperature ?? 0.7,
     ...(spec.num_predict ? { max_tokens: spec.num_predict } : {}),
@@ -316,9 +316,31 @@ async function cloudChat(spec, {
   }
 }
 
-/** Cloud messages: images ride on the last user message as data-URL parts. */
-function cloudMessages(messages, images) {
+/**
+ * Cloud messages: images ride on the last user message as data-URL parts.
+ *
+ * Providers that offer `response_format: json_object` demand the word "json"
+ * appear in the prompt, or they reject the request outright. Many of this
+ * system's prompts never mention it (the report planner, for one). When the
+ * request asks for structured output, a system message stating the contract
+ * satisfies the provider and nudges the model — without touching every caller.
+ *
+ * `json_object` guarantees only that output parses, never that it matches the
+ * schema — unlike Ollama's grammar, which enforces shape. So the schema itself
+ * is spelled out in that message: a strong cloud model can hold a small schema
+ * in context and emit its keys correctly, which is exactly what the local
+ * grammar did for us. Big schemas degrade this, so keep the per-call schemas
+ * small (the report section grammars already are).
+ */
+function cloudMessages(messages, images, format) {
   const out = messages.map((m) => ({ role: m.role, content: m.content }));
+  if (format) {
+    out.unshift({
+      role: "system",
+      content: "Respond in JSON only, matching this JSON Schema exactly:\n" +
+        JSON.stringify(format),
+    });
+  }
   if (images?.length) {
     const last = out[out.length - 1];
     last.content = [
