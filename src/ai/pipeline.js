@@ -6,6 +6,7 @@ import { researchQuery, fetchPage } from "../search.js";
 import { excerptResearch } from "./research.js";
 import { planDeck, generateDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
+import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
 import { generateReport } from "./report.js";
 import { loadIdentity, deepMerge } from "./identity.js";
@@ -307,7 +308,18 @@ export async function generateFromPlan({
     throw new Error(res.errors?.join("; ") || "Generation failed");
   }
 
-  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(res.deck), "utf8");
+  // Ground the deck against its research before persisting. The writer was told
+  // to derive stats from notes.md, and the writer is a model: anything it emits
+  // that the research does not support is flagged into the slide's notes and
+  // the problems list rather than silently shipped. The critic below may
+  // rewrite deck.yaml, so grounding runs once more on its output.
+  const groundOnce = (d) => {
+    const g = groundDeck(d, researchText);
+    return { deck: g.notes, problems: g.problems };
+  };
+
+  let grounded = groundOnce(res.deck);
+  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(grounded.deck), "utf8");
   await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(res.plan), "utf8");
 
   meta.status = "ready";
@@ -322,13 +334,14 @@ export async function generateFromPlan({
   if (critic) {
     criticReport = await critiqueDeck({
       slug,
-      deck: res.deck,
+      deck: grounded.deck,
       model,
       signal,
       onProgress: (e) => onProgress?.({ status: "critiquing", ...e }),
     });
     if (criticReport.deck) {
-      await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(criticReport.deck), "utf8");
+      grounded = groundOnce(criticReport.deck);
+      await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(grounded.deck), "utf8");
       meta.status = "ready";
       await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
     }
@@ -336,11 +349,11 @@ export async function generateFromPlan({
 
   return {
     slug,
-    deck: criticReport?.deck ?? res.deck,
+    deck: criticReport?.deck ?? grounded.deck,
     plan: res.plan,
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
-    problems: criticReport?.problems ?? r.problems ?? [],
+    problems: [...(r.problems ?? []), ...grounded.problems],
     skipped: res.skipped ?? [],
     stats: res.stats,
     critic: criticReport,
@@ -438,6 +451,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (r.skipped.length) process.stdout.write(`, ${r.skipped.length} skipped`);
       process.stdout.write("\n");
       for (const s of r.skipped) process.stdout.write(`  skipped [${s.index}] ${s.type}: ${s.reason}\n`);
+      for (const p of r.problems ?? []) process.stdout.write(`  ! ${p}\n`);
       if (r.critic) {
         process.stdout.write("critic:\n");
         for (const rd of r.critic.rounds) {
