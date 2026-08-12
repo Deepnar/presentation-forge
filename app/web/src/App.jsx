@@ -4,6 +4,7 @@ import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import DocsModal from "./components/DocsModal.jsx";
 import ChatPanel from "./components/ChatPanel.jsx";
+import ParticleField from "./components/ParticleField.jsx";
 import { ChatIcon } from "./components/icons.jsx";
 import Home from "./views/Home.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
@@ -16,7 +17,9 @@ import Identity from "./views/Identity.jsx";
  * Application shell: header bar on top; below it the sidebar (persistent deck
  * list), the active view, and the chat rail. Both rails persist their open
  * state. The deck list lives here — the sidebar and home carousel share it, and
- * a chat turn or report flow bumps the version so both re-fetch.
+ * a chat turn or report flow bumps the version so both re-fetch. The particle
+ * field sits behind the whole shell as ambience, and pauses whenever the
+ * pointer enters either rail so it never competes with navigation.
  */
 export default function App() {
   const [view, setView] = useState("home"); // home | deck | new | outline | themes | identity
@@ -30,6 +33,7 @@ export default function App() {
   const [deckVersion, setDeckVersion] = useState(0);
   const [draft, setDraft] = useState(null); // approved outline handoff
   const [docsOpen, setDocsOpen] = useState(false);
+  const [railHover, setRailHover] = useState(false); // pause particles over a rail
 
   useEffect(() => {
     api.identity()
@@ -65,26 +69,35 @@ export default function App() {
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
   return (
-    <div className="flex h-full flex-col">
-      <HeaderBar
-        leftOpen={leftOpen}
-        onToggleLeft={() => setLeftOpen((o) => !o)}
-        onOpenDocs={() => setDocsOpen(true)}
-        onHome={() => setView("home")}
-      />
+    <div className="relative h-full overflow-hidden">
+      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0" />
 
-      <div className="flex min-h-0 flex-1">
-        <Sidebar
-          decks={decks}
-          activeSlug={view === "deck" ? activeSlug : null}
-          view={view}
-          open={leftOpen}
-          onOpenDeck={openDeck}
-          onNewDeck={() => setView("new")}
-          onView={setView}
+      <div className="relative z-10 flex h-full flex-col">
+        <HeaderBar
+          leftOpen={leftOpen}
+          onToggleLeft={() => setLeftOpen((o) => !o)}
+          onOpenDocs={() => setDocsOpen(true)}
+          onHome={() => setView("home")}
         />
 
-        <main className="min-w-0 flex-1 overflow-y-auto">
+        <div className="flex min-h-0 flex-1">
+          <div
+            onMouseEnter={() => setRailHover(true)}
+            onMouseLeave={() => setRailHover(false)}
+            className="flex"
+          >
+            <Sidebar
+              decks={decks}
+              activeSlug={view === "deck" ? activeSlug : null}
+              view={view}
+              open={leftOpen}
+              onOpenDeck={openDeck}
+              onNewDeck={() => setView("new")}
+              onView={setView}
+            />
+          </div>
+
+          <main className="min-w-0 flex-1 overflow-y-auto">
           {view === "home" && (
             <Home
               decks={decks}
@@ -119,7 +132,11 @@ export default function App() {
         </main>
 
         {rightOpen ? (
-          <section className="flex w-80 shrink-0 flex-col border-l border-line bg-panel">
+          <section
+            onMouseEnter={() => setRailHover(true)}
+            onMouseLeave={() => setRailHover(false)}
+            className="flex w-80 shrink-0 flex-col border-l border-line bg-panel"
+          >
             <div className="flex-1 overflow-hidden">
               <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
             </div>
@@ -139,6 +156,7 @@ export default function App() {
       </div>
 
       {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
+      </div>
     </div>
   );
 }
