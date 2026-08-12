@@ -6,18 +6,20 @@ import { ChevronDown, DocIcon, LayersIcon, SlidersIcon, SparkleIcon, UpArrowIcon
 
 /**
  * The home generate surface, on its own tonal step. Deck mode streams a brief
- * to the outline; Report mode picks a deck + depth and streams a report that
- * lands in the deck's Report panel. Both share the model pill and the circular
- * submit. The sliders icon opens the full wizard — nothing is hidden behind
- * this box, it is the fast path.
+ * to the outline; Report mode streams a report that lands in the deck's Report
+ * panel — from an existing deck, or from a brief alone (a standalone report
+ * with no deck, the reverse flow's other door). All share the model pill and
+ * the circular submit. The sliders icon opens the full wizard — nothing is
+ * hidden behind this box, it is the fast path.
  */
-export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onNewDeck, onPlanReady, onReportDone }) {
+export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onNewDeck, onPlanReady, onReportDone, onStandaloneReport }) {
   const [models, setModels] = useState([]);
   const [cloud, setCloud] = useState(null);
   const [defaultModel, setDefaultModel] = useState("");
   const [model, setModel] = useState("");
   const [identity, setIdentity] = useState(null);
   const [reportSlug, setReportSlug] = useState("");
+  const [reportSource, setReportSource] = useState("deck"); // deck | brief
   const [depth, setDepth] = useState("brief");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -40,7 +42,9 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
     if (focusSignal > 0 && mode === "deck") taRef.current?.focus();
   }, [focusSignal, mode]);
 
-  const canSubmit = busy ? false : mode === "deck" ? brief.trim().length > 0 : Boolean(reportSlug);
+  const canSubmit = busy ? false : mode === "deck"
+    ? brief.trim().length > 0
+    : reportSource === "brief" ? brief.trim().length > 0 : Boolean(reportSlug);
 
   async function submit() {
     if (!canSubmit) return;
@@ -55,14 +59,24 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
             plan: (d) => onPlanReady({ slug: d.slug, plan: d.plan, theme: "" }),
           },
         )
-      : api.generateReport(
-          reportSlug,
-          { depth, model: model || undefined },
-          {
-            status: (p) => setStatus(progressLabel(p)),
-            result: () => onReportDone(reportSlug),
-          },
-        );
+      : reportSource === "brief"
+        ? api.createReport(
+            // A standalone report grounds itself: the report generator needs
+            // research/notes.md, so the brief always drives a research pass.
+            { brief, depth, research: true, model: model || undefined, identity },
+            {
+              status: (p) => setStatus(progressLabel(p)),
+              result: (d) => onStandaloneReport(d.slug),
+            },
+          )
+        : api.generateReport(
+            reportSlug,
+            { depth, model: model || undefined },
+            {
+              status: (p) => setStatus(progressLabel(p)),
+              result: () => onReportDone(reportSlug),
+            },
+          );
     setJob(j);
     try {
       await j.promise;
@@ -92,26 +106,60 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
             className="w-full resize-none border-none bg-transparent px-2 py-1 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60"
           />
         ) : (
-          <div className="flex flex-wrap items-center gap-2 px-2 py-1">
-            <div className="relative min-w-[14rem] flex-1">
-              <select
-                value={reportSlug}
-                onChange={(e) => setReportSlug(e.target.value)}
-                disabled={!decks.length}
-                title={decks.length ? "Which deck to write the report from" : "Create a deck first"}
-                className="w-full appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-[13px] text-fg outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
-              >
-                <option value="">{decks.length ? "Choose a deck…" : "Create a deck first"}</option>
-                {decks.map((d) => (
-                  <option key={d.slug} value={d.slug}>{d.title}</option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+          <div className="px-2 py-1">
+            <div className="mb-2 flex items-center gap-1">
+              <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+                <ModePill active={reportSource === "deck"} onClick={() => setReportSource("deck")}>
+                  From a deck
+                </ModePill>
+                <ModePill active={reportSource === "brief"} onClick={() => setReportSource("brief")}>
+                  From a brief
+                </ModePill>
+              </div>
+              <span className="ml-1.5 text-[11px] text-fg-faint">
+                {reportSource === "brief" ? "standalone — no deck required" : "same research as the deck"}
+              </span>
             </div>
-            <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-              <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full</ModePill>
-              <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
-            </div>
+
+            {reportSource === "brief" ? (
+              <textarea
+                ref={taRef}
+                value={brief}
+                onChange={(e) => setBrief(e.target.value)}
+                rows={3}
+                placeholder="Describe the report… (e.g. topic, depth, audience)"
+                className="w-full resize-none border-none bg-transparent px-1 py-1 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60"
+              />
+            ) : (
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative min-w-[14rem] flex-1">
+                  <select
+                    value={reportSlug}
+                    onChange={(e) => setReportSlug(e.target.value)}
+                    disabled={!decks.length}
+                    title={decks.length ? "Which deck to write the report from" : "Create a deck first"}
+                    className="w-full appearance-none rounded-lg border border-line bg-sunken py-2 pl-3 pr-8 text-[13px] text-fg outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+                  >
+                    <option value="">{decks.length ? "Choose a deck…" : "Create a deck first"}</option>
+                    {decks.map((d) => (
+                      <option key={d.slug} value={d.slug}>{d.title}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+                </div>
+                <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+                  <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full</ModePill>
+                  <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
+                </div>
+              </div>
+            )}
+
+            {reportSource === "brief" && (
+              <div className="mt-2 flex items-center gap-0.5 rounded-full bg-panel p-0.5 self-start">
+                <ModePill active={depth === "full"} onClick={() => setDepth("full")}>Full depth</ModePill>
+                <ModePill active={depth === "brief"} onClick={() => setDepth("brief")}>Brief</ModePill>
+              </div>
+            )}
           </div>
         )}
 

@@ -17,7 +17,7 @@ const SUGGESTED = [
  * real recent decks. The carousel hides only when there are no decks; the
  * prompt and pills are always valid.
  */
-export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, onReportDone }) {
+export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, onReportDone, onStandaloneReport }) {
   const [themes, setThemes] = useState([]);
   const [mode, setMode] = useState("deck");
   const [brief, setBrief] = useState("");
@@ -68,6 +68,7 @@ export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, o
           onNewDeck={onNewDeck}
           onPlanReady={onPlanReady}
           onReportDone={onReportDone}
+          onStandaloneReport={onStandaloneReport}
         />
       </div>
 

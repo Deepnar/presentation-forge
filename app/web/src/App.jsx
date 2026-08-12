@@ -8,6 +8,7 @@ import ParticleField from "./components/ParticleField.jsx";
 import { ChatIcon } from "./components/icons.jsx";
 import Home from "./views/Home.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
+import ReportView from "./views/ReportView.jsx";
 import NewDeck from "./views/NewDeck.jsx";
 import Outline from "./views/Outline.jsx";
 import Themes from "./views/Themes.jsx";
@@ -49,8 +50,12 @@ export default function App() {
   useEffect(() => localStorage.setItem("forge.rightRail", rightOpen ? "1" : "0"), [rightOpen]);
 
   const openDeck = (slug) => {
+    // A report-only deck (no deck.yaml yet) opens the Report view; a deck with
+    // slides opens the deck detail. The chat rail edits deck.yaml, so it only
+    // exists on the deck view.
+    const entry = decks.find((d) => d.slug === slug);
     setActiveSlug(slug);
-    setView("deck");
+    setView(entry && entry.report && !entry.deck ? "report" : "deck");
   };
 
   const handlePlanReady = ({ slug, plan, theme }) => {
@@ -108,6 +113,7 @@ export default function App() {
               onOpenDeck={openDeck}
               onPlanReady={handlePlanReady}
               onReportDone={handleReportDone}
+              onStandaloneReport={(slug) => { setDeckVersion((v) => v + 1); openDeck(slug); }}
             />
           )}
           {view === "deck" && activeSlug && (
@@ -117,6 +123,14 @@ export default function App() {
               refreshToken={deckVersion}
               onBack={() => setView("home")}
               onDeckChanged={bumpDeck}
+            />
+          )}
+          {view === "report" && activeSlug && (
+            <ReportView
+              slug={activeSlug}
+              refreshToken={deckVersion}
+              onBack={() => setView("home")}
+              onPlanReady={(plan) => { setDraft({ slug: activeSlug, plan, theme: "" }); setView("outline"); }}
             />
           )}
           {view === "new" && <NewDeck onPlanned={handlePlanReady} onBack={() => setView("home")} />}

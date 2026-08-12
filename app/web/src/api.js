@@ -97,6 +97,11 @@ export const api = {
     call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
   generateReport: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/report/generate`, payload, handlers),
+  // Standalone report — brief → report.yaml → .docx with no deck. And the
+  // reverse flow: a report.yaml plans a companion deck (SSE, lands in Outline).
+  createReport: (payload, handlers) => stream("/api/reports", payload, handlers),
+  planDeckFromReport: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/report/deck`, payload, handlers),
   // Opt-in cloud backend (Settings/Cloud). The key itself never travels back
   // to the browser — status and test results are booleans and strings.
   cloud: () => call("/api/cloud"),
