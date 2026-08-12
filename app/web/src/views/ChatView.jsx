@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
+import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
+import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, initialBriefing, suggestTitle, echoAnswer, applyFreeText } from "../lib/briefing.js";
 
@@ -32,6 +34,17 @@ function phaseOf(chat) {
 }
 
 /**
+ * The sidebar row's name. The deck title wins once the briefing has one (the
+ * user can edit it on the title card); before that the topic's first sentence
+ * names the chat so the list reads as "about what", never as "New chat".
+ */
+function chatName(title, topic) {
+  const t = String(title ?? topic ?? "").replace(/\s+/g, " ").trim();
+  if (!t) return "New chat";
+  return t.length > 48 ? `${t.slice(0, 45).trimEnd()}…` : t;
+}
+
+/**
  * The chat window IS the app. A message thread with the input bar at the
  * bottom, like Claude/ChatGPT: send a topic, the assistant asks the deck-briefing
  * questions one at a time (each with a default and a choose/type affordance),
@@ -43,7 +56,7 @@ function phaseOf(chat) {
  * a pure local state change, verified by the CDP flow in the handoff.
  */
 export default function ChatView({
-  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged, onNewChat,
+  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -54,6 +67,8 @@ export default function ChatView({
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
+  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
+  const [model, setModel] = useState(chat.model ?? "");
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -89,7 +104,7 @@ export default function ChatView({
     persist({
       ...chat,
       topic: text,
-      title: title || "New chat",
+      title: chatName(title, text),
       briefing: { ...briefing, title },
       updatedAt: new Date().toISOString(),
     });
@@ -97,9 +112,12 @@ export default function ChatView({
 
   /** One question answered (via the card's controls or free text). */
   function onNext(patch) {
+    const briefing = { ...chat.briefing, ...patch };
+    const named = patch.title ? chatName(patch.title, chat.topic) : chat.title;
     persist({
       ...chat,
-      briefing: { ...chat.briefing, ...patch },
+      title: named,
+      briefing,
       briefStep: Math.min(chat.briefStep + 1, BRIEFING_QUESTIONS.length),
       updatedAt: new Date().toISOString(),
     });
@@ -133,12 +151,14 @@ export default function ChatView({
         theme: b.theme || undefined,
         research: b.research,
         identity: { academic: b.academic, guide: b.guide, team: b.team },
+        model: model || undefined,
       },
       {
         status: (p) => setStatus(progressLabel(p)),
         plan: (d) => {
           persist({
             ...chat,
+            title: chatName(d.plan.title ?? b.title, chat.topic),
             plan: {
               title: d.plan.title ?? b.title,
               subtitle: d.plan.subtitle ?? "",
@@ -147,6 +167,7 @@ export default function ChatView({
             },
             deckSlug: d.slug,
             deckThumbs: [],
+            model: model || undefined,
             updatedAt: new Date().toISOString(),
           });
         },
@@ -180,6 +201,7 @@ export default function ChatView({
       {
         plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean },
         theme: chat.briefing.theme || undefined,
+        model: model || undefined,
       },
       {
         status: (p) => setStatus(progressLabel(p)),
@@ -203,7 +225,7 @@ export default function ChatView({
   }
 
   function sendReportTopic(text) {
-    const updated = { ...chat, topic: text, title: suggestTitle(text) || "New chat", updatedAt: new Date().toISOString() };
+    const updated = { ...chat, topic: text, title: chatName("", text), updatedAt: new Date().toISOString() };
     persist(updated);
     runReport(updated);
   }
@@ -218,7 +240,7 @@ export default function ChatView({
       team: identity?.team ?? {},
     };
     const j = api.createReport(
-      { brief: c.topic, depth: "brief", research: true, identity: identityPayload },
+      { brief: c.topic, depth: "brief", research: true, identity: identityPayload, model: model || undefined },
       {
         status: (p) => setStatus(progressLabel(p)),
         result: (d) => {
@@ -234,6 +256,12 @@ export default function ChatView({
   }
 
   function stop() { job?.abort(); }
+
+  /** Flip an empty thread between the two products before a topic is sent. */
+  function switchKind(kind) {
+    if (chat.topic || kind === chat.kind) return;
+    persist({ ...chat, kind, updatedAt: new Date().toISOString() });
+  }
 
   /** The bottom input bar: topic first, then free-text answers to questions. */
   function send() {
@@ -285,9 +313,6 @@ export default function ChatView({
         {chat.produced && (
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
-        <Button size="sm" variant="outline" onClick={() => onNewChat(chat.kind)}>
-          New chat
-        </Button>
       </header>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
@@ -296,7 +321,6 @@ export default function ChatView({
             chat={chat}
             org={identity?.institution?.short}
             onFill={(s) => { setInput(s); inputRef.current?.focus(); }}
-            onNewChat={onNewChat}
           />
 
           {chat.topic && (
@@ -421,22 +445,62 @@ export default function ChatView({
 
       <footer className="shrink-0 border-t border-line px-6 py-4">
         <div className="mx-auto max-w-3xl">
-          <div className="surface-well flex items-end gap-2 rounded-[var(--radius-lg)] border border-line bg-prompt p-3">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => { setInput(e.target.value); setFreeHint(""); }}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              rows={1}
-              disabled={inputDisabled}
-              placeholder={placeholder}
-              className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
-            />
-            <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
-              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
-              </svg>
-            </Button>
+          <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt">
+            <div className="flex items-end gap-2 p-3 pb-2">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => { setInput(e.target.value); setFreeHint(""); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+                rows={1}
+                disabled={inputDisabled}
+                placeholder={placeholder}
+                className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
+              />
+              <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+                </svg>
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2 border-t border-line/60 px-3 pb-2.5 pt-2">
+              {!chat.topic && (
+                <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+                  <button
+                    onClick={() => switchKind("deck")}
+                    title="A topic becomes a themed deck"
+                    className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "deck" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+                  >
+                    <LayersIcon className="h-3 w-3" /> Chat
+                  </button>
+                  <button
+                    onClick={() => switchKind("report")}
+                    title="A topic becomes a standalone written report"
+                    className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "report" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+                  >
+                    <DocIcon className="h-3 w-3" /> Report
+                  </button>
+                </div>
+              )}
+
+              <div className="ml-auto flex items-center gap-2">
+                <div className="relative">
+                  <select
+                    value={model}
+                    onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
+                    disabled={inputDisabled}
+                    title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model does the work"}
+                    className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+                  >
+                    <option value="">auto · {defaultModel}</option>
+                    {models.map((m) => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+                </div>
+              </div>
+            </div>
           </div>
           {freeHint && <div className="mt-1.5 px-1 text-[11px] text-amber">{freeHint}</div>}
           <div className="mt-1.5 px-1 text-[10.5px] text-fg-faint">
@@ -453,7 +517,7 @@ export default function ChatView({
 
 /* ------------------------------------------------------------------ parts */
 
-function Welcome({ chat, org, onFill, onNewChat }) {
+function Welcome({ chat, org, onFill }) {
   if (chat.topic || chat.produced) return null;
   return (
     <div className="pt-8 text-center">
@@ -478,14 +542,6 @@ function Welcome({ chat, org, onFill, onNewChat }) {
               {s}
             </button>
           ))}
-        </div>
-      )}
-      {chat.kind === "deck" && (
-        <div className="mt-6 text-[11px] text-fg-faint">
-          Prefer a written report?{" "}
-          <button onClick={() => onNewChat("report")} className="text-fg-muted underline-offset-2 transition hover:text-fg hover:underline">
-            Start a report chat
-          </button>
         </div>
       )}
     </div>
