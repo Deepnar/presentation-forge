@@ -56,7 +56,7 @@ function chatName(title, topic) {
  * a pure local state change, verified by the CDP flow in the handoff.
  */
 export default function ChatView({
-  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
+  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged, onIdentityChanged,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -67,10 +67,14 @@ export default function ChatView({
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
+  const [defaultsState, setDefaultsState] = useState({ status: "idle" });
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+  const chatRef = useRef(chat);
+
+  useEffect(() => { chatRef.current = chat; }, [chat]);
 
   useEffect(() => {
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
@@ -259,6 +263,35 @@ export default function ChatView({
 
   function stop() { job?.abort(); }
 
+  /**
+   * Persist the repeated set — guide, subject/year, team — as remembered
+   * defaults in config/identity.yaml, the same file the Identity view edits.
+   * Institution and brand come from the saved identity and pass through
+   * untouched; blank fields are dropped rather than overwriting good defaults.
+   */
+  async function saveDefaults() {
+    const b = chat.briefing;
+    const drop = (o) => Object.fromEntries(Object.entries(o ?? {}).filter(([, v]) => String(v ?? "").trim() !== ""));
+    const next = {
+      ...(identity ?? {}),
+      academic: { ...(identity?.academic ?? {}), ...drop(b.academic) },
+      guide: { ...(identity?.guide ?? {}), ...drop(b.guide) },
+      team: {
+        label: b.team?.label ?? identity?.team?.label ?? "",
+        members: (b.team?.members ?? []).filter((m) => m.name?.trim()),
+      },
+    };
+    if (!next.team.members.length) delete next.team;
+    setDefaultsState({ status: "saving" });
+    try {
+      await api.saveIdentity(next);
+      setDefaultsState({ status: "saved" });
+      onIdentityChanged?.(next);
+    } catch (err) {
+      setDefaultsState({ status: "error", message: err.message });
+    }
+  }
+
   /** Flip an empty thread between the two products before a topic is sent. */
   function switchKind(kind) {
     if (chat.topic || kind === chat.kind) return;
@@ -371,15 +404,25 @@ export default function ChatView({
                 chat={chat}
                 themeLabel={themeLabel}
               />
-              <div className="mt-4 flex items-center gap-2">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
                 <Button variant="primary" onClick={planDeck} disabled={busy}>
                   {busy ? <Spinner /> : null}
                   Plan the deck
+                </Button>
+                <Button variant="outline" onClick={saveDefaults} disabled={defaultsState.status === "saving"}>
+                  {defaultsState.status === "saving" ? <Spinner /> : null}
+                  Remember as defaults
                 </Button>
                 <span className="text-[11px] text-fg-faint">
                   The only thing that starts research &amp; planning.
                 </span>
               </div>
+              {defaultsState.status === "saved" && (
+                <div className="mt-2 text-[11.5px] text-accent">Saved — next briefing starts from these.</div>
+              )}
+              {defaultsState.status === "error" && (
+                <div className="mt-2 text-[11.5px] text-danger">{defaultsState.message}</div>
+              )}
             </Panel>
           )}
 
@@ -650,28 +693,38 @@ function TeamCard({ team, onNext }) {
   const [label, setLabel] = useState(team.label ?? "");
   const [members, setMembers] = useState((team.members ?? []).map((m) => ({ ...m })));
   const edit = (i, patch) => setMembers((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)));
+  const add = () => setMembers((ms) => [...ms, { name: "", roll: "", presenting: false }]);
+  const named = members.filter((m) => m.name?.trim());
+  const presenting = named.filter((m) => m.presenting);
 
   return (
-    <div>
+    <div className="w-full">
       <div className="mb-1.5 text-[11px] text-fg-faint">
-        Who presents on the slides is ticked here — adding members is instant and local.
+        Visible rows, an obvious add — nobody is saved until you press Next, and
+        “presents” decides who the slides split across.
       </div>
+
+      <div className="grid grid-cols-[1fr_4.5rem_5rem_2rem] items-center gap-2 px-1 pb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">
+        <div>Name</div><div>Roll</div><div>Presents</div><div />
+      </div>
+
       <div className="space-y-1.5">
         {members.map((m, i) => (
-          <div key={i} className="flex items-center gap-1.5">
+          <div key={i} className="grid grid-cols-[1fr_4.5rem_5rem_2rem] items-center gap-2">
             <input
               value={m.name ?? ""}
               onChange={(e) => edit(i, { name: e.target.value })}
-              placeholder="Name"
-              className={`${inputCls} flex-1 py-1.5 text-[12.5px]`}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (i === members.length - 1) add(); } }}
+              placeholder="Full name"
+              className={`${inputCls} py-1.5 text-[12.5px]`}
             />
             <input
               value={m.roll ?? ""}
               onChange={(e) => edit(i, { roll: e.target.value })}
-              placeholder="Roll"
-              className={`${inputCls} w-20 py-1.5 text-[12.5px]`}
+              placeholder="21"
+              className={`${inputCls} py-1.5 text-[12.5px]`}
             />
-            <label className="flex shrink-0 cursor-pointer items-center gap-1 text-[11px] text-fg-muted">
+            <label className="flex cursor-pointer items-center justify-center gap-1 text-[11px] text-fg-muted">
               <input
                 type="checkbox"
                 checked={Boolean(m.presenting)}
@@ -690,18 +743,32 @@ function TeamCard({ team, onNext }) {
           </div>
         ))}
       </div>
+
+      <button
+        onClick={add}
+        className="mt-2 w-full rounded-lg border border-dashed border-line py-1.5 text-[12px] text-fg-faint transition hover:border-accent/50 hover:text-accent"
+      >
+        + Add member
+      </button>
+
       <div className="mt-2 flex items-center gap-2">
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="Group label (optional)"
-          className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
+          className={`${inputCls} w-48 py-1.5 text-[12.5px]`}
         />
-        <Button size="sm" onClick={() => setMembers((ms) => [...ms, { name: "", roll: "", presenting: false }])}>
-          + Add member
-        </Button>
+        {named.length > 0 && (
+          <span className="text-[11px] text-fg-faint">
+            {named.length} member{named.length === 1 ? "" : "s"}{presenting.length ? ` · ${presenting.length} presenting` : ""}
+          </span>
+        )}
       </div>
-      <CardFooter onNext={() => onNext({ team: { label, members } })} />
+
+      <CardFooter
+        onNext={() => onNext({ team: { label, members: members.filter((m) => m.name?.trim()) } })}
+        nextLabel={named.length ? `Next — ${named.length} on the team` : "Next"}
+      />
     </div>
   );
 }

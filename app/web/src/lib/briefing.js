@@ -29,7 +29,9 @@ export function initialBriefing(identity) {
     title: "",
     team: {
       label: team.label ?? "",
-      members: (team.members ?? []).map((m) => ({ name: m.name ?? "", roll: m.roll ?? "", presenting: Boolean(m.presenting) })),
+      members: (team.members ?? [])
+        .filter((m) => m.name?.trim())
+        .map((m) => ({ name: m.name ?? "", roll: m.roll ?? "", presenting: Boolean(m.presenting) })),
     },
     guide: { name: guide.name ?? "", designation: guide.designation ?? "" },
     academic: {

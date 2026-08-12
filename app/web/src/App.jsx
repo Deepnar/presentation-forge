@@ -208,6 +208,10 @@ export default function App() {
                 onOpenDeck={openDeck}
                 onOpenReport={openReport}
                 onDeckChanged={bumpDeck}
+                onIdentityChanged={(next) => {
+                  setIdentity(next);
+                  setOrg(next?.institution?.short ?? "");
+                }}
               />
             )}
             {view === "chat" && !activeChat && (
