@@ -5,7 +5,7 @@ import PptxGenJS from "pptxgenjs";
 import YAML from "yaml";
 import sharp from "sharp";
 import { ROOT, CONFIG } from "./paths.js";
-import { loadTheme, hex } from "./theme.js";
+import { loadTheme, hex, textStyle } from "./theme.js";
 import { loadDeck } from "./validate.js";
 import { layouts, content } from "./layouts.js";
 import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrome.js";

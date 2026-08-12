@@ -3402,6 +3402,353 @@ export const layouts = {
       });
     });
   },
+
+  /**
+   * A mini-dictionary: terms in an accent bold column, definitions to the
+   * right, hairlines between entries.
+   */
+  glossary(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const termW = 3.2;
+    const rowH = (box.bottom - y - 0.1) / data.entries.length;
+    const defScale = fitScaleAll(
+      data.entries.map((e) => e.definition), box.w - termW - 0.5, rowH * 0.8, theme.type.body,
+    );
+    const termScale = fitScaleAll(data.entries.map((e) => e.term), termW, rowH * 0.8, theme.type.subhead, { min: 0.65 });
+    data.entries.forEach((e, i) => {
+      const ry = y + i * rowH;
+      slide.addText(e.term, {
+        x: box.x, y: ry, w: termW, h: rowH,
+        ...textStyle(theme, "subhead", { bold: true, color: theme.palette.accent, scale: termScale }),
+        valign: "middle",
+      });
+      slide.addText(e.definition, {
+        x: box.x + termW + 0.5, y: ry, w: box.w - termW - 0.5, h: rowH,
+        ...textStyle(theme, "body", { scale: defScale }),
+        valign: "middle",
+      });
+      if (i < data.entries.length - 1) {
+        slide.addShape("rect", {
+          x: box.x, y: ry + rowH - 0.015, w: box.w, h: 0.015,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+      }
+    });
+  },
+
+  /** Questions and answers: a Q marker and question above an A marker and answer. */
+  faq(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.items.length;
+    const rowH = (box.bottom - y - 0.1 - 0.12 * (n - 1)) / n;
+    const qScale = fitScaleAll(data.items.map((i) => i.question), box.w - 0.45, rowH * 0.42, theme.type.subhead, { min: 0.7 });
+    const aScale = fitScaleAll(data.items.map((i) => i.answer), box.w - 0.45, rowH * 0.45, theme.type.body);
+    data.items.forEach((it, i) => {
+      const ry = y + i * (rowH + 0.12);
+      slide.addText("Q", {
+        x: box.x, y: ry, w: 0.4, h: rowH * 0.45,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+        valign: "top",
+      });
+      slide.addText(it.question, {
+        x: box.x + 0.45, y: ry, w: box.w - 0.45, h: rowH * 0.45,
+        ...textStyle(theme, "subhead", { bold: true, scale: qScale }),
+        valign: "top",
+      });
+      slide.addText("A", {
+        x: box.x, y: ry + rowH * 0.52, w: 0.4, h: rowH * 0.42,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+        valign: "top",
+      });
+      slide.addText(it.answer, {
+        x: box.x + 0.45, y: ry + rowH * 0.52, w: box.w - 0.45, h: rowH * 0.42,
+        ...textStyle(theme, "body", { scale: aScale, color: theme.palette.ink_muted }),
+        valign: "top",
+      });
+      if (i < n - 1) {
+        slide.addShape("rect", {
+          x: box.x, y: ry + rowH + 0.06, w: box.w, h: 0.015,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+      }
+    });
+  },
+
+  /**
+   * A member grid: a circular photo (or a numbered placeholder) beside the name
+   * and role. Columns grow with the roster: 2..4 → two, 5..6 → three, 7+ → four.
+   */
+  "team-grid"(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.members.length;
+    const cols = n <= 4 ? 2 : n <= 6 ? 3 : 4;
+    const rows = Math.ceil(n / cols);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const pad = theme.shape?.card_pad ?? 0.24;
+    const imgSize = 0.95;
+    const tx = (x) => x + pad + imgSize + 0.25;
+    const tw = (cw) => cw - pad * 2 - imgSize - 0.25;
+    const nameScale = fitScaleAll(data.members.map((m) => m.name), tw(cw), 0.4, theme.type.subhead, { min: 0.65 });
+    const roleScale = fitScaleAll(data.members.map((m) => m.role), tw(cw), 0.35, theme.type.caption);
+    data.members.forEach((m, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      card(slide, theme, { x, y: ry, w: cw, h: ch });
+      const cy = ry + ch / 2;
+      const src = resolveAsset(m.image);
+      if (src) {
+        slide.addImage({
+          path: src, x: x + pad, y: cy - imgSize / 2, w: imgSize, h: imgSize,
+          rounding: true, sizing: { type: "cover", w: imgSize, h: imgSize },
+        });
+      } else {
+        slide.addShape("ellipse", {
+          x: x + pad, y: cy - imgSize / 2, w: imgSize, h: imgSize,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+        slide.addText(String(i + 1), {
+          x: x + pad, y: cy - imgSize / 2, w: imgSize, h: imgSize,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+          align: "center", valign: "middle",
+        });
+      }
+      slide.addText(m.name, {
+        x: tx(x), y: cy - 0.42, w: tw(cw), h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: nameScale }),
+        valign: "middle",
+      });
+      slide.addText(m.role, {
+        x: tx(x), y: cy - 0.02, w: tw(cw), h: 0.35,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: roleScale }),
+        valign: "top",
+      });
+    });
+  },
+
+  /** Credits: name/contribution pairs in a two- or three-column grid. */
+  attribution(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const cols = data.items.length >= 6 ? 3 : 2;
+    const rows = Math.ceil(data.items.length / cols);
+    const gut = theme.grid.gutter;
+    const cw = (box.w - gut * (cols - 1)) / cols;
+    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const nameScale = fitScaleAll(data.items.map((i) => i.name), cw - 0.2, 0.45, theme.type.subhead, { min: 0.7 });
+    const contribScale = fitScaleAll(
+      data.items.map((i) => i.contribution).filter(Boolean), cw - 0.2, 0.4, theme.type.caption,
+    );
+    data.items.forEach((it, i) => {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = box.x + c * (cw + gut);
+      const ry = y + r * (ch + gut);
+      slide.addText(it.name, {
+        x, y: ry, w: cw, h: 0.5,
+        ...textStyle(theme, "subhead", { bold: true, scale: nameScale }),
+        valign: "top",
+      });
+      if (it.contribution) {
+        slide.addText(it.contribution, {
+          x, y: ry + 0.52, w: cw, h: 0.4,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: contribScale }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /** A centred card of label/value contact lines. */
+  contact(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const cardW = Math.min(6.4, box.w);
+    const cardH = data.items.length * 0.62 + 0.5;
+    const cx = box.x + (box.w - cardW) / 2;
+    const cy = Math.max(y, 2.85);
+    slide.addShape("roundRect", {
+      x: cx, y: cy, w: cardW, h: cardH,
+      fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    const valueScale = fitScaleAll(data.items.map((i) => i.value), cardW - 2.7, 0.4, theme.type.subhead, { min: 0.7 });
+    data.items.forEach((it, i) => {
+      const ry = cy + 0.25 + i * 0.62;
+      // The label is right-aligned to its box end; the box must END before the
+      // value starts or a right-aligned label's last glyph meets the value.
+      slide.addText(it.label, {
+        x: cx + 0.5, y: ry, w: 1.7, h: 0.45,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+        align: "right", valign: "middle",
+      });
+      slide.addText(it.value, {
+        x: cx + 2.4, y: ry, w: cardW - 2.9, h: 0.45,
+        ...textStyle(theme, "subhead", { bold: true, scale: valueScale }),
+        valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * A formula slide: the equation in the theme's mono face (falling back to the
+   * body family), a panel behind it, the interpretation below, and a grid of
+   * variable definitions at the bottom.
+   */
+  equation(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const mono = theme.type.mono?.family ?? theme.type.body.family;
+    const top = Math.max(y, 2.7);
+    const fH = 1.25;
+    slide.addShape("roundRect", {
+      x: box.x, y: top, w: box.w, h: fH,
+      fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
+      rectRadius: theme.shape?.radius?.card ?? 0.12,
+    });
+    const fStyle = { family: mono, size: theme.type.heading.size, weight: 700 };
+    const fScale = fitOneLine(data.formula, box.w - 1.2, fStyle, { min: 0.5 });
+    slide.addText(data.formula, {
+      x: box.x + 0.6, y: top, w: box.w - 1.2, h: fH,
+      fontFace: mono, fontSize: Math.round(fStyle.size * fScale),
+      bold: true, color: hex(theme.palette.accent),
+      align: "center", valign: "middle",
+      charSpacing: theme.type.heading.tracking ?? 0,
+    });
+    const bodyTop = top + fH + 0.3;
+    const hasVars = Array.isArray(data.variables) && data.variables.length > 0;
+    const bodyBudget = hasVars ? 0.95 : box.bottom - bodyTop - 0.1;
+    slide.addText(data.body, {
+      x: box.x, y: bodyTop, w: box.w, h: bodyBudget,
+      ...textStyle(theme, "body", {
+        scale: fitScale(data.body, box.w, bodyBudget, theme.type.body, { min: 0.75 }),
+        color: theme.palette.ink_muted,
+      }),
+      valign: "top",
+    });
+    if (hasVars) {
+      const vars = data.variables;
+      const cols = vars.length > 3 ? 3 : vars.length;
+      const rows = Math.ceil(vars.length / cols);
+      const gut = theme.grid.gutter;
+      const cw = (box.w - gut * (cols - 1)) / cols;
+      const vTop = bodyTop + 1.05;
+      const ch = (box.bottom - vTop - 0.1 - gut * (rows - 1)) / rows;
+      const meaningScale = fitScaleAll(vars.map((v) => v.meaning), cw - 1.5, 0.4, theme.type.caption);
+      vars.forEach((v, i) => {
+        const r = Math.floor(i / cols), c = i % cols;
+        const x = box.x + c * (cw + gut);
+        const ry = vTop + r * (ch + gut);
+        // Symbols are mono acronyms; the box is sized by the longest one and the
+        // font shrinks to fit, so CAPEX never breaks into "CA"/"PEX".
+        const symStyle = { family: mono, size: theme.type.subhead.size * 0.85 };
+        const symScale = fitOneLine(
+          vars.map((x) => x.symbol).reduce((a, b) => (b.length > a.length ? b : a)),
+          1.4,
+          symStyle,
+          { min: 0.5 },
+        );
+        slide.addText(v.symbol, {
+          x, y: ry, w: 1.4, h: ch,
+          fontFace: mono, fontSize: Math.round(symStyle.size * symScale),
+          bold: true, color: hex(theme.palette.accent),
+          align: "left", valign: "middle",
+        });
+        slide.addText(v.meaning, {
+          x: x + 1.5, y: ry, w: cw - 1.5, h: ch,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: meaningScale }),
+          valign: "middle",
+        });
+      });
+    }
+  },
+
+  /**
+   * An annotated bibliography: the citation and an italic annotation beneath it,
+   * one entry per row.
+   */
+  bibliography(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.entries.length;
+    const rowH = (box.bottom - y - 0.1 - 0.1 * (n - 1)) / n;
+    const citeScale = fitScaleAll(
+      data.entries.map((e) => e.citation), box.w - 0.3, rowH * 0.55, theme.type.body,
+    );
+    const annScale = fitScaleAll(
+      data.entries.map((e) => e.annotation).filter(Boolean), box.w - 0.3, rowH * 0.4, theme.type.caption,
+    );
+    data.entries.forEach((e, i) => {
+      const ry = y + i * (rowH + 0.1);
+      slide.addText(e.citation, {
+        x: box.x, y: ry, w: box.w, h: rowH * 0.55,
+        ...textStyle(theme, "body", { scale: citeScale }),
+        valign: "top",
+      });
+      if (e.annotation) {
+        slide.addText(e.annotation, {
+          x: box.x, y: ry + rowH * 0.55, w: box.w, h: rowH * 0.4,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true, scale: annScale }),
+          valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * Data-source attribution cards: a name, the URL in small caption, a
+   * description, and hairlines between sources.
+   */
+  "data-source"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const n = data.sources.length;
+    const rowH = (box.bottom - y - 0.1 - 0.12 * (n - 1)) / n;
+    const nameScale = fitScaleAll(data.sources.map((s) => s.name), box.w - 0.2, rowH * 0.4, theme.type.subhead, { min: 0.7 });
+    const descScale = fitScaleAll(
+      data.sources.map((s) => s.description).filter(Boolean), box.w - 0.2, rowH * 0.28, theme.type.caption,
+    );
+    data.sources.forEach((s, i) => {
+      const ry = y + i * (rowH + 0.12);
+      slide.addText(s.name, {
+        x: box.x, y: ry, w: box.w, h: rowH * 0.4,
+        ...textStyle(theme, "subhead", { bold: true, scale: nameScale }),
+        valign: "top",
+      });
+      if (s.url) {
+        slide.addText(s.url, {
+          x: box.x, y: ry + rowH * 0.42, w: box.w, h: rowH * 0.26,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.85 }),
+          valign: "top",
+        });
+      }
+      if (s.description) {
+        slide.addText(s.description, {
+          x: box.x, y: ry + rowH * 0.7, w: box.w, h: rowH * 0.26,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: descScale }),
+          valign: "top",
+        });
+      }
+      if (i < n - 1) {
+        slide.addShape("rect", {
+          x: box.x, y: ry + rowH + 0.06, w: box.w, h: 0.015,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+      }
+    });
+  },
 };
 
 export { content };
