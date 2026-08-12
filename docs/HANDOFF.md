@@ -7,120 +7,139 @@ history preserves older handoffs.
 
 ## Session summary
 
-**UI redesign complete, committed and pushed to `origin/main`.** The app shell
-went from a developer-tool layout (grid of text cards, dev-menu sidebar, no
-reports UI) to a Google-Stitch-style product surface, executed per
-`/tmp/opencode/ref/REDESIGN_PLAN.md`. Renderer, themes, schema, config and deck
-content are untouched — the headless pipeline still works (`npm run render`
-verified on gpu-demo).
+**Frontend polish pass: the four queued UI bugs fixed, a reactive particle
+background and a depth pass added, and an OpenCode Go cloud backend with a
+Settings/Cloud key surface shipped. All committed and pushed to `origin/main`.**
+Renderer, themes, schema and deck content are untouched — the headless pipeline
+still works (`npm test` 65/65, `vite build` clean).
 
-### What the shell is now
+### What changed
 
-- **HeaderBar** (new): wordmark → home, LOCAL badge, sidebar toggle, Docs modal
-  (`GET /api/docs` serves README.md as text), GitHub link to the real remote.
-- **Sidebar** (new): All decks / Reports tabs (Reports filters on a real
-  `report` flag added to `deckMeta()`), client-side search over
-  title/slug/theme, date-grouped list (Today/Yesterday/This week/This
-  month/Earlier via new `lib/time.js`), `DeckThumb` rows with a fallback tile
-  when no `slide-01.png` exists, Themes/Identity rows + New deck button,
-  collapse-to-icon-rail persisted in localStorage.
-- **Home** (new): "What shall we present?" banner (org short from
-  `/api/identity`), `PromptBox` with Deck/Report modes on a new `--color-prompt`
-  tonal step, model pill from `/api/models`, suggestion pills that fill the
-  textarea, "Recent decks" carousel of real decks. Deck mode streams a brief to
-  the outline gate; Report mode streams `report/generate` and lands in the deck
-  detail's Report panel.
-- **DeckDetail** (extracted from Decks.jsx, which is deleted): header restyle,
-  and a **Report panel** — generate (depth + model) when no `report.yaml`,
-  otherwise Render `.docx` + sections/pages readout + download link. Lightbox,
-  inline editor, presenter, move/dup/del, theme/style render are unchanged
-  behaviour.
-- **Report surface everywhere**: `api.js` gained `docs/report/renderReport/
-  generateReport`; the deck list refetches on a version bump so the Reports tab
-  and Report panel track real `report.yaml` presence.
-- Wizard/outline/themes/identity/chat got a copy + spacing pass (no behaviour
-  change). Dev-tool literals removed from subtitles and the sidebar footer
-  motto; chat empty state now says "Every turn edits the deck's source."
+**Part A — the four queued bugs (`/tmp/opencode/UI_BUGS.md`):**
+
+1. **Submit arrow anchored inside the prompt box.** The real cause was the
+   model picker sizing itself to its longest option — a 63-char pulled model
+   name (`hf.co/bartowski/Mistral-Small-…GGUF:Q5_K_M`) — which pushed the whole
+   right-hand cluster past the box's right edge so the circular arrow hung half
+   outside it. Capped the picker width (`max-w-[14rem]` in the prompt, same for
+   the report picker) and gave the box a `surface-well` treatment so it reads as
+   one defined surface. The arrow now sits fully inside the toolbar row.
+2. **Single chat surface.** Verified in HEAD: `App.jsx` already renders exactly
+   one surface via a ternary (panel when open, edge strip when closed). The
+   "two chatting things" was a stale review; no code change was needed, and the
+   open/closed states were both screenshot-verified.
+3. **Word overlap / truncation.** The one real overlap: a sidebar fallback
+   tile's theme label (`WARM-HUMANIST`) spilled past its 36px edge into the
+   row's meta text. Fallback tiles now clip at the tile (`overflow: hidden` +
+   width-constrained inner), the home carousel meta line truncates, deck titles
+   and chat bubbles wrap (`break-words` / `overflow-wrap:anywhere`).
+4. **Identity covered by the "create deck" UI.** The Identity view's save bar
+   was `position: fixed; inset-x-0`, a full-width bar that sat on top of the
+   sidebar's bottom "New deck" button and Themes/Identity rows. Now `sticky
+   bottom-0` inside the scroll column, so it belongs to the form and never
+   overlaps chrome.
+
+**Part B — rich, not dull, without new colours.**
+
+- **`ParticleField.jsx`** — an ambient dot field behind the whole shell. Capped
+  dot count by area, slow sine drift, gentle repulsion + parallax around the
+  pointer. Behaviourally verified (instrumented, not just screenshots): the
+  loop runs ~60fps, up to 7 dots respond to the cursor, reduced-motion draws
+  exactly one static frame, and the loop pauses on tab-hidden, window-blur and
+  rail-hover. Two traps worth remembering: `inset-0` does NOT stretch a canvas
+  (replaced element — it stays 300×150; you need an explicit `h-full w-full`),
+  and `/models`-style public endpoints can't validate keys.
+- **Depth pass** — panel/surface gradients + 1px inset highlights that catch
+  light, card lift on hover with a press-settle, a soft accent focus halo on
+  inputs, primary-button inner highlight, a light-catching header edge, and
+  designed empty states (icon in a ring). All white-on-black light and the
+  existing tokens; no new palette entries.
+
+**Part C — OpenCode Go cloud backend.**
+
+- `config/models.yaml` gains an opt-in `opencode-go` provider (openai-
+  compatible, `https://opencode.ai/zen/go/v1`, key `env:OPENCODE_GO_API_KEY`)
+  with `models: [deepseek-v4-flash, qwen3.8-max, mimo-v2.5]`.
+- **`src/cloud.js`** — the secret store. Keys resolve env-first then from
+  gitignored `config/local.yaml` (the file the Settings panel writes). No code
+  path returns a key value.
+- **Routing** — a `model` override naming a provider's listed model routes that
+  request to the provider (this is how picking `deepseek-v4-flash` sends work
+  to OpenCode Go). `/api/models` now forwards a `cloud` group, shown as an
+  optgroup in the prompt, chat and report pickers only when a key is present.
+- **Server** — `GET /api/cloud`, `PUT/DELETE /api/cloud/key`, and
+  `POST /api/cloud/test`. The test is an *authenticated probe*: a one-token
+  chat call against the provider's first listed model. `/models` is public on
+  OpenCode Go and proved nothing — a dummy key now fails with the provider's
+  401, the real key reports the authenticated model.
+- **Settings/Cloud panel** — the bottom section of the Identity view: what the
+  key is for, provider/baseURL/models, save / remove / test, honest status.
 
 ### Verification (all behavioural, on the live dev servers)
 
-- `npm test` 65/65; `vite build` clean; headless `npm run render` on a real
-  deck works.
-- Playwright at 1440×900, reviewed with the mimo-v2.5 vision subagent: header/
-  sidebar alignment, prompt-box radius hierarchy, fallback thumbs (no broken
-  `<img>`), truncation, deck grid, collapsed rails — all clean and matching the
-  Stitch design language (three tonal steps, radius hierarchy, capsule pills).
-- **Deck mode flow** ran end-to-end: prompt submit → status streamed in the box
-  → outline opened with a real 17-slide plan → approve → 17 slides written →
-  deck detail rendered. See "Honest limitations" for the one content bug the
-  run exposed.
-- **Report mode flow** ran end-to-end: deck picker + Brief → status streamed
-  → deck detail opened → Report panel rendered `.docx` (LibreOffice, ~6s) →
-  download link produced a valid `report.docx`. Error path verified: a deck
-  without an approved outline shows the "no plan.yaml — approve an outline
-  first" amber error inline, page intact.
-- Sidebar search/tabs/date-groups/collapse-persistence, deck detail ops
-  (render, lightbox, inline edit, presenter, move/dup/del), docs modal and
-  GitHub link all exercised and passing.
+- `npm test` 65/65; `vite build` clean; the running API + Vite at :5174/:5173.
+- **Bug fixes** screenshot-verified with the mimo-v2.5 subagent: arrow inside
+  the box, one chat surface in both states, no sidebar tile spill, save bar
+  clear of the sidebar nav.
+- **Particle field** instrumented via CDP (frame counter, pointer stamp,
+  pushed-dot count, reduced-motion static frame, blur/focus and rail-hover
+  pauses) — all hold.
+- **Richness** — mimo confirmed the layered surfaces, and no text overlaps on
+  home / themes / deck detail / identity.
+- **Cloud** — the real key was saved through the actual UI path (PUT → wrote
+  `config/local.yaml`), `/api/cloud` reports it without ever returning it, and
+  `POST /api/cloud/test` connected live: *"connected — deepseek-v4-flash
+  authenticated"*. A dummy key flow was exercised end-to-end in the UI (typed,
+  saved, "key attached", 401 on test) and the real key was then restored. A
+  live model call through the pipeline with `model: deepseek-v4-flash` returned
+  "cloud ok" (done_reason stop). Per the discipline, no other cloud model was
+  ever invoked — mimo-v2.5 was used for vision checks only, and the cloud
+  models were listed but never called.
 
-### One real bug found and fixed during verification
-
-The report render endpoint returns `pages` as a **`{section: page}` map**, not
-a count. The first version of the Report panel rendered that object as a React
-child and crashed the whole deck view after every successful render. Fixed by
-deriving the total page count from the highest section page. This is worth
-remembering for any future consumer of `/report/render`.
-
-## Honest limitations
-
-- **The deck writer invents image filenames.** A fresh generated deck contained
-  `image-text`/`compare` slides referencing `*.jpg` files that were never
-  written, so the render failed loudly with "Unable to read media" — the
-  renderer refusing is correct, but this is a pre-existing deck-writer
-  content bug (the handoff's known weak spot). It is **not** a UI issue; the UI
-  surfaced it as the real renderer problem panel.
-- **Report generation takes real time** (8 sections × brief ≈ several minutes
-  with the default 30b model); the render itself is fast (~6s). Do not kill a
-  browser mid-generate and expect the pipeline to continue — SSE aborts on
-  socket close by design.
-- **Vision QA note:** mimo-v2.5 once misread an amber error box as a soffice
-  failure when the actual text was the plan.yaml error (the same false-positive
-  family TRAPS warns about). A second focused check with a pinned question
-  corrected it. Batch per-target, ask narrowly.
-
-## Context to read before starting
-
-- `docs/ARCHITECTURE.md` §"The web shell" — the new structure; §"The chat
-  panel" and §"Shared core, two front-ends" are unchanged.
-- `docs/ROADMAP.md` — still fully ticked; nothing new was opened.
-- `/tmp/opencode/ref/REDESIGN_PLAN.md` — the executed plan (reference only).
-- `app/web/src/` — the shell; `app/server/index.js` has the two thin additions
-  (`/api/docs`, `report` flag in `deckMeta`, plus the 404-safe `GET /report`).
-
-## Known open work (not roadmap items)
+### Known open work (unchanged from last session)
 
 - **Deck writer image grounding** — the model emits image filenames for
-  `image`/`image-text`/`compare` slides without writing the files. Either drop
-  the image slots from the writer schema or generate placeholder media.
-- **Report UI** — now a real generate/render/download surface, but no
-  section-reader for the `.docx` content itself (still open from before).
-- **Flow layout capacity** — six-step ttb cards collide with the footer.
+  `image`/`image-text`/`compare` slides without writing the files. Still open.
+- **Report UI** — generate/render/download surface exists; no section-reader
+  for the `.docx` content yet.
+- **Flow layout capacity** — six-step ttb cards still collide with the footer.
 - **Dark-mode / style-variant visual checks** for the renderer.
 
-## Gotchas
+### Gotchas
 
 Full list in `docs/TRAPS.md`. Ones that bit this session:
 
-- **Express does not hot-reload** — the running API picks up edits only via
-  `node --watch`. The API was already running with `--watch`, so it reloaded.
-  Restart manually if it is started another way.
-- **`npm test` and `vite build` are fast** — run both before claiming the UI
-  compiles; `node --test` never touches `app/web` (only `lib/slides.js` is
-  imported by tests).
-- **Playwright's chromium build must match the local install** — the system
-  cache had build 1223 while a fresh `npm i playwright` wanted 1234; launch
-  with an explicit `executablePath` to the cached chrome.
-- **`pages` in `/report/render` is a map** — see the fixed bug above.
-- **Report generate writes `report.yaml`** and overwrites whatever was there;
-  the committed full-depth report on the green-hydrogen deck was restored with
-  `git checkout` after the brief-depth verification run.
+- **A `<canvas>` is a replaced element: `inset-0` leaves it at its intrinsic
+  300×150.** Stretch it explicitly (`h-full w-full`) or the particle field only
+  ever painted in the top-left corner — invisible everywhere else, and the
+  "fix" looked like it did nothing.
+- **`GET /models` on OpenCode Go is unauthenticated** — it returns the model
+  list for any key (or none). Any "connection test" built on it is a false
+  positive. The honest test is an authenticated one-token chat probe.
+- **React's `onMouseEnter` is mouseover-delegated.** Dispatching a synthetic
+  `mouseenter` to test rail-hover pause does nothing; move the real pointer via
+  CDP `Input.dispatchMouseEvent` instead.
+- **`node --watch` silently keeps stale module state.** The `/api/models`
+  route dropped the new `cloud` field for two restarts because the running
+  process still served the old handler — when an endpoint "works but the field
+  is missing", restart the API before debugging the data.
+- **`b.native click` vs CDP pointer events:** `el.click()` in an eval navigated
+  the app; a real mouse click at the same coordinates did not (offset). When in
+  doubt, drive React with `el.click()` and read state via eval polls.
+
+## Context to read before starting
+
+- `docs/ARCHITECTURE.md` §"The web shell" and §"The cloud surface — opt-in
+  hosted models" describe the shell's new subsystems.
+- `docs/ROADMAP.md` — still fully ticked; nothing new was opened this session
+  (all four bugs and both features were fix/shine work on shipped items).
+- `config/models.yaml` — the `opencode-go` provider block and its `models:` list.
+- `src/cloud.js` — the secret store and the authenticated probe.
+- `app/web/src/components/ParticleField.jsx` — the ambient background.
+
+## End-of-session state
+
+- `config/local.yaml` (gitignored) currently holds the real OpenCode Go key,
+  saved via the Settings panel — the app works with the subscription out of the
+  box on this machine. Remove it (Settings → Cloud → Remove) to hand the repo
+  back to a machine without the subscription.
