@@ -8,20 +8,18 @@ import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PlusIcon, Search
 const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 
 /**
- * Persistent deck navigation. Tabs filter All decks / Reports (a real per-deck
- * flag), search filters title/slug/theme, and the list is grouped by relative
- * date with a cover thumb on every row. The Reports tab opens the report's
- * document view directly — a deck that also has slides still opens its report
- * here, because this tab is about the document, not the deck. Collapses to an
- * icon rail — both states are persisted by App. Themes and Identity are compact
- * rows at the bottom.
+ * The per-user navigation. Two tabs: Chats (the conversation threads that end
+ * in decks or reports) and Decks (your actual artefacts). Search filters the
+ * deck list and greps content server-side; the chats need no search yet. The
+ * one creation entry app-wide lives here — "+ New chat". Collapses to an icon
+ * rail; Themes and Identity are compact rows at the bottom.
  */
-export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onOpenReport, onNewDeck, onView }) {
-  const [tab, setTab] = useState("all");
+export default function Sidebar({
+  chats, decks, activeChatId, activeSlug, view, open, focusSearch,
+  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onView,
+}) {
+  const [tab, setTab] = useState("chats"); // chats | decks
   const [query, setQuery] = useState("");
-  // F19 — when the client-side title/slug/theme filter comes up short, a
-  // debounced server search greps deck.yaml content so a phrase inside a slide
-  // still finds its deck.
   const [contentHits, setContentHits] = useState([]);
 
   useEffect(() => {
@@ -36,10 +34,19 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onO
     return () => clearTimeout(t);
   }, [query]);
 
+  // Ctrl+K lands here from anywhere: switch to the Decks tab and focus search.
+  useEffect(() => {
+    if (focusSearch > 0) {
+      setTab("decks");
+      requestAnimationFrame(() => {
+        document.querySelector("input[placeholder='Search decks']")?.focus();
+      });
+    }
+  }, [focusSearch]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const local = decks.filter((d) => {
-      if (tab === "reports" && !d.report) return false;
       if (!q) return true;
       return (
         d.title?.toLowerCase().includes(q) ||
@@ -47,98 +54,135 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onO
         d.theme?.toLowerCase().includes(q)
       );
     });
-    // Content matches appear too — decks whose slides mention the query.
     const bySlug = new Map(decks.map((d) => [d.slug, d]));
     const extra = contentHits
       .map((s) => bySlug.get(s))
       .filter(Boolean)
       .filter((d) => !local.includes(d));
     return [...local, ...extra];
-  }, [decks, tab, query, contentHits]);
+  }, [decks, query, contentHits]);
 
   const grouped = useMemo(() => {
     const out = new Map();
-    for (const d of filtered) {
-      const g = dateGroup(d.updated);
+    for (const c of chats) {
+      const g = dateGroup(c.updatedAt);
       if (!out.has(g)) out.set(g, []);
-      out.get(g).push(d);
+      out.get(g).push(c);
     }
     return out;
-  }, [filtered]);
-
-  const reportCount = decks.filter((d) => d.report).length;
+  }, [chats]);
 
   return (
     <aside className={`flex shrink-0 flex-col bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${open ? "w-64" : "w-14"}`}>
       {open ? (
         <>
           <div className="flex items-center gap-1 px-3 pt-3">
-            <TabButton active={tab === "all"} onClick={() => setTab("all")}>All decks</TabButton>
-            <TabButton active={tab === "reports"} onClick={() => setTab("reports")}>
-              Reports
-              {reportCount > 0 && (
-                <span className={`rounded-full px-1.5 text-[10px] tabular-nums ${tab === "reports" ? "bg-hover" : "bg-prompt"}`}>
-                  {reportCount}
+            <TabButton active={tab === "chats"} onClick={() => setTab("chats")}>
+              Chats
+              {chats.length > 0 && (
+                <span className={`rounded-full px-1.5 text-[10px] tabular-nums ${tab === "chats" ? "bg-hover" : "bg-prompt"}`}>
+                  {chats.length}
                 </span>
               )}
             </TabButton>
+            <TabButton active={tab === "decks"} onClick={() => setTab("decks")}>Decks</TabButton>
           </div>
 
-          <div className="relative px-3 pt-2.5">
-            <SearchIcon className="pointer-events-none absolute left-4.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search decks"
-              className="w-full rounded-lg border border-line bg-sunken py-1.5 pl-8 pr-3 text-[12.5px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
-            />
-          </div>
+          {tab === "decks" && (
+            <div className="relative px-3 pt-2.5">
+              <SearchIcon className="pointer-events-none absolute left-4.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search decks"
+                className="w-full rounded-lg border border-line bg-sunken py-1.5 pl-8 pr-3 text-[12.5px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
+              />
+            </div>
+          )}
 
           <div className="mt-3 flex-1 space-y-3 overflow-y-auto px-3 pb-3">
-            {GROUPS.map((g) => {
-              const list = grouped.get(g);
-              if (!list?.length) return null;
-              return (
-                <div key={g}>
-                  <div className="mb-1 px-1 text-[10px] font-semibold uppercase tracking-wider text-fg-faint">{g}</div>
-                  <div className="space-y-0.5">
-                    {list.map((d) => (
-                      <button
-                        key={d.slug}
-                        onClick={() => (tab === "reports" ? onOpenReport(d.slug) : onOpenDeck(d.slug))}
-                        title={`${d.title}\n${new Date(d.updated).toLocaleString()}`}
-                        className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
-                          activeSlug === d.slug
-                            ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                            : "hover:bg-hover"
-                        }`}
-                      >
-                        <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
-                          <span className="block truncate text-[10.5px] text-fg-faint">
-                            {tab === "reports" ? "report" : `${d.slides} slides`} · {relative(d.updated)}
-                          </span>
-                        </span>
-                        {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
-                      </button>
-                    ))}
+            {tab === "chats" && (
+              <>
+                {GROUPS.map((g) => {
+                  const list = grouped.get(g);
+                  if (!list?.length) return null;
+                  return (
+                    <div key={g}>
+                      <div className="mb-1 px-1 text-[10px] font-semibold uppercase tracking-wider text-fg-faint">{g}</div>
+                      <div className="space-y-0.5">
+                        {list.map((c) => (
+                          <button
+                            key={c.id}
+                            onClick={() => onOpenChat(c.id)}
+                            title={c.title}
+                            className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
+                              activeChatId === c.id
+                                ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                                : "hover:bg-hover"
+                            }`}
+                          >
+                            <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${c.produced ? "border-accent/30 bg-accent/10 text-accent" : "border-line bg-sunken text-fg-faint"}`}>
+                              <span className="text-[13px] font-semibold uppercase">{(c.title?.[0] ?? "?").toUpperCase()}</span>
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-[12.5px] font-medium text-fg">{c.title}</span>
+                              <span className="block truncate text-[10.5px] text-fg-faint">
+                                {c.kind === "report" ? "report" : "deck"} · {c.produced ? "ready · " : ""}{relative(c.updatedAt)}
+                              </span>
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                {chats.length === 0 && (
+                  <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
+                    <div className="empty-ring h-8 w-8">
+                      <PlusIcon className="h-3.5 w-3.5" />
+                    </div>
+                    <div>No chats yet — start one below.</div>
                   </div>
-                </div>
-              );
-            })}
+                )}
+              </>
+            )}
 
-            {filtered.length === 0 && (
-              <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
-                <div className="empty-ring h-8 w-8">
-                  <SearchIcon className="h-3.5 w-3.5" />
+            {tab === "decks" && (
+              <>
+                <div className="space-y-0.5">
+                  {filtered.map((d) => (
+                    <button
+                      key={d.slug}
+                      onClick={() => onOpenDeck(d.slug)}
+                      title={d.title}
+                      className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
+                        activeSlug === d.slug
+                          ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                          : "hover:bg-hover"
+                      }`}
+                    >
+                      <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
+                        <span className="block truncate text-[10.5px] text-fg-faint">
+                          {d.report ? "report" : `${d.slides} slides`} · {relative(d.updated)}
+                        </span>
+                      </span>
+                      {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
+                    </button>
+                  ))}
                 </div>
-                {tab === "reports"
-                  ? <div>No reports yet — generate one from a deck's Report panel or the home prompt (Report mode).</div>
-                  : query.trim()
-                    ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
-                    : <div>No decks yet — start one from the home prompt.</div>}
-              </div>
+                {filtered.length === 0 && (
+                  <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
+                    <div className="empty-ring h-8 w-8">
+                      <SearchIcon className="h-3.5 w-3.5" />
+                    </div>
+                    {query.trim()
+                      ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
+                      : <div>No decks yet — one starts from a chat.</div>}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -147,19 +191,19 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onO
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" onClick={() => onView("themes")} />
               <NavRow active={view === "identity"} icon={IdIcon} label="Identity" onClick={() => onView("identity")} />
             </div>
-            <Button variant="primary" className="w-full" onClick={onNewDeck}>
+            <Button variant="primary" className="w-full" onClick={() => onNewChat("deck")}>
               <PlusIcon className="h-3.5 w-3.5" />
-              New deck
+              New chat
             </Button>
           </div>
         </>
       ) : (
         <div className="flex flex-col items-center gap-1 py-3">
-          <IconButton active={view === "home"} icon={LayersIcon} title="Home" onClick={() => onView("home")} />
+          <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" onClick={() => onOpenChat(activeChatId) || onView("chat")} />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" onClick={() => onView("themes")} />
           <IconButton active={view === "identity"} icon={IdIcon} title="Identity" onClick={() => onView("identity")} />
           <div className="mt-auto" />
-          <IconButton icon={PlusIcon} title="New deck" onClick={onNewDeck} />
+          <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
         </div>
       )}
     </aside>

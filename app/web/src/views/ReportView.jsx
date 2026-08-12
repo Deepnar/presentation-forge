@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
-import { progressLabel } from "./NewDeck.jsx";
+import { progressLabel } from "../lib/progress.js";
 
 const REPORT_SECTIONS = [
   "Abstract", "Acknowledgement", "Introduction", "Theoretical Background",

@@ -5,125 +5,161 @@ import Sidebar from "./components/Sidebar.jsx";
 import DocsModal from "./components/DocsModal.jsx";
 import ChatPanel from "./components/ChatPanel.jsx";
 import AuthModal from "./components/AuthModal.jsx";
+import LoginScreen from "./components/LoginScreen.jsx";
 import ParticleField from "./components/ParticleField.jsx";
-import { ChatIcon } from "./components/icons.jsx";
-import Home from "./views/Home.jsx";
+import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
-import NewDeck from "./views/NewDeck.jsx";
-import Outline from "./views/Outline.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
+import { loadChats, saveChat, createChat } from "./lib/chats.js";
+import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 
 /**
- * Application shell: header bar on top; below it the sidebar (persistent deck
- * list), the active view, and the chat rail. Both rails persist their open
- * state. The deck list lives here — the sidebar and home carousel share it, and
- * a chat turn or report flow bumps the version so both re-fetch. The particle
- * field sits behind the whole shell as ambience, and pauses whenever the
- * pointer enters either rail so it never competes with navigation.
- *
- * Auth is a local single-install gate: the header's account entry opens
- * Login/Register, and the session (a bearer token in localStorage) unlocks the
- * Cloud-key section. Everything else stays open.
+ * The chat-first shell. Logging in is the landing; the chat window is the app.
+ * Views: chat (the active conversation), deck, report, themes, identity. A
+ * chat persists per account and knows the deck it produced; the deck list in
+ * the sidebar shows only your decks. The old wizard form and the standalone
+ * outline view are gone — the briefing and the outline gate both live in the
+ * chat thread.
  */
 export default function App() {
-  const [view, setView] = useState("home"); // home | deck | new | outline | themes | identity
-  // The institution comes from config, never from source — src/ must stay free
-  // of any one school's details so the tool is reusable.
+  const [user, setUser] = useState(null);
+  const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
-  const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
-  const [rightOpen, setRightOpen] = useState(() => localStorage.getItem("forge.rightRail") === "1");
+  const [view, setView] = useState("chat"); // chat | deck | report | themes | identity
+  const [chats, setChats] = useState([]);
+  const [activeChatId, setActiveChatId] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
-  const [draft, setDraft] = useState(null); // approved outline handoff
+  const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
+  const [rightOpen, setRightOpen] = useState(() => localStorage.getItem("forge.rightRail") === "1");
   const [docsOpen, setDocsOpen] = useState(false);
-  const [railHover, setRailHover] = useState(false); // pause particles over a rail
-  const [user, setUser] = useState(null);
+  const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [focusSearch, setFocusSearch] = useState(0);
 
+  // Boot: rehydrate the session (a stale token just logs out) and remember the
+  // institution. Auth-first — everything else waits for a user.
   useEffect(() => {
-    api.identity()
-      .then((r) => setOrg(r.identity?.institution?.short ?? ""))
-      .catch(() => {});
+    api.me().then((r) => setUser(r.user)).catch(() => setUser(null));
+    api.identity().then((r) => { setIdentity(r.identity ?? {}); setOrg(r.identity?.institution?.short ?? ""); }).catch(() => {});
   }, []);
 
-  // F7 — global keyboard shortcuts: Ctrl+K focuses deck search, Ctrl+N starts a
-  // new deck, Escape closes the docs modal. Per-deck shortcuts (undo/redo,
-  // re-render) live in DeckDetail where they have a deck to act on.
+  // A logged-in user gets their own chat list; the first visit starts one
+  // empty thread so the landing is already a chat. StrictMode double-fires this
+  // effect, so the initial-chat guard reads localStorage, not React state.
+  useEffect(() => {
+    if (!user) { setChats([]); setActiveChatId(null); return; }
+    let list = loadChats(user.email);
+    if (!list.length) {
+      const c = createChat();
+      saveChat(user.email, c);
+      list = [c];
+    }
+    setChats(list);
+    setActiveChatId((prev) => (prev && list.some((c) => c.id === prev) ? prev : list[0].id));
+  }, [user?.email]);
+
+  useEffect(() => {
+    if (!user) { setDecks([]); return; }
+    api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
+  }, [user?.email, deckVersion]);
+
+  useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
+  useEffect(() => localStorage.setItem("forge.rightRail", rightOpen ? "1" : "0"), [rightOpen]);
+
+  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat, Escape closes
+  // the docs modal.
   useEffect(() => {
     const onKey = (e) => {
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setView("home");
-        // Focus the sidebar search the next frame.
-        requestAnimationFrame(() => {
-          const input = document.querySelector("input[placeholder='Search decks']");
-          input?.focus();
-        });
+        setFocusSearch((n) => n + 1);
       } else if (mod && e.key.toLowerCase() === "n") {
         e.preventDefault();
-        setView("new");
+        newChat();
       } else if (e.key === "Escape" && docsOpen) {
         setDocsOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [docsOpen]);
-
-  // Rehydrate the session on boot: a stored token that no longer resolves is
-  // simply forgotten, leaving the user logged out.
-  useEffect(() => {
-    api.me()
-      .then((r) => setUser(r.user))
-      .catch(() => setUser(null));
-  }, []);
-
-  useEffect(() => {
-    api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
-  }, [deckVersion]);
-
-  useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
-  useEffect(() => localStorage.setItem("forge.rightRail", rightOpen ? "1" : "0"), [rightOpen]);
-
-  const openDeck = (slug) => {
-    // A report-only deck (no deck.yaml yet) opens the Report view; a deck with
-    // slides opens the deck detail. The chat rail edits deck.yaml, so it only
-    // exists on the deck view.
-    const entry = decks.find((d) => d.slug === slug);
-    setActiveSlug(slug);
-    setView(entry && entry.report && !entry.deck ? "report" : "deck");
-  };
-
-  // The sidebar's Reports tab is about the document, not the deck: clicking a
-  // report opens its full-document view even when the deck also has slides.
-  const openReport = (slug) => {
-    setActiveSlug(slug);
-    setView("report");
-  };
-
-  const handlePlanReady = ({ slug, plan, theme }) => {
-    setDraft({ slug, plan, theme });
-    setView("outline");
-  };
-
-  // A report generate wrote report.yaml server-side; refetch the list so the
-  // Reports tab and the deck's Report panel reflect the new file.
-  const handleReportDone = (slug) => {
-    setDeckVersion((v) => v + 1);
-    openDeck(slug);
-  };
+  }, [docsOpen, user]);
 
   const bumpDeck = () => setDeckVersion((v) => v + 1);
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
+  /** The one creation entry: a new chat, empty thread, welcome message. */
+  function newChat(kind = "deck") {
+    const c = createChat({ kind });
+    if (user) saveChat(user.email, c);
+    setChats((list) => [c, ...list]);
+    setActiveChatId(c.id);
+    setView("chat");
+  }
+
+  function openChat(id) {
+    setActiveChatId(id);
+    setView("chat");
+  }
+
+  /** Persist a chat the view changed (briefing progress, produced deck, …). */
+  function handleChatChanged(chat) {
+    if (!user) return;
+    saveChat(user.email, chat);
+    setChats((list) => {
+      const i = list.findIndex((c) => c.id === chat.id);
+      return i === -1 ? [chat, ...list] : list.map((c) => (c.id === chat.id ? chat : c));
+    });
+    if (chat.produced && chat.deckSlug) bumpDeck();
+  }
+
+  const openDeck = (slug) => { setActiveSlug(slug); setView("deck"); };
+  const openReport = (slug) => { setActiveSlug(slug); setView("report"); };
+
+  /**
+   * The reverse flow's chat: a report's plan arrives already made, so the chat
+   * skips the briefing and lands straight on the outline gate — same surface,
+   * same approve step, no second wizard.
+   */
+  function startCompanionChat(slug, plan, theme = "") {
+    const c = createChat();
+    const now = new Date().toISOString();
+    const companion = {
+      ...c,
+      title: plan.title ?? "Companion deck",
+      topic: plan.title ?? "Companion deck",
+      briefStep: BRIEFING_QUESTIONS.length,
+      briefing: { ...c.briefing, theme, title: plan.title ?? "" },
+      plan,
+      deckSlug: slug,
+      updatedAt: now,
+    };
+    if (user) saveChat(user.email, companion);
+    setChats((list) => [companion, ...list]);
+    setActiveChatId(companion.id);
+    setView("chat");
+  }
+
+  const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
+  const goHome = () => setView("chat");
+
+  if (!user) {
+    return (
+      <div className="relative h-full overflow-hidden">
+        <ParticleField className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
+        <div className="relative z-10 h-full">
+          <LoginScreen onDone={(u) => { setUser(u); setView("chat"); }} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative h-full overflow-hidden">
-      {/* A canvas is a replaced element with an intrinsic size, so inset-0 alone
-          leaves it at 300x150 — it needs an explicit fill to cover the shell. */}
       <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
 
       <div className="relative z-10 flex h-full flex-col">
@@ -131,7 +167,7 @@ export default function App() {
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
           onOpenDocs={() => setDocsOpen(true)}
-          onHome={() => setView("home")}
+          onHome={goHome}
           onOpenIdentity={() => setView("identity")}
           user={user}
           onAuthClick={() => setAuthOpen(true)}
@@ -148,107 +184,105 @@ export default function App() {
             className="flex"
           >
             <Sidebar
+              chats={chats}
               decks={decks}
+              activeChatId={activeChatId}
               activeSlug={view === "deck" || view === "report" ? activeSlug : null}
               view={view}
               open={leftOpen}
+              focusSearch={focusSearch}
+              onOpenChat={openChat}
               onOpenDeck={openDeck}
               onOpenReport={openReport}
-              onNewDeck={() => setView("new")}
+              onNewChat={newChat}
               onView={setView}
             />
           </div>
 
-          <main key={view} className="view-in min-w-0 flex-1 overflow-y-auto">
-          {view === "home" && (
-            <Home
-              decks={decks}
-              org={org}
-              onNewDeck={() => setView("new")}
-              onOpenDeck={openDeck}
-              onPlanReady={handlePlanReady}
-              onReportDone={handleReportDone}
-              onStandaloneReport={(slug) => { setDeckVersion((v) => v + 1); openDeck(slug); }}
-            />
-          )}
-          {view === "deck" && activeSlug && (
-            <DeckDetail
-              slug={activeSlug}
-              hasReport={hasReportFor(activeSlug)}
-              refreshToken={deckVersion}
-              onBack={() => setView("home")}
-              onDeckChanged={bumpDeck}
-              onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
-            />
-          )}
-          {view === "report" && activeSlug && (
-            <ReportView
-              slug={activeSlug}
-              refreshToken={deckVersion}
-              onBack={() => setView("home")}
-              onDeckChanged={bumpDeck}
-              onPlanReady={(plan) => { setDraft({ slug: activeSlug, plan, theme: "" }); setView("outline"); }}
-            />
-          )}
-          {view === "new" && <NewDeck onPlanned={handlePlanReady} onBack={() => setView("home")} />}
-          {view === "outline" && draft && (
-            <Outline
-              slug={draft.slug}
-              plan={draft.plan}
-              initialTheme={draft.theme}
-              onDone={(slug) => { bumpDeck(); openDeck(slug); }}
-              onBack={() => setView("new")}
-            />
-          )}
-          {view === "themes" && <Themes />}
-          {view === "identity" && (
-            <Identity
-              user={user}
-              onAuthClick={() => setAuthOpen(true)}
-            />
-          )}
-        </main>
-
-        {/* The chat rail belongs to a deck — it edits deck.yaml. With no deck
-            open there is nothing to talk to, so the rail (and its edge tab) only
-            exists on the deck view and the main column goes full-width. The
-            section stays mounted and animates its width so collapsing reads as
-            one fluid motion, not a mount/unmount pop. */}
-        {view === "deck" && (
-          <section
-            onMouseEnter={() => setRailHover(true)}
-            onMouseLeave={() => setRailHover(false)}
-            className={`flex shrink-0 flex-col border-l border-line bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${
-              rightOpen ? "w-80" : "w-10"
-            }`}
-          >
-            {rightOpen ? (
-              <div className="flex-1 overflow-hidden">
-                <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
-              </div>
-            ) : (
-              <button
-                onClick={() => setRightOpen(true)}
-                title="Open chat"
-                className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-fg-faint transition hover:text-fg"
-              >
-                <ChatIcon className="h-4 w-4" />
-                <span className="text-[10px] font-medium uppercase tracking-wider" style={{ writingMode: "vertical-rl" }}>
-                  Chat
-                </span>
-              </button>
+          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in min-w-0 flex-1 overflow-hidden">
+            {view === "chat" && activeChat && (
+              <ChatView
+                chat={activeChat}
+                identity={identity}
+                onChatChanged={handleChatChanged}
+                onOpenDeck={openDeck}
+                onOpenReport={openReport}
+                onDeckChanged={bumpDeck}
+                onNewChat={newChat}
+              />
             )}
-          </section>
-        )}
-      </div>
+            {view === "chat" && !activeChat && (
+              <div className="flex h-full items-center justify-center">
+                <button onClick={() => newChat()} className="pill px-3 py-1.5 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">
+                  Start a new chat
+                </button>
+              </div>
+            )}
+            {view === "deck" && activeSlug && (
+              <DeckDetail
+                slug={activeSlug}
+                hasReport={hasReportFor(activeSlug)}
+                refreshToken={deckVersion}
+                onBack={goHome}
+                onDeckChanged={bumpDeck}
+                onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
+              />
+            )}
+            {view === "report" && activeSlug && (
+              <ReportView
+                slug={activeSlug}
+                refreshToken={deckVersion}
+                onBack={goHome}
+                onDeckChanged={bumpDeck}
+                onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
+              />
+            )}
+            {view === "themes" && <Themes />}
+            {view === "identity" && (
+              <Identity
+                user={user}
+                onAuthClick={() => setAuthOpen(true)}
+              />
+            )}
+          </main>
 
-      {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
-      {authOpen && (
-        <AuthModal
-          onDone={(u) => { setUser(u); setAuthOpen(false); }}
-          onClose={() => setAuthOpen(false)}
-        />
-      )}
+          {view === "deck" && (
+            <section
+              onMouseEnter={() => setRailHover(true)}
+              onMouseLeave={() => setRailHover(false)}
+              className={`flex shrink-0 flex-col border-l border-line bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${
+                rightOpen ? "w-80" : "w-10"
+              }`}
+            >
+              {rightOpen ? (
+                <div className="flex-1 overflow-hidden">
+                  <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
+                </div>
+              ) : (
+                <button
+                  onClick={() => setRightOpen(true)}
+                  title="Open chat"
+                  className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-fg-faint transition hover:text-fg"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5Z" />
+                  </svg>
+                  <span className="text-[10px] font-medium uppercase tracking-wider" style={{ writingMode: "vertical-rl" }}>
+                    Chat
+                  </span>
+                </button>
+              )}
+            </section>
+          )}
+        </div>
+
+        {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
+        {authOpen && (
+          <AuthModal
+            onDone={(u) => { setUser(u); setAuthOpen(false); }}
+            onClose={() => setAuthOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

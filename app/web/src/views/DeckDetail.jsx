@@ -4,7 +4,7 @@ import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.j
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
-import { progressLabel } from "./NewDeck.jsx";
+import { progressLabel } from "../lib/progress.js";
 import { useModels } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 
@@ -32,6 +32,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [actionErr, setActionErr] = useState("");
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
+  const [exportOpen, setExportOpen] = useState(false);
   // F9 — undo/redo stacks of full deck states. Every commitDeck pushes the
   // previous deck; Ctrl+Z/Ctrl+Y walk the stacks and re-save + re-render.
   const [past, setPast] = useState([]);
@@ -39,8 +40,24 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [templates, setTemplates] = useState([]);
   const [tplOpen, setTplOpen] = useState(false);
   const renderTimer = useRef(null);
+  const exportRef = useRef(null);
 
   useEffect(() => setReportExists(hasReport), [hasReport]);
+
+  // The Export menu closes on outside click and Escape.
+  useEffect(() => {
+    if (!exportOpen) return;
+    const onDown = (e) => {
+      if (exportRef.current && !exportRef.current.contains(e.target)) setExportOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setExportOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [exportOpen]);
 
   useEffect(() => {
     // refreshToken bumps after a chat turn or report generate, so a deck
@@ -375,44 +392,51 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       </header>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <ActionBtn onClick={toggleMode} title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
-          {mode === "dark" ? "☀ Light" : "☾ Dark"}
-        </ActionBtn>
-        <ActionBtn onClick={() => doExport("pdf")} title="Export the deck as a PDF">PDF</ActionBtn>
-        <ActionBtn onClick={() => doExport("markdown")} title="Export the deck's content as Markdown">.md</ActionBtn>
-        <ActionBtn onClick={doBundle} title="Download a zip of the whole deck folder">Bundle .zip</ActionBtn>
-        <ActionBtn onClick={doClone} title="Copy the deck to a new slug — iterate without fear">Clone</ActionBtn>
-        <div className="relative">
-          <ActionBtn onClick={toggleVersions} title="Timestamped backups of deck.yaml">Versions</ActionBtn>
-          {versions && (
-            <div className="absolute left-0 top-full z-30 mt-1.5 w-80 rounded-card border border-line bg-panel p-2 shadow-lg">
-              <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Version history</div>
-              {versions === "loading" ? (
-                <div className="px-1.5 py-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
-              ) : versions.length === 0 ? (
-                <div className="px-1.5 py-2 text-[12px] leading-relaxed text-fg-muted">
-                  No backups yet — saving this deck snapshots the previous deck.yaml.
-                </div>
-              ) : (
-                <ul className="max-h-64 space-y-0.5 overflow-y-auto">
-                  {versions.map((v) => (
-                    <li key={v.file} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-hover">
-                      <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">
-                        {new Date(v.at).toLocaleString()}
-                      </span>
-                      <button
-                        onClick={() => restoreVersion(v.file)}
-                        className="shrink-0 rounded border border-line px-1.5 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg"
-                      >
-                        Restore
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+        <div ref={exportRef} className="relative">
+          <ActionBtn onClick={() => setExportOpen((o) => !o)} title="PDF, Markdown, bundle, clone, versions, mode">
+            Export <ChevronDown className="h-3 w-3" />
+          </ActionBtn>
+          {exportOpen && (
+            <div className="fade-in absolute left-0 top-full z-30 mt-1.5 w-56 rounded-card border border-line bg-panel p-1.5 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <MenuBtn onClick={() => { doExport("pdf"); setExportOpen(false); }}>PDF</MenuBtn>
+              <MenuBtn onClick={() => { doExport("markdown"); setExportOpen(false); }}>Markdown (.md)</MenuBtn>
+              <MenuBtn onClick={() => { doBundle(); setExportOpen(false); }}>Bundle (.zip)</MenuBtn>
+              <MenuBtn onClick={() => { doClone(); setExportOpen(false); }}>Clone deck</MenuBtn>
+              <MenuBtn onClick={() => { setExportOpen(false); toggleVersions(); }}>Versions</MenuBtn>
+              <MenuBtn onClick={() => { toggleMode(); setExportOpen(false); }}>
+                {mode === "dark" ? "Light mode" : "Dark mode"}
+              </MenuBtn>
             </div>
           )}
         </div>
+        {versions && (
+          <div className="absolute left-0 top-full z-30 mt-1.5 w-80 rounded-card border border-line bg-panel p-2 shadow-lg">
+            <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Version history</div>
+            {versions === "loading" ? (
+              <div className="px-1.5 py-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
+            ) : versions.length === 0 ? (
+              <div className="px-1.5 py-2 text-[12px] leading-relaxed text-fg-muted">
+                No backups yet — saving this deck snapshots the previous deck.yaml.
+              </div>
+            ) : (
+              <ul className="max-h-64 space-y-0.5 overflow-y-auto">
+                {versions.map((v) => (
+                  <li key={v.file} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-hover">
+                    <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">
+                      {new Date(v.at).toLocaleString()}
+                    </span>
+                    <button
+                      onClick={() => restoreVersion(v.file)}
+                      className="shrink-0 rounded border border-line px-1.5 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg"
+                    >
+                      Restore
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
       </div>
 
@@ -840,7 +864,18 @@ function ActionBtn({ children, ...props }) {
   return (
     <button
       {...props}
-      className="rounded-lg border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg"
+      className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg"
+    >
+      {children}
+    </button>
+  );
+}
+
+function MenuBtn({ children, ...props }) {
+  return (
+    <button
+      {...props}
+      className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
     >
       {children}
     </button>
