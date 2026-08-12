@@ -71,18 +71,24 @@
           "enum": [
             "title",
             "section",
+            "agenda",
             "bullets",
             "cards",
             "compare",
+            "pros-cons",
             "stats",
+            "big-number",
             "quote",
             "callout",
+            "emphasis",
             "table",
             "chart",
             "flow",
             "image",
             "image-text",
             "timeline",
+            "milestone",
+            "definition",
             "references",
             "freeform"
           ]
@@ -600,6 +606,207 @@
                   "type": "string",
                   "maxLength": 220
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "agenda"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "title"
+                  ],
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "maxLength": 40
+                    },
+                    "desc": {
+                      "type": "string",
+                      "maxLength": 120
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "big-number"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value",
+              "label"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "maxLength": 12
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "sub": {
+                "type": "string",
+                "maxLength": 60
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "pros-cons"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pros",
+              "cons"
+            ],
+            "properties": {
+              "pros": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "cons": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "milestone"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "milestones"
+            ],
+            "properties": {
+              "milestones": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "when",
+                    "title"
+                  ],
+                  "properties": {
+                    "when": {
+                      "type": "string",
+                      "maxLength": 16
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxLength": 40
+                    },
+                    "body": {
+                      "type": "string",
+                      "maxLength": 120
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "emphasis"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "body"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "maxLength": 24,
+                "default": "Key point"
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "definition"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "term",
+              "definition"
+            ],
+            "properties": {
+              "term": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "definition": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "example": {
+                "type": "string",
+                "maxLength": 120
               }
             }
           }
