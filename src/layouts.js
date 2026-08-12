@@ -2405,6 +2405,264 @@ export const layouts = {
       }
     });
   },
+
+  /**
+   * A Now/Next/Later roadmap: time labels across the top, then one row per
+   * phase — a label column and item cards distributed evenly along the row.
+   */
+  roadmap(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const phases = data.phases;
+    const timeLabels = data.time_labels ?? [];
+    const top = Math.max(y, 2.8);
+    const labelW = 1.6;
+    const rowH = (box.bottom - top - 0.05) / phases.length;
+    const areaX = box.x + labelW + 0.35;
+    const areaW = box.w - labelW - 0.35;
+
+    if (timeLabels.length) {
+      const tw = areaW / timeLabels.length;
+      timeLabels.forEach((tl, i) => {
+        slide.addText(tl, {
+          x: areaX + i * tw, y: top - 0.34, w: tw, h: 0.3,
+          ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
+          align: "center", valign: "middle",
+        });
+      });
+    }
+    const titleScale = fitScaleAll(
+      phases.flatMap((p) => p.items ?? []).map((it) => it.title), 3.2, 0.3, theme.type.caption, { min: 0.6 },
+    );
+    phases.forEach((p, pi) => {
+      const ry = top + 0.05 + pi * rowH;
+      const phaseScale = fitScale(p.label, labelW - 0.1, rowH - 0.15, theme.type.subhead, { min: 0.6 });
+      slide.addText(p.label, {
+        x: box.x, y: ry, w: labelW, h: rowH - 0.1,
+        ...textStyle(theme, "subhead", { bold: true, scale: phaseScale }),
+        valign: "middle",
+      });
+      const items = p.items ?? [];
+      const itemW = Math.max(1.2, Math.min(3.4, areaW / items.length - 0.18));
+      items.forEach((it, ii) => {
+        const x = areaX + (ii + 0.5) * (areaW / items.length) - itemW / 2;
+        card(slide, theme, { x, y: ry, w: itemW, h: rowH - 0.1 });
+        slide.addText(it.title, {
+          x: x + 0.1, y: ry + 0.07, w: itemW - 0.2, h: 0.3,
+          ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+          align: "center", valign: "top",
+        });
+        if (it.body) {
+          slide.addText(it.body, {
+            x: x + 0.1, y: ry + rowH * 0.5, w: itemW - 0.2, h: rowH * 0.42,
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.88 }),
+            align: "center", valign: "top",
+          });
+        }
+      });
+      if (pi < phases.length - 1) {
+        slide.addShape("rect", {
+          x: box.x, y: ry + rowH - 0.015, w: box.w, h: 0.015,
+          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        });
+      }
+    });
+  },
+
+  /**
+   * A journey map: stage labels above, a sawtooth accent line tracing sentiment
+   * (positive high, neutral mid, negative low), nodes on the line and the stage
+   * bodies below it.
+   */
+  journey(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const stages = data.stages;
+    const n = stages.length;
+    const top = Math.max(y, 2.75);
+    const lineTop = top + 0.4;
+    const lineBot = box.bottom - 1.0;
+    const mid = (lineTop + lineBot) / 2;
+    const sentY = (s) => (s === "positive" ? lineTop : s === "negative" ? lineBot : mid);
+    const step = box.w / n;
+    const points = stages.map((st, i) => ({ x: box.x + step * i + step / 2, y: sentY(st.sentiment) }));
+    const labelScale = fitScaleAll(stages.map((s) => s.label), step - 0.2, 0.3, theme.type.eyebrow, { min: 0.6 });
+    stages.forEach((st, i) => {
+      slide.addText(st.label, {
+        x: box.x + step * i + 0.1, y: lineTop - 0.65, w: step - 0.2, h: 0.3,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted, scale: labelScale }),
+        align: "center", valign: "top",
+      });
+    });
+    slide.addShape("rect", {
+      x: box.x, y: mid - 0.015, w: box.w, h: 0.03,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    for (let i = 0; i < n - 1; i++) {
+      const a = points[i], b = points[i + 1];
+      const lx = Math.min(a.x, b.x), lw = Math.abs(b.x - a.x) || 0.02;
+      const ly = Math.min(a.y, b.y), lh = Math.abs(b.y - a.y) || 0.02;
+      slide.addShape("line", {
+        x: lx, y: ly, w: lw, h: lh,
+        line: { color: hex(theme.palette.accent), width: 2 },
+        flipH: b.x < a.x, flipV: b.y < a.y,
+      });
+    }
+    const bodyScale = fitScaleAll(
+      stages.map((s) => s.body).filter(Boolean), step - 0.2, 0.8, theme.type.caption,
+    );
+    points.forEach((p, i) => {
+      slide.addShape("ellipse", {
+        x: p.x - 0.11, y: p.y - 0.11, w: 0.22, h: 0.22,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      if (stages[i].body) {
+        slide.addText(stages[i].body, {
+          x: box.x + step * i + 0.1, y: lineBot + 0.16, w: step - 0.2, h: 0.8,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          align: "center", valign: "top",
+        });
+      }
+    });
+  },
+
+  /**
+   * A dense chronological list: a fixed year column in accent eyebrow, a rule
+   * between the columns, and the event text to the right.
+   */
+  chronology(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const yearW = 1.4;
+    const rowH = (box.bottom - y - 0.1) / data.events.length;
+    const textScale = fitScaleAll(
+      data.events.map((e) => e.text), box.w - yearW - 0.55, rowH * 0.8, theme.type.body,
+    );
+    slide.addShape("rect", {
+      x: box.x + yearW + 0.18, y, w: 0.02, h: box.bottom - y,
+      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+    });
+    data.events.forEach((e, i) => {
+      const ry = y + i * rowH;
+      slide.addText(e.year, {
+        x: box.x, y: ry, w: yearW, h: rowH,
+        ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
+        align: "left", valign: "middle",
+      });
+      slide.addText(e.text, {
+        x: box.x + yearW + 0.4, y: ry, w: box.w - yearW - 0.4, h: rowH,
+        ...textStyle(theme, "body", { scale: textScale }),
+        valign: "middle",
+      });
+    });
+  },
+
+  /**
+   * A quote with its speaker: the quote centred (or right-offset when a circular
+   * photo sits on the left), with name and role beneath.
+   */
+  testimonial(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const img = data.image ? resolveAsset(data.image) : null;
+    const hasImg = Boolean(img);
+    const qx = hasImg ? box.x + 2.6 : box.x;
+    const qw = hasImg ? box.w - 2.6 : box.w;
+    const top = Math.max(y, 2.5);
+    const quoteScale = fitScale(data.quote, qw, hasImg ? 2.0 : 2.6, theme.type.heading, { min: 0.55 });
+    slide.addText(`“${data.quote}”`, {
+      x: qx, y: top, w: qw, h: hasImg ? 2.0 : 2.6,
+      ...textStyle(theme, "heading", { scale: quoteScale, italic: true }),
+      align: hasImg ? "left" : "center", valign: "middle",
+    });
+    if (hasImg) {
+      const imgSize = 1.8;
+      slide.addImage({
+        path: img, x: box.x + 0.1, y: top + 0.4, w: imgSize, h: imgSize,
+        rounding: true, sizing: { type: "cover", w: imgSize, h: imgSize },
+      });
+    }
+    if (data.name) {
+      const ny = hasImg ? top + 2.15 : top + 2.75;
+      slide.addText(data.name, {
+        x: qx, y: ny, w: qw, h: 0.4,
+        ...textStyle(theme, "subhead", { bold: true }),
+        align: hasImg ? "left" : "center", valign: "middle",
+      });
+      if (data.role) {
+        slide.addText(data.role, {
+          x: qx, y: ny + 0.42, w: qw, h: 0.35,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+          align: hasImg ? "left" : "center", valign: "middle",
+        });
+      }
+    }
+  },
+
+  /**
+   * An inline quote-lite within a content slide: an accent left bar, the quote
+   * in italic heading, and an attribution below — quieter than the full-bleed
+   * quote, so it can sit inside a sequence of standard slides.
+   */
+  "pull-quote"(slide, ctx) {
+    const { theme, data, box } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+    const top = Math.max(y + 0.5, 3.1);
+    slide.addShape("rect", {
+      x: box.x, y: top, w: 0.08, h: 1.3,
+      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+    });
+    const quoteScale = fitScale(data.quote, box.w - 0.55, 1.3, theme.type.heading, { min: 0.55 });
+    slide.addText(`“${data.quote}”`, {
+      x: box.x + 0.32, y: top, w: box.w - 0.32, h: 1.3,
+      ...textStyle(theme, "heading", { scale: quoteScale, italic: true }),
+      align: "left", valign: "middle",
+    });
+    if (data.attribution) {
+      slide.addText(`— ${data.attribution}`, {
+        x: box.x + 0.32, y: top + 1.45, w: box.w - 0.32, h: 0.4,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
+        align: "left", valign: "middle",
+      });
+    }
+  },
+
+  /**
+   * A section-opening quote on the section surface — the epigraph as a hero.
+   * Full-bleed: large centred italic quote, attribution and source beneath.
+   */
+  epigraph(slide, ctx) {
+    const { theme, data } = ctx;
+    const s = theme.surfaces.section;
+    slide.background = { color: hex(s.bg) };
+    const m = theme.grid.margin;
+    const w = CANVAS.w - m.left - m.right;
+    const quoteScale = fitScale(data.quote, w * 0.78, 3.0, theme.type.heading, { min: 0.55 });
+    slide.addText(`“${data.quote}”`, {
+      x: (CANVAS.w - w * 0.78) / 2, y: 1.7, w: w * 0.78, h: 3.0,
+      ...textStyle(theme, "heading", { color: s.ink, scale: quoteScale, italic: true }),
+      align: "center", valign: "middle",
+    });
+    if (data.attribution) {
+      slide.addText(`— ${data.attribution}`, {
+        x: m.left, y: 4.85, w, h: 0.4,
+        ...textStyle(theme, "subhead", { color: s.muted }),
+        align: "center", valign: "middle",
+      });
+    }
+    if (data.source) {
+      slide.addText(data.source, {
+        x: m.left, y: 5.32, w, h: 0.35,
+        ...textStyle(theme, "caption", { color: s.muted, italic: true }),
+        align: "center", valign: "middle",
+      });
+    }
+  },
 };
 
 export { content };
