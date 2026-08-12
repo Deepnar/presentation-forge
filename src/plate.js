@@ -26,7 +26,7 @@ export const PLATE_W = 1280;
 export const PLATE_H = 720;
 export const PLATE_SCALE = 1.5;
 
-export const PLATE_CACHE = path.join(ROOT, ".plate-cache");
+export const PLATE_CACHE = process.env.FORGE_PLATE_CACHE || path.join(ROOT, ".plate-cache");
 
 const CHROME = process.env.FORGE_CHROME || "/usr/bin/google-chrome-stable";
 const VERSION = "plate-v1"; // bump to invalidate every cached plate at once
