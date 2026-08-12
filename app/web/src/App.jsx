@@ -87,7 +87,7 @@ export default function App() {
           onHome={() => setView("home")}
         />
 
-        <div className="flex min-h-0 flex-1">
+        <div className="isolate flex min-h-0 flex-1">
           <div
             onMouseEnter={() => setRailHover(true)}
             onMouseLeave={() => setRailHover(false)}

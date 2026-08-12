@@ -40,7 +40,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome }
   }
 
   return (
-    <header className="shell-header flex h-12 shrink-0 items-center gap-2.5 border-b border-line bg-base px-3">
+    <header className="shell-header relative z-20 flex h-12 shrink-0 items-center gap-2.5 border-b border-line bg-base px-3">
       <button
         onClick={onToggleLeft}
         title={leftOpen ? "Collapse navigation" : "Expand navigation"}
