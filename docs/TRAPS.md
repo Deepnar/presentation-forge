@@ -51,6 +51,15 @@ navy; transparent or not, it disappears on dark. The fix is a single-colour
 reversed ("knockout") variant, selected by background luminance. Any new mark
 needs the same treatment.
 
+**Do not trust a supplied logo's alpha channel — rebuild it from RGB.** One
+real crest shipped with every pixel at ~14/255 (6%) alpha: the viewer composite
+it against white so it looked normal, and it was a ghost on every slide. The
+old keying kept the source alpha for saturated pixels, so the defect survived
+normalisation. The keyer now treats alpha ≤ 0 as a real cutout and rebuilds
+everything else from colour (saturated → opaque, neutral → lightness). This
+turns "viewer looks fine, slide looks broken" into the same bug it was: a
+broken alpha in the source.
+
 **Chrome colour must derive from the painted background, not the palette.**
 `ink_muted` is only correct on the standard page. Title slides and section
 dividers deliberately break out of it, so the footer and crest pick their
@@ -115,6 +124,20 @@ Passing a JSON Schema as `format` compiles it to a grammar and masks any token
 that would violate it. Output is guaranteed to *parse*. Everything below follows
 from what that guarantee does not cover — and this applies equally to OpenAI's
 structured outputs and Anthropic's tool schemas, it is not an Ollama quirk.
+
+**OpenAI-compatible `json_object` is a weaker guarantee than Ollama's grammar.**
+Two separate traps, both hit on the cloud path:
+- The provider rejects the request with a 400 unless the prompt contains the
+  word "json" — many of this system's prompts (the report planner, for one)
+  never mention it. The transport prepends a "Respond in JSON only" system
+  message when `format` is set.
+- `json_object` guarantees only that output parses, never that it matches the
+  schema. The report section writer happily returned `{"introduction":[…]}` where
+  the grammar demanded `{"paragraphs":[…]}` — silent, schema-shaped-but-wrong
+  output. The transport now spells the schema out verbatim in that system
+  message so a strong model can hold the small per-call schemas in context.
+  Keep cloud-side schemas small; a large one degrades the same way a large
+  grammar does on Ollama.
 
 **It guarantees shape, not sense.** A deck titled ".NET Core 6.0 release notes"
 satisfies the schema perfectly. Constraint cannot supply knowledge.

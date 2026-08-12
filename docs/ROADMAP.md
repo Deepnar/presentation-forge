@@ -297,6 +297,63 @@ session degrades gracefully rather than forgetting its first half.
 > record; a durable instruction ("keep it under 12 slides") was promoted to
 > `decisions.md` while a one-off edit was not.
 
+### [x] Structural chat commands
+The chat's `runTurn` now maps explicit structural instructions — "add a slide
+at the end titled X", "delete slide 4", "duplicate slide 2", "move slide 3
+after slide 5" — to concrete `deck.yaml` ops. Adds `duplicate_slide` to the ops
+layer (a deep copy right after its source), teaches the turn prompt to translate
+each command into the matching op rather than paraphrasing it back, and aligns
+the server delete guard with the editor's: no op may empty a deck. The deck
+detail's own manual move/duplicate/delete buttons already used the same
+semantics and are untouched. Covered by `test/ops.test.js`.
+
+### [x] Shell polish — rails, motion, cloud routing, brand surface
+A pass of Gamma-like affordances and shell refinement:
+
+- **Chat rail only on the deck view.** The rail edits `deck.yaml`; on Home,
+  Identity, Themes, the wizard and the outline review there is no deck to talk
+  to, so the rail and its edge tab disappear and the main column goes
+  full-width. The rail stays mounted and animates its width on the shell easing
+  rather than popping in.
+- **Ambient particle field.** Fine stipple (more, smaller dots) drifting on
+  two-axis sine wander so it moves without the pointer; cursor repulsion kept,
+  capped at 60fps, reduced-motion draws one static frame, and the loop pauses
+  on hidden tabs. Instrumented behaviourally: frame counter, pointer stamp and
+  pushed-dot count all hold.
+- **One easing everywhere.** View switches (keyed fade-and-rise), sidebar
+  collapse, chat rail, card hover and the carousel all ride
+  `cubic-bezier(0.2,0.8,0.2,1)` on transform/opacity only, with a
+  `prefers-reduced-motion` query that collapses everything to instant state.
+- **Cloud routing preference.** A gitignored `config/local.yaml` value decides
+  what "auto" means in the model pickers. The header shows a CLOUD badge and a
+  LOCAL/CLOUD toggle when a key is attached; an unpicked author-role model
+  routes to the attached provider's first model, while research/utility/critic
+  stay on their configured backends.
+- **Brand upload surface.** The Identity view's Brand section uploads
+  crest/banner/watermark into gitignored `brand/logos/` and re-runs the shared
+  `normalizeBrand()`. Marks are trademarks and stay out of the repo — the
+  upload surface is the answer to "can we make them public": no.
+- **Gamma-style quick affordances.** Audience and slide-count presets fold into
+  the existing brief→pipeline flow (audience becomes part of the brief,
+  slide count maps to `maxSlides`); a per-slide "make it punchier" bolt runs a
+  scoped chat turn through the same `runTurn` the chat rail uses.
+
+> **Learned.** Two things stood out. The chat rail's "no deck" empty state was
+> the giveaway that a rail with nothing to edit is dead weight — a surface only
+> earns space when it maps to an artefact. And the cloud routing toggle had to
+> be scoped to the author role deliberately: routing every unpicked role to the
+> cloud would silently move the internal plumbing (decision extraction, summary
+> folding) onto the subscription, which is not what "route my work" means.
+
+### [ ] (stretch) Canvas slide-builder
+Live slides appearing as they stream (status → plan → slides) as a
+filmstrip/storyboard the user can point the model at. Not built this session —
+the chat rail already streams a rendered thumbstrip after each turn, and the
+Outline view shows the plan; a full live filmstrip of slides *while they are
+being written* would need a new SSE phase in `generateFromPlan` that emits each
+validated slide as it lands, plus a storyboard view. Design note: it belongs
+over the existing `status: writing` events, not a new pipeline.
+
 ---
 
 ## 3. Themes
@@ -681,6 +738,33 @@ Sections with no content are skipped gracefully, never a bare heading.
 Content is schema-validated `decks/<slug>/report.yaml` (sibling of deck.yaml,
 so shared research feeds both). CLI `forge report <slug>`, API
 `GET/PUT /api/decks/:slug/report` and `POST .../report/render`.
+
+### [x] Standalone reports — no deck required
+A report no longer needs a deck. `brief → research → report.yaml → .docx` runs
+standalone: the fixed graded section order IS the structure, so no outline gate
+applies, and the generator's `requirePlan: false` derives its plan from the
+brief and research. The deck list shows report-only folders (`deck: false`) and
+a Report view renders/downloads the `.docx`. CLI `forge report-new`, API
+`POST /api/reports` (SSE).
+
+### [x] Deck-from-report — the reverse flow
+The companion direction: an existing `report.yaml` (and its shared research)
+plans a deck outline, which routes through the ordinary outline gate and
+`/generate` path — so the deck and report agree by construction. The report's
+own sections become the planning brief (`reportBrief`). CLI
+`forge deck-from-report <slug>`, API `POST /api/decks/:slug/report/deck` (SSE),
+plus the Report view's "Generate companion deck" button. Verified end-to-end on
+`decks/solar-water-pumping-for-irrigation` (a standalone report that gained a
+rendered 18-slide deck through this flow).
+
+> **Learned.** The cloud transport was the hidden cost of making the standalone
+> report work at all: OpenAI-compatible `json_object` is not Ollama's grammar.
+> The provider 400s unless the prompt contains the word "json", and even then
+> only guarantees output parses — the section writer returned
+> `{"introduction":[…]}` where the schema demanded `{"paragraphs":[…]}`. Both
+> are fixed at the transport (`cloudMessages` prepends a message stating the
+> schema verbatim), which is where the report generator failed, not in the
+> report generator itself.
 
 ### [x] Shared research
 One brief → one research pass → both deck and report. This is the actual

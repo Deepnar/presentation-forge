@@ -244,6 +244,19 @@ and an unbounded prompt collapses generation. Reachable as
 `forge report <slug> --generate [--depth full|brief]` (CLI) and
 `POST /api/decks/:slug/report/generate` (API, SSE like deck generation).
 
+**Two extra doors on the same generator.** A report does not have to come from
+a deck. `forge report-new <brief>` / `POST /api/reports` runs the standalone
+flow — brief → research → `report.yaml` → `.docx`, no `deck.yaml` at all. The
+fixed section order is the structure, so no outline gate applies; the generator
+is told `requirePlan: false` and derives its plan from the brief and research.
+And the flow reverses cleanly: `forge deck-from-report <slug>` /
+`POST /api/decks/:slug/report/deck` plans a *companion deck* from an existing
+`report.yaml` and its shared research, routing the plan through the ordinary
+outline gate and `/generate` path. Both directions share `decks/<slug>/research/`,
+so the deck and report agree by construction whichever way they were built.
+A report-only deck (`meta.yaml` + `report.yaml`, no `deck.yaml`) appears in the
+deck list with `deck: false` and opens the Report view.
+
 ## The report renderer
 
 `src/report.js` is the opposite of the deck renderer. No themes, no layout
@@ -354,28 +367,44 @@ thin transport and every control maps to a real endpoint. `App.jsx` owns the
 deck list (fetched once, re-fetched on a version bump) and routes between
 `home`, `deck`, `new`, `outline`, `themes` and `identity`:
 
-- **`HeaderBar`** — wordmark (home link) with a LOCAL badge, the sidebar
-  collapse toggle, a Docs modal (reads the repo README via `GET /api/docs`) and
-  the GitHub link. No avatar, no sync, no dead icons.
+- **`HeaderBar`** — wordmark (home link), the sidebar collapse toggle, a Docs
+  modal (reads the repo README via `GET /api/docs`) and the GitHub link. When a
+  cloud key is attached it shows the routing badge and the LOCAL/CLOUD toggle;
+  otherwise a plain LOCAL badge. No avatar, no sync, no dead icons.
 - **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
-  capped set of dots drifts on slow sine paths and repels gently around the
-  pointer. It is ambience, never content — one static frame under
-  `prefers-reduced-motion`, no loop while the tab is hidden or a navigation
-  rail is focused, and nothing at all when a 2d context is unavailable.
+  fine stipple (more, smaller dots than before) drifts on two-axis sine wander
+  so it moves without the pointer, and repels gently around it. Capped at 60fps,
+  one static frame under `prefers-reduced-motion`, no loop while the tab is
+  hidden or a navigation rail is focused, and nothing at all when a 2d context
+  is unavailable.
 - **`Sidebar`** — the persistent deck list, grouped by relative date, with a
   real cover thumb per row (`DeckThumb`, fallback tile when no preview is on
   disk). Tabs filter All decks / Reports using the `report` flag that
   `deckMeta()` adds, search filters title/slug/theme client-side, and the rail
   collapses to an icon strip. Both rails persist via localStorage.
 - **`Home`** — the prompt box is the generate surface. Deck mode streams a
-  brief to the outline gate (`POST /api/decks`, SSE); Report mode picks a deck
-  and depth and streams `POST /api/decks/:slug/report/generate`, landing in the
-  deck detail's **Report panel**. Suggestion pills fill the prompt; a
-  "Recent decks" carousel reuses the deck list.
+  brief to the outline gate (`POST /api/decks`, SSE); Report mode streams a
+  report either from a deck (`POST /api/decks/:slug/report/generate`) or from a
+  brief alone (`POST /api/reports`, standalone — no deck required). Suggestion
+  pills fill the prompt; audience and slide-count presets fold into the brief
+  and `maxSlides`. A "Recent decks" carousel reuses the deck list.
 - **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
-  grid with lightbox/inline-editor/presenter ops, and the Report panel:
-  generate when no `report.yaml` exists, otherwise render `.docx` and download
-  it. `lib/time.js` supplies the relative timestamps used everywhere.
+  grid with lightbox/inline-editor/presenter ops, a per-slide "make it punchier"
+  bolt (a scoped chat turn), and the Report panel: generate when no `report.yaml`
+  exists, otherwise render `.docx` and download it. `lib/time.js` supplies the
+  relative timestamps used everywhere.
+- **The chat rail only exists on the deck view.** It edits `deck.yaml`, so with
+  no deck open it would be dead weight; Home, Identity, Themes, the wizard and
+  the outline review are full-width. The rail stays mounted and animates its
+  width on the shell's shared easing rather than popping in.
+- **`ReportView`** — the report-only deck's home: title, section cards, Render
+  `.docx` / download, and a *Generate companion deck* button that plans from the
+  report's sections and routes through the outline gate (the reverse flow).
+- **Motion.** Every transition rides one easing
+  (`cubic-bezier(0.2,0.8,0.2,1)`, `--ease-shell`) — view switches (a keyed
+  fade-and-rise), the sidebar collapse, the chat rail, card hover, the carousel —
+  animating transform/opacity only, and a `prefers-reduced-motion` media query
+  collapses them all to instant state changes.
 
 ### The cloud surface — opt-in hosted models
 
@@ -399,11 +428,34 @@ usable end-to-end.
   (likely absent) local pull — that is how picking `deepseek-v4-flash` in the
   prompt, chat or report picker sends the work to OpenCode Go. The model picker
   lists the cloud models as a labelled group only when a key is present.
+- **Routing preference.** `config/local.yaml` also holds `routing.default`
+  (`local` or `cloud`), set from the header's LOCAL/CLOUD toggle or the Cloud
+  panel. It decides what "auto" means in every picker: the default label
+  reflects it, and an unpicked model routes the *author* role to the attached
+  provider's first model. Research, utility and critic stay on their configured
+  backends — the toggle moves the user's work, not the plumbing.
 - **The connection test is an authenticated probe.** `/models` lists are public
   on some providers and prove nothing about a key, so the test issues a
   one-token chat call against the provider's first listed model and checks the
   status — a dummy key fails with the provider's 401, a real key reports the
   authenticated model.
+- **Cloud structured output.** OpenAI-compatible providers reject
+  `response_format: json_object` unless the prompt contains the word "json",
+  and guarantee only that output parses — never that it matches the schema
+  (unlike Ollama's grammar). The cloud transport prepends a system message
+  stating the schema contract verbatim, so every constrained call spells out
+  its keys and a strong model can hold the small per-call schemas in context.
+
+### The brand surface — institutional marks, uploaded not committed
+
+`brand/logos/` and `brand/generated/` are gitignored because institutional
+marks are trademarks. The Brand section of the Identity view uploads crest,
+banner and watermark directly: the server writes the file into `brand/logos/`
+(replacing any earlier extension of that asset), then calls the same
+`normalizeBrand()` the `npm run brand` CLI uses — one implementation, two
+callers. Remove falls back to placeholders. The report renderer needs nothing
+extra: it preserves the donor `.docx`'s own VML watermark byte-for-byte, so
+reports already carry the institution's mark.
 
 The three-layer rule is unaffected: the shell is human-owned chrome, and
 `decks/<slug>/report.yaml` is written by the report generator exactly as
@@ -415,7 +467,7 @@ The three-layer rule is unaffected: the shell is human-owned chrome, and
 |---|---|---|
 | `themes/`, `schema/`, `src/`, `app/` | yes | source |
 | `config/identity.yaml` | yes | remembered defaults, user-editable |
-| `brand/logos/` | yes | raw supplied marks |
+| `brand/logos/` | no | raw supplied marks — trademarks stay local; uploaded via the Brand panel |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
 | `decks/<slug>/plan.yaml` | yes | the approved outline |
