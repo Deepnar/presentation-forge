@@ -14,7 +14,7 @@ import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
  * inline editing and presenter picks. Rendering happens through the real API;
  * "rendering…" and the problems list are sync feedback, not decoration.
  */
-export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged }) {
+export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -29,6 +29,15 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [reportExists, setReportExists] = useState(hasReport);
   const [punch, setPunch] = useState(null); // slide index being punched up
   const [punchErr, setPunchErr] = useState("");
+  const [actionErr, setActionErr] = useState("");
+  const [versions, setVersions] = useState(null); // null = not loaded
+  const [mode, setMode] = useState(null); // deck's remembered dark mode
+  // F9 — undo/redo stacks of full deck states. Every commitDeck pushes the
+  // previous deck; Ctrl+Z/Ctrl+Y walk the stacks and re-save + re-render.
+  const [past, setPast] = useState([]);
+  const [future, setFuture] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [tplOpen, setTplOpen] = useState(false);
   const renderTimer = useRef(null);
 
   useEffect(() => setReportExists(hasReport), [hasReport]);
@@ -45,9 +54,11 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       });
       setTheme(r.deck.theme ?? "");
       setStyle(r.deck.style ?? "");
+      setMode(r.meta?.mode ?? null);
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
+    api.templates().then((r) => setTemplates(r.templates ?? [])).catch(() => {});
     // Team members for the presenter picker; the deck's own meta snapshot wins.
     api.identity().then((r) => setIdentity(r.identity ?? {})).catch(() => {});
   }, [slug, refreshToken]);
@@ -86,6 +97,9 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
    */
   function commitDeck(nextDeck) {
     setData((d) => (d ? { ...d, deck: nextDeck } : d));
+    // The deck being replaced joins the undo history.
+    setPast((p) => [...p.slice(-19), deck]);
+    setFuture([]);
     api.saveDeck(slug, nextDeck, data?.meta)
       .then(() => {
         clearTimeout(renderTimer.current);
@@ -94,6 +108,49 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       })
       .catch((err) => setProblems([err.message, ...(err.errors ?? [])]));
   }
+
+  // Ctrl+Z / Ctrl+Y undo and redo across the stacks, saving + re-rendering the
+  // restored deck exactly like any other mutation.
+  function stepHistory(dir) {
+    const from = dir < 0 ? past : future;
+    if (!from.length) return;
+    setData((d) => {
+      const current = d?.deck ?? deck;
+      const [restore] = from.slice(-1);
+      const rest = from.slice(0, -1);
+      if (dir < 0) {
+        setPast(rest);
+        setFuture((f) => [...f, current].slice(-20));
+      } else {
+        setFuture(rest);
+        setPast((p) => [...p, current].slice(-20));
+      }
+      api.saveDeck(slug, restore, data?.meta).catch((e) => setProblems([e.message]));
+      clearTimeout(renderTimer.current);
+      setSyncing(true);
+      renderTimer.current = setTimeout(runRender, 450);
+      return d ? { ...d, deck: restore } : d;
+    });
+  }
+
+  useEffect(() => {
+    const onKey = (e) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) {
+        e.preventDefault();
+        if (editing === null) stepHistory(-1);
+      } else if (mod && (e.key.toLowerCase() === "y" || (e.key.toLowerCase() === "z" && e.shiftKey))) {
+        e.preventDefault();
+        if (editing === null) stepHistory(1);
+      } else if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (editing !== null) return; // the editor's own save button
+        rerender();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   async function runRender() {
     setBusy(true);
@@ -118,6 +175,85 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
     clearTimeout(renderTimer.current);
     setSyncing(true);
     runRender();
+  }
+
+  /**
+   * The deck's remembered dark mode (F17): toggling saves `mode` into meta.yaml
+   * and re-renders in that mode, so a dark deck stays dark across reloads.
+   */
+  function toggleMode() {
+    const next = mode === "dark" ? "light" : "dark";
+    setMode(next);
+    const meta = { ...(data?.meta ?? {}), mode: next };
+    api.saveDeck(slug, deck, meta).catch((e) => setActionErr(e.message));
+    clearTimeout(renderTimer.current);
+    setSyncing(true);
+    api.renderDeck(slug, { theme: theme || undefined, style: style || undefined, mode: next })
+      .then((r) => {
+        const stamp = Date.now();
+        setData((d) => (d ? {
+          ...d,
+          meta,
+          slides: r.slides.map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
+        } : d));
+        setProblems(r.problems ?? []);
+      })
+      .catch((e) => setProblems([e.message]))
+      .finally(() => setSyncing(false));
+  }
+
+  function doClone() {
+    setActionErr("");
+    api.cloneDeck(slug)
+      .then((r) => onOpenDeck?.(r.slug))
+      .catch((e) => setActionErr(e.message));
+  }
+
+  function doExport(format) {
+    setActionErr("");
+    api.exportDeck(slug, format, theme || undefined)
+      .then((r) => {
+        const a = document.createElement("a");
+        a.href = r.file;
+        a.download = r.file.split("/").pop();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((e) => setActionErr(e.message));
+  }
+
+  function doBundle() {
+    setActionErr("");
+    api.downloadBundle(slug)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`bundle failed: HTTP ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${slug}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      })
+      .catch((e) => setActionErr(e.message));
+  }
+
+  function toggleVersions() {
+    setVersions((v) => (v === null ? "loading" : null));
+    if (versions === null) {
+      api.versions(slug).then((r) => setVersions(r.versions)).catch(() => setVersions([]));
+    }
+  }
+
+  function restoreVersion(file) {
+    setActionErr("");
+    api.restoreVersion(slug, file)
+      .then(() => { setVersions(null); onDeckChanged?.(); })
+      .catch((e) => setActionErr(e.message));
   }
 
   if (!data) {
@@ -238,6 +374,48 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         </div>
       </header>
 
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <ActionBtn onClick={toggleMode} title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+          {mode === "dark" ? "☀ Light" : "☾ Dark"}
+        </ActionBtn>
+        <ActionBtn onClick={() => doExport("pdf")} title="Export the deck as a PDF">PDF</ActionBtn>
+        <ActionBtn onClick={() => doExport("markdown")} title="Export the deck's content as Markdown">.md</ActionBtn>
+        <ActionBtn onClick={doBundle} title="Download a zip of the whole deck folder">Bundle .zip</ActionBtn>
+        <ActionBtn onClick={doClone} title="Copy the deck to a new slug — iterate without fear">Clone</ActionBtn>
+        <div className="relative">
+          <ActionBtn onClick={toggleVersions} title="Timestamped backups of deck.yaml">Versions</ActionBtn>
+          {versions && (
+            <div className="absolute left-0 top-full z-30 mt-1.5 w-80 rounded-card border border-line bg-panel p-2 shadow-lg">
+              <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Version history</div>
+              {versions === "loading" ? (
+                <div className="px-1.5 py-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
+              ) : versions.length === 0 ? (
+                <div className="px-1.5 py-2 text-[12px] leading-relaxed text-fg-muted">
+                  No backups yet — saving this deck snapshots the previous deck.yaml.
+                </div>
+              ) : (
+                <ul className="max-h-64 space-y-0.5 overflow-y-auto">
+                  {versions.map((v) => (
+                    <li key={v.file} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-hover">
+                      <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">
+                        {new Date(v.at).toLocaleString()}
+                      </span>
+                      <button
+                        onClick={() => restoreVersion(v.file)}
+                        className="shrink-0 rounded border border-line px-1.5 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg"
+                      >
+                        Restore
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+        {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
+      </div>
+
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ReportPanel
           slug={slug}
@@ -277,7 +455,41 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           />
         </div>
       ) : (
-        <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-7">
+          <div className="relative mb-3 flex items-center justify-between">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Slides</div>
+            <div className="relative">
+              <Button size="sm" variant="outline" onClick={() => setTplOpen((o) => !o)}>
+                + Add slide
+              </Button>
+              {tplOpen && (
+                <div className="absolute right-0 top-full z-30 mt-1.5 w-56 rounded-card border border-line bg-panel p-1.5 shadow-lg">
+                  <button
+                    onClick={() => {
+                      commitDeck({ ...deck, slides: [...slides, { type: "bullets", headline: "New slide", bullets: ["Point one", "Point two"] }] });
+                      setTplOpen(false);
+                    }}
+                    className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
+                  >
+                    Blank bullets
+                  </button>
+                  {templates.map((t) => (
+                    <button
+                      key={t.name}
+                      onClick={() => {
+                        commitDeck({ ...deck, slides: [...slides, structuredClone(t.slide)] });
+                        setTplOpen(false);
+                      }}
+                      className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
+                    >
+                      {t.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {slides.map((slide, i) => {
             const src = data.slides[i];
             return (
@@ -343,6 +555,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
               </div>
             );
           })}
+          </div>
         </div>
       )}
 
@@ -617,6 +830,17 @@ function CardBtn({ children, ...props }) {
     <button
       {...props}
       className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg disabled:pointer-events-none disabled:opacity-30"
+    >
+      {children}
+    </button>
+  );
+}
+
+function ActionBtn({ children, ...props }) {
+  return (
+    <button
+      {...props}
+      className="rounded-lg border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg"
     >
       {children}
     </button>

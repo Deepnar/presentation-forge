@@ -109,6 +109,21 @@ app.get("/api/styles", wrap(async (_req, res) => {
   ok(res, { styles });
 }));
 
+/** Slide templates — reusable partial slides to drop into a deck. */
+app.get("/api/templates", wrap(async (_req, res) => {
+  const { readdir, readFile } = await import("node:fs/promises");
+  const dir = path.join(ROOT, "templates");
+  let files = [];
+  try {
+    files = (await readdir(dir)).filter((f) => f.endsWith(".yaml"));
+  } catch { /* no templates dir */ }
+  const templates = await Promise.all(files.map(async (f) => ({
+    name: f.replace(/\.yaml$/, ""),
+    slide: YAML.parse(await readFile(path.join(dir, f), "utf8")),
+  })));
+  ok(res, { templates });
+}));
+
 /* ------------------------------------------------------------------- decks */
 
 async function deckMeta(slug) {

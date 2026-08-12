@@ -39,6 +39,21 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
     });
   }
 
+  // F3 — drag-and-drop reorder: a dragged slide's index travels in the data
+  // transfer, and dropping over another reorders to that slot. Reordering 24
+  // slides by clicking tiny arrows was the pain this removes.
+  const [dragIdx, setDragIdx] = useState(null);
+  function onDrop(target) {
+    if (dragIdx == null || dragIdx === target) return;
+    setSlides((s) => {
+      const out = [...s];
+      const [moved] = out.splice(dragIdx, 1);
+      out.splice(target, 0, moved);
+      return out;
+    });
+    setDragIdx(null);
+  }
+
   async function approve() {
     const clean = slides
       .map((s, i) => ({
@@ -161,7 +176,14 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
 
       <div className="space-y-3">
         {slides.map((s, i) => (
-          <Panel key={i} className="p-4">
+          <Panel
+            key={i}
+            draggable
+            onDragStart={() => setDragIdx(i)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => onDrop(i)}
+            className={`p-4 transition ${dragIdx === i ? "opacity-40" : ""}`}
+          >
             <div className="mb-3 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] tabular-nums text-fg-faint">{String(i + 1).padStart(2, "0")}</span>

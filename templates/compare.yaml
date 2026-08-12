@@ -1,0 +1,9 @@
+type: compare
+headline: Comparison
+left:
+  title: Option A
+  body: The first approach and its trade-offs.
+right:
+  title: Option B
+  body: The second approach and its trade-offs.
+verdict: One option wins for these reasons.

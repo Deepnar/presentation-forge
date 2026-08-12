@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { dateGroup, relative } from "../lib/time.js";
+import { api } from "../api.js";
 import DeckThumb from "./DeckThumb.jsx";
 import { Button } from "./ui.jsx";
 import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PlusIcon, SearchIcon } from "./icons.jsx";
@@ -18,10 +19,26 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onOpenReport, onNewDeck, onView }) {
   const [tab, setTab] = useState("all");
   const [query, setQuery] = useState("");
+  // F19 — when the client-side title/slug/theme filter comes up short, a
+  // debounced server search greps deck.yaml content so a phrase inside a slide
+  // still finds its deck.
+  const [contentHits, setContentHits] = useState([]);
+
+  useEffect(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) { setContentHits([]); return; }
+    const t = setTimeout(async () => {
+      try {
+        const r = await api.searchDecks(q);
+        setContentHits(r.hits ?? []);
+      } catch { /* offline or API down — keep local results */ }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [query]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return decks.filter((d) => {
+    const local = decks.filter((d) => {
       if (tab === "reports" && !d.report) return false;
       if (!q) return true;
       return (
@@ -30,7 +47,14 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onO
         d.theme?.toLowerCase().includes(q)
       );
     });
-  }, [decks, tab, query]);
+    // Content matches appear too — decks whose slides mention the query.
+    const bySlug = new Map(decks.map((d) => [d.slug, d]));
+    const extra = contentHits
+      .map((s) => bySlug.get(s))
+      .filter(Boolean)
+      .filter((d) => !local.includes(d));
+    return [...local, ...extra];
+  }, [decks, tab, query, contentHits]);
 
   const grouped = useMemo(() => {
     const out = new Map();

@@ -19,6 +19,14 @@ const STATUS_LABEL = {
   rendering: "Rendering slides…",
 };
 
+const SUGGESTIONS = [
+  "Add a stats slide about the key figures",
+  "Make the conclusion punchier",
+  "Keep every slide under 12 words per line",
+  "Turn slide 2 into a compare layout",
+  "Add speaker notes to the section dividers",
+];
+
 function formatTokens(n) {
   if (n == null || !Number.isFinite(n)) return "";
   return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
@@ -182,6 +190,28 @@ export default function ChatPanel({ slug, onDeckChanged, onClose }) {
 
         {slug && thread && (
           <>
+            {thread.turns?.length === 0 && (
+              <div className="rounded-card border border-dashed border-line p-4 text-center">
+                <div className="text-[12px] font-medium text-fg-muted">Chat with the deck</div>
+                <p className="mt-1 text-[11px] leading-relaxed text-fg-faint">
+                  Every turn edits deck.yaml — structure, wording, theme choices.
+                  Try one of these:
+                </p>
+                <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => send(s)}
+                      disabled={busy}
+                      className="rounded-full border border-line px-2.5 py-1 text-[11px] text-fg-muted transition hover:border-accent/60 hover:text-fg disabled:opacity-40"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {thread.summary && (
               <details className="group rounded-card border border-line bg-panel">
                 <summary className="cursor-pointer select-none px-3 py-2 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint transition hover:text-fg-muted">

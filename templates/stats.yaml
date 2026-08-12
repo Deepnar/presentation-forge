@@ -1,0 +1,11 @@
+type: stats
+headline: Key figures
+stats:
+  - value: "01"
+    label: First metric
+  - value: "02"
+    label: Second metric
+  - value: "03"
+    label: Third metric
+  - value: "04"
+    label: Fourth metric

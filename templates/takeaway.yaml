@@ -1,0 +1,7 @@
+type: takeaway
+headline: The takeaway
+label: Key takeaway
+body: One sentence that captures the section's point.
+points:
+  - Supporting point one
+  - Supporting point two

@@ -97,6 +97,7 @@ export const api = {
     call("/api/identity", { method: "PUT", body: JSON.stringify({ identity }) }),
   types: () => call("/api/types"),
   styles: () => call("/api/styles"),
+  templates: () => call("/api/templates"),
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),
@@ -160,4 +161,14 @@ export const api = {
     call("/api/auth/logout", { method: "POST", body: JSON.stringify({}) })
       .finally(clearToken),
   me: () => call("/api/auth/me"),
+  // Deck export (pdf/markdown), cloning, sharing bundles and version history.
+  exportDeck: (slug, format, theme) =>
+    call(`/api/decks/${slug}/export`, { method: "POST", body: JSON.stringify({ format, theme }) }),
+  cloneDeck: (slug) => call(`/api/decks/${slug}/clone`, { method: "POST", body: JSON.stringify({}) }),
+  bundleUrl: (slug) => `/api/decks/${slug}/bundle`,
+  downloadBundle: (slug) => fetch(`/api/decks/${slug}/bundle`, { method: "POST" }),
+  versions: (slug) => call(`/api/decks/${slug}/versions`),
+  restoreVersion: (slug, file) =>
+    call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
+  searchDecks: (q) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }) }),
 };

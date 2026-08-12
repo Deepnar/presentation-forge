@@ -49,6 +49,31 @@ export default function App() {
       .catch(() => {});
   }, []);
 
+  // F7 — global keyboard shortcuts: Ctrl+K focuses deck search, Ctrl+N starts a
+  // new deck, Escape closes the docs modal. Per-deck shortcuts (undo/redo,
+  // re-render) live in DeckDetail where they have a deck to act on.
+  useEffect(() => {
+    const onKey = (e) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setView("home");
+        // Focus the sidebar search the next frame.
+        requestAnimationFrame(() => {
+          const input = document.querySelector("input[placeholder='Search decks']");
+          input?.focus();
+        });
+      } else if (mod && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        setView("new");
+      } else if (e.key === "Escape" && docsOpen) {
+        setDocsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [docsOpen]);
+
   // Rehydrate the session on boot: a stored token that no longer resolves is
   // simply forgotten, leaving the user logged out.
   useEffect(() => {
@@ -153,6 +178,7 @@ export default function App() {
               refreshToken={deckVersion}
               onBack={() => setView("home")}
               onDeckChanged={bumpDeck}
+              onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
             />
           )}
           {view === "report" && activeSlug && (
