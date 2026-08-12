@@ -35,7 +35,7 @@ export default function ParticleField({ paused = false, className = "" }) {
     };
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 80;
+    const MAX = 150;
 
     const state = {
       dots: [],
@@ -44,12 +44,12 @@ export default function ParticleField({ paused = false, className = "" }) {
     };
 
     const makeDot = () => {
-      const r = 0.5 + Math.random() * 1.3;
+      const r = 1 + Math.random() * 1.8;
       return {
         x: Math.random() * state.w,
         y: Math.random() * state.h,
         r,
-        base: 0.05 + Math.random() * 0.14,
+        base: 0.12 + Math.random() * 0.18,
         phase: Math.random() * Math.PI * 2,
         speed: 0.15 + Math.random() * 0.35,
         accent: Math.random() < 0.16,
@@ -64,7 +64,7 @@ export default function ParticleField({ paused = false, className = "" }) {
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      const count = Math.max(20, Math.min(MAX, Math.round(area / 20000)));
+      const count = Math.max(24, Math.min(MAX, Math.round(area / 9000)));
       state.dots = Array.from({ length: count }, makeDot);
       if (reduceMotion) drawFrame(performance.now());
     }
@@ -100,7 +100,7 @@ export default function ParticleField({ paused = false, className = "" }) {
         else if (y < -8) y = state.h + 8;
 
         const twinkle = 0.75 + 0.25 * Math.sin(now * 0.001 + d.phase * 3);
-        ctx.globalAlpha = d.base * twinkle;
+        ctx.globalAlpha = d.base * twinkle * (d.accent ? 1.3 : 1);
         ctx.fillStyle = d.accent ? fill.accent : fill.dot;
         ctx.beginPath();
         ctx.arc(x, y, d.r * dpr, 0, Math.PI * 2);

@@ -70,7 +70,9 @@ export default function App() {
 
   return (
     <div className="relative h-full overflow-hidden">
-      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0" />
+      {/* A canvas is a replaced element with an intrinsic size, so inset-0 alone
+          leaves it at 300x150 — it needs an explicit fill to cover the shell. */}
+      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
 
       <div className="relative z-10 flex h-full flex-col">
         <HeaderBar
