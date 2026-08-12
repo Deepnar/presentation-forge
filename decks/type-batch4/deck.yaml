@@ -1,0 +1,99 @@
+title: "Batch 4 — Process and flow types"
+theme: warm-humanist
+sections:
+  - Flow
+slides:
+  - type: title
+    section: 0
+  - type: cycle
+    headline: The continuous improvement loop
+    label: Iterate
+    steps:
+      - title: Plan
+        body: set the goal
+      - title: Build
+        body: ship the change
+      - title: Measure
+        body: gather data
+      - title: Learn
+        body: adjust course
+    section: 0
+  - type: funnel
+    headline: Conversion across the stages
+    stages:
+      - label: Leads
+        value: "100%"
+      - label: Qualified
+        value: "42%"
+        body: meet the criteria
+      - label: Proposed
+        value: "18%"
+      - label: Closed won
+        value: "9%"
+    section: 0
+  - type: pipeline
+    headline: The delivery pipeline
+    stages:
+      - title: Commit
+        body: code merged
+        gate: build
+      - title: Test
+        body: unit + e2e
+        gate: coverage
+      - title: Stage
+        body: deploy to env
+        gate: approval
+      - title: Prod
+        body: gradual roll-out
+        gate: release
+    section: 0
+  - type: dependencies
+    headline: What depends on what
+    nodes:
+      - title: Events
+        body: ingested
+      - title: Enrichment
+        body: joins context
+        depends_on: [0]
+      - title: Storage
+        body: columnar lake
+        depends_on: [1]
+      - title: Serving
+        body: read models
+        depends_on: [2]
+      - title: Alerts
+        body: thresholded
+        depends_on: [1, 2]
+    section: 0
+  - type: branching-flow
+    headline: How an order flows
+    steps:
+      - title: Receive order
+      - title: Validate
+    decision: Credit check passes?
+    branches:
+      - label: Approve
+        steps:
+          - title: Confirm order
+          - title: Notify team
+      - label: Review
+        steps:
+          - title: Manual check
+          - title: Decision
+    section: 0
+  - type: layered-architecture
+    headline: The platform stack
+    layers:
+      - label: Presentation
+        body: web and mobile clients
+        items: [React, Mobile]
+      - label: API gateway
+        body: routing and auth
+        items: [GraphQL, OAuth]
+      - label: Services
+        body: business logic
+        items: [Orders, Users, Billing]
+      - label: Data
+        body: stores and caches
+        items: [Postgres, Redis, S3]
+    section: 0
