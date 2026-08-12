@@ -498,11 +498,14 @@ have a place for future hosting, and that is all. Everything else stays open.
 with `crypto.scrypt` and a per-user random salt; the users file holds only
 salt+hash, and the password is never logged, stored, or returned. Sessions are
 opaque random bearer tokens held server-side in a gitignored sessions file —
-the browser only ever sees the token. `POST /api/auth/register|login|logout`
-and `GET /api/auth/me` back the header's account entry (Login/Register when
-logged out, name + Logout when in). `PUT/DELETE /api/cloud/key` return 401
-without a session, and the Identity view's Cloud section shows a login prompt
-until one exists. The AuthModal is the register/login surface; both
+the browser only ever sees the token. `POST /api/auth/login` mints a session,
+`POST /api/auth/register` does not: creating an account returns the user
+without a token and the visitor signs in explicitly, so registration never
+silently logs anyone in. `POST /api/auth/logout` and `GET /api/auth/me` back
+the header's account entry (Login/Register when logged out, name + Logout when
+in). `PUT/DELETE /api/cloud/key` return 401 without a session, and the Identity
+view's Cloud section shows a login prompt until one exists. The AuthModal and
+the full-screen LoginScreen are the register/login surfaces; both
 `config/users.json` and `config/sessions.json` are gitignored.
 
 ### The cloud surface — opt-in hosted models
