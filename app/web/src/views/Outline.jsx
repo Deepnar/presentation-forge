@@ -20,6 +20,8 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
+  const [storyboard, setStoryboard] = useState(null);
+  const [storyIdx, setStoryIdx] = useState(null);
 
   useEffect(() => {
     api.types().then((r) => setTypes(r.types)).catch(() => {});
@@ -72,11 +74,21 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
     setBusy(true);
     setError("");
     setStatus("Approving…");
+    // F15 — the storyboard: one tile per planned slide, the one being written
+    // highlighted as the SSE status frames stream in.
+    setStoryboard(clean.map((s) => ({ ...s, state: "queued" })));
+    setStoryIdx(null);
     const j = api.generate(
       slug,
       { plan: { title, subtitle, sections, slides: clean }, theme: theme || undefined },
       {
-        status: (p) => setStatus(progressLabel(p)),
+        status: (p) => {
+          setStatus(progressLabel(p));
+          if (p.phase === "writing" && typeof p.index === "number") {
+            setStoryIdx(p.index);
+            setStoryboard((sb) => sb.map((s, i) => (i === p.index ? { ...s, state: "writing" } : s)));
+          }
+        },
         result: () => onDone(slug),
       },
     );
@@ -290,6 +302,23 @@ export default function Outline({ slug, plan, initialTheme, onDone, onBack }) {
             <Spinner />
             {status}
           </div>
+          {storyboard && (
+            <div className="mt-3.5 flex gap-1.5 overflow-x-auto pb-1">
+              {storyboard.map((s, i) => (
+                <div
+                  key={i}
+                  className={`flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg border px-1 py-1.5 ${
+                    storyIdx === i
+                      ? "border-accent/60 bg-accent/10"
+                      : "border-line bg-sunken"
+                  }`}
+                >
+                  <span className="font-mono text-[9px] tabular-nums text-fg-faint">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="w-full truncate text-center font-mono text-[9px] text-fg-muted">{s.type}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </Panel>
       )}
 

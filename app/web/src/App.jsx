@@ -186,6 +186,7 @@ export default function App() {
               slug={activeSlug}
               refreshToken={deckVersion}
               onBack={() => setView("home")}
+              onDeckChanged={bumpDeck}
               onPlanReady={(plan) => { setDraft({ slug: activeSlug, plan, theme: "" }); setView("outline"); }}
             />
           )}

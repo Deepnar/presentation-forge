@@ -18,7 +18,7 @@ const REPORT_SECTIONS = [
  * deck also gets the reverse-flow door: plan a companion deck from the same
  * research through the outline gate.
  */
-export default function ReportView({ slug, refreshToken, onBack, onPlanReady }) {
+export default function ReportView({ slug, refreshToken, onBack, onPlanReady, onDeckChanged }) {
   const [data, setData] = useState(null);
   const [identity, setIdentity] = useState(null);
   const [depth, setDepth] = useState("full");
@@ -73,6 +73,33 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady }) 
       await j.promise;
     } catch (err) {
       setError(err.name === "AbortError" ? "Cancelled." : err.message);
+      setStatus("");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // F20 — the report-as-deck bridge: append one report section as a real slide
+  // of the companion deck, so the two artefacts share content freely. Only
+  // decks that already have a deck.yaml can take a slide.
+  async function addSectionAsSlide(name) {
+    setBusy(true);
+    setError("");
+    setStatus("Adding slide…");
+    try {
+      const d = await api.deck(slug);
+      const section = data.content[name];
+      const paras = [...(section.paragraphs ?? []), ...(section.entries ?? [])].filter((s) => String(s).trim());
+      const slide = {
+        type: "bullets",
+        headline: name.length > 60 ? name.slice(0, 57) + "…" : name,
+        bullets: paras.slice(0, 4),
+      };
+      await api.saveDeck(slug, { ...d.deck, slides: [...d.deck.slides, slide] }, d.meta);
+      onDeckChanged?.();
+      setStatus("");
+    } catch (err) {
+      setError(err.message);
       setStatus("");
     } finally {
       setBusy(false);
@@ -181,9 +208,19 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady }) 
                       <span className="mr-2 font-mono tabular-nums text-fg-faint">{i + 1}</span>
                       {name}
                     </h2>
-                    {table && (
-                      <span className="text-[10.5px] uppercase tracking-wider text-fg-faint">+ table</span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {table && (
+                        <span className="text-[10.5px] uppercase tracking-wider text-fg-faint">+ table</span>
+                      )}
+                      <button
+                        onClick={() => addSectionAsSlide(name)}
+                        disabled={busy}
+                        title="Append this section as a slide of the deck"
+                        className="rounded-lg border border-line px-2 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg disabled:opacity-40"
+                      >
+                        + Add as slide
+                      </button>
+                    </div>
                   </div>
                   {paras.length > 0 ? (
                     <div className="space-y-2.5">
