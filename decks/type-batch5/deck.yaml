@@ -1,0 +1,82 @@
+title: "Batch 5 — Timeline and quote types"
+theme: warm-humanist
+sections:
+  - Time
+  - Voices
+slides:
+  - type: title
+    section: 0
+  - type: roadmap
+    headline: The delivery roadmap
+    time_labels: [Now, Next, Later]
+    phases:
+      - label: Platform
+        items:
+          - title: Auth hardening
+            body: SSO + MFA
+          - title: Rate limiting
+      - label: Product
+        items:
+          - title: Workspaces
+          - title: Templates
+            body: reusable decks
+          - title: Add-ins
+      - label: Reach
+        items:
+          - title: Mobile apps
+          - title: Localisation
+    section: 0
+  - type: journey
+    headline: The onboarding journey
+    stages:
+      - label: Discovery
+        body: excited about the promise
+        sentiment: positive
+      - label: Signup
+        body: friction at the form
+        sentiment: negative
+      - label: First run
+        body: the aha moment
+        sentiment: positive
+      - label: Setup
+        body: configuration fatigue
+        sentiment: neutral
+      - label: Daily use
+        body: settled into a rhythm
+        sentiment: positive
+    section: 0
+  - type: chronology
+    headline: How the project unfolded
+    events:
+      - year: "2019"
+        text: The first prototype ships to a single campus.
+      - year: "2021"
+        text: Wider rollout begins with three partner institutions.
+      - year: "2023"
+        text: The platform passes a million generated slides.
+      - year: "2025"
+        text: Academic review recognises the citation workflow.
+      - year: "2026"
+        text: Research grounding becomes a default guardrail.
+    section: 0
+  - type: section
+    headline: Voices
+    section: 1
+  - type: testimonial
+    headline: What the guide said
+    quote: The final deck survived contact with a picky committee — the sources
+      were right there in the notes.
+    name: Dr. Meera Rao
+    role: Guide, Systems Engineering
+    image: portrait.png
+    section: 1
+  - type: pull-quote
+    headline: The point worth repeating
+    quote: Clarity is a feature, not an afterthought.
+    attribution: Internal design principle
+    section: 1
+  - type: epigraph
+    quote: The only way to do great work is to love what you do.
+    attribution: Steve Jobs
+    source: Stanford commencement, 2005
+    section: 1
