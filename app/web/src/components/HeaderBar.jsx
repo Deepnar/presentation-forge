@@ -2,19 +2,20 @@ import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { Badge } from "./ui.jsx";
 import { ChevronLeft, ChevronRight, DocIcon, GithubIcon } from "./icons.jsx";
+import { setModelMode } from "../lib/modelMode.js";
 
 /**
  * Full-width product bar. Left: the sidebar collapse toggle, the mark and
  * wordmark (home link) with the routing badge. Right: Docs (README modal) and
- * the repo link. Nothing else — no avatar, no sync, no dead icons.
+ * the repo link.
  *
- * The LOCAL/CLOUD badge reflects whether a cloud key is attached and where the
- * model pickers' "auto" points: LOCAL when no cloud or routing is local,
- * CLOUD/HYBRID when routing routes default work to the attached provider. The
- * toggle flips the routing preference (gitignored config/local.yaml) so
- * "auto" follows the header without touching any picker.
+ * The LOCAL/CLOUD badge is also the mode switch: it writes the routing
+ * preference (gitignored config/local.yaml) and flips the client model-mode
+ * store so every model picker filters to that mode immediately. CLOUD is only
+ * reachable when a key is attached; without one the button is disabled and
+ * points at the Settings/Cloud section where the key lands.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, onOpenIdentity }) {
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("local");
 
@@ -23,19 +24,22 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome }
       .then((r) => {
         setCloud(r.cloud ?? null);
         setRoute(r.cloud?.route ?? "local");
+        // Rehydrate the pickers' mode from the persisted preference on boot.
+        setModelMode(r.cloud?.route ?? "local");
       })
       .catch(() => {});
   }, []);
 
+  const configured = Boolean(cloud?.configured);
   const cloudOn = Boolean(cloud?.configured && cloud.keySet);
   const routingCloud = route === "cloud";
-  const hybrid = cloudOn && routingCloud;
 
-  async function toggleRoute() {
-    const next = routingCloud ? "local" : "cloud";
+  async function setMode(next) {
+    if (next === "cloud" && !cloudOn) return; // no key — unreachable
     try {
       await api.cloudRoute(next);
       setRoute(next);
+      setModelMode(next);
     } catch { /* non-fatal — the badge just stays as it was */ }
   }
 
@@ -60,34 +64,32 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome }
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </button>
 
-      {cloudOn && (
-        <button
-          onClick={toggleRoute}
-          title={hybrid
-            ? "Default model routing is CLOUD — click to route work locally"
-            : "Default model routing is LOCAL — click to route work to your cloud subscription"}
-          className="group inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-panel px-2 py-0.5 transition hover:border-accent/50"
-        >
-          {hybrid ? (
-            <Badge className="bg-accent/15 text-accent">CLOUD</Badge>
-          ) : (
-            <Badge className="border border-line-strong bg-transparent text-fg-faint">LOCAL</Badge>
-          )}
-          <svg
-            viewBox="0 0 24 24"
-            className="h-3 w-3 text-fg-faint transition group-hover:text-accent"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {configured ? (
+        <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
+          <button
+            onClick={() => setMode("local")}
+            title="Model pickers show local models only"
+            className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
+              !routingCloud ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
+            }`}
           >
-            <path d="M18 8a6 6 0 0 0-11.8 1.5A4 4 0 1 0 5 18h13a3 3 0 0 0 0-10Z" />
-          </svg>
-        </button>
+            LOCAL
+          </button>
+          <button
+            onClick={() => (cloudOn ? setMode("cloud") : onOpenIdentity?.())}
+            title={cloudOn
+              ? "Model pickers show cloud models only"
+              : "Attach an API key in Settings → Cloud to use cloud models"}
+            className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
+              routingCloud ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
+            }`}
+          >
+            CLOUD
+          </button>
+        </div>
+      ) : (
+        <Badge className="border border-line-strong bg-transparent text-fg-faint">LOCAL</Badge>
       )}
-
-      {!cloudOn && <Badge className="border border-line-strong bg-transparent text-fg-faint">LOCAL</Badge>}
 
       <div className="ml-auto flex items-center gap-1">
         <button

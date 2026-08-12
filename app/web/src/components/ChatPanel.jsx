@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge } from "./ui.jsx";
+import { useModels } from "../lib/useModels.js";
 
 /**
  * The chat panel — a deck-scoped conversational surface on runTurn.
@@ -24,10 +25,8 @@ function formatTokens(n) {
 }
 
 export default function ChatPanel({ slug, onDeckChanged, onClose }) {
+  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [thread, setThread] = useState(null);
-  const [models, setModels] = useState([]);
-  const [cloud, setCloud] = useState(null);
-  const [defaultModel, setDefaultModel] = useState("");
   const [model, setModel] = useState("");
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -40,14 +39,6 @@ export default function ChatPanel({ slug, onDeckChanged, onClose }) {
   const [lastStats, setLastStats] = useState(null);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-
-  useEffect(() => {
-    api.models().then((r) => {
-      setModels(r.models ?? []);
-      setCloud(r.cloud ?? null);
-      setDefaultModel(r.default ?? "");
-    }).catch(() => {});
-  }, []);
 
   useEffect(() => {
     setThread(null); setInput(""); setError(""); setPending(null);
@@ -158,16 +149,11 @@ export default function ChatPanel({ slug, onDeckChanged, onClose }) {
             <select
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              title="Which model writes the edits"
+              title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model writes the edits"}
               className="w-full appearance-none rounded-lg border border-line bg-sunken py-1.5 pl-2.5 pr-7 text-[11.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
             >
               <option value="">auto · {defaultModel}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
-              {cloud && (
-                <optgroup label={cloud.label}>
-                  {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
-                </optgroup>
-              )}
             </select>
             <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m6 9 6 6 6-6" />

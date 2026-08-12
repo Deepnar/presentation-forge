@@ -85,6 +85,7 @@ export default function App() {
           onToggleLeft={() => setLeftOpen((o) => !o)}
           onOpenDocs={() => setDocsOpen(true)}
           onHome={() => setView("home")}
+          onOpenIdentity={() => setView("identity")}
         />
 
         <div className="isolate flex min-h-0 flex-1">

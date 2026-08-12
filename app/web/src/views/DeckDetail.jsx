@@ -5,6 +5,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { progressLabel } from "./NewDeck.jsx";
+import { useModels } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 
 /**
@@ -373,9 +374,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 }
 
 function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
-  const [models, setModels] = useState([]);
-  const [cloud, setCloud] = useState(null);
-  const [defaultModel, setDefaultModel] = useState("");
+  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState("");
   const [depth, setDepth] = useState(defaultDepth ?? "full");
   const [busy, setBusy] = useState(false);
@@ -383,16 +382,6 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [job, setJob] = useState(null);
-
-  useEffect(() => {
-    api.models()
-      .then((r) => {
-        setModels(r.models ?? []);
-        setCloud(r.cloud ?? null);
-        setDefaultModel(r.default ?? "");
-      })
-      .catch(() => {});
-  }, []);
 
   async function generate() {
     setBusy(true);
@@ -451,14 +440,9 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
           <div className="relative">
-            <select value={model} onChange={(e) => setModel(e.target.value)} title="Which model writes the report" className={`${selectCls} max-w-[16rem]`}>
+            <select value={model} onChange={(e) => setModel(e.target.value)} title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model writes the report"} className={`${selectCls} max-w-[16rem]`}>
               <option value="">auto · {defaultModel}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
-              {cloud && (
-                <optgroup label={cloud.label}>
-                  {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
-                </optgroup>
-              )}
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>

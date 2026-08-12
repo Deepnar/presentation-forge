@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Spinner } from "./ui.jsx";
 import { progressLabel } from "../views/NewDeck.jsx";
+import { useModels } from "../lib/useModels.js";
 import { ChevronDown, DocIcon, LayersIcon, SlidersIcon, SparkleIcon, UpArrowIcon } from "./icons.jsx";
 
 /**
@@ -13,9 +14,7 @@ import { ChevronDown, DocIcon, LayersIcon, SlidersIcon, SparkleIcon, UpArrowIcon
  * hidden behind this box, it is the fast path.
  */
 export default function PromptBox({ decks, mode, setMode, brief, setBrief, focusSignal, onNewDeck, onPlanReady, onReportDone, onStandaloneReport }) {
-  const [models, setModels] = useState([]);
-  const [cloud, setCloud] = useState(null);
-  const [defaultModel, setDefaultModel] = useState("");
+  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState("");
   const [identity, setIdentity] = useState(null);
   const [reportSlug, setReportSlug] = useState("");
@@ -41,13 +40,6 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
   const SLIDE_COUNTS = [0, 8, 14, 20];
 
   useEffect(() => {
-    api.models()
-      .then((r) => {
-        setModels(r.models ?? []);
-        setCloud(r.cloud ?? null);
-        setDefaultModel(r.default ?? "");
-      })
-      .catch(() => {});
     api.identity().then((r) => setIdentity(r.identity ?? null)).catch(() => {});
   }, []);
 
@@ -215,16 +207,11 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                title="Which model does the work"
+                title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model does the work"}
                 className="appearance-none rounded-full border border-line bg-sunken py-1.5 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent max-w-[14rem]"
               >
                 <option value="">auto · {defaultModel}</option>
                 {models.map((m) => <option key={m} value={m}>{m}</option>)}
-                {cloud && (
-                  <optgroup label={cloud.label}>
-                    {cloud.models.map((m) => <option key={m} value={m}>{m}</option>)}
-                  </optgroup>
-                )}
               </select>
               <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
               <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />

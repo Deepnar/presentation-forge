@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Badge, Field, Spinner, inputCls } from "../components/ui.jsx";
+import { setModelMode } from "../lib/modelMode.js";
 
 /**
  * Edits config/identity.yaml — the remembered defaults every new deck starts
@@ -115,6 +116,7 @@ export default function Identity() {
     setCloudState({ status: "busy", message: "" });
     try {
       await api.cloudRoute(route);
+      setModelMode(route);
       const r = await api.cloud();
       setCloud(r.cloud);
       setCloudState({ status: "saved", message: `Default routing: ${route}` });
