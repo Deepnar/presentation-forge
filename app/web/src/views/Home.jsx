@@ -92,14 +92,14 @@ export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, o
               <button
                 onClick={() => scrollCarousel(-1)}
                 aria-label="Scroll back"
-                className="grid h-7 w-7 place-items-center rounded-full border border-line text-fg-faint transition hover:border-line-strong hover:text-fg"
+                className="grid h-7 w-7 place-items-center rounded-full border border-line text-fg-faint transition hover:border-line-strong hover:text-fg active:translate-y-px active:bg-hover"
               >
                 <ChevronLeft className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={() => scrollCarousel(1)}
                 aria-label="Scroll forward"
-                className="grid h-7 w-7 place-items-center rounded-full border border-line text-fg-faint transition hover:border-line-strong hover:text-fg"
+                className="grid h-7 w-7 place-items-center rounded-full border border-line text-fg-faint transition hover:border-line-strong hover:text-fg active:translate-y-px active:bg-hover"
               >
                 <ChevronRight className="h-3.5 w-3.5" />
               </button>
@@ -111,7 +111,7 @@ export default function Home({ decks, org, onNewDeck, onOpenDeck, onPlanReady, o
               <button
                 key={d.slug}
                 onClick={() => onOpenDeck(d.slug)}
-                className="w-64 shrink-0 rounded-[var(--radius-lg)] border border-line bg-panel p-3 text-left transition hover:border-line-strong hover:bg-raised"
+                className="card-hover panel-surface w-64 shrink-0 rounded-[var(--radius-lg)] border border-line bg-panel p-3 text-left hover:bg-raised"
               >
                 <DeckThumb
                   slug={d.slug}

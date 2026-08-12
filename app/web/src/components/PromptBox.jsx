@@ -141,7 +141,7 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
             <button
               onClick={onNewDeck}
               title="Advanced options — sources, research, team"
-              className="grid h-8 w-8 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg"
+              className="grid h-8 w-8 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg active:scale-95"
             >
               <SlidersIcon className="h-4 w-4" />
             </button>
@@ -150,7 +150,7 @@ export default function PromptBox({ decks, mode, setMode, brief, setBrief, focus
               onClick={submit}
               disabled={!canSubmit}
               title="Generate"
-              className="grid h-8 w-8 place-items-center rounded-full bg-accent text-white transition hover:bg-accent-hi disabled:pointer-events-none disabled:opacity-40"
+              className="grid h-8 w-8 place-items-center rounded-full bg-accent text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_6px_14px_-6px_rgba(0,0,0,0.7)] transition hover:bg-accent-hi active:scale-95 disabled:pointer-events-none disabled:opacity-40"
             >
               <UpArrowIcon className="h-4 w-4" />
             </button>

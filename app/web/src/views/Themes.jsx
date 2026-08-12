@@ -42,7 +42,7 @@ function ThemeCard({ theme }) {
   const swatches = [p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean);
 
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-panel transition hover:border-line-strong">
+    <div className="card-hover panel-surface overflow-hidden rounded-card border border-line bg-panel">
       {/* Two specimens: the title treatment and a standard content page. Between
           them they show almost everything a theme decides. */}
       <div className="flex aspect-[16/7] flex-col justify-end px-4 pb-3 pt-3" style={{ background: title.bg ?? p.ink }}>

@@ -246,13 +246,13 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           {slides.map((slide, i) => {
             const src = data.slides[i];
             return (
-              <div key={i} className="rounded-[var(--radius-lg)] border border-line bg-panel p-2">
+              <div key={i} className="card-hover panel-surface rounded-[var(--radius-lg)] border border-line bg-panel p-2">
                 <button
                   onClick={() => setZoom(i)}
                   className="block w-full text-left"
                   title="View full size"
                 >
-                  <div className="slide-frame overflow-hidden rounded-lg ring-accent transition group-hover:ring-2">
+                  <div className="slide-frame overflow-hidden rounded-lg transition hover:ring-2 hover:ring-accent/70">
                     {/* Iterate over the deck, not the previews: right after a
                         delete/duplicate the rasterised set lags the content by
                         a beat, so a missing frame is a skeleton, not a gap.

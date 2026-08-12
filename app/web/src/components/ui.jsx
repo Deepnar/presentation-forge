@@ -3,16 +3,17 @@
 
 export function Button({ variant = "ghost", size = "md", className = "", ...props }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition " +
-    "disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-150 " +
+    "active:translate-y-px disabled:pointer-events-none disabled:opacity-40";
   const sizes = {
     sm: "px-2.5 py-1.5 text-xs",
     md: "px-3.5 py-2 text-sm",
   };
   const variants = {
-    primary: "bg-accent text-white hover:bg-accent-hi active:bg-accent",
+    primary:
+      "bg-accent text-white hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)]",
     ghost: "text-fg-muted hover:bg-hover hover:text-fg",
-    outline: "border border-line text-fg-muted hover:border-line-strong hover:text-fg",
+    outline: "border border-line text-fg-muted hover:border-line-strong hover:text-fg hover:shadow-[0_6px_14px_-10px_rgba(0,0,0,0.6)]",
   };
   return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props} />;
 }
@@ -20,7 +21,7 @@ export function Button({ variant = "ghost", size = "md", className = "", ...prop
 export function Panel({ className = "", ...props }) {
   return (
     <div
-      className={`rounded-card border border-line bg-panel ${className}`}
+      className={`panel-surface rounded-card border border-line bg-panel ${className}`}
       {...props}
     />
   );
@@ -52,8 +53,14 @@ export function Field({ label, hint, value, onChange, placeholder, className = "
 
 export function Empty({ title, hint, action }) {
   return (
-    <div className="rounded-card border border-dashed border-line px-8 py-14 text-center">
-      <div className="text-sm text-fg-muted">{title}</div>
+    <div className="empty-state rounded-card border border-dashed border-line">
+      <div className="empty-ring h-10 w-10">
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+          <path d="m3 14 9 5 9-5" />
+        </svg>
+      </div>
+      <div className="mt-3 text-sm font-medium text-fg-muted">{title}</div>
       {hint && <div className="mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-fg-faint">{hint}</div>}
       {action && <div className="mt-5">{action}</div>}
     </div>

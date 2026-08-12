@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, DocIcon, GithubIcon } from "./icons.jsx";
  */
 export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome }) {
   return (
-    <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line bg-base px-3">
+    <header className="shell-header flex h-12 shrink-0 items-center gap-2.5 border-b border-line bg-base px-3">
       <button
         onClick={onToggleLeft}
         title={leftOpen ? "Collapse navigation" : "Expand navigation"}

@@ -82,7 +82,9 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
                         onClick={() => onOpenDeck(d.slug)}
                         title={`${d.title}\n${new Date(d.updated).toLocaleString()}`}
                         className={`flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition ${
-                          activeSlug === d.slug ? "bg-raised" : "hover:bg-hover"
+                          activeSlug === d.slug
+                            ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                            : "hover:bg-hover"
                         }`}
                       >
                         <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
@@ -101,12 +103,15 @@ export default function Sidebar({ decks, activeSlug, view, open, onOpenDeck, onN
             })}
 
             {filtered.length === 0 && (
-              <div className="rounded-card border border-dashed border-line px-3 py-6 text-center text-[11px] leading-relaxed text-fg-faint">
+              <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
+                <div className="empty-ring h-8 w-8">
+                  <SearchIcon className="h-3.5 w-3.5" />
+                </div>
                 {tab === "reports"
-                  ? "No reports yet — generate one from a deck's Report panel or the home prompt."
+                  ? <div>No reports yet — generate one from a deck's Report panel or the home prompt.</div>
                   : query.trim()
-                    ? `No decks match "${query.trim()}"`
-                    : "No decks yet — start one from the home prompt."}
+                    ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
+                    : <div>No decks yet — start one from the home prompt.</div>}
               </div>
             )}
           </div>
@@ -153,7 +158,7 @@ function NavRow({ active, icon: Icon, label, onClick }) {
     <button
       onClick={onClick}
       className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition ${
-        active ? "bg-raised" : "hover:bg-hover"
+        active ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "hover:bg-hover"
       }`}
     >
       <Icon className={`h-4 w-4 shrink-0 ${active ? "text-accent" : "text-fg-faint"}`} />
