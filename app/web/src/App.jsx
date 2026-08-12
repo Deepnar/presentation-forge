@@ -199,7 +199,7 @@ export default function App() {
             />
           </div>
 
-          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in min-w-0 flex-1 overflow-hidden">
+          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
             {view === "chat" && activeChat && (
               <ChatView
                 chat={activeChat}
@@ -208,7 +208,6 @@ export default function App() {
                 onOpenDeck={openDeck}
                 onOpenReport={openReport}
                 onDeckChanged={bumpDeck}
-                onNewChat={newChat}
               />
             )}
             {view === "chat" && !activeChat && (
