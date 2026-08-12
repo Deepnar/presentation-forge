@@ -150,10 +150,11 @@ export const api = {
   },
   brandRemove: (name) => call(`/api/brand/${name}`, { method: "DELETE" }),
   // Local single-install accounts. The token is the only credential the browser
-  // holds; the password is never stored or returned.
+  // holds; the password is never stored or returned. Registering never logs in:
+  // the new account is created and the visitor signs in with it explicitly.
   register: (payload) =>
     call("/api/auth/register", { method: "POST", body: JSON.stringify(payload) })
-      .then((r) => { rememberToken(r.token); return r.user; }),
+      .then((r) => r.user),
   login: (payload) =>
     call("/api/auth/login", { method: "POST", body: JSON.stringify(payload) })
       .then((r) => { rememberToken(r.token); return r.user; }),

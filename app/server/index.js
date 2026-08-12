@@ -884,8 +884,10 @@ app.post("/api/auth/register", wrap(async (req, res) => {
   const { name, email, password } = req.body ?? {};
   try {
     const user = await register({ name, email, password });
-    const token = await startSession(user);
-    ok(res, { token, user });
+    // Registration deliberately does not start a session — the visitor logs in
+    // with the new credentials explicitly, so creating an account never hands
+    // out a token.
+    ok(res, { user });
   } catch (err) {
     fail(res, 400, err.message);
   }

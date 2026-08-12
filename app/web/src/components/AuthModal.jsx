@@ -16,6 +16,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
@@ -29,10 +30,17 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     setBusy(true);
     setError("");
     try {
-      const user = mode === "login"
-        ? await api.login({ email: email.trim(), password })
-        : await api.register({ name: name.trim(), email: email.trim(), password });
-      onDone?.(user);
+      if (mode === "login") {
+        const user = await api.login({ email: email.trim(), password });
+        onDone?.(user);
+      } else {
+        // Registration never hands out a session — the account is created and
+        // the visitor signs in with it explicitly.
+        const user = await api.register({ name: name.trim(), email: email.trim(), password });
+        setMode("login");
+        setPassword("");
+        setSuccess(`Account created for ${user.name} — log in to start.`);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,13 +66,13 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
 
         <div className="mb-4 flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
           <button
-            onClick={() => { setMode("login"); setError(""); }}
+            onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
             className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "login" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
           >
             Log in
           </button>
           <button
-            onClick={() => { setMode("register"); setError(""); }}
+            onClick={() => { setMode("register"); setError(""); setSuccess(""); }}
             className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "register" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
           >
             Register
@@ -114,6 +122,12 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
           {error && (
             <div className="rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-[12px] leading-relaxed text-fg">
+              {success}
             </div>
           )}
 
