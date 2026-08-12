@@ -45,15 +45,44 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 > reformat; it is a change of kind, from persuasion to specification.
 
 ### [x] Content schema
-`schema/deck.schema.json`, 15 slide types, per-type conditional rules.
+`schema/deck.schema.json`, 22 slide types, per-type conditional rules.
 
 > **Learned.** Ajv's raw errors ("must match a schema in anyOf") are useless as a
 > correction prompt for a small model. `src/validate.js` resolves each error to
 > a slide index, its type, and the specific edit needed. This output is a
 > product surface, not a debug log — it is what the model reads to fix itself.
 
+### [x] Tier-1 slide-type vocabulary
+The six high-impact types from the 50-type plan landed first: `big-number`
+(data/stats), `agenda` (foundation), `milestone` (timeline), `pros-cons`
+(comparison), `emphasis` (callout), `definition` (definitions). Each is a
+schema conditional block (data only), a native layout in `src/layouts.js`, and
+auto-derived catalog detail. The catalog now groups types by family so the
+planner can navigate the growing vocabulary, and the outline prompt maps each
+rhetorical beat to the family that expresses it.
+
+> **Learned.** Three things were not obvious beforehand.
+>
+> Inter is a wide geometric sans and the fitter measured it as a narrow one —
+> the big-number body wrapped to a line the fitter did not budget for, and its
+> caption landed on the footer. Rasterising and looking found it, as always.
+> The `cards`/`compare`/`stats` lesson generalises: a stacked layout must
+> *anchor* to the content box bottom and fitScale its body into a fixed budget,
+> never derive a y-offset from a raw `heightOf` — see the TRAPS entry on the
+> fitter's units.
+>
+> `heightOf` is not "height in inches" in the way a layout wants. The fitter's
+> `measure` never multiplies the advance by the em size, so its outputs are
+> wildly pessimistic against real inches; every layout that computes a position
+> from raw fit arithmetic will drift, and the fix is to let `fitScale` own the
+> box. (Fixing `measure` itself would re-type every deck and is deferred.)
+>
+> The family map in `src/ai/catalog.js` already names all 50 planned types, so
+> Tier 2-4 additions are schema + layout + editor-descriptor work with no
+> catalog changes — the look-ahead the plan asked for.
+
 ### [x] Renderer
-`src/render.js` + `src/layouts.js` — 15 layouts, zero literal colours or fonts.
+`src/render.js` + `src/layouts.js` — 21 layouts, zero literal colours or fonts.
 
 > **Learned.** Keeping every literal out of `layouts.js` is what makes 20 themes
 > cost 20 YAML files instead of 20 renderers. The discipline only holds if it is
@@ -182,6 +211,21 @@ on a short debounce so rapid operations coalesce.
 > same stale value, and a held arrow key silently skips slides. It looks correct
 > under single slow presses, which is exactly how it gets missed: stepping from
 > slide 5 with three left presses landed on 4 instead of 2.
+
+### [x] Research panel — see and correct what the model writes from
+`DeckDetail` now shows the deck's research beside the Report panel: the
+`research/notes.md` content as a read-only code block with an Edit mode that
+saves back, and `sources.json` as a collapsible list. API
+`GET/PUT /api/decks/:slug/research`, 404-safe (a deck with no research pass
+renders a hint, not an error). An edit is what the next generation reads —
+`generateFromPlan` pulls `notes.md` fresh at write time, verified end-to-end by
+PUTting a distinctive fact and watching the cloud-written deck use it.
+
+> **Learned.** "404-safe" was the trap worth naming: a missing research dir is a
+> *state*, not an error, and a UI that treats it as a fetch failure shows an
+> error where it should show "research this deck". The endpoint returns
+> `exists: false` and the panel has four states — loading, error, no-research,
+> content.
 
 ### [x] Intake wizard
 Collect team, subject, guide, year, brief and sources before generation, then
@@ -682,6 +726,28 @@ headline and paragraph all present, native neighbours untouched, chrome footer
 luminance. The sandbox is proven by the same test that guards the CSP.
 
 ---
+
+### [x] Content grounding — the hallucination guard
+After generation, `src/ai/grounding.js` compares each slide's figures, dates
+and names against `research/notes.md` and flags anything it cannot find — into
+the slide's `notes` field and the render result's `problems[]`. It only flags,
+never rewrites a number to pass. Wired into `generateFromPlan` (and re-run on
+the critic's output when the critic rewrites the deck); the CLI prints the
+problems.
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> Names are the noise source. A card title or stat label like "Early Innovator"
+> is not a claim, and flagging every capitalized phrase the research lacks makes
+> the guard cry wolf. Names are only extracted from fields that carry a real
+> figure — a name tied to a number is a claim, a bare label is not. With that,
+> a properly grounded cloud deck produces zero findings.
+>
+> The guard's real test is a fabricated stat, and the cloud model obliged: a
+> stats slide prompted with "growing at a 4.2% annual rate" emitted "4.2%" and
+> a year "2030" that the notes never stated. Both flagged into the slide's
+> notes. The notes themselves are the UI — the speaker sees exactly what to
+> verify, in the deck file the deck detail already shows.
 
 ## 5. Reports
 

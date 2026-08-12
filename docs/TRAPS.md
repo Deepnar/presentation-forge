@@ -28,6 +28,19 @@ and encodes a distinction that does not exist, while pulling low-contrast
 palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
 and doughnut should vary.
 
+**Never derive a text position from `heightOf`/`lineCount` arithmetic.** The
+fitter's `measure` never multiplies the per-em advance by the em size, so its
+width (and therefore line and height) estimates are wildly pessimistic against
+real inches — a 150-char body at 13pt "measures" ~84in. Every existing layout
+works because `fitScale` shrinks defensively against its own metric. But a
+layout that computes its own y-offset from `heightOf` output (e.g. "body ends
+here, so the caption goes there") drifts off the slide: the big-number caption
+landed exactly on the chrome footer. The rule: anchor a stacked block to the
+content box bottom and fitScale the text into the fixed budget between anchor
+and label — let `fitScale` own the arithmetic, never trust its raw numbers as
+inches. (Fixing `measure` to multiply by em would re-type every deck and is a
+deliberate non-goal until the fit system is revisited as a whole.)
+
 **LibreOffice headless silently no-ops.** Two separate traps:
 - `-env:UserInstallation` needs an **absolute** `file://` URL. A relative path
   fails with a bare non-zero exit and no message.

@@ -7,159 +7,121 @@ history preserves older handoffs.
 
 ## Session summary
 
-**Ten queued items worked: the chat rail is now deck-only, chat handles
-structural slide commands, reports stand alone and spawn companion decks, the
-particle field and shell motion got richer, cloud routing has a header toggle,
-a brand upload surface exists, and the crest no longer renders as a ghost. All
-committed and pushed to `origin/main`.** `npm test` 73/73, `vite build` clean,
-and the live dev servers were CDP-checked with screenshots inspected by
-`mimo-v2.5` for the UI work and the crest.
+**The first tranche of the 50-type vocabulary shipped (Tier 1: big-number,
+agenda, milestone, pros-cons, emphasis, definition), content grounding is a
+live hallucination guard in the generate path, and the deck's research is now
+visible and editable in the UI. All committed and pushed to `origin/main`.**
+`npm test` 89/89, `vite build` clean, every new type rendered + rasterised +
+vision-checked (`mimo-v2.5`) on a real deck in two themes, grounding verified
+on a real cloud-model run, and the research panel round-trips through the live
+API. Dev servers are running at :5174 / :5173.
 
 ### What changed
 
-**Task 10 — the crest fix.** The root cause was *not* the knockout selection or
-the chrome luminance logic: `brand/logos/crest.png` itself shipped with every
-pixel at ~14/255 alpha (6%) — RGB fully intact, alpha meaningless. A viewer
-compositing it against white made it look normal; on any slide it was a ghost.
-`keyWhite` kept the source alpha for saturated pixels, so the defect survived
-normalisation. The keyer now rebuilds alpha from RGB: a pixel with alpha 0 stays
-a real cutout, everything else becomes saturated→opaque or neutral→lightness.
-Verified by rendering warm-humanist (full-colour crest visible) and dark-neon
-(the reversed white silhouette) and looking at both via `mimo-v2.5`.
+**Tier-1 slide types.** Six conditional blocks in `schema/deck.schema.json`
+(data fields only), six native layouts in `src/layouts.js`, family
+categorisation in `src/ai/catalog.js` (the map already names all 50 planned
+types, so Tier 2-4 need no catalog work), an outline-prompt steer
+("a number → data family, a definition → definition type…"), and SlideEditor
+descriptors. The demo deck `decks/tier1-types/` shows all six types and is
+committed; it renders clean on warm-humanist and dark-neon.
 
-**Task 1 — chat rail is deck-only.** `App.jsx` mounts the rail (and its edge
-tab) only when `view === "deck"`; Home/Identity/Themes/NewDeck/Outline get the
-main column full-width. The rail stays mounted and animates its width on the
-shell easing instead of popping in.
+**The big-number layout bug.** The caption was landing on the chrome footer.
+Root cause was two-fold: `heightOf`/`measure` in the fitter never multiply the
+per-em advance by the em size (documented in TRAPS — a units quirk every
+layout works around by letting `fitScale` own boxes), and the layout derived a
+y-offset from raw `heightOf`. It now pins the caption to the content-box bottom
+and fit-scales the body into the fixed budget between the label and the
+caption. Inter was also added to the fitter's `WIDE_SANS` set — it renders
+wider than the generic sans advance.
 
-**Task 2 — structural chat commands.** `src/ai/ops.js` gains `duplicate_slide`;
-`runTurn`'s prompt now maps "add/delete/duplicate/move slide N" directly to ops
-and is told never to paraphrase or refuse. The server-side `delete_slide` now
-refuses to empty a deck, matching the editor's guard. New `test/ops.test.js`
-(6 tests). The deck detail's manual move/duplicate/delete buttons were already
-correct and are untouched.
+**Grounding (F1).** `src/ai/grounding.js` compares each slide's figures, dates
+and names against `research/notes.md` after generation and flags ungrounded
+claims into the slide's `notes` (`[grounding] …`) and the result's `problems[]`.
+Wired into `generateFromPlan`, re-run on the critic's output, printed by the
+CLI. Verified with the cloud model: a stats slide prompted with a figure that
+was *not* in the notes emitted "4.2%" and "2030" — both flagged. Names only
+count as claims when their field carries a real figure, so a well-grounded
+cloud deck produces zero findings.
 
-**Task 3 — standalone reports + deck-from-report.** Two new doors on the same
-generator and the same research:
-- `forge report-new <brief>` / `POST /api/reports` — brief → research →
-  `report.yaml` → `.docx`, no deck. The fixed section order is the structure,
-  so no outline gate applies; `generateReport({ requirePlan: false })` derives
-  its plan from brief + research.
-- `forge deck-from-report <slug>` / `POST /api/decks/:slug/report/deck` — an
-  existing `report.yaml` plans a companion deck (`reportBrief()` feeds the
-  report's own sections to `planDeck`), through the ordinary outline gate and
-  `/generate` path.
-- Report-only decks (`deck: false`) appear in the list and open a new
-  `ReportView` (section cards, render/download, Generate-companion-deck button).
-  Home Report mode gained a From-a-deck / From-a-brief toggle.
-- **End-to-end proven on `decks/solar-water-pumping-for-irrigation`** — a
-  standalone report that gained a rendered 18-slide deck through the reverse
-  flow. This deck is committed as the demonstration.
-
-**Task 4 — particle field.** More/smaller dots (area/4200, capped 260), and the
-idle motion is now a two-axis sine wander around a fixed home (figure-eight,
-not a sway). Capped at 60fps for high-refresh displays; reduced-motion static
-frame and hidden-tab pause kept. Behaviourally verified via CDP (frame counter,
-pointer stamp, pushed-dot count).
-
-**Task 5 — fluid motion.** One easing everywhere —
-`--ease-shell: cubic-bezier(0.2,0.8,0.2,1)` — for view switches (keyed
-fade-and-rise on `main`), sidebar collapse, chat rail, card hover; a
-`prefers-reduced-motion` query collapses all transitions/animations to instant.
-
-**Task 6 — cloud routing.** `config/local.yaml` gains `routing.default`
-(local|cloud). The header shows a CLOUD badge + LOCAL/CLOUD toggle when a key is
-attached (plain LOCAL otherwise); the Cloud panel has the same toggle. "auto" in
-every picker follows it (default label + actual routing), but **only the author
-role routes** — research/utility/critic stay on their configured backends.
-
-**Task 8 — Gamma affordances.** Audience + slide-count presets fold into the
-existing brief flow (audience into the brief, count into `maxSlides`); a
-per-slide "make it punchier" bolt in deck detail runs a scoped chat turn through
-`runTurn`.
-
-**Task 9 — brand upload surface.** Identity's Brand section uploads
-crest/banner/watermark into gitignored `brand/logos/` and re-runs the same
-`normalizeBrand()` the CLI uses (now exported from `tools/prep-brand.mjs`).
-Uploads replace any earlier extension; remove falls back to placeholders. The
-report renderer needs nothing extra — it preserves the donor's own VML
-watermark byte-for-byte.
-
-### Cloud structured output — the cross-cutting fix
-
-Getting the standalone report working surfaced a real cloud-path bug: OpenAI-
-compatible `json_object` is not Ollama's grammar. It 400s unless the prompt
-contains the word "json" (the report planner never did), and even then only
-guarantees output parses — the section writer returned `{"introduction":[…]}`
-where the schema demanded `{"paragraphs":[…]}`. Both are fixed at the
-transport: `cloudMessages` prepends a system message stating the schema
-contract verbatim whenever `format` is set. In `docs/TRAPS.md`.
+**Research panel (F2).** `GET/PUT /api/decks/:slug/research` (404-safe:
+`exists: false` for a deck with no research pass; notes/sources validated).
+`DeckDetail` shows the notes as a read-only code block with an Edit mode
+(textarea + Save) and `sources.json` as a collapsible list; states are
+loading / error / no-research / content. Round-trip verified live: PUT a
+distinctive fact into a scratch deck's notes, regenerated with the cloud model,
+and the writer used it — the edit feeds the content stage because
+`generateFromPlan` reads `notes.md` fresh at write time.
 
 ### Verification (all behavioural)
 
-- `npm test` 73/73; `vite build` clean; the running API + Vite at :5174/:5173.
-- CDP on the live app: Home has no chat rail; deck view has it plus the punch
-  bolt; rail opens with the chat input; Identity shows Brand (Crest/Banner/
-  Watermark cards) and Cloud (key, routing toggle); header shows the badge.
-  All screenshots inspected with `mimo-v2.5` — no overlaps, clean layout.
-- Particle field instrumented: loop runs, pointer repulsion responds, 60fps cap
-  in place, reduced-motion static frame, hidden-tab pause.
-- Cloud routing: `modelChoices` default flips with the preference; an unpicked
-  author call routes to `deepseek-v4-flash`; utility stays local.
-- `/api/reports` and `/api/decks/:slug/report/deck` exercised live on
-  `deepseek-v4-flash`: a brief became an 8-section report (0 skipped) plus a
-  companion deck plan. The verification deck was then removed (only the
-  solar-water demonstration deck is committed).
-- Crest verified by rendering both themes and looking at the PNGs, twice.
+- `npm test` 89/89; `vite build` clean; dev API :5174 + Vite :5173 running.
+- Six new types rendered (`decks/tier1-types/deck.yaml`), rasterised, and
+  vision-checked with `mimo-v2.5` — warm-humanist all 7 slides clean; the
+  big-number caption/footer collision was found by the vision pass and fixed;
+  a dark-neon spot check of the three riskiest slides also clean.
+- Grounding: unit tests pass; the real green-hydrogen deck grounds clean; a
+  cloud-model generation produced two genuine ungrounded claims ("4.2%",
+  "2030") that were flagged into slide notes.
+- Research panel: GET/PUT round-tripped through the running API (including the
+  non-string rejection), and a PUT edit reached the regenerated deck's content.
+  UI inspected via headless Chrome screenshots (deck detail, research notes,
+  edit mode) — vision-checked, no overlaps.
 
 ### Known open work
 
-- **Deck writer image grounding** — the model emits image filenames for
-  `image`/`image-text`/`compare` slides without writing the files. Still open.
-- **Report UI section-reader** — generate/render/download exists (now including
-  the standalone Report view); no reader for the `.docx` content itself.
-- **Flow layout capacity** — six-step ttb cards still collide with the footer.
-- **Task 7 (stretch) canvas slide-builder** — designed but not built; see the
-  roadmap entry. It belongs over the existing `status: writing` SSE events, not
-  a new pipeline: `generateFromPlan` would emit each validated slide as it
-  lands and a storyboard view would render them.
+- **Fitter units.** `measure()` never multiplies by the em size, so its width
+  and line estimates are ~5-8x pessimistic against real inches. Every layout
+  works because `fitScale` shrinks defensively. Fixing it would re-type every
+  deck — deliberately deferred; see the TRAPS entry. Future layouts must anchor
+  to fixed boxes, never compute offsets from raw `heightOf`/`lineCount`.
+- **Tier 2-4 types.** The plan's other 44 types (numbered-list, kpi-dashboard,
+  progress-bars, framework, matrix, cycle, funnel, image-grid, faq, …) follow
+  the same recipe: schema conditional block, native layout, SlideEditor
+  descriptor, catalog detail auto-derives. The family map already covers them.
+- **Deck writer image grounding** — the model emits image filenames without
+  writing the files (pre-existing open work).
+- **Chart expansion** — `scatter`, `radar`, `stacked-bar` in the existing chart
+  kind enum (small, high payoff).
+- **Cross-cutting `speaker_note`** field for all content types (plan Family O).
+- **Flow layout capacity** — six-step TTB cards still collide with the footer.
+- **Canvas slide-builder (stretch)** — see the roadmap entry.
 
 ### Gotchas
 
 Full list in `docs/TRAPS.md`. New this session:
 
-- **A supplied logo's alpha channel is not to be trusted — rebuild it from
-  RGB.** The crest shipped at ~6% alpha everywhere (RGB intact); keying that
-  keeps source alpha for saturated pixels preserves the defect. Real cutouts
-  are alpha 0; anything with content gets alpha from colour.
-- **`json_object` ≠ schema conformance.** Two traps on the cloud path: the
-  provider 400s without the word "json" in the prompt, and the output shape is
-  only "parses", not "matches the schema". Both fixed at the transport by
-  stating the schema verbatim in a prepended system message. Keep cloud schemas
-  small.
-- **The vision subagent can misread a synthetic composite** while the real
-  rendered artefact is correct — when an asset check and pixel data disagree,
-  trust the pixel data (white marks on black were pixel-confirmed) and re-check
-  against a real render.
+- **The fitter's `measure` is not true inches.** `length * advance` with no em
+  multiply makes `heightOf` wildly pessimistic. Let `fitScale` own text boxes;
+  a layout that derives a y-offset from fit arithmetic will drift onto the
+  chrome (the big-number caption hit the footer exactly this way).
+- **Inter is a wide geometric sans.** It was missing from the fitter's
+  `WIDE_SANS` set, so its real width wrapped the big-number body. Now included.
+- **Names are the grounding guard's noise source.** A bare card title or stat
+  label is not a claim; flagging every capitalized phrase absent from research
+  cries wolf. Names are only extracted from fields carrying a real figure.
+- **A missing research dir is a state, not an error.** The research endpoint
+  returns `exists: false`; the panel shows a hint, never a fetch error.
 
 ## Context to read before starting
 
-- `docs/ARCHITECTURE.md` §"The web shell", §"The cloud surface" and §"The brand
-  surface" describe the shell's new subsystems; §"The report generator" now
-  covers both extra doors.
-- `docs/ROADMAP.md` — new ticked items: "Standalone reports", "Deck-from-report",
-  "Structural chat commands", "Shell polish — rails, motion, cloud routing,
-  brand surface", and the unchecked "Canvas slide-builder (stretch)".
-- `src/ai/ops.js` — the ops layer including `duplicate_slide`.
-- `src/ai/pipeline.js` — `createReport` and `createDeckFromReport`.
-- `tools/prep-brand.mjs` — `normalizeBrand()` exported for the API.
-- `src/ai/ollama.js` — `cloudMessages` schema-hint injection and routing.
+- `docs/ARCHITECTURE.md` — new section "The grounding guard — research is the
+  contract"; the web-shell `DeckDetail` bullet covers the Research panel.
+- `docs/ROADMAP.md` — new ticked items: "Tier-1 slide-type vocabulary",
+  "Content grounding", "Research panel".
+- `src/ai/grounding.js` — the guard; pure functions tested in
+  `test/grounding.test.js`.
+- `src/layouts.js` — the six new layouts at the top of the `layouts` object.
+- `app/server/index.js` — `GET/PUT /api/decks/:slug/research`.
+- `decks/tier1-types/` — the committed demo deck for all six new types.
 
 ## End-of-session state
 
-- `config/local.yaml` (gitignored) holds the real OpenCode Go key, saved via
-  the Settings panel, plus `routing.default`. The app works with the
-  subscription out of the box on this machine. Remove it (Settings → Cloud →
-  Remove) to hand the repo back to a machine without the subscription.
-- `brand/logos/` holds the real marks (banner.jpeg, crest.png, watermark.png);
-  `brand/generated/` is the normalised output. Both gitignored.
+- Dev servers running: API `http://localhost:5174`, UI `http://localhost:5173`.
+  The `node --watch` API auto-reloads on server edits; Vite hot-reloads the UI.
+- `config/local.yaml` (gitignored) holds the OpenCode Go key and
+  `routing.default: local`. Generation tests this session passed
+  `model: deepseek-v4-flash` explicitly to route to the cloud provider.
+- `decks/tier1-types/` is the new-type demonstration deck (committed). Its
+  `out/` previews are gitignored and regenerated by `npm run render` +
+  `npm run preview`.

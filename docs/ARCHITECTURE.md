@@ -360,6 +360,29 @@ detail performs — edit, presenter assign, reorder, delete, duplicate — goes
 through the immutable ops in `app/web/src/lib/slides.js`, persists deck.yaml
 immediately, and re-renders on a short debounce.
 
+## The grounding guard — research is the contract
+
+`src/ai/grounding.js` runs after deck generation in `generateFromPlan` (and
+again on the critic's output when the critic rewrites the deck). It walks every
+slide's content, extracts the factual claims — numbers with units, years,
+proper-noun phrases — and checks each against the research text the writer was
+given. Anything it cannot find is appended to the slide's `notes` field as a
+`[grounding]` line and surfaced in the render result's `problems[]`. It never
+edits a number to make the check pass; flagging is the whole job.
+
+The guard is deliberately conservative about what counts as a claim. Headlines
+and standfirsts are the rhetorical frame, so their noun phrases are skipped
+(their numbers still count). Names are only extracted from fields that carry a
+real figure — a name tied to a number is a claim ("Inflation Reduction Act
+unlocked 180 GW"), a bare card title or stat label ("Early Innovator") is not.
+Without any research text the pass stays silent: flagging every number against
+nothing would be noise, not honesty.
+
+Because the research the writer sees is `research/notes.md`, and that file is
+now user-editable from the deck detail's Research panel, the grounding contract
+is: the notes are the ground truth, the user owns them, and the model is
+flagged when it leaves them.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
@@ -390,9 +413,14 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   and `maxSlides`. A "Recent decks" carousel reuses the deck list.
 - **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
   grid with lightbox/inline-editor/presenter ops, a per-slide "make it punchier"
-  bolt (a scoped chat turn), and the Report panel: generate when no `report.yaml`
-  exists, otherwise render `.docx` and download it. `lib/time.js` supplies the
-  relative timestamps used everywhere.
+  bolt (a scoped chat turn), the Report panel (generate when no `report.yaml`
+  exists, otherwise render `.docx` and download it), and the Research panel
+  beside it — a read-only view of `research/notes.md` with an Edit mode that
+  saves back, and `sources.json` as a collapsible list. The research surface is
+  the trust layer: the user can see and correct what the model writes from,
+  and an edit feeds the next generation because the writer reads `notes.md`
+  fresh at write time. `lib/time.js` supplies the relative timestamps used
+  everywhere.
 - **The chat rail only exists on the deck view.** It edits `deck.yaml`, so with
   no deck open it would be dead weight; Home, Identity, Themes, the wizard and
   the outline review are full-width. The rail stays mounted and animates its
