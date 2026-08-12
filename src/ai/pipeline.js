@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, readdir, access } from "node:fs/promises";
+import { mkdir, readFile, writeFile, readdir, access, copyFile, cp } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
@@ -253,6 +253,7 @@ export async function createDeckFromReport({
 }
 
 /** The report's sections as a planning brief — title plus each section's prose. */
+/** The report's sections as a planning brief — title plus each section's prose. */
 function reportBrief(report) {
   const content = report?.content ?? {};
   const lines = [report?.title ?? ""];
@@ -360,10 +361,38 @@ export async function generateFromPlan({
   };
 }
 
+/**
+ * Clone a deck under a new slug — the "iterate without fear" affordance. Every
+ * content file (deck, plan, meta, report, research) copies across so the clone
+ * is a fully independent deck; the meta's slug and timestamp are re-stamped so
+ * the copy shows as its own entry.
+ */
+export async function cloneDeck({ slug }) {
+  const src = path.join(DECKS, slug);
+  const dest = await uniqueSlug(`${slug}-copy`);
+  const ddir = path.join(DECKS, dest);
+  await mkdir(ddir, { recursive: true });
+  for (const f of ["deck.yaml", "plan.yaml", "meta.yaml", "report.yaml"]) {
+    try {
+      await copyFile(path.join(src, f), path.join(ddir, f));
+    } catch { /* optional file */ }
+  }
+  try {
+    await cp(path.join(src, "research"), path.join(ddir, "research"), { recursive: true });
+  } catch { /* no research pass */ }
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(ddir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* copy may predate meta */ }
+  meta.slug = dest;
+  meta.updatedAt = new Date().toISOString();
+  await writeFile(path.join(ddir, "meta.yaml"), YAML.stringify(meta), "utf8");
+  return { slug: dest };
+}
+
 /* --------------------------------------------------------------------- CLI */
 
-const USAGE = `
-Usage:
+const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
                         [--research] [--max-slides <n>] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]

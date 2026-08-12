@@ -208,6 +208,7 @@ function parseArgs(argv) {
     else if (a === "--style") args.style = argv[++i];
     else if (a === "--mode") args.mode = argv[++i];
     else if (a === "--out") args.out = argv[++i];
+    else if (a === "--format") args.format = argv[++i];
     else rest.push(a);
   }
   args.deckFile = rest[0];
@@ -217,7 +218,7 @@ function parseArgs(argv) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = parseArgs(process.argv.slice(2));
   if (!args.deckFile) {
-    console.error("usage: node src/render.js <deck.yaml> [--theme name] [--style name] [--mode light|dark] [--out file.pptx]");
+    console.error("usage: node src/render.js <deck.yaml> [--theme name] [--style name] [--mode light|dark] [--out file.pptx] [--format pdf|markdown]");
     process.exit(2);
   }
   try {
@@ -228,12 +229,20 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
 
   try {
-    const r = await render(args);
-    console.log(`  ${r.slides} slides · ${r.theme} · ${path.relative(ROOT, r.outFile)}`);
-    if (r.problems.length) {
-      console.error(`\n  ${r.problems.length} problem(s):`);
-      for (const p of r.problems) console.error(`    - ${p}`);
-      process.exitCode = 1;
+    // --format pdf|markdown hands off to the export module: the PDF is the
+    // rendered deck through LibreOffice, the markdown a plain-text extraction.
+    if (args.format) {
+      const { exportDeck } = await import("./export.js");
+      const r = await exportDeck({ deckFile: args.deckFile, format: args.format, themeName: args.themeName });
+      console.log(`  ${r.format} · ${path.relative(ROOT, r.outFile)}`);
+    } else {
+      const r = await render(args);
+      console.log(`  ${r.slides} slides · ${r.theme} · ${path.relative(ROOT, r.outFile)}`);
+      if (r.problems.length) {
+        console.error(`\n  ${r.problems.length} problem(s):`);
+        for (const p of r.problems) console.error(`    - ${p}`);
+        process.exitCode = 1;
+      }
     }
   } catch (err) {
     console.error(err.message);

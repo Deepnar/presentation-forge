@@ -259,8 +259,15 @@ export async function generateDeck({
   for (const [i, spec] of plan.slides.entries()) {
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
     try {
-      const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
-      const applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
+      // Retry once with the catalog re-stated explicitly before giving up — a
+      // first failure is often the grammar drifting, and a second pass with the
+      // contract spelled out recovers most of them.
+      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+      let applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
+      if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
+        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+        applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
+      }
       if (!applied.ok) {
         skipped.push({ index: i, type: spec.type, reason: applied.errors.join("; ") });
         continue;
@@ -269,6 +276,15 @@ export async function generateDeck({
       // poisoning the deck and failing everything at the end.
       const { ok, errors } = await validateDeck(applied.deck);
       if (!ok) {
+        // Second failure: write a minimal placeholder so the deck stays whole —
+        // a degraded slide beats a missing one, and the purpose names the beat.
+        const placeholder = { ...spec, type: "bullets", headline: spec.purpose.slice(0, 60), bullets: [spec.purpose] };
+        const pApplied = applyOps(deck, [{ op: "append_slide", slide: placeholder }]);
+        if (pApplied.ok && (await validateDeck(pApplied.deck)).ok) {
+          deck = pApplied.deck;
+          skipped.push({ index: i, type: spec.type, reason: `${errors.slice(0, 2).join("; ")} — placeholder written` });
+          continue;
+        }
         skipped.push({ index: i, type: spec.type, reason: errors.slice(0, 2).join("; ") });
         continue;
       }

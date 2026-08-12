@@ -209,8 +209,47 @@ app.put("/api/decks/:slug", wrap(async (req, res) => {
 
   const dir = path.join(DECKS, req.params.slug);
   await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(deck), "utf8");
+
+  // Version history: snapshot the current deck.yaml before overwriting, so a
+  // destructive chat turn or an accidental delete has a timestamped escape
+  // hatch. The first save of a deck has nothing to back up.
+  const deckFile = path.join(dir, "deck.yaml");
+  try {
+    const cur = await readFile(deckFile, "utf8");
+    const vdir = path.join(dir, "backups");
+    await mkdir(vdir, { recursive: true });
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    await writeFile(path.join(vdir, `deck.${stamp}.yaml`), cur, "utf8");
+  } catch { /* no deck.yaml yet */ }
+
+  await writeFile(deckFile, YAML.stringify(deck), "utf8");
   if (meta) await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+  ok(res, {});
+}));
+
+/** The deck's version history — timestamped backups of deck.yaml, newest first. */
+app.get("/api/decks/:slug/versions", wrap(async (req, res) => {
+  const dir = path.join(DECKS, req.params.slug, "backups");
+  let versions = [];
+  try {
+    const names = (await readdir(dir)).filter((f) => /^deck\.\d{4}-\d{2}-\d{2}T.+\.yaml$/.test(f));
+    versions = await Promise.all(names.map(async (f) => {
+      const s = await stat(path.join(dir, f));
+      return { file: f, at: s.mtime.toISOString() };
+    }));
+    versions.sort((a, b) => b.at.localeCompare(a.at));
+  } catch { /* no backups yet */ }
+  ok(res, { versions });
+}));
+
+/** Restore a versioned deck.yaml back over the working copy. */
+app.post("/api/decks/:slug/versions/:file/restore", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "backups", path.basename(req.params.file));
+  if (!/^deck\.\d{4}-\d{2}-\d{2}T.+\.yaml$/.test(path.basename(req.params.file))) {
+    return fail(res, 400, "unrecognised version file");
+  }
+  const data = await readFile(file, "utf8");
+  await writeFile(path.join(DECKS, req.params.slug, "deck.yaml"), data, "utf8");
   ok(res, {});
 }));
 
@@ -225,7 +264,13 @@ app.post("/api/decks/:slug/render", wrap(async (req, res) => {
   const deckFile = path.join(dir, "deck.yaml");
   const themeName = req.body?.theme;
   const style = req.body?.style;
-  const mode = req.body?.mode ?? "light";
+  // The deck remembers its mode (F17): meta.yaml's `mode` is the default when
+  // the request does not override it, so a dark deck stays dark across reloads.
+  let metaMode = null;
+  try {
+    metaMode = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8"))?.mode ?? null;
+  } catch { /* optional */ }
+  const mode = req.body?.mode ?? metaMode ?? "light";
 
   const r = await render({ deckFile, themeName, style, mode });
   const p = await preview(r.outFile, { dpi: req.body?.dpi ?? 110 });
@@ -267,6 +312,84 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
   } catch {
     res.status(404).end();
   }
+}));
+
+/**
+ * Export a deck as PDF or Markdown. PDF re-renders through the LibreOffice
+ * converter; Markdown extracts the content from deck.yaml. Both land in
+ * decks/<slug>/out/ so the download route serves them.
+ */
+app.post("/api/decks/:slug/export", wrap(async (req, res) => {
+  const { format = "pdf", theme } = req.body ?? {};
+  const { exportDeck } = await import("../../src/export.js");
+  const deckFile = path.join(DECKS, req.params.slug, "deck.yaml");
+  const r = await exportDeck({ deckFile, format, themeName: theme });
+  ok(res, {
+    format: r.format,
+    file: `/api/decks/${req.params.slug}/download/${path.basename(r.outFile)}`,
+  });
+}));
+
+/** Clone a deck to a fresh slug — try a new theme or regenerate without fear. */
+app.post("/api/decks/:slug/clone", wrap(async (req, res) => {
+  const { cloneDeck } = await import("../../src/ai/pipeline.js");
+  const r = await cloneDeck({ slug: req.params.slug });
+  ok(res, r);
+}));
+
+/**
+ * The sharing bundle: a zip of everything another user needs to unpack the deck
+ * into their own decks/ folder — content files plus the rendered pptx.
+ */
+app.post("/api/decks/:slug/bundle", wrap(async (req, res) => {
+  const JSZip = (await import("jszip")).default;
+  const zip = new JSZip();
+  const dir = path.join(DECKS, req.params.slug);
+  const include = ["deck.yaml", "meta.yaml", "plan.yaml", "report.yaml", "research", "out"];
+  for (const name of include) {
+    const src = path.join(dir, name);
+    let st;
+    try {
+      st = await stat(src);
+    } catch { continue; }
+    if (st.isDirectory()) {
+      for (const f of await readdir(src, { recursive: true })) {
+        try {
+          zip.file(path.posix.join(req.params.slug, name, f), await readFile(path.join(src, f)));
+        } catch { /* unreadable file — skip */ }
+      }
+    } else {
+      zip.file(path.posix.join(req.params.slug, name), await readFile(src));
+    }
+  }
+  const buf = await zip.generateAsync({ type: "nodebuffer" });
+  res.setHeader("Content-Type", "application/zip");
+  res.setHeader("Content-Disposition", `attachment; filename="${req.params.slug}.zip"`);
+  res.send(buf);
+}));
+
+/**
+ * Full-text content search across deck.yaml files — the deck list's client-side
+ * title filter stops being enough once the count grows past a screen.
+ */
+app.post("/api/decks/search", wrap(async (req, res) => {
+  const q = String(req.body?.q ?? "").trim().toLowerCase();
+  if (!q) return ok(res, { hits: [] });
+  let entries = [];
+  try {
+    entries = await readdir(DECKS, { withFileTypes: true });
+  } catch {
+    return ok(res, { hits: [] });
+  }
+  const hits = [];
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    try {
+      const text = await readFile(path.join(DECKS, e.name, "deck.yaml"), "utf8");
+      if (text.toLowerCase().includes(q)) hits.push(e.name);
+    } catch { /* no deck.yaml */ }
+  }
+  ok(res, { hits });
 }));
 
 /* ---------------------------------------------------------------- reports */
