@@ -16,6 +16,7 @@
 const OP_NAMES = [
   "set_meta", "append_slide", "insert_slide",
   "replace_slide", "update_slide", "delete_slide", "move_slide",
+  "duplicate_slide",
 ];
 
 /**
@@ -213,6 +214,9 @@ export function applyOp(deck, op) {
 
     case "delete_slide": {
       requireIndex(deck, op.index, "delete_slide");
+      if (deck.slides.length <= 1) {
+        throw new OpError("delete_slide refuses to empty the deck — keep at least one slide");
+      }
       const [gone] = deck.slides.splice(op.index, 1);
       return `- slide ${op.index + 1} (${gone.type})`;
     }
@@ -225,6 +229,12 @@ export function applyOp(deck, op) {
       const dest = op.to > op.index ? op.to - 1 : op.to;
       deck.slides.splice(dest, 0, moved);
       return `↕ slide ${op.index + 1} → ${dest + 1} (${moved.type})`;
+    }
+
+    case "duplicate_slide": {
+      requireIndex(deck, op.index, "duplicate_slide");
+      deck.slides.splice(op.index + 1, 0, clone(deck.slides[op.index]));
+      return `⧉ slide ${op.index + 1} duplicated → ${op.index + 2} (${deck.slides[op.index].type})`;
     }
 
     default:
