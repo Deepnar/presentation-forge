@@ -831,23 +831,34 @@ export const layouts = {
     const gut = 0.42;
 
     if (ttb) {
-      const sh = (box.bottom - y - gut * (n - 1)) / n;
+      // Six narrow TTB cards once collided with the footer. A vertical card
+      // needs ~0.75in for a readable title + body; with the heading and chrome
+      // footer fixed, only up to four cards get that. At five or more the body
+      // drops and the row renders title-only — a tiny unreadable body is worse
+      // than none, and the card count is what the model was told it could use.
+      const crowded = n >= 5;
+      const gutT = crowded ? 0.3 : gut;
+      const sh = (box.bottom - y - gutT * (n - 1)) / n;
+      const titleScale = fitScaleAll(data.steps.map((s) => s.title), box.w - 0.6, sh - (crowded ? 0.08 : 0.4), theme.type.subhead, { min: 0.55 });
+      const bodyScale = fitScaleAll(
+        data.steps.map((s) => s.body).filter(Boolean), box.w - 0.6, sh - 0.62, theme.type.body, { min: 0.5 },
+      );
       data.steps.forEach((s, i) => {
-        const sy = y + i * (sh + gut);
+        const sy = y + i * (sh + gutT);
         card(slide, theme, { x: box.x, y: sy, w: box.w, h: sh });
         slide.addText(s.title, {
-          x: box.x + 0.3, y: sy + 0.1, w: box.w - 0.6, h: 0.4,
-          ...textStyle(theme, "subhead", { bold: true }), valign: "middle",
+          x: box.x + 0.3, y: sy + 0.06, w: box.w - 0.6, h: sh - 0.12,
+          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }), valign: "middle",
         });
-        if (s.body) {
+        if (s.body && !crowded) {
           slide.addText(s.body, {
-            x: box.x + 0.3, y: sy + 0.48, w: box.w - 0.6, h: sh - 0.56,
-            ...textStyle(theme, "body", { scale: 0.9, color: theme.palette.ink_muted }), valign: "top",
+            x: box.x + 0.3, y: sy + 0.44, w: box.w - 0.6, h: Math.max(0.3, sh - 0.56),
+            ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }), valign: "top",
           });
         }
         if (i < n - 1) {
           slide.addShape("triangle", {
-            x: box.x + box.w / 2 - 0.11, y: sy + sh + 0.08, w: 0.22, h: 0.22,
+            x: box.x + box.w / 2 - 0.1, y: sy + sh + gutT / 2 - 0.1, w: 0.2, h: 0.2,
             fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 180,
           });
         }
