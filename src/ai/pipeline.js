@@ -2,8 +2,8 @@ import { mkdir, readFile, writeFile, readdir, access, copyFile, cp } from "node:
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
-import { researchQuery, fetchPage } from "../search.js";
-import { excerptResearch } from "./research.js";
+import { fetchPage } from "../search.js";
+import { excerptResearch, deepResearch } from "./research.js";
 import { planDeck, generateDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
 import { groundDeck } from "./grounding.js";
@@ -51,15 +51,17 @@ export async function uniqueSlug(base) {
 
 /**
  * One research pass: explicit sources are fetched directly, otherwise the brief
- * drives a metasearch query. Returns text for the model plus a sources list.
+ * drives a deep metasearch pass — several subtopic queries plus follow-ups on
+ * the richest sources, so a deck and its report draw from more than one
+ * search's top five. Returns text for the model plus a sources list.
  */
-export async function runResearch(brief, sources = []) {
+export async function runResearch(brief, sources = [], onProgress) {
   let out = [];
   if (sources.length) {
     const pages = await Promise.all(sources.map((url) => fetchPage(url)));
     out = pages.filter((p) => p.ok);
   } else if (brief?.trim()) {
-    const r = await researchQuery(brief.trim());
+    const r = await deepResearch(brief.trim(), { onProgress });
     out = r.pages;
   }
   return {
@@ -111,7 +113,7 @@ export async function createDeck({
   // generation with "no research/notes.md" for a reason nothing explains.
   if (research || sources.length) {
     onProgress?.({ status: "researching" });
-    const r = await runResearch(brief, sources);
+    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }));
     if (r.text) {
       const rdir = path.join(dir, "research");
       await mkdir(rdir, { recursive: true });
@@ -174,7 +176,7 @@ export async function createReport({
   // contradiction. Sources ground the pass when given, otherwise the brief
   // drives a metasearch.
   onProgress?.({ status: "researching" });
-  const r = await runResearch(brief, sources);
+  const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }));
   if (!r.text) throw new Error("Research produced nothing to write the report from.");
   const rdir = path.join(dir, "research");
   await mkdir(rdir, { recursive: true });
