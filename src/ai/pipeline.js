@@ -12,7 +12,7 @@ import { loadIdentity, deepMerge } from "./identity.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
-import { renderReport } from "../report.js";
+import { renderReport, REPORT_SECTIONS } from "../report.js";
 
 /**
  * Orchestration shared by the CLI and the API: creating a deck from a brief and
@@ -135,6 +135,139 @@ export async function createDeck({
 }
 
 /**
+ * Standalone report — brief → research → report.yaml → .docx with NO deck.
+ * The reverse of the deck pipeline: a report is the graded artefact, and there
+ * is no outline gate because the fixed section order (the graded constant) is
+ * the structure. Research is still shared: decks/<slug>/research/ holds the
+ * notes, so a companion deck can later be generated from the same material.
+ * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
+ */
+export async function createReport({
+  brief, sources = [], research = false, depth = "full",
+  model, identity, onProgress, signal,
+}) {
+  if (!brief?.trim()) throw new Error("brief is required");
+
+  const slug = await uniqueSlug(brief);
+  const dir = path.join(DECKS, slug);
+  await mkdir(dir, { recursive: true });
+
+  const snapshot = identity && typeof identity === "object"
+    ? { academic: identity.academic ?? {}, guide: identity.guide ?? {}, team: identity.team ?? {} }
+    : {};
+
+  const meta = {
+    slug, brief, sources, research, depth,
+    status: "report",
+    createdAt: new Date().toISOString(),
+    ...snapshot,
+  };
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
+  // A standalone report always runs a research pass: the report generator
+  // writes from research/notes.md, so a report with nothing to write from is a
+  // contradiction. Sources ground the pass when given, otherwise the brief
+  // drives a metasearch.
+  onProgress?.({ status: "researching" });
+  const r = await runResearch(brief, sources);
+  if (!r.text) throw new Error("Research produced nothing to write the report from.");
+  const rdir = path.join(dir, "research");
+  await mkdir(rdir, { recursive: true });
+  await writeFile(path.join(rdir, "notes.md"), r.text, "utf8");
+  await writeFile(path.join(rdir, "sources.json"), JSON.stringify(r.sources, null, 2), "utf8");
+
+  // No plan.yaml for a standalone report — requirePlan: false lets the report
+  // generator derive its structure from the brief and the fixed section order.
+  const g = await generateReport({
+    slug, depth, model, signal, onProgress, requirePlan: false,
+  });
+
+  // Render straight through so the .docx exists the moment the brief resolves.
+  onProgress?.({ status: "rendering" });
+  const doc = await renderReport({ reportFile: g.reportFile });
+
+  meta.status = "ready";
+  meta.updatedAt = new Date().toISOString();
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
+  return {
+    slug,
+    sections: g.sections,
+    skipped: g.skipped,
+    reportFile: g.reportFile,
+    docx: doc.outFile,
+  };
+}
+
+/**
+ * Deck-from-report — the reverse of deck → report. Given an existing
+ * decks/<slug>/report.yaml (and its shared research), plan a companion deck
+ * outline from the report's own sections, so the deck and report agree by
+ * construction. The outline gate still applies: nothing renders until a human
+ * approves, then generateFromPlan writes deck.yaml.
+ */
+export async function createDeckFromReport({
+  slug, theme = null, model, identity, onProgress, signal,
+}) {
+  const dir = path.join(DECKS, slug);
+  const reportFile = path.join(dir, "report.yaml");
+  let report;
+  try {
+    report = YAML.parse(await readFile(reportFile, "utf8"));
+  } catch {
+    throw new Error(`no decks/${slug}/report.yaml — generate report content first`);
+  }
+
+  let researchText = "";
+  try {
+    researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
+  } catch { /* report may have no research pass */ }
+
+  const identityObj = identity ?? (await loadIdentity(dir));
+  const themeObj = theme ? await loadTheme(theme) : undefined;
+
+  // The report IS the brief: its title and the section content describe the
+  // deck's structure better than the original one-liner, so feed it wholesale.
+  const brief = reportBrief(report);
+
+  onProgress?.({ status: "planning" });
+  const { plan, stats } = await planDeck({
+    brief, theme: themeObj, identity: identityObj,
+    research: excerptResearch(researchText), model, signal,
+  });
+
+  if (!plan.slides?.length) throw new Error("The model produced no outline.");
+
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* no meta yet */ }
+  meta.status = "planned";
+  meta.brief = report.title ?? meta.brief ?? "";
+  meta.updatedAt = new Date().toISOString();
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+  await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(plan), "utf8");
+
+  return { slug, plan, stats };
+}
+
+/** The report's sections as a planning brief — title plus each section's prose. */
+function reportBrief(report) {
+  const content = report?.content ?? {};
+  const lines = [report?.title ?? ""];
+  if (report?.subtitle) lines.push(report.subtitle);
+  for (const name of REPORT_SECTIONS) {
+    const sec = content[name];
+    if (!sec || typeof sec !== "object") continue;
+    const text = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])]
+      .map((p) => String(p).trim()).filter(Boolean).join(" ");
+    const excerpt = text.slice(0, 600);
+    if (excerpt) lines.push(`\n${name}: ${excerpt}${text.length > 600 ? "…" : ""}`);
+  }
+  return lines.join("\n");
+}
+
+/**
  * Stage 2 — approved outline → deck. Writes deck.yaml, then renders and
  * rasterises so the result is inspectable immediately, not after a human opens
  * PowerPoint. With `critic`, the rendered slides are run through the vision
@@ -225,6 +358,9 @@ Usage:
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
   node src/ai/pipeline.js report <slug> [--generate [--depth full|brief]]
                         [--donor <path>] [--no-toc] [--no-render]
+  node src/ai/pipeline.js report-new "<brief>" [--depth full|brief]
+                        [--sources <url> ...] [--model <id>]
+  node src/ai/pipeline.js deck-from-report <slug> [--theme <name>] [--model <id>]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
   generate  approved outline → deck.yaml, rendered and rasterised
@@ -241,11 +377,17 @@ Usage:
                         in meta.yaml for later runs without --depth)
             --no-render  generate report.yaml only, skip drawing the .docx
             --no-toc  skip the table of contents (and the LibreOffice pass)
+  report-new  standalone report — brief → research → report.yaml → .docx,
+              with NO deck. The reverse flow's other door.
+  deck-from-report  plan a companion deck from an existing decks/<slug>/report.yaml
+              (and its shared research) → decks/<slug>/plan.yaml for the outline gate
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
   node src/ai/pipeline.js generate raytracing-ai --critic
   node src/ai/pipeline.js chat raytracing-ai "Keep every slide under 12 words per line."
+  node src/ai/pipeline.js report-new "Green hydrogen in 2026" --depth full
+  node src/ai/pipeline.js deck-from-report green-hydrogen-production-how-electrolysis-t-2
 `;
 
 function parseArgs(argv) {
@@ -353,6 +495,21 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const r = await renderReport({ reportFile, donor: opts.donor, toc: opts.toc !== false });
       process.stdout.write(`report decks/${opts.slug}/out/report.docx — ${r.sections.join(" → ")}\n`);
       for (const p of r.problems) process.stderr.write(`  ! ${p}\n`);
+    } else if (cmd === "report-new") {
+      if (!opts.brief) { console.error(USAGE); process.exit(2); }
+      const r = await createReport({
+        brief: opts.brief, sources: opts.sources, research: true,
+        depth: opts.depth ?? "full", model: opts.model, onProgress: progress,
+      });
+      process.stdout.write(`report decks/${r.slug}/out/report.docx — ${r.sections.join(" → ")} (standalone)\n`);
+      for (const s of r.skipped) process.stdout.write(`  skipped [${s.section}]: ${s.reason}\n`);
+    } else if (cmd === "deck-from-report") {
+      if (!opts.slug) { console.error(USAGE); process.exit(2); }
+      const r = await createDeckFromReport({
+        slug: opts.slug, theme: opts.theme, model: opts.model, onProgress: progress,
+      });
+      process.stdout.write(`planned decks/${opts.slug}/plan.yaml — ${r.plan.slides.length} slides (from report)\n`);
+      process.stdout.write(YAML.stringify(r.plan));
     } else {
       console.error(USAGE);
       process.exit(2);

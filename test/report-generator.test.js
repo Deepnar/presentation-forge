@@ -197,6 +197,32 @@ test("resolveReportInputs errors clearly when the outline gate was skipped", asy
   await assert.rejects(resolveReportInputs(dir), /plan\.yaml.*outline gate/);
 });
 
+test("resolveReportInputs with requirePlan:false needs no plan.yaml — the standalone report", async (t) => {
+  const dir = await fixtureDir(t);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({ brief: "Standalone topic" }));
+  await mkdir(path.join(dir, "research"), { recursive: true });
+  await writeFile(path.join(dir, "research", "notes.md"), "## Source\nFacts for the report.");
+  const { meta, plan, research } = await resolveReportInputs(dir, { requirePlan: false });
+  assert.equal(meta.brief, "Standalone topic");
+  assert.deepEqual(plan, { title: "", sections: [] });
+  assert.match(research, /Facts for the report/);
+});
+
+test("generateReport with requirePlan:false builds a standalone report with no deck", async (t) => {
+  const dir = await fixtureDir(t);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({ brief: "Standalone topic" }));
+  await mkdir(path.join(dir, "research"), { recursive: true });
+  await writeFile(path.join(dir, "research", "notes.md"), "## Source\nFacts for the report.");
+
+  const r = await generateReport({ dir, depth: "full", chat: fakeChat([]), requirePlan: false });
+  assert.ok(r.sections.length >= 3);
+  const onDisk = YAML.parse(await readFile(r.reportFile, "utf8"));
+  const { ok } = await validateReport(onDisk);
+  assert.equal(ok, true);
+});
+
 /* ------------------------------------------------------- orchestration */
 
 test("generateReport: full depth writes four paragraphs and a table, from shared research", async (t) => {

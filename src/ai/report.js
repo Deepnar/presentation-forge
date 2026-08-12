@@ -225,10 +225,12 @@ export function validateSection(name, depth, data) {
  * Everything the report generator draws on, resolved from the deck directory:
  * the brief and identity (meta.yaml), the approved outline (plan.yaml) and —
  * the point of shared research — the same notes the deck was written from
- * (research/notes.md). Missing plan or research is a hard error: the report is
- * only ever generated after the outline gate and from the research pass.
+ * (research/notes.md). Missing plan or research is a hard error in the deck→
+ * report direction: the report is only ever generated after the outline gate
+ * and from the research pass. With `requirePlan: false` (standalone report —
+ * no deck at all) the plan slot is left empty and the brief carries the title.
  */
-export async function resolveReportInputs(dir) {
+export async function resolveReportInputs(dir, { requirePlan = true } = {}) {
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
@@ -238,9 +240,12 @@ export async function resolveReportInputs(dir) {
   try {
     plan = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8"));
   } catch {
-    throw new Error(
-      `no decks/${path.basename(dir)}/plan.yaml — approve an outline first (forge new, then the outline gate)`,
-    );
+    if (requirePlan) {
+      throw new Error(
+        `no decks/${path.basename(dir)}/plan.yaml — approve an outline first (forge new, then the outline gate)`,
+      );
+    }
+    plan = { title: "", sections: [] };
   }
 
   let research = "";
@@ -399,13 +404,14 @@ export async function generateReport({
   signal,
   onProgress,
   chat = chatJSON,
+  requirePlan = true,
 }) {
   if (!REPORT_DEPTHS.includes(depth)) {
     throw new Error(`report depth must be one of ${REPORT_DEPTHS.join(", ")}, got "${depth}"`);
   }
 
   const deckDir = path.resolve(dir ?? path.join(DECKS, slug ?? ""));
-  const { meta, plan, research, identity } = await resolveReportInputs(deckDir);
+  const { meta, plan, research, identity } = await resolveReportInputs(deckDir, { requirePlan });
 
   onProgress?.({ status: "report_planning" });
   const planned = await planReport({
