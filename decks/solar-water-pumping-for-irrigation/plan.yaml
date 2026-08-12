@@ -1,0 +1,86 @@
+title: Solar-Powered Water Pumping for Smallholder Irrigation in Karshi
+subtitle: Design, Feasibility, and Implementation for a Sustainable Crop
+  Production Future
+sections:
+  - Introduction
+  - System Design
+  - Feasibility & Implementation
+  - Conclusion & Future
+slides:
+  - type: title
+    section: 0
+    purpose: Set the stage for the presentation by introducing the proposed
+      solar-powered irrigation system for Karshi, Abuja.
+  - type: section
+    section: 0
+    purpose: Open the Introduction section and transition to the challenges facing
+      smallholder farmers in Karshi.
+  - type: bullets
+    section: 0
+    purpose: "Highlight the current irrigation challenges: reliance on rain-fed
+      agriculture, manual or fossil-fuel pumping, and financial/physical
+      burden."
+  - type: stats
+    section: 0
+    purpose: Quantify the need for solar irrigation in Karshi, showing key community
+      and farming statistics.
+  - type: section
+    section: 1
+    purpose: "Shift to the core of the presentation: the design methodology and
+      component selection."
+  - type: flow
+    section: 1
+    purpose: Walk through the step-by-step design methodology from crop water demand
+      to PV array sizing.
+  - type: stats
+    section: 1
+    purpose: "Present the critical design parameters: daily water demand, pump flow
+      rate, total dynamic head, and required power."
+  - type: table
+    section: 1
+    purpose: Summarize the technical specifications of the chosen pump, solar
+      panels, and water tank.
+  - type: chart
+    section: 1
+    purpose: Demonstrate that the 330 W PV array comfortably exceeds the 258 W pump
+      power requirement.
+  - type: callout
+    section: 1
+    purpose: Explain why three 110 W panels in parallel satisfy the pump's voltage
+      and current constraints.
+  - type: section
+    section: 2
+    purpose: Open the feasibility and implementation section, focusing on economic
+      and practical viability.
+  - type: compare
+    section: 2
+    purpose: Compare solar vs. diesel pumping systems on cost, maintenance,
+      reliability, and environmental impact.
+  - type: cards
+    section: 2
+    purpose: "Showcase the key benefits of the solar system for Karshi farmers:
+      water access, cost savings, emissions reduction, and livelihoods."
+  - type: timeline
+    section: 2
+    purpose: Outline the pilot implementation roadmap from community engagement to
+      scaling.
+  - type: quote
+    section: 2
+    purpose: Emphasize the importance of farmer cooperation and community investment
+      as a recommendation.
+  - type: section
+    section: 3
+    purpose: Bring the presentation to a close with key conclusions and future
+      research directions.
+  - type: bullets
+    section: 3
+    purpose: "Summarize the main conclusions: the system meets water demand, is
+      technically feasible, and offers environmental and economic benefits."
+  - type: timeline
+    section: 3
+    purpose: "Outline future work: pilot deployment, economic comparison with
+      diesel, and nationwide scaling."
+  - type: references
+    section: 3
+    purpose: Cite the academic sources and industry reviews that informed the design
+      and feasibility study.

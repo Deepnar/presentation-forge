@@ -1,0 +1,115 @@
+title: Design and Feasibility of a Solar-Powered Water Pumping System for
+  Smallholder Irrigation in Karshi, Abuja, Nigeria
+subtitle: A Sustainable Approach to Enhancing Crop Production and Reducing
+  Fossil Fuel Dependence
+content:
+  Abstract:
+    paragraphs:
+      - This study designed a solar-powered water pumping system for smallholder
+        irrigation in Karshi, Abuja, based on crop water demand and
+        site-specific insolation data.
+      - The system was sized to supply 10,000 litres per day for a one-hectare
+        field, using a pump with a flow rate of 2.4 m3/h and a total dynamic
+        head of 14.2 m.
+      - Pump performance analysis indicated a required motor power of
+        approximately 258 W, which is met by a 330 W photovoltaic array of three
+        parallel-connected 110 W panels.
+      - The design confirms the technical feasibility of solar-powered
+        irrigation for smallholder farms in Karshi, offering a reliable
+        alternative to fossil-fuel pumping.
+  Acknowledgement:
+    paragraphs:
+      - The authors would like to express their sincere gratitude to the farmers
+        of Karshi, Abuja, for generously sharing their invaluable insights into
+        local irrigation practices, which formed the foundation of this study.
+        We are also deeply thankful to Mrs. Ifunanya Grace Anayochukwu of the
+        Federal Capital Development Authority (FCDA) for her unwavering
+        assistance and technical guidance throughout the course of this project.
+        Additionally, we acknowledge the institutional support and the use of
+        published research and technical sources that enriched the design and
+        feasibility analysis presented in this report.
+  Introduction:
+    paragraphs:
+      - Irrigation is vital for food security, yet smallholder farmers in
+        Karshi, Abuja, face significant energy access challenges for water
+        pumping.
+      - Most farmers in Karshi rely on rain-fed agriculture and, during the dry
+        season, resort to manual or fossil-fuel-powered pumping, which imposes
+        financial and physical burdens.
+      - Solar-powered water pumping systems offer a sustainable alternative,
+        being cost-effective, environmentally friendly, and low-maintenance,
+        especially suitable for areas with unreliable grid power.
+      - This study aims to design an efficient solar-powered water pumping
+        system for smallholder irrigation in Karshi, based on site-specific crop
+        water demand, insolation, and pump performance data.
+  Theoretical Background:
+    paragraphs:
+      - The design of a solar-powered water pumping system hinges on matching
+        the photovoltaic array to the pump's hydraulic and electrical
+        requirements.
+      - Flow rate is calculated by dividing the daily crop water demand by the
+        peak sun hours of the design month, as demonstrated by the Karshi case
+        where 10,000 L/day and 4.22 h yielded a pump flow rate of 2.4 m³/h.
+      - Total dynamic head combines vertical lift, pressure head, and friction
+        losses; in the Karshi design friction loss was computed from pipe length
+        and diameter, giving a TDH of 14.2 m.
+      - The PV array must be oversized to account for panel losses, and the
+        chosen configuration of three 110 W panels in parallel supplied 330 W to
+        safely operate the 258 W pump within its voltage and current limits.
+  Application:
+    paragraphs:
+      - The proposed system applies the theoretical solar water pumping design
+        to Karshi by targeting a daily irrigation demand of 10,000 liters for a
+        one-hectare field.
+      - A daily demand of 10,000 liters was derived from crop water
+        requirements, with tomatoes identified as the design crop due to their
+        highest demand of 9 m³ per day every third day.
+      - The Lorentz PS150 C-SJ5-8 submersible pump was selected to deliver 2.4
+        m³/h at a total dynamic head of 14.2 meters, requiring approximately 258
+        W of power.
+      - The system layout pairs this pump with three 110 W SunPower panels wired
+        in parallel, producing 18.8 V and 17.7 A to stay within pump limits, and
+        stores water in a 10 m³ elevated tank for gravity-fed drip irrigation.
+  Future Scope:
+    paragraphs:
+      - Future work should commence with a pilot deployment of the proposed
+        solar water pumping system in Karshi, as the study explicitly recommends
+        a pilot run to validate performance before scaling up.
+      - A rigorous economic comparison between the solar and diesel pumping
+        options is required, because the research notes identify the need for
+        further study on their relative viability in rural Karshi communities.
+      - If the pilot proves successful, the system can be scaled to other
+        Nigerian regions, supported by the report's expectation that successful
+        implementation will create a replicable model nationwide.
+      - Facilitating farmer cooperatives for joint investment and knowledge
+        exchange is advisable, as the recommendations emphasize that collective
+        action allows cost and risk sharing and fosters learning.
+  Conclusion:
+    paragraphs:
+      - The proposed 330 W solar-powered pumping system conclusively satisfies
+        the 10,000 L/day irrigation demand of a one-hectare Karshi farm,
+        offering a sustainable and economically viable alternative to
+        fossil-fuel pumps.
+      - The pump, selected for a flow rate of 2.4 m3/h at a 14.2 m total dynamic
+        head, requires 258 W, which is adequately delivered by three
+        parallel-connected 110 W panels.
+      - By storing water in a 10 m3 elevated tank sized for three days of
+        demand, the design decouples pumping from intermittent sunlight,
+        ensuring reliable irrigation for smallholder crops.
+      - Given the system's low maintenance, zero fuel cost, and positive
+        environmental impact, a pilot implementation in Karshi is recommended
+        before scaling the approach to other communities in Nigeria.
+  References:
+    entries:
+      - 1. V.A. (2024). Design of a solar water pumping system for efficient
+        irrigation systems for crop production. Frontiers in Energy Research.
+      - 2. U.S. Geological Survey. (2018). Irrigation water use. U.S. Geological
+        Survey.
+      - 3. Water Mission. (2018). Solar water pumping system design manual.
+        Water Mission.
+      - 4. Pande, P. C., et al. (2003). Design of photovoltaic pumping systems
+        for crop irrigation. Solar Energy.
+      - 5. Solar Pump Reviews. (2025). 10 Best Solar Powered Irrigation Pumps to
+        Optimize Your Watering System in 2025. SolarPumpReviews.com.
+      - 6. Solar Irrigation Pumps. (2026). 10 Best Solar Irrigation Pumps for
+        Gardens [2026]. SolarIrrigationPumps.com.

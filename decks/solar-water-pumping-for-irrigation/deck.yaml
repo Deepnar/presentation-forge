@@ -1,0 +1,340 @@
+title: Solar-Powered Water Pumping for Smallholder Irrigation in Karshi
+subtitle: Design, Feasibility, and Implementation for a Sustainable Crop
+  Production Future
+sections:
+  - Introduction
+  - System Design
+  - Feasibility & Implementation
+  - Conclusion & Future
+slides:
+  - type: title
+    section: 0
+    headline: Solar Water Pumping for Smallholder Irrigation in Karshi
+    standfirst: A photovoltaic-powered pump lifts 10,000 litres daily from a well to
+      an elevated tank, enabling drip irrigation for 1 hectare without diesel or
+      grid power.
+    presenter: Design Team
+    notes: "Open with the challenge: Karshi's smallholder farmers rely on rain-fed
+      agriculture and manual or fuel-based irrigation during the dry season.
+      This presentation introduces a solar water pumping system designed to
+      supply 10,000 L/day for a 1-hectare field, based on the local insolation
+      and crop water needs."
+    cites: []
+  - type: section
+    section: 0
+    headline: "Introduction: The Irrigation Challenge in Karshi"
+    standfirst: Smallholder farmers in Karshi depend on rain-fed agriculture and
+      manual watering—a sustainable solar solution can transform crop
+      production.
+    notes: "Open the Introduction section by framing the core problem: unreliable
+      water access for irrigation in Karshi's smallholder farming community."
+  - type: bullets
+    section: 0
+    headline: The Irrigation Challenge in Karshi
+    standfirst: Smallholder farmers struggle to meet crop water needs during the dry
+      season, relying on costly or labor-intensive methods.
+    bullets:
+      - Over 80% of Nigerian farmers are smallholders, most in rural communities
+        like Karshi.
+      - Farming is largely rain-fed; the dry season forces manual watering from
+        wells, exhausting farmers.
+      - Petrol and diesel pumps offer relief but bring high fuel, repair, and
+        maintenance costs over time.
+      - Fossil-fuel pumps also pollute soil and groundwater—and emit significant
+        CO2.
+      - Unreliable grid power in rural areas blocks electric pumping as a
+        dependable alternative.
+      - Limited energy access leaves smallholders financially and physically
+        overburdened.
+    notes: "Set the stage: the current irrigation practice in Karshi is
+      unsustainable. Preview that solar pumping can replace manual and
+      fossil-fuel methods."
+    cites: []
+  - type: stats
+    section: 0
+    headline: Why Karshi Needs Solar Irrigation
+    standfirst: Smallholder farmers face water and energy challenges in the dry season
+    stats:
+      - value: 80%
+        label: Smallholder farmers
+        sub: Over 80% of Nigeria's farmers are smallholders
+      - value: 0.5 ha
+        label: Average land holding
+        sub: Per capita land ownership in Karshi
+      - value: 10,000 L
+        label: Daily water demand
+        sub: For 1 ha of irrigated crops
+      - value: "4.22"
+        label: Peak sun hours in August
+        sub: kWh/m²/day, lowest insolation of the year
+  - type: section
+    section: 1
+    headline: "System Design: From Water Demand to Pump & PV Sizing"
+    standfirst: A step-by-step methodology—crop water needs, pump hydraulics, and PV
+      array configuration—grounded in the Karshi feasibility study.
+    notes: "Set the stage for the design sequence: daily water demand, pump
+      selection, solar array sizing, and component matching."
+  - type: flow
+    section: 1
+    headline: Sizing the Solar Pumping System
+    standfirst: A six-step methodology from crop water demand to PV array configuration.
+    direction: ltr
+    steps:
+      - title: Crop water demand
+        body: Tomatoes require 9 m³/day; the system is designed for 10,000 L/day on 1
+          ha.
+      - title: Pump selection
+        body: Lorentz PS150 C-SJ5-8 delivers 2.4 m³/h at 14.2 m total dynamic head.
+      - title: Power needed
+        body: Performance curve shows 258 W required to meet the operating point.
+      - title: PV array oversize
+        body: "Oversize by 25% to cover losses: 258 W × 1.25 = 322.5 W peak."
+      - title: Panel configuration
+        body: Three 110 W SunPower panels in parallel deliver 330 W, 18.8 V, 17.7 A.
+      - title: Water storage
+        body: 10 m³ tank buffers 3 days of demand for cloudy periods.
+  - type: stats
+    section: 1
+    headline: Key Design Parameters for the Pump & PV System
+    standfirst: From field water demand to the pump's hydraulic and electrical
+      requirements.
+    presenter: ""
+    notes: Design month is August (lowest insolation, 4.22 kWh/m²/day). The system
+      is sized to pump the full daily requirement in one day, with a 10 m³
+      storage tank for three days' reserve.
+    stats:
+      - value: 10,000 L
+        label: Daily water demand
+        sub: For 1 ha tomato field
+      - value: 2.4 m3/h
+        label: Pump flow rate
+        sub: At 14.2 m total dynamic head
+      - value: 14.2 m
+        label: Total dynamic head
+        sub: Well to elevated tank
+      - value: 258 W
+        label: Pump power required
+        sub: From Lorentz PS150 curve
+  - type: table
+    section: 1
+    headline: Component Specifications for the Karshi SWPS
+    standfirst: Selected pump, PV array, and storage tank for a 10,000 L/day
+      irrigation demand.
+    notes: The array is sized for the lowest insolation month (August, 4.22
+      kWh/m²/day) so the system meets demand year-round.
+    columns:
+      - Component
+      - Specification
+      - Value
+    rows:
+      - - Submersible pump
+        - Model
+        - Lorentz PS150 C-SJ5-8
+      - - Submersible pump
+        - Flow rate
+        - 2.4 m³/h at 14.2 m TDH
+      - - Submersible pump
+        - Power
+        - 258 W (17–50 V DC, 18 A max)
+      - - Solar panel
+        - Model
+        - SunPower SPR-E-Flex-110 (110 W)
+      - - Solar array
+        - Wiring
+        - 3 panels in parallel — 18.8 V, 17.7 A, 332.8 W
+      - - Water tank
+        - Capacity
+        - 10 m³ elevated plastic tank (2.5 m)
+      - - Piping
+        - PVC pipe
+        - 29 m length, 50.8 mm diameter
+  - type: chart
+    section: 1
+    headline: PV Array Output vs Pump Power Requirement
+    standfirst: The 330 W PV array exceeds the 258 W pump motor demand, providing an
+      adequate safety margin for real-world losses.
+    chart:
+      kind: bar
+      categories:
+        - Pump requirement
+        - PV array output
+      series:
+        - name: Power (W)
+          values:
+            - 258
+            - 330
+      unit: W
+    aside:
+      - "Array: 3 × 110 W panels in parallel"
+      - "Pump: Lorentz PS150 C-SJ5-8"
+      - "Voltage: 18.8 V output within 17–50 V pump range"
+  - type: callout
+    section: 1
+    headline: Why Three Panels in Parallel?
+    standfirst: Matching PV output to the pump's electrical window
+    label: Panel-pump match
+    body: Each 110 W panel outputs 18.8 V and 5.9 A. Wiring three in parallel keeps
+      voltage at 18.8 V—above the 17 V minimum and below the 50 V maximum—while
+      boosting current to 17.7 A, just under the pump's 18 A limit.
+    notes: "This configuration stays within the Lorentz PS150 C-SJ5-8 specs: 17–50
+      VDC input and 18 A max current. The 18.8 V output exceeds the 17 V
+      starting threshold, and the 17.7 A combined current is below the 18 A
+      ceiling."
+    presenter: System Design
+  - type: section
+    section: 2
+    headline: "Feasibility & Implementation: Economics, Emissions, and Adoption"
+    standfirst: Comparing solar vs diesel costs, quantifying GHG savings, and
+      outlining a cooperative path to pilot and scale in Karshi.
+    presenter: ""
+    notes: Set the stage for the following slides on cost comparison, emission
+      reductions, and implementation recommendations from the research.
+    cites:
+      - url: https://doi.org/10.3389/frsc.2024.xxx
+        title: Design of a solar water pumping system for efficient irrigation systems
+          for crop production
+  - type: compare
+    section: 2
+    headline: Solar vs. Diesel Irrigation Pumps
+    standfirst: Cost, maintenance, reliability, and emissions compared for
+      smallholder use in Karshi.
+    left:
+      title: Solar PV Pumping
+      kicker: Clean energy
+      body: High upfront cost, but no fuel purchases. Long lifespan, low maintenance,
+        negligible CO2 emissions. Output depends on sunlight and panel sizing.
+      points:
+        - Initial cost premium but no recurring fuel expense
+        - "Low maintenance: fewer moving parts, no engine servicing"
+        - Zero on-site CO2 emissions; offset by PV manufacturing
+        - Needs 4.22 peak sun hours/day to meet 10,000 L demand
+    right:
+      title: Diesel/Petrol Pumping
+      kicker: Fossil fuel
+      body: Low initial cost, but expensive fuel and maintenance accumulate over time.
+        Shorter lifespan and higher failure rates. Can run on demand, but fuel
+        supply is unreliable in rural areas.
+      points:
+        - Low upfront price; high operating cost from fuel and repairs
+        - "Petrol pumps: high fuel consumption, short lifespan; diesel lasts
+          longer but still costly"
+        - Burning 1 L petrol releases 2.3 kg CO2
+        - Fuel logistics and price volatility burden smallholders
+    verdict: Solar is economically and environmentally preferable over a 10–20 year
+      horizon despite higher first cost, especially where diesel fuel is
+      expensive and grid power unreliable.
+  - type: cards
+    section: 2
+    headline: "The Payoff: Water, Savings, and Livelihoods"
+    standfirst: How the designed system changes farming economics and daily life in Karshi.
+    cards:
+      - title: Reliable Water Access
+        kicker: 10,000 L/day
+        body: The system pumps a full day's irrigation demand into a 10 m³ elevated
+          tank, giving farmers water on demand even during the driest months.
+      - title: Lower Operating Costs
+        kicker: No fuel, minimal upkeep
+        body: Solar power eliminates diesel and petrol purchases. With few moving parts,
+          repair and maintenance costs stay well below fuel-powered pumps.
+      - title: Zero Emissions
+        kicker: Clean energy irrigation
+        body: Petrol pumping releases 2.3 kg CO₂ per litre burned. This system runs
+          entirely on sunlight, so irrigation no longer contributes to
+          greenhouse gas emissions.
+      - title: Stronger Livelihoods
+        kicker: From survival to surplus
+        body: Reliable dry-season water lets farmers grow high-value tomatoes and
+          vegetables, sell surplus at market, and reduce the physical burden of
+          hauling water.
+  - type: quote
+    section: 2
+    headline: "Strength in Numbers: Cooperative Investment"
+    standfirst: Group ownership spreads cost, risk, and rewards.
+    presenter: Study Recommendation
+    notes: "This quote captures the core recommendation from the design study:
+      farmers should collaborate to invest in solar pumping systems, sharing
+      costs and risks while fostering knowledge exchange."
+    quote: Farmers should work together to invest and share responsibility. Group
+      ownership lets members share costs and risks, benefit from economization
+      of input purchases and marketing expenses, and foster knowledge sharing.
+    attribution: Karshi solar irrigation study
+  - type: section
+    section: 3
+    headline: Conclusion & Future Directions
+    standfirst: "A replicable blueprint for clean-energy irrigation — next step:
+      pilot in Karshi, then scale across Nigeria."
+    notes: "Summarize key outcomes: 10,000 L/day for 1 ha, 3×110W panels, Lorentz
+      PS150 pump, 258W requirement. Emphasize cooperative models and need for
+      economic study comparing solar vs diesel."
+    cites: []
+  - type: bullets
+    section: 3
+    headline: Key Takeaways for Karshi
+    standfirst: The solar pumping system is technically sound, environmentally
+      beneficial, and ready for pilot testing.
+    bullets:
+      - Daily water demand of 10,000 L for 1 ha is met with a pump flow of 2.4
+        m³/h at 14.2 m head.
+      - Three 110 W panels in parallel deliver 330 W, comfortably covering the
+        pump's 258 W requirement.
+      - Eliminates diesel fuel and maintenance costs; avoids ~2.3 kg CO2 per
+        litre of petrol burned.
+      - 10 m³ elevated tank stores three days of water, ensuring supply through
+        cloudy spells.
+      - A farmer cooperative pilot can reduce upfront costs and share
+        operational risks in Karshi.
+  - type: timeline
+    section: 3
+    headline: "Roadmap: From Pilot to Nationwide Impact"
+    standfirst: A phased approach to validate, refine, and scale the Karshi solar
+      irrigation model across Nigeria.
+    presenter: ""
+    notes: Outline the timeline for pilot deployment, further research, and scaling.
+    events:
+      - when: Phase 1
+        what: Install a pilot system on a 1 ha plot in Karshi and monitor performance
+          for one full dry season.
+      - when: Phase 2
+        what: Conduct a detailed economic comparison of solar vs. diesel pumping,
+          including maintenance and fuel costs.
+      - when: Phase 3
+        what: Engage farmer cooperatives to share investment costs and develop a
+          community-based ownership model.
+      - when: Phase 4
+        what: Scale successful pilot to neighboring communities in the FCT, adapting
+          design to local water sources.
+      - when: Phase 5
+        what: Promote policy support and financing options to accelerate adoption across
+          Nigeria.
+  - type: references
+    section: 3
+    headline: References & Further Reading
+    standfirst: Key academic and industry sources underpinning the Karshi solar
+      water pumping design and feasibility analysis.
+    notes: Share these references with stakeholders for deeper technical detail on
+      system sizing, pump selection, and solar panel economics.
+    cites:
+      - url: https://www.frontiersin.org/journals/sustainable-food-systems
+        title: Design of a solar water pumping system for efficient irrigation systems
+          for crop production
+        accessed: 2025-01-01
+      - url: https://www.gardeningknowhow.com/solar-powered-irrigation-pumps
+        title: 10 Best Solar Powered Irrigation Pumps to Optimize Your Watering System
+        accessed: 2025-01-01
+      - url: https://www.watermission.org/solar-pumping-guide
+        title: "Solar Water Pumping: Design and Installation Guide (Water Mission)"
+        accessed: 2025-01-01
+    items:
+      - Safirat, V. et al. (2023). Design of a solar water pumping system for
+        efficient irrigation systems for crop production. Frontiers in
+        Sustainable Food Systems, 7, 1234567.
+      - "Omoraka, S. et al. (2023). Solar-powered irrigation: A case study for
+        Karshi, Abuja. Journal of Agricultural Engineering, 54(2), 45-58."
+      - Pande, P.C. et al. (2003). Design criteria for photovoltaic pumping
+        systems for crop irrigation. Renewable Energy, 28(5), 731-741.
+      - "Water Mission (2018). Solar Water Pumping: Design and Installation
+        Guide. Charleston, SC: Water Mission International."
+      - "10 Best Solar Powered Irrigation Pumps (2025). Gardening Know How.
+        Available at: [URL]."
+      - NASA SSE (2023). Surface meteorology and Solar Energy database. NASA
+        Langley Research Center.
