@@ -133,7 +133,10 @@ export default function App() {
           {view === "identity" && <Identity />}
         </main>
 
-        {rightOpen ? (
+        {/* The chat rail belongs to a deck — it edits deck.yaml. With no deck
+            open there is nothing to talk to, so the rail (and its edge tab) only
+            exists on the deck view and the main column goes full-width. */}
+        {view === "deck" && (rightOpen ? (
           <section
             onMouseEnter={() => setRailHover(true)}
             onMouseLeave={() => setRailHover(false)}
@@ -154,7 +157,7 @@ export default function App() {
               Chat
             </span>
           </button>
-        )}
+        ))}
       </div>
 
       {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
