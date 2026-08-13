@@ -28,7 +28,25 @@ import { normalizeBrand } from "../../tools/prep-brand.mjs";
  */
 
 const app = express();
-app.use(cors());
+
+// Secure headers — the light hardening for a public-facing box. Without
+// helmet's dependency weight: a strict default that blocks framing/MIME-sniff
+// and ref leaks, and the API itself never sets cookies.
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+
+// CORS restricted to the UI origin. In dev the Vite server proxies /api so the
+// browser is same-origin and this never matters; when the built UI is served
+// from the API itself it is same-origin too. The allow-list only matters if
+// someone serves the UI from elsewhere, and then it is the ONLY origin allowed.
+const UI_ORIGIN = (process.env.FORGE_UI_ORIGIN ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+app.use(cors(UI_ORIGIN.length ? { origin: UI_ORIGIN } : {}));
 app.use(express.json({ limit: "8mb" }));
 
 // Deliberately NOT `PORT` — dev harnesses inject that for the frontend, and the
@@ -49,7 +67,7 @@ const wrap = (fn) => (req, res) =>
  * header — so those stay open and the UI is never told a URL it cannot load.
  */
 const deckWorkspace = async (req, res, next) => {
-  if (/^\/([^/]+)\/(preview|download)\//.test(req.path)) return next();
+  if (/^\/([^/]+)\/(preview|download|assets)\//.test(req.path)) return next();
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user) return fail(res, 401, "log in to use the deck workspace");
   req.user = user;
@@ -75,7 +93,11 @@ async function assertDeckAccess(slug, user) {
   if (meta.owner && meta.owner !== user.email) throw new Error("no such deck");
 }
 app.use("/api/decks/:slug", async (req, res, next) => {
+  // The rasters, downloads and uploaded images load in <img> tags that cannot
+  // carry a bearer token, so their GETs skip the ownership gate. The assets
+  // POST stays gated — an upload is a write and must be yours.
   if (/^\/(preview|download)\//.test(req.path)) return next();
+  if (req.method === "GET" && /^\/assets\//.test(req.path)) return next();
   try {
     await assertDeckAccess(req.params.slug, req.user);
     next();
@@ -302,6 +324,19 @@ app.delete("/api/decks/:slug", wrap(async (req, res) => {
   ok(res, {});
 }));
 
+/**
+ * Run the sweep on demand (dry run by default) — the same deletion policy the
+ * scheduler runs on its own, exposed so an owner can preview it from the UI
+ * before it fires. Requires a session, like every deck mutation.
+ */
+app.post("/api/sweep", wrap(async (req, res) => {
+  const { sweep } = await import("../../src/sweep.js");
+  const dryRun = req.body?.dryRun !== false;
+  const olderThanDays = Number(req.body?.olderThanDays || NaN);
+  const r = await sweep({ dryRun, ...(Number.isFinite(olderThanDays) && olderThanDays > 0 ? { olderThanDays } : {}) });
+  ok(res, r);
+}));
+
 /** The deck's version history — timestamped backups of deck.yaml, newest first. */
 app.get("/api/decks/:slug/versions", wrap(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug, "backups");
@@ -332,6 +367,45 @@ app.post("/api/decks/:slug/versions/:file/restore", wrap(async (req, res) => {
 app.post("/api/validate", wrap(async (req, res) => {
   const { ok: valid, errors } = await validateDeck(req.body?.deck ?? {});
   ok(res, { valid, errors });
+}));
+
+const DECK_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg", "avif"]);
+const DECK_IMAGE_MAX = 15 * 1024 * 1024; // 15 MB — a slide image, not a photo library
+
+/**
+ * Upload a slide image for a deck. Lands in decks/<slug>/assets/ (gitignored)
+ * so a slide's image field can reference it as `assets/<file>` and the render
+ * resolves it relative to the deck folder. Extension and size are validated —
+ * the same trust boundary as the brand uploads.
+ */
+app.post("/api/decks/:slug/assets", (req, res, next) => {
+  const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (!DECK_IMAGE_EXT.has(ext)) {
+    return fail(res, 400, `unsupported image extension — allowed: ${[...DECK_IMAGE_EXT].join(", ")}`);
+  }
+  express.raw({ type: () => true, limit: DECK_IMAGE_MAX })(req, res, async () => {
+    try {
+      if (!req.body?.length) return fail(res, 400, "empty upload");
+      const dir = path.join(DECKS, req.params.slug, "assets");
+      await mkdir(dir, { recursive: true });
+      const name = `image-${Date.now().toString(36)}.${ext}`;
+      await writeFile(path.join(dir, name), req.body);
+      ok(res, { file: `assets/${name}`, url: `/api/decks/${req.params.slug}/assets/${name}` });
+    } catch (err) {
+      fail(res, 500, err.message);
+    }
+  });
+});
+
+/** Serve a deck's uploaded image (same open-exemption as preview rasters). */
+app.get("/api/decks/:slug/assets/:file", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "assets", path.basename(req.params.file));
+  try {
+    await stat(file);
+    res.sendFile(file);
+  } catch {
+    res.status(404).end();
+  }
 }));
 
 app.post("/api/decks/:slug/render", wrap(async (req, res) => {
@@ -1122,12 +1196,33 @@ app.delete("/api/brand/:name", wrap(async (req, res) => {
 /* ------------------------------------------------------------------- auth */
 
 /**
+ * Rate limiting for the credential endpoints — the one thing a public-facing
+ * box should never allow to be hammered. In-memory sliding window per IP:
+ * a friend's laptop has one or two real users, so 20 attempts / 10 min is
+ * generous for humans and useless for a dictionary attack.
+ */
+const AUTH_LIMIT = Number(process.env.FORGE_AUTH_RATE_LIMIT || 20);
+const authHits = new Map();
+function rateLimit(req, res, next) {
+  const ip = req.ip ?? req.socket.remoteAddress ?? "unknown";
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+  const list = (authHits.get(ip) ?? []).filter((t) => now - t < windowMs);
+  if (list.length >= AUTH_LIMIT) {
+    return fail(res, 429, "too many attempts — try again later");
+  }
+  list.push(now);
+  authHits.set(ip, list);
+  next();
+}
+
+/**
  * Local single-install accounts. Sessions are bearer tokens held server-side;
  * the token rides the Authorization header and nothing sensitive ever leaves
  * the machine. These endpoints protect the Cloud-key surface (and future
  * hosting), not the deck pipeline — everything else stays open.
  */
-app.post("/api/auth/register", wrap(async (req, res) => {
+app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
   const { name, email, password } = req.body ?? {};
   try {
     const user = await register({ name, email, password });
@@ -1140,7 +1235,7 @@ app.post("/api/auth/register", wrap(async (req, res) => {
   }
 }));
 
-app.post("/api/auth/login", wrap(async (req, res) => {
+app.post("/api/auth/login", rateLimit, wrap(async (req, res) => {
   const { email, password } = req.body ?? {};
   const user = await authenticate(email, password);
   if (!user) return fail(res, 401, "invalid email or password");
@@ -1219,6 +1314,46 @@ app.get("/api/docs", wrap(async (_req, res) => {
 }));
 
 app.get("/api/health", (_req, res) => ok(res, { root: ROOT }));
+
+/**
+ * The monthly sweep scheduler. When FORGE_SWEEP_DAYS is set (the number of days
+ * of inactivity before a deck is deleted), the server runs the sweep once a
+ * day at FORGE_SWEEP_HOUR (default 3 AM) — deleting old unkept decks and
+ * emailing the owner, per the deployment plan for the home server. Without the
+ * env var the server never touches deck data on its own.
+ */
+const SWEEP_DAYS = Number(process.env.FORGE_SWEEP_DAYS || NaN);
+const SWEEP_HOUR = Number(process.env.FORGE_SWEEP_HOUR || 3);
+if (Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0) {
+  const { sweep } = await import("../../src/sweep.js");
+  const runSweep = () => sweep({ olderThanDays: SWEEP_DAYS })
+    .then((r) => console.log(`  sweep: ${r.deleted.length} deleted, ${r.willDelete.length} old, ${r.skipped.length} kept`))
+    .catch((err) => console.error(`  sweep failed: ${err.message}`));
+
+  const schedule = () => {
+    const now = new Date();
+    const next = new Date(now);
+    next.setHours(SWEEP_HOUR, 0, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    const delay = next - now;
+    setTimeout(() => { runSweep(); schedule(); }, delay);
+    console.log(`  sweep scheduled daily at ${SWEEP_HOUR}:00 (deleting decks older than ${SWEEP_DAYS} days)`);
+  };
+  schedule();
+}
+
+/**
+ * Production static serving: when the UI is built (app/web/dist), the API
+ * serves it so one port runs the whole app on a home server. In dev the dist
+ * is absent (Vite runs on :5173) and these routes simply never match.
+ */
+const UI_DIST = path.join(ROOT, "app", "web", "dist");
+try {
+  await stat(path.join(UI_DIST, "index.html"));
+  app.use(express.static(UI_DIST));
+  // SPA fallback: unknown non-API paths render the shell.
+  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(UI_DIST, "index.html")));
+} catch { /* dev — no built UI */ }
 
 app.listen(PORT, () => {
   console.log(`  api   http://localhost:${PORT}`);

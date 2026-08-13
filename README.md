@@ -60,6 +60,7 @@ npm run render decks/gpu-demo/deck.yaml      # deck.yaml -> .pptx
 npm run preview decks/gpu-demo/out/deck.pptx # .pptx -> PNGs, so you can SEE it
 npm run dev                                  # web UI :5173, API :5174
 npm run search "your query"                  # research from the terminal
+npm run sweep -- --dry-run                   # preview the monthly deck sweep
 ```
 
 Generate a deck from a brief:
@@ -102,6 +103,47 @@ starts inventing them; give the renderer adjectives and it starts guessing.
 are trademarks and identity files carry personal details, so neither belongs in
 a repository. `npm run brand` generates neutral placeholders when no marks are
 present, so a fresh clone renders immediately; drop your own in and re-run it.
+
+## Deploying on a home Linux server
+
+The app is built to be "plug your API key and play" on a friend's old laptop —
+one container, one command, persistent data:
+
+```bash
+cd docker
+cp ../.env.example .env        # then set FORGE_SMTP_* etc.
+docker compose -f docker-compose.app.yml up -d --build
+```
+
+The `forge` container ships Node, LibreOffice and headless Chrome (the whole
+render pipeline), serves the built UI on one port, and talks to the bundled
+SearXNG container for local research. State lives in a Docker volume
+(`/data`): decks, brand marks, config, plate cache. Redeploying never loses a
+deck.
+
+Environment (set in `docker/.env`, all optional):
+
+| Variable | Meaning |
+|---|---|
+| `FORGE_PORT` | public port (default 8080) |
+| `FORGE_SWEEP_DAYS` | delete decks older than N days of inactivity (default off) |
+| `FORGE_SWEEP_HOUR` | run the daily sweep at this hour (default 3) |
+| `FORGE_SMTP_HOST/PORT/USER/PASS/FROM/TO` | sweep email (see `src/mail.js`) |
+| `FORGE_SMTP_SECURE=1` | implicit TLS for SMTP |
+| `FORGE_AUTH_RATE_LIMIT` | login/register attempts per 10 min per IP (default 20) |
+| `FORGE_UI_ORIGIN` | comma-separated allowed CORS origins (empty = same-origin only) |
+
+The monthly sweep is what keeps the server from becoming cloud storage: decks
+older than `FORGE_SWEEP_DAYS` are deleted unless their `meta.yaml` has
+`keep: true`, and an email is sent on sweep day listing what was removed.
+People download daily to local machines, so the server only ever holds recent
+work. `npm run sweep` runs it manually; `POST /api/sweep` does the same from
+the UI (dry run by default).
+
+For a domain in front, put a reverse proxy (Caddy/nginx) on the public port
+with a TLS cert and forward to the container. The research papers feature
+(arXiv/Crossref) and the Jina Reader fallback (`RESEARCH_JINA=1`) are the only
+outbound network calls the app makes beyond SearXNG.
 
 ## Licence
 

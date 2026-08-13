@@ -1,0 +1,81 @@
+# Full deployment for a friend's home Linux server: the app container plus the
+# local SearXNG research backend. One command:
+#
+#   docker compose -f docker/docker-compose.app.yml up -d --build
+#
+# Config comes from env (see the README's deployment section). The stateful
+# directories are a named volume so a redeploy never loses decks/brand/config.
+
+services:
+  forge:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: forge_app
+    restart: unless-stopped
+    ports:
+      - "${FORGE_PORT:-8080}:5174"
+    environment:
+      FORGE_DECKS_DIR: /data/decks
+      FORGE_BRAND_DIR: /data/brand
+      FORGE_CONFIG_DIR: /data/config
+      FORGE_PLATE_CACHE: /data/plate-cache
+      FORGE_API_PORT: "5174"
+      SEARXNG_URL: "http://searxng:8080"
+      # Sweep + mail. Set these in a .env file next to this compose file:
+      #   FORGE_SWEEP_DAYS=30          (delete decks older than 30 days)
+      #   FORGE_SWEEP_HOUR=3           (run daily at 3 AM)
+      #   FORGE_SMTP_HOST=smtp.example.com
+      #   FORGE_SMTP_PORT=587
+      #   FORGE_SMTP_USER=...
+      #   FORGE_SMTP_PASS=...
+      #   FORGE_SMTP_FROM=sweep@example.com
+      #   FORGE_SMTP_TO=owner@example.com
+      FORGE_SWEEP_DAYS: "${FORGE_SWEEP_DAYS:-}"
+      FORGE_SWEEP_HOUR: "${FORGE_SWEEP_HOUR:-3}"
+      FORGE_SMTP_HOST: "${FORGE_SMTP_HOST:-}"
+      FORGE_SMTP_PORT: "${FORGE_SMTP_PORT:-587}"
+      FORGE_SMTP_USER: "${FORGE_SMTP_USER:-}"
+      FORGE_SMTP_PASS: "${FORGE_SMTP_PASS:-}"
+      FORGE_SMTP_FROM: "${FORGE_SMTP_FROM:-}"
+      FORGE_SMTP_TO: "${FORGE_SMTP_TO:-}"
+      FORGE_SMTP_SECURE: "${FORGE_SMTP_SECURE:-0}"
+      FORGE_AUTH_RATE_LIMIT: "${FORGE_AUTH_RATE_LIMIT:-20}"
+      FORGE_UI_ORIGIN: "${FORGE_UI_ORIGIN:-}"
+    volumes:
+      - forge_data:/data
+    depends_on:
+      - searxng
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5174/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: forge_searxng
+    restart: unless-stopped
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=http://forge:5174/
+      - SEARXNG_SECRET=${SEARXNG_SECRET:-forge-deployment-secret}
+      - UWSGI_WORKERS=2
+      - UWSGI_THREADS=2
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  forge_data:
