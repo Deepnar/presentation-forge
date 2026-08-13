@@ -1,0 +1,116 @@
+# Isometric Dark — a deep obsidian field with a faint isometric grid.
+#
+# A plate theme: the background is a near-black slate crisscrossed by a subtle
+# 3D-wireframe grid of accent-tinted lines, the way an engineering visualisation
+# opens. Native content sits in a soft dark panel so text stays legible. Distinct
+# from linear-dark (no product-UI hairlines) and dark-neon (no glow) — this is
+# architectural wireframe, flat and precise.
+
+name: isometric-dark
+label: Isometric Dark
+summary: Obsidian slate with a faint 3D-wireframe grid — architectural and precise.
+
+tokens:
+  palette:
+    bg: "#12151C"          # obsidian
+    surface: "#1A1E28"
+    ink: "#E8EAEF"
+    ink_muted: "#9BA1AE"
+    accent: "#3D9BFF"      # blueprint cyan
+    accent_alt: "#2E6BD6"
+    rule: "#FFFFFF1C"
+    on_accent: "#0D1117"
+
+  surfaces:
+    title:   { bg: "#0D1117", ink: "#E8EAEF", muted: "#8B93A4", accent: "#3D9BFF" }
+    section: { bg: "#3D9BFF", ink: "#0D1117", muted: "#B7D8FF" }
+
+  dark:
+    bg: "#0D1017"
+    surface: "#141820"
+    ink: "#E8EAEF"
+    ink_muted: "#8F96A5"
+    accent: "#4FA6FF"
+    accent_alt: "#2E6BD6"
+    rule: "#FFFFFF1A"
+    on_accent: "#0D1117"
+
+  type:
+    display:  { family: "Space Grotesk", weight: 700, size: 40, line: 1.08, tracking: -0.6 }
+    heading:  { family: "Space Grotesk", weight: 600, size: 29, line: 1.15, tracking: -0.3 }
+    subhead:  { family: Inter,           weight: 400, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,           weight: 400, size: 13, line: 1.6,  tracking: 0 }
+    caption:  { family: Inter,           weight: 500, size: 10, line: 1.35, tracking: 0.3 }
+    eyebrow:  { family: "Space Grotesk", weight: 600, size: 10, line: 1.2,  tracking: 2.0, transform: upper }
+    stat:     { family: "Space Grotesk", weight: 700, size: 54, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.12, pill: 0.40, chip: 0.06 }
+    border: { width: 1, color: "#FFFFFF24" }
+    card_pad: 0.30
+    card_fill: { color: "#1A1E28", transparency: 0 }
+
+  shadow:
+    card: { type: outer, blur: 16, offset: 4, angle: 90, color: "000000", opacity: 0.45 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .grid{position:absolute;inset:0;background:
+          linear-gradient(30deg, transparent 46%, {{tokens.palette.accent}}22 46% 47%, transparent 47%),
+          linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}22 46% 47%, transparent 47%);
+          background-size: 86px 74px;}
+        .grid:after{content:"";position:absolute;inset:0;background:
+          radial-gradient(120% 100% at 50% 0%, transparent 55%, {{tokens.palette.bg}} 100%);}
+        .field{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+          background:{{tokens.palette.surface}}cc;border:1px solid {{tokens.palette.accent}}30;border-radius:12px;}
+      </style>
+      <div class="grid"></div>
+      <div class="field"></div>
+    surfaces:
+      title: |
+        <style>
+          .grid{position:absolute;inset:0;background:
+            linear-gradient(30deg, transparent 46%, {{tokens.palette.accent}}33 46% 47%, transparent 47%),
+            linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}33 46% 47%, transparent 47%);
+            background-size: 86px 74px;}
+          .fade{position:absolute;inset:0;background:
+            radial-gradient(100% 90% at 50% 30%, transparent 40%, {{tokens.surfaces.title.bg}} 92%);}
+        </style>
+        <div class="grid"></div>
+        <div class="fade"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            linear-gradient(30deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
+          .grid{position:absolute;inset:0;background:
+            linear-gradient(30deg, transparent 46%, #FFFFFF2E 46% 47%, transparent 47%),
+            linear-gradient(150deg, transparent 46%, #FFFFFF2E 46% 47%, transparent 47%);
+            background-size: 86px 74px;}
+        </style>
+        <div class="sec"></div>
+        <div class="grid"></div>
+
+voice:
+  feel: precise, engineered, architectural, calm
+  density: medium
+  prefers:
+    - measured, technical language
+    - a systems view — how the parts fit
+    - figures over adjectives
+  avoid:
+    - glow, neon, gradients over content
+    - playful or warm phrasing
+    - decoration that distracts from the grid
+  headline_style: >
+    Label it like a blueprint. "THE RENDER PIPELINE, FRAME BY FRAME". Clear,
+    technical, exact.
+  body_style: >
+    Short precise sentences. Name the system, state its behaviour, stop.

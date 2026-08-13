@@ -1,0 +1,76 @@
+# Brutalist Paper — raw print poster meets institutional document.
+# Huge Archivo Black type, off-white "newsprint" paper, a single dense ink
+# block, hard edges. Differs from neubrutalism by being FLAT and paper-based —
+# no blue gradient, no glow, no offset shadows: just ink on stock.
+
+name: brutalist-paper
+label: Brutalist Paper
+summary: Raw print-poster type on off-white paper — flat ink, hard edges, no effects.
+
+tokens:
+  palette:
+    bg: "#EFEDE6"          # uncoated paper
+    surface: "#FFFFFF"
+    ink: "#11110E"
+    ink_muted: "#5A574E"
+    accent: "#C62828"      # a printer's red
+    accent_alt: "#1A1A18"
+    rule: "#C8C4B6"
+    on_accent: "#EFEDE6"
+
+  surfaces:
+    title:   { bg: "#11110E", ink: "#EFEDE6", muted: "#A8A49A", accent: "#E53935" }
+    section: { bg: "#C62828", ink: "#EFEDE6", muted: "#F4C7C4" }
+
+  dark:
+    bg: "#161613"
+    surface: "#1F1F1B"
+    ink: "#EFEDE6"
+    ink_muted: "#A8A49A"
+    accent: "#E53935"
+    accent_alt: "#6B6B60"
+    rule: "#FFFFFF26"
+    on_accent: "#11110E"
+
+  type:
+    display:  { family: "Archivo Black", weight: 400, size: 44, line: 1.04, tracking: -1.5 }
+    heading:  { family: "Archivo Black", weight: 400, size: 30, line: 1.1,  tracking: -0.5 }
+    subhead:  { family: Inter,           weight: 400, size: 15, line: 1.4,  tracking: 0 }
+    body:     { family: Inter,           weight: 400, size: 13, line: 1.6,  tracking: 0 }
+    caption:  { family: Inter,           weight: 600, size: 10, line: 1.35, tracking: 0.4 }
+    eyebrow:  { family: "Archivo Black", weight: 400, size: 10, line: 1.2,  tracking: 2.0, transform: upper }
+    stat:     { family: "Archivo Black", weight: 400, size: 56, line: 1.0,  tracking: -1.5 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0, pill: 0.40, chip: 0 }        # everything square
+    border: { width: 1.5, color: "#11110E" }        # thick ink rules
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "11110E", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: raw, blunt, printed, unpolished-on-purpose
+  density: medium
+  prefers:
+    - short declarative statements
+    - a poster's confidence, a document's seriousness
+    - one strong figure per slide
+  avoid:
+    - softness, gradients, drop shadows, glass
+    - marketing gloss or filler
+    - more than one accent per slide
+  headline_style: >
+    Shout it plainly. "RAY TRACING WINS THE FRAME" over "An Introduction".
+    Title-case is fine, lowercase is fine — just be loud and specific.
+  body_style: >
+    Sparse and direct. Sentences the way you'd say them at a print deadline.

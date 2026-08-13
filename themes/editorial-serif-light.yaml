@@ -1,0 +1,77 @@
+# Editorial Serif Light — an upmarket print magazine on white.
+# Fraunces (a soft editorial serif with warmth) on bright white, generous
+# leading, a single editorial accent, hairline rules. Deliberately the LIGHT
+# sibling of editorial-magazine (which is dark maroon) — same spirit, opposite
+# canvas, so the pair reads as a family, not a duplicate.
+
+name: editorial-serif-light
+label: Editorial Serif Light
+summary: Bright-white print magazine — Fraunces serif, generous leading, one accent.
+
+tokens:
+  palette:
+    bg: "#FDFDFB"          # bright white
+    surface: "#FFFFFF"
+    ink: "#1A1A1A"
+    ink_muted: "#6B6B6B"
+    accent: "#B3471F"      # editorial burnt orange
+    accent_alt: "#2E4A62"  # ink blue
+    rule: "#E3E0D8"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#1E3A4F", ink: "#FDFDFB", muted: "#C3D3DE", accent: "#D05A28" }
+    section: { bg: "#B3471F", ink: "#FFFFFF", muted: "#F4D5C6" }
+
+  dark:
+    bg: "#141414"
+    surface: "#1E1E1E"
+    ink: "#F2F0EC"
+    ink_muted: "#A8A8A8"
+    accent: "#D05A28"
+    accent_alt: "#6A8CA8"
+    rule: "#FFFFFF24"
+    on_accent: "#141414"
+
+  type:
+    display:  { family: Fraunces,        weight: 600, size: 40, line: 1.14, tracking: -0.4 }
+    heading:  { family: Fraunces,        weight: 600, size: 30, line: 1.2,  tracking: -0.2 }
+    subhead:  { family: "Source Serif 4", weight: 400, size: 15, line: 1.55, tracking: 0 }
+    body:     { family: "Source Serif 4", weight: 400, size: 13, line: 1.7,  tracking: 0 }
+    caption:  { family: Inter,            weight: 500, size: 10, line: 1.35, tracking: 0.4 }
+    eyebrow:  { family: Inter,            weight: 700, size: 10, line: 1.2,  tracking: 2.2, transform: upper }
+    stat:     { family: Fraunces,         weight: 700, size: 54, line: 1.0,  tracking: -0.8 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.03, pill: 0.40, chip: 0.03 }
+    border: { width: 0.6, color: "#E3E0D8" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "1A1A1A", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: literate, considered, tasteful, magazine-grade
+  density: medium
+  prefers:
+    - a strong lede and a calm, assured argument
+    - precise, specific language
+    - a sense of space — let the serif breathe
+  avoid:
+    - clutter, dense walls of text
+    - casual or chatty phrasing
+    - more than one accent colour
+  headline_style: >
+    Write it like a magazine cover line. "The Frame Is the Story" over
+    "Introduction to Ray Tracing". Refined, confident, specific.
+  body_style: >
+    Well-built sentences with real leading. Say it once, say it well.

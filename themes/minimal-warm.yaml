@@ -1,0 +1,76 @@
+# Minimal Warm — soft cream and terracotta restraint.
+# The warm answer to minimal-muji (which stays cool and grey): cream paper,
+# a gentle terracotta accent, one quiet serif (Lora) for emphasis over a neutral
+# sans body. Less is more, but the room is warm.
+
+name: minimal-warm
+label: Minimal Warm
+summary: Soft cream, terracotta and quiet serif — warm minimalism.
+
+tokens:
+  palette:
+    bg: "#FAF6EF"          # cream
+    surface: "#FFFFFF"
+    ink: "#3A332B"
+    ink_muted: "#8A8074"
+    accent: "#C1663B"      # terracotta
+    accent_alt: "#8C6A4F"
+    rule: "#E8E0D2"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#3A332B", ink: "#FAF6EF", muted: "#C0B4A6", accent: "#D97A4A" }
+    section: { bg: "#C1663B", ink: "#FFFFFF", muted: "#F0D6C6" }
+
+  dark:
+    bg: "#1F1C17"
+    surface: "#2A2620"
+    ink: "#F1ECE2"
+    ink_muted: "#ADA396"
+    accent: "#D97A4A"
+    accent_alt: "#B09374"
+    rule: "#FFFFFF22"
+    on_accent: "#1F1C17"
+
+  type:
+    display:  { family: Lora,  weight: 600, size: 38, line: 1.18, tracking: -0.3 }
+    heading:  { family: Lora,  weight: 600, size: 28, line: 1.24, tracking: -0.2 }
+    subhead:  { family: Inter, weight: 400, size: 15, line: 1.5,  tracking: 0 }
+    body:     { family: Inter, weight: 400, size: 13, line: 1.65, tracking: 0 }
+    caption:  { family: Inter, weight: 500, size: 10, line: 1.35, tracking: 0.4 }
+    eyebrow:  { family: Inter, weight: 600, size: 10, line: 1.2,  tracking: 2.0, transform: upper }
+    stat:     { family: Lora,  weight: 700, size: 52, line: 1.0,  tracking: -0.6 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.1, pill: 0.40, chip: 0.06 }
+    border: { width: 0, color: "#00000000" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 12, offset: 3, angle: 90, color: "8C6A4F", opacity: 0.06 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: calm, warm, considered, unhurried
+  density: low
+  prefers:
+    - a single idea per slide
+    - gentle, concrete language
+    - room to breathe around the words
+  avoid:
+    - crowding, jargon, urgency
+    - cold or clinical phrasing
+    - more than one accent
+  headline_style: >
+    Quiet and specific. "How Light Becomes a Picture" over "Ray Tracing
+    Explained". Warm, simple, exact.
+  body_style: >
+    Short calm sentences. Say one thing, then let it sit.

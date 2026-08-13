@@ -1,0 +1,77 @@
+# Mono Terminal Light — a typescript/terminal aesthetic on paper.
+# IBM Plex Mono throughout, off-white background with dark mono ink, a single
+# terminal-green accent. The LIGHT sibling of retro-terminal (dark CRT green):
+# same monospace discipline, opposite canvas, so the pair is a family, not a
+# duplicate. Reads like a printed session log.
+
+name: mono-terminal-light
+label: Mono Terminal Light
+summary: Monospace session-log aesthetic on paper — IBM Plex Mono, one green accent.
+
+tokens:
+  palette:
+    bg: "#F4F4F0"          # paper
+    surface: "#FFFFFF"
+    ink: "#1C1E1A"
+    ink_muted: "#5E6158"
+    accent: "#2E7D32"      # terminal green
+    accent_alt: "#1F4E79"  # command blue
+    rule: "#D8D8D0"
+    on_accent: "#F4F4F0"
+
+  surfaces:
+    title:   { bg: "#1C1E1A", ink: "#F4F4F0", muted: "#A9ADA1", accent: "#4CAF50" }
+    section: { bg: "#2E7D32", ink: "#F4F4F0", muted: "#C8E6C9" }
+
+  dark:
+    bg: "#14160F"
+    surface: "#1C1E17"
+    ink: "#EDF0E4"
+    ink_muted: "#A6AB9B"
+    accent: "#66BB6A"
+    accent_alt: "#64B5F6"
+    rule: "#FFFFFF26"
+    on_accent: "#14160F"
+
+  type:
+    display:  { family: "IBM Plex Mono", weight: 600, size: 38, line: 1.2,  tracking: -0.8 }
+    heading:  { family: "IBM Plex Mono", weight: 600, size: 27, line: 1.3,  tracking: -0.3 }
+    subhead:  { family: "IBM Plex Mono", weight: 400, size: 14, line: 1.55, tracking: 0 }
+    body:     { family: "IBM Plex Mono", weight: 400, size: 11.5, line: 1.7, tracking: 0 }
+    caption:  { family: "IBM Plex Mono", weight: 400, size: 9.5, line: 1.4,  tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Mono", weight: 600, size: 10.5, line: 1.25, tracking: 1.0, transform: upper }
+    stat:     { family: "IBM Plex Mono", weight: 600, size: 48, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0, pill: 0.40, chip: 0 }
+    border: { width: 1, color: "#C8C8BE" }
+    card_pad: 0.28
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "1C1E1A", opacity: 0 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: technical, efficient, unadorned, precise
+  density: medium
+  prefers:
+    - a system's clarity — steps, inputs, outputs
+    - exact terms and figures
+    - terse, information-dense phrasing
+  avoid:
+    - adjectives that decorate rather than define
+    - marketing gloss
+    - prose that reads like a brochure
+  headline_style: >
+    Type it like a command. "RAY_TRACE // HOW FRAMES ARE BUILT". Uppercase or
+    sentence case, but always exact and terse.
+  body_style: >
+    Compact and complete. Each line a fact; no filler lines.
