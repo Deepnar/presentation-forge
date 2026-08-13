@@ -808,6 +808,22 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           index={zoom}
           onIndex={setZoom}
           onClose={() => setZoom(null)}
+          // The enlarged view carries the same per-slide actions as the small
+          // card — editing/swap/image close the viewer so their modal can own
+          // the screen; punch, move, duplicate and delete run in place. Moving
+          // follows the slide to its new position.
+          actions={{
+            onEdit: (i) => { setZoom(null); setEditing(i); },
+            onPunch: (i) => punchUp(i),
+            punching: punch === zoom,
+            onSwap: (i) => { setZoom(null); openSwap(i); },
+            onImage: (i) => { setZoom(null); openImagePicker(i); },
+            onDuplicate: (i) => onDuplicate(i),
+            onDelete: (i) => { onDelete(i); setZoom((z) => Math.max(0, Math.min(slides.length - 2, z))); },
+            canDelete: slides.length > 1,
+            onMoveLeft: (i) => { onMove(i, -1); setZoom((z) => Math.max(0, z - 1)); },
+            onMoveRight: (i) => { onMove(i, 1); setZoom((z) => Math.min(slides.length - 1, z + 1)); },
+          }}
         />
       )}
 
