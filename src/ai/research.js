@@ -89,12 +89,22 @@ export function researchSummary(sources = [], notes = "") {
 
 /* ----------------------------------------------------- the deep research pass */
 
+/** The five query angles the research role expands a brief into. Each produces
+ *  a distinct search so the pass covers the keyword, scientific, practical,
+ *  regional and data/counterpoint sides rather than one listicle's top hits. */
+const ANGLES = [
+  { key: "keywords", hint: "the core terms and synonyms people search for" },
+  { key: "science", hint: "the mechanism or concept behind the topic" },
+  { key: "practical", hint: "how it is applied or done in practice" },
+  { key: "regional", hint: "the local/Indian context and its specifics" },
+  { key: "data", hint: "statistics, figures, benchmarks, studies" },
+  { key: "counterpoint", hint: "opposing views, limitations, controversies" },
+];
+
 /**
- * Expand one brief into the 2..4 queries a deep pass runs. A tiny schema on the
- * research role (the query-formulation model) splits the topic into subtopics —
- * "ray tracing" → the rasterisation pipeline, GPU hardware, industrial usage.
- * Falls back to the brief alone when the model is unavailable, so a dead Ollama
- * degrades depth, never the pass.
+ * Expand one brief into 5-7 angle queries: the 6 angles above, each a concrete
+ * search term. Falls back to the brief alone when the model is unavailable, so
+ * a dead model degrades depth, never the pass.
  */
 export async function expandQueries(brief, { chat } = {}) {
   const schema = {
@@ -103,9 +113,68 @@ export async function expandQueries(brief, { chat } = {}) {
     properties: {
       queries: {
         type: "array",
-        minItems: 2,
-        maxItems: 4,
-        items: { type: "string", minLength: 3, maxLength: 120 },
+        minItems: 5,
+        maxItems: 8,
+        items: { type: "string", minLength: 3, maxLength: 140 },
+      },
+    },
+  };
+  try {
+    const run = chat ?? chatJSON;
+    const angleList = ANGLES.map((a) => `${a.key}: ${a.hint}`).join("\n");
+    const res = await run({
+      role: "research",
+      schema,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You turn one topic into 5-7 concrete web-search queries, one per angle:\n" +
+            angleList +
+            "\nQueries must be specific search terms (plain noun phrases, not questions). " +
+            "Each must retrieve DIFFERENT material. Return {queries}.",
+        },
+        { role: "user", content: `TOPIC\n${brief}` },
+      ],
+    });
+    const queries = (res.data?.queries ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3);
+    return [...new Set([String(brief).trim(), ...queries])].slice(0, 8);
+  } catch {
+    return [String(brief).trim()];
+  }
+}
+
+/**
+ * The source-diversity guard: after a pass, check that the notes cover enough
+ * distinct domains and an academic/authoritative voice. Returns the follow-up
+ * queries for whatever is missing, or [] when the pass is diverse enough.
+ */
+export async function diversityFollowups(brief, sources, { chat } = {}) {
+  const s = researchSummary(sources);
+  const follows = [];
+  if (s.distinctDomains < 3) follows.push(`${brief} different sources sites`);
+  if (s.academicCount === 0) follows.push(`${brief} journal article research study`);
+  if (s.listicleCount > s.academicCount && s.academicCount === 0) {
+    follows.push(`${brief} .edu OR .ac.in academic source`);
+  }
+  return follows.slice(0, 2);
+}
+
+/**
+ * Gap-driven follow-up: ask the research role what an examiner for this
+ * subject would expect a strong submission to cover, and search those gaps.
+ * Returns 1-3 concrete queries, or [] when the model is unavailable.
+ */
+export async function gapQueries(brief, notes, { chat } = {}) {
+  const schema = {
+    type: "object",
+    required: ["gaps"],
+    properties: {
+      gaps: {
+        type: "array",
+        minItems: 1,
+        maxItems: 3,
+        items: { type: "string", minLength: 3, maxLength: 140 },
       },
     },
   };
@@ -118,26 +187,24 @@ export async function expandQueries(brief, { chat } = {}) {
         {
           role: "system",
           content:
-            "You split one topic into 2-4 concrete web-search queries covering its distinct " +
-            "subtopics. Queries must be specific search terms, not questions — plain noun " +
-            "phrases. Each should retrieve different material. Return {queries}.",
+            "You review a research-notes excerpt about a topic and find what is still MISSING " +
+            "for a strong academic submission. Think like an examiner: what would they expect " +
+            "to be covered? Return 1-3 concrete web-search queries for the missing material.",
         },
-        { role: "user", content: `TOPIC\n${brief}` },
+        { role: "user", content: `TOPIC\n${brief}\n\nNOTES EXCERPT\n${String(notes ?? "").slice(0, 3000)}` },
       ],
     });
-    const queries = (res.data?.queries ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3);
-    return [String(brief).trim(), ...queries].slice(0, 4);
+    return (res.data?.gaps ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3).slice(0, 3);
   } catch {
-    return [String(brief).trim()];
+    return [];
   }
 }
 
 /**
- * The deep research pass: expand the brief into several queries, run each at a
- * higher read budget than the single-shot `researchQuery`, then follow up each
- * of the top extracted sources with a query of its own. Returns the deduplicated
- * accumulated pages — the whole point is that a deck (and its report) draw from
- * several sources per subtopic rather than one search's top five.
+ * The deep research pass: expand the brief into angle queries, run each at a
+ * higher read budget than the single-shot `researchQuery`, then follow up on
+ * the top sources, then close the two gaps the diversity guard finds (missing
+ * domains / missing academic voice). Returns the deduplicated accumulated pages.
  */
 export async function deepResearch(brief, { onProgress } = {}) {
   const queries = await expandQueries(brief);
@@ -155,7 +222,7 @@ export async function deepResearch(brief, { onProgress } = {}) {
 
   for (const q of queries) {
     onProgress?.({ query: q });
-    absorb((await researchQuery(q, { limit: 10, read: 6 })).pages);
+    absorb((await researchQuery(q, { limit: 8, read: 4 })).pages);
   }
 
   // Follow up the top sources: the richest extracted pages, queried for the
@@ -168,6 +235,18 @@ export async function deepResearch(brief, { onProgress } = {}) {
     if (!q) continue;
     onProgress?.({ query: `↳ ${q}` });
     absorb((await researchQuery(q, { limit: 6, read: 3 })).pages);
+  }
+
+  // Diversity + examiner-gap follow-ups: if the pass is one-domain or has no
+  // academic voice, run the targeted queries the guard returns.
+  const sourceRecords = pages.map((p) => ({ url: p.url, title: p.title, words: p.words }));
+  for (const q of await diversityFollowups(brief, sourceRecords)) {
+    onProgress?.({ query: `↳ ${q}` });
+    absorb((await researchQuery(q, { limit: 6, read: 3 })).pages);
+  }
+  for (const q of await gapQueries(brief, pages.map((p) => p.text).join("\n\n").slice(0, 4000))) {
+    onProgress?.({ query: `gap ↳ ${q}` });
+    absorb((await researchQuery(q, { limit: 5, read: 3 })).pages);
   }
 
   return { query: brief, pages };

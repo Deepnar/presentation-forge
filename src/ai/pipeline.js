@@ -50,13 +50,16 @@ export async function uniqueSlug(base) {
 }
 
 /**
- * One research pass: explicit sources are fetched directly, otherwise the brief
- * drives a deep metasearch pass — several subtopic queries plus follow-ups on
- * the richest sources, so a deck and its report draw from more than one
- * search's top five. Returns text for the model plus a sources list.
- */
-export async function runResearch(brief, sources = [], onProgress) {
+  * One research pass: explicit sources are fetched directly, otherwise the brief
+  * drives a deep metasearch pass — several subtopic queries plus follow-ups on
+  * the richest sources, so a deck and its report draw from more than one
+  * search's top five. When `papers` is set, the same brief also hits arXiv and
+  * Crossref, and the top papers' full text joins the notes. Returns text for
+  * the model plus a sources list (web sources and papers marked kind:"paper").
+  */
+export async function runResearch(brief, sources = [], onProgress, { papers = false } = {}) {
   let out = [];
+  const allSources = [];
   if (sources.length) {
     const pages = await Promise.all(sources.map((url) => fetchPage(url)));
     out = pages.filter((p) => p.ok);
@@ -64,9 +67,26 @@ export async function runResearch(brief, sources = [], onProgress) {
     const r = await deepResearch(brief.trim(), { onProgress });
     out = r.pages;
   }
+  allSources.push(...out.map(({ url, title, words }) => ({ url, title, words })));
+
+  // The academic half: arXiv + Crossref for the brief, top papers' full text
+  // pulled into the notes. Defaults off — papers are slow (two public APIs +
+  // two full-text fetches) and the plain web pass is the fast path.
+  if (papers && brief?.trim()) {
+    onProgress?.({ status: "papers" });
+    const { searchPapers, paperFullTexts, mergePapers } = await import("../papers.js");
+    const { papers: found } = await searchPapers(brief.trim());
+    allSources.push(...mergePapers([], found));
+    const full = await paperFullTexts(found);
+    for (const f of full) {
+      out.push(f);
+      allSources.push({ url: f.url, title: f.title, words: f.words, kind: "paper" });
+    }
+  }
+
   return {
     text: out.map((s) => `## ${s.title}\n\n${s.text}`).join("\n\n"),
-    sources: out.map(({ url, title, words }) => ({ url, title, words })),
+    sources: allSources,
   };
 }
 
@@ -75,7 +95,7 @@ export async function runResearch(brief, sources = [], onProgress) {
  * come back to a planned deck, and the outline survives an interrupted browser.
  */
 export async function createDeck({
-  brief, sources = [], research = false, theme = null, maxSlides = 24,
+  brief, sources = [], research = false, papers = false, theme = null, maxSlides = 24,
   model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -98,7 +118,7 @@ export async function createDeck({
     : {};
 
   const meta = {
-    slug, brief, sources, research, theme, maxSlides,
+    slug, brief, sources, research, papers, theme, maxSlides,
     status: "planning",
     createdAt: new Date().toISOString(),
     // Per-user workspace: the owning account's email. Ownerless meta (legacy
@@ -112,9 +132,9 @@ export async function createDeck({
   // Supplied sources imply a research pass: a brief with sources but no
   // --research would otherwise silently skip research and later fail report
   // generation with "no research/notes.md" for a reason nothing explains.
-  if (research || sources.length) {
+  if (research || sources.length || papers) {
     onProgress?.({ status: "researching" });
-    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }));
+    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
     if (r.text) {
       const rdir = path.join(dir, "research");
       await mkdir(rdir, { recursive: true });
@@ -150,7 +170,7 @@ export async function createDeck({
  * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
  */
 export async function createReport({
-  brief, sources = [], research = false, depth = "full", density = "balanced",
+  brief, sources = [], research = false, papers = false, depth = "full", density = "balanced",
   model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -164,7 +184,7 @@ export async function createReport({
     : {};
 
   const meta = {
-    slug, brief, sources, research, depth, density,
+    slug, brief, sources, research, papers, depth, density,
     status: "report",
     createdAt: new Date().toISOString(),
     ...(owner ? { owner } : {}),
@@ -177,7 +197,7 @@ export async function createReport({
   // contradiction. Sources ground the pass when given, otherwise the brief
   // drives a metasearch.
   onProgress?.({ status: "researching" });
-  const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }));
+  const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
   if (!r.text) throw new Error("Research produced nothing to write the report from.");
   const rdir = path.join(dir, "research");
   await mkdir(rdir, { recursive: true });
@@ -518,7 +538,7 @@ export async function cloneDeck({ slug }) {
 
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
-                        [--research] [--max-slides <n>] [--model <id>]
+                        [--research] [--papers] [--max-slides <n>] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
@@ -569,6 +589,7 @@ function parseArgs(argv) {
     else if (a === "--sources") {
       while (argv[i + 1] && !argv[i + 1].startsWith("--")) opts.sources.push(argv[++i]);
     }     else if (a === "--research") opts.research = true;
+    else if (a === "--papers") opts.papers = true;
     else if (a === "--generate") opts.generate = true;
     else if (a === "--depth") opts.depth = argv[++i];
     else if (a === "--no-render") opts.render = false;

@@ -237,6 +237,7 @@ export default function ChatView({
         maxSlides: b.maxSlides || undefined,
         theme: b.theme || undefined,
         research: b.research,
+        papers: b.papers,
         identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
         model: model || undefined,
       },
@@ -358,6 +359,7 @@ export default function ChatView({
         depth: b.depth ?? "full",
         density: b.density ?? "balanced",
         research: b.research ?? true,
+        papers: b.papers,
         identity: identityPayload,
         model: model || undefined,
       },
@@ -1195,6 +1197,7 @@ function BrandingCard({ value, onNext }) {
 
 function ResearchCard({ value, onNext }) {
   const [v, setV] = useState(value ?? false);
+  const [papers, setPapers] = useState(false);
   return (
     <div>
       <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
@@ -1209,7 +1212,22 @@ function ResearchCard({ value, onNext }) {
         value={v}
         onPick={setV}
       />
-      <CardFooter onNext={() => onNext({ research: v })} nextLabel="Finish briefing" />
+      {v && (
+        <div className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2">
+          <div className="mb-1 text-[11px] text-fg-faint">
+            Also search arXiv and Crossref for academic papers on the topic?
+          </div>
+          <ChoicePills
+            options={[
+              { value: true, label: "Papers too" },
+              { value: false, label: "Web only" },
+            ]}
+            value={papers}
+            onPick={setPapers}
+          />
+        </div>
+      )}
+      <CardFooter onNext={() => onNext({ research: v, papers: v && papers })} nextLabel="Finish briefing" />
     </div>
   );
 }
@@ -1254,7 +1272,7 @@ function SummaryLine({ chat, themeLabel }) {
         `${b.depth === "brief" ? "brief" : "full"} depth`,
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
-        b.research ? "researched" : "no research pass",
+        b.research ? (b.papers ? "research + papers" : "researched") : "no research pass",
       ]
     : [
         b.title || "Untitled",
@@ -1262,7 +1280,7 @@ function SummaryLine({ chat, themeLabel }) {
         themeLabel(b.theme),
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
-        b.research ? "researched" : "no research pass",
+        b.research ? (b.papers ? "research + papers" : "researched") : "no research pass",
       ];
   if (presenting.length) bits.push(`${presenting.length} presenting`);
   return (

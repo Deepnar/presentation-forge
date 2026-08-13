@@ -14,6 +14,15 @@ import TurndownService from "turndown";
 const SEARX = process.env.SEARXNG_URL ?? "http://localhost:8888";
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
 
+/**
+ * The Jina Reader (https://r.jina.ai/<url>) is a second extraction path for
+ * pages Readability mangles — JS-heavy, paywalled, behind redirects. It is a
+ * free cloud service, so it stays OPT-IN: without this flag the pipeline is
+ * exactly as local as before, and the fallback only ever fires on a page that
+ * Readability already failed to extract.
+ */
+const JINA_ENABLED = process.env.RESEARCH_JINA === "1";
+
 const FETCH_TIMEOUT = 12_000;
 const MAX_BYTES = 4 * 1024 * 1024;   // pathological pages exist; cap before parsing
 const MAX_CONCURRENT = 4;            // politeness, and SearXNG's upstreams throttle
@@ -158,30 +167,71 @@ export async function fetchPage(url) {
       const { document } = parseHTML(html);
       const article = new Readability(document, { charThreshold: 250 }).parse();
 
-      if (!article?.content) return { ...base, error: "no extractable article body" };
+      if (article?.content) {
+        const text = turndown.turndown(article.content)
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+        if (text.length >= 200) {
+          return {
+            url: res.url || url,
+            host: hostOf(res.url || url),
+            ok: true,
+            title: (article.title || document.title || "").trim(),
+            byline: article.byline?.trim() ?? null,
+            siteName: article.siteName?.trim() ?? null,
+            excerpt: article.excerpt?.trim() ?? null,
+            words: text.split(/\s+/).length,
+            text,
+            error: null,
+          };
+        }
+      }
 
-      const text = turndown.turndown(article.content)
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
+      // Readability failed or the body was too thin — a JS-heavy or paywalled
+      // page is exactly what the Jina Reader exists for. It is a cloud service,
+      // so this path is gated behind RESEARCH_JINA=1; without it the page is
+      // reported as unextractable exactly as before.
+      if (JINA_ENABLED) {
+        const jina = await jinaRead(url, res.url || url);
+        if (jina?.text) return { ...jina, error: null };
+      }
 
-      if (text.length < 200) return { ...base, error: "article body too short to be useful" };
-
-      return {
-        url: res.url || url,
-        host: hostOf(res.url || url),
-        ok: true,
-        title: (article.title || document.title || "").trim(),
-        byline: article.byline?.trim() ?? null,
-        siteName: article.siteName?.trim() ?? null,
-        excerpt: article.excerpt?.trim() ?? null,
-        words: text.split(/\s+/).length,
-        text,
-        error: null,
-      };
+      return { ...base, error: article?.content ? "article body too short to be useful" : "no extractable article body" };
     } catch (err) {
       return { ...base, error: err.name === "AbortError" ? "timed out" : err.message };
     }
   });
+}
+
+/**
+ * The Jina Reader extraction path: GET https://r.jina.ai/<url> returns the
+ * page as clean markdown, which is exactly the shape Readability produces, so
+ * a Jina result slots into the same { title, text, words } contract. Capped to
+ * the same size budget as a Readability parse.
+ */
+async function jinaRead(originalUrl, finalUrl) {
+  const target = `https://r.jina.ai/${encodeURIComponent(finalUrl || originalUrl)}`;
+  let res;
+  try {
+    res = await withTimeout(target, { headers: { "User-Agent": UA, Accept: "text/plain" } }, 20_000);
+  } catch {
+    return { ok: false, error: "jina timeout" };
+  }
+  if (!res.ok) return { ok: false, error: `jina HTTP ${res.status}` };
+
+  const text = (await res.text()).trim();
+  if (text.length < 200) return { ok: false, error: "jina body too short" };
+
+  const firstLine = text.split("\n").find((l) => l.trim());
+  const title = firstLine?.replace(/^#+\s*/, "").trim() ?? finalUrl;
+  return {
+    ok: true,
+    url: finalUrl || originalUrl,
+    host: hostOf(finalUrl || originalUrl),
+    title: title.slice(0, 200),
+    words: text.split(/\s+/).length,
+    text: text.slice(0, MAX_BYTES),
+  };
 }
 
 /** Search, then extract the top N in parallel. The unit a research turn uses. */

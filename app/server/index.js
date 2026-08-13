@@ -811,10 +811,10 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, theme, maxSlides, model, identity } = req.body ?? {};
+  const { brief, sources, research, papers, theme, maxSlides, model, identity } = req.body ?? {};
   (async () => {
     const r = await createDeck({
-      brief, sources, research, theme, maxSlides, model, identity,
+      brief, sources, research, papers, theme, maxSlides, model, identity,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
@@ -904,7 +904,7 @@ app.post("/api/reports", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, depth, density, model, identity } = req.body ?? {};
+  const { brief, sources, research, papers, depth, density, model, identity } = req.body ?? {};
   if (!brief?.trim()) {
     sse.send("error", { error: "body must include a `brief`" });
     return sse.close();
@@ -912,7 +912,7 @@ app.post("/api/reports", (req, res) => {
 
   (async () => {
     const r = await createReport({
-      brief, sources, research, depth, density, model, identity,
+      brief, sources, research, papers, depth, density, model, identity,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),

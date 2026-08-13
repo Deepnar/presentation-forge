@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { excerptResearch, RESEARCH_EXCERPT, expandQueries, researchSummary } from "../src/ai/research.js";
+import { excerptResearch, RESEARCH_EXCERPT, expandQueries, researchSummary, diversityFollowups, gapQueries } from "../src/ai/research.js";
 
 test("short research passes through unchanged", () => {
   const text = "## One\n\nSome notes under the cap.";
@@ -26,10 +26,12 @@ test("the cap stays well under the author role's 32K context", () => {
   assert.ok(RESEARCH_EXCERPT < 100_000);
 });
 
-test("expandQueries uses the model's subtopic queries, brief first", async () => {
-  const chat = async () => ({ data: { queries: ["query two", "query three"] } });
+test("expandQueries uses the model's angle queries, brief first", async () => {
+  const chat = async () => ({ data: { queries: ["ray tracing pipeline", "ray tracing GPU hardware", "ray tracing movies", "ray tracing india", "ray tracing benchmark data", "ray tracing limitations"] } });
   const out = await expandQueries("Ray tracing", { chat });
-  assert.deepEqual(out, ["Ray tracing", "query two", "query three"]);
+  assert.equal(out[0], "Ray tracing");
+  assert.ok(out.length >= 5, "the angle expansion yields several queries");
+  assert.deepEqual(out.slice(1), ["ray tracing pipeline", "ray tracing GPU hardware", "ray tracing movies", "ray tracing india", "ray tracing benchmark data", "ray tracing limitations"]);
 });
 
 test("expandQueries falls back to the brief alone when the model is unavailable", async () => {
@@ -40,6 +42,27 @@ test("expandQueries falls back to the brief alone when the model is unavailable"
 test("expandQueries drops malformed expansions but keeps the brief", async () => {
   const chat = async () => ({ data: { queries: ["ok query", "x", 7] } });
   assert.deepEqual(await expandQueries("Ray tracing", { chat }), ["Ray tracing", "ok query"]);
+});
+
+test("diversityFollowups suggests queries when a pass is one-domain or has no academic voice", async () => {
+  const oneDomain = await diversityFollowups("topic", [
+    { url: "https://a.example/x", title: "X" },
+    { url: "https://a.example/y", title: "Y" },
+  ]);
+  assert.ok(oneDomain.length >= 1);
+  assert.ok(oneDomain.some((q) => /different sources/i.test(q)));
+});
+
+test("gapQueries returns examiner-gap searches from the model", async () => {
+  const chat = async () => ({ data: { gaps: ["missing economic analysis", "missing comparison"] } });
+  const out = await gapQueries("topic", "notes", { chat });
+  assert.deepEqual(out, ["missing economic analysis", "missing comparison"]);
+});
+
+test("gapQueries returns [] when the model is unavailable", async () => {
+  const chat = async () => { throw new Error("down"); };
+  const out = await gapQueries("topic", "notes", { chat });
+  assert.deepEqual(out, []);
 });
 
 test("researchSummary counts sources, domains, and academic vs listicle", () => {

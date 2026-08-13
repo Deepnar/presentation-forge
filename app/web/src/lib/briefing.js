@@ -152,6 +152,7 @@ export function initialBriefing(identity) {
     branding: "full",   // full | minimal | none
     depth: "full",      // report only: full | brief
     research: false,
+    papers: false,      // also search arXiv + Crossref for academic papers
   };
 }
 
