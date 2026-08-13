@@ -3,7 +3,6 @@ import { api } from "./api.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import DocsModal from "./components/DocsModal.jsx";
-import ChatPanel from "./components/ChatPanel.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import LoginScreen from "./components/LoginScreen.jsx";
 import ParticleField from "./components/ParticleField.jsx";
@@ -34,7 +33,6 @@ export default function App() {
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
-  const [rightOpen, setRightOpen] = useState(() => localStorage.getItem("forge.rightRail") === "1");
   const [docsOpen, setDocsOpen] = useState(false);
   const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -68,7 +66,6 @@ export default function App() {
   }, [user?.email, deckVersion]);
 
   useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
-  useEffect(() => localStorage.setItem("forge.rightRail", rightOpen ? "1" : "0"), [rightOpen]);
 
   // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat, Escape closes
   // the docs modal.
@@ -281,35 +278,6 @@ export default function App() {
               />
             )}
           </main>
-
-          {view === "deck" && (
-            <section
-              onMouseEnter={() => setRailHover(true)}
-              onMouseLeave={() => setRailHover(false)}
-              className={`flex shrink-0 flex-col border-l border-line bg-panel transition-[width] duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${
-                rightOpen ? "w-80" : "w-10"
-              }`}
-            >
-              {rightOpen ? (
-                <div className="flex-1 overflow-hidden">
-                  <ChatPanel slug={activeSlug} onDeckChanged={bumpDeck} onClose={() => setRightOpen(false)} />
-                </div>
-              ) : (
-                <button
-                  onClick={() => setRightOpen(true)}
-                  title="Open chat"
-                  className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-fg-faint transition hover:text-fg"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5Z" />
-                  </svg>
-                  <span className="text-[10px] font-medium uppercase tracking-wider" style={{ writingMode: "vertical-rl" }}>
-                    Chat
-                  </span>
-                </button>
-              )}
-            </section>
-          )}
         </div>
 
         {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
