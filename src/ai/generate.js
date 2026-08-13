@@ -1,6 +1,6 @@
 import { chatJSON } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
-import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget } from "./catalog.js";
+import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
 
@@ -105,6 +105,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     "  `split-screen`, `side-by-side`) unless the brief actually names image files —",
     "  the writer has no image to draw from and must not invent one.",
     `- Structure the talk as about ${sectionCap} major parts, each member taking one.`,
+    dataAffinityNote(research),
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
     voice.density ? `- Density: ${voice.density}.` : "",
   ].filter(Boolean).join("\n");
@@ -189,6 +190,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     "",
     catalog,
     "",
+    dataAffinityNote(research),
     voice.headline_style ? `Headlines: ${voice.headline_style.trim()}` : "",
     voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
     voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",

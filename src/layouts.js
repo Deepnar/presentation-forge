@@ -813,7 +813,7 @@ export const layouts = {
     slide.addChart(kindMap[c.kind] ?? "bar", series, {
       x: box.x, y, w: cw, h: ch,
       barDir: c.kind === "hbar" ? "bar" : "col",
-      barStacked: c.kind === "stacked-bar",
+      barGrouping: c.kind === "stacked-bar" ? "stacked" : undefined,
       chartColors: colors,
       varyColors: isCircular,
       showLegend: c.series.length > 1,

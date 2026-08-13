@@ -196,6 +196,49 @@ export function typeLabel(type) {
 }
 
 /**
+ * The chart kinds the schema's `chart` type accepts, in one place so the
+ * steering hint can name them without re-deriving the enum.
+ */
+export const CHART_KINDS = ["bar", "hbar", "line", "area", "pie", "doughnut", "scatter", "radar", "stacked-bar"];
+
+/**
+ * How many distinct numeric facts the research carries. A fact is a number
+ * with a unit or percentage ("180 GW", "4.2%") or a 3+ digit figure ("1789",
+ * "1.23"), deduplicated so one figure repeated across sources counts once.
+ * This is the "≥2 numeric facts" threshold behind the data-affinity steering.
+ */
+export function numericFactCount(research) {
+  const t = String(research ?? "");
+  const facts = new Set();
+  const re = /\b(\d[\d,]*(?:\.\d+)?)(\s*%|\s*(?:kwh?|gwh?|twh?|mwh?|gw|mw|kw|w|kg|km|mm|cm|v|a|hz|gb|tb|billion|million|thousand|people|years?|yr|tonnes?|tons?|usd|eur|inr)\b)?/gi;
+  for (const m of t.matchAll(re)) {
+    const num = m[1].replace(/,/g, "");
+    if (m[2]) facts.add(`${m[1]} ${m[2].trim().toLowerCase()}`);
+    else if (/^\d{3,}$/.test(num) || num.includes(".")) facts.add(num);
+  }
+  return facts.size;
+}
+
+/**
+ * The data-affinity steering note: when the research carries real figures, a
+ * data beat should be visualised as a chart, not restated as big numbers. The
+ * planner (and the writer, for chart slides) is told the chart kinds and which
+ * one matches which comparison. Returns null when the research is not numeric.
+ */
+export function dataAffinityNote(research) {
+  const count = numericFactCount(research);
+  if (count < 2) return null;
+  return (
+    `The research carries ${count} numeric facts — figures, percentages, comparisons, trends. ` +
+    "Data beats should be CHART slides (type `chart`, kinds: " +
+    `${CHART_KINDS.join("|")}) rather than stats/big-number/cards, so the numbers are actually ` +
+    "visualised: scatter for correlations, radar for multi-attribute profiles, stacked-bar for " +
+    "composition over time, bar/line/area for trends and comparisons, pie/doughnut for shares. " +
+    "The chart's numbers must still come verbatim from the research."
+  );
+}
+
+/**
  * The enum's plain-language descriptions, for the outline review and the inline
  * editor. Walks the schema so the set never drifts from the vocabulary, and
  * throws on a type the map has missed — the guard that keeps the two in lockstep.
