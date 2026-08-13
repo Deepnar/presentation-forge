@@ -90,6 +90,13 @@ broken alpha in the source.
 dividers deliberately break out of it, so the footer and crest pick their
 variant from the background the layout actually painted.
 
+**pptxgenjs silently drops unknown chart options.** `barStacked` was never a
+real option — the correct key is `barGrouping: "stacked"` — but the chart
+wrote `grouping val="clustered"` and nothing complained, so every "stacked"
+chart rendered as grouped bars. Options a library does not recognise fail
+silent. The only way to know a chart's grouping is to unzip the pptx and read
+the `<c:grouping>` element, which is now a permanent regression test.
+
 ---
 
 ## Fonts
