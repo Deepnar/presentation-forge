@@ -11,7 +11,7 @@ import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity, convertSlideType } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
@@ -428,6 +428,48 @@ app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
   }
 }));
 
+/**
+ * The type swap: change one slide's type, preserving section and presenter.
+ * Compatible types remap locally; the rest get a scoped model rewrite. Same
+ * SSE transport as generation so a slow cloud rewrite streams progress.
+ */
+app.post("/api/decks/:slug/slides/:index/convert", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { type, model } = req.body ?? {};
+  if (!type) {
+    sse.send("error", { error: "body must include a target `type`" });
+    return sse.close();
+  }
+
+  (async () => {
+    const r = await convertSlideType({
+      slug: req.params.slug,
+      index: Number(req.params.index),
+      type,
+      model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", {
+      slug: r.slug,
+      index: r.index,
+      slide: r.slide,
+      method: r.method,
+      slides: r.slides,
+      thumbs: r.thumbs,
+      problems: r.problems,
+    });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
 app.get("/api/decks/:slug/preview/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "out", "preview", path.basename(req.params.file));
   try {
@@ -676,6 +718,91 @@ app.get("/api/types", wrap(async (_req, res) => {
     types: schema.definitions.slide.properties.type.enum,
     descriptions,
   });
+}));
+
+/** Specimen previews for every type in the given theme, in enum order. */
+app.get("/api/types/:theme/specimens", wrap(async (req, res) => {
+  const themeName = req.params.theme === "default" ? "warm-humanist" : req.params.theme;
+  const schema = await deckSchema();
+  const types = schema.definitions.slide.properties.type.enum;
+  const { specimenDeck } = await import("../../src/specimens.js");
+  const deck = await specimenDeck();
+  deck.theme = themeName;
+  deck.slides.forEach((s) => { delete s.presenter; });
+
+  const cacheDir = path.join(ROOT, "decks", ".specimen-cache", themeName);
+  const previewDir = path.join(cacheDir, "preview");
+  const expected = deck.slides.length;
+  let rendered = false;
+  try {
+    const existing = await readdir(path.join(previewDir, "thumbs"));
+    rendered = existing.length >= expected;
+  } catch { /* render below */ }
+  if (!rendered) {
+    const deckFile = path.join(cacheDir, "specimen.yaml");
+    await mkdir(cacheDir, { recursive: true });
+    await writeFile(deckFile, YAML.stringify(deck), "utf8");
+    const r = await render({ deckFile, themeName });
+    await preview(r.outFile, { outDir: previewDir, dpi: 60 });
+  }
+
+  ok(res, {
+    types,
+    previews: buildSpecimenUrls(themeName, types.length),
+  });
+}));
+
+/**
+ * The type-swap gallery: render one specimen slide per type in a given theme
+ * and return a per-type preview URL. The specimens are assembled once from the
+ * committed demo decks (src/specimens.js), rendered into a gitignored
+ * cache dir keyed by theme, and the PNGs are served back — so the gallery
+ * shows every type AS IT RENDERS in the current theme, never a stub.
+ */
+app.get("/api/specimens/:theme", wrap(async (req, res) => {
+  const themeName = req.params.theme === "default" ? "warm-humanist" : req.params.theme;
+  const { specimenDeck } = await import("../../src/specimens.js");
+  const deck = await specimenDeck();
+  deck.theme = themeName;
+  deck.slides.forEach((s) => { delete s.presenter; });
+
+  // Renders land in a gitignored cache: <root>/decks/.specimen-cache/<theme>/.
+  const cacheDir = path.join(ROOT, "decks", ".specimen-cache", themeName);
+  const previewDir = path.join(cacheDir, "preview");
+  const expected = deck.slides.length;
+  try {
+    const existing = await readdir(path.join(previewDir, "thumbs"));
+    if (existing.length >= expected) {
+      return ok(res, { previews: buildSpecimenUrls(themeName, expected) });
+    }
+  } catch { /* need to render */ }
+
+  const deckFile = path.join(cacheDir, "specimen.yaml");
+  await mkdir(cacheDir, { recursive: true });
+  await writeFile(deckFile, YAML.stringify(deck), "utf8");
+  const r = await render({ deckFile, themeName });
+  await preview(r.outFile, { outDir: previewDir, dpi: 60 });
+
+  ok(res, { previews: buildSpecimenUrls(themeName, expected) });
+}));
+
+function buildSpecimenUrls(themeName, count) {
+  const base = `/api/specimens/${encodeURIComponent(themeName)}/`;
+  return Array.from({ length: count }, (_, i) => `${base}slide-${String(i + 1).padStart(2, "0")}.png`);
+}
+
+app.get("/api/specimens/:theme/:file", wrap(async (req, res) => {
+  const themeName = req.params.theme === "default" ? "warm-humanist" : req.params.theme;
+  const file = path.join(ROOT, "decks", ".specimen-cache", themeName, "preview", path.basename(req.params.file));
+  try {
+    await stat(file);
+    // res.sendFile's default dotfiles policy ignores files under a dot directory
+    // like .specimen-cache; the cache is a legitimate generated artefact, so
+    // serve it explicitly.
+    res.sendFile(file, { dotfiles: "allow" });
+  } catch {
+    res.status(404).end();
+  }
 }));
 
 /** Brief → outline. Long-running; streams research/planning progress as SSE. */

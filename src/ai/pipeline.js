@@ -4,7 +4,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
-import { planDeck, generateDeck, sweepDeck } from "./generate.js";
+import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
@@ -430,6 +430,61 @@ export async function sweepDensity({
   };
 }
 
+/**
+ * The type-swap conversion: change one slide's type from the deck detail's
+ * gallery. Compatible types remap locally (bullets → numbered list, cards →
+ * feature grid); the rest get a scoped model rewrite grounded in the research.
+ * Persists deck.yaml, grounds, renders. Returns the converted slide and the
+ * new previews so the UI can show the result immediately.
+ */
+export async function convertSlideType({
+  slug, index, type, model, onProgress, signal,
+}) {
+  const dir = path.join(DECKS, slug);
+  const deckFile = path.join(dir, "deck.yaml");
+  const deck = YAML.parse(await readFile(deckFile, "utf8"));
+  const themeName = deck.theme ?? "warm-humanist";
+  const themeObj = await loadTheme(themeName);
+
+  let researchText = "";
+  try {
+    researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
+  } catch { /* no research pass */ }
+
+  onProgress?.({ status: "converting" });
+  const r = await convertSlide({
+    deck,
+    index: Number(index),
+    targetType: type,
+    theme: themeObj,
+    research: excerptResearch(researchText),
+    model,
+    signal,
+  });
+
+  if (!r.slide) {
+    throw new Error(`Could not convert slide ${index + 1} to "${type}" — kept the original.`);
+  }
+
+  const nextDeck = { ...deck, slides: deck.slides.map((s, i) => (i === Number(index) ? r.slide : s)) };
+  const grounded = groundDeck(nextDeck, researchText);
+  await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
+
+  onProgress?.({ status: "rendering" });
+  const rendered = await render({ deckFile, themeName });
+  const p = await preview(rendered.outFile, { dpi: 110 });
+  const base = `/api/decks/${slug}/preview`;
+
+  return {
+    slug,
+    index: Number(index),
+    slide: r.slide,
+    method: r.method,
+    slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
+    thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
+    problems: [...(rendered.problems ?? []), ...grounded.problems],
+  };
+}
 /**
  * Clone a deck under a new slug — the "iterate without fear" affordance. Every
  * content file (deck, plan, meta, report, research) copies across so the clone

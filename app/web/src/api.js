@@ -103,6 +103,11 @@ export const api = {
   types: () => call("/api/types"),
   styles: () => call("/api/styles"),
   templates: () => call("/api/templates"),
+  // The type-swap gallery: one rendered preview per slide type in a theme.
+  typeSpecimens: (theme) => call(`/api/types/${encodeURIComponent(theme || "default")}/specimens`),
+  // Change one slide's type — remap when compatible, model rewrite otherwise.
+  convertSlide: (slug, index, payload, handlers) =>
+    stream(`/api/decks/${slug}/slides/${index}/convert`, payload, handlers),
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),

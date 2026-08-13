@@ -5,6 +5,7 @@ app/web/dist/
 
 # Generated artefacts — reproducible from sources, never committed.
 decks/*/out/
+decks/.specimen-cache/
 .plate-cache/
 
 # Per-deck chat state — conversation transcript and extracted standing

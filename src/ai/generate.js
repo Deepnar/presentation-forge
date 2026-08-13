@@ -467,3 +467,146 @@ export async function sweepDeck({
 
   return { deck: out, problems, swept };
 }
+
+/**
+ * A content-compatible type map for the type swap: when the target type can
+ * carry the current slide's content unchanged in shape, remap instead of asking
+ * the model. bullets → any list type keeps `bullets`; cards → feature-grid
+ * keeps card bodies. Returns a slide with the same content under the new type
+ * when the mapping is lossless, else null (meaning: the model rewrites).
+ */
+const COMPATIBLE_TYPES = {
+  bullets: ["numbered-list", "checklist", "icon-list", "stacked-list"],
+  "numbered-list": ["bullets", "checklist", "icon-list", "stacked-list"],
+  checklist: ["bullets", "numbered-list", "icon-list", "stacked-list"],
+  "feature-grid": ["cards", "grid-items"],
+  cards: ["feature-grid", "grid-items"],
+  "grid-items": ["feature-grid", "cards"],
+  "icon-list": ["bullets", "numbered-list", "checklist", "stacked-list"],
+  "stacked-list": ["bullets", "numbered-list", "checklist", "icon-list"],
+};
+
+export function compatibleRemap(slide, targetType) {
+  const from = COMPATIBLE_TYPES[slide.type];
+  if (!from || !from.includes(targetType)) return null;
+
+  const out = { ...slide, type: targetType };
+  const src = slide.bullets ?? slide.items ?? slide.rows ?? [];
+
+  // List-ish targets all take an `items` array but with different item shapes:
+  // numbered-list takes plain strings, checklist/icon-list take {text},
+  // stacked-list takes {title, body, tag}.
+  if (targetType === "numbered-list") {
+    out.items = src.map((s) => (typeof s === "string" ? s : s.text ?? s.title ?? s.detail ?? ""));
+    delete out.bullets; delete out.rows;
+  } else if (targetType === "checklist" || targetType === "icon-list") {
+    out.items = src.map((s) => ({ text: typeof s === "string" ? s : s.text ?? s.title ?? s.detail ?? "", ...(targetType === "icon-list" ? { icon: "" } : {}) }));
+    delete out.bullets; delete out.rows;
+  } else if (targetType === "stacked-list") {
+    out.items = src.map((s) => {
+      const t = typeof s === "string" ? s : s.title ?? s.text ?? "";
+      const b = typeof s === "string" ? "" : s.detail ?? s.body ?? "";
+      return { title: t.slice(0, 30), ...(b ? { body: b.slice(0, 120) } : {}) };
+    });
+    delete out.bullets; delete out.rows;
+  } else if (targetType === "feature-grid") {
+    out.items = (slide.cards ?? slide.items ?? []).map((c) => ({
+      title: (c.title ?? c.headline ?? "").slice(0, 60),
+      body: (c.body ?? c.text ?? "").slice(0, 220),
+    }));
+    delete out.cards;
+  } else if (targetType === "grid-items") {
+    out.items = (slide.cards ?? slide.items ?? []).map((c, i) => ({
+      label: (c.title ?? c.headline ?? `Item ${i + 1}`).slice(0, 20),
+      value: (c.body ?? c.text ?? "").slice(0, 60),
+    }));
+    delete out.cards;
+  }
+
+  delete out.image;
+  return out;
+}
+
+/**
+ * The type-swap conversion: change ONE slide to a new type, preserving its
+ * section and presenter. When the content maps cleanly (bullets → numbered
+ * list, cards → feature grid), the slide is remapped locally and no model runs.
+ * Otherwise a scoped model call rewrites the slide's content for the target
+ * type, grounded in the deck's research like the density sweep. Returns the
+ * converted slide (validated) or null.
+ */
+export async function convertSlide({
+  deck, index, targetType, theme, research = "", model, signal, chat = chatJSON,
+}) {
+  const slide = deck.slides[index];
+  if (!slide) throw new Error(`no slide at index ${index}`);
+
+  const remapped = compatibleRemap(slide, targetType);
+  if (remapped) {
+    // Validate the remap: if it happens to satisfy the schema, ship it.
+    const { ok } = await validateDeck({ ...deck, slides: deck.slides.map((s, i) => (i === index ? remapped : s)) });
+    if (ok) return { slide: remapped, method: "remap" };
+    // fall through to the model — a lossless-looking map can still need a field.
+  }
+
+  const schema = await deckSchema();
+  const typeCatalog = await catalogForType(targetType);
+  const buildOps = buildOpsSchema(schema, { slideCount: deck.slides.length, onlyTypes: [targetType] });
+  const isDivider = DIVIDER_TYPES.has(targetType);
+  const voice = theme?.voice ?? {};
+  const current = Object.entries(slide)
+    .map(([k, v]) => (k === "notes" ? null : `${k}: ${Array.isArray(v) ? v.join(" | ") : v}`))
+    .filter(Boolean)
+    .join("\n");
+
+  const system = [
+    `You convert ONE slide of a presentation to type "${targetType}".`,
+    "Rewrite its content to fit the new type naturally — reuse the ideas and facts",
+    "already on the slide, at the same density. Layout, colour and font are not yours.",
+    isDivider
+      ? "This is a divider slide: it announces structure. Keep it minimal, no presenter."
+      : `Keep the presenter exactly as it was (${slide.presenter ?? "none"}), and keep the section.`,
+    "",
+    "Emit exactly one replace_slide op at the slide's index with type \"" + targetType + "\".",
+    "Every statistic must come from the RESEARCH NOTES below — never invent one.",
+    typeCatalog,
+    "",
+    voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
+    voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
+  ].filter(Boolean).join("\n");
+
+  const res = await chat({
+    role: "author",
+    model,
+    signal,
+    schema: buildOps,
+    messages: [
+      { role: "system", content: system },
+      {
+        role: "user",
+        content: [
+          research ? `RESEARCH NOTES\n${research}\n` : "",
+          `CURRENT SLIDE [index ${index}]\n${current}`,
+          `\nConvert this slide to type ${targetType}.`,
+        ].filter(Boolean).join("\n"),
+      },
+    ],
+  });
+
+  const ops = (res.data?.ops ?? []).filter((o) => o.op === "replace_slide" && o.index === index);
+  if (!ops.length) return { slide: null, method: "model", errors: ["no usable op"] };
+
+  const applied = applyOps(deck, ops);
+  const candidate = applied.ok ? applied.deck.slides[index] : null;
+  if (!candidate) return { slide: null, method: "model", errors: applied.errors };
+
+  // Preserve section + presenter contract unless it's a divider.
+  if (isDivider) delete candidate.presenter;
+  else candidate.presenter = slide.presenter;
+  candidate.section = slide.section;
+
+  const { ok } = await validateDeck(applied.deck);
+  return ok
+    ? { slide: candidate, method: "model" }
+    : { slide: null, method: "model", errors: [] };
+}
