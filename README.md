@@ -1,28 +1,35 @@
 # Presentation Forge
 
-Local-first generator for academic presentations and reports. A brief goes in,
-a themed `.pptx` comes out. Node + pptxgenjs + local models via Ollama by
-default, with an optional cloud backend per role.
+> A brief goes in — a themed, graded-format deck and report come out.
+
+**Local-first academic presentation and report generator.** Node + pptxgenjs +
+local models by default, optional cloud backend per role. Built for TCET-style
+graded submissions: institutional chrome, fixed section order, per-member
+presenter blocks, and a report that matches the donor template.
+
+`topic in → guided briefing → outline gate → deck + report out`
 
 ```
 brief ──► research ──► outline ──► [you approve] ──► content ──► render ──► critique
           SearXNG      plan.yaml                     deck.yaml   .pptx      vision
+          + papers     (plain-language cards)                   .docx
 ```
 
-Models are local by default: every role resolves to an Ollama model and
-nothing leaves the machine unless you opt in. To use a cloud model for a role,
-add a provider under `providers:` in `config/models.yaml` and set
-`provider:` on that role — OpenAI-compatible endpoints only, key read from an
-environment variable. Local and cloud roles can mix (e.g. local author, cloud
-critic), and the rest of this README assumes the local default.
+---
 
-## The idea
+## Tags
+
+`node` · `pptxgenjs` · `ollama` · `local-first` · `chat-first UI` · `50+ slide types`
+`searxng` · `arxiv/crossref research` · `report renderer` · `docker` · `MIT`
+
+---
+
+## Why this shape
 
 The obvious approach — ask a model to write pptxgenjs code — falls apart with a
 local model. Slide layout is coordinate arithmetic, text metrics and overflow
 handling, which is exactly what small models are worst at, and it is unstable:
-every regeneration reshuffles the geometry, so iterating on content destroys the
-design and iterating on design destroys the content.
+every regeneration reshuffles the geometry.
 
 So layout is made unreachable. Three layers, strictly separated:
 
@@ -32,14 +39,44 @@ So layout is made unreachable. Three layers, strictly separated:
 | **theme** | palette, type, spacing, shape | YAML, by hand |
 | **content** | what the slides actually say | the model, as validated YAML |
 
-The model picks *what to say* and *which of 15 slide types fits each beat*. It
+The model picks *what to say* and *which of 75 slide types fits each beat*. It
 cannot place anything, colour anything, or choose a font. All design quality
 lives in theme files where it is deterministic and tunable.
+
+## What it does today
+
+- **Chat-first UI** — login, per-user workspaces, and a chat window as the
+  whole app: send a topic, answer a guided one-question-at-a-time briefing
+  (title, team, guide, subject, theme gallery with live previews, slide count,
+  density, branding), approve a plain-language outline, and watch it generate.
+  The chat stays alive after the deck is ready and edits it by conversation.
+- **75 slide types** in 14 families — data/stats, charts (line/bar/scatter/
+  radar/stacked-bar), comparison, process/flow, timeline, quote, callout,
+  image/table, diagram-ish (framework, matrix, venn, hierarchy), definitions,
+  team, hero/dividers — each with a live per-theme preview and per-slide swap.
+- **Research that researches** — multi-angle queries, source-diversity
+  scoring, claim cross-checking against `research/notes.md`, arXiv/Crossref
+  paper search, optional Jina Reader fallback, and a grounding pass that flags
+  invented statistics instead of shipping them.
+- **Graded reports** — template-donor `.docx` renderer (institutional chrome
+  byte-identical to the donor, fixed section order, watermark preserved),
+  standalone brief→report, deck-from-report, full/brief depth, Word-page
+  previews, one-click render-and-download.
+- **Content quality controls** — global density sweep (sparse/balanced/dense),
+  auto-trim of overfull slides to a readable font floor, presenter blocks that
+  are contiguous and balanced (every member gets a slide when the count
+  allows), dividers never assigned.
+- **20+ themes** — `tokens`/`voice` split per theme; native shapes or the
+  Chrome plate renderer (glassmorphism, clay, neumorphism, aurora).
+- **Deployment-ready** — one container (Node + LibreOffice + Chrome +
+  SearXNG), env-driven config, monthly old-data sweep with SMTP mail, auth
+  rate limits, CORS hardening.
 
 ## Requirements
 
 - Node 24+
 - [Ollama](https://ollama.com) with at least one instruction-following model
+  (or a cloud provider in `config/models.yaml`)
 - LibreOffice and poppler (`pdftoppm`) — used to rasterise slides for review
 - Docker, if you want local web search
 
@@ -56,14 +93,14 @@ npm run searxng               # optional: local metasearch on :8888
 ## Use
 
 ```bash
-npm run render decks/gpu-demo/deck.yaml      # deck.yaml -> .pptx
-npm run preview decks/gpu-demo/out/deck.pptx # .pptx -> PNGs, so you can SEE it
-npm run dev                                  # web UI :5173, API :5174
-npm run search "your query"                  # research from the terminal
-npm run sweep -- --dry-run                   # preview the monthly deck sweep
+npm run dev                                   # web UI :5173, API :5174 — the app
+npm run render decks/gpu-demo/deck.yaml       # deck.yaml -> .pptx
+npm run preview decks/gpu-demo/out/deck.pptx  # .pptx -> PNGs, so you can SEE it
+npm run search "your query"                   # research from the terminal
+npm run sweep -- --dry-run                    # preview the monthly deck sweep
 ```
 
-Generate a deck from a brief:
+Generate a deck from a brief (headless):
 
 ```js
 import { generateDeck } from "./src/ai/generate.js";
@@ -103,6 +140,8 @@ starts inventing them; give the renderer adjectives and it starts guessing.
 are trademarks and identity files carry personal details, so neither belongs in
 a repository. `npm run brand` generates neutral placeholders when no marks are
 present, so a fresh clone renders immediately; drop your own in and re-run it.
+The UI can also upload marks from Identity → Brand (written to the gitignored
+dirs, re-normalised, never committed).
 
 ## Deploying on a home Linux server
 
