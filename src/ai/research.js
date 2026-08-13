@@ -27,6 +27,66 @@ export function excerptResearch(text) {
   return text.slice(0, cut > 0 ? cut : RESEARCH_EXCERPT);
 }
 
+/**
+ * The trust surface for the Research view: how many sources, how many distinct
+ * domains, which look academic/authoritative vs listicle, and which sources
+ * carry the single-source claims the grounding pass flagged. Built from
+ * sources.json so the CLI can produce it too, not just the UI.
+ */
+export function researchSummary(sources = [], notes = "") {
+  const list = Array.isArray(sources) ? sources : [];
+  const domains = new Set();
+  const academic = [];
+  const listicle = [];
+  let paperCount = 0;
+
+  const hostOf = (url) => {
+    try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
+  };
+  const looksAcademic = (url) =>
+    /\.(edu|ac\.|gov|int)\b|arxiv\.org|doi\.org|wikipedia\.org|ncbi|researchgate|scholar\.google/i.test(url ?? "");
+  const looksListicle = (host) =>
+    /^(medium\.com|substack\.com|quora\.com|reddit\.com|slideshare\.net|pinterest|buzzfeed|lifehacker|hubspot|wordpress\.com)$/.test(host ?? "");
+
+  for (const s of list) {
+    const host = hostOf(s.url);
+    if (host) domains.add(host);
+    if (String(s.kind).toLowerCase() === "paper" || /arxiv\.org|doi\.org/.test(s.url ?? "")) {
+      paperCount++;
+      academic.push(s);
+    } else if (looksAcademic(s.url)) {
+      academic.push(s);
+    } else if (looksListicle(host)) {
+      listicle.push(s);
+    }
+  }
+
+  // Single-source claims: the grounding pass writes `[grounding] …` lines into
+  // the slide notes, not into notes.md, so the closest proxy in the research
+  // view is noting how many sources each domain contributes and which are
+  // alone. A domain appearing once is a single-source bullet point.
+  const domainCount = {};
+  for (const d of domains) domainCount[d] = 0;
+  for (const s of list) {
+    const host = hostOf(s.url);
+    if (host) domainCount[host] = (domainCount[host] ?? 0) + 1;
+  }
+  const singleSourceDomains = Object.entries(domainCount).filter(([, n]) => n === 1).map(([d]) => d);
+
+  return {
+    total: list.length,
+    domains: [...domains],
+    distinctDomains: domains.size,
+    academicCount: academic.length,
+    listicleCount: listicle.length,
+    paperCount,
+    academic,
+    listicle,
+    singleSourceDomains,
+    notesWords: String(notes ?? "").trim().split(/\s+/).filter(Boolean).length,
+  };
+}
+
 /* ----------------------------------------------------- the deep research pass */
 
 /**

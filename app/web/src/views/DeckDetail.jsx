@@ -14,7 +14,7 @@ import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
  * inline editing and presenter picks. Rendering happens through the real API;
  * "rendering…" and the problems list are sync feedback, not decoration.
  */
-export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck }) {
+export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck, onOpenResearch }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -515,7 +515,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
             onDeckChanged?.();
           }}
         />
-        <ResearchPanel slug={slug} />
+        <ResearchCard slug={slug} onOpen={onOpenResearch} />
       </div>
 
       {problems.length > 0 && (
@@ -808,111 +808,50 @@ function pageCount(pages) {
 }
 
 /**
- * The deck's research — what the writer draws from. Read-only code block with
- * an Edit mode that saves back through PUT /research; sources.json collapses
- * underneath. The point is trust: the user must be able to see and correct the
- * notes the model writes from, and an edit here is what the next generation
- * reads (generateFromPlan reads research/notes.md fresh at write time).
+ * The research card on the deck page — a compact summary that links to the
+ * full Research view. The full view (notes as prose, sources table, diversity
+ * summary, edit) is where the researched content actually lives; this card is
+ * just the doorway plus the one-line trust surface (how many sources, how many
+ * domains).
  */
-function ResearchPanel({ slug }) {
-  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [] });
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState("");
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
+function ResearchCard({ slug, onOpen }) {
+  const [summary, setSummary] = useState(null);
+  const [exists, setExists] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const load = useCallback(() => {
-    setState((s) => ({ ...s, loading: true }));
-    setError("");
+  useEffect(() => {
     api.research(slug)
-      .then((r) => setState({ loading: false, exists: r.exists, notes: r.notes ?? "", sources: r.sources ?? [] }))
-      .catch((err) => {
-        setState((s) => ({ ...s, loading: false }));
-        setError(err.message);
-      });
+      .then((r) => { setExists(r.exists); setSummary(r.summary ?? null); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [slug]);
 
-  useEffect(() => load(), [load]);
-
-  async function save() {
-    setSaving(true);
-    setError("");
-    try {
-      await api.saveResearch(slug, { notes: draft });
-      setState((s) => ({ ...s, notes: draft, exists: true }));
-      setEditing(false);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
-    }
-  }
-
   return (
-    <Panel className="p-4">
-      <div className="mb-3 flex items-center justify-between">
+    <Panel className="flex flex-col p-4">
+      <div className="mb-2 flex items-center justify-between">
         <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Research</div>
-        {state.exists && !editing && (
-          <Button size="sm" variant="outline" onClick={() => { setDraft(state.notes); setEditing(true); }}>
-            Edit
-          </Button>
-        )}
+        {loading && <Spinner />}
       </div>
-
-      {state.loading ? (
-        <div className="flex items-center gap-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
-      ) : error ? (
-        <div className="rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">{error}</div>
-      ) : !state.exists ? (
+      {!loading && !exists ? (
         <div className="text-[12px] leading-relaxed text-fg-muted">
-          No research yet. Create this deck with a research pass (or with sources) and this
-          panel shows the notes the model writes from.
-        </div>
-      ) : editing ? (
-        <div className="space-y-2">
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            spellCheck={false}
-            className="h-56 w-full resize-y rounded-lg border border-line bg-sunken p-3 font-mono text-[11.5px] leading-relaxed text-fg outline-none transition focus:border-accent"
-          />
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="primary" onClick={save} disabled={saving}>
-              {saving && <Spinner />} Save
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setEditing(false)} disabled={saving}>Cancel</Button>
-          </div>
+          No research pass yet — regenerate with research on and the notes the
+          writer draws from appear here.
         </div>
       ) : (
-        <div className="space-y-2">
-          <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap break-words rounded-lg border border-line bg-sunken p-3 font-mono text-[11px] leading-relaxed text-fg-muted">
-            {state.notes}
-          </pre>
-          {state.sources.length > 0 && (
-            <details className="rounded-lg border border-line px-3 py-2">
-              <summary className="cursor-pointer text-[11px] font-medium uppercase tracking-wider text-fg-faint">
-                Sources ({state.sources.length})
-              </summary>
-              <ul className="mt-2 space-y-1.5">
-                {state.sources.map((s, i) => (
-                  <li key={i} className="text-[11.5px] leading-relaxed">
-                    {s.url ? (
-                      <a href={s.url} target="_blank" rel="noreferrer" className="break-all text-fg-muted underline-offset-2 hover:text-fg hover:underline">
-                        {s.title ?? s.url}
-                      </a>
-                    ) : (
-                      <span className="text-fg-muted">{s.title}</span>
-                    )}
-                    {typeof s.words === "number" && (
-                      <span className="ml-1.5 text-fg-faint">· {s.words} words</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </details>
+        <div className="text-[12px] leading-relaxed text-fg-muted">
+          {summary && (
+            <span className="mb-2 block">
+              {summary.total ?? 0} sources · {summary.distinctDomains ?? 0} domains
+              {summary.paperCount ? ` · ${summary.paperCount} paper` : ""}
+            </span>
           )}
         </div>
       )}
+      <div className="mt-auto pt-2">
+        <Button size="sm" variant="outline" onClick={() => onOpen(slug)} disabled={loading || !exists}>
+          Open full research
+        </Button>
+      </div>
     </Panel>
   );
 }

@@ -9,6 +9,7 @@ import ParticleField from "./components/ParticleField.jsx";
 import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
+import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore } from "./lib/chats.js";
@@ -116,6 +117,7 @@ export default function App() {
 
   const openDeck = (slug) => { setActiveSlug(slug); setView("deck"); };
   const openReport = (slug) => { setActiveSlug(slug); setView("report"); };
+  const openResearch = (slug) => { setActiveSlug(slug); setView("research"); };
 
   /** Delete a chat thread locally; if it was active, land on another. */
   function handleDeleteChat(id) {
@@ -145,7 +147,7 @@ export default function App() {
       return;
     }
     bumpDeck();
-    if (activeSlug === slug && (view === "deck" || view === "report")) goHome();
+    if (activeSlug === slug && (view === "deck" || view === "report" || view === "research")) goHome();
   }
 
   /**
@@ -215,7 +217,7 @@ export default function App() {
               chats={chats}
               decks={decks}
               activeChatId={activeChatId}
-              activeSlug={view === "deck" || view === "report" ? activeSlug : null}
+              activeSlug={view === "deck" || view === "report" || view === "research" ? activeSlug : null}
               view={view}
               open={leftOpen}
               focusSearch={focusSearch}
@@ -259,6 +261,7 @@ export default function App() {
                 onBack={goHome}
                 onDeckChanged={bumpDeck}
                 onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
+                onOpenResearch={openResearch}
               />
             )}
             {view === "report" && activeSlug && (
@@ -268,6 +271,13 @@ export default function App() {
                 onBack={goHome}
                 onDeckChanged={bumpDeck}
                 onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
+              />
+            )}
+            {view === "research" && activeSlug && (
+              <ResearchView
+                slug={activeSlug}
+                refreshToken={deckVersion}
+                onBack={goHome}
               />
             )}
             {view === "themes" && <Themes />}

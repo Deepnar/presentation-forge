@@ -13,6 +13,7 @@ import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
+import { researchSummary } from "../../src/ai/research.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
@@ -397,8 +398,7 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
   });
 });
 
-app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
-  const file = path.join(DECKS, req.params.slug, "out", "preview", "thumbs", path.basename(req.params.file));
+app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {  const file = path.join(DECKS, req.params.slug, "out", "preview", "thumbs", path.basename(req.params.file));
   try {
     await stat(file);
     res.sendFile(file);
@@ -528,7 +528,7 @@ app.get("/api/decks/:slug/research", wrap(async (req, res) => {
     sources = JSON.parse(await readFile(path.join(dir, "sources.json"), "utf8")) ?? [];
   } catch { /* malformed or missing — the notes may still be valid */ }
 
-  ok(res, { exists: notes != null, notes, sources });
+  ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes) });
 }));
 
 /** Save research back to disk — the edit half of the panel. Either or both of
