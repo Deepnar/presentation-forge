@@ -700,7 +700,7 @@ app.post("/api/reports", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, depth, model, identity } = req.body ?? {};
+  const { brief, sources, research, depth, density, model, identity } = req.body ?? {};
   if (!brief?.trim()) {
     sse.send("error", { error: "body must include a `brief`" });
     return sse.close();
@@ -708,7 +708,7 @@ app.post("/api/reports", (req, res) => {
 
   (async () => {
     const r = await createReport({
-      brief, sources, research, depth, model, identity,
+      brief, sources, research, depth, density, model, identity,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),

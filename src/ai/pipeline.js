@@ -150,7 +150,7 @@ export async function createDeck({
  * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
  */
 export async function createReport({
-  brief, sources = [], research = false, depth = "full",
+  brief, sources = [], research = false, depth = "full", density = "balanced",
   model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -164,7 +164,7 @@ export async function createReport({
     : {};
 
   const meta = {
-    slug, brief, sources, research, depth,
+    slug, brief, sources, research, depth, density,
     status: "report",
     createdAt: new Date().toISOString(),
     ...(owner ? { owner } : {}),
@@ -187,7 +187,7 @@ export async function createReport({
   // No plan.yaml for a standalone report — requirePlan: false lets the report
   // generator derive its structure from the brief and the fixed section order.
   const g = await generateReport({
-    slug, depth, model, signal, onProgress, requirePlan: false,
+    slug, depth, density, model, signal, onProgress, requirePlan: false,
   });
 
   // Render straight through so the .docx exists the moment the brief resolves.

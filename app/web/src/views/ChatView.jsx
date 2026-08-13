@@ -5,7 +5,7 @@ import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
-import { BRIEFING_QUESTIONS, PRESET_KEYS, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload } from "../lib/briefing.js";
+import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 
 const DENSITIES = [
@@ -21,16 +21,17 @@ const DECK_SUGGESTIONS = [
   "Mechanical keyboards: ergonomics of typing",
 ];
 
-function phaseOf(chat, effStep) {
+function phaseOf(chat, effStep, questions) {
   if (chat.kind === "report") {
     if (chat.produced) return "done";
-    if (chat.topic) return "running";
-    return "greeting";
+    if (!chat.topic) return "greeting";
+    if (effStep < questions.length) return "briefing";
+    return "summary";
   }
   if (chat.produced) return "done";
   if (chat.plan) return "outline";
   if (!chat.topic) return "greeting";
-  if (effStep >= BRIEFING_QUESTIONS.length) return "summary";
+  if (effStep >= questions.length) return "summary";
   return "briefing";
 }
 
@@ -110,9 +111,10 @@ export default function ChatView({
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [chat, status, busy, themes.length]);
 
-  const phase = phaseOf(chat, effectiveBriefStep(chat.briefing, chat.briefStep));
-  const qIndex = Math.min(effectiveBriefStep(chat.briefing, chat.briefStep), BRIEFING_QUESTIONS.length - 1);
-  const currentQuestion = phase === "briefing" ? BRIEFING_QUESTIONS[qIndex] : null;
+  const questions = questionsFor(chat.kind);
+  const phase = phaseOf(chat, effectiveBriefStep(chat.briefing, chat.briefStep, questions), questions);
+  const qIndex = Math.min(effectiveBriefStep(chat.briefing, chat.briefStep, questions), questions.length - 1);
+  const currentQuestion = phase === "briefing" ? questions[qIndex] : null;
 
   const themeLabel = (name) => {
     if (!name) return "Default (warm-humanist)";
@@ -147,20 +149,20 @@ export default function ChatView({
       ...chat,
       title: named,
       briefing,
-      briefStep: Math.min(chat.briefStep + 1, BRIEFING_QUESTIONS.length),
+      briefStep: Math.min(chat.briefStep + 1, questions.length),
       updatedAt: new Date().toISOString(),
     });
   }
 
   /** Jump back to an earlier question — later answers are re-asked. */
   function editAt(i) {
-    const q = BRIEFING_QUESTIONS[i];
+    const q = questions[i];
     // Rewinding to a preset-fixed question un-skips it so the user can change
     // the preset's value for this deck without abandoning the whole format.
     const briefing = q && PRESET_KEYS.includes(q.key)
       ? { ...chat.briefing, unskip: [...(chat.briefing?.unskip ?? []), q.key] }
       : chat.briefing;
-    persist({ ...chat, briefing, briefStep: Math.min(i, BRIEFING_QUESTIONS.length), updatedAt: new Date().toISOString() });
+    persist({ ...chat, briefing, briefStep: Math.min(i, questions.length), updatedAt: new Date().toISOString() });
   }
 
   /**
@@ -325,25 +327,40 @@ export default function ChatView({
       .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
   }
 
+  /** Topic sent → the report briefing begins, like the deck's. */
   function sendReportTopic(text) {
-    const updated = { ...chat, topic: text, title: chatName("", text), updatedAt: new Date().toISOString() };
-    persist(updated);
-    runReport(updated);
+    const title = suggestTitle(text);
+    const briefing = initialBriefing(identity);
+    persist({
+      ...chat,
+      topic: text,
+      title: chatName(title, text),
+      briefing: { ...briefing, title },
+      updatedAt: new Date().toISOString(),
+    });
   }
 
   function runReport(c) {
     setBusy(true);
     setError("");
     setStatus("Queued…");
+    const b = c.briefing ?? {};
     const identityPayload = {
-      academic: identity?.academic ?? {},
-      guide: identity?.guide ?? {},
-      team: identity?.team ?? {},
-      chrome: { branding: c.briefing?.branding ?? "full" },
+      academic: b.academic ?? identity?.academic ?? {},
+      guide: b.guide ?? identity?.guide ?? {},
+      team: b.team ?? identity?.team ?? {},
+      chrome: { branding: b.branding ?? "full" },
     };
     runs.begin(c.id, { abort: () => {}, status: "Queued…" });
     const j = api.createReport(
-      { brief: c.topic, depth: "brief", research: true, identity: identityPayload, model: model || undefined },
+      {
+        brief: c.topic,
+        depth: b.depth ?? "full",
+        density: b.density ?? "balanced",
+        research: b.research ?? true,
+        identity: identityPayload,
+        model: model || undefined,
+      },
       {
         status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(c.id, { status: label }); },
         result: (d) => {
@@ -438,9 +455,9 @@ export default function ChatView({
   }
 
   const answered = [];
-  const effStep = effectiveBriefStep(chat.briefing, chat.briefStep);
-  for (let i = 0; i < effStep && i < BRIEFING_QUESTIONS.length; i++) {
-    answered.push({ ...BRIEFING_QUESTIONS[i], idx: i });
+  const effStep = effectiveBriefStep(chat.briefing, chat.briefStep, questions);
+  for (let i = 0; i < effStep && i < questions.length; i++) {
+    answered.push({ ...questions[i], idx: i });
   }
 
   const placeholder =
@@ -521,16 +538,25 @@ export default function ChatView({
 
           {phase === "summary" && (
             <Panel className="p-5">
-              <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-fg-faint">Your deck</div>
+              <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-fg-faint">
+                {chat.kind === "report" ? "Your report" : "Your deck"}
+              </div>
               <SummaryLine
                 chat={chat}
                 themeLabel={themeLabel}
               />
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <Button variant="primary" onClick={planDeck} disabled={busy}>
-                  {busy ? <Spinner /> : null}
-                  Plan the deck
-                </Button>
+                {chat.kind === "report" ? (
+                  <Button variant="primary" onClick={() => runReport(chat)} disabled={busy}>
+                    {busy ? <Spinner /> : null}
+                    Generate the report
+                  </Button>
+                ) : (
+                  <Button variant="primary" onClick={planDeck} disabled={busy}>
+                    {busy ? <Spinner /> : null}
+                    Plan the deck
+                  </Button>
+                )}
                 <Button variant="outline" onClick={saveDefaults} disabled={defaultsState.status === "saving"}>
                   {defaultsState.status === "saving" ? <Spinner /> : null}
                   Remember as defaults
@@ -540,7 +566,9 @@ export default function ChatView({
                   state={presetSaveState}
                 />
                 <span className="text-[11px] text-fg-faint">
-                  The only thing that starts research &amp; planning.
+                  {chat.kind === "report"
+                    ? "The only thing that starts research &amp; writing."
+                    : "The only thing that starts research &amp; planning."}
                 </span>
               </div>
               {defaultsState.status === "saved" && (
@@ -583,7 +611,7 @@ export default function ChatView({
               {chat.kind === "report" && chat.topic && !chat.produced && !busy && (
                 <Button size="sm" variant="outline" className="mt-2" onClick={() => runReport(chat)}>Retry</Button>
               )}
-              {phase === "summary" && !busy && (
+              {chat.kind !== "report" && phase === "summary" && !busy && (
                 <Button size="sm" variant="outline" className="mt-2" onClick={planDeck}>Retry planning</Button>
               )}
             </Bubble>
@@ -697,7 +725,7 @@ function Welcome({ chat, org, onFill }) {
       </h1>
       <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-fg-muted">
         {chat.kind === "report"
-          ? "Send a topic and the report is researched, written and rendered — the graded section order is the structure."
+          ? "Send a topic and I'll ask a few questions first — depth, density, branding — then the report is researched, written and rendered. The graded section order is the structure."
           : org
             ? `Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise.`
             : "Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise."}
@@ -825,6 +853,7 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
         />
       )}
       {q.key === "theme" && <ThemeCard themes={themes} value={b.theme} themeLabel={themeLabel} onNext={onNext} />}
+      {q.key === "depth" && <DepthCard value={b.depth} onNext={onNext} />}
       {q.key === "maxSlides" && <MaxSlidesCard value={b.maxSlides} onNext={onNext} />}
       {q.key === "slidesPerMember" && <SlidesPerMemberCard value={b.slidesPerMember} onNext={onNext} />}
       {q.key === "density" && <DensityCard value={b.density} onNext={onNext} />}
@@ -1056,8 +1085,7 @@ function ChoicePills({ options, value, onPick }) {
   );
 }
 
-function MaxSlidesCard({ value, onNext }) {
-  const [v, setV] = useState(value ?? 0);
+function MaxSlidesCard({ value, onNext }) {  const [v, setV] = useState(value ?? 0);
   const [custom, setCustom] = useState("");
   return (
     <div>
@@ -1121,6 +1149,21 @@ function DensityCard({ value, onNext }) {
         onPick={setV}
       />
       <CardFooter onNext={() => onNext({ density: v })} nextLabel="Continue" />
+    </div>
+  );
+}
+
+const DEPTHS = [
+  { value: "full", label: "Full", note: "3-6 paragraphs per section, a table where it earns one" },
+  { value: "brief", label: "Brief", note: "a headline statement + 3 supporting sentences, no tables" },
+];
+
+function DepthCard({ value, onNext }) {
+  const [v, setV] = useState(value ?? "full");
+  return (
+    <div>
+      <ChoicePills options={DEPTHS} value={v} onPick={setV} />
+      <CardFooter onNext={() => onNext({ depth: v })} nextLabel="Continue" />
     </div>
   );
 }
@@ -1205,18 +1248,28 @@ function PresetSave({ onSave, state }) {
 function SummaryLine({ chat, themeLabel }) {
   const b = chat.briefing;
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
-  const bits = [
-    b.title || "Untitled",
-    `${b.maxSlides || "auto"} slides`,
-    themeLabel(b.theme),
-    `${b.density} density`,
-    b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
-    b.research ? "researched" : "no research pass",
-  ];
+  const bits = chat.kind === "report"
+    ? [
+        b.title || "Untitled",
+        `${b.depth === "brief" ? "brief" : "full"} depth`,
+        `${b.density} density`,
+        b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
+        b.research ? "researched" : "no research pass",
+      ]
+    : [
+        b.title || "Untitled",
+        `${b.maxSlides || "auto"} slides`,
+        themeLabel(b.theme),
+        `${b.density} density`,
+        b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
+        b.research ? "researched" : "no research pass",
+      ];
   if (presenting.length) bits.push(`${presenting.length} presenting`);
   return (
     <div className="text-[13px] leading-relaxed text-fg-muted">
-      <span className="font-semibold text-fg">{b.title || "Untitled deck"}</span>
+      <span className="font-semibold text-fg">
+        {b.title || (chat.kind === "report" ? "Untitled report" : "Untitled deck")}
+      </span>
       {presenting.length > 0 && (
         <span className="mt-1 block text-[12px]">
           Presenting: <span className="text-fg-muted">{presenting.join(", ")}</span>

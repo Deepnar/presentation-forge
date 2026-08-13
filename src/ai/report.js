@@ -330,8 +330,14 @@ const ACK_PROMPT =
   "You write the Acknowledgement of an academic report. A short, sincere paragraph " +
   "thanking the guide, the institution and the sources used. One or two paragraphs.";
 
-async function writeSection({ spec, report, research, identity, depth, model, signal, chat }) {
+async function writeSection({ spec, report, research, identity, depth, density, model, signal, chat }) {
   const subject = identity?.academic?.subject;
+
+  const densityNote = density === "sparse"
+    ? "Keep the prose lean: state each point once, avoid restating the same idea in consecutive sentences."
+    : density === "dense"
+      ? "Write with the density of a technical brief: precise, information-rich sentences, concrete figures and terms drawn from the research where they belong."
+      : "";
 
   const guidance = depth === "full"
     ? [
@@ -363,7 +369,7 @@ async function writeSection({ spec, report, research, identity, depth, model, si
         ? [ACK_PROMPT]
         : [
             ...guidance,
-            "",
+            ...(densityNote ? [densityNote, ""] : []),
             "Lead each item with its claim, then the evidence. Ground every factual claim in the",
             "RESEARCH NOTES — never invent statistics, names or numbers. Do not repeat wording",
             "already used in another section. Formal academic English.",
@@ -409,6 +415,7 @@ export async function generateReport({
   slug,
   dir,
   depth = "full",
+  density = "balanced",
   model,
   signal,
   onProgress,
@@ -443,7 +450,7 @@ export async function generateReport({
   for (const [i, spec] of planned.sections.entries()) {
     onProgress?.({ status: "report_writing", index: i, total: planned.sections.length, section: spec.name });
     try {
-      const data = await writeSection({ spec, report, research, identity, depth, model, signal, chat });
+      const data = await writeSection({ spec, report, research, identity, depth, density, model, signal, chat });
       const check = validateSection(spec.name, depth, data ?? {});
       if (!check.ok) {
         skipped.push({ section: spec.name, reason: check.errors.slice(0, 2).join("; ") });

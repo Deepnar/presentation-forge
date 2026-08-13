@@ -22,6 +22,30 @@ export const BRIEFING_QUESTIONS = [
 ];
 
 /**
+ * The report briefing — the same guided walk, but report-relevant: no theme
+ * (the graded template has none), no slide count, and a depth choice instead.
+ * Sections scale with the team already, so they are not asked either.
+ */
+export const REPORT_QUESTIONS = [
+  { key: "preset", ask: "Use a saved format, or start fresh?" },
+  { key: "title", ask: "What should the report be called?" },
+  { key: "team", ask: "Who is on the team?" },
+  { key: "guide", ask: "Who is your guide?" },
+  { key: "academic", ask: "Which subject and academic year is this for?" },
+  { key: "audience", ask: "Who is this for — and what should they take away?" },
+  { key: "emphasis", ask: "Which parts matter most?" },
+  { key: "depth", ask: "How deep should the report be?" },
+  { key: "density", ask: "How much text per section?" },
+  { key: "branding", ask: "How much institutional branding should it carry?" },
+  { key: "research", ask: "Run a research pass over the topic?" },
+];
+
+/** The question list for a product kind — reports walk a different briefing. */
+export function questionsFor(kind) {
+  return kind === "report" ? REPORT_QUESTIONS : BRIEFING_QUESTIONS;
+}
+
+/**
  * The briefing fields a preset fixes. When a preset is picked these questions
  * are treated as answered and skipped; the user still walks the changing bits
  * (title, subject, teacher) and the per-deck choices (audience, emphasis,
@@ -72,13 +96,14 @@ export function applyPresetToBriefing(briefing, preset) {
  * after "use a saved format" the thread lands straight on the next open
  * question instead of re-asking the fixed fields. A question the user has
  * explicitly rewound to (clicked "change" on) is un-skipped — `unskip` holds
- * those keys — so the fixed fields stay editable, not frozen.
+ * those keys — so the fixed fields stay editable, not frozen. `questions` is
+ * the per-kind list (deck or report).
  */
-export function effectiveBriefStep(briefing, step) {
+export function effectiveBriefStep(briefing, step, questions = BRIEFING_QUESTIONS) {
   if (!briefing?.presetId) return step;
   const unskip = new Set(briefing.unskip ?? []);
   let i = step;
-  while (i < BRIEFING_QUESTIONS.length && PRESET_KEYS.includes(BRIEFING_QUESTIONS[i].key) && !unskip.has(BRIEFING_QUESTIONS[i].key)) i++;
+  while (i < questions.length && PRESET_KEYS.includes(questions[i].key) && !unskip.has(questions[i].key)) i++;
   return i;
 }
 
@@ -125,6 +150,7 @@ export function initialBriefing(identity) {
     slidesPerMember: null,
     density: "balanced",
     branding: "full",   // full | minimal | none
+    depth: "full",      // report only: full | brief
     research: false,
   };
 }
@@ -165,6 +191,7 @@ export function echoAnswer(briefing, key, opts = {}) {
     case "maxSlides": return b.maxSlides ? `${b.maxSlides} slides` : "auto";
     case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
     case "density": return b.density;
+    case "depth": return b.depth === "brief" ? "brief — headline + 3 sentences" : "full — 3-6 paragraphs + table";
     case "branding": return b.branding === "none" ? "no branding" : b.branding === "minimal" ? "minimal branding" : "full branding";
     case "research": return b.research ? "research on" : "no research";
     default: return "";
@@ -227,6 +254,11 @@ export function applyFreeText(briefing, key, text) {
       const m = /sparse|balanced|dense/i.exec(t);
       if (!m) return null;
       return { briefing: { ...b, density: m[0].toLowerCase() }, echo: m[0].toLowerCase() };
+    }
+    case "depth": {
+      const m = /full|brief/i.exec(t);
+      if (!m) return null;
+      return { briefing: { ...b, depth: m[0].toLowerCase() }, echo: m[0].toLowerCase() };
     }
     case "branding": {
       const m = /none|minimal|full/i.exec(t);
