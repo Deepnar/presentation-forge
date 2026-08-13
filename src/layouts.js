@@ -13,9 +13,9 @@ const path2 = (ctx) => ctx; // keep signature obvious at call sites
 
 /* ------------------------------------------------------------------ utils */
 
-function content(theme, brand, { full = false, note = 0 } = {}) {
+function content(theme, brand, { full = false, note = 0, identity } = {}) {
   const m = theme.grid.margin;
-  const reserve = full ? 0 : reservedTopRight(brand);
+  const reserve = full ? 0 : reservedTopRight(brand, identity);
   // A speaker-note bar reserves height at the bottom of the content box; the
   // bar itself is drawn by render.js in the space this frees.
   const bottom = CANVAS.h - m.bottom - note;

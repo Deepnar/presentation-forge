@@ -16,6 +16,7 @@ export const BRIEFING_QUESTIONS = [
   { key: "maxSlides", ask: "How many slides?" },
   { key: "slidesPerMember", ask: "Slides per presenting member?" },
   { key: "density", ask: "How much text per slide?" },
+  { key: "branding", ask: "How much institutional branding should the slides carry?" },
   { key: "research", ask: "Run a research pass over the topic?" },
 ];
 
@@ -46,6 +47,7 @@ export function initialBriefing(identity) {
     maxSlides: 0,        // 0 = auto
     slidesPerMember: null,
     density: "balanced",
+    branding: "full",   // full | minimal | none
     research: false,
   };
 }
@@ -82,6 +84,7 @@ export function echoAnswer(briefing, key, opts = {}) {
     case "maxSlides": return b.maxSlides ? `${b.maxSlides} slides` : "auto";
     case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
     case "density": return b.density;
+    case "branding": return b.branding === "none" ? "no branding" : b.branding === "minimal" ? "minimal branding" : "full branding";
     case "research": return b.research ? "research on" : "no research";
     default: return "";
   }
@@ -139,6 +142,12 @@ export function applyFreeText(briefing, key, text) {
       const m = /sparse|balanced|dense/i.exec(t);
       if (!m) return null;
       return { briefing: { ...b, density: m[0].toLowerCase() }, echo: m[0].toLowerCase() };
+    }
+    case "branding": {
+      const m = /none|minimal|full/i.exec(t);
+      if (!m) return null;
+      const v = m[0].toLowerCase();
+      return { briefing: { ...b, branding: v }, echo: v === "none" ? "no branding" : `${v} branding` };
     }
     case "research": {
       if (/^(on|yes|y)/i.test(t)) return { briefing: { ...b, research: true }, echo: "research on" };

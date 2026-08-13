@@ -137,7 +137,7 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     // stays free. Full-bleed slides (title, section, quote, image, freeform)
     // never take one — there is no standard content box to reserve.
     const noteBar = data.speaker_note && !isFull;
-    const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0 });
+    const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity });
     const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
 
     try {
@@ -182,7 +182,7 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     }
 
     if (isTitle) {
-      applyTitleChrome(slide, { brand });
+      applyTitleChrome(slide, { brand, identity });
     } else {
       // Chrome picks its legible variant from what is actually painted. On a
       // plate slide the theme's flat palette no longer describes it: prefer

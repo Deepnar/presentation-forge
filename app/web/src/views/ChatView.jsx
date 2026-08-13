@@ -176,7 +176,7 @@ export default function ChatView({
         maxSlides: b.maxSlides || undefined,
         theme: b.theme || undefined,
         research: b.research,
-        identity: { academic: b.academic, guide: b.guide, team: b.team },
+        identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
         model: model || undefined,
       },
       {
@@ -280,6 +280,7 @@ export default function ChatView({
       academic: identity?.academic ?? {},
       guide: identity?.guide ?? {},
       team: identity?.team ?? {},
+      chrome: { branding: c.briefing?.branding ?? "full" },
     };
     runs.begin(c.id, { abort: () => {}, status: "Queued…" });
     const j = api.createReport(
@@ -684,6 +685,7 @@ function QuestionCard({ q, chat, themes, themeLabel, onNext }) {
       {q.key === "maxSlides" && <MaxSlidesCard value={b.maxSlides} onNext={onNext} />}
       {q.key === "slidesPerMember" && <SlidesPerMemberCard value={b.slidesPerMember} onNext={onNext} />}
       {q.key === "density" && <DensityCard value={b.density} onNext={onNext} />}
+      {q.key === "branding" && <BrandingCard value={b.branding} onNext={onNext} />}
       {q.key === "research" && <ResearchCard value={b.research} onNext={onNext} />}
     </Bubble>
   );
@@ -980,6 +982,31 @@ function DensityCard({ value, onNext }) {
   );
 }
 
+const BRANDINGS = [
+  { value: "full", label: "Full branding", note: "banner + crest + footer marks" },
+  { value: "minimal", label: "Minimal", note: "crest and slide numbers, no banner" },
+  { value: "none", label: "No branding", note: "just slide numbers — no institution marks" },
+];
+
+function BrandingCard({ value, onNext }) {
+  const [v, setV] = useState(value ?? "full");
+  return (
+    <div>
+      <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
+        The institution's marks (banner, crest, footer) render on every slide
+        by default. "No branding" strips them entirely and keeps only the slide
+        numbers.
+      </div>
+      <ChoicePills
+        options={BRANDINGS}
+        value={v}
+        onPick={setV}
+      />
+      <CardFooter onNext={() => onNext({ branding: v })} nextLabel="Continue" />
+    </div>
+  );
+}
+
 function ResearchCard({ value, onNext }) {
   const [v, setV] = useState(value ?? false);
   return (
@@ -1009,6 +1036,7 @@ function SummaryLine({ chat, themeLabel }) {
     `${b.maxSlides || "auto"} slides`,
     themeLabel(b.theme),
     `${b.density} density`,
+    b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
     b.research ? "researched" : "no research pass",
   ];
   if (presenting.length) bits.push(`${presenting.length} presenting`);

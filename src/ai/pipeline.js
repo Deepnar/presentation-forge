@@ -93,6 +93,7 @@ export async function createDeck({
         academic: identity.academic ?? {},
         guide: identity.guide ?? {},
         team: identity.team ?? {},
+        chrome: identity.chrome ?? {},
       }
     : {};
 
@@ -159,7 +160,7 @@ export async function createReport({
   await mkdir(dir, { recursive: true });
 
   const snapshot = identity && typeof identity === "object"
-    ? { academic: identity.academic ?? {}, guide: identity.guide ?? {}, team: identity.team ?? {} }
+    ? { academic: identity.academic ?? {}, guide: identity.guide ?? {}, team: identity.team ?? {}, chrome: identity.chrome ?? {} }
     : {};
 
   const meta = {

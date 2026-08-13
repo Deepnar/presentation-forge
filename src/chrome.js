@@ -74,8 +74,16 @@ function crestFor(brand, bgColor) {
   return brand.crest;
 }
 
+/** How much of the institution's marks a deck carries: full | minimal | none.
+ *  The briefing asks this and it lands in meta.yaml's chrome block; "none"
+ *  strips the banner, crest and presenter line but keeps slide numbers. */
+export function brandingMode(identity) {
+  return identity?.chrome?.branding ?? "full";
+}
+
 /** Title slide: the wide department banner, centred at the top. */
-export function applyTitleChrome(slide, { brand }) {
+export function applyTitleChrome(slide, { brand, identity }) {
+  if (brandingMode(identity) !== "full") return;
   if (!brand.banner) return;
   const w = Math.min(BANNER.maxW, CANVAS.w - 2);
   const h = w / brand.banner.ratio;
@@ -99,9 +107,10 @@ export function applyTitleChrome(slide, { brand }) {
  */
 export function applyContentChrome(slide, { brand, theme, identity, data, index, total, bg }) {
   const cfg = identity.chrome ?? {};
+  const branding = brandingMode(identity);
   const mark = crestFor(brand, bg ?? theme.palette.bg);
 
-  if (cfg.crest_on_content_slides !== false && mark) {
+  if (branding !== "none" && cfg.crest_on_content_slides !== false && mark) {
     const h = CREST.h;
     const w = h * mark.ratio;
     slide.addImage({
@@ -120,7 +129,7 @@ export function applyContentChrome(slide, { brand, theme, identity, data, index,
   const footOpacity = luminance(bgColor) < 0.45 ? 55 : 0;
   const footFont = theme.type.caption?.family ?? "Inter";
 
-  if (cfg.presenter_on_slides !== false) {
+  if (branding !== "none" && cfg.presenter_on_slides !== false) {
     // Dividers (section/chapter/closing/epigraph) are the structure between
     // parts, not somebody's slide — they never carry a presenter line, however
     // the deck is split. The title slide has its own chrome and never reaches
@@ -151,8 +160,8 @@ export function applyContentChrome(slide, { brand, theme, identity, data, index,
 }
 
 /** Horizontal space on the right that content must not overlap on slide 2+. */
-export function reservedTopRight(brand) {
-  if (!brand.crest) return 0;
+export function reservedTopRight(brand, identity) {
+  if (!brand.crest || brandingMode(identity) === "none") return 0;
   return CREST.h * brand.crest.ratio + CREST.right + 0.25;
 }
 
