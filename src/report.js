@@ -159,13 +159,6 @@ function t(text, rpr) {
   return `<w:r>${rp}<w:t xml:space="preserve">${esc(text)}</w:t></w:r>`;
 }
 
-/** The donor's own title line is plain body text — reproduce that quirk. */
-const TITLE_PPR =
-  '<w:pPr><w:widowControl w:val="0"/>' +
-  '<w:pBdr><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/>' +
-  '<w:right w:val="nil"/><w:between w:val="nil"/></w:pBdr>' +
-  '<w:spacing w:after="0" w:line="276" w:lineRule="auto"/></w:pPr>';
-
 const pageBreak = '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
 
 function centerBold(text, sz) {
@@ -191,8 +184,9 @@ function caption(text) {
 /* ------------------------------------------------------------ body build */
 
 /** Cover page from the merged identity: title, group label, names table and
- *  the submission block, matching the donor's own cover structure and the
- *  quirk that the title line is plain body text. */
+ *  the submission block, matching the donor's own cover structure. The title
+ *  is the one heading the user sees first — bold, centred, larger than the
+ *  body so the report announces itself. */
 function cover(report, identity) {
   const ac = identity.academic ?? {};
   const g = identity.guide ?? {};
@@ -200,7 +194,7 @@ function cover(report, identity) {
   const members = Array.isArray(team.members) ? team.members : [];
 
   const out = [];
-  out.push(`<w:p>${TITLE_PPR}${t(report.title)}</w:p>`);
+  out.push(centerBold(report.title, 44));
   if (team.label) {
     out.push(centerBold(`By ${team.label}`, 44));
     out.push(centerBold(`By ${team.label}`, 32));
