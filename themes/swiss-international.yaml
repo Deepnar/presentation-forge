@@ -48,7 +48,7 @@ tokens:
 
   shape:
     radius: { card: 0, pill: 0.40, chip: 0 }       # sharp — the style is the grid
-    border: { width: 0, color: "#00000000" }
+    border: { width: 1, color: "#D9D9D4" }          # hairline card outlines, not shadows
     card_pad: 0.30
 
   shadow:

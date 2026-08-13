@@ -69,7 +69,7 @@ tokens:
   # PowerPoint shadows are a weak approximation of the CSS spec in the .txt,
   # but soft + wide + low-opacity reads correctly at presentation distance.
   shadow:
-    card: { type: outer, blur: 18, offset: 5, angle: 90, color: "2D2D2A", opacity: 0.10 }
+    card: { type: outer, blur: 16, offset: 4, angle: 90, color: "2D2D2A", opacity: 0.09 }
 
   # ---- decorative background plate ---------------------------------------
   # This theme is flat, so no pre-rendered plate is needed. Themes that rely on

@@ -64,16 +64,16 @@ tokens:
     html: |
       <style>
         .mesh{position:absolute;inset:0;background:
-          radial-gradient(70% 60% at 14% 16%, {{tokens.palette.accent}}44 0%, transparent 55%),
-          radial-gradient(60% 55% at 86% 22%, {{tokens.palette.accent_alt}}33 0%, transparent 55%),
+          radial-gradient(70% 60% at 14% 16%, {{tokens.palette.accent}}55 0%, transparent 55%),
+          radial-gradient(60% 55% at 86% 22%, {{tokens.palette.accent_alt}}44 0%, transparent 55%),
           radial-gradient(90% 80% at 50% 115%, {{tokens.palette.surface}}cc 0%, transparent 70%),
           linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.55}
-        .b1{left:6%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}55}
-        .b2{right:4%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}44}
-        .b3{left:26%;bottom:-10%;width:48%;height:38%;background:{{tokens.palette.ink_muted}}33}
+        .blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.65}
+        .b1{left:6%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}66}
+        .b2{right:4%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}55}
+        .b3{left:26%;bottom:-10%;width:48%;height:38%;background:{{tokens.palette.ink_muted}}44}
         .frost{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
-          border-radius:26px;background:{{tokens.palette.surface}}47;
+          border-radius:26px;background:{{tokens.palette.surface}}40;
           backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
           border:1px solid {{tokens.palette.surface}}99;
           box-shadow:0 14px 44px {{tokens.palette.ink}}26;}
@@ -89,11 +89,15 @@ tokens:
             radial-gradient(65% 55% at 84% 24%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
             radial-gradient(100% 90% at 50% 120%, {{tokens.surfaces.title.bg}} 0%, transparent 75%),
             linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.6}
+          .scrim{position:absolute;inset:0;background:
+            linear-gradient(120deg, {{tokens.surfaces.title.bg}}aa 0%, transparent 55%),
+            linear-gradient(0deg, {{tokens.surfaces.title.bg}}66 0%, transparent 40%);}
+          .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.65}
           .b1{left:8%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
           .b2{right:6%;top:6%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}77}
         </style>
         <div class="hero"></div>
+        <div class="scrim"></div>
         <div class="b b1"></div><div class="b b2"></div>
       section: |
         <style>

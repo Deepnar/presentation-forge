@@ -160,12 +160,12 @@ export const layouts = {
     const scale = fitScale(deck.title, w, (st.size / 72) * (st.line ?? 1.12) * 2, st);
 
     slide.addText(deck.title, {
-      x: m.left, y: 2.15, w, h: 2.5,
+      x: m.left, y: 1.95, w, h: 2.5,
       ...textStyle(theme, "display", { color: s.ink, scale }),
       valign: "bottom",
     });
 
-    let y = 4.85;
+    let y = 4.65;
     if (deck.subtitle) {
       slide.addText(deck.subtitle, {
         x: m.left, y, w, h: 0.5,
@@ -221,6 +221,15 @@ export const layouts = {
       });
       y += 0.38;
     }
+
+    // The accent rule is the one decorative element every section surface
+    // draws — a short bar in the surface's light tint under the number, so a
+    // section break reads as designed rather than a bare text block.
+    slide.addShape("rect", {
+      x: m.left, y: y + 0.06, w: 1.0, h: 0.05,
+      fill: { color: hex(s.muted) }, line: { type: "none" },
+    });
+    y += 0.30;
 
     slide.addText(data.headline ?? "", {
       x: m.left, y, w, h: 1.15,
@@ -654,36 +663,49 @@ export const layouts = {
     const n = data.stats.length;
     const gut = theme.grid.gutter;
     const cw = (box.w - gut * (n - 1)) / n;
-    const accents = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.accent, theme.palette.ink];
+    const accents = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.accent];
 
-    // A stat's label may take more than one line; the value and sub sit at
-    // fixed offsets, so the label box must hold the label's real lines or a
-    // wrapped label collides with the sub below it.
     const sub = theme.type.subhead;
-    const subLineH = (sub.size * (sub.line ?? 1.3)) / 72;
-    const labelLines = (label) => Math.max(1, lineCount(String(label), cw, { ...sub, size: sub.size }));
+    const valueH = (theme.type.stat.size * (theme.type.stat.line ?? 1.0)) / 72;
+    const cap = theme.type.caption;
+    const capH = (cap.size * (cap.line ?? 1.3)) / 72;
 
-    data.stats.forEach((s, i) => {
-      const x = box.x + i * (cw + gut);
-      // Value must stay on ONE line — a wrapped value ("53 kWh") overflows its
-      // box into the label. Shrink by measured width with a safety factor (the
-      // height fit trusts a width heuristic that Black stat digits defeat).
+    // Measure each column at its fitted size first, so the sub sits below the
+    // label's REAL rendered lines (a wrapped label used to meet its sub), and
+    // the whole block is tall enough to centre in the content box instead of
+    // piling its columns in the top half of the slide. The label is measured
+    // against a ~10% narrower width than the column actually gives it — the
+    // fitter's wrap heuristic runs optimistic for long labels, and an
+    // underestimated line count is what lets a 3-line label meet its sub.
+    const cols = data.stats.map((s) => {
       const valueScale = fitOneLine(s.value, cw, theme.type.stat, { min: 0.6 });
-      slide.addText(s.value, {
-        x, y, w: cw, h: 1.15,
-        ...textStyle(theme, "stat", { color: accents[i % accents.length], scale: valueScale }),
+      const labelW = cw * 0.9;
+      const labelScale = fitScale(s.label, labelW, 1.2, sub, { min: 0.7 });
+      const labelLines = lineCount(s.label, labelW, { ...sub, size: sub.size * labelScale });
+      const labelH = labelLines * ((sub.size * labelScale * (sub.line ?? 1.4)) / 72) + 0.05;
+      const subH = s.sub ? capH : 0;
+      return { s, valueScale, labelScale, labelLines, labelH, height: valueH + 0.18 + labelH + (s.sub ? 0.08 + capH : 0) };
+    });
+
+    const blockH = Math.max(...cols.map((c) => c.height));
+    const startY = Math.max(y + 0.1, (box.bottom - blockH) / 2);
+
+    cols.forEach((col, i) => {
+      const x = box.x + i * (cw + gut);
+      slide.addText(col.s.value, {
+        x, y: startY, w: cw, h: valueH + 0.1,
+        ...textStyle(theme, "stat", { color: accents[i % accents.length], scale: col.valueScale }),
         valign: "top",
       });
-      const labelH = Math.round((labelLines(s.label) * subLineH + 0.03) * 100) / 100;
-      const labelScale = fitScale(s.label, cw, labelH, theme.type.subhead, { min: 0.7 });
-      slide.addText(s.label, {
-        x, y: y + 1.2, w: cw, h: labelH,
-        ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
+      const ly = startY + valueH + 0.18;
+      slide.addText(col.s.label, {
+        x, y: ly, w: cw, h: col.labelH,
+        ...textStyle(theme, "subhead", { bold: true, scale: col.labelScale }),
         valign: "top",
       });
-      if (s.sub) {
-        slide.addText(s.sub, {
-          x, y: y + 1.2 + labelH + 0.05, w: cw, h: 0.5,
+      if (col.s.sub) {
+        slide.addText(col.s.sub, {
+          x, y: ly + col.labelH + 0.08, w: cw, h: capH + 0.1,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
           valign: "top",
         });

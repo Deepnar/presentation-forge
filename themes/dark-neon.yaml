@@ -11,7 +11,7 @@ tokens:
     bg: "#0B0E14"          # near-black slate
     surface: "#151B26"
     ink: "#E8ECF4"
-    ink_muted: "#8A93A6"
+    ink_muted: "#98A2B5"   # brightened — caption and footer text needs the extra lift on near-black
     accent: "#00E5FF"      # cyan
     accent_alt: "#FF2E88"  # magenta
     rule: "#FFFFFF1A"
@@ -25,7 +25,7 @@ tokens:
     bg: "#05070B"
     surface: "#10141D"
     ink: "#E8ECF4"
-    ink_muted: "#7E879A"
+    ink_muted: "#98A2B5"
     accent: "#00E5FF"
     accent_alt: "#FF2E88"
     rule: "#FFFFFF14"
