@@ -44,6 +44,11 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [specimens, setSpecimens] = useState(null); // { types, previews }
   const [swapBusy, setSwapBusy] = useState(false);
   const [swapErr, setSwapErr] = useState("");
+  // Image upload: which slide an uploaded image is destined for, and the file.
+  // A ref, not state: the file-input change fires synchronously after the
+  // picker click, before a state update could commit.
+  const imgForRef = useRef(null);
+  const imgInputRef = useRef(null);
   // F9 — undo/redo stacks of full deck states. Every commitDeck pushes the
   // previous deck; Ctrl+Z/Ctrl+Y walk the stacks and re-save + re-render.
   const [past, setPast] = useState([]);
@@ -287,6 +292,65 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   }
 
   /**
+   * Add an image to a slide. Picking a file opens the native chooser; the
+   * upload lands in decks/<slug>/assets/ (gitignored) and the slide is set to
+   * an image-carrying type with that asset as its image field. If the slide is
+   * already an image type, the image field is set in place; otherwise it is
+   * converted to image-text so the image has somewhere to render.
+   */
+  /**
+   * Add an image to a slide. Picking a file uploads it to decks/<slug>/assets/
+   * (gitignored), then the slide is set to an image-carrying type with that
+   * asset as its image field — directly, no model involved (an image slide's
+   * layout is deterministic; only the picture is new). If the slide already
+   * carries the image, just attach it; otherwise it becomes an image-text slide
+   * preserving its headline.
+   */
+  async function handleImageFile(file) {
+    if (!file || imgForRef.current === null) return;
+    const idx = imgForRef.current;
+    setSwapBusy(true);
+    setSwapErr("");
+    try {
+      const r = await api.uploadDeckImage(slug, file);
+      const next = { ...deck };
+      const prev = next.slides[idx];
+      const isImageType = ["image", "image-text", "hero-image", "image-grid", "split-screen", "side-by-side"].includes(prev?.type);
+      const target = isImageType
+        ? { ...prev, image: r.file }
+        : {
+            type: "image-text",
+            headline: prev?.headline ?? prev?.type ?? "Image",
+            image: r.file,
+            body: [prev?.headline ?? "A slide with a picture."],
+            section: prev?.section,
+            presenter: prev?.presenter,
+          };
+      // The [image] hint is satisfied — drop it so the "add image" badge clears.
+      if (/\[image\]/.test(target.notes ?? "")) {
+        target.notes = target.notes.replace(/\[image\][^\n]*\n?/, "").trim() || undefined;
+      }
+      next.slides[idx] = target;
+      await api.saveDeck(slug, next, data?.meta);
+      clearTimeout(renderTimer.current);
+      setSyncing(true);
+      renderTimer.current = setTimeout(runRender, 450);
+      onDeckChanged?.();
+    } catch (err) {
+      setSwapErr(err.message);
+    } finally {
+      setSwapBusy(false);
+      imgForRef.current = null;
+    }
+  }
+
+  function openImagePicker(i) {
+    imgForRef.current = i;
+    setSwapErr("");
+    setTimeout(() => imgInputRef.current?.click(), 0);
+  }
+
+  /**
    * The deck's remembered dark mode (F17): toggling saves `mode` into meta.yaml
    * and re-renders in that mode, so a dark deck stays dark across reloads.
    */
@@ -401,6 +465,13 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 
   return (
     <div className="mx-auto max-w-6xl px-10 py-10">
+      <input
+        ref={imgInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif"
+        className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) handleImageFile(f); }}
+      />
       <button
         onClick={onBack}
         className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg"
@@ -664,6 +735,20 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="truncate text-fg-faint">{slide?.type}</span>
+                  {/\[image\]/.test(slide?.notes ?? "") && (
+                    <button
+                      onClick={() => openImagePicker(i)}
+                      title="The model asked for an image here — add one"
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-1.5 py-0.5 text-[9.5px] font-medium text-accent transition hover:bg-accent/20"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="m21 15-5-5L5 21" />
+                      </svg>
+                      add image
+                    </button>
+                  )}
                   <select
                     value={slide?.presenter ?? ""}
                     onChange={(e) => onPresenter(i, e.target.value)}
@@ -695,6 +780,13 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                     <CardBtn onClick={() => openSwap(i)} title="Swap slide type — see every type in this theme">
                       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 12h18M12 3v18M8 8l-4 4 4 4M16 8l4 4-4 4" />
+                      </svg>
+                    </CardBtn>
+                    <CardBtn onClick={() => openImagePicker(i)} disabled={swapBusy} title="Add an image to this slide">
+                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="m21 15-5-5L5 21" />
                       </svg>
                     </CardBtn>
                     <CardBtn onClick={() => onDuplicate(i)} title="Duplicate"><CopyIcon /></CardBtn>

@@ -108,6 +108,19 @@ export const api = {
   // Change one slide's type — remap when compatible, model rewrite otherwise.
   convertSlide: (slug, index, payload, handlers) =>
     stream(`/api/decks/${slug}/slides/${index}/convert`, payload, handlers),
+  // Deck image upload — lands in decks/<slug>/assets/ (gitignored).
+  uploadDeckImage: (slug, file) => {
+    const ext = (file.name.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    return fetch(`/api/decks/${slug}/assets`, {
+      method: "POST",
+      headers: { "X-File-Ext": ext, "Content-Type": "application/octet-stream", ...authHeader() },
+      body: file,
+    }).then(async (res) => {
+      const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
+      if (!body.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+      return body;
+    });
+  },
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),

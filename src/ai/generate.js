@@ -212,7 +212,10 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, pr
     "RESEARCH NOTES below — quote figures verbatim, never approximate or invent one.",
     "If the notes carry no figure for this slide's point, state it qualitatively.",
     "NEVER invent an image path or URL — if this slide's type has an image field",
-    "and no real image file exists for it, leave the field out entirely.",
+    "and no real image file exists for it, leave the field out entirely. If the slide",
+    "REALLY needs an image, describe what it should show in the slide's `notes` field",
+    "prefixed with `[image]` (e.g. \"[image] a diagram of the electrolysis cell\") — the",
+    "app then shows an 'add image' prompt on that slide.",
     "No filler, no invented statistics, no rhetorical hedging.",
     "Do not repeat wording already used on an earlier slide.",
   ].filter(Boolean).join("\n");
@@ -461,6 +464,15 @@ export async function sweepDeck({
     // type and presenter survive. Re-assert them so a verbose model cannot turn
     // a sweep into a redesign.
     applied.deck.slides[i] = { ...applied.deck.slides[i], type: slide.type, presenter: slide.presenter };
+    // Same invented-image guard as the type swap: an external image URL renders
+    // as a placeholder, so never let a sweep ship one silently.
+    const sweptImage = applied.deck.slides[i].image;
+    if (sweptImage && /^[a-z][a-z0-9+.-]*:\/\//i.test(sweptImage)) {
+      const s = applied.deck.slides[i];
+      delete s.image;
+      const hint = `[image] ${sweptImage}`;
+      s.notes = s.notes ? `${s.notes}\n${hint}` : hint;
+    }
     out = applied.deck;
     swept.push({ index: i, type: slide.type });
   }
@@ -605,7 +617,22 @@ export async function convertSlide({
   else candidate.presenter = slide.presenter;
   candidate.section = slide.section;
 
-  const { ok } = await validateDeck(applied.deck);
+  // A model will still try to invent an image (a real unsplash URL, an
+  // example.com stub). Never ship it silently: an external URL resolves to null
+  // and renders a placeholder anyway, so strip it and record what the slide
+  // WANTS as an [image] note the UI turns into an "add image" prompt.
+  const imageField = candidate.image;
+  if (imageField && /^[a-z][a-z0-9+.-]*:\/\//i.test(imageField)) {
+    delete candidate.image;
+    const hint = `[image] ${imageField}`;
+    candidate.notes = candidate.notes ? `${candidate.notes}\n${hint}` : hint;
+  }
+
+  // Validate against a deck that carries the SANITISED candidate — a model that
+  // invented a URL may have left a type whose required image field is now gone,
+  // in which case the conversion failed cleanly rather than shipping a stub.
+  const withSanitized = { ...applied.deck, slides: applied.deck.slides.map((s, i) => (i === index ? candidate : s)) };
+  const { ok } = await validateDeck(withSanitized);
   return ok
     ? { slide: candidate, method: "model" }
     : { slide: null, method: "model", errors: [] };
