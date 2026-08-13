@@ -625,6 +625,146 @@ being written* would need a new SSE phase in `generateFromPlan` that emits each
 validated slide as it lands, plus a storyboard view. Design note: it belongs
 over the existing `status: writing` events, not a new pipeline.
 
+### [x] The big sweep — explicit controls, real research, deployable
+The user's wish list, shipped in priority order: explicit deck-level controls
+instead of the removed chat rail, a proper research engine, and a home-server
+deployment path.
+
+- **The deck-detail chat rail is gone.** The one place whole-deck model edits
+  applied is deleted (`ChatPanel` removed); deck-level changes now exist only
+  as explicit controls. Theme stays, and a new **Density select + Re-sweep**
+  rewrites every content slide's body at Sparse/Balanced/Dense from the same
+  plan and research, keeping types, presenters and structure (`sweepDeck` in
+  `src/ai/generate.js`; per-family content budgets in the catalog; grounding
+  still applied; failed rewrites keep the original with a visible problem).
+- **Saved briefing formats (presets).** The briefing's first question is now
+  "use a saved format?" — a preset pre-fills team, guide, academic, theme,
+  density, branding and slides-per-member and skips those questions, so an "IE
+  preset" only asks for the changing bits. CRUD behind the session gate,
+  stored per-user in gitignored `config/presets/<user>.json`.
+- **No-branding mode.** A branding question (full / minimal / none) lands in
+  meta.yaml's chrome block; chrome.js honours it — "none" strips banner, crest
+  and presenter footer, keeps slide numbers, and the layout's top-right
+  reservation is skipped so content gets the full width.
+- **Report chats ask questions too.** Reports walk the same one-question
+  briefing with report-relevant questions (depth full/brief replaces the slide
+  count; density and branding carry over); a report summary card with "Generate
+  the report" is the only thing that starts writing. Density flows into the
+  report writer as prose guidance on top of depth.
+- **Research is a proper surface.** The small panel is a compact card that
+  opens a full Research view: notes as readable prose, sources as a table
+  (domain, kind web/paper, URL, words), and a coverage summary (count, distinct
+  domains, academic vs listicle, papers, single-source domains) computed in
+  `src/ai/research.js` so the CLI shares it.
+- **Reports preview as real Word pages.** Rendering a report.docx also
+  rasterises it (LibreOffice → PDF → PNG, the deck's own pipeline) and the
+  report view shows the pages under "The rendered document" — what you see is
+  the actual output, watermark and tables included. The deck page's report
+  panel shows a thumbnail strip and an "Open report view" door.
+- **The type-swap gallery.** Every slide card gains a swap control that opens
+  a scrollable gallery of all 75 types rendered as mini previews in the current
+  theme (specimens assembled from the demo decks in `src/specimens.js`, cached
+  per theme). Compatible types remap instantly (bullets → numbered-list, cards
+  → feature-grid); the rest get a scoped model rewrite grounded in research.
+  Section and presenter always survive. Image slides in the gallery show an
+  "add image" door.
+- **The research engine actually researches.** A brief expands into 5-8 angle
+  queries (keywords, science, practical, regional, data, counterpoint) via the
+  research role; after the pass, a diversity guard runs targeted follow-ups
+  when the notes are one-domain or have no academic voice, and an examiner-gap
+  pass searches what a strong submission would be missing. A **papers** toggle
+  adds arXiv + Crossref (deduped, relevance-ranked, arXiv IDs and DOIs in
+  sources.json, top papers' full text pulled into the notes). Jina Reader is
+  the second extraction path for JS-heavy pages, gated behind `RESEARCH_JINA=1`.
+- **Images: upload, attach, never invented.** An image button uploads to
+  `decks/<slug>/assets/` (validated extension + size) and sets the slide to an
+  image type with the real asset, no model involved. Model output that invents
+  an image URL is sanitised in both the type swap and density sweep — the URL
+  is stripped and recorded as an `[image]` note, which the deck page turns into
+  an "add image" badge.
+- **Deployable on a home Linux server.** A Dockerfile (Node 24 + LibreOffice +
+  Chrome) and `docker/docker-compose.app.yml` pair the app with bundled
+  SearXNG; the API serves the built UI and SPA fallback on one port; decks,
+  brand, config and the plate cache live in a named volume. A monthly sweep
+  deletes decks older than `FORGE_SWEEP_DAYS` (unless `meta.keep: true`), runs
+  daily at `FORGE_SWEEP_HOUR`, and emails the owner via a dependency-free SMTP
+  client (`src/mail.js`). Light hardening for a public box: secure headers,
+  CORS allow-list, rate-limited auth endpoints, validated uploads.
+- **Six new themes, two siblings sharpened.** brutalist-paper, isometric-dark,
+  editorial-serif-light, chalkboard, mono-terminal-light and minimal-warm fill
+  visual gaps and each is verified distinct; bauhaus's divider is now the
+  primary-triad yellow (was the same red as swiss-international) and
+  editorial-serif-light's title is ink-blue (was orange beside minimal-warm).
+- **The report title is bold and centred.** The cover's first line was plain
+  body text — it now uses the largest centred bold treatment on the page.
+
+> **Learned.** Eleven things were not obvious beforehand.
+>
+> `res.sendFile` refuses files under a dot-directory by default (the specimen
+> cache lives in `decks/.specimen-cache/`) — a path that passes `stat` still
+> 404s from `send`. `{ dotfiles: "allow" }` is required, and the failure looks
+> like a missing file with no hint.
+>
+> A React component can reference an undeclared prop and build clean, then
+> crash the whole app on mount — `onOpenReport` was used but not destructured,
+> and the deck detail went blank. Vite build and the unit tests cannot see a
+> runtime prop bug; only a headless-Chrome session can. That is now a permanent
+> CDP check.
+>
+> The density sweep cannot be one big call. One scoped call per content slide,
+> each with the slide-type-only catalog and its density budget, keeps the
+> grammar small — the whole reason two-stage generation works. A single
+> rewrite call over the whole deck would be the old large-grammar failure.
+>
+> The cloud model will still invent an image URL no matter how firmly the
+> prompt forbids it. The fix is structural, not prompting: strip any external
+> URL from a model-produced slide and record it as an `[image]` note. The
+> prompt is the first line of defence; the sanitizer is the boundary.
+>
+> Converting a slide to an image type with no real image is inherently invalid
+> (the schema requires the field) — so the conversion refuses and keeps the
+> original, which is the honest outcome. The image flow therefore sets the
+> slide to an image type directly with the uploaded asset, never via the model.
+>
+> Presets are a "skip the fixed questions" feature, not a template engine. The
+> briefing walk skips preset-fixed questions (team, theme, density, branding,
+> slides-per-member) but leaves the changing bits (title, subject, teacher)
+> answerable — and a "change" click on a preset-fixed question un-skips it for
+> that deck without abandoning the format.
+>
+> Report depth and density are two axes, not one. Depth (full/brief) bounds the
+> schema; density (sparse/balanced/dense) is prose guidance layered on top. A
+> brief-dense report reads differently from a full-sparse one, and both are
+> expressible.
+>
+> arXiv + Crossref are genuinely usable with zero keys, but the paper full text
+> only reliably comes from arXiv HTML — Crossref abstracts are often absent.
+> `paperFullTexts` targets arXiv pages first and the whole papers feature is a
+> fast-path-off toggle because two public APIs plus two full-text fetches add
+> real time to a research pass.
+>
+> The theme gallery's "looks similar" problem is real and measurable: a
+> 20-theme contact sheet at thumbnail resolution shows sibling pairs
+> (bauhaus/swiss both red dividers, editorial/material-you both dark maroon
+> titles). The fixes were small and surgical — change the divider colour to the
+> design language's own secondary, not a new identity.
+>
+> A whole-deck render across 20 themes for visual auditing is slow enough that
+> it outlives a 5-minute shell timeout; rendering one representative deck per
+> theme into a contact sheet image is the audit primitive.
+>
+> The monthly sweep's email must send even when nothing was deleted — otherwise
+> "the sweep ran" is indistinguishable from "the sweep never ran", and the
+> owner cannot trust the server is holding recent work only.
+
+### [ ] (stretch) F13 image search — CC image lookup for model-emitted descriptions
+The `[image]` notes the writer now emits (and the sanitizer preserves) are the
+designated seam for supply: a slide that WANTS an image has a description the
+app could search for (Unsplash source API or a SearXNG image category), opt-in.
+The UI currently turns the note into an "add image" prompt; an automated
+lookup would close the loop. `searchPapers` in `src/papers.js` is the pattern —
+a public API with no keys, folded into the research pass.
+
 ---
 
 ## 3. Themes

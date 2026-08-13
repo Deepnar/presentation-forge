@@ -416,12 +416,19 @@ is: the notes are the ground truth, the user owns them, and the model is
 flagged when it leaves them.
 
 **The research pass is deep, not one query.** `deepResearch` (`src/ai/research.js`)
-expands the brief into 2-4 subtopic queries via the research role (falling back
-to the brief alone when the model is unavailable), runs each at a higher read
-budget than the old single query, then follows up each of the three richest
-extracted sources with a query of its own — deduplicated, ~21 pages in a real
-run instead of five. The model only ever sees a bounded excerpt; the richer
-artefact stays whole on disk for the deck, the report and the user's edits.
+expands the brief into 5-8 angle queries via the research role (keywords,
+science, practical, regional, data, counterpoint; falling back to the brief
+alone when the model is unavailable), runs each at a higher read budget than
+the old single query, follows up the richest sources, then closes the gaps the
+diversity guard finds (missing domains / missing academic voice) and the
+examiner-gap pass raises. The model only ever sees a bounded excerpt; the
+richer artefact stays whole on disk for the deck, the report and the user's
+edits. **Papers are a toggle away.** `src/papers.js` queries arXiv and
+Crossref for the brief, dedupes by canonical id, ranks by brief-term overlap,
+writes arXiv IDs and DOIs into sources.json with `kind: "paper"`, and pulls the
+top papers' full text (arXiv HTML) into the notes. Jina Reader
+(`https://r.jina.ai/<url>`) is the second extraction path for JS-heavy pages,
+gated behind `RESEARCH_JINA=1` so the local-first default is untouched.
 
 **Invented images degrade, never crash.** The renderer's `resolveAsset` returns
 null for URLs and for files that do not exist, and every image layout already
@@ -470,33 +477,38 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   unmounts the view without touching the run — re-entering adopts the live run
   (busy, live status, working Stop button) and errors are persisted onto the
   chat so a failure that lands while the user is away is shown on return.
-- **`DeckDetail`** — theme/style selects, render + `.pptx` download, the slide
-  grid with lightbox/inline-editor/presenter ops, a per-slide "make it punchier"
-  bolt (a scoped chat turn), the Report panel (generate when no `report.yaml`
-  exists, otherwise render `.docx` and download it), and the Research panel
-  beside it — a read-only view of `research/notes.md` with an Edit mode that
-  saves back, and `sources.json` as a collapsible list. The research surface is
-  the trust layer: the user can see and correct what the model writes from,
-  and an edit feeds the next generation because the writer reads `notes.md`
-  fresh at write time. `lib/time.js` supplies the relative timestamps used
-  everywhere.
-- **The chat rail only exists on the deck view.** It edits `deck.yaml`, so with
-  no deck open it would be dead weight; Home, Identity, Themes, the wizard and
-  the outline review are full-width. The rail stays mounted and animates its
-  width on the shell's shared easing rather than popping in. The shell's
-  content row isolates its stacking context and the header sits on its own
-  z-20 layer, so nothing a rail or panel renders can paint over the product
-  bar — the top-left escape that once pushed the chat rail over the header is
-  structurally unrepresentable.
+- **`DeckDetail`** — theme/style selects, a **Density select + Re-sweep** that
+  rewrites every content slide's body at the chosen density (`sweepDeck`, one
+  scoped call per slide, grounding still applied), render + `.pptx` download,
+  the slide grid with lightbox/inline-editor/presenter ops, a per-slide "make
+  it punchier" bolt, a per-slide **type swap** opening a gallery of all 75
+  types rendered in the current theme (specimens in `src/specimens.js`, cached
+  per theme; compatible types remap locally, the rest get a scoped rewrite),
+  per-slide **image upload** to `decks/<slug>/assets/` that sets the slide to
+  an image type with the real asset, the Report panel (generate when no
+  `report.yaml` exists, otherwise render `.docx`, download, thumbnail strip and
+  an "Open report view" door), and the Research card — a compact coverage line
+  that opens the full Research view. `lib/time.js` supplies the relative
+  timestamps used everywhere.
+- **The chat rail is gone; deck-level changes are explicit controls.** The old
+  right-rail chat on the deck view (which applied whole-deck model edits) is
+  deleted. The deck detail's only whole-deck changes are the theme selector
+  and the Density Re-sweep — both explicit, both scoped, neither a model turn.
+  The per-deck thread files (`chat.jsonl`, `decisions.md`) stay on disk but
+  have no UI. The main chat → briefing flow is untouched; Home, Identity,
+  Themes and the outline review are full-width.
 - **`ReportView`** — the full-document view of a report: a cover block (title,
   subtitle, subject, guide, team from the merged identity), then every section
   in the fixed graded order with paragraphs and tables rendered as prose, never
-  YAML. Render `.docx` / download and a *Generate companion deck* button that
+  YAML. Render `.docx` / download, a "Generate companion deck" button that
   plans from the report's sections and routes through the outline gate (the
-  reverse flow). It is the land target of the sidebar's Reports tab and of the
-  home "from a brief" flow; a missing report renders an empty state. Each
-  section also offers *Add as slide*, which appends the section's prose as a
-  bullets slide of the companion deck — the report-as-deck hybrid (F20).
+  reverse flow), and — after a render — **the rasterised pages of the actual
+  document** under "The rendered document" (LibreOffice → PDF → PNG via
+  `reportPreview` in `src/preview.js`), so what the user sees is the real Word
+  output. It is the land target of the sidebar's Reports tab and of the home
+  "from a brief" flow; a missing report renders an empty state. Each section
+  also offers *Add as slide*, which appends the section's prose as a bullets
+  slide of the companion deck — the report-as-deck hybrid (F20).
 - **Deck detail actions.** The header's action row wires the Part-2 features:
   a Dark/Light toggle that remembers `meta.yaml`'s `mode`, PDF and Markdown
   export (`src/export.js`, reusing the LibreOffice converter for the PDF),
@@ -597,6 +609,33 @@ The three-layer rule is unaffected: the shell is human-owned chrome, and
 `decks/<slug>/report.yaml` is written by the report generator exactly as
 `deck.yaml` is — nothing in the UI ever specifies geometry.
 
+### Saved briefing formats — presets
+
+`src/presets.js` stores the reusable half of a briefing per user
+(`config/presets/<user>.json`, gitignored): team, guide, academic context,
+theme, density, branding and slides-per-member. The briefing's first question
+offers them, and picking one pre-fills those fields and skips their questions
+while the changing bits (title, subject, teacher) stay answerable. The server
+CRUDs them behind the same session gate as the deck workspace; "Save as
+preset" lives on the briefing's summary card. The skip logic is a client-side
+walk over the per-kind question list (`effectiveBriefStep` in
+`lib/briefing.js`), and a "change" click on a preset-fixed question un-skips
+it for that deck.
+
+### Deployment — the home-server path
+
+The app is built to run on a friend's old Linux box. A Dockerfile (Node 24 +
+LibreOffice + Chrome) and `docker/docker-compose.app.yml` pair the app
+container with the bundled SearXNG; the API serves the built UI and SPA
+fallback from one port; the stateful directories are env-pointed at a named
+volume. The monthly sweep (`src/sweep.js`) deletes decks older than
+`FORGE_SWEEP_DAYS` unless `meta.keep: true`, runs daily at `FORGE_SWEEP_HOUR`
+from the server's own scheduler (env-gated — no env, no sweep), and emails the
+owner via `src/mail.js`, a dependency-free SMTP client. Light hardening for a
+public box: secure headers, a CORS allow-list (`FORGE_UI_ORIGIN`), rate-limited
+auth endpoints, and validated uploads (extension + size) for brand marks and
+deck images. `POST /api/sweep` and `npm run sweep` run the sweep manually.
+
 ## Data locations
 
 | Path | Committed | Notes |
@@ -605,12 +644,15 @@ The three-layer rule is unaffected: the shell is human-owned chrome, and
 | `config/identity.yaml` | yes | remembered defaults, user-editable |
 | `config/local.yaml` | no | cloud API keys + `routing.default` — written by the Cloud panel and header toggle |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
+| `config/presets/` | no | saved briefing formats, one file per user |
 | `brand/logos/` | no | raw supplied marks — trademarks stay local; uploaded via the Brand panel |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
 | `decks/<slug>/plan.yaml` | yes | the approved outline |
 | `decks/<slug>/research/` | yes | the shared research pass (notes.md + sources.json) both artefacts draw from |
 | `decks/<slug>/out/` | no | rendered artefacts |
+| `decks/<slug>/assets/` | no | uploaded slide images (gitignored, referenced as `assets/<file>`) |
+| `decks/.specimen-cache/` | no | type-swap gallery renders, cached per theme |
 | `.plate-cache/` | no | headless-Chrome plate PNGs, keyed by content hash |
 | `decks/<slug>/chat.jsonl`, `decisions.md` | no | per-deck thread state |
 | `decks/<slug>/backups/` | no | timestamped deck.yaml snapshots — the version history (F14) |
