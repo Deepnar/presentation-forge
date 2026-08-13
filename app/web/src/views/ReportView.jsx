@@ -57,6 +57,15 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
         });
       }
       setStatus("");
+      // The render wrote the .docx — grab it without a second click. Same
+      // synthetic-anchor trick the deck export flow uses.
+      const href = r.docx ?? `/api/decks/${slug}/download/report.docx`;
+      const a = document.createElement("a");
+      a.href = href;
+      a.download = href.split("/").pop();
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     } catch (err) {
       setError(err.message);
       setStatus("");
