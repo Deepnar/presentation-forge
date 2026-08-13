@@ -13,6 +13,24 @@ const path2 = (ctx) => ctx; // keep signature obvious at call sites
 
 /* ------------------------------------------------------------------ utils */
 
+/**
+ * The vertical box, in inches, that stacked titles/labels need for their real
+ * rendered lines at the theme's nominal size. The stacked layouts used to
+ * reserve a fixed one-line guess and shrink the text into it — the classic
+ * small-font pattern (a long card title rendered at ~8pt to stay on one line).
+ * Sizing the box to the content's own line count gives the text its lines at a
+ * readable size, and the fitter's floor still guards the genuinely-too-long.
+ */
+function linesBox(theme, token, texts, width) {
+  const st = theme.type[token];
+  const lineH = (st.size * (st.line ?? 1.3)) / 72;
+  const lines = Math.max(
+    1,
+    ...texts.filter(Boolean).map((t) => lineCount(String(t), width, { ...st, size: st.size })),
+  );
+  return Math.round((lines * lineH + 0.06) * 100) / 100;
+}
+
 function content(theme, brand, { full = false, note = 0, identity } = {}) {
   const m = theme.grid.margin;
   const reserve = full ? 0 : reservedTopRight(brand, identity);
@@ -517,8 +535,17 @@ export const layouts = {
     const cw = (box.w - gut * (n - 1)) / n;
     const ch = box.bottom - y - 0.15;
     const pad = theme.shape?.card_pad ?? 0.28;
+    // The title box holds the lines the longest title really needs — a
+    // one-line rule shrank long titles to ~8pt, the exact small-font the floor
+    // now forbids. The body starts after the title, sized to the remainder.
+    const titleH = linesBox(theme, "subhead", data.cards.map((c) => c.title), cw - pad * 2);
+    const stackH = titleH + 0.04 + (data.cards.some((c) => c.kicker) ? 0.34 : 0);
+    const bodyBudget = Math.max(0.4, ch - pad - stackH);
     const bodyScale = fitScaleAll(
-      data.cards.map((c) => c.body), cw - pad * 2, ch - 1.35, theme.type.body,
+      data.cards.map((c) => c.body), cw - pad * 2, bodyBudget, theme.type.body,
+    );
+    const titleScale = fitScaleAll(
+      data.cards.map((c) => c.title), cw - pad * 2, titleH, theme.type.subhead,
     );
 
     data.cards.forEach((c, i) => {
@@ -526,16 +553,12 @@ export const layouts = {
       card(slide, theme, { x, y, w: cw, h: ch });
 
       let ty = y + pad;
-      // The title must stay on ONE line — a wrapped title renders its second
-      // line below the 0.42in box, straight into the body. Shrink it until it
-      // fits the line instead; the body box below assumes a single title line.
-      const titleScale = fitScale(c.title, cw - pad * 2, 0.42, theme.type.subhead, { min: 0.55 });
       slide.addText(c.title, {
-        x: x + pad, y: ty, w: cw - pad * 2, h: 0.42,
+        x: x + pad, y: ty, w: cw - pad * 2, h: titleH,
         ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
         valign: "top",
       });
-      ty += 0.44;
+      ty += titleH + 0.04;
 
       if (c.kicker) {
         slide.addText(c.kicker, {
@@ -546,7 +569,7 @@ export const layouts = {
       }
 
       slide.addText(c.body, {
-        x: x + pad, y: ty + 0.1, w: cw - pad * 2, h: ch - (ty - y) - pad - 0.1,
+        x: x + pad, y: ty + 0.08, w: cw - pad * 2, h: ch - (ty - y) - pad,
         ...textStyle(theme, "body", { scale: bodyScale }),
         valign: "top",
       });
@@ -633,26 +656,34 @@ export const layouts = {
     const cw = (box.w - gut * (n - 1)) / n;
     const accents = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.accent, theme.palette.ink];
 
+    // A stat's label may take more than one line; the value and sub sit at
+    // fixed offsets, so the label box must hold the label's real lines or a
+    // wrapped label collides with the sub below it.
+    const sub = theme.type.subhead;
+    const subLineH = (sub.size * (sub.line ?? 1.3)) / 72;
+    const labelLines = (label) => Math.max(1, lineCount(String(label), cw, { ...sub, size: sub.size }));
+
     data.stats.forEach((s, i) => {
       const x = box.x + i * (cw + gut);
-      // Value and label are stacked at fixed offsets (y, y+1.2, y+1.68); a
-      // wrapped value would overflow its box into the label. Shrink to one
-      // line rather than letting it collide.
-      const valueScale = fitScale(s.value, cw, 0.75, theme.type.stat, { min: 0.6 });
+      // Value must stay on ONE line — a wrapped value ("53 kWh") overflows its
+      // box into the label. Shrink by measured width with a safety factor (the
+      // height fit trusts a width heuristic that Black stat digits defeat).
+      const valueScale = fitOneLine(s.value, cw, theme.type.stat, { min: 0.6 });
       slide.addText(s.value, {
         x, y, w: cw, h: 1.15,
         ...textStyle(theme, "stat", { color: accents[i % accents.length], scale: valueScale }),
         valign: "top",
       });
-      const labelScale = fitScale(s.label, cw, 0.45, theme.type.subhead, { min: 0.7 });
+      const labelH = Math.round((labelLines(s.label) * subLineH + 0.03) * 100) / 100;
+      const labelScale = fitScale(s.label, cw, labelH, theme.type.subhead, { min: 0.7 });
       slide.addText(s.label, {
-        x, y: y + 1.2, w: cw, h: 0.45,
+        x, y: y + 1.2, w: cw, h: labelH,
         ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         valign: "top",
       });
       if (s.sub) {
         slide.addText(s.sub, {
-          x, y: y + 1.68, w: cw, h: 0.5,
+          x, y: y + 1.2 + labelH + 0.05, w: cw, h: 0.5,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
           valign: "top",
         });
@@ -840,8 +871,13 @@ export const layouts = {
       const gutT = crowded ? 0.3 : gut;
       const sh = (box.bottom - y - gutT * (n - 1)) / n;
       const titleScale = fitScaleAll(data.steps.map((s) => s.title), box.w - 0.6, sh - (crowded ? 0.08 : 0.4), theme.type.subhead, { min: 0.55 });
-      const bodyScale = fitScaleAll(
-        data.steps.map((s) => s.body).filter(Boolean), box.w - 0.6, sh - 0.62, theme.type.body, { min: 0.5 },
+      // The body box is `max(0.3, sh - 0.56)` tall; the fit budget must be the
+      // box, not a tighter `sh - 0.62`, or a one-line body at the floor is
+      // flagged even though it fits the space actually drawn. When the card is
+      // too crowded for a body at all, skip the fit entirely — it is not drawn.
+      const bodyBudget = Math.max(0.3, sh - 0.56);
+      const bodyScale = crowded ? 1 : fitScaleAll(
+        data.steps.map((s) => s.body).filter(Boolean), box.w - 0.6, bodyBudget, theme.type.body,
       );
       data.steps.forEach((s, i) => {
         const sy = y + i * (sh + gutT);
@@ -867,6 +903,10 @@ export const layouts = {
       const arrow = 0.34;
       const sw = (box.w - (gut + arrow) * (n - 1)) / n;
       const sh = Math.min(2.3, box.bottom - y - 0.2);
+      // Horizontal cards narrow to ~1.4in at five steps — a sentence-long body
+      // cannot render readably in that width at any size above the floor. Same
+      // capacity rule as the vertical branch: title-only when crowded.
+      const crowded = n >= 5;
       data.steps.forEach((s, i) => {
         const sx = box.x + i * (sw + gut + arrow);
         card(slide, theme, { x: sx, y, w: sw, h: sh });
@@ -891,7 +931,7 @@ export const layouts = {
           }),
           valign: "top",
         });
-        if (s.body) {
+        if (s.body && !crowded) {
           slide.addText(s.body, {
             x: sx + 0.26, y: y + 1.28, w: sw - 0.52, h: sh - 1.5,
             ...textStyle(theme, "body", {
@@ -1122,7 +1162,9 @@ export const layouts = {
     const rowH = (box.bottom - y - 0.1) / n;
     const cw = 0.45;
     const tw = box.w - cw - 0.35;
-    const scale = fitScaleAll(data.items.map((i) => i.text), tw, rowH * 0.85, theme.type.body);
+    // The text box is the full row (valign middle); a 15% tighter budget was
+    // pure over-reservation once the fitter measured in real inches.
+    const scale = fitScaleAll(data.items.map((i) => i.text), tw, rowH, theme.type.body);
     data.items.forEach((it, i) => {
       const ry = y + i * rowH;
       const cy = ry + rowH / 2;
@@ -1336,17 +1378,18 @@ export const layouts = {
       cw - pad * 2,
       theme.type.stat,
     );
-    const labelScale = fitScaleAll(data.kpis.map((k) => k.label), cw - pad * 2, 0.4, theme.type.caption);
+    const labelH = linesBox(theme, "caption", data.kpis.map((k) => k.label), cw - pad * 2);
+    const labelScale = fitScaleAll(data.kpis.map((k) => k.label), cw - pad * 2, labelH, theme.type.caption);
     data.kpis.forEach((k, i) => {
       const x = box.x + i * (cw + gut);
       card(slide, theme, { x, y, w: cw, h: ch });
       slide.addText(k.label, {
-        x: x + pad, y: y + pad, w: cw - pad * 2, h: 0.4,
+        x: x + pad, y: y + pad, w: cw - pad * 2, h: labelH,
         ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: labelScale }),
         valign: "top",
       });
       slide.addText(k.value, {
-        x: x + pad, y: y + pad + 0.42, w: cw - pad * 2, h: 0.7,
+        x: x + pad, y: y + pad + labelH + 0.06, w: cw - pad * 2, h: 0.7,
         ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
         valign: "top",
       });
@@ -1391,9 +1434,13 @@ export const layouts = {
       cw - pad * 2,
       theme.type.stat,
     );
-    const labelScale = fitScaleAll(data.cards.map((c) => c.label), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.65 });
+    // The label box holds the real lines of the longest label, so a wrapped
+    // label never collides with the body below it.
+    const labelH = linesBox(theme, "subhead", data.cards.map((c) => c.label), cw - pad * 2);
+    const labelScale = fitScaleAll(data.cards.map((c) => c.label), cw - pad * 2, labelH, theme.type.subhead);
+    const bodyTop = 0.9 + labelH + 0.04;
     const bodyScale = fitScaleAll(
-      data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, ch - pad - 1.4, theme.type.body,
+      data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, ch - pad - bodyTop, theme.type.body,
     );
     data.cards.forEach((c, i) => {
       const x = box.x + i * (cw + gut);
@@ -1407,13 +1454,13 @@ export const layouts = {
         valign: "top",
       });
       slide.addText(c.label, {
-        x: x + pad, y: y + pad + 0.9, w: cw - pad * 2, h: 0.4,
+        x: x + pad, y: y + pad + 0.9, w: cw - pad * 2, h: labelH,
         ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         valign: "top",
       });
       if (c.body) {
         slide.addText(c.body, {
-          x: x + pad, y: y + pad + 1.4, w: cw - pad * 2, h: ch - pad - 1.4,
+          x: x + pad, y: y + pad + bodyTop, w: cw - pad * 2, h: ch - pad - bodyTop,
           ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
           valign: "top",
         });
@@ -1542,7 +1589,8 @@ export const layouts = {
       halfW,
       theme.type.stat,
     );
-    const labelScale = fitScaleAll([data.left.label, data.right.label], halfW, 0.4, theme.type.subhead, { min: 0.7 });
+    const labelH = linesBox(theme, "subhead", [data.left.label, data.right.label], halfW);
+    const labelScale = fitScaleAll([data.left.label, data.right.label], halfW, labelH, theme.type.subhead);
     const block = (side, x) => {
       slide.addText(side.value, {
         x, y: y + 0.1, w: halfW, h: 1.2,
@@ -1550,7 +1598,7 @@ export const layouts = {
         align: "center", valign: "middle",
       });
       slide.addText(side.label, {
-        x, y: y + 1.35, w: halfW, h: 0.4,
+        x, y: y + 1.35, w: halfW, h: labelH,
         ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         align: "center", valign: "top",
       });
@@ -1569,9 +1617,10 @@ export const layouts = {
       align: "center", valign: "middle",
     });
     if (data.body) {
+      const bodyY = y + 1.35 + labelH + 0.18;
       const bScale = fitScale(data.body, box.w, 0.9, theme.type.body, { min: 0.75 });
       slide.addText(data.body, {
-        x: box.x, y: y + 2.1, w: box.w, h: 0.9,
+        x: box.x, y: bodyY, w: box.w, h: 0.9,
         ...textStyle(theme, "body", { scale: bScale, color: theme.palette.ink_muted }),
         align: "center", valign: "top",
       });

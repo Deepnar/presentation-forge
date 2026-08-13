@@ -94,6 +94,15 @@ export async function loadTheme(name, { mode = "light", style } = {}) {
   // actually render. The renderer reads tokens; the model never does.
   const tokens = { ...t.tokens, palette };
 
+  // Each type token carries its own role so the fitter can apply the readable
+  // floor per text kind (body 14pt, caption 12pt, ...) without every layout
+  // call site naming it. The `_role` marker is private to the fitter — it is
+  // stripped by textStyle so it can never leak into a pptxgenjs text option.
+  const type = {};
+  for (const [key, spec] of Object.entries(t.tokens.type ?? {})) {
+    type[key] = { ...spec, _role: key };
+  }
+
   return {
     name: t.name ?? name,
     label: t.label ?? name,
@@ -101,7 +110,7 @@ export async function loadTheme(name, { mode = "light", style } = {}) {
     palette,
     surfaces,
     tokens,
-    type: t.tokens.type,
+    type,
     grid: t.tokens.grid,
     shape: t.tokens.shape ?? {},
     shadow: t.tokens.shadow ?? {},
@@ -116,8 +125,10 @@ export async function loadTheme(name, { mode = "light", style } = {}) {
  * never grows — growing would break the theme's vertical rhythm).
  */
 export function textStyle(theme, token, { color, scale = 1, ...rest } = {}) {
-  const t = theme.type[token];
-  if (!t) throw new Error(`Theme "${theme.name}" has no type token "${token}"`);
+  const spec = theme.type[token];
+  if (!spec) throw new Error(`Theme "${theme.name}" has no type token "${token}"`);
+  // The fitter's role marker is private; it must never reach a pptxgenjs option.
+  const { _role, ...t } = spec;
   const opts = {
     fontFace: t.family,
     fontSize: Math.round(t.size * scale * 10) / 10,

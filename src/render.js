@@ -11,6 +11,7 @@ import { loadDeck } from "./validate.js";
 import { layouts, content } from "./layouts.js";
 import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrome.js";
 import { renderSlidePlate } from "./plate.js";
+import { resetFloorEvents, drainFloorEvents } from "./fit.js";
 
 async function loadIdentity(deckDir) {
   // identity.yaml carries real personal and institutional details and is
@@ -143,10 +144,15 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     try {
       // A freeform slide has no native layout — the whole slide rasterises
       // from its html. Everything else draws natively as usual.
+      // The fitter reports its floor hits into a per-slide sink; drain it after
+      // so a slide that would need text below the readable floor is flagged
+      // rather than silently shipping a tiny font.
+      resetFloorEvents();
       if (!isFreeform) layout(slide, ctx);
     } catch (err) {
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
+    for (const e of drainFloorEvents()) problems.push(`slide ${i + 1} (${data.type}): ${e}`);
 
     // A plate replaces the flat background: headless Chrome rasterises the
     // theme's (or the slide's) HTML and the PNG becomes the true slide
