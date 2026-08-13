@@ -5,6 +5,7 @@ import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
+import { trimDeckToFit } from "./trim.js";
 import { critiqueDeck } from "./critic.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
@@ -355,6 +356,25 @@ export async function generateFromPlan({
   await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(grounded.deck), "utf8");
   await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(res.plan), "utf8");
 
+  // Content-trim pass: slides the fitter flags below the readable floor get
+  // their text trimmed deterministically until they fit or cannot be trimmed
+  // further — the overfull flag used to ship with the deck. Trims only shorten
+  // text, but the deck is re-grounded so problems never reference a claim that
+  // was trimmed away.
+  const trimOnce = async (candidate) => {
+    const trimRes = await trimDeckToFit({
+      deck: candidate,
+      themeName: res.deck.theme ?? "warm-humanist",
+      deckDir: dir,
+      signal,
+    });
+    const g = groundOnce(trimRes.deck);
+    await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(g.deck), "utf8");
+    return { ...trimRes, grounded: g };
+  };
+
+  let tr = await trimOnce(grounded.deck);
+
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
@@ -367,14 +387,15 @@ export async function generateFromPlan({
   if (critic) {
     criticReport = await critiqueDeck({
       slug,
-      deck: grounded.deck,
+      deck: tr.grounded.deck,
       model,
       signal,
       onProgress: (e) => onProgress?.({ status: "critiquing", ...e }),
     });
     if (criticReport.deck) {
-      grounded = groundOnce(criticReport.deck);
-      await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(grounded.deck), "utf8");
+      // The critic rewrites content; run the trim on its output too so a fix
+      // never trades a visual defect for an overfull slide.
+      tr = await trimOnce(criticReport.deck);
       meta.status = "ready";
       await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
     }
@@ -382,14 +403,15 @@ export async function generateFromPlan({
 
   return {
     slug,
-    deck: criticReport?.deck ?? grounded.deck,
+    deck: tr.grounded.deck,
     plan: res.plan,
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
-    problems: [...(r.problems ?? []), ...grounded.problems],
+    problems: [...(r.problems ?? []), ...tr.grounded.problems],
     skipped: res.skipped ?? [],
     stats: res.stats,
     critic: criticReport,
+    trimmed: tr.trimmed,
   };
 }
 
@@ -429,6 +451,17 @@ export async function sweepDensity({
   const grounded = groundDeck(r.deck, researchText);
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
+  // A denser rewrite is exactly what overfills slides — run the content-trim
+  // pass after it, and re-ground so problems never cite a trimmed claim.
+  const trimRes = await trimDeckToFit({
+    deck: grounded.notes,
+    themeName,
+    deckDir: dir,
+    signal,
+  });
+  const finalGrounded = groundDeck(trimRes.deck, researchText);
+  await writeFile(deckFile, YAML.stringify(finalGrounded.notes), "utf8");
+
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
@@ -445,12 +478,13 @@ export async function sweepDensity({
 
   return {
     slug,
-    deck: grounded.notes,
+    deck: finalGrounded.notes,
     density,
     slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
     thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
-    problems: [...(r.problems ?? []), ...(rendered.problems ?? []), ...grounded.problems],
+    problems: [...(r.problems ?? []), ...(rendered.problems ?? []), ...finalGrounded.problems],
     swept: r.swept ?? [],
+    trimmed: trimRes.trimmed,
   };
 }
 

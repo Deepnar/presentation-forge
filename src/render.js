@@ -67,10 +67,15 @@ async function plateChromeBg(png) {
   }
 }
 
-export async function render({ deckFile, themeName, mode = "light", out, style, signal }) {
-  const deckDir = path.dirname(deckFile);
-  const deck = await loadDeck(deckFile);
-  const identity = await loadIdentity(deckDir);
+export async function render({
+  deckFile, deck: givenDeck, themeName, mode = "light", out, style, signal, deckDir, write = true,
+}) {
+  // A caller may hand a deck object in directly (the content-trim loop audits
+  // in-memory) instead of a path; `deckDir` still names where identity, meta
+  // and relative assets resolve from.
+  const dir = deckDir ?? (deckFile ? path.dirname(deckFile) : process.cwd());
+  const deck = givenDeck ?? await loadDeck(deckFile);
+  const identity = await loadIdentity(dir);
   const theme = await loadTheme(themeName ?? deck.theme ?? "warm-humanist", {
     mode,
     style: style ?? deck.style,
@@ -97,7 +102,7 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
   // degrades one slide instead of crashing the whole deck at write time.
   const resolveAsset = (rel) => {
     if (!rel || /^[a-z][a-z0-9+.-]*:\/\//i.test(rel)) return null;
-    const abs = path.isAbsolute(rel) ? rel : path.join(deckDir, rel);
+    const abs = path.isAbsolute(rel) ? rel : path.join(dir, rel);
     return existsSync(abs) ? abs : null;
   };
 
@@ -201,9 +206,9 @@ export async function render({ deckFile, themeName, mode = "light", out, style, 
     if (data.notes) slide.addNotes(data.notes);
   }
 
-  const outFile = out ?? path.join(deckDir, "out", "deck.pptx");
+  const outFile = out ?? path.join(dir, "out", "deck.pptx");
   await mkdir(path.dirname(outFile), { recursive: true });
-  await pres.writeFile({ fileName: outFile });
+  if (write) await pres.writeFile({ fileName: outFile });
 
   return { outFile, slides: total, theme: theme.label, problems };
 }
