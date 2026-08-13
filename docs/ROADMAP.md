@@ -105,7 +105,9 @@ rhetorical beat to the family that expresses it.
 > **Learned.** PowerPoint's own autofit is not applied until a human opens the
 > file, so a deck can look correct in LibreOffice and overflow on the projector.
 > Sizing must be baked in at generation time. The fitter is deliberately
-> pessimistic — slightly small never costs marks, overflow does.
+> pessimistic — slightly small never costs marks, overflow does. (The pessimism
+> is now bounded: `measure` scales with the em, so ordinary content fits at its
+> nominal size; see the big-sweep font-floor item.)
 
 ### [x] Preview / rasterisation
 `src/preview.js` — LibreOffice → PDF → PNG + 480px thumbs.
@@ -756,6 +758,118 @@ deployment path.
 > The monthly sweep's email must send even when nothing was deleted — otherwise
 > "the sweep ran" is indistinguishable from "the sweep never ran", and the
 > owner cannot trust the server is holding recent work only.
+
+### [x] Font floor — never ship a tiny font, flag instead (big-sweep item 16)
+"the font is usually small" in generated decks. Two causes, both fixed in
+`src/fit.js` and the stacked layouts:
+
+- **The fitter's `measure` forgot the em factor.** It returned
+  `length × advance` with the advance a bare em fraction, so it estimated
+  ~5.7× wider than reality at 13pt. Every fitter consumer inherited that: a
+  146-char body "measured" ~81in, `lineCount` over-counted, `heightOf`
+  over-estimated, and the fitter shrank fonts that were already readable —
+  a three-bullet slide rendered at 8pt. `measure` now multiplies the advance
+  by the em, and Black/ExtraBold faces estimate wider (Merriweather Black
+  stat digits like "53 kWh" wrapped at the width a 0.495 em advance
+  predicted fits one line; the real average is ~0.60 em). Ordinary content
+  now renders at its nominal size.
+- **No floor existed below which shrinking was refused.** Every role now has
+  a readable floor (body 14pt, caption 12pt, subhead 14pt, stat 24pt, ...)
+  and the fitter clamps at it, reporting `body would need 9.9pt — floor 14pt`
+  into the render `problems[]` instead of rendering smaller. The fix for a
+  flagged slide is LESS TEXT via the density sweep, never a smaller font. A
+  theme whose nominal is already below the floor keeps its design size — the
+  floor is a shrink stop, never a grow (warm-humanist's 13pt body renders at
+  13pt, never below).
+
+The stacked layouts that reserved a fixed one-line guess and shrunk
+titles/labels into it (the classic ~8pt card title) now size the box to the
+content's real line count (`linesBox`); flow cards drop bodies at five or
+more steps, matching the vertical branch's existing capacity rule. Floor
+events flow out of the fitter through a per-slide sink the renderer drains
+into `problems[]` — no call-site changes across ~140 fit sites.
+
+> **Learned.** Five things were not obvious beforehand.
+>
+> The "small font" report was one root cause, not many: the em-less `measure`
+> made the fitter think ordinary content needed ~5.7× the box it does, so it
+> shrank fonts that were already readable. The floor without the measure fix
+> would have flagged almost every slide (the pessimistic estimate says even
+> short bullets overflow); fixing the measure first meant the floor only ever
+> fires on genuinely long content. The two changes are a pair.
+>
+> A `min(nominal, floor)` floor is a shrink stop, not a grow. A theme that
+> chooses a compact 11.5pt mono body stays 11.5pt; the floor prevents the
+> fitter from going below it and flags when content cannot fit there. Growing
+> text past the theme's design would break the shrink-only contract and every
+> layout budget that assumes it.
+>
+> Merriweather Black is ~0.60 em average, not 0.495 — and weight is the thing
+> the fitter ignored. Without a weight factor the stat value "53 kWh" wraps
+> at a size the heuristic promises fits one line, and the wrap lands the
+> unit on the label below. Black/900 faces now measure 1.25× the regular
+> advance.
+>
+> Floor events need a sink, not 140 call-site edits. The fit functions have
+> no idea a per-slide `problems[]` exists, so the events collect in a
+> module-level array (safe because layouts render synchronously) that the
+> renderer drains after each layout, deduped by message because `fitScaleAll`
+> refits every member.
+>
+> Layouts that enforce "one line at any size" ARE the small-font bug. The
+> `cards` layout shrank long titles to 0.55 scale (~8pt) to keep them on one
+> line; once the floor forbids that shrink the title wraps into the body, so
+> the only honest fix is giving the title its real line count and pushing the
+> body down. Sized-to-content zones are what make the floor affordable.
+>
+> Verified by rasterising the batch decks, the real cloud decks and the
+> 26-theme matrix: normal slides render at their nominal size, and only
+> genuinely-long slides (verbose card bodies, 3+ line checklist items, dense
+> flow steps) flag. `mimo-v2.5` confirmed the flagged slides keep readable
+> fonts and the previously-colliding card titles/labels are clean.
+
+### [x] Presenter distribution — contiguous, balanced, centralised (big-sweep item 17)
+"some people were given 2 slides and some had one slide here and then another
+slide again later." Presenters used to be assigned by the writer model one
+slide at a time ("picking the next one in the presenting order"), which
+scattered. Now a single `distributePresenters(slides, members)` in
+`src/ai/team.js` is the one source of truth:
+
+- Dividers (title/section/chapter/closing/epigraph) never carry a presenter.
+- Content slides group by their `section`; whole sections are assigned to
+  presenting members IN ORDER, so a member's slides are one contiguous block
+  (their section's divider opens it, the next divider closes it).
+- With at least as many members as sections, each section goes to its own
+  member — nobody doubled up while another sits idle. With fewer members, the
+  sections partition into contiguous blocks sized within one slide of each
+  other where the section sizes permit.
+- The briefing's slides-per-member answer overrides the automatic per-member
+  target but still produces contiguous blocks. It now flows structurally
+  through meta.yaml (`slidesPerMember`) instead of a sentence inside the
+  brief.
+
+The writer no longer sees the `presenter` field at all — it is removed from
+its ops grammar, and the distribution is force-applied after generation. Chat
+turns can still edit a presenter by hand (their grammar keeps the field).
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> "Contiguous" had to be defined against the dividers. A member owns a run of
+> sections, and the section dividers between them carry no presenter — so
+> contiguity is checked over the content sequence with dividers stripped, not
+> as an unbroken run of names in the flat slide list. A test helper that
+> naively run-length-encoded the full assignment (treating a divider null as a
+> break) reported "four blocks" for a perfectly contiguous 3-member split.
+>
+> "Unrepresentable beats scrubbed" holds for presenters too: removing the
+> field from the writer's grammar stopped the model scattering assignments,
+> and the deterministic post-pass is the belt-and-braces that guarantees the
+> shipped deck matches the split. Same lesson as the divider-grammar fix.
+>
+> Verified end-to-end with the cloud model: an 11-member team and a 3-section
+> deck produced blocks 3,3,2 — contiguous, balanced to within one slide, no
+> dividers assigned, and the presenter name renders in the chrome footer of
+> each section's content slides.
 
 ### [ ] (stretch) F13 image search — CC image lookup for model-emitted descriptions
 The `[image]` notes the writer now emits (and the sanitizer preserves) are the

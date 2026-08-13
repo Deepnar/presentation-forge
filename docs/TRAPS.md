@@ -29,17 +29,16 @@ palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
 and doughnut should vary.
 
 **Never derive a text position from `heightOf`/`lineCount` arithmetic.** The
-fitter's `measure` never multiplies the per-em advance by the em size, so its
-width (and therefore line and height) estimates are wildly pessimistic against
-real inches — a 150-char body at 13pt "measures" ~84in. Every existing layout
-works because `fitScale` shrinks defensively against its own metric. But a
-layout that computes its own y-offset from `heightOf` output (e.g. "body ends
-here, so the caption goes there") drifts off the slide: the big-number caption
-landed exactly on the chrome footer. The rule: anchor a stacked block to the
-content box bottom and fitScale the text into the fixed budget between anchor
-and label — let `fitScale` own the arithmetic, never trust its raw numbers as
-inches. (Fixing `measure` to multiply by em would re-type every deck and is a
-deliberate non-goal until the fit system is revisited as a whole.)
+fitter's `measure` estimates width as a fraction of the em (it multiplies the
+per-em advance by the em size — it used to forget the em factor, which made it
+~5.7× pessimistic against real inches and was the root cause of "the font is
+usually small"; that is fixed). Even accurate now, its estimates are
+heuristics, and a layout that computes its own y-offset from `heightOf` output
+(e.g. "body ends here, so the caption goes there") drifts off the slide: the
+big-number caption landed exactly on the chrome footer. The rule: anchor a
+stacked block to the content box bottom and fitScale the text into the fixed
+budget between anchor and label — let `fitScale` own the arithmetic, never
+trust its raw numbers as inches.
 
 **LibreOffice headless silently no-ops.** Two separate traps:
 - `-env:UserInstallation` needs an **absolute** `file://` URL. A relative path
@@ -48,6 +47,19 @@ deliberate non-goal until the fit system is revisited as a whole.)
   already running in the session — no error, no output file.
 `--outdir` resolves against soffice's cwd, not the caller's, so pass absolutes
 throughout.
+
+**"One line at any size" IS the small-font bug.** A stacked zone (card title,
+stat label) that shrinks text to fit a fixed one-line guess renders long titles
+at ~8pt — the exact complaint "the font is usually small". With a readable
+floor the shrink is refused and the wrapped text collides with the body below.
+The honest fix is to size the zone to the content's real rendered line count
+and push the following element down, not to keep shrinking.
+
+**A font floor is a shrink stop, never a grow.** `min(nominal, floor)` means a
+compact theme's 11.5pt mono body stays 11.5pt — the floor only prevents the
+fitter from going *below* it and flags when content cannot fit there. Growing
+text past the theme's design breaks the shrink-only contract and every layout
+budget that assumes it.
 
 ---
 

@@ -133,7 +133,12 @@ stacked element is fit-scaled or reserves its rendered line count, stat values
 use `fitOneLine` (width-based, pessimistic) because the height-based fitter is
 optimistic for wide digits, and the algorithmic diagram types (framework,
 cycle, dependencies, diagram, hierarchy, concept-map, venn) place nodes purely
-from angles, radii and topological depth — never from content.
+from angles, radii and topological depth — never from content. The fitter
+itself is em-aware (advance × size/72, with a weight factor for Black faces)
+and every text role has a readable floor — the fitter clamps at the floor and
+reports "would need Xpt" into the render problems rather than shrinking below
+it. Stacked zones size to the content's real line count, so long card titles
+keep their lines instead of being shrunk to ~8pt.
 
 ## Why not LangChain / LangGraph
 
@@ -240,13 +245,20 @@ from the merged identity's team (`src/ai/team.js`): a deck gets `clamp(members,
 same number; the report planner floors the same calculation at the four-section
 graded core. The count is the deck's own data, never a separate input.
 
-**Dividers carry no presenter.** `title`/`section`/`chapter`/`closing`/`epigraph`
-slides are structure, not a member's slide. The writer's ops grammar drops the
-`presenter` field for those types (unrepresentable beats scrubbed), the
-pipeline strips any stray value after generation, and the chrome footer skips
-the presenter line on divider surfaces. Content slides are handed the real
-presenting-members list so assignment stays grounded in the actual team rather
-than invented roles.
+**Presenters are assigned centrally, not by the model.** `distributePresenters`
+in `src/ai/team.js` is the one place the split is computed: content slides
+group by their `section` and whole sections go to presenting members in order,
+so every member's slides are a single contiguous block (their section's divider
+opens it, the next divider closes it) and block sizes differ by at most one
+slide where the section sizes allow. With at least as many members as sections,
+each section goes to its own member — nobody doubled up while another sits
+idle. The writer's ops grammar drops the `presenter` field for every type
+(unrepresentable beats scrubbed), the distribution is force-applied after
+generation, and the chrome footer skips the presenter line on divider surfaces.
+The briefing's slides-per-member answer overrides the automatic per-member
+target (still contiguous) and reaches generation structurally through
+meta.yaml. Chat turns can still reassign a presenter by hand — their grammar
+keeps the field.
 
 ## The report generator
 
