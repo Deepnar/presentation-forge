@@ -95,6 +95,39 @@ export async function preview(pptxFile, { outDir, dpi = 110 } = {}) {
   };
 }
 
+/**
+ * Rasterise a report .docx to one PNG per page, exactly like the deck preview —
+ * the preview IS the real Word output, drawn by LibreOffice and split by
+ * pdftoppm, so what the user sees in the report view is what opens in Word.
+ * Lives in out/report-preview so it never collides with the deck's slides.
+ */
+export async function reportPreview(docxFile, { dpi = 110 } = {}) {
+  const dir = path.resolve(path.join(path.dirname(docxFile), "report-preview"));
+  const pdf = await libreofficeToPdf(docxFile, { outDir: dir });
+
+  if (await which("pdftoppm")) {
+    await run("pdftoppm", ["-png", "-r", String(dpi), pdf, path.join(dir, "page")], { timeout: 180_000 });
+  } else {
+    throw new Error("pdftoppm not found (install poppler) — required to split the PDF into report pages");
+  }
+
+  const pngs = (await readdir(dir)).filter((f) => /^page-\d+\.png$/.test(f)).sort();
+
+  const thumbDir = path.join(dir, "thumbs");
+  await mkdir(thumbDir, { recursive: true });
+  await Promise.all(pngs.map((f) =>
+    sharp(path.join(dir, f)).resize({ width: THUMB_W }).png({ compressionLevel: 9 })
+      .toFile(path.join(thumbDir, f)),
+  ));
+
+  return {
+    dir,
+    pdf,
+    pages: pngs.map((f) => path.join(dir, f)),
+    thumbs: pngs.map((f) => path.join(thumbDir, f)),
+  };
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const file = process.argv[2];
   if (!file) {

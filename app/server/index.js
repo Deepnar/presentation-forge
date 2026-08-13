@@ -7,7 +7,7 @@ import { ROOT, DECKS, THEMES, CONFIG, BRAND } from "../../src/paths.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
-import { preview } from "../../src/preview.js";
+import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
@@ -397,8 +397,29 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
     sse.close();
   });
 });
+/** The report preview rasters — out/report-preview/page-N.png. */
+app.get("/api/decks/:slug/preview/report/thumbs/:file", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "out", "report-preview", "thumbs", path.basename(req.params.file));
+  try {
+    await stat(file);
+    res.sendFile(file);
+  } catch {
+    res.status(404).end();
+  }
+}));
 
-app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {  const file = path.join(DECKS, req.params.slug, "out", "preview", "thumbs", path.basename(req.params.file));
+app.get("/api/decks/:slug/preview/report/:file", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "out", "report-preview", path.basename(req.params.file));
+  try {
+    await stat(file);
+    res.sendFile(file);
+  } catch {
+    res.status(404).end();
+  }
+}));
+
+app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "out", "preview", "thumbs", path.basename(req.params.file));
   try {
     await stat(file);
     res.sendFile(file);
@@ -593,10 +614,27 @@ app.post("/api/decks/:slug/report/render", wrap(async (req, res) => {
   }
   const toc = req.body?.toc !== false;
   const r = await renderReport({ reportFile, toc });
+
+  // Rasterise the actual .docx so the report view shows the real Word output
+  // as pages, not a placeholder — the same LibreOffice → PDF → PNG pipeline
+  // the deck preview uses.
+  const base = `/api/decks/${req.params.slug}/preview`;
+  let pages = [];
+  let thumbs = [];
+  try {
+    const p = await reportPreview(r.outFile);
+    pages = p.pages.map((f) => `${base}/report/${path.basename(f)}`);
+    thumbs = p.thumbs.map((f) => `${base}/report/thumbs/${path.basename(f)}`);
+  } catch (err) {
+    r.problems.push(`report preview failed: ${err.message}`);
+  }
+
   ok(res, {
     sections: r.sections,
     pages: r.pages,
     problems: r.problems,
+    previewPages: pages,
+    previewThumbs: thumbs,
     docx: `/api/decks/${req.params.slug}/download/report.docx`,
   });
 }));

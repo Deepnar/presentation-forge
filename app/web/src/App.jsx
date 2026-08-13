@@ -262,6 +262,7 @@ export default function App() {
                 onDeckChanged={bumpDeck}
                 onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
                 onOpenResearch={openResearch}
+                onOpenReport={openReport}
               />
             )}
             {view === "report" && activeSlug && (

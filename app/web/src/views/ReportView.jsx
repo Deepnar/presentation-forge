@@ -27,6 +27,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
   const [result, setResult] = useState(null);
+  const [preview, setPreview] = useState(null); // { pages, thumbs } after render
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -47,6 +48,14 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     try {
       const r = await api.renderReport(slug);
       setResult(r);
+      // The rasterised preview pages — the report AS IT OPENS in Word.
+      if (r.previewPages?.length) {
+        const stamp = Date.now();
+        setPreview({
+          pages: r.previewPages.map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.previewThumbs ?? r.previewPages).map((s) => `${s}?t=${stamp}`),
+        });
+      }
       setStatus("");
     } catch (err) {
       setError(err.message);
@@ -239,6 +248,30 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
             })}
           </div>
         </>
+      )}
+
+      {preview && (
+        <div className="mt-10">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">
+              The rendered document
+            </div>
+            <Badge className="bg-raised text-fg-faint">{preview.pages.length} page{preview.pages.length > 1 ? "s" : ""}</Badge>
+          </div>
+          <div className="space-y-4">
+            {preview.pages.map((src, i) => (
+              <div key={src}>
+                <div className="mb-1 text-[10.5px] font-mono text-fg-faint">page {i + 1}</div>
+                <img
+                  src={src}
+                  alt={`Report page ${i + 1}`}
+                  className="w-full rounded-card border border-line shadow-[0_20px_40px_-24px_rgba(0,0,0,0.6)]"
+                  loading={i === 0 ? undefined : "lazy"}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="sticky bottom-0 z-10 mt-8 border-t border-line bg-panel/95 backdrop-blur">

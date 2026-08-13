@@ -16,6 +16,7 @@ import {
   tocTable,
   locatePages,
 } from "../src/report.js";
+import { reportPreview } from "../src/preview.js";
 
 const IDENTITY = {
   academic: { exam_type: "Innovative Examination (IE)", subject: "Operating Systems", year: "2025-2026" },
@@ -195,4 +196,30 @@ test("assembleDocx errors clearly when the donor has no sectPr", async (t) => {
     assembleDocx(donorPath, r, IDENTITY, presentSections(r)),
     /no body-level <w:sectPr>/,
   );
+});
+
+test("reportPreview rasterises the rendered docx to one PNG per page", async (t) => {
+  const dir = await mkdtemp(path.join(tmpdir(), "forge-report-prev-"));
+  t.after(() => import("node:fs/promises").then(({ rm }) => rm(dir, { recursive: true, force: true })));
+
+  const donorPath = path.join(dir, "donor.docx");
+  await writeFile(donorPath, await buildDonor());
+  const reportFile = path.join(dir, "report.yaml");
+  await writeFile(reportFile, `title: "A comparative study"\ncontent:\n  Abstract:\n    paragraphs:\n      - "Injected abstract."\n      - "A second paragraph."\n`);
+
+  const r = await renderReport({ reportFile, donor: donorPath, toc: false });
+  const p = await reportPreview(r.outFile);
+
+  assert.ok(p.pages.length >= 1, "at least one page rasterised");
+  assert.equal(p.pages.length, p.thumbs.length);
+
+  // The PNG is a real raster of the document, not a placeholder.
+  const meta = await import("sharp").then((s) => s.default(p.pages[0]).metadata());
+  assert.equal(meta.format, "png");
+  assert.ok(meta.width > 400, "page is wide enough to be a real render");
+
+  // The preview lives in out/report-preview so it never collides with the
+  // deck's slide previews.
+  assert.ok(p.pages[0].includes(path.join("out", "report-preview")));
+  assert.ok(p.pdf.endsWith(".pdf"));
 });

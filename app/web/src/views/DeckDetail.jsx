@@ -14,7 +14,7 @@ import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
  * inline editing and presenter picks. Rendering happens through the real API;
  * "rendering…" and the problems list are sync feedback, not decoration.
  */
-export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck, onOpenResearch }) {
+export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck, onOpenResearch, onOpenReport }) {
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -514,6 +514,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
             setReportExists(true);
             onDeckChanged?.();
           }}
+          onOpenReport={onOpenReport}
         />
         <ResearchCard slug={slug} onOpen={onOpenResearch} />
       </div>
@@ -678,7 +679,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   );
 }
 
-function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
+function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport }) {
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState("");
   const [depth, setDepth] = useState(defaultDepth ?? "full");
@@ -686,6 +687,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [job, setJob] = useState(null);
 
   async function generate() {
@@ -715,6 +717,14 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
     try {
       const r = await api.renderReport(slug);
       setResult(r);
+      // Rasterised pages of the actual .docx — the report as it opens in Word.
+      if (r.previewPages?.length) {
+        const stamp = Date.now();
+        setPreview({
+          pages: r.previewPages.map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.previewThumbs ?? r.previewPages).map((s) => `${s}?t=${stamp}`),
+        });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -778,6 +788,11 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
               Download report.docx
             </a>
           )}
+          {onOpenReport && (
+            <Button variant="ghost" size="sm" onClick={() => onOpenReport(slug)} title="Open the report's full document view">
+              Open report view
+            </Button>
+          )}
         </div>
       )}
 
@@ -797,6 +812,21 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated }) {
         <ul className="mt-2.5 space-y-1 text-[11.5px] leading-relaxed text-amber">
           {result.problems.map((p, i) => <li key={i}>{p}</li>)}
         </ul>
+      )}
+
+      {preview && (
+        <div className="mt-3 grid max-h-64 grid-cols-3 gap-1.5 overflow-y-auto">
+          {preview.pages.map((src, i) => (
+            <a
+              key={src}
+              href={`/api/decks/${slug}/download/report.docx`}
+              title={`Report page ${i + 1} — the rendered document as it opens in Word`}
+              className="group relative overflow-hidden rounded-md border border-line"
+            >
+              <img src={src} alt={`Report page ${i + 1}`} className="aspect-[3/4] w-full object-cover" loading={i < 3 ? undefined : "lazy"} />
+            </a>
+          ))}
+        </div>
       )}
     </Panel>
   );
