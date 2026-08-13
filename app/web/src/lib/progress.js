@@ -9,6 +9,8 @@ export function progressLabel(p) {
     case "rendering": return "Rendering slides…";
     case "report_planning": return "Planning the report…";
     case "report_writing": return `Writing section ${(p.index ?? 0) + 1} of ${p.total ?? "…"}…`;
+    case "reading": return "Reading the deck…";
+    case "editing": return "Editing the deck…";
     default: return "Working…";
   }
 }

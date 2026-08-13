@@ -23,12 +23,12 @@ const DECK_SUGGESTIONS = [
 
 function phaseOf(chat, effStep, questions) {
   if (chat.kind === "report") {
-    if (chat.produced) return "done";
+    if (chat.produced) return "record";
     if (!chat.topic) return "greeting";
     if (effStep < questions.length) return "briefing";
     return "summary";
   }
-  if (chat.produced) return "done";
+  if (chat.produced) return "editing"; // the deck exists — the thread edits it
   if (chat.plan) return "outline";
   if (!chat.topic) return "greeting";
   if (effStep >= questions.length) return "summary";
@@ -390,6 +390,68 @@ export default function ChatView({
   function stop() { runs.get(chat.id)?.abort?.() ?? job?.abort(); }
 
   /**
+   * The deck-editing turn. After the deck is produced the SAME thread keeps
+   * working: a message here is an instruction to runTurn on deck.yaml (the
+   * machinery the deleted chat rail used, still served by /api/decks/:slug/chat).
+   * The turn's applied changes and the fresh slide thumbnails land back in the
+   * thread, and bumping deckVersion makes the deck view re-fetch if it is open.
+   */
+  function sendEditTurn(text) {
+    if (!chat.deckSlug) return;
+    setBusy(true);
+    setError("");
+    setStatus("Editing…");
+    const userMsg = { role: "user", text, at: new Date().toISOString() };
+    persist({
+      ...chat,
+      turns: [...(chat.turns ?? []), userMsg],
+      updatedAt: new Date().toISOString(),
+    });
+    runs.begin(chat.id, { abort: () => {}, status: "Editing…" });
+    const j = api.chatDeck(
+      chat.deckSlug,
+      {
+        instruction: text,
+        model: model || undefined,
+      },
+      {
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
+        result: (r) => {
+          const stamp = Date.now();
+          const thumbs = (r.thumbs ?? []).map((s) => `${s}?t=${stamp}`);
+          const asstMsg = {
+            role: "assistant",
+            text: turnSummary(r),
+            changes: r.changes ?? [],
+            problems: r.problems ?? [],
+            thumbs,
+            at: new Date().toISOString(),
+          };
+          const base = chatRef.current;
+          persist({
+            ...base,
+            turns: [...(base.turns ?? []), asstMsg],
+            deckThumbs: thumbs,
+            error: undefined,
+            updatedAt: new Date().toISOString(),
+          });
+          onDeckChanged?.();
+        },
+      },
+    );
+    runs.update(chat.id, { abort: j.abort });
+    setJob(j);
+    j.promise
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
+  }
+
+  /**
    * Persist the repeated set — guide, subject/year, team — as remembered
    * defaults in config/identity.yaml, the same file the Identity view edits.
    * Institution and brand come from the saved identity and pass through
@@ -424,10 +486,17 @@ export default function ChatView({
     persist({ ...chat, kind, updatedAt: new Date().toISOString() });
   }
 
-  /** The bottom input bar: topic first, then free-text answers to questions. */
+  /** The bottom input bar: topic first, then free-text answers to questions,
+   *  then — once the deck exists — deck-editing turns. */
   function send() {
     const text = input.trim();
     if (!text || busy) return;
+    if (phase === "editing") {
+      setInput("");
+      setFreeHint("");
+      sendEditTurn(text);
+      return;
+    }
     if (phase === "greeting") {
       setInput("");
       chat.kind === "report" ? sendReportTopic(text) : sendTopic(text);
@@ -470,10 +539,14 @@ export default function ChatView({
         : "Type a topic — everything else defaults…"
       : phase === "briefing"
         ? `Answer: ${currentQuestion?.ask}`
-        : phase === "running" || phase === "planning" || phase === "generating"
-          ? "Working…"
-          : "Review the card above…";
-  const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "done";
+        : phase === "editing"
+          ? "Edit the deck — try \u201cmake slide 2 punchier\u201d…"
+          : phase === "record"
+            ? "The report is ready — this thread is its record."
+            : busy
+              ? "Working…"
+              : "Review the card above…";
+  const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "record";
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -519,6 +592,38 @@ export default function ChatView({
               </div>
             </div>
           ))}
+
+          {phase === "editing" && (
+            <DeckBriefing
+              chat={chat}
+              answered={answered}
+              echoAnswer={echoAnswer}
+              themeLabel={themeLabel}
+              presetLabel={presetLabel}
+            />
+          )}
+
+          {/* The deck-editing turn log — every edit instruction and its applied
+              result stays in the thread, alongside the briefing record. */}
+          {phase === "editing" && (chat.turns ?? []).map((t, i) =>
+            t.role === "user" ? (
+              <Bubble key={i} role="user">{t.text}</Bubble>
+            ) : (
+              <Bubble key={i} role="assistant">
+                <div className="text-[12.5px] leading-relaxed text-fg">{t.text}</div>
+                {t.thumbs?.length > 0 && (
+                  <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
+                    {t.thumbs.map((src, j) => (
+                      <img key={src} src={src} alt={`Slide ${j + 1}`} className="h-14 w-auto shrink-0 rounded border border-line" />
+                    ))}
+                  </div>
+                )}
+                {t.problems?.length > 0 && (
+                  <div className="mt-2 text-[11px] leading-relaxed text-amber">{t.problems.slice(0, 3).join(" · ")}</div>
+                )}
+              </Bubble>
+            )
+          )}
 
           {currentQuestion && (
             <QuestionCard
@@ -595,7 +700,7 @@ export default function ChatView({
             />
           )}
 
-          {(phase === "running" || (busy && phase === "summary") || (busy && phase === "outline")) && (
+          {(phase === "running" || (busy && (phase === "summary" || phase === "outline" || phase === "editing"))) && (
             <Bubble role="assistant">
               <div className="flex items-center gap-2 text-[12px] text-fg-muted">
                 <Spinner /> {status}
@@ -620,7 +725,7 @@ export default function ChatView({
             </Bubble>
           )}
 
-          {phase === "done" && (
+          {(phase === "editing" || phase === "record") && (
             <Panel className="p-5">
               <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 text-accent" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -628,6 +733,12 @@ export default function ChatView({
                 </svg>
                 {chat.kind === "report" ? "Your report is ready." : `${chat.title} is ready.`}
               </div>
+              {phase === "editing" && (
+                <div className="mt-1 text-[11.5px] leading-relaxed text-fg-faint">
+                  This thread keeps working — type below to edit the deck, and its
+                  slides update here after every turn.
+                </div>
+              )}
               {chat.deckThumbs?.length > 0 && (
                 <div className="mt-3 flex gap-1.5 overflow-x-auto pb-0.5">
                   {chat.deckThumbs.map((src, i) => (
@@ -707,9 +818,12 @@ export default function ChatView({
           {freeHint && <div className="mt-1.5 px-1 text-[11px] text-amber">{freeHint}</div>}
           <div className="mt-1.5 px-1 text-[10.5px] text-fg-faint">
             {chat.kind === "report"
-              ? "A report is researched and written from your topic — depth defaults to brief."
+              ? phase === "record"
+                ? "The report is ready — this thread is its record. Open it to read the document."
+                : "A report is researched and written from your topic — depth defaults to brief."
               : phase === "briefing" ? "Answer in the card above, or type the answer here and send."
-                : "Every model call stays on this machine."}
+                : phase === "editing" ? "Each message is a deck-editing turn — structure, wording, types, presenters."
+                  : "Every model call stays on this machine."}
           </div>
         </div>
       </footer>
@@ -1303,6 +1417,61 @@ function SummaryLine({ chat, themeLabel }) {
       )}
     </div>
   );
+}
+
+/** The compact recap of the deck-briefing answers, shown once the deck is
+ *  ready — the briefing "cards" collapse into this block and the Q&A record
+ *  stays inside it, expandable, so nothing said for the deck is lost. */
+function DeckBriefing({ chat, answered, echoAnswer, themeLabel, presetLabel }) {
+  const [open, setOpen] = useState(false);
+  const b = chat.briefing;
+  const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
+  const bits = [
+    b.title?.trim() || chat.title || "Untitled",
+    `${b.maxSlides || "auto"} slides`,
+    themeLabel(b.theme),
+    `${b.density} density`,
+    b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
+  ];
+  return (
+    <Panel className="p-4">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center gap-2 text-left"
+        title={open ? "Collapse the briefing record" : "Show the full briefing record"}
+      >
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">Deck briefing</span>
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-fg-faint transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
+        <span className="ml-auto hidden min-w-0 truncate text-[11.5px] text-fg-muted sm:block">{bits.join(" · ")}</span>
+      </button>
+      <div className="mt-1.5 text-[12px] leading-relaxed text-fg-muted sm:hidden">{bits.join(" · ")}</div>
+      {presenting.length > 0 && (
+        <div className="mt-1 text-[11.5px] text-fg-muted">
+          Presenting: <span className="text-fg">{presenting.join(", ")}</span>
+        </div>
+      )}
+      {open && (
+        <div className="mt-3 space-y-1 border-t border-line/60 pt-2.5">
+          <div className="mb-1 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">What was said</div>
+          {answered.map((q) => (
+            <div key={q.key} className="rounded-lg bg-sunken px-2.5 py-1.5">
+              <div className="text-[10px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
+              <div className="text-[12.5px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+/** One-line description of what an edit turn applied — the assistant's reply
+ *  in the turn log. Never claims more than the turn returned. */
+function turnSummary(r) {
+  const parts = [];
+  if (r.changes?.length) parts.push(r.changes.slice(0, 5).join("; "));
+  if (r.problems?.length) parts.push(r.problems.slice(0, 3).join("; "));
+  return parts.join("  ") || "Applied.";
 }
 
 /**

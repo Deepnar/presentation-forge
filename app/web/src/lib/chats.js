@@ -71,5 +71,6 @@ export function createChat({ kind = "deck" } = {}) {
     },
     plan: null,            // approved outline (title/subtitle/sections/slides)
     deckSlug: null,        // the deck or report this chat produced
+    turns: [],             // post-production deck-edit turn log (user/assistant pairs)
   };
 }
