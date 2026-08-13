@@ -6,6 +6,7 @@
  */
 
 export const BRIEFING_QUESTIONS = [
+  { key: "preset", ask: "Use a saved format, or start fresh?" },
   { key: "title", ask: "What should the deck be called?" },
   { key: "team", ask: "Who is on the team — and who presents?" },
   { key: "guide", ask: "Who is your guide?" },
@@ -20,6 +21,81 @@ export const BRIEFING_QUESTIONS = [
   { key: "research", ask: "Run a research pass over the topic?" },
 ];
 
+/**
+ * The briefing fields a preset fixes. When a preset is picked these questions
+ * are treated as answered and skipped; the user still walks the changing bits
+ * (title, subject, teacher) and the per-deck choices (audience, emphasis,
+ * count, research).
+ */
+export const PRESET_KEYS = ["team", "theme", "density", "branding", "slidesPerMember"];
+
+/**
+ * Pre-fill a briefing from a saved preset, over the identity defaults.
+ * The preset's values win on every fixed field; everything else keeps its
+ * default so the changing questions still get asked.
+ */
+export function briefingFromPreset(preset, identity) {
+  const b = initialBriefing(identity);
+  const p = preset ?? {};
+  return {
+    ...b,
+    team: p.team ?? b.team,
+    guide: p.guide ?? b.guide,
+    academic: { ...b.academic, ...(p.academic ?? {}) },
+    theme: p.theme ?? b.theme,
+    density: p.density ?? b.density,
+    branding: p.branding ?? b.branding,
+    slidesPerMember: p.slidesPerMember ?? b.slidesPerMember,
+  };
+}
+
+/**
+ * Re-fill the fixed briefing fields from a preset without touching the fields
+ * the user has already answered in this thread (title, audience, …).
+ */
+export function applyPresetToBriefing(briefing, preset) {
+  const p = preset ?? {};
+  return {
+    ...briefing,
+    team: p.team ?? briefing.team,
+    guide: p.guide ?? briefing.guide,
+    academic: { ...briefing.academic, ...(p.academic ?? {}) },
+    theme: p.theme ?? briefing.theme,
+    density: p.density ?? briefing.density,
+    branding: p.branding ?? briefing.branding,
+    slidesPerMember: p.slidesPerMember ?? briefing.slidesPerMember,
+  };
+}
+
+/**
+ * The briefing walk skips the questions a picked preset already answers, so
+ * after "use a saved format" the thread lands straight on the next open
+ * question instead of re-asking the fixed fields. A question the user has
+ * explicitly rewound to (clicked "change" on) is un-skipped — `unskip` holds
+ * those keys — so the fixed fields stay editable, not frozen.
+ */
+export function effectiveBriefStep(briefing, step) {
+  if (!briefing?.presetId) return step;
+  const unskip = new Set(briefing.unskip ?? []);
+  let i = step;
+  while (i < BRIEFING_QUESTIONS.length && PRESET_KEYS.includes(BRIEFING_QUESTIONS[i].key) && !unskip.has(BRIEFING_QUESTIONS[i].key)) i++;
+  return i;
+}
+
+/** The briefing fields a "save as preset" captures. */
+export function presetPayload(briefing) {
+  const b = briefing ?? {};
+  return {
+    team: b.team,
+    guide: b.guide,
+    academic: b.academic,
+    theme: b.theme,
+    density: b.density,
+    branding: b.branding,
+    slidesPerMember: b.slidesPerMember,
+  };
+}
+
 /** Pre-fill from config/identity.yaml — the remembered defaults, not truth. */
 export function initialBriefing(identity) {
   const id = identity ?? {};
@@ -28,6 +104,7 @@ export function initialBriefing(identity) {
   const team = id.team ?? {};
   return {
     title: "",
+    presetId: null,    // set when the briefing starts from a saved format
     team: {
       label: team.label ?? "",
       members: (team.members ?? [])
@@ -63,6 +140,10 @@ export function suggestTitle(topic) {
 export function echoAnswer(briefing, key, opts = {}) {
   const b = briefing;
   switch (key) {
+    case "preset": {
+      const name = opts.presetLabel?.(b.presetId) ?? (b.presetId ? b.presetId : "none");
+      return b.presetId ? `Preset: ${name}` : "Fresh briefing";
+    }
     case "title": return b.title?.trim() || "(untitled)";
     case "team": {
       const n = (b.team?.members ?? []).length;
@@ -101,6 +182,10 @@ export function applyFreeText(briefing, key, text) {
   if (!t) return null;
   const b = briefing;
   switch (key) {
+    case "preset":
+      // Free text names a preset to use, or "none"/"fresh" to start clean.
+      if (/^(none|fresh|new|no)/i.test(t)) return { briefing: { ...b, presetId: null }, echo: "Fresh briefing" };
+      return { briefing: { ...b, presetId: t }, echo: `Preset: ${t}` };
     case "title":
       return { briefing: { ...b, title: t }, echo: t };
     case "team": {

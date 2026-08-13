@@ -17,6 +17,7 @@ import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
 import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser } from "../../src/auth.js";
+import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 
 /**
@@ -55,6 +56,7 @@ const deckWorkspace = async (req, res, next) => {
 };
 app.use("/api/decks", deckWorkspace);
 app.use("/api/reports", deckWorkspace);
+app.use("/api/presets", deckWorkspace);
 
 /**
  * Per-slug ownership. An owned deck belongs to exactly one account; a folder
@@ -787,6 +789,36 @@ app.post("/api/decks/:slug/generate", (req, res) => {
     sse.close();
   });
 });
+
+/* ---------------------------------------------------------------- presets */
+
+/**
+ * Saved briefing formats, per user. A preset is the reusable half of a
+ * briefing — the fixed fields (team, guide, academic, theme, density,
+ * branding, slides-per-member) — so the briefing's first question can offer
+ * "use a saved format?" and pre-fill the rest. Gated by the same session
+ * check as the deck workspace.
+ */
+app.get("/api/presets", wrap(async (req, res) => {
+  ok(res, { presets: await listPresets(req.user.email) });
+}));
+
+app.post("/api/presets", wrap(async (req, res) => {
+  const { name, team, guide, academic, theme, density, branding, slidesPerMember } = req.body ?? {};
+  const preset = await savePreset(req.user.email, { name, team, guide, academic, theme, density, branding, slidesPerMember });
+  ok(res, { preset });
+}));
+
+app.put("/api/presets/:id", wrap(async (req, res) => {
+  const { name, team, guide, academic, theme, density, branding, slidesPerMember } = req.body ?? {};
+  const preset = await updatePreset(req.user.email, req.params.id, { name, team, guide, academic, theme, density, branding, slidesPerMember });
+  ok(res, { preset });
+}));
+
+app.delete("/api/presets/:id", wrap(async (req, res) => {
+  await deletePreset(req.user.email, req.params.id);
+  ok(res, {});
+}));
 
 /* ---------------------------------------------------------------- identity */
 

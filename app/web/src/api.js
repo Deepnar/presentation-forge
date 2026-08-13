@@ -173,4 +173,9 @@ export const api = {
   restoreVersion: (slug, file) =>
     call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
   searchDecks: (q) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }) }),
+  // Saved briefing formats — the reusable half of a briefing, per user.
+  presets: () => call("/api/presets"),
+  savePreset: (preset) => call("/api/presets", { method: "POST", body: JSON.stringify(preset) }),
+  updatePreset: (id, preset) => call(`/api/presets/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(preset) }),
+  deletePreset: (id) => call(`/api/presets/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };

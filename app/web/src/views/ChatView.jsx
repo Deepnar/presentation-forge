@@ -5,7 +5,7 @@ import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
-import { BRIEFING_QUESTIONS, initialBriefing, suggestTitle, echoAnswer, applyFreeText } from "../lib/briefing.js";
+import { BRIEFING_QUESTIONS, PRESET_KEYS, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 
 const DENSITIES = [
@@ -21,7 +21,7 @@ const DECK_SUGGESTIONS = [
   "Mechanical keyboards: ergonomics of typing",
 ];
 
-function phaseOf(chat) {
+function phaseOf(chat, effStep) {
   if (chat.kind === "report") {
     if (chat.produced) return "done";
     if (chat.topic) return "running";
@@ -30,7 +30,7 @@ function phaseOf(chat) {
   if (chat.produced) return "done";
   if (chat.plan) return "outline";
   if (!chat.topic) return "greeting";
-  if (chat.briefStep >= BRIEFING_QUESTIONS.length) return "summary";
+  if (effStep >= BRIEFING_QUESTIONS.length) return "summary";
   return "briefing";
 }
 
@@ -64,6 +64,7 @@ export default function ChatView({
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
+  const [presets, setPresets] = useState([]);
   const [input, setInput] = useState("");
   const [freeHint, setFreeHint] = useState("");
   const [busy, setBusy] = useState(false);
@@ -72,6 +73,7 @@ export default function ChatView({
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
   const [defaultsState, setDefaultsState] = useState({ status: "idle" });
+  const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
   const scrollRef = useRef(null);
@@ -98,6 +100,7 @@ export default function ChatView({
   useEffect(() => {
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.types().then((r) => setTypes(r.descriptions ?? {})).catch(() => {});
+    api.presets().then((r) => setPresets(r.presets ?? [])).catch(() => {});
   }, []);
 
   useEffect(() => { setDraftPlan(chat.plan); }, [chat.plan]);
@@ -107,14 +110,17 @@ export default function ChatView({
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [chat, status, busy, themes.length]);
 
-  const phase = phaseOf(chat);
-  const qIndex = Math.min(chat.briefStep, BRIEFING_QUESTIONS.length - 1);
+  const phase = phaseOf(chat, effectiveBriefStep(chat.briefing, chat.briefStep));
+  const qIndex = Math.min(effectiveBriefStep(chat.briefing, chat.briefStep), BRIEFING_QUESTIONS.length - 1);
   const currentQuestion = phase === "briefing" ? BRIEFING_QUESTIONS[qIndex] : null;
 
   const themeLabel = (name) => {
     if (!name) return "Default (warm-humanist)";
     return themes.find((t) => t.name === name)?.label ?? name;
   };
+
+  const presetById = (id) => presets.find((p) => p.id === id) ?? null;
+  const presetLabel = (id) => presetById(id)?.name ?? id;
 
   function persist(updated) {
     onChatChanged(updated);
@@ -148,7 +154,60 @@ export default function ChatView({
 
   /** Jump back to an earlier question — later answers are re-asked. */
   function editAt(i) {
-    persist({ ...chat, briefStep: Math.min(i, BRIEFING_QUESTIONS.length), updatedAt: new Date().toISOString() });
+    const q = BRIEFING_QUESTIONS[i];
+    // Rewinding to a preset-fixed question un-skips it so the user can change
+    // the preset's value for this deck without abandoning the whole format.
+    const briefing = q && PRESET_KEYS.includes(q.key)
+      ? { ...chat.briefing, unskip: [...(chat.briefing?.unskip ?? []), q.key] }
+      : chat.briefing;
+    persist({ ...chat, briefing, briefStep: Math.min(i, BRIEFING_QUESTIONS.length), updatedAt: new Date().toISOString() });
+  }
+
+  /**
+   * "Use a saved format?" — the briefing's first question. Picking a preset
+   * pre-fills the fixed fields (team, guide, academic, theme, density,
+   * branding, slides-per-member) and skips those questions; picking none
+   * starts a fresh briefing. Either way the walk continues from the title.
+   */
+  function pickPreset(preset) {
+    const briefing = preset
+      ? applyPresetToBriefing(chat.briefing, { ...preset, id: preset.id })
+      : chat.briefing;
+    persist({
+      ...chat,
+      briefing: { ...briefing, presetId: preset?.id ?? null },
+      briefStep: 1,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  /** Save the current briefing's fixed fields as a named preset. */
+  async function saveAsPreset(name) {
+    const clean = String(name ?? "").trim();
+    if (!clean) return;
+    setPresetSaveState({ status: "saving" });
+    try {
+      const existing = presets.find((p) => p.name.toLowerCase() === clean.toLowerCase());
+      const saved = existing
+        ? await api.updatePreset(existing.id, { ...presetPayload(chat.briefing), name: clean })
+        : await api.savePreset({ ...presetPayload(chat.briefing), name: clean });
+      setPresets((list) => {
+        const next = existing ? list.map((p) => (p.id === saved.preset?.id ? saved.preset : p)) : [saved.preset, ...list];
+        return next;
+      });
+      setPresetSaveState({ status: "saved" });
+    } catch (err) {
+      setPresetSaveState({ status: "error", message: err.message });
+    }
+  }
+
+  async function deletePreset(id) {
+    try {
+      await api.deletePreset(id);
+      setPresets((list) => list.filter((p) => p.id !== id));
+    } catch (err) {
+      window.alert(`Could not delete preset: ${err.message}`);
+    }
   }
 
   function densityNote(d) {
@@ -355,6 +414,16 @@ export default function ChatView({
       return;
     }
     if (phase === "briefing" && currentQuestion) {
+      if (currentQuestion.key === "preset") {
+        // Free text on the preset question names a saved format, or "none" to
+        // start fresh. Picking via the card is the full path; typing a name is
+        // the keyboard-only path.
+        const named = presets.find((p) => p.name.toLowerCase() === text.trim().toLowerCase());
+        if (named) { setInput(""); setFreeHint(""); pickPreset(named); return; }
+        if (/^(none|fresh|new|no)/i.test(text.trim())) { setInput(""); setFreeHint(""); pickPreset(null); return; }
+        setFreeHint("No preset by that name — pick one from the card, or type 'none' to start fresh.");
+        return;
+      }
       const r = applyFreeText(chat.briefing, currentQuestion.key, text);
       if (!r) {
         setFreeHint(currentQuestion.key === "theme"
@@ -369,7 +438,10 @@ export default function ChatView({
   }
 
   const answered = [];
-  for (let i = 0; i < chat.briefStep && i < BRIEFING_QUESTIONS.length; i++) answered.push(BRIEFING_QUESTIONS[i]);
+  const effStep = effectiveBriefStep(chat.briefing, chat.briefStep);
+  for (let i = 0; i < effStep && i < BRIEFING_QUESTIONS.length; i++) {
+    answered.push({ ...BRIEFING_QUESTIONS[i], idx: i });
+  }
 
   const placeholder =
     phase === "greeting"
@@ -415,11 +487,11 @@ export default function ChatView({
             <div key={q.key}>
               <Bubble role="assistant">
                 <div className="mb-0.5 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
-                <div className="text-[13px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel })}</div>
+                <div className="text-[13px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
               </Bubble>
               <div className="mt-0.5 flex justify-start pl-1">
                 <button
-                  onClick={() => editAt(i)}
+                  onClick={() => editAt(q.idx)}
                   className="rounded px-1.5 py-0.5 text-[10px] text-fg-faint transition hover:bg-hover hover:text-fg-muted"
                 >
                   change
@@ -435,6 +507,9 @@ export default function ChatView({
               chat={chat}
               themes={themes}
               themeLabel={themeLabel}
+              presets={presets}
+              onPickPreset={pickPreset}
+              onDeletePreset={deletePreset}
               onNext={onNext}
               onFreeText={(text) => {
                 const r = applyFreeText(chat.briefing, currentQuestion.key, text);
@@ -460,6 +535,10 @@ export default function ChatView({
                   {defaultsState.status === "saving" ? <Spinner /> : null}
                   Remember as defaults
                 </Button>
+                <PresetSave
+                  onSave={saveAsPreset}
+                  state={presetSaveState}
+                />
                 <span className="text-[11px] text-fg-faint">
                   The only thing that starts research &amp; planning.
                 </span>
@@ -656,11 +735,75 @@ function Bubble({ role, children }) {
   );
 }
 
-function QuestionCard({ q, chat, themes, themeLabel, onNext }) {
+function PresetCard({ presets, value, onPick, onDelete }) {
+  const [confirming, setConfirming] = useState(null);
+  return (
+    <div>
+      <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
+        A saved format pre-fills the fixed fields — team, guide, academic
+        context, theme, density, branding, slides per member — so only the
+        changing bits (title, subject, teacher) need answering.
+      </div>
+      <div className="space-y-1.5">
+        <button
+          onClick={() => onPick(null)}
+          className={`block w-full rounded-lg border px-3 py-2 text-left text-[12.5px] transition ${
+            value == null
+              ? "border-accent bg-accent/10 text-fg"
+              : "border-line bg-panel text-fg-muted hover:border-line-strong hover:text-fg"
+          }`}
+        >
+          <span className="font-medium">Start fresh</span>
+          <span className="ml-2 text-[10.5px] text-fg-faint">answer everything this time</span>
+        </button>
+        {presets.map((p) => (
+          <div
+            key={p.id}
+            className={`flex items-center rounded-lg border transition ${
+              value === p.id ? "border-accent bg-accent/10" : "border-line bg-panel hover:border-line-strong"
+            }`}
+          >
+            <button
+              onClick={() => onPick(p)}
+              className="min-w-0 flex-1 px-3 py-2 text-left"
+            >
+              <span className="block truncate text-[12.5px] font-medium text-fg">{p.name}</span>
+              <span className="block truncate text-[10.5px] text-fg-faint">
+                {p.team?.members?.length ?? 0} members{p.theme ? ` · ${p.theme}` : ""} · {p.density} density
+                {p.branding !== "full" ? ` · ${p.branding} branding` : ""}
+              </span>
+            </button>
+            <div className="flex shrink-0 items-center pr-1.5">
+              {confirming === p.id ? (
+                <button
+                  onClick={() => { onDelete(p.id); setConfirming(null); }}
+                  className="rounded px-2 py-1 text-[11px] font-medium text-danger transition hover:bg-danger/10"
+                >
+                  Delete?
+                </button>
+              ) : (
+                <button
+                  onClick={() => setConfirming(p.id)}
+                  title="Delete this preset"
+                  className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber"
+                >
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onNext }) {
   const b = chat.briefing;
   return (
     <Bubble role="assistant">
       <div className="mb-1 text-[12px] font-medium text-fg">{q.ask}</div>
+      {q.key === "preset" && <PresetCard presets={presets} value={b.presetId} onPick={onPickPreset} onDelete={onDeletePreset} />}
       {q.key === "title" && <TitleCard value={b.title} onNext={onNext} />}
       {q.key === "team" && <TeamCard team={b.team} onNext={onNext} />}
       {q.key === "guide" && <GuideCard guide={b.guide} onNext={onNext} />}
@@ -1025,6 +1168,37 @@ function ResearchCard({ value, onNext }) {
       />
       <CardFooter onNext={() => onNext({ research: v })} nextLabel="Finish briefing" />
     </div>
+  );
+}
+
+function PresetSave({ onSave, state }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  if (!open) {
+    return (
+      <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
+        Save as preset…
+      </Button>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <input
+        autoFocus
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") { onSave(name); setOpen(false); } if (e.key === "Escape") setOpen(false); }}
+        placeholder="e.g. IE preset"
+        className={`${inputCls} w-40 py-1.5 text-[12px]`}
+      />
+      <Button size="sm" variant="outline" disabled={!name.trim() || state.status === "saving"}
+        onClick={() => { onSave(name); setOpen(false); }}>
+        {state.status === "saving" ? <Spinner /> : "Save"}
+      </Button>
+      <button onClick={() => setOpen(false)} className="rounded p-1 text-fg-faint hover:text-fg" title="Cancel">
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+    </span>
   );
 }
 
