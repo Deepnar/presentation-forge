@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
+import { parseHash, hashFor } from "./lib/router.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import DocsModal from "./components/DocsModal.jsx";
@@ -38,6 +39,9 @@ export default function App() {
   const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [focusSearch, setFocusSearch] = useState(0);
+  // A chat id asked for by the hash before the chat list has loaded (a deep
+  // link on a cold start) — the chats effect resolves it once the list is in.
+  const pendingChatIdRef = useRef(null);
 
   // Boot: rehydrate the session (a stale token just logs out) and remember the
   // institution. Auth-first — everything else waits for a user.
@@ -48,7 +52,9 @@ export default function App() {
 
   // A logged-in user gets their own chat list; the first visit starts one
   // empty thread so the landing is already a chat. StrictMode double-fires this
-  // effect, so the initial-chat guard reads localStorage, not React state.
+  // effect, so the initial-chat guard reads localStorage, not React state. The
+  // hash's chat id (a deep link, or a back-press restore) wins over the
+  // previously active chat once the list is in.
   useEffect(() => {
     if (!user) { setChats([]); setActiveChatId(null); return; }
     let list = loadChats(user.email);
@@ -58,7 +64,13 @@ export default function App() {
       list = [c];
     }
     setChats(list);
-    setActiveChatId((prev) => (prev && list.some((c) => c.id === prev) ? prev : list[0].id));
+    setActiveChatId((prev) => {
+      // The hash's chat id wins (a deep link, or a back-press restore). It may
+      // not have reached the ref yet on a cold-start login — read the hash too.
+      const want = pendingChatIdRef.current ?? parseHash(window.location.hash).chatId;
+      if (want && list.some((c) => c.id === want)) return want;
+      return prev && list.some((c) => c.id === prev) ? prev : list[0].id;
+    });
   }, [user?.email]);
 
   useEffect(() => {
@@ -96,12 +108,12 @@ export default function App() {
     if (user) saveChat(user.email, c);
     setChats((list) => [c, ...list]);
     setActiveChatId(c.id);
-    setView("chat");
+    navigate("chat", { chatId: c.id });
   }
 
   function openChat(id) {
     setActiveChatId(id);
-    setView("chat");
+    navigate("chat", { chatId: id });
   }
 
   /** Persist a chat the view changed (briefing progress, produced deck, …). */
@@ -115,9 +127,71 @@ export default function App() {
     if (chat.produced && chat.deckSlug) bumpDeck();
   }
 
-  const openDeck = (slug) => { setActiveSlug(slug); setView("deck"); };
-  const openReport = (slug) => { setActiveSlug(slug); setView("report"); };
-  const openResearch = (slug) => { setActiveSlug(slug); setView("research"); };
+  /**
+   * The one place view changes meet the URL. Every navigation pushes a hash
+   * entry, so the browser back button walks the same route the user walked
+   * forward (chat → deck → home) instead of exiting the site. Non-navigation
+   * actions (toggles, modals, renders) never call this.
+   */
+  function navigate(view, opts = {}) {
+    pendingChatIdRef.current = null;
+    const h = hashFor(view, opts);
+    if (window.location.hash === h) return applyHash();
+    window.location.hash = h; // pushes a history entry and fires hashchange
+  }
+
+  /** Hash → shell state. The single consumer of the URL for both navigation
+   *  pushes and back/forward restores, so the two can never drift apart. */
+  function applyHash() {
+    const r = parseHash(window.location.hash);
+    switch (r.view) {
+      case "deck":
+      case "report":
+      case "research":
+        if (r.slug) {
+          setActiveSlug(r.slug);
+          setView(r.view);
+        } else {
+          setView("chat");
+        }
+        break;
+      case "themes":
+      case "identity":
+        setView(r.view);
+        break;
+      case "chat":
+      default:
+        setView("chat");
+        pendingChatIdRef.current = r.chatId || null;
+        // The list is already loaded most of the time (back/forward); the
+        // chats effect resolves the id when this runs before it is.
+        if (r.chatId && chats.some((c) => c.id === r.chatId)) setActiveChatId(r.chatId);
+        break;
+    }
+  }
+
+  // Back/forward and manual hash edits restore the view they name.
+  useEffect(() => {
+    const onHash = () => applyHash();
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  });
+
+  // Boot and login: an empty hash gets the home route (without a history
+  // entry), and any hash — a deep link the user opened while logged out
+  // included — is applied once there is a session to apply it to.
+  useEffect(() => {
+    if (!user) return;
+    if (!window.location.hash) window.history.replaceState(null, "", "#/chat");
+    applyHash();
+  }, [user?.email]);
+
+  const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
+  const goHome = () => navigate("chat");
+
+  const openDeck = (slug) => navigate("deck", { slug });
+  const openReport = (slug) => navigate("report", { slug });
+  const openResearch = (slug) => navigate("research", { slug });
 
   /** Delete a chat thread locally; if it was active, land on another. */
   function handleDeleteChat(id) {
@@ -128,13 +202,13 @@ export default function App() {
     const next = remaining[0] ?? null;
     if (next) {
       setActiveChatId(next.id);
-      setView("chat");
+      navigate("chat", { chatId: next.id });
     } else {
       const c = createChat();
       saveChat(user.email, c);
       setChats([c]);
       setActiveChatId(c.id);
-      setView("chat");
+      navigate("chat", { chatId: c.id });
     }
   }
 
@@ -171,18 +245,15 @@ export default function App() {
     if (user) saveChat(user.email, companion);
     setChats((list) => [companion, ...list]);
     setActiveChatId(companion.id);
-    setView("chat");
+    navigate("chat", { chatId: companion.id });
   }
-
-  const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
-  const goHome = () => setView("chat");
 
   if (!user) {
     return (
       <div className="relative h-full overflow-hidden">
         <ParticleField className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
         <div className="relative z-10 h-full">
-          <LoginScreen onDone={(u) => { setUser(u); setView("chat"); }} />
+          <LoginScreen onDone={(u) => setUser(u)} />
         </div>
       </div>
     );
@@ -225,7 +296,7 @@ export default function App() {
               onOpenDeck={openDeck}
               onOpenReport={openReport}
               onNewChat={newChat}
-              onView={setView}
+              onView={(v) => navigate(v)}
               onDeleteChat={handleDeleteChat}
               onDeleteDeck={handleDeleteDeck}
             />
@@ -260,7 +331,7 @@ export default function App() {
                 refreshToken={deckVersion}
                 onBack={goHome}
                 onDeckChanged={bumpDeck}
-                onOpenDeck={(s) => { setActiveSlug(s); bumpDeck(); setView("deck"); }}
+                onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
                 onOpenResearch={openResearch}
                 onOpenReport={openReport}
               />
