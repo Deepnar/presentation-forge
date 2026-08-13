@@ -7,102 +7,137 @@ handoffs.
 
 ## Session summary
 
-**The post-sweep UX review round shipped.** Four fixes from the user's review
-at 20:02: hash routing so the browser back button navigates views instead of
-exiting the site; the chat thread continuing as the deck editor after a deck
-is ready; a judgeable type-swap gallery; and the per-slide action toolbar on
-the enlarged slide view. All verified with CDP headless Chrome and
-`mimo-v2.5`, all pushed to `origin/main`. `npm test` 209/209, `vite build`
-clean.
+**The deck-quality review round shipped** (user review at 21:45, four issues).
+Fixes 1-3 are done, verified end-to-end, and pushed: presenter distribution no
+longer strands members; overfull slides are auto-trimmed instead of shipping a
+flag; and data beats now become real charts (which surfaced and fixed a
+stacked-bar rendering bug). Fix 4 split honestly: a shared-layout + token
+polish pass on the four workhorse themes shipped and vision-checked clean;
+layout-LEVEL distinctness for flagship themes is designed below for a dedicated
+themes session. `npm test` 225/225, `vite build` clean, all pushed to
+`origin/main`.
 
 ## What shipped
 
-### Hash routing — back walks the route, deep links work
+### 1. Presenter distribution — members ≥ sections no longer strands anyone
 
-`lib/router.js` (unit-tested) maps every view to a hash: `#/chat[/<id>]`,
-`#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`, `#/themes`,
-`#/identity`. `App.jsx`'s `navigate()` pushes the hash on every navigation
-(the sidebar, header home, deck/report/research doors, chat open, new chat,
-delete-deck home); one `hashchange` listener is the only consumer of the URL
-and restores state for both pushes and back/forward. Empty hash gets a boot
-`replaceState` (no spurious history entry). Deep links land after login; the
-per-slug ownership gate still answers "no such deck" for foreign slugs. A
-chat-id deep link on a cold start resolves in the chats effect, which reads
-the hash directly because it runs before the boot effect parses it.
+`src/ai/team.js` `distributePresenters`: when sections ≤ members, content
+*slides* are now the unit. Every presenting member gets ≥1 slide when the count
+allows, block sizes stay within one slide of each other (balance ≤1), and a
+member with no section takes a contiguous share of a neighbouring section's
+slides. `slidesPerMember` is honoured in both branches — a deck sized to the
+briefing (11 members × 1 → 11 content slides) hands each member exactly one.
+Equal counts + no briefing target keeps the old "member i takes section i".
+Verified: the First-Impressions deck's 11 content slides now reach all 11
+members, one each. New tests in `test/team.test.js`.
 
-### The chat thread is the deck editor after readiness
+### 2. Content trim — the floor flag fixes instead of reporting
 
-`ChatView` phase `done` became `editing` (deck) / `record` (report). Once a
-deck is produced: the briefing cards collapse into a "Deck briefing" recap
-block (expandable to the full Q&A record — nothing said is lost), the input
-stays live, and a message runs `sendEditTurn` → the existing
-`/api/decks/:slug/chat` endpoint (the machinery the deleted chat rail used).
-The turn's changes + fresh thumbnails land back in the thread as a persistent
-turn log (`chat.turns` on the chat object, localStorage). Reports stay a
-readable record (input disabled with a hint). `lib/progress.js` gained
-`reading`/`editing` labels.
+`src/ai/trim.js` (new): a deterministic, schema-driven trim pass at the end of
+generation and after density sweeps. Slides flagged below the readable floor
+drop their lowest-value trailing items first (down to schema `minItems`), then
+shorten the longest prose at a sentence boundary with an ellipsis, re-rendering
+between steps (in-memory, no pptx written) so content is only cut as far as the
+box demands. The flag survives only when trimming cannot reach the floor.
+`render()` gained in-memory-deck + `deckDir` + `write:false` support for the
+audit loop. Verified: First-Impressions went 10 floor problems → 0; a fresh
+cloud generation trimmed 18 steps with one stuck slide that a round-cap raise
+cleared; `mimo-v2.5` confirmed the trimmed slides fit at readable sizes.
 
-### Judgeable type-swap gallery
+### 3. Data-affinity steering — data beats become charts
 
-The 75-tile grid renders at ~200px+, hovering a tile enlarges it in a dock
-below the grid, clicking a tile opens a full-size preview (same cached specimen
-PNG, no re-render) where the commit happens. Filter box and the current type's
-"now" badge kept.
+`catalog.js` counts numeric facts in the research (units/percentages/3+ digit,
+deduped) and `dataAffinityNote` rides the planner + writer prompts when there
+are ≥2: data beats become `chart` slides, kinds named and matched (scatter for
+correlations, radar for profiles, stacked-bar for composition, bar/line/area
+for trends). **Root-caused during verification:** `stacked-bar` wrote OOXML
+grouping `clustered` because pptxgenjs honours `barGrouping`, not `barStacked`
+(silently ignored). The layout now passes `barGrouping: "stacked"`, guarded by
+a regression test that unzips the pptx. Verified with the cloud model: a
+data-centre brief planned 5 chart slides and generated 4 real ones (line, bar,
+hbar, bar), all rendered correctly (vision-checked).
 
-### Lightbox per-slide actions
+### 4a. Theme polish — shared surfaces + four workhorse themes
 
-The enlarged view now has the same toolbar as the small card (edit, punch-up,
-swap, add image, move, duplicate, delete) for the current slide. Edit/swap/
-image close the viewer for their modal; punch/move/duplicate/delete run in
-place (move follows the slide). Keyboard nav skips when a toolbar button is
-focused.
+`src/layouts.js`: the **stats** layout no longer piles columns in the top half
+(it centres the block, measures labels against ~10% narrower width so wrapped
+labels can't meet their sub, and cycles accent/accent_alt instead of pulling
+ink onto a dark theme's third stat); **section** dividers draw a short
+light-tint accent rule under the number; the **title** composition tightens by
+0.2in. Theme YAML: warm-humanist softer card shadow; swiss-international
+hairline card outlines; dark-neon brighter muted text; glassmorphism more
+saturated blobs, see-through frost, title scrim. `mimo-v2.5` rated all four
+8.0-8.5 with no regressions.
+
+## Fix 4b design — layout-level theme distinctness (a dedicated themes session)
+
+Themes are still token variations on ONE layout system — same chrome, same card
+function, same section surface. Real distinctness needs layouts that branch on
+the theme. Three flagship candidates, in order of payoff:
+
+1. **neubrutalism — hard shadows + offset borders (cheapest, tokens-first).**
+   The `card()` helper already reads `theme.shadow.card`; a "hard offset" shadow
+   (`type: outer, blur: 0, offset: 6, angle: 90, color: ink, opacity: 1`) plus a
+   thick border (`shape.border.width: 3`) is nearly expressible in YAML today.
+   Verify a full deck first — if the hard shadow reads right on cards, lists and
+   stat tiles, this theme is a token change, not a layout one.
+2. **editorial-magazine — drop-cap / two-column body.** Needs a layout change:
+   a `bullets`/`cards` variant that draws a large initial cap on the first
+   paragraph and a two-column body treatment. The seam is a per-theme flag the
+   layouts read (e.g. `tokens.editorial: { dropcap: true, columns: 2 }`), with
+   the layout falling back to the default when absent so the other 25 themes are
+   untouched. Keep the flag a layout-level *treatment*, never a coordinate.
+3. **bauhaus — geometric block headers.** Section/chapter surfaces with a
+   primary-colour block behind the headline (circle/triangle/semicircle from the
+   theme's shape vocabulary). Layout change to the `section` surface keyed off a
+   `tokens.bauhaus: { block: true }`-style flag.
+
+Rules for the session: one flagship per commit, rasterise + `mimo-v2.5` compare
+against the pre-change render of the same deck, and never let the theme YAML
+inject a coordinate or font name into content. The polish groundwork is done —
+the shared stats/section/title surfaces are clean, so the flags can build on
+them rather than around them.
 
 ## Verification notes
 
-- `npm test` 209/209 (+5 router); `npx vite build --config app/web/vite.config.js` clean.
-- **Routing (CDP):** boot lands on `#/chat`; sidebar deck click pushes
-  `#/deck/<slug>`; back → chat; forward → deck; Themes → back → chat; reload on
-  `#/deck/<slug>` restores the deck; unknown `#/bogus` renders chat; deep link
-  `#/chat/<id>` selects the right chat.
-- **Chat-as-editor (CDP + real cloud turn):** seeded a produced deck chat →
-  editing phase renders (briefing collapsed, input live, ready panel); a real
-  "add a slide titled Cloud Economics" turn grew the deck 13 → 14 slides,
-  refreshed the thumbnails in the thread, and both turn messages persisted.
-  (A `make slide N punchier` turn on an already-punched slide is near-idempotent
-  — the punch was verified changing the deck separately in the lightbox test.)
-- **Gallery + lightbox (CDP):** all seven toolbar actions present; duplicate/
-  delete/move change the deck; edit opens the editor; swap opens the gallery
-  (75 tiles, ~203px wide, NOW badge, filter narrows, hover dock, click full-size
-  preview); a real cloud punch from the lightbox changed the deck's headline.
-- **`mimo-v2.5`** confirmed: lightbox toolbar (8 icons + filmstrip), gallery
-  dock + full-size preview, and the chat-editing surface all render correctly.
+- `npm test` 225/225; `npx vite build --config app/web/vite.config.js` clean.
+- **Presenter distribution (unit + real deck):** 11 members / 7 sections / 11
+  content slides → 11 distinct presenters, one each; 11/7/20 → all covered,
+  balance ≤1, max 2; 5 members / 3 sections → 5 contiguous blocks.
+- **Trim (real deck + real generation):** First-Impressions 10 → 0 floor
+  problems; the cloud data-centre deck trimmed 18 steps (then 2 more after the
+  cap raise) to 0; `mimo-v2.5` confirmed the agenda/feature-grid/compare/
+  stacked-list slides fit clean, ellipses on word boundaries.
+- **Charts (cloud generation):** the data-centre brief produced 4 chart slides
+  across 4 kinds; `mimo-v2.5` confirmed line/bar/hbar all render completely.
+  The stacked-bar grouping regression test unzips the pptx and asserts
+  `<c:grouping val="stacked"/>`.
+- **Theme polish:** rendered raytracing-ai in all four themes before and after;
+  `mimo-v2.5` confirmed the stats collision gone, section rule visible, glass
+  reads as glass, ratings 8.0-8.5, no regressions.
 
 ## Seams and leftovers
 
-- **CDP harness lives in `/tmp/opencode/`** (`cdp.mjs` + `t1-routing.mjs`,
-  `t34-actions.mjs`, `t2-final.mjs`, `t2-extra.mjs`, `t35-shots.mjs`) — a
-  minimal Chrome DevTools Protocol client over Node's built-in WebSocket, with
-  no npm dependency. Reusable for the next review round. A stale `chrome` on
-  port 9494 from a previous session is still running (`/tmp/opencode/cdp-profile-9494`);
-  harmless, kill it if it interferes.
-- **Test account `cdp-test@forge.local`** was created in gitignored
-  `config/users.json`. The shared test deck
-  `decks/how-cloud-computing-scales-from-virtual-mach` (untracked) was punched
-  and gained a "Cloud Economics" slide during verification — fine as a
-  regression fixture, delete/recreate if it gets in the way.
-- **Report chats are a readable record, not an editor.** Deck-edit turns apply
-  to decks; report-edit turns (re-generate sections) were out of scope per the
-  task ("implement deck-edit turns first, report follow-ups if cheap"). The
-  seam if wanted later: `runTurn`-style edits over `report.yaml` don't exist.
-- **The cloud punch/chat turns are slow (~60-120s)** — unchanged, and each
-  verification round costs a few cloud calls.
-- **`app/server` untouched** this session — everything was frontend + one new
-  test file.
+- **The trim cuts, it does not rewrite.** A trimmed agenda can keep a subtitle
+  that mentions dropped items (the vision check flagged slide 02's "seven quick
+  tours" over four remaining items). The deterministic, no-model constraint is
+  the point; a later smart pass could rephrase supporting text. Noted in the
+  roadmap's trim Learned entry.
+- **Fix 4b is designed, not built** — see the section above. The four-workhorse
+  polish is done; the layout-level flags wait for the dedicated themes session.
+- **The data-centre verification decks** (`decks/data-centre-...`, untracked)
+  are the chart-steering fixtures — keep for regression, delete freely.
+- **CDP harness** from the last session lives in `/tmp/opencode/` and is
+  reusable; the chart/trim/theme work this session was backend-only and needed
+  no browser automation.
+- **The trim cap is 24 rounds** (~1s, plates cached). If a genuinely huge slide
+  ever stalls there, the flag is supposed to survive — that is the design.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174` (detached, `setsid`), UI
-  `http://localhost:5173` (Vite). The API did not need a restart — no server
-  code changed.
+- Servers still running: API `http://localhost:5174`, UI `http://localhost:5173`
+  (unchanged — no server code this session).
 - `config/local.yaml`: cloud key attached, `routing.default: cloud`.
-- All commits pushed to `origin/main` (last: the post-sweep UX round).
+- All commits pushed to `origin/main` (last: the TRAPS entry; the roadmap,
+  trim cap, theme polish, chart steering and presenter-distribution fixes all
+  landed before it).
