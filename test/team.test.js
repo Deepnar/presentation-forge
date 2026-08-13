@@ -147,6 +147,66 @@ test("a slidesPerMember override still produces contiguous blocks", () => {
   assert.deepEqual(b.map((x) => [x.name, x.count]), [["A", 2], ["B", 2], ["C", 2]]);
 });
 
+test("members ≥ sections: 11 members × 1-per-person → each presents exactly one slide", () => {
+  // 7 sections, 11 content slides, 11 members, briefing "1 per person". The
+  // old code assigned section i → member i and silently stranded members 8-11;
+  // the fix hands the 11 content slides to 11 distinct members.
+  const slides = deckOf([
+    ["bullets", "bullets"],
+    ["bullets", "bullets"],
+    ["bullets", "bullets"],
+    ["bullets"],
+    ["bullets"],
+    ["bullets"],
+    ["bullets", "bullets"],
+  ]);
+  const names = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11"];
+  const a = distributePresenters(slides, names, { slidesPerMember: 1 });
+  const counts = names.map((name) => a.filter((p) => p === name).length);
+  assert.deepEqual(counts, names.map(() => 1), "every member exactly one slide");
+  for (const p of names) assert.ok(a.includes(p), `every member presents at least once (${p})`);
+  // Dividers still carry nothing.
+  for (const [i, s] of slides.entries()) {
+    if (DIVIDER_TYPES.has(s.type)) assert.equal(a[i], null, `divider at ${i} must be null`);
+  }
+});
+
+test("members ≥ sections: 11 members / 7 sections / 20 content slides → all covered, balance ≤1", () => {
+  // 20 slides cannot fit 11 people at one each; the surplus must distribute at
+  // balance ≤1 (nine members × 2, two × 1) and nobody may sit at zero while
+  // another holds two.
+  const slides = deckOf([
+    ["bullets", "bullets", "bullets", "bullets"],
+    ["bullets", "bullets", "bullets", "bullets"],
+    ["bullets", "bullets", "bullets"],
+    ["bullets", "bullets", "bullets"],
+    ["bullets", "bullets", "bullets"],
+    ["bullets", "bullets", "bullets"],
+  ]);
+  const names = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11"];
+  const a = distributePresenters(slides, names, { slidesPerMember: 1 });
+  const counts = names.map((name) => a.filter((p) => p === name).length);
+  for (const c of counts) assert.ok(c >= 1, `every member ≥1 (got ${counts.join(",")})`);
+  assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, `balance ≤1 (got ${counts.join(",")})`);
+  assert.ok(Math.max(...counts) <= 2, "surplus distributes at one extra, never a pile-on");
+  const content = a.filter(Boolean);
+  const runs = blocks(a).map((b) => b.name);
+  assert.equal(runs.length, names.length, "each member's slides are one contiguous block");
+});
+
+test("members ≥ sections: 5 members / 3 sections → contiguous blocks covering all 5", () => {
+  // The old code gave sections to members 0-2 and left members 3-4 silent; the
+  // fix splits a section's slides between adjacent members so all 5 present.
+  const slides = deckOf([["bullets", "bullets"], ["bullets", "bullets"], ["bullets", "bullets"]]);
+  const a = distributePresenters(slides, ["A", "B", "C", "D", "E"]);
+  const counts = ["A", "B", "C", "D", "E"].map((name) => a.filter((p) => p === name).length);
+  for (const c of counts) assert.ok(c >= 1, `every member ≥1 (got ${counts.join(",")})`);
+  const b = blocks(a);
+  assert.equal(b.length, 5, "five members, five contiguous blocks");
+  assert.deepEqual(b.map((x) => x.name), ["A", "B", "C", "D", "E"]);
+  assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, "balance ≤1");
+});
+
 test("dividers are never assigned a presenter", () => {
   const slides = deckOf([["bullets"], ["bullets"], ["bullets"]]);
   const a = distributePresenters(slides, ["A", "B", "C"]);
