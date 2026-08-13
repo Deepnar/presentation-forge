@@ -454,7 +454,13 @@ image-requiring types unless the brief names real files.
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
 thin transport and every control maps to a real endpoint. `App.jsx` owns the
 deck list (fetched once, re-fetched on a version bump) and routes between
-`home`, `deck`, `new`, `outline`, `themes` and `identity`:
+`chat`, `deck`, `report`, `research`, `themes` and `identity`. **View routing is
+hash-based** (`lib/router.js`): every navigation pushes a `#/chat[/<id>]`,
+`#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`, `#/themes` or
+`#/identity` entry, and a single `hashchange` listener is the only consumer of
+the URL — so the browser back button walks the same route the user walked
+forward (chat → deck → home) instead of exiting the site, and a deep link like
+`#/deck/<slug>` reopens that view on reload (per-user auth still gates it).
 
 - **`HeaderBar`** — wordmark (home link), the sidebar collapse toggle, a Docs
   modal (reads the repo README via `GET /api/docs`) and the GitHub link. When a
@@ -489,6 +495,13 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   unmounts the view without touching the run — re-entering adopts the live run
   (busy, live status, working Stop button) and errors are persisted onto the
   chat so a failure that lands while the user is away is shown on return.
+  **After the deck is ready the same thread becomes the deck editor**: the
+  briefing cards collapse into a compact "Deck briefing" recap block (expandable
+  to the full Q&A record), the input stays live, and a message there runs a
+  real deck-edit turn through `/api/decks/:slug/chat` (`sendEditTurn`), with
+  the applied changes and the fresh slide thumbnails landing back in the thread
+  as a persistent turn log (`chat.turns`). A produced *report* chat keeps its
+  readable record instead — input disabled with a hint.
 - **`DeckDetail`** — theme/style selects, a **Density select + Re-sweep** that
   rewrites every content slide's body at the chosen density (`sweepDeck`, one
   scoped call per slide, grounding still applied), render + `.pptx` download,
@@ -502,13 +515,20 @@ deck list (fetched once, re-fetched on a version bump) and routes between
   an "Open report view" door), and the Research card — a compact coverage line
   that opens the full Research view. `lib/time.js` supplies the relative
   timestamps used everywhere.
-- **The chat rail is gone; deck-level changes are explicit controls.** The old
-  right-rail chat on the deck view (which applied whole-deck model edits) is
-  deleted. The deck detail's only whole-deck changes are the theme selector
-  and the Density Re-sweep — both explicit, both scoped, neither a model turn.
-  The per-deck thread files (`chat.jsonl`, `decisions.md`) stay on disk but
-  have no UI. The main chat → briefing flow is untouched; Home, Identity,
-  Themes and the outline review are full-width.
+- **The lightbox is the same slide with the same actions.** The enlarged view
+  carries the full per-slide toolbar (edit, punch-up, swap type, add image,
+  move, duplicate, delete) for the current slide — no feature exists on the
+  small card that vanishes at full size. The swap gallery's 75 tiles render at
+  ~200px+ and add a hover dock plus a click-through full-size preview (the same
+  cached specimen PNG, no re-render) with the commit happening on the enlarged
+  view; the filter box and the current type's "now" badge stay.
+- **The chat rail is gone; the thread continues instead.** The old right-rail
+  chat on the deck view is deleted, but the deck detail's only whole-deck
+  changes are not limited to the theme selector and the Density Re-sweep: once
+  a deck is produced, its originating chat becomes the editor (see `ChatView`)
+  and every message is a deck-edit turn. The per-deck thread files
+  (`chat.jsonl`, `decisions.md`) keep no standalone UI; the deck page stays
+  full-width.
 - **`ReportView`** — the full-document view of a report: a cover block (title,
   subtitle, subject, guide, team from the merged identity), then every section
   in the fixed graded order with paragraphs and tables rendered as prose, never

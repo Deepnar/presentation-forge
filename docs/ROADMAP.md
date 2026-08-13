@@ -871,6 +871,77 @@ turns can still edit a presenter by hand (their grammar keeps the field).
 > dividers assigned, and the presenter name renders in the chrome footer of
 > each section's content slides.
 
+### [x] Post-sweep UX fixes — hash routing, the thread-as-editor, judgeable galleries
+The user-review round after the big sweep, four fixes:
+
+- **Browser back navigates the app.** The SPA's views were pure React state, so
+  back exited the site. `lib/router.js` maps every view to a hash
+  (`#/chat[/<id>]`, `#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`,
+  `#/themes`, `#/identity`) and the shell pushes one on every navigation; a
+  single `hashchange` listener is the only consumer of the URL, so back walks
+  the route the user walked forward and `#/deck/<slug>` reopens that view on
+  reload. In-app toggles never push. Deep links land after login (auth still
+  gates per-user slugs).
+- **The chat becomes the deck editor.** "Once the deck is prepared, the deck is
+  made and I can't chat, so it's kinda useless" — after "Open the deck" the
+  same thread keeps working: the briefing cards collapse into a compact "Deck
+  briefing" recap (expandable to the full Q&A record, so nothing said is
+  lost), the input stays live, and a message runs a real deck-edit turn through
+  the same `/api/decks/:slug/chat` the deleted rail used, landing the applied
+  changes and fresh slide thumbnails back in the thread as a persistent turn
+  log. A produced report chat stays a readable record (input disabled with a
+  hint).
+- **The type-swap gallery is judgeable.** 75 tiny tiles were too small to
+  decide on. Tiles render at ~200px+, hovering a tile enlarges it in a dock
+  under the grid, and clicking a tile opens a full-size preview (the same
+  cached specimen PNG — no re-render) where the commit happens. Filter and the
+  current type's "now" badge stay.
+- **The enlarged slide view carries the slide's actions.** The lightbox was
+  navigation-only while the small card had edit/reorder/punch/swap/image/
+  duplicate/delete. The lightbox now has the same toolbar for the current
+  slide; edit/swap/image close the viewer for their modal, punch/move/
+  duplicate/delete run in place.
+
+> **Learned.** Four things were not obvious beforehand.
+>
+> Hash routing is a single-consumer system. A `hashchange` listener that
+> applies the hash to state works for both navigation pushes and back/forward
+> restores with no push-vs-pop bookkeeping — as long as every navigation goes
+> through one `navigate()` and the listener is the only thing that writes view
+> state. Two edge cases still bite: an empty hash needs a boot `replaceState`
+> (not a push) so the root has no spurious history entry, and a chat-id deep
+> link on a cold start resolves in the *chats* effect, which runs before the
+> boot effect parses the hash — so the chats effect reads the hash directly
+> instead of waiting for a ref the boot effect fills later.
+>
+> The deck-editing machinery never went away — only its UI did. The big sweep
+> deleted the chat rail but `/api/decks/:slug/chat` (`runChatTurn`) stayed, so
+> "the thread edits the deck" was wiring an existing endpoint to the existing
+> input bar plus a turn log. The chat is the natural home for the record the
+> user asked for: the briefing Q&A already lives in the thread, so the editor
+> surface keeps it as an expandable recap instead of losing it.
+>
+> React maps `onMouseEnter` to `mouseover` delegation; a synthetic
+> `mouseenter` event never fires it. A CDP hover test must move the real
+> pointer (`Input.dispatchMouseEvent`) — and a "busy turn finished" wait must
+> key on a precise DOM signal (the Stop button disappearing), not on text that
+> can be matched by an earlier user bubble, or every "after" assertion runs
+> while the model is still working.
+>
+> The lightbox was the same slide, just bigger — the gap was that none of the
+> card's actions were reachable at that size. Modal-owning actions (edit, swap,
+> image) close the viewer so their dialog owns the screen; in-place actions
+> (punch, move, duplicate, delete) keep it open. Move follows the slide to its
+> new position by adjusting the lightbox index.
+
+Verified end-to-end in headless Chrome (CDP): routing round-trips chat → deck →
+themes → back/forward → reload-restore, an unknown hash lands on chat; a real
+cloud "make slide N punchier" turn from the chat thread changed deck.yaml and
+refreshed the thumbnails; the swap gallery's dock, full-size preview and filter
+behave; every lightbox action works from the enlarged view (a real punch turn
+changed the deck). `mimo-v2.5` confirmed the lightbox toolbar, the gallery
+dock/preview and the chat-editor surface render correctly.
+
 ### [ ] (stretch) F13 image search — CC image lookup for model-emitted descriptions
 The `[image]` notes the writer now emits (and the sanitizer preserves) are the
 designated seam for supply: a slide that WANTS an image has a description the

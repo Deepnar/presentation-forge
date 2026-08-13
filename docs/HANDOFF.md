@@ -7,119 +7,102 @@ handoffs.
 
 ## Session summary
 
-**The two final big-sweep items shipped.** The font-floor / fitter fix (item
-16) and the presenter distribution fix (item 17), both verified with the cloud
-model and `mimo-v2.5`, both pushed to `origin/main`. `npm test` 204/204,
-`vite build` clean.
+**The post-sweep UX review round shipped.** Four fixes from the user's review
+at 20:02: hash routing so the browser back button navigates views instead of
+exiting the site; the chat thread continuing as the deck editor after a deck
+is ready; a judgeable type-swap gallery; and the per-slide action toolbar on
+the enlarged slide view. All verified with CDP headless Chrome and
+`mimo-v2.5`, all pushed to `origin/main`. `npm test` 209/209, `vite build`
+clean.
 
 ## What shipped
 
-### Font floor / fitter fix — "the font is usually small"
+### Hash routing — back walks the route, deep links work
 
-One root cause, two changes that are a pair:
+`lib/router.js` (unit-tested) maps every view to a hash: `#/chat[/<id>]`,
+`#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`, `#/themes`,
+`#/identity`. `App.jsx`'s `navigate()` pushes the hash on every navigation
+(the sidebar, header home, deck/report/research doors, chat open, new chat,
+delete-deck home); one `hashchange` listener is the only consumer of the URL
+and restores state for both pushes and back/forward. Empty hash gets a boot
+`replaceState` (no spurious history entry). Deep links land after login; the
+per-slug ownership gate still answers "no such deck" for foreign slugs. A
+chat-id deep link on a cold start resolves in the chats effect, which reads
+the hash directly because it runs before the boot effect parses it.
 
-- **`measure` is now em-aware.** It used to return `length × advance` with the
-  advance a bare em fraction — ~5.7× wider than reality at 13pt — so the
-  fitter shrank fonts that were already readable (a 3-bullet slide rendered at
-  8pt). It now multiplies by `size/72`, and Black/ExtraBold faces estimate
-  wider (Merriweather Black stat digits wrap at a width a 0.495-em advance
-  predicts fits). Ordinary content renders at its nominal size again.
-- **Every text role has a readable floor** (`src/fit.js` `FLOOR_PT`: body
-  14pt, caption 12pt, subhead 14pt, stat 24pt, …). The fitter clamps at the
-  floor and reports `body would need 9.9pt — floor 14pt` into the render
-  `problems[]` instead of shrinking further. The fix for a flagged slide is
-  LESS TEXT via the Density re-sweep, never a smaller font. Floor events leave
-  the fitter through a per-slide sink the renderer drains — no edits across
-  the ~140 fit call sites.
-- **Stacked layouts size to content lines.** The `cards`/`data-cards`/
-  `stats`/`metric-comparison`/`kpi-dashboard` zones that reserved a fixed
-  one-line guess and shrunk long titles/labels to ~8pt now use `linesBox` (the
-  real rendered line count); the `stats` value uses `fitOneLine`; flow cards
-  drop bodies at 5+ steps (LTR branch, matching the existing TTB rule).
+### The chat thread is the deck editor after readiness
 
-`src/fit.js` · `src/theme.js` (type tokens carry a private `_role` so the
-fitter knows each text's floor; `textStyle` strips it) · `src/render.js` ·
-`src/layouts.js` · `test/fit.test.js`.
+`ChatView` phase `done` became `editing` (deck) / `record` (report). Once a
+deck is produced: the briefing cards collapse into a "Deck briefing" recap
+block (expandable to the full Q&A record — nothing said is lost), the input
+stays live, and a message runs `sendEditTurn` → the existing
+`/api/decks/:slug/chat` endpoint (the machinery the deleted chat rail used).
+The turn's changes + fresh thumbnails land back in the thread as a persistent
+turn log (`chat.turns` on the chat object, localStorage). Reports stay a
+readable record (input disabled with a hint). `lib/progress.js` gained
+`reading`/`editing` labels.
 
-### Presenter distribution — contiguous, balanced, centralised
+### Judgeable type-swap gallery
 
-"some people were given 2 slides and some had one slide here and then another
-slide again later" is gone. `distributePresenters(slides, members)` in
-`src/ai/team.js` is the single source of truth:
+The 75-tile grid renders at ~200px+, hovering a tile enlarges it in a dock
+below the grid, clicking a tile opens a full-size preview (same cached specimen
+PNG, no re-render) where the commit happens. Filter box and the current type's
+"now" badge kept.
 
-- Dividers never carry a presenter.
-- Content slides group by `section`; whole sections go to presenting members
-  in order, so each member's slides are one contiguous block (their section's
-  divider opens it, the next divider closes it).
-- Members ≥ sections → one section per member. Members < sections → the
-  sections partition into contiguous blocks within one slide of each other
-  where section sizes permit. Nobody gets 2+ while another gets 0 when the
-  section count allows.
-- The briefing's slides-per-member overrides the per-member target (still
-  contiguous) and now flows structurally through meta.yaml (`slidesPerMember`),
-  not as a sentence inside the brief.
-- The writer no longer sees `presenter` at all — removed from its ops grammar
-  — and the distribution is force-applied after generation. Chat turns can
-  still reassign a presenter by hand.
+### Lightbox per-slide actions
 
-`src/ai/team.js` · `src/ai/generate.js` · `src/ai/pipeline.js` ·
-`app/server/index.js` · `app/web/src/views/ChatView.jsx` · CLI
-`--slides-per-member` · `test/team.test.js`.
+The enlarged view now has the same toolbar as the small card (edit, punch-up,
+swap, add image, move, duplicate, delete) for the current slide. Edit/swap/
+image close the viewer for their modal; punch/move/duplicate/delete run in
+place (move follows the slide). Keyboard nav skips when a toolbar button is
+focused.
 
 ## Verification notes
 
-- `npm test` 204/204 (was 190; +10 fit, +8 team, −4 net after consolidating);
-  `npx vite build --config app/web/vite.config.js` clean.
-- **Font floor, visually:** batch decks (type-batch1..8), tier1, flow-ttb and
-  most real decks render with **zero** flags at larger fonts. Remaining flags
-  are confined to genuinely-long cloud-written content (verbose card bodies,
-  3+ line checklist items, dense flow steps) — each is an honest "would need
-  Xpt" for the density sweep. `mimo-v2.5` confirmed: normal slides clean and
-  readable; flagged slides keep readable fonts and the previously-colliding
-  card titles/labels (2-line titles vs bodies) are fixed; the `stats` value
-  "53 kWh" stays on one line (was wrapping onto its label). All 26 themes
-  render raytracing-ai with the same content-driven flags.
-- **Presenter distribution, end-to-end (cloud `deepseek-v4-flash`):** a
-  14-slide deck from the 11-presenting-member identity produced blocks
-  3,3,2 — contiguous, balanced to within one slide, dividers clean, and the
-  presenter name renders in the chrome footer of each section's content
-  slides. `slidesPerMember` verified to reach meta.yaml and drive the split.
+- `npm test` 209/209 (+5 router); `npx vite build --config app/web/vite.config.js` clean.
+- **Routing (CDP):** boot lands on `#/chat`; sidebar deck click pushes
+  `#/deck/<slug>`; back → chat; forward → deck; Themes → back → chat; reload on
+  `#/deck/<slug>` restores the deck; unknown `#/bogus` renders chat; deep link
+  `#/chat/<id>` selects the right chat.
+- **Chat-as-editor (CDP + real cloud turn):** seeded a produced deck chat →
+  editing phase renders (briefing collapsed, input live, ready panel); a real
+  "add a slide titled Cloud Economics" turn grew the deck 13 → 14 slides,
+  refreshed the thumbnails in the thread, and both turn messages persisted.
+  (A `make slide N punchier` turn on an already-punched slide is near-idempotent
+  — the punch was verified changing the deck separately in the lightbox test.)
+- **Gallery + lightbox (CDP):** all seven toolbar actions present; duplicate/
+  delete/move change the deck; edit opens the editor; swap opens the gallery
+  (75 tiles, ~203px wide, NOW badge, filter narrows, hover dock, click full-size
+  preview); a real cloud punch from the lightbox changed the deck's headline.
+- **`mimo-v2.5`** confirmed: lightbox toolbar (8 icons + filmstrip), gallery
+  dock + full-size preview, and the chat-editing surface all render correctly.
 
 ## Seams and leftovers
 
-- **A flagged slide now renders at the floor and overflows its box** (readable,
-  but text can spill past the card or onto the footer) until the density sweep
-  shortens it. That is the designed contract — "never a smaller font" — and the
-  flag is the signal. If a slide is genuinely over capacity with nothing to cut
-  (e.g. a flow step body at 5+ columns), the layout drops the body (title-only)
-  as the TTB branch always did.
-- **The floor is `min(nominal, floorPt)` — a shrink stop, never a grow.** A
-  theme whose body is 13pt renders at 13pt (its design), never below; the
-  floor does not raise text past the theme. If the user wants bigger theme
-  type, that is a theme-authoring change (themes are human-owned).
-- **The deck detail's inline presenter picker is untouched** — it writes the
-  same free-text `presenter` field the central split produces, so manual
-  reassignment still works and survives re-sweeps.
-- **Cloud generation is still slow (~80-100s outline)** — unchanged.
-- **Untracked test decks:** the `exploring-first-impressions-*` folders are the
-  user's browser-test decks (left untouched). `how-cloud-computing-scales-from-
-  virtual-mach` is this session's verification deck (13 slides, untracked) —
-  delete it or keep as a presenter-distribution regression fixture. A plan-only
-  `serverless-patterns-in-2026` fixture was removed.
-- **GitHub push hiccup:** the first push after the fitter commit returned a
-  remote `Internal Server Error` several times (transient, server-side — the
-  repo read fine). Resolved on retry; all commits are on `origin/main`.
+- **CDP harness lives in `/tmp/opencode/`** (`cdp.mjs` + `t1-routing.mjs`,
+  `t34-actions.mjs`, `t2-final.mjs`, `t2-extra.mjs`, `t35-shots.mjs`) — a
+  minimal Chrome DevTools Protocol client over Node's built-in WebSocket, with
+  no npm dependency. Reusable for the next review round. A stale `chrome` on
+  port 9494 from a previous session is still running (`/tmp/opencode/cdp-profile-9494`);
+  harmless, kill it if it interferes.
+- **Test account `cdp-test@forge.local`** was created in gitignored
+  `config/users.json`. The shared test deck
+  `decks/how-cloud-computing-scales-from-virtual-mach` (untracked) was punched
+  and gained a "Cloud Economics" slide during verification — fine as a
+  regression fixture, delete/recreate if it gets in the way.
+- **Report chats are a readable record, not an editor.** Deck-edit turns apply
+  to decks; report-edit turns (re-generate sections) were out of scope per the
+  task ("implement deck-edit turns first, report follow-ups if cheap"). The
+  seam if wanted later: `runTurn`-style edits over `report.yaml` don't exist.
+- **The cloud punch/chat turns are slow (~60-120s)** — unchanged, and each
+  verification round costs a few cloud calls.
+- **`app/server` untouched** this session — everything was frontend + one new
+  test file.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174` (restarted this session with the
-  new code — it was serving pre-change `createDeck`), UI `http://localhost:5173`
-  (Vite). The API process is detached (`setsid node app/server/index.js &`), so
-  a shell restart does not take it down. `npm run api` runs `node --watch` if
-  you prefer hot reload.
-- `config/local.yaml`: cloud key attached, `routing.default: cloud` (restored
-  after the cloud generation test; flip back to `local` if you want the local
-  default).
-- All commits pushed to `origin/main` (last: the roadmap/traps/architecture
-  tranche). Server code is the thin transport as before — the CLI shares
-  `src/ai/`, and CLI-created decks stay ownerless/shared.
+- Servers running: API `http://localhost:5174` (detached, `setsid`), UI
+  `http://localhost:5173` (Vite). The API did not need a restart — no server
+  code changed.
+- `config/local.yaml`: cloud key attached, `routing.default: cloud`.
+- All commits pushed to `origin/main` (last: the post-sweep UX round).
