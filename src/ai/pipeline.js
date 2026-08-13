@@ -96,7 +96,7 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
  */
 export async function createDeck({
   brief, sources = [], research = false, papers = false, theme = null, maxSlides = 24,
-  model, identity, owner, onProgress, signal,
+  slidesPerMember = null, model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
@@ -107,7 +107,9 @@ export async function createDeck({
   // The intake wizard's identity snapshot: what each deck used freezes into
   // meta.yaml (the renderer already merges meta over config/identity.yaml), and
   // planning sees the merged identity so the model knows the subject, guide and
-  // team it is writing for.
+  // team it is writing for. slidesPerMember freezes too — the presenter split
+  // is decided deterministically at generation, and needs the briefing answer
+  // to reach it without the model interpreting a sentence in the brief.
   const snapshot = identity && typeof identity === "object"
     ? {
         academic: identity.academic ?? {},
@@ -119,6 +121,7 @@ export async function createDeck({
 
   const meta = {
     slug, brief, sources, research, papers, theme, maxSlides,
+    ...(slidesPerMember != null ? { slidesPerMember } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
     // Per-user workspace: the owning account's email. Ownerless meta (legacy
@@ -328,6 +331,7 @@ export async function generateFromPlan({
     identity: identityObj,
     research: excerptResearch(researchText),
     maxSlides: meta.maxSlides ?? 24,
+    slidesPerMember: meta.slidesPerMember ?? null,
     model,
     signal,
     onProgress: (p) => onProgress?.({ status: "writing", ...p }),
@@ -538,7 +542,8 @@ export async function cloneDeck({ slug }) {
 
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
-                        [--research] [--papers] [--max-slides <n>] [--model <id>]
+                        [--research] [--papers] [--max-slides <n>] [--slides-per-member <n>]
+                        [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
@@ -583,6 +588,7 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === "--theme") opts.theme = argv[++i];
     else if (a === "--max-slides") opts.maxSlides = Number(argv[++i]);
+    else if (a === "--slides-per-member") opts.slidesPerMember = Number(argv[++i]);
     else if (a === "--model") opts.model = argv[++i];
     else if (a === "--plan") opts.plan = argv[++i];
     else if (a === "--donor") opts.donor = argv[++i];

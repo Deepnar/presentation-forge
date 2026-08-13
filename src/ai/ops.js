@@ -43,11 +43,12 @@ const OP_NAMES = [
  * small model off-distribution into loops and confabulation. Narrowing to the
  * one type being written keeps the grammar tight.
  *
- * `excludeProps` removes shared fields entirely. A divider slide (title,
- * section, chapter, closing) carries no presenter by rule — "the next part is
- * the slide, not somebody's slide" — and the cleanest way to enforce that is
- * to make a stray `presenter` unrepresentable in the grammar rather than
- * scrubbing it after the fact.
+ * `excludeProps` removes shared fields entirely. The first-generation writer
+ * excludes `presenter` for every type — presenters are assigned centrally by
+ * `distributePresenters` after generation, not by the model — and the divider
+ * types (title, section, chapter, closing) never carry one by rule: "the next
+ * part is the slide, not somebody's slide". Making a stray `presenter`
+ * unrepresentable in the grammar beats scrubbing it after the fact.
  */
 export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, excludeProps = null } = {}) {
   const slide = deckSchema.definitions.slide;

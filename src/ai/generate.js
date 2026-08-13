@@ -2,7 +2,7 @@ import { chatJSON } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget } from "./catalog.js";
 import { validateDeck } from "../validate.js";
-import { DIVIDER_TYPES, presentingNames, targetSections } from "./team.js";
+import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
 
 /**
  * Two-stage deck generation: plan the whole deck, then write one slide per call.
@@ -143,31 +143,18 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
 }
 
 /** Stage 2 — write one slide. Grammar is limited to this type's own fields. */
-async function writeSlide({ spec, plan, deck, theme, research, model, signal, presenters }) {
+async function writeSlide({ spec, plan, deck, theme, research, model, signal }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const isDivider = DIVIDER_TYPES.has(spec.type);
-  // A divider is structure, not a member's slide — the presenter field is
-  // removed from its grammar so the model cannot assign one. Content slides
-  // keep it, and the prompt hands the model the real presenting members so the
-  // assignment stays grounded in the actual team rather than invented roles.
-  const presenterClause = isDivider
-    ? [
-        `This slide is a ${spec.type} divider — it announces structure, not content. ` +
-          "It is owned by NO single member, so you must not set a `presenter` field.",
-      ]
-    : presenters?.length
-      ? [
-          "Assign this content slide's `presenter` field to exactly one of these team members,",
-          `picking the next one in the presenting order: ${presenters.join(", ")}. ` +
-            "Distribute the deck's content slides evenly across them so each member presents",
-          "roughly the same number of slides. Never invent a name outside this list.",
-        ]
-      : [];
+  // Presenters are assigned centrally by distributePresenters after generation —
+  // the writer model is not asked to pick one, so a verbose model cannot
+  // scatter assignments or hand a slide to someone twice. The field is removed
+  // from the grammar for every type (dividers already never carried it).
   const buildOps = buildOpsSchema(schema, {
     slideCount: deck.slides.length,
     onlyTypes: [spec.type],
-    ...(isDivider ? { excludeProps: ["presenter"] } : {}),
+    excludeProps: ["presenter"],
   });
 
   const voice = theme?.voice ?? {};
@@ -205,8 +192,6 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, pr
     voice.headline_style ? `Headlines: ${voice.headline_style.trim()}` : "",
     voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
     voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
-    "",
-    ...presenterClause,
     "",
     "Be specific and declarative. Every statistic, number or date must come from the",
     "RESEARCH NOTES below — quote figures verbatim, never approximate or invent one.",
@@ -275,7 +260,8 @@ async function sanitizePlan(plan, types) {
  * output is the plan — the same path a headless run uses.
  */
 export async function generateDeck({
-  brief, theme, identity, research = "", maxSlides = 24, model, signal, onProgress, plan: givenPlan,
+  brief, theme, identity, research = "", maxSlides = 24, model, signal, onProgress,
+  plan: givenPlan, slidesPerMember = null,
 }) {
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -303,7 +289,6 @@ export async function generateDeck({
   };
 
   const skipped = [];
-  const presenters = presentingNames(identity);
 
   for (const [i, spec] of plan.slides.entries()) {
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
@@ -311,10 +296,10 @@ export async function generateDeck({
       // Retry once with the catalog re-stated explicitly before giving up — a
       // first failure is often the grammar drifting, and a second pass with the
       // contract spelled out recovers most of them.
-      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, presenters });
+      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
       let applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
       if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
-        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, presenters });
+        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
         applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
       }
       if (!applied.ok) {
@@ -346,11 +331,18 @@ export async function generateDeck({
   const { ok, errors } = await validateDeck(deck);
   onProgress?.({ phase: "done", slides: deck.slides.length, skipped: skipped.length });
 
-  // Belt and braces behind the grammar: whatever the model tried to slip onto a
-  // divider, dividers carry no presenter. This runs before validation so a
-  // stray field can never ship.
+  // Presenters are decided here, deterministically, not by the writer model:
+  // whole sections go to presenting members in order, so every member's slides
+  // are one contiguous block and no one is doubled up while another sits idle.
+  // Dividers carry no presenter; any stray field the model slipped onto one is
+  // stripped first so the distribution cannot assign into a divider.
   for (const s of deck.slides) {
     if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
+  }
+  const presenters = presentingNames(identity);
+  const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember });
+  for (let i = 0; i < deck.slides.length; i++) {
+    if (assignment[i]) deck.slides[i].presenter = assignment[i];
   }
 
   return { ok, deck, plan, skipped, errors, stats };
