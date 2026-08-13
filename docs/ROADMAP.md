@@ -839,20 +839,34 @@ scattered. Now a single `distributePresenters(slides, members)` in
 - Content slides group by their `section`; whole sections are assigned to
   presenting members IN ORDER, so a member's slides are one contiguous block
   (their section's divider opens it, the next divider closes it).
-- With at least as many members as sections, each section goes to its own
-  member — nobody doubled up while another sits idle. With fewer members, the
-  sections partition into contiguous blocks sized within one slide of each
-  other where the section sizes permit.
+- With more sections than members, whole sections partition into contiguous
+  blocks sized within one slide of each other where the section sizes permit —
+  a section is never split.
+- With at least as many members as sections, the CONTENT SLIDES themselves are
+  the unit: every member gets at least one slide when the count allows, block
+  sizes stay within one slide of each other, and a member with no section of
+  their own takes a contiguous share of a neighbouring section's slides rather
+  than staying silent. The exception is exactly as many members as sections and
+  no briefing target — then member i takes section i, whole.
 - The briefing's slides-per-member answer overrides the automatic per-member
-  target but still produces contiguous blocks. It now flows structurally
-  through meta.yaml (`slidesPerMember`) instead of a sentence inside the
-  brief.
+  target in BOTH branches but still produces contiguous blocks; it now flows
+  structurally through meta.yaml (`slidesPerMember`) instead of a sentence
+  inside the brief, and a surplus distributes at balance ≤1 rather than piling
+  onto the trailing members.
 
 The writer no longer sees the `presenter` field at all — it is removed from
 its ops grammar, and the distribution is force-applied after generation. Chat
 turns can still edit a presenter by hand (their grammar keeps the field).
 
-> **Learned.** Two things were not obvious beforehand.
+> **Learned.** Three things were not obvious beforehand.
+>
+> "At least as many members as sections" is NOT "member i takes section i".
+> The first version assigned sections to the first N members and silently
+> stranded the rest, and ignored slides-per-member entirely — an 11-member team
+> with 7 sections shipped to 7 presenters and left 4 at zero even when the
+> briefing asked for one slide each. When members outnumber sections, the
+> slides are the unit and sections may split between adjacent members; the
+> equal-counts case keeps the per-section rule.
 >
 > "Contiguous" had to be defined against the dividers. A member owns a run of
 > sections, and the section dividers between them carry no presenter — so
@@ -1089,6 +1103,48 @@ clay board with inset highlight (clay), and the embossed field with visible
 dual shadows (neumorphism) all rendered with native text readable on every
 slide.
 
+### [x] Theme polish — the shared surfaces and the four workhorse themes
+The user's review called the themes "not that beautiful... all the same
+philosophy — nice but repetitive." The honest scoping split it in two: a token
+and shared-layout polish pass now, and layout-LEVEL distinctness for flagship
+themes deferred to a dedicated themes session (design in HANDOFF).
+
+The polish round fixed what the vision audit found:
+- **Stats layout** (shared, every theme): the block piled its columns in the
+  top half of the slide and a 3-line label collided with its sub-annotation.
+  Columns are now measured at their fitted size against a ~10% narrower width
+  (the wrap heuristic runs optimistic for long labels), the sub sits below the
+  label's real rendered lines, the whole block centres in the content box, and
+  the accent cycling drops `ink` so a near-white figure no longer lands on a
+  dark theme.
+- **Section divider** (shared): a short light-tint accent rule under the number
+  turns a bare text block into a designed break, and gives dark-neon its neon
+  moment and swiss its hairline.
+- **Title composition** (shared): tightened by 0.2in, cutting the flagged
+  dead space between the banner and the headline.
+- **warm-humanist** — softer card shadow; **swiss-international** — hairline
+  card outlines (the style is the grid, not shadows); **dark-neon** — brighter
+  muted text for caption/footer legibility; **glassmorphism** — more saturated
+  blobs, a see-through frost, and a title scrim so white text stops competing
+  with the gradient.
+
+> **Learned.** The themes' sameness is mostly NOT the tokens — it is that one
+> shared layout system draws every theme's cards, stats and dividers, so all 26
+> read as the same skeleton in different paint. Palette swaps cannot fix that;
+> only layout functions that branch on the theme can. The polish pass improved
+> the shared surfaces instead, which raises every theme at once and is the
+> honest precondition for the layout-level work.
+>
+> The stats sub-collision was the same fitter optimism that hit stat digits:
+> `lineCount` undercounted a 3-line label, the sub was offset below the
+> undercount, and the two met. Measuring the label against ~10% less width
+> over-reserves the box by construction, exactly the fitter's established
+> "pessimistic safety factor" pattern.
+>
+> Verified by rendering the raytracing deck in all four themes and checking
+> with `mimo-v2.5`: the collision is gone, glass reads as glass, hairlines and
+> shadows land, all four themes rated 8.0-8.5 with no regressions.
+
 ### [x] HTML plate renderer
 Headless Chrome renders decorative CSS backgrounds to PNG at build time; the
 renderer places them as slide background plates with all *text* still native.
@@ -1300,6 +1356,96 @@ problems.
 > a year "2030" that the notes never stated. Both flagged into the slide's
 > notes. The notes themselves are the UI — the speaker sees exactly what to
 > verify, in the deck file the deck detail already shows.
+
+### [x] Content trim — the floor flag fixes instead of reporting
+The fitter's role floor flagged slides whose text would need to render below
+the readable floor ("body would need 11.4pt — floor 14pt") and the overfull
+content shipped anyway. `src/ai/trim.js` closes the loop with a deterministic,
+schema-driven pass at the end of generation and after density sweeps:
+
+- The per-type trim metadata (which arrays are drop-able down to their
+  `minItems`, which strings are shortenable, nested objects and array items
+  included) derives from `deck.schema.json`, so a new type gets a sensible
+  trim for free.
+- Each `trimSlide` step is one small, deterministic edit — drop the last
+  element of the array with the most slack over minItems, else shorten the
+  longest prose at a sentence boundary with an ellipsis, headline last.
+  `trimDeckToFit` re-renders between steps (in-memory, no pptx written), so
+  content is only cut as far as the box actually demands; the flag survives
+  only when trimming cannot reach the floor.
+- `render()` now accepts an in-memory deck + explicit `deckDir`, which is what
+  lets the audit loop run without touching the persisted deck until it
+  converges, and a `write: false` flag skips the pptx write for audits.
+
+> **Learned.** Three things were not obvious beforehand.
+>
+> A trim that converges needs a per-round step budget far above the obvious
+> one. The loop trims one step per overfull slide per round and re-audits, so
+> a dense compare slide (two sides + verdict + headline + standfirst) needs a
+> dozen-plus steps; capping at 5 rounds left a slide flagged at 12pt that was
+> two cuts from clean. The audit renders are cheap (plates cached, no pptx
+> write), so 24 rounds cost about a second and the loop exits early when clean.
+>
+> "Drop items before shortening" is the right priority but the wrong granularity
+> for arrays of prose. Dropping a bullet removes a whole line; shortening the
+> longest bullet saves a third of it — the former converges faster and the
+> ordering keeps the trim honest about what "lowest value" means (trailing
+> items go first).
+>
+> The schema walker must keep the object prefix. The first version flattened
+> nested strings to bare field names ("body" instead of "left.body"), which
+> would have trimmed the wrong slide on a compare deck. Array-of-strings fields
+> also need registering as shortenable strings, or bullets never shorten after
+> hitting their minItems.
+>
+> Verified on the real First-Impressions deck (10 floor problems → 0) and a
+> fresh cloud generation (18 steps, one stuck slide that two more steps
+> cleared); `mimo-v2.5` confirmed the trimmed agenda, feature-grid, compare and
+> stacked-list slides render clean at readable sizes with ellipses on word
+> boundaries. One honest residual: the trim cuts content, it does not rewrite
+> it — a trimmed agenda can keep a subtitle that still mentions the dropped
+> items.
+
+### [x] Data-affinity steering — data beats become charts
+The chart type (and its scatter/radar/stacked-bar kinds) existed in the schema
+and renderer for two batches, and the writer never chose it — a data-rich deck
+used 17 types and zero charts, because the outline prompt described types
+generically and "a number → data family" let stats/big-number/cards absorb
+every quantitative beat. Now:
+
+- `catalog.js` counts the research's numeric facts (numbers with units or
+  percentages, and 3+ digit figures, deduplicated) and `dataAffinityNote`
+  rides the planner and writer prompts when there are ≥2: data beats become
+  `chart` slides, with the kinds named and matched to the comparison (scatter
+  for correlations, radar for multi-attribute profiles, stacked-bar for
+  composition over time, bar/line/area for trends).
+- The chart specimen audit surfaced a real rendering bug: `stacked-bar` wrote
+  OOXML grouping `clustered` because pptxgenjs honours `barGrouping`, not
+  `barStacked` — the ignored option made every "stacked" chart render as
+  grouped bars. The layout now passes `barGrouping: "stacked"`, guarded by a
+  regression test that unzips the rendered pptx and asserts the chart part's
+  grouping element.
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> Steering works by naming the kinds, not the type. "Prefer chart" alone is
+> weak for a model that already has stats/big-number/cards; spelling out which
+> chart kind matches which rhetorical comparison is what converts a beat into a
+> real chart choice. The planner produced five chart slides from a data-rich
+> brief the first time it saw the note.
+>
+> pptxgenjs silently drops unknown options. `barStacked` was never a real
+> option, the chart wrote `clustered`, and nothing complained — the bug was
+> only visible by unzipping the pptx and reading the grouping element, which is
+> now a permanent regression test. "The chart renders" must mean "the chart's
+> grouping is stacked", not "a chart appeared".
+>
+> Verified end-to-end with the cloud model: a data-centre brief (4.5% of global
+> electricity, 25-35% annual growth, PUE 1.036) planned five chart slides and
+> generated four real ones (line, bar, hbar, bar), all rendered correctly and
+> vision-checked with `mimo-v2.5`.
+
+---
 
 ## 5. Reports
 
