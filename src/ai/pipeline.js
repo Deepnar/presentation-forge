@@ -4,7 +4,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
-import { planDeck, generateDeck } from "./generate.js";
+import { planDeck, generateDeck, sweepDeck } from "./generate.js";
 import { critiqueDeck } from "./critic.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
@@ -366,6 +366,67 @@ export async function generateFromPlan({
     skipped: res.skipped ?? [],
     stats: res.stats,
     critic: criticReport,
+  };
+}
+
+/**
+ * The density sweep: rewrite an existing deck's content at a chosen density,
+ * keeping structure, types, presenters and order intact. Reads deck.yaml,
+ * runs `sweepDeck` (one scoped call per content slide), grounds the result
+ * against the research again, writes it back, renders and rasterises. The
+ * density is remembered in meta.yaml so the deck detail can show what it
+ * currently is.
+ */
+export async function sweepDensity({
+  slug, density = "balanced", theme = null, model, onProgress, signal,
+}) {
+  const dir = path.join(DECKS, slug);
+  const deckFile = path.join(dir, "deck.yaml");
+  const deck = YAML.parse(await readFile(deckFile, "utf8"));
+
+  const themeName = theme ?? deck.theme ?? "warm-humanist";
+  const themeObj = await loadTheme(themeName);
+  let researchText = "";
+  try {
+    researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
+  } catch { /* no research pass */ }
+
+  onProgress?.({ status: "sweeping", density });
+  const r = await sweepDeck({
+    deck,
+    density,
+    theme: themeObj,
+    research: excerptResearch(researchText),
+    model,
+    signal,
+    onProgress: (p) => onProgress?.({ status: "sweeping", ...p }),
+  });
+
+  const grounded = groundDeck(r.deck, researchText);
+  await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
+
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* no meta */ }
+  meta.status = "ready";
+  meta.density = density;
+  meta.updatedAt = new Date().toISOString();
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
+  onProgress?.({ status: "rendering" });
+  const rendered = await render({ deckFile, themeName });
+  const p = await preview(rendered.outFile, { dpi: 110 });
+  const base = `/api/decks/${slug}/preview`;
+
+  return {
+    slug,
+    deck: grounded.notes,
+    density,
+    slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
+    thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
+    problems: [...(r.problems ?? []), ...(rendered.problems ?? []), ...grounded.problems],
+    swept: r.swept ?? [],
   };
 }
 

@@ -11,7 +11,7 @@ import { preview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan, createReport, createDeckFromReport } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity } from "../../src/ai/pipeline.js";
 import { generateReport } from "../../src/ai/report.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
@@ -357,6 +357,45 @@ app.post("/api/decks/:slug/render", wrap(async (req, res) => {
     pptx: `/api/decks/${req.params.slug}/download/deck.pptx`,
   });
 }));
+
+/**
+ * The content-density sweep: rewrite the deck's content at a chosen density
+ * (sparse/balanced/dense) keeping structure, types, presenters and order.
+ * Same SSE transport as the other long runs — one scoped model call per
+ * content slide, then a re-render.
+ */
+app.post("/api/decks/:slug/sweep", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { density, theme, model } = req.body ?? {};
+  if (!["sparse", "balanced", "dense"].includes(density)) {
+    sse.send("error", { error: "density must be one of sparse|balanced|dense" });
+    return sse.close();
+  }
+
+  (async () => {
+    const r = await sweepDensity({
+      slug: req.params.slug, density, theme, model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", {
+      slug: r.slug,
+      density: r.density,
+      slides: r.slides,
+      thumbs: r.thumbs,
+      problems: r.problems,
+      swept: r.swept,
+    });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
 
 app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "out", "preview", "thumbs", path.basename(req.params.file));

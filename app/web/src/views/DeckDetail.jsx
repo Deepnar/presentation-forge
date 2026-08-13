@@ -33,6 +33,11 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
   const [exportOpen, setExportOpen] = useState(false);
+  // The content-density sweep: rewrite all slide content at a chosen density,
+  // keeping structure, types and presenters. density = current deck density.
+  const [density, setDensity] = useState("balanced");
+  const [sweeping, setSweeping] = useState(false);
+  const [sweepMsg, setSweepMsg] = useState("");
   // F9 — undo/redo stacks of full deck states. Every commitDeck pushes the
   // previous deck; Ctrl+Z/Ctrl+Y walk the stacks and re-save + re-render.
   const [past, setPast] = useState([]);
@@ -72,6 +77,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       setTheme(r.deck.theme ?? "");
       setStyle(r.deck.style ?? "");
       setMode(r.meta?.mode ?? null);
+      setDensity(r.meta?.density ?? "balanced");
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
@@ -192,6 +198,41 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
     clearTimeout(renderTimer.current);
     setSyncing(true);
     runRender();
+  }
+
+  /**
+   * The content-density sweep — the deck-level control that replaces the old
+   * chat rail's whole-deck edits. Rewrites every content slide at the chosen
+   * density (sparse/balanced/dense) keeping structure, types and presenters,
+   * then re-renders. One scoped model call per slide, streamed as progress.
+   */
+  function sweep() {
+    if (sweeping) return;
+    setSweeping(true);
+    setSweepMsg(`Rewriting at ${density} density…`);
+    setProblems([]);
+    api.sweepDensity(slug, {
+      density,
+      theme: theme || undefined,
+    }, {
+      status: (p) => {
+        if (p?.index != null && p?.total != null) {
+          setSweepMsg(`Rewriting slide ${p.index + 1} of ${p.total} at ${density} density…`);
+        }
+      },
+      result: (r) => {
+        const stamp = Date.now();
+        setData((d) => (d ? {
+          ...d,
+          slides: r.slides.map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
+        } : d));
+        setProblems(r.problems ?? []);
+        onDeckChanged?.();
+      },
+    }).promise
+      .catch((err) => setProblems([err.message]))
+      .finally(() => { setSweeping(false); setSweepMsg(""); });
   }
 
   /**
@@ -375,6 +416,30 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
           </div>
+
+          <div className="relative">
+            <select
+              value={density}
+              onChange={(e) => setDensity(e.target.value)}
+              title="Content density — rewrite every slide's content at this density"
+              className={selectCls}
+            >
+              <option value="sparse">Sparse</option>
+              <option value="balanced">Balanced</option>
+              <option value="dense">Dense</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={sweep}
+            disabled={busy || sweeping}
+            title="Rewrite all slide content at this density — keeps structure, types and presenters"
+          >
+            {sweeping ? <Spinner /> : null}
+            {sweeping ? sweepMsg.slice(0, 26) : "Re-sweep"}
+          </Button>
 
           <Button variant="primary" onClick={rerender} disabled={busy}>
             {busy && <Spinner />}

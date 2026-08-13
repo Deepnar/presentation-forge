@@ -93,6 +93,10 @@ export const api = {
     call("/api/validate", { method: "POST", body: JSON.stringify({ deck }) }),
   renderDeck: (slug, opts = {}) =>
     call(`/api/decks/${slug}/render`, { method: "POST", body: JSON.stringify(opts) }),
+  // Content-density sweep: rewrite content at sparse/balanced/dense, keeping
+  // structure and presenters. SSE like generation — one call per slide.
+  sweepDensity: (slug, opts, handlers) =>
+    stream(`/api/decks/${slug}/sweep`, opts, handlers),
   identity: () => call("/api/identity"),
   saveIdentity: (identity) =>
     call("/api/identity", { method: "PUT", body: JSON.stringify({ identity }) }),

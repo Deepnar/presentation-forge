@@ -1,6 +1,6 @@
 import { chatJSON } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
-import { slideCatalog, deckSchema } from "./catalog.js";
+import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections } from "./team.js";
 
@@ -351,4 +351,119 @@ export async function generateDeck({
   }
 
   return { ok, deck, plan, skipped, errors, stats };
+}
+
+/**
+ * The content-density sweep: rewrite a deck's CONTENT at a chosen density
+ * while keeping its structure exactly — same plan, sections, slide types,
+ * presenters and order. Only the content fields (bullets, bodies, cards,
+ * stat labels) are regenerated, at the per-family budget for the target
+ * density. Dividers (title/section/chapter/closing/epigraph) carry no body
+ * content and are preserved untouched.
+ *
+ * This is the deck-level "make it denser / lighter" the user asked for as an
+ * explicit control — the opposite of a chat turn, which edits one thing. It
+ * runs one scoped call per content slide so each still gets a small grammar,
+ * and grounding still applies afterwards: density must come from the research,
+ * never from invention.
+ */
+export async function sweepDeck({
+  deck, density = "balanced", theme, research = "", model, signal, onProgress, chat = chatJSON,
+}) {
+  if (!["sparse", "balanced", "dense"].includes(density)) {
+    throw new Error(`density must be one of sparse|balanced|dense, got "${density}"`);
+  }
+  const schema = await deckSchema();
+  const voice = theme?.voice ?? {};
+  let out = structuredClone(deck);
+  const problems = [];
+  const swept = [];
+
+  for (let i = 0; i < deck.slides.length; i++) {
+    const slide = deck.slides[i];
+    if (DIVIDER_TYPES.has(slide.type)) continue; // dividers carry no body content
+
+    onProgress?.({ status: "sweeping", index: i, total: deck.slides.length, type: slide.type });
+    const budget = densityBudget(density, slide.type, familyFor(slide.type));
+    const buildOps = buildOpsSchema(schema, { slideCount: deck.slides.length, onlyTypes: [slide.type] });
+    // One type's contract, not the whole 75-type catalogue — the slide type is
+    // fixed by the sweep, so the model only needs that type's fields.
+    const typeCatalog = await catalogForType(slide.type);
+
+    const current = Object.entries(slide)
+      .map(([k, v]) => {
+        if (k === "notes" || k === "presenter") return null;
+        const val = Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join(" | ") : String(v ?? "");
+        return val ? `  ${k}: ${val}` : null;
+      })
+      .filter(Boolean)
+      .join("\n");
+
+    const system = [
+      "You rewrite the CONTENT of ONE existing slide of a presentation, keeping its type,",
+      "presenter and meaning exactly. Layout, colour and font are not yours.",
+      `The slide type is "${slide.type}" and it stays "${slide.type}". The presenter stays the same.`,
+      "",
+      `TARGET DENSITY: ${density}. Content budget for this slide: ${budget}.`,
+      density === "sparse"
+        ? "You are making the slide LIGHTER: fewer items, shorter phrasing. Trim, do not pad."
+        : density === "dense"
+          ? "You are making the slide DENSER: more items, fuller sentences. Add real substance."
+          : "You are balancing the slide: a normal number of items, each a complete point.",
+      "",
+      "Emit exactly one update_slide op patching ONLY the content fields — the headline",
+      "may be refined, but the type, presenter and section must not change. Do not invent",
+      "statistics: every figure must come from the RESEARCH NOTES below, quoted verbatim.",
+      typeCatalog,
+      "",
+      voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
+      voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
+    ].filter(Boolean).join("\n");
+
+    let res;
+    try {
+      res = await chat({
+        role: "author",
+        model,
+        signal,
+        schema: buildOps,
+        messages: [
+          { role: "system", content: system },
+          {
+            role: "user",
+            content: [
+              research ? `RESEARCH NOTES\n${research}\n` : "",
+              `CURRENT SLIDE [index ${i}]\n${current}`,
+              `\nRewrite this slide's content at ${density} density.`,
+            ].filter(Boolean).join("\n"),
+          },
+        ],
+      });
+    } catch (err) {
+      problems.push(`slide ${i + 1} (${slide.type}): ${err.message.slice(0, 120)} — kept original`);
+      swept.push({ index: i, type: slide.type, kept: true });
+      continue;
+    }
+
+    const ops = (res.data?.ops ?? []).filter((o) => o.op === "update_slide" && o.index === i);
+    if (!ops.length) {
+      problems.push(`slide ${i + 1} (${slide.type}): no usable rewrite — kept original`);
+      swept.push({ index: i, type: slide.type, kept: true });
+      continue;
+    }
+    const applied = applyOps(out, ops);
+    if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
+      problems.push(`slide ${i + 1} (${slide.type}): density rewrite failed — kept original`);
+      swept.push({ index: i, type: slide.type, kept: true });
+      continue;
+    }
+    // The grammar allows a patch to change anything; the sweep contract is that
+    // type and presenter survive. Re-assert them so a verbose model cannot turn
+    // a sweep into a redesign.
+    applied.deck.slides[i] = { ...applied.deck.slides[i], type: slide.type, presenter: slide.presenter };
+    out = applied.deck;
+    swept.push({ index: i, type: slide.type });
+  }
+
+  return { deck: out, problems, swept };
 }

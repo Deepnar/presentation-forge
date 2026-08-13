@@ -47,11 +47,56 @@ const FAMILIES = {
   Special: ["equation", "bibliography", "data-source"],
 };
 
-function familyFor(type) {
+export function familyFor(type) {
   for (const [name, list] of Object.entries(FAMILIES)) {
     if (list.includes(type)) return name;
   }
   return null;
+}
+
+/**
+ * Per-family content budgets at each density. The sweep rewrites a deck's
+ * content at a chosen density; these are the per-type targets the writer is
+ * told to hit — sparse means few short bullets, dense means more, longer.
+ * Families absent here fall back to the generic budget.
+ */
+export const DENSITY_BUDGETS = {
+  sparse: {
+    generic: "a few words — 1-2 short items where the type allows lists, one-line bodies",
+    "List & Grid": "3-4 short bullets, each under 12 words; card bodies one short phrase",
+    "Data & Stats": "3 stats maximum, each a figure and a short label",
+    Comparison: "one key point per side, kept to a single line each",
+    "Process & Flow": "3-4 steps, each a short phrase",
+    "Timeline & Milestone": "3-4 milestones, each a year and a short phrase",
+    "Callout & Highlight": "a single line callout — one sentence",
+    "Definitions & FAQ": "1-2 terms, each a one-line definition",
+  },
+  balanced: {
+    generic: "4-6 items where the type allows lists, 1-2 sentence bodies",
+    "List & Grid": "4-6 bullets, each 12-25 words; card bodies 1-2 sentences",
+    "Data & Stats": "3-4 stats, each a figure with a one-line label",
+    Comparison: "2-3 points per side, each a short sentence",
+    "Process & Flow": "4-5 steps, each a short sentence",
+    "Timeline & Milestone": "4-5 milestones, each a date and a sentence",
+    "Callout & Highlight": "a two-sentence callout",
+    "Definitions & FAQ": "2-3 terms, each a one-to-two-line definition",
+  },
+  dense: {
+    generic: "6-8 items where the type allows lists, 2-3 sentence bodies",
+    "List & Grid": "6-8 bullets, each 20-40 words; card bodies 2-3 sentences",
+    "Data & Stats": "4-5 stats, each a figure with a label and one-line context",
+    Comparison: "3-4 points per side, each a full sentence",
+    "Process & Flow": "5-6 steps, each a full sentence",
+    "Timeline & Milestone": "5-6 milestones, each a date and a sentence of context",
+    "Callout & Highlight": "a three-sentence callout",
+    "Definitions & FAQ": "3-4 terms, each a two-to-three-line definition",
+  },
+};
+
+/** The budget string for one slide type at one density, or the generic fallback. */
+export function densityBudget(density, type, family) {
+  const level = DENSITY_BUDGETS[density] ?? DENSITY_BUDGETS.balanced;
+  return level[family] ?? level.generic;
 }
 
 /**
@@ -179,19 +224,7 @@ export async function slideCatalog() {
   const types = slide.properties.type.enum;
   const shared = Object.keys(slide.properties).filter((k) => k !== "type");
 
-  // Each conditional branch declares one type and the fields it requires.
-  const byType = new Map(types.map((t) => [t, { required: [], fields: [] }]));
-
-  for (const rule of slide.allOf ?? []) {
-    const type = rule.if?.properties?.type?.const;
-    if (!type || !byType.has(type)) continue;
-    const then = rule.then ?? {};
-    const entry = byType.get(type);
-    entry.required = then.required ?? [];
-    entry.fields = Object.entries(then.properties ?? {}).map(([name, spec]) =>
-      describeField(name, spec, schema),
-    );
-  }
+  const byType = await fieldsByType(schema);
 
   const lines = types.map((t) => {
     const e = byType.get(t);
@@ -222,6 +255,44 @@ export async function slideCatalog() {
     `Per-type fields:\n${lines.join("\n")}`;
 
   return _cache;
+}
+
+/** Each conditional branch → { type → { required, fields } }. Shared extraction
+ *  for the full catalog and the per-type prompt. */
+async function fieldsByType(schema) {
+  const slide = schema.definitions.slide;
+  const types = slide.properties.type.enum;
+  const byType = new Map(types.map((t) => [t, { required: [], fields: [] }]));
+  for (const rule of slide.allOf ?? []) {
+    const type = rule.if?.properties?.type?.const;
+    if (!type || !byType.has(type)) continue;
+    const then = rule.then ?? {};
+    const entry = byType.get(type);
+    entry.required = then.required ?? [];
+    entry.fields = Object.entries(then.properties ?? {}).map(([name, spec]) =>
+      describeField(name, spec, schema),
+    );
+  }
+  return byType;
+}
+
+/** The field spec for ONE slide type — a scoped catalog line for prompts that
+ *  only touch a single slide (the density sweep), instead of the whole 75-type
+ *  catalogue. Keeping the grammar-relevant contract while cutting prompt size. */
+export async function catalogForType(type) {
+  const schema = await deckSchema();
+  const slide = schema.definitions.slide;
+  const shared = Object.keys(slide.properties).filter((k) => k !== "type");
+  const byType = await fieldsByType(schema);
+  const e = byType.get(type) ?? { required: [], fields: [] };
+  const req = new Set(e.required);
+  const fields = e.fields
+    .map((f) => (req.has(f.name) ? `${f.text} [required]` : f.text))
+    .join("; ");
+  return (
+    `Shared fields on any slide: ${shared.join(", ")}. "section" is a 0-based index into deck.sections.\n` +
+    `This slide is type "${type}". Fields: ${fields || "(none)"}.`
+  );
 }
 
 function describeField(name, spec, schema) {
