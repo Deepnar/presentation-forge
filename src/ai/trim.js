@@ -182,7 +182,7 @@ export async function trimSlide(slide) {
  * fitter flags below its floor, and re-renders until the deck is clean or no
  * trim can help. Deterministic throughout — no model call.
  */
-export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 16, signal }) {
+export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal }) {
   let cur = structuredClone(deck);
   const trimmed = [];
   let audit = { problems: [] };
@@ -208,5 +208,5 @@ export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 16, 
   }
 
   audit = await render({ deck: cur, themeName, deckDir, write: false, signal });
-  return { deck: cur, trimmed, converged: true, problems: audit.problems };
+  return { deck: cur, trimmed, converged: audit.problems.length === 0, problems: audit.problems };
 }
