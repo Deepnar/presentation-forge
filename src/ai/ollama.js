@@ -5,6 +5,94 @@ import { CONFIG } from "../paths.js";
 import { resolveSecret, routingPreference, cloudProvider } from "../cloud.js";
 
 /**
+ * Per-transport capability split. A role's sampling/output/context settings are
+ * written for the LOCAL backend — the caps and conservative choices a
+ * small-model pipeline survives on. A role may declare `transports.cloud` (and
+ * optionally `transports.local`) overrides; the cloud transport then gets the
+ * full capability instead of inheriting limits that only exist because the
+ * local model cannot handle more. Everything that resolves a role applies this
+ * before the request is built, so both backends always see their own numbers.
+ */
+
+/** The research excerpt default (80000 chars ≈ 23K tokens) — what the local
+ *  author's 32768 num_ctx window has headroom for. Research.js re-exports it. */
+export const DEFAULT_EXCERPT_CHARS = 80_000;
+
+/**
+ * Merge a role's per-transport overrides over its base spec. Shallow at the top
+ * level, so a nested block (e.g. `research:`) is replaced wholesale by its
+ * cloud form rather than partially merged — the overrides are a complete
+ * alternative, not a patch.
+ */
+export function applyTransport(spec, backend) {
+  const block = backend?.type === "openai-compatible" ? spec?.transports?.cloud : spec?.transports?.local;
+  if (!block || typeof block !== "object") return spec;
+  return { ...spec, ...block, transports: spec.transports };
+}
+
+/**
+ * The transport the author role would run on right now, mirroring `chat()`'s
+ * own resolution: an explicit `provider` wins, then an explicit model name that
+ * belongs to a cloud provider's `models:` list, then the routing preference.
+ * Exposed so prompt-builders can pick a full-strength variant for cloud before
+ * the call is made.
+ */
+export async function authorTransport({ model } = {}) {
+  const cfg = await config();
+  const spec = cfg.roles?.author ?? {};
+  if (spec.provider) return "cloud";
+  if (model) {
+    for (const p of Object.values(cfg.providers ?? {})) {
+      if (p?.type === "openai-compatible" && Array.isArray(p.models) && p.models.includes(model)) {
+        return "cloud";
+      }
+    }
+    return "ollama";
+  }
+  const route = await routingPreference();
+  const cp = await cloudProvider();
+  if (route === "cloud" && cp?.models?.length) return "cloud";
+  return "ollama";
+}
+
+/** The transport-aware research depth profile for the research role. */
+export async function researchProfile() {
+  const cfg = await config();
+  const spec = cfg.roles?.research ?? {};
+  const merged = applyTransport(spec, await backendFor(cfg, spec));
+  return { ...RESEARCH_DEPTH_DEFAULTS, ...(merged.research ?? {}) };
+}
+
+const RESEARCH_DEPTH_DEFAULTS = {
+  angle_max: 8,
+  per_query_limit: 8,
+  per_query_read: 4,
+  followup_sources: 3,
+  followup_limit: 6,
+  followup_read: 3,
+  gap_max: 3,
+  gap_limit: 5,
+  gap_read: 3,
+  papers_limit: 6,
+  papers_fulltext: 2,
+};
+
+/**
+ * How much of research/notes.md the AUTHOR role can see per call. The cap exists
+ * because the local author's num_ctx is 32768; on the cloud transport the
+ * window is far larger, so the cloud override raises it. Mirrors `chat()`'s
+ * transport decision so the excerpt matches the model that will actually read
+ * it.
+ */
+export async function researchExcerptCap({ model } = {}) {
+  const cfg = await config();
+  const spec = cfg.roles?.author ?? {};
+  const t = await authorTransport({ model });
+  const merged = applyTransport(spec, { type: t === "cloud" ? "openai-compatible" : "ollama" });
+  return merged.excerpt_chars ?? DEFAULT_EXCERPT_CHARS;
+}
+
+/**
  * Model client, role-addressed, with an optional cloud backend.
  *
  * Callers ask for a *role* ("author") rather than a model id, so swapping the
@@ -149,6 +237,9 @@ async function cloudSpec(cfg, model, role) {
       temperature: author.temperature,
       top_p: author.top_p,
       num_predict: author.num_predict,
+      // Carried so the per-transport override can raise the cap for the cloud
+      // backend the model override just selected.
+      transports: author.transports,
       backend: { type: "openai-compatible", baseURL: p.baseURL, apiKey: await resolveEnv(p.apiKey) },
       model,
       fellBack: false,
@@ -191,16 +282,22 @@ export async function chat({
       if (cp?.models?.length) model = cp.models[0];
     }
   }
-  const spec = model
+  let spec = model
     ? (await cloudSpec(cfg, model, role)) ?? { ...(await resolveRole(role)), model }
     : await resolveRole(role);
+  // The per-transport split lands here: the resolved role spec is written for
+  // one backend, and the transport it actually runs on may override it (cloud
+  // gets the larger num_predict / excerpt budget, never the local caps).
+  spec = applyTransport(spec, spec.backend);
   const stream = typeof onToken === "function";
   const timeout = cfg.defaults?.request_timeout_ms ?? 300_000;
   const maxRetries = cfg.defaults?.max_retries ?? 2;
+  const bumpCeiling = cfg.defaults?.num_predict_bump_ceiling ?? 64_000;
 
   let lastErr;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
+      let res;
       if (spec.backend.type === "ollama") {
         const payload = {
           model: spec.model,
@@ -222,12 +319,37 @@ export async function chat({
         };
         if (format) payload.format = format;
         if (tools?.length) payload.tools = tools;
-        return await once(spec, payload, { stream, onToken, timeout, signal });
+        res = await once(spec, payload, { stream, onToken, timeout, signal });
+      } else {
+        res = await cloudChat(spec, {
+          messages, format, tools, images, temperature,
+          stream, onToken, timeout, signal,
+        });
       }
-      return await cloudChat(spec, {
-        messages, format, tools, images, temperature,
-        stream, onToken, timeout, signal,
-      });
+
+      // Carry the effective cap and transport on the result so callers can say
+      // "cut at N tokens" precisely and decide whether a bump is warranted.
+      const cap = spec.num_predict ?? null;
+      res = { ...res, cap, transport: spec.backend.type };
+
+      // done_reason=length means the response hit the token cap mid-output, not
+      // that the model stopped for a good reason. Retry the same request with
+      // the cap doubled, up to the ceiling — a legitimate large output gets
+      // room, while a runaway grammar still fails cleanly once the ceiling is
+      // reached. Non-streamed only: tokens already streamed cannot be unsaid,
+      // so a truncated streamed turn keeps today's behaviour (failed JSON parse
+      // surfaced as an error).
+      if (!stream && res.doneReason === "length" && cap != null && cap < bumpCeiling) {
+        const next = Math.min(cap * 2, bumpCeiling);
+        if (next > cap) {
+          spec = { ...spec, num_predict: next };
+          lastErr = null;
+          attempt--; // a length bump is a retry, not a failure
+          await new Promise((r) => setTimeout(r, 250));
+          continue;
+        }
+      }
+      return res;
     } catch (err) {
       // A caller-initiated abort is intentional; never retry it.
       if (err.name === "AbortError" && signal?.aborted) throw err;
@@ -469,7 +591,9 @@ export async function chatJSON({ role, messages, schema, ...rest }) {
     const salvaged = extractJSON(raw);
     if (salvaged) return { ...res, data: salvaged, salvaged: true };
     const why = res.doneReason === "length"
-      ? ` Generation was CUT SHORT (done_reason=length, ${res.evalCount} tokens) — raise num_predict for role "${role}".`
+      ? ` Generation was CUT SHORT (done_reason=length, ${res.evalCount} tokens) — the ` +
+        `${res.transport ?? "?"} transport's effective cap (${res.cap ?? "unset"} tokens) was hit; ` +
+        `the transport already retries length-truncated responses with the cap doubled up to the ceiling.`
       : ` (done_reason=${res.doneReason}, ${res.evalCount} tokens)`;
     throw new Error(`Model did not return JSON.${why}\nFirst 300 chars:\n${raw.slice(0, 300)}`);
   }

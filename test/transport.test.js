@@ -1,0 +1,184 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import YAML from "yaml";
+import { ROOT } from "../src/paths.js";
+import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
+import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
+
+/* -------------------------------------------------------- applyTransport */
+
+test("applyTransport leaves a spec without overrides untouched", () => {
+  const spec = { role: "author", num_predict: 12000 };
+  assert.equal(applyTransport(spec, { type: "ollama" }), spec);
+  assert.equal(applyTransport(spec, { type: "openai-compatible" }), spec);
+});
+
+test("applyTransport merges the cloud override only onto the cloud backend", () => {
+  const spec = { num_predict: 12000, excerpt_chars: 80000, transports: { cloud: { num_predict: 24000, excerpt_chars: 240000 } } };
+  const cloud = applyTransport(spec, { type: "openai-compatible" });
+  assert.equal(cloud.num_predict, 24000);
+  assert.equal(cloud.excerpt_chars, 240000);
+  const local = applyTransport(spec, { type: "ollama" });
+  assert.equal(local.num_predict, 12000);
+  assert.equal(local.excerpt_chars, 80000);
+});
+
+test("applyTransport replaces nested blocks wholesale, not as patches", () => {
+  const spec = { research: { angle_max: 8, per_query_limit: 8 }, transports: { cloud: { research: { angle_max: 10 } } } };
+  const cloud = applyTransport(spec, { type: "openai-compatible" });
+  assert.equal(cloud.research.angle_max, 10);
+  assert.equal(cloud.research.per_query_limit, undefined); // replaced, not merged
+});
+
+test("the local override wins on the local backend when both are declared", () => {
+  const spec = { num_predict: 12000, transports: { local: { num_predict: 8000 }, cloud: { num_predict: 24000 } } };
+  assert.equal(applyTransport(spec, { type: "ollama" }).num_predict, 8000);
+  assert.equal(applyTransport(spec, { type: "openai-compatible" }).num_predict, 24000);
+});
+
+test("authorTransport resolves by explicit model name without touching routing", async () => {
+  // deepseek-v4-flash is a declared opencode-go model → cloud.
+  assert.equal(await authorTransport({ model: "deepseek-v4-flash" }), "cloud");
+  // A name on no provider's list (a local pull) → ollama.
+  assert.equal(await authorTransport({ model: "qwen3:4b-instruct" }), "ollama");
+});
+
+test("researchExcerptCap follows the transport of the model that will read the notes", async () => {
+  assert.equal(await researchExcerptCap({ model: "deepseek-v4-flash" }), 240_000);
+  assert.equal(await researchExcerptCap({ model: "qwen3:4b-instruct" }), DEFAULT_EXCERPT_CHARS);
+});
+
+test("researchProfile resolves the research role's transport-aware depth", async () => {
+  const local = await researchProfile();
+  // The committed research role is local-first → the local budgets.
+  assert.equal(local.angle_max, 8);
+  assert.equal(local.per_query_limit, 8);
+  assert.ok(local.papers_limit >= 6);
+  // A fabricated cloud spec deepens every stage.
+  const spec = {
+    research: { angle_max: 8, per_query_limit: 8, per_query_read: 4 },
+    transports: { cloud: { research: { angle_max: 10, per_query_limit: 12, per_query_read: 8 } } },
+  };
+  const cloud = applyTransport(spec, { type: "openai-compatible" }).research;
+  assert.equal(cloud.angle_max, 10);
+  assert.equal(cloud.per_query_limit, 12);
+  assert.equal(cloud.per_query_read, 8);
+});
+
+/* ------------------------------------------------- models.yaml contract */
+
+test("models.yaml declares a per-transport split that is strictly deeper on cloud", async () => {
+  const cfg = YAML.parse(await readFile(path.join(ROOT, "config", "models.yaml"), "utf8"));
+  const author = cfg.roles.author;
+  const research = cfg.roles.research;
+
+  assert.ok(author.transports.cloud.num_predict >= author.num_predict * 2, "cloud author output cap must not inherit the local cap");
+  assert.ok(author.transports.cloud.excerpt_chars > author.excerpt_chars, "cloud author research budget must exceed the local one");
+  assert.equal(author.transports.cloud.excerpt_chars, 240_000);
+
+  const local = research.research;
+  const cloud = research.transports.cloud.research;
+  for (const key of Object.keys(local)) {
+    assert.ok(cloud[key] >= local[key], `cloud research ${key} (${cloud[key]}) must not be smaller than local (${local[key]})`);
+  }
+
+  assert.ok(cfg.defaults.num_predict_bump_ceiling >= 2 * author.num_predict, "the bump ceiling must give the cloud cap room to double");
+});
+
+/* ------------------------------------------------------- excerpt cap param */
+
+test("excerptResearch honours an explicit cap", () => {
+  const text = `## A\n\n${"word ".repeat(RESEARCH_EXCERPT)}tail-line\n`;
+  const out = excerptResearch(text, 10_000);
+  assert.ok(out.length <= 10_000);
+  assert.ok(out.endsWith("\n"));
+  assert.ok(excerptResearch(text).length <= RESEARCH_EXCERPT);
+});
+
+/* ------------------------------------------------------- length auto-bump */
+
+function fakeResponse(body) {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => body,
+    text: async () => "",
+  };
+}
+
+test("chat() auto-bumps the cap when a non-streamed response is cut at length", async () => {
+  const orig = globalThis.fetch;
+  const caps = [];
+  const AUTHOR = "qwen3-coder:30b-a3b-q4_K_M";
+  globalThis.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    if (u.endsWith("/api/tags")) {
+      return fakeResponse({ models: [{ name: AUTHOR }] });
+    }
+    if (u.endsWith("/api/chat")) {
+      const body = JSON.parse(opts.body ?? "{}");
+      caps.push(body.options?.num_predict);
+      const truncated = caps.length === 1;
+      return fakeResponse({
+        model: AUTHOR,
+        message: { content: '{"ops":[]}' },
+        done_reason: truncated ? "length" : "stop",
+        eval_count: 1234,
+      });
+    }
+    throw new Error(`unexpected URL ${u}`);
+  };
+  try {
+    // An explicit local model name skips the routing preference and forces the
+    // ollama backend, so the test is deterministic on any machine.
+    const res = await chat({ role: "author", model: AUTHOR, messages: [{ role: "user", content: "hi" }] });
+    assert.equal(caps.length, 2);
+    assert.equal(caps[0], 12000);   // the local author cap
+    assert.equal(caps[1], 24000);   // doubled by the auto-bump
+    assert.equal(res.doneReason, "stop");
+    assert.equal(res.cap, 24000);
+    assert.equal(res.transport, "ollama");
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+test("chat() leaves a streamed length-truncated response alone (tokens cannot be unsaid)", async () => {
+  const orig = globalThis.fetch;
+  const caps = [];
+  const AUTHOR = "qwen3-coder:30b-a3b-q4_K_M";
+  globalThis.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    if (u.endsWith("/api/tags")) {
+      return fakeResponse({ models: [{ name: AUTHOR }] });
+    }
+    if (u.endsWith("/api/chat")) {
+      const body = JSON.parse(opts.body ?? "{}");
+      caps.push(body.options?.num_predict);
+      assert.equal(body.stream, true);
+      // NDJSON stream: one truncated line, done_reason=length.
+      const line = JSON.stringify({ message: { content: "partial" }, done: true, done_reason: "length" });
+      const reader = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(line + "\n"));
+          controller.close();
+        },
+      }).getReader();
+      return { ok: true, body: { getReader: () => reader } };
+    }
+    throw new Error(`unexpected URL ${u}`);
+  };
+  try {
+    const res = await chat({
+      role: "author", model: AUTHOR,
+      messages: [{ role: "user", content: "hi" }],
+      onToken: () => {},
+    });
+    assert.equal(caps.length, 1); // no bump for a streamed call
+    assert.equal(res.doneReason, "length");
+  } finally {
+    globalThis.fetch = orig;
+  }
+});

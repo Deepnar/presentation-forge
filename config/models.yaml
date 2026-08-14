@@ -51,6 +51,42 @@ roles:
     model: qwen3-coder:30b-a3b-q4_K_M
     temperature: 0.3
     num_ctx: 32768
+    # How deeply one research pass searches and reads. These are the budgets
+    # for the LOCAL pipeline — the numbers that keep a small-model author's
+    # prompt inside its window. The cloud transport override (below) is the
+    # whole point of the per-transport split: a cloud research role deepens
+    # the pass because the cloud author that reads the notes has a far larger
+    # context, so the caps that exist "because the local model can't handle
+    # more" do not constrain it.
+    research:
+      angle_max: 8          # queries the brief expands into (incl. the brief itself)
+      per_query_limit: 8    # search results considered per query
+      per_query_read: 4     # pages extracted per query
+      followup_sources: 3   # richest sources to follow up on
+      followup_limit: 6     # search results per follow-up query
+      followup_read: 3      # pages extracted per follow-up
+      gap_max: 3            # examiner-gap follow-up queries
+      gap_limit: 5          # search results per gap query
+      gap_read: 3           # pages extracted per gap query
+      papers_limit: 6       # papers kept from arXiv + Crossref
+      papers_fulltext: 2    # top papers' full text pulled into the notes
+    transports:
+      cloud:
+        # The cloud research pass runs strictly deeper: more angle queries,
+        # higher source and read caps, more examiner-gap follow-ups, and more
+        # papers with fuller full-text coverage.
+        research:
+          angle_max: 10
+          per_query_limit: 12
+          per_query_read: 8
+          followup_sources: 5
+          followup_limit: 10
+          followup_read: 6
+          gap_max: 5
+          gap_limit: 8
+          gap_read: 5
+          papers_limit: 10
+          papers_fulltext: 4
 
   # Outline and slide content. This one writes everything the audience reads.
   #
@@ -83,6 +119,17 @@ roles:
     # cloud transport can run to ~7K output tokens, and 8192 occasionally
     # truncated it mid-JSON. The local grammar keeps output bounded regardless.
     num_predict: 12000
+    # How much of research/notes.md the model sees per call. 80K chars is ~23K
+    # tokens against the local author's 32768 num_ctx, leaving headroom for the
+    # schema and output. The cloud override raises it well past that window.
+    excerpt_chars: 80000
+    transports:
+      cloud:
+        # Cloud models legitimately output more; 24000 keeps a long outline or a
+        # dense slide from being cut mid-JSON. The local grammar keeps the local
+        # path bounded regardless, so this cap only ever widens the cloud side.
+        num_predict: 24000
+        excerpt_chars: 240000
 
   # Reads rendered slide PNGs. Must be a vision model.
   critic:
@@ -109,3 +156,8 @@ defaults:
   keep_alive: "15m"
   request_timeout_ms: 300000
   max_retries: 2
+  # When a completion reports done_reason=length (hit its token cap mid-output),
+  # the transport retries the same request with the cap doubled, up to this
+  # ceiling. A runaway grammar still fails cleanly once the ceiling is reached —
+  # it just gets a fairer number of chances first.
+  num_predict_bump_ceiling: 64000
