@@ -690,7 +690,25 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "out", path.basename(req.params.file));
   try {
     await stat(file);
-    res.download(file);
+    // The saved file is deck.pptx / report.docx; the user should get the
+    // deck's title instead. meta.yaml may carry it; the deck's own title
+    // (deck.yaml) is the fallback — else the file name.
+    let title = "";
+    try {
+      const meta = YAML.parse(await readFile(path.join(DECKS, req.params.slug, "meta.yaml"), "utf8"));
+      title = String(meta.title ?? "").trim();
+    } catch { /* no meta */ }
+    if (!title) {
+      try {
+        const deck = YAML.parse(await readFile(path.join(DECKS, req.params.slug, "deck.yaml"), "utf8"));
+        title = String(deck.title ?? "").trim();
+      } catch { /* no deck */ }
+    }
+    const ext = path.extname(req.params.file);
+    const base = path.basename(req.params.file, ext);
+    const name = (title || base).replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, " ").trim() || base;
+    res.setHeader("Content-Disposition", `attachment; filename="${name}${ext}"`);
+    res.download(file, `${name}${ext}`);
   } catch {
     res.status(404).end();
   }
