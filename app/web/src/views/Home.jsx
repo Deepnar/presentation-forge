@@ -43,9 +43,7 @@ function AuthBar({ onAuth }) {
   return (
     <div className="mb-10 flex items-center justify-between">
       <div className="flex items-center gap-2.5">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-[14px] font-bold text-white">
-          F
-        </span>
+        <img src="/logo.svg" alt="Presentation Forge" className="h-8 w-8 rounded-lg" />
         <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </div>
       <div className="flex items-center gap-2">
@@ -88,9 +86,7 @@ function Reveal({ children, className = "" }) {
 function Hero({ authed, onStartChat, onBrowseThemes, onAuth }) {
   return (
     <div className="hero-glow glow-breathe py-12 text-center sm:py-16">
-      <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent text-[26px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_20px_40px_-20px_rgba(0,0,0,0.8)]">
-        F
-      </div>
+      <img src="/logo.svg" alt="" className="mx-auto h-16 w-16 rounded-2xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)]" />
       <h1 className="mx-auto mt-6 max-w-2xl text-[3.25rem] font-semibold leading-[1.05] tracking-[-0.02em] text-fg">
         From topic to deck — fast
       </h1>

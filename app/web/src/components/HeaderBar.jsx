@@ -57,9 +57,11 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdenti
         title="Home"
         className="flex min-w-0 items-center gap-2.5 rounded-md transition hover:opacity-90"
       >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-accent text-[13px] font-bold text-white">
-          F
-        </span>
+        <img
+          src="/logo.svg"
+          alt="Presentation Forge"
+          className="h-7 w-7 shrink-0 rounded-md"
+        />
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </a>
 

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="Presentation Forge">
+  <defs>
+    <linearGradient id="wm-ember" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#C4503C"/>
+      <stop offset="0.45" stop-color="#E0705A"/>
+      <stop offset="0.8" stop-color="#F08A5D"/>
+      <stop offset="1" stop-color="#FFB36B"/>
+    </linearGradient>
+    <linearGradient id="wm-core" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#FFD9A0"/>
+      <stop offset="1" stop-color="#FFF3DE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- mark (compact F-flame, no tile) -->
+  <g transform="translate(4, 10) scale(0.82)">
+    <path d="M34 84 C34 68 34 61 38 54 C41 49 43 46 43 42 C43 46 44 49 46 53 C51 59 53 63 53 69 C53 77 48 84 41 84 Z" fill="url(#wm-ember)"/>
+    <path d="M42 84 C42 75 42 69 44 65 C45 62 46 60 46 58 C46 60 47 63 49 65 C51 69 52 72 52 76 C52 80 50 84 47 84 Z" fill="url(#wm-core)" opacity="0.9"/>
+    <rect x="42" y="34" width="42" height="10" rx="5" fill="#F4EDE6"/>
+    <rect x="42" y="56" width="36" height="10" rx="5" fill="#F4EDE6"/>
+    <path d="M88 59 L92 55 L96 59 L92 61 Z" fill="#FFB36B"/>
+    <circle cx="93" cy="51" r="1.4" fill="#FFD9A0"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="104" y="64" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="650" letter-spacing="-0.5" fill="#F4EDE6">Presentation</text>
+  <text x="258" y="64" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="350" letter-spacing="-0.5" fill="#C9BDB4">Forge</text>
+</svg>
