@@ -1,133 +1,95 @@
-# Handoff — for the next session
+# HANDOFF — 2026-08-15 (user testing round)
 
-Read `AGENTS.md` (repo root) first — the three-layer rule, commands, roadmap
-discipline, commit rules. Then `docs/TRAPS.md`. Then the sections below. This
-file is overwritten at the end of every session; git history preserves older
-handoffs.
+The product is functionally complete (324 commits, 261/261 tests, servers up).
+The user tested it end-to-end and filed the issues below. Root causes are
+CONFIRMED in code for the render bug and the empty report pages; the rest are
+feature requests with clear directions. Next session: fix the confirmed bugs
+first (items 1-2), then the UX/feature batch (items 3-9), in order.
 
-## Session summary
+## Confirmed bugs (root causes found)
 
-**Two queued user tasks, both done and verified end-to-end: (1) product
-framing + entry flow — "the app does the bulk, you do the final touches", the
-landing page as the front door, and New chat as the constant post-login
-landing; (2) report button states — a shared report-write state so Render
-.docx / Download / Plan can never be clicked mid-write.**
+### 1. Report view: "still rendering" spinner after render + download button lost on reopen
+- ReportView.jsx `renderDoc()`: the "Rendering…" status and busy flag come from
+  `setStatus`/`setBusy` — but the report WRITE progress ("Writing section N of M")
+  flows through a separate subscription (`reportWrites`, line 60). The button's
+  disabled state (`busy || !data`) doesn't cover the write; and `status` stays
+  "Rendering…" if the write subscription's terminal patch never clears it.
+- Also: `result` (which shows the Download link) is component state — lost on
+  reopen. The download link must be derived from server state (the .docx exists
+  on disk) so it survives navigation: check for the rendered file on load.
+- Fix: unify busy/status across renderDoc AND the write subscription (one
+  `generating` state); on reopen, probe whether report.docx exists and show
+  Download without re-render.
 
-### Task 1 — Product framing + entry flow
+### 2. Report: pages 2-3 always empty
+- src/report.js `buildBody` (line 304-312): `cover()` + `pageBreak, pageBreak`
+  (TWO hard breaks) + TOC + `pageBreak` + section 1 with `<w:pageBreakBefore/>`.
+  When the cover ends near a page boundary, the double break produces a blank
+  page; the TOC's trailing break + pageBreakBefore can produce another. Hence
+  pages 2-3 blank on every report.
+- Fix: exactly ONE page break after the cover, ONE after the TOC, and drop
+  `pageBreakBefore` from section 1 (it already follows a break). Verify by
+  rendering a report and checking no blank interior pages.
 
-1. **Framing reframed everywhere.** Every product-describing surface now says
-   "the app does the bulk — research, structure, draft content, render — you do
-   the final touches: verify the facts, tune the words, make it yours", with
-   "Bulk by machine, polish by you" as the short form: `#/home` hero/tagline/
-   how-it-works/capability copy, the auth modal (which inherited the old login
-   screen's tagline), the chat welcome + footer hint, README + LOCAL_SETUP
-   taglines, the sidebar empty states and the report view's no-report hint.
-2. **Landing-first entry.** An unauthenticated visitor lands on `#/home` — the
-   landing is the front door whatever the hash (an auth-gated deep link still
-   redirects to it, and its hash survives so login can honour it). The landing
-   carries the auth: a slim Log in / Sign up bar, and the hero "Start a chat"
-   opens the register modal. All auth actions go through the existing
-   `AuthModal` (which gained the registration-closed handling the old
-   LoginScreen had). The full-page `LoginScreen.jsx` was **deleted** — its role
-   and tagline folded into the landing + modal.
-3. **New chat is the constant landing.** Post-login and post-register the app
-   routes to a fresh New chat every time (reusing the account's empty thread,
-   minting one when none exists) — never the last route, never the decks list.
-   Only an explicitly-opened artefact deep link (`#/deck/<slug>`, `#/report/…`,
-   `#/research/…`) is honoured; a chat id in the URL is the last route, not a
-   deep link, so it resets to a bare `#/chat`. Logout resets the hash to
-   `#/home`. This supersedes the earlier "reopen at last position" idea.
+## Feature/UX batch (in priority order)
 
-### Task 2 — Report button states
+### 3. Chat knows WHICH slides you mean (select-then-instruct)
+- User: the edit-then-see flow is ambiguous ("add more content to the slides 9
+  10 13 19" produced updates on 10/11/14/20 — off-by-one confusion). They want
+  Claude-style slide selection: after a deck is ready, a side panel (~40% width,
+  chat shifts left) shows all rendered slides scrollable; the user selects one
+  or many, then types in the chat ("add more content to THIS slide") and the
+  turn context names the selected slides explicitly (indices + content
+  excerpts), removing ambiguity.
+- Also wire the lightbox's active slide index into the chat context so "make
+  THIS punchier" works (was queued before).
+- The selection panel should also let the user trigger per-slide actions
+  (swap type, punch-up) from the selected set.
 
-- `lib/reportWrites.js` (new): slug-keyed mirror of `runs.js` —
-  `begin/update/end` + subscribe.
-- The deck's ReportPanel `generate` registers the write and streams its status
-  into it; the ReportView subscribes for its slug and — while a write is in
-  flight — disables Render .docx (spinner during both write and render),
-  hides the Download link, disables "Generate companion deck" and "Add as
-  slide", and shows the write status + a Stop that aborts through the registry.
-  A remounted ReportPanel re-adopts an in-flight write.
-- Download link only after a render exists (`result`), and hidden during a
-  write. One-click "render and download" verified (auto-download anchor).
+### 4. Are briefing answers sent to the AI? (verify + make explicit)
+- User asks whether the Q&A from the guided briefing reaches the model. Check
+  pipeline: the briefing collects title/team/guide/academic/theme/density/
+  branding/slidesPerMember — verify each is actually folded into the plan
+  prompt (identity merge exists; confirm briefing answers beyond identity are
+  passed). Make it explicit in the plan prompt: "The user answered: …".
 
-## What shipped
+### 5. Explicit intro→conclusion flow instruction
+- User asks whether the planner is instructed to keep a proper presentation
+  flow (title → intro → body sections → conclusion/closing) or whether the
+  user must ask for it. The plan prompt has generic structure guidance; make
+  the flow instruction EXPLICIT: always include title, an intro section, body
+  sections in a sensible order, and a conclusion/closing — regardless of the
+  brief. The structural-budget fix already reserves title/dividers/closing;
+  this adds the flow-order guarantee.
 
-- `app/web/src/lib/reportWrites.js` (new) — slug-keyed report-write registry.
-- `app/web/src/App.jsx` — landing-first logged-out branch (always Home +
-  AuthModal), chats effect always lands on the account's empty thread (New
-  chat), boot effect honours only artefact deep links and resets chat-id hashes
-  to `#/chat`, logout resets to `#/home`. The `pendingChatIdRef` mechanism was
-  removed (chat-id restore at login is gone by design; mid-session back/forward
-  still works through `applyHash`).
-- `app/web/src/views/Home.jsx` — auth bar + auth-aware hero/CTA routing, new
-  framing copy everywhere.
-- `app/web/src/components/AuthModal.jsx` — registration-closed handling +
-  human-touch tagline.
-- `app/web/src/components/LoginScreen.jsx` — **deleted** (superseded by
-  landing + AuthModal).
-- `app/web/src/views/DeckDetail.jsx` — ReportPanel registers into
-  reportWrites, re-adopts on mount, disables during write.
-- `app/web/src/views/ReportView.jsx` — subscribes to reportWrites; write state
-  disables Render/Download/Plan/Add-as-slide, shows status + Stop.
-- `app/web/src/views/ChatView.jsx`, `Sidebar.jsx` — framing copy.
-- `README.md`, `LOCAL_SETUP.md` — tagline framing.
-- `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` — two new checked entries + sync.
+### 6. Logout confirmation
+- Logout currently logs out instantly. Add a confirm step (small modal: "Log
+  out of Presentation Forge? Your work is saved.").
 
-## Verification notes
+### 7. Login/signup screen redesign + de-clutter
+- Make it a proper split screen: something visual on the left (logo, tagline,
+  the ember particle field, maybe the theme carousel), a clean professional
+  sign-up/login card on the right. Label it "Sign up".
+- The landing page has too many auth entry points (Log in, Sign up, Start a
+  chat, Browse themes all open auth) — keep one strong CTA; make the rest
+  links, not buttons.
 
-- `npm test` 261/261; `vite build` clean.
-- CDP scripts (under `/tmp/opencode/`):
-  - `cdp-entry-report.mjs` — full Task 1 + report render/download round: boot
-    lands on `#/home` with Sign up visible + the framing hero; register from the
-    landing → login → lands on New chat (`#/chat`, 1 empty row); New chat twice
-    stays 1 row (reuse); logout → landing → re-login → New chat; explicit
-    `#/deck/gpu-demo` deep link opens the deck after login (auth-gated);
-    ReportView: no Download before any render, one click renders AND
-    auto-downloads, Download appears after. All assertions pass.
-  - `cdp-rw.mjs` — Task 2: deck without report.yaml → Generate report in the
-    Report panel registers a write; while it runs the panel's Generate is
-    disabled and "Planning/Writing section N of M" + Stop show; navigating to
-    the ReportView for the same slug mid-write surfaces the same write status +
-    Stop and no render action; Stop clears the status. All pass.
-  - The auto-download assertion needs a *polling* hook, not a fixed timeout:
-    the LibreOffice render outlives any short wait, so the test installs a
-    click hook on download anchors and polls `window.__autoDownload` until it
-    fires (or 90s elapses). The one-click "render and download" is confirmed
-    working: Render .docx click → spinner → render completes → synthetic
-    anchor fires the browser download → Download link appears.
-  - `mimo-v2.5` vision check on the screenshots: landing hero/auth bar clean,
-    deck detail clean, report view's sticky bar with Render .docx + Download
-    clean, and the mid-write ReportView shows "Planning the report…" + Stop
-    cleanly. No overlap/clipping anywhere.
-- The `data-centre-energy-consumption-how-much-elec-2` deck was used for the
-  write-state test; its `report.yaml` was removed at the end (keep or delete
-  the deck freely).
+### 8. Theme preview sizing inconsistency + font visibility
+- Theme preview cards render at differing sizes on the home page vs the
+  briefing's theme gallery vs the themes page. Unify the card dimensions and
+  the preview raster size across all three surfaces.
+- When scrolling themes during deck creation, the typeface used by each theme
+  isn't visible in the preview. Add the font name to the card (the themes page
+  shows palette+type; the briefing gallery should too).
 
-## Seams and leftovers
+### 9. Some slide types render too little content (bullets especially)
+- Bullets slides come out sparse. The writer's per-type content budgets exist;
+  raise the floor for bullets/list types (4-6 complete statements) and check
+  the trim pass isn't over-cutting. Compare a generated bullets slide's density
+  against the type's content budget.
 
-- Registration never hands out a session (by design), so "register from the
-  landing → New chat" is register-then-log-in; the CDP flow does both steps.
-- The `reportWrites` registry is only fed by the ReportPanel's `generate` (the
-  chat's standalone-report path knows its slug only at result, so it can't
-  register mid-write — and the ReportView can't be open for it mid-write
-  either, since report.yaml doesn't exist until the write completes). If a
-  future regenerate path appears, route it through `reportWrites.begin` too.
-- `schema/report.schema.json` still carries the unrelated reformat diff from
-  prior sessions — left untouched as before.
-- The untracked `decks/*` dirs are prior fixtures + this session's test decks;
-  keep or delete freely. `config/users.json` (gitignored) holds the operator
-  (`operator@forge.local`, `operator-pass-1`) plus this session's
-  `cdp-*@entry.local` account.
-
-## End-of-session state
-
-- Servers running: API `http://localhost:5174` (plain `node
-  app/server/index.js` via setsid, NOT watch mode), web `http://localhost:5173`,
-  SearXNG `:8888`, Ollama `:11434`. Frontend-only changes this session, so no
-  API restart was needed. If you change server code, restart the API yourself.
-- All commits pushed to `origin/main`. Commits (one logical change each):
-  the copy reframe; the landing-first entry; the always-New-chat landing;
-  the report write state; the roadmap/architecture sync; this handoff.
-- ROADMAP (two new checked entries), ARCHITECTURE (entry flow + report-write
-  registry), and the handoff all updated to match.
+## Notes
+- Local models untouched; cloud used for generation tests. Model discipline:
+  flash codes ONLY, mimo vision ONLY, NO qwen (user banned it).
+- All specs/prompts durable in ~/.hermes/scripts/prompts/.
+- Servers left running: UI :5173, API :5174, Ollama, SearXNG.
