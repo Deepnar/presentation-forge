@@ -1,8 +1,34 @@
-import { chatJSON } from "./ollama.js";
+import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
+
+/**
+ * The synthesis-mode note: the writer prompt is written to survive small local
+ * models — short conservative bullets, plain phrasing. When the author runs on
+ * a cloud model (large context, strong prose) that ceiling is wrong, so the
+ * full-strength variant demands genuinely sharper copy. Grounding still runs
+ * afterwards either way: every figure must trace to the RESEARCH NOTES.
+ */
+export function synthesisNote(mode) {
+  if (mode !== "full") return "";
+  return [
+    "",
+    "You are writing at full strength — write like a strong writer, not a template:",
+    "- Lead with a specific claim, then its evidence: a named mechanism, a dated",
+    "  result, a real number from the RESEARCH NOTES. Never paraphrase a section",
+    "  heading as a slide.",
+    "- Bullets are complete statements (subject + claim + evidence), each with its",
+    "  own substance — never three bullets saying the same thing.",
+    "- Standfirsts and subtexts carry a real hook or a framing fact, not a",
+    "  restatement of the headline.",
+    "- Vary sentence structure. No filler openers ('This slide covers…', 'In",
+    "  today's world'), no hedging, no template-y phrasing.",
+    "- Where the notes carry a figure, date or name, say it. Grounding runs after",
+    "  you: every number you write must appear in the RESEARCH NOTES.",
+  ].join("\n");
+}
 
 /**
  * Two-stage deck generation: plan the whole deck, then write one slide per call.
@@ -76,6 +102,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
   // model cannot casually draft more parts than there are people.
   const sectionCap = targetSections(identity);
   const presenters = presentingNames(identity);
+  const fullStrength = (await authorTransport({ model })) === "cloud";
   const teamNote = presenters.length
     ? `The team of ${presenters.length} presenting members (${presenters.join(", ")}) presents the deck together — one member per part, each member presenting only content slides, never the dividers.`
     : "Plan the deck as three to eight major parts.";
@@ -94,6 +121,13 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     "- `purpose` states what that slide must convey — ONE short sentence, under",
     "  ~140 characters. It is a private brief for the writer, never slide text,",
     "  so it must stay brief even if the deck is large.",
+    ...(fullStrength
+      ? [
+          "- On this path the `purpose` is the writer's brief at full strength: name the",
+          "  specific claim the slide must land, including its key figure when the",
+          "  research carries one — still one sentence, still under 180 characters.",
+        ]
+      : []),
     "- `sections` labels are short — two to four words each.",
     "- Vary the types across families. A deck of nothing but `bullets` is a failure.",
     "- Think in terms of what each beat needs: a number → data family, a process →",
@@ -159,6 +193,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
   });
 
   const voice = theme?.voice ?? {};
+  const fullStrength = (await authorTransport({ model })) === "cloud";
   const already = deck.slides
     .map((s, i) => `[${i}] ${s.type}: ${s.headline ?? s.quote ?? "—"}`)
     .join("\n") || "(none yet)";
@@ -205,6 +240,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     "app then shows an 'add image' prompt on that slide.",
     "No filler, no invented statistics, no rhetorical hedging.",
     "Do not repeat wording already used on an earlier slide.",
+    synthesisNote(fullStrength ? "full" : "local"),
   ].filter(Boolean).join("\n");
 
   const res = await chatJSON({
@@ -386,6 +422,7 @@ export async function sweepDeck({
     // One type's contract, not the whole 75-type catalogue — the slide type is
     // fixed by the sweep, so the model only needs that type's fields.
     const typeCatalog = await catalogForType(slide.type);
+    const fullStrength = (await authorTransport({ model })) === "cloud";
 
     const current = Object.entries(slide)
       .map(([k, v]) => {
@@ -415,6 +452,7 @@ export async function sweepDeck({
       "",
       voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
       voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
+      synthesisNote(fullStrength ? "full" : "local"),
     ].filter(Boolean).join("\n");
 
     let res;
@@ -560,6 +598,7 @@ export async function convertSlide({
   const buildOps = buildOpsSchema(schema, { slideCount: deck.slides.length, onlyTypes: [targetType] });
   const isDivider = DIVIDER_TYPES.has(targetType);
   const voice = theme?.voice ?? {};
+  const fullStrength = (await authorTransport({ model })) === "cloud";
   const current = Object.entries(slide)
     .map(([k, v]) => (k === "notes" ? null : `${k}: ${Array.isArray(v) ? v.join(" | ") : v}`))
     .filter(Boolean)
@@ -579,6 +618,7 @@ export async function convertSlide({
     "",
     voice.body_style ? `Body: ${voice.body_style.trim()}` : "",
     voice.avoid?.length ? `Avoid: ${voice.avoid.join("; ")}` : "",
+    synthesisNote(fullStrength ? "full" : "local"),
   ].filter(Boolean).join("\n");
 
   const res = await chat({

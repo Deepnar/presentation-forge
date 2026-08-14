@@ -1,5 +1,5 @@
 import YAML from "yaml";
-import { chatJSON } from "./ollama.js";
+import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, diffDecks } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
@@ -18,7 +18,7 @@ import { validateDeck } from "../validate.js";
 
 const MAX_REPAIR = 2;
 
-function systemPrompt({ catalog, theme, identity, decisions }) {
+function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
   const voice = theme?.voice ?? {};
   const lines = [
     "You write presentation CONTENT. You never control layout.",
@@ -86,6 +86,21 @@ function systemPrompt({ catalog, theme, identity, decisions }) {
     "Never write filler like 'This slide discusses…'. Never invent statistics.",
   );
 
+  // The full-strength bar for cloud authors: the deck-editing surface is where
+  // the user feels prose quality, so a cloud model is expected to write like
+  // one rather than inherit the conservative local standard.
+  if (synthesis === "full") {
+    lines.push(
+      "",
+      "You are writing at full strength — write like a strong writer, not a template:",
+      "lead with a specific claim, then its evidence (a named mechanism, a dated",
+      "result, a real number from the research). Bullets are complete statements,",
+      "each with its own substance. Standfirsts carry a real hook, never a",
+      "restatement of the headline. Vary sentence structure; no filler openers,",
+      "no hedging. Where the research carries a figure, say it.",
+    );
+  }
+
   return lines.join("\n");
 }
 
@@ -138,9 +153,10 @@ export async function runTurn({
   const base = deck ?? { title: "", slides: [] };
   // Schema is rebuilt per turn so the op set matches what this deck can accept.
   const schema = buildOpsSchema(await deckSchema(), { slideCount: base.slides?.length ?? 0 });
+  const synthesis = (await authorTransport({ model })) === "cloud" ? "full" : "local";
 
   const messages = [
-    { role: "system", content: systemPrompt({ catalog, theme, identity, decisions }) },
+    { role: "system", content: systemPrompt({ catalog, theme, identity, decisions, synthesis }) },
     ...history,
     {
       role: "user",
