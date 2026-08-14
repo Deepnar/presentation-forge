@@ -515,6 +515,17 @@ site, and a deep link like `#/deck/<slug>` reopens that view on reload (per-user
 auth still gates it, and a route's hash survives logout, so logging back in
 restores where the user was).
 
+**Entry flow — landing-first.** The `#/home` landing page is the front door.
+An unauthenticated visitor lands on it whatever the hash (an auth-gated deep
+link redirects there, and its hash survives so login can honour it); the
+landing carries the Log in / Sign up actions that open the `AuthModal`. The
+constant landing after login/register is a fresh **New chat** — the account's
+empty thread is reused if one exists, else minted — never the last route,
+never the decks list. The boot effect honours only an explicitly-opened
+artefact deep link (`#/deck/<slug>`, `#/report/…`, `#/research/…`); a chat id
+left in the URL is the last route, not a deep link, so it resets to a bare
+`#/chat`. Logout resets the hash to `#/home`.
+
 - **`HeaderBar`** — the wordmark is a real `<a href="#/chat">` (middle-click
   opens a new tab), the sidebar collapse toggle, a **Tour** anchor to `#/home`
   (the README's replacement; the raw doc stays at `GET /api/docs` for
@@ -522,14 +533,17 @@ restores where the user was).
   shows the LOCAL/CLOUD toggle, which writes the routing preference and flips
   the client model-mode store so every picker filters to that mode; CLOUD is
   only reachable when a key is attached, and without one the button points at
-  Settings/Cloud. The account entry lives here too: Login/Register when logged
-  out, name + Logout when in.
-- **`Home`** — the landing tour at `#/home`, full-bleed (sidebar hidden), also
-  reachable from a link on the login screen. Hero with the login tagline, the
-  pipeline as a designed icon flow, how-it-works cards, a live theme carousel
-  (reusing the specimen renderer), a local-vs-cloud split, a capability grid
-  and a footer strip. Sections scroll-reveal on the shell keyframe via an
-  IntersectionObserver; reduced motion shows them immediately.
+  Settings/Cloud. The account entry lives here too: name + Logout when in
+  (Login/Register now happen on the landing's auth modal).
+- **`Home`** — the landing tour at `#/home`, the front door. For a visitor it
+  adds a slim auth bar (Log in / Sign up → the auth modal) and routes the
+  hero's "Start a chat" to register; for a signed-in user the same page is the
+  tour. Hero with the "the app does the bulk, you do the final touches"
+  framing and "Bulk by machine, polish by you", the pipeline as a designed
+  icon flow, how-it-works cards, a live theme carousel (reusing the specimen
+  renderer), a local-vs-cloud split, a capability grid and a footer strip.
+  Sections scroll-reveal on the shell keyframe via an IntersectionObserver;
+  reduced motion shows them immediately.
 - **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
   fine stipple drifts on two-axis sine wander so it moves without the pointer,
   and repels gently around it. Tuned as "drifting embers" — base opacity
@@ -615,8 +629,16 @@ restores where the user was).
   `reportPreview` in `src/preview.js`), so what the user sees is the real Word
   output. It is the land target of the sidebar's Reports tab and of the home
   "from a brief" flow; a missing report renders an empty state. Each section
-  also offers *Add as slide*, which appends the section's prose as a bullets
-  slide of the companion deck — the report-as-deck hybrid (F20).
+   also offers *Add as slide*, which appends the section's prose as a bullets
+   slide of the companion deck — the report-as-deck hybrid (F20). Render .docx
+   and the Download link are gated by the report's **write state**: a report
+   generation in flight for this slug (started from the deck's Report panel) is
+   mirrored in the module-level `lib/reportWrites.js` registry (slug-keyed, the
+   report counterpart of `runs.js`), and the view subscribes — while the write
+   runs, Render .docx / Download / Plan / Add-as-slide disable with the write's
+   status and a Stop affordance, so a report being rewritten can never be
+   double-rendered. The Download link only appears after a render exists, and
+   the Render button's spinner shows during both a write and a render.
 - **Deck detail actions.** The header's action row wires the Part-2 features:
   a Dark/Light toggle that remembers `meta.yaml`'s `mode`, PDF and Markdown
   export (`src/export.js`, reusing the LibreOffice converter for the PDF),
@@ -670,14 +692,16 @@ creating an account returns the user without a token and the visitor signs in
 explicitly, so registration never silently logs anyone in. `POST /api/auth/logout`
 and `GET /api/auth/me` back the header's account entry. `PUT/DELETE
 /api/cloud/key` return 401 without a session, and the Identity view's Cloud
-section shows a login prompt until one exists. The AuthModal and the
-full-screen LoginScreen are the register/login surfaces; both
-`config/users.json` and `config/sessions.json` are gitignored.
+section shows a login prompt until one exists. The AuthModal — reachable from
+the landing's Log in / Sign up actions and from the shell — is the register/
+login surface (the full-screen LoginScreen was retired when the landing became
+the front door); both `config/users.json` and `config/sessions.json` are
+gitignored.
 
 **Registration** is open by default for local dev but closes on a public box:
 `FORGE_OPEN_REGISTRATION=0` turns `POST /api/auth/register` into a 403 and the
 owner's account is seeded at boot from `FORGE_ADMIN_EMAIL` +
-`FORGE_ADMIN_PASSWORD` (idempotent — a restart never errors). The login screen
+`FORGE_ADMIN_PASSWORD` (idempotent — a restart never errors). The AuthModal
 asks the server whether signup is open and hides the register tab when it is
 not.
 

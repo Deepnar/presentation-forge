@@ -1948,3 +1948,88 @@ thumbnails.
 > clipped mid-word on the rendered slide. The vision critic caught the clipping
 > that no unit test could — the rendered PNG is the only real proof of a slide.
 
+### [x] Product framing + entry flow — bulk by machine, polish by you
+Two user instructions in one round: the product message was reframed to the
+honest positioning, and the app's front door moved from a bare login to the
+landing page.
+
+- **Framing everywhere.** Every surface that describes the product now says
+  "the app does the bulk — research, structure, draft content, render — you do
+  the final touches: verify the facts, tune the words, make it yours", with
+  "Bulk by machine, polish by you" as the short form. Updated the `#/home`
+  hero/tagline/how-it-works/capability copy, the auth modal (the login screen's
+  tagline moved here when the full-page LoginScreen was retired), the chat
+  welcome + footer hint, README + LOCAL_SETUP taglines, the sidebar empty
+  states and the report view's no-report hint.
+- **Landing-first entry.** An unauthenticated visitor lands on `#/home` — the
+  landing page is the front door, whatever the hash (an auth-gated deep link
+  still redirects to it, and its hash survives so login can honour it). The
+  landing carries the auth: a slim Log in / Sign up header bar, and the hero's
+  "Start a chat" opens the register modal. Auth actions all open the same
+  `AuthModal` (now with the registration-closed handling the old LoginScreen
+  had). The full-page `LoginScreen.jsx` was deleted — its tagline and role were
+  folded into the landing + modal.
+- **New chat is the constant landing.** Post-login and post-register the app
+  routes to a fresh New chat every time — reusing the account's empty thread,
+  minting one when none exists — never the last route, never the decks list.
+  Only an explicitly-opened artefact deep link (`#/deck/<slug>`,
+  `#/report/…`, `#/research/…`) is honoured instead; a chat id in the URL is
+  the last route, not a deep link, so it resets to a bare `#/chat`. Logout
+  resets the hash to `#/home`, so the next login lands on New chat. This
+  supersedes the earlier "reopen at last position" idea; the mid-session
+  back/forward restore is untouched.
+
+> **Learned.** Two not-obvious traps.
+>
+> "Always land on New chat" is a chats-effect concern, not a boot-effect
+> concern. The boot effect that applied the hash on login had to stop being the
+> place that decided the landing: a chat id left in the URL by a previous
+> session is the "last route" the user explicitly rejected, so it must reset —
+> but a deck/report/research slug is a genuine deep link that must survive.
+> Distinguishing the two in the boot effect (honour only artefact slugs,
+> replaceState everything else to a bare `#/chat`) is what makes "always New
+> chat" and "deep links still open" both true.
+>
+> Registration never hands out a session (by design), so "register from the
+> landing → New chat" is really register-then-log-in. The landing's register
+> modal correctly lands on the login form after creating the account; the New
+> chat routing kicks in on the actual login. The verify flow must do both
+> steps.
+
+### [x] Report button states — a shared write state, no double-render mid-write
+"the Render .docx button comes even when the thing is loading saying 'Writing
+section 8 of 8'." A report write (streaming server-side writer) and the report
+render are independent long jobs, and the Render .docx button only knew about
+the render's own busy state.
+
+- **A shared report-write registry.** `lib/reportWrites.js` mirrors `runs.js`
+  but is keyed by slug (the ReportView has no chat id): `begin/update/end` plus
+  subscribe. The deck's ReportPanel `generate` registers the write and streams
+  its status into it; the ReportView subscribes for its slug.
+- **ReportView respects the write.** While a write for the slug is in flight,
+  Render .docx is disabled with its spinner showing (during both write and
+  render), the Download link is hidden, "Generate companion deck" and "Add as
+  slide" are disabled, the write's status line shows with a Stop that aborts
+  through the registry. A remounted ReportPanel re-adopts an in-flight write so
+  navigation mid-write can't re-enable its buttons.
+- **Download only after a render exists.** The Download report.docx link is
+  gated on the render's `result`, confirmed absent before any render; it is
+  also hidden while a write is in flight. The one-click "render and download"
+  still works: renderDoc's synthetic-anchor click fires the browser download on
+  completion (verified via CDP that a single click both renders and downloads).
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> The ReportView can be open for a slug whose report is being *rewritten* (a
+> regenerate) — that is exactly the mid-write double-render the user hit. A
+> per-component `busy` flag cannot see a write started elsewhere; only a
+> module-level, slug-keyed registry that survives navigation can, and the
+> ReportView must adopt it on mount, not just subscribe from then on — a write
+> started before the view opened must be visible immediately.
+>
+> "Download only after render" is two rules, not one: gate the link on the
+> render result (absent before any render) AND hide it during a write. The
+> first alone would still offer a stale .docx while the report was being
+> rewritten.
+
+
