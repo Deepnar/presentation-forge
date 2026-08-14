@@ -208,6 +208,17 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
   return { plan, stats: { model: res.model, outputTokens: res.evalCount } };
 }
 
+/** A headline short enough to render: the purpose's first clause, ≤48 chars,
+ *  cut at a word boundary. A hard slice ships clipped mid-word on the slide. */
+function shortHeadline(purpose) {
+  const clause = String(purpose ?? "").replace(/[.:;,!?][\s\S]*$/, "").trim();
+  if (!clause) return "Covered in the full briefing.";
+  if (clause.length <= 48) return clause;
+  const cut = clause.slice(0, 48);
+  const at = cut.lastIndexOf(" ");
+  return (at > 20 ? cut.slice(0, at) : cut) + "…";
+}
+
 /**
  * The degraded-slide fallback written when a plan slide cannot be generated:
  * the deck must stay whole, and the plan's promised content count must hold.
@@ -217,13 +228,14 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
  */
 export function placeholderFor(spec) {
   const purpose = String(spec.purpose ?? "").trim() || "Covered in the full briefing.";
+  const headline = shortHeadline(spec.purpose);
   if (DIVIDER_TYPES.has(spec.type)) {
-    return { ...spec, headline: purpose.slice(0, 60), quote: purpose.slice(0, 60) };
+    return { ...spec, headline, quote: purpose.slice(0, 120) };
   }
   return {
     ...spec,
     type: "bullets",
-    headline: purpose.slice(0, 60),
+    headline,
     bullets: [purpose.slice(0, 160), "Details in the full briefing."],
   };
 }
