@@ -55,6 +55,59 @@ const PORT = process.env.FORGE_API_PORT || 5174;
 const ok = (res, data) => res.json({ ok: true, ...data });
 const fail = (res, code, message) => res.status(code).json({ ok: false, error: message });
 
+/**
+ * Renderer mutex. A home box has one CPU and LibreOffice/Chrome are single-file
+ * processes; two concurrent renders would fight over it and both crawl. Renders
+ * behind this queue run one at a time; anything beyond a small wait gets a 429
+ * instead of stacking up memory.
+ */
+const RENDER_MAX_WAIT = 3 * 60 * 1000;
+const RENDER_MAX_QUEUE = 2;
+
+/**
+ * Serialise renders. A home box has one CPU and LibreOffice/Chrome are
+ * single-file processes; two concurrent renders would fight over it and both
+ * crawl. This is a promise-chain mutex: each caller waits for the previous
+ * slot, and releases its own when the render finishes. A caller that would
+ * wait longer than RENDER_MAX_WAIT (or sit behind a queue already that deep)
+ * gets a 429 instead of stacking up memory behind a runaway render.
+ */
+let renderTail = Promise.resolve();
+let renderQueued = 0;
+function renderSlot() {
+  if (renderQueued >= RENDER_MAX_QUEUE) {
+    return Promise.reject(new Error("server is busy rendering — try again shortly"));
+  }
+  const prev = renderTail;
+  let release;
+  renderTail = new Promise((r) => { release = r; });
+  renderQueued += 1;
+  const timer = setTimeout(() => {
+    renderQueued -= 1;
+    release();
+  }, RENDER_MAX_WAIT);
+  return prev.then(() => {
+    clearTimeout(timer);
+    renderQueued -= 1;
+    return release;
+  });
+}
+const withRenderSlot = (fn) => async (req, res) => {
+  let release;
+  try {
+    release = await renderSlot();
+  } catch (err) {
+    return fail(res, 429, err.message);
+  }
+  try {
+    await fn(req, res);
+  } catch (err) {
+    fail(res, 500, err.message);
+  } finally {
+    release();
+  }
+};
+
 const wrap = (fn) => (req, res) =>
   Promise.resolve(fn(req, res)).catch((err) => fail(res, 500, err.message));
 
@@ -65,9 +118,21 @@ const wrap = (fn) => (req, res) =>
  * the raster and download GET routes key off a slug that is only discoverable
  * through the gated deck list, and a bare <img> cannot send the Authorization
  * header — so those stay open and the UI is never told a URL it cannot load.
+ *
+ * The slug format guard runs before the exemption: whatever a route allows
+ * through must still be a sane deck slug, so the exemption can never be used
+ * to reach a path that was never meant to be open.
  */
+const SLUG_RE = /^[a-z0-9][a-z0-9_-]{0,99}$/;
 const deckWorkspace = async (req, res, next) => {
-  if (/^\/([^/]+)\/(preview|download|assets)\//.test(req.path)) return next();
+  // The exemption grants unauthenticated <img> access to previews/downloads/
+  // assets. Its path embeds the slug, so the slug must be validated here —
+  // this middleware runs before the :slug layer has extracted req.params.
+  const exempt = req.path.match(/^\/([^/]+)\/(preview|download|assets)\//);
+  if (exempt) {
+    if (!SLUG_RE.test(exempt[1])) return fail(res, 404, "no such deck");
+    return next();
+  }
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user) return fail(res, 401, "log in to use the deck workspace");
   req.user = user;
@@ -96,6 +161,7 @@ app.use("/api/decks/:slug", async (req, res, next) => {
   // The rasters, downloads and uploaded images load in <img> tags that cannot
   // carry a bearer token, so their GETs skip the ownership gate. The assets
   // POST stays gated — an upload is a write and must be yours.
+  if (!SLUG_RE.test(req.params.slug)) return fail(res, 404, "no such deck");
   if (/^\/(preview|download)\//.test(req.path)) return next();
   if (req.method === "GET" && /^\/assets\//.test(req.path)) return next();
   try {
@@ -327,9 +393,12 @@ app.delete("/api/decks/:slug", wrap(async (req, res) => {
 /**
  * Run the sweep on demand (dry run by default) — the same deletion policy the
  * scheduler runs on its own, exposed so an owner can preview it from the UI
- * before it fires. Requires a session, like every deck mutation.
+ * before it fires. Requires a session: it can delete whole decks, so a stranger
+ * who can reach the box must not be able to fire it.
  */
 app.post("/api/sweep", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to run the sweep");
   const { sweep } = await import("../../src/sweep.js");
   const dryRun = req.body?.dryRun !== false;
   const olderThanDays = Number(req.body?.olderThanDays || NaN);
@@ -721,7 +790,7 @@ app.put("/api/decks/:slug/report", wrap(async (req, res) => {
 }));
 
 /** Draw report.yaml on the institutional donor → decks/<slug>/out/report.docx. */
-app.post("/api/decks/:slug/report/render", wrap(async (req, res) => {
+app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   const reportFile = path.join(DECKS, req.params.slug, "report.yaml");
   let saved = true;
   try { await access(reportFile); } catch { saved = false; }
@@ -794,9 +863,17 @@ app.get("/api/types", wrap(async (_req, res) => {
   });
 }));
 
-/** Specimen previews for every type in the given theme, in enum order. */
-app.get("/api/types/:theme/specimens", wrap(async (req, res) => {
+/**
+ * Specimen previews for every type in the given theme, in enum order. Renders
+ * ~75 slides the first time per theme, so it is gated — a stranger must not be
+ * able to trigger a LibreOffice+Chrome render loop on the box — and the theme
+ * is validated against the known list before anything renders.
+ */
+app.get("/api/types/:theme/specimens", withRenderSlot(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to use the deck workspace");
   const themeName = req.params.theme === "default" ? "warm-humanist" : req.params.theme;
+  if (!(await listThemes()).includes(themeName)) return fail(res, 404, `unknown theme "${themeName}"`);
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
   const { specimenDeck } = await import("../../src/specimens.js");
@@ -833,8 +910,11 @@ app.get("/api/types/:theme/specimens", wrap(async (req, res) => {
  * cache dir keyed by theme, and the PNGs are served back — so the gallery
  * shows every type AS IT RENDERS in the current theme, never a stub.
  */
-app.get("/api/specimens/:theme", wrap(async (req, res) => {
+app.get("/api/specimens/:theme", withRenderSlot(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to use the deck workspace");
   const themeName = req.params.theme === "default" ? "warm-humanist" : req.params.theme;
+  if (!(await listThemes()).includes(themeName)) return fail(res, 404, `unknown theme "${themeName}"`);
   const { specimenDeck } = await import("../../src/specimens.js");
   const deck = await specimenDeck();
   deck.theme = themeName;
@@ -1113,6 +1193,7 @@ app.get("/api/identity", wrap(async (_req, res) => {
 }));
 
 app.put("/api/identity", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res))) return;
   const { identity } = req.body ?? {};
   if (!identity || typeof identity !== "object") return fail(res, 400, "body must include `identity`");
   await writeFile(path.join(CONFIG, "identity.yaml"), YAML.stringify(identity), "utf8");
@@ -1179,6 +1260,7 @@ app.post("/api/brand/:name", (req, res, next) => {
 
 /** Remove a source mark and re-normalise — falls back to placeholders. */
 app.delete("/api/brand/:name", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res))) return;
   const name = req.params.name;
   if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
   const entries = await readdir(BRAND_SRC).catch(() => []);
@@ -1300,6 +1382,7 @@ app.post("/api/cloud/test", wrap(async (_req, res) => {
 
 /** The LOCAL/CLOUD routing preference — a gitignored config/local.yaml value. */
 app.put("/api/cloud/routing", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res))) return;
   const route = req.body?.route;
   await setRoutingPreference(route);
   ok(res, { route: await routingPreference() });
