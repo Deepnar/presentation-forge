@@ -259,3 +259,38 @@ are catered to me; it shouldn't be, it should be generalised info."
   USER-FACING copy must be generalised.
 - Also generalise README.md:8 "Built for TCET-style graded submissions" →
   "institutional graded submissions".
+
+## Addendum — user's testing round 5 (01:00)
+
+### 24. Coherence check: every slide must serve the deck's topic AND be presentable (NEW, high priority)
+User (slide 17 of the soft-skills deck): the slide "The Young Flight Attendant
+Is a Stereotype the Data No Longer Supports" (age-demographic bar chart,
+male-share stat) has NO obvious connection to the deck's topic — first
+impressions and networking. "That slide might throw someone off… both report
+and the ppt must have coherence."
+- Root cause confirmed: the data IS legitimately in research/notes.md (the
+  stereotyping section, cited Saenz & Evans 2009) — the writer picked a
+  real, grounded stat but framed it as the slide's headline with no link
+  back to the deck's argument. It's a FRAMING/COHERENCE failure, not a
+  data failure: the slide is topically adjacent (stereotypes → bias/blind
+  spots section) but argumentatively disconnected — a presenter can't
+  deliver it without improvising the "so what".
+- Fix: add a COHERENCE pass (to the post-generation sweep, per the user's
+  ask) that checks EVERY slide against the deck's topic and section:
+  1. TOPICAL FIT: each slide's headline + body must clearly serve the
+     deck's central topic (embed the topic in the sweep prompt; flag
+     slides whose content drifts — e.g. a flight-attendant chart in a
+     first-impressions deck).
+  2. PRESENTER READINESS / FRAMING: each slide must LAND its point — the
+     headline should be the claim, the body the support, and there must be
+     an implied "so what" a presenter can voice. Flag slides that are
+     data-without-argument (stats with no link to the section's point).
+  3. Both DECK and REPORT must pass the same check (the report generator
+     should be coherent with the deck's sections).
+- The writer prompt should also carry a framing rule: "Every slide's
+  headline must be a claim that serves THIS deck's topic; if a researched
+  fact doesn't serve the argument, don't use it — even if it's grounded."
+- Verification: the soft-skills deck's slide 17 should be rewritten to tie
+  the stereotype data to first impressions (e.g. "Stereotypes shape your
+  first impression before you speak" + the flight-attendant example as
+  support), or replaced if it can't be connected.
