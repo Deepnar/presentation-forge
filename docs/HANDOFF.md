@@ -93,3 +93,47 @@ first (items 1-2), then the UX/feature batch (items 3-9), in order.
   flash codes ONLY, mimo vision ONLY, NO qwen (user banned it).
 - All specs/prompts durable in ~/.hermes/scripts/prompts/.
 - Servers left running: UI :5173, API :5174, Ollama, SearXNG.
+
+## Addendum — user's testing round 2 (00:22)
+
+### 10. Placeholders ship into real decks looking like real content (BUG)
+User's slide 19 literally reads: "Introduce the four CQ factors as learnable
+skills for diverse classrooms…" + "Details in the full briefing." — that second
+line is the PLACEHOLDER text (src/ai/generate.js:239) written when a slide's
+generation fails (cut-short JSON). It looks like a deliberate writing choice,
+so the user ships it unknowingly. 5+ committed decks still contain it.
+Fix (pick all):
+- Placeholders must be IMPOSSIBLE to miss: mark them in the UI (slide card
+  badge "needs regeneration"), flag them in the deck's problems[] (they already
+  go to skipped[]), and show a visible warning in the deck view listing every
+  placeholder slide with a "Regenerate" button per slide.
+- Auto-retry placeholder slides once more (the retry loop exists for failed
+  ops; ensure a placeholder triggers one more regeneration attempt rather than
+  shipping immediately).
+- Consider a "no placeholders may ship" gate in the render: refuse to render
+  (or loudly warn) when deck.yaml contains placeholder text.
+- Sweep existing decks: regenerate the placeholder slides in
+  green-hydrogen-economics-2026-*, green-hydrogen-in-2026-*,
+  topic-exploring-first-impressions-and-networ.
+
+### 11. Confirm the divider design intent (user asked — it's already correct)
+User asked whether section dividers are "real topics people explain" or
+transition slides. ANSWER: they are TRANSITION slides — "a divider announcing
+the next part of the talk" (catalog.js:111); every content-bearing section
+opens with one; they carry NO presenter; the content slides follow. This
+matches the user's mental model. No code change — but consider making the
+outline review say this explicitly ("divider — announces the next section" is
+already the plain-language description; verify it reads clearly).
+
+### 12. Per-type guidance for the AI: does every type have a description + when-to-use?
+User asks whether each slide type has a description of what it is and when to
+use, so the AI knows what to select. PARTIALLY: catalog.js has TYPE_DESCRIPTIONS
+(plain-language, used in outline review + inline editor) and family groupings
++ data-affinity steering (numeric research → chart types). VERIFY the WRITER'S
+prompt actually carries the "when to use" guidance per type — the catalog is
+derived into the prompt; check that each type's prompt text includes a
+one-line "use this type when…" (the type selection may otherwise be driven by
+the type name alone). If missing, add a `use_when` line per type in the
+catalog so the model's selection is grounded in intent, not just names.
+Audit a generated deck's type choices against the brief to confirm sensible
+selection.
