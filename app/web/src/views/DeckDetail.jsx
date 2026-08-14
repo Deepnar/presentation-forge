@@ -219,6 +219,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
    */
   function sweep() {
     if (sweeping) return;
+    if (!window.confirm("Rewrite every slide's content at this density? This replaces the current slide text (structure, types and presenters are kept).")) return;
     setSweeping(true);
     setSweepMsg(`Rewriting at ${density} density…`);
     setProblems([]);

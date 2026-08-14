@@ -67,7 +67,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, 
         <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
           <button
             onClick={() => setMode("local")}
-            title="Model pickers show local models only"
+            title="Author model runs on this machine. Research and critique models are separate — the toggle moves only your writing model."
             className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
               !routingCloud ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
             }`}
@@ -77,7 +77,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, 
           <button
             onClick={() => (cloudOn ? setMode("cloud") : onOpenIdentity?.())}
             title={cloudOn
-              ? "Model pickers show cloud models only"
+              ? "Author model runs on a cloud provider. Research and critique stay local — this moves only your writing model."
               : "Attach an API key in Settings → Cloud to use cloud models"}
             className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
               routingCloud ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"

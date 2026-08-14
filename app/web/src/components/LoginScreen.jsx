@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { Button, Spinner, inputCls } from "./ui.jsx";
 import ParticleField from "./ParticleField.jsx";
@@ -7,16 +7,29 @@ import ParticleField from "./ParticleField.jsx";
  * The landing experience. The deck workspace is per-user, so the first thing a
  * visitor sees is a clean log-in/register screen — your chats and decks are
  * yours, kept apart from everyone else's on the machine. Registration is a
- * local account: scrypt-hashed, token held only in the browser.
+ * local account: scrypt-hashed, token held only in the browser. On a locked
+ * server (FORGE_OPEN_REGISTRATION=0) the register tab is replaced by a note
+ * that accounts come from the owner.
  */
 export default function LoginScreen({ onDone }) {
   const [mode, setMode] = useState("login"); // login | register
+  const [regOpen, setRegOpen] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    api.registrationOpen().then(setRegOpen).catch(() => setRegOpen(true));
+  }, []);
+
+  // If registration closed while the form sat on the register tab, land on
+  // login instead of showing a dead form.
+  useEffect(() => {
+    if (!regOpen && mode === "register") setMode("login");
+  }, [regOpen, mode]);
 
   async function submit(e) {
     e.preventDefault();
@@ -65,13 +78,22 @@ export default function LoginScreen({ onDone }) {
               >
                 Log in
               </button>
-              <button
-                onClick={() => { setMode("register"); setError(""); setSuccess(""); }}
-                className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "register" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
-              >
-                Register
-              </button>
+              {regOpen && (
+                <button
+                  onClick={() => { setMode("register"); setError(""); setSuccess(""); }}
+                  className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "register" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+                >
+                  Register
+                </button>
+              )}
             </div>
+
+            {!regOpen && (
+              <div className="mb-4 rounded-lg border border-line bg-sunken px-3 py-2.5 text-[11.5px] leading-relaxed text-fg-muted">
+                This server belongs to one owner and accounts are closed —
+                ask them to add you, or use the account they set up.
+              </div>
+            )}
 
             <form onSubmit={submit} className="space-y-3">
               {mode === "register" && (

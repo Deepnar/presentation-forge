@@ -181,6 +181,7 @@ export const api = {
   login: (payload) =>
     call("/api/auth/login", { method: "POST", body: JSON.stringify(payload) })
       .then((r) => { rememberToken(r.token); return r.user; }),
+  registrationOpen: () => call("/api/auth/registration").then((r) => r.open === true),
   logout: () =>
     call("/api/auth/logout", { method: "POST", body: JSON.stringify({}) })
       .finally(clearToken),

@@ -1411,6 +1411,11 @@ app.get("/api/auth/me", wrap(async (req, res) => {
   ok(res, { user });
 }));
 
+/** Whether new accounts can self-register on this server. */
+app.get("/api/auth/registration", wrap(async (_req, res) => {
+  ok(res, { open: OPEN_REGISTRATION });
+}));
+
 /** The cloud-key gate — writes and tests require a logged-in session. */
 async function requireAuth(req, res) {
   const user = await userForToken(bearerToken(req.headers.authorization));

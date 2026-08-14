@@ -1161,21 +1161,31 @@ function AcademicCard({ academic, onNext }) {
 /** The theme gallery — visual previews from the themes' own tokens, never names. */
 function ThemeCard({ themes, value, onNext }) {
   const [sel, setSel] = useState(value ?? "");
+  const gridRef = useRef(null);
+  const selectedRef = useRef(null);
+
+  // A deck defaults to warm-humanist; if it is not in the first scroll of the
+  // gallery, bring it into view so the chosen theme is never hidden.
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [sel]);
+
   return (
     <div>
       <div className="mb-1.5 text-[11px] text-fg-faint">
         {themes.length} design languages, each drawn live from its own values.
       </div>
       {themes.length === 0 && <div className="text-[12px] text-fg-faint">Loading themes…</div>}
-      <div className="grid max-h-60 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3">
+      <div ref={gridRef} className="grid max-h-60 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3">
         {themes.map((t) => (
-          <ThemeMiniCard
-            key={t.name}
-            theme={t}
-            selected={sel === t.name || (!sel && t.name === "warm-humanist")}
-            defaultTheme={t.name === "warm-humanist"}
-            onClick={() => setSel(t.name)}
-          />
+          <div key={t.name} ref={sel === t.name || (!sel && t.name === "warm-humanist") ? selectedRef : null} className="min-w-0">
+            <ThemeMiniCard
+              theme={t}
+              selected={sel === t.name || (!sel && t.name === "warm-humanist")}
+              defaultTheme={t.name === "warm-humanist"}
+              onClick={() => setSel(t.name)}
+            />
+          </div>
         ))}
       </div>
       <CardFooter onNext={() => onNext({ theme: sel })} nextLabel="Use this theme" />
