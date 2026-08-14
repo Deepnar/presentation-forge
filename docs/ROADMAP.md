@@ -1895,3 +1895,56 @@ number formatting + RTL — design noted in Handoff).
 > and undo-per-session (F9) get a permanent sibling for free. And `readdir`
 > with `{ recursive: true }` made the sharing bundle a five-line zip instead of
 > a walk — worth remembering for any folder export.
+
+### [x] Chat/deck UX fixes — the user review round
+Four user-reported defects, each with a verified root cause:
+
+- **Cross-tab chat desync.** Chats live in localStorage keyed by account, and
+  no tab listened for the other tabs' writes, so a middle-clicked copy drifted.
+  The shell now listens for the `storage` event on its chat key and reloads the
+  list (keeping the active chat unless the other tab deleted it), so creating,
+  editing and deleting in one tab is live in every other.
+- **"New chat" stacking empty rows.** Repeated clicks minted a fresh thread each
+  time. `newChat` now returns to the account's existing EMPTY chat of that kind
+  (nothing sent, nothing produced) until a topic is actually sent. The Ctrl+N
+  handler reads the list through a ref so its once-bound closure cannot miss the
+  reuse.
+- **Deck density showed "balanced" regardless of the briefing.** `createDeck`
+  never wrote the density into meta.yaml, so the detail view's control fell
+  back to balanced. Density now flows from the briefing (and a `--density` CLI
+  flag) into meta at planning time; the sweep still overwrites it.
+- **Structural slides counted against the per-member budget.** The outline
+  schema capped TOTAL slides at max-slides, so 11 members × 1-per-person with 11
+  max produced a plan with no title, dividers or closing — the structure was
+  squeezed out by the cap. The budget now counts CONTENT slides only: the
+  schema reserves headroom, `planDeck` post-processes every plan to open with a
+  title, divide each content-bearing section and close, and trims content to the
+  team-sized budget (N members × M each, capped by max-slides) so one-per-member
+  hands every member exactly one slide.
+- **Generation silently dropped plan slides.** A writer that emitted no usable
+  append op (or threw — truncated JSON) filtered to an empty op list, applied as
+  a no-op and vanished without a retry or placeholder, shrinking the promised
+  count and stranding a member. The write loop now retries once, then writes a
+  validating placeholder — a degraded slide beats a missing one, and a divider
+  spec never degrades into a content slide.
+
+Verified end-to-end through the UI with a real cloud generation: two-tab live
+sync (create/rename/delete), repeated New-chat stays one empty row then a fresh
+one after a topic, a dense deck opens with the Dense control, an 11-member ×
+1-per-person × 11-max deck plans and generates title + 8 dividers + closing +
+exactly 11 content slides with M1–M11 exactly once each, and a "make slide N
+punchier" turn in the post-ready chat rewrites deck.yaml and refreshes the
+thumbnails.
+
+> **Learned.** Two not-obvious traps.
+>
+> The writer's "silent drop" failure mode hides behind validation: an empty op
+> list passes `applyOps` as a no-op and the unchanged deck still validates, so a
+> lost slide is indistinguishable from success. Success must be defined as "a
+> NEW valid slide was appended", not "the deck is still valid".
+>
+> A placeholder that must validate is itself constrained by the schema: bullets
+> requires two items (minItems 2) and a hard 60-char headline slice ships
+> clipped mid-word on the rendered slide. The vision critic caught the clipping
+> that no unit test could — the rendered PNG is the only real proof of a slide.
+

@@ -19,6 +19,12 @@ text running off the canvas, invisible-on-invisible colour pairs, and empty
 charts. The only real check is `src/preview.js` plus actually looking at the
 image. Treat "the render succeeded" as meaning the file parsed, nothing more.
 
+**A schema-valid slide can still be visually broken.** The placeholder fallback
+for a failed model write ships a headline that *passes* `validateDeck` — and a
+hard 60-char `slice` of the purpose rendered as a headline clipped mid-word at
+the right edge. Validation proves the fields exist, never that the text fits.
+The vision critic caught it; no unit test could have. Rasterise and look.
+
 **pptxgenjs wants bare hex.** `#C05D4E` silently misbehaves; pass `C05D4E`. Use
 `hex()` from `src/theme.js` rather than stripping inline — it also drops the
 alpha channel from `#RRGGBBAA` tokens, which OOXML cannot express as a fill.
@@ -232,6 +238,15 @@ swapping the model before tuning anything else.
 then one slide per call constrained to that single type — replaced a single
 large call and fixed the degeneration, the truncation and the completeness
 problem at once. Small grammars are the whole trick.
+
+**A silent drop hides behind validation.** When a per-slide call emits no
+usable op (an empty list, or one the filter discards), `applyOps` is a no-op
+and the *unchanged* deck still validates — so "the deck is still valid" reads
+as success while a slide has quietly vanished and the promised count shrinks.
+A model call that throws (truncated JSON) skips the same way through a catch.
+Success for an append loop must be defined as "a NEW valid slide appeared",
+with empty/exception attempts retried and then degraded to a placeholder; never
+test "the deck validates" and assume it means "this slide landed".
 
 ## Session / tooling
 

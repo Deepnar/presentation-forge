@@ -391,6 +391,21 @@ SSE endpoints are thin wrappers. Long-running calls stream Server-Sent Events
 over a POST body; dropping the socket aborts the request via an
 `AbortController`, so a vanished client stops the model call.
 
+`createDeck` freezes the briefing into `meta.yaml` — team, guide, academic,
+theme, max-slides, slides-per-member and now **density** — so the deck detail
+can show what the deck actually is, and `generateFromPlan` re-loads that meta
+so the per-member promise survives from plan to deck. The outline itself is
+sized in `planDeck`: the max-slides budget counts **content** slides only, with
+the title, section dividers and closing slide as structural overhead that
+never counts toward it; a `slidesPerMember` briefing sizes the plan to the team
+(N members × M each, capped by max-slides) and `trimContentToBudget` trims it
+to that exact number. `generateDeck` then writes one validated slide per plan
+entry, and the writer loop treats "no new valid slide appeared" as a failure —
+an empty or mis-targeted op list would otherwise apply as a no-op and silently
+vanish, so it retries once and then writes a validating placeholder
+(`placeholderFor`): a degraded slide beats a missing one, and a divider spec
+never degrades into a content slide.
+
 A deck has a lifecycle that is also a disk boundary: `planning` means
 `meta.yaml` + `plan.yaml` exist and no `deck.yaml` does, which is what makes the
 outline gate enforceable — nothing renders until a human approves, and an
@@ -522,6 +537,16 @@ restores where the user was).
   on the login screen. Capped at 60fps, one static frame under
   `prefers-reduced-motion`, no loop while the tab is hidden or a navigation
   rail is focused, and nothing at all when a 2d context is unavailable.
+- **`App.jsx` — the chat store and its cross-tab sync.** Chats live in
+  localStorage keyed by account (`lib/chats.js`), persisted on every change and
+  loaded at boot. Because a middle-clicked tab is a fresh load over the same
+  storage, the shell listens for the `storage` event on its chat key: any other
+  tab that writes the list triggers a reload here (the active chat survives
+  unless the other tab deleted it, and the deck list refreshes when a produced
+  chat appears). "New chat" (sidebar button, Home, Ctrl+N) returns to the
+  account's existing empty chat of that kind — nothing sent, nothing produced —
+  instead of stacking another empty row, so repeated clicks stay one thread
+  until a topic is actually sent.
 - **`Sidebar`** — the per-user navigation. Chats and Decks tabs (the old All
   decks / Reports split is now the Decks tab, `report`-flagged rows open the
   report's full-document view). Search filters title/slug/theme client-side
@@ -562,8 +587,10 @@ restores where the user was).
   an image type with the real asset, the Report panel (generate when no
   `report.yaml` exists, otherwise render `.docx`, download, thumbnail strip and
   an "Open report view" door), and the Research card — a compact coverage line
-  that opens the full Research view. `lib/time.js` supplies the relative
-  timestamps used everywhere.
+  that opens the full Research view. The density select reads
+  `meta.density` (persisted at planning, overwritten by a sweep), so the deck
+  reflects the briefing's choice instead of always defaulting to balanced.
+  `lib/time.js` supplies the relative timestamps used everywhere.
 - **The lightbox is the same slide with the same actions.** The enlarged view
   carries the full per-slide toolbar (edit, punch-up, swap type, add image,
   move, duplicate, delete) for the current slide — no feature exists on the
