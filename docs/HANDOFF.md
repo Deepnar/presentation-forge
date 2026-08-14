@@ -231,14 +231,31 @@ all the written content — did something leak into all those things?"
 ### 23. Personal descriptions in the app must be GENERALISED
 User: "a LOT of places in the app the descriptions — like in the API places —
 are catered to me; it shouldn't be, it should be generalised info."
-- Verified: NO personal data (TCET/Deepesh/Thakur/Chembur) exists in
-  src/, app/server, app/web (clean grep). config/identity.example.yaml is a
-  neutral template ("Example Institute of Technology"). The ONLY reference is
-  README.md:8 "Built for TCET-style graded submissions" — generalise to
-  "institutional graded submissions" (or similar) for a public repo.
-- The user's own data lives only in the gitignored config/identity.yaml —
-  correct by design.
-- Action: audit ALL user-facing copy (api.js descriptions, error strings,
-  empty states, docs) for anything instance-specific (institution names,
-  course names, the example deck titles) and replace with generic wording.
-  Keep "TCET-style" → "institutional" style in the README.
+- CLARIFIED (round 4, 00:55): the user means PROVIDER-SPECIFIC copy, not just
+  names — e.g. the Cloud/Identity section says "Attach your OpenCode Go
+  subscription… deepseek-v4-flash, qwen3.8-max, mimo-v2.5" which only makes
+  sense for the user's own setup. When hosted, users have OTHER providers.
+- Verified: NO personal data (TCET/Deepesh/Thakur/Chembur) in code — the
+  identity.example.yaml is neutral; the user's own data lives only in the
+  gitignored config/identity.yaml (correct).
+- FULL INVENTORY of provider-specific user-facing copy to generalise:
+  1. app/web/src/views/Identity.jsx:328-329 — "Attach your OpenCode Go
+     subscription so the app can also use hosted models — deepseek-v4-flash,
+     qwen3.8-max, mimo-v2.5 — next to the local ones." THE WORST: hardcodes
+     the provider name AND its model list. Fix: render the provider's
+     `label` + `models` from the cloud status response (dynamic), with
+     generic wording ("Attach your provider's API key so the app can also
+     use hosted models — <listed models> — next to the local ones."). The
+     OPENCODE GO badge + zen/go URL below are already dynamic (from config)
+     — keep those.
+  2. README.md:119 — "the opencode-go key works" → "any OpenAI-compatible
+     key works (OpenAI, OpenRouter, OpenCode Go, …)".
+  3. Any other UI copy mentioning opencode / the specific models / zen/go —
+     grep for `opencode|zen/go|deepseek-v4-flash|qwen3.8-max|mimo-v2.5` in
+     app/web/src and app/server — replace with dynamic/config-driven text.
+- Code comments (src/cloud.js:7, src/ai/ollama.js:227, ARCHITECTURE.md,
+  TRAPS.md, ROADMAP.md, test/transport.test.js) are internal — may keep
+  opencode-go references (they document the actual dev setup). Only
+  USER-FACING copy must be generalised.
+- Also generalise README.md:8 "Built for TCET-style graded submissions" →
+  "institutional graded submissions".
