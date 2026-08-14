@@ -303,6 +303,7 @@ export default function App() {
           </div>
 
           <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+            <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
               <ChatView
                 chat={activeChat}
@@ -370,6 +371,50 @@ export default function App() {
           />
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * A one-time, dismissible first-run hint explaining where models come from —
+ * the only setup a fresh server needs. Shown once per account (localStorage),
+ * never again, and never a wizard.
+ */
+function FirstRunHint({ userEmail }) {
+  const [show, setShow] = useState(() => {
+    try {
+      return localStorage.getItem(`forge.hint.models.${userEmail ?? ""}`) !== "1";
+    } catch {
+      return true;
+    }
+  });
+  if (!show) return null;
+  return (
+    <div className="mx-auto mb-1 mt-3 flex max-w-3xl items-start gap-3 rounded-card border border-line bg-panel px-4 py-3 text-[12px] leading-relaxed text-fg-muted">
+      <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8h.01M11 12h1v4h1" />
+      </svg>
+      <p className="min-w-0 flex-1">
+        <span className="font-semibold text-fg">Where do the models live?</span>{" "}
+        LOCAL uses Ollama — install it on this machine (or point{" "}
+        <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[11px]">config/models.yaml</code>{" "}
+        at another host). CLOUD needs an API key: open Identity → Cloud and attach one. Research and
+        critique models are separate — the LOCAL/CLOUD toggle moves only your writing model.
+      </p>
+      <button
+        onClick={() => {
+          try { localStorage.setItem(`forge.hint.models.${userEmail ?? ""}`, "1"); } catch {}
+          setShow(false);
+        }}
+        className="shrink-0 rounded-md p-1 text-fg-faint transition hover:bg-hover hover:text-fg"
+        title="Dismiss"
+        aria-label="Dismiss first-run hint"
+      >
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   );
 }

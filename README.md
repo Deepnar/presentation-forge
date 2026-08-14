@@ -189,10 +189,37 @@ older than `FORGE_SWEEP_DAYS` are deleted unless their `meta.yaml` has
 `keep: true`, and an email is sent on sweep day listing what was removed.
 People download daily to local machines, so the server only ever holds recent
 work. `npm run sweep` runs it manually; `POST /api/sweep` does the same from
-the UI (dry run by default).
+the UI (dry run by default, and gated behind a login).
+
+**Local models:** the container does not bundle Ollama. For local-first
+generation install Ollama on the host (or any other machine on the LAN) and
+point `config/models.yaml` at it (`host: http://host-ip:11434`) — the app
+talks to it over HTTP like any other model backend. For cloud-only, just
+attach an API key in Identity → Cloud and set the LOCAL/CLOUD toggle.
+
+**Sweep timezone:** the in-process scheduler runs on the container clock,
+which is UTC. `FORGE_SWEEP_HOUR` is a UTC hour.
+
+**Backups:** everything that matters lives in the `forge_data` volume —
+decks, brand marks, and `config/users.json` + `config/sessions.json` (the
+accounts). To back up:
+
+```bash
+docker compose -f docker-compose.app.yml stop forge
+docker run --rm -v forge_data:/data -v "$PWD":/backup alpine \
+  tar czf /backup/forge-data-$(date +%F).tar.gz -C /data .
+docker compose -f docker-compose.app.yml start forge
+```
+
+Restore the other way: stop, extract the tarball back into `/data`, start.
+Backing up `config/users.json` and `config/sessions.json` is what preserves
+accounts — without them every visitor must log in again, and with
+`FORGE_OPEN_REGISTRATION=0` nobody can self-register to recover.
 
 For a domain in front, put a reverse proxy (Caddy/nginx) on the public port
-with a TLS cert and forward to the container. The research papers feature
+with a TLS cert and forward to the container. Set `FORGE_TRUST_PROXY=1` so
+the rate limiter counts real client IPs, and set `FORGE_UI_ORIGIN` to your
+domain if the UI is served from elsewhere. The research papers feature
 (arXiv/Crossref) and the Jina Reader fallback (`RESEARCH_JINA=1`) are the only
 outbound network calls the app makes beyond SearXNG.
 
