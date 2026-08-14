@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -49,6 +49,43 @@ test("sessions round-trip: start, resolve, end", async () => {
   assert.equal((await auth.userForToken(token)).email, user.email);
   await auth.endSession(token);
   assert.equal(await auth.userForToken(token), null);
+});
+
+test("seedAdmin mints the operator account once and is idempotent", async () => {
+  assert.equal(await auth.seedAdmin({ name: "Op", email: "op@example.com", password: "operator-pass" }), true);
+  assert.equal(await auth.seedAdmin({ name: "Op", email: "OP@example.com", password: "operator-pass" }), false);
+  assert.equal((await auth.authenticate("op@example.com", "operator-pass"))?.email, "op@example.com");
+});
+
+test("seedAdmin validates its env pair before writing", async () => {
+  const err = await auth.seedAdmin({ name: "X", email: "bad", password: "12345678" })
+    .then(() => null, (e) => e.message);
+  assert.match(err, /misconfigured/);
+});
+
+test("an expired session token is rejected and pruned", async () => {
+  const user = await auth.authenticate("dup@example.com", "12345678");
+  const token = await auth.startSession(user);
+  const sessionsFile = path.join(scratch, "sessions.json");
+  const old = JSON.parse(await readFile(sessionsFile, "utf8"));
+  // Backdate the session past the default 30-day TTL.
+  old[token].createdAt = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
+  await writeFile(sessionsFile, JSON.stringify(old, null, 2), "utf8");
+  assert.equal(await auth.userForToken(token), null);
+  // The dead token is gone from the store.
+  const pruned = JSON.parse(await readFile(sessionsFile, "utf8"));
+  assert.ok(!pruned[token]);
+});
+
+test("a live session refreshes its clock on use", async () => {
+  const user = await auth.authenticate("dup@example.com", "12345678");
+  const token = await auth.startSession(user);
+  const sessionsFile = path.join(scratch, "sessions.json");
+  const before = JSON.parse(await readFile(sessionsFile, "utf8"))[token].createdAt;
+  await new Promise((r) => setTimeout(r, 20)); // ensure the clock ticked
+  await auth.userForToken(token);
+  const after = JSON.parse(await readFile(sessionsFile, "utf8"))[token].createdAt;
+  assert.ok(new Date(after) > new Date(before));
 });
 
 test("bearerToken extracts the header value", () => {
