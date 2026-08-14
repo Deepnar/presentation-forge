@@ -960,6 +960,72 @@ dock/preview and the chat-editor surface render correctly.
 The `[image]` notes the writer now emits (and the sanitizer preserves) are the
 designated seam for supply: a slide that WANTS an image has a description the
 app could search for (Unsplash source API or a SearXNG image category), opt-in.
+
+### [x] Per-user deck isolation — ownerless decks are operator-only
+A fresh account saw two dozen stranger decks because legacy CLI and test decks
+carry no `owner` in meta.yaml and the per-user gate treated them as shared. The
+ownerless legacy store is now the operator's:
+- **One policy, everywhere.** `canAccessDeck(user, owner)` in `src/auth.js` is
+  the single decision: owned decks belong to their owner, ownerless decks to
+  the admin (seeded with a `role: "admin"`, with a `FORGE_ADMIN_EMAIL` fallback
+  for accounts minted before roles existed). The deck list, the per-slug
+  detail/render/report gate, the content search and the sweep all route through
+  it, so list and access can never disagree.
+- **The sweep is operator-only too** — it deletes whole decks including
+  ownerless ones a regular account cannot even see, so a non-admin must not be
+  able to fire it.
+- **CLI decks stay usable headless.** The CLI never touches the server's auth,
+  so an ownerless deck created by `forge` keeps working for whoever runs it; the
+  web admin sees it, nobody else does.
+
+> **Learned.** The auth model had no roles — admin was "the account minted by
+> seedAdmin", which is just another record. Rather than bolt an `isAdmin`
+> special-case onto every caller, the role became a first-class field on the
+> user (with an env-email fallback for existing installs) and the policy a
+> single pure function. That is the difference between "the list hides it but
+> the slug still loads" and one gate everyone passes through.
+
+### [x] Shell redesign — warm charcoal, real depth, working anchors
+The "feels dead" review landed two specs: a visual plan (warm palette, depth
+tokens, motion, self-hosted type) and a structural critique (ten fixes, from
+dead anchors to the raw-markdown Docs modal). Both shipped in one pass:
+- **Paint.** Warm neutral ramp (`#141110` base → `#2f2822` hover), accent
+  brightened to `#e0705a` with real tint/glow materials, amber kept sparingly,
+  crimson danger, sage success. An elevation scale (`--shadow-card/-hover/-float`),
+  a one-step-stronger field fill, `::selection` in accent, warm scrollbar, and
+  one radial ember glow per hero.
+- **Motion** on a single 220ms easing: staggered entrances (40ms steps, capped
+  at 12), hover lift with a growing shadow, count-ups on the coverage metrics,
+  typing dots on chat status, press-scale 0.98, rising toasts, a 6s glow
+  breathe. The particle field drifts as embers (opacity 0.16–0.40, accent share
+  0.22, 150px repulsion) with a 1.5× boost on login.
+- **Type.** Inter variable + Plex Mono load self-hosted via `@fontsource` (no
+  CDN — the `font-feature-settings` are no longer a no-op); a scale floors body
+  at 15px and captions at 12px, titles step up to display/heading sizes.
+- **Structure.** Chat/deck/nav rows and the wordmark are real `<a href="#/…">`
+  anchors, so middle-click and copy-link work. The chat greeting is one centred
+  column (hero + chips + composer) with the void removed. The Docs modal is
+  gone; `#/home` is a designed landing tour (pipeline flow, live theme
+  carousel, local-vs-cloud, capability grid). Theme cards set the default (with
+  toast + undo, search, default badge). Slide cards get a hover-reveal toolbar
+  with styled tooltips and crimson delete in the menu. Empty states use the
+  shared `Empty` with in-state CTAs, ProseNotes strips `**` leaks, and auth
+  errors land inline under the offending field.
+
+> **Learned.** Two not-obvious things.
+>
+> Centring content taller than the viewport with `justify-center` clips the top
+> — the classic flexbox centering overflow. The fix is `margin: auto` on an
+> inner wrapper with a scrollable parent, which centres when there is room and
+> scrolls when there is not. The first CDP screenshot of the "recentered"
+> greeting showed the hero heading sliced off; `m-auto` fixed it.
+>
+> `textarea` cannot be self-closing JSX. Extracting the composer into a shared
+> variable for the greeting column and the pinned footer surfaced a `<textarea
+> …/>` that rolldown rejected as "adjacent JSX elements" — a parse error that
+> reads like a structure bug, because the real tell (the tag type) is not in
+> the message.
+
 The UI currently turns the note into an "add image" prompt; an automated
 lookup would close the loop. `searchPapers` in `src/papers.js` is the pattern —
 a public API with no keys, folded into the research pass.

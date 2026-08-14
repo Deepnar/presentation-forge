@@ -490,35 +490,48 @@ image-requiring types unless the brief names real files.
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
 thin transport and every control maps to a real endpoint. `App.jsx` owns the
 deck list (fetched once, re-fetched on a version bump) and routes between
-`chat`, `deck`, `report`, `research`, `themes` and `identity`. **View routing is
-hash-based** (`lib/router.js`): every navigation pushes a `#/chat[/<id>]`,
-`#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`, `#/themes` or
-`#/identity` entry, and a single `hashchange` listener is the only consumer of
-the URL — so the browser back button walks the same route the user walked
-forward (chat → deck → home) instead of exiting the site, and a deep link like
-`#/deck/<slug>` reopens that view on reload (per-user auth still gates it).
+`chat`, `deck`, `report`, `research`, `themes`, `identity` and `home`. **View
+routing is hash-based** (`lib/router.js`): every navigation pushes a
+`#/chat[/<id>]`, `#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`,
+`#/themes`, `#/identity` or `#/home` entry, and a single `hashchange` listener
+is the only consumer of the URL — so the browser back button walks the same
+route the user walked forward (chat → deck → home) instead of exiting the
+site, and a deep link like `#/deck/<slug>` reopens that view on reload (per-user
+auth still gates it, and a route's hash survives logout, so logging back in
+restores where the user was).
 
-- **`HeaderBar`** — wordmark (home link), the sidebar collapse toggle, a Docs
-  modal (reads the repo README via `GET /api/docs`) and the GitHub link. When a
-  cloud provider is configured it shows the LOCAL/CLOUD toggle, which writes
-  the routing preference and flips the client model-mode store so every picker
-  filters to that mode; CLOUD is only reachable when a key is attached, and
-  without one the button points at Settings/Cloud. The account entry lives
-  here too: Login/Register when logged out, name + Logout when in.
+- **`HeaderBar`** — the wordmark is a real `<a href="#/chat">` (middle-click
+  opens a new tab), the sidebar collapse toggle, a **Tour** anchor to `#/home`
+  (the README's replacement; the raw doc stays at `GET /api/docs` for
+  developers only) and the GitHub link. When a cloud provider is configured it
+  shows the LOCAL/CLOUD toggle, which writes the routing preference and flips
+  the client model-mode store so every picker filters to that mode; CLOUD is
+  only reachable when a key is attached, and without one the button points at
+  Settings/Cloud. The account entry lives here too: Login/Register when logged
+  out, name + Logout when in.
+- **`Home`** — the landing tour at `#/home`, full-bleed (sidebar hidden), also
+  reachable from a link on the login screen. Hero with the login tagline, the
+  pipeline as a designed icon flow, how-it-works cards, a live theme carousel
+  (reusing the specimen renderer), a local-vs-cloud split, a capability grid
+  and a footer strip. Sections scroll-reveal on the shell keyframe via an
+  IntersectionObserver; reduced motion shows them immediately.
 - **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
-  fine stipple (more, smaller dots than before) drifts on two-axis sine wander
-  so it moves without the pointer, and repels gently around it. Capped at 60fps,
-  one static frame under `prefers-reduced-motion`, no loop while the tab is
-  hidden or a navigation rail is focused, and nothing at all when a 2d context
-  is unavailable.
+  fine stipple drifts on two-axis sine wander so it moves without the pointer,
+  and repels gently around it. Tuned as "drifting embers" — base opacity
+  0.16–0.40, accent-dot share 0.22, 150px repulsion — with a 1.5× opacity boost
+  on the login screen. Capped at 60fps, one static frame under
+  `prefers-reduced-motion`, no loop while the tab is hidden or a navigation
+  rail is focused, and nothing at all when a 2d context is unavailable.
 - **`Sidebar`** — the per-user navigation. Chats and Decks tabs (the old All
   decks / Reports split is now the Decks tab, `report`-flagged rows open the
   report's full-document view). Search filters title/slug/theme client-side
   and greps content server-side; the rail collapses to an icon strip and both
-  states persist via localStorage. Every row — chat or deck — carries a hover
-  "⋯" popover: a chat deletes locally, a deck opens or deletes server-side
-  (`DELETE /api/decks/:slug`, behind a confirm modal). The one creation entry
-  app-wide lives here, "+ New chat".
+  states persist via localStorage. Every row — chat or deck — is a real
+  `<a href="#/chat/<id>">` / `<a href="#/deck/<slug>">` so middle-click and
+  copy-link work, and carries a hover "⋯" popover: a chat deletes locally, a
+  deck opens or deletes server-side (`DELETE /api/decks/:slug`, behind a
+  confirm modal). Deck names clamp to two lines so long titles stop truncating
+  to initials. The one creation entry app-wide lives here, "+ New chat".
 - **`ChatView`** — the chat window IS the app. A message thread with the input
   bar at the bottom: send a topic, the assistant walks the guided briefing one
   question at a time (each with a default), then a summary card whose "Plan the
@@ -607,8 +620,17 @@ forward (chat → deck → home) instead of exiting the site, and a deep link li
 Accounts are deliberately NOT a multi-user system: they exist so the Cloud-key
 section can be gated (the key is the one sensitive thing on the box) and to
 have a place for future hosting. The deck/report/preset workspaces require a
-session; legacy ownerless decks stay shared. Everything else — themes, models,
-identity GET — is open.
+session. Everything else — themes, models, identity GET — is open.
+
+**Per-user deck access is one policy.** `canAccessDeck(user, owner)` in
+`src/auth.js` is the single decision used by the deck list, the per-slug
+detail/render/report gate, the content search and the sweep: owned decks belong
+to their owner; ownerless decks (legacy folders, headless CLI runs) are the
+operator's — visible and editable only by an admin account, so a fresh account
+does not see a stranger's CLI decks as its own. The admin is the seed account
+(created by `seedAdmin` with a `role: "admin"`), with `FORGE_ADMIN_EMAIL`
+matching as a fallback for accounts minted before roles existed. The CLI is
+unaffected — it runs headless and never goes through the server's auth.
 
 `src/auth.js` owns the logic, `app/server` transports it. Passwords are hashed
 with `crypto.scrypt` and a per-user random salt; the users file holds only
@@ -633,12 +655,13 @@ asks the server whether signup is open and hides the register tab when it is
 not.
 
 **Destructive and config-writing endpoints are gated.** `POST /api/sweep`
-(deletes decks), `PUT /api/identity`, brand `POST`/`DELETE` and
-`PUT /api/cloud/routing` all require a session — an unauthenticated visitor can
-no longer wipe decks or deface the identity/brand. Heavy specimen renders are
-gated too, and the render endpoints run behind a one-at-a-time mutex so a
-home box with a single CPU never stacks concurrent LibreOffice/Chrome jobs.
-Slugs are format-validated (`^[a-z0-9][a-z0-9_-]{0,99}$`) before the
+(deletes decks, and therefore operator-only), `PUT /api/identity`, brand
+`POST`/`DELETE` and `PUT /api/cloud/routing` all require a session — an
+unauthenticated visitor can no longer wipe decks or deface the identity/brand.
+Heavy specimen renders are gated too, and the render endpoints run behind a
+one-at-a-time mutex so a home box with a single CPU never stacks concurrent
+LibreOffice/Chrome jobs. Slugs are format-validated (`^[a-z0-9][a-z0-9_-]{0,99}$`)
+before the
 img-tag exemptions, closing the traversal class in one place.
 
 **Uploads are raster-only and verified.** SVG was dropped from the deck and
