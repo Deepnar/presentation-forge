@@ -9,7 +9,8 @@
  *   #/chat[/<chatId>]   the active conversation
  *   #/deck/<slug>       deck detail       #/report/<slug>   report view
  *   #/research/<slug>   research view     #/themes          theme gallery
- *   #/identity          identity          (empty)           home = chat
+ *   #/identity          identity          #/home            the landing page
+ *   (empty)             home = chat
  */
 
 /** A hash string ("#/deck/<slug>") → { view, slug?, chatId? }. Unknown routes
@@ -29,6 +30,8 @@ export function parseHash(hash) {
       return { view: "themes" };
     case "identity":
       return { view: "identity" };
+    case "home":
+      return { view: "home" };
     case "chat":
       return { view: "chat", chatId: rest[0] || null };
     default:
@@ -50,6 +53,8 @@ export function hashFor(view, { slug, chatId } = {}) {
       return "#/themes";
     case "identity":
       return "#/identity";
+    case "home":
+      return "#/home";
     case "chat":
     default:
       return chatId ? `#/chat/${chatId}` : "#/chat";

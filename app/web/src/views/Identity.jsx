@@ -163,7 +163,7 @@ export default function Identity({ user, onAuthClick }) {
   return (
     <div className="mx-auto max-w-3xl px-10 py-10 pb-28">
       <header className="mb-7">
-        <h1 className="text-[1.5rem] font-semibold tracking-tight">Identity</h1>
+        <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Identity</h1>
         <p className="mt-1 max-w-2xl text-sm leading-relaxed text-fg-muted">
           Defaults for new decks and reports. Any deck can override these in its
           own metadata. Blank fields are omitted from output rather than

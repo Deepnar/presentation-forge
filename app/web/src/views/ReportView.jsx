@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { Button, Panel, Spinner, Badge } from "../components/ui.jsx";
+import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
 import { progressLabel } from "../lib/progress.js";
 
@@ -172,15 +172,10 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       </button>
 
       {notFound ? (
-        <div className="empty-state rounded-card border border-dashed border-line">
-          <div className="empty-ring h-10 w-10">
-            <DocIcon />
-          </div>
-          <div className="mt-3 text-sm font-medium text-fg-muted">No report here yet</div>
-          <p className="mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-fg-faint">
-            No reports yet — generate one from a deck's Report panel or the home prompt (Report mode).
-          </p>
-        </div>
+        <Empty
+          title="No report here yet"
+          hint="Generate one from a deck's Report panel, or from the home prompt in Report mode."
+        />
       ) : (
         <>
           {/* Cover block — the report's title page as the reader first sees it. */}
@@ -188,7 +183,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
             <div className="flex justify-center">
               <Badge className="bg-accent/10 text-accent">Report</Badge>
             </div>
-            <h1 className="mx-auto mt-3 max-w-2xl break-words text-[1.6rem] font-semibold leading-tight tracking-tight">
+            <h1 className="mx-auto mt-3 max-w-2xl break-words text-[1.75rem] font-semibold leading-tight tracking-[-0.015em]">
               {data?.title}
             </h1>
             {data?.subtitle && (
@@ -283,7 +278,8 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
         </div>
       )}
 
-      <div className="sticky bottom-0 z-10 mt-8 border-t border-line bg-panel/95 backdrop-blur">
+      {!notFound && (
+        <div className="sticky bottom-0 z-10 mt-8 border-t border-line bg-panel/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-2.5 px-10 py-3.5">
           <Button variant="primary" onClick={renderDoc} disabled={busy || !data}>
             {busy && status === "Rendering…" && <Spinner />}
@@ -321,7 +317,8 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
             </>
           )}
         </div>
-      </div>
+        </div>
+      )}
 
       {status && (
         <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-muted">
@@ -374,14 +371,5 @@ function SectionTable({ table }) {
         </tbody>
       </table>
     </div>
-  );
-}
-
-function DocIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
-      <path d="M14 3v5h5M9 13h6M9 17h6" />
-    </svg>
   );
 }
