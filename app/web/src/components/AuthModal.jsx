@@ -3,14 +3,16 @@ import { api } from "../api.js";
 import { Button, Spinner, inputCls } from "./ui.jsx";
 
 /**
- * Login / Register surface — a lightweight local account gate. Password fields
- * are type=password and never stored client-side; the API returns a session
- * token and the password is dropped on the floor server-side (scrypt-hashed
- * before anything touches disk). Honest scope: single local install, not a
- * multi-user system — accounts exist for the Cloud-key gate and future hosting.
+ * Login / Register surface — the auth modal shown from the landing (the front
+ * door) and the shell. Password fields are type=password and never stored
+ * client-side; the API returns a session token and the password is dropped on
+ * the floor server-side (scrypt-hashed before anything touches disk). Honest
+ * scope: single local install, not a multi-user system — accounts exist for
+ * the Cloud-key gate and future hosting.
  */
 export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [mode, setMode] = useState(initialMode ?? "login"); // login | register
+  const [regOpen, setRegOpen] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,16 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [fieldErrors, setFieldErrors] = useState({}); // field → message
   const [formError, setFormError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    api.registrationOpen().then(setRegOpen).catch(() => setRegOpen(true));
+  }, []);
+
+  // If registration closed while the form sat on the register tab, land on
+  // login instead of showing a dead form.
+  useEffect(() => {
+    if (!regOpen && mode === "register") setMode("login");
+  }, [regOpen, mode]);
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
@@ -98,6 +110,16 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
           </button>
         </div>
 
+        <div className="mb-4 text-center">
+          <div className="text-[12px] leading-relaxed text-fg-muted">
+            The app does the bulk — you do the final touches.
+          </div>
+          <div className="mt-0.5 text-[10.5px] text-fg-faint">
+            Research, structure, draft and render by machine; the facts and the
+            final words stay yours.
+          </div>
+        </div>
+
         <div className="mb-4 flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
           <button
             onClick={() => { setMode("login"); setFieldErrors({}); setFormError(""); setSuccess(""); }}
@@ -105,13 +127,22 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
           >
             Log in
           </button>
-          <button
-            onClick={() => { setMode("register"); setFieldErrors({}); setFormError(""); setSuccess(""); }}
-            className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "register" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
-          >
-            Register
-          </button>
+          {regOpen && (
+            <button
+              onClick={() => { setMode("register"); setFieldErrors({}); setFormError(""); setSuccess(""); }}
+              className={`pill px-3 py-1 text-[12px] font-medium transition ${mode === "register" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+            >
+              Register
+            </button>
+          )}
         </div>
+
+        {!regOpen && (
+          <div className="mb-4 rounded-lg border border-line bg-sunken px-3 py-2.5 text-[12px] leading-relaxed text-fg-muted">
+            This server belongs to one owner and accounts are closed —
+            ask them to add you, or use the account they set up.
+          </div>
+        )}
 
         <form onSubmit={submit} className="space-y-3" noValidate>
           {mode === "register" && (

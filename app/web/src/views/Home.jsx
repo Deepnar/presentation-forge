@@ -7,23 +7,51 @@ import {
 } from "../components/icons.jsx";
 
 /**
- * The landing page at #/home — the docs modal's replacement. The raw README
- * stays at /api/docs for developers; this is the human tour: the pipeline as
- * a designed flow, the live theme specimens the product is richest at, the
+ * The landing page at #/home — the front door of the app and the docs modal's
+ * replacement. For a visitor it carries the sign-up/login actions; for a
+ * signed-in user the same page is the tour. The raw README stays at
+ * /api/docs for developers; this is the human story: the pipeline as a
+ * designed flow, the live theme specimens the product is richest at, the
  * local-vs-cloud story, and a capability grid. Sections scroll-reveal on the
  * shell's view-in keyframe; reduced motion collapses it to an instant state
  * change. One radial accent glow behind the hero, never two.
  */
-export default function Home({ user, onStartChat, onBrowseThemes }) {
+export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
+  const authed = Boolean(user);
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10">
-      <Hero onStartChat={onStartChat} onBrowseThemes={onBrowseThemes} />
+      {!authed && <AuthBar onAuth={onAuth} />}
+      <Hero
+        authed={authed}
+        onStartChat={onStartChat}
+        onBrowseThemes={onBrowseThemes}
+        onAuth={onAuth}
+      />
       <PipelineFlow />
-      <HowItWorks onStartChat={onStartChat} />
-      <ThemeCarousel onBrowseThemes={onBrowseThemes} />
+      <HowItWorks onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
+      <ThemeCarousel onBrowseThemes={authed ? onBrowseThemes : () => onAuth?.("register")} />
       <LocalVsCloud />
-      <CapabilityGrid onStartChat={onStartChat} />
+      <CapabilityGrid onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
       <FooterStrip />
+    </div>
+  );
+}
+
+/** A slim auth bar for visitors — "Start a chat" leads to sign-up, and the
+ *  Log in / Sign up actions open the auth modal from the landing itself. */
+function AuthBar({ onAuth }) {
+  return (
+    <div className="mb-10 flex items-center justify-between">
+      <div className="flex items-center gap-2.5">
+        <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-[14px] font-bold text-white">
+          F
+        </span>
+        <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="sm" onClick={() => onAuth?.("login")}>Log in</Button>
+        <Button variant="primary" size="sm" onClick={() => onAuth?.("register")}>Sign up</Button>
+      </div>
     </div>
   );
 }
@@ -57,25 +85,30 @@ function Reveal({ children, className = "" }) {
 
 /* --------------------------------------------------------------------- hero */
 
-function Hero({ onStartChat, onBrowseThemes }) {
+function Hero({ authed, onStartChat, onBrowseThemes, onAuth }) {
   return (
     <div className="hero-glow glow-breathe py-12 text-center sm:py-16">
       <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent text-[26px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_20px_40px_-20px_rgba(0,0,0,0.8)]">
         F
       </div>
       <h1 className="mx-auto mt-6 max-w-2xl text-[3.25rem] font-semibold leading-[1.05] tracking-[-0.02em] text-fg">
-        A topic in, a themed deck out
+        From topic to deck — fast
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
-        Presentation Forge turns a brief into a graded-format deck and report —
-        and every model call stays on this machine.
+        The app does the bulk: research, structure, draft content, render. You
+        do the final touches: verify the facts, tune the words, make it yours.
       </p>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+          Bulk by machine, polish by you
+        </span>
+      </div>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button variant="primary" onClick={onStartChat}>
+        <Button variant="primary" onClick={authed ? onStartChat : () => onAuth?.("register")}>
           <ChatIcon className="h-4 w-4" />
           Start a chat
         </Button>
-        <Button variant="outline" onClick={onBrowseThemes}>
+        <Button variant="outline" onClick={authed ? onBrowseThemes : () => onAuth?.("register")}>
           <PaletteIcon className="h-4 w-4" />
           Browse themes
         </Button>
@@ -141,13 +174,13 @@ function HowItWorks({ onStartChat }) {
     },
     {
       icon: DocIcon,
-      title: "Deck + report",
-      body: "Slides render and rasterise immediately, and the graded .docx report draws from the same research.",
+      title: "Deck + report, then yours",
+      body: "Slides render and rasterise immediately, and the graded .docx report draws from the same research. The machine drafts; you verify the facts, tune the words and make it yours.",
     },
   ];
   return (
     <Reveal className="pb-20">
-      <SectionHead eyebrow="How it works" title="From brief to boardroom" />
+      <SectionHead eyebrow="How it works" title="Bulk by machine, polish by you" />
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         {steps.map(({ icon: Icon, title, body }, i) => (
           <div key={title} className="card-hover panel-surface rounded-card border border-line bg-panel p-6" style={{ ["--stagger-i"]: i }}>
@@ -261,7 +294,7 @@ const CAPABILITIES = [
   { icon: DocIcon, title: "Graded-format reports", body: "The institutional .docx donor, Word-page previews, one-click render and download." },
   { icon: SparkleIcon, title: "Vision critique loop", body: "Rendered slides are inspected and re-rendered until the text fits and nothing overlaps." },
   { icon: LayersIcon, title: "Versions & undo", body: "Every save snapshots deck.yaml; the version history is one restore away." },
-  { icon: IdIcon, title: "Institutional chrome", body: "Your crest, guide and team on the title slides — locked so content can never touch it." },
+  { icon: IdIcon, title: "Your final touches", body: "An approvable outline, editable content, chat refinement — the machine drafts, you make it yours." },
 ];
 
 function CapabilityGrid({ onStartChat }) {
@@ -305,7 +338,9 @@ function FooterStrip() {
           <GithubIcon className="h-3.5 w-3.5" /> GitHub
         </a>
       </div>
-      <p className="mt-4 text-[12px] text-fg-faint">Built to be yours — local-first, free, no cloud in the pipeline.</p>
+      <p className="mt-4 text-[12px] text-fg-faint">
+        Built to be yours — local-first, free, no cloud in the pipeline. Bulk by machine, polish by you.
+      </p>
     </footer>
   );
 }
