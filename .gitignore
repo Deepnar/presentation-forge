@@ -50,3 +50,4 @@ config/presets/
 # Source institutional templates: these carry third-party names and roll
 # numbers, and are reference material rather than source.
 reference/
+!reference/.gitkeep

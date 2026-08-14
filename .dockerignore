@@ -1,0 +1,33 @@
+# Keep the build context small and leak-free. Generated artefacts, real
+# accounts, local keys and git history must never enter the image build.
+
+.git
+.gitignore
+
+node_modules
+
+# Built output — rebuilt inside the image.
+app/web/dist
+app/gallery
+
+# Generated / stateful — reproducible or volume-backed.
+decks
+.plate-cache
+brand/generated
+brand/fonts
+brand/logos
+reference
+!reference/.gitkeep
+
+# Local secrets and real accounts.
+.env
+config/identity.yaml
+config/local.yaml
+config/users.json
+config/sessions.json
+config/presets
+
+# Rendered documents.
+*.pptx
+*.docx
+*.pdf
