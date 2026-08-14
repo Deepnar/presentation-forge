@@ -69,6 +69,10 @@ function screenshot(htmlFile, outFile, { w, h, scale }) {
     `--screenshot=${outFile}`,
     `file://${htmlFile}`,
   ];
+  // The Docker image runs as root, where Chromium's setuid sandbox is refused.
+  // Desktop installs keep it — the flag is only added when it would be
+  // impossible to render without it.
+  if (typeof process.getuid === "function" && process.getuid() === 0) args.splice(1, 0, "--no-sandbox");
   return new Promise((resolve, reject) => {
     const child = spawn(CHROME, args, { stdio: ["ignore", "ignore", "pipe"] });
     let stderr = "";
