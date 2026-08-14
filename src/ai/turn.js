@@ -98,6 +98,9 @@ function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
       "each with its own substance. Standfirsts carry a real hook, never a",
       "restatement of the headline. Vary sentence structure; no filler openers,",
       "no hedging. Where the research carries a figure, say it.",
+      "Every field has a hard length cap from the schema — a slide whose field",
+      "overflows is rejected, so where a field is tight a precise short phrase",
+      "beats a long one.",
     );
   }
 

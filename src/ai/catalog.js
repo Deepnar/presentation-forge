@@ -343,23 +343,53 @@ function describeField(name, spec, schema) {
   const bits = [];
 
   if (resolved.enum) bits.push(`one of ${resolved.enum.join("|")}`);
-  else if (resolved.type === "array") {
-    const item = resolved.items?.$ref ? resolveRef(resolved.items.$ref, schema) : resolved.items;
-    const inner = item?.type === "object"
-      ? `{${Object.keys(item.properties ?? {}).join(", ")}}`
-      : item?.type ?? "value";
-    const range = [
-      resolved.minItems ? `min ${resolved.minItems}` : null,
-      resolved.maxItems ? `max ${resolved.maxItems}` : null,
-    ].filter(Boolean).join(", ");
-    bits.push(`array of ${inner}${range ? ` (${range})` : ""}`);
-  } else if (resolved.type === "object") {
-    bits.push(`{${Object.keys(resolved.properties ?? {}).join(", ")}}`);
+  else {
+    const shape = shapeOf(resolved, schema);
+    if (shape) bits.push(shape);
   }
 
-  if (resolved.maxLength) bits.push(`≤${resolved.maxLength} chars`);
-
   return { name, text: `${name}${bits.length ? ` (${bits.join(", ")})` : ""}` };
+}
+
+/** A compact shape description including the per-field length caps, so the
+ *  writer sees the real budget for nested fields ("layers[] body ≤80 chars"),
+ *  not just the array bounds. The caps are the schema's hard limits — a model
+ *  that cannot see them overflows a field and its slide is rejected. */
+function shapeOf(spec, schema) {
+  const resolved = spec.$ref ? resolveRef(spec.$ref, schema) : spec;
+  if (resolved.type === "string") return resolved.maxLength ? `≤${resolved.maxLength} chars` : null;
+
+  const range = [
+    resolved.minItems ? `min ${resolved.minItems}` : null,
+    resolved.maxItems ? `max ${resolved.maxItems}` : null,
+  ].filter(Boolean).join(", ");
+
+  if (resolved.type === "array") {
+    const item = resolved.items?.$ref ? resolveRef(resolved.items.$ref, schema) : resolved.items;
+    if (item?.type === "object") {
+      const inner = Object.entries(item.properties ?? {})
+        .map(([k, v]) => {
+          const cap = shapeOf(v, schema);
+          return cap ? `${k} ${cap}` : k;
+        })
+        .join(", ");
+      return `array of {${inner}}${range ? ` (${range})` : ""}`;
+    }
+    const itemCap = item?.maxLength ? ` ≤${item.maxLength} chars` : "";
+    return `array of ${item?.type ?? "value"}${itemCap}${range ? ` (${range})` : ""}`;
+  }
+
+  if (resolved.type === "object") {
+    const inner = Object.entries(resolved.properties ?? {})
+      .map(([k, v]) => {
+        const cap = shapeOf(v, schema);
+        return cap ? `${k} ${cap}` : k;
+      })
+      .join(", ");
+    return `{${inner}}`;
+  }
+
+  return null;
 }
 
 function resolveRef(ref, schema) {

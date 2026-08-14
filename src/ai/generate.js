@@ -27,6 +27,10 @@ export function synthesisNote(mode) {
     "  today's world'), no hedging, no template-y phrasing.",
     "- Where the notes carry a figure, date or name, say it. Grounding runs after",
     "  you: every number you write must appear in the RESEARCH NOTES.",
+    "- Every field has a hard length cap from the schema — a slide whose field",
+    "  overflows is rejected and replaced by a placeholder, so where a field is",
+    "  tight (short labels, small nested bodies) a precise short phrase beats a",
+    "  long one. Richer prose lives in the generous fields.",
   ].join("\n");
 }
 
