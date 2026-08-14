@@ -24,11 +24,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Headless Chrome for plate themes (a theme with tokens.plate.enabled renders
-# its background via Chrome; the freeform slide type is all Chrome).
+# its background via Chrome; the freeform slide type is all Chrome). The
+# symlink lives at /usr/local/bin — src/plate.js resolves FORGE_CHROME there
+# rather than the Debian path, or every plate render fails in the container.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       chromium \
     && ln -s /usr/bin/chromium /usr/local/bin/google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
+
+ENV FORGE_CHROME=/usr/local/bin/google-chrome-stable
 
 WORKDIR /app
 
@@ -48,14 +52,13 @@ COPY tools ./tools
 # Build the UI and copy it in.
 COPY app ./app
 RUN npm ci && npx vite build --config app/web/vite.config.js && npm prune --omit=dev
-RUN rm -rf app/web/dist/../../node_modules
 
 # The stateful directories are volumes in docker-compose; env points at them.
 ENV FORGE_DECKS_DIR=/data/decks \
     FORGE_THEMES_DIR=/app/themes \
     FORGE_BRAND_DIR=/data/brand \
     FORGE_CONFIG_DIR=/data/config \
-    PLATE_CACHE_DIR=/data/plate-cache \
+    FORGE_PLATE_CACHE=/data/plate-cache \
     FORGE_API_PORT=5174
 
 VOLUME ["/data"]
