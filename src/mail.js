@@ -9,11 +9,12 @@ import { connect as tlsConnect } from "node:tls";
  * Env config (all optional — with none set the helper is a silent no-op):
  *   FORGE_SMTP_HOST, FORGE_SMTP_PORT (default 587), FORGE_SMTP_USER,
  *   FORGE_SMTP_PASS, FORGE_SMTP_FROM, FORGE_SMTP_TO,
- *   FORGE_SMTP_SECURE=1  (implicit TLS on connect; default is plain + AUTH)
+ *   FORGE_SMTP_SECURE=1  (implicit TLS on connect, port 465 style)
  *
- * Plain SMTP with AUTH LOGIN, one recipient, one text message. That is the
- * entire job; a real mail server (or provider's submission port) handles the
- * rest.
+ * On a plain connection the client upgrades via STARTTLS when the server
+ * advertises it (the standard submission-port handshake, 587); servers that do
+ * not offer STARTTLS still work over the plain socket. One recipient, one text
+ * message — that is the entire job.
  */
 
 const cfg = () => ({
@@ -31,18 +32,36 @@ export function mailConfigured() {
   return Boolean(c.host && c.from && c.to && c.user && c.pass);
 }
 
+/** Whether a multiline EHLO reply advertises STARTTLS. */
+function offersStartTls(reply) {
+  return /STARTTLS/i.test(reply);
+}
+
 /**
- * The SMTP dialogue is: wait for banner (220), EHLO, AUTH LOGIN (334),
- * base64 user (334), base64 pass (235), MAIL FROM (250), RCPT TO (250),
- * DATA (354), then the message body + "." (250), QUIT (221). Each step waits
- * for a complete response line; the response code tells us what to send next.
+ * The SMTP dialogue: banner (220), EHLO, optional STARTTLS upgrade + a second
+ * EHLO, AUTH LOGIN, MAIL FROM, RCPT TO, DATA, QUIT. `step` counts accepted
+ * responses so far; the send function at that index produces the next command.
+ *
+ * Step layout:
+ *   0  banner    220 -> EHLO
+ *   1  EHLO      250 -> STARTTLS (if plain + advertised) else AUTH LOGIN
+ *   2  STARTTLS  220 -> (upgrade here, send EHLO, advance to 3)
+ *   3  EHLO#2    250 -> AUTH LOGIN
+ *   4  AUTH      334 -> user  (b64)
+ *   5  PASS      334 -> pass  (b64)
+ *   6  LOGIN     235 -> MAIL FROM
+ *   7  MAIL      250 -> RCPT TO
+ *   8  RCPT      250 -> DATA
+ *   9  DATA      354 -> message body + "."
+ *  10  BODY      250 -> QUIT
+ *  11  QUIT      221 -> done
  */
 export function sendMail({ subject, body } = {}) {
   const c = cfg();
   if (!mailConfigured()) return Promise.resolve({ sent: false, reason: "SMTP not configured" });
 
   return new Promise((resolve, reject) => {
-    const socket = c.secure
+    let socket = c.secure
       ? tlsConnect({ host: c.host, port: c.port })
       : connect(c.port, c.host);
 
@@ -53,13 +72,16 @@ export function sendMail({ subject, body } = {}) {
       socket.destroy();
       err ? reject(err) : resolve({ sent: true, ...ok });
     };
+    const onError = (err) => finish(err);
     socket.setTimeout(25_000);
     socket.on("timeout", () => finish(new Error("SMTP timeout")));
+    socket.on("error", onError);
 
-    // The ordered list of things to send, one per accepted response line.
     const steps = [
       { code: 220, send: () => "EHLO presentation-forge" },
-      { code: 334, send: () => "AUTH LOGIN" },
+      { code: 250, send: null }, // set by onData: STARTTLS or AUTH LOGIN
+      { code: 220, send: null }, // STARTTLS go-ahead — upgraded in onData
+      { code: 250, send: () => "AUTH LOGIN" },
       { code: 334, send: () => Buffer.from(c.user).toString("base64") },
       { code: 334, send: () => Buffer.from(c.pass).toString("base64") },
       { code: 235, send: () => `MAIL FROM:<${c.from}>` },
@@ -78,25 +100,70 @@ export function sendMail({ subject, body } = {}) {
     ];
 
     let step = 0;
+    let startedTls = false;
     let buffer = "";
+    // A multiline reply (EHLO advertises its capabilities on 250-… continuation
+    // lines) must be accumulated as a whole before the state machine advances;
+    // checking only the final line would miss a STARTTLS offer on an earlier one.
+    let reply = "";
     const onData = (chunk) => {
       buffer += chunk.toString("utf8");
-      // Only act on a complete single-line response (final code, not a
-      // multiline continuation like "250-..."). SMTP servers here reply one
-      // line at a time for this dialogue.
-      const m = buffer.match(/^(\d{3})\s[^\r\n]*\r?\n/);
-      if (!m) return;
-      buffer = "";
+      let m;
+      while ((m = buffer.match(/^(\d{3})([ -])([^\r\n]*)(?:\r?\n)/))) {
+        buffer = buffer.slice(m[0].length);
+        reply += m[3] + "\n";
+        if (m[2] === " ") break; // final line of a (possibly multiline) response
+      }
+      if (!m || m[2] !== " ") return; // still mid-multiline
       const code = Number(m[1]);
+      const complete = reply;
+      reply = "";
       const expected = steps[step];
       if (!expected) return finish(new Error(`SMTP unexpected response ${code}`));
       if (code !== expected.code) return finish(new Error(`SMTP ${code} (expected ${expected.code})`));
-      if (expected.send) socket.write(expected.send());
+
+      // Step 1: decide the path after the first EHLO. Plain + STARTTLS offered
+      // -> upgrade; otherwise (TLS already up, or the server has no STARTTLS)
+      // go straight to auth.
+      if (step === 1) {
+        if (!c.secure && !startedTls && offersStartTls(complete)) {
+          socket.write("STARTTLS\r\n");
+          step = 2;
+        } else {
+          socket.write("AUTH LOGIN\r\n");
+          step = 4;
+        }
+        return;
+      }
+
+      // Step 2: the server accepted STARTTLS. Wrap the live socket in TLS,
+      // re-attach handlers, and send the required post-upgrade EHLO. The TLS
+      // layer replays buffered plaintext into the encrypted stream.
+      if (step === 2) {
+        startedTls = true;
+        const plain = socket;
+        plain.removeListener("data", onData);
+        plain.removeListener("error", onError);
+        socket = tlsConnect({ socket: plain, servername: c.host, rejectUnauthorized: false });
+        socket.setTimeout(25_000);
+        socket.on("timeout", () => finish(new Error("SMTP timeout")));
+        socket.on("error", onError);
+        socket.on("data", onData);
+        socket.write("EHLO presentation-forge\r\n");
+        step = 3;
+        return;
+      }
+
+      if (expected.send) {
+        const payload = expected.send();
+        // Every SMTP command line must end CRLF; the DATA payload already
+        // carries its own terminators, so only append when missing.
+        socket.write(payload.endsWith("\r\n") ? payload : payload + "\r\n");
+      }
       step++;
       if (step >= steps.length) finish(null, {});
     };
     socket.on("data", onData);
-    socket.on("error", (err) => finish(err));
   });
 }
 

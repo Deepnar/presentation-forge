@@ -54,3 +54,4 @@ config/presets/
 # numbers, and are reference material rather than source.
 reference/
 !reference/.gitkeep
+test/fixtures/
