@@ -3,7 +3,7 @@ import path from "node:path";
 import Ajv from "ajv";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
-import { chatJSON } from "./ollama.js";
+import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
 import { REPORT_SECTIONS, validateReport } from "../report.js";
@@ -231,7 +231,7 @@ export function validateSection(name, depth, data) {
  * and from the research pass. With `requirePlan: false` (standalone report —
  * no deck at all) the plan slot is left empty and the brief carries the title.
  */
-export async function resolveReportInputs(dir, { requirePlan = true } = {}) {
+export async function resolveReportInputs(dir, { requirePlan = true, model } = {}) {
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
@@ -258,8 +258,9 @@ export async function resolveReportInputs(dir, { requirePlan = true } = {}) {
       "research pass as the deck; create the deck with --research first",
     );
   }
-  // The model sees a bounded excerpt; the full artefact stays on disk.
-  research = excerptResearch(research);
+  // The model sees a bounded excerpt; the full artefact stays on disk. The cap
+  // tracks the author's transport — cloud gets the larger budget.
+  research = excerptResearch(research, await researchExcerptCap({ model }));
 
   const identity = await loadIdentity(dir);
   return { meta, plan, research, identity };
@@ -427,7 +428,7 @@ export async function generateReport({
   }
 
   const deckDir = path.resolve(dir ?? path.join(DECKS, slug ?? ""));
-  const { meta, plan, research, identity } = await resolveReportInputs(deckDir, { requirePlan });
+  const { meta, plan, research, identity } = await resolveReportInputs(deckDir, { requirePlan, model });
 
   onProgress?.({ status: "report_planning" });
   const planned = await planReport({

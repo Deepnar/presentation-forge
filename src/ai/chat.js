@@ -2,7 +2,7 @@ import { readFile, writeFile, stat } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
-import { chatJSON } from "./ollama.js";
+import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { runTurn } from "./turn.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
@@ -343,7 +343,7 @@ export async function runChatTurn({
   try {
     research = await readFile(path.join(dir, "research", "notes.md"), "utf8");
   } catch { /* no research pass */ }
-  research = excerptResearch(research);
+  research = excerptResearch(research, await researchExcerptCap({ model }));
 
   onProgress?.({ status: "reading" });
 
