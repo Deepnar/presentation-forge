@@ -131,7 +131,9 @@ export async function createDeck({
     status: "planning",
     createdAt: new Date().toISOString(),
     // Per-user workspace: the owning account's email. Ownerless meta (legacy
-    // decks, CLI runs) is a shared deck visible to every logged-in user.
+    // decks, CLI runs) is operator-owned — hidden from other accounts' lists,
+    // visible to the admin. CLI runs keep working headless: they never go
+    // through the server's auth, so an ownerless deck stays usable.
     ...(owner ? { owner } : {}),
     ...snapshot,
   };

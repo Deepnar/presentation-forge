@@ -80,7 +80,30 @@ export function validateRegistration({ name, email, password }) {
 
 /** Public shape only — never the hash or salt, never anything derivable. */
 export function publicUser(u) {
-  return { name: u.name, email: u.email, createdAt: u.createdAt };
+  return { name: u.name, email: u.email, createdAt: u.createdAt, ...(u.role ? { role: u.role } : {}) };
+}
+
+/** The operator's account. Admin is the only role today, minted by seedAdmin
+ *  (or matched by FORGE_ADMIN_EMAIL for an account seeded before roles
+ *  existed). Admin sees the whole deck store, including ownerless legacy
+ *  decks that no account owns. */
+export function isAdmin(user) {
+  if (!user) return false;
+  if (user.role === "admin") return true;
+  const adminEmail = process.env.FORGE_ADMIN_EMAIL;
+  return typeof adminEmail === "string" && user.email === adminEmail.trim().toLowerCase();
+}
+
+/**
+ * The per-user deck access policy, shared by the list and the per-slug gate so
+ * the two can never disagree. Owned decks belong to their owner; ownerless
+ * decks (legacy folders, CLI runs) are operator-only — a fresh account must
+ * not see a stranger's CLI decks as its own.
+ */
+export function canAccessDeck(user, owner) {
+  if (isAdmin(user)) return true;
+  if (!owner) return false;
+  return owner === user.email;
 }
 
 export async function register({ name, email, password }) {
@@ -117,6 +140,7 @@ export async function seedAdmin({ name, email, password }) {
     name: name.trim(),
     email: normalized,
     createdAt: new Date().toISOString(),
+    role: "admin",
     ...hashPassword(password),
   };
   users.push(user);

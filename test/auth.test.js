@@ -57,6 +57,30 @@ test("seedAdmin mints the operator account once and is idempotent", async () => 
   assert.equal((await auth.authenticate("op@example.com", "operator-pass"))?.email, "op@example.com");
 });
 
+test("the seeded admin carries the admin role; regular accounts do not", async () => {
+  const op = await auth.authenticate("op@example.com", "operator-pass");
+  assert.equal(op.role, "admin");
+  assert.equal(auth.isAdmin(op), true);
+  const reg = await auth.authenticate("dup@example.com", "12345678");
+  assert.equal(reg.role, undefined);
+  assert.equal(auth.isAdmin(reg), false);
+  assert.equal(auth.isAdmin(null), false);
+});
+
+test("deck access policy: owner decks are private, ownerless decks are operator-only", () => {
+  const reg = { email: "dup@example.com", role: undefined };
+  const op = { email: "op@example.com", role: "admin" };
+  // Ownerless legacy/CLI decks — visible only to the operator.
+  assert.equal(auth.canAccessDeck(reg, null), false);
+  assert.equal(auth.canAccessDeck(op, null), true);
+  assert.equal(auth.canAccessDeck(reg, undefined), false);
+  // Owned decks belong to their owner.
+  assert.equal(auth.canAccessDeck(reg, "dup@example.com"), true);
+  assert.equal(auth.canAccessDeck(reg, "other@example.com"), false);
+  // The operator sees everything.
+  assert.equal(auth.canAccessDeck(op, "other@example.com"), true);
+});
+
 test("seedAdmin validates its env pair before writing", async () => {
   const err = await auth.seedAdmin({ name: "X", email: "bad", password: "12345678" })
     .then(() => null, (e) => e.message);

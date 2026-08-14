@@ -17,7 +17,7 @@ import { researchSummary } from "../../src/ai/research.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 
@@ -158,8 +158,10 @@ app.use("/api/presets", deckWorkspace);
 /**
  * Per-slug ownership. An owned deck belongs to exactly one account; a folder
  * whose meta.yaml has no owner is a legacy deck (or a headless CLI run) and is
- * shared. The error is "no such deck", not "not yours", so a stranger cannot
- * even learn a slug exists. Same preview/download exemption as the gate above.
+ * the operator's — visible to every logged-in user would leak one account's
+ * CLI work to all the others. The error is "no such deck", not "not yours",
+ * so a stranger cannot even learn a slug exists. Same preview/download
+ * exemption as the gate above.
  */
 async function assertDeckAccess(slug, user) {
   if (!slug || /[\/\\]|\.\./.test(slug)) throw new Error("no such deck");
@@ -167,8 +169,8 @@ async function assertDeckAccess(slug, user) {
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
-  } catch { /* folder predates meta — legacy, shared */ }
-  if (meta.owner && meta.owner !== user.email) throw new Error("no such deck");
+  } catch { /* folder predates meta — legacy, operator-owned */ }
+  if (!canAccessDeck(user, meta.owner)) throw new Error("no such deck");
 }
 app.use("/api/decks/:slug", async (req, res, next) => {
   // The rasters, downloads and uploaded images load in <img> tags that cannot
@@ -335,8 +337,9 @@ app.get("/api/decks", wrap(async (req, res) => {
     if (!e.isDirectory()) continue;
     try {
       const entry = await deckMeta(e.name);
-      // Per-user workspace: only your decks (and shared ownerless legacy decks).
-      if (entry.owner && entry.owner !== req.user.email) continue;
+      // Per-user workspace: only your decks (and, for the operator, the
+      // ownerless legacy/CLI decks nobody else should see).
+      if (!canAccessDeck(req.user, entry.owner)) continue;
       decks.push(entry);
     } catch { /* folder without a valid deck.yaml — skip */ }
   }
@@ -407,12 +410,14 @@ app.delete("/api/decks/:slug", wrap(async (req, res) => {
 /**
  * Run the sweep on demand (dry run by default) — the same deletion policy the
  * scheduler runs on its own, exposed so an owner can preview it from the UI
- * before it fires. Requires a session: it can delete whole decks, so a stranger
- * who can reach the box must not be able to fire it.
+ * before it fires. Operator-only: it can delete the ownerless legacy decks
+ * that regular accounts cannot even see, so a non-admin must not be able to
+ * fire it.
  */
 app.post("/api/sweep", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user) return fail(res, 401, "log in to run the sweep");
+  if (!isAdmin(user)) return fail(res, 403, "the sweep is an operator tool");
   const { sweep } = await import("../../src/sweep.js");
   const dryRun = req.body?.dryRun !== false;
   const olderThanDays = Number(req.body?.olderThanDays || NaN);
@@ -767,7 +772,7 @@ app.post("/api/decks/search", wrap(async (req, res) => {
       try {
         owner = YAML.parse(await readFile(path.join(DECKS, e.name, "meta.yaml"), "utf8"))?.owner ?? null;
       } catch { /* legacy folder */ }
-      if (owner && owner !== req.user.email) continue;
+      if (!canAccessDeck(req.user, owner)) continue;
       const text = await readFile(path.join(DECKS, e.name, "deck.yaml"), "utf8");
       if (text.toLowerCase().includes(q)) hits.push(e.name);
     } catch { /* no deck.yaml */ }
