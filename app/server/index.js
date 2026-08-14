@@ -45,8 +45,21 @@ app.use((_req, res, next) => {
 // browser is same-origin and this never matters; when the built UI is served
 // from the API itself it is same-origin too. The allow-list only matters if
 // someone serves the UI from elsewhere, and then it is the ONLY origin allowed.
+// With no origin configured, emit NO CORS headers at all — a public box should
+// not advertise Access-Control-Allow-Origin: * to every site in the world.
 const UI_ORIGIN = (process.env.FORGE_UI_ORIGIN ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-app.use(cors(UI_ORIGIN.length ? { origin: UI_ORIGIN } : {}));
+if (UI_ORIGIN.length) {
+  app.use(cors({ origin: UI_ORIGIN }));
+}
+
+// When a reverse proxy fronts the box (the documented deployment), req.ip is
+// the proxy and the rate limiter would treat every visitor as one IP. Only
+// honour X-Forwarded-For when the operator has explicitly opted in — the
+// default stays conservative.
+if (process.env.FORGE_TRUST_PROXY === "1") {
+  app.set("trust proxy", 1);
+}
+
 app.use(express.json({ limit: "8mb" }));
 
 // Deliberately NOT `PORT` — dev harnesses inject that for the frontend, and the
@@ -1481,10 +1494,23 @@ if (Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0) {
  * Production static serving: when the UI is built (app/web/dist), the API
  * serves it so one port runs the whole app on a home server. In dev the dist
  * is absent (Vite runs on :5173) and these routes simply never match.
+ *
+ * The UI gets a strict CSP (the token lives in localStorage, so CSP is the
+ * main defence if any XSS slips through). The API JSON responses deliberately
+ * do not — the plate renderer and assets carry their own, more restrictive
+ * policies, and a JSON response with a CSP header only invites confusion.
  */
 const UI_DIST = path.join(ROOT, "app", "web", "dist");
 try {
   await stat(path.join(UI_DIST, "index.html"));
+  app.use((req, res, next) => {
+    if (!req.path.startsWith("/api/")) {
+      res.setHeader("Content-Security-Policy",
+        "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; " +
+        "script-src 'self'; font-src 'self' data:; connect-src 'self'");
+    }
+    next();
+  });
   app.use(express.static(UI_DIST));
   // SPA fallback: unknown non-API paths render the shell.
   app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(UI_DIST, "index.html")));
