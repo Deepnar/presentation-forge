@@ -1,0 +1,93 @@
+# Corporate Clean Blue — disciplined blue corporate, one accent.
+# Navy and steel on a cool grey-white, a single trust-blue accent, hairline
+# rules. The reserved opposite of corporate-alegria's bright optimism.
+
+name: corporate-clean-blue
+label: Corporate Clean Blue
+summary: Disciplined navy/steel corporate with one trust-blue accent.
+
+tokens:
+  palette:
+    bg: "#F2F5F8"          # cool grey-white
+    surface: "#FFFFFF"
+    ink: "#16283A"         # deep navy
+    ink_muted: "#5A6B7E"
+    accent: "#1F5FA8"      # trust blue
+    accent_alt: "#7BA7D9"  # pale steel blue
+    rule: "#D9E0E8"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#16283A", ink: "#FFFFFF", muted: "#9DB2C8", accent: "#7BA7D9" }
+    section: { bg: "#1F5FA8", ink: "#FFFFFF", muted: "#C4D8EE" }
+
+  dark:
+    bg: "#101C28"
+    surface: "#1A2A3A"
+    ink: "#E4ECF4"
+    ink_muted: "#93A7BB"
+    accent: "#3B82C4"
+    accent_alt: "#6E9FCF"
+    rule: "#FFFFFF1A"
+    on_accent: "#FFFFFF"
+
+  type:
+    display:  { family: "Public Sans", weight: 700, size: 38, line: 1.12, tracking: -0.5 }
+    heading:  { family: "Public Sans", weight: 700, size: 28, line: 1.16, tracking: -0.2 }
+    subhead:  { family: "IBM Plex Sans", weight: 400, size: 14, line: 1.45, tracking: 0 }
+    body:     { family: "IBM Plex Sans", weight: 400, size: 12.5, line: 1.55, tracking: 0 }
+    caption:  { family: "IBM Plex Sans", weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Sans", weight: 600, size: 10, line: 1.2,  tracking: 1.4, transform: upper }
+    stat:     { family: "Public Sans", weight: 700, size: 52, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.08, pill: 0.40, chip: 0.06 }
+    border: { width: 1, color: "#D9E0E8" }        # hairline card edges
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 8, offset: 2, angle: 90, color: "16283A", opacity: 0.06 }
+
+  # A faint steel-blue corner — the corporate version of the good-bg layer.
+  background:
+    decor:
+      - shape: rect
+        x: 0
+        y: 0
+        w: 13.333
+        h: 0.10
+        fill: "#1F5FA8"
+        transparency: 0
+      - shape: ellipse
+        x: 10.6
+        y: -3.0
+        w: 5.6
+        h: 5.6
+        fill: "#7BA7D9"
+        transparency: 90
+
+  plate:
+    enabled: false
+
+voice:
+  feel: composed, trustworthy, precise, understated
+  density: medium
+  prefers:
+    - structured two- or three-part arguments
+    - data and figures stated plainly
+    - a single takeaway line per section
+  avoid:
+    - hype, exclamation, marketing warmth
+    - more than one accent colour
+    - playful or informal phrasing
+  headline_style: >
+    Precise and concrete. "Three Facts About Storage" over "Intro to Storage".
+    State the finding, not the topic.
+  body_style: >
+    Plain, complete sentences. One claim per sentence; evidence after it.

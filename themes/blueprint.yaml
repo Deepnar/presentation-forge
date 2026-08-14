@@ -1,0 +1,86 @@
+# Blueprint / Technical — an engineering drawing.
+# Blueprint-blue field, white linework, monospace labels, a faint grid. The
+# "technical diagram" language — distinct from dark-neon by being disciplined
+# and from corporate by being white-on-blue.
+
+name: blueprint
+label: Blueprint
+summary: Engineering-drawing blueprint blue with white linework and mono labels.
+
+tokens:
+  palette:
+    bg: "#1C3A6B"          # blueprint blue
+    surface: "#264A85"     # panel blue
+    ink: "#EAF2FF"         # white-blue ink
+    ink_muted: "#AEC4E8"
+    accent: "#F5A623"      # drafting amber
+    accent_alt: "#7FD1C6"  # teal ink
+    rule: "#4A6FA8"        # hairlines
+    on_accent: "#1C3A6B"
+
+  surfaces:
+    title:   { bg: "#0E2350", ink: "#FFFFFF", muted: "#9DB6E0", accent: "#F5A623" }
+    section: { bg: "#F5A623", ink: "#1C3A6B", muted: "#6E4A14" }
+
+  dark:
+    bg: "#0E1B33"
+    surface: "#16294B"
+    ink: "#EAF2FF"
+    ink_muted: "#8FA9D6"
+    accent: "#F5A623"
+    accent_alt: "#6FC7BC"
+    rule: "#33507F"
+    on_accent: "#0E1B33"
+
+  type:
+    display:  { family: "Oswald",       weight: 500, size: 40, line: 1.05, tracking: 0.5 }
+    heading:  { family: "Oswald",       weight: 500, size: 30, line: 1.1,  tracking: 0.3 }
+    subhead:  { family: "IBM Plex Mono", weight: 400, size: 14, line: 1.4,  tracking: 0 }
+    body:     { family: "IBM Plex Mono", weight: 400, size: 12, line: 1.55, tracking: 0 }
+    caption:  { family: "IBM Plex Mono", weight: 400, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Mono", weight: 600, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "Oswald",       weight: 500, size: 56, line: 1.0,  tracking: 0 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.02, pill: 0.40, chip: 0 }
+    border: { width: 1, color: "#6B8FC4" }           # drawn edges
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 6, offset: 2, angle: 90, color: "0E2350", opacity: 0.25 }
+
+  # A drafting grid behind the content — faint vertical and horizontal lines.
+  background:
+    decor:
+      - { shape: rect, x: 0, y: 1.5, w: 13.333, h: 0.015, fill: "#AEC4E8", transparency: 82 }
+      - { shape: rect, x: 0, y: 3.5, w: 13.333, h: 0.015, fill: "#AEC4E8", transparency: 82 }
+      - { shape: rect, x: 0, y: 5.5, w: 13.333, h: 0.015, fill: "#AEC4E8", transparency: 82 }
+      - { shape: rect, x: 3.33, y: 0, w: 0.015, h: 7.5, fill: "#AEC4E8", transparency: 82 }
+      - { shape: rect, x: 6.66, y: 0, w: 0.015, h: 7.5, fill: "#AEC4E8", transparency: 82 }
+      - { shape: rect, x: 9.99, y: 0, w: 0.015, h: 7.5, fill: "#AEC4E8", transparency: 82 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: precise, engineered, schematic, matter-of-fact
+  density: high
+  prefers:
+    - numbered parts and labelled components
+    - exact terms and specifications
+    - a system/component framing
+  avoid:
+    - marketing language
+    - vague metaphor
+    - emotional appeals
+  headline_style: >
+    Name the system. "RENDER PIPELINE // COMPONENT OVERVIEW" over "How
+    Rendering Works". Number and label it like a drawing callout.
+  body_style: >
+    Terse and exact. Each sentence a spec; no filler. Use part numbers.
