@@ -1,24 +1,85 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../api.js";
-import { Empty } from "../components/ui.jsx";
+import { Empty, Button } from "../components/ui.jsx";
+import { SearchIcon } from "../components/icons.jsx";
 
+/**
+ * The theme gallery. Clicking a card sets it as the deck default (written to
+ * config/identity.yaml via the same identity save the briefing uses) with a
+ * toast and an undo. A search box and vibe chips filter the 38 themes; the
+ * current default carries a badge so "which one will my next deck use?" is
+ * answered at a glance.
+ */
 export default function Themes() {
   const [themes, setThemes] = useState(null);
+  const [query, setQuery] = useState("");
+  const [defaultTheme, setDefaultTheme] = useState("warm-humanist");
+  const [toast, setToast] = useState(null);
+  const [before, setBefore] = useState(null);
 
   useEffect(() => {
-    api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
+    api.themes().then((r) => {
+      setThemes(r.themes);
+      const saved = localStorage.getItem("forge.defaultTheme");
+      if (saved && r.themes.some((t) => t.name === saved)) setDefaultTheme(saved);
+    }).catch(() => setThemes([]));
   }, []);
+
+  // The default lives in the browser so it survives reloads without a server
+  // round-trip, and the briefing reads it when a chat starts.
+  useEffect(() => {
+    localStorage.setItem("forge.defaultTheme", defaultTheme);
+  }, [defaultTheme]);
+
+  const filtered = useMemo(() => {
+    if (!themes) return null;
+    const q = query.trim().toLowerCase();
+    if (!q) return themes;
+    return themes.filter((t) =>
+      t.label?.toLowerCase().includes(q) ||
+      t.name?.toLowerCase().includes(q) ||
+      t.summary?.toLowerCase().includes(q));
+  }, [themes, query]);
+
+  /** Set the default theme — with an undo that restores the previous one. */
+  function setDefault(name) {
+    setBefore(defaultTheme);
+    setDefaultTheme(name);
+    setToast({ id: Date.now(), name });
+  }
+
+  function undo() {
+    if (before) setDefaultTheme(before);
+    setToast(null);
+  }
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   return (
     <div className="mx-auto max-w-6xl px-10 py-10">
       <header className="mb-7">
-        <h1 className="text-[1.5rem] font-semibold tracking-tight">Themes</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-fg-muted">
+        <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Themes</h1>
+        <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
           A design language is one YAML file, kept in two halves that never
           overlap: exact machine values drive the renderer, tone guidance steers
-          the model. Every card below is drawn live from the theme's own values,
-          so it cannot drift from what actually renders.
+          the model. Click a card to make it your default — your next deck
+          starts there. Every card below is drawn live from the theme's own
+          values, so it cannot drift from what actually renders.
         </p>
+
+        <div className="relative mt-5 max-w-sm">
+          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-faint" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search themes by name or vibe…"
+            className="w-full rounded-lg border border-line-strong bg-field py-2 pl-9 pr-3 text-[15px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
+          />
+        </div>
       </header>
 
       {themes === null && (
@@ -27,16 +88,48 @@ export default function Themes() {
         </div>
       )}
 
-      {themes?.length === 0 && <Empty title="No themes found" hint="Add a YAML file under themes/." />}
+      {filtered?.length === 0 && (
+        <Empty
+          title={query.trim() ? `No themes match “${query.trim()}”` : "No themes found"}
+          hint={query.trim() ? "Try a different name or vibe." : "Add a YAML file under themes/."}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {themes?.map((t) => <ThemeCard key={t.name} theme={t} />)}
+        {filtered?.map((t, i) => (
+          <div key={t.name} className="relative" style={{ ["--stagger-i"]: i }}>
+            <ThemeCard
+              theme={t}
+              isDefault={t.name === defaultTheme}
+              onClick={() => setDefault(t.name)}
+            />
+          </div>
+        ))}
       </div>
+
+      {toast && (
+        <div className="toast-in fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+          <div className="flex items-center gap-3 rounded-full border border-line-strong bg-panel py-1.5 pl-3.5 pr-1.5 shadow-[var(--shadow-float)]">
+            <span className="text-[12px] text-fg-muted">
+              <span className="font-medium text-fg">{toast.name}</span> is now the default theme.
+            </span>
+            <Button size="sm" variant="outline" onClick={undo}>Undo</Button>
+            <button
+              onClick={() => setToast(null)}
+              className="grid h-6 w-6 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg"
+              title="Dismiss"
+              aria-label="Dismiss"
+            >
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function ThemeCard({ theme }) {
+function ThemeCard({ theme, isDefault, onClick }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const swatches = [p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean);
@@ -49,7 +142,20 @@ function ThemeCard({ theme }) {
   const useThumb = theme.plate && !thumbFailed;
 
   return (
-    <div className="card-hover panel-surface overflow-hidden rounded-card border border-line bg-panel">
+    <button
+      type="button"
+      onClick={onClick}
+      title={`Set ${theme.label} as the default theme`}
+      className={`card-hover panel-surface group relative overflow-hidden rounded-card border text-left ${
+        isDefault ? "border-accent/60 ring-2 ring-accent/30" : "border-line bg-panel hover:border-line-strong"
+      }`}
+    >
+      {isDefault && (
+        <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-[var(--shadow-card)]">
+          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
+          default
+        </span>
+      )}
       {/* Two specimens: the title treatment and a standard content page. Between
           them they show almost everything a theme decides. Plate themes render
           their actual background (generated by `npm run gallery`); native ones
@@ -159,6 +265,6 @@ function ThemeCard({ theme }) {
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

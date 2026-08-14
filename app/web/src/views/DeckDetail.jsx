@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
-import { Button, Panel, Empty, Spinner, SlideSkeleton } from "../components/ui.jsx";
+import { Button, Panel, Empty, Spinner, SlideSkeleton, Tooltip } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
@@ -485,7 +485,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <h1 className="break-words text-[1.5rem] font-semibold leading-tight tracking-tight">
+          <h1 className="break-words text-[1.75rem] font-semibold leading-tight tracking-[-0.015em]">
             {deck.title}
           </h1>
           <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] text-fg-muted">
@@ -706,7 +706,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           {slides.map((slide, i) => {
             const src = data.slides[i];
             return (
-              <div key={i} className="card-hover panel-surface rounded-[var(--radius-lg)] border border-line bg-panel p-2">
+              <div key={i} className="card-hover group panel-surface rounded-[var(--radius-lg)] border border-line bg-panel p-2">
                 <button
                   onClick={() => setZoom(i)}
                   className="block w-full text-left"
@@ -764,34 +764,38 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                   </select>
                 </div>
 
+                {/* The hover-reveal toolbar: three primary actions up front,
+                    the rest behind a "⋯" menu. Visible on hover, settled and
+                    quiet otherwise — seven grey icons under every slide was
+                    noise. Delete sits in the menu, crimson, behind a confirm. */}
                 <div className="mt-1 flex items-center justify-between">
-                  <div className="flex items-center gap-0.5">
-                    <CardBtn onClick={() => setEditing(i)} title="Edit content"><EditIcon /></CardBtn>
-                    <CardBtn onClick={() => onMove(i, -1)} disabled={i === 0} title="Move left"><UpIcon /></CardBtn>
-                    <CardBtn onClick={() => onMove(i, 1)} disabled={i === slides.length - 1} title="Move right"><DownIcon /></CardBtn>
+                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100">
+                    <Tooltip label="Edit content">
+                      <CardBtn onClick={() => setEditing(i)}><EditIcon /></CardBtn>
+                    </Tooltip>
+                    <Tooltip label={punch === i ? "Making it punchier…" : "Make this slide punchier"}>
+                      <CardBtn onClick={() => punchUp(i)} disabled={punch !== null}>
+                        {punch === i ? <Spinner className="h-3 w-3 text-fg-faint" /> : <BoltIcon />}
+                      </CardBtn>
+                    </Tooltip>
+                    <Tooltip label="Swap slide type">
+                      <CardBtn onClick={() => openSwap(i)} disabled={swapBusy}>
+                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 12h18M12 3v18M8 8l-4 4 4 4M16 8l4 4-4 4" />
+                        </svg>
+                      </CardBtn>
+                    </Tooltip>
                   </div>
-                  <div className="flex items-center gap-0.5">
-                    <CardBtn
-                      onClick={() => punchUp(i)}
-                      disabled={punch !== null}
-                      title="Make this slide punchier (chat turn)"
-                    >
-                      {punch === i ? <Spinner className="h-3 w-3 text-fg-faint" /> : <BoltIcon />}
-                    </CardBtn>
-                    <CardBtn onClick={() => openSwap(i)} title="Swap slide type — see every type in this theme">
-                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 12h18M12 3v18M8 8l-4 4 4 4M16 8l4 4-4 4" />
-                      </svg>
-                    </CardBtn>
-                    <CardBtn onClick={() => openImagePicker(i)} disabled={swapBusy} title="Add an image to this slide">
-                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <circle cx="8.5" cy="8.5" r="1.5" />
-                        <path d="m21 15-5-5L5 21" />
-                      </svg>
-                    </CardBtn>
-                    <CardBtn onClick={() => onDuplicate(i)} title="Duplicate"><CopyIcon /></CardBtn>
-                    <CardBtn onClick={() => onDelete(i)} disabled={slides.length <= 1} title="Delete"><TrashIcon /></CardBtn>
+                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100">
+                    <CardMenu
+                      items={[
+                        { label: "Move left", onClick: () => onMove(i, -1), disabled: i === 0 },
+                        { label: "Move right", onClick: () => onMove(i, 1), disabled: i === slides.length - 1 },
+                        { label: "Add image", onClick: () => openImagePicker(i), disabled: swapBusy },
+                        { label: "Duplicate", onClick: () => onDuplicate(i) },
+                        { label: "Delete slide", danger: true, onClick: () => onDelete(i), disabled: slides.length <= 1 },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>
@@ -1251,6 +1255,52 @@ function CardBtn({ children, ...props }) {
     >
       {children}
     </button>
+  );
+}
+
+/** The "⋯" overflow menu for a slide card. Outside-click closes it; the danger
+ *  item (delete) renders crimson so destructive weight reads before the click. */
+function CardMenu({ items }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <Tooltip label="More actions">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          aria-label="More actions"
+          aria-expanded={open}
+          className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+            <circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" />
+          </svg>
+        </button>
+      </Tooltip>
+      {open && (
+        <div className="absolute right-0 top-7 z-30 min-w-36 rounded-card border border-line bg-panel py-1 shadow-[var(--shadow-float)]">
+          {items.map((it, idx) => (
+            <button
+              key={idx}
+              disabled={it.disabled}
+              onClick={() => { setOpen(false); it.onClick?.(); }}
+              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[12px] transition disabled:pointer-events-none disabled:opacity-30 ${
+                it.danger ? "text-danger hover:bg-hover" : "text-fg-muted hover:bg-hover hover:text-fg"
+              }`}
+            >
+              {it.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

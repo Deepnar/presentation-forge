@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
-import { Button, Panel, Spinner, Badge } from "../components/ui.jsx";
+import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 
 /**
  * The full Research view — the proper place for the researched content that
@@ -54,8 +54,8 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
 
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[1.5rem] font-semibold tracking-tight">Research</h1>
-          <p className="mt-1 text-[13px] text-fg-muted">
+          <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Research</h1>
+          <p className="mt-1 text-[15px] text-fg-muted">
             What the writer draws from — the ground truth the deck and report are built on.
           </p>
         </div>
@@ -67,13 +67,15 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
       </header>
 
       {state.loading ? (
-        <div className="mt-8 flex items-center gap-2 text-[13px] text-fg-muted"><Spinner /> Loading…</div>
+        <div className="mt-8 flex items-center gap-2 text-[15px] text-fg-muted"><Spinner /> Loading…</div>
       ) : error ? (
-        <div className="mt-8 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">{error}</div>
+        <div className="mt-8 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-[12px] leading-relaxed text-danger">{error}</div>
       ) : !state.exists ? (
-        <div className="mt-8 rounded-card border border-dashed border-line p-10 text-center text-[13px] leading-relaxed text-fg-muted">
-          No research pass ran for this deck. Regenerate with the research option on
-          (or with sources) and the notes the model writes from appear here.
+        <div className="mt-8">
+          <Empty
+            title="This deck hasn't been researched yet"
+            hint="Turn research on and regenerate, or create it with sources — the notes the model writes from appear here."
+          />
         </div>
       ) : (
         <div className="mt-6 space-y-6">
@@ -176,10 +178,39 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
 }
 
 function Metric({ label, value }) {
+  const ref = useRef(null);
+  const [display, setDisplay] = useState(0);
+  const num = Number(value) || 0;
+  const animatedRef = useRef(false);
+
+  // Count-up: 0 → value over 700ms on the shell ease, triggered the first time
+  // the metric scrolls into view. Reduced motion jumps straight to the value.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setDisplay(num); return; }
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting) || animatedRef.current) return;
+      animatedRef.current = true;
+      io.disconnect();
+      const t0 = performance.now();
+      const DURATION = 700;
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / DURATION);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setDisplay(Math.round(num * eased));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [num]);
+
   return (
-    <div className="rounded-lg border border-line bg-sunken px-3 py-2.5">
-      <div className="text-[1.4rem] font-semibold tabular-nums leading-none">{value ?? "—"}</div>
-      <div className="mt-1 text-[10.5px] uppercase tracking-wider text-fg-faint">{label}</div>
+    <div ref={ref} className="rounded-lg border border-line bg-sunken px-3 py-2.5">
+      <div className="text-[1.4rem] font-semibold tabular-nums leading-none">{display || "—"}</div>
+      <div className="mt-1 text-[12px] uppercase tracking-wider text-fg-faint">{label}</div>
     </div>
   );
 }
@@ -199,7 +230,9 @@ function KindBadge({ src }) {
 /**
  * Render notes.md as readable prose: source sections as blocks, lines as
  * paragraphs, one blank line between. Kept deliberately dependency-free — the
- * notes are plain research text, not rich markdown.
+ * notes are plain research text, not rich markdown. Inline emphasis and code
+ * markers are stripped too: the writer emits **bold** and backticks that the
+ * reader should see as plain text, not literals.
  */
 function ProseNotes({ text }) {
   const blocks = String(text ?? "")
@@ -209,17 +242,26 @@ function ProseNotes({ text }) {
 
   if (!blocks.length) return <div className="text-[12px] text-fg-faint">(empty)</div>;
 
+  // Strip **bold**, *italic* and `code` inline markers — they leak from the
+  // model's notes and read as literals. The stripper runs char-wise so paired
+  // markers inside a line all go, and a stray unmatched marker is dropped too.
+  const stripInline = (s) => s
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[*`]/g, "");
+
   return (
     <div className="space-y-3">
       {blocks.map((block, i) => {
         const isHeading = /^#{1,3}\s/.test(block);
         const content = isHeading
-          ? block.replace(/^#{1,3}\s*/, "").trim()
-          : block.split("\n").map((l) => l.replace(/^[-*•]\s*/, "").trim()).filter(Boolean).join(" ");
+          ? stripInline(block.replace(/^#{1,3}\s*/, "").trim())
+          : stripInline(block.split("\n").map((l) => l.replace(/^[-*•]\s*/, "").trim()).filter(Boolean).join(" "));
         return (
           <div
             key={i}
-            className={`leading-relaxed ${isHeading ? "text-[13.5px] font-semibold text-fg" : "text-[13px] text-fg-muted"}`}
+            className={`leading-relaxed ${isHeading ? "text-[15px] font-semibold text-fg" : "text-[15px] text-fg-muted"}`}
           >
             {content}
           </div>

@@ -548,6 +548,74 @@ export default function ChatView({
               : "Review the card above…";
   const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "record";
 
+  /** The bottom input bar — topic first, then free-text answers to questions,
+   *  then — once the deck exists — deck-editing turns. Shared by the greeting
+   *  column (centered above the fold) and the pinned footer of a working chat. */
+  const composerBar = (
+    <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt">
+      <div className="flex items-end gap-2 p-3 pb-2">
+        <textarea
+          ref={inputRef}
+          value={input}
+          onChange={(e) => { setInput(e.target.value); setFreeHint(""); }}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+          rows={1}
+          disabled={inputDisabled}
+          placeholder={placeholder}
+          className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
+        ></textarea>
+        <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+          </svg>
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-2 border-t border-line/60 px-3 pb-2.5 pt-2">
+        {!chat.topic && (
+          <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
+            <button
+              onClick={() => switchKind("deck")}
+              title="A topic becomes a themed deck"
+              className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "deck" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+            >
+              <LayersIcon className="h-3 w-3" /> Chat
+            </button>
+            <button
+              onClick={() => switchKind("report")}
+              title="A topic becomes a standalone written report"
+              className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "report" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
+            >
+              <DocIcon className="h-3 w-3" /> Report
+            </button>
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-2">
+          <div className="relative">
+            <select
+              value={model}
+              onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
+              disabled={inputDisabled}
+              title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model does the work"}
+              className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+            >
+              <option value="">auto · {defaultModel}</option>
+              {models.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+            <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // The greeting phase is the product's front door: hero + suggestion chips +
+  // composer as one vertically centred column, composer above the fold. The
+  // scroll viewport is gone, so there is no void between the chips and the bar.
+  const greeting = !chat.topic && !chat.produced;
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
@@ -562,8 +630,23 @@ export default function ChatView({
         )}
       </header>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-3xl space-y-4 px-6 py-8">
+      {greeting ? (
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6 py-10">
+          <div className="m-auto flex w-full max-w-3xl flex-col items-center gap-8">
+            <Welcome
+              chat={chat}
+              org={identity?.institution?.short}
+              onFill={(s) => { setInput(s); inputRef.current?.focus(); }}
+            />
+            <div className="w-full">
+              {composerBar}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto">
+            <div className="mx-auto max-w-3xl space-y-4 px-6 py-8">
           <Welcome
             chat={chat}
             org={identity?.institution?.short}
@@ -579,8 +662,8 @@ export default function ChatView({
           {!chat.plan && answered.map((q, i) => (
             <div key={q.key}>
               <Bubble role="assistant">
-                <div className="mb-0.5 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
-                <div className="text-[13px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
+                <div className="mb-0.5 text-[12px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
+                <div className="text-[15px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
               </Bubble>
               <div className="mt-0.5 flex justify-start pl-1">
                 <button
@@ -610,7 +693,7 @@ export default function ChatView({
               <Bubble key={i} role="user">{t.text}</Bubble>
             ) : (
               <Bubble key={i} role="assistant">
-                <div className="text-[12.5px] leading-relaxed text-fg">{t.text}</div>
+                <div className="text-[15px] leading-relaxed text-fg">{t.text}</div>
                 {t.thumbs?.length > 0 && (
                   <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
                     {t.thumbs.map((src, j) => (
@@ -619,7 +702,7 @@ export default function ChatView({
                   </div>
                 )}
                 {t.problems?.length > 0 && (
-                  <div className="mt-2 text-[11px] leading-relaxed text-amber">{t.problems.slice(0, 3).join(" · ")}</div>
+                  <div className="mt-2 text-[12px] leading-relaxed text-amber">{t.problems.slice(0, 3).join(" · ")}</div>
                 )}
               </Bubble>
             )
@@ -702,8 +785,11 @@ export default function ChatView({
 
           {(phase === "running" || (busy && (phase === "summary" || phase === "outline" || phase === "editing"))) && (
             <Bubble role="assistant">
-              <div className="flex items-center gap-2 text-[12px] text-fg-muted">
-                <Spinner /> {status}
+              <div className="flex items-center gap-2.5 text-[12px] text-fg-muted">
+                <span className="flex items-center gap-1">
+                  <span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" />
+                </span>
+                {status}
               </div>
               {busy && (
                 <div className="mt-2 flex justify-end">
@@ -758,63 +844,7 @@ export default function ChatView({
 
       <footer className="shrink-0 border-t border-line px-6 py-4">
         <div className="mx-auto max-w-3xl">
-          <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt">
-            <div className="flex items-end gap-2 p-3 pb-2">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => { setInput(e.target.value); setFreeHint(""); }}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-                rows={1}
-                disabled={inputDisabled}
-                placeholder={placeholder}
-                className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
-              />
-              <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
-                </svg>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-2 border-t border-line/60 px-3 pb-2.5 pt-2">
-              {!chat.topic && (
-                <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
-                  <button
-                    onClick={() => switchKind("deck")}
-                    title="A topic becomes a themed deck"
-                    className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "deck" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
-                  >
-                    <LayersIcon className="h-3 w-3" /> Chat
-                  </button>
-                  <button
-                    onClick={() => switchKind("report")}
-                    title="A topic becomes a standalone written report"
-                    className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "report" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
-                  >
-                    <DocIcon className="h-3 w-3" /> Report
-                  </button>
-                </div>
-              )}
-
-              <div className="ml-auto flex items-center gap-2">
-                <div className="relative">
-                  <select
-                    value={model}
-                    onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
-                    disabled={inputDisabled}
-                    title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model does the work"}
-                    className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
-                  >
-                    <option value="">auto · {defaultModel}</option>
-                    {models.map((m) => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                  <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-                </div>
-              </div>
-            </div>
-          </div>
+          {composerBar}
           {freeHint && <div className="mt-1.5 px-1 text-[11px] text-amber">{freeHint}</div>}
           <div className="mt-1.5 px-1 text-[10.5px] text-fg-faint">
             {chat.kind === "report"
@@ -827,6 +857,8 @@ export default function ChatView({
           </div>
         </div>
       </footer>
+      </>
+      )}
     </div>
   );
 }
@@ -836,11 +868,11 @@ export default function ChatView({
 function Welcome({ chat, org, onFill }) {
   if (chat.topic || chat.produced) return null;
   return (
-    <div className="pt-8 text-center">
-      <h1 className="text-[2rem] font-semibold tracking-tight text-fg">
+    <div className="text-center">
+      <h1 className="text-[2.5rem] font-semibold leading-tight tracking-tight text-fg">
         {chat.kind === "report" ? "What would you like to write a report about?" : "What would you like to present today?"}
       </h1>
-      <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-fg-muted">
+      <p className="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-fg-muted">
         {chat.kind === "report"
           ? "Send a topic and I'll ask a few questions first — depth, density, branding — then the report is researched, written and rendered. The graded section order is the structure."
           : org
@@ -848,12 +880,12 @@ function Welcome({ chat, org, onFill }) {
             : "Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise."}
       </p>
       {chat.kind === "deck" && (
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+        <div className="mt-5 flex flex-wrap justify-center gap-1.5">
           {DECK_SUGGESTIONS.map((s) => (
             <button
               key={s}
               onClick={() => onFill(s)}
-              className="rounded-full border border-line px-2.5 py-1 text-[11px] text-fg-muted transition hover:border-accent/60 hover:text-fg"
+              className="rounded-full border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-accent/60 hover:text-fg"
             >
               {s}
             </button>
@@ -870,7 +902,7 @@ function Bubble({ role, children }) {
       <div
         className={
           role === "user"
-            ? "rounded-xl rounded-br-sm bg-accent/10 px-3.5 py-2.5 text-[13px] leading-relaxed break-words text-fg"
+            ? "rounded-xl rounded-br-sm bg-accent/10 px-3.5 py-2.5 text-[15px] leading-relaxed break-words text-fg"
             : "rounded-xl rounded-bl-sm border border-line bg-panel px-3.5 py-2.5"
         }
       >
