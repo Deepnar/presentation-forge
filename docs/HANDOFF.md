@@ -90,6 +90,12 @@ landing; (2) report button states — a shared report-write state so Render
     disabled and "Planning/Writing section N of M" + Stop show; navigating to
     the ReportView for the same slug mid-write surfaces the same write status +
     Stop and no render action; Stop clears the status. All pass.
+  - The auto-download assertion needs a *polling* hook, not a fixed timeout:
+    the LibreOffice render outlives any short wait, so the test installs a
+    click hook on download anchors and polls `window.__autoDownload` until it
+    fires (or 90s elapses). The one-click "render and download" is confirmed
+    working: Render .docx click → spinner → render completes → synthetic
+    anchor fires the browser download → Download link appears.
   - `mimo-v2.5` vision check on the screenshots: landing hero/auth bar clean,
     deck detail clean, report view's sticky bar with Render .docx + Download
     clean, and the mid-write ReportView shows "Planning the report…" + Stop
