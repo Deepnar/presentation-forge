@@ -113,6 +113,15 @@ const { deck } = await generateDeck({
 });
 ```
 
+## Keyboard shortcuts
+
+| Keys | Action |
+|---|---|
+| `Ctrl+K` | focus the sidebar search |
+| `Ctrl+N` | start a new chat |
+| `Ctrl+Z` / `Ctrl+Y` | undo / redo a deck edit (in a deck view) |
+| `Escape` | close the open modal / lightbox |
+
 ## Themes
 
 One YAML file each, split into two halves that never overlap:
@@ -170,6 +179,9 @@ Environment (set in `docker/.env`, all optional):
 | `FORGE_SMTP_HOST/PORT/USER/PASS/FROM/TO` | sweep email (see `src/mail.js`) |
 | `FORGE_SMTP_SECURE=1` | implicit TLS for SMTP |
 | `FORGE_AUTH_RATE_LIMIT` | login/register attempts per 10 min per IP (default 20) |
+| `FORGE_OPEN_REGISTRATION` | `0` closes self-signup; the owner account is seeded from `FORGE_ADMIN_EMAIL`/`FORGE_ADMIN_PASSWORD` at boot |
+| `FORGE_SESSION_TTL_DAYS` | session idle timeout in days (default 30; a token unused that long is revoked) |
+| `FORGE_TRUST_PROXY=1` | set behind a reverse proxy so the rate limiter sees real client IPs |
 | `FORGE_UI_ORIGIN` | comma-separated allowed CORS origins (empty = same-origin only) |
 
 The monthly sweep is what keeps the server from becoming cloud storage: decks
