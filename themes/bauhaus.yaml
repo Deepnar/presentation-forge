@@ -54,6 +54,11 @@ tokens:
   shadow:
     card: { type: outer, blur: 0, offset: 0, angle: 90, color: "1A1A1A", opacity: 0 }
 
+  # Bauhaus signature: a hard primary-colour geometric shape behind the section
+  # divider headlines — the red circle/triangle from the constructivist kit.
+  bauhaus:
+    block: true
+
   plate:
     enabled: false
 
