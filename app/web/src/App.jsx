@@ -3,10 +3,10 @@ import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
-import DocsModal from "./components/DocsModal.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import LoginScreen from "./components/LoginScreen.jsx";
 import ParticleField from "./components/ParticleField.jsx";
+import Home from "./views/Home.jsx";
 import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
@@ -28,14 +28,13 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
-  const [view, setView] = useState("chat"); // chat | deck | report | themes | identity
+  const [view, setView] = useState("chat"); // chat | deck | report | research | themes | identity | home
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
-  const [docsOpen, setDocsOpen] = useState(false);
   const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [focusSearch, setFocusSearch] = useState(0);
@@ -80,8 +79,7 @@ export default function App() {
 
   useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
 
-  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat, Escape closes
-  // the docs modal.
+  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat.
   useEffect(() => {
     const onKey = (e) => {
       const mod = e.ctrlKey || e.metaKey;
@@ -91,13 +89,11 @@ export default function App() {
       } else if (mod && e.key.toLowerCase() === "n") {
         e.preventDefault();
         newChat();
-      } else if (e.key === "Escape" && docsOpen) {
-        setDocsOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [docsOpen, user]);
+  }, [user]);
 
   const bumpDeck = () => setDeckVersion((v) => v + 1);
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
@@ -157,6 +153,7 @@ export default function App() {
         break;
       case "themes":
       case "identity":
+      case "home":
         setView(r.view);
         break;
       case "chat":
@@ -249,9 +246,25 @@ export default function App() {
   }
 
   if (!user) {
+    const route = parseHash(window.location.hash);
+    // The landing page is public — full-bleed, no auth gate. Any other route
+    // (or an empty hash) is the login screen.
+    if (route.view === "home") {
+      return (
+        <div className="relative h-full overflow-hidden">
+          <ParticleField boost={1.5} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+          <div className="relative z-10 h-full overflow-y-auto">
+            <Home
+              onStartChat={() => { navigate("chat"); }}
+              onBrowseThemes={() => navigate("themes")}
+            />
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="relative h-full overflow-hidden">
-        <ParticleField className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
+        <ParticleField boost={1.5} className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
         <div className="relative z-10 h-full">
           <LoginScreen onDone={(u) => setUser(u)} />
         </div>
@@ -267,7 +280,6 @@ export default function App() {
         <HeaderBar
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
-          onOpenDocs={() => setDocsOpen(true)}
           onHome={goHome}
           onOpenIdentity={() => setView("identity")}
           user={user}
@@ -279,30 +291,32 @@ export default function App() {
         />
 
         <div className="isolate flex min-h-0 flex-1">
-          <div
-            onMouseEnter={() => setRailHover(true)}
-            onMouseLeave={() => setRailHover(false)}
-            className="flex"
-          >
-            <Sidebar
-              chats={chats}
-              decks={decks}
-              activeChatId={activeChatId}
-              activeSlug={view === "deck" || view === "report" || view === "research" ? activeSlug : null}
-              view={view}
-              open={leftOpen}
-              focusSearch={focusSearch}
-              onOpenChat={openChat}
-              onOpenDeck={openDeck}
-              onOpenReport={openReport}
-              onNewChat={newChat}
-              onView={(v) => navigate(v)}
-              onDeleteChat={handleDeleteChat}
-              onDeleteDeck={handleDeleteDeck}
-            />
-          </div>
+          {view !== "home" && (
+            <div
+              onMouseEnter={() => setRailHover(true)}
+              onMouseLeave={() => setRailHover(false)}
+              className="flex"
+            >
+              <Sidebar
+                chats={chats}
+                decks={decks}
+                activeChatId={activeChatId}
+                activeSlug={view === "deck" || view === "report" || view === "research" ? activeSlug : null}
+                view={view}
+                open={leftOpen}
+                focusSearch={focusSearch}
+                onOpenChat={openChat}
+                onOpenDeck={openDeck}
+                onOpenReport={openReport}
+                onNewChat={newChat}
+                onView={(v) => navigate(v)}
+                onDeleteChat={handleDeleteChat}
+                onDeleteDeck={handleDeleteDeck}
+              />
+            </div>
+          )}
 
-          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in relative min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
             <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
               <ChatView
@@ -360,10 +374,15 @@ export default function App() {
                 onAuthClick={() => setAuthOpen(true)}
               />
             )}
+            {view === "home" && (
+              <Home
+                onStartChat={newChat}
+                onBrowseThemes={() => navigate("themes")}
+              />
+            )}
           </main>
         </div>
 
-        {docsOpen && <DocsModal onClose={() => setDocsOpen(false)} />}
         {authOpen && (
           <AuthModal
             onDone={(u) => { setUser(u); setAuthOpen(false); }}
@@ -376,7 +395,7 @@ export default function App() {
 }
 
 /**
- * A one-time, dismissible first-run hint explaining where models come from —
+ * A one-time, dismissible first-run toast explaining where models come from —
  * the only setup a fresh server needs. Shown once per account (localStorage),
  * never again, and never a wizard.
  */
@@ -388,33 +407,34 @@ function FirstRunHint({ userEmail }) {
       return true;
     }
   });
+  const dismiss = () => {
+    try { localStorage.setItem(`forge.hint.models.${userEmail ?? ""}`, "1"); } catch {}
+    setShow(false);
+  };
   if (!show) return null;
   return (
-    <div className="mx-auto mb-1 mt-3 flex max-w-3xl items-start gap-3 rounded-card border border-line bg-panel px-4 py-3 text-[12px] leading-relaxed text-fg-muted">
-      <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 8h.01M11 12h1v4h1" />
-      </svg>
-      <p className="min-w-0 flex-1">
-        <span className="font-semibold text-fg">Where do the models live?</span>{" "}
-        LOCAL uses Ollama — install it on this machine (or point{" "}
-        <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[11px]">config/models.yaml</code>{" "}
-        at another host). CLOUD needs an API key: open Identity → Cloud and attach one. Research and
-        critique models are separate — the LOCAL/CLOUD toggle moves only your writing model.
-      </p>
-      <button
-        onClick={() => {
-          try { localStorage.setItem(`forge.hint.models.${userEmail ?? ""}`, "1"); } catch {}
-          setShow(false);
-        }}
-        className="shrink-0 rounded-md p-1 text-fg-faint transition hover:bg-hover hover:text-fg"
-        title="Dismiss"
-        aria-label="Dismiss first-run hint"
-      >
-        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M18 6 6 18M6 6l12 12" />
-        </svg>
-      </button>
+    <div className="toast-in absolute right-4 top-3 z-30">
+      <div className="flex items-center gap-2.5 rounded-full border border-line-strong bg-panel py-1.5 pl-3.5 pr-1.5 shadow-[var(--shadow-float)]">
+        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent-tint text-accent">
+          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+          </svg>
+        </span>
+        <span className="whitespace-nowrap text-[12px] text-fg-muted">
+          Models come from <span className="font-medium text-fg">Ollama</span> or your{" "}
+          <span className="font-medium text-fg">cloud key</span> — switch in Identity.
+        </span>
+        <button
+          onClick={dismiss}
+          className="grid h-6 w-6 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg"
+          title="Dismiss"
+          aria-label="Dismiss first-run hint"
+        >
+          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

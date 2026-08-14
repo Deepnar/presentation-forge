@@ -14,7 +14,7 @@ import { setModelMode } from "../lib/modelMode.js";
  * reachable when a key is attached; without one the button is disabled and
  * points at the Settings/Cloud section where the key lands.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, onOpenIdentity, user, onAuthClick, onLogout }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdentity, user, onAuthClick, onLogout }) {
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("local");
 
@@ -52,16 +52,16 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, 
         {leftOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
       </button>
 
-      <button
-        onClick={onHome}
+      <a
+        href="#/chat"
         title="Home"
-        className="flex min-w-0 items-center gap-2.5 rounded-md"
+        className="flex min-w-0 items-center gap-2.5 rounded-md transition hover:opacity-90"
       >
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-accent text-[13px] font-bold text-white">
           F
         </span>
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
-      </button>
+      </a>
 
       {configured ? (
         <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
@@ -91,13 +91,13 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onOpenDocs, onHome, 
       )}
 
       <div className="ml-auto flex items-center gap-1">
-        <button
-          onClick={onOpenDocs}
+        <a
+          href="#/home"
           className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
         >
           <DocIcon className="h-4 w-4" />
-          Docs
-        </button>
+          Tour
+        </a>
         <a
           href="https://github.com/Deepnar/presentation-forge"
           target="_blank"

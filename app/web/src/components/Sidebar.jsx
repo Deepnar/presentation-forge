@@ -116,8 +116,9 @@ export default function Sidebar({
                       <div className="space-y-0.5">
                         {list.map((c) => (
                           <div key={c.id} className="group relative">
-                            <button
-                              onClick={() => onOpenChat(c.id)}
+                            <a
+                              href={`#/chat/${c.id}`}
+                              onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenChat(c.id); } }}
                               title={c.title}
                               className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
                                 activeChatId === c.id
@@ -134,7 +135,7 @@ export default function Sidebar({
                                   {c.kind === "report" ? "report" : "deck"} · {c.produced ? "ready · " : ""}{relative(c.updatedAt)}
                                 </span>
                               </span>
-                            </button>
+                            </a>
                             <RowMenu
                               open={openMenu === `c-${c.id}`}
                               onToggle={(v) => setOpenMenu(v ? `c-${c.id}` : null)}
@@ -164,8 +165,9 @@ export default function Sidebar({
                 <div className="space-y-0.5">
                   {filtered.map((d) => (
                     <div key={d.slug} className="group relative">
-                      <button
-                        onClick={() => onOpenDeck(d.slug)}
+                      <a
+                        href={`#/deck/${d.slug}`}
+                        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenDeck(d.slug); } }}
                         title={d.title}
                         className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
                           activeSlug === d.slug
@@ -175,13 +177,13 @@ export default function Sidebar({
                       >
                         <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[12.5px] font-medium text-fg">{d.title}</span>
+                          <span className="line-clamp-2 text-[12.5px] font-medium leading-snug text-fg">{d.title}</span>
                           <span className="block truncate text-[10.5px] text-fg-faint">
                             {d.report ? "report" : `${d.slides} slides`} · {relative(d.updated)}
                           </span>
                         </span>
                         {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
-                      </button>
+                      </a>
                       <RowMenu
                         open={openMenu === `d-${d.slug}`}
                         onToggle={(v) => setOpenMenu(v ? `d-${d.slug}` : null)}
@@ -209,8 +211,8 @@ export default function Sidebar({
 
           <div className="mt-auto border-t border-line p-2.5">
             <div className="mb-2 space-y-0.5">
-              <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" onClick={() => onView("themes")} />
-              <NavRow active={view === "identity"} icon={IdIcon} label="Identity" onClick={() => onView("identity")} />
+              <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
+              <NavRow active={view === "identity"} icon={IdIcon} label="Identity" href="#/identity" />
             </div>
             <Button variant="primary" className="w-full" onClick={() => onNewChat("deck")}>
               <PlusIcon className="h-3.5 w-3.5" />
@@ -220,9 +222,9 @@ export default function Sidebar({
         </>
       ) : (
         <div className="flex flex-col items-center gap-1 py-3">
-          <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" onClick={() => onOpenChat(activeChatId) || onView("chat")} />
-          <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" onClick={() => onView("themes")} />
-          <IconButton active={view === "identity"} icon={IdIcon} title="Identity" onClick={() => onView("identity")} />
+          <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" href="#/chat" />
+          <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
+          <IconButton active={view === "identity"} icon={IdIcon} title="Identity" href="#/identity" />
           <div className="mt-auto" />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
         </div>
@@ -331,10 +333,11 @@ function TabButton({ active, onClick, children }) {
   );
 }
 
-function NavRow({ active, icon: Icon, label, onClick }) {
+function NavRow({ active, icon: Icon, label, href }) {
   return (
-    <button
-      onClick={onClick}
+    <a
+      href={href}
+      onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) e.preventDefault(); }}
       className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition ${
         active ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "hover:bg-hover"
       }`}
@@ -342,20 +345,35 @@ function NavRow({ active, icon: Icon, label, onClick }) {
       <Icon className={`h-4 w-4 shrink-0 ${active ? "text-accent" : "text-fg-faint"}`} />
       <span className={`text-[13px] font-medium ${active ? "text-fg" : "text-fg-muted"}`}>{label}</span>
       <ChevronDown className="ml-auto h-3 w-3 -rotate-90 text-fg-faint" />
-    </button>
+    </a>
   );
 }
 
-function IconButton({ icon: Icon, title, onClick, active }) {
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      className={`grid h-9 w-9 place-items-center rounded-lg transition ${
-        active ? "bg-raised text-accent" : "text-fg-faint hover:bg-hover hover:text-fg"
-      }`}
-    >
+function IconButton({ icon: Icon, title, onClick, href, active }) {
+  const inner = (
+    <>
       <Icon className="h-4 w-4" />
+    </>
+  );
+  const cls = `grid h-9 w-9 place-items-center rounded-lg transition ${
+    active ? "bg-raised text-accent" : "text-fg-faint hover:bg-hover hover:text-fg"
+  }`;
+  if (href) {
+    return (
+      <a
+        href={href}
+        title={title}
+        aria-label={title}
+        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) e.preventDefault(); }}
+        className={cls}
+      >
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button onClick={onClick} title={title} aria-label={title} className={cls}>
+      {inner}
     </button>
   );
 }

@@ -145,7 +145,11 @@ export function initialBriefing(identity) {
     },
     audience: "",
     emphasis: "",
-    theme: "",
+    // The remembered default theme (set from the Themes gallery) wins over the
+    // generic default; a saved preset overrides it on pick.
+    theme: (() => {
+      try { return localStorage.getItem("forge.defaultTheme") ?? ""; } catch { return ""; }
+    })(),
     maxSlides: 0,        // 0 = auto
     slidesPerMember: null,
     density: "balanced",
