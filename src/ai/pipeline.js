@@ -11,6 +11,7 @@ import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
 import { generateReport } from "./report.js";
 import { loadIdentity, deepMerge } from "./identity.js";
+import { researchProfile, researchExcerptCap } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -59,13 +60,17 @@ export async function uniqueSlug(base) {
   * the model plus a sources list (web sources and papers marked kind:"paper").
   */
 export async function runResearch(brief, sources = [], onProgress, { papers = false } = {}) {
+  // The research role's per-transport depth budget: the cloud override runs
+  // every stage of the pass deeper (more queries, higher source/read caps,
+  // more papers and fuller full-text coverage).
+  const profile = await researchProfile();
   let out = [];
   const allSources = [];
   if (sources.length) {
     const pages = await Promise.all(sources.map((url) => fetchPage(url)));
     out = pages.filter((p) => p.ok);
   } else if (brief?.trim()) {
-    const r = await deepResearch(brief.trim(), { onProgress });
+    const r = await deepResearch(brief.trim(), { onProgress, profile });
     out = r.pages;
   }
   allSources.push(...out.map(({ url, title, words }) => ({ url, title, words })));
@@ -76,9 +81,9 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
   if (papers && brief?.trim()) {
     onProgress?.({ status: "papers" });
     const { searchPapers, paperFullTexts, mergePapers } = await import("../papers.js");
-    const { papers: found } = await searchPapers(brief.trim());
+    const { papers: found } = await searchPapers(brief.trim(), { limit: profile.papers_limit });
     allSources.push(...mergePapers([], found));
-    const full = await paperFullTexts(found);
+    const full = await paperFullTexts(found, { top: profile.papers_fulltext });
     for (const f of full) {
       out.push(f);
       allSources.push({ url: f.url, title: f.title, words: f.words, kind: "paper" });
@@ -153,7 +158,7 @@ export async function createDeck({
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
     brief: brief.trim(), theme: themeObj, identity: identityObj,
-    research: excerptResearch(researchText), maxSlides, model, signal,
+    research: excerptResearch(researchText, await researchExcerptCap({ model })), maxSlides, model, signal,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");
@@ -266,7 +271,7 @@ export async function createDeckFromReport({
   onProgress?.({ status: "planning" });
   const { plan, stats } = await planDeck({
     brief, theme: themeObj, identity: identityObj,
-    research: excerptResearch(researchText), model, signal,
+    research: excerptResearch(researchText, await researchExcerptCap({ model })), model, signal,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");
@@ -330,7 +335,7 @@ export async function generateFromPlan({
     plan,
     theme: themeObj,
     identity: identityObj,
-    research: excerptResearch(researchText),
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
     maxSlides: meta.maxSlides ?? 24,
     slidesPerMember: meta.slidesPerMember ?? null,
     model,
@@ -442,7 +447,7 @@ export async function sweepDensity({
     deck,
     density,
     theme: themeObj,
-    research: excerptResearch(researchText),
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
     model,
     signal,
     onProgress: (p) => onProgress?.({ status: "sweeping", ...p }),
@@ -515,7 +520,7 @@ export async function convertSlideType({
     index: Number(index),
     targetType: type,
     theme: themeObj,
-    research: excerptResearch(researchText),
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
     model,
     signal,
   });

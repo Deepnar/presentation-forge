@@ -95,9 +95,15 @@ function rankByBrief(scoreText, brief) {
   return hits / ts.length;
 }
 
-/** Query both APIs, dedupe by canonical id, rank by brief term overlap. */
+/**
+ * Query both APIs, dedupe by canonical id, rank by brief term overlap. `limit`
+ * is the number of papers kept; the upstream result windows scale with it so a
+ * deeper pass (the cloud research profile) still sees enough raw candidates to
+ * rank from.
+ */
 export async function searchPapers(brief, { limit = 6 } = {}) {
   const term = String(brief ?? "").slice(0, 200);
+  const upstream = Math.max(12, limit * 2);
   const out = [];
   const seen = new Set();
 
@@ -109,7 +115,7 @@ export async function searchPapers(brief, { limit = 6 } = {}) {
   };
 
   try {
-    const xml = await getAtom(ARXIV, { search_query: `all:${term}`, start: 0, max_results: 12 });
+    const xml = await getAtom(ARXIV, { search_query: `all:${term}`, start: 0, max_results: upstream });
     for (const p of parseArxiv(xml)) {
       absorb({
         kind: "paper",
@@ -130,7 +136,7 @@ export async function searchPapers(brief, { limit = 6 } = {}) {
 
   try {
     const json = await getJSON(CROSSREF, {
-      query: term, rows: 12, select: "DOI,title,author,published,abstract,container-title,URL",
+      query: term, rows: upstream, select: "DOI,title,author,published,abstract,container-title,URL",
     });
     for (const item of json.message?.items ?? []) {
       const doi = item.DOI ?? "";

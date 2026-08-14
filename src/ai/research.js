@@ -14,17 +14,22 @@
  * budget and one failure mode to think about.
  */
 
-import { chatJSON } from "./ollama.js";
+import { chatJSON, DEFAULT_EXCERPT_CHARS } from "./ollama.js";
 import { researchQuery } from "../search.js";
 
-export const RESEARCH_EXCERPT = 80_000;
+/**
+ * The cap the LOCAL author's 32768 num_ctx window has headroom for. On the
+ * cloud transport the author role's `excerpt_chars` override raises it; callers
+ * that know the transport pass the resolved cap explicitly.
+ */
+export const RESEARCH_EXCERPT = DEFAULT_EXCERPT_CHARS;
 
 /** Cap to the excerpt budget, ending on a line boundary when truncated. */
-export function excerptResearch(text) {
+export function excerptResearch(text, cap = RESEARCH_EXCERPT) {
   if (!text) return "";
-  if (text.length <= RESEARCH_EXCERPT) return text;
-  const cut = text.lastIndexOf("\n", RESEARCH_EXCERPT);
-  return text.slice(0, cut > 0 ? cut : RESEARCH_EXCERPT);
+  if (text.length <= cap) return text;
+  const cut = text.lastIndexOf("\n", cap);
+  return text.slice(0, cut > 0 ? cut : cap);
 }
 
 /**
@@ -102,11 +107,12 @@ const ANGLES = [
 ];
 
 /**
- * Expand one brief into 5-7 angle queries: the 6 angles above, each a concrete
- * search term. Falls back to the brief alone when the model is unavailable, so
- * a dead model degrades depth, never the pass.
+ * Expand one brief into 5-`max` angle queries: the 6 angles above, each a
+ * concrete search term. Falls back to the brief alone when the model is
+ * unavailable, so a dead model degrades depth, never the pass. `max` is the
+ * per-transport budget — the cloud research profile opens it up.
  */
-export async function expandQueries(brief, { chat } = {}) {
+export async function expandQueries(brief, { chat, max = 8 } = {}) {
   const schema = {
     type: "object",
     required: ["queries"],
@@ -114,7 +120,7 @@ export async function expandQueries(brief, { chat } = {}) {
       queries: {
         type: "array",
         minItems: 5,
-        maxItems: 8,
+        maxItems: max,
         items: { type: "string", minLength: 3, maxLength: 140 },
       },
     },
@@ -138,7 +144,7 @@ export async function expandQueries(brief, { chat } = {}) {
       ],
     });
     const queries = (res.data?.queries ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3);
-    return [...new Set([String(brief).trim(), ...queries])].slice(0, 8);
+    return [...new Set([String(brief).trim(), ...queries])].slice(0, max);
   } catch {
     return [String(brief).trim()];
   }
@@ -149,7 +155,7 @@ export async function expandQueries(brief, { chat } = {}) {
  * distinct domains and an academic/authoritative voice. Returns the follow-up
  * queries for whatever is missing, or [] when the pass is diverse enough.
  */
-export async function diversityFollowups(brief, sources, { chat } = {}) {
+export async function diversityFollowups(brief, sources, { chat, max = 2 } = {}) {
   const s = researchSummary(sources);
   const follows = [];
   if (s.distinctDomains < 3) follows.push(`${brief} different sources sites`);
@@ -157,15 +163,15 @@ export async function diversityFollowups(brief, sources, { chat } = {}) {
   if (s.listicleCount > s.academicCount && s.academicCount === 0) {
     follows.push(`${brief} .edu OR .ac.in academic source`);
   }
-  return follows.slice(0, 2);
+  return follows.slice(0, max);
 }
 
 /**
  * Gap-driven follow-up: ask the research role what an examiner for this
  * subject would expect a strong submission to cover, and search those gaps.
- * Returns 1-3 concrete queries, or [] when the model is unavailable.
+ * Returns 1-`max` concrete queries, or [] when the model is unavailable.
  */
-export async function gapQueries(brief, notes, { chat } = {}) {
+export async function gapQueries(brief, notes, { chat, max = 3 } = {}) {
   const schema = {
     type: "object",
     required: ["gaps"],
@@ -173,7 +179,7 @@ export async function gapQueries(brief, notes, { chat } = {}) {
       gaps: {
         type: "array",
         minItems: 1,
-        maxItems: 3,
+        maxItems: max,
         items: { type: "string", minLength: 3, maxLength: 140 },
       },
     },
@@ -194,7 +200,7 @@ export async function gapQueries(brief, notes, { chat } = {}) {
         { role: "user", content: `TOPIC\n${brief}\n\nNOTES EXCERPT\n${String(notes ?? "").slice(0, 3000)}` },
       ],
     });
-    return (res.data?.gaps ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3).slice(0, 3);
+    return (res.data?.gaps ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3).slice(0, max);
   } catch {
     return [];
   }
@@ -204,49 +210,57 @@ export async function gapQueries(brief, notes, { chat } = {}) {
  * The deep research pass: expand the brief into angle queries, run each at a
  * higher read budget than the single-shot `researchQuery`, then follow up on
  * the top sources, then close the two gaps the diversity guard finds (missing
- * domains / missing academic voice). Returns the deduplicated accumulated pages.
+ * domains / missing academic voice). The `profile` is the research role's
+ * per-transport depth budget — the cloud override runs every stage deeper.
+ * Returns the deduplicated accumulated pages.
  */
-export async function deepResearch(brief, { onProgress } = {}) {
-  const queries = await expandQueries(brief);
+export async function deepResearch(brief, { onProgress, profile } = {}) {
+  const p = {
+    per_query_limit: 8, per_query_read: 4,
+    followup_sources: 3, followup_limit: 6, followup_read: 3,
+    gap_max: 3, gap_limit: 5, gap_read: 3,
+    ...(profile ?? {}),
+  };
+  const queries = await expandQueries(brief, { max: profile?.angle_max ?? 8 });
   const pages = [];
   const seenUrl = new Set();
 
   const absorb = (batch) => {
-    for (const p of batch) {
-      if (p.ok && !seenUrl.has(p.url)) {
-        seenUrl.add(p.url);
-        pages.push(p);
+    for (const item of batch) {
+      if (item.ok && !seenUrl.has(item.url)) {
+        seenUrl.add(item.url);
+        pages.push(item);
       }
     }
   };
 
   for (const q of queries) {
     onProgress?.({ query: q });
-    absorb((await researchQuery(q, { limit: 8, read: 4 })).pages);
+    absorb((await researchQuery(q, { limit: p.per_query_limit, read: p.per_query_read })).pages);
   }
 
   // Follow up the top sources: the richest extracted pages, queried for the
   // material around them. Capped so a degenerate brief cannot spin forever.
   const top = [...pages]
     .sort((a, b) => (b.words ?? 0) - (a.words ?? 0))
-    .slice(0, 3);
+    .slice(0, p.followup_sources);
   for (const s of top) {
     const q = String(s.title ?? "").trim().slice(0, 90);
     if (!q) continue;
     onProgress?.({ query: `↳ ${q}` });
-    absorb((await researchQuery(q, { limit: 6, read: 3 })).pages);
+    absorb((await researchQuery(q, { limit: p.followup_limit, read: p.followup_read })).pages);
   }
 
   // Diversity + examiner-gap follow-ups: if the pass is one-domain or has no
   // academic voice, run the targeted queries the guard returns.
-  const sourceRecords = pages.map((p) => ({ url: p.url, title: p.title, words: p.words }));
-  for (const q of await diversityFollowups(brief, sourceRecords)) {
+  const sourceRecords = pages.map((page) => ({ url: page.url, title: page.title, words: page.words }));
+  for (const q of await diversityFollowups(brief, sourceRecords, { max: p.diversity_max ?? 2 })) {
     onProgress?.({ query: `↳ ${q}` });
-    absorb((await researchQuery(q, { limit: 6, read: 3 })).pages);
+    absorb((await researchQuery(q, { limit: p.followup_limit, read: p.followup_read })).pages);
   }
-  for (const q of await gapQueries(brief, pages.map((p) => p.text).join("\n\n").slice(0, 4000))) {
+  for (const q of await gapQueries(brief, pages.map((page) => page.text).join("\n\n").slice(0, 4000), { max: p.gap_max })) {
     onProgress?.({ query: `gap ↳ ${q}` });
-    absorb((await researchQuery(q, { limit: 5, read: 3 })).pages);
+    absorb((await researchQuery(q, { limit: p.gap_limit, read: p.gap_read })).pages);
   }
 
   return { query: brief, pages };
