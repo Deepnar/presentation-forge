@@ -1,47 +1,79 @@
 @import "tailwindcss";
 
 /* Design tokens. Tailwind v4 exposes each of these as a utility, so the app has
-   one vocabulary instead of ad-hoc white/10 opacity values scattered around. */
+   one vocabulary instead of ad-hoc white/10 opacity values scattered around.
+   The shell is "ember on warm charcoal": the neutral ramp carries a red-brown
+   undertone so every surface belongs to the same family as the accent, and the
+   accent itself is bright enough to glow on dark instead of muting into it. */
 @theme {
-  /* Surfaces, darkest to lightest. */
-  --color-base: #0e0e0f;
-  --color-sunken: #0a0a0b;
-  --color-panel: #151517;
-  --color-raised: #1c1c1f;
-  --color-prompt: #1d1d20;
-  --color-hover: #232327;
+  /* Surfaces, darkest to lightest. Warm, not grey — a bindery at night. */
+  --color-base: #141110;
+  --color-sunken: #0e0b0a;
+  --color-panel: #1b1715;
+  --color-raised: #241f1b;
+  --color-prompt: #272119;
+  --color-hover: #2f2822;
+  --color-field: #221c17;
 
   /* Hairlines. Two weights is enough; more reads as noise. */
-  --color-line: #26262b;
-  --color-line-strong: #34343a;
+  --color-line: #332b25;
+  --color-line-strong: #4a3d33;
 
-  /* Text ramp. */
-  --color-fg: #ededec;
-  --color-fg-muted: #9a9a97;
-  --color-fg-faint: #66665f;
+  /* Text ramp — warm paper, and the muted register lifted to ~8:1 on panel. */
+  --color-fg: #f2ede8;
+  --color-fg-muted: #b6a99d;
+  --color-fg-faint: #82746a;
 
-  /* Brand — matches the institution's terracotta so the tool and its output
-     read as one system. */
-  --color-accent: #c96a59;
-  --color-accent-hi: #d9806f;
-  --color-accent-dim: #6b3229;
-  --color-amber: #d99a3a;
-  --color-danger: #d9584e;
+  /* The ember: actions and moments. Brighter than before so it pops on warm
+     dark; the tints make accent-tinted surfaces a real material, not a blend. */
+  --color-accent: #e0705a;
+  --color-accent-hi: #ef8a70;
+  --color-accent-dim: #8a4433;
+  --color-accent-tint: rgb(224 112 92 / 0.12);
+  --color-accent-glow: rgb(224 112 92 / 0.16);
+
+  /* Supporting hues: amber is the spark (warnings, "new"), danger is crimson
+     so destructive actions are clearly distinct from the accent, success is a
+     low-chroma sage that sits in a warm palette. */
+  --color-amber: #e2a54a;
+  --color-danger: #e5484d;
+  --color-success: #93b576;
+  --color-overlay: rgb(12 9 8 / 0.72);
 
   --radius-card: 0.75rem;
   --radius-lg: 1.125rem;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-serif: Merriweather, ui-serif, Georgia, serif;
+  /* Type scale — one step per role, rem-based so it follows the root. The
+     caption floor is 12px; only the mono micro-labels in Badge sit below. */
+  --text-display: 2.5rem;
+  --text-heading: 1.75rem;
+  --text-title: 1.125rem;
+  --text-body: 0.9375rem;
+  --text-caption: 0.75rem;
+
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
-/* The shell's one easing. Everything that moves — view switches, the rails,
-   card hover, the carousel — uses this same curve so motion reads as one
-   system rather than a set of unrelated tweens. */
+/* The shell's one easing and one duration. Everything that moves — view
+   switches, the rails, card hover, toasts — uses these same values so motion
+   reads as one system rather than a set of unrelated tweens. */
 :root {
   --ease-shell: cubic-bezier(0.2, 0.8, 0.2, 1);
   --dur-shell: 220ms;
+
+  /* Elevation. Cards rest on the page (border outlines, shadow lifts); hover
+     gives the lift a real shadow to rise out of; floating chrome (popovers,
+     toasts, the lightbox bar) gets the deepest drop. */
+  --shadow-card:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 10px 24px -14px rgb(0 0 0 / 0.6);
+  --shadow-card-hover:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 20px 40px -18px rgb(0 0 0 / 0.75);
+  --shadow-float:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 28px 56px -22px rgb(0 0 0 / 0.85);
 }
 
 html,
@@ -55,8 +87,16 @@ body {
   background: var(--color-base);
   color: var(--color-fg);
   font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
   font-feature-settings: "cv05" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
+}
+
+/* The text cursor over anything selectable — accent, never the UA blue. */
+::selection {
+  background: rgb(224 112 92 / 0.35);
+  color: #fff;
 }
 
 /* Slides are light artefacts shown inside a dark tool. Matting them in white
@@ -83,7 +123,7 @@ body {
   box-shadow:
     inset 0 0 0 1px rgb(255 255 255 / 0.03),
     inset 0 1px 0 rgb(255 255 255 / 0.06),
-    0 30px 60px -30px rgb(0 0 0 / 0.6);
+    var(--shadow-card);
 }
 
 /* Panel surfaces get the same light-catch, subtler — enough to read as a
@@ -95,10 +135,11 @@ body {
     inset 0 1px 0 rgb(255 255 255 / 0.05);
 }
 
-/* Interactive cards (carousel, deck grid, theme cards): a slight lift with a
-   soft drop shadow on hover, and a settled press state. transform/opacity
-   only, on the shell's shared easing. */
+/* Interactive cards (carousel, deck grid, theme cards): a slight lift with the
+   card shadow growing to sell it, and a settled press state. transform/
+   opacity/box-shadow only, on the shell's shared easing. */
 .card-hover {
+  box-shadow: var(--shadow-card);
   transition:
     transform var(--dur-shell) var(--ease-shell),
     border-color var(--dur-shell) var(--ease-shell),
@@ -108,9 +149,7 @@ body {
 .card-hover:hover {
   transform: translateY(-2px);
   border-color: var(--color-line-strong);
-  box-shadow:
-    0 14px 28px -18px rgb(0 0 0 / 0.75),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  box-shadow: var(--shadow-card-hover);
 }
 .card-hover:active {
   transform: translateY(0);
@@ -125,8 +164,9 @@ body {
     0 1px 0 rgb(0 0 0 / 0.4);
 }
 
-/* Designed empty states: a muted icon in a ring, then the message. The bare
-   dashed box was "no data" noise; this reads as an intentional resting state. */
+/* Designed empty states: a muted icon in a ring, then the message, warmed by
+   one ember glow. The bare dashed box was "no data" noise; this reads as an
+   intentional resting state. */
 .empty-state,
 .empty-state-mini {
   display: flex;
@@ -137,7 +177,7 @@ body {
 .empty-state {
   padding: 3rem 2rem;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 0.025), transparent 60%),
+    radial-gradient(52rem 30rem at 50% 12%, var(--color-accent-glow), transparent 68%),
     transparent;
 }
 .empty-state-mini {
@@ -156,11 +196,29 @@ body {
     0 8px 16px -10px rgb(0 0 0 / 0.6);
 }
 
+/* The one radial glow each hero moment gets — login logo, chat-home hero,
+   landing hero, empty states. One per screen: a hearth, not a disco. */
+.hero-glow {
+  background:
+    radial-gradient(52rem 30rem at 50% 12%, var(--color-accent-glow), transparent 68%);
+}
+
+/* The ambient loop: the hero glow breathes 0.85→1 over six seconds — too slow
+   to notice as animation, perceptible as life. Skipped under reduced motion. */
+@keyframes glow-breathe {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+.glow-breathe {
+  animation: glow-breathe 6s ease-in-out infinite alternate;
+}
+
 /* Focus glow on text inputs and selects — the accent ring in soft form, so
    keyboard users keep the strong outline and mousers get a gentle halo. */
 input:focus,
-select:focus {
-  box-shadow: 0 0 0 3px rgb(201 106 89 / 0.14);
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px var(--color-accent-tint);
 }
 
 @keyframes shimmer {
@@ -212,15 +270,6 @@ select:focus {
   padding: 0 2px;
 }
 
-/* Horizontal scroller with a hidden scrollbar — the home carousel. */
-.scroll-x {
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.scroll-x::-webkit-scrollbar {
-  display: none;
-}
-
 /* View switches: a short fade-and-rise on the shell's shared easing, driven by
    React's key on the main column so each view change re-runs it. Only opacity
    and transform animate. */
@@ -234,6 +283,20 @@ select:focus {
   animation: view-in var(--dur-shell) var(--ease-shell) both;
 }
 
+/* Staggered entrances: grid children assemble 40ms apart, capped at twelve so
+   a long grid never drags. Set --stagger-i (0-based) per child; the cascade
+   reads as the page assembling itself. */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.view-stagger {
+  animation: stagger-in var(--dur-shell) var(--ease-shell) both;
+  animation-delay: min(calc(var(--stagger-i, 0) * 40ms), 480ms);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -241,6 +304,51 @@ select:focus {
 }
 .fade-in {
   animation: fade-in var(--dur-shell) var(--ease-shell);
+}
+
+/* Toasts and the slim first-run hint rise into place, then exit as a plain
+   fade — rise confirms arrival, fade acknowledges departure. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.toast-in {
+  animation: toast-in var(--dur-shell) var(--ease-shell) both;
+}
+
+/* Chat streaming: three 4px dots pulse beside the status label while a turn
+   runs — opacity and a 2px hop, staggered 150ms, both ways on the shell ease. */
+@keyframes typing-dot {
+  0%, 60%, 100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+.typing-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  animation: typing-dot 900ms var(--ease-shell) infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 150ms; }
+.typing-dot:nth-child(3) { animation-delay: 300ms; }
+
+/* Primary/outline buttons press: a 2% shrink under the finger, on the shell
+   ease — subtle enough to feel, fast enough to confirm. */
+.press {
+  transition:
+    transform var(--dur-shell) var(--ease-shell),
+    box-shadow var(--dur-shell) var(--ease-shell);
+}
+.press:active {
+  transform: scale(0.98);
 }
 
 /* Reduced motion: the field already draws one static frame, and every
@@ -255,6 +363,8 @@ select:focus {
   }
 }
 
+/* Warm scrollbar — the thumb echoes the line-strong ramp, warms on hover, and
+   stays a quiet 11px content-box pill against a transparent track. */
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
@@ -266,7 +376,7 @@ select:focus {
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #45454c;
+  background: #57493d;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-track {

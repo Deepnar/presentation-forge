@@ -16,7 +16,7 @@ import { useEffect, useRef } from "react";
  *  - a missing 2d context renders nothing, so an old browser gets a clean
  *    static shell instead of a crash.
  */
-export default function ParticleField({ paused = false, className = "" }) {
+export default function ParticleField({ paused = false, boost = 1, className = "" }) {
   const canvasRef = useRef(null);
   const controlRef = useRef(null);
 
@@ -57,7 +57,7 @@ export default function ParticleField({ paused = false, className = "" }) {
         bx: Math.random() * state.w,
         by: Math.random() * state.h,
         r,
-        base: 0.1 + Math.random() * 0.16,
+        base: (0.16 + Math.random() * 0.24) * boost,
         phase: Math.random() * Math.PI * 2,
         // Two incommensurate frequencies give a Perlin-ish wander on each axis
         // — a figure-eight wobble rather than a single left-right sway.
@@ -65,7 +65,7 @@ export default function ParticleField({ paused = false, className = "" }) {
         fy: 0.07 + Math.random() * 0.15,
         ax: 8 + Math.random() * 16,
         ay: 8 + Math.random() * 16,
-        accent: Math.random() < 0.14,
+        accent: Math.random() < 0.22,
       };
     };
 
@@ -99,13 +99,13 @@ export default function ParticleField({ paused = false, className = "" }) {
         if (pointer.x >= 0) {
           const dx = x - pointer.x * dpr;
           const dy = y - pointer.y * dpr;
-          const radius = 120 * dpr;
+          const radius = 150 * dpr;
           const dist2 = dx * dx + dy * dy;
           if (dist2 > 0 && dist2 < radius * radius) {
             const dist = Math.sqrt(dist2);
             const push = (1 - dist / radius) * 1.2;
-            x += (dx / dist) * push * 6 * dpr;
-            y += (dy / dist) * push * 6 * dpr;
+            x += (dx / dist) * push * 9 * dpr;
+            y += (dy / dist) * push * 9 * dpr;
             pushed += 1;
           }
         }
