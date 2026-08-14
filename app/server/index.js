@@ -231,6 +231,7 @@ app.get("/api/themes", wrap(async (_req, res) => {
         body: t.type.body?.family,
       },
       voice: t.voice,
+      plate: t.plate?.enabled === true,
       // Gallery thumbnails, if `npm run gallery` has been run.
       thumb: `/api/themes/${name}/thumb.png`,
     };

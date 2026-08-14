@@ -16,6 +16,7 @@
     "search": "node src/search.js",
     "sweep": "node src/sweep.js",
     "compare": "node tools/compare.mjs",
+    "gallery": "node tools/gallery.mjs",
     "forge": "node src/ai/pipeline.js",
     "searxng": "docker compose -f docker/docker-compose.yml up -d"
   },
