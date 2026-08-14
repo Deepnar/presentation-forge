@@ -275,6 +275,60 @@ to `read_page`, `javascript_tool` and direct `curl` against the API — they sta
 reliable. Do not conclude the app is broken from a screenshot timeout, and do
 not claim a UI was visually verified when it was only checked structurally.
 
+**SMTP commands without CRLF are invisible to the server.** `socket.write("EHLO …")`
+with no line ending sits in the server's buffer and the dialogue hangs on a
+timeout with no error naming the cause. Every SMTP command needs `\r\n`; the
+DATA payload is the one line that already carries its own terminators.
+
+**A multiline SMTP reply must be accumulated whole before the state machine
+advances.** EHLO advertises its capabilities on `250-…` continuation lines;
+checking only the final `250 ` line misses STARTTLS and silently falls back to
+plain AUTH, which a port-587 submission server then rejects. Parse the complete
+reply, then decide.
+
+**pptxgenjs has no gradient fills, whatever the docs imply.** `fill: { type:
+"gradient", stops: […] }` writes a shape with no fill element at all — the
+option is silently dropped and the shape renders blank. A background layer must
+be built from native shapes + transparency, or a pre-rendered plate. Verify any
+pptxgenjs feature by unzipping the output, not the README.
+
+**A contact sheet that renders the wrong slide proves nothing about
+backgrounds.** The specimen deck's first slide is the dark title screen; a
+themesheet using it makes every pale theme look dark and indistinguishable. For
+a "do the themes differ" audit, use the first standard content slide, where the
+background layer actually paints.
+
+**`pkill -f <pattern>` matches the invoking shell.** When the pattern appears
+in the shell command line itself, the shell kills itself and the command hangs.
+Kill by exact PID, or use a pattern the shell line does not contain.
+
+**Theme shadow `opacity` is 0–1 in pptxgenjs.** `opacity: 100` (reading as
+percent) writes an off-chart alpha (~10000%) that PowerPoint clamps
+unpredictably and the hard-shadow look is lost. Values above 1 are a silent
+bug; the valid range is 0–1.
+
+**`loading="lazy"` makes a broken-image check lie.** Off-screen lazy images
+never load in a small headless viewport, so a screenshot pass reports them
+"broken" when they are fine. Scroll the page through its full height before
+counting `naturalWidth === 0`, or check the served HTTP status directly.
+
+**A vision model's "distinguishable" verdict is only as good as the sheet it is
+shown.** A 38-theme contact sheet at one-per-row puts ~300px per theme; two
+near-twin themes (corporate-alegria vs swiss) passed a glance and only a
+per-pixel diff surfaced them. Use the cheap numeric scorer to *surface* near
+pairs, then point the vision model at exactly those two at readable size.
+
+**Async state initialised `true` hides a broken fetch.** The register-tab
+suppression silently did nothing because the effect's `.catch()` set the state
+but the success path never did — the resolution value was discarded. Guard both
+branches of the promise.
+
+**A containerised app whose config dir is an empty volume 404s on boot.** The
+compose file pointed `FORGE_CONFIG_DIR` at `/data/config`, which starts empty,
+so `identity.example.yaml` was missing. An entrypoint that seeds committed
+templates only when absent turns a fresh deploy from broken to bootable and
+stays idempotent across redeploys.
+
 **Validate against the rendered artefact, not the data structure.** Valid YAML,
 a passing schema, and a written file are three checks that all pass while the
 output is unusable.

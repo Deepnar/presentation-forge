@@ -1145,6 +1145,42 @@ The polish round fixed what the vision audit found:
 > with `mimo-v2.5`: the collision is gone, glass reads as glass, hairlines and
 > shadows land, all four themes rated 8.0-8.5 with no regressions.
 
+### [x] Themes distinctness — background layer, layout flagships, 12 new themes
+The "all the same philosophy" review split into a token-polish pass (above) and
+this layout-level distinctness pass. Three pieces landed:
+
+- **Per-theme background layer.** A theme-owned `tokens.background.decor`
+  block paints native shapes + transparency behind the content box — a corner
+  halo, edge bar or hairline grid. The plan assumed pptxgenjs gradient fills;
+  those are silently dropped (the shape writes no fill element at all), so the
+  layer is built from shapes alone, with mesh/gradient themes using the plate
+  path. `drawBackground()` in render.js reads it; nothing in deck.yaml can.
+- **Three layout flagships.** `tokens.editorial` gives editorial-magazine a
+  two-column bullets split (≥4 items) and a display-size drop cap on the
+  definition slide; `tokens.bauhaus.block` draws the red-circle/black-triangle
+  geometric block behind section and chapter headlines; neubrutalism's hard
+  shadow was already token-carried (its `opacity: 100` was an off-chart alpha
+  bug, now 1). Each flag falls back to the default when absent, so the other
+  themes are untouched.
+- **Twelve new themes, 38 total.** corporate-clean-blue, nature-organic,
+  blueprint, high-contrast-mono, risograph, letterpress, paper-pastel,
+  soft-glass-light (plate), sunset (plate), gradient-mesh-dark (plate),
+  retro-crt (plate), sci-fi-hud. Each carries the full token + voice contract.
+
+`tools/themesheet.mjs` renders the specimen deck's *first content slide* (the
+title slide is full-bleed and skips the background layer — a sheet built on it
+makes every theme look dark) into one labeled PNG, with a `--score` mode that
+reports the closest theme pairs by mean per-pixel difference. That scorer
+surfaced corporate-alegria × swiss-international at 0.429 — genuinely
+indistinguishable — and they were differentiated (duo-wash vs hairline grid).
+
+> **Learned.** A background layer must be theme-owned tokens, verified by the
+> theme-contract test (decor shape/geometry/hex checked per theme). The
+> distinctness audit is a two-stage thing: a cheap pixel scorer to surface
+> near pairs, then a vision model pointed at exactly those pairs at readable
+> size — a 38-theme sheet at one-per-row is too small for a vision model to
+> tell twins apart, while the numeric scorer catches them instantly.
+
 ### [x] HTML plate renderer
 Headless Chrome renders decorative CSS backgrounds to PNG at build time; the
 renderer places them as slide background plates with all *text* still native.

@@ -88,21 +88,34 @@ declares `tokens.plate.enabled: true` plus a `plate.html` template (and optional
 tokens as `{{tokens.palette.bg}}` — the renderer rasterises the template
 through headless Chrome and uses it as the slide background, so a theme can
 express effects OOXML cannot (backdrop blur, dual shadows, mesh gradients) while
-all text stays native. The four plate themes (glassmorphism, claymorphism,
-neumorphism, aurora-mesh) are the gallery's reference implementations of the
-contract. Plate templates also receive `{{box.*}}` — the content region in CSS
-pixels — so a theme can panel exactly the area the native content draws, and
-native panels can be made translucent through `shape.card_fill` so they layer
-over the plate instead of covering it.
+all text stays native. Plate templates also receive `{{box.*}}` — the content
+region in CSS pixels — so a theme can panel exactly the area the native content
+draws, and native panels can be made translucent through `shape.card_fill` so
+they layer over the plate instead of covering it.
 
-The gallery is at the 20-theme target: one native reference (warm-humanist),
-fifteen native design languages (Swiss grid, editorial magazine, Muji,
-neubrutalism, Bauhaus, Memphis, Art Deco, dark-neon, Linear, Material You,
-flat, retro-terminal, newsprint, Notion, Alegria) and four plated ones. The
-fifteen native themes rely on the fitter's family table — its per-family
-advance estimates are what keep a one-line title on one line — and on their
-section-surface luminance, which the chrome's crest/footer variant derives
-from. A theme-contract test loads every theme and machine-checks the split.
+Native themes can also carry a **background layer**: `tokens.background.decor`
+is a list of native shapes (ellipse/rect/roundRect/triangle) drawn behind the
+content box — a corner halo, an edge bar, a hairline grid. pptxgenjs has no
+gradient fills (a gradient option is silently dropped), so any theme that wants
+a true mesh or wash uses the plate path instead; the decor layer is for
+treatments expressible as plain translucent shapes. `drawBackground()` in
+`render.js` reads it and nothing in deck.yaml can reach it — same three-layer
+boundary as the palette.
+
+The gallery sits at **38 themes**: the native reference (warm-humanist), a
+broad native family (Swiss grid, editorial magazine with its layout flags,
+Muji, neubrutalism, Bauhaus with its section block, Memphis, Art Deco,
+dark-neon, Linear, Material You, flat, retro-terminal, newsprint, Notion,
+Alegria, corporate blue, nature organic, blueprint, high-contrast mono,
+risograph, letterpress, paper pastel, sci-fi HUD) and plated ones
+(glassmorphism, claymorphism, neumorphism, aurora-mesh, soft glass, sunset,
+gradient mesh dark, retro CRT). Layout-LEVEL distinctness is carried by
+per-theme flags the layouts read (`tokens.editorial`, `tokens.bauhaus`) and
+falls back to the default when absent. The themes rely on the fitter's family
+table — its per-family advance estimates are what keep a one-line title on one
+line — and on their section-surface luminance, which the chrome's
+crest/footer variant derives from. A theme-contract test loads every theme and
+machine-checks the split, including the background-decor shapes.
 
 **Styles layer over themes.** `styles/*.yaml` are cross-cutting token
 overrides — deep-merged over a theme's tokens at load time, with voice merged
@@ -570,21 +583,50 @@ forward (chat → deck → home) instead of exiting the site, and a deep link li
 
 Accounts are deliberately NOT a multi-user system: they exist so the Cloud-key
 section can be gated (the key is the one sensitive thing on the box) and to
-have a place for future hosting, and that is all. Everything else stays open.
+have a place for future hosting. The deck/report/preset workspaces require a
+session; legacy ownerless decks stay shared. Everything else — themes, models,
+identity GET — is open.
 
 `src/auth.js` owns the logic, `app/server` transports it. Passwords are hashed
 with `crypto.scrypt` and a per-user random salt; the users file holds only
 salt+hash, and the password is never logged, stored, or returned. Sessions are
 opaque random bearer tokens held server-side in a gitignored sessions file —
-the browser only ever sees the token. `POST /api/auth/login` mints a session,
-`POST /api/auth/register` does not: creating an account returns the user
-without a token and the visitor signs in explicitly, so registration never
-silently logs anyone in. `POST /api/auth/logout` and `GET /api/auth/me` back
-the header's account entry (Login/Register when logged out, name + Logout when
-in). `PUT/DELETE /api/cloud/key` return 401 without a session, and the Identity
-view's Cloud section shows a login prompt until one exists. The AuthModal and
-the full-screen LoginScreen are the register/login surfaces; both
+the browser only ever sees the token, and tokens idle-expire after
+`FORGE_SESSION_TTL_DAYS` (default 30), refreshed on use and pruned when dead.
+`POST /api/auth/login` mints a session, `POST /api/auth/register` does not:
+creating an account returns the user without a token and the visitor signs in
+explicitly, so registration never silently logs anyone in. `POST /api/auth/logout`
+and `GET /api/auth/me` back the header's account entry. `PUT/DELETE
+/api/cloud/key` return 401 without a session, and the Identity view's Cloud
+section shows a login prompt until one exists. The AuthModal and the
+full-screen LoginScreen are the register/login surfaces; both
 `config/users.json` and `config/sessions.json` are gitignored.
+
+**Registration** is open by default for local dev but closes on a public box:
+`FORGE_OPEN_REGISTRATION=0` turns `POST /api/auth/register` into a 403 and the
+owner's account is seeded at boot from `FORGE_ADMIN_EMAIL` +
+`FORGE_ADMIN_PASSWORD` (idempotent — a restart never errors). The login screen
+asks the server whether signup is open and hides the register tab when it is
+not.
+
+**Destructive and config-writing endpoints are gated.** `POST /api/sweep`
+(deletes decks), `PUT /api/identity`, brand `POST`/`DELETE` and
+`PUT /api/cloud/routing` all require a session — an unauthenticated visitor can
+no longer wipe decks or deface the identity/brand. Heavy specimen renders are
+gated too, and the render endpoints run behind a one-at-a-time mutex so a
+home box with a single CPU never stacks concurrent LibreOffice/Chrome jobs.
+Slugs are format-validated (`^[a-z0-9][a-z0-9_-]{0,99}$`) before the
+img-tag exemptions, closing the traversal class in one place.
+
+**Uploads are raster-only and verified.** SVG was dropped from the deck and
+brand upload allowlists (an SVG can carry a script into the token-in-localStorage
+origin), and every upload is checked against its magic bytes, so a smuggled
+HTML file named `.png` is refused. Served assets carry a `sandbox` CSP.
+
+**Headers.** The served UI gets a strict CSP (`default-src 'self'` + inline
+styles); API JSON does not. With no `FORGE_UI_ORIGIN` configured, no CORS
+headers are emitted at all. `FORGE_TRUST_PROXY=1` opts a reverse proxy into
+`X-Forwarded-For` handling for the rate limiter.
 
 ### The cloud surface — opt-in hosted models
 
