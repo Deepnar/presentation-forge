@@ -59,7 +59,7 @@ function Reveal({ children, className = "" }) {
 
 function Hero({ onStartChat, onBrowseThemes }) {
   return (
-    <div className="hero-glow glow-breathe py-16 text-center sm:py-20">
+    <div className="hero-glow glow-breathe py-12 text-center sm:py-16">
       <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent text-[26px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_20px_40px_-20px_rgba(0,0,0,0.8)]">
         F
       </div>
