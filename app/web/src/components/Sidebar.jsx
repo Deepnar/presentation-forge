@@ -154,7 +154,7 @@ export default function Sidebar({
                     <div className="empty-ring h-8 w-8">
                       <PlusIcon className="h-3.5 w-3.5" />
                     </div>
-                    <div>No chats yet — start one below.</div>
+                    <div>No chats yet — start one below. The machine drafts, you do the final touches.</div>
                   </div>
                 )}
               </>
@@ -202,7 +202,7 @@ export default function Sidebar({
                     </div>
                     {query.trim()
                       ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
-                      : <div>No decks yet — one starts from a chat.</div>}
+                      : <div>No decks yet — one starts from a chat. The machine drafts, you do the final touches.</div>}
                   </div>
                 )}
               </>

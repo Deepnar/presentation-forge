@@ -854,7 +854,7 @@ export default function ChatView({
                 : "A report is researched and written from your topic — depth defaults to brief."
               : phase === "briefing" ? "Answer in the card above, or type the answer here and send."
                 : phase === "editing" ? "Each message is a deck-editing turn — structure, wording, types, presenters."
-                  : "Every model call stays on this machine."}
+                  : "The app does the bulk; you do the final touches — every model call stays on this machine."}
           </div>
         </div>
       </footer>
@@ -875,10 +875,10 @@ function Welcome({ chat, org, onFill }) {
       </h1>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-fg-muted">
         {chat.kind === "report"
-          ? "Send a topic and I'll ask a few questions first — depth, density, branding — then the report is researched, written and rendered. The graded section order is the structure."
+          ? "Send a topic and I'll ask a few questions first — depth, density, branding — then the report is researched, written and rendered. The app does the bulk; the final words are yours."
           : org
-            ? `Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise.`
-            : "Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise."}
+            ? `Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise. The app drafts it; you do the final touches.`
+            : "Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise. The app drafts it; you do the final touches."}
       </p>
       {chat.kind === "deck" && (
         <div className="mt-5 flex flex-wrap justify-center gap-1.5">

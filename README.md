@@ -1,6 +1,8 @@
 # Presentation Forge
 
 > A brief goes in — a themed, graded-format deck and report come out.
+> The app does the bulk — research, structure, draft content, render — you do
+> the final touches: verify the facts, tune the words, make it yours.
 
 **Local-first academic presentation and report generator.** Node + pptxgenjs +
 local models by default, optional cloud backend per role. Built for TCET-style
@@ -50,6 +52,8 @@ lives in theme files where it is deterministic and tunable.
   (title, team, guide, subject, theme gallery with live previews, slide count,
   density, branding), approve a plain-language outline, and watch it generate.
   The chat stays alive after the deck is ready and edits it by conversation.
+  The machine drafts — the outline gate, editable content and chat refinement
+  are the final-touch surfaces that stay human.
 - **75 slide types** in 14 families — data/stats, charts (line/bar/scatter/
   radar/stacked-bar), comparison, process/flow, timeline, quote, callout,
   image/table, diagram-ish (framework, matrix, venn, hierarchy), definitions,

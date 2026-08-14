@@ -1,5 +1,8 @@
 # Running Presentation Forge on your own machine
 
+The app does the bulk — research, structure, draft content, render. You do the
+final touches: verify the facts, tune the words, make it yours.
+
 Two ways to run this yourself — pick the one that fits your machine:
 
 - **Local models (fully offline)** — needs a machine with ~8GB+ RAM for a small
