@@ -181,6 +181,29 @@ Everything downstream (`chat`/`chatJSON`, generate, turn, pipeline, CLI, API)
 is backend-agnostic — only the role's provider changes. The default stays
 local; nothing calls a cloud endpoint unless a role opts in.
 
+### Per-transport capability split
+
+A role's sampling, output and context settings are written for the LOCAL
+backend — the caps a small-model pipeline survives on. A role may declare
+`transports.cloud` (and optionally `transports.local`) overrides in
+`config/models.yaml`; `applyTransport` merges the block for whichever backend
+the role resolves to, replacing nested blocks wholesale. This is how the cloud
+path escapes limits that only exist because the local model cannot handle more:
+
+- the author's `num_predict` (12000 local / 24000 cloud) and research
+  `excerpt_chars` (80000 / 240000) are per-transport;
+- the research role's `research:` block sets the depth budget per transport —
+  a cloud research role searches and reads far deeper;
+- a completion cut at `done_reason=length` retries with the cap doubled up to
+  `defaults.num_predict_bump_ceiling`, so a legitimate large output is not
+  failed by a cap that was sized for a smaller model.
+
+Prompts are per-transport too: `authorTransport()` tells prompt-builders which
+backend the author will run on, so the cloud writer gets a full-strength
+synthesis note (claim-first prose, real hooks, figures from the notes) while
+the local writer keeps the conservative instructions that small models survive
+on.
+
 ## Why the human gate replaces presets
 
 Presets guess the deck's structure in advance and are wrong whenever the
@@ -655,7 +678,10 @@ usable end-to-end.
   panel. It decides what "auto" means in every picker: the default label
   reflects it, and an unpicked model routes the *author* role to the attached
   provider's first model. Research, utility and critic stay on their configured
-  backends — the toggle moves the user's work, not the plumbing.
+  backends — the toggle moves the user's work, not the plumbing. Cloud research
+  is therefore a role-level choice: giving the research role a `provider:`
+  switches its depth profile to the deeper cloud budgets (see the per-transport
+  split above).
 - **The connection test is an authenticated probe.** `/models` lists are public
   on some providers and prove nothing about a key, so the test issues a
   one-token chat call against the provider's first listed model and checks the

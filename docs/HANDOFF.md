@@ -7,126 +7,105 @@ handoffs.
 
 ## Session summary
 
-**The final-polish plan (`/tmp/opencode/FINAL_POLISH_PLAN.md`) is fully
-executed, pushed, and the app is go-live ready.** Security first (A1–A10 with
-real curl/CDP verification), the two Docker bugs that broke the container,
-then the themes work (the user's biggest complaint): a background layer, three
-layout flagships and twelve new themes (26 → 38), each verified by rasterise +
-`mimo-v2.5`. Then the UX quick wins, deployment hardening (including a STARTTLS
-SMTP rewrite), and docs. `npm test` 231/231, `vite build` clean, Docker build
-verified in a real container run.
+**Per-transport capability split — cloud is no longer hobbled by local
+limits.** Every place a LOCAL-model limit (output caps, prompt conservatism,
+context window, research depth) constrained the pipeline, the cloud transport
+now gets the full capability, split by transport rather than one-size-fits-all.
+Verified end-to-end with a real cloud run: a 79-source / 56-domain / 10-paper
+research pass (940 KB notes), a 15-slide deck generated with zero
+`done_reason=length` truncations, and `mimo-v2.5` confirming sharp, specific
+text with no visual defects. `npm test` 244/244, `vite build` clean, all seven
+commits pushed.
 
 ## What shipped
 
-### Security (all verified with real attacks before and after)
-- **A1** `POST /api/sweep` (could delete every unkept deck unauthenticated) now
-  requires a session — proven 401 unauthenticated, works authenticated.
-- **A2** identity-PUT, brand-POST/DELETE, cloud-routing-PUT all gated (were
-  `ok:true` unauthenticated).
-- **A3** slug-format guard (`^[a-z0-9][a-z0-9_-]{0,99}$`) before every `<img>`
-  exemption, closing the traversal class.
-- **A4** SVG dropped from uploads; magic-byte checks (a smuggled HTML named
-  `.png` is refused); served assets carry a `sandbox` CSP. Brand uploads
-  tightened to the raster allowlist + magic bytes too.
-- **A5** strict CSP on the served UI (not API JSON); **A6**
-  `FORGE_OPEN_REGISTRATION=0` + boot-seeded admin; **A7/A9/A10** trust-proxy,
-  session idle TTL (default 30d, refreshed on use), CORS emits nothing when
-  unconfigured. **A8** specimen endpoints gated + a render mutex (one render
-  at a time, queue cap 2).
-- **A11** recorded — both `image-size` advisories affect `<=2.0.2`; no patched
-  version exists, and A4 already closes the reachable surface. Note + monitor,
-  do not force-downgrade pptxgenjs.
+### The transport override mechanism
+- A role in `config/models.yaml` may declare `transports.cloud` (and optionally
+  `transports.local`). `applyTransport()` in `src/ai/ollama.js` merges the
+  block for whichever backend the role resolves to, replacing nested blocks
+  wholesale. Applied centrally in `chat()` after resolution, so every caller
+  sees their own transport's numbers.
+- **Cloud author:** `num_predict` 12000→24000, `excerpt_chars` 80000→240000.
+  A long cloud outline is no longer cut mid-JSON.
 
-### Docker (D0 + D1, all verified in a real build/run)
-- `FORGE_CHROME` env fixed (plate themes rendered blank in-container); dead
-  `PLATE_CACHE_DIR` → `FORGE_PLATE_CACHE`; `.dockerignore` added; `reference/`
-  copy guarded with a forced `.gitkeep`. `--no-sandbox` is now an image env
-  flag (`FORGE_CHROME_NO_SANDBOX=1`).
-- The image runs as an unprivileged user (uid 1001) and a first-boot entrypoint
-  seeds the committed config templates into the empty `/data/config` volume —
-  without it a fresh deploy 404s on `identity.example.yaml`. Verified: build,
-  non-root plate render, API boot, idempotent second boot.
+### Length auto-bump + honest errors
+- A non-streamed completion with `done_reason=length` retries the same request
+  with the cap doubled, up to `defaults.num_predict_bump_ceiling` (64000).
+  Streamed calls are exempt (tokens cannot be unsaid). The truncation error
+  states the effective cap AND transport. The UI's "Retry planning" card now
+  succeeds where it used to fail identically — no UI change was needed.
+- TRAPS updated: the auto-bump is the automated raise-`num_predict` with a
+  ceiling guardrail, so a runaway grammar still fails cleanly.
 
-### Themes (26 → 38, the big visible win)
-- **Background layer** (`tokens.background.decor`, native shapes +
-  transparency — pptxgenjs has NO gradient fills, they're silently dropped):
-  rolled out across the neutral-minimal cluster, corporate-alegria/swiss
-  differentiation, and the new themes.
-- **Three layout flagships**: editorial-magazine two-column bullets + drop cap
-  (`tokens.editorial`), bauhaus section geometric block (`tokens.bauhaus.block`),
-  neubrutalism hard-shadow opacity bug fixed (100 → 1).
-- **Twelve new themes**: corporate-clean-blue, nature-organic, blueprint,
-  high-contrast-mono, risograph, letterpress, paper-pastel, soft-glass-light
-  (plate), sunset (plate), gradient-mesh-dark (plate), retro-crt (plate),
-  sci-fi-hud.
-- **`tools/themesheet.mjs`** renders the specimen deck's *first content slide*
-  into a labeled PNG with a `--score` mode (closest theme pairs by pixel diff).
-  It caught corporate-alegria × swiss-international at 0.429 — genuinely
-  identical — now differentiated. `tools/gallery.mjs` (`npm run gallery`)
-  renders per-theme title-slide thumbs; plate themes now show their real
-  background in the Themes gallery and the briefing cards (falling back to the
-  token synthesis when the thumb is missing).
+### Cloud research is strictly deeper
+- The research role's `research:` block is a per-transport depth budget: cloud
+  runs more angle queries (10 vs 8), higher source/read caps (12/8 vs 8/4), more
+  examiner-gap follow-ups, more papers (10 vs 6) with arXiv/Crossref upstream
+  windows scaled. `excerptResearch` takes an explicit cap, resolved against the
+  AUTHOR's transport (`researchExcerptCap`) because the author reads the notes.
+- **Routing only routes the author role**, so cloud research = giving the
+  research role a `provider:` in models.yaml. The committed default stays
+  local-first; the verification run temporarily set `provider: opencode-go`
+  on research, confirmed 79 sources / 10 papers, then reverted.
 
-### UX (B quick wins) + Deployment (D)
-- Registration-locked login screen (hides register tab, shows owner note),
-  Re-sweep confirm dialog, LOCAL/CLOUD tooltips, theme auto-scroll in briefing,
-  keyboard-shortcuts docs, first-run "where do the models live" hint.
-- **STARTTLS in `src/mail.js`** — port 587 submission now works; also fixed a
-  latent bug where every command was written WITHOUT CRLF (the server never
-  saw a complete line). Two integration tests spin up a real STARTTLS server.
-- README: Ollama-on-host note, sweep-UTC note, backup/restore tar recipe,
-  reverse-proxy + trust-proxy guidance.
+### Full-strength synthesis on cloud
+- `authorTransport()` lets prompt-builders pick a full-strength variant when the
+  author runs cloud: planner (richer purposes), slide writer, density sweep,
+  type swap and chat turns all get a synthesis note — claim-first prose with
+  evidence, real hooks in standfirsts, figures quoted from the notes, no
+  template filler. Local keeps the conservative prompt. Grounding still runs
+  either way.
 
-## GitHub findings (from the user's sweep) — all SKIPPED, reasons
+### Writer sees the field caps
+- The full-strength prompt made the cloud writer overflow per-field schema caps
+  (layers[].body ≤80, elements[].body ≤100), dropping slides to placeholders.
+  The catalog now states every string's maxLength inside arrays and nested
+  objects ("layers[] body ≤80 chars"). The same plan went from 12/17 to 15/17
+  slides written. The two residual skips (agenda desc 120, framework elements
+  body 100) are still model discipline — the placeholders keep the deck whole.
 
-1. **docxtemplater** — skipped. Correct licence (MPL-2.0) and Node-native, but
-   the report renderer already preserves institutional header/watermark from
-   the donor template; replacing a verified path is a multi-day risk, not a ≤1
-   day upgrade. Concept recorded: "template → data → document" for any future
-   report rework.
-2. **wisupai/e2m** — skipped. Python sidecar for a paste-a-PDF→notes flow that
-   doesn't exist yet; the research pipeline ingests URLs/arXiv/Crossref already.
-   Record as future option if a file-ingestion flow is wanted.
-3. **dashi-ppt-skill** — concept only (AGPL, no code). The outline/diagram/
-   table-views UX is already the chat-first direction. No action.
-4. **pptxgenjs-jsx** — concept only. The three-layer rule wins; a JSX layer
-   would let content reach layout. No action.
-5. **PPTX2HTML / office-open-xml-viewer** — skipped. In-browser OOXML preview
-   would need to match LibreOffice's output pixel-for-pixel or the preview
-   would lie (TRAPS: validate against the rendered artefact). LibreOffice
-   latency is acceptable; revisit only if preview latency becomes the pain.
-6. **ppt-agent-skill** — concept only (charts/benchmarks). The chart steering
-   already shipped. No action.
+### Grounding fix (required for synthesis to be trustworthy)
+- `normalize()` stripped decimal points and commas, so "18.84 GW" could never
+  match "18.84 gigawatts" in the notes — every decimal a cloud writer quoted
+  flagged as fabricated. Keep the dot; the bare-number check also tries the
+  comma-collapsed form ("1,232 MW" → "1,232 megawatts"). One honest residual:
+  a derived figure (₹3.61 − ₹2.25 = ₹1.36) flags, because grounding cannot do
+  arithmetic.
 
 ## Verification notes
 
-- `npm test` 231/231; `npx vite build --config app/web/vite.config.js` clean;
-  Docker build + non-root container run verified (plate render, API boot,
-  config seed).
-- All theme batches verified by contact sheet + `mimo-v2.5`; the final sheet
-  confirmed dark-mesh, sunset, two-column bullets and the bauhaus block.
-- CDP harness used this session: `/tmp/opencode/cdp-shot.mjs` (raw WebSocket,
-  no deps) — screenshots pages on :5174 with a token injected. Useful for any
-  future UI check. A pixel probe confirmed the registration-lock UI.
+- `npm test` 244/244; `vite build` clean.
+- Real cloud run: `forge new "Urban rooftop solar in India…" --research
+  --papers --max-slides 18 --model deepseek-v4-flash` → 79 sources, 56 domains,
+  10 papers, 940 KB notes. `forge generate <slug> --model deepseek-v4-flash` →
+  15 slides, 2 skipped (schema caps), zero truncation errors. Rasterised and
+  vision-checked with `mimo-v2.5`: all 8 sampled slides sharp/specific, no
+  defects.
+- Deck lives at `decks/urban-rooftop-solar-in-india-economics-polic/` (a real
+  deck, keep — it is the synthesis-mode specimen).
+- Transport config-contract tests in `test/transport.test.js` (applyTransport
+  merge semantics, models.yaml cloud-stricter-than-local, auto-bump both
+  transports).
 
 ## Seams and leftovers
 
-- **`decks/type-batch1/`** untracked (regression fixtures from earlier theme
-  batches); **data-centre/exploring decks** untracked (chart-steering
-  fixtures) — keep, delete freely.
-- The background layer supports ellipse/rect/roundRect/triangle. A theme that
-  wants a genuine mesh/gradient must use the plate path — there is no native
-  gradient.
-- Specimen renders are gated (login) and mutexed; the specimen PNG serve route
-  stays open for `<img>`.
-- `app/gallery/` is gitignored — run `npm run gallery` after adding a theme so
-  the Themes page shows its real thumbnail.
+- `schema/report.schema.json` carries an unrelated reformat diff in the working
+  tree from before this session — leave or discard, it is not part of this work.
+- The untracked `decks/*` dirs are prior fixtures (type batches, exploring,
+  data-centre) — keep, delete freely.
+- Enabling cloud research is a one-line models.yaml role override
+  (`provider: opencode-go` on `research`); the depth profile follows the role's
+  transport. Documented in ARCHITECTURE "Per-transport capability split".
+- The `frame`/`window` in which cloud research ran used the temporary override;
+  the committed default keeps research local-first.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174` (dev config, registration open).
+- Servers running: API `http://localhost:5174`, web `http://localhost:5173`
+  (restarted this session), SearXNG `:8888`, Ollama `:11434`.
 - `config/local.yaml`: cloud key attached, `routing.default: cloud`.
-- All commits pushed to `origin/main` (last: the docs record commit
-  `d8265cf`).
-- Roadmap/TRAPS/ARCHITECTURE updated to the built reality; the plan file at
-  `/tmp/opencode/FINAL_POLISH_PLAN.md` remains as the audit record.
+- All seven commits pushed to `origin/main` (last: `8017edc` the writer-cap
+  commit; docs commit pending in this same session).
+- Roadmap item added: **"Per-transport capability split — cloud is not hobbled
+  by local limits"** (with Learned). ARCHITECTURE "Model backends" and TRAPS
+  updated to match. HANDOFF is this file.

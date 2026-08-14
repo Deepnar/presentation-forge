@@ -1481,6 +1481,79 @@ every quantitative beat. Now:
 > generated four real ones (line, bar, hbar, bar), all rendered correctly and
 > vision-checked with `mimo-v2.5`.
 
+### [x] Per-transport capability split — cloud is not hobbled by local limits
+Every place a LOCAL-model limit (output caps, prompt conservatism, context
+window) constrained the pipeline used to apply to the cloud transport too.
+The cloud path now gets the full capability, split by transport rather than
+one-size-fits-all:
+
+- **Per-transport role overrides.** A role may declare `transports.cloud` (and
+  optionally `transports.local`) in `config/models.yaml`; `applyTransport` in
+  `src/ai/ollama.js` merges the block for whichever backend the role resolves
+  to, replacing nested blocks wholesale. The cloud author gets a 24000-token
+  output cap (the local 12000 kept) and a 240000-char research excerpt (the
+  local 80000 kept) — a long cloud outline is no longer cut mid-JSON.
+- **Length auto-bump.** A non-streamed completion that reports
+  `done_reason=length` retries the same request with the cap doubled, up to a
+  `num_predict_bump_ceiling` (default 64000). A runaway grammar still fails
+  cleanly at the ceiling; a legitimate large output gets room. Streamed calls
+  are exempt — tokens already delivered cannot be unsaid. The truncation
+  error now states the effective cap and transport instead of asking the
+  human to guess the role's `num_predict`. So the UI's "Retry planning" card
+  now succeeds where it used to fail identically.
+- **Cloud research is strictly deeper.** The research role's `research:` block
+  sets the depth budget per transport: the cloud override runs more angle
+  queries, higher source and read caps per query, more examiner-gap follow-ups,
+  and more papers with the arXiv/Crossref upstream windows scaled to match.
+  `excerptResearch` takes an explicit cap, resolved against the author's
+  transport (`researchExcerptCap`), so a cloud author reads the deep notes.
+  A verified cloud pass over one brief returned 79 sources across 56 domains
+  with 10 papers (940 KB of notes).
+- **Full-strength synthesis on cloud.** The writer prompt is tuned for small
+  local models; when the author resolves to cloud, the planner, slide writer,
+  density sweep, type swap and chat turns add a synthesis note demanding
+  claim-first prose with evidence, real hooks in standfirsts, and figures from
+  the notes — local keeps the conservative prompt. Grounding still runs
+  afterwards either way.
+- **The writer sees the field caps.** The full-strength prompt pushed the
+  cloud writer past per-field schema caps (layers[].body ≤80, elements[].body
+  ≤100) and overflowed slides became placeholders. The catalog now states
+  every string's maxLength inside arrays and nested objects, so the model has
+  the real budget.
+- **The rest of the caps sweep.** Chat turns inherit the author transport's
+  overrides through `runTurn` → `chatJSON`, so they are covered by the same
+  `transports.cloud` block. The caps that deliberately do NOT get a cloud
+  override are ones that exist for a reason other than a local-model limit:
+  the critic's findings schema stays tiny because large grammars degrade
+  constrained decoding (TRAPS), the report's paragraph caps are the
+  depth/density contract (a user parameter, not a transport limit), and the
+  outline's `purpose`/`maxSlides` bounds are structure the planner already
+  works within.
+
+> **Learned.** Three things were not obvious beforehand.
+>
+> Routing only routes the AUTHOR role by design, so "cloud research" is not a
+> toggle — the research pass deepens when the research role itself is
+> configured with a `provider:`. One-line override; the committed default stays
+> local-first. The excerpt cap follows the author's transport (resolved by the
+> same routing decision `chat()` makes) because the excerpt is read by the
+> author, and capping it to the research role's transport would overflow a
+> local author with a cloud research artefact.
+>
+> A verbose writer WILL overflow tight schema caps even when told to be
+> specific — the fix is showing it the caps, not weakening the instruction.
+> "Array of {label, body, items} (min 3, max 7)" hides that body is 80 chars;
+> "layers[] body ≤80 chars" is actionable. The same plan went from 12/17 to
+> 15/17 slides written after the caps entered the catalog.
+>
+> Grounding's normalize() stripped the decimal point and the commas, so a
+> figure like "18.84 GW" could never match "18.84 gigawatts" in the notes and
+> every decimal a cloud writer quoted flagged as fabricated. Keeping the dot
+> and checking the comma-collapsed form made the guard trustworthy again — the
+> synthesis pass only works if the numbers it is told to quote actually verify.
+> The one honest residual: a derived figure (₹3.61 − ₹2.25 = ₹1.36) flags,
+> because grounding cannot do arithmetic, only match text.
+
 ---
 
 ## 5. Reports

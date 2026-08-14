@@ -214,7 +214,12 @@ beats explaining it in the prompt.
 **Always capture `done_reason`.** `length` means truncated; anything else means
 the model genuinely produced that. Without it, a response cut off mid-JSON is
 indistinguishable from malformed output, and the obvious fix (raise
-`num_predict`) is exactly wrong when the real cause is a runaway grammar.
+`num_predict`) is exactly wrong when the real cause is a runaway grammar. The
+transport now automates that fix with a guardrail: a `length` truncation
+retries the same request with the cap doubled, but only up to
+`defaults.num_predict_bump_ceiling` — so a legitimate large output gets room
+while a runaway grammar still fails cleanly once the ceiling is reached. A
+bump is bounded by construction; a hand-raised `num_predict` is not.
 
 **Model choice matters more than prompt engineering here.** On an identical
 outline prompt: `qwen3-coder:30b-a3b` 11.8s and coherent; `qwen3.6:27b` 210s and
