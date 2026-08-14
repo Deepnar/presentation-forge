@@ -7,12 +7,12 @@
  * server round-trip.
  */
 
-const KEY = (email) => `forge.chats.${email.toLowerCase()}`;
+export const chatsKey = (email) => `forge.chats.${email.toLowerCase()}`;
 
 export function loadChats(email) {
   if (!email) return [];
   try {
-    const raw = localStorage.getItem(KEY(email));
+    const raw = localStorage.getItem(chatsKey(email));
     const list = raw ? JSON.parse(raw) : [];
     return Array.isArray(list) ? list : [];
   } catch {
@@ -22,7 +22,7 @@ export function loadChats(email) {
 
 function persist(email, chats) {
   try {
-    localStorage.setItem(KEY(email), JSON.stringify(chats));
+    localStorage.setItem(chatsKey(email), JSON.stringify(chats));
   } catch { /* storage full or blocked — the conversation is best-effort */ }
 }
 
@@ -43,6 +43,16 @@ export function deleteChat(email, id) {
 
 export function touchChat(email, chat) {
   return saveChat(email, { ...chat, updatedAt: new Date().toISOString() });
+}
+
+/**
+ * The thread already in hand for this product: an empty chat (nothing sent,
+ * nothing produced) that "New chat" should return to rather than stacking
+ * another empty row. Only a chat of the same kind is reusable — "New chat"
+ * must not land a user in a half-broken report thread.
+ */
+export function findEmptyChat(chats, kind = "deck") {
+  return (chats ?? []).find((c) => c.kind === kind && !c.topic && !c.produced) ?? null;
 }
 
 /** A fresh empty thread. Nothing touches the network until the topic is sent. */

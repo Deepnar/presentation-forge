@@ -13,7 +13,7 @@ import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
 import Identity from "./views/Identity.jsx";
-import { loadChats, saveChat, createChat, deleteChat as deleteChatStore } from "./lib/chats.js";
+import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 
 /**
@@ -72,6 +72,29 @@ export default function App() {
     });
   }, [user?.email]);
 
+  // Cross-tab sync. localStorage fires the `storage` event in every OTHER tab
+  // when this one writes the chat list, so a middle-clicked tab that is already
+  // mounted stays current: it reloads the list and drops the active chat only
+  // if the other tab deleted it. (The tab that made the change does not get the
+  // event — it already holds the new state.) A produced chat implies a deck may
+  // have appeared, so the deck list refreshes too.
+  useEffect(() => {
+    if (!user) return;
+    const onStorage = (e) => {
+      if (e.key !== chatsKey(user.email)) return;
+      const list = loadChats(user.email);
+      setChats(list);
+      if (list.some((c) => c.produced)) bumpDeck();
+      setActiveChatId((prev) =>
+        list.some((c) => c.id === prev) ? prev : (list[0]?.id ?? null),
+      );
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [user?.email]);
+
+  const bumpDeck = () => setDeckVersion((v) => v + 1);
+
   useEffect(() => {
     if (!user) { setDecks([]); return; }
     api.decks().then((r) => setDecks(r.decks)).catch(() => setDecks([]));
@@ -79,7 +102,11 @@ export default function App() {
 
   useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
 
-  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat.
+  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat. The handler
+  // reads the live chat list through a ref — it binds once per session, so a
+  // stale closure would otherwise miss the empty-chat reuse in newChat.
+  const chatsRef = useRef(chats);
+  useEffect(() => { chatsRef.current = chats; }, [chats]);
   useEffect(() => {
     const onKey = (e) => {
       const mod = e.ctrlKey || e.metaKey;
@@ -88,18 +115,28 @@ export default function App() {
         setFocusSearch((n) => n + 1);
       } else if (mod && e.key.toLowerCase() === "n") {
         e.preventDefault();
-        newChat();
+        newChat("deck", chatsRef.current);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [user]);
 
-  const bumpDeck = () => setDeckVersion((v) => v + 1);
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
-  /** The one creation entry: a new chat, empty thread, welcome message. */
-  function newChat(kind = "deck") {
+  /**
+   * The one creation entry: a new chat, empty thread, welcome message. If the
+   * account already holds an EMPTY chat of that kind (nothing sent, nothing
+   * produced), "New chat" returns to it instead of stacking another empty row —
+   * repeated New-chat clicks stay one thread until a topic is actually sent.
+   */
+  function newChat(kind = "deck", from = chats) {
+    const existing = user ? findEmptyChat(from ?? chats, kind) : null;
+    if (existing) {
+      setActiveChatId(existing.id);
+      navigate("chat", { chatId: existing.id });
+      return;
+    }
     const c = createChat({ kind });
     if (user) saveChat(user.email, c);
     setChats((list) => [c, ...list]);
