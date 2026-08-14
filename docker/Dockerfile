@@ -32,7 +32,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && ln -s /usr/bin/chromium /usr/local/bin/google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
-ENV FORGE_CHROME=/usr/local/bin/google-chrome-stable
+ENV FORGE_CHROME=/usr/local/bin/google-chrome-stable \
+    FORGE_CHROME_NO_SANDBOX=1
 
 WORKDIR /app
 
@@ -61,8 +62,22 @@ ENV FORGE_DECKS_DIR=/data/decks \
     FORGE_PLATE_CACHE=/data/plate-cache \
     FORGE_API_PORT=5174
 
+# Run as an unprivileged user (1001 — the base image's node user already owns
+# 1000). The image's data dir lives on a named volume that the compose file
+# must give this uid access to (see docker-compose.app.yml for the user:
+# mapping). Chromium gets --no-sandbox from src/plate.js because the container
+# is rootless anyway; the setuid sandbox needs root to exist.
+RUN useradd --create-home --uid 1001 forge \
+    && mkdir -p /data && chown -R forge:forge /data /app
+
+USER forge
+
+COPY --chown=forge:forge docker/entrypoint.sh /usr/local/bin/forge-entrypoint
+RUN chmod +x /usr/local/bin/forge-entrypoint
+
 VOLUME ["/data"]
 
 EXPOSE 5174
 
+ENTRYPOINT ["/usr/local/bin/forge-entrypoint"]
 CMD ["node", "app/server/index.js"]
