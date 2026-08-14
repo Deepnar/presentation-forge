@@ -1,0 +1,75 @@
+# High Contrast Mono — pure black and white, no mid-greys.
+# Huge type, hard edges, zero decoration. The stark poster — vs swiss, which
+# keeps hairlines and grey. Nothing but ink and paper.
+
+name: high-contrast-mono
+label: High Contrast Mono
+summary: Pure black/white, huge type, hard edges — a stark poster.
+
+tokens:
+  palette:
+    bg: "#FFFFFF"          # paper
+    surface: "#FFFFFF"
+    ink: "#000000"         # pure ink
+    ink_muted: "#000000"
+    accent: "#000000"      # no secondary — black is the accent
+    accent_alt: "#FFFFFF"
+    rule: "#000000"
+    on_accent: "#FFFFFF"
+
+  surfaces:
+    title:   { bg: "#000000", ink: "#FFFFFF", muted: "#FFFFFF", accent: "#FFFFFF" }
+    section: { bg: "#000000", ink: "#FFFFFF", muted: "#FFFFFF" }
+
+  dark:
+    bg: "#000000"
+    surface: "#111111"
+    ink: "#FFFFFF"
+    ink_muted: "#FFFFFF"
+    accent: "#FFFFFF"
+    accent_alt: "#000000"
+    rule: "#FFFFFF"
+    on_accent: "#000000"
+
+  type:
+    display:  { family: "Anton",        weight: 400, size: 46, line: 1.0,  tracking: 0 }
+    heading:  { family: "Anton",        weight: 400, size: 34, line: 1.05, tracking: 0 }
+    subhead:  { family: "Space Grotesk", weight: 500, size: 16, line: 1.3,  tracking: 0 }
+    body:     { family: "Space Grotesk", weight: 400, size: 14, line: 1.45, tracking: 0 }
+    caption:  { family: "Space Grotesk", weight: 500, size: 11, line: 1.3,  tracking: 0.1 }
+    eyebrow:  { family: "Space Grotesk", weight: 700, size: 11, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "Anton",        weight: 400, size: 60, line: 0.95, tracking: 0 }
+
+  grid:
+    margin: { top: 0.66, right: 0.8, bottom: 0.6, left: 0.8 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.66, title_y: 1.40, body_y: 2.70 }
+
+  shape:
+    radius: { card: 0, pill: 0.40, chip: 0 }          # nothing rounded
+    border: { width: 2, color: "#000000" }            # thick ink outlines
+    card_pad: 0.32
+
+  shadow:
+    card: { type: outer, blur: 0, offset: 4, angle: 90, color: "000000", opacity: 1 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: stark, confident, absolute, editorial
+  density: low
+  prefers:
+    - one idea, huge
+    - short declarative statements
+    - typographic contrast as the visual
+  avoid:
+    - mid-tones, gradients, shadows on text
+    - more than one idea per slide
+    - anything that softens the statement
+  headline_style: >
+    Say it flat and big. "BLACK AND WHITE" over "A Balanced Introduction".
+    Remove every word you can.
+  body_style: >
+    Short, blunt, complete. One sentence per point. No hedging.

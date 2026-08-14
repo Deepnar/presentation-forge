@@ -1,0 +1,86 @@
+# Letterpress / Parchment — deep ink on cream, serif, emboss shadows.
+# Warmer and heavier than newsprint: parchment paper, a letterpress feel,
+# hairline rules, subtle emboss shadows. A bookish, archival tone.
+
+name: letterpress
+label: Letterpress
+summary: Deep ink on parchment, serif type and embossed weight — a bookish archive.
+
+tokens:
+  palette:
+    bg: "#EDE4D0"          # parchment
+    surface: "#F7F0DF"
+    ink: "#2A2118"         # deep umber ink
+    ink_muted: "#6B5D49"
+    accent: "#8A3B2E"      # oxblood
+    accent_alt: "#4A5D3A"  # dark olive
+    rule: "#CDBF9F"
+    on_accent: "#F7F0DF"
+
+  surfaces:
+    title:   { bg: "#2A2118", ink: "#F7F0DF", muted: "#B9AC93", accent: "#8A3B2E" }
+    section: { bg: "#8A3B2E", ink: "#F7F0DF", muted: "#E8C9C3" }
+
+  dark:
+    bg: "#201A12"
+    surface: "#2B2318"
+    ink: "#EDE4D0"
+    ink_muted: "#A89A80"
+    accent: "#A0503F"
+    accent_alt: "#6B7F55"
+    rule: "#4A402F"
+    on_accent: "#EDE4D0"
+
+  type:
+    display:  { family: "Cormorant Garamond", weight: 700, size: 40, line: 1.1,  tracking: 0 }
+    heading:  { family: "Cormorant Garamond", weight: 700, size: 30, line: 1.15, tracking: 0 }
+    subhead:  { family: "Lora",               weight: 400, size: 14, line: 1.5,  tracking: 0 }
+    body:     { family: "Lora",               weight: 400, size: 12.5, line: 1.6, tracking: 0 }
+    caption:  { family: "Lora",               weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "Lora",               weight: 600, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "Cormorant Garamond", weight: 700, size: 54, line: 1.05, tracking: 0 }
+
+  grid:
+    margin: { top: 0.66, right: 0.8, bottom: 0.58, left: 0.8 }
+    gutter: 0.32
+    columns: 12
+    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
+
+  shape:
+    radius: { card: 0.02, pill: 0.40, chip: 0.02 }
+    border: { width: 1, color: "#CDBF9F" }           # thin rule edges
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 2, offset: 1, angle: 90, color: "2A2118", opacity: 0.16 }
+
+  # A dark-olive corner tint — like a marbled endpaper.
+  background:
+    decor:
+      - shape: ellipse
+        x: 10.8
+        y: 5.0
+        w: 4.6
+        h: 4.2
+        fill: "#4A5D3A"
+        transparency: 92
+
+  plate:
+    enabled: false
+
+voice:
+  feel: archival, considered, weighty, literary
+  density: medium
+  prefers:
+    - a long view and a definitive claim
+    - formal but warm register
+    - stately progress through a topic
+  avoid:
+    - buzzwords and startup language
+    - clipped, telegraphic style
+    - loud modern colour
+  headline_style: >
+    A definitive statement in full sentences. "The Weight of a Printed Page"
+    over "Printing, An Overview". Let the serif do the talking.
+  body_style: >
+    Formal, complete sentences. One idea per paragraph, thoroughly said.
