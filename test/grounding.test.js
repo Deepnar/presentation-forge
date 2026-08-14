@@ -32,6 +32,20 @@ test("claimGrounded matches a figure present in the research", () => {
   assert.equal(claimGrounded("Inflation Reduction Act", RESEARCH), true);
 });
 
+test("claimGrounded matches a decimal figure even when the notes spell the unit out", () => {
+  // "18.84 GW" must trace to "18.84 gigawatts" — the normalized notes keep the
+  // decimal point, so the bare-number match survives a unit abbreviation.
+  assert.equal(claimGrounded("18.84 GW", "Cumulative rooftop capacity reached 18.84 gigawatts by March 2025."), true);
+  assert.equal(claimGrounded("1.36", "The payout gap is 1.36 rupees per unit."), true);
+});
+
+test("claimGrounded matches a comma figure when the notes spell the unit out", () => {
+  // "1,232 MW" must trace to "1,232 megawatts": the bare digits drop the comma
+  // while the notes keep it as a space, so the spaced form is checked too.
+  assert.equal(claimGrounded("1,232 MW", "336,000 installations totalling 1,232 megawatts."), true);
+  assert.equal(claimGrounded("1,232", "The fleet totals 1,232 units."), true);
+});
+
 test("claimGrounded accepts a glued unit (180GW) and rejects an absent number", () => {
   assert.equal(claimGrounded("180 GW", "By 2030 the fleet totals 180GW."), true);
   assert.equal(claimGrounded("900 MW", RESEARCH), false);

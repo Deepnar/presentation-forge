@@ -103,7 +103,11 @@ function escapeRegExp(s) {
 }
 
 function normalize(s) {
-  return String(s).toLowerCase().replace(/[\s,.'’]+/g, " ").trim();
+  // Keep the decimal point: stripping it turns "18.84 gigawatts" into
+  // "18 84 gigawatts", so the bare-number check for "18.84 GW" could never
+  // match a figure the notes carry with a full unit word. Commas and
+  // apostrophes still collapse so "18,000" and "18 000" agree.
+  return String(s).toLowerCase().replace(/[\s,'’]+/g, " ").trim();
 }
 
 /**
@@ -121,6 +125,10 @@ export function claimGrounded(claim, researchText) {
   if (num) {
     const bare = num.replace(/,/g, "");
     if (new RegExp(`(^|\\s)${escapeRegExp(bare)}(\\s|$)`).test(research)) return true;
+    // The comma-normalized form: research "1,232 MW" normalizes to "1 232 mw",
+    // so "1,232 MW" must also match "1,232 megawatts" via the spaced digits.
+    const spaced = normalize(num);
+    if (spaced !== bare && new RegExp(`(^|\\s)${escapeRegExp(spaced)}(\\s|$)`).test(research)) return true;
     const unit = n.replace(normalize(num), "").trim();
     if (unit && research.includes(`${normalize(num)}${unit.replace(/\s+/g, "")}`)) return true;
   }
