@@ -337,7 +337,13 @@ function NavRow({ active, icon: Icon, label, href }) {
   return (
     <a
       href={href}
-      onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) e.preventDefault(); }}
+      onClick={(e) => {
+        // These are pure view anchors (#/themes, #/identity): let the hash
+        // change — the App's hashchange listener switches the view. Middle-
+        // click and copy-link keep working. (preventDefault here used to
+        // swallow the navigation entirely, leaving the view stuck.)
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      }}
       className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition ${
         active ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "hover:bg-hover"
       }`}
