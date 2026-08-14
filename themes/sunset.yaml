@@ -1,0 +1,121 @@
+# Sunset / Golden Hour — warm gradient mesh light.
+# Amber through rose to violet, a light "golden hour" hero — the opposite of
+# aurora-mesh's cool pastel and glassmorphism's violet/teal by temperature.
+
+name: sunset
+label: Sunset Golden Hour
+summary: A warm amber-to-rose-to-violet golden-hour mesh.
+
+tokens:
+  palette:
+    bg: "#F7E9D8"          # pale amber light
+    surface: "#FFF9F0"
+    ink: "#4A2B24"         # deep warm umber
+    ink_muted: "#8A6456"
+    accent: "#D2691E"      # amber
+    accent_alt: "#B23A6B"  # rose
+    rule: "#E9D2BC"
+    on_accent: "#FFF9F0"
+
+  surfaces:
+    title:   { bg: "#4A2B24", ink: "#FFF9F0", muted: "#D8B7A4", accent: "#F0A45C" }
+    section: { bg: "#B23A6B", ink: "#FFF9F0", muted: "#F5CBDD" }
+
+  dark:
+    bg: "#2B1B1E"
+    surface: "#3A2527"
+    ink: "#F7E9D8"
+    ink_muted: "#B99A8A"
+    accent: "#D2691E"
+    accent_alt: "#C94A7C"
+    rule: "#5A3E3E"
+    on_accent: "#F7E9D8"
+
+  type:
+    display:  { family: "Fraunces",      weight: 600, size: 38, line: 1.12, tracking: -0.4 }
+    heading:  { family: "Fraunces",      weight: 600, size: 29, line: 1.18, tracking: -0.3 }
+    subhead:  { family: "Manrope",       weight: 400, size: 14, line: 1.5,  tracking: 0 }
+    body:     { family: "Manrope",       weight: 400, size: 12.5, line: 1.6, tracking: 0 }
+    caption:  { family: "Manrope",       weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "Manrope",       weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "Fraunces",      weight: 600, size: 52, line: 1.05, tracking: -1 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.14, pill: 0.40, chip: 0.08 }
+    border: { width: 1, color: "#FFF9F080" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 12, offset: 3, angle: 90, color: "4A2B24", opacity: 0.10 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .sky{position:absolute;inset:0;background:
+          radial-gradient(85% 70% at 18% 12%, {{tokens.palette.accent_alt}}44 0%, transparent 55%),
+          radial-gradient(70% 60% at 84% 20%, {{tokens.palette.accent}}55 0%, transparent 55%),
+          radial-gradient(100% 85% at 50% 118%, {{tokens.palette.accent_alt}}33 0%, transparent 70%),
+          linear-gradient(158deg, {{tokens.palette.surface}} 0%, {{tokens.palette.bg}} 45%, {{tokens.palette.rule}} 100%);}
+        .sun{position:absolute;left:26%;bottom:-6%;width:44%;height:40%;border-radius:50%;
+          background:radial-gradient(60% 60% at 50% 50%, {{tokens.palette.accent}}88 0%, {{tokens.palette.accent_alt}}55 100%);
+          filter:blur(28px);opacity:.6}
+        .b{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5}
+        .b1{left:6%;top:8%;width:30%;height:34%;background:{{tokens.palette.accent_alt}}55}
+        .b2{right:5%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent}}66}
+      </style>
+      <div class="sky"></div>
+      <div class="sun"></div>
+      <div class="b b1"></div><div class="b b2"></div>
+    surfaces:
+      title: |
+        <style>
+          .hero{position:absolute;inset:0;background:
+            radial-gradient(80% 70% at 18% 12%, {{tokens.surfaces.title.accent}}88 0%, transparent 50%),
+            radial-gradient(70% 60% at 86% 22%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
+            radial-gradient(100% 95% at 50% 125%, {{tokens.surfaces.title.bg}} 0%, transparent 75%),
+            linear-gradient(160deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
+          .scrim{position:absolute;inset:0;background:
+            linear-gradient(125deg, {{tokens.surfaces.title.bg}}cc 0%, transparent 55%),
+            linear-gradient(0deg, {{tokens.surfaces.title.bg}}88 0%, transparent 42%);}
+          .sun{position:absolute;left:28%;bottom:-8%;width:44%;height:42%;border-radius:50%;
+            background:radial-gradient(60% 60% at 50% 50%, {{tokens.palette.accent}}99 0%, transparent 70%);
+            filter:blur(34px);opacity:.8}
+        </style>
+        <div class="hero"></div>
+        <div class="scrim"></div>
+        <div class="sun"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            radial-gradient(75% 65% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
+            radial-gradient(70% 60% at 85% 28%, {{tokens.palette.accent}}88 0%, transparent 55%),
+            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
+          .s{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45}
+          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
+        </style>
+        <div class="sec"></div>
+        <div class="s s1"></div>
+
+voice:
+  feel: warm, golden, cinematic, expansive
+  density: medium
+  prefers:
+    - a warm, confident narrative
+    - a hero statistic or a strong opening image
+    - an ending that lingers
+  avoid:
+    - cold clinical phrasing
+    - overcrowded slides
+    - flat, grey vocabulary
+  headline_style: >
+    Evocative but exact. "Light at the End of the Pipeline" over "Rendering".
+    Warm, cinematic, specific.
+  body_style: >
+    Full warm sentences. Lead with the feeling, land on the fact.
