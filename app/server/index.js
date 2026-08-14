@@ -17,7 +17,7 @@ import { researchSummary } from "../../src/ai/research.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 
@@ -1368,8 +1368,17 @@ function rateLimit(req, res, next) {
  * the token rides the Authorization header and nothing sensitive ever leaves
  * the machine. These endpoints protect the Cloud-key surface (and future
  * hosting), not the deck pipeline — everything else stays open.
+ *
+ * Registration is open by default for local dev, but on a public box that is
+ * the "friend's server" story: anyone who can reach it can sign up and burn
+ * CPU. FORGE_OPEN_REGISTRATION=0 closes it and the owner's account is seeded
+ * from FORGE_ADMIN_EMAIL + FORGE_ADMIN_PASSWORD at boot.
  */
+const OPEN_REGISTRATION = process.env.FORGE_OPEN_REGISTRATION !== "0";
 app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
+  if (!OPEN_REGISTRATION) {
+    return fail(res, 403, "registration is closed on this server — ask the owner for an account");
+  }
   const { name, email, password } = req.body ?? {};
   try {
     const user = await register({ name, email, password });
@@ -1462,6 +1471,26 @@ app.get("/api/docs", wrap(async (_req, res) => {
 }));
 
 app.get("/api/health", (_req, res) => ok(res, { root: ROOT }));
+
+/**
+ * Seed the operator's account on boot when registration is closed. The env
+ * pair is the only way in on a locked box — document it loudly and never fall
+ * back to a default password.
+ */
+if (!OPEN_REGISTRATION) {
+  const adminEmail = process.env.FORGE_ADMIN_EMAIL;
+  const adminPassword = process.env.FORGE_ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    console.warn("  WARNING: FORGE_OPEN_REGISTRATION=0 but FORGE_ADMIN_EMAIL/FORGE_ADMIN_PASSWORD are not set — nobody can create an account.");
+  } else {
+    try {
+      const created = await seedAdmin({ name: "Admin", email: adminEmail, password: adminPassword });
+      if (created) console.log("  seeded operator account from FORGE_ADMIN_*");
+    } catch (err) {
+      console.error(`  admin seed failed: ${err.message}`);
+    }
+  }
+}
 
 /**
  * The monthly sweep scheduler. When FORGE_SWEEP_DAYS is set (the number of days
