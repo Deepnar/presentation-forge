@@ -145,6 +145,26 @@ function heading(slide, ctx) {
   return Math.max(y, theme.grid.band.body_y);
 }
 
+/**
+ * The bauhaus section treatment: a hard primary-colour geometric shape behind
+ * the divider headline — a red circle over the yellow field, the constructivist
+ * signature. Drawn before the text so the headline reads on top of it. Only
+ * runs when the theme opts in via tokens.bauhaus.block.
+ */
+function bauhausBlock(slide, theme, s) {
+  if (theme.tokens?.bauhaus?.block !== true) return;
+  // The circle breaks out of the right edge; the triangle counters it at the
+  // top-left. Both are flat fills — no shadow, no outline.
+  slide.addShape("ellipse", {
+    x: 8.6, y: 3.4, w: 5.6, h: 5.6,
+    fill: { color: hex(s.accent ?? theme.palette.accent) }, line: { type: "none" },
+  });
+  slide.addShape("triangle", {
+    x: -0.6, y: -0.6, w: 3.2, h: 2.4,
+    fill: { color: hex(s.ink ?? theme.palette.ink) }, line: { type: "none" },
+  });
+}
+
 /* ---------------------------------------------------------------- layouts */
 
 export const layouts = {
@@ -210,6 +230,7 @@ export const layouts = {
     const { theme, data, deck } = ctx;
     const s = theme.surfaces.section;
     slide.background = { color: hex(s.bg) };
+    bauhausBlock(slide, theme, s);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
 
@@ -255,6 +276,32 @@ export const layouts = {
     const avail = box.bottom - y - 0.2;
     const st = theme.type.body;
     const scale = fitScaleAll(data.bullets, box.w - 0.4, avail / data.bullets.length, st);
+
+    // The editorial-magazine treatment: a magazine-style column split. When the
+    // theme opts in (tokens.editorial.columns === 2) and there are enough
+    // bullets to justify it, the list runs in two columns instead of one long
+    // stack. Every other theme is untouched — the flag is absent there.
+    if (theme.tokens?.editorial?.columns === 2 && data.bullets.length >= 4) {
+      const colGut = 0.45;
+      const cw = (box.w - colGut) / 2;
+      const half = Math.ceil(data.bullets.length / 2);
+      const left = data.bullets.slice(0, half);
+      const right = data.bullets.slice(half);
+      const colScale = fitScaleAll(data.bullets, cw - 0.35, avail / Math.max(left.length, right.length), st);
+      for (const [i, col] of [left, right].entries()) {
+        const rx = box.x + i * (cw + colGut);
+        slide.addText(
+          col.map((b) => ({ text: b, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
+          {
+            x: rx, y, w: cw, h: avail,
+            ...textStyle(theme, "body", { scale: colScale }),
+            paraSpaceAfter: 10,
+            valign: "top",
+          },
+        );
+      }
+      return;
+    }
 
     slide.addText(
       data.bullets.map((b) => ({ text: b, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
@@ -498,7 +545,6 @@ export const layouts = {
       align: "center", valign: "middle",
     });
   },
-
   /** One term, its definition, and an optional example in a caption bar. */
   definition(slide, ctx) {
     const { theme, data, box } = ctx;
@@ -506,17 +552,43 @@ export const layouts = {
     const y = heading(slide, ctx);
 
     const termScale = fitScale(data.term, box.w, 0.9, theme.type.heading, { min: 0.6 });
+
+    // The editorial-magazine drop cap: the definition's first letter renders
+    // as a large display initial and the body's first line indents past it.
+    // Other themes never see this — the flag is absent from their tokens.
+    const dropcap = theme.tokens?.editorial?.dropcap === true && data.definition?.length > 0;
+    const capW = dropcap ? 0.85 : 0;
+
     slide.addText(data.term, {
-      x: box.x, y, w: box.w, h: 0.9,
+      x: box.x, y, w: box.w - capW, h: 0.9,
       ...textStyle(theme, "heading", { color: theme.palette.accent, scale: termScale }),
       valign: "top",
     });
 
     const example = data.example;
     const budget = (example ? box.bottom - 1.25 : box.bottom) - y - 1.0;
+    const defX = box.x + capW;
+    const defW = box.w - capW;
+
+    if (dropcap) {
+      const cap = String(data.definition).trim()[0];
+      const capStyle = theme.type.display;
+      // The cap spans roughly three body lines; the body indents past its
+      // width so the first lines wrap around it like a printed magazine.
+      slide.addText(cap, {
+        x: box.x, y: y + 1.0, w: 0.85, h: 1.35,
+        ...textStyle(theme, "display", {
+          color: theme.palette.accent,
+          scale: Math.min(1, fitScale(cap, 0.85, 1.35, capStyle)),
+        }),
+        valign: "top",
+      });
+    }
+
+    const bodyScale = fitScale(data.definition, defW, budget, theme.type.body);
     slide.addText(data.definition, {
-      x: box.x, y: y + 1.05, w: box.w, h: Math.max(0.6, budget),
-      ...textStyle(theme, "body", { scale: fitScale(data.definition, box.w, budget, theme.type.body) }),
+      x: defX, y: y + 1.05, w: defW, h: Math.max(0.6, budget),
+      ...textStyle(theme, "body", { scale: bodyScale }),
       valign: "top",
     });
 
@@ -1075,6 +1147,7 @@ export const layouts = {
     const { theme, data } = ctx;
     const s = theme.surfaces.section;
     slide.background = { color: hex(s.bg) };
+    bauhausBlock(slide, theme, s);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
     const scale = fitScale(data.headline, w, 1.8, theme.type.display, { min: 0.55 });

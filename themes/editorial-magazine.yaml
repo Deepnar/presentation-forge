@@ -54,6 +54,12 @@ tokens:
   shadow:
     card: { type: outer, blur: 14, offset: 3, angle: 90, color: "1B1B1B", opacity: 0.07 }
 
+  # Layout-level treatments for this theme only. Absent in every other theme,
+  # so the layouts read them and fall back to the default when they are missing.
+  editorial:
+    dropcap: true
+    columns: 2
+
   plate:
     enabled: false
 
