@@ -438,14 +438,49 @@ app.post("/api/validate", wrap(async (req, res) => {
   ok(res, { valid, errors });
 }));
 
-const DECK_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg", "avif"]);
+// Raster formats only. SVG is deliberately absent: an uploaded SVG can carry
+// a <script> and, served from the app's origin, would execute in the session's
+// context — the token lives in localStorage, so that is the app's one real XSS
+// surface. Rasters cannot carry executable content, and each is verified below
+// by its magic bytes before it is stored.
+const DECK_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "avif"]);
 const DECK_IMAGE_MAX = 15 * 1024 * 1024; // 15 MB — a slide image, not a photo library
+
+/**
+ * Verify the leading bytes match the claimed extension. Express has already
+ * limited the body size, so the buffer is small; a format mismatch is a
+ * smuggled payload (HTML named .png), not a slow-loris concern.
+ */
+function sniffImage(buf, ext) {
+  const h = buf.slice(0, 16);
+  switch (ext) {
+    case "png":
+      return h.length >= 8 && h[0] === 0x89 && h[1] === 0x50 && h[2] === 0x4e && h[3] === 0x47;
+    case "jpg":
+    case "jpeg":
+      return h.length >= 3 && h[0] === 0xff && h[1] === 0xd8 && h[2] === 0xff;
+    case "gif":
+      return h.length >= 4 && h[0] === 0x47 && h[1] === 0x49 && h[2] === 0x46 && h[3] === 0x38;
+    case "webp":
+      return h.length >= 12 && h[0] === 0x52 && h[1] === 0x49 && h[2] === 0x46 && h[3] === 0x46
+        && h[8] === 0x57 && h[9] === 0x45 && h[10] === 0x42 && h[11] === 0x50;
+    case "avif":
+      // ISO-BMFF: 'ftyp' box with 'avif'/'avis' brand.
+      return h.length >= 12 && h[4] === 0x66 && h[5] === 0x74 && h[6] === 0x79 && h[7] === 0x70
+        && h[8] === 0x61 && h[9] === 0x76 && h[10] === 0x69;
+    case "tiff":
+      return (h.length >= 4 && h[0] === 0x49 && h[1] === 0x49 && h[2] === 0x2a && h[3] === 0x00)
+        || (h.length >= 4 && h[0] === 0x4d && h[1] === 0x4d && h[2] === 0x00 && h[3] === 0x2a);
+    default:
+      return false;
+  }
+}
 
 /**
  * Upload a slide image for a deck. Lands in decks/<slug>/assets/ (gitignored)
  * so a slide's image field can reference it as `assets/<file>` and the render
- * resolves it relative to the deck folder. Extension and size are validated —
- * the same trust boundary as the brand uploads.
+ * resolves it relative to the deck folder. Extension, magic bytes and size are
+ * validated — the same trust boundary as the brand uploads.
  */
 app.post("/api/decks/:slug/assets", (req, res, next) => {
   const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -455,6 +490,9 @@ app.post("/api/decks/:slug/assets", (req, res, next) => {
   express.raw({ type: () => true, limit: DECK_IMAGE_MAX })(req, res, async () => {
     try {
       if (!req.body?.length) return fail(res, 400, "empty upload");
+      if (!sniffImage(req.body, ext)) {
+        return fail(res, 400, `file does not look like a ${ext} image`);
+      }
       const dir = path.join(DECKS, req.params.slug, "assets");
       await mkdir(dir, { recursive: true });
       const name = `image-${Date.now().toString(36)}.${ext}`;
@@ -466,18 +504,24 @@ app.post("/api/decks/:slug/assets", (req, res, next) => {
   });
 });
 
-/** Serve a deck's uploaded image (same open-exemption as preview rasters). */
+/**
+ * Serve a deck's uploaded image (same open-exemption as preview rasters).
+ * A `sandbox` CSP on the response keeps any file that slips past the magic-byte
+ * check inert — no scripts, no same-origin access — even though the extension
+ * is now a strict raster allowlist.
+ */
 app.get("/api/decks/:slug/assets/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "assets", path.basename(req.params.file));
   try {
     await stat(file);
+    res.setHeader("Content-Security-Policy", "sandbox; default-src 'none'; img-src data: blob:");
     res.sendFile(file);
   } catch {
     res.status(404).end();
   }
 }));
 
-app.post("/api/decks/:slug/render", wrap(async (req, res) => {
+app.post("/api/decks/:slug/render", withRenderSlot(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug);
   const deckFile = path.join(dir, "deck.yaml");
   const themeName = req.body?.theme;
@@ -1204,6 +1248,7 @@ app.put("/api/identity", wrap(async (req, res) => {
 
 const BRAND_ASSETS = ["crest", "banner", "watermark"];
 const BRAND_SRC = path.join(BRAND, "logos");
+const BRAND_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "tiff"]);
 
 /** What the Brand panel renders: which marks exist, and whether placeholders
  *  are in use (a fresh clone generates neutral stand-ins). */
@@ -1234,12 +1279,19 @@ app.get("/api/brand", wrap(async (_req, res) => {
 app.post("/api/brand/:name", (req, res, next) => {
   const name = req.params.name;
   if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
-  if (typeof req.headers["x-file-ext"] !== "string" || !/^[a-z0-9]{2,5}$/i.test(req.headers["x-file-ext"])) {
-    return fail(res, 400, "missing or invalid X-File-Ext header");
+  const ext = typeof req.headers["x-file-ext"] === "string"
+    ? req.headers["x-file-ext"].toLowerCase().replace(/[^a-z0-9]/g, "")
+    : "";
+  if (!BRAND_IMAGE_EXT.has(ext)) {
+    return fail(res, 400, `unsupported image extension — allowed: ${[...BRAND_IMAGE_EXT].join(", ")}`);
   }
   express.raw({ type: () => true, limit: "20mb" })(req, res, async () => {
     try {
-      const ext = req.headers["x-file-ext"].toLowerCase();
+      if (!(await requireAuth(req, res))) return;
+      if (!req.body?.length) return fail(res, 400, "empty upload");
+      if (!sniffImage(req.body, ext)) {
+        return fail(res, 400, `file does not look like a ${ext} image`);
+      }
       const file = path.join(BRAND_SRC, `${name}.${ext}`);
       await mkdir(BRAND_SRC, { recursive: true });
       // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
