@@ -1,21 +1,27 @@
+import { useState } from "react";
+
 /**
  * A compact visual specimen of one theme, drawn live from its own tokens — the
  * same "can't be stale" approach as the Themes gallery, sized for the briefing
  * card. It is what "I see the theme, not just names" means: the palette, type
- * and title treatment on a mini 16:9 canvas, not a dropdown.
+ * and title treatment on a mini 16:9 canvas, not a dropdown. Plate themes show
+ * their real rendered background thumbnail instead, falling back to the token
+ * synthesis when the thumbnail has not been generated.
  */
 export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme = false }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const label = theme.label;
   const sub = defaultTheme ? `${label} · default` : label;
+  const [thumbFailed, setThumbFailed] = useState(false);
+  const useThumb = theme.plate && !thumbFailed;
 
   return (
     <button
       type="button"
       onClick={() => onClick?.(theme.name)}
       title={`${label} (${theme.name})`}
-      className={`card-hover group overflow-hidden rounded-card border bg-panel text-left transition ${
+      className={`card-hover group relative overflow-hidden rounded-card border bg-panel text-left transition ${
         selected
           ? "border-accent ring-2 ring-accent/40"
           : "border-line hover:border-line-strong"
@@ -23,32 +29,43 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
     >
       {/* Title band — the theme's hero treatment. */}
       <div
-        className="flex aspect-[16/8] flex-col justify-end px-2.5 pb-2 pt-2"
+        className="relative flex aspect-[16/8] flex-col justify-end px-2.5 pb-2 pt-2"
         style={{ background: title.bg ?? p.ink }}
       >
-        <div
-          className="truncate leading-tight"
-          style={{
-            color: title.ink ?? p.surface,
-            fontFamily: `"${theme.fonts.heading}", serif`,
-            fontWeight: 800,
-            fontSize: 12,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Title
+        <div className="relative z-10">
+          <div
+            className="truncate leading-tight"
+            style={{
+              color: title.ink ?? p.surface,
+              fontFamily: `"${theme.fonts.heading}", serif`,
+              fontWeight: 800,
+              fontSize: 12,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Title
+          </div>
+          <div
+            className="mt-0.5 truncate"
+            style={{
+              color: title.muted ?? p.ink_muted,
+              fontFamily: `"${theme.fonts.body}", sans-serif`,
+              fontSize: 7.5,
+              fontStyle: "italic",
+            }}
+          >
+            subtitle line
+          </div>
         </div>
-        <div
-          className="mt-0.5 truncate"
-          style={{
-            color: title.muted ?? p.ink_muted,
-            fontFamily: `"${theme.fonts.body}", sans-serif`,
-            fontSize: 7.5,
-            fontStyle: "italic",
-          }}
-        >
-          subtitle line
-        </div>
+        {useThumb && (
+          <img
+            src={theme.thumb}
+            alt=""
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            loading="lazy"
+            onError={() => setThumbFailed(true)}
+          />
+        )}
       </div>
 
       {/* Content strip — surface, cards and accent. */}
