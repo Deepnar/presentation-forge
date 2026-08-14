@@ -27,6 +27,10 @@ export function setStoreDir(dir) {
 }
 
 export const MIN_PASSWORD_LENGTH = 8;
+// Sessions are idle-expiring: a token unused for this long is dead, and using
+// a token refreshes its clock. A leaked token therefore has a bounded shelf
+// life without forcing the owner to log in again mid-project.
+const SESSION_TTL_MS = (Number(process.env.FORGE_SESSION_TTL_DAYS) || 30) * 24 * 60 * 60 * 1000;
 
 async function readJson(file, fallback) {
   try {
@@ -100,6 +104,26 @@ export async function register({ name, email, password }) {
   return publicUser(user);
 }
 
+/** Mint the operator's account from env on first boot (registration locked).
+ *  No-op when the email is already taken — the env can stay set across
+ *  restarts without repeatedly erroring. */
+export async function seedAdmin({ name, email, password }) {
+  const error = validateRegistration({ name, email, password });
+  if (error) throw new Error(`FORGE_ADMIN_* misconfigured: ${error}`);
+  const users = await loadUsers();
+  const normalized = email.trim().toLowerCase();
+  if (users.some((u) => u.email === normalized)) return false;
+  const user = {
+    name: name.trim(),
+    email: normalized,
+    createdAt: new Date().toISOString(),
+    ...hashPassword(password),
+  };
+  users.push(user);
+  await writeJson(USERS_FILE, users);
+  return true;
+}
+
 export async function authenticate(email, password) {
   const users = await loadUsers();
   const user = users.find((u) => u.email === String(email ?? "").trim().toLowerCase());
@@ -128,12 +152,29 @@ export async function endSession(token) {
   }
 }
 
-/** Resolve a bearer token to a public user, or null. */
+/** Resolve a bearer token to a public user, or null. Expired sessions are
+ *  pruned (and the store rewritten) so a dead token cannot accumulate, and a
+ *  live session's clock is refreshed so an active owner never logs in again
+ *  mid-project. */
 export async function userForToken(token) {
   if (!token) return null;
   const sessions = await loadSessions();
+  const now = Date.now();
+  let changed = false;
   const session = sessions[token];
-  if (!session) return null;
+  if (session) {
+    const created = Date.parse(session.createdAt);
+    if (Number.isFinite(created) && now - created > SESSION_TTL_MS) {
+      delete sessions[token];
+      changed = true;
+    } else {
+      // Slide-window TTL: refresh the clock so an active session never dies.
+      session.createdAt = new Date(now).toISOString();
+      changed = true;
+    }
+  }
+  if (changed) await writeJson(SESSIONS_FILE, sessions);
+  if (!session || !sessions[token]) return null;
   const users = await loadUsers();
   const user = users.find((u) => u.email === session.email);
   return user ? publicUser(user) : null;
