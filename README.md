@@ -84,15 +84,79 @@ lives in theme files where it is deterministic and tunable.
 - LibreOffice and poppler (`pdftoppm`) — used to rasterise slides for review
 - Docker, if you want local web search
 
-## Setup
+## Running it locally
+
+Two ways — pick the one that fits your machine:
+
+| | Local models (fully offline) | Cloud models (any laptop) |
+|---|---|---|
+| Needs | Node 24+, Ollama + a model, ~8GB+ RAM | Node 24+, an API key |
+| Model calls | stay on your machine | go to the cloud provider |
+| Your data | local, always | local, always (only model calls leave) |
+
+### Setup (both paths)
 
 ```bash
+git clone https://github.com/Deepnar/presentation-forge.git
+cd presentation-forge
 npm install
 npm run fonts                 # 27 typefaces the themes call for
 npm run brand                 # normalises brand marks (generates placeholders if none)
-cp config/identity.example.yaml config/identity.yaml   # then edit
-npm run searxng               # optional: local metasearch on :8888
+cp config/identity.example.yaml config/identity.yaml   # then edit: institution, guide, team
 ```
+
+### Models
+
+**Local (default):** start Ollama and pull a model — the app resolves every
+role to Ollama automatically:
+
+```bash
+ollama pull qwen3:4b          # or any instruction-following model you have
+npm run dev
+```
+
+**Cloud:** in the app go to Identity → Cloud, paste your key (any
+OpenAI-compatible endpoint; the opencode-go key works), flip the header
+toggle to CLOUD. The key is stored in the gitignored `config/local.yaml` and
+never sent anywhere but the provider.
+
+### Run
+
+```bash
+npm run dev                   # web UI :5173, API :5174 — the app
+```
+
+Open http://localhost:5173/, register an account, start a new chat, type a
+topic, answer the briefing, approve the outline — deck and report come out.
+(Optional local web search: `npm run searxng` on :8888.)
+
+### Where your data lives (all local, all yours)
+
+| What | Where |
+|---|---|
+| Decks (per account) | `decks/<slug>/` — deck.yaml, plan.yaml, research/, out/ |
+| Accounts | `config/users.json` (scrypt hashes — no plaintext passwords) |
+| Sessions | `config/sessions.json` (opaque bearer tokens) |
+| Saved briefing presets | per-account, in config/ |
+| Institution identity | `config/identity.yaml` |
+| Cloud API key | `config/local.yaml` (gitignored, never committed) |
+| Brand marks | `brand/logos/` + `brand/generated/` (gitignored) |
+
+Every user gets their own scope (decks carry the owning account's email,
+presets and sessions are per-account). No database — it's all JSON/YAML
+files, which is also what makes a deck portable: copy `decks/<slug>/` to
+another machine and it opens there.
+
+### Troubleshooting
+
+- **Previews fail / "pdftoppm not found"** — install poppler-utils and
+  LibreOffice: `sudo apt install libreoffice poppler-utils` (Debian/Ubuntu)
+  or `sudo pacman -S libreoffice-fresh poppler` (Arch).
+- **Nothing renders from chat** — check the API log (`npm run dev` output)
+  and that Ollama is running (`ollama list`); if using cloud, check the key
+  in Identity → Cloud.
+- **Ports busy** — the app binds :5173 (UI) and :5174 (API); change with
+  `FORGE_API_PORT` or the Vite config.
 
 ## Use
 
