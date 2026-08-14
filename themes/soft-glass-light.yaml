@@ -1,0 +1,120 @@
+# Soft Glass Light — frosted glass, warm neutral.
+# Oat/amber temperature instead of glassmorphism's violet/teal; softer blur,
+# larger radius. Distinct from glassmorphism by palette and temperature alone.
+
+name: soft-glass-light
+label: Soft Glass Light
+summary: Warm frosted glass — oat and amber, soft and calm.
+
+tokens:
+  palette:
+    bg: "#EFE7D8"          # warm oat
+    surface: "#FDF9F1"
+    ink: "#3D3226"         # warm umber
+    ink_muted: "#8A7A67"
+    accent: "#C98A3B"      # amber
+    accent_alt: "#B2574C"  # soft clay
+    rule: "#DCCEB8"
+    on_accent: "#FDF9F1"
+
+  surfaces:
+    title:   { bg: "#3D3226", ink: "#FDF9F1", muted: "#C9BBA6", accent: "#D9A45C" }
+    section: { bg: "#B2574C", ink: "#FDF9F1", muted: "#F0D8D3" }
+
+  dark:
+    bg: "#241D14"
+    surface: "#332A1E"
+    ink: "#F4EDDF"
+    ink_muted: "#B0A08B"
+    accent: "#C98A3B"
+    accent_alt: "#C26357"
+    rule: "#4A3E2E"
+    on_accent: "#F4EDDF"
+
+  type:
+    display:  { family: "Fraunces",  weight: 500, size: 40, line: 1.1,  tracking: -0.4 }
+    heading:  { family: "Fraunces",  weight: 500, size: 30, line: 1.15, tracking: -0.3 }
+    subhead:  { family: "Manrope",   weight: 400, size: 14, line: 1.5,  tracking: 0 }
+    body:     { family: "Manrope",   weight: 400, size: 12.5, line: 1.6, tracking: 0 }
+    caption:  { family: "Manrope",   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "Manrope",   weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
+    stat:     { family: "Fraunces",  weight: 500, size: 54, line: 1.0,  tracking: -1 }
+
+  grid:
+    margin: { top: 0.66, right: 0.75, bottom: 0.58, left: 0.75 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
+
+  shape:
+    radius: { card: 0.34, pill: 0.45, chip: 0.14 }   # larger radius, softer
+    border: { width: 1, color: "#FDF9F180" }
+    card_pad: 0.30
+    card_fill: { color: "#FDF9F1", transparency: 44 }
+
+  shadow:
+    card: { type: outer, blur: 20, offset: 5, angle: 90, color: "3D3226", opacity: 0.10 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .mesh{position:absolute;inset:0;background:
+          radial-gradient(72% 62% at 16% 14%, {{tokens.palette.accent}}55 0%, transparent 56%),
+          radial-gradient(62% 56% at 86% 20%, {{tokens.palette.accent_alt}}44 0%, transparent 56%),
+          radial-gradient(90% 82% at 50% 118%, {{tokens.palette.surface}}cc 0%, transparent 72%),
+          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+        .b1{left:7%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}66}
+        .b2{right:5%;top:5%;width:27%;height:31%;background:{{tokens.palette.accent_alt}}55}
+        .frost{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+          border-radius:30px;background:{{tokens.palette.surface}}40;
+          backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
+          border:1px solid {{tokens.palette.surface}}99;
+          box-shadow:0 16px 48px {{tokens.palette.ink}}26;}
+      </style>
+      <div class="mesh"></div>
+      <div class="b b1"></div><div class="b b2"></div>
+      <div class="frost"></div>
+    surfaces:
+      title: |
+        <style>
+          .hero{position:absolute;inset:0;background:
+            radial-gradient(82% 72% at 18% 14%, {{tokens.palette.accent}}bb 0%, transparent 52%),
+            radial-gradient(66% 56% at 84% 22%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
+            radial-gradient(100% 92% at 50% 122%, {{tokens.surfaces.title.bg}} 0%, transparent 76%),
+            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .b{position:absolute;border-radius:50%;filter:blur(76px);opacity:.55}
+          .b1{left:9%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
+          .b2{right:6%;top:7%;width:27%;height:31%;background:{{tokens.palette.accent_alt}}77}
+        </style>
+        <div class="hero"></div>
+        <div class="b b1"></div><div class="b b2"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            radial-gradient(76% 66% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 56%),
+            radial-gradient(70% 60% at 86% 28%, {{tokens.palette.accent}}88 0%, transparent 56%),
+            linear-gradient(152deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
+          .s{position:absolute;border-radius:50%;filter:blur(64px);opacity:.45}
+          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
+        </style>
+        <div class="sec"></div>
+        <div class="s s1"></div>
+
+voice:
+  feel: calm, tactile, warm, crafted
+  density: medium
+  prefers:
+    - soft card breakdowns
+    - a gentle confident register
+    - short lines that read through frost
+  avoid:
+    - cold digital language
+    - dense paragraphs
+    - stark high-contrast design
+  headline_style: >
+    Warm and specific. "Soft Light, Clear Thinking" over "An Introduction".
+    Calm, crafted, unhurried.
+  body_style: >
+    Gentle full sentences. Say the warm thing, then the true thing.

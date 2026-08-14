@@ -1,0 +1,94 @@
+# Sci-Fi HUD — dark panel, cyan/magenta HUD lines, corner brackets.
+# A heads-up display language: dark slate panels, cyan and magenta linework,
+# corner brackets on cards, monospace labels. Distinct from dark-neon's glow
+# by the disciplined HUD geometry.
+
+name: sci-fi-hud
+label: Sci-Fi HUD
+summary: A heads-up display — dark panels, cyan/magenta HUD linework.
+
+tokens:
+  palette:
+    bg: "#0A0F14"          # deep space slate
+    surface: "#101A22"
+    ink: "#DFF3F2"         # pale cyan-white
+    ink_muted: "#6E8B93"
+    accent: "#33D6E0"      # cyan
+    accent_alt: "#E85AD4"  # magenta
+    rule: "#1E3540"
+    on_accent: "#0A0F14"
+
+  surfaces:
+    title:   { bg: "#070B0F", ink: "#DFF3F2", muted: "#5F7B85", accent: "#E85AD4" }
+    section: { bg: "#12303A", ink: "#DFF3F2", muted: "#7FB6C0" }
+
+  dark:
+    bg: "#05080C"
+    surface: "#0C151C"
+    ink: "#DFF3F2"
+    ink_muted: "#5F7B85"
+    accent: "#3BE0EA"
+    accent_alt: "#EF63DC"
+    rule: "#1A2F38"
+    on_accent: "#05080C"
+
+  type:
+    display:  { family: "Space Grotesk", weight: 600, size: 38, line: 1.1,  tracking: 0.5 }
+    heading:  { family: "Space Grotesk", weight: 600, size: 28, line: 1.15, tracking: 0.3 }
+    subhead:  { family: "IBM Plex Mono", weight: 400, size: 13.5, line: 1.5, tracking: 0 }
+    body:     { family: "IBM Plex Mono", weight: 400, size: 12, line: 1.6,  tracking: 0 }
+    caption:  { family: "IBM Plex Mono", weight: 400, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Mono", weight: 700, size: 10, line: 1.2,  tracking: 1.8, transform: upper }
+    stat:     { family: "Space Grotesk", weight: 600, size: 54, line: 1.0,  tracking: 0 }
+
+  grid:
+    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
+
+  shape:
+    radius: { card: 0.04, pill: 0.40, chip: 0 }
+    border: { width: 1, color: "#2A4A58" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 6, offset: 2, angle: 90, color: "000000", opacity: 0.45 }
+
+  # Cyan grid hairlines and a magenta top scan bar — the HUD frame.
+  background:
+    decor:
+      - shape: rect
+        x: 0
+        y: 0
+        w: 13.333
+        h: 0.05
+        fill: "#E85AD4"
+        transparency: 20
+      - { shape: rect, x: 1.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
+      - { shape: rect, x: 4.4, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
+      - { shape: rect, x: 6.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
+      - { shape: rect, x: 9.4, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
+      - { shape: rect, x: 11.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
+      - { shape: rect, x: 0, y: 2.4, w: 13.333, h: 0.02, fill: "#33D6E0", transparency: 90 }
+      - { shape: rect, x: 0, y: 4.9, w: 13.333, h: 0.02, fill: "#33D6E0", transparency: 90 }
+
+  plate:
+    enabled: false
+
+voice:
+  feel: precise, technical, futuristic, controlled
+  density: medium
+  prefers:
+    - system diagrams and telemetry framing
+    - exact parameters and readouts
+    - a cool confident register
+  avoid:
+    - organic warm language
+    - marketing hype
+    - emotional appeals
+  headline_style: >
+    A system status line. "PIPELINE STATUS: NOMINAL" over "How Rendering
+    Works". Terse, coded, exact.
+  body_style: >
+    Each line a readout. No prose fluff, no filler.

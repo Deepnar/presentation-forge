@@ -1,0 +1,117 @@
+# Retro CRT — phosphor glow, scanlines and a screen vignette.
+# A real plate carries the CRT: scanline pattern, phosphor glow, rounded
+# screen with a vignette. Distinct from retro-terminal's flat green by the
+# whole tube-and-phosphor language.
+
+name: retro-crt
+label: Retro CRT
+summary: A phosphor-green CRT tube — scanlines, glow, screen vignette.
+
+tokens:
+  palette:
+    bg: "#0B120B"          # off-tube black
+    surface: "#0F180F"
+    ink: "#C9FFCE"         # phosphor green
+    ink_muted: "#5E8A63"
+    accent: "#33FF5C"      # bright phosphor
+    accent_alt: "#FFE14A"  # amber secondary
+    rule: "#1F3A22"
+    on_accent: "#0B120B"
+
+  surfaces:
+    title:   { bg: "#050A05", ink: "#C9FFCE", muted: "#6F9E74", accent: "#33FF5C" }
+    section: { bg: "#1A3A1E", ink: "#C9FFCE", muted: "#7FB784" }
+
+  dark:
+    bg: "#050A05"
+    surface: "#0C140C"
+    ink: "#C9FFCE"
+    ink_muted: "#5E8A63"
+    accent: "#3BFF68"
+    accent_alt: "#FFE14A"
+    rule: "#1A3320"
+    on_accent: "#050A05"
+
+  type:
+    display:  { family: "IBM Plex Mono", weight: 700, size: 38, line: 1.1,  tracking: 1.0 }
+    heading:  { family: "IBM Plex Mono", weight: 700, size: 28, line: 1.15, tracking: 0.8 }
+    subhead:  { family: "IBM Plex Mono", weight: 400, size: 14, line: 1.5,  tracking: 0 }
+    body:     { family: "IBM Plex Mono", weight: 400, size: 12.5, line: 1.6, tracking: 0 }
+    caption:  { family: "IBM Plex Mono", weight: 400, size: 10, line: 1.35, tracking: 0.2 }
+    eyebrow:  { family: "IBM Plex Mono", weight: 700, size: 10, line: 1.2,  tracking: 2.0, transform: upper }
+    stat:     { family: "IBM Plex Mono", weight: 700, size: 54, line: 1.0,  tracking: 0 }
+
+  grid:
+    margin: { top: 0.66, right: 0.75, bottom: 0.58, left: 0.75 }
+    gutter: 0.30
+    columns: 12
+    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
+
+  shape:
+    radius: { card: 0.06, pill: 0.40, chip: 0.04 }
+    border: { width: 1, color: "#2A4A30" }
+    card_pad: 0.30
+
+  shadow:
+    card: { type: outer, blur: 8, offset: 2, angle: 90, color: "000000", opacity: 0.5 }
+
+  plate:
+    enabled: true
+    html: |
+      <style>
+        .tube{position:absolute;inset:0;background:
+          radial-gradient(75% 65% at 50% 42%, {{tokens.palette.ink_muted}}44 0%, transparent 70%),
+          linear-gradient({{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
+        .scan{position:absolute;inset:0;
+          background:repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 4px);}
+        .glow{position:absolute;left:20%;top:14%;width:60%;height:55%;
+          background:radial-gradient(50% 50% at 50% 50%, {{tokens.palette.accent}}22 0%, transparent 70%);
+          filter:blur(30px);}
+        .vig{position:absolute;inset:0;background:
+          radial-gradient(120% 120% at 50% 50%, transparent 62%, {{tokens.palette.bg}}aa 100%);}
+      </style>
+      <div class="tube"></div>
+      <div class="glow"></div>
+      <div class="scan"></div>
+      <div class="vig"></div>
+    surfaces:
+      title: |
+        <style>
+          .hero{position:absolute;inset:0;background:
+            radial-gradient(80% 70% at 50% 40%, {{tokens.palette.accent}}33 0%, transparent 70%),
+            linear-gradient({{tokens.surfaces.title.bg}} 0%, {{tokens.palette.surface}} 120%);}
+          .scan{position:absolute;inset:0;
+            background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px);}
+          .vig{position:absolute;inset:0;background:
+            radial-gradient(120% 120% at 50% 50%, transparent 60%, {{tokens.surfaces.title.bg}}cc 100%);}
+        </style>
+        <div class="hero"></div>
+        <div class="scan"></div>
+        <div class="vig"></div>
+      section: |
+        <style>
+          .sec{position:absolute;inset:0;background:
+            radial-gradient(70% 60% at 50% 40%, {{tokens.surfaces.section.bg}} 0%, transparent 72%),
+            linear-gradient({{tokens.palette.bg}} 0%, {{tokens.surfaces.section.bg}} 130%);}
+          .scan{position:absolute;inset:0;
+            background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px);}
+        </style>
+        <div class="sec"></div>
+        <div class="scan"></div>
+
+voice:
+  feel: retro, precise, immersive, playful-tech
+  density: medium
+  prefers:
+    - system and hardware framing
+    - a playful-but-exact register
+    - short lines, terminal energy
+  avoid:
+    - corporate prose
+    - long paragraphs
+    - soft warm language
+  headline_style: >
+    Like a boot message. "PIPELINE ONLINE // 60FPS" over "Rendering".
+    Caps-able, terse, techy.
+  body_style: >
+    Compact and complete. Each line a fact; no filler lines.
