@@ -160,7 +160,8 @@ export async function createDeck({
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
     brief: brief.trim(), theme: themeObj, identity: identityObj,
-    research: excerptResearch(researchText, await researchExcerptCap({ model })), maxSlides, model, signal,
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
+    maxSlides, slidesPerMember, model, signal,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");

@@ -75,7 +75,12 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
     slides: {
       type: "array",
       minItems: 3,
-      maxItems: maxSlides,
+      // The budget counts CONTENT slides; title, the section dividers and the
+      // closing slide are structural and sit on top. Without this headroom a
+      // tight cap (11 members × 1-per-person, 11 max) squeezes the structure
+      // out of the plan entirely — the observed defect was a deck with no
+      // title and no break slides at all.
+      maxItems: maxSlides + sectionCap + 2,
       items: {
         type: "object",
         required: ["type", "purpose"],
@@ -94,7 +99,7 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
 });
 
 /** Stage 1 — the plan. Cheap, reviewable, and the human gate's input. */
-export async function planDeck({ brief, theme, identity, research = "", maxSlides = 24, model, signal }) {
+export async function planDeck({ brief, theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -106,10 +111,26 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
   // model cannot casually draft more parts than there are people.
   const sectionCap = targetSections(identity);
   const presenters = presentingNames(identity);
+  // The max-slides budget counts CONTENT slides; the title, section dividers
+  // and the closing slide are structural and never count. When the briefing
+  // fixes slides-per-member, the deck is sized to the team (N members × M each)
+  // so the per-person promise is kept AND the cap cannot squeeze structure out.
+  const contentCap = slidesPerMember && presenters.length
+    ? Math.min(maxSlides, presenters.length * slidesPerMember)
+    : maxSlides;
   const fullStrength = (await authorTransport({ model })) === "cloud";
   const teamNote = presenters.length
     ? `The team of ${presenters.length} presenting members (${presenters.join(", ")}) presents the deck together — one member per part, each member presenting only content slides, never the dividers.`
     : "Plan the deck as three to eight major parts.";
+  // The sizing note states the CONTENT budget only when the user set one —
+  // an explicit cap, or a per-member promise the deck must honour. Auto (24 is
+  // the fallback, not an intent) plans by parts as before, and the loosened
+  // schema bound above simply gives structure room without padding the deck.
+  const sizingNote = slidesPerMember && presenters.length
+    ? `- Size the talk to the team: about ${presenters.length * slidesPerMember} content slides, roughly ${slidesPerMember} per presenting member. The title, section dividers and closing slide are structural and do not count toward that number.`
+    : maxSlides < 24
+      ? `- Keep the deck to about ${contentCap} content slides; the title, section dividers and closing slide are extra and do not count toward the limit.`
+      : "";
 
   const system = [
     "You plan presentation decks. You do not write slide content yet.",
@@ -146,13 +167,14 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     dataAffinityNote(research),
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
     voice.density ? `- Density: ${voice.density}.` : "",
+    sizingNote,
   ].filter(Boolean).join("\n");
 
   const res = await chatJSON({
     role: "author",
     model,
     signal,
-    schema: outlineSchema({ maxSlides, sectionCap }),
+    schema: outlineSchema({ maxSlides: contentCap, sectionCap }),
     messages: [
       { role: "system", content: system },
       {
@@ -170,15 +192,83 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
   const plan = res.data ?? {};
   // The type field is free-form in the outline schema on purpose — a tight enum
   // here made the model abandon planning to satisfy the grammar. Coerce after.
-  plan.slides = (plan.slides ?? [])
+  let slides = (plan.slides ?? [])
     .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
     .filter((s) => s.purpose);
 
-  if (plan.slides.length && plan.slides[0].type !== "title") {
-    plan.slides.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
+  // The structure contract is enforced here, not asked: title opens, the
+  // closing slide ends, and every content-bearing section opens with a divider.
+  if (slides.length && slides[0].type !== "title") {
+    slides.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
   }
+  slides = trimContentToBudget(slides, contentCap);
+  slides = ensureStructuralSlides(slides, plan.sections ?? []);
+  plan.slides = slides;
 
   return { plan, stats: { model: res.model, outputTokens: res.evalCount } };
+}
+
+/**
+ * The structure contract for a plan, applied after the model so a tight cap can
+ * never squeeze it away: title opens, every content-bearing section opens with
+ * a divider, the closing slide ends. All three are structural and live OUTSIDE
+ * the content budget — the writer treats them as given and writes one slide per
+ * entry, so a member's "content slide" promise is kept while the deck still
+ * reads as a whole. A named-but-empty section gets no divider (that would just
+ * be a blank page), and a section's opener is placed before its first content
+ * slide so the deck reads title → divider → content in order.
+ */
+export function ensureStructuralSlides(slides, sections) {
+  const out = [...slides];
+  if (!out.length) return out;
+
+  if (out[0].type !== "title") {
+    out.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
+  }
+
+  const used = new Set();
+  for (const s of out) if (!DIVIDER_TYPES.has(s.type)) used.add(s.section ?? 0);
+
+  for (const sec of [...used].sort((a, b) => a - b)) {
+    const hasOpener = out.some(
+      (s) => s.section === sec && DIVIDER_TYPES.has(s.type) && s.type !== "closing" && s.type !== "title",
+    );
+    if (hasOpener) continue;
+    const first = out.findIndex((s) => s.section === sec && !DIVIDER_TYPES.has(s.type));
+    const divider = {
+      type: "section",
+      purpose: sections[sec] ? `Open the part on ${sections[sec]}.` : `Open part ${sec + 1}.`,
+      section: sec,
+    };
+    if (first === -1) out.push(divider);
+    else out.splice(first, 0, divider);
+  }
+
+  if (!out.some((s) => s.type === "closing")) {
+    const lastContent = [...out].reverse().find((s) => !DIVIDER_TYPES.has(s.type));
+    out.push({ type: "closing", purpose: "Close the deck and thank the audience.", section: lastContent?.section ?? 0 });
+  }
+  return out;
+}
+
+/**
+ * Keep the plan's CONTENT slides within the budget by dropping trailing content
+ * slides. Structural slides (title, dividers, closing) are never counted or
+ * dropped — they sit outside the budget by design. Trailing drops keep the
+ * early parts whole, so the trimmed plan stays coherent for the outline gate;
+ * with slides-per-member the budget is exact (11 members × 1 → 11 content
+ * slides), which is what lets generation hand every member their own slide.
+ */
+export function trimContentToBudget(slides, contentCap) {
+  if (!Number.isFinite(contentCap) || contentCap < 0) return slides;
+  const out = [...slides];
+  let content = out.filter((s) => !DIVIDER_TYPES.has(s.type)).length;
+  for (let i = out.length - 1; i >= 0 && content > contentCap; i--) {
+    if (DIVIDER_TYPES.has(out[i].type)) continue;
+    out.splice(i, 1);
+    content--;
+  }
+  return out;
 }
 
 /** Stage 2 — write one slide. Grammar is limited to this type's own fields. */
