@@ -26,7 +26,7 @@ const pick = (flag) => {
   const i = process.argv.indexOf(flag);
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1].split(",").map((s) => s.trim()).filter(Boolean) : null;
 };
-const outFlag = pick("--out");
+const outFlag = pick("--out")?.[0] ?? OUT;
 const themes = pick("--themes") ?? (await listThemes());
 
 const deck = await specimenDeck();
@@ -60,6 +60,43 @@ for (const theme of themes) {
   }
 }
 
+// Distinctness audit: downscale each render to a tiny thumbnail and compare
+// every pair by mean absolute per-pixel difference. This is a blunt "how far
+// apart do they look" meter — it is not a judgement, just a way to surface the
+// near-neighbour pairs a human or vision model should look at. Pairs closer
+// than the threshold get printed.
+if (process.argv.includes("--score")) {
+  const SIZE = 48;
+  const thumbs = {};
+  for (const { theme, file } of rendered) {
+    if (!file) continue;
+    const meta = await sharp(file).metadata();
+    const { data, info } = await sharp(file).resize(SIZE, Math.round(SIZE * meta.height / meta.width))
+      .raw().toBuffer({ resolveWithObject: true });
+    thumbs[theme] = { data, w: info.width, h: info.height };
+  }
+  const names = Object.keys(thumbs);
+  const pairs = [];
+  for (let i = 0; i < names.length; i++) {
+    for (let j = i + 1; j < names.length; j++) {
+      const a = thumbs[names[i]], b = thumbs[names[j]];
+      const n = Math.min(a.h, b.h) * Math.min(a.w, b.w);
+      let diff = 0;
+      for (let p = 0; p < n * 3; p += 3) {
+        diff += Math.abs(a.data[p] - b.data[p]) + Math.abs(a.data[p + 1] - b.data[p + 1]) + Math.abs(a.data[p + 2] - b.data[p + 2]);
+      }
+      const mean = diff / (n * 3);
+      pairs.push({ a: names[i], b: names[j], mean });
+    }
+  }
+  pairs.sort((x, y) => x.mean - y.mean);
+  console.log(`\nclosest theme pairs (mean abs pixel diff / 255, lower = more alike):`);
+  for (const p of pairs.slice(0, 12)) {
+    console.log(`  ${p.mean.toFixed(3)}  ${p.a} × ${p.b}`);
+  }
+  process.exit(0);
+}
+
 // Grid: up to 6 per row, cells scaled to a uniform thumbnail height.
 const cols = 6;
 const rows = Math.ceil(rendered.length / cols);
@@ -91,5 +128,5 @@ for (let i = 0; i < rendered.length; i++) {
   comps.push({ input: label, left: x, top: y });
 }
 
-await sheet.composite(comps).png().toFile(outFlag ?? OUT);
+await sheet.composite(comps).png().toFile(outFlag);
 console.log(`themesheet: ${path.relative(ROOT, outFlag ?? OUT)} (${rendered.length} themes)`);

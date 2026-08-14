@@ -54,6 +54,26 @@ tokens:
   shadow:
     card: { type: outer, blur: 12, offset: 3, angle: 90, color: "1A2B4A", opacity: 0.10 }
 
+  # The optimistic duo: a strong blue bloom rising from the bottom-left and an
+  # orange bloom in the top-left — clearly two warm-bright shapes, nothing like
+  # notion-clean's single cool top-right halo.
+  background:
+    decor:
+      - shape: ellipse
+        x: -2.4
+        y: 3.2
+        w: 6.2
+        h: 5.4
+        fill: "#2D6BFF"
+        transparency: 84
+      - shape: ellipse
+        x: -1.2
+        y: -2.8
+        w: 5.0
+        h: 4.6
+        fill: "#FF7A00"
+        transparency: 86
+
   plate:
     enabled: false
 

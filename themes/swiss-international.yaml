@@ -54,6 +54,16 @@ tokens:
   shadow:
     card: { type: outer, blur: 0, offset: 0, angle: 90, color: "141414", opacity: 0 }
 
+  # The Swiss grid as a barely-there hairline background — the style IS the
+  # grid. Faint neutral lines, far below text-contrast range.
+  background:
+    decor:
+      - { shape: rect, x: 0, y: 2.5, w: 13.333, h: 0.015, fill: "#B9B9B9", transparency: 70 }
+      - { shape: rect, x: 0, y: 5.0, w: 13.333, h: 0.015, fill: "#B9B9B9", transparency: 70 }
+      - { shape: rect, x: 3.33, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
+      - { shape: rect, x: 6.66, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
+      - { shape: rect, x: 9.99, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
+
   plate:
     enabled: false
 
