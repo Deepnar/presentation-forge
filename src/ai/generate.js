@@ -209,6 +209,26 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
 }
 
 /**
+ * The degraded-slide fallback written when a plan slide cannot be generated:
+ * the deck must stay whole, and the plan's promised content count must hold.
+ * A DIVIDER spec stays a divider (never degrading into a content slide, which
+ * would inflate the per-member count); anything else becomes a short bullets
+ * slide named by its purpose. Both shapes validate against deck.schema.json.
+ */
+export function placeholderFor(spec) {
+  const purpose = String(spec.purpose ?? "").trim() || "Covered in the full briefing.";
+  if (DIVIDER_TYPES.has(spec.type)) {
+    return { ...spec, headline: purpose.slice(0, 60), quote: purpose.slice(0, 60) };
+  }
+  return {
+    ...spec,
+    type: "bullets",
+    headline: purpose.slice(0, 60),
+    bullets: [purpose.slice(0, 160), "Details in the full briefing."],
+  };
+}
+
+/**
  * The structure contract for a plan, applied after the model so a tight cap can
  * never squeeze it away: title opens, every content-bearing section opens with
  * a divider, the closing slide ends. All three are structural and live OUTSIDE
@@ -424,40 +444,46 @@ export async function generateDeck({
 
   for (const [i, spec] of plan.slides.entries()) {
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
+    // Retry once with the catalog re-stated explicitly before giving up — a
+    // first failure is often the grammar drifting, and a second pass with the
+    // contract spelled out recovers most of them. "Usable" means a NEW valid
+    // slide actually appeared: a model that emits no append (or a mis-targeted
+    // op) would otherwise filter to an empty op list, apply as a no-op, pass
+    // validation and silently vanish — shrinking the exact content count the
+    // plan promised and stranding the member who owned the slide. A thrown
+    // model call is a failure of the same kind.
+    let res;
     try {
-      // Retry once with the catalog re-stated explicitly before giving up — a
-      // first failure is often the grammar drifting, and a second pass with the
-      // contract spelled out recovers most of them.
-      let ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
-      let applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
-      if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
-        ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
-        applied = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
-      }
-      if (!applied.ok) {
-        skipped.push({ index: i, type: spec.type, reason: applied.errors.join("; ") });
-        continue;
-      }
-      // Validate incrementally so one bad slide is dropped rather than
-      // poisoning the deck and failing everything at the end.
-      const { ok, errors } = await validateDeck(applied.deck);
-      if (!ok) {
-        // Second failure: write a minimal placeholder so the deck stays whole —
-        // a degraded slide beats a missing one, and the purpose names the beat.
-        const placeholder = { ...spec, type: "bullets", headline: spec.purpose.slice(0, 60), bullets: [spec.purpose] };
-        const pApplied = applyOps(deck, [{ op: "append_slide", slide: placeholder }]);
-        if (pApplied.ok && (await validateDeck(pApplied.deck)).ok) {
-          deck = pApplied.deck;
-          skipped.push({ index: i, type: spec.type, reason: `${errors.slice(0, 2).join("; ")} — placeholder written` });
-          continue;
-        }
-        skipped.push({ index: i, type: spec.type, reason: errors.slice(0, 2).join("; ") });
-        continue;
-      }
-      deck = applied.deck;
+      const before = deck.slides.length;
+      const attempt = async () => {
+        const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+        const a = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
+        const grew = a.ok && a.deck.slides.length > before;
+        if (!grew) return { a, ok: false, errors: a.ok ? ["no usable slide written"] : a.errors };
+        const v = await validateDeck(a.deck);
+        return { a, ok: v.ok, errors: v.errors ?? [] };
+      };
+      res = await attempt();
+      if (!res.ok) res = await attempt();
     } catch (err) {
-      skipped.push({ index: i, type: spec.type, reason: err.message.slice(0, 120) });
+      res = { ok: false, errors: [err.message.slice(0, 120)] };
     }
+    if (!res.ok) {
+      // Write a minimal placeholder so the deck stays whole — a degraded slide
+      // beats a missing one, and the purpose names the beat. A DIVIDER spec
+      // must never degrade into a content slide — that would inflate the
+      // content count the plan promised to the members.
+      const placeholder = placeholderFor(spec);
+      const pApplied = applyOps(deck, [{ op: "append_slide", slide: placeholder }]);
+      if (pApplied.ok && (await validateDeck(pApplied.deck)).ok) {
+        deck = pApplied.deck;
+        skipped.push({ index: i, type: spec.type, reason: `${res.errors.slice(0, 2).join("; ")} — placeholder written` });
+        continue;
+      }
+      skipped.push({ index: i, type: spec.type, reason: res.errors.slice(0, 2).join("; ") });
+      continue;
+    }
+    deck = res.a.deck;
   }
 
   const { ok, errors } = await validateDeck(deck);

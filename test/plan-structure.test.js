@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ensureStructuralSlides, trimContentToBudget } from "../src/ai/generate.js";
+import { ensureStructuralSlides, trimContentToBudget, placeholderFor } from "../src/ai/generate.js";
 import { distributePresenters, DIVIDER_TYPES } from "../src/ai/team.js";
+import { validateDeck } from "../src/validate.js";
 
 const content = (section) => ({ type: "bullets", section, purpose: "a point" });
 
@@ -97,4 +98,23 @@ test("finalize on an under-produced team deck: 9 content slides for 11 members s
   const assignment = distributePresenters(plan, names, { slidesPerMember: 1 });
   const counts = names.map((name) => assignment.filter((p) => p === name).length);
   for (const c of counts) assert.ok(c <= 1, `no member doubled (got ${counts.join(",")})`);
+});
+
+test("placeholderFor keeps a failed content slide as a validating bullets slide", async () => {
+  const spec = { type: "roadmap", section: 2, purpose: "Show the phased path to cost parity: scale manufacturing, raise efficiency, extend stack life." };
+  const p = placeholderFor(spec);
+  assert.equal(p.type, "bullets");
+  assert.equal(p.section, 2);
+  const { ok } = await validateDeck({ title: "T", slides: [p] });
+  assert.ok(ok, "placeholder must validate — a dropped slide would break the promised member count");
+});
+
+test("placeholderFor keeps a failed DIVIDER spec a divider, never a content slide", async () => {
+  for (const type of ["title", "section", "closing", "epigraph"]) {
+    const p = placeholderFor({ type, section: 0, purpose: "Open the deck." });
+    assert.ok(DIVIDER_TYPES.has(p.type), `${type} placeholder stays a divider`);
+    assert.notEqual(p.type, "bullets");
+    const { ok } = await validateDeck({ title: "T", slides: [p] });
+    assert.ok(ok, `${type} placeholder must validate`);
+  }
 });
