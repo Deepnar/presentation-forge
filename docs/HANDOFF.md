@@ -7,105 +7,128 @@ handoffs.
 
 ## Session summary
 
-**Per-transport capability split — cloud is no longer hobbled by local
-limits.** Every place a LOCAL-model limit (output caps, prompt conservatism,
-context window, research depth) constrained the pipeline, the cloud transport
-now gets the full capability, split by transport rather than one-size-fits-all.
-Verified end-to-end with a real cloud run: a 79-source / 56-domain / 10-paper
-research pass (940 KB notes), a 15-slide deck generated with zero
-`done_reason=length` truncations, and `mimo-v2.5` confirming sharp, specific
-text with no visual defects. `npm test` 244/244, `vite build` clean, all seven
-commits pushed.
+**Combined frontend redesign + a security fix.** Two workstreams landed
+together, each verified end-to-end:
+
+1. **Per-user deck isolation (the leak).** A fresh account saw two dozen
+   stranger decks because legacy CLI/test decks carry no `owner` in meta.yaml
+   and the per-user gate treated them as shared. Ownerless decks are now
+   operator-only: one `canAccessDeck(user, owner)` policy in `src/auth.js`
+   gates the deck list, per-slug detail/render/report, content search AND the
+   sweep (which is now admin-only). The seed admin gets `role: "admin"`
+   (with `FORGE_ADMIN_EMAIL` fallback for pre-existing installs). CLI decks
+   stay usable headless — the CLI never goes through server auth. Verified
+   with real accounts: register A + B → B sees 0 decks, 404 on A's deck,
+   admin sees all 20 ownerless legacy decks. Both API assertions and a CDP UI
+   flow (register fresh account → Decks tab shows the "No decks yet" state).
+
+2. **The visual + structural redesign** (specs `VISUAL_PLAN.md` +
+   `DESIGN_CRITIQUE.md` top-10). Warm "ember on charcoal" shell: warm neutral
+   ramp, accent `#e0705a`, elevation scale, `::selection`, warm scrollbar,
+   one hero glow per screen; motion on one 220ms easing (staggered entrances,
+   hover lift, count-ups, typing dots, press 0.98, rising toasts, 6s glow
+   breathe, ember-tuned particle field with ×1.5 login boost); self-hosted
+   Inter variable + Plex Mono via `@fontsource` (no CDN); type floors at
+   15px body / 12px caption. Structure: real `<a href="#/…">` anchors on
+   chat/deck/nav rows + wordmark; centred chat-home greeting column with the
+   void removed; `#/home` landing page replaces the Docs modal; clickable
+   theme cards (set default + toast + undo + search + badge); hover-reveal
+   slide toolbars with styled tooltips and crimson delete; unified empty
+   states; ProseNotes `**` strip; inline auth errors. Deep-link restore after
+   login confirmed (navigate to deck → log out → log in → back on the deck).
 
 ## What shipped
 
-### The transport override mechanism
-- A role in `config/models.yaml` may declare `transports.cloud` (and optionally
-  `transports.local`). `applyTransport()` in `src/ai/ollama.js` merges the
-  block for whichever backend the role resolves to, replacing nested blocks
-  wholesale. Applied centrally in `chat()` after resolution, so every caller
-  sees their own transport's numbers.
-- **Cloud author:** `num_predict` 12000→24000, `excerpt_chars` 80000→240000.
-  A long cloud outline is no longer cut mid-JSON.
+### The leak fix (server-side)
+- `src/auth.js`: `seedAdmin` stamps `role: "admin"`; `isAdmin(user)` (role or
+  `FORGE_ADMIN_EMAIL`); `canAccessDeck(user, owner)` — the single decision.
+- `app/server/index.js`: `assertDeckAccess`, `GET /api/decks`, content search
+  and `POST /api/sweep` all route through `canAccessDeck`; sweep is
+  operator-only. Per-slug gate still 404s ("no such deck", never "not yours").
+- `src/ai/pipeline.js`: comment updated — ownerless meta is operator-owned.
+- Tests: `test/auth.test.js` gains admin-role and access-policy coverage.
 
-### Length auto-bump + honest errors
-- A non-streamed completion with `done_reason=length` retries the same request
-  with the cap doubled, up to `defaults.num_predict_bump_ceiling` (64000).
-  Streamed calls are exempt (tokens cannot be unsaid). The truncation error
-  states the effective cap AND transport. The UI's "Retry planning" card now
-  succeeds where it used to fail identically — no UI change was needed.
-- TRAPS updated: the auto-bump is the automated raise-`num_predict` with a
-  ceiling guardrail, so a runaway grammar still fails cleanly.
+### The visual redesign (app/web/src)
+- `styles.css`: full token pass (warm ramp, `--color-field`, `--color-accent-tint`,
+  `--color-accent-glow`, `--color-success`, `--color-overlay`), shadow scale,
+  `::selection`, warm scrollbar, `hero-glow`/`glow-breathe`, `view-stagger`,
+  `toast-in`, `typing-dot`, `press`, 15px/12px type floors. `.scroll-x` dropped.
+- `ui.jsx`: `Button` on `--dur-shell` with `.press`; `Panel` carries
+  `--shadow-card`; `Field`/`inputCls` use `--color-field` + `line-strong`;
+  `Empty` text floors; new `Tooltip`.
+- `ParticleField.jsx`: `boost` prop; base 0.16–0.40, accent share 0.22,
+  repulsion 150px ×9.
+- `main.jsx`: `@fontsource-variable/inter` + `@fontsource/ibm-plex-mono`
+  (400/500) imported — fonts were declared but never loaded before.
+- `LoginScreen`/`AuthModal`: hero glow + display title + "Take the tour",
+  inline per-field auth errors (danger border + message under the field),
+  `bg-[var(--color-overlay)]` scrim on the modal.
 
-### Cloud research is strictly deeper
-- The research role's `research:` block is a per-transport depth budget: cloud
-  runs more angle queries (10 vs 8), higher source/read caps (12/8 vs 8/4), more
-  examiner-gap follow-ups, more papers (10 vs 6) with arXiv/Crossref upstream
-  windows scaled. `excerptResearch` takes an explicit cap, resolved against the
-  AUTHOR's transport (`researchExcerptCap`) because the author reads the notes.
-- **Routing only routes the author role**, so cloud research = giving the
-  research role a `provider:` in models.yaml. The committed default stays
-  local-first; the verification run temporarily set `provider: opencode-go`
-  on research, confirmed 79 sources / 10 papers, then reverted.
-
-### Full-strength synthesis on cloud
-- `authorTransport()` lets prompt-builders pick a full-strength variant when the
-  author runs cloud: planner (richer purposes), slide writer, density sweep,
-  type swap and chat turns all get a synthesis note — claim-first prose with
-  evidence, real hooks in standfirsts, figures quoted from the notes, no
-  template filler. Local keeps the conservative prompt. Grounding still runs
-  either way.
-
-### Writer sees the field caps
-- The full-strength prompt made the cloud writer overflow per-field schema caps
-  (layers[].body ≤80, elements[].body ≤100), dropping slides to placeholders.
-  The catalog now states every string's maxLength inside arrays and nested
-  objects ("layers[] body ≤80 chars"). The same plan went from 12/17 to 15/17
-  slides written. The two residual skips (agenda desc 120, framework elements
-  body 100) are still model discipline — the placeholders keep the deck whole.
-
-### Grounding fix (required for synthesis to be trustworthy)
-- `normalize()` stripped decimal points and commas, so "18.84 GW" could never
-  match "18.84 gigawatts" in the notes — every decimal a cloud writer quoted
-  flagged as fabricated. Keep the dot; the bare-number check also tries the
-  comma-collapsed form ("1,232 MW" → "1,232 megawatts"). One honest residual:
-  a derived figure (₹3.61 − ₹2.25 = ₹1.36) flags, because grounding cannot do
-  arithmetic.
+### The structural pass
+- **Anchors**: `Sidebar` chat/deck rows, `NavRow`, icon-rail `IconButton`, and
+  `HeaderBar` wordmark are `<a href="#/…">` (middle-click/copy-link work). The
+  plain-click handler stays for SPA navigation; meta-click is left to the
+  browser. `onView` prop removed.
+- **Chat home**: greeting is one centred column (hero → chips → composer)
+  built on a shared `composerBar`; centring uses an `m-auto` inner wrapper so
+  it scrolls instead of clipping (the `justify-center` clip is a TRAPS-worthy
+  failure mode). Typing dots in the running bubble.
+- **Landing**: `views/Home.jsx` + `#/home` route; Docs modal deleted; header
+  link renamed Tour. Public when logged out; full-bleed (sidebar hidden) when
+  logged in.
+- **Themes**: cards set the default theme (localStorage `forge.defaultTheme`,
+  toast + undo, search box, default badge); `lib/briefing.js` reads the stored
+  default into new briefings.
+- **DeckDetail**: slide-card actions collapse to a hover-reveal toolbar (3
+  primary + ⋯ menu with crimson delete); `Tooltip` everywhere; unused icons
+  removed.
+- **Sidebar**: deck titles clamp to two lines (was truncating to initials).
+- **Empty states**: Research + Report use shared `Empty`; Report's sticky
+  "Render .docx" bar hidden when no report; ProseNotes strips `**`,`*`,`.
+- **FirstRunHint**: slim corner toast, human copy, persisted.
+- **Router**: `#/home` added to `parseHash`/`hashFor`; router tests updated.
 
 ## Verification notes
 
-- `npm test` 244/244; `vite build` clean.
-- Real cloud run: `forge new "Urban rooftop solar in India…" --research
-  --papers --max-slides 18 --model deepseek-v4-flash` → 79 sources, 56 domains,
-  10 papers, 940 KB notes. `forge generate <slug> --model deepseek-v4-flash` →
-  15 slides, 2 skipped (schema caps), zero truncation errors. Rasterised and
-  vision-checked with `mimo-v2.5`: all 8 sampled slides sharp/specific, no
-  defects.
-- Deck lives at `decks/urban-rooftop-solar-in-india-economics-polic/` (a real
-  deck, keep — it is the synthesis-mode specimen).
-- Transport config-contract tests in `test/transport.test.js` (applyTransport
-  merge semantics, models.yaml cloud-stricter-than-local, auto-bump both
-  transports).
+- `npm test` 246/246; `vite build` clean.
+- CDP (headless Chrome via `node /tmp/opencode/cdp-shot.mjs`):
+  - Leak UI: fresh registered account's Decks tab shows 0 decks + empty state.
+  - Deep-link restore: `#/deck/<slug>` while logged out → login → lands back
+    on the deck; sidebar rows are real `<a href="#/deck/...">` elements.
+  - Landing `#/home`, login screen, chat home, deck detail all render; hero
+    glow visible; no contrast failures.
+- `mimo-v2.5` vision checks: landing/chat-home/deck "good" after fixes. The
+  two real defects it caught — the FirstRunHint toast overlapping the chat
+  hero heading, and `justify-center` clipping the greeting heading — are
+  fixed and re-verified.
 
 ## Seams and leftovers
 
-- `schema/report.schema.json` carries an unrelated reformat diff in the working
-  tree from before this session — leave or discard, it is not part of this work.
-- The untracked `decks/*` dirs are prior fixtures (type batches, exploring,
-  data-centre) — keep, delete freely.
-- Enabling cloud research is a one-line models.yaml role override
-  (`provider: opencode-go` on `research`); the depth profile follows the role's
-  transport. Documented in ARCHITECTURE "Per-transport capability split".
-- The `frame`/`window` in which cloud research ran used the temporary override;
-  the committed default keeps research local-first.
+- `schema/report.schema.json` carries an unrelated reformat diff in the
+  working tree from a prior session — left untouched as before.
+- The untracked `decks/*` dirs are prior fixtures — keep, delete freely. The
+  `urban-rooftop-solar…` deck is the synthesis-mode specimen; it is also the
+  ownerless deck used in verification.
+- `config/users.json` now contains a seeded admin (`operator@forge.local`,
+  password `operator-pass-1`) plus test accounts from verification — the file
+  is gitignored. The operator account is the one that sees ownerless decks;
+  keep or rotate the password as you like.
+- No roadmap item existed for the shell redesign; two new entries were added
+  under section 7 ("Per-user deck isolation" and "Shell redesign"), each with
+  a **Learned** block, and ARCHITECTURE's web-shell + auth-gate sections were
+  updated. **Look-ahead note:** the critique's remaining items (context menus
+  F15, `/` focuses deck search, smooth-scroll landing anchors, styled tooltip
+  rollout beyond the deck grid, F14 mode-semantics tooltip on the LOCAL/CLOUD
+  pill, F13 lightbox scrim polish) are still unbuilt and would consume the
+  new `Tooltip` and the overlay/scrim tokens.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174`, web `http://localhost:5173`
-  (restarted this session), SearXNG `:8888`, Ollama `:11434`.
-- `config/local.yaml`: cloud key attached, `routing.default: cloud`.
-- All seven commits pushed to `origin/main` (last: `8017edc` the writer-cap
-  commit; docs commit pending in this same session).
-- Roadmap item added: **"Per-transport capability split — cloud is not hobbled
-  by local limits"** (with Learned). ARCHITECTURE "Model backends" and TRAPS
-  updated to match. HANDOFF is this file.
+- Servers running: API `http://localhost:5174`, web `http://localhost:5173`,
+  SearXNG `:8888`, Ollama `:11434`. The API was restarted once mid-session
+  (after the leak fix landed) — it is running the current `main`.
+- All commits pushed to `origin/main` (last: `30d7092` "Trim the landing hero
+  padding…"). Seven commits this session, one logical change each.
+- The `@fontsource-variable/inter` + `@fontsource/ibm-plex-mono` deps were
+  added to `package.json`/`package-lock.json` (self-hosted, no CDN).
+- Roadmap + ARCHITECTURE updated to match; HANDOFF is this file.
