@@ -7,136 +7,121 @@ handoffs.
 
 ## Session summary
 
-**A user-review round on the chat/deck UX — five reported issues, all fixed
-and verified end-to-end.** Cloud model (`opencode-go/deepseek-v4-flash`,
-route=cloud) for the real generation tests; local Ollama untouched. The
-session also surfaced and fixed a generation-reliability bug the review
-touched but did not report.
+**Two queued user tasks, both done and verified end-to-end: (1) product
+framing + entry flow — "the app does the bulk, you do the final touches", the
+landing page as the front door, and New chat as the constant post-login
+landing; (2) report button states — a shared report-write state so Render
+.docx / Download / Plan can never be clicked mid-write.**
 
-1. **Cross-tab chat desync** — the chat list lives in localStorage per account
-   and no tab listened for other tabs' writes, so a middle-clicked copy drifted.
-   The shell now listens for the `storage` event on its chat key and reloads the
-   list (active chat survives unless the other tab deleted it; the deck list
-   refreshes when a produced chat appears). Verified with two real tabs:
-   rename, create and delete in one are live in the other.
-2. **"New chat" stacked empty rows** — repeated clicks minted a fresh thread
-   each time. `newChat` now returns to the account's existing empty chat of
-   that kind (nothing sent, nothing produced) until a topic is actually sent.
-   The Ctrl+N handler reads the list through a ref so its once-bound closure
-   cannot miss the reuse. Verified: two New-chat clicks → one row; after a
-   topic, New chat → a fresh row.
-3. **Deck density always showed "balanced"** — `createDeck` never wrote the
-   briefing's density into meta.yaml, so `DeckDetail` fell back to balanced.
-   Density now flows from the briefing (and a `--density` CLI flag) into meta at
-   planning time; the sweep still overwrites it. Verified: a dense deck's detail
-   control shows Dense.
-4. **Structural slides squeezed out by the max-slides cap** — the outline
-   schema capped TOTAL slides at max-slides, so 11 members × 1-per-person × 11
-   max produced a plan with no title, dividers or closing. The budget now
-   counts CONTENT slides only: the schema reserves headroom
-   (`maxSlides + sectionCap + 2`), `planDeck` post-processes every plan to open
-   with a title, divide every content-bearing section and end with a closing
-   slide (none of which count toward the cap), and `trimContentToBudget` trims
-   content to the team-sized budget (`min(maxSlides, N × slidesPerMember)`) so
-   one-per-member hands every member exactly one slide. Verified end-to-end:
-   title + 8 dividers + closing + exactly 11 content, M1–M11 each presenting
-   exactly one slide, no one doubled.
-5. **"Make slide N punchier" is real** — a chat turn after the deck is ready
-   (`sendEditTurn` → `/api/decks/:slug/chat`). Verified in the current flow:
-   after a full briefing → plan → approve → generate, the live chat accepted
-   the turn, `deck.yaml` changed and 21 thumbnails refreshed in the thread.
+### Task 1 — Product framing + entry flow
 
-**Bonus bug found by verification:** the writer loop silently dropped plan
-slides. An empty or mis-targeted op list filtered to `[]`, `applyOps` no-op'd,
-validation passed and the slide vanished with no retry, no placeholder, no
-record — shrinking the promised count and stranding that member. A thrown
-model call (truncated JSON) skipped it the same way through the catch. The loop
-now defines success as "a NEW valid slide appeared", retries once, then writes
-a validating placeholder (`placeholderFor`): a degraded slide beats a missing
-one, and a divider spec never degrades into a content slide. The placeholder's
-headline is word-bounded (≤48 chars, ellipsis) — a hard 60-char slice shipped
-clipped mid-word on the rendered slide, caught by the vision critic.
+1. **Framing reframed everywhere.** Every product-describing surface now says
+   "the app does the bulk — research, structure, draft content, render — you do
+   the final touches: verify the facts, tune the words, make it yours", with
+   "Bulk by machine, polish by you" as the short form: `#/home` hero/tagline/
+   how-it-works/capability copy, the auth modal (which inherited the old login
+   screen's tagline), the chat welcome + footer hint, README + LOCAL_SETUP
+   taglines, the sidebar empty states and the report view's no-report hint.
+2. **Landing-first entry.** An unauthenticated visitor lands on `#/home` — the
+   landing is the front door whatever the hash (an auth-gated deep link still
+   redirects to it, and its hash survives so login can honour it). The landing
+   carries the auth: a slim Log in / Sign up bar, and the hero "Start a chat"
+   opens the register modal. All auth actions go through the existing
+   `AuthModal` (which gained the registration-closed handling the old
+   LoginScreen had). The full-page `LoginScreen.jsx` was **deleted** — its role
+   and tagline folded into the landing + modal.
+3. **New chat is the constant landing.** Post-login and post-register the app
+   routes to a fresh New chat every time (reusing the account's empty thread,
+   minting one when none exists) — never the last route, never the decks list.
+   Only an explicitly-opened artefact deep link (`#/deck/<slug>`, `#/report/…`,
+   `#/research/…`) is honoured; a chat id in the URL is the last route, not a
+   deep link, so it resets to a bare `#/chat`. Logout resets the hash to
+   `#/home`. This supersedes the earlier "reopen at last position" idea.
+
+### Task 2 — Report button states
+
+- `lib/reportWrites.js` (new): slug-keyed mirror of `runs.js` —
+  `begin/update/end` + subscribe.
+- The deck's ReportPanel `generate` registers the write and streams its status
+  into it; the ReportView subscribes for its slug and — while a write is in
+  flight — disables Render .docx (spinner during both write and render),
+  hides the Download link, disables "Generate companion deck" and "Add as
+  slide", and shows the write status + a Stop that aborts through the registry.
+  A remounted ReportPanel re-adopts an in-flight write.
+- Download link only after a render exists (`result`), and hidden during a
+  write. One-click "render and download" verified (auto-download anchor).
 
 ## What shipped
 
-### Frontend (app/web/src)
-- `lib/chats.js`: `chatsKey()` exported, `findEmptyChat(chats, kind)` added.
-- `App.jsx`: a `storage`-event listener on the chat key reloads the list in
-  every other tab (and bumps the deck list when a produced chat appears);
-  `newChat` reuses the empty chat of the same kind; the Ctrl+N handler passes
-  `chatsRef.current` so its once-bound closure stays current.
-- `views/ChatView.jsx`: `planDeck` passes the briefing's `density` into
-  `api.createDeck`.
-
-### Server / pipeline
-- `src/ai/pipeline.js`: `createDeck` accepts and persists `density` into
-  meta.yaml; passes `slidesPerMember` through to `planDeck`; CLI gains
-  `--density`.
-- `app/server/index.js`: `/api/decks` forwards `density`.
-- `src/ai/generate.js`: `outlineSchema` reserves structural headroom; `planDeck`
-  sizes the plan to the team (contentCap) and post-processes structure +
-  budget (new exports `ensureStructuralSlides`, `trimContentToBudget`,
-  `placeholderFor`, `shortHeadline`); `generateDeck`'s write loop treats
-  "no new valid slide" as failure and falls through to a placeholder.
-
-### Tests (261 passing)
-- `test/chats.test.js` (new): empty-chat reuse + key scoping.
-- `test/plan-structure.test.js` (new): structural-slides enforcement, budget
-  trim, the 11-members/1-per-member/11-max sizing, and placeholder validity
-  (content and divider specs).
+- `app/web/src/lib/reportWrites.js` (new) — slug-keyed report-write registry.
+- `app/web/src/App.jsx` — landing-first logged-out branch (always Home +
+  AuthModal), chats effect always lands on the account's empty thread (New
+  chat), boot effect honours only artefact deep links and resets chat-id hashes
+  to `#/chat`, logout resets to `#/home`. The `pendingChatIdRef` mechanism was
+  removed (chat-id restore at login is gone by design; mid-session back/forward
+  still works through `applyHash`).
+- `app/web/src/views/Home.jsx` — auth bar + auth-aware hero/CTA routing, new
+  framing copy everywhere.
+- `app/web/src/components/AuthModal.jsx` — registration-closed handling +
+  human-touch tagline.
+- `app/web/src/components/LoginScreen.jsx` — **deleted** (superseded by
+  landing + AuthModal).
+- `app/web/src/views/DeckDetail.jsx` — ReportPanel registers into
+  reportWrites, re-adopts on mount, disables during write.
+- `app/web/src/views/ReportView.jsx` — subscribes to reportWrites; write state
+  disables Render/Download/Plan/Add-as-slide, shows status + Stop.
+- `app/web/src/views/ChatView.jsx`, `Sidebar.jsx` — framing copy.
+- `README.md`, `LOCAL_SETUP.md` — tagline framing.
+- `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` — two new checked entries + sync.
 
 ## Verification notes
 
 - `npm test` 261/261; `vite build` clean.
-- CDP (headless Chrome, scripts under `/tmp/opencode/`):
-  - `cdp-sync-reuse.mjs` — two tabs in one profile: New chat twice stays 1
-    row; a topic rename, a new-chat creation and a deletion each appear live in
-    the other tab.
-  - `cdp-fullflow.mjs` — the whole user path with a cloud generation: briefing
-    (11-member team, 1-per-member, 11 max, dense) → plan → approve → generate →
-    deck; asserts title + 8 dividers + closing + exactly 11 content, M1–M11
-    once each, meta density `dense`, density control showing Dense, and a
-    punchier turn that changes deck.yaml + refreshes thumbnails.
-  - `headless-gen.mjs` — the same generation driven via the API, capturing the
-    `skipped` reasons (truncated-JSON writes → placeholder).
-- `mimo-v2.5` vision check on the generated deck's rasterised slides: found the
-  placeholder headline clipped mid-word (fixed and re-verified clean), and
-  confirmed title / chart / closing slides render cleanly.
-- Test decks left behind (untracked, gitignored artefacts): the
-  `green-hydrogen-in-2026-cost-and-electrolysis-*` family. Keep or delete
-  freely.
+- CDP scripts (under `/tmp/opencode/`):
+  - `cdp-entry-report.mjs` — full Task 1 + report render/download round: boot
+    lands on `#/home` with Sign up visible + the framing hero; register from the
+    landing → login → lands on New chat (`#/chat`, 1 empty row); New chat twice
+    stays 1 row (reuse); logout → landing → re-login → New chat; explicit
+    `#/deck/gpu-demo` deep link opens the deck after login (auth-gated);
+    ReportView: no Download before any render, one click renders AND
+    auto-downloads, Download appears after. All assertions pass.
+  - `cdp-rw.mjs` — Task 2: deck without report.yaml → Generate report in the
+    Report panel registers a write; while it runs the panel's Generate is
+    disabled and "Planning/Writing section N of M" + Stop show; navigating to
+    the ReportView for the same slug mid-write surfaces the same write status +
+    Stop and no render action; Stop clears the status. All pass.
+  - `mimo-v2.5` vision check on the screenshots: landing hero/auth bar clean,
+    deck detail clean, report view's sticky bar with Render .docx + Download
+    clean, and the mid-write ReportView shows "Planning the report…" + Stop
+    cleanly. No overlap/clipping anywhere.
+- The `data-centre-energy-consumption-how-much-elec-2` deck was used for the
+  write-state test; its `report.yaml` was removed at the end (keep or delete
+  the deck freely).
 
 ## Seams and leftovers
 
-- The write-loop placeholder guarantees the CONTENT count, but the model can
-  still *under*produce content in the plan (planDeck trims only overshoot;
-  there is no padding to `N × slidesPerMember`). With a well-behaved cloud
-  model this did not happen in any run; a local model that plans 8 content
-  slides for 11 members would leave three members silent. If that bites, pad
-  the plan with purpose-drafted slides rather than trusting the prompt.
-- A failed `closing`/`agenda` placeholder relies on the divider spec keeping
-  its type (title/section/closing validate; epigraph needs the quote the
-  placeholder adds). Divider loss is tolerated by design — it never affects the
-  content count.
+- Registration never hands out a session (by design), so "register from the
+  landing → New chat" is register-then-log-in; the CDP flow does both steps.
+- The `reportWrites` registry is only fed by the ReportPanel's `generate` (the
+  chat's standalone-report path knows its slug only at result, so it can't
+  register mid-write — and the ReportView can't be open for it mid-write
+  either, since report.yaml doesn't exist until the write completes). If a
+  future regenerate path appears, route it through `reportWrites.begin` too.
 - `schema/report.schema.json` still carries the unrelated reformat diff from
   prior sessions — left untouched as before.
 - The untracked `decks/*` dirs are prior fixtures + this session's test decks;
-  keep, delete freely.
-- `config/users.json` (gitignored) now holds the seeded operator plus the
-  verification accounts (`cdp-*@sync.local`, `cdp-*@full.local`, etc.), all
-  password `correct-horse-battery`.
+  keep or delete freely. `config/users.json` (gitignored) holds the operator
+  (`operator@forge.local`, `operator-pass-1`) plus this session's
+  `cdp-*@entry.local` account.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174` (restarted this session, plain
-  `node app/server/index.js` via `setsid`, NOT watch mode), web
-  `http://localhost:5173`, SearXNG `:8888`, Ollama `:11434`. If you change
-  server code, restart the API yourself — it is not auto-reloading.
-- All commits pushed to `origin/main`. This session (six commits, one logical
-  change each): `4f1c112` cross-tab sync + empty-chat reuse; `b3da7c0` density
-  into meta; `0f8218b` plan structure + per-member sizing; `32869ea`
-  no-silent-drop write loop; `45a6a84` word-bounded placeholder headline;
-  `437370e` roadmap/architecture/TRAPS.
-- ROADMAP (new checked entry under section 7), ARCHITECTURE (web-shell chat
-  store + pipeline planning/write-loop), and TRAPS (silent-drop-behind-validation,
-  schema-valid-but-clipped placeholder) updated to match.
+- Servers running: API `http://localhost:5174` (plain `node
+  app/server/index.js` via setsid, NOT watch mode), web `http://localhost:5173`,
+  SearXNG `:8888`, Ollama `:11434`. Frontend-only changes this session, so no
+  API restart was needed. If you change server code, restart the API yourself.
+- All commits pushed to `origin/main`. Commits (one logical change each):
+  the copy reframe; the landing-first entry; the always-New-chat landing;
+  the report write state; the roadmap/architecture sync; this handoff.
+- ROADMAP (two new checked entries), ARCHITECTURE (entry flow + report-write
+  registry), and the handoff all updated to match.
