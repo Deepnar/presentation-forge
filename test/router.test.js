@@ -10,6 +10,7 @@ test("parseHash resolves every supported view route", () => {
   assert.deepEqual(parseHash("#/research/some-deck"), { view: "research", slug: "some-deck" });
   assert.deepEqual(parseHash("#/themes"), { view: "themes" });
   assert.deepEqual(parseHash("#/identity"), { view: "identity" });
+  assert.deepEqual(parseHash("#/home"), { view: "home" });
 });
 
 test("parseHash tolerates an empty or malformed hash by landing on chat", () => {
@@ -29,6 +30,7 @@ test("hashFor builds the URL for a view + target", () => {
   assert.equal(hashFor("research", { slug: "x" }), "#/research/x");
   assert.equal(hashFor("themes"), "#/themes");
   assert.equal(hashFor("identity"), "#/identity");
+  assert.equal(hashFor("home"), "#/home");
 });
 
 test("hashFor refuses an artefact view without a slug", () => {
@@ -44,6 +46,7 @@ test("hashFor and parseHash round-trip every route", () => {
     { view: "research", opts: { slug: "x-1" } },
     { view: "themes" },
     { view: "identity" },
+    { view: "home" },
   ];
   for (const { view, opts } of routes) {
     assert.equal(parseHash(hashFor(view, opts)).view, view);

@@ -18,7 +18,7 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
  */
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
-  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onView, onDeleteChat, onDeleteDeck,
+  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
 }) {
   const [tab, setTab] = useState("chats"); // chats | decks
   const [query, setQuery] = useState("");

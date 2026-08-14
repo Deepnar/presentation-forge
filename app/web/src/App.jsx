@@ -309,7 +309,6 @@ export default function App() {
                 onOpenDeck={openDeck}
                 onOpenReport={openReport}
                 onNewChat={newChat}
-                onView={(v) => navigate(v)}
                 onDeleteChat={handleDeleteChat}
                 onDeleteDeck={handleDeleteDeck}
               />

@@ -1338,29 +1338,8 @@ const EditIcon = () => (
     <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
   </svg>
 );
-const UpIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <path d="m6 15 6-6 6 6" />
-  </svg>
-);
-const DownIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-);
-const CopyIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <rect x="9" y="9" width="12" height="12" rx="2.5" />
-    <path d="M5 15H4.5A2.5 2.5 0 0 1 2 12.5v-8A2.5 2.5 0 0 1 4.5 2h8A2.5 2.5 0 0 1 15 4.5V5" />
-  </svg>
-);
 const BoltIcon = () => (
   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
     <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5Z" />
-  </svg>
-);
-const TrashIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <path d="M3 6h18M8 6V4h8v2m1 0-1 14H8L7 6M10 11v6M14 11v6" />
   </svg>
 );
