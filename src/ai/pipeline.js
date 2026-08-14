@@ -102,7 +102,7 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
  */
 export async function createDeck({
   brief, sources = [], research = false, papers = false, theme = null, maxSlides = 24,
-  slidesPerMember = null, model, identity, owner, onProgress, signal,
+  slidesPerMember = null, density = "balanced", model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
@@ -126,7 +126,7 @@ export async function createDeck({
     : {};
 
   const meta = {
-    slug, brief, sources, research, papers, theme, maxSlides,
+    slug, brief, sources, research, papers, theme, maxSlides, density,
     ...(slidesPerMember != null ? { slidesPerMember } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
@@ -584,7 +584,7 @@ export async function cloneDeck({ slug }) {
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
                         [--research] [--papers] [--max-slides <n>] [--slides-per-member <n>]
-                        [--model <id>]
+                        [--density sparse|balanced|dense] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
@@ -630,6 +630,7 @@ function parseArgs(argv) {
     if (a === "--theme") opts.theme = argv[++i];
     else if (a === "--max-slides") opts.maxSlides = Number(argv[++i]);
     else if (a === "--slides-per-member") opts.slidesPerMember = Number(argv[++i]);
+    else if (a === "--density") opts.density = argv[++i];
     else if (a === "--model") opts.model = argv[++i];
     else if (a === "--plan") opts.plan = argv[++i];
     else if (a === "--donor") opts.donor = argv[++i];

@@ -239,6 +239,7 @@ export default function ChatView({
         research: b.research,
         papers: b.papers,
         slidesPerMember: b.slidesPerMember || undefined,
+        density: b.density || undefined,
         identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
         model: model || undefined,
       },
