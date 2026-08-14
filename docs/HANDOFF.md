@@ -7,128 +7,136 @@ handoffs.
 
 ## Session summary
 
-**Combined frontend redesign + a security fix.** Two workstreams landed
-together, each verified end-to-end:
+**A user-review round on the chat/deck UX — five reported issues, all fixed
+and verified end-to-end.** Cloud model (`opencode-go/deepseek-v4-flash`,
+route=cloud) for the real generation tests; local Ollama untouched. The
+session also surfaced and fixed a generation-reliability bug the review
+touched but did not report.
 
-1. **Per-user deck isolation (the leak).** A fresh account saw two dozen
-   stranger decks because legacy CLI/test decks carry no `owner` in meta.yaml
-   and the per-user gate treated them as shared. Ownerless decks are now
-   operator-only: one `canAccessDeck(user, owner)` policy in `src/auth.js`
-   gates the deck list, per-slug detail/render/report, content search AND the
-   sweep (which is now admin-only). The seed admin gets `role: "admin"`
-   (with `FORGE_ADMIN_EMAIL` fallback for pre-existing installs). CLI decks
-   stay usable headless — the CLI never goes through server auth. Verified
-   with real accounts: register A + B → B sees 0 decks, 404 on A's deck,
-   admin sees all 20 ownerless legacy decks. Both API assertions and a CDP UI
-   flow (register fresh account → Decks tab shows the "No decks yet" state).
+1. **Cross-tab chat desync** — the chat list lives in localStorage per account
+   and no tab listened for other tabs' writes, so a middle-clicked copy drifted.
+   The shell now listens for the `storage` event on its chat key and reloads the
+   list (active chat survives unless the other tab deleted it; the deck list
+   refreshes when a produced chat appears). Verified with two real tabs:
+   rename, create and delete in one are live in the other.
+2. **"New chat" stacked empty rows** — repeated clicks minted a fresh thread
+   each time. `newChat` now returns to the account's existing empty chat of
+   that kind (nothing sent, nothing produced) until a topic is actually sent.
+   The Ctrl+N handler reads the list through a ref so its once-bound closure
+   cannot miss the reuse. Verified: two New-chat clicks → one row; after a
+   topic, New chat → a fresh row.
+3. **Deck density always showed "balanced"** — `createDeck` never wrote the
+   briefing's density into meta.yaml, so `DeckDetail` fell back to balanced.
+   Density now flows from the briefing (and a `--density` CLI flag) into meta at
+   planning time; the sweep still overwrites it. Verified: a dense deck's detail
+   control shows Dense.
+4. **Structural slides squeezed out by the max-slides cap** — the outline
+   schema capped TOTAL slides at max-slides, so 11 members × 1-per-person × 11
+   max produced a plan with no title, dividers or closing. The budget now
+   counts CONTENT slides only: the schema reserves headroom
+   (`maxSlides + sectionCap + 2`), `planDeck` post-processes every plan to open
+   with a title, divide every content-bearing section and end with a closing
+   slide (none of which count toward the cap), and `trimContentToBudget` trims
+   content to the team-sized budget (`min(maxSlides, N × slidesPerMember)`) so
+   one-per-member hands every member exactly one slide. Verified end-to-end:
+   title + 8 dividers + closing + exactly 11 content, M1–M11 each presenting
+   exactly one slide, no one doubled.
+5. **"Make slide N punchier" is real** — a chat turn after the deck is ready
+   (`sendEditTurn` → `/api/decks/:slug/chat`). Verified in the current flow:
+   after a full briefing → plan → approve → generate, the live chat accepted
+   the turn, `deck.yaml` changed and 21 thumbnails refreshed in the thread.
 
-2. **The visual + structural redesign** (specs `VISUAL_PLAN.md` +
-   `DESIGN_CRITIQUE.md` top-10). Warm "ember on charcoal" shell: warm neutral
-   ramp, accent `#e0705a`, elevation scale, `::selection`, warm scrollbar,
-   one hero glow per screen; motion on one 220ms easing (staggered entrances,
-   hover lift, count-ups, typing dots, press 0.98, rising toasts, 6s glow
-   breathe, ember-tuned particle field with ×1.5 login boost); self-hosted
-   Inter variable + Plex Mono via `@fontsource` (no CDN); type floors at
-   15px body / 12px caption. Structure: real `<a href="#/…">` anchors on
-   chat/deck/nav rows + wordmark; centred chat-home greeting column with the
-   void removed; `#/home` landing page replaces the Docs modal; clickable
-   theme cards (set default + toast + undo + search + badge); hover-reveal
-   slide toolbars with styled tooltips and crimson delete; unified empty
-   states; ProseNotes `**` strip; inline auth errors. Deep-link restore after
-   login confirmed (navigate to deck → log out → log in → back on the deck).
+**Bonus bug found by verification:** the writer loop silently dropped plan
+slides. An empty or mis-targeted op list filtered to `[]`, `applyOps` no-op'd,
+validation passed and the slide vanished with no retry, no placeholder, no
+record — shrinking the promised count and stranding that member. A thrown
+model call (truncated JSON) skipped it the same way through the catch. The loop
+now defines success as "a NEW valid slide appeared", retries once, then writes
+a validating placeholder (`placeholderFor`): a degraded slide beats a missing
+one, and a divider spec never degrades into a content slide. The placeholder's
+headline is word-bounded (≤48 chars, ellipsis) — a hard 60-char slice shipped
+clipped mid-word on the rendered slide, caught by the vision critic.
 
 ## What shipped
 
-### The leak fix (server-side)
-- `src/auth.js`: `seedAdmin` stamps `role: "admin"`; `isAdmin(user)` (role or
-  `FORGE_ADMIN_EMAIL`); `canAccessDeck(user, owner)` — the single decision.
-- `app/server/index.js`: `assertDeckAccess`, `GET /api/decks`, content search
-  and `POST /api/sweep` all route through `canAccessDeck`; sweep is
-  operator-only. Per-slug gate still 404s ("no such deck", never "not yours").
-- `src/ai/pipeline.js`: comment updated — ownerless meta is operator-owned.
-- Tests: `test/auth.test.js` gains admin-role and access-policy coverage.
+### Frontend (app/web/src)
+- `lib/chats.js`: `chatsKey()` exported, `findEmptyChat(chats, kind)` added.
+- `App.jsx`: a `storage`-event listener on the chat key reloads the list in
+  every other tab (and bumps the deck list when a produced chat appears);
+  `newChat` reuses the empty chat of the same kind; the Ctrl+N handler passes
+  `chatsRef.current` so its once-bound closure stays current.
+- `views/ChatView.jsx`: `planDeck` passes the briefing's `density` into
+  `api.createDeck`.
 
-### The visual redesign (app/web/src)
-- `styles.css`: full token pass (warm ramp, `--color-field`, `--color-accent-tint`,
-  `--color-accent-glow`, `--color-success`, `--color-overlay`), shadow scale,
-  `::selection`, warm scrollbar, `hero-glow`/`glow-breathe`, `view-stagger`,
-  `toast-in`, `typing-dot`, `press`, 15px/12px type floors. `.scroll-x` dropped.
-- `ui.jsx`: `Button` on `--dur-shell` with `.press`; `Panel` carries
-  `--shadow-card`; `Field`/`inputCls` use `--color-field` + `line-strong`;
-  `Empty` text floors; new `Tooltip`.
-- `ParticleField.jsx`: `boost` prop; base 0.16–0.40, accent share 0.22,
-  repulsion 150px ×9.
-- `main.jsx`: `@fontsource-variable/inter` + `@fontsource/ibm-plex-mono`
-  (400/500) imported — fonts were declared but never loaded before.
-- `LoginScreen`/`AuthModal`: hero glow + display title + "Take the tour",
-  inline per-field auth errors (danger border + message under the field),
-  `bg-[var(--color-overlay)]` scrim on the modal.
+### Server / pipeline
+- `src/ai/pipeline.js`: `createDeck` accepts and persists `density` into
+  meta.yaml; passes `slidesPerMember` through to `planDeck`; CLI gains
+  `--density`.
+- `app/server/index.js`: `/api/decks` forwards `density`.
+- `src/ai/generate.js`: `outlineSchema` reserves structural headroom; `planDeck`
+  sizes the plan to the team (contentCap) and post-processes structure +
+  budget (new exports `ensureStructuralSlides`, `trimContentToBudget`,
+  `placeholderFor`, `shortHeadline`); `generateDeck`'s write loop treats
+  "no new valid slide" as failure and falls through to a placeholder.
 
-### The structural pass
-- **Anchors**: `Sidebar` chat/deck rows, `NavRow`, icon-rail `IconButton`, and
-  `HeaderBar` wordmark are `<a href="#/…">` (middle-click/copy-link work). The
-  plain-click handler stays for SPA navigation; meta-click is left to the
-  browser. `onView` prop removed.
-- **Chat home**: greeting is one centred column (hero → chips → composer)
-  built on a shared `composerBar`; centring uses an `m-auto` inner wrapper so
-  it scrolls instead of clipping (the `justify-center` clip is a TRAPS-worthy
-  failure mode). Typing dots in the running bubble.
-- **Landing**: `views/Home.jsx` + `#/home` route; Docs modal deleted; header
-  link renamed Tour. Public when logged out; full-bleed (sidebar hidden) when
-  logged in.
-- **Themes**: cards set the default theme (localStorage `forge.defaultTheme`,
-  toast + undo, search box, default badge); `lib/briefing.js` reads the stored
-  default into new briefings.
-- **DeckDetail**: slide-card actions collapse to a hover-reveal toolbar (3
-  primary + ⋯ menu with crimson delete); `Tooltip` everywhere; unused icons
-  removed.
-- **Sidebar**: deck titles clamp to two lines (was truncating to initials).
-- **Empty states**: Research + Report use shared `Empty`; Report's sticky
-  "Render .docx" bar hidden when no report; ProseNotes strips `**`,`*`,`.
-- **FirstRunHint**: slim corner toast, human copy, persisted.
-- **Router**: `#/home` added to `parseHash`/`hashFor`; router tests updated.
+### Tests (261 passing)
+- `test/chats.test.js` (new): empty-chat reuse + key scoping.
+- `test/plan-structure.test.js` (new): structural-slides enforcement, budget
+  trim, the 11-members/1-per-member/11-max sizing, and placeholder validity
+  (content and divider specs).
 
 ## Verification notes
 
-- `npm test` 246/246; `vite build` clean.
-- CDP (headless Chrome via `node /tmp/opencode/cdp-shot.mjs`):
-  - Leak UI: fresh registered account's Decks tab shows 0 decks + empty state.
-  - Deep-link restore: `#/deck/<slug>` while logged out → login → lands back
-    on the deck; sidebar rows are real `<a href="#/deck/...">` elements.
-  - Landing `#/home`, login screen, chat home, deck detail all render; hero
-    glow visible; no contrast failures.
-- `mimo-v2.5` vision checks: landing/chat-home/deck "good" after fixes. The
-  two real defects it caught — the FirstRunHint toast overlapping the chat
-  hero heading, and `justify-center` clipping the greeting heading — are
-  fixed and re-verified.
+- `npm test` 261/261; `vite build` clean.
+- CDP (headless Chrome, scripts under `/tmp/opencode/`):
+  - `cdp-sync-reuse.mjs` — two tabs in one profile: New chat twice stays 1
+    row; a topic rename, a new-chat creation and a deletion each appear live in
+    the other tab.
+  - `cdp-fullflow.mjs` — the whole user path with a cloud generation: briefing
+    (11-member team, 1-per-member, 11 max, dense) → plan → approve → generate →
+    deck; asserts title + 8 dividers + closing + exactly 11 content, M1–M11
+    once each, meta density `dense`, density control showing Dense, and a
+    punchier turn that changes deck.yaml + refreshes thumbnails.
+  - `headless-gen.mjs` — the same generation driven via the API, capturing the
+    `skipped` reasons (truncated-JSON writes → placeholder).
+- `mimo-v2.5` vision check on the generated deck's rasterised slides: found the
+  placeholder headline clipped mid-word (fixed and re-verified clean), and
+  confirmed title / chart / closing slides render cleanly.
+- Test decks left behind (untracked, gitignored artefacts): the
+  `green-hydrogen-in-2026-cost-and-electrolysis-*` family. Keep or delete
+  freely.
 
 ## Seams and leftovers
 
-- `schema/report.schema.json` carries an unrelated reformat diff in the
-  working tree from a prior session — left untouched as before.
-- The untracked `decks/*` dirs are prior fixtures — keep, delete freely. The
-  `urban-rooftop-solar…` deck is the synthesis-mode specimen; it is also the
-  ownerless deck used in verification.
-- `config/users.json` now contains a seeded admin (`operator@forge.local`,
-  password `operator-pass-1`) plus test accounts from verification — the file
-  is gitignored. The operator account is the one that sees ownerless decks;
-  keep or rotate the password as you like.
-- No roadmap item existed for the shell redesign; two new entries were added
-  under section 7 ("Per-user deck isolation" and "Shell redesign"), each with
-  a **Learned** block, and ARCHITECTURE's web-shell + auth-gate sections were
-  updated. **Look-ahead note:** the critique's remaining items (context menus
-  F15, `/` focuses deck search, smooth-scroll landing anchors, styled tooltip
-  rollout beyond the deck grid, F14 mode-semantics tooltip on the LOCAL/CLOUD
-  pill, F13 lightbox scrim polish) are still unbuilt and would consume the
-  new `Tooltip` and the overlay/scrim tokens.
+- The write-loop placeholder guarantees the CONTENT count, but the model can
+  still *under*produce content in the plan (planDeck trims only overshoot;
+  there is no padding to `N × slidesPerMember`). With a well-behaved cloud
+  model this did not happen in any run; a local model that plans 8 content
+  slides for 11 members would leave three members silent. If that bites, pad
+  the plan with purpose-drafted slides rather than trusting the prompt.
+- A failed `closing`/`agenda` placeholder relies on the divider spec keeping
+  its type (title/section/closing validate; epigraph needs the quote the
+  placeholder adds). Divider loss is tolerated by design — it never affects the
+  content count.
+- `schema/report.schema.json` still carries the unrelated reformat diff from
+  prior sessions — left untouched as before.
+- The untracked `decks/*` dirs are prior fixtures + this session's test decks;
+  keep, delete freely.
+- `config/users.json` (gitignored) now holds the seeded operator plus the
+  verification accounts (`cdp-*@sync.local`, `cdp-*@full.local`, etc.), all
+  password `correct-horse-battery`.
 
 ## End-of-session state
 
-- Servers running: API `http://localhost:5174`, web `http://localhost:5173`,
-  SearXNG `:8888`, Ollama `:11434`. The API was restarted once mid-session
-  (after the leak fix landed) — it is running the current `main`.
-- All commits pushed to `origin/main` (last: `30d7092` "Trim the landing hero
-  padding…"). Seven commits this session, one logical change each.
-- The `@fontsource-variable/inter` + `@fontsource/ibm-plex-mono` deps were
-  added to `package.json`/`package-lock.json` (self-hosted, no CDN).
-- Roadmap + ARCHITECTURE updated to match; HANDOFF is this file.
+- Servers running: API `http://localhost:5174` (restarted this session, plain
+  `node app/server/index.js` via `setsid`, NOT watch mode), web
+  `http://localhost:5173`, SearXNG `:8888`, Ollama `:11434`. If you change
+  server code, restart the API yourself — it is not auto-reloading.
+- All commits pushed to `origin/main`. This session (six commits, one logical
+  change each): `4f1c112` cross-tab sync + empty-chat reuse; `b3da7c0` density
+  into meta; `0f8218b` plan structure + per-member sizing; `32869ea`
+  no-silent-drop write loop; `45a6a84` word-bounded placeholder headline;
+  `437370e` roadmap/architecture/TRAPS.
+- ROADMAP (new checked entry under section 7), ARCHITECTURE (web-shell chat
+  store + pipeline planning/write-loop), and TRAPS (silent-drop-behind-validation,
+  schema-valid-but-clipped placeholder) updated to match.
