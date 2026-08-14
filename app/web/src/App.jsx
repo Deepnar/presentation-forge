@@ -4,7 +4,6 @@ import { parseHash, hashFor } from "./lib/router.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
-import LoginScreen from "./components/LoginScreen.jsx";
 import ParticleField from "./components/ParticleField.jsx";
 import Home from "./views/Home.jsx";
 import ChatView from "./views/ChatView.jsx";
@@ -37,10 +36,8 @@ export default function App() {
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
   const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login"); // login | register — the landing's auth modal
   const [focusSearch, setFocusSearch] = useState(0);
-  // A chat id asked for by the hash before the chat list has loaded (a deep
-  // link on a cold start) — the chats effect resolves it once the list is in.
-  const pendingChatIdRef = useRef(null);
 
   // Boot: rehydrate the session (a stale token just logs out) and remember the
   // institution. Auth-first — everything else waits for a user.
@@ -52,8 +49,12 @@ export default function App() {
   // A logged-in user gets their own chat list; the first visit starts one
   // empty thread so the landing is already a chat. StrictMode double-fires this
   // effect, so the initial-chat guard reads localStorage, not React state. The
-  // hash's chat id (a deep link, or a back-press restore) wins over the
-  // previously active chat once the list is in.
+  // constant landing after login/register is a NEW chat: the account's empty
+  // thread is reused if one exists, so repeated logins never stack empties.
+  // Only an explicitly-opened artefact deep link (#/deck/<slug>, #/report/…,
+  // #/research/…) overrides it — those are honoured by the boot effect below.
+  // The "reopen at last position" restore is gone: a stale chat id in the URL
+  // is the last route, not a deep link, so it never wins.
   useEffect(() => {
     if (!user) { setChats([]); setActiveChatId(null); return; }
     let list = loadChats(user.email);
@@ -62,14 +63,20 @@ export default function App() {
       saveChat(user.email, c);
       list = [c];
     }
-    setChats(list);
-    setActiveChatId((prev) => {
-      // The hash's chat id wins (a deep link, or a back-press restore). It may
-      // not have reached the ref yet on a cold-start login — read the hash too.
-      const want = pendingChatIdRef.current ?? parseHash(window.location.hash).chatId;
-      if (want && list.some((c) => c.id === want)) return want;
-      return prev && list.some((c) => c.id === prev) ? prev : list[0].id;
-    });
+    // New chat is the constant landing — reuse the account's empty thread, or
+    // mint one so the landing is always a New chat, not the last route or the
+    // decks list. StrictMode double-fires this, but the guard reads storage so
+    // the second run reuses the thread the first minted.
+    const empty = findEmptyChat(list, "deck");
+    if (empty) {
+      setChats(list);
+      setActiveChatId(empty.id);
+      return;
+    }
+    const c = createChat();
+    saveChat(user.email, c);
+    setChats([c, ...list]);
+    setActiveChatId(c.id);
   }, [user?.email]);
 
   // Cross-tab sync. localStorage fires the `storage` event in every OTHER tab
@@ -167,7 +174,6 @@ export default function App() {
    * actions (toggles, modals, renders) never call this.
    */
   function navigate(view, opts = {}) {
-    pendingChatIdRef.current = null;
     const h = hashFor(view, opts);
     if (window.location.hash === h) return applyHash();
     window.location.hash = h; // pushes a history entry and fires hashchange
@@ -196,9 +202,9 @@ export default function App() {
       case "chat":
       default:
         setView("chat");
-        pendingChatIdRef.current = r.chatId || null;
-        // The list is already loaded most of the time (back/forward); the
-        // chats effect resolves the id when this runs before it is.
+        // Back/forward restore: the hash's chat id (if the thread is loaded)
+        // wins mid-session; on a fresh login the boot effect replaces the
+        // hash with a bare #/chat first, so New chat stays the landing.
         if (r.chatId && chats.some((c) => c.id === r.chatId)) setActiveChatId(r.chatId);
         break;
     }
@@ -211,14 +217,26 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHash);
   });
 
-  // Boot and login: an empty hash gets the home route (without a history
-  // entry), and any hash — a deep link the user opened while logged out
-  // included — is applied once there is a session to apply it to.
+  // Boot and login: the constant landing is New chat (the chats effect picks
+  // the account's empty thread). Only an explicitly-opened artefact deep link
+  // (#/deck/<slug>, #/report/…, #/research/…) is honoured instead; a chat id
+  // in the hash is the last route, not a deep link, so it resets to a bare
+  // #/chat and New chat wins.
   useEffect(() => {
     if (!user) return;
-    if (!window.location.hash) window.history.replaceState(null, "", "#/chat");
+    const r = parseHash(window.location.hash);
+    const deep = (r.view === "deck" || r.view === "report" || r.view === "research") && r.slug;
+    if (deep) { applyHash(); return; }
+    window.history.replaceState(null, "", "#/chat");
     applyHash();
   }, [user?.email]);
+
+  // The front door for a visitor is the landing page. An empty hash reads as
+  // the tour, not a dead chat route.
+  useEffect(() => {
+    if (user) return;
+    if (!window.location.hash) window.history.replaceState(null, "", "#/home");
+  }, [user]);
 
   const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
   const goHome = () => navigate("chat");
@@ -283,28 +301,28 @@ export default function App() {
   }
 
   if (!user) {
-    const route = parseHash(window.location.hash);
-    // The landing page is public — full-bleed, no auth gate. Any other route
-    // (or an empty hash) is the login screen.
-    if (route.view === "home") {
-      return (
-        <div className="relative h-full overflow-hidden">
-          <ParticleField boost={1.5} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
-          <div className="relative z-10 h-full overflow-y-auto">
-            <Home
-              onStartChat={() => { navigate("chat"); }}
-              onBrowseThemes={() => navigate("themes")}
-            />
-          </div>
-        </div>
-      );
-    }
+    // The landing page IS the front door. A visitor lands here whatever the
+    // hash — an auth-gated deep link (#/deck/<slug>, #/chat/…) redirects to
+    // the landing too, and its hash survives so login can honour it. The
+    // landing carries the sign-up/login actions (the auth modal).
     return (
       <div className="relative h-full overflow-hidden">
-        <ParticleField boost={1.5} className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
-        <div className="relative z-10 h-full">
-          <LoginScreen onDone={(u) => setUser(u)} />
+        <ParticleField boost={1.5} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+        <div className="relative z-10 h-full overflow-y-auto">
+          <Home
+            user={null}
+            onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
+            onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
+            onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
+          />
         </div>
+        {authOpen && (
+          <AuthModal
+            mode={authMode}
+            onDone={(u) => { setUser(u); setAuthOpen(false); }}
+            onClose={() => setAuthOpen(false)}
+          />
+        )}
       </div>
     );
   }
@@ -323,6 +341,9 @@ export default function App() {
           onAuthClick={() => setAuthOpen(true)}
           onLogout={async () => {
             try { await api.logout(); } catch { /* token already gone */ }
+            // The front door is the landing page — reset the hash so the next
+            // login lands on New chat, not the route they were on.
+            window.history.replaceState(null, "", "#/home");
             setUser(null);
           }}
         />
@@ -412,6 +433,7 @@ export default function App() {
             )}
             {view === "home" && (
               <Home
+                user={user}
                 onStartChat={newChat}
                 onBrowseThemes={() => navigate("themes")}
               />
@@ -421,6 +443,7 @@ export default function App() {
 
         {authOpen && (
           <AuthModal
+            mode={authMode}
             onDone={(u) => { setUser(u); setAuthOpen(false); }}
             onClose={() => setAuthOpen(false)}
           />
