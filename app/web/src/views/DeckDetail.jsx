@@ -5,6 +5,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { progressLabel } from "../lib/progress.js";
+import { reportWrites } from "../lib/reportWrites.js";
 import { useModels } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 
@@ -1050,6 +1051,21 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
   const [result, setResult] = useState(null);
   const [preview, setPreview] = useState(null);
   const [job, setJob] = useState(null);
+  // A write in flight for this slug (this panel, or a report chat). Re-adopted
+  // on mount so a remounted panel mid-write stays disabled — the same shared
+  // "generating/writing" state the ReportView subscribes to.
+  const [writing, setWriting] = useState(null);
+
+  useEffect(() => {
+    const run = reportWrites.get(slug);
+    if (run && !run.finished) { setWriting({ status: run.status }); setStatus(run.status); }
+    const onPatch = (patch) => {
+      if (patch.finished) { setWriting(null); setStatus(""); }
+      else if (patch.status != null) { setWriting({ status: patch.status }); setStatus(patch.status); }
+    };
+    reportWrites.subscribe(slug, onPatch);
+    return () => reportWrites.unsubscribe(slug, onPatch);
+  }, [slug]);
 
   async function generate() {
     setBusy(true);
@@ -1058,8 +1074,9 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
     const j = api.generateReport(
       slug,
       { depth, model: model || undefined },
-      { status: (p) => setStatus(progressLabel(p)) },
+      { status: (p) => { const label = progressLabel(p); setStatus(label); reportWrites.update(slug, { status: label }); } },
     );
+    reportWrites.begin(slug, { abort: j.abort, status: "Queued…" });
     setJob(j);
     try {
       await j.promise;
@@ -1069,6 +1086,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
       setStatus("");
     } finally {
       setBusy(false);
+      reportWrites.end(slug);
     }
   }
 
@@ -1094,6 +1112,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
   }
 
   function stop() {
+    reportWrites.get(slug)?.abort?.();
     job?.abort();
     setStatus("");
   }
@@ -1122,9 +1141,9 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
-          <Button variant="primary" size="sm" onClick={generate} disabled={busy}>
-            {busy && <Spinner />}
-            {busy ? "Generating…" : "Generate report"}
+          <Button variant="primary" size="sm" onClick={generate} disabled={busy || writing}>
+            {(busy || writing) && <Spinner />}
+            {busy || writing ? "Generating…" : "Generate report"}
           </Button>
         </div>
       ) : (
@@ -1136,11 +1155,11 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
           ) : (
             <span className="text-[13px] text-fg-muted">A report already exists for this deck.</span>
           )}
-          <Button variant="outline" size="sm" onClick={renderDoc} disabled={busy}>
-            {busy && <Spinner />}
-            {busy ? "Rendering…" : "Render .docx"}
+          <Button variant="outline" size="sm" onClick={renderDoc} disabled={busy || writing}>
+            {(busy || writing) && <Spinner />}
+            {busy || writing ? "Rendering…" : "Render .docx"}
           </Button>
-          {result && (
+          {result && !writing && (
             <a
               href={`/api/decks/${slug}/download/report.docx`}
               className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-[12.5px] text-fg-muted transition hover:border-line-strong hover:text-fg"
@@ -1160,6 +1179,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
       {status && (
         <div className="mt-2.5 flex items-center gap-2 text-[12px] text-fg-muted">
           <Spinner /> {status}
+          {(busy || writing) && <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>}
         </div>
       )}
 

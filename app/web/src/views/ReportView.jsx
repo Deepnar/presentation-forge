@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
 import { progressLabel } from "../lib/progress.js";
+import { reportWrites } from "../lib/reportWrites.js";
 
 const REPORT_SECTIONS = [
   "Abstract", "Acknowledgement", "Introduction", "Theoretical Background",
@@ -29,6 +30,10 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   const [result, setResult] = useState(null);
   const [preview, setPreview] = useState(null); // { pages, thumbs } after render
   const [notFound, setNotFound] = useState(false);
+  // A report WRITE in flight for this slug — registered by whoever started the
+  // generation (the deck's Report panel, or a standalone report chat), so the
+  // view knows not to render or download a report that is being rewritten.
+  const [writing, setWriting] = useState(null); // { status } | null
 
   useEffect(() => {
     setNotFound(false);
@@ -40,6 +45,20 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       if (d?.meta?.reportDepth) setDepth(d.meta.reportDepth);
     }).catch(() => {});
   }, [slug, refreshToken]);
+
+  // Adopt any in-flight report write for this slug (started from the deck's
+  // Report panel or the chat) and disable the render/download/plan actions
+  // while it runs, showing its status and a Stop that aborts it.
+  useEffect(() => {
+    const run = reportWrites.get(slug);
+    if (run && !run.finished) setWriting({ status: run.status });
+    const onPatch = (patch) => {
+      if (patch.finished) setWriting(null);
+      else if (patch.status != null) setWriting((w) => ({ status: patch.status }));
+    };
+    reportWrites.subscribe(slug, onPatch);
+    return () => reportWrites.unsubscribe(slug, onPatch);
+  }, [slug]);
 
   async function renderDoc() {
     setBusy(true);
@@ -125,7 +144,12 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   }
 
   function stop() {
+    // A write in flight (started from the deck's Report panel or a chat) is
+    // aborted through the shared registry; a render/plan started here through
+    // the local job.
+    reportWrites.get(slug)?.abort?.();
     job?.abort();
+    setWriting(null);
     setStatus("");
   }
 
@@ -174,7 +198,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       {notFound ? (
         <Empty
           title="No report here yet"
-          hint="Generate one from a deck's Report panel, or from the home prompt in Report mode."
+          hint="Generate one from a deck's Report panel, or from the home prompt in Report mode. The machine drafts; the final words are yours."
         />
       ) : (
         <>
@@ -227,7 +251,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
                       )}
                       <button
                         onClick={() => addSectionAsSlide(name)}
-                        disabled={busy}
+                        disabled={busy || writing}
                         title="Append this section as a slide of the deck"
                         className="rounded-lg border border-line px-2 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg disabled:opacity-40"
                       >
@@ -281,11 +305,11 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       {!notFound && (
         <div className="sticky bottom-0 z-10 mt-8 border-t border-line bg-panel/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-2.5 px-10 py-3.5">
-          <Button variant="primary" onClick={renderDoc} disabled={busy || !data}>
-            {busy && status === "Rendering…" && <Spinner />}
+          <Button variant="primary" onClick={renderDoc} disabled={busy || writing || !data}>
+            {(busy || writing) && <Spinner />}
             Render .docx
           </Button>
-          {result && (
+          {result && !writing && (
             <a
               href={`/api/decks/${slug}/download/report.docx`}
               className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13px] text-fg-muted transition hover:border-line-strong hover:text-fg"
@@ -297,7 +321,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
           {data && (
             <>
               <div className="mx-auto" />
-              <Button variant="outline" onClick={planDeck} disabled={busy} title="Plan a companion deck from this report's sections">
+              <Button variant="outline" onClick={planDeck} disabled={busy || writing} title="Plan a companion deck from this report's sections">
                 Generate companion deck
               </Button>
               <div className="relative">
@@ -320,10 +344,10 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
         </div>
       )}
 
-      {status && (
+      {(status || writing) && (
         <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-muted">
-          <Spinner /> {status}
-          {busy && <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>}
+          <Spinner /> {writing?.status ?? status}
+          {(busy || writing) && <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>}
         </div>
       )}
 
