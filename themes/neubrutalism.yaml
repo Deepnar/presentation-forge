@@ -53,7 +53,9 @@ tokens:
     card_pad: 0.30
 
   shadow:
-    card: { type: outer, blur: 0, offset: 5, angle: 90, color: "141414", opacity: 100 }
+    # opacity is 0–1 in pptxgenjs; 1 is a fully opaque hard block. (100 would
+    # write an off-chart alpha value that PowerPoint clamps unpredictably.)
+    card: { type: outer, blur: 0, offset: 5, angle: 90, color: "141414", opacity: 1 }
 
   plate:
     enabled: false
