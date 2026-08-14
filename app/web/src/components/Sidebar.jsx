@@ -370,7 +370,11 @@ function IconButton({ icon: Icon, title, onClick, href, active }) {
         href={href}
         title={title}
         aria-label={title}
-        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) e.preventDefault(); }}
+        onClick={(e) => {
+          // Pure view anchors — let the hash change; the App's hashchange
+          // listener switches the view (see NavRow).
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        }}
         className={cls}
       >
         {inner}
