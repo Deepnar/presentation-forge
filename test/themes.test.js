@@ -38,6 +38,20 @@ test("every theme honours the token contract", async () => {
     at(t.shape?.radius?.card != null, "shape.radius.card");
     at(typeof t.plate?.enabled, "boolean", "plate.enabled is a boolean");
 
+    // The decorative background layer is theme-owned native shapes. Each decor
+    // entry must carry a shape, geometry and fill, and the shape must be one
+    // the renderer knows how to draw.
+    const decor = t.tokens?.background?.decor;
+    if (decor != null) {
+      at(Array.isArray(decor), "background.decor is an array when present");
+      const known = new Set(["ellipse", "rect", "roundRect", "triangle"]);
+      for (const d of decor) {
+        at(known.has(d.shape), `decor shape "${d.shape}" is known`);
+        at(Number.isFinite(d.x) && Number.isFinite(d.y) && Number.isFinite(d.w) && Number.isFinite(d.h), "decor geometry is numeric");
+        at(typeof d.fill === "string" && /^#[0-9a-fA-F]{3,8}$/.test(d.fill), `decor fill "${d.fill}" is hex`);
+      }
+    }
+
     // The three-layer rule, machine-checked: the model's voice must never see
     // a colour, a font name or geometry.
     const voice = JSON.stringify(raw.voice ?? {});

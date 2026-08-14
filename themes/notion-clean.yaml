@@ -54,6 +54,18 @@ tokens:
   shadow:
     card: { type: outer, blur: 0, offset: 1, angle: 90, color: "37352F", opacity: 3 }
 
+  # A faint blue halo hugging the top-right corner — notion's blue as a soft
+  # ambient wash, distinct from a centred or bottom-corner treatment.
+  background:
+    decor:
+      - shape: ellipse
+        x: 10.0
+        y: -2.6
+        w: 6.4
+        h: 6.4
+        fill: "#2383E2"
+        transparency: 94
+
   plate:
     enabled: false
 

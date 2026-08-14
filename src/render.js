@@ -43,6 +43,32 @@ function deepMerge(a, b) {
 }
 
 /**
+ * Draw the theme's decorative background layer — a faint wash, panel or hairline
+ * grid of native shapes sitting behind every content slide. Theme-owned tokens
+ * only (`tokens.background.decor`), never reachable from deck.yaml. A single
+ * transparent oversized shape is the "good bg" that makes two pale themes stop
+ * looking identical while every text element stays native and editable.
+ */
+function drawBackground(slide, theme) {
+  const decor = theme.tokens?.background?.decor;
+  if (!Array.isArray(decor)) return;
+  const map = { ellipse: "ellipse", rect: "rect", roundRect: "roundRect", triangle: "triangle" };
+  for (const d of decor) {
+    const shape = map[d.shape];
+    if (!shape) continue;
+    slide.addShape(shape, {
+      x: d.x, y: d.y, w: d.w, h: d.h,
+      fill: {
+        color: hex(d.fill) ?? "FFFFFF",
+        ...(d.transparency != null ? { transparency: d.transparency } : {}),
+      },
+      line: { type: "none" },
+      ...(d.rotation ? { rotation: d.rotation } : {}),
+    });
+  }
+}
+
+/**
  * The plate's own top-right luminance, as a dark/light hex the chrome can read.
  * The theme's flat palette says nothing about a freeform plate, so the crest
  * and footer pick their legible variant from the pixels actually painted.
@@ -136,7 +162,12 @@ export async function render({
       : data.type === "hero-image" ? theme.palette.ink
       : theme.palette.bg;
 
-    if (!isFull) slide.background = { color: hex(theme.palette.bg) };
+    if (!isFull) {
+      slide.background = { color: hex(theme.palette.bg) };
+      // The decorative background layer paints before any layout, so cards and
+      // text sit on top of it. Theme-owned tokens only — see drawBackground.
+      drawBackground(slide, theme);
+    }
 
     // A speaker note reserves 0.7in of the content box bottom and draws a bar
     // there, so no standard layout can collide with it and the chrome footer

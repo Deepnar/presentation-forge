@@ -54,6 +54,18 @@ tokens:
   shadow:
     card: { type: outer, blur: 10, offset: 2, angle: 90, color: "3B3B37", opacity: 0.05 }
 
+  # One very faint muji-red wash in the lower-right corner — the only decor the
+  # theme allows. Native shape + transparency, drawn behind the content box.
+  background:
+    decor:
+      - shape: ellipse
+        x: 9.4
+        y: 5.1
+        w: 5.2
+        h: 4.4
+        fill: "#C65D3B"
+        transparency: 92
+
   plate:
     enabled: false
 

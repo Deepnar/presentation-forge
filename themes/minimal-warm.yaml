@@ -55,6 +55,18 @@ tokens:
   shadow:
     card: { type: outer, blur: 12, offset: 3, angle: 90, color: "8C6A4F", opacity: 0.06 }
 
+  # A soft terracotta bloom rising from the bottom edge — warm and diffuse,
+  # the opposite of flat-2's crisp left panel.
+  background:
+    decor:
+      - shape: ellipse
+        x: 2.2
+        y: 6.9
+        w: 9.0
+        h: 3.4
+        fill: "#C1663B"
+        transparency: 90
+
   plate:
     enabled: false
 

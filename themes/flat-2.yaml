@@ -54,6 +54,25 @@ tokens:
   shadow:
     card: { type: outer, blur: 0, offset: 0, angle: 90, color: "1F2430", opacity: 0 }
 
+  # A wide indigo panel up the left edge — a flat colour block echoing the
+  # accent, clearly different from corner-wash themes.
+  background:
+    decor:
+      - shape: rect
+        x: 0
+        y: 0
+        w: 0.55
+        h: 7.5
+        fill: "#4F46E5"
+        transparency: 0
+      - shape: ellipse
+        x: -1.8
+        y: 5.6
+        w: 4.2
+        h: 4.2
+        fill: "#0EA5E9"
+        transparency: 88
+
   plate:
     enabled: false
 
