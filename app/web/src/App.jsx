@@ -24,7 +24,7 @@ import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
  * chat thread.
  */
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined); // undefined = auth still checking
   const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
   const [view, setView] = useState("chat"); // chat | deck | report | research | themes | identity | home
@@ -40,7 +40,9 @@ export default function App() {
   const [focusSearch, setFocusSearch] = useState(0);
 
   // Boot: rehydrate the session (a stale token just logs out) and remember the
-  // institution. Auth-first — everything else waits for a user.
+  // institution. Auth-first — everything else waits for a user. `user` starts
+  // undefined (still checking) so a reload never flashes the landing for an
+  // authed visitor; it resolves to the session or null before anything renders.
   useEffect(() => {
     api.me().then((r) => setUser(r.user)).catch(() => setUser(null));
     api.identity().then((r) => { setIdentity(r.identity ?? {}); setOrg(r.identity?.institution?.short ?? ""); }).catch(() => {});
@@ -298,6 +300,17 @@ export default function App() {
     setChats((list) => [companion, ...list]);
     setActiveChatId(companion.id);
     navigate("chat", { chatId: companion.id });
+  }
+
+  if (user === undefined) {
+    // Auth is still resolving from /api/me. Render nothing but the shell so a
+    // reload for a logged-in user never flashes the landing (or the chat) —
+    // the resolved user decides which in the next frame.
+    return (
+      <div className="relative h-full overflow-hidden bg-base">
+        <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+      </div>
+    );
   }
 
   if (!user) {
