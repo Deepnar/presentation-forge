@@ -200,3 +200,45 @@ navigate. Verify in the collapsed sidebar too.
 ### 20. (From round 2, still queued) Chat slide-selection panel (item 3) is the
 priority — the user keeps hitting the "the AI needs to know which slide"
 problem. Everything else here is ordered after it.
+
+## Addendum — user's testing round 4 (00:55)
+
+### 21. Hosted deployment: how do users choose cloud models? (answer + improvement)
+User asked: "for hosting, how will users choose which model from the API, and
+which are supported — will they be listed automatically?"
+ANSWER: cloud models come from the `providers:` section in config/models.yaml
+— each provider explicitly lists `models:` (e.g. opencode-go lists
+deepseek-v4-flash / qwen3.8-max / mimo-v2.5) and the picker shows them once a
+key is present. It is a STATIC, admin-curated list — NOT auto-discovered from
+the API. That's correct for a hosted box (the admin curates), but improve:
+- When a provider's `models:` is empty, optionally fetch the model list from
+  the API (GET {baseURL}/models) to auto-populate.
+- UI copy in the model picker / Cloud settings: "These are the models the
+  host has enabled" so users understand why the list is what it is.
+- Document in the deploy guide how the host curates the list.
+
+### 22. Post-generation sweep: verify nothing leaked into ALL slides
+User asked: "when the whole thing is made, does the model do one sweep over
+all the written content — did something leak into all those things?"
+- The density sweep re-writes all slide content at a density target; the
+  per-slide punch/edit turns touch single slides. VERIFY the sweep's rewrite
+  doesn't carry stale content (e.g. a previous slide's text, a removed
+  section's wording) across slides — the sweep prompt must treat each slide
+  independently against the research, not copy neighbors.
+- Also verify the grounding pass runs AFTER a sweep (it should — sweep →
+  re-ground was wired earlier; confirm in the current code).
+
+### 23. Personal descriptions in the app must be GENERALISED
+User: "a LOT of places in the app the descriptions — like in the API places —
+are catered to me; it shouldn't be, it should be generalised info."
+- Verified: NO personal data (TCET/Deepesh/Thakur/Chembur) exists in
+  src/, app/server, app/web (clean grep). config/identity.example.yaml is a
+  neutral template ("Example Institute of Technology"). The ONLY reference is
+  README.md:8 "Built for TCET-style graded submissions" — generalise to
+  "institutional graded submissions" (or similar) for a public repo.
+- The user's own data lives only in the gitignored config/identity.yaml —
+  correct by design.
+- Action: audit ALL user-facing copy (api.js descriptions, error strings,
+  empty states, docs) for anything instance-specific (institution names,
+  course names, the example deck titles) and replace with generic wording.
+  Keep "TCET-style" → "institutional" style in the README.
