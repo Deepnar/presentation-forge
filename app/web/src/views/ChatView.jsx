@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
+import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
+import Lightbox from "../components/Lightbox.jsx";
 import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
+import { deckContext } from "../lib/deckContext.js";
 
 const DENSITIES = [
   { id: "sparse", note: "few words, mostly visuals" },
@@ -77,6 +80,14 @@ export default function ChatView({
   const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
+  // The slide-selection panel: the deck's content + previews (fetched when the
+  // deck is ready), which slides the user has picked, and the enlarged slide.
+  const [deckData, setDeckData] = useState(null); // { slides:[{type,headline}], thumbs:[] }
+  const [selected, setSelected] = useState(() => new Set(chat.selectedSlides ?? []));
+  const [openIndex, setOpenIndex] = useState(null); // enlarged slide in the panel
+  const [punching, setPunching] = useState(false);
+  const [swapping, setSwapping] = useState(false);
+  const [swapOpen, setSwapOpen] = useState(false); // the type-picker modal
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(chat);
@@ -105,6 +116,43 @@ export default function ChatView({
   }, []);
 
   useEffect(() => { setDraftPlan(chat.plan); }, [chat.plan]);
+
+  // Fetch the deck's content + previews when the deck is ready (and after each
+  // turn, so the panel reflects the latest render). Selection is kept in the
+  // chat itself so it survives navigation; the focused slide from the deck
+  // view's lightbox is adopted as a starting selection.
+  useEffect(() => {
+    if (!chat.produced || !chat.deckSlug) return;
+    let live = true;
+    api.deck(chat.deckSlug)
+      .then((r) => {
+        if (!live) return;
+        const stamp = Date.now();
+        setDeckData({
+          slides: r.deck?.slides ?? [],
+          plates: (r.slides ?? []).map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.thumbs ?? []).map((s) => `${s}?t=${stamp}`),
+        });
+        const f = deckContext.focusedSlide(chat.deckSlug);
+        if (f != null && selected.size === 0) setOpenIndex(f.index);
+      })
+      .catch(() => {});
+    return () => { live = false; };
+    // selected.size is intentionally not a dep: adopting focus only on first load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chat.produced, chat.deckSlug, chat.turns?.length]);
+
+  // Persist the selection onto the chat so re-entering the thread restores it.
+  useEffect(() => {
+    const saved = chatRef.current.selectedSlides ?? [];
+    const same = saved.length === selected.size && saved.every((i) => selected.has(i));
+    if (chatRef.current.produced && chatRef.current.deckSlug && !same) {
+      persist({ ...chatRef.current, selectedSlides: [...selected] });
+    }
+    // persist() writes through onChatChanged which re-renders; only run on
+    // selection change, not on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -391,17 +439,51 @@ export default function ChatView({
   function stop() { runs.get(chat.id)?.abort?.() ?? job?.abort(); }
 
   /**
+   * The selection context appended to an edit turn: WHICH slides the user
+   * means, by index and content excerpt, so the AI never has to guess from a
+   * bare "these slides". When nothing is selected but a slide is enlarged
+   * (or was focused in the deck view's lightbox), that single slide is named —
+   * "make THIS punchier" resolves against it.
+   */
+  function selectionContext() {
+    const slideText = (s) => {
+      if (!s) return "";
+      const parts = [s.type];
+      if (s.headline) parts.push(`"${s.headline}"`);
+      const body = s.bullets?.length
+        ? s.bullets.slice(0, 2).join(" | ")
+        : s.body?.slice?.(0, 2).join(" | ") || s.cards?.map?.((c) => c.label ?? c.title).slice(0, 2).join(", ") || "";
+      if (body) parts.push(`content: ${body}`);
+      return parts.join(" — ");
+    };
+    const chosen = [...selected].sort((a, b) => a - b);
+    if (chosen.length > 0) {
+      const lines = chosen.map((i) => `  Slide ${i + 1} (index ${i}): ${slideText(deckData?.slides?.[i])}`);
+      return `The user selected these slides — the request below applies to EXACTLY these, not to any other slide:\n${lines.join("\n")}`;
+    }
+    const idx = openIndex ?? deckContext.focusedSlide(chat.deckSlug)?.index ?? null;
+    if (idx != null && deckData?.slides?.[idx]) {
+      return `The user is referring to the slide currently shown — Slide ${idx + 1} (index ${idx}): ${slideText(deckData.slides[idx])}`;
+    }
+    return "";
+  }
+
+  /**
    * The deck-editing turn. After the deck is produced the SAME thread keeps
    * working: a message here is an instruction to runTurn on deck.yaml (the
    * machinery the deleted chat rail used, still served by /api/decks/:slug/chat).
    * The turn's applied changes and the fresh slide thumbnails land back in the
    * thread, and bumping deckVersion makes the deck view re-fetch if it is open.
+   * When slides are selected in the panel, the turn context names them
+   * explicitly — "add more content to THIS slide" can no longer drift.
    */
   function sendEditTurn(text) {
     if (!chat.deckSlug) return;
     setBusy(true);
     setError("");
     setStatus("Editing…");
+    const ctx = selectionContext();
+    const instruction = ctx ? `${ctx}\n\n${text}` : text;
     const userMsg = { role: "user", text, at: new Date().toISOString() };
     persist({
       ...chat,
@@ -412,7 +494,7 @@ export default function ChatView({
     const j = api.chatDeck(
       chat.deckSlug,
       {
-        instruction: text,
+        instruction,
         model: model || undefined,
       },
       {
@@ -450,6 +532,47 @@ export default function ChatView({
         persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
       })
       .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
+  }
+
+  /** Punch up the selected slides — one scoped turn naming exactly them. */
+  function punchSelected() {
+    if (selected.size === 0 || busy || punching) return;
+    const idxs = [...selected].sort((a, b) => a - b);
+    const names = idxs.length === 1 ? `slide ${idxs[0] + 1}` : `slides ${idxs.map((i) => i + 1).join(", ")}`;
+    setPunching(true);
+    setError("");
+    api.chatDeck(chat.deckSlug, {
+      instruction:
+        `Make ${names} punchier — tighten their wording and sharpen the claims. ` +
+        `Keep each slide's type and structure; edit only ${names}.`,
+      model: model || undefined,
+    }, {
+      status: (p) => setStatus(progressLabel(p)),
+      result: () => onDeckChanged?.(),
+    }).promise
+      .catch((err) => setError(err.message))
+      .finally(() => setPunching(false));
+  }
+
+  /** Swap the selected slides to a new type — remap when compatible, scoped
+   *  rewrite otherwise, through the same endpoint the deck view's gallery uses. */
+  function swapSelected(targetType) {
+    if (selected.size === 0 || busy || swapping) return;
+    const idxs = [...selected].sort((a, b) => a - b);
+    setSwapping(true);
+    setError("");
+    (async () => {
+      for (const i of idxs) {
+        const cur = deckData?.slides?.[i]?.type;
+        if (cur === targetType) continue;
+        await api.convertSlide(chat.deckSlug, i, { type: targetType }, {
+          status: (p) => setStatus(progressLabel(p)),
+        }).promise;
+      }
+    })()
+      .then(() => { onDeckChanged?.(); setSelected(new Set()); })
+      .catch((err) => setError(err.message))
+      .finally(() => setSwapping(false));
   }
 
   /**
@@ -548,6 +671,9 @@ export default function ChatView({
               ? "Working…"
               : "Review the card above…";
   const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "record";
+  // The slide-selection panel shows beside the thread once the deck is ready
+  // and its content is loaded. ~40% of the row; the chat shifts left.
+  const showPanel = phase === "editing" && deckData && deckData.slides.length > 0;
 
   /** The bottom input bar — topic first, then free-text answers to questions,
    *  then — once the deck exists — deck-editing turns. Shared by the greeting
@@ -645,7 +771,8 @@ export default function ChatView({
           </div>
         </div>
       ) : (
-        <>
+        <div className="flex min-h-0 flex-1">
+          <div className="flex min-w-0 flex-1 flex-col">
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="mx-auto max-w-3xl space-y-4 px-6 py-8">
           <Welcome
@@ -853,12 +980,51 @@ export default function ChatView({
                 ? "The report is ready — this thread is its record. Open it to read the document."
                 : "A report is researched and written from your topic — depth defaults to brief."
               : phase === "briefing" ? "Answer in the card above, or type the answer here and send."
-                : phase === "editing" ? "Each message is a deck-editing turn — structure, wording, types, presenters."
+                : phase === "editing" ? "Select slides on the right, then type — the AI knows exactly which you mean."
                   : "The app does the bulk; you do the final touches — every model call stays on this machine."}
           </div>
         </div>
       </footer>
-      </>
+          </div>
+
+          {showPanel && (
+            <div className="w-[40%] max-w-[30rem] shrink-0">
+              <SlideSelectPanel
+                slides={deckData.slides}
+                thumbs={deckData.thumbs}
+                types={types}
+                selected={selected}
+                onToggle={(i) => setSelected((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
+                onClear={() => setSelected(new Set())}
+                openSlide={(i) => setOpenIndex(i)}
+                openIndex={openIndex}
+                busy={busy}
+                onPunch={punchSelected}
+                punching={punching}
+                onSwap={() => setSwapOpen(true)}
+                swapping={swapping}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {showPanel && openIndex != null && deckData.slides[openIndex] && (
+        <Lightbox
+          slides={deckData.plates}
+          thumbs={deckData.thumbs}
+          index={openIndex}
+          onIndex={(i) => { setOpenIndex(i); deckContext.focusSlide(chat.deckSlug, i); }}
+          onClose={() => setOpenIndex(null)}
+        />
+      )}
+
+      {showPanel && swapOpen && (
+        <TypePickModal
+          types={types}
+          onPick={(t) => { setSwapOpen(false); swapSelected(t); }}
+          onClose={() => setSwapOpen(false)}
+        />
       )}
     </div>
   );
@@ -1614,5 +1780,40 @@ function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApprove })
         </Button>
       </div>
     </Panel>
+  );
+}
+
+/** The type-picker modal for the selected slides — a compact list of every
+ *  type's name + description; the swap runs through the deck view's convert
+ *  endpoint (remap when compatible, scoped rewrite otherwise). */
+function TypePickModal({ types, onPick, onClose }) {
+  return (
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/80 p-6 backdrop-blur-sm">
+      <div className="max-h-[80vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-panel p-4 shadow-[var(--shadow-float)]">
+        <div className="mb-1 flex items-center justify-between">
+          <div className="text-[13px] font-semibold text-fg">Swap the selected slides' type</div>
+          <button onClick={onClose} className="rounded-lg px-2 py-1 text-fg-faint transition hover:bg-hover hover:text-fg" aria-label="Close">
+            ✕
+          </button>
+        </div>
+        <p className="mb-3 text-[11.5px] leading-relaxed text-fg-faint">
+          Compatible types remap instantly; the rest get a scoped rewrite grounded in the research.
+        </p>
+        <div className="space-y-1">
+          {Object.entries(types).map(([t, m]) => (
+            <button
+              key={t}
+              onClick={() => onPick(t)}
+              className="block w-full rounded-lg border border-line bg-sunken px-3 py-2 text-left transition hover:border-accent/60 hover:bg-hover"
+            >
+              <span className="block text-[12.5px] font-medium text-fg">{m.label ?? t}</span>
+              {m.description && (
+                <span className="block truncate text-[11px] text-fg-faint">{m.description}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

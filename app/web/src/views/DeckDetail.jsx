@@ -4,6 +4,7 @@ import { Button, Panel, Empty, Spinner, SlideSkeleton, Tooltip } from "../compon
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
+import { deckContext } from "../lib/deckContext.js";
 import { progressLabel } from "../lib/progress.js";
 import { reportWrites } from "../lib/reportWrites.js";
 import { useModels } from "../lib/useModels.js";
@@ -709,7 +710,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
             return (
               <div key={i} className="card-hover group panel-surface rounded-[var(--radius-lg)] border border-line bg-panel p-2">
                 <button
-                  onClick={() => setZoom(i)}
+                  onClick={() => { setZoom(i); deckContext.focusSlide(slug, i); }}
                   className="block w-full text-left"
                   title="View full size"
                 >
@@ -812,7 +813,9 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           thumbs={data.thumbs}
           types={types}
           index={zoom}
-          onIndex={setZoom}
+          // The focused slide is shared with the chat: the turn context reads
+          // it so "make THIS punchier" names the slide the user was looking at.
+          onIndex={(i) => { setZoom(i); deckContext.focusSlide(slug, i); }}
           onClose={() => setZoom(null)}
           // The enlarged view carries the same per-slide actions as the small
           // card — editing/swap/image close the viewer so their modal can own
