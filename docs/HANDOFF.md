@@ -294,3 +294,29 @@ and the ppt must have coherence."
   the stereotype data to first impressions (e.g. "Stereotypes shape your
   first impression before you speak" + the flight-attendant example as
   support), or replaced if it can't be connected.
+
+## Addendum — user's testing round 6 (13:00)
+
+### 25. "Upload-only" mode: turn search OFF, user's file is the source of truth (NEW)
+User: "the ability to turn search completely OFF and only depend on the info
+the person gives — in either an md file or Word or anything — as an upload,
+and that is the source of truth for the ppt or report."
+- A briefing/briefing question (or a toggle in the chat): Research source =
+  "Web search (default)" | "My uploaded file (no search)".
+- When upload-only: the research pass is SKIPPED entirely (no SearXNG, no
+  arXiv/Crossref, no Jina). The uploaded file (md / txt / docx / pdf —
+  convert via the existing e2m-style path or LibreOffice) becomes
+  research/notes.md + sources.json (marked "user-provided"), and it is the
+  ONLY content source.
+- The grounding pass already enforces "every figure must trace to the
+  notes" — with upload-only, the notes ARE the file, so grounding becomes
+  a strict fidelity check against the user's document (nothing invented,
+  nothing from outside the file).
+- The upload should be visible/editable in the existing Research panel
+  (the notes.md edit path already exists), so the user can trim their file
+  before generating.
+- Report mode: same toggle — the report is built only from the uploaded
+  file.
+- Verify: upload a md/docx → generate deck + report → assert zero web
+  calls in the log, every claim traces to the file, grounding flags
+  anything not in the file.
