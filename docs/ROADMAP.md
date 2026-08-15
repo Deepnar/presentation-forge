@@ -2318,5 +2318,74 @@ design rule that grew out of "the ups and downs mean nothing", and one was
 > density differing from the density the content was last written at — which
 > is also the honest definition of what the button does.
 
+### [x] Settings redesign — the profile modal is the settings surface
+
+The user's request: "what we have for identity changes to something a person
+can make and keep and SAVE PRESETS even without making a new chat." Identity
+split into what stays long-term and what changes per submission:
+
+- **Settings = one surface.** The profile-chip modal (bottom-left) IS Settings
+  now, not a read-only identity card with an "Edit in Identity" dead-end door.
+  Three sections: **Account** (the person, cloud status + model count + key
+  management + routing, logout behind the shared confirm), **Saved formats**
+  (presets: full create/edit/delete WITHOUT a chat — fields name, team with
+  presents, slides per member, max slides, density, theme, branding — with the
+  same "Save as preset…" still offered from the briefing summary), and
+  **Identity** (ONLY the long-term facts — institution name/short/department/
+  university and guide name/designation — edited inline in the modal, plus the
+  brand-marks upload kept). The old `views/Identity.jsx` is deleted; the
+  sidebar's Identity row becomes a Settings shortcut that opens the same modal,
+  and the `#/identity` route is removed (an old hash resolves to chat).
+- **The briefing's preset contract narrowed.** "Use a saved format?" still
+  lists the user's presets — now via a module-level store (`lib/presets.js`)
+  shared with Settings, so a format created in the modal is live in the chat
+  without a reload. A preset fixes team, maxSlides (new), slidesPerMember,
+  density, theme, branding — and NO longer guide or academic. The guide comes
+  from identity (a long-term fact); subject/year/semester/exam-type/team are
+  per-submission, asked in the chat, and frozen into each deck's meta.yaml as
+  before. "Remember as defaults" is gone: it wrote team/academic back into
+  identity, which is exactly the coupling the redesign removes.
+- **Migration — briefing-only, not a seeded default preset.** The simpler of
+  the two options: existing `config/identity.yaml` keeps institution + guide,
+  and any old team/academic/guide defaults in it are dropped the next time
+  identity is saved from Settings (the save writes only the long-term fields).
+  Old preset files carrying `guide`/`academic` migrate on read — `listPresets`
+  sanitizes stored items to the new key set, no separate step.
+
+> **Learned.** Three things were not obvious beforehand.
+>
+> A settings surface that lives in a modal needs a shared presets store, not
+> per-component fetches. The chat and Settings both render the preset list; if
+> each fetched once on mount, a format created in Settings would be invisible
+> to an already-open briefing until a reload. A tiny pub/sub cache (the
+> `modelMode` pattern) lets Settings write through it and the chat subscribe,
+> so the "Use a saved format?" list is live by construction. The api layer
+> was already there — `lib/presets.js` is pure view-state plumbing.
+>
+> Deleting the Identity VIEW had to preserve the cloud key manager and the
+> brand upload, or both silently lost their only UI. The spec listed "cloud
+> status + model count" for Account and institution/guide for Identity, but
+> the old view's Cloud section (key save/test/remove/routing) and Brand
+> section are real features the header's CLOUD button and the renderer depend
+> on. The modal keeps them — cloud management under Account, brand marks under
+> Identity — rather than shipping a regression hidden by "the modal is the
+> surface now".
+>
+> The briefing walk's skip logic needed maxSlides added to `PRESET_KEYS`, and
+> nothing else. The preset question, the skip, the change-to-unskip and the
+> echo all already keyed off that constant; growing it was the entire briefing
+> change. The per-submission fields were never in `PRESET_KEYS` (guide and
+> academic were only ever pre-fills), so removing them from the preset payload
+> left the walk order untouched.
+
+Verified end-to-end in headless Chrome (CDP): a preset created entirely in
+Settings (no chat) appears in a fresh chat's "Use a saved format?", picking it
+pre-fills the team and skips the fixed questions to land on the title; the
+Identity section shows only institution/guide and saves them to
+config/identity.yaml (old per-submission fields absent); the briefing list
+picks up a Settings-created preset without reload. `mimo-v2.5` confirmed all
+four surfaces render clean (settings modal, preset list, post-pick thread,
+identity panel). 316 tests pass.
+
 
 

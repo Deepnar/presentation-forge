@@ -666,15 +666,16 @@ impossible to miss:
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
 thin transport and every control maps to a real endpoint. `App.jsx` owns the
 deck list (fetched once, re-fetched on a version bump) and routes between
-`chat`, `deck`, `report`, `research`, `themes`, `identity` and `home`. **View
+`chat`, `deck`, `report`, `research`, `themes` and `home`. **View
 routing is hash-based** (`lib/router.js`): every navigation pushes a
 `#/chat[/<id>]`, `#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`,
-`#/themes`, `#/identity` or `#/home` entry, and a single `hashchange` listener
+`#/themes` or `#/home` entry, and a single `hashchange` listener
 is the only consumer of the URL — so the browser back button walks the same
 route the user walked forward (chat → deck → home) instead of exiting the
 site, and a deep link like `#/deck/<slug>` reopens that view on reload (per-user
 auth still gates it, and a route's hash survives logout, so logging back in
-restores where the user was).
+restores where the user was). Settings is deliberately NOT a route — it is a
+modal over whatever view is open (an old `#/identity` hash resolves to chat).
 
 **Entry flow — landing-first.** The `#/home` landing page is the front door.
 An unauthenticated visitor lands on it whatever the hash (an auth-gated deep
@@ -737,9 +738,15 @@ left in the URL is the last route, not a deep link, so it resets to a bare
   confirm modal). Deck names clamp to two lines so long titles stop truncating
   to initials. The one creation entry app-wide lives here, "+ New chat". The
   footer's bottom-left is a **profile chip** (`ProfileChip.jsx`) — avatar +
-  name, avatar-only in the collapsed rail — that opens a CENTERED modal: the
-  identity the AI drafts from (institution, guide, team, subject, year) with an
-  Edit-in-Identity door, the cloud status, and logout behind the shared confirm.
+  name, avatar-only in the collapsed rail — that opens the **Settings modal**
+  (`SettingsModal.jsx`), the ONE management surface. Three sections: Account
+  (the person, cloud status/key/routing, logout behind the shared confirm),
+  Saved formats (full preset CRUD — create/edit/delete a briefing format
+  without any chat, shared with the briefing via a module-level presets store),
+  and Identity (the long-term facts — institution and guide — edited inline;
+  brand-marks upload kept; the per-submission fields subject/year/semester/
+  exam-type/team are asked in the briefing and never stored here). The sidebar
+  Settings row opens the same modal.
 - **`ChatView`** — the chat window IS the app. A message thread with the input
   bar at the bottom: send a topic, the assistant walks the guided briefing one
   question at a time (each with a default), then a summary card whose "Plan the
@@ -748,7 +755,7 @@ left in the URL is the last route, not a deep link, so it resets to a bare
   Chat/Report toggle flips the same input bar between products. The input bar's
   model pill persists the pick on the chat. **Runs survive leaving the chat**:
   a generation's `AbortController` and status live in the module-level
-  `lib/runs.js` registry, never in component state, so navigating to Identity
+  `lib/runs.js` registry, never in component state, so navigating away
   unmounts the view without touching the run — re-entering adopts the live run
   (busy, live status, working Stop button) and errors are persisted onto the
   chat so a failure that lands while the user is away is shown on return.
@@ -864,7 +871,7 @@ the browser only ever sees the token, and tokens idle-expire after
 creating an account returns the user without a token and the visitor signs in
 explicitly, so registration never silently logs anyone in. `POST /api/auth/logout`
 and `GET /api/auth/me` back the header's account entry. `PUT/DELETE
-/api/cloud/key` return 401 without a session, and the Identity view's Cloud
+/api/cloud/key` return 401 without a session, and the Settings modal's Cloud
 section shows a login prompt until one exists. The AuthModal — reachable from
 the landing's Log in / Sign up actions and from the shell — is the register/
 login surface (the full-screen LoginScreen was retired when the landing became
@@ -914,7 +921,7 @@ usable end-to-end.
   fetched live from `GET {baseURL}/models` (key-gated, best-effort, both the
   `{data:[{id}]}` and string-array shapes) — so a hosted box whose provider
   does not curate a list still gets a working picker.
-- **The Settings/Cloud panel** (bottom of the Identity view) explains what the
+- **The Settings/Cloud panel** (in the Settings modal's Account section) explains what the
   key is for, shows the provider/baseURL/model list under "Models this host
   has enabled", and offers save, remove and test actions wired to
   `GET/PUT/DELETE /api/cloud/key` and `POST /api/cloud/test`. The write path
@@ -948,8 +955,9 @@ usable end-to-end.
 ### The brand surface — institutional marks, uploaded not committed
 
 `brand/logos/` and `brand/generated/` are gitignored because institutional
-marks are trademarks. The Brand section of the Identity view uploads crest,
-banner and watermark directly: the server writes the file into `brand/logos/`
+marks are trademarks. The Brand marks section of the Settings modal's Identity
+panel uploads crest, banner and watermark directly: the server writes the file
+into `brand/logos/`
 (replacing any earlier extension of that asset), then calls the same
 `normalizeBrand()` the `npm run brand` CLI uses — one implementation, two
 callers. Remove falls back to placeholders. The report renderer needs nothing
