@@ -1,91 +1,114 @@
-# HANDOFF — deck-quality round 3: no stranded members, all 75 types audited
+# HANDOFF — deck-quality round 4: speaker script, geometry honesty, action-row clarity
 
-Two real defects shipped from user testing, both fixed and verified; three
-findings were confirmations. Commit history up to `1e8747f` on `origin/main`.
-Servers left running (UI :5173, API :5174, Ollama). Local models untouched;
-cloud `deepseek-v4-flash` used for the generation tests.
+Four user-testing findings shipped and verified. Commit history up to `9a2b76c`
+on `origin/main`. Servers left running: UI :5173, API :5174 (restarted this
+session — the --watch child had gone stale mid-session and served pre-change
+code; kill the child and `npm run api` respawns with the current file). Local
+models untouched; cloud `deepseek-v4-flash` used for the generation tests.
 
-## 1. No stranded presenting member (the real "missing last person" bug)
+## 1. Speaker-script generator — the user's "script maker" idea
 
-`planDeck` could only SHRINK a plan. An 11-member team with slides-per-member 1
-planned 10 content slides (8 sections, one slide each), and the deck jumped
-from Vedant Sud's takeaway straight to the closing — Dhwani Tandon presented
-nothing. Fix: `mintContentSlides` in `src/ai/generate.js` enforces the
-content-count contract — at least N × M content slides when the briefing fixes
-M per member, at least one per member when it does not — minting the deficit
-into the trailing content-bearing sections, bounded by the same contentCap the
-trim enforces, before `ensureStructuralSlides` runs. The minted slides are
-`bullets` specs with a "Continue the part…" purpose the writer can build on.
+"Make a proper script too, at the end if the user wants, so if the person is
+unable to tell from the ppt the connection, the script fills in the gaps."
+`src/ai/script.js` writes `decks/<slug>/script.md`: one small-grammar call per
+slide producing 60–90 seconds of spoken prose in the presenter's voice,
+bridging the slide's bullets to the deck's argument and voicing the "so what"
+the coherence pass only implies. It is a button, never automatic — Export's
+"Speaker script" item and the deck-detail Script panel generate on demand; a
+per-slide Regenerate rewrites just that slide's words after an edit.
 
-Verified three ways: unit tests (`test/plan-structure.test.js` — 9 or 10
-natural slides mint up to exactly 11, one per member, closing last), replay of
-the real broken plan (11 content slides, Dhwani gets one), and a full cloud
-generation (`decks/first-impressions-and-networking-among-colle`, 11 members ×
-1, cloud planner + writer): 21 slides, exactly 11 content, every member once,
-Dhwani on slide 20, closing last.
+- Per-slide blocks are delimited by invisible `<!-- slide:N -->` markers; a
+  regen replaces exactly its own block and the file is rebuilt from deck
+  order, so a deleted slide drops its block. Unwritten slides stay blockless
+  (the panel shows "not written yet", never placeholder text).
+- CLI `forge script <slug> [--slide N]`; API `GET`/`POST /api/decks/:slug/script`
+  (SSE, abort-on-disconnect); download title-named via the existing route
+  (which now falls back to the deck root for `script.md`); bundled in the .zip.
+- Verified with the cloud author on a 14-slide data-centre deck: every slide
+  written, addressed to its presenter (Farid's checklist closer, Ben's chart),
+  figures drawn verbatim from the notes. The prompt's core instruction: write
+  in the presenter's voice, never read the slide, voice the connection the
+  bullets only point at.
 
-## 2. The 75-type layout audit
+## 2. Geometry honesty — a shape may only look like a measurement when it is one
 
-`tools/slideqa.mjs` renders the whole specimen deck in a set of themes,
-rasterises it, records the renderer's per-slide problems, and emits per-type
-full-size PNGs plus labelled contact sheets (20 cells/sheet at readable size).
-Run: `node tools/slideqa.mjs --themes warm-humanist,swiss-international,dark-neon`.
+The journey's sawtooth implied magnitudes its `sentiment` field never stated;
+the funnel's bars narrowed index-linearly regardless of any value. The rule
+now (audited across all geometry types, recorded in `docs/slide-type-audit.md`):
 
-The verdict list is committed at `docs/slide-type-audit.md` (75 rows: OK /
-fixed). **10 layouts reworked** in `src/layouts.js`:
+- **journey**: stages carry an optional numeric `value`. Every stage valued →
+  a real line scaled to the values, each value captioned under its label.
+  Any unvalued stage → a flat milestone rail (sentiment colours the nodes
+  categorically, never position). Schema, catalog budgets/descriptions and the
+  slide editor all carry the same rule.
+- **funnel**: the taper comes from real numbers only when every stage carries
+  one; otherwise equal-width steps.
+- Qualitative types (roadmap, timeline, milestone, chronology, flow, pipeline,
+  pyramid, venn, hierarchy, concept-map, diagram) are already honest — rails,
+  flows and trees over categories. Chart/progress-bars/sparklines/etc. require
+  their values by schema.
+- **Grounding walks numbers as claims**: a chart value or journey value the
+  research never states flags like any fabricated figure. The one structural
+  exception is `depends_on` (integer indices), excluded by key. New tests cover
+  chart values flagged, journey values flagged, dependency indices not.
+- **The research view lists every figure the deck's data slides claim** (plain
+  mono chips against the source table), so "are the graphs reflective of real
+  numbers?" is answered before presenting. The deck-detail research card shows
+  the count.
+- **The slide editor now edits chart data directly** (kind, categories, series
+  values) and journey values per stage — flattening a journey or fixing a
+  chart figure is a hand edit that re-renders on save (CDP-verified: changed a
+  chart value to 200/150/100/50, deck.yaml persisted, deck re-rendered).
+- Verified with `mimo-v2.5` on a 7-slide fixture: categorical journey flat with
+  all dots on the rail, valued journey falling 64→29 with captions, value-less
+  funnel equal-width, valued funnel narrowing 4%→100%. All 307 tests pass.
 
-- `flow` (vertical) — was six thin full-width stripes with bodies dropped and
-  the bottom quarter empty; now a numbered spine (chip on a rail, title and
-  body flowing right). Bodies render when a row holds a title plus one line at
-  the floor; a body needing two lines at six steps drops (title-only step).
-- `timeline`, `pipeline`, `funnel` — hugged the heading, lower half empty;
-  each now centres its whole block between heading and footer.
-- `cycle` — ring sat in the lower ~60%; it now starts below the heading.
-- `dependencies` — edges drew ON TOP of nodes (Enrichment→Alerts slashed
-  across Storage); edges draw behind the boxes and layers order by dependency
-  barycentre. `diagram` got the same barycentre ordering.
-- `concept-map` — leaf labels shrank to ~8pt and collided ("Events" over
-  "Queues"); leaves are now pills sized to their own measured text, fanned so
-  footprints never overlap.
-- `matrix` — rotated y-axis label wrapped ("Impact" → Imp/act); the box is now
-  measured on the transform-uppercased string.
-- `contact` — small card pinned below the heading; the card now spans the
-  content width heading-to-footer.
+## 3. The lightbox scroll jump — root cause found, not just patched
 
-**26 types were sound layouts the writer was under-filling.** `TYPE_BUDGETS`
-in `src/ai/catalog.js` tells the writer how much each layout invites (4 stats
-on the four-up grid, 5-8 table rows, a body per framework element, …); it
-rides the planner and writer catalogues (`slideCatalog` + `catalogForType`).
+Opening the lightbox/editor/swap from a scrolled position scrolled the page
+toward the top (CDP: main.scrollTop 1773 → 628). Root cause: `main`'s
+`view-in` animation used `animation-fill-mode: both`, which retains the
+animated `transform` (even the identity matrix) after it finishes — and any
+transform on a scroll container makes it a containing block for `position:
+fixed` descendants. The overlays mount inside `main`, so they positioned
+against scrolled `main` instead of the viewport. Fix: `backwards` fill mode
+(fills only during the animation). Verified: scroll to the last slide, click,
+scrollTop unchanged, overlay covers the exact viewport. See TRAPS for the
+reusable version.
 
-Most "half-empty" flags in the sheet audits were short SPECIMEN content (a
-three-row table, two-item stats, one-word flow steps), not structural defects —
-the layouts span the full width and fill with real content. Those are the 39
-"OK" verdicts.
+## 4. Deck-detail action row — five questions answered by construction
 
-## Confirmations (no change)
-
-- **First section divider after the title is intended**: title → section
-  divider (opens Part 1) → content. That is the designed rhythm.
-- **No hard slide cap**: maxSlides was 24; the binding constraint was the
-  content cap vs the member count — fixed by the mint.
-- **"Content feels disconnected"**: caused by the stranded member (the deck
-  visibly skipped someone before the thank-you) plus thin sections (10 content
-  slides across 8 sections). After the mint the sections fill out; no separate
-  fix needed.
+- **Render** disabled "Up to date" until deck.yaml (or theme/style/mode)
+  changes, with an accent dot when a render is pending. The server computes the
+  deck.yaml-vs-pptx half from mtimes; theme/style/mode changes flip it
+  client-side.
+- **Re-sweep** enables only when the chosen density differs from the density
+  the content was last written at — the "we didn't change the setting, yet we
+  can still click it" fix.
+- **Export ▾** holds exactly PDF / Markdown (.md) / Bundle (.zip) / Speaker
+  script (.md). Clone / Versions / Dark mode moved behind a ⋯ ellipsis menu.
+- **Report panel**: one action — "Generate report" / "Generate / Update
+  report" — writes, renders and downloads the .docx in one click. The separate
+  "Render .docx" step and the duplicate download link are gone.
+- CDP-verified: Re-sweep greyed then enabled on a density change; Render
+  "Up to date" then "Render" with a dot on a theme change; Export menu holds
+  exactly the four items.
 
 ## Open items / notes for the next session
 
-- `docs/slide-type-audit.md` is the QA deliverable. Re-run
-  `tools/slideqa.mjs` + a vision pass before claiming a future layout change
-  is verified — the sheets are the reproducible audit primitive.
-- The flow layout's one-line-body rule is content-aware: a body that needs two
-  lines at six steps drops (title-only step). At 4-5 steps (the new budget) a
-  body always fits. If the writer keeps emitting 6-step flows, consider
-  tightening the flow budget to "4-5 steps" in practice.
-- dark-neon's contact card labels were flagged as low-contrast by the vision
-  pass once; the tokens look fine (#98A2B5 on #151B26), so it was not chased.
-  If a real dark deck's contact slide reads faint, revisit the caption token.
-- The specimen `flow` uses 6 steps, which is the worst case for the layout; a
-  real 5-step deck renders bodies. The QA verdict for flow records this.
+- The `docs/slide-type-audit.md` round-4 addendum records the geometry-honesty
+  verdicts; re-run `node tools/slideqa.mjs` + a vision pass before claiming a
+  future layout change is verified.
+- The speaker script is a text artefact; it is not re-grounded (the deck is).
+  A future pass could run the script's figures through `groundDeck` too, but
+  spoken prose paraphrases numbers ("three point six times") so exact matching
+  would need the same normalize-as-words treatment the deck gets.
+- The script prompt targets 60–90s per content slide; divider slides get a
+  short 15–30s transition by instruction, not by schema. If a real script
+  reads too long/short, the timing note in `writerSystem()` is the only knob.
+- The stale `node --watch` child this session is a reminder: `git checkout` /
+  `cp` on a watched file can leave the running server on an intermediate state.
+  After any file surgery on the server, verify `GET /api/decks/:slug/script`
+  and the `dirty` key before concluding an endpoint is live.
 - Local models untouched, no qwen. Model discipline held: flash codes ONLY,
   mimo-v2.5 vision ONLY, cloud for generation tests.
