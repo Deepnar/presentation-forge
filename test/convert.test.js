@@ -6,7 +6,7 @@ const DECK = {
   title: "Test",
   sections: ["Intro"],
   slides: [
-    { type: "bullets", section: 0, presenter: "Alice", headline: "Points", bullets: ["a", "b", "c"] },
+    { type: "bullets", section: 0, presenter: "Alice", headline: "Points", bullets: ["a", "b", "c", "d"] },
     { type: "cards", section: 0, presenter: "Bob", headline: "Facts", cards: [{ title: "A", body: "body" }, { title: "B", body: "more" }] },
   ],
 };
@@ -14,7 +14,7 @@ const DECK = {
 test("compatibleRemap maps bullets → numbered-list losslessly", () => {
   const out = compatibleRemap(DECK.slides[0], "numbered-list");
   assert.equal(out.type, "numbered-list");
-  assert.deepEqual(out.items, ["a", "b", "c"]);
+  assert.deepEqual(out.items, ["a", "b", "c", "d"]);
   assert.equal(out.presenter, "Alice");
 });
 
@@ -39,7 +39,7 @@ test("convertSlide remaps a compatible type without a model", async () => {
   assert.equal(r.method, "remap");
   assert.equal(r.slide.type, "checklist");
   assert.equal(r.slide.presenter, "Alice");
-  assert.deepEqual(r.slide.items.map((i) => i.text), ["a", "b", "c"]);
+  assert.deepEqual(r.slide.items.map((i) => i.text), ["a", "b", "c", "d"]);
 });
 
 test("convertSlide uses the model when no compatible remap exists", async () => {

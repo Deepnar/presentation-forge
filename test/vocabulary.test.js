@@ -16,16 +16,16 @@ const base = { title: "T", slides: [{ type: "title" }] };
 const VALID = {
   chapter: { headline: "Part Two", standfirst: "A lighter pause in the argument." },
   closing: { headline: "Where the field is heading", body: "A closing statement.", cta: "Get in touch" },
-  "numbered-list": { headline: "Steps", items: ["one", "two", "three"] },
-  checklist: { items: [{ text: "done", checked: true }, { text: "todo", checked: false }] },
+  "numbered-list": { headline: "Steps", items: ["one", "two", "three", "four"] },
+  checklist: { items: [{ text: "done", checked: true }, { text: "todo", checked: false }, { text: "maybe", checked: true }, { text: "later", checked: false }] },
   "feature-grid": {
     items: [{ icon: "⚡", title: "Fast", body: "sub-second" }, { icon: "🔒", title: "Local" }],
   },
   "grid-items": {
     items: [{ label: "A", value: "1" }, { label: "B", value: "2" }, { label: "C", value: "3" }],
   },
-  "icon-list": { items: [{ icon: "★", text: "nice" }, { icon: "✎", text: "edit" }] },
-  "stacked-list": { items: [{ title: "a", tag: "x" }, { title: "b" }] },
+  "icon-list": { items: [{ icon: "★", text: "nice" }, { icon: "✎", text: "edit" }, { icon: "☀", text: "warm" }, { icon: "☂", text: "wet" }] },
+  "stacked-list": { items: [{ title: "a", tag: "x" }, { title: "b" }, { title: "c" }, { title: "d" }] },
   "kpi-dashboard": {
     kpis: [
       { label: "A", value: "42%", trend: "up", change: "+3" },
@@ -227,7 +227,7 @@ for (const [type, payload] of Object.entries(VALID)) {
 test("speaker_note is a shared field that survives on any standard type", async () => {
   const ok = await validateDeck({
     ...base,
-    slides: [...base.slides, { type: "bullets", headline: "H", bullets: ["a", "b"], speaker_note: "Ask the audience this." }],
+    slides: [...base.slides, { type: "bullets", headline: "H", bullets: ["a", "b", "c", "d"], speaker_note: "Ask the audience this." }],
   });
   assert.equal(ok.ok, true, JSON.stringify(ok.errors));
 });

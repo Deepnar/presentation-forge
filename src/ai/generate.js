@@ -242,7 +242,14 @@ export function placeholderFor(spec) {
     ...spec,
     type: "bullets",
     headline,
-    bullets: [purpose.slice(0, 160), "Details in the full briefing."],
+    // Four items meets the list-type content floor (minItems 4), so a
+    // degraded slide is never the sparse two-liner that reads as content.
+    bullets: [
+      purpose.slice(0, 160),
+      "Details in the full briefing.",
+      "This slide's generation was cut short and was not re-attempted.",
+      "Regenerate this slide to replace the placeholders above.",
+    ],
   };
 }
 

@@ -14,7 +14,7 @@ const DECK = {
       section: 0,
       presenter: "Alice",
       headline: "Key points",
-      bullets: ["one short point", "another short point"],
+      bullets: ["one short point", "another short point", "a third short point", "a fourth short point"],
     },
     {
       type: "cards",
@@ -42,7 +42,7 @@ test("sweepDeck rejects an unknown density", async () => {
 
 test("sweepDeck rewrites content slides and keeps dividers, types and presenters", async () => {
   const chat = fakeChat({
-    bullets: [{ op: "update_slide", index: 1, patch: { headline: "Key points", bullets: ["a fuller point one", "a fuller point two", "a third point"] } }],
+    bullets: [{ op: "update_slide", index: 1, patch: { headline: "Key points", bullets: ["a fuller point one", "a fuller point two", "a third point", "a fourth point"] } }],
     cards: [{ op: "update_slide", index: 2, patch: { headline: "Facts", cards: [{ title: "A", body: "a longer body" }, { title: "B", body: "another" }, { title: "C", body: "third" }] } }],
   });
 
@@ -60,7 +60,7 @@ test("sweepDeck rewrites content slides and keeps dividers, types and presenters
   assert.equal(r.deck.slides[2].presenter, "Bob");
 
   // Content rewritten to dense.
-  assert.equal(r.deck.slides[1].bullets.length, 3);
+  assert.equal(r.deck.slides[1].bullets.length, 4);
   assert.equal(r.deck.slides[2].cards.length, 3);
   assert.equal(r.swept.length, 2);
 });

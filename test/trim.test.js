@@ -49,8 +49,8 @@ test("trimSlide drops the last bullet before shortening, and never below minItem
       "The full channel set of sight hearing smell touch and taste is live at once",
     ],
   };
-  // Six bullets, minItems 2 → four drops allowed, then it must shorten instead.
-  for (let i = 0; i < 4; i++) {
+  // Six bullets, minItems 4 → two drops allowed, then it must shorten instead.
+  for (let i = 0; i < 2; i++) {
     const next = await trimSlide(slide);
     assert.ok(next, "still droppable");
     assert.equal(next.type, "bullets");
@@ -59,10 +59,10 @@ test("trimSlide drops the last bullet before shortening, and never below minItem
     assert.equal(next.bullets.length, slide.bullets.length - 1, "one bullet dropped");
     slide = next;
   }
-  assert.equal(slide.bullets.length, 2, "at minItems");
+  assert.equal(slide.bullets.length, 4, "at minItems");
   const next = await trimSlide(slide);
   assert.ok(next, "now shortens instead of dropping");
-  assert.equal(next.bullets.length, 2, "minItems is a floor, not a drop target");
+  assert.equal(next.bullets.length, 4, "minItems is a floor, not a drop target");
   assert.ok(next.bullets.some((b) => b.length < slide.bullets[slide.bullets.length - 1].length));
 });
 

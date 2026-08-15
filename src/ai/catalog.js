@@ -63,7 +63,7 @@ export function familyFor(type) {
 export const DENSITY_BUDGETS = {
   sparse: {
     generic: "a few words — 1-2 short items where the type allows lists, one-line bodies",
-    "List & Grid": "3-4 short bullets, each under 12 words; card bodies one short phrase",
+    "List & Grid": "4 short bullets (minimum the schema allows), each under 12 words; card bodies one short phrase",
     "Data & Stats": "3 stats maximum, each a figure and a short label",
     Comparison: "one key point per side, kept to a single line each",
     "Process & Flow": "3-4 steps, each a short phrase",

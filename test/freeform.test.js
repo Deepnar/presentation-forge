@@ -7,7 +7,7 @@ import { buildOpsSchema } from "../src/ai/ops.js";
 import { renderPlate, chromeBinary } from "../src/plate.js";
 import sharp from "sharp";
 
-const base = { title: "T", slides: [{ type: "title" }, { type: "bullets", headline: "h", bullets: ["a", "b"] }] };
+const base = { title: "T", slides: [{ type: "title" }, { type: "bullets", headline: "h", bullets: ["a", "b", "c", "d"] }] };
 
 test("a freeform slide requires non-empty html", async () => {
   const ok = await validateDeck({ ...base, slides: [...base.slides, { type: "freeform", html: "<div>hero</div>" }] });
@@ -25,7 +25,7 @@ test("a freeform slide requires non-empty html", async () => {
 test("html is forbidden on non-freeform slides", async () => {
   const r = await validateDeck({
     ...base,
-    slides: [...base.slides, { type: "bullets", headline: "h", bullets: ["a", "b"], html: "<div>x</div>" }],
+    slides: [...base.slides, { type: "bullets", headline: "h", bullets: ["a", "b", "c", "d"], html: "<div>x</div>" }],
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes("only allowed on type freeform")));

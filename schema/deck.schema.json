@@ -229,7 +229,7 @@
             "properties": {
               "bullets": {
                 "type": "array",
-                "minItems": 2,
+                "minItems": 4,
                 "maxItems": 6,
                 "items": {
                   "type": "string",
@@ -800,7 +800,7 @@
             "properties": {
               "items": {
                 "type": "array",
-                "minItems": 2,
+                "minItems": 4,
                 "maxItems": 8,
                 "items": {
                   "type": "string",
@@ -825,7 +825,7 @@
             "properties": {
               "items": {
                 "type": "array",
-                "minItems": 2,
+                "minItems": 4,
                 "maxItems": 8,
                 "items": {
                   "type": "object",
@@ -941,7 +941,7 @@
             "properties": {
               "items": {
                 "type": "array",
-                "minItems": 2,
+                "minItems": 4,
                 "maxItems": 6,
                 "items": {
                   "type": "object",
@@ -978,7 +978,7 @@
             "properties": {
               "items": {
                 "type": "array",
-                "minItems": 2,
+                "minItems": 4,
                 "maxItems": 5,
                 "items": {
                   "type": "object",

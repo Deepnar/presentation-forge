@@ -80,6 +80,8 @@ slides:
         text: A human gate on the outline before generation
       - icon: "✎"
         text: Inline editing that never wakes a model
+      - icon: "⛭"
+        text: A full vocabulary across every rhetorical beat
   - type: stacked-list
     headline: From brief to deck
     items:
@@ -92,3 +94,6 @@ slides:
       - tag: Stage 3
         title: Render
         body: Native slides with baked-in text fitting.
+      - tag: Stage 4
+        title: Critique
+        body: A vision pass that re-renders until nothing overlaps.
