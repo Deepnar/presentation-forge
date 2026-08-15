@@ -380,6 +380,11 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     "app then shows an 'add image' prompt on that slide.",
     "No filler, no invented statistics, no rhetorical hedging.",
     "Do not repeat wording already used on an earlier slide.",
+    "",
+    "Every slide must SERVE THIS DECK's topic and section. The headline is a claim,",
+    "the body is its support, and a presenter must be able to voice the 'so what'",
+    "from the slide alone. If a researched fact does not serve THIS deck's argument,",
+    "do not use it — even if it is grounded in the notes.",
     synthesisNote(fullStrength ? "full" : "local"),
   ].filter(Boolean).join("\n");
 

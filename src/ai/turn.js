@@ -84,6 +84,10 @@ function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
     "",
     "Write specific, declarative prose. Lead with the claim, then the evidence.",
     "Never write filler like 'This slide discusses…'. Never invent statistics.",
+    "Every slide must SERVE THIS DECK's topic and section: the headline is a",
+    "claim, the body is its support, and a presenter must be able to voice the",
+    "'so what' from the slide alone. If a fact does not serve THIS deck's",
+    "argument, do not use it — even if it is grounded in the research.",
   );
 
   // The full-strength bar for cloud authors: the deck-editing surface is where
@@ -151,6 +155,7 @@ export async function runTurn({
   model,
   onToken,
   signal,
+  chat = chatJSON,
 }) {
   const catalog = await slideCatalog();
   const base = deck ?? { title: "", slides: [] };
@@ -176,7 +181,7 @@ export async function runTurn({
   const attempts = [];
 
   for (let attempt = 0; attempt <= MAX_REPAIR; attempt++) {
-    const res = await chatJSON({
+    const res = await chat({
       role,
       model,
       messages,

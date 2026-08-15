@@ -374,6 +374,11 @@ async function writeSection({ spec, report, research, identity, depth, density, 
             "Lead each item with its claim, then the evidence. Ground every factual claim in the",
             "RESEARCH NOTES — never invent statistics, names or numbers. Do not repeat wording",
             "already used in another section. Formal academic English.",
+            "",
+            "Every paragraph must serve THIS report's topic and section focus: a claim, its",
+            "support, and an implied 'so what'. If a researched fact does not serve THIS report's",
+            "argument, do not use it — even if it is grounded. A report that drifts from its",
+            "topic is incoherent, however well-sourced each paragraph is.",
           ]),
   ].filter(Boolean).join("\n");
 

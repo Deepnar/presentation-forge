@@ -7,6 +7,7 @@ import { excerptResearch, deepResearch } from "./research.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
 import { trimDeckToFit } from "./trim.js";
 import { critiqueDeck } from "./critic.js";
+import { coherencePass } from "./coherence.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
 import { generateReport } from "./report.js";
@@ -383,6 +384,29 @@ export async function generateFromPlan({
 
   let tr = await trimOnce(grounded.deck);
 
+  // The coherence pass: every slide must serve the deck's topic AND be
+  // presenter-ready. The writer is told the framing rule, but a model can still
+  // ship a well-researched slide that drifts (data without a point). The pass
+  // reviews the finished deck against its title and sections, rewrites what it
+  // flags, and the rewrite is re-grounded + re-trimmed so a fix never trades a
+  // coherence problem for an ungrounded claim or an overfull slide.
+  let coherence = null;
+  {
+    onProgress?.({ status: "coherence_checking" });
+    const pass = await coherencePass({
+      deck: tr.grounded.deck,
+      sections: res.plan.sections ?? [],
+      model,
+      signal,
+      onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
+    });
+    coherence = pass;
+    if (pass.findings.length) {
+      const g = groundOnce(pass.deck);
+      tr = await trimOnce(g.deck);
+    }
+  }
+
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
@@ -405,6 +429,7 @@ export async function generateFromPlan({
         skipped: res.skipped ?? [],
         stats: res.stats,
         trimmed: tr.trimmed,
+        coherence: coherence ? coherence.findings.length : 0,
         blocked: err.message,
       };
     }
@@ -436,11 +461,17 @@ export async function generateFromPlan({
     plan: res.plan,
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
-    problems: [...(r.problems ?? []), ...tr.grounded.problems, ...(res.problems ?? [])],
+    problems: [
+      ...(r.problems ?? []),
+      ...tr.grounded.problems,
+      ...(res.problems ?? []),
+      ...(coherence?.problems ?? []),
+    ],
     skipped: res.skipped ?? [],
     stats: res.stats,
     critic: criticReport,
     trimmed: tr.trimmed,
+    coherence: coherence ? { findings: coherence.findings.length, fixed: coherence.findings.length > 0 } : { findings: 0, fixed: false },
   };
 }
 
@@ -488,7 +519,29 @@ export async function sweepDensity({
     deckDir: dir,
     signal,
   });
-  const finalGrounded = groundDeck(trimRes.deck, researchText);
+  let finalGrounded = groundDeck(trimRes.deck, researchText);
+
+  // The coherence pass also runs after a sweep: a density rewrite can reframe
+  // a slide away from the deck's argument (or lean on a statistic with no
+  // point). Review and rewrite against the deck's own sections, then re-ground
+  // the fixed deck exactly as the generation path does.
+  let coherence = null;
+  {
+    onProgress?.({ status: "coherence_checking" });
+    const pass = await coherencePass({
+      deck: finalGrounded.notes,
+      sections: deck.sections ?? [],
+      model,
+      signal,
+      onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
+    });
+    coherence = pass;
+    if (pass.findings.length) {
+      finalGrounded = groundDeck(pass.deck, researchText);
+      const retrim = await trimDeckToFit({ deck: finalGrounded.notes, themeName, deckDir: dir, signal });
+      finalGrounded = groundDeck(retrim.deck, researchText);
+    }
+  }
   await writeFile(deckFile, YAML.stringify(finalGrounded.notes), "utf8");
 
   let meta = {};
@@ -511,9 +564,10 @@ export async function sweepDensity({
     density,
     slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
     thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
-    problems: [...(r.problems ?? []), ...(rendered.problems ?? []), ...finalGrounded.problems],
+    problems: [...(r.problems ?? []), ...(rendered.problems ?? []), ...finalGrounded.problems, ...(coherence?.problems ?? [])],
     swept: r.swept ?? [],
     trimmed: trimRes.trimmed,
+    coherence: coherence ? { findings: coherence.findings.length, fixed: coherence.findings.length > 0 } : { findings: 0, fixed: false },
   };
 }
 
