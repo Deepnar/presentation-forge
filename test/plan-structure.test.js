@@ -1,16 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ensureStructuralSlides, trimContentToBudget, placeholderFor } from "../src/ai/generate.js";
+import { ensureStructuralSlides, trimContentToBudget, mintContentSlides, placeholderFor } from "../src/ai/generate.js";
 import { distributePresenters, DIVIDER_TYPES } from "../src/ai/team.js";
 import { validateDeck } from "../src/validate.js";
 
 const content = (section) => ({ type: "bullets", section, purpose: "a point" });
 
 /** planDeck's post-processing, replayed here without a model. */
-function finalize(slides, sections, contentCap) {
+function finalize(slides, sections, contentCap, mint = {}) {
   let out = [...slides];
   if (out.length && out[0].type !== "title") out.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
   out = trimContentToBudget(out, contentCap);
+  out = mintContentSlides(out, sections, contentCap, mint);
   return ensureStructuralSlides(out, sections);
 }
 
@@ -91,13 +92,53 @@ test("finalize on an over-produced team deck: 11 members × 1-per-member, 11 max
   assert.deepEqual(counts, names.map(() => 1), "every member exactly one content slide");
 });
 
-test("finalize on an under-produced team deck: 9 content slides for 11 members still caps at the budget and never doubles anyone", () => {
+test("finalize on an under-produced team deck: 9 content slides for 11 members mint up to exactly 11, one per member, closing last", () => {
   const under = Array.from({ length: 9 }, (_, i) => content(i % 3));
-  const plan = finalize(under, ["A", "B", "C"], 11);
+  const plan = finalize(under, ["A", "B", "C"], 11, { members: 11, slidesPerMember: 1 });
   const names = Array.from({ length: 11 }, (_, i) => `M${i + 1}`);
   const assignment = distributePresenters(plan, names, { slidesPerMember: 1 });
+
+  const contentSlides = plan.filter((s) => !DIVIDER_TYPES.has(s.type));
+  assert.equal(contentSlides.length, 11, "9 under-produced slides mint up to the 11-slide budget");
+  assert.equal(plan[plan.length - 1].type, "closing", "closing still ends the deck");
   const counts = names.map((name) => assignment.filter((p) => p === name).length);
-  for (const c of counts) assert.ok(c <= 1, `no member doubled (got ${counts.join(",")})`);
+  assert.deepEqual(counts, names.map(() => 1), "every member exactly one content slide");
+});
+
+test("finalize on the reported failure: 10 content slides across 8 sections, 11 members × 1 → the missing 11th content slide is minted so the LAST member is never stranded", () => {
+  // The observed defect: 8 sections, 10 content slides, 11 presenting members —
+  // the deck jumped from member 10's slide straight to the closing, and member
+  // 11 (Dhwani) presented nothing.
+  const natural = Array.from({ length: 10 }, (_, i) => content(i % 8));
+  const sections = Array.from({ length: 8 }, (_, i) => `Part ${i + 1}`);
+  const plan = finalize(natural, sections, 11, { members: 11, slidesPerMember: 1 });
+  const names = Array.from({ length: 11 }, (_, i) => `M${i + 1}`);
+  const assignment = distributePresenters(plan, names, { slidesPerMember: 1 });
+
+  const contentSlides = plan.filter((s) => !DIVIDER_TYPES.has(s.type));
+  assert.equal(contentSlides.length, 11, "one content slide per presenting member");
+  const counts = names.map((name) => assignment.filter((p) => p === name).length);
+  assert.deepEqual(counts, names.map(() => 1), "every member including the last presents exactly one slide");
+  assert.equal(plan[plan.length - 1].type, "closing", "closing is last, after the final member's slide");
+});
+
+test("mintContentSlides without a briefing target still gives every member at least one when members exceed content", () => {
+  const under = Array.from({ length: 3 }, (_, i) => content(i));
+  const plan = finalize(under, ["A", "B", "C"], 24, { members: 5, slidesPerMember: null });
+  const names = Array.from({ length: 5 }, (_, i) => `M${i + 1}`);
+  const assignment = distributePresenters(plan, names);
+
+  const contentSlides = plan.filter((s) => !DIVIDER_TYPES.has(s.type));
+  assert.equal(contentSlides.length, 5, "3 natural content slides mint up to one per member");
+  const counts = names.map((name) => assignment.filter((p) => p === name).length);
+  for (const c of counts) assert.ok(c >= 1, `every member gets at least one (got ${counts.join(",")})`);
+});
+
+test("mintContentSlides never exceeds the budget when the team is bigger than the cap", () => {
+  const under = Array.from({ length: 4 }, (_, i) => content(i));
+  const plan = finalize(under, ["A", "B", "C"], 6, { members: 11, slidesPerMember: 1 });
+  const contentSlides = plan.filter((s) => !DIVIDER_TYPES.has(s.type));
+  assert.equal(contentSlides.length, 6, "a mint is bounded by the content cap, not the team");
 });
 
 test("placeholderFor keeps a failed content slide as a validating bullets slide", async () => {

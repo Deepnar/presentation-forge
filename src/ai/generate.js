@@ -209,6 +209,14 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     slides.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
   }
   slides = trimContentToBudget(slides, contentCap);
+  // The budget can only shrink a plan; a thin outline (fewer parts than
+  // people) must GROW to the team-sized count or the last members are
+  // stranded — the observed defect was 11 members and 10 content slides,
+  // the deck jumping from the 10th member's slide straight to the closing.
+  slides = mintContentSlides(slides, plan.sections ?? [], contentCap, {
+    members: presenters.length,
+    slidesPerMember,
+  });
   slides = ensureStructuralSlides(slides, plan.sections ?? []);
   plan.slides = slides;
 
@@ -315,6 +323,58 @@ export function trimContentToBudget(slides, contentCap) {
     content--;
   }
   return out;
+}
+
+/**
+ * The content-count contract, enforced after the trim so a thin outline can
+ * never strand a presenting member. When the briefing fixes slides-per-member
+ * the plan must offer at least N × M content slides; when it does not, at least
+ * one per presenting member whenever the model's outline naturally undershoots
+ * (fewer parts than people, one slide per part). The deficit is minted as extra
+ * content slides into the TRAILING content-bearing sections — the opening parts
+ * keep their shape — and each minted slide is inserted after its section's last
+ * content slide so the plan keeps reading section-by-section for the outline
+ * gate. Bounded by the same contentCap the trim enforces, so a mint can never
+ * exceed the user's slide budget.
+ */
+export function mintContentSlides(slides, sections, contentCap, { members = 0, slidesPerMember = null } = {}) {
+  const content = slides.filter((s) => !DIVIDER_TYPES.has(s.type));
+  const n = Math.max(0, members);
+  const desired = slidesPerMember ? n * slidesPerMember : (content.length < n ? n : content.length);
+  const target = Number.isFinite(contentCap) ? Math.min(contentCap, desired) : desired;
+  const deficit = Math.max(0, target - content.length);
+  if (!deficit) return slides;
+
+  const out = [...slides];
+  const contentSections = [...new Set(content.map((s) => s.section ?? 0))];
+  if (!contentSections.length) {
+    for (let i = 0; i < deficit; i++) out.push(mintedSpec(sections, 0));
+    return out;
+  }
+  for (let i = 0; i < deficit; i++) {
+    const sec = contentSections[contentSections.length - 1 - (i % contentSections.length)];
+    const spec = mintedSpec(sections, sec);
+    let at = out.length;
+    for (let j = out.length - 1; j >= 0; j--) {
+      if (!DIVIDER_TYPES.has(out[j].type) && (out[j].section ?? 0) === sec) { at = j + 1; break; }
+    }
+    out.splice(at, 0, spec);
+  }
+  return out;
+}
+
+/** The plan spec for a minted content slide: bullets, in its section, with a
+ * purpose the writer can build on — the section's label is the only context
+ * the planner has, so the purpose points at the research to stay concrete. */
+function mintedSpec(sections, sec) {
+  const label = sections?.[sec];
+  return {
+    type: "bullets",
+    section: sec,
+    purpose: label
+      ? `Continue the "${label}" part: one more concrete point developing the section's argument, drawn from the research, extending the slide before it.`
+      : "Continue the part: one more concrete point developing the section's argument, drawn from the research, extending the slide before it.",
+  };
 }
 
 /** Stage 2 — write one slide. Grammar is limited to this type's own fields. */
