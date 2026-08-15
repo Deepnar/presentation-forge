@@ -50,6 +50,79 @@ const SPECIMEN_GAPS = {
       "<div class=card><h1>Freeform slide</h1><div class=sub>Any layout you like — " +
       "this one is a simple card. Rasterised, not editable later.</div></div>",
   },
+  // Neutral specimens for the types the demo decks cover with real content
+  // (gpu-demo, raytracing-ai). The gallery shows the LAYOUT, never a real
+  // deck — the same rule as the theme cards. A generic topic keeps every
+  // field valid while reading as the design, not as someone else's slides.
+  compare: {
+    headline: "Two options, one trade-off",
+    standfirst: "Both sides solve the same problem differently — the choice is what each gives up.",
+    left: { title: "Option A", kicker: "The proven path", body: "Fast to adopt, established tooling, and a large pool of people who already know it." },
+    right: { title: "Option B", kicker: "The efficient path", body: "Cheaper to run and simpler at scale, at the price of more setup today." },
+    verdict: "Pick the one whose trade-off fits this brief.",
+  },
+  table: {
+    headline: "The comparison at a glance",
+    columns: ["Parameter", "Option A", "Option B"],
+    rows: [
+      ["Setup effort", "Low", "High"],
+      ["Ongoing cost", "Higher", "Lower"],
+      ["Ecosystem size", "Large", "Growing"],
+    ],
+  },
+  stats: {
+    headline: "The numbers that matter",
+    standfirst: "Three figures that frame the decision.",
+    stats: [
+      { value: "2×", label: "Setup speed", sub: "for the common case" },
+      { value: "40%", label: "Lower running cost", sub: "at comparable scale" },
+      { value: "3", label: "Key integrations", sub: "you would manage yourself" },
+    ],
+  },
+  bullets: {
+    headline: "The argument in order",
+    standfirst: "The core points, each a complete statement.",
+    bullets: [
+      "The current approach works but does not scale with the workload.",
+      "The alternative removes the bottleneck at the price of more setup.",
+      "Most teams should switch when the workload crosses this threshold.",
+      "Adopting early compounds — the learning cost only rises later.",
+    ],
+  },
+  timeline: {
+    headline: "The road so far",
+    events: [
+      { when: "Year one", what: "The first version shipped and proved the approach." },
+      { when: "Year three", what: "Early adopters reported real, measured gains." },
+      { when: "Today", what: "The trade-offs are clear enough to decide." },
+    ],
+  },
+  quote: {
+    quote: "The best choice is the one you can commit to — the option itself matters less than the follow-through.",
+    attribution: "A practitioner's rule of thumb",
+  },
+  callout: {
+    headline: "Where this lands",
+    label: "Takeaway",
+    body: "The decision comes down to one question: does the extra setup buy enough in return? For this brief, the answer is yes.",
+  },
+  references: {
+    headline: "References",
+    items: [
+      "Industry primer on the current landscape, 2024.",
+      "Comparative field notes from three early adopters, 2025.",
+      "Cost-model working paper, 2025.",
+    ],
+  },
+  cards: {
+    headline: "The four building blocks",
+    cards: [
+      { title: "Component one", body: "The foundation everything else sits on." },
+      { title: "Component two", body: "Handles the core workload day to day." },
+      { title: "Component three", body: "Adds the capabilities that differentiate." },
+      { title: "Component four", body: "Pulls the parts together at the edge." },
+    ],
+  },
 };
 
 export async function specimenDeck() {
@@ -57,6 +130,14 @@ export async function specimenDeck() {
   const all = schema.definitions.slide.properties.type.enum;
 
   const byType = new Map();
+  // Hand-written neutral specimens win over demo-deck content: the gallery
+  // shows the LAYOUT, never a real deck, and the demo decks (gpu-demo,
+  // raytracing-ai) carry real content that would read as someone else's
+  // slides. A type without a gap specimen falls back to a demo deck when one
+  // covers it.
+  for (const t of all) {
+    if (SPECIMEN_GAPS[t]) byType.set(t, { type: t, ...SPECIMEN_GAPS[t] });
+  }
   for (const name of DEMO_DECKS) {
     try {
       const deck = YAML.parse(await readFile(path.join(DECKS, name, "deck.yaml"), "utf8"));
@@ -70,8 +151,6 @@ export async function specimenDeck() {
   for (const t of all) {
     if (byType.has(t)) {
       slides.push(byType.get(t));
-    } else if (SPECIMEN_GAPS[t]) {
-      slides.push({ type: t, ...SPECIMEN_GAPS[t] });
     } else {
       // Any type with no specimen at all is still listed so the gallery shows
       // every option; a minimal valid payload degrades to a near-blank slide.
