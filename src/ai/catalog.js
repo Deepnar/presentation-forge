@@ -100,6 +100,53 @@ export function densityBudget(density, type, family) {
 }
 
 /**
+ * Per-type content invitations — the substance a layout is BUILT to hold,
+ * beyond the schema's minimum. The 75-type visual audit showed several types
+ * render sparse because the writer filled the schema minima: 2 stats on a
+ * four-up grid, a 3-row table on a full-width slide, title-only framework
+ * elements round a ring. These tell the writer how much the layout invites, so
+ * a slide fills its space instead of reading as an empty shell. Types absent
+ * here get no extra guidance — the family density budget governs.
+ */
+export const TYPE_BUDGETS = {
+  framework: "a full ring of 6 elements, EACH with its own one-line body — a title-only element reads as an empty node",
+  "concept-map": "4-6 branches, each with 2-3 SHORT leaf items (one or two words — long leaves cannot fit a radial layout)",
+  stats: "4 stats — the layout is a four-up grid; two stats on it read half-empty",
+  "big-number": "the number, a short label, and a two-to-three-line body plus source",
+  table: "5-8 rows — the table is full-width and a 3-row table leaves the slide empty",
+  "data-table": "5-8 rows — the table is full-width and a 3-row table leaves the slide empty",
+  definition: "the term, a full definition, an example, and one line on why it matters",
+  glossary: "5-8 terms — the list is built for a full page of vocabulary",
+  faq: "5-6 questions with real answers — the list is built for a full page",
+  "pros-cons": "5-6 items per side — the two columns have room for a full trade-off",
+  milestone: "4 milestones, each with a body sentence — the rail is a full-height layout",
+  chronology: "6-10 events with a sentence each — the list fills the slide",
+  bibliography: "6-10 entries, with an annotation where it earns one",
+  references: "6-10 citations — a short list on this full-width layout reads empty",
+  "data-source": "4-8 sources, each with a one-line description of what it provides",
+  journey: "5-8 stages, each with a sentence body — the line spans the full width",
+  timeline: "4-6 events — the line spans the full width and a 3-event timeline reads thin",
+  cycle: "4-5 steps, each with a one-line body round the ring",
+  pipeline: "4-6 stages, each with a body and a gate",
+  funnel: "4-6 stages, each with a value and a one-line body where it earns one",
+  flow: "4-5 steps, each a title plus a short body (a 6-step vertical flow drops bodies to stay readable)",
+  "layered-architecture": "4-5 layers, each with a body and 2-3 item pills",
+  agenda: "as many entries as there are parts, each with a one-line detail",
+  "decision-matrix": "enough rows and columns that the grid reads as a real comparison, 4-6 rows",
+  scorecard: "3-4 options scored against 3-5 criteria — the grid should be visibly full",
+  roadmap: "3 phases with 2-4 items each — the grid is built for a full board",
+};
+
+/**
+ * The per-type content invitation for one type, or the empty string when the
+ * family budget governs. Rides the planner and writer catalogues so the model
+ * fills what the layout invites.
+ */
+export function typeBudget(type) {
+  return TYPE_BUDGETS[type] ?? "";
+}
+
+/**
  * Plain-language slide descriptions for the outline review — "Stats — shows 4
  * big numbers with captions". One source of truth: the in-chat outline renders
  * exactly these, so a slide type reads as what it will contain rather than as a
@@ -365,7 +412,8 @@ export async function slideCatalog() {
     const fields = e.fields
       .map((f) => (req.has(f.name) ? `${f.text} [required]` : f.text))
       .join("; ");
-    return `- ${t}: ${fields}`;
+    const invite = TYPE_BUDGETS[t] ? ` — ${TYPE_BUDGETS[t]}` : "";
+    return `- ${t}: ${fields}${invite}`;
   });
 
   const useWhen = types.map((t) => `- ${t}: ${TYPE_USE_WHEN[t] ?? "(no guidance — pick by the name)"}`);
@@ -427,6 +475,7 @@ export async function catalogForType(type) {
   return (
     `Shared fields on any slide: ${shared.join(", ")}. "section" is a 0-based index into deck.sections.\n` +
     `This slide is type "${type}". Use it when: ${TYPE_USE_WHEN[type] ?? "(pick by the name)"}.\n` +
+    `Content it is built to hold: ${TYPE_BUDGETS[type] ?? "the family density budget (see the sweep guidance)"}.\n` +
     `Fields: ${fields || "(none)"}.`
   );
 }
