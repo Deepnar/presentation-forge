@@ -506,25 +506,37 @@ function sniffImage(buf, ext) {
  * resolves it relative to the deck folder. Extension, magic bytes and size are
  * validated — the same trust boundary as the brand uploads.
  */
-app.post("/api/decks/:slug/assets", (req, res, next) => {
+/**
+ * Raw-body uploads are parsed by a middleware whose limit error must reach the
+ * caller as JSON. body-parser invokes the next function with the error when a
+ * body exceeds the declared limit; the call sites below pass their own
+ * continuation, so that error used to fall into the handler as a no-op and an
+ * oversized file came back as a misleading 200. Each continuation now checks
+ * for the parser error first.
+ */
+app.post("/api/decks/:slug/assets", (req, res) => {
   const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
   if (!DECK_IMAGE_EXT.has(ext)) {
     return fail(res, 400, `unsupported image extension — allowed: ${[...DECK_IMAGE_EXT].join(", ")}`);
   }
-  express.raw({ type: () => true, limit: DECK_IMAGE_MAX })(req, res, async () => {
-    try {
-      if (!req.body?.length) return fail(res, 400, "empty upload");
-      if (!sniffImage(req.body, ext)) {
-        return fail(res, 400, `file does not look like a ${ext} image`);
+  const maxMB = Math.round(DECK_IMAGE_MAX / 1024 / 1024);
+  express.raw({ type: () => true, limit: DECK_IMAGE_MAX })(req, res, (err) => {
+    if (err) return fail(res, 413, `image too large — max ${maxMB} MB`);
+    (async () => {
+      try {
+        if (!req.body?.length) return fail(res, 400, "empty upload");
+        if (!sniffImage(req.body, ext)) {
+          return fail(res, 400, `file does not look like a ${ext} image`);
+        }
+        const dir = path.join(DECKS, req.params.slug, "assets");
+        await mkdir(dir, { recursive: true });
+        const name = `image-${Date.now().toString(36)}.${ext}`;
+        await writeFile(path.join(dir, name), req.body);
+        ok(res, { file: `assets/${name}`, url: `/api/decks/${req.params.slug}/assets/${name}` });
+      } catch (err) {
+        fail(res, 500, err.message);
       }
-      const dir = path.join(DECKS, req.params.slug, "assets");
-      await mkdir(dir, { recursive: true });
-      const name = `image-${Date.now().toString(36)}.${ext}`;
-      await writeFile(path.join(dir, name), req.body);
-      ok(res, { file: `assets/${name}`, url: `/api/decks/${req.params.slug}/assets/${name}` });
-    } catch (err) {
-      fail(res, 500, err.message);
-    }
+    })();
   });
 });
 
@@ -560,14 +572,17 @@ app.post("/api/briefing/upload", (req, res, next) => {
   if (!UPLOAD_EXT.has(ext)) {
     return fail(res, 400, `unsupported file type — upload a .md, .txt, .docx or .pdf`);
   }
-  express.raw({ type: () => true, limit: UPLOAD_MAX_BYTES })(req, res, async () => {
-    try {
-      const ingested = await ingestUpload(req.body, { name, ext });
-      const staged = await stageUpload(ingested);
-      ok(res, { ...staged, preview: ingested.text.slice(0, 500) });
-    } catch (err) {
-      fail(res, 400, err.message);
-    }
+  express.raw({ type: () => true, limit: UPLOAD_MAX_BYTES })(req, res, (err) => {
+    if (err) return fail(res, 413, `file too large — max ${Math.round(UPLOAD_MAX_BYTES / 1024 / 1024)} MB`);
+    (async () => {
+      try {
+        const ingested = await ingestUpload(req.body, { name, ext });
+        const staged = await stageUpload(ingested);
+        ok(res, { ...staged, preview: ingested.text.slice(0, 500) });
+      } catch (err) {
+        fail(res, 400, err.message);
+      }
+    })();
   });
 });
 
@@ -1365,7 +1380,7 @@ app.get("/api/brand", wrap(async (_req, res) => {
  * file lands in gitignored brand/logos/ and normalisation re-runs, so the
  * renderer picks it up on the next render — no repo edits, marks stay local.
  */
-app.post("/api/brand/:name", (req, res, next) => {
+app.post("/api/brand/:name", (req, res) => {
   const name = req.params.name;
   if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
   const ext = typeof req.headers["x-file-ext"] === "string"
@@ -1374,28 +1389,31 @@ app.post("/api/brand/:name", (req, res, next) => {
   if (!BRAND_IMAGE_EXT.has(ext)) {
     return fail(res, 400, `unsupported image extension — allowed: ${[...BRAND_IMAGE_EXT].join(", ")}`);
   }
-  express.raw({ type: () => true, limit: "20mb" })(req, res, async () => {
-    try {
-      if (!(await requireAuth(req, res))) return;
-      if (!req.body?.length) return fail(res, 400, "empty upload");
-      if (!sniffImage(req.body, ext)) {
-        return fail(res, 400, `file does not look like a ${ext} image`);
-      }
-      const file = path.join(BRAND_SRC, `${name}.${ext}`);
-      await mkdir(BRAND_SRC, { recursive: true });
-      // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
-      const entries = await readdir(BRAND_SRC).catch(() => []);
-      for (const e of entries) {
-        if (e.startsWith(`${name}.`) && e !== path.basename(file)) {
-          await rm(path.join(BRAND_SRC, e), { force: true });
+  express.raw({ type: () => true, limit: "20mb" })(req, res, (err) => {
+    if (err) return fail(res, 413, "image too large — max 20 MB");
+    (async () => {
+      try {
+        if (!(await requireAuth(req, res))) return;
+        if (!req.body?.length) return fail(res, 400, "empty upload");
+        if (!sniffImage(req.body, ext)) {
+          return fail(res, 400, `file does not look like a ${ext} image`);
         }
+        const file = path.join(BRAND_SRC, `${name}.${ext}`);
+        await mkdir(BRAND_SRC, { recursive: true });
+        // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
+        const entries = await readdir(BRAND_SRC).catch(() => []);
+        for (const e of entries) {
+          if (e.startsWith(`${name}.`) && e !== path.basename(file)) {
+            await rm(path.join(BRAND_SRC, e), { force: true });
+          }
+        }
+        await writeFile(file, req.body);
+        const inv = await normalizeBrand();
+        ok(res, { asset: name, file: path.basename(file), brand: { sources: inv.sources, placeholder: false } });
+      } catch (err) {
+        fail(res, 500, err.message);
       }
-      await writeFile(file, req.body);
-      const inv = await normalizeBrand();
-      ok(res, { asset: name, file: path.basename(file), brand: { sources: inv.sources, placeholder: false } });
-    } catch (err) {
-      fail(res, 500, err.message);
-    }
+    })();
   });
 });
 
