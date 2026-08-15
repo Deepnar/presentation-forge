@@ -530,6 +530,39 @@ draws a placeholder for a null source — so a model that puts
 deck that fails at write time. Both the planner and the writer are told to avoid
 image-requiring types unless the brief names real files.
 
+## Upload-only research — the user's file is the source of truth
+
+The briefing's research question is a three-way choice — Web search (default) |
+My uploaded file (no search) | No research — and the upload path is a new
+intake seam, not a fork in the pipeline. When the file wins, the research pass
+is skipped entirely (no SearXNG, no arXiv/Crossref, no Jina) and the document
+becomes `research/notes.md` verbatim, marked `kind: "user-provided"` in
+sources.json, so everything downstream — planning, writing, the report, and
+the grounding guard — works on exactly the text the user gave.
+
+`src/ai/upload.js` owns the intake:
+
+- **Conversion.** md/txt are decoded directly (with a binary sniff so an
+  executable renamed `.txt` fails loudly); docx/pdf go through LibreOffice
+  headless to text (the same private-profile + absolute-path discipline as the
+  preview rasteriser). Caps: 25 MB and 60k words, rejected before staging.
+- **Staging.** The converted document is staged under a token in gitignored
+  `config/uploads/` (swept after 48h), so a large file never round-trips
+  through the browser or localStorage — the briefing holds `{token, name,
+  words}` and the plan resolves it once the deck's slug exists. The CLI
+  (`forge new/report-new --upload <file>`) passes `{name, text}` inline
+  instead; `resolveResearchSource` in `src/ai/pipeline.js` normalises both.
+- **Server.** `POST /api/briefing/upload` (session-gated like presets) accepts
+  md/txt/markdown/docx/pdf raw bytes, validates extension + size + readability,
+  stages, and returns the token; the plan's `createDeck`/`createReport` accept
+  `researchSource` + `upload`.
+
+The grounding guard becomes strict fidelity automatically: its label names
+"your uploaded file" instead of "research/notes.md" when `meta.researchSource`
+is upload, so the speaker's notes state the contract. The upload is visible and
+editable in the existing Research panel before generating — notes.md was always
+user-editable, and in upload mode it IS the user's document.
+
 ## The coherence pass — every slide must serve the deck's topic
 
 Grounding proves the facts; coherence proves the argument. A slide can be
@@ -915,6 +948,7 @@ deck images. `POST /api/sweep` and `npm run sweep` run the sweep manually.
 | `config/local.yaml` | no | cloud API keys + `routing.default` — written by the Cloud panel and header toggle |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `config/presets/` | no | saved briefing formats, one file per user |
+| `config/uploads/` | no | staged briefing documents — upload-only research mode; short-lived (swept after the TTL), resolved by token at planning |
 | `brand/logos/` | no | raw supplied marks — trademarks stay local; uploaded via the Brand panel |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |

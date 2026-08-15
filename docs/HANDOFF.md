@@ -1,131 +1,116 @@
-# HANDOFF — post user-testing-round-5 implementation
+# HANDOFF — upload-only research mode + full self-audit
 
-All 24 items from the 2026-08-15 user-testing handoff are implemented,
-committed and pushed. 286/286 tests pass; the web build is clean; servers were
-left running (UI :5173, API :5174, Ollama, SearXNG). This document records
-what the current state is so the next session can verify, extend or spot-check
-without re-reading the old task list.
+The final user-testing item (25) — upload-only research mode — is implemented,
+committed and pushed, and the whole system (the 24-item batch + the new mode)
+was audited like a QA pass with real UI walks via CDP. 300/300 tests pass; the
+web build is clean; servers were left running (UI :5173, API :5174, Ollama,
+SearXNG). This document records the current state so the next session can
+verify, extend or spot-check without re-reading the old task lists.
 
-## What shipped this round (each committed + pushed)
+## Item 25 — Upload-only research mode (the user's file is the source of truth)
 
-**Confirmed bugs**
-1. **Report view busy-state** — render and report-write now share one busy
-   state; `reportWrites.end()` fires the terminal `{finished:true}` patch so a
-   write can never leave a stuck "Rendering…". The Download link derives from a
-   server probe of `out/report.docx`, so reopening shows it without re-render.
-2. **Report blank pages 2-3** — `src/report.js buildBody` now emits exactly ONE
-   page break after the cover and ONE after the TOC, with no `pageBreakBefore`
-   on section 1. Verified blank-free by rasterising a real report.
+The briefing's research question is now a three-way choice: **Web search
+(default)** | **My uploaded file (no search)** | **No research**. When the
+file wins, the research pass is SKIPPED entirely (no SearXNG, no arXiv/Crossref,
+no Jina) and the uploaded document (md/txt/docx/pdf — LibreOffice converts the
+office formats) becomes `research/notes.md` verbatim, marked
+`kind: "user-provided"` in sources.json. Grounding then means strict fidelity
+against exactly what the user gave, and the flagged-claim line names "your
+uploaded file" so the contract is visible in the slide notes. The upload is
+staged by token (gitignored `config/uploads/`, swept after 48h) so a large file
+never round-trips through the browser or localStorage; the plan resolves the
+token once the deck's slug exists. Works for both deck and report (the report
+briefing doesn't offer "No research" — a report needs a source). The upload is
+visible/editable in the Research panel before generating, since notes.md was
+already user-editable. CLI parity: `forge new/report-new <brief> --upload <file>`.
 
-**UX batch**
-3. **Chat slide-selection panel** — after a deck is ready, a ~40% side panel
-   (`SlideSelectPanel.jsx`) shows every rendered slide scrollable; multi-select
-   names the chosen slides (index + type + headline + content excerpt) in the
-   turn context. The deck view's lightbox writes the focused slide into
-   `lib/deckContext.js`, so "make THIS punchier" resolves after returning to
-   the chat. Per-slide punch-up and type-swap act on the selection.
-4. **Briefing → planner verbatim** — `briefingAnsweredText()` in
-   `lib/briefing.js` sends every answered question as an explicit
-   "The user answered: …" block (separate from the research brief), threaded
-   through createDeck → planDeck.
-5. **Intro→conclusion flow** — the planner prompt now always instructs
-   title → intro → body → conclusion, regardless of the brief.
-6. **Logout confirmation** — shared `ConfirmModal` primitive; logout is
-   confirmed before the session drops.
-7. **Split-screen auth + one CTA** — AuthModal is a visual-left / card-right
-   split labelled "Sign up"; the landing has one strong CTA ("Start a chat"),
-   the rest are text links.
-8. **Theme previews unified** — Themes page cards use the same 16/8 + 16/5
-   specimen proportions as the mini cards; the mini card now shows the theme's
-   font names (home + briefing gallery).
-9. **List content floor** — bullets/numbered-list/checklist/icon-list/
-   stacked-list `minItems` 2→4 in the schema; the trim pass can no longer cut
-   below it; placeholder writes four items; budget notes updated.
+Commit sequence: backend core (`src/ai/upload.js`, pipeline resolution, strict
+grounding label, staging endpoint, CLI, tests) → frontend (three-way card +
+upload gate, briefing fields, Research view "your file" treatment).
 
-**Addenda**
-10. **Placeholder leak** — `src/placeholders.js` detects placeholders by marker
-    text (current + historical). Render gate refuses (422 naming the slides);
-    `generateDeck` retries each placeholder once then flags into problems[];
-    the deck view shows a red "Needs regeneration" panel with per-slide
-    Regenerate (scoped chat turn) + card badges. Existing placeholder decks
-    were swept via cloud turns (verified 0 remaining).
-11. **Divider intent** — verified: dividers are transition slides carrying no
-    presenter; the catalog description reads clearly ("a divider announcing the
-    next part of the talk"). No code change.
-12. **Per-type when-to-use** — `TYPE_USE_WHEN` map added; folded into
-    `slideCatalog`, `catalogForType` and `/api/types`; a guard refuses to ship
-    a type without guidance.
-13. **Neutral specimens** — Themes page cards show "Title"/"subtitle line"
-    placeholders (no gpu-demo content); the type-swap gallery prefers
-    hand-written neutral specimens over demo decks.
-15. **Slash commands** — `/theme`, `/density`, `/slides`, `/papers`, `/report`,
-    `/help` parsed before the turn (`lib/slash.js`); unknown commands get a
-    helpful reply.
-16. **Per-step telemetry** — `progressLabel` now names research queries,
-    writing/sweeping N of M, converting, report sections.
-17. **Auto-grow composer** — textarea grows 44px → ~152px cap, larger radius.
-18. **Profile chip bottom-left** — `ProfileChip.jsx` (avatar+name, avatar-only
-    collapsed) opens a centred modal with the AI's identity context, cloud
-    status, and logout-with-confirm. Header logout removed.
-21. **Hosted model curation** — `providerModels()` in `src/cloud.js` fetches
-    `GET {baseURL}/models` when a provider's static list is empty (key-gated,
-    both `{data:[{id}]}` and string-array shapes). Cloud panel labels the list
-    "Models this host has enabled"; README deploy docs added.
-22. **Sweep leak check** — the sweep prompt explicitly forbids carrying content
-    across slides; a test proves the bullets slide's context never contains the
-    cards slide's content. Grounding confirmed to run after the sweep.
-23. **Generalised copy** — no provider-specific or user-specific wording in
-    app/web or app/server; README:8 → "institutional graded submissions".
-24. **Coherence pass** — `src/ai/coherence.js` runs after generation AND after
-    a density sweep: one bounded review flags topical drift / data-without-a-
-    point, rewrites flagged slides via runTurn, then re-grounds + re-trims.
-    Writer prompts carry the framing rule. Verified on the real soft-skills
-    deck: slide 17 (the flight-attendant chart) became "The Face Is Read Before
-    a Word Is Spoken", re-rendered and vision-checked.
+## The self-audit (user's explicit "check it all for bugs" request)
+
+Walked the real flows via CDP (login → new chat → briefing with the new upload
+toggle → outline → approve/generate → deck detail → slide selection panel →
+punch/clear → report render → title-named download → reopen (Download persists
+via server probe) → logout confirm) and attacked the edge cases. **Three real
+bugs found and fixed** (each committed + pushed separately):
+
+1. **`generateFromPlan` returned `r is not defined`** — an undeclared `r` in
+   the problems spread, present since the grounding commit. deck.yaml was
+   written + rendered BEFORE the return, so every generation *produced* a deck
+   while the SSE result frame always failed and the chat reported an error.
+   The stray line was redundant with `res.problems` and is dropped. Verified:
+   the UI approve → generate → deck editor now completes.
+2. **Oversized raw uploads returned a false 200.** `express.raw`'s limit error
+   was swallowed by the misused continuation callback, so a >25 MB file came
+   back as "the file is empty". All three raw-upload handlers (deck image,
+   briefing upload, brand mark) now check the parser error and return a JSON
+   413 naming the cap.
+3. **Framework connectors crossed the concept title.** The radial hairlines
+   started at the ellipse centre, so the vertical lines ran straight through
+   "The ₹4.2/unit arithmetic" on a live deck. They now begin where the ray to
+   each element exits the ellipse (vision-confirmed fixed).
+
+Edge cases checked and green: report re-render twice (clean, no stuck busy
+state), report reopen shows Download without a spinner, placeholder gate
+refuses a deck carrying "Details in the full briefing." (naming the slide),
+coherence pass ran on both generated decks (flagged + reframed slides),
+selection panel select 1/many/clear, slash unknown-command reply, upload mode
+empty/binary/huge/unsupported/unauthenticated all reject cleanly, docx with an
+embedded image converts with text preserved, grounding flagged every derived
+number the file never stated (2.6 = 6.8−4.2, 12.3 Mt = 4 t × 30.8 lakh) while
+every real file figure passed.
+
+**Zero-web-call proof:** planning with `--upload` succeeded with `SEARXNG_URL`
+pointed at a dead port, and the resulting notes.md was byte-identical to the
+uploaded file with no URLs anywhere in sources.json. Deck (13 slides, zero
+grounding flags) and report (7 sections, .docx rendered) both generated from a
+docx upload through the real API.
 
 ## Where the docs point
 
-- `docs/ARCHITECTURE.md` — new sections: the coherence pass, the placeholder
-  gate, the chat selection panel/briefing/auto-grow, split-screen auth +
-  profile chip, the single page-break report layout, cloud model auto-fetch,
-  neutral specimens.
-- `docs/ROADMAP.md` — a completion entry for the whole batch with Learned
-  blocks (coherence ≠ grounding; validating placeholders; shared busy
-  terminal events; schema floor vs prompt floor).
-- `docs/TRAPS.md` — new cross-cutting entries for the validating-placeholder
-  and coherence-vs-grounding failure modes.
+- `docs/ROADMAP.md` — a completion entry for item 25 with a Learned block
+  (the seam fell out of existing notes-as-truth machinery; the work was the
+  intake) plus the three audit fixes.
+- `docs/ARCHITECTURE.md` — a new "Upload-only research" section and the
+  `config/uploads/` data-location row.
+- `docs/TRAPS.md` — three new cross-cutting entries: the terminal-spread
+  ReferenceError, the swallowed body-parser 413, and radial connectors from a
+  node's centre.
 
 ## Verified behaviourally this session
 
-- Report blank pages: rasterised 12-page report, no empty interior page.
-- ReportView reopen: Download link present from the server probe, no stuck
-  spinner (CDP).
-- Chat selection panel: renders, multi-select, turn context names selected
-  slides with content excerpts (captured the outgoing instruction), lightbox
-  focus flows to chat (CDP).
-- Slash commands: /help, /theme, /slides, /density all act with inline
-  confirmations (CDP).
-- Logout confirm + profile modal (centred, identity + cloud + logout) both
-  open/cancel correctly (CDP + vision).
-- Auto-grow composer: 10-line paste → 144px, clears → 44px (CDP + vision).
-- Placeholder gate: deck with placeholder shows warning + badge, render 422s,
-  Regenerate replaces it and clears the badge (CDP).
-- Coherence: real deck slide 17 re-framed, re-rendered, vision-confirmed
-  serving the topic.
-- Theme cards + type-swap: neutral specimens, no GPU/raytracing content
-  (vision); 38 cards at consistent width, no clipped headings.
+- Upload-only md + docx → plan → deck → report, zero research web calls,
+  strict grounding (above).
+- Upload card in the UI: Finish disabled until a file attaches; word count +
+  name shown; plan → outline via cloud planner (CDP).
+- Approve → generate → deck editor + selection panel (19 slides, select/✓/
+  clear) — this flow was previously broken by bug 1.
+- Deck detail slide grid (19 previews), deck.pptx download title-named,
+  report reopen shows Download immediately (server probe, no spinner).
+- Logout: profile chip → centred modal → confirm → token cleared, back on
+  `#/home`.
+- Oversized-upload 413 and the other upload rejections (API).
+- Framework connector fix vision-confirmed (ellipse edge, no line through text).
 
 ## Open items / notes for the next session
 
-- `schema/report.schema.json` has a pre-existing cosmetic reformat in the
-  working tree (JSON reflow, not semantics) — was present before this session;
-  left untouched. Commit or revert as you prefer.
-- Many untracked `decks/<slug>/` folders exist (user test decks). They are
-  working data, not part of the repo; the committed fixtures are all valid.
-- The coherence pass and the placeholder gate both run on cloud-author
-  generations; on a fully local run they still run but the reviewer/rewriter
-  uses the local author role. If local quality degrades, consider gating the
-  coherence review to cloud authors only.
-- TRAPS: the browser screenshot tool failed intermittently this session; the
-  CDP driver at `/tmp/opencode/cdp.mjs` (Node WebSocket, no puppeteer) was
-  reliable — reuse it for future UI checks.
+- A deck created with **No research** cannot produce a report (no notes.md to
+  write from); the Report panel's "Generate report" then fails with the honest
+  error "no decks/<slug>/research/notes.md…". The button stays enabled — the
+  error message is the current UX. Consider disabling/hiding it when the deck
+  has no research, or let the Research panel create notes from scratch.
+- `schema/report.schema.json` had a pre-existing cosmetic JSON reflow in the
+  working tree; it was semantically identical to HEAD and has been reverted —
+  the tree is clean.
+- The `config/uploads/` staging sweep runs on stage and at server boot (48h
+  TTL). Abandoned briefings are swept; a staged file resolved by no plan dies
+  within two days by design.
+- Local models untouched; cloud `deepseek-v4-flash` used for generation tests.
+  Model discipline held: flash codes ONLY, mimo-v2.5 vision ONLY, no qwen.
+- The CDP driver at `/tmp/opencode/cdp.mjs` was extended with `setFile` (DOM
+  domain) and `typeText` (Input.insertText — synthetic `input` events do not
+  update React 19 controlled inputs reliably). Reuse it for future UI checks.
+  Note: clicking the AuthModal's "Log in" *tab pill* does not submit — the
+  form submit is `button[type=submit]`.

@@ -368,3 +368,27 @@ stays idempotent across redeploys.
 **Validate against the rendered artefact, not the data structure.** Valid YAML,
 a passing schema, and a written file are three checks that all pass while the
 output is unusable.
+
+**An undeclared variable in a return-object spread fails AFTER the work is
+done, so the job looks successful.** `generateFromPlan` spread
+`...(r.problems ?? [])` where no `r` existed — but deck.yaml had already been
+written, rendered and rasterised before the return, so every generation
+*produced* a deck while the SSE result frame always died with "r is not
+defined" and the chat reported an error. The bug shipped for a full batch
+because the deck itself was fine. Any terminal expression that can throw is a
+shipping gate; if it is a literal reference, name the variable once and read
+it once.
+
+**Raw-body uploads swallow their own limit error.** `express.raw(opts)(req,
+res, async () => {...})` passes the callback as body-parser's `next`; a body
+over the declared limit invokes it *with the error*, which an argument-less
+handler ignores — so an oversized file came back as a misleading 200 ("the
+file is empty") instead of a 413. The continuation must check its first
+argument before doing anything else.
+
+**A radial connector that starts at the centre of its node crosses the node's
+text.** The framework layout drew hairlines from the ellipse's exact centre to
+each ring element, so the vertical connectors ran straight through the concept
+title and body on a live deck. A connector must begin where the ray to its
+target exits the node shape — compute the boundary point from the node's
+semi-axes, never from the centre.

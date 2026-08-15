@@ -2100,5 +2100,56 @@ The second user-testing round's findings, shipped in priority order:
 > was advisory; the schema makes it a hard contract the writer and the trim
 > both respect.
 
+### [x] Upload-only research mode — the user's file is the source of truth
+The user's own document as the sole content source, with search turned off
+entirely. The briefing's research question is now a three-way choice — Web
+search (default) | My uploaded file (no search) | No research — and the
+upload path is a new seam, not a fork:
+
+- **`src/ai/upload.js`** ingests a document (md/txt read directly with a
+  binary sniff; docx/pdf via LibreOffice headless to text) into the markdown
+  that becomes `research/notes.md`, stages it by token (`config/uploads/`,
+  gitignored, swept after 48h) so a large file never round-trips through the
+  browser or localStorage, and resolves the token at planning. Size (25 MB)
+  and word (60k) caps reject before anything is staged.
+- **The pipeline skips the web pass entirely** when `researchSource: "upload"`:
+  no SearXNG, no arXiv/Crossref, no Jina. `createDeck` and `createReport` both
+  write the file verbatim to notes.md and a `kind: "user-provided"` source
+  into sources.json, so grounding is strict fidelity against exactly what the
+  user gave. Legacy callers keep their meaning: `research`/`papers`/`sources`
+  still select the web mode.
+- **The whole surface rides the existing contract.** The file is editable in
+  the Research panel before generating (notes.md was always editable); the
+  report-from-deck path reads the same notes; grounding's flagged-claim line
+  names "your uploaded file" instead of "research/notes.md" so the fidelity
+  contract is explicit. CLI: `forge new/report-new <brief> --upload <file>`.
+- **Verified behaviourally.** Uploaded md and docx both: plan → deck → report
+  with zero research web calls (proved by pointing SEARXNG_URL at a dead port
+  and by notes.md being byte-identical to the file with no URLs in sources).
+  Real file figures (42,000 crore, 7.5 kW, 4.2 ₹/unit, 60% subsidy, 30.8 lakh,
+  9 bn L) pass grounding; derived numbers the file never states (6.8−4.2 = 2.6,
+  4 t × 30.8 lakh = 12.3 Mt) are flagged. Empty/binary/huge/unsupported uploads
+  and the unauthenticated case all reject cleanly; a docx carrying an image
+  converts with text preserved.
+
+> **Learned.** "The file is the source of truth" fell out of existing machinery
+> almost for free — the whole pipeline already treats notes.md as the ground
+> truth and the user already owns it. The new work was the intake (convert +
+> stage + resolve), not the research: making notes.md the file meant zero
+> changes to planning, writing or grounding. Two things the seam had to get
+> right: the strict-fidelity message in grounding (naming the user's file makes
+> the contract visible in the slide notes), and the three-way briefing choice
+> replacing a boolean (a file-less "upload" choice would have silently planned
+> without research — the card's Finish button stays disabled until a file is
+> attached).
+>
+> The self-audit that followed shipped three fixes that had nothing to do with
+> uploads: a ReferenceError that made every generation's SSE result frame fail
+> (`r.problems` where no `r` existed — decks were written and rendered, then
+> the frame died), a swallowed body-parser 413 that turned oversized uploads
+> into a false "the file is empty" 200, and the framework layout's connector
+> hairlines starting at the ellipse centre and running through the concept
+> title. See TRAPS for the reusable versions.
+
 
 
