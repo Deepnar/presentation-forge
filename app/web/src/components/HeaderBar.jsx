@@ -14,7 +14,7 @@ import { setModelMode } from "../lib/modelMode.js";
  * reachable when a key is attached; without one the button is disabled and
  * points at the Settings/Cloud section where the key lands.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdentity, user, onAuthClick }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, user, onAuthClick }) {
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("local");
 
@@ -77,7 +77,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdenti
             LOCAL
           </button>
           <button
-            onClick={() => (cloudOn ? setMode("cloud") : onOpenIdentity?.())}
+            onClick={() => (cloudOn ? setMode("cloud") : onOpenSettings?.())}
             title={cloudOn
               ? "Author model runs on a cloud provider. Research and critique stay local — this moves only your writing model."
               : "Attach an API key in Settings → Cloud to use cloud models"}

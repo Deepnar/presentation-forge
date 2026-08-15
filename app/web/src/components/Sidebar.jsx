@@ -13,14 +13,14 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
  * in decks or reports) and Decks (your actual artefacts). Search filters the
  * deck list and greps content server-side; the chats need no search yet. The
  * one creation entry app-wide lives here — "+ New chat". Collapses to an icon
- * rail; Themes and Identity are compact rows at the bottom. Each row carries a
+ * rail; Themes and Settings are compact rows at the bottom. Each row carries a
  * "⋯" menu on hover — delete a chat (local) or open/delete a deck (server-side,
- * behind a confirm modal).
+ * behind a confirm modal). Settings opens the modal, not a view.
  */
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
-  user, identity, onOpenIdentity, onLogout,
+  user, identity, onOpenSettings,
 }) {
   const [tab, setTab] = useState("chats"); // chats | decks
   const [query, setQuery] = useState("");
@@ -214,7 +214,7 @@ export default function Sidebar({
           <div className="mt-auto border-t border-line p-2.5">
             <div className="mb-2 space-y-0.5">
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
-              <NavRow active={view === "identity"} icon={IdIcon} label="Identity" href="#/identity" />
+              <SettingsRow icon={IdIcon} label="Settings" onClick={onOpenSettings} />
             </div>
             <Button variant="primary" className="w-full" onClick={() => onNewChat("deck")}>
               <PlusIcon className="h-3.5 w-3.5" />
@@ -224,8 +224,7 @@ export default function Sidebar({
               <ProfileChip
                 user={user}
                 identity={identity}
-                onOpenIdentity={onOpenIdentity}
-                onLogout={onLogout}
+                onOpenSettings={onOpenSettings}
               />
             </div>
           </div>
@@ -234,7 +233,7 @@ export default function Sidebar({
         <div className="flex flex-col items-center gap-1 py-3">
           <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" href="#/chat" />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
-          <IconButton active={view === "identity"} icon={IdIcon} title="Identity" href="#/identity" />
+          <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
           <div className="mt-auto" />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
           <div className="pt-1">
@@ -242,8 +241,7 @@ export default function Sidebar({
               collapsed
               user={user}
               identity={identity}
-              onOpenIdentity={onOpenIdentity}
-              onLogout={onLogout}
+              onOpenSettings={onOpenSettings}
             />
           </div>
         </div>
@@ -357,10 +355,10 @@ function NavRow({ active, icon: Icon, label, href }) {
     <a
       href={href}
       onClick={(e) => {
-        // These are pure view anchors (#/themes, #/identity): let the hash
-        // change — the App's hashchange listener switches the view. Middle-
-        // click and copy-link keep working. (preventDefault here used to
-        // swallow the navigation entirely, leaving the view stuck.)
+        // These are pure view anchors (#/themes): let the hash change — the
+        // App's hashchange listener switches the view. Middle-click and
+        // copy-link keep working. (preventDefault here used to swallow the
+        // navigation entirely, leaving the view stuck.)
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       }}
       className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition ${
@@ -371,6 +369,20 @@ function NavRow({ active, icon: Icon, label, href }) {
       <span className={`text-[13px] font-medium ${active ? "text-fg" : "text-fg-muted"}`}>{label}</span>
       <ChevronDown className="ml-auto h-3 w-3 -rotate-90 text-fg-faint" />
     </a>
+  );
+}
+
+/** Settings is a modal, not a view — the row opens it rather than routing. */
+function SettingsRow({ icon: Icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition hover:bg-hover"
+    >
+      <Icon className="h-4 w-4 shrink-0 text-fg-faint" />
+      <span className="text-[13px] font-medium text-fg-muted">{label}</span>
+      <ChevronDown className="ml-auto h-3 w-3 -rotate-90 text-fg-faint" />
+    </button>
   );
 }
 

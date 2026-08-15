@@ -11,23 +11,24 @@ import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
-import Identity from "./views/Identity.jsx";
+import SettingsModal from "./components/SettingsModal.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 
 /**
  * The chat-first shell. Logging in is the landing; the chat window is the app.
- * Views: chat (the active conversation), deck, report, themes, identity. A
- * chat persists per account and knows the deck it produced; the deck list in
- * the sidebar shows only your decks. The old wizard form and the standalone
- * outline view are gone — the briefing and the outline gate both live in the
- * chat thread.
+ * Views: chat (the active conversation), deck, report, themes, home. Settings
+ * is a MODAL over any view — opened from the profile chip or the sidebar row —
+ * holding presets, identity and the account/cloud controls. A chat persists
+ * per account and knows the deck it produced; the deck list in the sidebar
+ * shows only your decks.
  */
 export default function App() {
   const [user, setUser] = useState(undefined); // undefined = auth still checking
   const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
-  const [view, setView] = useState("chat"); // chat | deck | report | research | themes | identity | home
+  const [view, setView] = useState("chat"); // chat | deck | report | research | themes | home
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
@@ -197,7 +198,6 @@ export default function App() {
         }
         break;
       case "themes":
-      case "identity":
       case "home":
         setView(r.view);
         break;
@@ -222,9 +222,9 @@ export default function App() {
   // Boot and login: the constant landing is New chat (the chats effect picks
   // the account's empty thread). An EXPLICITLY-opened view hash is honoured
   // instead — #/deck/<slug>, #/report/…, #/research/…, and also #/themes,
-  // #/identity, #/home (a middle-clicked nav link must open ITS view, not
-  // spawn a New chat). Only a bare chat route (or a stale chat id, which is
-  // the last route, not a deep link) resets to #/chat and New chat wins.
+  // #/home (a middle-clicked nav link must open ITS view, not spawn a New
+  // chat). Only a bare chat route (or a stale chat id, which is the last
+  // route, not a deep link) resets to #/chat and New chat wins.
   useEffect(() => {
     if (!user) return;
     const r = parseHash(window.location.hash);
@@ -360,7 +360,7 @@ export default function App() {
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
           onHome={goHome}
-          onOpenIdentity={() => setView("identity")}
+          onOpenSettings={() => setSettingsOpen(true)}
           user={user}
           onAuthClick={() => setAuthOpen(true)}
         />
@@ -388,8 +388,7 @@ export default function App() {
                 onDeleteDeck={handleDeleteDeck}
                 user={user}
                 identity={identity}
-                onOpenIdentity={() => { setView("identity"); navigate("identity"); }}
-                onLogout={doLogout}
+                onOpenSettings={() => setSettingsOpen(true)}
               />
             </div>
           )}
@@ -404,10 +403,6 @@ export default function App() {
                 onOpenDeck={openDeck}
                 onOpenReport={openReport}
                 onDeckChanged={bumpDeck}
-                onIdentityChanged={(next) => {
-                  setIdentity(next);
-                  setOrg(next?.institution?.short ?? "");
-                }}
               />
             )}
             {view === "chat" && !activeChat && (
@@ -446,12 +441,6 @@ export default function App() {
               />
             )}
             {view === "themes" && <Themes />}
-            {view === "identity" && (
-              <Identity
-                user={user}
-                onAuthClick={() => setAuthOpen(true)}
-              />
-            )}
             {view === "home" && (
               <Home
                 user={user}
@@ -469,6 +458,18 @@ export default function App() {
             onClose={() => setAuthOpen(false)}
           />
         )}
+
+        <SettingsModal
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          user={user}
+          identity={identity}
+          onIdentityChanged={(next) => {
+            setIdentity(next);
+            setOrg(next?.institution?.short ?? "");
+          }}
+          onLogout={doLogout}
+        />
       </div>
     </div>
   );
@@ -502,7 +503,7 @@ function FirstRunHint({ userEmail }) {
         </span>
         <span className="whitespace-nowrap text-[12px] text-fg-muted">
           Models come from <span className="font-medium text-fg">Ollama</span> or your{" "}
-          <span className="font-medium text-fg">cloud key</span> — switch in Identity.
+          <span className="font-medium text-fg">cloud key</span> — switch in Settings.
         </span>
         <button
           onClick={dismiss}

@@ -9,8 +9,12 @@
  *   #/chat[/<chatId>]   the active conversation
  *   #/deck/<slug>       deck detail       #/report/<slug>   report view
  *   #/research/<slug>   research view     #/themes          theme gallery
- *   #/identity          identity          #/home            the landing page
+ *   #/home              the landing page
  *   (empty)             home = chat
+ *
+ * Settings is not a route — it is a modal over whatever view is open, opened
+ * from the profile chip or the sidebar row. An old #/identity hash resolves to
+ * the chat view like any unknown route.
  */
 
 /** A hash string ("#/deck/<slug>") → { view, slug?, chatId? }. Unknown routes
@@ -28,8 +32,6 @@ export function parseHash(hash) {
       return rest[0] ? { view: kind, slug: rest[0] } : { view: "chat" };
     case "themes":
       return { view: "themes" };
-    case "identity":
-      return { view: "identity" };
     case "home":
       return { view: "home" };
     case "chat":
@@ -51,8 +53,6 @@ export function hashFor(view, { slug, chatId } = {}) {
       return slug ? `#/research/${slug}` : "#/chat";
     case "themes":
       return "#/themes";
-    case "identity":
-      return "#/identity";
     case "home":
       return "#/home";
     case "chat":
