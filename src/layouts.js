@@ -956,40 +956,67 @@ export const layouts = {
     const gut = 0.42;
 
     if (ttb) {
-      // Six narrow TTB cards once collided with the footer. A vertical card
-      // needs ~0.75in for a readable title + body; with the heading and chrome
-      // footer fixed, only up to four cards get that. At five or more the body
-      // drops and the row renders title-only — a tiny unreadable body is worse
-      // than none, and the card count is what the model was told it could use.
-      const crowded = n >= 5;
-      const gutT = crowded ? 0.3 : gut;
-      const sh = (box.bottom - y - gutT * (n - 1)) / n;
-      const titleScale = fitScaleAll(data.steps.map((s) => s.title), box.w - 0.6, sh - (crowded ? 0.08 : 0.4), theme.type.subhead, { min: 0.55 });
-      // The body box is `max(0.3, sh - 0.56)` tall; the fit budget must be the
-      // box, not a tighter `sh - 0.62`, or a one-line body at the floor is
-      // flagged even though it fits the space actually drawn. When the card is
-      // too crowded for a body at all, skip the fit entirely — it is not drawn.
-      const bodyBudget = Math.max(0.3, sh - 0.56);
-      const bodyScale = crowded ? 1 : fitScaleAll(
-        data.steps.map((s) => s.body).filter(Boolean), box.w - 0.6, bodyBudget, theme.type.body,
-      );
+      // A vertical flow renders as a NUMBERED SPINE — a number chip on a
+      // central rail with the title flowing right — not a stack of full-width
+      // cards. At six steps the old cards were ~0.5in thin stripes, the body
+      // was dropped, and the bottom quarter of the slide was empty. A spine
+      // gives the title the real width, so the rows read as a deliberate flow
+      // at any step count. Bodies need ~0.72in per row (title + two lines), so
+      // like the old cards they render only while the rows have room — a tiny
+      // unreadable body is worse than none, and the count is the model's.
+      const chip = 0.5;
+      const railX = box.x + 0.34;
+      const textX = railX + 0.85;
+      const textW = box.right - textX - 0.15;
+      const gutT = 0.14;
+      const rowH = (box.bottom - y - gutT * (n - 1)) / n;
+      // Bodies render once the row is tall enough for a title plus ONE line at
+      // the body's floor — the spine layout spans the full width, so a line is
+      // cheap and a 6-step flow with short bodies fills the slide. The old
+      // full-width cards needed ~0.75in per row (a whole body across a narrow
+      // card), which is why they dropped bodies at five steps. A body that
+      // needs TWO lines at the floor cannot fit a six-step row — it drops
+      // (title-only step) rather than shrinking below the readable floor.
+      const canBody = rowH >= 0.55;
+      const bodyBudget = Math.max(0.26, rowH - 0.32);
+      const oneLineBody = (s) => s.body && lineCount(s.body, textW, theme.type.body) <= 1;
+      const renderedBodies = data.steps.filter(oneLineBody).map((s) => s.body);
+      const titleScale = fitScaleAll(data.steps.map((s) => s.title), textW, canBody ? 0.32 : rowH, theme.type.subhead, { min: 0.6 });
+      const bodyScale = canBody
+        ? fitScaleAll(renderedBodies, textW, bodyBudget, theme.type.body)
+        : 1;
       data.steps.forEach((s, i) => {
-        const sy = y + i * (sh + gutT);
-        card(slide, theme, { x: box.x, y: sy, w: box.w, h: sh });
-        slide.addText(s.title, {
-          x: box.x + 0.3, y: sy + 0.06, w: box.w - 0.6, h: sh - 0.12,
-          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }), valign: "middle",
-        });
-        if (s.body && !crowded) {
-          slide.addText(s.body, {
-            x: box.x + 0.3, y: sy + 0.44, w: box.w - 0.6, h: Math.max(0.3, sh - 0.56),
-            ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }), valign: "top",
+        const ry = y + i * (rowH + gutT);
+        const cyRow = ry + rowH / 2;
+        if (i < n - 1) {
+          slide.addShape("rect", {
+            x: railX - 0.012, y: cyRow + chip / 2, w: 0.024, h: rowH + gutT - chip,
+            fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          });
+          slide.addShape("triangle", {
+            x: railX - 0.09, y: ry + rowH + gutT / 2 - 0.09, w: 0.18, h: 0.18,
+            fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 180,
           });
         }
-        if (i < n - 1) {
-          slide.addShape("triangle", {
-            x: box.x + box.w / 2 - 0.1, y: sy + sh + gutT / 2 - 0.1, w: 0.2, h: 0.2,
-            fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 180,
+        slide.addShape("ellipse", {
+          x: railX - chip / 2, y: cyRow - chip / 2, w: chip, h: chip,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        });
+        slide.addText(String(i + 1), {
+          x: railX - chip / 2, y: cyRow - chip / 2, w: chip, h: chip,
+          ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent }),
+          align: "center", valign: "middle",
+        });
+        slide.addText(s.title, {
+          x: textX, y: ry, w: textW, h: canBody ? 0.32 : rowH,
+          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+          valign: canBody ? "top" : "middle",
+        });
+        if (oneLineBody(s) && canBody) {
+          slide.addText(s.body, {
+            x: textX, y: ry + 0.3, w: textW, h: bodyBudget,
+            ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
+            valign: "top",
           });
         }
       });
@@ -1100,13 +1127,25 @@ export const layouts = {
     const y = heading(slide, ctx);
 
     const n = data.events.length;
-    const railY = y + 0.55;
+    const step = box.w / n;
+    // The band is "when" above the rail, "what" below. It used to hug the
+    // heading at `y + 0.55`, leaving the lower half of the slide empty; the
+    // rail is now vertically centred so the "what" zone below balances the
+    // "when" zone above. Body lines are counted at the fitted size so the
+    // block height is the real rendered one, never a one-line guess.
+    const whenSt = theme.type.eyebrow;
+    const bodyLines = Math.max(
+      1,
+      ...data.events.map((e) => lineCount(e.what, step - 0.2, { ...theme.type.body, size: theme.type.body.size * 0.85 })),
+    );
+    const bodyH = bodyLines * ((theme.type.body.size * 0.85 * (theme.type.body.line ?? 1.3)) / 72);
+    const blockH = 0.42 + 0.03 + 0.24 + bodyH;
+    const railY = y + Math.max(0, (box.bottom - y - blockH) / 2) + 0.42;
     slide.addShape("rect", {
       x: box.x, y: railY, w: box.w, h: 0.03,
       fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
     });
 
-    const step = box.w / n;
     data.events.forEach((e, i) => {
       const cx = box.x + step * i + step / 2;
       slide.addShape("ellipse", {
@@ -1980,15 +2019,26 @@ export const layouts = {
     }
     // Y-axis low/high read vertically beside the axis. The boxes are small and
     // placed left of the quadrant text column so their rotated footprints stay
-    // clear of the quadrant titles and the footer presenter.
+    // clear of the quadrant titles and the footer presenter. A rotated box
+    // wraps within its LOGICAL width before rotation, and the eyebrow token
+    // may uppercase its text — measure the TRANSFORMED string or a label like
+    // "Impact" wraps as "Imp/act". Boxes are sized to that width and keep
+    // their right edge at the same line as before.
     if (ax.y) {
-      slide.addText(ax.y.high ?? "", {
-        x: box.x - 0.75, y: top + 0.05, w: 1.2, h: 0.3,
+      const highT = applyTransform(theme, "eyebrow", ax.y.high ?? "");
+      const lowT = applyTransform(theme, "eyebrow", ax.y.low ?? "");
+      const axisName = applyTransform(theme, "eyebrow", ax.y.label ?? "");
+      const highW = Math.min(1.8, Math.max(1.2, measure(highT, theme.type.eyebrow) * 1.1));
+      const lowW = Math.min(1.8, Math.max(1.2, measure(lowT, theme.type.eyebrow) * 1.1));
+      const nameW = Math.min(1.8, Math.max(0.9, measure(axisName, theme.type.eyebrow) * 1.1));
+      const right = box.x + 0.45;
+      slide.addText(highT, {
+        x: right - highW, y: top + 0.05, w: highW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "right", valign: "middle", rotate: 270,
       });
-      slide.addText(ax.y.low ?? "", {
-        x: box.x - 0.75, y: box.bottom - 0.38, w: 1.2, h: 0.3,
+      slide.addText(lowT, {
+        x: right - lowW, y: box.bottom - 0.38, w: lowW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "right", valign: "middle", rotate: 270,
       });
@@ -1996,10 +2046,8 @@ export const layouts = {
       // measured width so the string never wraps in the narrow gutter, and the
       // centre is pinned left of the quadrant column so the rotated footprint
       // (which equals the box's long dimension) stays clear of it.
-      const axisName = ax.y.label ?? "";
-      const nameW = Math.min(1.6, measure(axisName, theme.type.eyebrow) * 1.1);
       slide.addText(axisName, {
-        x: box.x - 0.25 - nameW / 2, y: cy - 0.15, w: nameW, h: 0.3,
+        x: right - nameW, y: cy - 0.15, w: nameW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "center", valign: "middle", rotate: 270,
       });
@@ -2197,7 +2245,11 @@ export const layouts = {
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
     const n = data.steps.length;
-    const top = Math.max(y, 3.0);
+    // The ring used to be forced to `top = max(y, 3.0)`, which sat it in the
+    // lower ~60% of the slide with a big dead zone between the heading and the
+    // top node. Starting just below the heading and letting radiusY take the
+    // full remaining vertical run centres the loop in the actual space.
+    const top = y + 0.25;
     const cx = box.x + box.w / 2;
     const cy = (top + box.bottom) / 2;
     const radiusX = box.w / 2 - 1.65;
@@ -2273,13 +2325,19 @@ export const layouts = {
     const y = heading(slide, ctx);
     const n = data.stages.length;
     const stageH = (box.bottom - y - 0.1 - 0.22 * (n - 1)) / n;
+    // The stack fills the space by construction; a short funnel (3-4 stages)
+    // leaves a wide empty gap under its last bar, so the whole stack is shifted
+    // down by half that gap — the same "centre the block" rule as the timeline
+    // and pipeline, so a sparse funnel reads balanced rather than top-heavy.
+    const stackH = n * stageH + (n - 1) * 0.22;
+    const top = y + Math.max(0, (box.bottom - y - stackH) / 2);
     const maxW = box.w;
     const minW = box.w * 0.3;
     const labelScale = fitScaleAll(data.stages.map((s) => s.label), maxW - 2.0, 0.4, theme.type.subhead, { min: 0.5 });
     data.stages.forEach((st, i) => {
       const w = maxW - (maxW - minW) * (i / (n - 1));
       const x = box.x + (box.w - w) / 2;
-      const sy = y + i * (stageH + 0.22);
+      const sy = top + i * (stageH + 0.22);
       const accent = i % 2 === 0;
       slide.addShape("roundRect", {
         x, y: sy, w, h: stageH,
@@ -2313,10 +2371,15 @@ export const layouts = {
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
     const n = data.stages.length;
-    const top = Math.max(y, 2.85);
     const cardH = 1.35;
     const gut = 0.34;
     const cw = (box.w - gut * (n - 1)) / n;
+    // The whole cluster — cards, baseline, gate pills — used to start just
+    // below the heading and left the bottom half of the slide empty. It is now
+    // centred in the space between the heading and the footer, so a 4-stage
+    // pipeline reads as a full slide rather than a top-hugging diagram.
+    const clusterH = cardH + 0.55 + 0.03 + 0.5;
+    const top = Math.max(y + 0.15, y + (box.bottom - y - clusterH) / 2);
     const lineY = top + cardH + 0.55;
     const titleScale = fitScaleAll(data.stages.map((s) => s.title), cw - 0.3, 0.4, theme.type.subhead, { min: 0.6 });
     const bodyScale = fitScaleAll(
@@ -2388,12 +2451,28 @@ export const layouts = {
     const maxDepth = Math.max(0, ...depth);
     const layers = Array.from({ length: maxDepth + 1 }, () => []);
     nodes.forEach((nd, i) => layers[depth[i]].push(i));
+    // Order nodes within each layer by the barycentre of their dependencies'
+    // horizontal positions, so edges route with fewer crossings. The naive
+    // insertion order lets long edges slash across unrelated nodes — the
+    // observed defect was Enrichment's edge to Alerts crossing over Storage.
+    const barycenter = (nodeIdx) => {
+      const deps = (nodes[nodeIdx].depends_on ?? []).filter((d) => d >= 0 && d < n && d !== nodeIdx);
+      if (!deps.length) return layers[depth[nodeIdx]].indexOf(nodeIdx);
+      return deps.reduce((acc, d) => acc + layers[depth[d]].indexOf(d), 0) / deps.length;
+    };
+    for (let pass = 0; pass < 3; pass++) {
+      for (const layer of layers) layer.sort((a, b) => barycenter(a) - barycenter(b));
+    }
     const top = Math.max(y, 2.6);
     const layerH = (box.bottom - top) / (maxDepth + 1);
-    const nodeW = 2.4, nodeH = 0.85;
-    const titleScale = fitScaleAll(nodes.map((nd) => nd.title), nodeW - 0.2, 0.35, theme.type.caption, { min: 0.6 });
+    // Nodes sized to the diagram, not to the schema minimum — the 2.4in boxes
+    // left a narrow centred column with dead space on both sides for a small
+    // graph. Wider, taller nodes make the diagram read as the slide's subject.
+    const nodeW = Math.min(3.0, Math.max(2.4, (box.w - 0.35 * Math.max(0, ...layers.map((l) => l.length - 1))) / Math.max(...layers.map((l) => l.length))));
+    const nodeH = 0.95;
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.title), nodeW - 0.2, 0.4, theme.type.caption, { min: 0.6 });
     const bodyScale = fitScaleAll(
-      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.4, theme.type.caption,
+      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.45, theme.type.caption,
     );
     const centres = nodes.map(() => ({ x: 0, y: 0 }));
     layers.forEach((layer, li) => {
@@ -2402,21 +2481,12 @@ export const layouts = {
         const x = lx + ni * (nodeW + 0.35);
         const nodeY = top + li * layerH + (layerH - nodeH) / 2;
         centres[nodeIdx] = { x: x + nodeW / 2, y: nodeY + nodeH / 2 };
-        card(slide, theme, { x, y: nodeY, w: nodeW, h: nodeH });
-        slide.addText(nodes[nodeIdx].title, {
-          x: x + 0.1, y: nodeY + 0.1, w: nodeW - 0.2, h: 0.35,
-          ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
-          align: "center", valign: "top",
-        });
-        if (nodes[nodeIdx].body) {
-          slide.addText(nodes[nodeIdx].body, {
-            x: x + 0.1, y: nodeY + 0.48, w: nodeW - 0.2, h: 0.35,
-            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
-            align: "center", valign: "top",
-          });
-        }
       });
     });
+    // Edges are drawn BEFORE the nodes so a long dependency line passes under
+    // an unrelated card rather than slicing across its face — the wires read
+    // as routed behind the boxes, which is how a layered diagram is meant to
+    // be read.
     nodes.forEach((nd, i) => (nd.depends_on ?? []).forEach((d) => {
       if (d >= 0 && d < n && d !== i) {
         const from = centres[d], to = centres[i];
@@ -2433,6 +2503,24 @@ export const layouts = {
         });
       }
     }));
+    layers.forEach((layer, li) => {
+      layer.forEach((nodeIdx) => {
+        const { x, y: nodeY } = { x: centres[nodeIdx].x - nodeW / 2, y: centres[nodeIdx].y - nodeH / 2 };
+        card(slide, theme, { x, y: nodeY, w: nodeW, h: nodeH });
+        slide.addText(nodes[nodeIdx].title, {
+          x: x + 0.1, y: nodeY + 0.1, w: nodeW - 0.2, h: 0.4,
+          ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+          align: "center", valign: "top",
+        });
+        if (nodes[nodeIdx].body) {
+          slide.addText(nodes[nodeIdx].body, {
+            x: x + 0.1, y: nodeY + 0.5, w: nodeW - 0.2, h: 0.42,
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+            align: "center", valign: "top",
+          });
+        }
+      });
+    });
   },
 
   /**
@@ -3271,6 +3359,19 @@ export const layouts = {
       const maxDepth = Math.max(0, ...depth);
       const layers = Array.from({ length: maxDepth + 1 }, () => []);
       nodes.forEach((nd, i) => layers[depth[i]].push(i));
+      // Order each layer by the barycentre of incoming-edge neighbours'
+      // horizontal positions, so long edges route with fewer crossings instead
+      // of slashing across unrelated node boxes.
+      const barycenter = (nodeIdx) => {
+        const ins = edges
+          .filter((e) => idIdx.get(e.to) === nodeIdx && idIdx.get(e.from) != null && idIdx.get(e.from) !== nodeIdx)
+          .map((e) => idIdx.get(e.from));
+        if (!ins.length) return layers[depth[nodeIdx]].indexOf(nodeIdx);
+        return ins.reduce((acc, d) => acc + layers[depth[d]].indexOf(d), 0) / ins.length;
+      };
+      for (let pass = 0; pass < 3; pass++) {
+        for (const layer of layers) layer.sort((a, b) => barycenter(a) - barycenter(b));
+      }
       const vertical = layout !== "horizontal";
       layers.forEach((layer, li) => {
         const along = vertical ? box.w : box.bottom - top;
@@ -3491,9 +3592,6 @@ export const layouts = {
     });
     const radius = Math.max(1.3, Math.min(box.w / 2 - 1.9, (box.bottom - top) / 2 - 0.95));
     const labelScale = fitScaleAll(branches.map((b) => b.label), 1.7, 0.35, theme.type.caption, { min: 0.6 });
-    const itemScale = fitScaleAll(
-      branches.flatMap((b) => b.items ?? []), 1.7, 0.3, theme.type.caption,
-    );
     const line = (ax, ay, bx, by, { width = 1.1, color = theme.palette.rule } = {}) => {
       const lx = Math.min(ax, bx), lw = Math.abs(bx - ax) || 0.02;
       const ly = Math.min(ay, by), lh = Math.abs(by - ay) || 0.02;
@@ -3514,24 +3612,40 @@ export const layouts = {
       if (c < 0) cap = Math.min(cap, (ex - box.x - 0.4) / -c);
       return cap;
     };
+    // Leaf geometry shared by the line pass and the label pass: each leaf is a
+    // pill sized to its OWN measured text width, fanned PERPENDICULAR to the
+    // branch so the footprints never overlap. The old fixed 1.7in box at
+    // 0.46in spacing made two side-by-side leaves collide ("Events" over
+    // "Queues") and shrank the labels to ~8pt; sizing to the text fixes both.
+    const leafGeometry = (b) => {
+      const items = b.items ?? [];
+      const widths = items.map((it) => Math.min(1.9, measure(it, theme.type.caption) + 0.36));
+      const total = widths.reduce((a, c) => a + c, 0) + 0.18 * Math.max(0, items.length - 1);
+      let cursor = -total / 2;
+      return items.map((it, j) => {
+        const w2 = widths[j];
+        const off = cursor + w2 / 2;
+        cursor += w2 + 0.18;
+        return { text: it, w: w2, off };
+      });
+    };
+    const leafPos = (b, angle, ex, ey, spread) => {
+      const perp = angle + Math.PI / 2;
+      return leafGeometry(b).map(({ text, w, off }) => {
+        let ix = ex + spread * Math.cos(angle) + off * Math.cos(perp);
+        let iy = ey + spread * Math.sin(angle) + off * Math.sin(perp);
+        ix = Math.max(box.x + 0.45, Math.min(box.right - 0.45, ix));
+        iy = Math.max(top + 0.35, Math.min(box.bottom - 0.35, iy));
+        return { text, w, x: ix, y: iy };
+      });
+    };
     branches.forEach((b, i) => {
       const angle = (2 * Math.PI * i) / n - Math.PI / 2;
       const ex = cx + radius * Math.cos(angle);
       const ey = cy + radius * Math.sin(angle);
       const spread = spreadCap(angle, ex, ey);
       line(cx, cy, ex, ey, { width: 2.2, color: theme.palette.accent });
-      (b.items ?? []).forEach((it, j) => {
-        // Leaves fan PERPENDICULAR to the branch (so a vertical branch fans
-        // horizontally), then extend along it. Clamping a downward fan would
-        // stack the labels on top of each other at the box edge.
-        const off = (j - (b.items.length - 1) / 2) * 0.46;
-        const perp = angle + Math.PI / 2;
-        let ix = ex + spread * Math.cos(angle) + off * Math.cos(perp);
-        let iy = ey + spread * Math.sin(angle) + off * Math.sin(perp);
-        ix = Math.max(box.x + 0.45, Math.min(box.right - 0.45, ix));
-        iy = Math.max(top + 0.35, Math.min(box.bottom - 0.35, iy));
-        line(ex, ey, ix, iy);
-      });
+      for (const lf of leafPos(b, angle, ex, ey, spread)) line(ex, ey, lf.x, lf.y);
     });
     slide.addShape("ellipse", {
       x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
@@ -3552,19 +3666,17 @@ export const layouts = {
         ...textStyle(theme, "caption", { bold: true, scale: labelScale }),
         align: "center", valign: "middle",
       });
-      (b.items ?? []).forEach((it, j) => {
-        const off = (j - (b.items.length - 1) / 2) * 0.46;
-        const perp = angle + Math.PI / 2;
-        let ix = ex + spread * Math.cos(angle) + off * Math.cos(perp);
-        let iy = ey + spread * Math.sin(angle) + off * Math.sin(perp);
-        ix = Math.max(box.x + 0.45, Math.min(box.right - 0.45, ix));
-        iy = Math.max(top + 0.35, Math.min(box.bottom - 0.35, iy));
-        slide.addText(it, {
-          x: ix - 0.85, y: iy - 0.12, w: 1.7, h: 0.3,
+      const maxW = Math.min(1.9, Math.max(...leafGeometry(b).map((g) => g.w)));
+      const itemScale = fitScaleAll(
+        (b.items ?? []).flat(), maxW, 0.34, theme.type.caption, { min: 0.7 },
+      );
+      for (const lf of leafPos(b, angle, ex, ey, spread)) {
+        slide.addText(lf.text, {
+          x: lf.x - lf.w / 2, y: lf.y - 0.17, w: lf.w, h: 0.34,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: itemScale }),
           align: "center", valign: "middle",
         });
-      });
+      }
     });
   },
 
@@ -3737,27 +3849,33 @@ export const layouts = {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
-    const cardW = Math.min(6.4, box.w);
-    const cardH = data.items.length * 0.62 + 0.5;
+    // The card used to be ~6.4in wide pinned below the heading, leaving most
+    // of the slide empty around a small floating box. It now spans most of the
+    // content width and fills the space from the heading to the footer, so the
+    // contact rows read as the slide's subject, not a note stuck mid-air.
+    const cardW = Math.min(9.4, box.w * 0.85);
     const cx = box.x + (box.w - cardW) / 2;
-    const cy = Math.max(y, 2.85);
+    const cardTop = y + 0.25;
+    const cardBot = box.bottom - 0.35;
+    const cardH = cardBot - cardTop;
+    const rowH = (cardH - 0.5) / data.items.length;
     slide.addShape("roundRect", {
-      x: cx, y: cy, w: cardW, h: cardH,
+      x: cx, y: cardTop, w: cardW, h: cardH,
       fill: { color: hex(theme.palette.surface) }, line: { type: "none" },
       rectRadius: theme.shape?.radius?.card ?? 0.12,
     });
-    const valueScale = fitScaleAll(data.items.map((i) => i.value), cardW - 2.7, 0.4, theme.type.subhead, { min: 0.7 });
+    const valueScale = fitScaleAll(data.items.map((i) => i.value), cardW - 3.1, Math.min(0.55, rowH - 0.1), theme.type.subhead, { min: 0.7 });
     data.items.forEach((it, i) => {
-      const ry = cy + 0.25 + i * 0.62;
+      const ry = cardTop + 0.25 + i * rowH + (rowH - 0.5) / 2;
       // The label is right-aligned to its box end; the box must END before the
       // value starts or a right-aligned label's last glyph meets the value.
       slide.addText(it.label, {
-        x: cx + 0.5, y: ry, w: 1.7, h: 0.45,
+        x: cx + 0.5, y: ry, w: 1.9, h: 0.5,
         ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
         align: "right", valign: "middle",
       });
       slide.addText(it.value, {
-        x: cx + 2.4, y: ry, w: cardW - 2.9, h: 0.45,
+        x: cx + 2.6, y: ry, w: cardW - 3.1, h: 0.5,
         ...textStyle(theme, "subhead", { bold: true, scale: valueScale }),
         valign: "middle",
       });
