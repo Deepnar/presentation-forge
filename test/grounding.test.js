@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { extractClaims, claimGrounded, groundDeck } from "../src/ai/grounding.js";
+import { extractClaims, claimGrounded, groundDeck, flattenSlide, deckFigures } from "../src/ai/grounding.js";
 
 const RESEARCH = `
 ## Green hydrogen
@@ -89,4 +89,86 @@ test("groundDeck stays silent without research", () => {
   const { findings, problems } = groundDeck(deck, "");
   assert.deepEqual(findings, []);
   assert.deepEqual(problems, []);
+});
+
+test("flattenSlide carries numbers as claims so chart and journey values are grounded", () => {
+  const slide = {
+    type: "chart",
+    chart: { kind: "bar", categories: ["India", "China"], series: [{ name: "GW", values: [180, 120] }] },
+  };
+  const flat = flattenSlide(slide);
+  assert.ok(flat.includes("180"), JSON.stringify(flat));
+  assert.ok(flat.includes("120"));
+  assert.ok(flat.includes("GW"));
+});
+
+test("a chart value missing from the research is flagged like any fabricated figure", () => {
+  const deck = {
+    title: "T",
+    slides: [
+      {
+        type: "chart",
+        headline: "Electrolyser capacity",
+        chart: {
+          kind: "bar",
+          categories: ["2024", "2030"],
+          series: [{ name: "GW", values: [180, 945] }],
+        },
+      },
+    ],
+  };
+  const { findings, problems } = groundDeck(deck, RESEARCH);
+  // 180 and 945 both check as bare numbers; 945 is not in the notes.
+  const slide = findings.find((f) => f.slide === 0);
+  assert.ok(slide, "a chart with an ungrounded value must produce a finding");
+  assert.ok(slide.claims.includes("945"), JSON.stringify(slide.claims));
+  assert.ok(!slide.claims.includes("180"), JSON.stringify(slide.claims));
+  assert.ok(problems.some((p) => p.includes("945")));
+});
+
+test("a journey value missing from the research is flagged; structural depends_on indices are not", () => {
+  const deck = {
+    title: "T",
+    slides: [
+      {
+        type: "journey",
+        headline: "Solar cost per watt",
+        stages: [
+          { label: "2018", value: 64 },
+          { label: "2020", value: 51 },
+        ],
+      },
+      {
+        type: "dependencies",
+        headline: "Deployment order",
+        nodes: [
+          { title: "A", depends_on: [] },
+          { title: "B", depends_on: [0] },
+        ],
+      },
+    ],
+  };
+  const { findings } = groundDeck(deck, RESEARCH);
+  const journey = findings.find((f) => f.slide === 0);
+  assert.ok(journey, "a journey with an ungrounded value must produce a finding");
+  assert.ok(journey.claims.includes("64"), JSON.stringify(journey.claims));
+  const deps = findings.filter((f) => f.slide === 1);
+  assert.equal(deps.length, 0, `dependencies indices must not be claims: ${JSON.stringify(deps)}`);
+});
+
+test("deckFigures lists the number-bearing claims the data slides draw", () => {
+  const deck = {
+    title: "T",
+    slides: [
+      { type: "chart", headline: "h", chart: { kind: "bar", categories: ["a"], series: [{ name: "GW", values: [180] }] } },
+      { type: "journey", headline: "h2", stages: [{ label: "s", value: 29 }] },
+      { type: "stats", headline: "h3", stats: [{ value: "900 MW", label: "x" }] },
+      { type: "dependencies", headline: "h4", nodes: [{ title: "A", depends_on: [1] }] },
+    ],
+  };
+  const figures = deckFigures(deck);
+  assert.ok(figures.includes("180"), JSON.stringify(figures));
+  assert.ok(figures.includes("29"));
+  assert.ok(figures.includes("900 MW"));
+  assert.ok(!figures.includes("1"), "depends_on indices must not leak into the figures list");
 });

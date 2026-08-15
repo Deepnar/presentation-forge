@@ -11,7 +11,7 @@ import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
  * and an edit is exactly what the next generation reads.
  */
 export default function ResearchView({ slug, refreshToken, onBack }) {
-  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [], summary: null });
+  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [], summary: null, figures: [] });
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
@@ -21,7 +21,10 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
     setState((s) => ({ ...s, loading: true }));
     setError("");
     api.research(slug)
-      .then((r) => setState({ loading: false, exists: r.exists, notes: r.notes ?? "", sources: r.sources ?? [], summary: r.summary ?? null }))
+      .then((r) => setState({
+        loading: false, exists: r.exists, notes: r.notes ?? "", sources: r.sources ?? [],
+        summary: r.summary ?? null, figures: r.figures ?? [],
+      }))
       .catch((err) => { setState((s) => ({ ...s, loading: false })); setError(err.message); });
   };
 
@@ -109,6 +112,28 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
               <div className="mt-3 text-[11px] text-fg-faint">~{s.notesWords.toLocaleString()} words of notes.</div>
             )}
           </Panel>
+
+          {/* The figures the deck claims — so "are the graphs reflective of
+              real numbers?" is answerable before presenting, not after. */}
+          {state.figures.length > 0 && (
+            <Panel className="p-5">
+              <div className="mb-1 flex items-center justify-between">
+                <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Figures the deck claims</div>
+                <Badge className="bg-raised text-fg-faint">{state.figures.length}</Badge>
+              </div>
+              <p className="text-[12px] leading-relaxed text-fg-muted">
+                Every number the deck's chart, journey and stat slides draw. Check each against the
+                sources above — a figure that is not in the notes was flagged by grounding at generation.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {state.figures.map((f, i) => (
+                  <span key={i} className="rounded border border-line bg-sunken px-2 py-0.5 font-mono text-[11px] tabular-nums text-fg-muted">
+                    {f}
+                  </span>
+                ))}
+              </div>
+            </Panel>
+          )}
 
           {/* The notes as readable prose. */}
           <Panel className="p-5">

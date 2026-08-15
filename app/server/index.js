@@ -17,6 +17,7 @@ import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
+import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
@@ -373,7 +374,17 @@ app.get("/api/decks/:slug", wrap(async (req, res) => {
 
   // Placeholder slides — the render gate blocks them and the UI must show a
   // badge + regenerate affordance, so the deck payload carries them explicitly.
-  ok(res, { deck, meta, slides, thumbs, placeholders: placeholderSlides(deck) });
+  // Render-dirty: deck.yaml newer than the rendered deck.pptx means the slides
+  // on screen are stale (or there is no render yet). The UI greys Render with
+  // "Up to date" when clean; theme/style/mode changes are tracked client-side
+  // because they never touch deck.yaml's mtime.
+  let dirty = true;
+  try {
+    const deckStat = await stat(path.join(dir, "deck.yaml"));
+    const outStat = await stat(path.join(dir, "out", "deck.pptx"));
+    dirty = deckStat.mtimeMs > outStat.mtimeMs;
+  } catch { /* no render yet — render needed */ }
+  ok(res, { deck, meta, slides, thumbs, placeholders: placeholderSlides(deck), dirty });
 }));
 
 app.put("/api/decks/:slug", wrap(async (req, res) => {
@@ -953,7 +964,10 @@ app.post("/api/decks/search", wrap(async (req, res) => {
 
 /** The deck's research artefact — what the model is drawing from. The panel's
  *  whole point is that the user must be able to see and correct it. No research
- *  dir is not an error: it is the "research this deck" hint. */
+ *  dir is not an error: it is the "research this deck" hint. `figures` carries
+ *  the number-bearing claims the deck's data slides make, so the research view
+ *  can list every chart/journey/stat figure for a human to cross-check against
+ *  the sources. */
 app.get("/api/decks/:slug/research", wrap(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug, "research");
   let notes = null;
@@ -966,7 +980,13 @@ app.get("/api/decks/:slug/research", wrap(async (req, res) => {
     sources = JSON.parse(await readFile(path.join(dir, "sources.json"), "utf8")) ?? [];
   } catch { /* malformed or missing — the notes may still be valid */ }
 
-  ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes) });
+  let figures = [];
+  try {
+    const deck = YAML.parse(await readFile(path.join(DECKS, req.params.slug, "deck.yaml"), "utf8")) ?? {};
+    figures = deckFigures(deck);
+  } catch { /* no deck — a report-only folder has nothing to verify yet */ }
+
+  ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes), figures });
 }));
 
 /** Save research back to disk — the edit half of the panel. Either or both of

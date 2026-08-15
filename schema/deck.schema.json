@@ -1018,10 +1018,11 @@
               "label"
             ],
             "properties": {
-              "value": {
-                "type": "string",
-                "maxLength": 12
-              },
+                    "value": {
+                      "type": "string",
+                      "maxLength": 12,
+                      "description": "A number for this stage (e.g. \"30%\"). The funnel's taper is drawn from these only when EVERY stage carries one; a stage without a value makes the whole funnel render as equal-width steps, because a partial taper would fake the stages it cannot measure."
+                    },
               "label": {
                 "type": "string",
                 "maxLength": 60
@@ -2022,8 +2023,7 @@
                 "items": {
                   "type": "object",
                   "required": [
-                    "label",
-                    "sentiment"
+                    "label"
                   ],
                   "properties": {
                     "label": {
@@ -2039,7 +2039,12 @@
                         "positive",
                         "neutral",
                         "negative"
-                      ]
+                      ],
+                      "description": "Qualitative stage colouring, optional. The layout draws no vertical position from it — without real values the journey renders on a flat rail."
+                    },
+                    "value": {
+                      "type": "number",
+                      "description": "A real measurement for this stage. The journey draws a true line only when EVERY stage carries a value; a single missing value falls back to the illustrative flat rail, because a partial line would fake the stages it cannot measure."
                     }
                   }
                 }

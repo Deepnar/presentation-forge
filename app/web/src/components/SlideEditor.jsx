@@ -160,6 +160,7 @@ const TYPE_FIELDS = {
   chart: [
     { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
     { key: "aside", label: "Aside", kind: "list", item: "Aside", maxLength: 120, maxItems: 3 },
+    { key: "chart", label: "Chart data", kind: "chart" },
   ],
   title: [],
   freeform: [
@@ -439,7 +440,8 @@ const TYPE_FIELDS = {
       key: "stages", label: "Stages", kind: "items", maxItems: 8, itemLabel: "Stage",
       fields: [
         { key: "label", maxLength: 20, placeholder: "Label" },
-        { key: "sentiment", kind: "select", options: ["positive", "neutral", "negative"], label: "Sentiment" },
+        { key: "sentiment", kind: "select", options: ["", "positive", "neutral", "negative"], label: "Sentiment (optional)" },
+        { key: "value", kind: "nums", single: true, placeholder: "Value (optional — the line is real only when every stage has one)" },
         { key: "body", kind: "textarea", maxLength: 80, placeholder: "Body" },
       ],
     },
@@ -799,12 +801,6 @@ export default function SlideEditor({ deck, index, members, onSave, onClose }) {
                 onChange={(v) => patchSlide({ [f.key]: v })} />
             ))}
 
-            {slide.type === "chart" && (
-              <p className="text-[11.5px] leading-relaxed text-fg-faint">
-                Chart categories and series aren't editable inline — ask the chat panel to change the data.
-              </p>
-            )}
-
             {slide.type === "freeform" && (
               <div className="rounded-card border border-amber/30 bg-amber/5 px-3 py-2.5 text-[11.5px] leading-relaxed text-amber">
                 <span className="font-semibold">Rasterises.</span> This slide becomes an image — a typo or a
@@ -958,6 +954,8 @@ function FieldEditor({ field, value, onChange }) {
       ]} />;
     case "axes":
       return <AxesEditor field={field} value={value ?? {}} onChange={onChange} />;
+    case "chart":
+      return <ChartEditor field={field} value={value ?? {}} onChange={onChange} />;
     case "rows":
       return <RowsEditor field={field} value={value ?? { columns: [], rows: [] }} onChange={onChange} />;
     default:
@@ -1184,6 +1182,66 @@ function AxesEditor({ field, value, onChange }) {
       <div className="space-y-2">
         {axis("x", "X axis")}
         {axis("y", "Y axis")}
+      </div>
+    </Field>
+  );
+}
+
+/**
+ * The chart's real data — kind, categories, series names and the values per
+ * series. This was the one deliberate gap in the inline editor ("ask the chat
+ * panel"); the numbers ARE the geometry, so editing them here re-renders the
+ * chart, and grounding checks each value against the research.
+ */
+function ChartEditor({ field, value, onChange }) {
+  const patch = (p) => onChange({ ...value, ...p });
+  const c = value ?? {};
+  const series = c.series ?? [];
+  const kinds = ["bar", "hbar", "line", "pie", "doughnut", "area", "scatter", "radar", "stacked-bar"];
+  return (
+    <Field label={field.label} hint="The values are the data the chart draws — every one is checked against the research. One value per category, in the same order.">
+      <div className="space-y-2.5 rounded-card border border-line bg-panel p-2.5">
+        <div>
+          <div className="mb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Kind</div>
+          <select className={inputCls} value={kinds.includes(c.kind) ? c.kind : "bar"} onChange={(e) => patch({ kind: e.target.value })}>
+            {kinds.map((k) => <option key={k} value={k}>{k}</option>)}
+          </select>
+        </div>
+        <div>
+          <div className="mb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Categories</div>
+          <ListEditor field={{ label: "Categories", item: "Category", maxLength: 40, maxItems: 12 }}
+            value={c.categories ?? []} onChange={(v) => patch({ categories: v })} />
+        </div>
+        <div>
+          <div className="mb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Unit (optional)</div>
+          <input className={inputCls} value={c.unit ?? ""} maxLength={16} placeholder="e.g. GW, %, ₹"
+            onChange={(e) => patch({ unit: e.target.value })} />
+        </div>
+        <div>
+          <div className="mb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Series</div>
+          <div className="space-y-2">
+            {series.map((s, i) => (
+              <div key={i} className="rounded border border-line bg-sunken p-2">
+                <div className="flex items-center gap-1.5">
+                  <input className={inputCls} placeholder="Series name" value={s.name ?? ""} maxLength={40}
+                    onChange={(e) => patch({ series: series.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} />
+                  <RemoveButton onClick={() => patch({ series: series.filter((_, j) => j !== i) })} />
+                </div>
+                <div className="mt-1.5">
+                  <div className="mb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Values</div>
+                  <input className={inputCls} placeholder="Numbers, comma or space separated — one per category"
+                    value={(s.values ?? []).join(", ")}
+                    onChange={(e) => {
+                      const nums = e.target.value.split(/[\s,]+/).filter(Boolean).map(Number).filter((x) => !Number.isNaN(x));
+                      patch({ series: series.map((x, j) => (j === i ? { ...x, values: nums } : x)) });
+                    }} />
+                </div>
+              </div>
+            ))}
+            <AddButton label="Add series" disabled={series.length >= 4}
+              onClick={() => patch({ series: [...series, { name: "", values: [] }] })} />
+          </div>
+        </div>
       </div>
     </Field>
   );

@@ -85,17 +85,54 @@ export function extractClaims(text, { names = true } = {}) {
   return [...claims];
 }
 
-/** All displayable strings in a slide — content the writer produced. */
+/**
+ * All displayable strings in a slide — content the writer produced. Numbers
+ * join as bare-string claims so a chart value or journey value that the
+ * research never states is flagged like any fabricated figure: "180" in a
+ * chart's series is a claim to verify. The one structural exception is
+ * `depends_on` — dependency indices, integers that reference other nodes, not
+ * measurements.
+ */
 export function flattenSlide(slide) {
   const out = [];
-  const walk = (v) => {
+  const walk = (v, key) => {
     if (typeof v === "string") out.push(v);
-    else if (Array.isArray(v)) v.forEach(walk);
-    else if (v && typeof v === "object") Object.values(v).forEach(walk);
+    else if (typeof v === "number" && key !== "depends_on") out.push(String(v));
+    else if (Array.isArray(v)) v.forEach((x) => walk(x, key));
+    else if (v && typeof v === "object") Object.entries(v).forEach(([k, x]) => walk(x, k));
   };
   const { notes, cites, presenter, type, section, ...content } = slide;
-  Object.values(content).forEach(walk);
+  Object.entries(content).forEach(([k, v]) => walk(v, k));
   return out;
+}
+
+/**
+ * The figures a data-bearing deck claims, deduplicated in slide order — chart
+ * and journey values, progress-bar/sparkline/scorecard numbers, stat values
+ * and unit-bearing labels. The Research view lists these so a human can
+ * cross-check every number the geometry draws against the sources the deck was
+ * built from — the "are the graphs reflective of real numbers?" question the
+ * user wants answered before presenting, not after.
+ */
+export function deckFigures(deck) {
+  const FIGURE_TYPES = new Set([
+    "chart", "journey", "progress-bars", "sparklines", "scorecard",
+    "decision-matrix", "stats", "data-cards", "kpi-dashboard", "ranking-list",
+    "metric-comparison", "big-number",
+  ]);
+  const figures = [];
+  const seen = new Set();
+  for (const slide of deck.slides ?? []) {
+    if (!FIGURE_TYPES.has(slide.type)) continue;
+    // Headlines, standfirsts and structural fields are not figures to verify.
+    const { headline, standfirst, notes, cites, presenter, type, section, ...rest } = slide;
+    for (const text of flattenSlide(rest)) {
+      for (const claim of extractClaims(text, { names: false })) {
+        if (!seen.has(claim)) { seen.add(claim); figures.push(claim); }
+      }
+    }
+  }
+  return figures;
 }
 
 function escapeRegExp(s) {

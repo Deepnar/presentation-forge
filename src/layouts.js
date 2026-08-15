@@ -2331,11 +2331,31 @@ export const layouts = {
     // and pipeline, so a sparse funnel reads balanced rather than top-heavy.
     const stackH = n * stageH + (n - 1) * 0.22;
     const top = y + Math.max(0, (box.bottom - y - stackH) / 2);
-    const maxW = box.w;
-    const minW = box.w * 0.3;
-    const labelScale = fitScaleAll(data.stages.map((s) => s.label), maxW - 2.0, 0.4, theme.type.subhead, { min: 0.5 });
+
+    // A funnel's narrowing only exists when every stage carries a real number
+    // (a "30%" or "1,200" the research supports). With any stage lacking one,
+    // the taper would fake a conversion it cannot measure, so the stages render
+    // as equal-width steps — the illustrative treatment, honest and still
+    // designed. Values, when present, stay as right-aligned figures either way.
+    const num = (v) => {
+      if (v == null || v === "") return NaN;
+      const f = parseFloat(String(v).replace(/[^\d.]/g, ""));
+      return Number.isFinite(f) ? f : NaN;
+    };
+    const nums = data.stages.map((s) => num(s.value));
+    const real = nums.every((x) => Number.isFinite(x));
+    const maxN = real ? Math.max(...nums) : 1;
+    const minN = real ? Math.min(...nums) : maxN;
+
+    const width = (i) => {
+      if (!real) return box.w * 0.78;
+      if (maxN === minN) return box.w * 0.78;
+      return box.w * (0.85 - 0.5 * ((maxN - nums[i]) / (maxN - minN)));
+    };
+
+    const labelScale = fitScaleAll(data.stages.map((s) => s.label), box.w * 0.78 - 1.6, 0.4, theme.type.subhead, { min: 0.5 });
     data.stages.forEach((st, i) => {
-      const w = maxW - (maxW - minW) * (i / (n - 1));
+      const w = width(i);
       const x = box.x + (box.w - w) / 2;
       const sy = top + i * (stageH + 0.22);
       const accent = i % 2 === 0;
@@ -2724,9 +2744,17 @@ export const layouts = {
   },
 
   /**
-   * A journey map: stage labels above, a sawtooth accent line tracing sentiment
-   * (positive high, neutral mid, negative low), nodes on the line and the stage
-   * bodies below it.
+   * A journey map: stage labels above, the path below them, and the stage
+   * bodies under that. The path is honest about what it draws:
+   *
+   *  - EVERY stage carries a numeric `value` → a REAL line, y scaled to the
+   *    values across the band, each value captioned under its label, a thin
+   *    reference rail at the middle. This is a measurement.
+   *  - ANY stage lacks a value → an ILLUSTRATIVE flat rail: all nodes sit on a
+   *    horizontal rail (no vertical position — a partial line would fake the
+   *    stages it cannot measure). Sentiment, when present, colours the nodes
+   *    categorically (a colour implies no magnitude); the rail never rises or
+   *    falls. The design is a milestone rail, not a chart.
    */
   journey(slide, ctx) {
     const { theme, data, box } = ctx;
@@ -2735,41 +2763,88 @@ export const layouts = {
     const stages = data.stages;
     const n = stages.length;
     const top = Math.max(y, 2.75);
-    const lineTop = top + 0.4;
+    // Headroom above the line for the value captions when the path is real.
+    const hasValues = stages.every((s) => typeof s.value === "number");
+    const lineTop = top + (hasValues ? 0.85 : 0.4);
     const lineBot = box.bottom - 1.0;
     const mid = (lineTop + lineBot) / 2;
-    const sentY = (s) => (s === "positive" ? lineTop : s === "negative" ? lineBot : mid);
     const step = box.w / n;
-    const points = stages.map((st, i) => ({ x: box.x + step * i + step / 2, y: sentY(st.sentiment) }));
+
+    const yFor = (st) => {
+      if (!hasValues) return mid;
+      const vals = stages.map((s) => s.value);
+      const vMin = Math.min(...vals), vMax = Math.max(...vals);
+      const range = vMax - vMin || 1;
+      return lineBot - ((st.value - vMin) / range) * (lineBot - lineTop);
+    };
+    const points = stages.map((st, i) => ({ x: box.x + step * i + step / 2, y: yFor(st) }));
+
     const labelScale = fitScaleAll(stages.map((s) => s.label), step - 0.2, 0.3, theme.type.eyebrow, { min: 0.6 });
     stages.forEach((st, i) => {
       slide.addText(st.label, {
-        x: box.x + step * i + 0.1, y: lineTop - 0.65, w: step - 0.2, h: 0.3,
+        x: box.x + step * i + 0.1, y: top, w: step - 0.2, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted, scale: labelScale }),
         align: "center", valign: "top",
       });
     });
-    slide.addShape("rect", {
-      x: box.x, y: mid - 0.015, w: box.w, h: 0.03,
-      fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
-    });
-    for (let i = 0; i < n - 1; i++) {
-      const a = points[i], b = points[i + 1];
-      const lx = Math.min(a.x, b.x), lw = Math.abs(b.x - a.x) || 0.02;
-      const ly = Math.min(a.y, b.y), lh = Math.abs(b.y - a.y) || 0.02;
-      slide.addShape("line", {
-        x: lx, y: ly, w: lw, h: lh,
-        line: { color: hex(theme.palette.accent), width: 2 },
-        flipH: b.x < a.x, flipV: b.y < a.y,
+
+    if (hasValues) {
+      // The measurement case: a reference rail at the middle and a true line
+      // scaled to the stage values, with each value captioned under its label.
+      slide.addShape("rect", {
+        x: box.x, y: mid - 0.015, w: box.w, h: 0.03,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
       });
+      const valScale = fitScaleAll(
+        stages.map((s) => String(s.value)), step - 0.2, 0.24, theme.type.caption, { min: 0.7 },
+      );
+      for (let i = 0; i < n - 1; i++) {
+        const a = points[i], b = points[i + 1];
+        const lx = Math.min(a.x, b.x), lw = Math.abs(b.x - a.x) || 0.02;
+        const ly = Math.min(a.y, b.y), lh = Math.abs(b.y - a.y) || 0.02;
+        slide.addShape("line", {
+          x: lx, y: ly, w: lw, h: lh,
+          line: { color: hex(theme.palette.accent), width: 2 },
+          flipH: b.x < a.x, flipV: b.y < a.y,
+        });
+      }
+      points.forEach((p, i) => {
+        slide.addText(String(stages[i].value), {
+          x: box.x + step * i + 0.1, y: top + 0.32, w: step - 0.2, h: 0.24,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: valScale }),
+          align: "center", valign: "top",
+        });
+      });
+    } else {
+      // The illustrative case: a flat rail and nodes on it. Sentiment colours
+      // the nodes categorically — a colour never encodes a magnitude.
+      slide.addShape("rect", {
+        x: box.x, y: mid - 0.02, w: box.w, h: 0.04,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+      });
+      for (let i = 0; i < n - 1; i++) {
+        const a = points[i], b = points[i + 1];
+        slide.addShape("line", {
+          x: a.x, y: mid - 0.02, w: Math.max(0.02, b.x - a.x), h: 0.04,
+          line: { color: hex(theme.palette.rule), width: 1.5 },
+        });
+      }
     }
+
     const bodyScale = fitScaleAll(
       stages.map((s) => s.body).filter(Boolean), step - 0.2, 0.8, theme.type.caption,
     );
     points.forEach((p, i) => {
+      const fill = hasValues
+        ? theme.palette.accent
+        : stages[i].sentiment === "positive"
+          ? theme.palette.accent
+          : stages[i].sentiment === "negative"
+            ? theme.palette.ink
+            : theme.palette.ink_muted;
       slide.addShape("ellipse", {
         x: p.x - 0.11, y: p.y - 0.11, w: 0.22, h: 0.22,
-        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        fill: { color: hex(fill) }, line: { type: "none" },
       });
       if (stages[i].body) {
         slide.addText(stages[i].body, {
