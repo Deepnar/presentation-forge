@@ -6,6 +6,7 @@ import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
 import { ingestUpload, readStagedUpload } from "./upload.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
+import { generateScript } from "./script.js";
 import { trimDeckToFit } from "./trim.js";
 import { critiqueDeck } from "./critic.js";
 import { coherencePass } from "./coherence.js";
@@ -756,6 +757,7 @@ const USAGE = `Usage:
   node src/ai/pipeline.js report-new "<brief>" [--depth full|brief]
                         [--sources <url> ...] [--upload <file.md|docx|pdf|txt>] [--model <id>]
   node src/ai/pipeline.js deck-from-report <slug> [--theme <name>] [--model <id>]
+  node src/ai/pipeline.js script <slug> [--slide <n>] [--model <id>]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
             --upload  upload-only mode: the given document becomes research/
@@ -779,6 +781,9 @@ const USAGE = `Usage:
               --upload  upload-only mode, as above
   deck-from-report  plan a companion deck from an existing decks/<slug>/report.yaml
               (and its shared research) → decks/<slug>/plan.yaml for the outline gate
+  script    generate decks/<slug>/script.md — the words each presenter says aloud
+              for every slide, grounded in the deck's research (one model call
+              per slide). --slide <n> regenerates only that slide's words.
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
@@ -809,6 +814,7 @@ function parseArgs(argv) {
     else if (a === "--papers") opts.papers = true;
     else if (a === "--upload") opts.upload = argv[++i];
     else if (a === "--generate") opts.generate = true;
+    else if (a === "--slide") opts.slide = argv[++i];
     else if (a === "--depth") opts.depth = argv[++i];
     else if (a === "--no-render") opts.render = false;
     else if (a === "--no-toc") opts.toc = false;
@@ -932,6 +938,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       });
       process.stdout.write(`planned decks/${opts.slug}/plan.yaml — ${r.plan.slides.length} slides (from report)\n`);
       process.stdout.write(YAML.stringify(r.plan));
+    } else if (cmd === "script") {
+      if (!opts.slug) { console.error(USAGE); process.exit(2); }
+      const r = await generateScript({
+        slug: opts.slug, model: opts.model, onProgress: progress,
+        index: opts.slide != null ? Number(opts.slide) : null,
+      });
+      process.stdout.write(`script decks/${opts.slug}/script.md — ${r.slides} slides, ${r.regenerated.length} written\n`);
+      for (const p of r.problems) process.stdout.write(`  ! ${p}\n`);
     } else {
       console.error(USAGE);
       process.exit(2);

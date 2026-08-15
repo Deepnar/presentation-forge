@@ -200,6 +200,12 @@ export const api = {
     call("/api/auth/logout", { method: "POST", body: JSON.stringify({}) })
       .finally(clearToken),
   me: () => call("/api/auth/me"),
+  // The deck's speaker script — what each presenter says aloud per slide,
+  // written to decks/<slug>/script.md. SSE like the sweep; `index` regens one
+  // slide.
+  script: (slug) => call(`/api/decks/${slug}/script`),
+  generateScript: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/script`, payload, handlers),
   // Deck export (pdf/markdown), cloning, sharing bundles and version history.
   exportDeck: (slug, format, theme) =>
     call(`/api/decks/${slug}/export`, { method: "POST", body: JSON.stringify({ format, theme }) }),

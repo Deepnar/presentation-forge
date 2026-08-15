@@ -13,6 +13,7 @@ import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity, convertSlideType } from "../../src/ai/pipeline.js";
+import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
@@ -664,6 +665,87 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
     sse.close();
   });
 });
+
+/**
+ * The deck's speaker script — what each presenter says aloud per slide. One
+ * scoped model call per slide, streamed as progress like the sweep; an
+ * `index` body field regenerates only that slide's words (the "regen this
+ * slide" affordance). Writes decks/<slug>/script.md.
+ */
+app.post("/api/decks/:slug/script", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { index, model } = req.body ?? {};
+  (async () => {
+    const r = await generateScript({
+      slug: req.params.slug,
+      index: index != null ? Number(index) : null,
+      model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", {
+      slides: r.slides,
+      regenerated: r.regenerated,
+      problems: r.problems,
+      file: `/api/decks/${req.params.slug}/download/script.md`,
+    });
+    sse.close();
+  })().catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message });
+    sse.close();
+  });
+});
+
+/** The deck's script as the panel needs it: per-slide blocks parsed from
+ *  script.md so the UI renders one card per slide with its own regenerate
+ *  affordance, plus the deck title for the header. A slide without a block
+ *  is reported `written: false`, never dropped. */
+app.get("/api/decks/:slug/script", wrap(async (req, res) => {
+  const file = path.join(DECKS, req.params.slug, "script.md");
+  let markdown = null;
+  try {
+    markdown = await readFile(file, "utf8");
+  } catch { /* no script yet */ }
+
+  if (markdown == null) return ok(res, { exists: false, slides: [] });
+
+  let deck = {};
+  try { deck = YAML.parse(await readFile(path.join(DECKS, req.params.slug, "deck.yaml"), "utf8")) ?? {}; } catch { /* legacy */ }
+  const deckSlides = deck.slides ?? [];
+
+  const blocks = parseScriptBlocks(markdown);
+  const slides = deckSlides.map((s, i) => {
+    const raw = blocks.get(i);
+    return {
+      index: i,
+      presenter: s.presenter ?? null,
+      type: s.type,
+      headline: s.headline ?? s.quote ?? s.title ?? s.type,
+      written: Boolean(raw),
+      body: raw
+        ? raw
+            .replace(/^<!-- slide:\d+ -->\s*/, "")
+            .replace(/\s*<!-- \/slide:\d+ -->$/, "")
+            .replace(/^##[^\n]*\n+\s*_[^\n]*_\s*\n*/m, "") // drop the heading + presenter line; the card shows those from deck.yaml
+            .trim()
+        : "",
+    };
+  });
+  ok(res, { exists: true, title: deck.title ?? "", slides });
+}));
+
+function parseScriptBlocks(markdown) {
+  const blocks = new Map();
+  const re = /<!-- slide:(\d+) -->([\s\S]*?)<!-- \/slide:\1 -->/g;
+  let m;
+  while ((m = re.exec(markdown))) blocks.set(Number(m[1]), m[0]);
+  return blocks;
+}
+
 /** The report preview rasters — out/report-preview/page-N.png. */
 app.get("/api/decks/:slug/preview/report/thumbs/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "out", "report-preview", "thumbs", path.basename(req.params.file));
@@ -748,7 +830,15 @@ app.get("/api/decks/:slug/preview/:file", wrap(async (req, res) => {
 }));
 
 app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
-  const file = path.join(DECKS, req.params.slug, "out", path.basename(req.params.file));
+  // Rendered artefacts (deck.pptx, report.docx) live in out/; generated
+  // content like script.md lives at the deck root. Try out/ first, then the
+  // deck folder, so the same title-naming download route serves both.
+  let file = path.join(DECKS, req.params.slug, "out", path.basename(req.params.file));
+  try {
+    await stat(file);
+  } catch {
+    file = path.join(DECKS, req.params.slug, path.basename(req.params.file));
+  }
   try {
     await stat(file);
     // The saved file is deck.pptx / report.docx; the user should get the
@@ -806,7 +896,7 @@ app.post("/api/decks/:slug/bundle", wrap(async (req, res) => {
   const JSZip = (await import("jszip")).default;
   const zip = new JSZip();
   const dir = path.join(DECKS, req.params.slug);
-  const include = ["deck.yaml", "meta.yaml", "plan.yaml", "report.yaml", "research", "out"];
+  const include = ["deck.yaml", "meta.yaml", "plan.yaml", "report.yaml", "script.md", "research", "out"];
   for (const name of include) {
     const src = path.join(dir, name);
     let st;
