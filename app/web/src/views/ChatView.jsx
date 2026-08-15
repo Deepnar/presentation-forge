@@ -289,6 +289,8 @@ export default function ChatView({
         maxSlides: b.maxSlides || undefined,
         theme: b.theme || undefined,
         research: b.research,
+        researchSource: b.researchSource,
+        upload: b.uploadedSource,
         papers: b.papers,
         slidesPerMember: b.slidesPerMember || undefined,
         density: b.density || undefined,
@@ -413,6 +415,8 @@ export default function ChatView({
         depth: b.depth ?? "full",
         density: b.density ?? "balanced",
         research: b.research ?? true,
+        researchSource: b.researchSource,
+        upload: b.uploadedSource,
         papers: b.papers,
         identity: identityPayload,
         model: model || undefined,
@@ -938,6 +942,11 @@ export default function ChatView({
               onPickPreset={pickPreset}
               onDeletePreset={deletePreset}
               onNext={onNext}
+              onPatchBriefing={(patch) => {
+                // A non-advancing briefing update — the upload card stages a
+                // file without leaving the question.
+                persist({ ...chat, briefing: { ...chat.briefing, ...patch }, updatedAt: new Date().toISOString() });
+              }}
               onFreeText={(text) => {
                 const r = applyFreeText(chat.briefing, currentQuestion.key, text);
                 if (r) { onNext(r.briefing); return true; }
@@ -1260,7 +1269,7 @@ function PresetCard({ presets, value, onPick, onDelete }) {
   );
 }
 
-function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onNext }) {
+function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onNext, onPatchBriefing, onFreeText }) {
   const b = chat.briefing;
   return (
     <Bubble role="assistant">
@@ -1292,15 +1301,27 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
       {q.key === "slidesPerMember" && <SlidesPerMemberCard value={b.slidesPerMember} onNext={onNext} />}
       {q.key === "density" && <DensityCard value={b.density} onNext={onNext} />}
       {q.key === "branding" && <BrandingCard value={b.branding} onNext={onNext} />}
-      {q.key === "research" && <ResearchCard value={b.research} onNext={onNext} />}
+      {q.key === "research" && (
+        <ResearchCard
+          value={b.research}
+          onNext={onNext}
+          kind={chat.kind}
+          uploaded={b.uploadedSource}
+          onUpload={async (file) => {
+            const staged = await api.stageBriefingUpload(file);
+            onPatchBriefing({ uploadedSource: staged });
+            return staged;
+          }}
+        />
+      )}
     </Bubble>
   );
 }
 
-function CardFooter({ onNext, nextLabel = "Next" }) {
+function CardFooter({ onNext, nextLabel = "Next", disabled = false }) {
   return (
     <div className="mt-2.5 flex justify-end">
-      <Button variant="primary" size="sm" onClick={onNext}>{nextLabel}</Button>
+      <Button variant="primary" size="sm" onClick={onNext} disabled={disabled}>{nextLabel}</Button>
     </div>
   );
 }
@@ -1637,24 +1658,53 @@ function BrandingCard({ value, onNext }) {
   );
 }
 
-function ResearchCard({ value, onNext }) {
-  const [v, setV] = useState(value ?? false);
+function ResearchCard({ value, onNext, kind, uploaded, onUpload }) {
+  // `value` is the legacy boolean (research on/off); the three-way choice lives
+  // in briefing.researchSource, initialised from it when the card mounts.
+  const [v, setV] = useState(value ? "web" : "none");
   const [papers, setPapers] = useState(false);
+  const [file, setFile] = useState(uploaded ?? null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  // A standalone report always needs content to write from, so "no research"
+  // is not offered there — the file is the alternative to the web pass.
+  const options = [
+    { value: "web", label: "Web search", note: "SearXNG research over the topic — the default" },
+    { value: "upload", label: "My uploaded file", note: "no search — the file is the only content source" },
+    ...(kind === "report" ? [] : [{ value: "none", label: "No research", note: "write from the topic alone" }]),
+  ];
+
+  const pickFile = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setUploading(true);
+    setUploadError("");
+    onUpload(f)
+      .then((staged) => setFile({ ...staged, name: f.name }))
+      .catch((err) => setUploadError(err.message))
+      .finally(() => { setUploading(false); e.target.value = ""; });
+  };
+
+  const finish = () => {
+    if (v === "upload" && !file) return; // never plan an upload with no file
+    onNext({
+      research: v === "web",
+      papers: v === "web" && papers,
+      researchSource: v,
+      uploadedSource: v === "upload" ? file : null,
+    });
+  };
+
   return (
     <div>
       <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
-        A research pass searches the topic (SearXNG, fully local) and the writer
-        draws every figure from the notes it returns.
+        Where should the content come from? Research searches the topic; an
+        uploaded file makes YOUR document the only source of truth — the
+        writer never goes outside it.
       </div>
-      <ChoicePills
-        options={[
-          { value: true, label: "On — research it" },
-          { value: false, label: "Off — just write it" },
-        ]}
-        value={v}
-        onPick={setV}
-      />
-      {v && (
+      <ChoicePills options={options} value={v} onPick={setV} />
+      {v === "web" && (
         <div className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2">
           <div className="mb-1 text-[11px] text-fg-faint">
             Also search arXiv and Crossref for academic papers on the topic?
@@ -1669,7 +1719,47 @@ function ResearchCard({ value, onNext }) {
           />
         </div>
       )}
-      <CardFooter onNext={() => onNext({ research: v, papers: v && papers })} nextLabel="Finish briefing" />
+      {v === "upload" && (
+        <div className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2">
+          {file ? (
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="truncate text-[12.5px] font-medium text-fg">{file.name}</div>
+                <div className="text-[11px] text-fg-faint">
+                  ~{Number(file.words ?? 0).toLocaleString()} words · your file is the source of truth
+                </div>
+              </div>
+              <button
+                onClick={() => setFile(null)}
+                className="shrink-0 rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber"
+                title="Remove file"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="mb-1.5 text-[11px] text-fg-faint">
+                Markdown, text, Word or PDF — the document becomes the notes.
+              </div>
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-line bg-raised px-3 py-1.5 text-[12px] text-fg transition hover:border-accent/50 hover:text-accent">
+                {uploading ? <Spinner /> : (
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" /></svg>
+                )}
+                {uploading ? "Reading your file…" : "Choose a file…"}
+                <input type="file" accept=".md,.txt,.markdown,.docx,.pdf" onChange={pickFile} className="hidden" disabled={uploading} />
+              </label>
+            </div>
+          )}
+          {uploadError && (
+            <div className="mt-2 rounded-lg border border-danger/30 bg-danger/10 px-2 py-1.5 text-[11px] leading-relaxed text-danger">{uploadError}</div>
+          )}
+          {!file && !uploading && (
+            <div className="mt-2 text-[11px] text-fg-faint">A file is required before the briefing can finish.</div>
+          )}
+        </div>
+      )}
+      <CardFooter onNext={finish} nextLabel="Finish briefing" disabled={v === "upload" && !file} />
     </div>
   );
 }
@@ -1705,6 +1795,12 @@ function PresetSave({ onSave, state }) {
   );
 }
 
+function researchLabel(b) {
+  if (b.researchSource === "upload") return `from my file (${b.uploadedSource?.name ?? "upload"})`;
+  if (b.researchSource === "web") return b.papers ? "research + papers" : "researched";
+  return "no research";
+}
+
 function SummaryLine({ chat, themeLabel }) {
   const b = chat.briefing;
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
@@ -1714,7 +1810,7 @@ function SummaryLine({ chat, themeLabel }) {
         `${b.depth === "brief" ? "brief" : "full"} depth`,
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
-        b.research ? (b.papers ? "research + papers" : "researched") : "no research pass",
+        researchLabel(b),
       ]
     : [
         b.title || "Untitled",
@@ -1722,7 +1818,7 @@ function SummaryLine({ chat, themeLabel }) {
         themeLabel(b.theme),
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
-        b.research ? (b.papers ? "research + papers" : "researched") : "no research pass",
+        researchLabel(b),
       ];
   if (presenting.length) bits.push(`${presenting.length} presenting`);
   return (

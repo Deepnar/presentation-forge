@@ -1328,8 +1328,10 @@ function ResearchCard({ slug, onOpen }) {
         <div className="text-[12px] leading-relaxed text-fg-muted">
           {summary && (
             <span className="mb-2 block">
-              {summary.total ?? 0} sources · {summary.distinctDomains ?? 0} domains
-              {summary.paperCount ? ` · ${summary.paperCount} paper` : ""}
+              {summary.userProvided > 0
+                ? `Your uploaded file is the only source — the writer stays inside it.`
+                : `${summary.total ?? 0} sources · ${summary.distinctDomains ?? 0} domains`
+                  + (summary.paperCount ? ` · ${summary.paperCount} paper` : "")}
             </span>
           )}
         </div>

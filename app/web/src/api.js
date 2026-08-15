@@ -121,6 +121,20 @@ export const api = {
       return body;
     });
   },
+  // Upload-only research mode: stage the briefing document (md/txt/docx/pdf)
+  // so it becomes the only content source. Returns { token, name, words }.
+  stageBriefingUpload: (file) => {
+    const ext = (file.name.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    return fetch("/api/briefing/upload", {
+      method: "POST",
+      headers: { "X-File-Ext": ext, "X-File-Name": encodeURIComponent(file.name), "Content-Type": "application/octet-stream", ...authHeader() },
+      body: file,
+    }).then(async (res) => {
+      const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
+      if (!body.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+      return body;
+    });
+  },
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),

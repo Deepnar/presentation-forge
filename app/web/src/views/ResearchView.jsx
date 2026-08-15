@@ -88,11 +88,17 @@ export default function ResearchView({ slug, refreshToken, onBack }) {
               <Metric label="Academic / authoritative" value={s.academicCount ?? 0} />
               <Metric label="Papers" value={s.paperCount ?? 0} />
             </div>
-            {s.distinctDomains < 3 && (
+            {s.userProvided > 0 ? (
+              <div className="mt-3 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-[12px] leading-relaxed text-fg-muted">
+                <span className="font-medium text-fg">Your uploaded file is the only source.</span>{" "}
+                The writer never goes outside it — anything a slide claims that
+                the file does not carry is flagged in grounding.
+              </div>
+            ) : s.distinctDomains < 3 ? (
               <div className="mt-3 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">
                 Fewer than 3 distinct domains — the research may lean on a single voice.
               </div>
-            )}
+            ) : null}
             {s.singleSourceDomains?.length > 0 && (
               <div className="mt-3 rounded-lg border border-line bg-sunken px-3 py-2 text-[12px] leading-relaxed text-fg-muted">
                 <span className="font-medium text-fg">Single-source domains:</span>{" "}
@@ -220,6 +226,9 @@ function domainOf(url) {
 }
 
 function KindBadge({ src }) {
+  if (String(src.kind).toLowerCase() === "user-provided") {
+    return <Badge className="bg-accent/10 text-accent">your file</Badge>;
+  }
   const isPaper = String(src.kind).toLowerCase() === "paper" || /arxiv\.org|doi\.org/.test(src.url ?? "");
   const isAcademic = /\.(edu|ac\.|gov|org|int)\b|wikipedia\.org|ncbi|researchgate/i.test(src.url ?? "");
   const label = isPaper ? "paper" : isAcademic ? "academic" : "web";

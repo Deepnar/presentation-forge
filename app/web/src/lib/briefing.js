@@ -161,7 +161,13 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   put("Slides per member", b.slidesPerMember ? `${b.slidesPerMember}` : "auto");
   put("Density", b.density);
   put("Branding", b.branding === "none" ? "no institutional branding" : b.branding === "minimal" ? "minimal branding" : "full branding");
-  put("Research pass", b.research ? "on" : "off");
+  if (b.researchSource === "upload") {
+    lines.push(`- Research source: my uploaded file${b.uploadedSource?.name ? ` (${b.uploadedSource.name})` : ""} — no web search`);
+  } else if (b.researchSource === "web") {
+    lines.push(`- Research source: web search${b.papers ? " + academic papers" : ""}`);
+  } else {
+    lines.push("- Research source: none — write from the topic alone");
+  }
 
   if (!lines.length) return "";
   return `The user answered:\n${lines.join("\n")}`;
@@ -201,6 +207,11 @@ export function initialBriefing(identity) {
     density: "balanced",
     branding: "full",   // full | minimal | none
     depth: "full",      // report only: full | brief
+    // Where the content comes from: web | upload | none. "upload" means the
+    // user's own document is the ONLY source — the research pass is skipped
+    // and the file becomes notes.md.
+    researchSource: "web",
+    uploadedSource: null, // { token, name, words } — the staged briefing document
     research: false,
     papers: false,      // also search arXiv + Crossref for academic papers
   };
@@ -244,7 +255,11 @@ export function echoAnswer(briefing, key, opts = {}) {
     case "density": return b.density;
     case "depth": return b.depth === "brief" ? "brief — headline + 3 sentences" : "full — 3-6 paragraphs + table";
     case "branding": return b.branding === "none" ? "no branding" : b.branding === "minimal" ? "minimal branding" : "full branding";
-    case "research": return b.research ? "research on" : "no research";
+    case "research": {
+      if (b.researchSource === "upload") return `my uploaded file (${b.uploadedSource?.name ?? "no file"}) — no web search`;
+      if (b.researchSource === "web") return b.papers ? "web search + academic papers" : "web search";
+      return "no research";
+    }
     default: return "";
   }
 }
@@ -318,8 +333,9 @@ export function applyFreeText(briefing, key, text) {
       return { briefing: { ...b, branding: v }, echo: v === "none" ? "no branding" : `${v} branding` };
     }
     case "research": {
-      if (/^(on|yes|y)/i.test(t)) return { briefing: { ...b, research: true }, echo: "research on" };
-      if (/^(off|no|n)/i.test(t)) return { briefing: { ...b, research: false }, echo: "no research" };
+      if (/upload|my file|file/i.test(t)) return { briefing: { ...b, researchSource: "upload", research: false }, echo: "my uploaded file" };
+      if (/^(on|yes|y)/i.test(t)) return { briefing: { ...b, researchSource: "web", research: true }, echo: "web search" };
+      if (/^(off|no|n|skip)/i.test(t)) return { briefing: { ...b, researchSource: "none", research: false }, echo: "no research" };
       return null;
     }
     default: return null;

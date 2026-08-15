@@ -77,6 +77,8 @@ export function createChat({ kind = "deck" } = {}) {
       maxSlides: 0,        // 0 = auto
       slidesPerMember: null,
       density: "balanced",
+      researchSource: "web",
+      uploadedSource: null,
       research: false,
     },
     plan: null,            // approved outline (title/subtitle/sections/slides)
