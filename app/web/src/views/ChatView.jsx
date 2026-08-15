@@ -10,6 +10,7 @@ import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
+import { parseSlashCommand, SLASH_HELP, looksLikeSlash } from "../lib/slash.js";
 
 const DENSITIES = [
   { id: "sparse", note: "few words, mostly visuals" },
@@ -613,11 +614,99 @@ export default function ChatView({
     persist({ ...chat, kind, updatedAt: new Date().toISOString() });
   }
 
+  /** Inline note shown for a handled slash command, without a model call. */
+  function slashReply(msg) {
+    setError("");
+    setFreeHint(msg);
+  }
+
+  /**
+   * Slash commands — parsed BEFORE the turn. A command is a direct action,
+   * not an instruction the model must interpret. Returns true when the input
+   * was a command (handled or unknown); the caller then skips the turn.
+   */
+  function handleSlash(text) {
+    const parsed = parseSlashCommand(text);
+    if (!parsed) {
+      // A leading "/" that did not parse is a typo'd command — say so rather
+      // than silently running it as a model instruction.
+      if (looksLikeSlash(text)) {
+        slashReply(`"${text.trim()}" doesn't look like a command. Try /help to see what works.`);
+        return true;
+      }
+      return false;
+    }
+    const { command, arg, rest } = parsed;
+    const b = chat.briefing ?? {};
+    const setBriefing = (patch) => {
+      persist({ ...chat, briefing: { ...b, ...patch }, updatedAt: new Date().toISOString() });
+    };
+    switch (command) {
+      case "help":
+        slashReply(SLASH_HELP.split("\n").join("  ·  "));
+        return true;
+      case "theme": {
+        if (!arg) { slashReply("Pick a theme by name — e.g. /theme swiss-international. The gallery still shows each one live."); return true; }
+        const t = themes.find((x) => x.name === arg || (x.label ?? "").toLowerCase() === arg.toLowerCase());
+        if (!t) {
+          slashReply(`No theme named "${arg}" — try /theme then a name from the gallery (e.g. /theme dark-neon).`);
+          return true;
+        }
+        setBriefing({ theme: t.name });
+        slashReply(`Theme set to ${t.label}.`);
+        return true;
+      }
+      case "density": {
+        if (!arg) { slashReply("Set density to sparse, balanced or dense — e.g. /density dense."); return true; }
+        const d = arg.toLowerCase();
+        if (!["sparse", "balanced", "dense"].includes(d)) {
+          slashReply(`"${arg}" isn't a density — try sparse, balanced or dense.`);
+          return true;
+        }
+        setBriefing({ density: d });
+        slashReply(`Density set to ${d}.`);
+        return true;
+      }
+      case "slides": {
+        const n = /^\d+$/.test(arg) ? Number(arg) : null;
+        if (n == null) { slashReply("Give a number — e.g. /slides 16."); return true; }
+        setBriefing({ maxSlides: n });
+        slashReply(`Slide budget set to ${n}.`);
+        return true;
+      }
+      case "papers": {
+        setBriefing({ papers: !b.papers });
+        slashReply(b.papers ? "Papers pass turned off." : "Papers pass turned on — arXiv + Crossref in the next research run.");
+        return true;
+      }
+      case "report": {
+        if (!chat.deckSlug) {
+          if (chat.kind === "report") { slashReply("This thread already builds a report."); return true; }
+          switchKind("report");
+          slashReply("Switched to Report mode — send a topic to start a standalone report.");
+          return true;
+        }
+        // A deck exists — jump to its report view.
+        onOpenReport(chat.deckSlug);
+        return true;
+      }
+      default:
+        slashReply(`Unknown command /${command}. ${SLASH_HELP.split("\n").slice(0, 3).join("  ·  ")}`);
+        return true;
+    }
+  }
+
   /** The bottom input bar: topic first, then free-text answers to questions,
    *  then — once the deck exists — deck-editing turns. */
   function send() {
     const text = input.trim();
     if (!text || busy) return;
+    // Slash commands are intercepted before the turn — a command is an action,
+    // not a model instruction. The rest of the line can still be a message.
+    if (handleSlash(text)) {
+      setInput("");
+      return;
+    }
     if (phase === "editing") {
       setInput("");
       setFreeHint("");
