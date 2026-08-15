@@ -6,6 +6,7 @@ import YAML from "yaml";
 import { ROOT } from "../src/paths.js";
 import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
 import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
+import { providerModels } from "../src/cloud.js";
 
 /* -------------------------------------------------------- applyTransport */
 
@@ -107,6 +108,52 @@ function fakeResponse(body) {
     text: async () => "",
   };
 }
+
+/* ------------------------------------------------- hosted model curation */
+
+test("providerModels returns the static list when one is declared", async () => {
+  assert.deepEqual(await providerModels({ models: ["a", "b"], baseURL: "https://x.example/v1" }), ["a", "b"]);
+});
+
+test("providerModels fetches GET {baseURL}/models when the list is empty and a key exists", async () => {
+  const orig = globalThis.fetch;
+  process.env.FAKE_PROV_KEY = "envkey";
+  globalThis.fetch = async (url, opts = {}) => {
+    assert.equal(String(url), "https://x.example/v1/models");
+    assert.equal(opts.headers.Authorization, "Bearer envkey");
+    return fakeResponse({ data: [{ id: "m1" }, { id: "m2" }] });
+  };
+  try {
+    const list = await providerModels({ models: [], baseURL: "https://x.example/v1/", apiKey: "env:FAKE_PROV_KEY" });
+    assert.deepEqual(list, ["m1", "m2"]);
+  } finally {
+    globalThis.fetch = orig;
+    delete process.env.FAKE_PROV_KEY;
+  }
+});
+
+test("providerModels handles the string-array /models shape too", async () => {
+  const orig = globalThis.fetch;
+  process.env.FAKE_PROV_KEY = "envkey";
+  globalThis.fetch = async () => fakeResponse({ models: ["one", "two"] });
+  try {
+    const list = await providerModels({ baseURL: "https://y.example/v1", apiKey: "env:FAKE_PROV_KEY" });
+    assert.deepEqual(list, ["one", "two"]);
+  } finally {
+    globalThis.fetch = orig;
+    delete process.env.FAKE_PROV_KEY;
+  }
+});
+
+test("providerModels returns empty on a failed fetch, never throwing", async () => {
+  const orig = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: false, status: 401, json: async () => ({}), text: async () => "nope" });
+  try {
+    assert.deepEqual(await providerModels({ baseURL: "https://z.example/v1", apiKey: "env:FAKE_KEY" }), []);
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
 
 test("chat() auto-bumps the cap when a non-streamed response is cut at length", async () => {
   const orig = globalThis.fetch;

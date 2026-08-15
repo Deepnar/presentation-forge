@@ -208,12 +208,15 @@ export async function modelChoices() {
   try {
     models = [...(await installed(cfg.host))].sort();
   } catch { /* offline — the picker just shows the default */ }
+  // The first opt-in provider (static `models:` or fetched from the API when
+  // the host does not declare a list) that has a key attached.
   let cloud = null;
-  for (const [name, p] of Object.entries(cfg.providers ?? {})) {
-    if (p.type !== "openai-compatible" || !Array.isArray(p.models) || !p.models.length) continue;
-    if (!(await resolveEnv(p.apiKey))) continue; // only list cloud models with a key
-    cloud = { provider: name, label: p.label ?? name, models: [...p.models] };
-    break;
+  const cp = await cloudProvider();
+  if (cp) {
+    const keyName = String(cp.apiKey).match(/^env:(.+)$/)?.[1] ?? null;
+    if (keyName && (await resolveEnv(cp.apiKey))) {
+      cloud = { provider: cp.id, label: cp.label, models: cp.models };
+    }
   }
   const route = await routingPreference();
   const defaultModel = cloud && route === "cloud" && cloud.models.length

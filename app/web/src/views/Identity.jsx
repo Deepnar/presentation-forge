@@ -325,10 +325,11 @@ export default function Identity({ user, onAuthClick }) {
         <div className="mb-4">
           <h2 className="text-[13px] font-semibold tracking-tight text-fg">Cloud</h2>
           <p className="mt-0.5 max-w-2xl text-[11px] leading-relaxed text-fg-faint">
-            Attach your OpenCode Go subscription so the app can also use hosted
-            models — deepseek-v4-flash, qwen3.8-max, mimo-v2.5 — next to the
-            local ones. The key is stored in gitignored config/local.yaml, never
-            committed, and never sent back to this page after saving.
+            Attach your provider's API key so the app can also use hosted
+            models next to the local ones. The models available are the ones
+            this host has enabled — the list below comes from the server. The
+            key is stored in gitignored config/local.yaml, never committed,
+            and never sent back to this page after saving.
           </p>
         </div>
 
@@ -351,6 +352,21 @@ export default function Identity({ user, onAuthClick }) {
                 {cloud.keySet ? "key attached" : "no key attached"}
               </span>
             </div>
+
+            {cloud.models?.length > 0 && (
+              <div className="rounded-lg border border-line bg-sunken/40 px-3 py-2.5">
+                <div className="mb-1.5 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">
+                  Models this host has enabled
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {cloud.models.map((m) => (
+                    <span key={m} className="rounded-full border border-line bg-panel px-2 py-0.5 font-mono text-[10.5px] text-fg-muted">
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mb-1.5 flex flex-wrap items-end gap-2">
               <label className="min-w-0 flex-1">
@@ -416,8 +432,9 @@ export default function Identity({ user, onAuthClick }) {
         ) : (
           <div className="text-[12px] leading-relaxed text-fg-faint">
             No cloud provider configured — add one under <code className="font-mono">providers:</code> in
-            config/models.yaml with a <code className="font-mono">models:</code> list and an{" "}
-            <code className="font-mono">env:</code> key reference.
+            config/models.yaml with an <code className="font-mono">env:</code> key reference. The
+            model list can be declared with <code className="font-mono">models:</code> or left for
+            the server to fetch from the provider's own <code className="font-mono">/models</code> endpoint.
           </div>
         )}
       </section>

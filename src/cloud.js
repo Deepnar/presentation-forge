@@ -30,6 +30,34 @@ export async function resolveSecret(name) {
   return (await readYaml(LOCAL_FILE)).api_keys?.[name] ?? "";
 }
 
+/**
+ * A provider's model list. The static `models:` array in config/models.yaml is
+ * the admin's curated list; when it is empty or absent the list is fetched
+ * from the provider's own GET {baseURL}/models instead, so a hosted box with a
+ * provider that does not declare models still offers a picker. The fetch is
+ * best-effort and key-gated: no key, no fetch, empty result.
+ */
+export async function providerModels(p) {
+  if (p && Array.isArray(p.models) && p.models.length) return [...p.models];
+  if (!p || !p.baseURL) return [];
+  const name = String(p.apiKey ?? "").match(/^env:(.+)$/)?.[1] ?? null;
+  const key = name ? await resolveSecret(name) : "";
+  if (!key) return [];
+  const base = String(p.baseURL).replace(/\/+$/, "");
+  try {
+    const res = await fetch(`${base}/models`, {
+      headers: key ? { Authorization: `Bearer ${key}` } : {},
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return [];
+    const body = await res.json();
+    const list = Array.isArray(body.data) ? body.data : Array.isArray(body.models) ? body.models : [];
+    return list.map((m) => (typeof m === "string" ? m : m.id)).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 export async function setApiKey(name, key) {
   const cfg = await readYaml(LOCAL_FILE);
   const next = { ...cfg, api_keys: { ...(cfg.api_keys ?? {}), [name]: key } };
@@ -60,17 +88,22 @@ export async function setRoutingPreference(route) {
 
 /**
  * The first opt-in provider that declares a model list — the one the picker
- * exposes. Only openai-compatible providers with a `models:` array qualify.
+ * exposes. Only openai-compatible providers qualify. A provider with an empty
+ * `models:` array still qualifies: its list is fetched from the API (GET
+ * {baseURL}/models) so a host that does not curate a list is not left with a
+ * dead picker.
  */
 export async function cloudProvider() {
   const models = await readYaml(MODELS_FILE);
   for (const [id, p] of Object.entries(models.providers ?? {})) {
-    if (p?.type !== "openai-compatible" || !Array.isArray(p.models) || !p.models.length) continue;
+    if (p?.type !== "openai-compatible") continue;
+    const list = await providerModels(p);
+    if (!list.length) continue;
     return {
       id,
       label: p.label ?? id,
       baseURL: String(p.baseURL).replace(/\/+$/, ""),
-      models: [...p.models],
+      models: list,
       apiKey: p.apiKey ?? "",
     };
   }

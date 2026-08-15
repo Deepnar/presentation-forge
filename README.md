@@ -116,9 +116,18 @@ npm run dev
 ```
 
 **Cloud:** in the app go to Identity → Cloud, paste your key (any
-OpenAI-compatible endpoint; the opencode-go key works), flip the header
-toggle to CLOUD. The key is stored in the gitignored `config/local.yaml` and
-never sent anywhere but the provider.
+OpenAI-compatible endpoint — OpenAI, OpenRouter, OpenCode Go, …), flip the
+header toggle to CLOUD. The key is stored in the gitignored `config/local.yaml`
+and never sent anywhere but the provider.
+
+**Which cloud models are offered:** the list a provider exposes is the one the
+host curates. In `config/models.yaml`, a provider may declare an explicit
+`models:` list (e.g. `models: [my-model-a, my-model-b]`) — that is what the
+picker shows, labelled "Models this host has enabled". If a provider's
+`models:` is empty or omitted, the server fetches the list from the provider's
+own `GET {baseURL}/models` endpoint instead, so a hosted box whose provider
+does not ship a curated list still gets a working picker. Either way the
+curation is an admin decision: what the host enables is what users can pick.
 
 ### Run
 
