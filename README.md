@@ -5,9 +5,9 @@
 > the final touches: verify the facts, tune the words, make it yours.
 
 **Local-first academic presentation and report generator.** Node + pptxgenjs +
-local models by default, optional cloud backend per role. Built for TCET-style
-graded submissions: institutional chrome, fixed section order, per-member
-presenter blocks, and a report that matches the donor template.
+local models by default, optional cloud backend per role. Built for
+institutional graded submissions: institutional chrome, fixed section order,
+per-member presenter blocks, and a report that matches the donor template.
 
 `topic in → guided briefing → outline gate → deck + report out`
 
