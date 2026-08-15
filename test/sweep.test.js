@@ -40,6 +40,30 @@ test("sweepDeck rejects an unknown density", async () => {
   await assert.rejects(sweepDeck({ deck: DECK, density: "huge" }), /sparse\|balanced\|dense/);
 });
 
+test("sweepDeck gives each slide only its own content — no neighbour leak", async () => {
+  // Capture every prompt; each must name only its own slide's content and
+  // must carry the explicit independence rule (which lives in the system
+  // message, like the rest of the sweep contract).
+  const seen = [];
+  const chat = async ({ schema, messages }) => {
+    seen.push({ user: messages[1]?.content ?? "", system: messages[0]?.content ?? "" });
+    const type = schema.properties.ops.items.properties.slide.properties.type.enum[0];
+    return { data: { ops: [{ op: "update_slide", index: seen.length - 1, patch: { headline: "H", bullets: ["a", "b", "c", "d"] } }] } };
+  };
+  await sweepDeck({ deck: DECK, density: "balanced", model: "mock", chat });
+  assert.equal(seen.length, 2, "two content slides swept");
+  const bullets = seen[0];
+  const cards = seen[1];
+  // The bullets slide's context carries its own headline but not the cards
+  // slide's content, and vice versa.
+  assert.ok(bullets.user.includes("Key points"));
+  assert.ok(!bullets.user.includes("Facts"), "cards headline must not leak into the bullets context");
+  assert.ok(cards.user.includes("Facts"));
+  assert.ok(!cards.user.includes("Key points"), "bullets headline must not leak into the cards context");
+  assert.ok(bullets.system.includes("Do not copy or carry"), "independence rule present");
+  assert.ok(cards.system.includes("Do not copy or carry"), "independence rule present on every slide");
+});
+
 test("sweepDeck rewrites content slides and keeps dividers, types and presenters", async () => {
   const chat = fakeChat({
     bullets: [{ op: "update_slide", index: 1, patch: { headline: "Key points", bullets: ["a fuller point one", "a fuller point two", "a third point", "a fourth point"] } }],

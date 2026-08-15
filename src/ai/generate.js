@@ -626,6 +626,10 @@ export async function sweepDeck({
           ? "You are making the slide DENSER: more items, fuller sentences. Add real substance."
           : "You are balancing the slide: a normal number of items, each a complete point.",
       "",
+      "This is the ONLY slide you see and the ONLY slide you touch. Do not copy or carry",
+      "content from any other slide — rewrite THIS slide's content against the research",
+      "alone, so each slide stays distinct and nothing from a neighbouring slide leaks in.",
+      "",
       "Emit exactly one update_slide op patching ONLY the content fields — the headline",
       "may be refined, but the type, presenter and section must not change. Do not invent",
       "statistics: every figure must come from the RESEARCH NOTES below, quoted verbatim.",
