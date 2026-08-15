@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
@@ -773,16 +773,15 @@ export default function ChatView({
   const composerBar = (
     <div className="surface-well rounded-[var(--radius-lg)] border border-line bg-prompt">
       <div className="flex items-end gap-2 p-3 pb-2">
-        <textarea
+        <AutoGrowTextarea
           ref={inputRef}
           value={input}
           onChange={(e) => { setInput(e.target.value); setFreeHint(""); }}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-          rows={1}
           disabled={inputDisabled}
           placeholder={placeholder}
-          className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
-        ></textarea>
+          className="max-h-36 flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
+        />
         <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
@@ -1123,6 +1122,33 @@ export default function ChatView({
 }
 
 /* ------------------------------------------------------------------ parts */
+
+/** A textarea that grows with its content and stops at a cap, then scrolls —
+ *  the Claude-style composer. The height is derived from scrollHeight on
+ *  input, clamped between a comfortable single-line minimum and the cap; the
+ *  styling is passed through so the caller keeps full control. */
+const AutoGrowTextarea = forwardRef(function AutoGrowTextarea({ className = "", ...props }, ref) {
+  const local = useRef(null);
+  const taRef = ref ?? local;
+  const resize = () => {
+    const el = taRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(Math.max(el.scrollHeight, 44), 152)}px`;
+  };
+  useEffect(resize, [props.value]);
+  useEffect(() => { resize(); }, []);
+  return (
+    <textarea
+      ref={taRef}
+      rows={1}
+      style={{ height: 44 }}
+      onInput={resize}
+      className={className}
+      {...props}
+    ></textarea>
+  );
+});
 
 function Welcome({ chat, org, onFill }) {
   if (chat.topic || chat.produced) return null;
