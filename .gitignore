@@ -50,6 +50,10 @@ config/sessions.json
 # Saved briefing formats — per-user, per the account store.
 config/presets/
 
+# Staged briefing documents — upload-only research mode. Short-lived (swept
+# after the TTL), never part of the repo.
+config/uploads/
+
 # Source institutional templates: these carry third-party names and roll
 # numbers, and are reference material rather than source.
 reference/

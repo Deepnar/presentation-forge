@@ -156,8 +156,11 @@ function strongField(text) {
  * `problems`: ready-to-display strings for the render result.
  * `notes`:    the deck clone with a grounding line appended to each flagged
  *             slide's notes, so the speaker sees exactly what to verify.
+ * `label`:    what the notes are named in that line — "research/notes.md" for a
+ *             web research pass, "your uploaded file" for upload-only mode,
+ *             where the fidelity contract is stricter and worth naming.
  */
-export function groundDeck(deck, researchText) {
+export function groundDeck(deck, researchText, { label = "research/notes.md" } = {}) {
   if (!researchText?.trim()) return { findings: [], problems: [], notes: deck };
 
   const findings = [];
@@ -179,7 +182,7 @@ export function groundDeck(deck, researchText) {
   const problems = [];
   for (const f of findings) {
     const slide = notes.slides[f.slide];
-    const line = `[grounding] unverified — not found in research/notes.md: ${f.claims.join("; ")}`;
+    const line = `[grounding] unverified — not found in ${label}: ${f.claims.join("; ")}`;
     slide.notes = slide.notes ? `${slide.notes}\n${line}` : line;
     problems.push(`slide ${f.slide + 1} (${f.type}): ungrounded claim(s) — ${f.claims.join("; ")}`);
   }

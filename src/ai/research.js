@@ -44,6 +44,7 @@ export function researchSummary(sources = [], notes = "") {
   const academic = [];
   const listicle = [];
   let paperCount = 0;
+  let userProvided = 0;
 
   const hostOf = (url) => {
     try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
@@ -54,6 +55,12 @@ export function researchSummary(sources = [], notes = "") {
     /^(medium\.com|substack\.com|quora\.com|reddit\.com|slideshare\.net|pinterest|buzzfeed|lifehacker|hubspot|wordpress\.com)$/.test(host ?? "");
 
   for (const s of list) {
+    // A user-provided source is the upload-only mode's whole document — it has
+    // no URL, so it must never be counted as a web domain or an academic find.
+    if (String(s.kind).toLowerCase() === "user-provided") {
+      userProvided++;
+      continue;
+    }
     const host = hostOf(s.url);
     if (host) domains.add(host);
     if (String(s.kind).toLowerCase() === "paper" || /arxiv\.org|doi\.org/.test(s.url ?? "")) {
@@ -88,6 +95,7 @@ export function researchSummary(sources = [], notes = "") {
     academic,
     listicle,
     singleSourceDomains,
+    userProvided,
     notesWords: String(notes ?? "").trim().split(/\s+/).filter(Boolean).length,
   };
 }

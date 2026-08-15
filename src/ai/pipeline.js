@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
+import { ingestUpload, readStagedUpload } from "./upload.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
 import { trimDeckToFit } from "./trim.js";
 import { critiqueDeck } from "./critic.js";
@@ -98,11 +99,74 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
 }
 
 /**
+ * The research-mode resolution shared by deck and report creation. The
+ * briefing's explicit `researchSource` (web | upload | none) wins; legacy
+ * callers that only pass the `research`/`papers`/`sources` booleans fall back
+ * to their historical meaning. `upload` carries either a staged token (the
+ * server/browser path) or an inline `{ name, text }` (the CLI path).
+ */
+export async function resolveResearchSource({ researchSource, research, papers, sources, upload }) {
+  if (researchSource === "upload") {
+    let text = "";
+    let name = "upload";
+    if (upload && typeof upload === "object") {
+      if (upload.token) {
+        const staged = await readStagedUpload(upload.token);
+        if (!staged) {
+          throw new Error("the uploaded file is missing — re-upload it from the briefing before planning");
+        }
+        text = staged.text;
+        name = staged.name || name;
+      } else if (typeof upload.text === "string") {
+        text = upload.text;
+        name = upload.name || name;
+      }
+    }
+    if (!text?.trim()) throw new Error("no uploaded file content — re-upload the document in the briefing");
+    return {
+      mode: "upload",
+      text: text.trim(),
+      name,
+      words: text.trim().split(/\s+/).filter(Boolean).length,
+    };
+  }
+  if (researchSource === "none") return { mode: "none" };
+  if (researchSource === "web") return { mode: "web" };
+  // Legacy callers: a research pass runs when any research signal is present.
+  return { mode: research || papers || (sources?.length ?? 0) > 0 ? "web" : "none" };
+}
+
+/**
+ * Persist the research artefact a deck/report writes from. Web research hands
+ * in the accumulated pages; upload-only hands in the user's own document,
+ * marked user-provided so the Research view shows it is the whole story.
+ */
+async function writeResearch(dir, { text, sources }) {
+  const rdir = path.join(dir, "research");
+  await mkdir(rdir, { recursive: true });
+  await writeFile(path.join(rdir, "notes.md"), text, "utf8");
+  await writeFile(path.join(rdir, "sources.json"), JSON.stringify(sources, null, 2), "utf8");
+}
+
+/** What the grounding line names the notes as — "your uploaded file" carries
+ *  the strict-fidelity contract of upload-only mode, web research keeps the
+ *  historical wording. */
+async function groundNotesLabel(dir) {
+  try {
+    const meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+    return meta.researchSource === "upload" ? "your uploaded file" : "research/notes.md";
+  } catch {
+    return "research/notes.md";
+  }
+}
+
+/**
  * Stage 1 — brief → outline. Saves meta.yaml and plan.yaml so a session can
  * come back to a planned deck, and the outline survives an interrupted browser.
  */
 export async function createDeck({
-  brief, briefing = "", sources = [], research = false, papers = false, theme = null, maxSlides = 24,
+  brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
+  upload = null, theme = null, maxSlides = 24,
   slidesPerMember = null, density = "balanced", model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -128,6 +192,7 @@ export async function createDeck({
 
   const meta = {
     slug, brief, sources, research, papers, theme, maxSlides, density,
+    ...(researchSource ? { researchSource } : {}),
     ...(slidesPerMember != null ? { slidesPerMember } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
@@ -140,18 +205,28 @@ export async function createDeck({
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
+  const src = await resolveResearchSource({ researchSource, research, papers, sources, upload });
   let researchText = "";
-  // Supplied sources imply a research pass: a brief with sources but no
-  // --research would otherwise silently skip research and later fail report
-  // generation with "no research/notes.md" for a reason nothing explains.
-  if (research || sources.length || papers) {
+
+  if (src.mode === "upload") {
+    // The user's file is the ONLY content source: no SearXNG, no papers, no
+    // Jina. The file becomes notes.md verbatim and sources.json marks it as
+    // user-provided, so the grounding pass is a strict fidelity check against
+    // exactly what the user gave.
+    onProgress?.({ status: "researching", source: "upload" });
+    await writeResearch(dir, {
+      text: src.text,
+      sources: [{ kind: "user-provided", name: src.name, title: src.name, words: src.words }],
+    });
+    researchText = src.text;
+  } else if (src.mode === "web") {
+    // Supplied sources imply a research pass: a brief with sources but no
+    // --research would otherwise silently skip research and later fail report
+    // generation with "no research/notes.md" for a reason nothing explains.
     onProgress?.({ status: "researching" });
     const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
     if (r.text) {
-      const rdir = path.join(dir, "research");
-      await mkdir(rdir, { recursive: true });
-      await writeFile(path.join(rdir, "notes.md"), r.text, "utf8");
-      await writeFile(path.join(rdir, "sources.json"), JSON.stringify(r.sources, null, 2), "utf8");
+      await writeResearch(dir, { text: r.text, sources: r.sources });
       researchText = r.text;
     }
   }
@@ -183,7 +258,8 @@ export async function createDeck({
  * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
  */
 export async function createReport({
-  brief, sources = [], research = false, papers = false, depth = "full", density = "balanced",
+  brief, sources = [], research = false, papers = false, researchSource = null,
+  upload = null, depth = "full", density = "balanced",
   model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -198,6 +274,7 @@ export async function createReport({
 
   const meta = {
     slug, brief, sources, research, papers, depth, density,
+    ...(researchSource ? { researchSource } : {}),
     status: "report",
     createdAt: new Date().toISOString(),
     ...(owner ? { owner } : {}),
@@ -205,17 +282,24 @@ export async function createReport({
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
-  // A standalone report always runs a research pass: the report generator
-  // writes from research/notes.md, so a report with nothing to write from is a
-  // contradiction. Sources ground the pass when given, otherwise the brief
-  // drives a metasearch.
-  onProgress?.({ status: "researching" });
-  const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
-  if (!r.text) throw new Error("Research produced nothing to write the report from.");
-  const rdir = path.join(dir, "research");
-  await mkdir(rdir, { recursive: true });
-  await writeFile(path.join(rdir, "notes.md"), r.text, "utf8");
-  await writeFile(path.join(rdir, "sources.json"), JSON.stringify(r.sources, null, 2), "utf8");
+  // A standalone report always needs research/notes.md to write from — that is
+  // the whole source. Upload-only supplies the user's own document instead of
+  // a web pass; any other resolution falls back to the web research the
+  // report path has always run (a report with nothing to write from is a
+  // contradiction either way).
+  const src = await resolveResearchSource({ researchSource, research, papers, sources, upload });
+  if (src.mode === "upload") {
+    onProgress?.({ status: "researching", source: "upload" });
+    await writeResearch(dir, {
+      text: src.text,
+      sources: [{ kind: "user-provided", name: src.name, title: src.name, words: src.words }],
+    });
+  } else {
+    onProgress?.({ status: "researching" });
+    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
+    if (!r.text) throw new Error("Research produced nothing to write the report from.");
+    await writeResearch(dir, { text: r.text, sources: r.sources });
+  }
 
   // No plan.yaml for a standalone report — requirePlan: false lets the report
   // generator derive its structure from the brief and the fixed section order.
@@ -355,9 +439,11 @@ export async function generateFromPlan({
   // to derive stats from notes.md, and the writer is a model: anything it emits
   // that the research does not support is flagged into the slide's notes and
   // the problems list rather than silently shipped. The critic below may
-  // rewrite deck.yaml, so grounding runs once more on its output.
+  // rewrite deck.yaml, so grounding runs once more on its output. In upload-only
+  // mode the label names the user's file, the strict-fidelity contract.
+  const label = await groundNotesLabel(dir);
   const groundOnce = (d) => {
-    const g = groundDeck(d, researchText);
+    const g = groundDeck(d, researchText, { label });
     return { deck: g.notes, problems: g.problems };
   };
 
@@ -498,6 +584,7 @@ export async function sweepDensity({
   } catch { /* no research pass */ }
 
   onProgress?.({ status: "sweeping", density });
+  const label = await groundNotesLabel(dir);
   const r = await sweepDeck({
     deck,
     density,
@@ -508,7 +595,7 @@ export async function sweepDensity({
     onProgress: (p) => onProgress?.({ status: "sweeping", ...p }),
   });
 
-  const grounded = groundDeck(r.deck, researchText);
+  const grounded = groundDeck(r.deck, researchText, { label });
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
   // A denser rewrite is exactly what overfills slides — run the content-trim
@@ -519,7 +606,7 @@ export async function sweepDensity({
     deckDir: dir,
     signal,
   });
-  let finalGrounded = groundDeck(trimRes.deck, researchText);
+  let finalGrounded = groundDeck(trimRes.deck, researchText, { label });
 
   // The coherence pass also runs after a sweep: a density rewrite can reframe
   // a slide away from the deck's argument (or lean on a statistic with no
@@ -537,9 +624,9 @@ export async function sweepDensity({
     });
     coherence = pass;
     if (pass.findings.length) {
-      finalGrounded = groundDeck(pass.deck, researchText);
+      finalGrounded = groundDeck(pass.deck, researchText, { label });
       const retrim = await trimDeckToFit({ deck: finalGrounded.notes, themeName, deckDir: dir, signal });
-      finalGrounded = groundDeck(retrim.deck, researchText);
+      finalGrounded = groundDeck(retrim.deck, researchText, { label });
     }
   }
   await writeFile(deckFile, YAML.stringify(finalGrounded.notes), "utf8");
@@ -608,7 +695,7 @@ export async function convertSlideType({
   }
 
   const nextDeck = { ...deck, slides: deck.slides.map((s, i) => (i === Number(index) ? r.slide : s)) };
-  const grounded = groundDeck(nextDeck, researchText);
+  const grounded = groundDeck(nextDeck, researchText, { label: await groundNotesLabel(dir) });
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
   onProgress?.({ status: "rendering" });
@@ -659,7 +746,8 @@ export async function cloneDeck({ slug }) {
 
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
-                        [--research] [--papers] [--max-slides <n>] [--slides-per-member <n>]
+                        [--research] [--papers] [--upload <file.md|docx|pdf|txt>]
+                        [--max-slides <n>] [--slides-per-member <n>]
                         [--density sparse|balanced|dense] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic]
@@ -667,10 +755,12 @@ const USAGE = `Usage:
   node src/ai/pipeline.js report <slug> [--generate [--depth full|brief]]
                         [--donor <path>] [--no-toc] [--no-render]
   node src/ai/pipeline.js report-new "<brief>" [--depth full|brief]
-                        [--sources <url> ...] [--model <id>]
+                        [--sources <url> ...] [--upload <file.md|docx|pdf|txt>] [--model <id>]
   node src/ai/pipeline.js deck-from-report <slug> [--theme <name>] [--model <id>]
 
   new       brief → outline, saved to decks/<slug>/plan.yaml
+            --upload  upload-only mode: the given document becomes research/
+                      notes.md and is the ONLY content source — no web search
   generate  approved outline → deck.yaml, rendered and rasterised
             --critic  also run the vision critic loop: detect visual defects in
                       the rendered slides and fix them via a content turn
@@ -687,11 +777,13 @@ const USAGE = `Usage:
             --no-toc  skip the table of contents (and the LibreOffice pass)
   report-new  standalone report — brief → research → report.yaml → .docx,
               with NO deck. The reverse flow's other door.
+              --upload  upload-only mode, as above
   deck-from-report  plan a companion deck from an existing decks/<slug>/report.yaml
               (and its shared research) → decks/<slug>/plan.yaml for the outline gate
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
+  node src/ai/pipeline.js new "Solar water pumping" --upload notes.docx --theme warm-humanist
   node src/ai/pipeline.js generate raytracing-ai --critic
   node src/ai/pipeline.js chat raytracing-ai "Keep every slide under 12 words per line."
   node src/ai/pipeline.js report-new "Green hydrogen in 2026" --depth full
@@ -712,8 +804,11 @@ function parseArgs(argv) {
     else if (a === "--donor") opts.donor = argv[++i];
     else if (a === "--sources") {
       while (argv[i + 1] && !argv[i + 1].startsWith("--")) opts.sources.push(argv[++i]);
-    }     else if (a === "--research") opts.research = true;
+    }
+    else if (a === "--upload") opts.upload = argv[++i];
+    else if (a === "--research") opts.research = true;
     else if (a === "--papers") opts.papers = true;
+    else if (a === "--upload") opts.upload = argv[++i];
     else if (a === "--generate") opts.generate = true;
     else if (a === "--depth") opts.depth = argv[++i];
     else if (a === "--no-render") opts.render = false;
@@ -732,9 +827,23 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const { cmd, opts } = parseArgs(process.argv.slice(2));
   const progress = (p) => process.stderr.write(`  ${p.status}${p.index != null ? ` ${p.index + 1}/${p.total}` : ""}\n`);
 
+  /** --upload <path>: read + ingest the document into an inline upload payload
+   *  (the CLI equivalent of the server's staged-token path). */
+  const uploadFromFile = async (p) => {
+    const buf = await readFile(p);
+    const { text, name, ext, words } = await ingestUpload(buf, { name: path.basename(p) });
+    return { name, text, ext, words };
+  };
+
   try {
     if (cmd === "new") {
-      const r = await createDeck({ ...opts, onProgress: progress });
+      const upload = opts.upload ? await uploadFromFile(opts.upload) : null;
+      const r = await createDeck({
+        ...opts,
+        researchSource: upload ? "upload" : null,
+        upload,
+        onProgress: progress,
+      });
       process.stdout.write(`planned decks/${r.slug}/plan.yaml — ${r.plan.slides.length} slides\n`);
       process.stdout.write(YAML.stringify(r.plan));
     } else if (cmd === "generate") {
@@ -809,8 +918,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       for (const p of r.problems) process.stderr.write(`  ! ${p}\n`);
     } else if (cmd === "report-new") {
       if (!opts.brief) { console.error(USAGE); process.exit(2); }
+      const upload = opts.upload ? await uploadFromFile(opts.upload) : null;
       const r = await createReport({
         brief: opts.brief, sources: opts.sources, research: true,
+        researchSource: upload ? "upload" : null, upload,
         depth: opts.depth ?? "full", model: opts.model, onProgress: progress,
       });
       process.stdout.write(`report decks/${r.slug}/out/report.docx — ${r.sections.join(" → ")} (standalone)\n`);

@@ -13,6 +13,7 @@ import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity, convertSlideType } from "../../src/ai/pipeline.js";
+import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
@@ -155,6 +156,7 @@ const deckWorkspace = async (req, res, next) => {
 app.use("/api/decks", deckWorkspace);
 app.use("/api/reports", deckWorkspace);
 app.use("/api/presets", deckWorkspace);
+app.use("/api/briefing", deckWorkspace);
 
 /**
  * Per-slug ownership. An owned deck belongs to exactly one account; a folder
@@ -542,6 +544,36 @@ app.get("/api/decks/:slug/assets/:file", wrap(async (req, res) => {
     res.status(404).end();
   }
 }));
+
+/**
+ * Stage a briefing document for upload-only research mode. The file is
+ * converted here (so the browser never sees the bytes back) and staged under a
+ * token the briefing holds; the plan resolves the token into research/notes.md
+ * when the deck's slug exists. Same trust boundary as the brand uploads:
+ * extension allowlist + magic-byte sniff + size cap.
+ */
+app.post("/api/briefing/upload", (req, res, next) => {
+  const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  let name = "";
+  try { name = decodeURIComponent(String(req.headers["x-file-name"] ?? "")); } catch { name = ""; }
+  name = name.replace(/[^\w .()-]/g, "").slice(0, 120);
+  if (!UPLOAD_EXT.has(ext)) {
+    return fail(res, 400, `unsupported file type — upload a .md, .txt, .docx or .pdf`);
+  }
+  express.raw({ type: () => true, limit: UPLOAD_MAX_BYTES })(req, res, async () => {
+    try {
+      const ingested = await ingestUpload(req.body, { name, ext });
+      const staged = await stageUpload(ingested);
+      ok(res, { ...staged, preview: ingested.text.slice(0, 500) });
+    } catch (err) {
+      fail(res, 400, err.message);
+    }
+  });
+});
+
+/** Stale staged briefing documents (abandoned uploads) are dead weight — drop
+ *  them at boot so a long-lived box does not accumulate them forever. */
+sweepStagedUploads().catch(() => {});
 
 app.post("/api/decks/:slug/render", withRenderSlot(async (req, res) => {
   const dir = path.join(DECKS, req.params.slug);
@@ -1066,10 +1098,10 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, briefing, sources, research, papers, theme, maxSlides, model, identity, slidesPerMember, density } = req.body ?? {};
+  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density } = req.body ?? {};
   (async () => {
     const r = await createDeck({
-      brief, briefing, sources, research, papers, theme, maxSlides, model, identity, slidesPerMember, density,
+      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
@@ -1159,7 +1191,7 @@ app.post("/api/reports", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, papers, depth, density, model, identity } = req.body ?? {};
+  const { brief, sources, research, papers, researchSource, upload, depth, density, model, identity } = req.body ?? {};
   if (!brief?.trim()) {
     sse.send("error", { error: "body must include a `brief`" });
     return sse.close();
@@ -1167,7 +1199,7 @@ app.post("/api/reports", (req, res) => {
 
   (async () => {
     const r = await createReport({
-      brief, sources, research, papers, depth, density, model, identity,
+      brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
