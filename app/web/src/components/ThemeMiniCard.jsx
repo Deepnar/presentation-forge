@@ -81,10 +81,14 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         </div>
       </div>
 
-      {/* Name bar. */}
+      {/* Name bar — label plus the typefaces, so the briefing gallery shows
+          the theme's font names the way the Themes page does. */}
       <div className="flex items-center justify-between gap-2 border-t border-line bg-sunken px-2.5 py-1.5">
-        <span className={`truncate text-[10px] font-medium ${selected ? "text-accent" : "text-fg-muted"}`}>
+        <span className={`min-w-0 truncate text-[10px] font-medium ${selected ? "text-accent" : "text-fg-muted"}`}>
           {sub}
+        </span>
+        <span className="shrink-0 truncate font-mono text-[8.5px] text-fg-faint">
+          {theme.fonts.heading} <span className="text-line-strong">/</span> {theme.fonts.body}
         </span>
         {selected && (
           <svg viewBox="0 0 24 24" className="h-3 w-3 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
