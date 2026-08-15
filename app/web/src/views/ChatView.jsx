@@ -10,6 +10,7 @@ import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
+import { presetsStore } from "../lib/presets.js";
 import { parseSlashCommand, SLASH_HELP, looksLikeSlash } from "../lib/slash.js";
 
 const DENSITIES = [
@@ -65,11 +66,11 @@ function chatName(title, topic) {
  * a pure local state change, verified by the CDP flow in the handoff.
  */
 export default function ChatView({
-  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged, onIdentityChanged,
+  chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
-  const [presets, setPresets] = useState([]);
+  const [presets, setPresets] = useState(presetsStore.get());
   const [input, setInput] = useState("");
   const [freeHint, setFreeHint] = useState("");
   const [busy, setBusy] = useState(false);
@@ -77,7 +78,6 @@ export default function ChatView({
   const [error, setError] = useState(chat.error ?? "");
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
-  const [defaultsState, setDefaultsState] = useState({ status: "idle" });
   const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
   const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
@@ -113,7 +113,9 @@ export default function ChatView({
   useEffect(() => {
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.types().then((r) => setTypes(r.descriptions ?? {})).catch(() => {});
-    api.presets().then((r) => setPresets(r.presets ?? [])).catch(() => {});
+    // Presets are shared with Settings — an edit there is live here.
+    presetsStore.refresh().then((list) => setPresets(list)).catch(() => {});
+    return presetsStore.subscribe(setPresets);
   }, []);
 
   useEffect(() => { setDraftPlan(chat.plan); }, [chat.plan]);
@@ -242,10 +244,11 @@ export default function ChatView({
       const saved = existing
         ? await api.updatePreset(existing.id, { ...presetPayload(chat.briefing), name: clean })
         : await api.savePreset({ ...presetPayload(chat.briefing), name: clean });
-      setPresets((list) => {
-        const next = existing ? list.map((p) => (p.id === saved.preset?.id ? saved.preset : p)) : [saved.preset, ...list];
-        return next;
-      });
+      const list = existing
+        ? presets.map((p) => (p.id === saved.preset?.id ? saved.preset : p))
+        : [saved.preset, ...presets];
+      setPresets(list);
+      presetsStore.set(list);
       setPresetSaveState({ status: "saved" });
     } catch (err) {
       setPresetSaveState({ status: "error", message: err.message });
@@ -255,7 +258,9 @@ export default function ChatView({
   async function deletePreset(id) {
     try {
       await api.deletePreset(id);
-      setPresets((list) => list.filter((p) => p.id !== id));
+      const list = presets.filter((p) => p.id !== id);
+      setPresets(list);
+      presetsStore.set(list);
     } catch (err) {
       window.alert(`Could not delete preset: ${err.message}`);
     }
@@ -581,35 +586,6 @@ export default function ChatView({
       .then(() => { onDeckChanged?.(); setSelected(new Set()); })
       .catch((err) => setError(err.message))
       .finally(() => setSwapping(false));
-  }
-
-  /**
-   * Persist the repeated set — guide, subject/year, team — as remembered
-   * defaults in config/identity.yaml, the same file the Identity view edits.
-   * Institution and brand come from the saved identity and pass through
-   * untouched; blank fields are dropped rather than overwriting good defaults.
-   */
-  async function saveDefaults() {
-    const b = chat.briefing;
-    const drop = (o) => Object.fromEntries(Object.entries(o ?? {}).filter(([, v]) => String(v ?? "").trim() !== ""));
-    const next = {
-      ...(identity ?? {}),
-      academic: { ...(identity?.academic ?? {}), ...drop(b.academic) },
-      guide: { ...(identity?.guide ?? {}), ...drop(b.guide) },
-      team: {
-        label: b.team?.label ?? identity?.team?.label ?? "",
-        members: (b.team?.members ?? []).filter((m) => m.name?.trim()),
-      },
-    };
-    if (!next.team.members.length) delete next.team;
-    setDefaultsState({ status: "saving" });
-    try {
-      await api.saveIdentity(next);
-      setDefaultsState({ status: "saved" });
-      onIdentityChanged?.(next);
-    } catch (err) {
-      setDefaultsState({ status: "error", message: err.message });
-    }
   }
 
   /** Flip an empty thread between the two products before a topic is sent. */
@@ -976,10 +952,6 @@ export default function ChatView({
                     Plan the deck
                   </Button>
                 )}
-                <Button variant="outline" onClick={saveDefaults} disabled={defaultsState.status === "saving"}>
-                  {defaultsState.status === "saving" ? <Spinner /> : null}
-                  Remember as defaults
-                </Button>
                 <PresetSave
                   onSave={saveAsPreset}
                   state={presetSaveState}
@@ -990,12 +962,6 @@ export default function ChatView({
                     : "The only thing that starts research &amp; planning."}
                 </span>
               </div>
-              {defaultsState.status === "saved" && (
-                <div className="mt-2 text-[11.5px] text-accent">Saved — next briefing starts from these.</div>
-              )}
-              {defaultsState.status === "error" && (
-                <div className="mt-2 text-[11.5px] text-danger">{defaultsState.message}</div>
-              )}
             </Panel>
           )}
 
@@ -1206,14 +1172,15 @@ function Bubble({ role, children }) {
   );
 }
 
-function PresetCard({ presets, value, onPick, onDelete }) {
+function PresetCard({ presets, value, themeLabel, onPick, onDelete }) {
   const [confirming, setConfirming] = useState(null);
   return (
     <div>
       <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
-        A saved format pre-fills the fixed fields — team, guide, academic
-        context, theme, density, branding, slides per member — so only the
-        changing bits (title, subject, teacher) need answering.
+        A saved format pre-fills the fixed fields — team, slides, density,
+        theme, branding — so only the changing bits (title, subject, teacher)
+        need answering. Create and edit formats in Settings, or from the
+        summary card's "Save as preset…".
       </div>
       <div className="space-y-1.5">
         <button
@@ -1240,8 +1207,8 @@ function PresetCard({ presets, value, onPick, onDelete }) {
             >
               <span className="block truncate text-[12.5px] font-medium text-fg">{p.name}</span>
               <span className="block truncate text-[10.5px] text-fg-faint">
-                {p.team?.members?.length ?? 0} members{p.theme ? ` · ${p.theme}` : ""} · {p.density} density
-                {p.branding !== "full" ? ` · ${p.branding} branding` : ""}
+                {p.maxSlides ? `${p.maxSlides} slides` : "auto slides"} · {(p.team?.members ?? []).filter((m) => m.name?.trim()).length} people
+                {p.branding !== "full" ? ` · ${p.branding} branding` : ""} · {themeLabel(p.theme)}
               </span>
             </button>
             <div className="flex shrink-0 items-center pr-1.5">
@@ -1274,7 +1241,7 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
   return (
     <Bubble role="assistant">
       <div className="mb-1 text-[12px] font-medium text-fg">{q.ask}</div>
-      {q.key === "preset" && <PresetCard presets={presets} value={b.presetId} onPick={onPickPreset} onDelete={onDeletePreset} />}
+      {q.key === "preset" && <PresetCard presets={presets} value={b.presetId} themeLabel={themeLabel} onPick={onPickPreset} onDelete={onDeletePreset} />}
       {q.key === "title" && <TitleCard value={b.title} onNext={onNext} />}
       {q.key === "team" && <TeamCard team={b.team} onNext={onNext} />}
       {q.key === "guide" && <GuideCard guide={b.guide} onNext={onNext} />}

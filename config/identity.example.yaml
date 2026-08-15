@@ -1,9 +1,13 @@
 # TEMPLATE. Copy to config/identity.yaml and fill in — that file is gitignored
 # so personal and institutional details never reach the repository.
 #
-# Standing defaults for every deck and report. Everything here is overridable
-# per-deck in decks/<slug>/meta.yaml — nothing is hardcoded in the renderer.
-# Leave a field blank ("") and it is simply omitted from the output.
+# Standing defaults for every deck and report. This file holds only the
+# LONG-TERM facts — institution and guide. The per-submission details
+# (subject, year, semester, exam type, team) are asked in the briefing for
+# each chat and frozen into the deck's own meta.yaml, never stored here.
+# Everything here is overridable per-deck in decks/<slug>/meta.yaml — nothing
+# is hardcoded in the renderer. Leave a field blank ("") and it is simply
+# omitted from the output.
 
 institution:
   name: "Example Institute of Technology"
@@ -13,22 +17,9 @@ institution:
   autonomy: ""
   university: ""
 
-academic:
-  year: ""
-  semester: ""
-  subject: ""            # e.g. "Computer Graphics" — usually set per deck
-  exam_type: "Innovative Examination (IE)"
-
 guide:
   name: ""               # e.g. "Dr. A. Sharma"
   designation: "Assistant Professor"
-
-# Team is an open list — 1 member or 10, add/remove freely.
-# `presenting: true` marks who appears in the deck's slide chrome.
-team:
-  label: ""              # e.g. "Group no. 2b [18-24]" — blank to omit
-  members:
-    - { name: "", roll: "", presenting: true }
 
 # Which brand marks the locked chrome layer applies. Paths are relative to the
 # project root and point at brand/generated/ — the normalised output of
