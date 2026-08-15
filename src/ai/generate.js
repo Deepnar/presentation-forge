@@ -3,6 +3,7 @@ import { buildOpsSchema, applyOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
+import { placeholderSlides } from "../placeholders.js";
 
 /**
  * The synthesis-mode note: the writer prompt is written to survive small local
@@ -465,7 +466,7 @@ export async function generateDeck({
     slides: [],
   };
 
-  const skipped = [];
+  let skipped = [];
 
   for (const [i, spec] of plan.slides.entries()) {
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
@@ -514,6 +515,41 @@ export async function generateDeck({
   const { ok, errors } = await validateDeck(deck);
   onProgress?.({ phase: "done", slides: deck.slides.length, skipped: skipped.length });
 
+  // One more regeneration pass over any placeholders that survived the write
+  // loop: a placeholder may ship only if a dedicated retry also failed. The
+  // loop already retries each slide twice; this third pass is the explicit
+  // "do not ship a placeholder without one final attempt" boundary, and it
+  // reports each slide it recovers.
+  const recovered = [];
+  for (const ph of placeholderSlides(deck)) {
+    const spec = plan.slides[ph.index];
+    if (!spec) continue;
+    try {
+      const before = deck.slides.length;
+      const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+      const a = applyOps(deck, [
+        { op: "replace_slide", index: ph.index, slide: ops.find((o) => o.op === "append_slide")?.slide },
+      ]);
+      const rep = ops.find((o) => o.op === "append_slide")?.slide;
+      if (!rep) continue;
+      const candidate = structuredClone(deck);
+      candidate.slides[ph.index] = rep;
+      if ((await validateDeck(candidate)).ok) {
+        deck = candidate;
+        recovered.push(ph.index);
+      }
+    } catch { /* keep the placeholder — flagged below */ }
+  }
+  if (recovered.length) {
+    skipped = skipped.filter((s) => !recovered.includes(s.index));
+  }
+
+  // Flag placeholders into the problems list: a degraded slide must be
+  // impossible to miss, and the UI badge + render gate both read this.
+  const placeholderProblems = placeholderSlides(deck).map(
+    (s) => `slide ${s.index + 1} (${s.type}) is a PLACEHOLDER — its generation failed and it must be regenerated before this deck is presented`,
+  );
+
   // Presenters are decided here, deterministically, not by the writer model:
   // whole sections go to presenting members in order, so every member's slides
   // are one contiguous block and no one is doubled up while another sits idle.
@@ -528,7 +564,7 @@ export async function generateDeck({
     if (assignment[i]) deck.slides[i].presenter = assignment[i];
   }
 
-  return { ok, deck, plan, skipped, errors, stats };
+  return { ok, deck, plan, skipped, errors, stats, problems: placeholderProblems };
 }
 
 /**

@@ -32,6 +32,9 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [punch, setPunch] = useState(null); // slide index being punched up
   const [punchErr, setPunchErr] = useState("");
   const [actionErr, setActionErr] = useState("");
+  // Slides whose generation failed — placeholder content must not ship. The
+  // badge, the warning panel and the regenerate affordance all derive here.
+  const [placeholders, setPlaceholders] = useState([]); // [{ index, type, headline }]
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
   const [exportOpen, setExportOpen] = useState(false);
@@ -87,6 +90,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         slides: r.slides.map((s) => `${s}?t=${stamp}`),
         thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`),
       });
+      setPlaceholders(r.placeholders ?? []);
       setTheme(r.deck.theme ?? "");
       setStyle(r.deck.style ?? "");
       setMode(r.meta?.mode ?? null);
@@ -120,6 +124,32 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         `("${headline}") sharper and more confident. Keep the slide type and ` +
         `structure; edit only that slide.`,
     }, {
+      result: () => onDeckChanged(),
+    }).promise.catch((err) => {
+      setPunchErr(err.message);
+    }).finally(() => setPunch(null));
+  }
+
+  /**
+   * Regenerate ONE placeholder slide — a scoped chat turn that replaces the
+   * placeholder content with real content drawn from the deck's research. The
+   * render gate refuses to render a deck that still carries placeholders, so
+   * this is the only way past it. Runs in place and re-renders on landing.
+   */
+  function regenerate(i) {
+    if (punch !== null) return;
+    setPunch(i);
+    setPunchErr("");
+    const headline = slides[i]?.headline ?? slides[i]?.type ?? "slide";
+    api.chatDeck(slug, {
+      instruction:
+        `Slide ${i + 1} is a PLACEHOLDER — its generation failed and its current content is ` +
+        `marker text ("Details in the full briefing.", "Regenerate this slide…"), not real ` +
+        `content. Rewrite slide ${i + 1} completely: real headline, real content drawn from ` +
+        `the RESEARCH NOTES, matching the slide's type (${slides[i]?.type ?? "bullets"}). ` +
+        `The old headline was "${headline}". Replace the placeholder text entirely.`,
+    }, {
+      status: (p) => setPunchErr(progressLabel(p)),
       result: () => onDeckChanged(),
     }).promise.catch((err) => {
       setPunchErr(err.message);
@@ -644,6 +674,38 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         <ResearchCard slug={slug} onOpen={onOpenResearch} />
       </div>
 
+      {placeholders.length > 0 && (
+        <Panel className="mt-5 border-danger/40 bg-danger/5 p-4">
+          <div className="mb-1.5 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-danger">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0ZM12 9v4M12 17h.01" />
+            </svg>
+            Needs regeneration
+          </div>
+          <p className="text-[12px] leading-relaxed text-fg-muted">
+            {placeholders.length === 1
+              ? "One slide's generation failed and it is still placeholder text. The deck cannot be rendered until it is regenerated."
+              : `${placeholders.length} slides' generation failed and they are still placeholder text. The deck cannot be rendered until they are regenerated.`}
+          </p>
+          <ul className="mt-2.5 space-y-1.5">
+            {placeholders.map((ph) => (
+              <li key={ph.index} className="flex items-center gap-2 rounded-lg border border-line bg-panel px-2.5 py-1.5">
+                <span className="font-mono text-[10.5px] tabular-nums text-fg-faint">slide {ph.index + 1}</span>
+                <span className="min-w-0 flex-1 truncate text-[12px] text-fg-muted">{ph.headline}</span>
+                <span className="rounded bg-raised px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-wider text-fg-faint">{ph.type}</span>
+                <button
+                  onClick={() => regenerate(ph.index)}
+                  disabled={punch !== null}
+                  className="shrink-0 rounded-md bg-danger px-2 py-1 text-[11px] font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                >
+                  {punch === ph.index ? <Spinner className="h-3 w-3" /> : "Regenerate"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
+
       {problems.length > 0 && (
         <Panel className="mt-5 border-amber/30 bg-amber/5 p-3.5">
           <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-amber">
@@ -738,6 +800,17 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="truncate text-fg-faint">{slide?.type}</span>
+                  {placeholders.some((ph) => ph.index === i) && (
+                    <button
+                      onClick={() => regenerate(i)}
+                      disabled={punch !== null}
+                      title="This slide's generation failed — regenerate it before rendering"
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full border border-danger/50 bg-danger/15 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-danger transition hover:bg-danger/25 disabled:opacity-50"
+                    >
+                      {punch === i ? <Spinner className="h-2.5 w-2.5" /> : null}
+                      needs regeneration
+                    </button>
+                  )}
                   {/\[image\]/.test(slide?.notes ?? "") && (
                     <button
                       onClick={() => openImagePicker(i)}

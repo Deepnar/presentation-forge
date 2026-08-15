@@ -11,6 +11,7 @@ import { loadDeck } from "./validate.js";
 import { layouts, content } from "./layouts.js";
 import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrome.js";
 import { renderSlidePlate } from "./plate.js";
+import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
 
 async function loadIdentity(deckDir) {
@@ -239,6 +240,16 @@ export async function render({
 
   const outFile = out ?? path.join(dir, "out", "deck.pptx");
   await mkdir(path.dirname(outFile), { recursive: true });
+  // The render gate: a deck with placeholder slides must not ship. The trim
+  // loop and preview pass render in-memory (write:false) so they may audit;
+  // a real render of placeholder content is refused — the user must regenerate
+  // the failed slides first. This is the "no placeholders may ship" boundary.
+  if (write) {
+    const gate = placeholderGateError(deck);
+    if (gate) {
+      throw new Error(`${gate} (render refused)`);
+    }
+  }
   if (write) await pres.writeFile({ fileName: outFile });
 
   return { outFile, slides: total, theme: theme.label, problems };

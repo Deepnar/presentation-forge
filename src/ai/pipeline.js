@@ -388,8 +388,29 @@ export async function generateFromPlan({
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
   onProgress?.({ status: "rendering" });
-  const r = await render({ deckFile: path.join(dir, "deck.yaml"), themeName: res.deck.theme });
-  const p = await preview(r.outFile, { dpi: 110 });
+  // The render gate refuses a deck that still carries placeholder slides, so a
+  // generation that left failures visible ships neither silently nor half-broken.
+  let rendered;
+  try {
+    rendered = await render({ deckFile: path.join(dir, "deck.yaml"), themeName: res.deck.theme });
+  } catch (err) {
+    if (/PLACEHOLDER|render refused/i.test(err.message)) {
+      return {
+        slug,
+        deck: tr.grounded.deck,
+        plan: res.plan,
+        slides: [],
+        thumbs: [],
+        problems: [...(tr.grounded.problems ?? []), err.message],
+        skipped: res.skipped ?? [],
+        stats: res.stats,
+        trimmed: tr.trimmed,
+        blocked: err.message,
+      };
+    }
+    throw err;
+  }
+  const p = await preview(rendered.outFile, { dpi: 110 });
 
   let criticReport = null;
   if (critic) {
@@ -415,7 +436,7 @@ export async function generateFromPlan({
     plan: res.plan,
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
-    problems: [...(r.problems ?? []), ...tr.grounded.problems],
+    problems: [...(r.problems ?? []), ...tr.grounded.problems, ...(res.problems ?? [])],
     skipped: res.skipped ?? [],
     stats: res.stats,
     critic: criticReport,

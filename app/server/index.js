@@ -7,6 +7,7 @@ import { ROOT, DECKS, THEMES, CONFIG, BRAND } from "../../src/paths.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
+import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
@@ -367,7 +368,9 @@ app.get("/api/decks/:slug", wrap(async (req, res) => {
     thumbs = names.map((f) => `${base}/thumbs/${f}`);
   } catch { /* not rendered yet */ }
 
-  ok(res, { deck, meta, slides, thumbs });
+  // Placeholder slides — the render gate blocks them and the UI must show a
+  // badge + regenerate affordance, so the deck payload carries them explicitly.
+  ok(res, { deck, meta, slides, thumbs, placeholders: placeholderSlides(deck) });
 }));
 
 app.put("/api/decks/:slug", wrap(async (req, res) => {
@@ -553,14 +556,25 @@ app.post("/api/decks/:slug/render", withRenderSlot(async (req, res) => {
   } catch { /* optional */ }
   const mode = req.body?.mode ?? metaMode ?? "light";
 
-  const r = await render({ deckFile, themeName, style, mode });
+  let r;
+  try {
+    r = await render({ deckFile, themeName, style, mode });
+  } catch (err) {
+    // The placeholder render gate refuses placeholder content loudly — return
+    // the block as a 422 the UI can surface, not a generic 500.
+    if (/render refused/i.test(err.message)) return fail(res, 422, err.message);
+    throw err;
+  }
   const p = await preview(r.outFile, { dpi: req.body?.dpi ?? 110 });
   const base = `/api/decks/${req.params.slug}/preview`;
 
+  let deck = null;
+  try { deck = YAML.parse(await readFile(deckFile, "utf8")); } catch { /* unreachable — just rendered */ }
   ok(res, {
     slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
     thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
     problems: r.problems,
+    placeholders: placeholderSlides(deck ?? {}),
     pptx: `/api/decks/${req.params.slug}/download/deck.pptx`,
   });
 }));
