@@ -1869,16 +1869,26 @@ export const layouts = {
 
     const ew = 1.6, eh = 0.95;
     const titleScale = fitScaleAll(data.elements.map((e) => e.title), ew - 0.25, 0.35, theme.type.caption, { min: 0.6 });
+    // The central ellipse's semi-axes — connectors must start at its EDGE, not
+    // its centre, or a hairline runs straight through the concept title and
+    // body (the real defect this fixes: the vertical line crossed "The ₹4.2/unit
+    // arithmetic" on a live deck). Edge point = ray from centre at angle θ to
+    // where it exits the ellipse.
+    const exAxis = 1.15, eyAxis = 0.55;
     data.elements.forEach((e, i) => {
       const angle = (2 * Math.PI * i) / n - Math.PI / 2;
       const ex = cx + radiusX * Math.cos(angle);
       const ey = cy + radiusY * Math.sin(angle);
-      const lx = Math.min(cx, ex), lw = Math.abs(ex - cx) || 0.02;
-      const ly = Math.min(cy, ey), lh = Math.abs(ey - cy) || 0.02;
+      const denom = Math.sqrt((Math.cos(angle) ** 2) / (exAxis ** 2) + (Math.sin(angle) ** 2) / (eyAxis ** 2)) || 1;
+      const t = 1 / denom;
+      const sx = cx + t * Math.cos(angle);
+      const sy = cy + t * Math.sin(angle);
+      const lx = Math.min(sx, ex), lw = Math.abs(ex - sx) || 0.02;
+      const ly = Math.min(sy, ey), lh = Math.abs(ey - sy) || 0.02;
       slide.addShape("line", {
         x: lx, y: ly, w: lw, h: lh,
         line: { color: hex(theme.palette.rule), width: 1.2 },
-        flipH: ex < cx, flipV: ey < cy,
+        flipH: ex < sx, flipV: ey < sy,
       });
       card(slide, theme, { x: ex - ew / 2, y: ey - eh / 2, w: ew, h: eh });
       slide.addText(e.title, {
