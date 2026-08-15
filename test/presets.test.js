@@ -16,6 +16,7 @@ test("presets CRUD: save, list, update, delete per user", async () => {
   const p = await savePreset(EMAIL, {
     name: "IE preset",
     team: { label: "Group 2b", members: [{ name: "A", presenting: true }] },
+    maxSlides: 16,
     theme: "swiss-international",
     density: "dense",
     branding: "minimal",
@@ -23,18 +24,58 @@ test("presets CRUD: save, list, update, delete per user", async () => {
   });
   assert.ok(p.id);
   assert.equal(p.name, "IE preset");
+  assert.equal(p.maxSlides, 16);
 
   const list = await listPresets(EMAIL);
   assert.equal(list.length, 1);
   assert.equal(list[0].density, "dense");
   assert.equal(list[0].branding, "minimal");
+  assert.equal(list[0].maxSlides, 16);
 
-  const updated = await updatePreset(EMAIL, p.id, { name: "IE preset", density: "balanced" });
+  const updated = await updatePreset(EMAIL, p.id, { name: "IE preset", density: "balanced", maxSlides: 12 });
   assert.equal(updated.density, "balanced");
   assert.equal((await listPresets(EMAIL))[0].density, "balanced");
+  assert.equal((await listPresets(EMAIL))[0].maxSlides, 12);
 
   await deletePreset(EMAIL, p.id);
   assert.deepEqual(await listPresets(EMAIL), []);
+});
+
+test("presets drop the pre-redesign guide/academic fields and keep only identity keys", async () => {
+  await clearPresets(EMAIL);
+  const p = await savePreset(EMAIL, {
+    name: "old shape",
+    team: {},
+    guide: { name: "Dr. A. Sharma" },
+    academic: { subject: "CG", year: "2026-27" },
+    maxSlides: 0,            // a blank/zero count normalises to null
+    slidesPerMember: 0,
+  });
+  assert.equal(p.guide, undefined);
+  assert.equal(p.academic, undefined);
+  assert.equal(p.maxSlides, null);
+  assert.equal(p.slidesPerMember, null);
+});
+
+test("a stored pre-redesign file migrates on read", async () => {
+  await clearPresets(EMAIL);
+  const { writeFile, mkdir, rm } = await import("node:fs/promises");
+  const path = await import("node:path");
+  const { CONFIG } = await import("../src/paths.js");
+  const dir = path.join(CONFIG, "presets");
+  await mkdir(dir, { recursive: true });
+  await writeFile(
+    path.join(dir, `${EMAIL}.json`),
+    JSON.stringify([{ id: "old", name: "legacy", team: {}, guide: { name: "G" }, academic: { subject: "S" }, maxSlides: 10 }]),
+    "utf8",
+  );
+  const list = await listPresets(EMAIL);
+  assert.equal(list.length, 1);
+  assert.equal(list[0].name, "legacy");
+  assert.equal(list[0].guide, undefined);
+  assert.equal(list[0].academic, undefined);
+  assert.equal(list[0].maxSlides, 10);
+  await rm(dir, { recursive: true, force: true });
 });
 
 test("presets reject unnamed saves and unknown ids", async () => {

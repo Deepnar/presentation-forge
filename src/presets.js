@@ -4,11 +4,13 @@ import { CONFIG } from "./paths.js";
 
 /**
  * Saved briefing formats, per user. A preset is the reusable half of a
- * briefing — the fields that stay the same across many decks (team, guide,
- * academic context, theme, density, branding, slides-per-member) — so picking
- * one pre-fills the briefing and the user only re-answers the changing bits
- * (title, subject, teacher). Stored as config/presets/<email>.json, one file
- * per account, gitignored like the rest of the account store.
+ * briefing — the fields that stay the same across many decks (team, theme,
+ * density, branding, slide counts) — so picking one pre-fills the briefing and
+ * the user only re-answers the changing bits (title, subject, teacher). The
+ * long-term facts (institution, guide) live in config/identity.yaml, never in
+ * a preset; the per-submission academic context is asked per chat. Stored as
+ * config/presets/<email>.json, one file per account, gitignored like the rest
+ * of the account store.
  */
 
 function fileFor(email) {
@@ -16,28 +18,39 @@ function fileFor(email) {
   return path.join(CONFIG, "presets", `${safe}.json`);
 }
 
-export async function listPresets(email) {
-  try {
-    const raw = await readFile(fileFor(email), "utf8");
-    const list = JSON.parse(raw);
-    return Array.isArray(list) ? list : [];
-  } catch {
-    return [];
-  }
-}
-
+/** A stored preset keeps only its identity keys — pre-redesign files carried
+ *  `guide` and `academic`, which have no home here anymore, so a list read
+ *  migrates them away without a separate step. */
 function sanitize(input) {
   const p = input ?? {};
   return {
     name: String(p.name ?? "").trim(),
     team: p.team ?? {},
-    guide: p.guide ?? {},
-    academic: p.academic ?? {},
+    maxSlides: Number.isFinite(p.maxSlides) && p.maxSlides > 0 ? p.maxSlides : null,
     theme: String(p.theme ?? ""),
     density: String(p.density ?? "balanced"),
     branding: String(p.branding ?? "full"),
-    slidesPerMember: Number.isFinite(p.slidesPerMember) ? p.slidesPerMember : null,
+    slidesPerMember: Number.isFinite(p.slidesPerMember) && p.slidesPerMember > 0 ? p.slidesPerMember : null,
   };
+}
+
+function clean(input) {
+  const p = input ?? {};
+  return {
+    ...(typeof p.id === "string" ? { id: p.id } : {}),
+    ...(typeof p.createdAt === "string" ? { createdAt: p.createdAt } : {}),
+    ...sanitize(p),
+  };
+}
+
+export async function listPresets(email) {
+  try {
+    const raw = await readFile(fileFor(email), "utf8");
+    const list = JSON.parse(raw);
+    return Array.isArray(list) ? list.map(clean).filter((p) => p.name) : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function savePreset(email, input) {

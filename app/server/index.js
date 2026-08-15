@@ -1410,24 +1410,25 @@ app.post("/api/decks/:slug/generate", (req, res) => {
 
 /**
  * Saved briefing formats, per user. A preset is the reusable half of a
- * briefing — the fixed fields (team, guide, academic, theme, density,
- * branding, slides-per-member) — so the briefing's first question can offer
- * "use a saved format?" and pre-fill the rest. Gated by the same session
- * check as the deck workspace.
+ * briefing — the fixed fields (team, theme, density, branding, slide counts) —
+ * so the briefing's first question can offer "use a saved format?" and
+ * pre-fill the rest. The long-term facts (institution, guide) live in
+ * config/identity.yaml, never in a preset. Gated by the same session check as
+ * the deck workspace.
  */
 app.get("/api/presets", wrap(async (req, res) => {
   ok(res, { presets: await listPresets(req.user.email) });
 }));
 
 app.post("/api/presets", wrap(async (req, res) => {
-  const { name, team, guide, academic, theme, density, branding, slidesPerMember } = req.body ?? {};
-  const preset = await savePreset(req.user.email, { name, team, guide, academic, theme, density, branding, slidesPerMember });
+  const { name, team, maxSlides, theme, density, branding, slidesPerMember } = req.body ?? {};
+  const preset = await savePreset(req.user.email, { name, team, maxSlides, theme, density, branding, slidesPerMember });
   ok(res, { preset });
 }));
 
 app.put("/api/presets/:id", wrap(async (req, res) => {
-  const { name, team, guide, academic, theme, density, branding, slidesPerMember } = req.body ?? {};
-  const preset = await updatePreset(req.user.email, req.params.id, { name, team, guide, academic, theme, density, branding, slidesPerMember });
+  const { name, team, maxSlides, theme, density, branding, slidesPerMember } = req.body ?? {};
+  const preset = await updatePreset(req.user.email, req.params.id, { name, team, maxSlides, theme, density, branding, slidesPerMember });
   ok(res, { preset });
 }));
 
