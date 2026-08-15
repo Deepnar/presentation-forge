@@ -1303,10 +1303,13 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
       {q.key === "branding" && <BrandingCard value={b.branding} onNext={onNext} />}
       {q.key === "research" && (
         <ResearchCard
-          value={b.research}
+          value={b.researchSource ?? (b.research ? "web" : "none")}
           onNext={onNext}
           kind={chat.kind}
           uploaded={b.uploadedSource}
+          papersValue={b.papers ?? false}
+          onPapers={(p) => onPatchBriefing({ papers: p })}
+          onSource={(s) => onPatchBriefing({ researchSource: s, research: s === "web" })}
           onUpload={async (file) => {
             const staged = await api.stageBriefingUpload(file);
             onPatchBriefing({ uploadedSource: staged });
@@ -1658,11 +1661,13 @@ function BrandingCard({ value, onNext }) {
   );
 }
 
-function ResearchCard({ value, onNext, kind, uploaded, onUpload }) {
-  // `value` is the legacy boolean (research on/off); the three-way choice lives
-  // in briefing.researchSource, initialised from it when the card mounts.
-  const [v, setV] = useState(value ? "web" : "none");
-  const [papers, setPapers] = useState(false);
+function ResearchCard({ value, onNext, kind, uploaded, onUpload, papersValue, onPapers, onSource }) {
+  // Controlled from the briefing (researchSource / papers), NOT local state:
+  // the card remounts on every briefing update (QuestionCard keys on
+  // chat.briefStep), and local state would reset — the "Papers too" pick
+  // snapped back to "Web only" until repeated clicks finally stuck.
+  const v = value;
+  const papers = papersValue;
   const [file, setFile] = useState(uploaded ?? null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
@@ -1703,7 +1708,7 @@ function ResearchCard({ value, onNext, kind, uploaded, onUpload }) {
         uploaded file makes YOUR document the only source of truth — the
         writer never goes outside it.
       </div>
-      <ChoicePills options={options} value={v} onPick={setV} />
+      <ChoicePills options={options} value={v} onPick={onSource} />
       {v === "web" && (
         <div className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2">
           <div className="mb-1 text-[11px] text-fg-faint">
@@ -1715,7 +1720,7 @@ function ResearchCard({ value, onNext, kind, uploaded, onUpload }) {
               { value: false, label: "Web only" },
             ]}
             value={papers}
-            onPick={setPapers}
+            onPick={onPapers}
           />
         </div>
       )}

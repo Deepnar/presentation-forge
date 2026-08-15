@@ -220,15 +220,16 @@ export default function App() {
   });
 
   // Boot and login: the constant landing is New chat (the chats effect picks
-  // the account's empty thread). Only an explicitly-opened artefact deep link
-  // (#/deck/<slug>, #/report/…, #/research/…) is honoured instead; a chat id
-  // in the hash is the last route, not a deep link, so it resets to a bare
-  // #/chat and New chat wins.
+  // the account's empty thread). An EXPLICITLY-opened view hash is honoured
+  // instead — #/deck/<slug>, #/report/…, #/research/…, and also #/themes,
+  // #/identity, #/home (a middle-clicked nav link must open ITS view, not
+  // spawn a New chat). Only a bare chat route (or a stale chat id, which is
+  // the last route, not a deep link) resets to #/chat and New chat wins.
   useEffect(() => {
     if (!user) return;
     const r = parseHash(window.location.hash);
-    const deep = (r.view === "deck" || r.view === "report" || r.view === "research") && r.slug;
-    if (deep) { applyHash(); return; }
+    const explicit = r.view !== "chat";
+    if (explicit) { applyHash(); return; }
     window.history.replaceState(null, "", "#/chat");
     applyHash();
   }, [user?.email]);
