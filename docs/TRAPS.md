@@ -154,6 +154,19 @@ and the page appears broken. Only lazy-load what is genuinely expensive.
 them will stall a browser tab. Always serve the 480px thumbs in grids and the
 full plate only in the lightbox.
 
+**A retained transform on a scroll container breaks every `position: fixed`
+overlay inside it.** Any transform — even the identity matrix — turns an
+element into a containing block for fixed descendants, so a modal that mounts
+inside a scrolled `<main>` positions against scrolled `main` instead of the
+viewport: the lightbox rendered above the visible area and the page scrolled
+toward the top (measured main.scrollTop 1773 → 628 on open). The cause was
+`animation-fill-mode: both` on a view-transition keyframe animating
+`transform`: after the animation the element holds the identity transform
+forever. Use `backwards` for one-shot entrance animations — it fills only
+during the animation — and check `getComputedStyle(el).transform` after an
+animation if fixed children misbehave; it returns `matrix(1,0,0,1,0,0)` for a
+retained (broken) state and `none` for a clean one.
+
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)

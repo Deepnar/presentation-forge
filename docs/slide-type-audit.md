@@ -117,3 +117,29 @@ quotes) where emptiness is the point, verified as intended.
 - **39 OK:** the rest — including every type whose audit flag was short
   specimen content (a three-row table, two-item stats, one-word flow steps)
   rather than a structural defect.
+
+## Round 4 addendum — the geometry-honesty audit
+
+The user's "the ups and downs mean nothing based on the content" finding
+turned into a rule, not a fix: **a shape that looks like a measurement only
+draws it when the data carries that measurement; qualitative content keeps a
+designed, clearly-illustrative treatment.** Audited every type that draws
+geometry, and the verdicts now record honesty as well as fit:
+
+| type | geometry | honest? |
+|---|---|---|
+| chart (all kinds) | bars/lines/scatter/radar drawn from `series[].values` | yes — values are required, real data |
+| journey | was a sentiment-driven sawtooth implying magnitude | **fixed (round 4)** — with all stages valued the line is real and each value is captioned; any unvalued stage renders a flat milestone rail (sentiment colours nodes, never position) |
+| funnel | was an index-linear taper implying conversion | **fixed (round 4)** — taper is drawn from real numbers only when every stage carries one; otherwise equal-width steps |
+| roadmap / timeline / milestone / chronology | markers on rails | yes — categorical positions, no axis, no magnitude implied |
+| flow / pipeline / branching-flow | steps connected by arrows | yes — categorical sequence |
+| pyramid | index-based taper | yes — the pyramid's iconic categorical shape (no unit, no scale); an illustrative hierarchy, not a measurement |
+| venn / hierarchy / concept-map / diagram | overlapping sets, trees, radial maps | yes — decorative geometry over categories |
+| progress-bars / sparklines / metric-comparison / ranking-list / scorecard / decision-matrix | geometry or values from explicit number fields | yes — every value is real, required, and now grounded |
+
+The grounding pass now walks numbers as claims too, so a chart value or
+journey value the research never states is flagged; the research view lists
+every figure a deck's data slides claim for the "are the graphs reflective
+of real numbers?" check. Verified visually with `mimo-v2.5` on a seven-slide
+fixture covering all four honesty modes (journey valued/unvalued, funnel
+valued/unvalued).

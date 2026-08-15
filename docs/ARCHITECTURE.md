@@ -512,6 +512,24 @@ now user-editable from the deck detail's Research panel, the grounding contract
 is: the notes are the ground truth, the user owns them, and the model is
 flagged when it leaves them.
 
+**Numbers are claims too.** The walker treats numeric values like any other
+figure, so a chart series value or journey value the research never states is
+flagged exactly like a fabricated percentage — the "are the graphs reflective
+of real numbers?" check the user wants before presenting, not after. The one
+structural exception is `depends_on`: integer indices that reference other
+nodes, not measurements. `deckFigures` surfaces the same numbers to the
+Research view as plain mono chips against the source table, so the cross-check
+has a surface, not just a rule.
+
+**Geometry is honest about what it measures.** A shape that looks like a
+measurement only draws it when the data carries that measurement: the journey
+renders a real line only when every stage carries a numeric `value` (any
+unvalued stage switches the whole slide to a flat milestone rail, sentiment
+colouring nodes categorically and never positioning them), and the funnel's
+taper comes from real numbers only when every stage has one, otherwise
+equal-width steps. Qualitative types keep their designed, clearly-illustrative
+treatments — the rule is that a decoration must not pretend to be an axis.
+
 **The research pass is deep, not one query.** `deepResearch` (`src/ai/research.js`)
 expands the brief into 5-8 angle queries via the research role (keywords,
 science, practical, regional, data, counterpoint; falling back to the brief
@@ -593,6 +611,32 @@ serve THIS deck's argument is not used — even if it is in the research. The
 report section writer carries the same rule, and the report planner must agree
 with the deck's approved outline, so both artefacts stay coherent with the same
 topic.
+
+## The speaker-script generator — the coherence pass's downstream
+
+The coherence pass asks "is there a 'so what' the presenter can voice"; the
+speaker script is where that voice lives. `src/ai/script.js` writes
+`decks/<slug>/script.md`, the words each presenter says aloud for every slide:
+60–90 seconds of spoken prose per content slide, in the presenter's voice,
+bridging the slide's bullets to the deck's argument and voicing the connection
+the slide only points at, grounded in the same `research/notes.md` the deck was
+written from. It rides the same decomposition as every other writer — one
+small-grammar call per slide (a single `words` string capped at 1999 chars) —
+and is deliberately a button, never automatic: the user asked for it "at the
+end if I want", so Export's "Speaker script" item and the deck-detail Script
+panel both generate on demand, and a per-slide Regenerate rewrites just that
+slide's words after an edit.
+
+`script.md` is plain markdown with an invisible `<!-- slide:N -->` marker per
+block. A regeneration replaces exactly its own block and rebuilds the file from
+the deck's slide order, so a deleted slide drops its block and unwritten slides
+stay blockless (the panel shows them as "not written yet" with a regenerate
+affordance, never placeholder text). The API mirrors the sweep (SSE, abort-on-
+disconnect): `POST /api/decks/:slug/script` with an optional `index`, plus
+`GET` returning per-slide blocks; the CLI is `forge script <slug> [--slide N]`;
+and the existing title-naming download route gained a deck-root fallback so
+`script.md` (a content artefact living beside deck.yaml, bundled in the .zip)
+downloads like any other file.
 
 ## The placeholder gate — a degraded slide must never ship as content
 

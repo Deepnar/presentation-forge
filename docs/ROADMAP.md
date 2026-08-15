@@ -2216,5 +2216,107 @@ real work:
 > six short-body steps fit. The same change turned a capacity bug into a
 > content question, which is where it belongs.
 
+### [x] Deck-quality round 4 — the speaker script, geometry honesty, a calmer action row
+The user-testing round's four findings. One was a UI defect with a found root
+cause, one was a new feature the user described in their own words, one was a
+design rule that grew out of "the ups and downs mean nothing", and one was
+"the top row is confusing" with a concrete spec.
+
+- **The lightbox scroll jump.** Clicking a slide while scrolled down opened the
+  lightbox above the visible area and scrolled the page toward the top (CDP
+  measured main.scrollTop falling 1773 → 628). Root cause: `main`'s `view-in`
+  animation used fill-mode `both`, which retains the animated `transform`
+  (even the identity matrix) after it finishes — and any transform on a scroll
+  container makes it a containing block for `position: fixed` descendants. The
+  overlays (lightbox, editors, swap gallery) mount inside `main`, so they
+  positioned against scrolled `main` instead of the viewport. `backwards`
+  fills only during the animation; afterwards the computed transform is `none`
+  and fixed overlays return to the viewport. Verified: scroll to the last
+  slide, click, scrollTop unchanged, overlay covers the exact viewport.
+- **The speaker-script generator.** "Make a proper script too, at the end if
+  the user wants, so if the person is unable to tell from the ppt the
+  connection, the script fills in the gaps." `src/ai/script.js` writes
+  decks/<slug>/script.md — one small-grammar call per slide producing 60–90
+  seconds of spoken prose in the presenter's voice, bridging the slide's
+  bullets to the deck's argument and naming the "so what" the coherence pass
+  only implies. It is a button, never automatic: Export's "Speaker script"
+  item and a deck-detail Script panel both generate on demand, and a per-slide
+  Regenerate rewrites just that slide's words after an edit. Per-slide blocks
+  are delimited by invisible `<!-- slide:N -->` markers so a regen replaces
+  exactly its own block; the file is rebuilt from deck order, so a deleted
+  slide drops its block. CLI `forge script <slug> [--slide N]`, API
+  GET/POST `/api/decks/:slug/script` (SSE), download title-named via the
+  existing route (now with a deck-root fallback), bundled in the .zip.
+- **Geometry honesty — a shape may only look like a measurement when it is
+  one.** The journey layout placed points by qualitative `sentiment` and drew
+  a sawtooth, so the ups and downs implied magnitudes the content never
+  stated; the funnel's bars narrowed index-linearly regardless of any value.
+  The rule now: journey stages carry an optional numeric `value` — every
+  stage valued draws a real line (each value captioned), any unvalued stage
+  renders a flat milestone rail (sentiment colours nodes categorically, never
+  position); the funnel's taper comes from real numbers only when every stage
+  carries one, otherwise equal-width steps. Qualitative types keep their
+  designed treatments — rails, flows, pyramids, venn, hierarchies stay
+  beautiful and clearly illustrative, never metric-looking. Grounding now
+  walks numbers as claims (a chart value missing from the research flags like
+  any fabricated figure; the one structural integer field, `depends_on`,
+  stays excluded), and the research view lists every figure the deck's data
+  slides claim so the cross-check happens before presenting. The slide editor
+  gained real data editors for chart (kind/categories/series values) and
+  journey (per-stage value), so flattening a journey or fixing a chart figure
+  is a hand edit, not a chat turn.
+- **The deck-detail action row.** Five questions in one row ("why render if
+  it's rendered", "how is re-sweep different from render", "how is the pptx
+  different from export", "what is all this in Export", "why does the report
+  panel have its own render/download") answered by construction: Render is
+  disabled "Up to date" until deck.yaml (or the theme/style/mode override)
+  changes, with an accent dot when a render is pending; Re-sweep enables only
+  when the chosen density differs from the density the content was last
+  written at; Export holds exactly PDF / Markdown / Bundle / Speaker script;
+  clone/versions/dark-mode move behind an ellipsis menu; and the report panel
+  has one action — "Generate report" / "Generate / Update report" — that
+  writes, renders and downloads the .docx in one click, the separate
+  "Render .docx" step gone.
+
+> **Learned.** Five things were not obvious beforehand.
+>
+> A retained transform — even the identity matrix — on a scroll container is
+> a real containing block for fixed descendants, not a theoretical one.
+> `animation-fill-mode: both` on a view-transition keyframe that animates
+> `transform` is exactly the trap: the element ends up holding the identity
+> transform, and every `position: fixed` modal inside it silently stops being
+> viewport-relative. `backwards` is the right fill for a one-shot entrance
+> animation; `both` is for a state you actually want to persist.
+>
+> The speaker script is the coherence pass's natural downstream: coherence
+> asks "is there a 'so what' the presenter can voice" and the script is where
+> that voice lives. The prompt's job is to say what the slide does NOT carry —
+> write in the presenter's voice, never read the slide, voice the connection
+> the bullets only point at, ground every figure in the notes. A per-slide
+> model call stays on the small-grammar rule, and 1999 chars is comfortably
+> enough for 180–250 spoken words.
+>
+> A journey with sentiment but no values is not "a journey with missing
+> values" — it is a qualitative journey, and the honest layout is a flat
+> rail with categorically-coloured nodes, not a degraded chart. The user's
+> framing made the distinction sharp: non-numeric decks SHOULD look designed,
+> they just must not fake measurement. That is why sentiment colours nodes
+> and never positions them.
+>
+> "The graphs are reflective of real numbers?" is a cross-check the user
+> wants to do BEFORE presenting, so it needs a surface, not a rule: the
+> research view now lists every figure the deck's data slides claim as plain
+> mono chips against the source table. Grounding's part was one line — treat
+> numbers like any other claim — and the one structural exception (integer
+> dependency indices) is the only reason the walker needed to know a field
+> name at all.
+>
+> Dirty state for Render has a server half and a client half: deck.yaml vs
+> deck.pptx mtimes are the disk truth, but theme/style/mode changes never
+> touch deck.yaml, so the UI must flip the flag itself. And "re-sweep was
+> clickable when nothing changed" had a one-line fix — gate it on the chosen
+> density differing from the density the content was last written at — which
+> is also the honest definition of what the button does.
+
 
 
