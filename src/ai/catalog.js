@@ -184,6 +184,91 @@ export const TYPE_DESCRIPTIONS = {
   freeform: "a fully custom design — rasterised, not editable in PowerPoint",
 };
 
+/**
+ * Per-type selection guidance — "use this type when…" in one line. The
+ * description says WHAT a type is; this says WHEN to pick it, so the writer's
+ * and planner's type choice is grounded in intent, not the type name alone.
+ * Every enum type must have an entry (the guard below refuses to ship a
+ * drift, exactly like TYPE_DESCRIPTIONS).
+ */
+export const TYPE_USE_WHEN = {
+  title: "use for the opening cover — one shot to say what the talk is, who presents and for whom",
+  section: "use to open a new major part of the talk — it announces the next section, carries no presenter",
+  chapter: "use for a large opener with a mini-agenda when a major part deserves a heavier landing than a divider",
+  closing: "use for the final screen — the thank-you, the wrap-up, the call to keep the conversation going",
+  agenda: "use early to show the talk's roadmap so the audience knows where it is going",
+  bullets: "use for the default explanatory beat — key points as short complete statements, the workhorse slide",
+  "numbered-list": "use when order matters — steps, priorities, a ranked sequence the audience should follow in sequence",
+  checklist: "use for items with a done/not-done reading — readiness, adoption, requirements met",
+  "feature-grid": "use to present a set of features or capabilities as small cards, each a headline plus a line",
+  "grid-items": "use for many small labelled tiles — a vocabulary, a catalog, a set of names",
+  "icon-list": "use for points where each row earns an icon — categories, principles, distinctions",
+  "stacked-list": "use for rows that each carry a label AND a detail line — steps with an explanation per step",
+  cards: "use for 2-4 related ideas, each a headline and a body — the compare-free alternative to bullets",
+  compare: "use to put TWO options side by side so the audience weighs them point for point",
+  "pros-cons": "use for ONE option's wins and costs in two columns — an honest trade-off read",
+  "before-after": "use to show a change as two states — the old way versus the new way, the problem versus the fix",
+  framework: "use to show how the pieces of a system fit together in a boxed structure",
+  matrix: "use to score items against two axes — effort versus impact, cost versus benefit",
+  scorecard: "use to grade options against fixed criteria in a simple table",
+  vs: "use for two contenders head to head — sharper and more direct than compare",
+  "side-by-side": "use to put two panels beside each other where at least one is visual (image or text block)",
+  stats: "use for a handful of headline figures that frame the argument — numbers with captions",
+  "big-number": "use for ONE number that is the slide's whole point — make it the loudest thing on screen",
+  "kpi-dashboard": "use for a row of key-figure tiles when several metrics matter at once",
+  "data-cards": "use for stat cards — one figure per card, a small set of independent metrics",
+  "progress-bars": "use to show figures as filled bars — shares, completion, capacity against a target",
+  "ranking-list": "use for an ordered list where the RANK is the point — top five, best to worst",
+  "metric-comparison": "use to compare two sets of figures across the same metrics — who wins on what",
+  sparklines: "use for small trend lines under the numbers — direction matters more than exact values",
+  quote: "use for a quotation with its source — let someone else make the point in their words",
+  testimonial: "use for someone in their own words — a first-hand voice on the topic",
+  "pull-quote": "use to pull ONE line out of the argument for emphasis — the line worth remembering",
+  epigraph: "use for a short motto opening a section — a tone-setter, not an argument",
+  callout: "use for a highlighted note in its own box — an aside that must not be missed",
+  emphasis: "use to make ONE idea visually loud — the point everything else supports",
+  warning: "use for a caution the audience must not miss — a risk, a misconception, a cost",
+  tip: "use for a practical hint worth taking away — how to apply what was just argued",
+  takeaway: "use for the ONE thing to remember — the closing claim of a section or the talk",
+  table: "use for rows and columns of data the audience should read directly",
+  "data-table": "use for figures laid out in a proper table when precise values matter",
+  "decision-matrix": "use to score options against weighted criteria so the best choice falls out",
+  chart: "use to VISUALISE the data — trends, comparisons, shares, correlations (prefer it when the research carries numbers)",
+  flow: "use for steps connected by arrows — a process the audience should see move left to right or top to bottom",
+  cycle: "use for a loop of stages round a circle — something that repeats or feeds back",
+  funnel: "use for stages narrowing as the audience narrows — conversion, qualification, adoption",
+  pipeline: "use for stages passing left to right into the next — an assembly line, a data path",
+  dependencies: "use for boxes linked by who needs whom — a dependency graph, a build order",
+  "branching-flow": "use for one path splitting into branches — options, decision trees, outcomes",
+  "layered-architecture": "use for stacked tiers of a system — layers, abstractions, responsibilities",
+  image: "use for a full-width image with a caption — the visual IS the slide (needs a real image)",
+  "image-text": "use for an image beside supporting text — the claim next to its visual proof",
+  "image-grid": "use for several images in a grid — a gallery, a set of examples",
+  "hero-image": "use for one large image as the slide — a dramatic opening or closer",
+  "split-screen": "use for two halves, one image and one text — a contrast anchored by a visual",
+  timeline: "use for events in time along a line — how things developed, what happened when",
+  milestone: "use for key milestones marked in sequence — the moments that mattered",
+  roadmap: "use for phases mapped toward a goal — a plan, a trajectory, a future path",
+  journey: "use for a path travelled through stages — a user journey, a learning arc",
+  chronology: "use for dates in order with their events — a historical account, a changelog",
+  references: "use to list the sources cited on this slide or in this section",
+  diagram: "use for a custom diagram of boxes and links when no stock layout fits",
+  pyramid: "use for a hierarchy stacked from base to peak — priorities, Maslow, tiers",
+  venn: "use for overlapping sets and their intersections — what is shared, what is exclusive",
+  hierarchy: "use for a tree of parent and child items — org charts, taxonomies, decomposition",
+  "concept-map": "use for ideas linked around a central topic — how the concepts relate",
+  definition: "use for ONE term and what it means — the key word the talk hinges on",
+  glossary: "use for terms and meanings in a list — the vocabulary the audience needs",
+  faq: "use for questions with short answers — common doubts, objections, clarifications",
+  "team-grid": "use for the team with names and rolls — who did what, who presents what",
+  attribution: "use to credit sources and imagery on the slide or in the section",
+  contact: "use for reach details at a glance — email, links, how to follow up",
+  equation: "use for a formula presented alone — the maths IS the message",
+  bibliography: "use for full citations in a list — the complete source record",
+  "data-source": "use to state where the figures came from — provenance the audience can check",
+  freeform: "use sparingly for a hero moment no native layout can express — the whole slide rasterises and text stops being editable",
+};
+
 /** "flow" in the outline; "Flow — six steps connected by arrows". */
 export function describeType(type) {
   const meta = TYPE_DESCRIPTIONS[type];
@@ -251,9 +336,13 @@ export async function typeDescriptions() {
     if (!TYPE_DESCRIPTIONS[t]) {
       throw new Error(`TYPE_DESCRIPTIONS is missing an entry for "${t}"`);
     }
+    if (!TYPE_USE_WHEN[t]) {
+      throw new Error(`TYPE_USE_WHEN is missing an entry for "${t}"`);
+    }
     out[t] = {
       label: typeLabel(t),
       description: TYPE_DESCRIPTIONS[t],
+      use_when: TYPE_USE_WHEN[t],
     };
   }
   return out;
@@ -279,6 +368,8 @@ export async function slideCatalog() {
     return `- ${t}: ${fields}`;
   });
 
+  const useWhen = types.map((t) => `- ${t}: ${TYPE_USE_WHEN[t] ?? "(no guidance — pick by the name)"}`);
+
   const byFamily = new Map();
   const escape = [];
   for (const t of types) {
@@ -295,7 +386,8 @@ export async function slideCatalog() {
     `Shared fields on any slide: ${shared.join(", ")}.\n` +
     `"section" is a 0-based index into deck.sections.\n\n` +
     `Slide types by family:\n${familyLines}\n\n` +
-    `Per-type fields:\n${lines.join("\n")}`;
+    `Per-type fields:\n${lines.join("\n")}\n\n` +
+    `WHEN TO USE EACH TYPE (choose by intent, not by the name alone):\n${useWhen.join("\n")}`;
 
   return _cache;
 }
@@ -334,7 +426,8 @@ export async function catalogForType(type) {
     .join("; ");
   return (
     `Shared fields on any slide: ${shared.join(", ")}. "section" is a 0-based index into deck.sections.\n` +
-    `This slide is type "${type}". Fields: ${fields || "(none)"}.`
+    `This slide is type "${type}". Use it when: ${TYPE_USE_WHEN[type] ?? "(pick by the name)"}.\n` +
+    `Fields: ${fields || "(none)"}.`
   );
 }
 
