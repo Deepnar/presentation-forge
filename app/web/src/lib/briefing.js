@@ -49,9 +49,11 @@ export function questionsFor(kind) {
  * The briefing fields a preset fixes. When a preset is picked these questions
  * are treated as answered and skipped; the user still walks the changing bits
  * (title, subject, teacher) and the per-deck choices (audience, emphasis,
- * count, research).
+ * research). Guide and academic are deliberately NOT here — the guide is a
+ * long-term fact that lives in identity, and the academic context is per
+ * submission.
  */
-export const PRESET_KEYS = ["team", "theme", "density", "branding", "slidesPerMember"];
+export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
 /**
  * Pre-fill a briefing from a saved preset, over the identity defaults.
@@ -64,8 +66,7 @@ export function briefingFromPreset(preset, identity) {
   return {
     ...b,
     team: p.team ?? b.team,
-    guide: p.guide ?? b.guide,
-    academic: { ...b.academic, ...(p.academic ?? {}) },
+    maxSlides: p.maxSlides ?? b.maxSlides,
     theme: p.theme ?? b.theme,
     density: p.density ?? b.density,
     branding: p.branding ?? b.branding,
@@ -82,8 +83,7 @@ export function applyPresetToBriefing(briefing, preset) {
   return {
     ...briefing,
     team: p.team ?? briefing.team,
-    guide: p.guide ?? briefing.guide,
-    academic: { ...briefing.academic, ...(p.academic ?? {}) },
+    maxSlides: p.maxSlides ?? briefing.maxSlides,
     theme: p.theme ?? briefing.theme,
     density: p.density ?? briefing.density,
     branding: p.branding ?? briefing.branding,
@@ -112,8 +112,7 @@ export function presetPayload(briefing) {
   const b = briefing ?? {};
   return {
     team: b.team,
-    guide: b.guide,
-    academic: b.academic,
+    maxSlides: b.maxSlides ?? null,
     theme: b.theme,
     density: b.density,
     branding: b.branding,
@@ -173,27 +172,22 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   return `The user answered:\n${lines.join("\n")}`;
 }
 
-/** Pre-fill from config/identity.yaml — the remembered defaults, not truth. */
+/** Pre-fill from config/identity.yaml — the remembered defaults, not truth.
+ *  The identity file now holds only the long-term facts (institution, guide);
+ *  team and academic context are per-submission and start blank here. */
 export function initialBriefing(identity) {
   const id = identity ?? {};
-  const acad = id.academic ?? {};
   const guide = id.guide ?? {};
-  const team = id.team ?? {};
   return {
     title: "",
     presetId: null,    // set when the briefing starts from a saved format
-    team: {
-      label: team.label ?? "",
-      members: (team.members ?? [])
-        .filter((m) => m.name?.trim())
-        .map((m) => ({ name: m.name ?? "", roll: m.roll ?? "", presenting: Boolean(m.presenting) })),
-    },
+    team: { label: "", members: [] },
     guide: { name: guide.name ?? "", designation: guide.designation ?? "" },
     academic: {
-      subject: acad.subject ?? "",
-      year: acad.year ?? "",
-      semester: acad.semester ?? "",
-      exam_type: acad.exam_type ?? "",
+      subject: "",
+      year: "",
+      semester: "",
+      exam_type: "",
     },
     audience: "",
     emphasis: "",
