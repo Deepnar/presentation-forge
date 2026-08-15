@@ -2032,4 +2032,73 @@ the render's own busy state.
 > first alone would still offer a stale .docx while the report was being
 > rewritten.
 
+### [x] User-testing batch 2 — selection, coherence, placeholders, polish
+The second user-testing round's findings, shipped in priority order:
+
+- **Report bugs.** The ReportView's busy state is one shared state across the
+  render and the report-write subscription (the write registry's `end()` now
+  fires the terminal patch that clears it, so "Writing section N of M" can
+  never leave a stuck "Rendering…"); the Download link derives from a server
+  probe of `out/report.docx`, so reopening shows it without re-rendering. The
+  renderer's doubled page breaks (cover → TOC → section 1) produced blank
+  pages 2-3; exactly one break per boundary with no pageBreakBefore on section
+  1, verified blank-free by rasterising a real report.
+- **Chat slide-selection panel.** After a deck is ready a ~40% side panel shows
+  every rendered slide; selecting one or many names them by index + content
+  excerpt in the turn context, and the deck view's lightbox focus flows into
+  the chat via a module-level `deckContext` store so "make THIS punchier"
+  resolves to the slide the user was looking at. Per-slide punch-up and type
+  swap work over the selected set.
+- **Briefing reaches the planner verbatim.** Every answered briefing question
+  (team, guide, academic, audience, emphasis, theme, density, branding, count)
+  ships as an explicit "The user answered: …" block, and the planner is told to
+  always produce title → intro → body → conclusion, whatever the brief says.
+- **Coherence pass.** `src/ai/coherence.js` reviews the finished deck (after
+  generation and after a sweep) for topical drift and data-without-a-point,
+  rewrites flagged slides through `runTurn`, and re-grounds + re-trims the fix.
+  The writer prompts carry the framing rule ("if a researched fact doesn't
+  serve THIS deck's argument, don't use it"). Verified on the soft-skills deck:
+  the flight-attendant chart became "The Face Is Read Before a Word Is Spoken".
+- **Placeholder gate.** `src/placeholders.js` recognises placeholder slides by
+  marker text; the render gate refuses a deck that still carries one, the
+  problems list flags them, and the deck view shows a per-slide Regenerate
+  panel + card badges. Existing placeholder decks were swept via cloud turns.
+- **Content floor + guidance.** List types now require 4 items minimum (the
+  schema floor the trim pass can no longer cut below), and every type carries a
+  "use when" line in the catalog so selection is grounded in intent, not names.
+- **Auth + shell.** Split-screen sign-up/login with one strong landing CTA;
+  logout moved to a bottom-left profile chip opening a centred identity/cloud
+  modal behind a shared confirm; slash commands (/theme, /density, /slides,
+  /papers, /report, /help) parsed before the turn; per-step SSE telemetry for
+  every long action; an auto-growing composer; neutral theme cards; hosted
+  model auto-fetch from `{baseURL}/models`.
+
+> **Learned.** The coherence failure was a FRAMING failure, not a data failure
+> — the flight-attendant stats were genuinely grounded, so grounding could not
+> catch them. Coherence needs a different check than grounding: not "is the
+> fact true" but "does this slide earn its place in THIS deck". That is a
+> reading-comprehension call, so it is a model review with the critic's small
+> schema, and the fix instruction must name the exact reframe or the rewrite
+> drifts again.
+>
+> A placeholder's worst property is that it VALIDATES. "Details in the full
+> briefing." passed every schema check and looked deliberate on the slide, so
+> no validator could flag it — the marker had to become recognisable text plus
+> a gate at the one place a deck ships (the render), plus a visible
+> regenerate affordance. Detection by marker text, not by a flag field, is what
+> let old decks be swept: their placeholders carry the historical phrasing.
+>
+> "Busy" across two subsystems (render + write) needs one shared terminal
+> event. The write registry's `end()` used to delete the store entry without
+> notifying subscribers, so a ReportView watching a write never learned it
+> finished and stayed disabled with a stuck status. Firing `{finished:true}`
+> before the delete is the whole fix; the UI unify follows from it.
+>
+> Raising the bullets floor in the SCHEMA (minItems 2→4) is what stopped the
+> trim pass over-cutting — the trim drops to minItems, so a 2-item floor was a
+> licence to ship two bullets. The floor in the writer's budget prompt alone
+> was advisory; the schema makes it a hard contract the writer and the trim
+> both respect.
+
+
 

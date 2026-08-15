@@ -248,6 +248,22 @@ Success for an append loop must be defined as "a NEW valid slide appeared",
 with empty/exception attempts retried and then degraded to a placeholder; never
 test "the deck validates" and assume it means "this slide landed".
 
+**A placeholder that validates is the worst kind of bug.** "Details in the
+full briefing." passed the schema, looked like a deliberate writing choice,
+and shipped in committed decks — no validator could catch it because it was
+valid. A degraded slide must be recognisable by its CONTENT (marker text a
+real writer never emits, matched across historical phrasing) and gated at the
+one place a deck ships: the render. A "needs regeneration" badge plus a
+per-slide regenerate affordance make it visible to the human too, and
+matching by marker text (not a flag field) is what lets old decks be swept.
+
+**Coherence and grounding answer different questions.** Grounding checks "is
+the fact in the research"; coherence checks "does this slide earn its place in
+THIS deck". A perfectly grounded slide can still drift — a flight-attendant
+demographics chart inside a first-impressions deck. The second check is a
+reading-comprehension call, so it needs a model review with a small findings
+schema, and the fix must name the exact reframe or the rewrite drifts again.
+
 ## Session / tooling
 
 **A vision model saying "clean" proves nothing until you verify it can see.**

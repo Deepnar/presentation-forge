@@ -109,7 +109,12 @@ dark-neon, Linear, Material You, flat, retro-terminal, newsprint, Notion,
 Alegria, corporate blue, nature organic, blueprint, high-contrast mono,
 risograph, letterpress, paper pastel, sci-fi HUD) and plated ones
 (glassmorphism, claymorphism, neumorphism, aurora-mesh, soft glass, sunset,
-gradient mesh dark, retro CRT). Layout-LEVEL distinctness is carried by
+gradient mesh dark, retro CRT). Theme cards carry NEUTRAL specimens — "Title" /
+"subtitle line" placeholders on the theme's own proportions (16/8 title band,
+16/5 content strip), never real deck content — so the card shows the design,
+not someone else's slides; the type-swap gallery's specimen slides are neutral
+the same way (`src/specimens.js` prefers hand-written neutral payloads over
+demo-deck content). Layout-LEVEL distinctness is carried by
 per-theme flags the layouts read (`tokens.editorial`, `tokens.bauhaus`) and
 falls back to the default when absent. The themes rely on the fitter's family
 table — its per-family advance estimates are what keep a one-line title on one
@@ -364,8 +369,11 @@ The TOC's page numbers are real, not hand-typed: the render is two-pass. The
 first pass renders to a temp .docx, `libreofficeToPdf` (a helper shared with
 `src/preview.js`) converts it, pdftotext locates the page each numbered heading
 lands on, and the final pass writes those numbers. The first section starts on
-a fresh page like the donor's Abstract, and the two page-breaks after the cover
-reproduce the donor's blank second page.
+a fresh page like the donor's Abstract. Exactly ONE page break follows the
+cover and ONE follows the TOC, and section 1 needs no pageBreakBefore of its
+own — the doubled breaks the renderer used to emit produced blank pages 2-3
+whenever a cover or TOC ended near a page boundary, and the single-break layout
+is verified blank-page-free by rasterising a real report.
 
 Content shape (`schema/report.schema.json`): each of the eight sections is
 `paragraphs` plus an optional borderless `table` (bold header, like the
@@ -419,6 +427,28 @@ critic does — the instruction is human-typed instead of vision-derived — and
 both call `runTurn` (`src/ai/turn.js`). The look-ahead seam is enforced in code:
 `runChatTurn` requires `deck.yaml` to exist, because *turn = edit an existing
 deck* and *generate = build from empty* are deliberately different paths.
+
+**The input bar knows WHICH slides you mean.** Once a deck is ready a ~40% side
+panel sits beside the thread (the chat shifts left) showing every rendered
+slide scrollable (`SlideSelectPanel.jsx`). Selecting one or many and typing
+builds the turn context from the selection — each chosen slide's 1-based index,
+type, headline and content excerpt — so "add more content to THIS slide" can no
+longer drift. The deck view's lightbox writes the focused slide into a
+module-level `deckContext` store, so opening slide 4 there and returning to the
+chat makes "make THIS punchier" resolve to that slide. The panel also carries
+per-slide actions (punch-up, type swap) over the selected set, through the same
+endpoints the deck view's toolbar uses. A leading `/` in the input is parsed
+before the turn runs (`lib/slash.js`): `/theme`, `/density`, `/slides`, `/papers`,
+`/report` and `/help` map to direct actions with an inline confirmation, and an
+unknown command gets a helpful reply instead of being forwarded as a prompt.
+The composer is an auto-growing textarea (44px up to a ~152px cap, then
+scrolls).
+
+**The briefing reaches the planner verbatim.** The full briefing record — team,
+guide, academic, audience, emphasis, theme, density, branding, slide count — is
+sent as an explicit "The user answered: …" block alongside the research brief,
+and the planner is told to always produce a complete talk (title → intro →
+body → conclusion/closing) regardless of what the brief says.
 
 **Memory model — state over transcript.** The thread is three tiers:
 
@@ -500,6 +530,56 @@ draws a placeholder for a null source — so a model that puts
 deck that fails at write time. Both the planner and the writer are told to avoid
 image-requiring types unless the brief names real files.
 
+## The coherence pass — every slide must serve the deck's topic
+
+Grounding proves the facts; coherence proves the argument. A slide can be
+perfectly grounded and still not belong — the soft-skills deck shipped a
+flight-attendant demographics chart inside a first-impressions deck, real data
+with no link to the deck's point, and a presenter could not voice the "so what".
+
+`src/ai/coherence.js` is the post-generation review that catches this. After
+generation (`generateFromPlan`) and after a density sweep (`sweepDensity`) it:
+
+1. **Reviews** the finished deck against its title and sections with one
+   bounded call (the critic's small-schema lesson): each slide is flagged for
+   either *topical drift* (headline and content do not serve the deck's central
+   topic or this section) or *framing* (data without a point — no implied "so
+   what" a presenter can voice).
+2. **Rewrites** every flagged slide through `runTurn` with a per-slide fix
+   instruction naming the exact reframe, capped at two rounds like the critic.
+3. **Re-grounds and re-trims** the fixed deck, so a fix never trades a
+   coherence problem for an ungrounded claim or an overfull slide.
+
+The writer prompts carry the framing rule as a first line of defence: the
+headline is a claim, the body is its support, and a grounded fact that does not
+serve THIS deck's argument is not used — even if it is in the research. The
+report section writer carries the same rule, and the report planner must agree
+with the deck's approved outline, so both artefacts stay coherent with the same
+topic.
+
+## The placeholder gate — a degraded slide must never ship as content
+
+When a slide's generation fails (cut-short JSON, a model that never lands a
+slide), the writer writes a validating placeholder so the deck stays whole and
+the promised count holds. The placeholder used to read like real content —
+"Details in the full briefing." sailed into committed decks.
+
+`src/placeholders.js` is the single seam that recognises placeholders by their
+marker text (current and historical phrasing), and three layers make them
+impossible to miss:
+
+- **The render gate.** A real render (`write: true`) of a deck with any
+  placeholder slide throws, returning a 422 that names every placeholder slide.
+  The trim loop and preview pass render in-memory so audits still run; only
+  shipping is refused.
+- **The problems list.** `generateDeck` gives each surviving placeholder one
+  dedicated regeneration attempt after the write loop, then flags any that
+  remain into `problems[]` ("slide N (bullets) is a PLACEHOLDER — it must be
+  regenerated before this deck is presented").
+- **The deck view.** A red "Needs regeneration" panel lists every placeholder
+  slide with a per-slide Regenerate button (a scoped chat turn that rewrites
+  the slide from research), plus a badge on each affected slide card.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
@@ -518,8 +598,12 @@ restores where the user was).
 **Entry flow — landing-first.** The `#/home` landing page is the front door.
 An unauthenticated visitor lands on it whatever the hash (an auth-gated deep
 link redirects there, and its hash survives so login can honour it); the
-landing carries the Log in / Sign up actions that open the `AuthModal`. The
-constant landing after login/register is a fresh **New chat** — the account's
+landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the
+rest as quiet text links (Log in, Browse themes), so a visitor sees a single
+button instead of a wall of them. The actions open the `AuthModal`, which is
+now a **split screen**: a visual left half (logo, the product tagline, a live
+strip of theme specimens) beside a clean sign-up/login card labelled "Sign up".
+The constant landing after login/register is a fresh **New chat** — the account's
 empty thread is reused if one exists, else minted — never the last route,
 never the decks list. The boot effect honours only an explicitly-opened
 artefact deep link (`#/deck/<slug>`, `#/report/…`, `#/research/…`); a chat id
@@ -529,21 +613,21 @@ left in the URL is the last route, not a deep link, so it resets to a bare
 - **`HeaderBar`** — the wordmark is a real `<a href="#/chat">` (middle-click
   opens a new tab), the sidebar collapse toggle, a **Tour** anchor to `#/home`
   (the README's replacement; the raw doc stays at `GET /api/docs` for
-  developers only) and the GitHub link. When a cloud provider is configured it
-  shows the LOCAL/CLOUD toggle, which writes the routing preference and flips
-  the client model-mode store so every picker filters to that mode; CLOUD is
-  only reachable when a key is attached, and without one the button points at
-  Settings/Cloud. The account entry lives here too: name + Logout when in
-  (Login/Register now happen on the landing's auth modal).
+   developers only) and the GitHub link. When a cloud provider is configured it
+   shows the LOCAL/CLOUD toggle, which writes the routing preference and flips
+   the client model-mode store so every picker filters to that mode; CLOUD is
+   only reachable when a key is attached, and without one the button points at
+   Settings/Cloud. The account entry is a quiet name chip — login/register live
+   on the landing's auth modal, and logout moved to the sidebar's profile chip.
 - **`Home`** — the landing tour at `#/home`, the front door. For a visitor it
-  adds a slim auth bar (Log in / Sign up → the auth modal) and routes the
-  hero's "Start a chat" to register; for a signed-in user the same page is the
-  tour. Hero with the "the app does the bulk, you do the final touches"
-  framing and "Bulk by machine, polish by you", the pipeline as a designed
-  icon flow, how-it-works cards, a live theme carousel (reusing the specimen
-  renderer), a local-vs-cloud split, a capability grid and a footer strip.
-  Sections scroll-reveal on the shell keyframe via an IntersectionObserver;
-  reduced motion shows them immediately.
+   adds a slim auth bar (a single "Log in" link — the hero's one strong CTA is
+   "Start a chat", which routes to register) and the tour; for a signed-in user
+   the same page is the tour. Hero with the "the app does the bulk, you do the
+   final touches" framing and "Bulk by machine, polish by you", the pipeline as
+   a designed icon flow, how-it-works cards, a live theme carousel (reusing the
+   specimen renderer), a local-vs-cloud split, a capability grid and a footer
+   strip. Sections scroll-reveal on the shell keyframe via an IntersectionObserver;
+   reduced motion shows them immediately.
 - **`ParticleField`** — an ambient canvas dot-field behind the whole shell: a
   fine stipple drifts on two-axis sine wander so it moves without the pointer,
   and repels gently around it. Tuned as "drifting embers" — base opacity
@@ -570,7 +654,11 @@ left in the URL is the last route, not a deep link, so it resets to a bare
   copy-link work, and carries a hover "⋯" popover: a chat deletes locally, a
   deck opens or deletes server-side (`DELETE /api/decks/:slug`, behind a
   confirm modal). Deck names clamp to two lines so long titles stop truncating
-  to initials. The one creation entry app-wide lives here, "+ New chat".
+  to initials. The one creation entry app-wide lives here, "+ New chat". The
+  footer's bottom-left is a **profile chip** (`ProfileChip.jsx`) — avatar +
+  name, avatar-only in the collapsed rail — that opens a CENTERED modal: the
+  identity the AI drafts from (institution, guide, team, subject, year) with an
+  Edit-in-Identity door, the cloud status, and logout behind the shared confirm.
 - **`ChatView`** — the chat window IS the app. A message thread with the input
   bar at the bottom: send a topic, the assistant walks the guided briefing one
   question at a time (each with a default), then a summary card whose "Plan the
@@ -627,18 +715,22 @@ left in the URL is the last route, not a deep link, so it resets to a bare
   reverse flow), and — after a render — **the rasterised pages of the actual
   document** under "The rendered document" (LibreOffice → PDF → PNG via
   `reportPreview` in `src/preview.js`), so what the user sees is the real Word
-  output. It is the land target of the sidebar's Reports tab and of the home
-  "from a brief" flow; a missing report renders an empty state. Each section
-   also offers *Add as slide*, which appends the section's prose as a bullets
-   slide of the companion deck — the report-as-deck hybrid (F20). Render .docx
-   and the Download link are gated by the report's **write state**: a report
-   generation in flight for this slug (started from the deck's Report panel) is
-   mirrored in the module-level `lib/reportWrites.js` registry (slug-keyed, the
-   report counterpart of `runs.js`), and the view subscribes — while the write
-   runs, Render .docx / Download / Plan / Add-as-slide disable with the write's
-   status and a Stop affordance, so a report being rewritten can never be
-   double-rendered. The Download link only appears after a render exists, and
-   the Render button's spinner shows during both a write and a render.
+   output. It is the land target of the sidebar's Reports tab and of the home
+   "from a brief" flow; a missing report renders an empty state. Each section
+    also offers *Add as slide*, which appends the section's prose as a bullets
+    slide of the companion deck — the report-as-deck hybrid (F20). Render .docx
+    and the Download link are gated by the report's **write state**: a report
+    generation in flight for this slug (started from the deck's Report panel) is
+    mirrored in the module-level `lib/reportWrites.js` registry (slug-keyed, the
+    report counterpart of `runs.js`), and the view subscribes — while the write
+    runs, Render .docx / Download / Plan / Add-as-slide disable with the write's
+    status and a Stop affordance, so a report being rewritten can never be
+    double-rendered. The write and the render share ONE busy state, so a
+    "Writing section N of M" can never leave a stuck "Rendering…" behind — the
+    registry's `end()` fires the terminal patch that clears it. The Download
+    link is derived from server state, not component state: the report GET
+    probes whether `out/report.docx` exists, so re-opening the view shows
+    Download immediately without a re-render.
 - **Deck detail actions.** The header's action row wires the Part-2 features:
   a Dark/Light toggle that remembers `meta.yaml`'s `mode`, PDF and Markdown
   export (`src/export.js`, reusing the LibreOffice converter for the PDF),
@@ -736,12 +828,16 @@ usable end-to-end.
   resolve environment-first, then from `config/local.yaml` — the gitignored
   file the Settings panel writes — so attaching a key never requires exporting
   anything. No code path returns a key value: status is booleans and labels,
-  and the connection test reports success/failure text only.
+  and the connection test reports success/failure text only. A provider's
+  model list is the static `models:` array when declared, otherwise it is
+  fetched live from `GET {baseURL}/models` (key-gated, best-effort, both the
+  `{data:[{id}]}` and string-array shapes) — so a hosted box whose provider
+  does not curate a list still gets a working picker.
 - **The Settings/Cloud panel** (bottom of the Identity view) explains what the
-  key is for, shows the provider/baseURL/model list, and offers save, remove
-  and test actions wired to `GET/PUT/DELETE /api/cloud/key` and
-  `POST /api/cloud/test`. The write path lands in `config/local.yaml`, never
-  the repo.
+  key is for, shows the provider/baseURL/model list under "Models this host
+  has enabled", and offers save, remove and test actions wired to
+  `GET/PUT/DELETE /api/cloud/key` and `POST /api/cloud/test`. The write path
+  lands in `config/local.yaml`, never the repo.
 - **Routing.** A `model` override in a request that names one of a cloud
   provider's `models:` list routes that request to the provider instead of a
   (likely absent) local pull — that is how picking `deepseek-v4-flash` in the
