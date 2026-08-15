@@ -548,7 +548,6 @@ export async function generateFromPlan({
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
     problems: [
-      ...(r.problems ?? []),
       ...tr.grounded.problems,
       ...(res.problems ?? []),
       ...(coherence?.problems ?? []),
