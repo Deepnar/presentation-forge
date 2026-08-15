@@ -38,6 +38,13 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
   const [exportOpen, setExportOpen] = useState(false);
+  const [overflowOpen, setOverflowOpen] = useState(false);
+  const overflowRef = useRef(null);
+  // Render dirty: deck.yaml (or the theme/style/mode override) changed since
+  // the last render. The server computes the deck.yaml-vs-pptx half from
+  // mtimes; theme/style/mode never touch deck.yaml, so every local change to
+  // them also flips the flag. Render is disabled with "Up to date" when clean.
+  const [renderDirty, setRenderDirty] = useState(false);
   // The content-density sweep: rewrite all slide content at a chosen density,
   // keeping structure, types and presenters. density = current deck density.
   const [density, setDensity] = useState("balanced");
@@ -67,18 +74,19 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
 
   // The Export menu closes on outside click and Escape.
   useEffect(() => {
-    if (!exportOpen) return;
+    if (!exportOpen && !overflowOpen) return;
     const onDown = (e) => {
-      if (exportRef.current && !exportRef.current.contains(e.target)) setExportOpen(false);
+      if (exportOpen && exportRef.current && !exportRef.current.contains(e.target)) setExportOpen(false);
+      if (overflowOpen && overflowRef.current && !overflowRef.current.contains(e.target)) setOverflowOpen(false);
     };
-    const onKey = (e) => { if (e.key === "Escape") setExportOpen(false); };
+    const onKey = (e) => { if (e.key === "Escape") { setExportOpen(false); setOverflowOpen(false); } };
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("keydown", onKey);
     };
-  }, [exportOpen]);
+  }, [exportOpen, overflowOpen]);
 
   useEffect(() => {
     // refreshToken bumps after a chat turn or report generate, so a deck
@@ -95,6 +103,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       setStyle(r.deck.style ?? "");
       setMode(r.meta?.mode ?? null);
       setDensity(r.meta?.density ?? "balanced");
+      setRenderDirty(r.dirty ?? true);
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
@@ -168,6 +177,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
     setFuture([]);
     api.saveDeck(slug, nextDeck, data?.meta)
       .then(() => {
+        setRenderDirty(true);
         clearTimeout(renderTimer.current);
         setSyncing(true);
         renderTimer.current = setTimeout(runRender, 450);
@@ -192,6 +202,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         setPast((p) => [...p, current].slice(-20));
       }
       api.saveDeck(slug, restore, data?.meta).catch((e) => setProblems([e.message]));
+      setRenderDirty(true);
       clearTimeout(renderTimer.current);
       setSyncing(true);
       renderTimer.current = setTimeout(runRender, 450);
@@ -229,6 +240,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
       } : d));
       setProblems(r.problems ?? []);
+      setRenderDirty(false);
     } catch (err) {
       setProblems([err.message, ...(err.errors ?? [])]);
     } finally {
@@ -268,6 +280,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         const stamp = Date.now();
         setData((d) => (d ? {
           ...d,
+          meta: { ...(d.meta ?? {}), density: r.density },
           slides: r.slides.map((s) => `${s}?t=${stamp}`),
           thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
         } : d));
@@ -365,6 +378,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       }
       next.slides[idx] = target;
       await api.saveDeck(slug, next, data?.meta);
+      setRenderDirty(true);
       clearTimeout(renderTimer.current);
       setSyncing(true);
       renderTimer.current = setTimeout(runRender, 450);
@@ -390,6 +404,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   function toggleMode() {
     const next = mode === "dark" ? "light" : "dark";
     setMode(next);
+    setRenderDirty(true);
     const meta = { ...(data?.meta ?? {}), mode: next };
     api.saveDeck(slug, deck, meta).catch((e) => setActionErr(e.message));
     clearTimeout(renderTimer.current);
@@ -404,6 +419,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
         } : d));
         setProblems(r.problems ?? []);
+        setRenderDirty(false);
       })
       .catch((e) => setProblems([e.message]))
       .finally(() => setSyncing(false));
@@ -448,6 +464,30 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       .catch((e) => setActionErr(e.message));
   }
 
+  /**
+   * Export's "Speaker script" item: download decks/<slug>/script.md, generating
+   * it first if it has never been written. The user's flow is "at the end if I
+   * want" — a button, never automatic.
+   */
+  function doScriptExport() {
+    setActionErr("");
+    const download = () => {
+      const a = document.createElement("a");
+      a.href = `/api/decks/${slug}/download/script.md`;
+      a.download = "script.md";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    };
+    api.script(slug)
+      .then(async (r) => {
+        if (r.exists) return download();
+        await api.generateScript(slug, {}, {}).promise;
+        download();
+      })
+      .catch((e) => setActionErr(e.message));
+  }
+
   function toggleVersions() {
     setVersions((v) => (v === null ? "loading" : null));
     if (versions === null) {
@@ -478,6 +518,10 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const types = slides.map((s) => s.type);
   const themeName = theme || deck.theme;
   const themeLabel = themes.find((t) => t.name === themeName)?.label ?? themeName;
+  // Re-sweep is gated on the chosen density differing from the density the
+  // content was last written at — the user's "we didn't change the setting,
+  // yet we can still click it" complaint.
+  const sweepDirty = density !== (data?.meta?.density ?? "balanced");
 
   function onMove(i, dir) {
     const next = moveSlide(slides, i, dir);
@@ -542,123 +586,156 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <select
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              className={selectCls}
+        <div className="flex flex-col items-end gap-2.5">
+          {/* Settings — what the deck renders with. The action that applies
+              them sits beside them so "why is this here" reads at a glance. */}
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="relative">
+              <select
+                value={theme}
+                onChange={(e) => { setTheme(e.target.value); setRenderDirty(true); }}
+                title="Theme — the design language the deck renders in. Changing it marks the render stale."
+                className={selectCls}
+              >
+                <option value="">from deck.yaml</option>
+                {themes.map((t) => (
+                  <option key={t.name} value={t.name}>{t.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+            </div>
+
+            <div className="relative">
+              <select
+                value={style}
+                onChange={(e) => { setStyle(e.target.value); setRenderDirty(true); }}
+                title="Style — a cross-cutting density/layout variant on top of the theme"
+                className={selectCls}
+              >
+                <option value="">theme default</option>
+                {styles.map((s) => (
+                  <option key={s.name} value={s.name}>{s.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+            </div>
+
+            <div className="relative">
+              <select
+                value={density}
+                onChange={(e) => setDensity(e.target.value)}
+                title="Content density — how much text each slide carries. The Re-sweep button rewrites the deck's content at the chosen density."
+                className={selectCls}
+              >
+                <option value="sparse">Sparse</option>
+                <option value="balanced">Balanced</option>
+                <option value="dense">Dense</option>
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={sweep}
+              disabled={busy || sweeping || !sweepDirty}
+              title={sweepDirty
+                ? "Re-sweep — rewrite every slide's content at the chosen density. Keeps structure, types and presenters; content comes from the same research."
+                : "Re-sweep is disabled: the content is already at this density. Change the density to rewrite it."}
             >
-              <option value="">from deck.yaml</option>
-              {themes.map((t) => (
-                <option key={t.name} value={t.name}>{t.label}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+              {sweeping ? <Spinner /> : null}
+              {sweeping ? sweepMsg.slice(0, 26) : "Re-sweep"}
+            </Button>
           </div>
 
-          <div className="relative">
-            <select
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              title="Style — a cross-cutting density/layout variant on top of the theme"
-              className={selectCls}
+          {/* Primary actions — Render when something changed, download the file,
+              Export the extras, ⋯ for the rare housekeeping. */}
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button
+              variant="primary"
+              onClick={rerender}
+              disabled={busy || !renderDirty}
+              title={renderDirty
+                ? "Render — the deck or its theme/style/mode changed since the last render. Turns deck.yaml into a fresh .pptx and refreshes the previews."
+                : "Up to date — the rendered slides already match the deck. The dot appears when a change needs a new render."}
             >
-              <option value="">theme default</option>
-              {styles.map((s) => (
-                <option key={s.name} value={s.name}>{s.label}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
-          </div>
+              {busy && <Spinner />}
+              {busy ? "Rendering" : renderDirty ? "Render" : "Up to date"}
+              {renderDirty && !busy && <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-label="needs render" />}
+            </Button>
 
-          <div className="relative">
-            <select
-              value={density}
-              onChange={(e) => setDensity(e.target.value)}
-              title="Content density — rewrite every slide's content at this density"
-              className={selectCls}
+            <a
+              href={`/api/decks/${slug}/download/deck.pptx`}
+              title="Download the rendered PowerPoint file — the deck as a .pptx, named after the deck title"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-sm text-fg-muted transition hover:border-line-strong hover:text-fg"
             >
-              <option value="sparse">Sparse</option>
-              <option value="balanced">Balanced</option>
-              <option value="dense">Dense</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
+              <DownloadIcon className="h-3.5 w-3.5" />
+              .pptx
+            </a>
+
+            <div ref={exportRef} className="relative">
+              <ActionBtn onClick={() => setExportOpen((o) => !o)} title="Everything else you can take away from the deck — PDF, Markdown, a zip bundle, or the speaker script">
+                Export <ChevronDown className="h-3 w-3" />
+              </ActionBtn>
+              {exportOpen && (
+                <div className="fade-in absolute left-0 top-full z-30 mt-1.5 w-60 rounded-card border border-line bg-panel p-1.5 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)]">
+                  <MenuBtn onClick={() => { doExport("pdf"); setExportOpen(false); }}>PDF</MenuBtn>
+                  <MenuBtn onClick={() => { doExport("markdown"); setExportOpen(false); }}>Markdown (.md)</MenuBtn>
+                  <MenuBtn onClick={() => { doBundle(); setExportOpen(false); }}>Bundle (.zip)</MenuBtn>
+                  <MenuBtn onClick={() => { doScriptExport(); setExportOpen(false); }}>
+                    Speaker script (.md)
+                  </MenuBtn>
+                </div>
+              )}
+            </div>
+
+            <div ref={overflowRef} className="relative">
+              <ActionBtn onClick={() => setOverflowOpen((o) => !o)} title="Clone deck, version history, dark mode">
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" />
+                </svg>
+              </ActionBtn>
+              {overflowOpen && (
+                <div className="fade-in absolute left-0 top-full z-30 mt-1.5 w-52 rounded-card border border-line bg-panel p-1.5 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)]">
+                  <MenuBtn onClick={() => { doClone(); setOverflowOpen(false); }}>Clone deck</MenuBtn>
+                  <MenuBtn onClick={() => { setOverflowOpen(false); toggleVersions(); }}>Versions</MenuBtn>
+                  <MenuBtn onClick={() => { toggleMode(); setOverflowOpen(false); }}>
+                    {mode === "dark" ? "Light mode" : "Dark mode"}
+                  </MenuBtn>
+                </div>
+              )}
+              {versions && (
+                <div className="absolute left-0 top-full z-30 mt-1.5 w-80 rounded-card border border-line bg-panel p-2 shadow-lg">
+                  <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Version history</div>
+                  {versions === "loading" ? (
+                    <div className="px-1.5 py-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
+                  ) : versions.length === 0 ? (
+                    <div className="px-1.5 py-2 text-[12px] leading-relaxed text-fg-muted">
+                      No backups yet — saving this deck snapshots the previous deck.yaml.
+                    </div>
+                  ) : (
+                    <ul className="max-h-64 space-y-0.5 overflow-y-auto">
+                      {versions.map((v) => (
+                        <li key={v.file} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-hover">
+                          <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">
+                            {new Date(v.at).toLocaleString()}
+                          </span>
+                          <button
+                            onClick={() => restoreVersion(v.file)}
+                            className="shrink-0 rounded border border-line px-1.5 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg"
+                          >
+                            Restore
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-
-          <Button
-            variant="outline"
-            onClick={sweep}
-            disabled={busy || sweeping}
-            title="Rewrite all slide content at this density — keeps structure, types and presenters"
-          >
-            {sweeping ? <Spinner /> : null}
-            {sweeping ? sweepMsg.slice(0, 26) : "Re-sweep"}
-          </Button>
-
-          <Button variant="primary" onClick={rerender} disabled={busy}>
-            {busy && <Spinner />}
-            {busy ? "Rendering" : "Render"}
-          </Button>
-
-          <a
-            href={`/api/decks/${slug}/download/deck.pptx`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-sm text-fg-muted transition hover:border-line-strong hover:text-fg"
-          >
-            <DownloadIcon className="h-3.5 w-3.5" />
-            .pptx
-          </a>
+          {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
         </div>
       </header>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <div ref={exportRef} className="relative">
-          <ActionBtn onClick={() => setExportOpen((o) => !o)} title="PDF, Markdown, bundle, clone, versions, mode">
-            Export <ChevronDown className="h-3 w-3" />
-          </ActionBtn>
-          {exportOpen && (
-            <div className="fade-in absolute left-0 top-full z-30 mt-1.5 w-56 rounded-card border border-line bg-panel p-1.5 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <MenuBtn onClick={() => { doExport("pdf"); setExportOpen(false); }}>PDF</MenuBtn>
-              <MenuBtn onClick={() => { doExport("markdown"); setExportOpen(false); }}>Markdown (.md)</MenuBtn>
-              <MenuBtn onClick={() => { doBundle(); setExportOpen(false); }}>Bundle (.zip)</MenuBtn>
-              <MenuBtn onClick={() => { doClone(); setExportOpen(false); }}>Clone deck</MenuBtn>
-              <MenuBtn onClick={() => { setExportOpen(false); toggleVersions(); }}>Versions</MenuBtn>
-              <MenuBtn onClick={() => { toggleMode(); setExportOpen(false); }}>
-                {mode === "dark" ? "Light mode" : "Dark mode"}
-              </MenuBtn>
-            </div>
-          )}
-        </div>
-        {versions && (
-          <div className="absolute left-0 top-full z-30 mt-1.5 w-80 rounded-card border border-line bg-panel p-2 shadow-lg">
-            <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">Version history</div>
-            {versions === "loading" ? (
-              <div className="px-1.5 py-2 text-[12px] text-fg-muted"><Spinner /> Loading…</div>
-            ) : versions.length === 0 ? (
-              <div className="px-1.5 py-2 text-[12px] leading-relaxed text-fg-muted">
-                No backups yet — saving this deck snapshots the previous deck.yaml.
-              </div>
-            ) : (
-              <ul className="max-h-64 space-y-0.5 overflow-y-auto">
-                {versions.map((v) => (
-                  <li key={v.file} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-hover">
-                    <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">
-                      {new Date(v.at).toLocaleString()}
-                    </span>
-                    <button
-                      onClick={() => restoreVersion(v.file)}
-                      className="shrink-0 rounded border border-line px-1.5 py-0.5 text-[10.5px] text-fg-faint transition hover:border-line-strong hover:text-fg"
-                    >
-                      Restore
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-        {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
-      </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ReportPanel
@@ -672,6 +749,10 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           onOpenReport={onOpenReport}
         />
         <ResearchCard slug={slug} onOpen={onOpenResearch} />
+      </div>
+
+      <div className="mt-6">
+        <ScriptPanel slug={slug} />
       </div>
 
       {placeholders.length > 0 && (
@@ -1143,6 +1224,10 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
     return () => reportWrites.unsubscribe(slug, onPatch);
   }, [slug]);
 
+  /** The one report action: write the content (SSE), then draw the .docx and
+   *  download it. "Generate report" for a fresh deck, "Generate / Update
+   *  report" once one exists — a single affordance, never a separate Render
+   *  .docx step to discover. */
   async function generate() {
     setBusy(true);
     setError("");
@@ -1157,19 +1242,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
     try {
       await j.promise;
       onGenerated();
-    } catch (err) {
-      setError(err.name === "AbortError" ? "Cancelled." : err.message);
-      setStatus("");
-    } finally {
-      setBusy(false);
-      reportWrites.end(slug);
-    }
-  }
-
-  async function renderDoc() {
-    setBusy(true);
-    setError("");
-    try {
+      setStatus("Rendering…");
       const r = await api.renderReport(slug);
       setResult(r);
       // Rasterised pages of the actual .docx — the report as it opens in Word.
@@ -1180,10 +1253,20 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
           thumbs: (r.previewThumbs ?? r.previewPages).map((s) => `${s}?t=${stamp}`),
         });
       }
+      // One click → rendered document on disk: the report is the graded
+      // artefact, so the flow ends in a download of the real .docx.
+      const a = document.createElement("a");
+      a.href = `/api/decks/${slug}/download/report.docx`;
+      a.download = "report.docx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     } catch (err) {
-      setError(err.message);
+      setError(err.name === "AbortError" ? "Cancelled." : err.message);
+      setStatus("");
     } finally {
       setBusy(false);
+      reportWrites.end(slug);
     }
   }
 
@@ -1202,7 +1285,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
 
       {!hasReport ? (
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-[13px] text-fg-muted">Generate a graded report from this deck's research and outline.</span>
+          <span className="text-[13px] text-fg-muted">Generate a graded report from this deck's research and outline — it renders the .docx and downloads it in one step.</span>
           <div className="relative">
             <select value={depth} onChange={(e) => setDepth(e.target.value)} title="Report depth" className={selectCls}>
               <option value="full">Full depth</option>
@@ -1219,7 +1302,7 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
           </div>
           <Button variant="primary" size="sm" onClick={generate} disabled={busy || writing}>
             {(busy || writing) && <Spinner />}
-            {busy || writing ? "Generating…" : "Generate report"}
+            {busy || writing ? "Working…" : "Generate report"}
           </Button>
         </div>
       ) : (
@@ -1229,23 +1312,21 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
               {result.sections.length} sections · {pageCount(result.pages)} pages
             </span>
           ) : (
-            <span className="text-[13px] text-fg-muted">A report already exists for this deck.</span>
+            <span className="text-[13px] text-fg-muted">A report already exists — Generate / Update rewrites it, then renders and downloads the .docx.</span>
           )}
-          <Button variant="outline" size="sm" onClick={renderDoc} disabled={busy || writing}>
+          <div className="relative">
+            <select value={depth} onChange={(e) => setDepth(e.target.value)} title="Report depth for the update" className={selectCls}>
+              <option value="full">Full depth</option>
+              <option value="brief">Brief</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+          </div>
+          <Button variant="primary" size="sm" onClick={generate} disabled={busy || writing}>
             {(busy || writing) && <Spinner />}
-            {busy || writing ? "Rendering…" : "Render .docx"}
+            {busy || writing ? "Working…" : "Generate / Update report"}
           </Button>
-          {result && !writing && (
-            <a
-              href={`/api/decks/${slug}/download/report.docx`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-[12.5px] text-fg-muted transition hover:border-line-strong hover:text-fg"
-            >
-              <DownloadIcon className="h-3.5 w-3.5" />
-              Download report.docx
-            </a>
-          )}
           {onOpenReport && (
-            <Button variant="ghost" size="sm" onClick={() => onOpenReport(slug)} title="Open the report's full document view">
+            <Button variant="ghost" size="sm" onClick={() => onOpenReport(slug)} title="Open the report's full document view — pages, download, companion deck">
               Open report view
             </Button>
           )}
@@ -1304,11 +1385,12 @@ function pageCount(pages) {
 function ResearchCard({ slug, onOpen }) {
   const [summary, setSummary] = useState(null);
   const [exists, setExists] = useState(false);
+  const [figureCount, setFigureCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api.research(slug)
-      .then((r) => { setExists(r.exists); setSummary(r.summary ?? null); })
+      .then((r) => { setExists(r.exists); setSummary(r.summary ?? null); setFigureCount(r.figures?.length ?? 0); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [slug]);
@@ -1334,6 +1416,11 @@ function ResearchCard({ slug, onOpen }) {
                   + (summary.paperCount ? ` · ${summary.paperCount} paper` : "")}
             </span>
           )}
+          {figureCount > 0 && (
+            <span className="block text-[11.5px] text-fg-faint">
+              {figureCount} figure{figureCount === 1 ? "" : "s"} the deck claims — cross-check them in the research view.
+            </span>
+          )}
         </div>
       )}
       <div className="mt-auto pt-2">
@@ -1341,6 +1428,117 @@ function ResearchCard({ slug, onOpen }) {
           Open full research
         </Button>
       </div>
+    </Panel>
+  );
+}
+
+/**
+ * The speaker-script panel — the words each presenter says aloud, slide by
+ * slide. A script is a button, never automatic: the user asked for it "at the
+ * end if they want". Each slide renders as its own card so an edit can
+ * regenerate just that slide's words (one scoped model call, the established
+ * small-grammar pattern), and the whole thing downloads as markdown.
+ */
+function ScriptPanel({ slug }) {
+  const [state, setState] = useState(null); // null = loading
+  const [busy, setBusy] = useState(false);
+  const [regenerating, setRegenerating] = useState(null); // slide index | "all"
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
+
+  const refresh = useCallback(() => {
+    api.script(slug).then(setState).catch(() => setState({ exists: false, slides: [] }));
+  }, [slug]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  function run(index) {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    setRegenerating(index ?? "all");
+    setMsg(index == null ? "Writing the speaker script…" : `Rewriting slide ${index + 1}'s words…`);
+    api.generateScript(slug, index == null ? {} : { index }, {
+      status: (p) => {
+        if (p?.index != null && p?.total != null) setMsg(`Writing slide ${p.index + 1} of ${p.total}…`);
+      },
+      result: () => refresh(),
+    }).promise
+      .catch((e) => setError(e.message))
+      .finally(() => { setBusy(false); setRegenerating(null); setMsg(""); });
+  }
+
+  return (
+    <Panel className="p-4">
+      <div className="mb-1 flex items-center justify-between">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Speaker script</div>
+        {state?.exists && (
+          <div className="flex items-center gap-2">
+            <a
+              href={`/api/decks/${slug}/download/script.md`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-[11.5px] text-fg-muted transition hover:border-line-strong hover:text-fg"
+              title="Download script.md — the full speaker script"
+            >
+              <DownloadIcon className="h-3 w-3" />
+              Download .md
+            </a>
+            <Button size="sm" variant="outline" onClick={() => run(null)} disabled={busy}>
+              {regenerating === "all" ? <Spinner /> : null}
+              Regenerate all
+            </Button>
+          </div>
+        )}
+      </div>
+      <p className="text-[12px] leading-relaxed text-fg-muted">
+        The words each presenter says aloud — the full argument behind each slide's bullets, in the presenter's voice, grounded in the deck's research. Roughly 60–90 seconds per slide.
+      </p>
+
+      {!state ? (
+        <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-faint"><Spinner /> Loading…</div>
+      ) : !state.exists ? (
+        <div className="mt-3 flex flex-wrap items-center gap-2.5">
+          <span className="text-[12.5px] text-fg-muted">
+            No script yet — generate one when you need it: what you say goes beyond what the slide says.
+          </span>
+          <Button size="sm" variant="primary" onClick={() => run(null)} disabled={busy}>
+            {regenerating === "all" ? <Spinner /> : null}
+            Generate speaker script
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-3 space-y-2">
+          {state.slides.map((s) => (
+            <div key={s.index} className="rounded-card border border-line bg-panel p-3">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10.5px] tabular-nums text-fg-faint">
+                  {String(s.index + 1).padStart(2, "0")}
+                </span>
+                <span className="rounded bg-raised px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-wider text-fg-faint">{s.type}</span>
+                <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-fg">{s.headline}</span>
+                <span className="shrink-0 text-[11px] text-fg-faint">{s.presenter ?? "—"}</span>
+                <button
+                  onClick={() => run(s.index)}
+                  disabled={busy}
+                  title="Regenerate this slide's words — keeps the other slides' scripts"
+                  className="shrink-0 rounded-md border border-line px-2 py-1 text-[11px] text-fg-muted transition hover:border-line-strong hover:text-fg disabled:opacity-40"
+                >
+                  {regenerating === s.index ? <Spinner className="h-3 w-3" /> : "Regenerate"}
+                </button>
+              </div>
+              <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">
+                {s.written ? s.body : "Not written yet — regenerate this slide to write its words."}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {msg && (
+        <div className="mt-2.5 flex items-center gap-2 text-[12px] text-fg-muted"><Spinner /> {msg}</div>
+      )}
+      {error && (
+        <div className="mt-2.5 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">{error}</div>
+      )}
     </Panel>
   );
 }
