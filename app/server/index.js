@@ -853,7 +853,13 @@ app.get("/api/decks/:slug/report", wrap(async (req, res) => {
   try {
     identity = await loadIdentity(dir);
   } catch { /* identity may be absent on a bare clone */ }
-  ok(res, { report, identity });
+  // The rendered .docx is server state, not component state — probing it here
+  // is what lets the report view show a Download link on reopen without
+  // re-rendering. A stale render (report.yaml changed since) is the user's
+  // call; we only report that a file exists.
+  let rendered = false;
+  try { await access(path.join(dir, "out", "report.docx")); rendered = true; } catch { /* not yet */ }
+  ok(res, { report, identity, rendered });
 }));
 
 /** Validate and save report content — same shape as the deck PUT. */

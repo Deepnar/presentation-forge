@@ -172,9 +172,8 @@ function bodyPara(text) {
   return `<w:p><w:pPr><w:spacing w:line="259" w:lineRule="auto"/><w:rPr>${BODY_RPR}</w:rPr></w:pPr>${t(text, BODY_RPR)}</w:p>`;
 }
 
-function sectionHeading(text, first) {
-  const pbb = first ? "<w:pageBreakBefore/>" : "";
-  return `<w:p><w:pPr><w:spacing w:line="259" w:lineRule="auto"/>${pbb}<w:rPr>${HEAD_RPR}</w:rPr></w:pPr>${t(text, HEAD_RPR)}</w:p>`;
+function sectionHeading(text) {
+  return `<w:p><w:pPr><w:spacing w:line="259" w:lineRule="auto"/><w:rPr>${HEAD_RPR}</w:rPr></w:pPr>${t(text, HEAD_RPR)}</w:p>`;
 }
 
 function caption(text) {
@@ -297,13 +296,16 @@ function contentTable({ header, rows }) {
   );
 }
 
-/** The body: cover, the donor's own two page-breaks, TOC, then the fixed
- *  sections in order. The first section starts on a fresh page like the
- *  donor's Abstract. Pure, so tests can assert on the XML directly. */
+/** The body: cover, ONE page break, TOC, ONE page break, then the fixed
+ *  sections in order. The single breaks reproduce the donor's cover-page and
+ *  TOC-page boundaries without the blank interior pages the doubled breaks
+ *  produced when a cover or TOC ended near a page boundary; the first section
+ *  follows the TOC's break directly, so it needs no pageBreakBefore of its
+ *  own. Pure, so tests can assert on the XML directly. */
 export function buildBody(report, identity, present, tocPages = {}, { includeToc = true } = {}) {
   const out = [cover(report, identity)];
   if (includeToc) {
-    out.push(pageBreak, pageBreak);
+    out.push(pageBreak);
     out.push(
       `<w:p><w:pPr><w:jc w:val="center"/><w:rPr>${TOC_HEAD_RPR}</w:rPr></w:pPr>${t("TABLE OF CONTENT", TOC_HEAD_RPR)}</w:p>`,
       tocTable(present, tocPages),
@@ -312,7 +314,7 @@ export function buildBody(report, identity, present, tocPages = {}, { includeToc
   out.push(pageBreak);
   present.forEach((name, i) => {
     const sec = report.content[name] ?? {};
-    out.push(sectionHeading(`${i + 1}. ${name}`, i === 0));
+    out.push(sectionHeading(`${i + 1}. ${name}`));
     for (const para of [...(sec.paragraphs ?? []), ...(sec.entries ?? [])]) {
       if (String(para).trim()) out.push(bodyPara(para));
     }

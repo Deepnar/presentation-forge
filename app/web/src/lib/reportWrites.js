@@ -34,6 +34,8 @@ export const reportWrites = {
   },
 
   end(slug) {
+    const r = store.get(slug);
+    if (r) for (const fn of r.subs) fn({ finished: true });
     store.delete(slug);
   },
 };

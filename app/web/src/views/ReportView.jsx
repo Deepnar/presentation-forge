@@ -27,7 +27,11 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
-  const [result, setResult] = useState(null);
+  // Whether a rendered report.docx exists on disk — SERVER state, so the
+  // Download link survives reopen/navigation without re-rendering. Probe on
+  // load, update after each render. The render result itself (preview pages)
+  // stays component state; the link is derived from this flag.
+  const [rendered, setRendered] = useState(false);
   const [preview, setPreview] = useState(null); // { pages, thumbs } after render
   const [notFound, setNotFound] = useState(false);
   // A report WRITE in flight for this slug — registered by whoever started the
@@ -38,7 +42,11 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   useEffect(() => {
     setNotFound(false);
     api.report(slug)
-      .then((r) => { setData(r.report); setIdentity(r.identity ?? {}); })
+      .then((r) => {
+        setData(r.report);
+        setIdentity(r.identity ?? {});
+        setRendered(r.rendered === true);
+      })
       .catch((e) => { setNotFound(e.status === 404); setError(e.message); });
     api.decks().then((r) => {
       const d = r.decks.find((x) => x.slug === slug);
@@ -48,7 +56,9 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
 
   // Adopt any in-flight report write for this slug (started from the deck's
   // Report panel or the chat) and disable the render/download/plan actions
-  // while it runs, showing its status and a Stop that aborts it.
+  // while it runs, showing its status and a Stop that aborts it. The write
+  // and the render share one busy state (`busy || writing` below), so a
+  // "Writing section N of M" can never leave a stuck "Rendering…" behind.
   useEffect(() => {
     const run = reportWrites.get(slug);
     if (run && !run.finished) setWriting({ status: run.status });
@@ -66,7 +76,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     setStatus("Rendering…");
     try {
       const r = await api.renderReport(slug);
-      setResult(r);
+      setRendered(true);
       // The rasterised preview pages — the report AS IT OPENS in Word.
       if (r.previewPages?.length) {
         const stamp = Date.now();
@@ -309,7 +319,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
             {(busy || writing) && <Spinner />}
             Render .docx
           </Button>
-          {result && !writing && (
+          {rendered && !writing && (
             <a
               href={`/api/decks/${slug}/download/report.docx`}
               className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13px] text-fg-muted transition hover:border-line-strong hover:text-fg"
