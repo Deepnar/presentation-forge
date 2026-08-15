@@ -272,7 +272,11 @@ textarea:focus {
 
 /* View switches: a short fade-and-rise on the shell's shared easing, driven by
    React's key on the main column so each view change re-runs it. Only opacity
-   and transform animate. */
+   and transform animate. The fill mode is `backwards`, never `both`: a retained
+   transform on the scroll container — even the identity matrix — turns it into
+   a containing block for `position: fixed` descendants, so the lightbox and
+   the editors (which mount inside main) would position against scrolled main
+   instead of the viewport and the page would jump when they open. */
 @keyframes view-in {
   from {
     opacity: 0;
@@ -280,7 +284,7 @@ textarea:focus {
   }
 }
 .view-in {
-  animation: view-in var(--dur-shell) var(--ease-shell) both;
+  animation: view-in var(--dur-shell) var(--ease-shell) backwards;
 }
 
 /* Staggered entrances: grid children assemble 40ms apart, capped at twelve so
