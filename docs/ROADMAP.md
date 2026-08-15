@@ -2151,5 +2151,70 @@ upload path is a new seam, not a fork:
 > hairlines starting at the ellipse centre and running through the concept
 > title. See TRAPS for the reusable versions.
 
+### [x] Deck-quality round 3 — no stranded members, 75-type audit
+The user-testing round's five findings. Two were design confirmations (the
+first section divider after the title is intended; the "no connection" feel
+was the stranded member plus thin sections, not a separate defect). Two were
+real work:
+
+- **The plan can now only SHRINK a deck — the thin-outline bug.** `planDeck`
+  trimmed content to the budget but had no way to GROW a plan that came up
+  short. An 11-member team with slides-per-member 1 planned 10 content slides
+  (8 sections, one slide each) and the deck jumped from the 10th member's
+  takeaway straight to the closing — Dhwani presented nothing. `mintContentSlides`
+  now enforces the content-count contract: at least N × M content slides when
+  the briefing fixes M per member, at least one per member when it does not.
+  The deficit is minted into the trailing content-bearing sections (bounded by
+  the same contentCap the trim enforces) before `ensureStructuralSlides` runs.
+  Verified end-to-end on a real cloud generation: 11 members → title + 8
+  dividers + exactly 11 content slides + closing, every member once, Dhwani on
+  slide 20.
+- **The 75-type layout audit.** Every type was rendered from the specimen deck
+  in three themes (warm-humanist, swiss-international, dark-neon), rasterised,
+  and read by `mimo-v2.5` for density, zoning and text fit. The verdict list
+  (75 rows: OK / fixed) is committed as `docs/slide-type-audit.md`; the pass
+  itself is reproducible via `tools/slideqa.mjs` (per-type PNGs + labelled
+  contact sheets + the renderer's own problems). **Ten layouts were genuinely
+  broken** and reworked: vertical `flow` was six thin full-width stripes with
+  bodies dropped (now a numbered spine — chip on a central rail, title and
+  body flowing right, bodies rendered whenever a row holds a title plus one
+  line at the floor); `timeline`, `pipeline` and `funnel` hugged the heading
+  and left the lower half empty (each now centres its block); `cycle` sat in
+  the lower 60% (the ring starts below the heading); `dependencies` drew edges
+  on top of nodes so Enrichment→Alerts slashed across Storage (edges draw
+  behind the boxes, and layers order by their dependencies' barycentre —
+  `diagram` got the same ordering); `concept-map` leaf labels shrank to ~8pt
+  and collided (leaves are now pills sized to their own measured text, fanned
+  so footprints never overlap); `matrix` rotated y-axis labels wrapped
+  ("Impact" became Imp/act — the box was measured on the untransformed string);
+  `contact` pinned a small card below the heading (the card now spans the
+  content width, heading-to-footer). **Twenty-six types were sound layouts the
+  writer was under-filling** — a new `TYPE_BUDGETS` map in `src/ai/catalog.js`
+  tells the writer how much each layout invites (4 stats on the four-up grid,
+  5-8 rows on a full-width table, a body per framework element), so the model
+  fills what the layout is built to hold.
+
+> **Learned.** Three things were not obvious beforehand.
+>
+> The budget is a two-way door. The trim exists because a model overshoots;
+> the mint exists because it undershoots — a thin outline (fewer sections than
+> people, one slide per part) is the same failure as a fat one, and a planner
+> that can only shrink ships stranded members. The content-count contract must
+> be enforced in the plan, not at distribution: `distributePresenters` balances
+> what EXISTS but cannot conjure a missing slide.
+>
+> "Richer content" is a catalog concern, not a layout concern. A half-empty
+> slide is usually the writer filling the schema minimum, and the honest fix is
+> telling the model what the layout invites (the catalog rides every writer
+> prompt), not rewriting the drawing code. The audit's verdict split — 10
+> layouts reworked, 26 budgets enriched — is the proof: most "sparse" flags
+> were content, most "broken" flags were zoning.
+>
+> A vertical flow's body capacity is "title plus one line at the floor", not a
+> fixed step count. The old full-width cards needed ~0.75in per row and dropped
+> bodies at five steps; the spine spans the full width, so a line is cheap and
+> six short-body steps fit. The same change turned a capacity bug into a
+> content question, which is where it belongs.
+
 
 

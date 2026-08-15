@@ -392,3 +392,17 @@ each ring element, so the vertical connectors ran straight through the concept
 title and body on a live deck. A connector must begin where the ray to its
 target exits the node shape — compute the boundary point from the node's
 semi-axes, never from the centre.
+
+**A layered graph drawn edges-last lets long edges slash across unrelated
+nodes.** The dependency tree's lines were added AFTER the node boxes, so
+Enrichment's edge to Alerts cut straight across the Storage card. Draw edges
+before the nodes (a wire passing behind a box reads as routed, not broken) and
+order each layer by its nodes' dependency barycentre — the classic layered-graph
+crossing reduction — so edges route with fewer crossings in the first place.
+
+**A rotated axis label wraps when its box is measured on the untransformed
+string.** A type token with a text transform (the eyebrow token uppercases)
+renders text wider than the untransformed source, so a box sized with
+`measure(label, token)` is too narrow and the label wraps mid-word — the matrix
+y-axis name "Impact" rendered as "Imp/act". Apply the token's transform to the
+string before measuring, then size the box to that width.

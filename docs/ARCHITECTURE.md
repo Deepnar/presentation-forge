@@ -407,12 +407,16 @@ sized in `planDeck`: the max-slides budget counts **content** slides only, with
 the title, section dividers and closing slide as structural overhead that
 never counts toward it; a `slidesPerMember` briefing sizes the plan to the team
 (N members × M each, capped by max-slides) and `trimContentToBudget` trims it
-to that exact number. `generateDeck` then writes one validated slide per plan
-entry, and the writer loop treats "no new valid slide appeared" as a failure —
-an empty or mis-targeted op list would otherwise apply as a no-op and silently
-vanish, so it retries once and then writes a validating placeholder
-(`placeholderFor`): a degraded slide beats a missing one, and a divider spec
-never degrades into a content slide.
+to that exact number. The budget is a two-way door: `mintContentSlides` GROWS a
+thin outline (fewer sections than people, one slide per part) up to the
+team-sized count before distribution, so a plan can never strand a presenting
+member — the observed defect was 11 members and 10 content slides, the deck
+jumping from the 10th member's slide to the closing. `generateDeck` then writes
+one validated slide per plan entry, and the writer loop treats "no new valid
+slide appeared" as a failure — an empty or mis-targeted op list would otherwise
+apply as a no-op and silently vanish, so it retries once and then writes a
+validating placeholder (`placeholderFor`): a degraded slide beats a missing
+one, and a divider spec never degrades into a content slide.
 
 A deck has a lifecycle that is also a disk boundary: `planning` means
 `meta.yaml` + `plan.yaml` exist and no `deck.yaml` does, which is what makes the
