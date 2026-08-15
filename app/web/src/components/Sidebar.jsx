@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { dateGroup, relative } from "../lib/time.js";
 import { api } from "../api.js";
 import DeckThumb from "./DeckThumb.jsx";
+import ProfileChip from "./ProfileChip.jsx";
 import { Button } from "./ui.jsx";
 import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PlusIcon, SearchIcon } from "./icons.jsx";
 
@@ -19,6 +20,7 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
+  user, identity, onOpenIdentity, onLogout,
 }) {
   const [tab, setTab] = useState("chats"); // chats | decks
   const [query, setQuery] = useState("");
@@ -218,6 +220,14 @@ export default function Sidebar({
               <PlusIcon className="h-3.5 w-3.5" />
               New chat
             </Button>
+            <div className="mt-2 border-t border-line/60 pt-2">
+              <ProfileChip
+                user={user}
+                identity={identity}
+                onOpenIdentity={onOpenIdentity}
+                onLogout={onLogout}
+              />
+            </div>
           </div>
         </>
       ) : (
@@ -227,6 +237,15 @@ export default function Sidebar({
           <IconButton active={view === "identity"} icon={IdIcon} title="Identity" href="#/identity" />
           <div className="mt-auto" />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
+          <div className="pt-1">
+            <ProfileChip
+              collapsed
+              user={user}
+              identity={identity}
+              onOpenIdentity={onOpenIdentity}
+              onLogout={onLogout}
+            />
+          </div>
         </div>
       )}
 

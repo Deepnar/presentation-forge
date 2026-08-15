@@ -14,7 +14,7 @@ import { setModelMode } from "../lib/modelMode.js";
  * reachable when a key is attached; without one the button is disabled and
  * points at the Settings/Cloud section where the key lands.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdentity, user, onAuthClick, onLogout }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdentity, user, onAuthClick }) {
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("local");
 
@@ -111,20 +111,11 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenIdenti
         </a>
 
         {user ? (
-          <div className="flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pl-1 pr-1">
+          <div className="flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pl-1 pr-2">
             <span className="grid h-6 w-6 place-items-center rounded-full bg-accent/15 text-[11px] font-semibold uppercase text-accent">
               {user.name?.[0] ?? "?"}
             </span>
             <span className="max-w-[7rem] truncate px-1 text-[12px] text-fg-muted">{user.name}</span>
-            <button
-              onClick={onLogout}
-              title="Log out"
-              className="grid h-6 w-6 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg"
-            >
-              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-              </svg>
-            </button>
           </div>
         ) : (
           <button
