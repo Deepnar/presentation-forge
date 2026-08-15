@@ -42,7 +42,7 @@ engines:
   - name: google
     disabled: false
   - name: duckduckgo
-    disabled: false
+    disabled: true
   - name: bing
     disabled: false
   - name: brave
