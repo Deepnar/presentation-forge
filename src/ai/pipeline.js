@@ -101,7 +101,7 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
  * come back to a planned deck, and the outline survives an interrupted browser.
  */
 export async function createDeck({
-  brief, sources = [], research = false, papers = false, theme = null, maxSlides = 24,
+  brief, briefing = "", sources = [], research = false, papers = false, theme = null, maxSlides = 24,
   slidesPerMember = null, density = "balanced", model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -159,7 +159,7 @@ export async function createDeck({
   const identityObj = deepMerge(await loadIdentity(), identity ?? {});
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
-    brief: brief.trim(), theme: themeObj, identity: identityObj,
+    brief: brief.trim(), briefing, theme: themeObj, identity: identityObj,
     research: excerptResearch(researchText, await researchExcerptCap({ model })),
     maxSlides, slidesPerMember, model, signal,
   });

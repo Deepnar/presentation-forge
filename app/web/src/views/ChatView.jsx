@@ -7,7 +7,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
-import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload } from "../lib/briefing.js";
+import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
 
@@ -282,6 +282,9 @@ export default function ChatView({
     const j = api.createDeck(
       {
         brief,
+        // The full briefing record, explicit — every answered question reaches
+        // the planner verbatim ("The user answered: …"), not just the topic.
+        briefing: briefingAnsweredText(b, themeLabel),
         maxSlides: b.maxSlides || undefined,
         theme: b.theme || undefined,
         research: b.research,

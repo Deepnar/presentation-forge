@@ -121,6 +121,52 @@ export function presetPayload(briefing) {
   };
 }
 
+/**
+ * The full briefing record as explicit text for the plan prompt — "The user
+ * answered: …". Every guided question the user actually answered must reach
+ * the planner verbatim; a plan built from the topic sentence alone ignores
+ * the team, the guide, the audience, the emphasis, the branding. Only
+ * non-empty answers are listed, so a skipped question (defaulted) reads as
+ * "not stated" rather than inventing a value. `label` supplies human theme
+ * names when the caller has them.
+ */
+export function briefingAnsweredText(briefing, label = (t) => t) {
+  const b = briefing ?? {};
+  const team = b.team ?? {};
+  const members = (team.members ?? []).filter((m) => m.name?.trim());
+  const presenting = members.filter((m) => m.presenting);
+  const acad = b.academic ?? {};
+  const lines = [];
+
+  const put = (key, value) => {
+    const v = String(value ?? "").trim();
+    if (v) lines.push(`- ${key}: ${v}`);
+  };
+
+  put("Title", b.title);
+  if (members.length) {
+    const names = members.map((m) => `${m.name}${m.roll ? ` (${m.roll})` : ""}${m.presenting ? " — presents" : ""}`).join(", ");
+    const teamLine = `- Team: ${names}`;
+    lines.push(teamLine + (team.label ? ` — ${team.label}` : ""));
+  }
+  put("Guide", b.guide?.name ? [b.guide.name, b.guide.designation].filter(Boolean).join(", ") : "");
+  put("Subject", acad.subject);
+  put("Academic year", acad.year);
+  put("Semester", acad.semester);
+  put("Exam type", acad.exam_type);
+  put("Audience", b.audience);
+  put("Emphasis", b.emphasis);
+  if (b.theme) lines.push(`- Theme: ${label(b.theme)}`);
+  put("Slide count", b.maxSlides ? `${b.maxSlides}` : "auto");
+  put("Slides per member", b.slidesPerMember ? `${b.slidesPerMember}` : "auto");
+  put("Density", b.density);
+  put("Branding", b.branding === "none" ? "no institutional branding" : b.branding === "minimal" ? "minimal branding" : "full branding");
+  put("Research pass", b.research ? "on" : "off");
+
+  if (!lines.length) return "";
+  return `The user answered:\n${lines.join("\n")}`;
+}
+
 /** Pre-fill from config/identity.yaml — the remembered defaults, not truth. */
 export function initialBriefing(identity) {
   const id = identity ?? {};

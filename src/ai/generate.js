@@ -99,7 +99,7 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
 });
 
 /** Stage 1 — the plan. Cheap, reviewable, and the human gate's input. */
-export async function planDeck({ brief, theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal }) {
+export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -146,6 +146,11 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
     "- `purpose` states what that slide must convey — ONE short sentence, under",
     "  ~140 characters. It is a private brief for the writer, never slide text,",
     "  so it must stay brief even if the deck is large.",
+    "- The deck must be a complete talk, in presentation flow: it opens on the",
+    "  title, then an INTRO beat that frames the topic, then the body sections",
+    "  in a sensible order, and it CLOSES with a conclusion/closing that lands",
+    "  the point. Always include the intro and the closing — do not leave the",
+    "  talk to trail off at the last body section, whatever the brief says.",
     ...(fullStrength
       ? [
           "- On this path the `purpose` is the writer's brief at full strength: name the",
@@ -182,6 +187,7 @@ export async function planDeck({ brief, theme, identity, research = "", maxSlide
         content: [
           research ? `RESEARCH NOTES\n${research}\n` : "",
           `BRIEF\n${brief}`,
+          briefing ? `\n${briefing}` : "",
           identity?.academic?.subject ? `\nSubject: ${identity.academic.subject}` : "",
           `\n${teamNote}`,
         ].filter(Boolean).join("\n"),
@@ -424,7 +430,7 @@ async function sanitizePlan(plan, types) {
  * output is the plan — the same path a headless run uses.
  */
 export async function generateDeck({
-  brief, theme, identity, research = "", maxSlides = 24, model, signal, onProgress,
+  brief, briefing = "", theme, identity, research = "", maxSlides = 24, model, signal, onProgress,
   plan: givenPlan, slidesPerMember = null,
 }) {
   const schema = await deckSchema();
@@ -434,7 +440,7 @@ export async function generateDeck({
   let stats = {};
 
   if (!plan) {
-    const planned = await planDeck({ brief, theme, identity, research, maxSlides, model, signal });
+    const planned = await planDeck({ brief, briefing, theme, identity, research, maxSlides, model, signal });
     plan = await sanitizePlan(planned.plan, types);
     stats = planned.stats;
   }
