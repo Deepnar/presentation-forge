@@ -43,6 +43,11 @@ engines:
     disabled: false
   - name: duckduckgo
     disabled: true
+  # Startpage bot-detects a local instance the same way DuckDuckGo did
+  # (CAPTCHA redirects in the logs); disabled explicitly — it is enabled
+  # through use_default_settings.
+  - name: startpage
+    disabled: true
   - name: bing
     disabled: false
   - name: brave
