@@ -37,8 +37,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   );
 }
 
-/** A slim auth bar for visitors — "Start a chat" leads to sign-up, and the
- *  Log in / Sign up actions open the auth modal from the landing itself. */
+/** A slim auth bar for visitors — just a "Log in" link, so the hero's one
+ *  strong CTA ("Start a chat" → sign up) is not crowded out by buttons. */
 function AuthBar({ onAuth }) {
   return (
     <div className="mb-10 flex items-center justify-between">
@@ -46,10 +46,12 @@ function AuthBar({ onAuth }) {
         <img src="/logo.svg" alt="Presentation Forge" className="h-8 w-8 rounded-lg" />
         <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={() => onAuth?.("login")}>Log in</Button>
-        <Button variant="primary" size="sm" onClick={() => onAuth?.("register")}>Sign up</Button>
-      </div>
+      <button
+        onClick={() => onAuth?.("login")}
+        className="rounded-lg px-2 py-1 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
+      >
+        Log in
+      </button>
     </div>
   );
 }
@@ -104,10 +106,13 @@ function Hero({ authed, onStartChat, onBrowseThemes, onAuth }) {
           <ChatIcon className="h-4 w-4" />
           Start a chat
         </Button>
-        <Button variant="outline" onClick={authed ? onBrowseThemes : () => onAuth?.("register")}>
+        <button
+          onClick={authed ? onBrowseThemes : () => onAuth?.("register")}
+          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
+        >
           <PaletteIcon className="h-4 w-4" />
           Browse themes
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -189,9 +194,12 @@ function HowItWorks({ onStartChat }) {
         ))}
       </div>
       <div className="mt-8 text-center">
-        <Button variant="ghost" onClick={onStartChat}>
+        <button
+          onClick={onStartChat}
+          className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
+        >
           Start the first chat →
-        </Button>
+        </button>
       </div>
     </Reveal>
   );
@@ -228,7 +236,12 @@ function ThemeCarousel({ onBrowseThemes }) {
         </div>
       )}
       <div className="mt-6 text-center">
-        <Button variant="outline" onClick={onBrowseThemes}>Browse all themes</Button>
+        <button
+          onClick={onBrowseThemes}
+          className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
+        >
+          Browse all themes
+        </button>
       </div>
     </Reveal>
   );
