@@ -4,6 +4,7 @@ import { parseHash, hashFor } from "./lib/router.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
+import { ConfirmModal } from "./components/ui.jsx";
 import ParticleField from "./components/ParticleField.jsx";
 import Home from "./views/Home.jsx";
 import ChatView from "./views/ChatView.jsx";
@@ -37,6 +38,7 @@ export default function App() {
   const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login"); // login | register — the landing's auth modal
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const [focusSearch, setFocusSearch] = useState(0);
 
   // Boot: rehydrate the session (a stale token just logs out) and remember the
@@ -243,6 +245,16 @@ export default function App() {
   const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
   const goHome = () => navigate("chat");
 
+  /** Logging out is consequential (it clears the session) — confirm first. */
+  async function doLogout() {
+    setLogoutOpen(false);
+    try { await api.logout(); } catch { /* token already gone */ }
+    // The front door is the landing page — reset the hash so the next
+    // login lands on New chat, not the route they were on.
+    window.history.replaceState(null, "", "#/home");
+    setUser(null);
+  }
+
   const openDeck = (slug) => navigate("deck", { slug });
   const openReport = (slug) => navigate("report", { slug });
   const openResearch = (slug) => navigate("research", { slug });
@@ -352,13 +364,7 @@ export default function App() {
           onOpenIdentity={() => setView("identity")}
           user={user}
           onAuthClick={() => setAuthOpen(true)}
-          onLogout={async () => {
-            try { await api.logout(); } catch { /* token already gone */ }
-            // The front door is the landing page — reset the hash so the next
-            // login lands on New chat, not the route they were on.
-            window.history.replaceState(null, "", "#/home");
-            setUser(null);
-          }}
+          onLogout={() => setLogoutOpen(true)}
         />
 
         <div className="isolate flex min-h-0 flex-1">
@@ -459,6 +465,17 @@ export default function App() {
             mode={authMode}
             onDone={(u) => { setUser(u); setAuthOpen(false); }}
             onClose={() => setAuthOpen(false)}
+          />
+        )}
+
+        {logoutOpen && (
+          <ConfirmModal
+            title="Log out of Presentation Forge?"
+            body="Your work is saved — decks, reports and chats stay on this machine. Sign back in any time to continue where you left off."
+            confirmLabel="Log out"
+            danger
+            onCancel={() => setLogoutOpen(false)}
+            onConfirm={doLogout}
           />
         )}
       </div>

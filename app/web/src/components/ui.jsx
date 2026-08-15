@@ -1,6 +1,6 @@
 /** Shared primitives. Kept deliberately small — enough to stop every view
  *  reinventing a button, not a component library. */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Button({ variant = "ghost", size = "md", className = "", ...props }) {
   const base =
@@ -127,5 +127,42 @@ export function Tooltip({ label, children, side = "top", className = "" }) {
         </span>
       )}
     </span>
+  );
+}
+
+/** A centred confirm dialog — the shared "are you sure" gate for destructive
+ *  or consequential actions (logout, deletes). Esc or clicking the backdrop
+ *  cancels; the confirm button carries the optional danger treatment. */
+export function ConfirmModal({ title, body, confirmLabel = "Confirm", danger, onCancel, onConfirm }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onCancel(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-sm rounded-card border border-line bg-panel p-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-[14px] font-semibold text-fg">{title}</div>
+        {body && <div className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">{body}</div>}
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={onCancel}>Cancel</Button>
+          <button
+            onClick={onConfirm}
+            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition hover:opacity-90 active:translate-y-px ${
+              danger ? "bg-danger text-white" : "bg-accent text-white"
+            }`}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
