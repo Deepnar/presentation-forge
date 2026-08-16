@@ -1677,9 +1677,14 @@ export const layouts = {
       const cy = ry + rowH / 2;
       const rank = it.rank ?? i + 1;
       const top = rank <= 3;
+      // Non-top rank chips are outlined surfaces, not rule fills: `rule` is a
+      // hairline colour and can be a translucent white (isometric-dark) that
+      // swallows the rank text. The text sits on surface with the rule as the
+      // boundary, exactly like the layered-architecture chips.
       slide.addShape("ellipse", {
         x: box.x, y: cy - 0.19, w: 0.38, h: 0.38,
-        fill: { color: hex(top ? theme.palette.accent : theme.palette.rule) }, line: { type: "none" },
+        fill: { color: hex(top ? theme.palette.accent : theme.palette.surface) },
+        line: top ? { type: "none" } : { color: hex(theme.palette.rule), width: 1 },
       });
       slide.addText(String(rank), {
         x: box.x, y: cy - 0.19, w: 0.38, h: 0.38,
@@ -1835,10 +1840,13 @@ export const layouts = {
     const bodyScale = fitScaleAll([data.before.body, data.after.body], cw - pad * 2, 1.8, theme.type.body);
     const pill = (x, text, filled) => {
       const pw2 = Math.min(cw - pad * 2, measure(text, theme.type.eyebrow) + 0.5);
+      // The unfilled pill is an outlined surface, not a rule fill — `rule` can
+      // be a translucent white (isometric-dark) whose stripped fill swallows
+      // the ink_muted label. The label sits on surface; rule is the boundary.
       slide.addShape("roundRect", {
         x, y: y + pad, w: pw2, h: 0.34,
-        fill: { color: hex(filled ? theme.palette.accent : theme.palette.rule) },
-        line: { type: "none" },
+        fill: { color: hex(filled ? theme.palette.accent : theme.palette.surface) },
+        line: filled ? { type: "none" } : { color: hex(theme.palette.rule), width: 1 },
         rectRadius: theme.shape?.radius?.pill ?? 0.17,
       });
       slide.addText(applyTransform(theme, "eyebrow", text), {
@@ -2691,9 +2699,11 @@ export const layouts = {
         line: { color: hex(theme.palette.rule), width: 1.1 },
       });
       const lW = Math.min(1.3, measure(b.label, theme.type.caption) + 0.4);
+      // Outlined surface, not a rule fill — `rule` can be a translucent white
+      // (isometric-dark) that swallows the ink_muted branch label.
       slide.addShape("roundRect", {
         x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
-        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        fill: { color: hex(theme.palette.surface) }, line: { color: hex(theme.palette.rule), width: 1 },
         rectRadius: theme.shape?.radius?.pill ?? 0.15,
       });
       slide.addText(b.label, {
@@ -2757,9 +2767,13 @@ export const layouts = {
         const it = items[j];
         const w2 = Math.min(2.3, measure(it, theme.type.caption) + 0.4);
         pillX -= w2;
+        // An OUTLINED chip, not a rule-filled one: `rule` is a hairline colour
+        // and in some themes a translucent white (isometric-dark's #FFFFFF1C),
+        // which renders as a solid near-white fill that swallows `ink` text.
+        // The text sits on the row's surface and the rule is the boundary.
         slide.addShape("roundRect", {
           x: pillX, y: ly + (layerH - 0.3) / 2, w: w2, h: 0.3,
-          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          fill: { color: hex(theme.palette.surface) }, line: { color: hex(theme.palette.rule), width: 1 },
           rectRadius: theme.shape?.radius?.pill ?? 0.15,
         });
         slide.addText(it, {
@@ -3993,9 +4007,11 @@ export const layouts = {
           rounding: true, sizing: { type: "cover", w: imgSize, h: imgSize },
         });
       } else {
+        // Placeholder avatar: outlined surface, not a rule fill — `rule` can
+        // be a translucent white whose stripped fill swallows the number.
         slide.addShape("ellipse", {
           x: x + pad, y: cy - imgSize / 2, w: imgSize, h: imgSize,
-          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          fill: { color: hex(theme.palette.surface) }, line: { color: hex(theme.palette.rule), width: 1 },
         });
         slide.addText(String(i + 1), {
           x: x + pad, y: cy - imgSize / 2, w: imgSize, h: imgSize,
