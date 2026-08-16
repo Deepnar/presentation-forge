@@ -7,6 +7,8 @@ import JSZip from "jszip";
 import YAML from "yaml";
 import { render } from "../src/render.js";
 import { numericFactCount, dataAffinityNote, CHART_KINDS } from "../src/ai/catalog.js";
+import { planDeck } from "../src/ai/generate.js";
+import { validateDeck } from "../src/validate.js";
 
 test("numericFactCount counts distinct numeric facts, not repetitions", () => {
   assert.equal(numericFactCount(""), 0);
@@ -17,13 +19,74 @@ test("numericFactCount counts distinct numeric facts, not repetitions", () => {
   assert.equal(numericFactCount(notes), 4);
 });
 
-test("dataAffinityNote is silent below two numeric facts and names the kinds above", () => {
-  assert.equal(dataAffinityNote("a brief with no numbers in it"), null);
-  assert.equal(dataAffinityNote("only one fact: 42% uptake"), null);
+test("dataAffinityNote forbids charts below two numeric facts and names the kinds above", () => {
+  const thin = dataAffinityNote("a brief with no numbers in it");
+  assert.ok(thin, "a no-numbers brief still gets the steering note");
+  assert.match(thin, /Do NOT choose chart/i, "below the threshold charts are forbidden, not merely unmentioned");
+  assert.match(thin, /qualitative|framework|cards/, "a qualitative alternative is named");
+  assert.match(dataAffinityNote("only one fact: 42% uptake"), /Do NOT choose chart/i, "one fact is also below the threshold");
   const note = dataAffinityNote("Two facts: 180 GW by 2030 and 4.2% annual growth.");
   assert.ok(note, "two facts must trigger the note");
   assert.match(note, /CHART/);
   for (const kind of CHART_KINDS) assert.ok(note.includes(kind), `note names the ${kind} kind`);
+});
+
+test("the schema refuses a chart with empty series values", async () => {
+  const empty = {
+    title: "t",
+    slides: [{
+      type: "chart",
+      headline: "Evidence",
+      chart: { kind: "bar", categories: ["MPI", "Hybrid"], series: [{ name: "Speedup", values: [] }] },
+    }],
+  };
+  const { ok, errors } = await validateDeck(empty);
+  assert.equal(ok, false, "an empty-values chart must not validate");
+  assert.ok(errors.some((e) => e.includes("values")), "the error names the values array");
+});
+
+test("the schema refuses a chart with no categories", async () => {
+  const { ok } = await validateDeck({
+    title: "t",
+    slides: [{
+      type: "chart",
+      headline: "Evidence",
+      chart: { kind: "bar", categories: [], series: [{ name: "Speedup", values: [1.2] }] },
+    }],
+  });
+  assert.equal(ok, false);
+});
+
+test("planDeck coerces a proposed chart to a qualitative type when the research has no numbers", async () => {
+  const chat = async () => ({
+    data: {
+      title: "Trends",
+      sections: ["Evidence"],
+      slides: [
+        { type: "chart", section: 0, purpose: "The evidence from papers." },
+        { type: "bullets", section: 0, purpose: "The key claims." },
+      ],
+    },
+  });
+  const { plan } = await planDeck({ brief: "b", research: "qualitative notes, no figures", model: "mock", chat });
+  const chart = plan.slides.find((s) => s.type === "chart");
+  assert.equal(chart, undefined, "no chart survives the coercion");
+  assert.ok(plan.slides.some((s) => s.type === "cards"), "the chart beat became a cards slide");
+  assert.equal(plan.slides.filter((s) => s.type === "bullets").length, 1, "other types untouched");
+});
+
+test("planDeck keeps a proposed chart when the research carries real numbers", async () => {
+  const chat = async () => ({
+    data: {
+      title: "Trends",
+      sections: ["Data"],
+      slides: [
+        { type: "chart", section: 0, purpose: "180 GW vs 220 GW by source." },
+      ],
+    },
+  });
+  const { plan } = await planDeck({ brief: "b", research: "Capacity is 180 GW today, rising to 220 GW by 2030.", model: "mock", chat });
+  assert.ok(plan.slides.some((s) => s.type === "chart"), "a numeric research keeps the chart");
 });
 
 /** Render a one-slide chart deck and return the raw chart XML from the pptx. */

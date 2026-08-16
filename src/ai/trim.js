@@ -46,6 +46,10 @@ const _meta = new Map();
  * (with their minItems floor — a drop may not go below it) and which are
  * strings. Item-field strings are encoded as `<array>[].<field>`.
  */
+export async function slideFieldMeta(type) {
+  return metaFor(type);
+}
+
 async function metaFor(type) {
   if (_meta.has(type)) return _meta.get(type);
   const schema = await deckSchema();
@@ -80,7 +84,7 @@ async function metaFor(type) {
 }
 
 /** Read an array by a dot path ("left.points"). */
-function readArray(slide, path) {
+export function readArray(slide, path) {
   return path.split(".").reduce((o, k) => o?.[k], slide);
 }
 
@@ -89,7 +93,7 @@ function readArray(slide, path) {
  * "items[].text" iterates the items array; a plain array-of-strings path
  * ("bullets") yields each element.
  */
-function walkStrings(slide, path) {
+export function walkStrings(slide, path) {
   const segs = path.split(".");
   let nodes = [{ val: slide, path: [] }];
   for (let i = 0; i < segs.length; i++) {

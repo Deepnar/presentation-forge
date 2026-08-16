@@ -1,0 +1,267 @@
+import { chatJSON, authorTransport } from "./ollama.js";
+import { buildOpsSchema, applyOps } from "./ops.js";
+import { deckSchema, catalogForType } from "./catalog.js";
+import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
+import { validateDeck } from "../validate.js";
+import { render } from "../render.js";
+
+/**
+ * The FIELD-LENGTH pass — the "no mid-sentence ellipsis" rule.
+ *
+ * The deterministic trim (trim.js) shortens an overfull field at a word
+ * boundary and appends "…", which is exactly the "the…" defect the user called
+ * out: a half-sentence ships because the writer overfilled the field and the
+ * layout could not hold it. This pass runs BEFORE the trim and fixes overfull
+ * fields with a REWRITE instead: a targeted model call that turns each flagged
+ * field into one complete sentence within its schema cap, with no ellipsis.
+ * The trim then only cuts what the rewrite cannot fix.
+ *
+ * A field is a candidate when the fitter flags the slide below its readable
+ * floor (the layout cannot hold the current text), or when the field exceeds
+ * its schema maxLength outright (a defensive net — validation normally stops
+ * these, but the pass should not assume every write path validated).
+ */
+
+/** Every string field on a slide with its schema cap, current length and a
+ *  stable label — the writer's view of "what is too long". Exported so tests
+ *  can assert the cap contract the pass rewrites against. */
+export async function fieldInventory(slide) {
+  const { strings } = await slideFieldMeta(slide.type);
+  const schema = await deckSchema();
+  const out = [];
+  for (const path of strings) {
+    const cap = capForPath(schema, slide.type, path);
+    for (const w of walkStrings(slide, path)) {
+      if (typeof w.value !== "string" || !w.value.trim()) continue;
+      out.push({
+        path,
+        label: labelPath(path),
+        cap: cap ?? null,
+        length: w.value.length,
+        text: w.value,
+      });
+    }
+  }
+  return out;
+}
+
+/** The per-field maxLength from the schema (a dot path like "steps[].body"). */
+function capForPath(schema, type, path) {
+  const rule = schema.definitions.slide.allOf?.find(
+    (r) => r.if?.properties?.type?.const === type,
+  );
+  const node = resolvePath(rule?.then?.properties ?? {}, path);
+  const resolved = node?.$ref ? resolveRef(node.$ref, schema) : node;
+  if (resolved?.type === "string") return resolved.maxLength ?? null;
+  // An array-of-strings field ("bullets") caps its items, not the array.
+  if (resolved?.type === "array") {
+    const item = resolved.items?.$ref ? resolveRef(resolved.items.$ref, schema) : resolved.items;
+    return item?.type === "string" ? item.maxLength ?? null : null;
+  }
+  return null;
+}
+
+function resolvePath(props, path) {
+  const segs = path.split(".");
+  let node = props;
+  for (const seg of segs) {
+    if (seg.endsWith("[]")) {
+      node = node?.[seg.slice(0, -2)]?.items;
+    } else if (node?.type === "object" && node.properties) {
+      // A nested object spec keeps its fields under `properties`.
+      node = node.properties?.[seg];
+    } else {
+      node = node?.[seg];
+    }
+  }
+  return node;
+}
+
+/** A human label for a schema path: "steps[].body" → "step body". */
+function labelPath(path) {
+  return path
+    .replace(/\[\]/, "")
+    .replace(/\./g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function resolveRef(ref, schema) {
+  return ref.replace(/^#\//, "").split("/").reduce((o, k) => o?.[k], schema) ?? {};
+}
+
+/** A targeted rewrite of ONE slide's overlong fields, via its own type grammar.
+ *  Returns the repaired slide (validated) or null. */
+async function rewriteSlide({ slide, index, inventory, research, model, signal, chat = chatJSON }) {
+  const schema = await deckSchema();
+  const typeCatalog = await catalogForType(slide.type);
+  const buildOps = buildOpsSchema(schema, {
+    slideCount: Math.max(index + 1, 2),
+    onlyTypes: [slide.type],
+    excludeProps: ["presenter"],
+  });
+
+  const flagged = inventory
+    .map(
+      (f) =>
+        `- ${f.label} (${f.path}): ${f.length} chars, cap ${f.cap ?? "unset"} — "${f.text.slice(0, 90)}${f.text.length > 90 ? "…" : ""}"`,
+    );
+
+  const system = [
+    "You rewrite the TEXT of ONE presentation slide to make it FIT.",
+    "Layout, colour and font are not yours.",
+    `The slide type is "${slide.type}" and it stays "${slide.type}".`,
+    "",
+    "The fields below are too long for the layout to hold at a readable size.",
+    "Rewrite EACH of them as ONE complete, grammatically finished sentence no",
+    "longer than its cap — never truncate with an ellipsis mid-sentence. A",
+    "shorter complete sentence is correct; 'the…' is never acceptable. Keep",
+    "the meaning, the figures and the names; drop modifiers and subordinate",
+    "clauses before dropping any fact.",
+    "",
+    "Fields to rewrite:",
+    flagged.join("\n"),
+    "",
+    "Emit exactly one update_slide op at the slide's index that patches ONLY",
+    "the fields above, with the rewritten complete sentences.",
+    typeCatalog,
+  ].join("\n");
+
+  const current = Object.entries(slide)
+    .map(([k, v]) => {
+      if (k === "notes" || k === "presenter" || k === "type") return null;
+      const val = Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join(" | ") : String(v ?? "");
+      return val ? `  ${k}: ${val}` : null;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  const res = await chat({
+    role: "author",
+    model,
+    signal,
+    schema: buildOps,
+    messages: [
+      { role: "system", content: system },
+      {
+        role: "user",
+        content: [
+          research ? `RESEARCH NOTES (keep every figure verbatim)\n${research}\n` : "",
+          `CURRENT SLIDE [index ${index}]\n${current}`,
+          `\nRewrite the flagged fields as complete sentences within their caps.`,
+        ].filter(Boolean).join("\n"),
+      },
+    ],
+  });
+
+  const ops = (res.data?.ops ?? []).filter(
+    (o) =>
+      (o.op === "update_slide" && (o.index === index || o.index == null) && (o.patch || o.slide)) ||
+      (o.op === "replace_slide" && o.index === index && o.slide),
+  );
+  // The ops grammar allows a full `slide` on any op, and models drift toward
+  // writing the whole slide rather than a patch — accept both: a patch merges,
+  // a full slide replaces. Either way the target slide is index 0 of the
+  // single-slide deck.
+  let candidate = null;
+  for (const op of ops) {
+    if (op.op === "replace_slide" && op.slide) { candidate = op.slide; break; }
+    if (op.patch) {
+      const applied = applyOps({ title: "t", slides: [slide] }, [{ op: "update_slide", index: 0, patch: op.patch }]);
+      if (applied.ok) { candidate = applied.deck.slides[0]; break; }
+    } else if (op.slide) {
+      candidate = op.slide;
+      break;
+    }
+  }
+  if (!candidate) return null;
+  candidate = { ...candidate, type: slide.type, presenter: slide.presenter, section: slide.section };
+  const { ok } = await validateDeck({ title: "t", slides: [candidate] });
+  return ok ? candidate : null;
+}
+
+/**
+ * Run the pass over a freshly-written deck. Renders (in-memory) to find slides
+ * the fitter flags below the floor, walks each flagged slide's fields against
+ * their schema caps, and rewrites the overlong fields via a scoped model call
+ * (two attempts). Returns the repaired deck plus what changed. Slides the
+ * rewrite cannot fix are left for the deterministic trim.
+ */
+export async function fieldLengthPass({
+  deck, themeName, deckDir, research = "", model, signal, onProgress, chat = chatJSON,
+}) {
+  const audit = await render({ deck, themeName, deckDir, write: false, signal });
+  const flagged = parseFloorProblems(audit.problems);
+
+  const out = structuredClone(deck);
+  const repaired = [];
+  const problems = [];
+
+  for (let i = 0; i < out.slides.length; i++) {
+    const slide = out.slides[i];
+    const inventory = await fieldInventory(slide);
+    // A field is a candidate when it exceeds its schema cap outright, when it
+    // already carries a mid-sentence ellipsis (a previous trim's cut — exactly
+    // what this pass exists to eliminate), or when the slide is floor-flagged
+    // (the layout cannot hold its text at a readable size) and the field is
+    // long enough to be a plausible cause.
+    let over = inventory.filter((f) => f.cap != null && f.length > f.cap);
+    over = [...over, ...inventory.filter((f) => /…$/.test(f.text) || /\.\.\.$/.test(f.text)).filter((f) => !over.includes(f))];
+    if (flagged.get(i)) {
+      const long = inventory.filter((f) => f.length > 90);
+      over = [...over, ...long.filter((f) => !over.includes(f))];
+    }
+    if (!over.length) continue;
+
+    onProgress?.({ index: i, total: out.slides.length, type: slide.type, fields: over.length });
+    let candidate = null;
+    for (let attempt = 0; attempt < 2 && !candidate; attempt++) {
+      try {
+        candidate = await rewriteSlide({ slide, index: i, inventory: over, research, model, signal, chat });
+      } catch (err) {
+        problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite failed (${err.message.slice(0, 90)})`);
+        break;
+      }
+    }
+    if (!candidate) {
+      problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite failed — leaving to the trim`);
+      continue;
+    }
+    for (const f of over) {
+      const before = f.text;
+      const after = findFieldText(candidate, f.path, f.text);
+      if (after && after !== before) repaired.push({ index: i, path: f.path, label: f.label, before, after });
+    }
+    out.slides[i] = candidate;
+  }
+
+  const { ok, errors } = await validateDeck(out);
+  if (!ok) problems.push(...errors);
+
+  return { deck: ok ? out : deck, repaired, problems };
+}
+
+/** After a rewrite, the new text of a specific field (by value match fallback). */
+function findFieldText(slide, path, prevText) {
+  // Walk for the FIRST string under the path whose value is not the old one.
+  let found = null;
+  const seek = (node, segs) => {
+    if (found) return;
+    const seg = segs[0];
+    if (!seg) return;
+    if (seg.endsWith("[]")) {
+      const key = seg.slice(0, -2);
+      const arr = node?.[key];
+      if (Array.isArray(arr)) {
+        for (const item of arr) seek(item, segs.slice(1));
+      }
+    } else if (segs.length === 1 && Array.isArray(node?.[seg])) {
+      for (const item of node[seg]) if (typeof item === "string" && item !== prevText) { found = item; return; }
+    } else if (typeof node?.[seg] === "string") {
+      if (node[seg] !== prevText) found = node[seg];
+    } else {
+      seek(node?.[seg], segs.slice(1));
+    }
+  };
+  seek(slide, path.split("."));
+  return found;
+}

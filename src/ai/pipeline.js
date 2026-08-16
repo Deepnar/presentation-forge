@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, readdir, access, copyFile, cp } from "node:fs/promises";
+import { mkdir, readFile, writeFile, readdir, access, copyFile, cp, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
@@ -8,6 +8,7 @@ import { ingestUpload, readStagedUpload } from "./upload.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
 import { generateScript } from "./script.js";
 import { trimDeckToFit } from "./trim.js";
+import { fieldLengthPass } from "./fieldlength.js";
 import { critiqueDeck } from "./critic.js";
 import { coherencePass } from "./coherence.js";
 import { groundDeck } from "./grounding.js";
@@ -29,6 +30,11 @@ import { renderReport, REPORT_SECTIONS } from "../report.js";
  * (deck.yaml exists). Only ready decks appear in the deck list; the outline
  * gate is the boundary between the two.
  */
+
+/** The durable in-flight marker a generation leaves on disk: `.run.json` next
+ *  to deck.yaml. Existence + `written` vs plan length is what lets a fresh
+ *  process tell "resumable partial deck" from "complete but unfinalised". */
+export const RUN_FILE = ".run.json";
 
 export function slugify(text, max = 44) {
   const slug = String(text ?? "")
@@ -396,13 +402,18 @@ function reportBrief(report) {
 }
 
 /**
- * Stage 2 — approved outline → deck. Writes deck.yaml, then renders and
- * rasterises so the result is inspectable immediately, not after a human opens
- * PowerPoint. With `critic`, the rendered slides are run through the vision
- * critic loop and the deck is re-rendered from whatever it fixes.
+ * Stage 2 — approved outline → deck content, checkpointed per slide.
+ *
+ * This is the write half of generation. The approved outline is persisted to
+ * plan.yaml FIRST (it is the resume contract — a dropped run restarts from
+ * exactly what the human approved), then deck.yaml is written as each slide
+ * lands, so a connection drop leaves a resumable deck instead of a lost run.
+ * `meta.status` becomes "writing" for the duration; the finalize half flips it
+ * to "ready". A resumed run (`resume: true`) loads the checkpointed deck.yaml
+ * and the stored plan and continues from where the writer stopped.
  */
-export async function generateFromPlan({
-  slug, plan, theme = null, model, identity, onProgress, signal, critic = false,
+export async function writeDeckContent({
+  slug, plan, theme = null, model, identity, onProgress, signal, resume = false,
 }) {
   const dir = path.join(DECKS, slug);
   let meta = {};
@@ -418,6 +429,53 @@ export async function generateFromPlan({
     researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
   } catch { /* no research pass */ }
 
+  let baseDeck = null;
+  let fromIndex = 0;
+  if (resume) {
+    try {
+      baseDeck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
+    } catch { /* no partial deck yet — start fresh */ }
+    fromIndex = baseDeck?.slides?.length ?? 0;
+    // The stored plan is authoritative on resume: it is the outline the human
+    // approved and the writer is continuing, not the caller's possibly-stale
+    // re-send after a reload.
+    let stored = null;
+    try {
+      stored = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8"));
+    } catch { /* fall through to .run.json */ }
+    if (!stored?.slides?.length) {
+      try {
+        stored = JSON.parse(await readFile(path.join(dir, RUN_FILE), "utf8"))?.plan ?? null;
+      } catch { /* no checkpoint either */ }
+    }
+    if (stored?.slides?.length) plan = stored;
+  }
+
+  await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(plan), "utf8");
+
+  // The durable in-flight marker. The server's in-memory registry decides
+  // whether a run is actively executing; this file is what a fresh process (or
+  // the UI) reads to see "a generation happened and did not finish".
+  const run = {
+    kind: "deck-generation",
+    status: "writing",
+    plan: {
+      title: plan.title ?? "",
+      subtitle: plan.subtitle ?? "",
+      sections: plan.sections ?? [],
+      slides: plan.slides ?? [],
+    },
+    total: plan.slides?.length ?? 0,
+    written: fromIndex,
+    startedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  await writeFile(path.join(dir, RUN_FILE), JSON.stringify(run, null, 2), "utf8");
+
+  meta.status = "writing";
+  meta.updatedAt = new Date().toISOString();
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
   onProgress?.({ status: "writing", phase: "planned", slides: plan.slides?.length ?? 0 });
   const res = await generateDeck({
     brief: meta.brief ?? plan.title ?? "",
@@ -429,12 +487,56 @@ export async function generateFromPlan({
     slidesPerMember: meta.slidesPerMember ?? null,
     model,
     signal,
+    baseDeck,
+    fromIndex,
     onProgress: (p) => onProgress?.({ status: "writing", ...p }),
+    onSlide: async (deck, written, total) => {
+      await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(deck), "utf8");
+      const cp = JSON.parse(await readFile(path.join(dir, RUN_FILE), "utf8"));
+      cp.written = written;
+      cp.updatedAt = new Date().toISOString();
+      await writeFile(path.join(dir, RUN_FILE), JSON.stringify(cp, null, 2), "utf8");
+    },
   });
 
   if (!res.ok || !res.deck) {
     throw new Error(res.errors?.join("; ") || "Generation failed");
   }
+  // The write half hands over the full deck; finalize persists the grounded
+  // version. deck.yaml already holds the raw writer output via the checkpoint.
+  return { deck: res.deck, plan, skipped: res.skipped ?? [], stats: res.stats, problems: res.problems ?? [] };
+}
+
+/**
+ * Stage 2b — the finalize half: ground, trim, review, render, rasterise, and
+ * flip the deck to ready.
+ *
+ * Runs standalone so a deck whose content is already complete (a dropped run,
+ * or a manual "the deck.yaml is done but never finalised" state) can be
+ * finalised without re-writing any slides. Reads deck.yaml + plan.yaml from
+ * disk, so it is idempotent with respect to whatever the write half did.
+ */
+export async function finalizeDeck({
+  slug, theme = null, model, identity, onProgress, signal, critic = false, write = null,
+}) {
+  const dir = path.join(DECKS, slug);
+  const deckFile = path.join(dir, "deck.yaml");
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* optional */ }
+
+  const deck = YAML.parse(await readFile(deckFile, "utf8"));
+  let plan = {};
+  try {
+    plan = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8")) ?? {};
+  } catch { /* optional */ }
+  const themeName = theme ?? deck.theme ?? "warm-humanist";
+
+  let researchText = "";
+  try {
+    researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
+  } catch { /* no research pass */ }
 
   // Ground the deck against its research before persisting. The writer was told
   // to derive stats from notes.md, and the writer is a model: anything it emits
@@ -448,9 +550,30 @@ export async function generateFromPlan({
     return { deck: g.notes, problems: g.problems };
   };
 
-  let grounded = groundOnce(res.deck);
-  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(grounded.deck), "utf8");
-  await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(res.plan), "utf8");
+  let grounded = groundOnce(deck);
+  await writeFile(deckFile, YAML.stringify(grounded.deck), "utf8");
+
+  // The FIELD-LENGTH pass first: a field the fitter flags below its floor is
+  // REWRITTEN as a complete sentence via a targeted model call, so the
+  // deterministic trim never has to cut prose mid-sentence ("the…"). Only what
+  // the rewrite cannot fix reaches the trim.
+  let repaired = grounded;
+  if (!signal?.aborted) {
+    onProgress?.({ status: "field_length_checking" });
+    const fix = await fieldLengthPass({
+      deck: grounded.deck,
+      themeName,
+      deckDir: dir,
+      research: excerptResearch(researchText, await researchExcerptCap({ model })),
+      model,
+      signal,
+      onProgress: (p) => onProgress?.({ status: "field_length", ...p }),
+    });
+    if (fix.repaired.length) {
+      repaired = { deck: fix.deck, problems: groundOnce(fix.deck).problems };
+      await writeFile(deckFile, YAML.stringify(repaired.deck), "utf8");
+    }
+  }
 
   // Content-trim pass: slides the fitter flags below the readable floor get
   // their text trimmed deterministically until they fit or cannot be trimmed
@@ -460,16 +583,16 @@ export async function generateFromPlan({
   const trimOnce = async (candidate) => {
     const trimRes = await trimDeckToFit({
       deck: candidate,
-      themeName: res.deck.theme ?? "warm-humanist",
+      themeName,
       deckDir: dir,
       signal,
     });
     const g = groundOnce(trimRes.deck);
-    await writeFile(path.join(dir, "deck.yaml"), YAML.stringify(g.deck), "utf8");
+    await writeFile(deckFile, YAML.stringify(g.deck), "utf8");
     return { ...trimRes, grounded: g };
   };
 
-  let tr = await trimOnce(grounded.deck);
+  let tr = await trimOnce(repaired.deck);
 
   // The coherence pass: every slide must serve the deck's topic AND be
   // presenter-ready. The writer is told the framing rule, but a model can still
@@ -482,7 +605,7 @@ export async function generateFromPlan({
     onProgress?.({ status: "coherence_checking" });
     const pass = await coherencePass({
       deck: tr.grounded.deck,
-      sections: res.plan.sections ?? [],
+      sections: plan.sections ?? [],
       model,
       signal,
       onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
@@ -503,18 +626,18 @@ export async function generateFromPlan({
   // generation that left failures visible ships neither silently nor half-broken.
   let rendered;
   try {
-    rendered = await render({ deckFile: path.join(dir, "deck.yaml"), themeName: res.deck.theme });
+    rendered = await render({ deckFile, themeName });
   } catch (err) {
     if (/PLACEHOLDER|render refused/i.test(err.message)) {
       return {
         slug,
         deck: tr.grounded.deck,
-        plan: res.plan,
+        plan,
         slides: [],
         thumbs: [],
         problems: [...(tr.grounded.problems ?? []), err.message],
-        skipped: res.skipped ?? [],
-        stats: res.stats,
+        skipped: [],
+        stats: {},
         trimmed: tr.trimmed,
         coherence: coherence ? coherence.findings.length : 0,
         blocked: err.message,
@@ -542,22 +665,104 @@ export async function generateFromPlan({
     }
   }
 
+  // A finalised deck has no in-flight marker left behind.
+  await rm(path.join(dir, RUN_FILE), { force: true });
+
   return {
     slug,
     deck: tr.grounded.deck,
-    plan: res.plan,
+    plan,
     slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
     thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
     problems: [
       ...tr.grounded.problems,
-      ...(res.problems ?? []),
+      ...(write?.problems ?? []),
       ...(coherence?.problems ?? []),
     ],
-    skipped: res.skipped ?? [],
-    stats: res.stats,
+    skipped: write?.skipped ?? [],
+    stats: write?.stats ?? {},
     critic: criticReport,
     trimmed: tr.trimmed,
     coherence: coherence ? { findings: coherence.findings.length, fixed: coherence.findings.length > 0 } : { findings: 0, fixed: false },
+  };
+}
+
+/**
+ * Stage 2 — approved outline → deck, rendered and rasterised. The write half
+ * then the finalize half; both are exposed separately so the server can resume
+ * a dropped run (resumeGeneration) or finalise a complete-but-unfinalised deck
+ * (finalizeDeck) without re-entering the writer.
+ */
+export async function generateFromPlan({
+  slug, plan, theme = null, model, identity, onProgress, signal, critic = false,
+}) {
+  const write = await writeDeckContent({ slug, plan, theme, model, identity, onProgress, signal, resume: false });
+  return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic, write });
+}
+
+/**
+ * Resume a dropped generation from its checkpoint. A partial deck.yaml
+ * continues from where the writer stopped; a complete one skips straight to
+ * finalize (the "the deck is already N/M written — finalize it" path).
+ */
+export async function resumeGeneration({
+  slug, theme = null, model, identity, onProgress, signal, critic = false,
+}) {
+  const dir = path.join(DECKS, slug);
+  let deck = null;
+  try {
+    deck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
+  } catch { /* nothing written yet */ }
+  let plan = null;
+  try {
+    plan = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8"));
+  } catch { /* no approved outline */ }
+  if (!plan?.slides?.length) {
+    try {
+      plan = JSON.parse(await readFile(path.join(dir, RUN_FILE), "utf8"))?.plan ?? null;
+    } catch { /* no checkpoint either */ }
+  }
+  if (!plan?.slides?.length) throw new Error("no approved outline (plan.yaml) to resume from");
+
+  const written = deck?.slides?.length ?? 0;
+  if (written >= plan.slides.length) {
+    // All slides are on disk — the run died between the last slide and
+    // finalize. Nothing to write; finalize what is there.
+    onProgress?.({ status: "writing", phase: "done", slides: written });
+    return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic });
+  }
+
+  const write = await writeDeckContent({ slug, plan, theme, model, identity, onProgress, signal, resume: true });
+  return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic, write });
+}
+
+/**
+ * The on-disk state of a (possibly interrupted) generation: how many plan
+ * slides are written versus total, and whether the deck is complete but
+ * unfinalised. The server folds the in-memory registry on top for `active`.
+ */
+export async function generationStatus(slug) {
+  const dir = path.join(DECKS, slug);
+  let deck = null;
+  let plan = null;
+  let run = null;
+  try {
+    deck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
+  } catch { /* no deck yet */ }
+  try {
+    plan = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8"));
+  } catch { /* no outline */ }
+  try {
+    run = JSON.parse(await readFile(path.join(dir, RUN_FILE), "utf8"));
+  } catch { /* no checkpoint */ }
+  const written = deck?.slides?.length ?? 0;
+  const total = run?.total ?? plan?.slides?.length ?? 0;
+  return {
+    written,
+    total,
+    complete: total > 0 && written >= total,
+    partial: written > 0 && total > 0 && written < total,
+    status: run?.status ?? null,
   };
 }
 
@@ -598,10 +803,29 @@ export async function sweepDensity({
   const grounded = groundDeck(r.deck, researchText, { label });
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
-  // A denser rewrite is exactly what overfills slides — run the content-trim
-  // pass after it, and re-ground so problems never cite a trimmed claim.
+  // A denser rewrite is exactly what overfills slides — rewrite the overlong
+  // fields as complete sentences first (the FIELD-LENGTH pass), then run the
+  // content-trim pass on whatever remains, and re-ground so problems never
+  // cite a trimmed claim.
+  let repaired = grounded.notes;
+  {
+    onProgress?.({ status: "field_length_checking" });
+    const fix = await fieldLengthPass({
+      deck: grounded.notes,
+      themeName,
+      deckDir: dir,
+      research: excerptResearch(researchText, await researchExcerptCap({ model })),
+      model,
+      signal,
+      onProgress: (p) => onProgress?.({ status: "field_length", ...p }),
+    });
+    if (fix.repaired.length) {
+      repaired = fix.deck;
+      await writeFile(deckFile, YAML.stringify(repaired), "utf8");
+    }
+  }
   const trimRes = await trimDeckToFit({
-    deck: grounded.notes,
+    deck: repaired,
     themeName,
     deckDir: dir,
     signal,
@@ -750,7 +974,8 @@ const USAGE = `Usage:
                         [--max-slides <n>] [--slides-per-member <n>]
                         [--density sparse|balanced|dense] [--model <id>]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
-                        [--plan <plan.yaml>] [--no-render] [--critic]
+                        [--plan <plan.yaml>] [--no-render] [--critic] [--resume]
+  node src/ai/pipeline.js finalize <slug> [--theme <name>] [--model <id>]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
   node src/ai/pipeline.js report <slug> [--generate [--depth full|brief]]
                         [--donor <path>] [--no-toc] [--no-render]
@@ -765,6 +990,11 @@ const USAGE = `Usage:
   generate  approved outline → deck.yaml, rendered and rasterised
             --critic  also run the vision critic loop: detect visual defects in
                       the rendered slides and fix them via a content turn
+            --resume  continue a dropped generation from its checkpoint
+                      (deck.yaml written so far; finalizes when complete)
+  finalize  run the post-write pass on a complete-but-unfinalised deck:
+            grounding + field-length rewrite + trim + coherence + render, then
+            flip meta.status to ready
   chat      one conversational turn against an existing deck: edits deck.yaml,
             maintains the deck's thread (chat.jsonl, decisions.md) and renders
   report    draw decks/<slug>/report.yaml on the institutional .docx donor
@@ -819,6 +1049,7 @@ function parseArgs(argv) {
     else if (a === "--no-render") opts.render = false;
     else if (a === "--no-toc") opts.toc = false;
     else if (a === "--critic") opts.critic = true;
+    else if (a === "--resume") opts.resume = true;
     else if (a === "--help" || a === "-h") { console.log(USAGE); process.exit(0); }
     else opts._.push(a);
   }
@@ -853,12 +1084,20 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.stdout.write(YAML.stringify(r.plan));
     } else if (cmd === "generate") {
       if (!opts.slug) { console.error(USAGE); process.exit(2); }
-      const planFile = opts.plan ?? path.join(DECKS, opts.slug, "plan.yaml");
-      const plan = YAML.parse(await readFile(planFile, "utf8"));
-      const r = await generateFromPlan({
-        slug: opts.slug, plan, theme: opts.theme, model: opts.model,
-        onProgress: progress, critic: opts.critic,
-      });
+      let r;
+      if (opts.resume) {
+        r = await resumeGeneration({
+          slug: opts.slug, theme: opts.theme, model: opts.model,
+          onProgress: progress, critic: opts.critic,
+        });
+      } else {
+        const planFile = opts.plan ?? path.join(DECKS, opts.slug, "plan.yaml");
+        const plan = YAML.parse(await readFile(planFile, "utf8"));
+        r = await generateFromPlan({
+          slug: opts.slug, plan, theme: opts.theme, model: opts.model,
+          onProgress: progress, critic: opts.critic,
+        });
+      }
       process.stdout.write(`ready decks/${opts.slug}/deck.yaml — ${r.deck.slides.length} slides`);
       if (r.skipped.length) process.stdout.write(`, ${r.skipped.length} skipped`);
       process.stdout.write("\n");
@@ -877,6 +1116,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
           if (rd.unfixed) process.stdout.write(`    NOT fixed: ${rd.unfixed.map((f) => `slide ${f.slide} ${f.kind}`).join(", ")}\n`);
         }
       }
+    } else if (cmd === "finalize") {
+      if (!opts.slug) { console.error(USAGE); process.exit(2); }
+      const r = await finalizeDeck({
+        slug: opts.slug, theme: opts.theme, model: opts.model,
+        onProgress: progress, critic: opts.critic,
+      });
+      process.stdout.write(`finalised decks/${opts.slug}/deck.yaml — ${r.deck.slides.length} slides\n`);
+      for (const p of r.problems ?? []) process.stdout.write(`  ! ${p}\n`);
     } else if (cmd === "chat") {
       if (!opts.slug || !opts.instruction) { console.error(USAGE); process.exit(2); }
       const r = await runChatTurn({

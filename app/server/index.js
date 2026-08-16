@@ -12,7 +12,7 @@ import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
 import { loadIdentity } from "../../src/ai/identity.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan, createReport, createDeckFromReport, sweepDensity, convertSlideType } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
@@ -384,7 +384,24 @@ app.get("/api/decks/:slug", wrap(async (req, res) => {
     const outStat = await stat(path.join(dir, "out", "deck.pptx"));
     dirty = deckStat.mtimeMs > outStat.mtimeMs;
   } catch { /* no render yet — render needed */ }
-  ok(res, { deck, meta, slides, thumbs, placeholders: placeholderSlides(deck), dirty });
+
+  // Generation run state: the live in-memory registry folded over the durable
+  // checkpoint, so a reload can tell "a run is in flight", "the deck is N/M
+  // written — resume it" and "the deck is complete but was never finalised"
+  // apart, instead of offering only a fresh run.
+  const onDisk = await generationStatus(req.params.slug);
+  const live = generationRunInfo(req.params.slug);
+  ok(res, {
+    deck, meta, slides, thumbs, placeholders: placeholderSlides(deck), dirty,
+    run: {
+      ...onDisk,
+      ...live,
+      // "complete" means every plan slide is written (finalize is all that is
+      // left); "resumable" means a partial deck sits on disk to continue.
+      resumable: onDisk.partial,
+      needsFinalize: onDisk.complete && live.active === false,
+    },
+  });
 }));
 
 app.put("/api/decks/:slug", wrap(async (req, res) => {
@@ -1371,40 +1388,170 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
   });
 });
 
-/** Approved outline → deck, rendered and rasterised. Same SSE transport. */
-app.post("/api/decks/:slug/generate", (req, res) => {
-  const sse = startSSE(res);
-  const ctrl = new AbortController();
-  sse.done.catch(() => ctrl.abort());
+/**
+ * Live generation runs, keyed by slug. A run lives OUTSIDE the SSE response:
+ * dropping the socket no longer aborts the pipeline (that was the "refresh
+ * restarted from slide 1" bug — the abort-on-disconnect killed the run mid-write
+ * and left meta.status "planned" with nothing to resume). A reconnect to the
+ * same slug attaches to the SAME run and streams its events, so a reload
+ * resumes watching instead of starting over. The AbortController is kept for
+ * the explicit Stop button only.
+ */
+const generationRuns = new Map(); // slug -> run record
 
-  const { plan, theme, model } = req.body ?? {};
-  if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) {
-    sse.send("error", { error: "body must include an approved `plan` with slides" });
-    return sse.close();
-  }
+function generationRunInfo(slug) {
+  const run = generationRuns.get(slug);
+  return {
+    active: Boolean(run && !run.finished),
+    status: run?.statusData?.status ?? null,
+    runId: run?.runId ?? null,
+    kind: run?.kind ?? null,
+  };
+}
+
+/**
+ * The generation/finalize pipeline for one deck, tracked in the registry. A
+ * reconnecting client that already has a live run for the slug is attached by
+ * `attachToRun` instead of starting a second pipeline.
+ */
+function startDeckRun({ slug, kind, plan, theme, model }) {
+  const ctrl = new AbortController();
+  const run = {
+    slug,
+    runId: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    kind,
+    plan,
+    abort: () => ctrl.abort(),
+    statusData: { status: "Queued…" },
+    subscribers: new Set(),
+    finished: false,
+    error: null,
+    result: null,
+  };
+  generationRuns.set(slug, run);
+
+  const broadcast = (event, data) => {
+    if (event === "status") run.statusData = data;
+    for (const s of run.subscribers) s.send(event, data);
+  };
 
   (async () => {
-    const r = await generateFromPlan({
-      slug: req.params.slug, plan, theme, model,
-      signal: ctrl.signal,
-      onProgress: (p) => sse.send("status", p),
-    });
-    const base = `/api/decks/${req.params.slug}/preview`;
-    sse.send("result", {
-      slug: r.slug,
-      slides: r.slides.map((f) => `${base}/${f}`),
-      thumbs: r.thumbs.map((f) => `${base}/thumbs/${f}`),
+    const job = kind === "finalize"
+      ? () => finalizeDeck({ slug, theme, model, signal: ctrl.signal, onProgress: (p) => broadcast("status", p) })
+      : kind === "resume"
+        ? () => resumeGeneration({ slug, theme, model, signal: ctrl.signal, onProgress: (p) => broadcast("status", p) })
+        : () => generateFromPlan({ slug, plan, theme, model, signal: ctrl.signal, onProgress: (p) => broadcast("status", p) });
+    const r = await job();
+    const base = `/api/decks/${slug}/preview`;
+    run.result = {
+      slug,
+      slides: (r.slides ?? []).map((f) => `${base}/${f}`),
+      thumbs: (r.thumbs ?? []).map((f) => `${base}/thumbs/${f}`),
       problems: r.problems,
       skipped: r.skipped,
       stats: r.stats,
-    });
-    sse.close();
+    };
+    run.finished = true;
+    broadcast("result", run.result);
   })().catch((err) => {
-    if (ctrl.signal.aborted) return;
-    sse.send("error", { error: err.message });
-    sse.close();
+    if (ctrl.signal.aborted) {
+      run.error = "Stopped — the deck's progress is preserved; resume from where it left off.";
+    } else {
+      run.error = err.message;
+    }
+    run.finished = true;
+    broadcast("error", { error: run.error });
+  }).finally(() => {
+    // Close every attached response, then drop the record after a grace period
+    // so a very late reconnect still reads the terminal frame.
+    for (const s of run.subscribers) s.close();
+    run.subscribers.clear();
+    setTimeout(() => {
+      if (generationRuns.get(slug) === run) generationRuns.delete(slug);
+    }, 5 * 60 * 1000);
   });
+
+  return run;
+}
+
+/** Wire one SSE response into a live (or finished-but-still-recorded) run. */
+function attachToRun(res, run) {
+  const sse = startSSE(res);
+  const sub = { send: sse.send, close: sse.close };
+  run.subscribers.add(sub);
+  sse.done.catch(() => run.subscribers.delete(sub));
+  if (run.finished) {
+    if (run.error) sse.send("error", { error: run.error });
+    else sse.send("result", run.result);
+    sse.close();
+  } else if (run.statusData) {
+    sse.send("status", run.statusData);
+  }
+  return sse;
+}
+
+/** Approved outline → deck, rendered and rasterised. Same SSE transport. */
+app.post("/api/decks/:slug/generate", (req, res) => {
+  const { plan, theme, model, resume } = req.body ?? {};
+
+  const live = generationRuns.get(req.params.slug);
+  if (live && !live.finished) {
+    // A reload (or a duplicate approve) reconnects to the SAME run instead of
+    // starting a second pipeline — the "refresh restarted from slide 1" fix.
+    attachToRun(res, live);
+    return;
+  }
+  if (!resume && (!plan || !Array.isArray(plan.slides) || !plan.slides.length)) {
+    const sse = startSSE(res);
+    sse.send("error", { error: "body must include an approved `plan` with slides" });
+    return sse.close();
+  }
+  startDeckRun({
+    slug: req.params.slug,
+    kind: resume ? "resume" : "generate",
+    plan,
+    theme,
+    model,
+  });
+  // The FIRST client owns the initial SSE; later reconnects attach via attachToRun.
+  attachToRun(res, generationRuns.get(req.params.slug));
 });
+
+/** Resume a dropped generation from its checkpoint (continues writing the
+ *  remaining plan slides, then finalizes). Reconnects to a live run if one
+ *  exists, exactly like /generate. */
+app.post("/api/decks/:slug/generate/resume", (req, res) => {
+  const live = generationRuns.get(req.params.slug);
+  if (live && !live.finished) {
+    attachToRun(res, live);
+    return;
+  }
+  const { theme, model } = req.body ?? {};
+  startDeckRun({ slug: req.params.slug, kind: "resume", plan: null, theme, model });
+  attachToRun(res, generationRuns.get(req.params.slug));
+});
+
+/** The finalize watchdog — the deck's content is already written and complete
+ *  (a dropped run, or a deck whose run died before finalize), so run the
+ *  post-write pass and flip it to ready instead of re-writing slides. */
+app.post("/api/decks/:slug/finalize", (req, res) => {
+  const live = generationRuns.get(req.params.slug);
+  if (live && !live.finished) {
+    attachToRun(res, live);
+    return;
+  }
+  const { theme, model } = req.body ?? {};
+  startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model });
+  attachToRun(res, generationRuns.get(req.params.slug));
+});
+
+/** Stop a live generation — the one explicit abort. The checkpoint survives,
+ *  so a later resume continues from where the writer stopped. */
+app.post("/api/decks/:slug/generate/stop", wrap(async (req, res) => {
+  const run = generationRuns.get(req.params.slug);
+  if (run && !run.finished) run.abort();
+  ok(res, { stopped: Boolean(run && !run.finished) });
+}));
 
 /* ---------------------------------------------------------------- presets */
 

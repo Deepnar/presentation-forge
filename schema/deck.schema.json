@@ -480,6 +480,7 @@
                   },
                   "categories": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                       "type": "string"
                     }
@@ -500,6 +501,7 @@
                         },
                         "values": {
                           "type": "array",
+                          "minItems": 1,
                           "items": {
                             "type": "number"
                           }

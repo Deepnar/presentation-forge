@@ -37,6 +37,11 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [placeholders, setPlaceholders] = useState([]); // [{ index, type, headline }]
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
+  // Generation-run state (server-reported): whether a run is live, and whether
+  // this complete-but-unfinalised deck needs the finalize pass — the stuck
+  // "Working…" fix. Polled while a run is active so the banner flips by itself.
+  const [deckRun, setDeckRun] = useState(null);
+  const [runBusy, setRunBusy] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [overflowOpen, setOverflowOpen] = useState(false);
   const overflowRef = useRef(null);
@@ -104,6 +109,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       setMode(r.meta?.mode ?? null);
       setDensity(r.meta?.density ?? "balanced");
       setRenderDirty(r.dirty ?? true);
+      setDeckRun(r.run ?? null);
     });
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
@@ -115,6 +121,25 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const members = (data?.meta?.team?.members?.length
     ? data.meta.team.members
     : identity?.team?.members) ?? [];
+
+  // While a generation run is live, poll so the banner (and the slides once
+  // they land) appear without a manual reload — the "refresh restarted from
+  // slide 1" fix's companion: the deck view adopts the run instead of hanging.
+  useEffect(() => {
+    if (!deckRun?.active) return;
+    const id = setInterval(() => {
+      api.deck(slug)
+        .then((r) => {
+          setDeckRun(r.run ?? null);
+          if (!r.run?.active && r.slides?.length) {
+            const stamp = Date.now();
+            setData((d) => (d ? { ...d, slides: r.slides.map((s) => `${s}?t=${stamp}`), thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`) } : d));
+          }
+        })
+        .catch(() => {});
+    }, 3000);
+    return () => clearInterval(id);
+  }, [deckRun?.active, slug]);
 
   /**
    * Gamma-style per-slide quick action: "make this punchier" is a chat turn
@@ -253,6 +278,53 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
     clearTimeout(renderTimer.current);
     setSyncing(true);
     runRender();
+  }
+
+  /** Reload the deck payload — used after a resume/finalize run lands. */
+  const reload = () => {
+    api.deck(slug).then((r) => {
+      const stamp = Date.now();
+      setData({
+        ...r,
+        slides: r.slides.map((s) => `${s}?t=${stamp}`),
+        thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`),
+      });
+      setPlaceholders(r.placeholders ?? []);
+      setDeckRun(r.run ?? null);
+      setRenderDirty(r.dirty ?? true);
+    }).catch(() => {});
+  };
+
+  /** Resume a dropped generation from its checkpoint (SSE like render). */
+  function resumeRun() {
+    if (runBusy || !deckRun?.resumable) return;
+    setRunBusy(true);
+    setActionErr("");
+    api.resumeGenerate(slug, { theme: theme || undefined, model: undefined }, {
+      status: () => {},
+      result: () => { reload(); },
+    }).promise
+      .catch((err) => setActionErr(err.message))
+      .finally(() => setRunBusy(false));
+  }
+
+  /** Finalize watchdog: the deck is complete but was never finalised — run the
+   *  post-write pass (grounding + text fit + review + render) and flip it to
+   *  ready. The "stuck on Working…" fix. */
+  function finalizeRun() {
+    if (runBusy || !deckRun?.needsFinalize) return;
+    setRunBusy(true);
+    setActionErr("");
+    api.finalizeDeck(slug, { theme: theme || undefined, model: undefined }, {
+      status: () => {},
+      result: () => { reload(); },
+    }).promise
+      .catch((err) => setActionErr(err.message))
+      .finally(() => setRunBusy(false));
+  }
+
+  function stopRun() {
+    api.stopGenerate(slug).catch(() => {});
   }
 
   /**
@@ -736,6 +808,43 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
         </div>
       </header>
+
+      {deckRun && (deckRun.active || deckRun.resumable || deckRun.needsFinalize) && (
+        <Panel className="mt-5 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
+                <span className={`h-2 w-2 shrink-0 rounded-full ${deckRun.active ? "bg-accent animate-pulse" : "bg-amber"}`} />
+                {deckRun.active
+                  ? `Generation in progress — ${deckRun.written}/${deckRun.total} slides written`
+                  : deckRun.needsFinalize
+                    ? "This deck is fully written but was never finalised"
+                    : `This deck has ${deckRun.written}/${deckRun.total} slides written`}
+              </div>
+              <div className="mt-0.5 text-[11.5px] leading-relaxed text-fg-muted">
+                {deckRun.active
+                  ? "The run keeps going in the background; it lands here when done."
+                  : deckRun.needsFinalize
+                    ? "The post-write pass (grounding, text fitting, review, render) never ran. Finalize completes it and makes the deck ready."
+                    : "A previous run stopped part-way. Resume continues writing the remaining slides."}
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              {deckRun.active ? (
+                <Button size="sm" variant="outline" onClick={stopRun}>Stop</Button>
+              ) : deckRun.needsFinalize ? (
+                <Button size="sm" variant="primary" onClick={finalizeRun} disabled={runBusy}>
+                  {runBusy ? <Spinner className="h-3 w-3" /> : null} Finalize this deck
+                </Button>
+              ) : (
+                <Button size="sm" variant="primary" onClick={resumeRun} disabled={runBusy}>
+                  {runBusy ? <Spinner className="h-3 w-3" /> : null} Resume generation
+                </Button>
+              )}
+            </div>
+          </div>
+        </Panel>
+      )}
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ReportPanel

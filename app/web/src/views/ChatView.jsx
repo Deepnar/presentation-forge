@@ -89,6 +89,12 @@ export default function ChatView({
   const [punching, setPunching] = useState(false);
   const [swapping, setSwapping] = useState(false);
   const [swapOpen, setSwapOpen] = useState(false); // the type-picker modal
+  // The deck's generation-run state (server-reported): whether a run is live,
+  // how many slides are written, and whether a complete-but-unfinalised deck
+  // needs the finalize pass. This is what lets a reload offer "resume" or
+  // "finalize" instead of only a fresh run.
+  const [deckRun, setDeckRun] = useState(null);
+  const autoAttachedRef = useRef(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(chat);
@@ -119,6 +125,34 @@ export default function ChatView({
   }, []);
 
   useEffect(() => { setDraftPlan(chat.plan); }, [chat.plan]);
+
+  // Poll the deck's run state whenever the chat is between a plan and a
+  // produced deck — a dropped SSE leaves the run alive server-side, and this is
+  // how a reload finds it. Refreshed while a run is active so it flips to
+  // "finalize"/"ready" the moment the writer finishes without the user touching
+  // anything.
+  useEffect(() => {
+    if (!chat.deckSlug || chat.produced) { setDeckRun(null); return; }
+    let live = true;
+    const poll = () => {
+      api.deck(chat.deckSlug)
+        .then((r) => { if (live) setDeckRun(r.run ?? null); })
+        .catch(() => {});
+    };
+    poll();
+    const id = setInterval(poll, 3000);
+    return () => { live = false; clearInterval(id); };
+  }, [chat.deckSlug, chat.produced, busy, chat.turns?.length]);
+
+  // Reconnect: a run that is live server-side (a reload dropped our SSE, the
+  // pipeline kept going) is re-attached once automatically, so the refresh
+  // resumes watching instead of starting a fresh generation.
+  useEffect(() => {
+    if (!deckRun?.active || autoAttachedRef.current) return;
+    autoAttachedRef.current = true;
+    resumeRun();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deckRun?.active]);
 
   // Fetch the deck's content + previews when the deck is ready (and after each
   // turn, so the panel reflects the latest render). Selection is kept in the
@@ -450,6 +484,90 @@ export default function ChatView({
   }
 
   function stop() { runs.get(chat.id)?.abort?.() ?? job?.abort(); }
+
+  /**
+   * Resume a dropped generation: reconnect to the live server-side run when one
+   * exists, otherwise continue writing the checkpointed deck from where it
+   * stopped. Either way the result lands the same way approve()'s does.
+   */
+  function resumeRun() {
+    if (!chat.deckSlug || busy) return;
+    setBusy(true);
+    setError("");
+    setStatus("Reconnecting…");
+    runs.begin(chat.id, { abort: () => {}, status: "Reconnecting…" });
+    const j = api.resumeGenerate(
+      chat.deckSlug,
+      { model: model || undefined },
+      {
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
+        result: (r) => {
+          persist({
+            ...chatRef.current,
+            produced: true,
+            deckSlug: r.slug ?? chat.deckSlug,
+            deckThumbs: (r.thumbs ?? []).slice(0, 8),
+            error: undefined,
+            updatedAt: new Date().toISOString(),
+          });
+          onDeckChanged?.();
+        },
+      },
+    );
+    runs.update(chat.id, { abort: j.abort });
+    setJob(j);
+    j.promise
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
+  }
+
+  /** Finalize watchdog: the deck is fully written but the run died before the
+   *  post-write pass. Run it without re-writing any slides. */
+  function finalizeRun() {
+    if (!chat.deckSlug || busy) return;
+    setBusy(true);
+    setError("");
+    setStatus("Finalizing…");
+    runs.begin(chat.id, { abort: () => {}, status: "Finalizing…" });
+    const j = api.finalizeDeck(
+      chat.deckSlug,
+      { model: model || undefined },
+      {
+        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
+        result: (r) => {
+          persist({
+            ...chatRef.current,
+            produced: true,
+            deckSlug: r.slug ?? chat.deckSlug,
+            deckThumbs: (r.thumbs ?? []).slice(0, 8),
+            error: undefined,
+            updatedAt: new Date().toISOString(),
+          });
+          onDeckChanged?.();
+        },
+      },
+    );
+    runs.update(chat.id, { abort: j.abort });
+    setJob(j);
+    j.promise
+      .catch((err) => {
+        const msg = err.name === "AbortError" ? "Cancelled." : err.message;
+        setError(msg);
+        setStatus("");
+        persist({ ...chatRef.current, error: msg, updatedAt: new Date().toISOString() });
+      })
+      .finally(() => { setBusy(false); runs.update(chat.id, { finished: true }); });
+  }
+
+  function stopRun() {
+    if (!chat.deckSlug) return;
+    api.stopGenerate(chat.deckSlug).catch(() => {});
+  }
 
   /**
    * The selection context appended to an edit turn: WHICH slides the user
@@ -963,6 +1081,16 @@ export default function ChatView({
                 </span>
               </div>
             </Panel>
+          )}
+
+          {phase === "outline" && deckRun && !busy && !chat.produced && (
+            <DeckRunCard
+              run={deckRun}
+              onResume={resumeRun}
+              onFinalize={finalizeRun}
+              onStop={stopRun}
+              onOpen={() => onOpenDeck(chat.deckSlug)}
+            />
           )}
 
           {phase === "outline" && (
@@ -1867,6 +1995,59 @@ function turnSummary(r) {
   if (r.changes?.length) parts.push(r.changes.slice(0, 5).join("; "));
   if (r.problems?.length) parts.push(r.problems.slice(0, 3).join("; "));
   return parts.join("  ") || "Applied.";
+}
+
+/**
+ * The generation-run banner: what a reload finds between "approved the plan"
+ * and "the deck is produced". A live server-side run is watched (reconnect),
+ * a partial checkpoint is offered for resume, and a complete-but-unfinalised
+ * deck is offered for finalize — never a silent fresh run from slide 1.
+ */
+function DeckRunCard({ run, onResume, onFinalize, onStop, onOpen }) {
+  if (!run || (!run.active && !run.resumable && !run.needsFinalize)) return null;
+  let title;
+  let hint;
+  if (run.active) {
+    title = `Generation in progress — ${run.written}/${run.total} slides written`;
+    hint = "The run survived the refresh; it continues in the background and this view is watching it.";
+  } else if (run.needsFinalize) {
+    title = `The deck is fully written (${run.total} slides) but was never finalised`;
+    hint = "Finalize runs the post-write pass — grounding, text fitting, review and render — and flips it to ready.";
+  } else {
+    title = `This deck has ${run.written}/${run.total} slides written`;
+    hint = "A previous run stopped part-way. Resume continues writing the remaining slides; the slides already written are on disk.";
+  }
+  return (
+    <Panel className="p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-amber" />
+            {title}
+          </div>
+          <div className="mt-0.5 text-[11.5px] leading-relaxed text-fg-muted">{hint}</div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {run.active ? (
+            <>
+              <Button size="sm" variant="outline" onClick={onStop}>Stop</Button>
+              <Button size="sm" variant="primary" onClick={onOpen}>Open what's written</Button>
+            </>
+          ) : run.needsFinalize ? (
+            <>
+              <Button size="sm" variant="outline" onClick={onOpen}>Open what's written</Button>
+              <Button size="sm" variant="primary" onClick={onFinalize}>Finalize this deck</Button>
+            </>
+          ) : (
+            <>
+              <Button size="sm" variant="outline" onClick={onOpen}>Open what's written</Button>
+              <Button size="sm" variant="primary" onClick={onResume}>Resume generation</Button>
+            </>
+          )}
+        </div>
+      </div>
+    </Panel>
+  );
 }
 
 /**

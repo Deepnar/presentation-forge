@@ -138,6 +138,16 @@ export const api = {
   createDeck: (payload, handlers) => stream("/api/decks", payload, handlers),
   generate: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/generate`, payload, handlers),
+  // Resume a dropped generation from its checkpoint — reconnects to a live run
+  // when one exists, otherwise continues writing the remaining slides.
+  resumeGenerate: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/generate/resume`, payload, handlers),
+  // Finalize watchdog: run the post-write pass on a complete-but-unfinalised
+  // deck and flip it to ready, instead of re-writing slides.
+  finalizeDeck: (slug, payload, handlers) =>
+    stream(`/api/decks/${slug}/finalize`, payload, handlers),
+  stopGenerate: (slug) =>
+    call(`/api/decks/${slug}/generate/stop`, { method: "POST", body: JSON.stringify({}) }),
   models: () => call("/api/models"),
   chatThread: (slug) => call(`/api/decks/${slug}/chat`),
   clearChat: (slug) => call(`/api/decks/${slug}/chat`, { method: "DELETE" }),

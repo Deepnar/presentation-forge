@@ -353,13 +353,23 @@ export function numericFactCount(research) {
 
 /**
  * The data-affinity steering note: when the research carries real figures, a
- * data beat should be visualised as a chart, not restated as big numbers. The
- * planner (and the writer, for chart slides) is told the chart kinds and which
- * one matches which comparison. Returns null when the research is not numeric.
+ * data beat should be visualised as a chart, not restated as big numbers. When
+ * it does NOT, the note must say so explicitly — an empty chart is the one
+ * outcome that must be impossible. The planner (and the writer, for chart
+ * slides) is told the chart kinds and which one matches which comparison.
+ * Returns the note for either case.
  */
 export function dataAffinityNote(research) {
   const count = numericFactCount(research);
-  if (count < 2) return null;
+  if (count < 2) {
+    return (
+      `The research carries fewer than 2 numeric facts — there is no real data to plot. ` +
+      `Do NOT choose chart types (\`chart\`, or the scatter/radar/stacked-bar kinds), and do NOT ` +
+      `emit a chart with empty or invented values — an empty axis is un-presentable. ` +
+      `Present the material itself with a qualitative type instead: framework, cards, ` +
+      `compare, or flow. A chart slide is only legal when the notes carry the numbers it plots.`
+    );
+  }
   return (
     `The research carries ${count} numeric facts — figures, percentages, comparisons, trends. ` +
     "Data beats should be CHART slides (type `chart`, kinds: " +

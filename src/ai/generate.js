@@ -1,6 +1,6 @@
 import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps } from "./ops.js";
-import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote } from "./catalog.js";
+import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
 import { placeholderSlides } from "../placeholders.js";
@@ -100,7 +100,7 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
 });
 
 /** Stage 1 — the plan. Cheap, reviewable, and the human gate's input. */
-export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal }) {
+export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal, chat = chatJSON }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -176,7 +176,7 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     sizingNote,
   ].filter(Boolean).join("\n");
 
-  const res = await chatJSON({
+  const res = await chat({
     role: "author",
     model,
     signal,
@@ -202,6 +202,14 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
   let slides = (plan.slides ?? [])
     .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
     .filter((s) => s.purpose);
+
+  // E1 — an empty chart must be impossible: when the research carries no real
+  // numbers, any `chart` the planner proposed is coerced to a qualitative type
+  // before the outline is shown. A chart slide is only legal when the notes
+  // carry the numbers it would plot; an empty axis is un-presentable.
+  if (numericFactCount(research) < 2) {
+    slides = slides.map((s) => (s.type === "chart" ? { ...s, type: "cards" } : s));
+  }
 
   // The structure contract is enforced here, not asked: title opens, the
   // closing slide ends, and every content-bearing section opens with a divider.
@@ -378,7 +386,7 @@ function mintedSpec(sections, sec) {
 }
 
 /** Stage 2 — write one slide. Grammar is limited to this type's own fields. */
-async function writeSlide({ spec, plan, deck, theme, research, model, signal }) {
+async function writeSlide({ spec, plan, deck, theme, research, model, signal, chat = chatJSON }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const isDivider = DIVIDER_TYPES.has(spec.type);
@@ -448,7 +456,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal }) 
     synthesisNote(fullStrength ? "full" : "local"),
   ].filter(Boolean).join("\n");
 
-  const res = await chatJSON({
+  const res = await chat({
     role: "author",
     model,
     signal,
@@ -505,6 +513,7 @@ async function sanitizePlan(plan, types) {
 export async function generateDeck({
   brief, briefing = "", theme, identity, research = "", maxSlides = 24, model, signal, onProgress,
   plan: givenPlan, slidesPerMember = null,
+  baseDeck = null, fromIndex = 0, onSlide = null, chat = chatJSON,
 }) {
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -523,7 +532,11 @@ export async function generateDeck({
   }
   onProgress?.({ phase: "planned", slides: plan.slides.length, plan });
 
-  let deck = {
+  // A resumed run starts from the checkpointed deck.yaml (slides 0..fromIndex-1
+  // already written) and only writes the remaining plan slides. The title and
+  // structure are already on the checkpoint; a fresh run builds them from the
+  // plan as before.
+  let deck = baseDeck ?? {
     title: plan.title || brief.slice(0, 80),
     ...(plan.subtitle ? { subtitle: plan.subtitle } : {}),
     ...(theme?.name ? { theme: theme.name } : {}),
@@ -533,7 +546,17 @@ export async function generateDeck({
 
   let skipped = [];
 
-  for (const [i, spec] of plan.slides.entries()) {
+  // E1 backstop: even a hand-edited plan cannot write a chart when the research
+  // carries no numbers — coerce chart specs to cards before the loop so an
+  // empty chart is unrepresentable at every entry point.
+  const noNumbers = numericFactCount(research) < 2;
+  const planSlides = noNumbers
+    ? plan.slides.map((s) => (s.type === "chart" ? { ...s, type: "cards" } : s))
+    : plan.slides;
+
+  for (const [i, rawSpec] of planSlides.entries()) {
+    const spec = rawSpec;
+    if (i < fromIndex) continue;
     onProgress?.({ phase: "writing", index: i, total: plan.slides.length, type: spec.type });
     // Retry once with the catalog re-stated explicitly before giving up — a
     // first failure is often the grammar drifting, and a second pass with the
@@ -547,7 +570,7 @@ export async function generateDeck({
     try {
       const before = deck.slides.length;
       const attempt = async () => {
-        const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+        const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, chat });
         const a = applyOps(deck, ops.filter((o) => o.op === "append_slide"));
         const grew = a.ok && a.deck.slides.length > before;
         if (!grew) return { a, ok: false, errors: a.ok ? ["no usable slide written"] : a.errors };
@@ -557,6 +580,10 @@ export async function generateDeck({
       res = await attempt();
       if (!res.ok) res = await attempt();
     } catch (err) {
+      // An abort is a stop, not a failed slide — never degrade a stopped run
+      // into a wall of placeholders. Re-throw so the caller can preserve the
+      // checkpoint instead.
+      if (err.name === "AbortError") throw err;
       res = { ok: false, errors: [err.message.slice(0, 120)] };
     }
     if (!res.ok) {
@@ -575,6 +602,9 @@ export async function generateDeck({
       continue;
     }
     deck = res.a.deck;
+    // Checkpoint hook: the caller persists deck.yaml as each slide lands, so a
+    // dropped connection leaves a resumable deck instead of a lost run.
+    onSlide?.(deck, i + 1, plan.slides.length);
   }
 
   const { ok, errors } = await validateDeck(deck);
@@ -591,7 +621,7 @@ export async function generateDeck({
     if (!spec) continue;
     try {
       const before = deck.slides.length;
-      const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal });
+      const ops = await writeSlide({ spec, plan, deck, theme, research, model, signal, chat });
       const a = applyOps(deck, [
         { op: "replace_slide", index: ph.index, slide: ops.find((o) => o.op === "append_slide")?.slide },
       ]);
@@ -603,7 +633,11 @@ export async function generateDeck({
         deck = candidate;
         recovered.push(ph.index);
       }
-    } catch { /* keep the placeholder — flagged below */ }
+    } catch (err) {
+      // A stop mid-recovery keeps the checkpoint; everything else keeps the
+      // placeholder and flags it below.
+      if (err.name === "AbortError") throw err;
+    }
   }
   if (recovered.length) {
     skipped = skipped.filter((s) => !recovered.includes(s.index));
