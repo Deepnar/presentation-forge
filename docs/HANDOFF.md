@@ -1,103 +1,93 @@
-# Handoff — 2026-08-16, generation-robustness batch complete
+# Handoff — 2026-08-16, readability batch complete
 
-The queued handoff (items A, B, C, E1–E4 from the 00:10 addendum) is DONE,
-committed, pushed, and behaviourally verified. Git history carries the batch:
-`4a74de2` (JSON salvage + cloud repair room), `2fd528b` (resumable generation +
-finalize + E1/E2 core), `cfe4086` (layout overlap + sentence-boundary trim +
-op-drift tolerance).
+The six-item fix batch from the user review is DONE, committed, pushed and
+behaviourally verified. Git history carries it: `b597173` (calm sci-fi-hud
+background), `236ecd7` (presenters on finalize), `59703e4` (relative-chart
+grounding), `2aebd5f` (flow as milestone rail), `6a7b216` (text never on a
+rule fill).
 
 ## What shipped
 
-- **A — JSON-parse tolerance.** `salvageJSON` (ollama.js) strips every fence,
-  tries every plausible brace position, repairs trailing commas, and names its
-  attempts in the error. `MAX_REPAIR` is per-transport (cloud 4, local 2).
-- **B/C — resumable generation + finalize watchdog.** Generation split into
-  `writeDeckContent` (checkpoints deck.yaml per slide, persists the approved
-  plan first, `.run.json` marker, meta.status "writing") and `finalizeDeck`
-  (grounding + field-length + trim + coherence + render, flips to ready). The
-  server keeps runs alive after the socket drops, dedupes reconnects to the
-  same run, and exposes `/generate`, `/generate/resume`, `/finalize`,
-  `/generate/stop`; the deck GET reports `run:{active,written,total,resumable,
-  needsFinalize}`. ChatView auto-reconnects to a live run and offers
-  resume/finalize; DeckDetail shows the same banner. CLI: `generate --resume`
-  + `finalize`.
-- **E1 — empty charts unrepresentable.** Negative data-affinity steering,
-  planner coercion of `chart` → `cards` below 2 numeric facts, schema
-  `minItems:1` on `values` and `categories`. Cloud planner tests: no-numbers
-  brief → zero charts; data-rich → four.
-- **E2 — no mid-sentence ellipsis.** The FIELD-LENGTH pass rewrites overfull or
-  already-ellipsised fields as complete sentences before the trim; the trim's
-  `shortenString` cuts at sentence boundaries only (a mid-sentence "…" is now
-  unproducible). Verified on the HPC deck: every "…" became a complete
-  sentence.
-- **E3 — framework/diagram never hide text.** Framework ring checks
-  card/ellipse + card/card clearance and falls back to a grid; diagram sizes
-  nodes from layer spacing, auto-routes thin chains horizontally, draws edges
-  behind nodes, drops bodies when rows are too thin. Slide 6 pixel-verified at
-  0.3–0.6in gap (the vision model's repeated "overlap" calls were false
-  positives at tight-but-legal spacing); slide 14 no longer overlaps.
-- **E4 — thin-type floors.** ~30 TYPE_BUDGETS entries added; the HPC deck's
-  flow slide now carries six steps.
+- **Sci-Fi HUD background calmed.** The 5 full-height cyan verticals + 2
+  horizontals on every slide are gone. The decor is now a thin magenta scan
+  bar, three short registration ticks and one baseline — the corner brackets
+  and mono labels carry the HUD identity. `mimo-v2.5` confirmed it reads calm
+  while still HUD.
+- **Presenters now run on finalize.** The write half checkpoints deck.yaml
+  per slide DURING the write loop and only assigned presenters in memory at
+  the end, so every resume/finalize path re-read a presenter-less file and
+  shipped content slides "auto". `assignPresenters()` (team.js) is the single
+  shared step, called by generateDeck, the resume continuation AND
+  finalizeDeck before flip-to-ready (re-applied after the critic path). The
+  user's 11-member deck went through a REAL finalize → all 11 members
+  assigned, dividers clean, and the manual 5 the user had typed matched the
+  deterministic split exactly. Locked in by `test/finalize-presenters.test.js`
+  (full finalize path with a fake chat) + `assignPresenters` unit tests.
+- **Relative-chart grounding fixed.** The DIOMP chart (125/55 on a
+  "% of MPI+OpenMP" axis) shipped six phantom `[grounding]` notes — the
+  extractor flagged the normalised coordinates when the research states the
+  percentages ("25% higher bandwidth, 45% lower latency"). `flattenSlide`
+  now resolves relative-axis series values to their delta-from-baseline and
+  grounds that, dropping the 100-baseline origin; a fabricated coordinate
+  whose delta is absent still flags (E1 intact). `deckFigures` keeps the raw
+  values so the Research view lists what the geometry draws. The user deck's
+  chart now grounds clean.
+- **Flow slide redesigned.** The ltr branch drew one cramped row of narrow
+  cards hugging the heading (bodies dropped at 5 steps, lower ~40% empty).
+  It is now a milestone rail: a baseline across the slide, numbered accent
+  chips on it, titles above, bodies filling the zone below. All 5 steps of
+  the user's flow slide render title AND body, the slide is filled, and
+  `mimo-v2.5` rates it professional with no dead space. The ttb numbered
+  spine was checked too and is unchanged.
+- **Text never sits on a rule fill.** The real font-visibility bug: the
+  geometry layouts drew pill/chip/avatar text on `theme.palette.rule` fills,
+  and isometric-dark's `rule` is `#FFFFFF1C` — alpha-stripped to solid white,
+  swallowing the near-white `ink`. Five sites (layered-architecture pills,
+  ranking chips, before/after pills, branching-flow labels, avatar
+  placeholders) now fill with `surface` and use `rule` only as a 1pt outline.
+  `mimo-v2.5` confirmed the previously-invisible isometric-dark slide-11 pills
+  are legible and the change reads clean in sci-fi-hud and warm-humanist too.
+- **Bibliography floor resolved.** The user deck re-renders with ZERO floor
+  flags (slide 20 included) — the finalize path's field-length + trim passes
+  cleared them.
 
-## Known limitations (pre-existing, surfaced honestly)
+## The 38-theme contrast audit
 
-- **The LOCAL author model (`qwen3-coder:30b-a3b-q4_K_M`) is unreliable at
-  multi-slide rewrites** (the coherence pass's rewrite, and some sweep
-  rewrites): it emits ops missing the `op` field. runTurn now drops the
-  never-valid items and reports all-malformed responses through the repair
-  loop with a clear diagnostic, but a wholly-malformed coherence rewrite still
-  fails — surfaced as a `problems[]` entry, never a silent no-op. The deck
-  ships; the drift case (a sweep rewrite that wandered off-topic) is what the
-  coherence pass exists to catch and occasionally cannot. On the cloud
-  transport the same passes succeed.
-- **The HPC deck still carries honest floor flags** on slide 10 (stacked-list,
-  dense content in five narrow columns) — "would need <floor>pt". This is the
-  fitter's contract (flag, don't shrink), and the content is genuine: the deck
-  renders, nothing is hidden or cut mid-sentence. A `sparse`/`balanced` sweep
-  on slide 10's material, or shortening its bodies, clears them. Slide 14's
-  diagram labels also flag at ~9-10pt on the long mono labels ("Compute-Comm
-  Overlap").
-- The deck's `decks/recent-trends-in-mixed-mode-programming-for-3/` meta.yaml
-  had a temporary `owner: tester@test.local` for API testing — REMOVED, it is
-  ownerless (operator-owned) again. It is `ready`, rendered, and slide 16 is a
-  cards slide (the empty chart is gone).
+`tools/contrast-audit.mjs` renders the geometry slide types (vs, compare,
+cards, framework, diagram, flow, checklist, roadmap, chart,
+layered-architecture) in every theme into one labelled contact sheet per
+type. The sweep's big lesson: **contact sheets are targeters, not verdicts.**
+The sheets flagged neumorphism, retro-terminal, sci-fi-hud and chalkboard for
+"invisible text" — full-resolution re-renders showed all four were
+downsampling artifacts. Only isometric-dark (the rule-fill bug) was real.
+The remaining dark-theme muted-body cases (retro-crt 4.79:1, dark-neon
+7.52:1, isometric-dark 7.05:1) are above WCAG AA and read fine at full res.
 
-## The one rule still enforced
+## Known limitations (pre-existing, unchanged)
 
-The model never writes layout code. The framework/diagram changes are geometry
-in `src/layouts.js`; the content contract in `schema/deck.schema.json` gained
-only a `minItems` (a machine rule, not a coordinate). `themes/*.yaml` untouched.
+- The LOCAL author model (`qwen3-coder:30b-a3b-q4_K_M`) is still unreliable
+  at multi-slide rewrites (the coherence pass) — same story as last handoff.
+  Cloud transport succeeds where local flakes.
+- The older `-3` deck (`decks/recent-trends-in-mixed-mode-programming-for-3/`)
+  predates the finalize-presenter fix; its presenters were assigned manually
+  in the UI. Re-running `forge finalize` on it would now assign them.
 
 ## Servers
 
-- `forge_searxng` running in docker (the D note from last night stands: restart
-  via `docker restart forge_searxng`, never `--force-recreate`).
-- API on :5174 (dev) — I ran a throwaway on :5199 for CDP-ish verification and
-  left it; kill it before the next `npm run dev`. Ollama running.
+- `forge_searxng` running in docker (restart via `docker restart forge_searxng`).
+- API on :5174, web on :5173, Ollama on :11434 — all left running.
+- Kill the throwaway on :5199 from the earlier session before the next
+  `npm run dev` if it is still up.
+
+## Model discipline
+
+flash codes ONLY, mimo-v2.5 vision ONLY, local Ollama untouched, cloud used
+only for the finalize verification run. All specs durable in
+~/.hermes/scripts/prompts/.
 
 ## Next session's carry-forward
 
-The queued items are exhausted. Remaining open threads: the coherence-pass
-flakiness on the local model (tracked above), and the roadmap's stretch items
-(F13 image search, canvas builder). If you want the HPC deck presentation-clean
-now, run `forge generate recent-trends-in-mixed-mode-programming-for-3 --resume`-style
-finalize (already done) or a `sparse` sweep on slide 10's section, then re-render.
-
-Model discipline: flash codes ONLY, mimo vision ONLY, no qwen. All specs durable
-in ~/.hermes/scripts/prompts/.
-
-## F. Settings vs Profile split + theme thumbnail sizing (user, 2026-08-16, NO CHANGES YET — user testing)
-
-### F1. Profile and Settings open the SAME modal — must be separate
-User: "both the settings and the profile open the same shit — it shouldn't. The profile is about personal only, and the settings about other stuff and making those presets."
-- Verified: App.jsx:363 (header avatar) and App.jsx:391 (sidebar ProfileChip) BOTH call `setSettingsOpen(true)` → the same SettingsModal. The sidebar also has a separate "Settings" row (Sidebar.jsx:217) doing the same. THREE entry points, ONE identical modal.
-- Fix: split into two surfaces —
-  - **Profile** (avatar chip, header avatar): personal only — avatar, name, email, Log out (with confirm). Nothing else.
-  - **Settings** (sidebar "Settings" row; the header's settings icon): everything else — Saved formats (presets CRUD), Identity (institution + guide, inline), Cloud (status/key/routing).
-  - Decide which the header avatar opens (profile) vs the sidebar row (settings); keep the LOCAL/CLOUD toggle where it is.
-
-### F2. Theme thumbnail sizes "all over the place" — new-chat gallery + Home/tour page
-User: "the theme thumbnail sizes are still all over the place in the new chat as well as that tour home page — it's all over the place, what is it even doing."
-- Verified root cause: ThemeMiniCard.jsx renders a fixed `aspect-[16/8]` band + `aspect-[16/5]` strip, but PLATE themes overlay `theme.thumb` (a rasterised PNG from `npm run gallery`) with `object-cover` (line 60-68). The thumbnails were generated at inconsistent pixel sizes/aspect ratios, so object-cover crops/zooms them differently per theme; non-plate themes show the flat token synthesis — cards look photo-like (plates) next to flat token art, and the size/zoom differs across the gallery, the Home/tour page, and the new-chat picker.
-- Fix: regenerate ALL theme thumbs at ONE fixed size (e.g. 640×360) from ONE neutral specimen (see deck-quality-round4.md item 13), and/or stop overlaying thumbs on the mini card entirely (pure token synthesis everywhere = uniform); if thumbs stay, generate them at the exact band aspect so object-cover is a no-op.
-- Apply consistently to: new-chat ThemeCard gallery (ChatView.jsx), Home/tour page (Home.jsx:232), Themes page (Themes.jsx), briefing gallery.
+The queued fix batch is exhausted. Remaining open threads: the coherence-pass
+flakiness on the local model, F13 image search, the canvas builder, and the
+stretch F1/F2 items from the previous handoff (profile/settings split + theme
+thumbnail sizing — user testing, no changes yet).

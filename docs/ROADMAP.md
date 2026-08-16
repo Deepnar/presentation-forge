@@ -880,6 +880,18 @@ turns can still edit a presenter by hand (their grammar keeps the field).
 > and the deterministic post-pass is the belt-and-braces that guarantees the
 > shipped deck matches the split. Same lesson as the divider-grammar fix.
 >
+> The split must run where the deck SHIPS, not only in the write half. The
+> write half checkpoints deck.yaml per slide during the write loop and only
+> assigns presenters in memory at the very end — so a deck that reached
+> finalize via the resume shortcut (or a direct finalize of a hand-written
+> deck.yaml) re-read a presenter-less file and shipped every content slide
+> "auto". The assignment is now the shared `assignPresenters(deck, identity,
+> slidesPerMember)` in team.js, called by generateDeck, the resume
+> continuation AND finalizeDeck before flip-to-ready (re-applied after the
+> critic path, which rewrites through the ops layer). Verified on the user's
+> 11-member deck: resume → finalize assigned all 11, dividers clean, and the
+> finalize-path unit test locks it in.
+>
 > Verified end-to-end with the cloud model: an 11-member team and a 3-section
 > deck produced blocks 3,3,2 — contiguous, balanced to within one slide, no
 > dividers assigned, and the presenter name renders in the chrome footer of
@@ -1247,6 +1259,48 @@ indistinguishable — and they were differentiated (duo-wash vs hairline grid).
 > size — a 38-theme sheet at one-per-row is too small for a vision model to
 > tell twins apart, while the numeric scorer catches them instantly.
 
+### [x] Readability batch — calm HUD background, resizable flow, per-theme text contrast
+The user-review round over the HPC deck, four fixes:
+
+- **Sci-Fi HUD background decoupled from the grid.** Five full-height cyan
+  verticals plus two horizontals on every slide read as dense line noise
+  behind all content. The decor is now a thin magenta scan bar, three short
+  registration ticks and one baseline; the corner brackets and mono labels
+  carry the HUD identity, not a grid.
+- **Horizontal flow is a milestone rail, not cramped cards.** The ltr flow
+  drew one row of narrow cards hugging the heading — at five steps each card
+  was ~1.4in wide, bodies were dropped entirely and the lower ~40% of the
+  slide sat empty. The new design runs a baseline rail across the slide with
+  numbered accent chips on it, titles above, bodies filling the zone below,
+  so every step renders title AND body at any step count and the layout
+  spans the full content height.
+- **Text never sits on a rule fill.** The geometry layouts drew pill/chip/
+  avatar text on `theme.palette.rule` fills. `rule` is a hairline colour and
+  in isometric-dark it is `#FFFFFF1C` — a translucent white whose stripped
+  hex renders as a solid near-white fill that swallowed the near-white `ink`
+  text (the invisible slide-11 pills after a theme switch). Five sites
+  (layered-architecture pills, ranking chips, before/after pills,
+  branching-flow labels, avatar placeholders) now fill with `surface` and use
+  `rule` only as a 1pt outline, so text resolves as ink-on-surface per the
+  layer contract. `tools/contrast-audit.mjs` rasterises the geometry slide
+  types in every theme into per-type contact sheets — the primitive for the
+  38-theme sweep.
+
+> **Learned.** Two things were not obvious beforehand.
+>
+> A contact sheet is a *targeter*, not a verdict. The 38-theme sheets flagged
+> neumorphism, retro-terminal, sci-fi-hud and chalkboard for "invisible text"
+> — full-resolution re-renders showed all four were downsampling artifacts
+> with perfectly legible text. Only isometric-dark (the rule-fill bug) was
+> real. Small-cell audits earn a full-res confirm before any fix.
+>
+> The fitter's floor is the right gate for "does this layout look good": the
+> old flow cards dropped bodies at five steps for a reason (a sentence cannot
+> render readably in a 1.4in card at the body floor), and the milestone-rail
+> redesign fixed the COMPOSITION rather than fighting the floor — the body
+> simply gets a zone wide enough for it. Same lesson as the font-floor item:
+> give the content a box that fits it, don't shrink the text.
+
 ### [x] HTML plate renderer
 Headless Chrome renders decorative CSS backgrounds to PNG at build time; the
 renderer places them as slide background plates with all *text* still native.
@@ -1458,6 +1512,17 @@ problems.
 > a year "2030" that the notes never stated. Both flagged into the slide's
 > notes. The notes themselves are the UI — the speaker sees exactly what to
 > verify, in the deck file the deck detail already shows.
+>
+> A relative chart's coordinates are derived, not claimed. A chart drawn on a
+> "% of baseline" axis (unit "% of X" or a "(relative)" category) encodes its
+> claims as percentages: value 125 on "% of MPI+OpenMP" means "25% higher",
+> value 55 means "45% lower". The notes state the percentages, never the
+> normalised coordinates, so flagging 125 as ungrounded was a false positive
+> (the DIOMP chart shipped six phantom `[grounding]` notes). `flattenSlide`
+> now resolves such values to their delta-from-baseline and grounds that,
+> dropping the 100-baseline origin; a fabricated coordinate whose delta is
+> absent still flags (E1 intact). `deckFigures` keeps the raw values so the
+> Research view lists what the geometry draws.
 
 ### [x] Content trim — the floor flag fixes instead of reporting
 The fitter's role floor flagged slides whose text would need to render below
