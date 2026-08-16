@@ -55,23 +55,23 @@ tokens:
   shadow:
     card: { type: outer, blur: 6, offset: 2, angle: 90, color: "000000", opacity: 0.45 }
 
-  # Cyan grid hairlines and a magenta top scan bar — the HUD frame.
+  # The HUD frame: a thin magenta scan bar, a few short registration ticks and
+  # one baseline — NOT a full grid. Five full-height verticals plus two
+  # horizontals read as dense line noise behind every slide; the HUD identity
+  # comes from the corner brackets and mono labels, so the background stays calm.
   background:
     decor:
       - shape: rect
         x: 0
         y: 0
         w: 13.333
-        h: 0.05
+        h: 0.035
         fill: "#E85AD4"
-        transparency: 20
-      - { shape: rect, x: 1.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
-      - { shape: rect, x: 4.4, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
-      - { shape: rect, x: 6.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
-      - { shape: rect, x: 9.4, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
-      - { shape: rect, x: 11.9, y: 0, w: 0.02, h: 7.5, fill: "#33D6E0", transparency: 86 }
-      - { shape: rect, x: 0, y: 2.4, w: 13.333, h: 0.02, fill: "#33D6E0", transparency: 90 }
-      - { shape: rect, x: 0, y: 4.9, w: 13.333, h: 0.02, fill: "#33D6E0", transparency: 90 }
+        transparency: 35
+      - { shape: rect, x: 2.22, y: 0.035, w: 0.02, h: 0.45, fill: "#33D6E0", transparency: 93 }
+      - { shape: rect, x: 6.67, y: 0.035, w: 0.02, h: 0.45, fill: "#33D6E0", transparency: 93 }
+      - { shape: rect, x: 11.11, y: 0.035, w: 0.02, h: 0.45, fill: "#33D6E0", transparency: 93 }
+      - { shape: rect, x: 0, y: 6.65, w: 13.333, h: 0.02, fill: "#33D6E0", transparency: 94 }
 
   plate:
     enabled: false
