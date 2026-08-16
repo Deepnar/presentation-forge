@@ -16,7 +16,13 @@ import { validateDeck } from "../validate.js";
  * validation and repair, and the two would drift.
  */
 
-const MAX_REPAIR = 2;
+// Repair attempts are capped per transport. The local grammar path is slow
+// (minutes per call) and a model that has failed twice is not converging, so
+// the local ceiling stays low. On a cloud transport a retry is cheap and the
+// model is strong enough to profit from another pass at the error list, so it
+// gets more room before the turn hands its failures to the caller.
+const MAX_REPAIR_LOCAL = 2;
+const MAX_REPAIR_CLOUD = 4;
 
 function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
   const voice = theme?.voice ?? {};
@@ -162,6 +168,7 @@ export async function runTurn({
   // Schema is rebuilt per turn so the op set matches what this deck can accept.
   const schema = buildOpsSchema(await deckSchema(), { slideCount: base.slides?.length ?? 0 });
   const synthesis = (await authorTransport({ model })) === "cloud" ? "full" : "local";
+  const MAX_REPAIR = synthesis === "full" ? MAX_REPAIR_CLOUD : MAX_REPAIR_LOCAL;
 
   const messages = [
     { role: "system", content: systemPrompt({ catalog, theme, identity, decisions, synthesis }) },

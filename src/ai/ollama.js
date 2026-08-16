@@ -583,7 +583,10 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
  * Chat constrained to a JSON Schema, parsed.
  *
  * Structured output still occasionally arrives wrapped in prose or a code
- * fence, so recover the outermost JSON value rather than failing the turn.
+ * fence, or with a small JSON blemish (a trailing comma, a stray character),
+ * so recover the outermost JSON value rather than failing the turn. On
+ * failure the error names the salvage attempts so the failure is diagnosable
+ * instead of a bare "did not return JSON".
  */
 export async function chatJSON({ role, messages, schema, ...rest }) {
   const res = await chat({ role, messages, format: schema, ...rest });
@@ -591,43 +594,93 @@ export async function chatJSON({ role, messages, schema, ...rest }) {
   try {
     return { ...res, data: JSON.parse(raw) };
   } catch {
-    const salvaged = extractJSON(raw);
-    if (salvaged) return { ...res, data: salvaged, salvaged: true };
+    const salvage = salvageJSON(raw);
+    if (salvage.value !== undefined) return { ...res, data: salvage.value, salvaged: true };
     const why = res.doneReason === "length"
       ? ` Generation was CUT SHORT (done_reason=length, ${res.evalCount} tokens) — the ` +
         `${res.transport ?? "?"} transport's effective cap (${res.cap ?? "unset"} tokens) was hit; ` +
         `the transport already retries length-truncated responses with the cap doubled up to the ceiling.`
       : ` (done_reason=${res.doneReason}, ${res.evalCount} tokens)`;
-    throw new Error(`Model did not return JSON.${why}\nFirst 300 chars:\n${raw.slice(0, 300)}`);
+    throw new Error(
+      `Model did not return JSON.${why}\n` +
+      `Salvage attempts: ${salvage.attempts.join("; ") || "none"}\n` +
+      `First 300 chars:\n${raw.slice(0, 300)}`,
+    );
   }
 }
 
-function extractJSON(text) {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const candidates = [fenced?.[1], text];
-  for (const c of candidates) {
-    if (!c) continue;
-    const start = c.search(/[{[]/);
-    if (start === -1) continue;
-    const open = c[start];
-    const close = open === "{" ? "}" : "]";
-    let depth = 0, inStr = false, esc = false;
-    for (let i = start; i < c.length; i++) {
-      const ch = c[i];
-      if (inStr) {
-        if (esc) esc = false;
-        else if (ch === "\\") esc = true;
-        else if (ch === '"') inStr = false;
-        continue;
-      }
-      if (ch === '"') inStr = true;
-      else if (ch === open) depth++;
-      else if (ch === close && --depth === 0) {
-        try { return JSON.parse(c.slice(start, i + 1)); } catch { break; }
+/** Strip every code fence, case-insensitive language tag, so a multi-fence
+ *  reply yields each block as a candidate document. */
+function fenceCandidates(text) {
+  const out = [];
+  const re = /```[a-zA-Z]*\s*([\s\S]*?)```/g;
+  let m;
+  while ((m = re.exec(text))) out.push(m[1]);
+  return out;
+}
+
+/** Try JSON.parse plus a couple of common one-character repairs, reporting
+ *  which path succeeded (or why the region is unsalvageable). */
+function tryParseWithRepairs(slice, attempts) {
+  try {
+    const value = JSON.parse(slice);
+    attempts.push(`balanced ${slice.length}ch parse`);
+    return { value };
+  } catch (err) {
+    // The most common blemish by far: a trailing comma before a closing
+    // bracket. A cheap strip recovers it without loosening the parser.
+    const stripped = slice.replace(/,\s*([}\]])/g, "$1");
+    if (stripped !== slice) {
+      try {
+        const value = JSON.parse(stripped);
+        attempts.push(`balanced ${slice.length}ch parse after trailing-comma repair`);
+        return { value };
+      } catch { /* still broken — fall through */ }
+    }
+    attempts.push(`balanced ${slice.length}ch parse FAILED (${err.message})`);
+    return {};
+  }
+}
+
+/**
+ * Recover a JSON object or array from model output that wrapped it in prose,
+ * fences, or small syntax blemishes. Returns `{ value, attempts }`; `value`
+ * is undefined when nothing salvaged. Every plausible start position is tried
+ * (not just the first brace), so leading prose that happens to contain a brace
+ * cannot mask the real document, and `attempts` records what was scanned for
+ * the caller's error message.
+ */
+export function salvageJSON(text) {
+  const attempts = [];
+  const docs = [...fenceCandidates(text), text];
+  for (const doc of docs) {
+    if (!doc || !doc.trim()) continue;
+    // A fence candidate only helps if the reply was actually fenced; a bare
+    // re-scan of the whole text is the fallback that always runs.
+    for (let i = 0; i < doc.length; i++) {
+      const ch = doc[i];
+      if (ch !== "{" && ch !== "[") continue;
+      const close = ch === "{" ? "}" : "]";
+      let depth = 0, inStr = false, esc = false;
+      for (let j = i; j < doc.length; j++) {
+        const c = doc[j];
+        if (inStr) {
+          if (esc) esc = false;
+          else if (c === "\\") esc = true;
+          else if (c === '"') inStr = false;
+          continue;
+        }
+        if (c === '"') inStr = true;
+        else if (c === ch) depth++;
+        else if (c === close && --depth === 0) {
+          const r = tryParseWithRepairs(doc.slice(i, j + 1), attempts);
+          if (r.value !== undefined) return { value: r.value, attempts };
+          break; // this region is broken — try the next start position
+        }
       }
     }
   }
-  return null;
+  return { value: undefined, attempts };
 }
 
 export async function ollamaHealthy() {
