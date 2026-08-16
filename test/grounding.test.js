@@ -172,3 +172,57 @@ test("deckFigures lists the number-bearing claims the data slides draw", () => {
   assert.ok(figures.includes("900 MW"));
   assert.ok(!figures.includes("1"), "depends_on indices must not leak into the figures list");
 });
+
+test("a relative %-of-baseline chart resolves its coordinates to the grounded deltas", () => {
+  // The research states the percentages ("25% higher bandwidth, 45% lower
+  // latency"); the chart's 125/55 are the 100-baseline normalisations of those
+  // claims. Flagging the raw coordinates is a false positive — the extractor
+  // resolves each to its delta-from-baseline and grounds the delta instead.
+  const research = "DiOMP achieves 25% higher bandwidth and 45% lower latency than MPI+OpenMP.";
+  const deck = {
+    title: "T",
+    slides: [
+      {
+        type: "chart",
+        headline: "DIOMP: 25% HIGHER BANDWIDTH, 45% LOWER LATENCY",
+        chart: {
+          kind: "bar",
+          unit: "% of MPI+OpenMP",
+          categories: ["Bandwidth (relative)", "Latency (relative)"],
+          series: [
+            { name: "MPI+OpenMP", values: [100, 100] },
+            { name: "DiOMP", values: [125, 55] },
+          ],
+        },
+      },
+    ],
+  };
+  const { findings, problems } = groundDeck(deck, research);
+  assert.equal(findings.length, 0, `no ungrounded claims on a derived relative chart: ${JSON.stringify(findings)}`);
+  assert.equal(problems.length, 0, JSON.stringify(problems));
+});
+
+test("a fabricated relative coordinate still flags when its delta is ungrounded", () => {
+  // 175 on the relative axis resolves to "75" — the research never states 75%,
+  // so the chart cannot ship the coordinate (the E1 rule, unchanged).
+  const research = "DiOMP achieves 25% higher bandwidth than MPI+OpenMP.";
+  const deck = {
+    title: "T",
+    slides: [
+      {
+        type: "chart",
+        headline: "Throughput",
+        chart: {
+          kind: "bar",
+          unit: "% of baseline",
+          categories: ["Bandwidth (relative)"],
+          series: [{ name: "X", values: [175] }],
+        },
+      },
+    ],
+  };
+  const { findings } = groundDeck(deck, research);
+  const slide = findings.find((f) => f.slide === 0);
+  assert.ok(slide, "a relative coordinate whose delta is absent from the research must flag");
+  assert.ok(slide.claims.includes("75"), JSON.stringify(slide.claims));
+});

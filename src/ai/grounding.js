@@ -92,18 +92,42 @@ export function extractClaims(text, { names = true } = {}) {
  * chart's series is a claim to verify. The one structural exception is
  * `depends_on` — dependency indices, integers that reference other nodes, not
  * measurements.
+ *
+ * `relativeChart` resolves the series values of a chart drawn on a RELATIVE
+ * axis ("% of baseline", or a "(relative)" category) to their percentage
+ * claims, because on such an axis the raw value is a coordinate, not a fact:
+ * "125" on a "% of MPI+OpenMP" axis encodes "25% higher" and the research
+ * states the percentage, never the normalised coordinate. Flagging the raw
+ * coordinate is a false positive; flagging the delta ("25") is the honest
+ * check. The 100-baseline itself is the scale origin, not a measurement, and
+ * is dropped so it never flags. `deckFigures` leaves this off so the Research
+ * view lists the numbers the geometry actually draws.
  */
-export function flattenSlide(slide) {
+export function flattenSlide(slide, { relativeChart = false } = {}) {
   const out = [];
   const walk = (v, key) => {
     if (typeof v === "string") out.push(v);
-    else if (typeof v === "number" && key !== "depends_on") out.push(String(v));
+    else if (typeof v === "number" && key !== "depends_on") {
+      if (relativeChart && key === "values" && v === 100) return; // baseline origin
+      out.push(relativeChart && key === "values" ? String(Math.round(Math.abs(100 - v) * 100) / 100) : String(v));
+    }
     else if (Array.isArray(v)) v.forEach((x) => walk(x, key));
     else if (v && typeof v === "object") Object.entries(v).forEach(([k, x]) => walk(x, k));
   };
   const { notes, cites, presenter, type, section, ...content } = slide;
   Object.entries(content).forEach(([k, v]) => walk(v, k));
   return out;
+}
+
+/** Is this chart drawn on a relative "% of baseline" axis — where a value V
+ *  means "V% of baseline" and the real claim is the delta from 100? Signalled
+ *  by a "% of X" unit or a "(relative)" category label. */
+export function isRelativeChart(slide) {
+  const c = slide?.chart;
+  if (!c) return false;
+  return /^%?\s*of\b/i.test(c.unit ?? "") ||
+    /relative/i.test(c.unit ?? "") ||
+    (c.categories ?? []).some((x) => /relative/i.test(String(x)));
 }
 
 /**
@@ -209,7 +233,7 @@ export function groundDeck(deck, researchText, { label = "research/notes.md" } =
     // Innovator", "Electricity Required per kg H2") is a name, not a fact, and
     // flagging it is noise.
     const noNames = new Set([slide.headline, slide.standfirst].filter(Boolean));
-    const claims = flattenSlide(slide)
+    const claims = flattenSlide(slide, { relativeChart: isRelativeChart(slide) })
       .flatMap((text) => extractClaims(text, { names: !noNames.has(text) && strongField(text) }))
       .filter((c) => !claimGrounded(c, researchText));
     if (claims.length) findings.push({ slide: i, type: slide.type, claims: [...new Set(claims)] });
