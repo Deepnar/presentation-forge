@@ -2,7 +2,7 @@ import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
-import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
+import { DIVIDER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
 import { placeholderSlides } from "../placeholders.js";
 
 /**
@@ -652,16 +652,10 @@ export async function generateDeck({
   // Presenters are decided here, deterministically, not by the writer model:
   // whole sections go to presenting members in order, so every member's slides
   // are one contiguous block and no one is doubled up while another sits idle.
-  // Dividers carry no presenter; any stray field the model slipped onto one is
-  // stripped first so the distribution cannot assign into a divider.
-  for (const s of deck.slides) {
-    if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
-  }
-  const presenters = presentingNames(identity);
-  const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember });
-  for (let i = 0; i < deck.slides.length; i++) {
-    if (assignment[i]) deck.slides[i].presenter = assignment[i];
-  }
+  // The shared assignment strips divider presenters, distributes and applies —
+  // finalizeDeck calls the same step, so a deck that skipped this write half
+  // (resume-continued or directly finalised) still lands presenter-complete.
+  assignPresenters(deck, identity, slidesPerMember);
 
   return { ok, deck, plan, skipped, errors, stats, problems: placeholderProblems };
 }

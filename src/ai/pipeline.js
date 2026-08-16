@@ -13,6 +13,7 @@ import { critiqueDeck } from "./critic.js";
 import { coherencePass } from "./coherence.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
+import { assignPresenters } from "./team.js";
 import { generateReport } from "./report.js";
 import { loadIdentity, deepMerge } from "./identity.js";
 import { researchProfile, researchExcerptCap } from "./ollama.js";
@@ -517,7 +518,7 @@ export async function writeDeckContent({
  * disk, so it is idempotent with respect to whatever the write half did.
  */
 export async function finalizeDeck({
-  slug, theme = null, model, identity, onProgress, signal, critic = false, write = null,
+  slug, theme = null, model, identity, onProgress, signal, critic = false, write = null, chat = null,
 }) {
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
@@ -567,6 +568,7 @@ export async function finalizeDeck({
       research: excerptResearch(researchText, await researchExcerptCap({ model })),
       model,
       signal,
+      chat,
       onProgress: (p) => onProgress?.({ status: "field_length", ...p }),
     });
     if (fix.repaired.length) {
@@ -608,6 +610,7 @@ export async function finalizeDeck({
       sections: plan.sections ?? [],
       model,
       signal,
+      chat,
       onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
     });
     coherence = pass;
@@ -616,6 +619,21 @@ export async function finalizeDeck({
       tr = await trimOnce(g.deck);
     }
   }
+
+  // Presenter distribution runs on finalize too, not just in the write half.
+  // The write half checkpoints deck.yaml per slide DURING the write loop and
+  // only assigns presenters in memory at the very end, so a deck that reached
+  // finalize via the resume shortcut (or a direct finalize of a hand-written
+  // deck.yaml) has never had its presenters assigned. Assign here, on the deck
+  // that will render, and persist before the render reads deck.yaml from disk.
+  const identityObj = identity ?? (await loadIdentity(dir));
+  const assignAndPersist = async (d) => {
+    assignPresenters(d, identityObj, meta.slidesPerMember ?? null);
+    await writeFile(deckFile, YAML.stringify(d), "utf8");
+    return d;
+  };
+
+  tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
 
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();
@@ -660,6 +678,11 @@ export async function finalizeDeck({
       // The critic rewrites content; run the trim on its output too so a fix
       // never trades a visual defect for an overfull slide.
       tr = await trimOnce(criticReport.deck);
+      // The critic's rewrite went through the ops layer, which knows nothing of
+      // the deterministic split — re-apply so the persisted deck stays
+      // presenter-complete (the deck the render reads below already did, but
+      // trimOnce rewrote deck.yaml after that).
+      tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
       meta.status = "ready";
       await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
     }

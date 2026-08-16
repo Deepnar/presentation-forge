@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { presentingNames, teamSize, targetSections, distributePresenters, DIVIDER_TYPES } from "../src/ai/team.js";
+import { presentingNames, teamSize, targetSections, distributePresenters, assignPresenters, DIVIDER_TYPES } from "../src/ai/team.js";
 
 const team = (members) => ({ team: { label: "G1", members } });
 
@@ -213,4 +213,42 @@ test("dividers are never assigned a presenter", () => {
   for (const [i, s] of slides.entries()) {
     if (DIVIDER_TYPES.has(s.type)) assert.equal(a[i], null, `divider at ${i} must be null`);
   }
+});
+
+/* ---------------------------------------------- assignPresenters (shared step) */
+
+test("assignPresenters writes the split onto a real deck and strips divider strays", () => {
+  const slides = deckOf([["bullets", "bullets"], ["bullets"], ["bullets"]]);
+  const deck = { title: "t", sections: ["s0", "s1", "s2"], slides: structuredClone(slides) };
+  // A stray divider presenter from a model slip must be scrubbed.
+  deck.slides[1].presenter = "A";
+  assignPresenters(deck, team([{ name: "A", presenting: true }, { name: "B", presenting: true }, { name: "C", presenting: true }]));
+  for (const [i, s] of deck.slides.entries()) {
+    if (DIVIDER_TYPES.has(s.type)) assert.equal(s.presenter, undefined, `divider ${i} carries nothing`);
+    else assert.ok(s.presenter, `content slide ${i} has a presenter`);
+  }
+  const content = deck.slides.filter((s) => !DIVIDER_TYPES.has(s.type)).map((s) => s.presenter);
+  assert.deepEqual(content, ["A", "A", "B", "C"], "three members, one contiguous block each");
+});
+
+test("assignPresenters honours slidesPerMember and is idempotent", () => {
+  const slides = deckOf([["bullets", "bullets"], ["bullets", "bullets"], ["bullets"]]);
+  const deck = { slides: structuredClone(slides) };
+  const id = team([{ name: "A", presenting: true }, { name: "B", presenting: true }, { name: "C", presenting: true }]);
+  assignPresenters(deck, id, 1);
+  const first = deck.slides.map((s) => s.presenter ?? null);
+  // Re-running on an already-assigned deck is a no-op — every member's blocks
+  // are contiguous and identical to the first pass.
+  assignPresenters(deck, id, 1);
+  const second = deck.slides.map((s) => s.presenter ?? null);
+  assert.deepEqual(second, first, "assignment is stable under re-application");
+  const counts = ["A", "B", "C"].map((n) => first.filter((p) => p === n).length);
+  assert.deepEqual(counts, [2, 2, 1]);
+});
+
+test("assignPresenters with no presenting members leaves every slide untouched", () => {
+  const slides = deckOf([["bullets", "bullets"]]);
+  const deck = { slides: structuredClone(slides) };
+  assignPresenters(deck, team([{ name: "", presenting: true }]));
+  assert.ok(deck.slides.every((s) => s.presenter === undefined));
 });

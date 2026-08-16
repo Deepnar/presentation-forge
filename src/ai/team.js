@@ -156,3 +156,23 @@ function balancedTargets(total, n) {
 function contentOrder(bySection, order) {
   return order.flatMap((sec) => bySection.get(sec));
 }
+
+/**
+ * Apply the deterministic presenter split to a whole deck: strip any stray
+ * presenter a model slipped onto a divider, then distribute the presenting
+ * members across the content slides and write the assignment back onto the
+ * deck's slides. This is the ONE place the split is decided — generateDeck,
+ * the resume continuation and finalizeDeck all call it, so a deck reaches
+ * "ready" presenter-complete no matter which path completed it.
+ */
+export function assignPresenters(deck, identity, slidesPerMember = null) {
+  for (const s of deck.slides) {
+    if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
+  }
+  const presenters = presentingNames(identity);
+  const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember });
+  for (let i = 0; i < deck.slides.length; i++) {
+    if (assignment[i]) deck.slides[i].presenter = assignment[i];
+  }
+  return deck;
+}
