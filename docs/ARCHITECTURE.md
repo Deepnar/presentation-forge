@@ -151,12 +151,19 @@ stacked element is fit-scaled or reserves its rendered line count, stat values
 use `fitOneLine` (width-based, pessimistic) because the height-based fitter is
 optimistic for wide digits, and the algorithmic diagram types (framework,
 cycle, dependencies, diagram, hierarchy, concept-map, venn) place nodes purely
-from angles, radii and topological depth — never from content. The fitter
-itself is em-aware (advance × size/72, with a weight factor for Black faces)
-and every text role has a readable floor — the fitter clamps at the floor and
-reports "would need Xpt" into the render problems rather than shrinking below
-it. Stacked zones size to the content's real line count, so long card titles
-keep their lines instead of being shrunk to ~8pt.
+from angles, radii and topological depth — never from content. A node's text
+zone never sits under another shape: the framework ring is checked for card-vs-
+ellipse and card-vs-card clearance at the largest size the box allows and falls
+back to a stacked panel + grid when a ring cannot fit; the diagram sizes nodes
+from the layer spacing (auto-routing a thin chain horizontally) and draws edges
+before nodes, from a node's edge rather than its centre. When the layout
+genuinely cannot hold a body line at the floor, it drops the body (label-only)
+instead of shipping a tiny font. The fitter itself is em-aware (advance ×
+size/72, with a weight factor for Black faces) and every text role has a
+readable floor — the fitter clamps at the floor and reports "would need Xpt"
+into the render problems rather than shrinking below it. Stacked zones size to
+the content's real line count, so long card titles keep their lines instead of
+being shrunk to ~8pt.
 
 ## Why not LangChain / LangGraph
 
@@ -416,12 +423,64 @@ one validated slide per plan entry, and the writer loop treats "no new valid
 slide appeared" as a failure — an empty or mis-targeted op list would otherwise
 apply as a no-op and silently vanish, so it retries once and then writes a
 validating placeholder (`placeholderFor`): a degraded slide beats a missing
-one, and a divider spec never degrades into a content slide.
+one, and a divider spec never degrades into a content slide. The writer's ops
+are read tolerantly through `slideFromOps` (`src/ai/ops.js`): a model that
+drifts toward `update_slide` without an index, or a full `slide` object on the
+wrong key, is a correct-in-intent rewrite, not a failure to discard — the sweep,
+convert and field-length rewrites all resolve through it.
 
 A deck has a lifecycle that is also a disk boundary: `planning` means
 `meta.yaml` + `plan.yaml` exist and no `deck.yaml` does, which is what makes the
-outline gate enforceable — nothing renders until a human approves, and an
-aborted generation can never leave a half-written deck.
+outline gate enforceable — nothing renders until a human approves.
+
+### Resumable generation — the run survives the socket
+
+Generation is split into a **write half** and a **finalize half**, each
+standalone so a dropped run re-enters only the stage that is left:
+
+- `writeDeckContent` persists the *approved* outline to `plan.yaml` first (the
+  resume contract), then checkpoints `deck.yaml` as each slide lands (the
+  `onSlide` hook on `generateDeck`), writes a durable `.run.json` marker and
+  sets `meta.status` to "writing". A dropped connection leaves a resumable
+  deck, never a lost run.
+- `finalizeDeck` runs the post-write pass — grounding, the field-length
+  rewrite, trim, coherence, render, preview — and flips `meta.status` to
+  "ready", clearing the checkpoint. It reads deck.yaml + plan.yaml from disk,
+  so it can finalise a deck whose content is complete but whose run died before
+  the pass (the "N/M written — finalize it" watchdog state).
+
+The server no longer aborts a run when the SSE socket drops; that was the
+"refresh restarted from slide 1" bug. Runs live in a slug-keyed in-memory
+registry (`generationRuns` in `app/server/index.js`), a reconnect attaches to
+the SAME run and streams its events (dedupe, not restart), and Stop is the one
+explicit abort via `POST /api/decks/:slug/generate/stop` — the checkpoint
+survives even that. `GET /api/decks/:slug` folds the registry over the on-disk
+checkpoint into a `run` field (`{active, written, total, resumable,
+needsFinalize}`), which is what lets the chat and deck views offer watch /
+resume / finalize instead of a silent fresh run. The CLI mirrors the split:
+`generate --resume` and a `finalize` command.
+
+### The field-length pass — rewrite, never cut mid-sentence
+
+`src/ai/fieldlength.js` runs after writing and after a density sweep, BEFORE
+the deterministic trim. It renders to find slides the fitter flags below their
+floor, walks each flagged slide's string fields against their per-field schema
+caps (`fieldInventory`), and sends one scoped model call per slide: rewrite the
+flagged fields as complete sentences within their caps — no ellipsis. Only what
+it cannot fix reaches the trim, and `shortenString` (`src/ai/trim.js`) now cuts
+at sentence boundaries only: with no sentence end reachable it returns null and
+the floor flag reports the slide rather than ship a mid-sentence "…". The two
+together make the banned artifact unproducible.
+
+### The chart-eligibility rule — an empty chart is unrepresentable
+
+A `chart` slide with empty `values` is banned at every entry point: the
+data-affinity steering tells the planner *and* the writer to choose chart only
+when the research carries real numbers (and names the qualitative alternative
+when it does not), `planDeck` coerces a proposed `chart` to `cards` below the
+numeric-fact threshold, and the schema requires `series[].values` and
+`categories` to be non-empty — so an empty chart fails validation and the
+render gate refuses it.
 
 ## The chat panel — a turn over a per-deck thread
 

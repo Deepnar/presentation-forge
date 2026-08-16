@@ -1,43 +1,87 @@
-# Handoff addendum — 2026-08-16 00:10 (user's late-night HPC test)
+# Handoff — 2026-08-16, generation-robustness batch complete
 
-The user generated the mixed-mode programming deck (recent-trends-in-mixed-mode-programming-for-3) — deck.yaml complete (20 slides, 11 presenters, no placeholders), status flipped to ready manually, rendered + previewed. TWO systemic issues surfaced; both queued below.
+The queued handoff (items A, B, C, E1–E4 from the 00:10 addendum) is DONE,
+committed, pushed, and behaviourally verified. Git history carries the batch:
+`4a74de2` (JSON salvage + cloud repair room), `2fd528b` (resumable generation +
+finalize + E1/E2 core), `cfe4086` (layout overlap + sentence-boundary trim +
+op-drift tolerance).
 
-## A. JSON-parse tolerance for model output (the "did not return JSON" error)
-User hit: `Model did not return JSON. (done_reason=stop, 1943 tokens)` during a slide-edit turn. The model produced VALID-looking ops JSON (the update_slide patch for slide 9 with OmpSs/StarPU content is visible in the error's first-300-chars) but the cloud transport's json_object parse still failed — likely markdown fences, trailing/leading chars, or a non-strict provider guarantee.
-- Fix: harden the JSON extraction before the throw (strip ``` fences, find the first balanced JSON object/array, tolerate trailing prose), and/or raise MAX_REPAIR (turn.js:19, currently 2) for the cloud transport where a retry is cheap. The error message should also show the repair attempts so it's diagnosable.
-- The content was fine — the parse is the failure, not the model. This is the same class as the earlier truncation bug (ollama.js:601).
+## What shipped
 
-## B. Resumable generation (the "refreshing restarted from slide 1" problem)
-User refreshed mid-run → the SSE connection died, the run's finalize never fired (status stuck "planned" despite deck.yaml being complete), and re-approving started a NEW run from scratch.
-- Fix: checkpoint the run per slide (deck.yaml is already written incrementally — the pipeline writes it as slides land). On connection drop / reload:
-  1. The UI should detect an in-progress run for the deck and offer "resume" (continue writing remaining slides) or "the deck is already N/M written — open it" instead of a fresh generation.
-  2. A finalize watchdog: if deck.yaml exists and is complete but status != ready and no active run, offer "finalize this deck" (flip to ready, run trim + grounding + render) rather than hanging on Working….
-  3. The SSE client should reconnect (with the server deduping/continuing the same run id) instead of the refresh abandoning it.
+- **A — JSON-parse tolerance.** `salvageJSON` (ollama.js) strips every fence,
+  tries every plausible brace position, repairs trailing commas, and names its
+  attempts in the error. `MAX_REPAIR` is per-transport (cloud 4, local 2).
+- **B/C — resumable generation + finalize watchdog.** Generation split into
+  `writeDeckContent` (checkpoints deck.yaml per slide, persists the approved
+  plan first, `.run.json` marker, meta.status "writing") and `finalizeDeck`
+  (grounding + field-length + trim + coherence + render, flips to ready). The
+  server keeps runs alive after the socket drops, dedupes reconnects to the
+  same run, and exposes `/generate`, `/generate/resume`, `/finalize`,
+  `/generate/stop`; the deck GET reports `run:{active,written,total,resumable,
+  needsFinalize}`. ChatView auto-reconnects to a live run and offers
+  resume/finalize; DeckDetail shows the same banner. CLI: `generate --resume`
+  + `finalize`.
+- **E1 — empty charts unrepresentable.** Negative data-affinity steering,
+  planner coercion of `chart` → `cards` below 2 numeric facts, schema
+  `minItems:1` on `values` and `categories`. Cloud planner tests: no-numbers
+  brief → zero charts; data-rich → four.
+- **E2 — no mid-sentence ellipsis.** The FIELD-LENGTH pass rewrites overfull or
+  already-ellipsised fields as complete sentences before the trim; the trim's
+  `shortenString` cuts at sentence boundaries only (a mid-sentence "…" is now
+  unproducible). Verified on the HPC deck: every "…" became a complete
+  sentence.
+- **E3 — framework/diagram never hide text.** Framework ring checks
+  card/ellipse + card/card clearance and falls back to a grid; diagram sizes
+  nodes from layer spacing, auto-routes thin chains horizontally, draws edges
+  behind nodes, drops bodies when rows are too thin. Slide 6 pixel-verified at
+  0.3–0.6in gap (the vision model's repeated "overlap" calls were false
+  positives at tight-but-legal spacing); slide 14 no longer overlaps.
+- **E4 — thin-type floors.** ~30 TYPE_BUDGETS entries added; the HPC deck's
+  flow slide now carries six steps.
 
-## C. Minor: the 3 text-floor flags in the user's deck
-Slides 6 (framework), 10 (stacked-list), 14 (diagram) flag "would need <floor>pt". Run a density sweep / trim on the deck (or the finalize watchdog in B does it) before the user presents.
+## Known limitations (pre-existing, surfaced honestly)
 
-## E. THREE slide-quality rules from the user's HPC deck review (00:15) — the "we don't want this" set
-The user reviewed slides of the generated HPC deck (recent-trends-in-mixed-mode-programming-for-3) and flagged three recurring failure classes, all CONFIRMED in deck.yaml:
+- **The LOCAL author model (`qwen3-coder:30b-a3b-q4_K_M`) is unreliable at
+  multi-slide rewrites** (the coherence pass's rewrite, and some sweep
+  rewrites): it emits ops missing the `op` field. runTurn now drops the
+  never-valid items and reports all-malformed responses through the repair
+  loop with a clear diagnostic, but a wholly-malformed coherence rewrite still
+  fails — surfaced as a `problems[]` entry, never a silent no-op. The deck
+  ships; the drift case (a sweep rewrite that wandered off-topic) is what the
+  coherence pass exists to catch and occasionally cannot. On the cloud
+  transport the same passes succeed.
+- **The HPC deck still carries honest floor flags** on slide 10 (stacked-list,
+  dense content in five narrow columns) — "would need <floor>pt". This is the
+  fitter's contract (flag, don't shrink), and the content is genuine: the deck
+  renders, nothing is hidden or cut mid-sentence. A `sparse`/`balanced` sweep
+  on slide 10's material, or shortening its bodies, clears them. Slide 14's
+  diagram labels also flag at ~9-10pt on the long mono labels ("Compute-Comm
+  Overlap").
+- The deck's `decks/recent-trends-in-mixed-mode-programming-for-3/` meta.yaml
+  had a temporary `owner: tester@test.local` for API testing — REMOVED, it is
+  ownerless (operator-owned) again. It is `ready`, rendered, and slide 16 is a
+  cards slide (the empty chart is gone).
 
-### E1. Empty charts must never ship — planner must not pick chart without real numbers
-Slide 16 "Papers, Not Numbers, Carry the Evidence": the writer was honest (research had no speedup figures) and emitted `chart: { kind: bar, series: [{ values: [] }] }` with the standfirst literally saying "the chart is intentionally empty". Honest but un-presentable — a presenter cannot talk to an empty axis.
-- Fix: planner/chart-eligibility rule — the data-affinity steering must ALSO say "no numeric data → do NOT choose chart/scatter/radar/stacked-bar; choose a qualitative type (framework/cards/compare/flow) that presents the papers themselves." Empty charts become impossible to emit. The schema could also require `series[].values.length > 0` for chart types (validation error otherwise).
-- Re-sweep this deck after the fix: slide 16 becomes a qualitative "evidence from papers" slide (e.g. a cards slide listing Rabenseifner et al. / Augonnet et al. findings).
+## The one rule still enforced
 
-### E2. No mid-sentence ellipsis truncation — over-cap fields must be REWRITTEN, not cut
-Slide 11 "Decompose, Express, Schedule, Overlap" step 2 body: "Task inputs and outputs form a directed acyclic graph (DAG) the…" and slide 6 concept body: "MPI ranks own NUMA domains, OpenMP…" — the writer overfilled the field caps (flow step body ≤120, framework concept body ≤120) and the validator/trim cut them with "…", leaving half-sentences.
-- Fix: a post-write FIELD-LENGTH pass that detects any field over its schema cap and sends a targeted REWRITE request ("rewrite this field as one complete sentence ≤ N chars — no ellipsis"), with a couple of repair attempts; only if rewriting fails does the trim run. An ellipsis mid-sentence is worse than a shorter complete sentence — the writer must never ship "the…".
-- Also verify the catalog's cap statement reaches the writer effectively (the caps are in the prompt but the writer still overfills — check whether the prompt lists caps per field or only per type).
+The model never writes layout code. The framework/diagram changes are geometry
+in `src/layouts.js`; the content contract in `schema/deck.schema.json` gained
+only a `minItems` (a machine rule, not a coordinate). `themes/*.yaml` untouched.
 
-### E3. Framework/diagram layouts must not hide text under overlapping shapes
-Slide 6 "One Node, Four Parallel Levels": the framework layout draws overlapping shapes (the black oval overlapping the boxes) and text sits hidden behind the overlap — "structurally wrong" per the user.
-- Fix: rework the framework (and diagram) layout overlap handling — text zones must never sit under another shape; either no overlap, or a deliberate backdrop/inset so all text is readable. Include slides 6/10/11/14/16 of this deck in the verification (re-render + mimo read).
+## Servers
 
-### E4. (User note) On "Dense" some slides still read too thin
-Even at dense density, a few slides carry little content. The TYPE_BUDGETS enrichment (round 3) helped; check the remaining thin types against their budgets and raise the floor where the layout invites more.
+- `forge_searxng` running in docker (the D note from last night stands: restart
+  via `docker restart forge_searxng`, never `--force-recreate`).
+- API on :5174 (dev) — I ran a throwaway on :5199 for CDP-ish verification and
+  left it; kill it before the next `npm run dev`. Ollama running.
 
-## D. SearXNG hardening (DONE tonight, commit b2f7362 + 7535d45)
-DuckDuckGo + Startpage bot-detect a local instance → CAPTCHA exceptions aborted whole search steps, surfacing as "SearXNG unreachable". Both disabled in docker/searxng/settings.yml; google/bing/brave/wikipedia/arxiv/crossref/semantic-scholar remain. NOTE the file's working-tree ownership churns to systemd-network on `--force-recreate` — the repo file is authoritative; a plain `docker restart forge_searxng` re-reads the mount without re-owning.
+## Next session's carry-forward
 
-Model discipline: flash codes ONLY, mimo vision ONLY, no qwen. All specs durable in ~/.hermes/scripts/prompts/.
+The queued items are exhausted. Remaining open threads: the coherence-pass
+flakiness on the local model (tracked above), and the roadmap's stretch items
+(F13 image search, canvas builder). If you want the HPC deck presentation-clean
+now, run `forge generate recent-trends-in-mixed-mode-programming-for-3 --resume`-style
+finalize (already done) or a `sparse` sweep on slide 10's section, then re-render.
+
+Model discipline: flash codes ONLY, mimo vision ONLY, no qwen. All specs durable
+in ~/.hermes/scripts/prompts/.

@@ -2389,3 +2389,183 @@ identity panel). 316 tests pass.
 
 
 
+## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
+
+Four queued items from the 2026-08-16 HPC-deck review (handoff A/B/C/E) plus the
+E1–E4 slide-quality rules. All shipped in one batch; each has its own commit.
+
+### [x] JSON-parse tolerance for model output (handoff A)
+
+The cloud transport's `json_object` guarantee is "parses", never "matches the
+schema", and the model still wraps output in fences or leaves a trailing comma.
+The old `extractJSON` tried only the first brace and gave up after one failed
+balanced scan, so visibly-correct ops JSON threw "Model did not return JSON".
+
+- `salvageJSON` (ollama.js) now strips every fence (any language tag), tries
+  every plausible `{`/`[` start position — so leading prose containing a brace
+  cannot mask the real document — repairs trailing commas, and returns an
+  `attempts` log the error message shows, so a failure is diagnosable.
+- `MAX_REPAIR` is per-transport: the cheap cloud retry loop gets 4 rounds, the
+  slow local grammar path keeps 2.
+- Guarded by `test/json-salvage.test.js` (fences, upper-case tags, trailing
+  prose, brace-bearing prose, trailing-comma repair, attempt logging).
+
+> **Learned.** The failure the user saw was *not* a JSON-parse failure of a
+> well-formed document — the model had emitted a genuinely malformed response
+> and the parse correctly refused it. Hardening the salvager is still right
+> (fences/trailing commas happen), but the bigger win was making the error
+> name its attempts, so "did not return JSON" stops being a black box. The
+> first-300-chars in the old error made the output *look* valid and the parse
+> look broken.
+
+### [x] Resumable generation — the "refresh restarted from slide 1" fix (handoff B + C)
+
+A dropped SSE connection used to abort the pipeline (abort-on-disconnect), so a
+reload killed the run mid-write, left `meta.status` "planned", and the only
+offered action was a fresh generation from slide 1.
+
+- **Write half / finalize half.** `generateFromPlan` split into
+  `writeDeckContent` (checkpoints deck.yaml per slide, persists the approved
+  outline to plan.yaml *first*, writes `.run.json`, sets `meta.status`
+  "writing") and `finalizeDeck` (grounding + field-length + trim + coherence +
+  render, flips to "ready", clears the checkpoint). Both are standalone, so
+  resume and finalize re-enter only the needed stage.
+- **Server runs survive the socket.** The generate endpoint tracks runs by slug
+  in an in-memory registry; a client disconnect no longer aborts. A reconnect
+  (or a second approve) attaches to the SAME run and streams its events —
+  dedupe instead of restart. Stop is the one explicit abort (`POST
+  /generate/stop`), and the checkpoint survives it.
+- **The UI offers the honest three.** `GET /api/decks/:slug` folds the registry
+  over the on-disk checkpoint and reports `{active, written, total,
+  resumable, needsFinalize}`. ChatView and DeckDetail render a run banner:
+  watch a live run, resume a partial one, or finalize a complete-but-unfinalised
+  deck ("the deck is N/M written — finalize it" instead of a silent re-run or a
+  stuck Working…). ChatView auto-reconnects to a live run on reload.
+- CLI: `generate --resume` and a new `finalize` command.
+- Guarded by `test/resume.test.js` (abort leaves a checkpoint, resume continues
+  from it, only the remaining slides re-run the writer) and the live finalize
+  run against the HPC deck.
+
+> **Learned.** The abort-on-disconnect instinct is backwards for generation:
+> dropping the socket is the *common* case (reload, tab switch), and killing a
+> long model pipeline for it destroys work the deck.yaml checkpoint had already
+> secured. The SSE socket is a status channel, not the run's life support —
+> hold the run in a registry, re-attach the socket on reconnect. And "status
+> planned + complete deck.yaml on disk" is a real state a user can land in
+> (the run died between the last slide and finalize); the watchdog that offers
+> finalize is what makes it recoverable rather than a confused re-run.
+
+### [x] Empty charts must never ship (handoff E1)
+
+Slide 16 of the HPC deck was an honest-but-unpresentable `chart` with
+`values: []` and a standfirst saying so. Fixed three ways, so it is
+unrepresentable at every entry point:
+
+- **Negative steering.** `dataAffinityNote` now speaks for the no-numbers case
+  too: "fewer than 2 numeric facts — do NOT choose chart; present the material
+  with framework/cards/compare/flow". Previously it returned null below the
+  threshold, i.e. said nothing.
+- **Planner coercion.** `planDeck` coerces any proposed `chart` to `cards`
+  when the research carries < 2 numeric facts, before the outline is shown.
+- **Schema backstop.** `chart.series[].values` and `categories` now require
+  `minItems: 1`, so an empty chart fails validation and the render gate
+  refuses it (verified: the HPC deck's render was refused until slide 16
+  became a cards slide).
+
+Guarded by `test/chart.test.js` (validation rejects empty values/categories,
+planDeck coerces below the threshold and keeps charts above it). Cloud planner
+tests: a no-numbers brief produced zero chart types, a data-rich one produced
+four.
+
+> **Learned.** The writer was being honest and the validator was silent — the
+> empty chart validated fine. "Honest but un-presentable" is a *category* of
+> failure the schema must make unrepresentable, not a behaviour to discourage
+> in the prompt. The steering is the first line; the schema minItems is the
+> one that actually refuses to render.
+
+### [x] No mid-sentence ellipsis — rewrite, don't cut (handoff E2)
+
+Slides 6/10/11 shipped "MPI ranks own NUMA domains, OpenMP…" and "(DAG) the…":
+the writer overfilled fields, the deterministic trim cut at a word boundary and
+appended "…". Two fixes, and the trim can no longer produce the defect:
+
+- **The FIELD-LENGTH pass** (`src/ai/fieldlength.js`), run in finalize and
+  after a density sweep, *before* the trim: renders to find floor-flagged
+  slides, walks each slide's fields against their per-field schema caps
+  (`test/fieldlength.test.js` asserts the catalog states caps per field —
+  framework concept.body ≤ 120, flow step body ≤ 120 — not just per type), and
+  sends a scoped model call per slide: "rewrite each flagged field as one
+  complete sentence ≤ its cap — no ellipsis". Two attempts; only what it cannot
+  fix reaches the trim.
+- **Sentence-boundary-only trimming.** `shortenString` now cuts only at a real
+  sentence end (`. ? ! ;`) inside the window; with no sentence boundary
+  reachable it returns null and the fitter's floor flag reports the slide
+  instead. "The…" is no longer producible by the trim, whatever the writer did.
+
+Verified on the HPC deck: finalize turned every "…" field into a complete
+sentence; the re-render has no ellipsis anywhere.
+
+> **Learned.** The trim was the second offender, not the writer alone: the
+> field-length rewrite *succeeded* and then the trim re-cut the repaired text
+> to "…" because the layout still could not hold it. Repairing upstream while
+> the last-resort cutter still produces the banned artifact fixes nothing. The
+> floor flag ("would need Xpt") is the honest fallback and is exactly right to
+> keep — a flag is preferable to a fragment.
+>
+> The rewrite also had to accept the local model's op drift (a full `slide`
+> object on an `update_slide`, no index): a model that writes the whole slide
+> correctly is not a failure to discard. `slideFromOps` in ops.js is the shared
+> tolerance point for sweep, convert and field-length.
+
+### [x] Framework/diagram layouts must not hide text (handoff E3)
+
+Slide 6's framework drew the central oval over the element boxes; slide 14's
+diagram stacked six nodes so each box clipped the next.
+
+- **Framework.** The ring radii are now checked against both clearances — each
+  card's inner corner must clear the ellipse, no two cards may overlap — at the
+  largest size the box allows, with ~0.3in of air between cards and oval. When
+  no ring can fit, the layout falls back to a stacked concept panel + card grid
+  (non-overlapping by construction). The ellipse is wide enough for a mono
+  concept title at the subhead floor.
+- **Diagram.** Node size derives from the layer spacing (never a fixed 1.0in
+  box that overlaps a dense stack); a chain graph with too many layers for the
+  vertical run auto-routes horizontally; edges draw before nodes (routed
+  behind boxes) and start at a node's edge, not its centre; when rows are too
+  thin for a body line at the floor, nodes render label-only — the same deal
+  the flow layout strikes for six steps.
+
+Verified by pixel analysis (0.3–0.6in gap between card text and the oval on
+slide 6) and mimo-v2.5 reads of slides 6/10/11/14/16.
+
+> **Learned.** A vision model's "these shapes overlap" verdict at tight-but-
+> legal spacing is a false positive — it called a clean 0.3–0.6in gap an
+> overlap three times, and quoted text that is not even on the slide. Pixel
+> analysis is the ground truth for geometry; the vision model is a useful
+> *targeter*, not the verdict. (TRAPS already says distrust-the-model-first;
+> this is the concrete case.)
+>
+> A dense graph's honest answer is fewer words, not a smaller box: capping the
+> diagram node height to the layer spacing stopped the overlap but squeezed
+> bodies to nothing — the layout had to *drop* the body (label-only) rather
+> than ship a 6.8pt line.
+
+### [x] Raise the budget floor for thin types (handoff E4)
+
+At dense, several types still read thin because the writer filled the schema
+minima: a 2-step flow on a six-step slide, a 2-node diagram. `TYPE_BUDGETS`
+gained entries for ~30 types that previously fell back to the family budget —
+cards, compare, stacked-list (columns, so bodies must be one crisp sentence),
+diagram (connected nodes), venn, hierarchy, pyramid, matrix, before-after, vs,
+kpi-dashboard, data-cards, progress-bars, ranking-list, metric-comparison,
+sparklines, the callout family, quote/testimonial, team-grid, image-text,
+split-screen, side-by-side. Verified: the HPC deck's flow slide now carries six
+steps.
+
+> **Learned.** A layout that *is* the empty space needs its own budget line.
+> The generic family budget ("6-8 items…") did not tell the writer the diagram
+> is built for a connected graph or that stacked-list is five narrow columns
+> where bodies must be short — a one-line per-type budget is what makes the
+> writer fill the layout it is given.
+
+316 → 341 tests.
