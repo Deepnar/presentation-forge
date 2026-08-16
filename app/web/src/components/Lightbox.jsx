@@ -37,6 +37,10 @@ export default function Lightbox({ slides, thumbs, types, index, onIndex, onClos
   );
 
   useEffect(() => {
+    // The click that opened us left focus on a slide button; the keydown
+    // guard skips BUTTON targets, so the first arrow/Escape would be eaten.
+    // Blur the opener so the very first keypress reaches the viewer.
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     const onKey = (e) => {
       // A focused toolbar button owns Space/Enter — never let the viewer also
       // navigate from it.
