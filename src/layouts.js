@@ -1021,51 +1021,57 @@ export const layouts = {
         }
       });
     } else {
-      const arrow = 0.34;
-      const sw = (box.w - (gut + arrow) * (n - 1)) / n;
-      const sh = Math.min(2.3, box.bottom - y - 0.2);
-      // Horizontal cards narrow to ~1.4in at five steps — a sentence-long body
-      // cannot render readably in that width at any size above the floor. Same
-      // capacity rule as the vertical branch: title-only when crowded.
-      const crowded = n >= 5;
+      // Horizontal flow as a MILESTONE RAIL: number chips sit on a baseline
+      // that runs across the slide, each step's title floats above its chip
+      // and the body fills the zone below the rail. The old single row of
+      // narrow cards hugged the heading, dropped bodies at five steps and
+      // left the lower half of the slide empty; the rail spans the full
+      // content height so every step renders title AND body, and the deck's
+      // step count never decides whether a sentence survives.
+      const n = data.steps.length;
+      const colW = box.w / n;
+      const railY = Math.min(box.bottom - 1.1, y + (box.bottom - y) * 0.38);
+      const titleZone = Math.max(0.7, railY - y - 0.22);
+      const bodyTop = railY + 0.48;
+      const bodyH = box.bottom - bodyTop - 0.1;
+
+      const titleScale = fitScaleAll(data.steps.map((s) => s.title), colW - 0.3, titleZone, theme.type.subhead, { min: 0.72 });
+      const bodyScale = fitScaleAll(data.steps.map((s) => s.body).filter(Boolean), colW - 0.3, bodyH, theme.type.body, { min: 0.72 });
+
+      // The baseline the chips ride on.
+      slide.addShape("rect", {
+        x: box.x, y: railY - 0.015, w: box.w, h: 0.03,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+      });
+
       data.steps.forEach((s, i) => {
-        const sx = box.x + i * (sw + gut + arrow);
-        card(slide, theme, { x: sx, y, w: sw, h: sh });
+        const cx = box.x + colW * i + colW / 2;
         slide.addShape("ellipse", {
-          x: sx + 0.26, y: y + 0.26, w: 0.4, h: 0.4,
+          x: cx - 0.24, y: railY - 0.24, w: 0.48, h: 0.48,
           fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
         });
         slide.addText(String(i + 1), {
-          x: sx + 0.26, y: y + 0.26, w: 0.4, h: 0.4,
+          x: cx - 0.24, y: railY - 0.24, w: 0.48, h: 0.48,
           ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent }),
           align: "center", valign: "middle",
         });
-        slide.addText(s.title, {
-          x: sx + 0.26, y: y + 0.78, w: sw - 0.52, h: 0.5,
-          // Narrow ltr step cards are ~1.2in at six steps. fitScale's height
-          // logic returns a scale where two lines fit the 0.5in budget, which
-          // still breaks a long word mid-word; shrink by measured width with a
-          // pessimistic safety factor instead, so words never split.
-          ...textStyle(theme, "subhead", {
-            bold: true,
-            scale: Math.min(1, Math.max(0.42, ((sw - 0.52) / measure(s.title, theme.type.subhead)) * 0.9)),
-          }),
-          valign: "top",
-        });
-        if (s.body && !crowded) {
-          slide.addText(s.body, {
-            x: sx + 0.26, y: y + 1.28, w: sw - 0.52, h: sh - 1.5,
-            ...textStyle(theme, "body", {
-              scale: fitScaleAll(data.steps.map((x) => x.body).filter(Boolean), sw - 0.52, sh - 1.5, theme.type.body, { min: 0.42 }),
-              color: theme.palette.ink_muted,
-            }),
-            valign: "top",
-          });
-        }
+        // A small chevron on the rail to the next chip.
         if (i < n - 1) {
           slide.addShape("triangle", {
-            x: sx + sw + gut / 2, y: y + sh / 2 - 0.12, w: 0.24, h: 0.24,
+            x: cx + 0.34, y: railY - 0.1, w: 0.2, h: 0.2,
             fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 90,
+          });
+        }
+        slide.addText(s.title, {
+          x: cx - colW / 2 + 0.15, y, w: colW - 0.3, h: titleZone,
+          ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
+          align: "center", valign: "top",
+        });
+        if (s.body) {
+          slide.addText(s.body, {
+            x: cx - colW / 2 + 0.15, y: bodyTop, w: colW - 0.3, h: bodyH,
+            ...textStyle(theme, "body", { color: theme.palette.ink_muted, scale: bodyScale }),
+            align: "center", valign: "top",
           });
         }
       });
