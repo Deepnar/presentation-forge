@@ -85,3 +85,19 @@ finalize (already done) or a `sparse` sweep on slide 10's section, then re-rende
 
 Model discipline: flash codes ONLY, mimo vision ONLY, no qwen. All specs durable
 in ~/.hermes/scripts/prompts/.
+
+## F. Settings vs Profile split + theme thumbnail sizing (user, 2026-08-16, NO CHANGES YET — user testing)
+
+### F1. Profile and Settings open the SAME modal — must be separate
+User: "both the settings and the profile open the same shit — it shouldn't. The profile is about personal only, and the settings about other stuff and making those presets."
+- Verified: App.jsx:363 (header avatar) and App.jsx:391 (sidebar ProfileChip) BOTH call `setSettingsOpen(true)` → the same SettingsModal. The sidebar also has a separate "Settings" row (Sidebar.jsx:217) doing the same. THREE entry points, ONE identical modal.
+- Fix: split into two surfaces —
+  - **Profile** (avatar chip, header avatar): personal only — avatar, name, email, Log out (with confirm). Nothing else.
+  - **Settings** (sidebar "Settings" row; the header's settings icon): everything else — Saved formats (presets CRUD), Identity (institution + guide, inline), Cloud (status/key/routing).
+  - Decide which the header avatar opens (profile) vs the sidebar row (settings); keep the LOCAL/CLOUD toggle where it is.
+
+### F2. Theme thumbnail sizes "all over the place" — new-chat gallery + Home/tour page
+User: "the theme thumbnail sizes are still all over the place in the new chat as well as that tour home page — it's all over the place, what is it even doing."
+- Verified root cause: ThemeMiniCard.jsx renders a fixed `aspect-[16/8]` band + `aspect-[16/5]` strip, but PLATE themes overlay `theme.thumb` (a rasterised PNG from `npm run gallery`) with `object-cover` (line 60-68). The thumbnails were generated at inconsistent pixel sizes/aspect ratios, so object-cover crops/zooms them differently per theme; non-plate themes show the flat token synthesis — cards look photo-like (plates) next to flat token art, and the size/zoom differs across the gallery, the Home/tour page, and the new-chat picker.
+- Fix: regenerate ALL theme thumbs at ONE fixed size (e.g. 640×360) from ONE neutral specimen (see deck-quality-round4.md item 13), and/or stop overlaying thumbs on the mini card entirely (pure token synthesis everywhere = uniform); if thumbs stay, generate them at the exact band aspect so object-cover is a no-op.
+- Apply consistently to: new-chat ThemeCard gallery (ChatView.jsx), Home/tour page (Home.jsx:232), Themes page (Themes.jsx), briefing gallery.
