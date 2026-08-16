@@ -1872,6 +1872,13 @@ export const layouts = {
    * A central concept with supporting elements arranged in a ring, connected by
    * hairlines. Positions come from angle and radius — pure geometry, nothing
    * content-derived.
+   *
+   * The ring must never hide text: element cards may not overlap the central
+   * ellipse (their inner corner must clear it) and no two cards may overlap
+   * each other. The ring radii are checked against both constraints at the
+   * largest size the box allows; when the box cannot hold a non-overlapping
+   * ring (too many elements, too little vertical room), the layout falls back
+   * to a stacked concept + element grid, which cannot overlap by construction.
    */
   framework(slide, ctx) {
     const { theme, data, box } = ctx;
@@ -1881,65 +1888,145 @@ export const layouts = {
     const top = Math.max(y, 3.0);
     const cx = box.x + box.w / 2;
     const cy = (top + box.bottom) / 2;
-    // The ring is elliptical on purpose: the vertical run (heading to footer) is
-    // far tighter than the horizontal one, so a circular ring would either clip
-    // the top/bottom cards or overlap the central ellipse. A circular radius
-    // forced to the vertical constraint is what caused the overlap.
-    const radiusX = box.w / 2 - 1.5;
-    const radiusY = Math.max(0.95, (box.bottom - top) / 2 - 0.95);
+    const ew = 1.6, eh = 0.95;
+    // The ellipse is sized so the concept title fits at the subhead floor: a
+    // 2.3in-wide oval forced a mono title like "Hybrid Node Layout" down to
+    // ~12.7pt and flagged the slide. 2.7in gives a 16-char title ~14pt.
+    const exAxis = 1.35, eyAxis = 0.55;
+    const gap = 0.09;
 
-    const conceptScale = fitOneLine(data.concept.title, 2.0, theme.type.subhead, { min: 0.6 });
-    slide.addShape("ellipse", {
-      x: cx - 1.15, y: cy - 0.55, w: 2.3, h: 1.1,
-      fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
-    });
+    // The largest ring that fits the box — growing the radii can only improve
+    // both clearances (further from the ellipse, further apart), so the max is
+    // the best candidate; if even it fails the box cannot hold a ring. The
+    // vertical radius keeps ~0.3in of air between the ring cards and the
+    // ellipse so the gap reads as clear separation, never a collision.
+    const radX = Math.max(0.5, box.w / 2 - ew / 2 - 0.4);
+    const radY = Math.max(0.5, (box.bottom - top) / 2 - eh / 2 - 0.15);
+    const ringClear = (() => {
+      if (radX <= ew / 2 || radY <= eh / 2) return false;
+      for (let i = 0; i < n; i++) {
+        const a = (2 * Math.PI * i) / n - Math.PI / 2;
+        const dx = radX * Math.cos(a), dy = radY * Math.sin(a);
+        // The card's corner nearest the ellipse centre must sit outside it.
+        const ix = Math.max(0, Math.abs(dx) - ew / 2);
+        const iy = Math.max(0, Math.abs(dy) - eh / 2);
+        if ((ix / exAxis) ** 2 + (iy / eyAxis) ** 2 < 1.08) return false;
+      }
+      for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+          const ai = (2 * Math.PI * i) / n - Math.PI / 2;
+          const aj = (2 * Math.PI * j) / n - Math.PI / 2;
+          const dx = radX * (Math.cos(ai) - Math.cos(aj));
+          const dy = radY * (Math.sin(ai) - Math.sin(aj));
+          if (Math.abs(dx) < ew + gap && Math.abs(dy) < eh + gap) return false;
+        }
+      }
+      return true;
+    })();
+
+    if (ringClear) {
+      const conceptScale = fitOneLine(data.concept.title, exAxis * 2 - 0.3, theme.type.subhead, { min: 0.6 });
+      slide.addShape("ellipse", {
+        x: cx - exAxis, y: cy - eyAxis, w: exAxis * 2, h: eyAxis * 2,
+        fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+      });
+      slide.addText(data.concept.title, {
+        x: cx - (exAxis - 0.1), y: cy - 0.52, w: (exAxis - 0.1) * 2, h: 0.5,
+        ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: conceptScale }),
+        align: "center", valign: "middle",
+      });
+      if (data.concept.body) {
+        slide.addText(data.concept.body, {
+          x: cx - (exAxis - 0.15), y: cy - 0.02, w: (exAxis - 0.15) * 2, h: 0.45,
+          ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.9 }),
+          align: "center", valign: "top",
+        });
+      }
+
+      const titleScale = fitScaleAll(data.elements.map((e) => e.title), ew - 0.25, 0.35, theme.type.caption, { min: 0.6 });
+      // The central ellipse's semi-axes — connectors must start at its EDGE, not
+      // its centre, or a hairline runs straight through the concept title and
+      // body (the real defect this fixes: the vertical line crossed "The ₹4.2/unit
+      // arithmetic" on a live deck). Edge point = ray from centre at angle θ to
+      // where it exits the ellipse.
+      data.elements.forEach((e, i) => {
+        const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+        const ex = cx + radX * Math.cos(angle);
+        const ey = cy + radY * Math.sin(angle);
+        const denom = Math.sqrt((Math.cos(angle) ** 2) / (exAxis ** 2) + (Math.sin(angle) ** 2) / (eyAxis ** 2)) || 1;
+        const t = 1 / denom;
+        const sx = cx + t * Math.cos(angle);
+        const sy = cy + t * Math.sin(angle);
+        const lx = Math.min(sx, ex), lw = Math.abs(ex - sx) || 0.02;
+        const ly = Math.min(sy, ey), lh = Math.abs(ey - sy) || 0.02;
+        slide.addShape("line", {
+          x: lx, y: ly, w: lw, h: lh,
+          line: { color: hex(theme.palette.rule), width: 1.2 },
+          flipH: ex < sx, flipV: ey < sy,
+        });
+        card(slide, theme, { x: ex - ew / 2, y: ey - eh / 2, w: ew, h: eh });
+        slide.addText(e.title, {
+          x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.12, w: ew - 0.24, h: 0.35,
+          ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
+          align: "center", valign: "top",
+        });
+        if (e.body) {
+          slide.addText(e.body, {
+            x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.5, w: ew - 0.24, h: eh - 0.62,
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+            align: "center", valign: "top",
+          });
+        }
+      });
+      return;
+    }
+
+    // Grid fallback — the concept as a full-width panel, elements as cards
+    // beneath it. Nothing overlaps because every zone is stacked and sized to
+    // the content box; connectors are dropped (a hairline across a grid reads
+    // as clutter, not structure).
+    const conceptH = 0.85;
+    const gutter = 0.18;
+    const colGap = 0.24;
+    const perRow = n <= 2 ? n : n === 3 ? 3 : n <= 4 ? 2 : 3;
+    const rows = Math.ceil(n / perRow);
+    const availH = box.bottom - top - conceptH - gutter;
+    const rowGap = 0.22;
+    const cardH = Math.min(1.15, (availH - rowGap * (rows - 1)) / rows);
+    const cardW = (box.w - colGap * (perRow - 1)) / perRow;
+    const conceptScale = fitOneLine(data.concept.title, box.w - 0.6, theme.type.subhead, { min: 0.7 });
+    const titleScale = fitScaleAll(data.elements.map((e) => e.title), cardW - 0.3, 0.35, theme.type.caption, { min: 0.6 });
+    const bodyScale = fitScaleAll(data.elements.map((e) => e.body).filter(Boolean), cardW - 0.3, cardH - 0.45, theme.type.caption, { min: 0.65 });
+
+    card(slide, theme, { x: box.x, y: top, w: box.w, h: conceptH });
     slide.addText(data.concept.title, {
-      x: cx - 1.1, y: cy - 0.52, w: 2.2, h: 0.5,
-      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: conceptScale }),
-      align: "center", valign: "middle",
+      x: box.x + 0.3, y: top + 0.12, w: box.w - 0.6, h: 0.45,
+      ...textStyle(theme, "subhead", { bold: true, scale: conceptScale }),
+      align: "left", valign: "middle",
     });
     if (data.concept.body) {
       slide.addText(data.concept.body, {
-        x: cx - 1.05, y: cy - 0.02, w: 2.1, h: 0.45,
-        ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.9 }),
-        align: "center", valign: "top",
+        x: box.x + 0.3, y: top + 0.48, w: box.w - 0.6, h: conceptH - 0.6,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+        align: "left", valign: "top",
       });
     }
-
-    const ew = 1.6, eh = 0.95;
-    const titleScale = fitScaleAll(data.elements.map((e) => e.title), ew - 0.25, 0.35, theme.type.caption, { min: 0.6 });
-    // The central ellipse's semi-axes — connectors must start at its EDGE, not
-    // its centre, or a hairline runs straight through the concept title and
-    // body (the real defect this fixes: the vertical line crossed "The ₹4.2/unit
-    // arithmetic" on a live deck). Edge point = ray from centre at angle θ to
-    // where it exits the ellipse.
-    const exAxis = 1.15, eyAxis = 0.55;
     data.elements.forEach((e, i) => {
-      const angle = (2 * Math.PI * i) / n - Math.PI / 2;
-      const ex = cx + radiusX * Math.cos(angle);
-      const ey = cy + radiusY * Math.sin(angle);
-      const denom = Math.sqrt((Math.cos(angle) ** 2) / (exAxis ** 2) + (Math.sin(angle) ** 2) / (eyAxis ** 2)) || 1;
-      const t = 1 / denom;
-      const sx = cx + t * Math.cos(angle);
-      const sy = cy + t * Math.sin(angle);
-      const lx = Math.min(sx, ex), lw = Math.abs(ex - sx) || 0.02;
-      const ly = Math.min(sy, ey), lh = Math.abs(ey - sy) || 0.02;
-      slide.addShape("line", {
-        x: lx, y: ly, w: lw, h: lh,
-        line: { color: hex(theme.palette.rule), width: 1.2 },
-        flipH: ex < sx, flipV: ey < sy,
-      });
-      card(slide, theme, { x: ex - ew / 2, y: ey - eh / 2, w: ew, h: eh });
+      const col = i % perRow;
+      const row = Math.floor(i / perRow);
+      const x = box.x + col * (cardW + colGap);
+      const yTop = top + conceptH + gutter + row * (cardH + rowGap);
+      card(slide, theme, { x, y: yTop, w: cardW, h: cardH });
       slide.addText(e.title, {
-        x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.12, w: ew - 0.24, h: 0.35,
+        x: x + 0.15, y: yTop + 0.1, w: cardW - 0.3, h: 0.35,
         ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
-        align: "center", valign: "top",
+        align: "left", valign: "top",
       });
       if (e.body) {
         slide.addText(e.body, {
-          x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.5, w: ew - 0.24, h: eh - 0.62,
-          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
-          align: "center", valign: "top",
+          x: x + 0.15, y: yTop + 0.48, w: cardW - 0.3, h: cardH - 0.58,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
+          align: "left", valign: "top",
         });
       }
     });
@@ -3382,21 +3469,56 @@ export const layouts = {
     const idIdx = new Map(nodes.map((nd, i) => [nd.id, i]));
     const layout = data.layout ?? "vertical";
     const top = Math.max(y, 2.6);
-    const nodeW = 2.2, nodeH = 0.8;
-    const titleScale = fitScaleAll(nodes.map((nd) => nd.label), nodeW - 0.2, 0.35, theme.type.caption, { min: 0.6 });
+    // Node size adapts to the graph: with many depth layers the vertical run is
+    // thin, and a fixed 1.0in box would overlap the layer below it (the six-
+    // node stacked diagram defect). Cap the height to the layer spacing and the
+    // width to the widest layer, so boxes never overlap however dense the graph.
+    const depth = Array(n).fill(0);
+    for (let pass = 0; pass < n; pass++) {
+      edges.forEach((e) => {
+        const f = idIdx.get(e.from), t = idIdx.get(e.to);
+        if (f != null && t != null && f !== t) depth[t] = Math.max(depth[t], depth[f] + 1);
+      });
+    }
+    const maxDepth = Math.max(0, ...depth);
+    const layers = Array.from({ length: maxDepth + 1 }, () => []);
+    nodes.forEach((nd, i) => layers[depth[i]].push(i));
+    // A chain graph in a vertical layout stacks every node at the same x with
+    // ~0.7in per layer — too thin for a readable label. When the vertical run
+    // cannot hold the layer count at a readable size, the graph lays out
+    // horizontally (one column per layer) where the full width gives each node
+    // room. The explicit `horizontal` request always wins.
+    const vertical = layout !== "horizontal" && (box.bottom - top) / (maxDepth + 1) >= 0.85;
+    const across = vertical ? box.bottom - top : box.w;
+    const along = vertical ? box.w : box.bottom - top;
+    const vSpacing = across / (maxDepth + 1);
+    const hSpacing = along / Math.max(...layers.map((l) => l.length));
+    // The two axes bound differently: nodeW must fit the horizontal spacing
+    // between centres, nodeH the vertical one.
+    const layerSpaceX = vertical ? hSpacing : vSpacing;
+    const layerSpaceY = vertical ? vSpacing : hSpacing;
+    const nodeW = Math.min(2.2, Math.max(1.4, layerSpaceX - 0.35));
+    const nodeH = Math.max(0.5, Math.min(1.0, layerSpaceY - 0.2));
+    // When the layers are too dense for a body line at the readable floor, the
+    // nodes render label-only — the same deal the flow layout strikes for a
+    // 6-step run. A 0.04in body zone would flag the floor and clip text.
+    const dense = nodeH < 0.72;
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.label), nodeW - 0.2, 0.3, theme.type.caption, { min: 0.6 });
     const bodyScale = fitScaleAll(
-      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.35, theme.type.caption,
+      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, nodeH - 0.5, theme.type.caption,
     );
     const node = (i, x, y2) => {
       card(slide, theme, { x: x - nodeW / 2, y: y2 - nodeH / 2, w: nodeW, h: nodeH });
       slide.addText(nodes[i].label, {
-        x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.08, w: nodeW - 0.2, h: 0.35,
+        x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.06, w: nodeW - 0.2, h: 0.3,
         ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
-        align: "center", valign: "top",
+        align: "center", valign: "middle",
       });
-      if (nodes[i].body) {
+      if (nodes[i].body && !dense) {
+        // The body zone must hold two caption lines at the readable floor — a
+        // 0.32in box was the "text clipped below the rounded rectangle" defect.
         slide.addText(nodes[i].body, {
-          x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.45, w: nodeW - 0.2, h: 0.32,
+          x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.38, w: nodeW - 0.2, h: nodeH - 0.46,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
           align: "center", valign: "top",
         });
@@ -3424,16 +3546,6 @@ export const layouts = {
         centres[idx] = { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
       });
     } else {
-      const depth = Array(n).fill(0);
-      for (let pass = 0; pass < n; pass++) {
-        edges.forEach((e) => {
-          const f = idIdx.get(e.from), t = idIdx.get(e.to);
-          if (f != null && t != null && f !== t) depth[t] = Math.max(depth[t], depth[f] + 1);
-        });
-      }
-      const maxDepth = Math.max(0, ...depth);
-      const layers = Array.from({ length: maxDepth + 1 }, () => []);
-      nodes.forEach((nd, i) => layers[depth[i]].push(i));
       // Order each layer by the barycentre of incoming-edge neighbours'
       // horizontal positions, so long edges route with fewer crossings instead
       // of slashing across unrelated node boxes.
@@ -3447,10 +3559,7 @@ export const layouts = {
       for (let pass = 0; pass < 3; pass++) {
         for (const layer of layers) layer.sort((a, b) => barycenter(a) - barycenter(b));
       }
-      const vertical = layout !== "horizontal";
       layers.forEach((layer, li) => {
-        const along = vertical ? box.w : box.bottom - top;
-        const across = vertical ? box.bottom - top : box.w;
         const per = along / layer.length;
         layer.forEach((nodeIdx, ni) => {
           const a = per * (ni + 0.5);
@@ -3461,12 +3570,27 @@ export const layouts = {
         });
       });
     }
-    centres.forEach((c, i) => node(i, c.x, c.y));
+    // Edges first, nodes second: a connector passing behind a box reads as
+    // routed, never as cutting through the label — the layered-graph lesson.
+    // A node's edge must still start at the node's EDGE, not its centre, or
+    // the line runs under (and through) the label text. The ray from the
+    // centre is clipped to the first box side it crosses.
+    const clipToBox = (p, q) => {
+      const dx = q.x - p.x, dy = q.y - p.y;
+      let t = 1;
+      if (dx !== 0) t = Math.min(t, nodeW / 2 / Math.abs(dx));
+      if (dy !== 0) t = Math.min(t, nodeH / 2 / Math.abs(dy));
+      return { x: p.x + dx * t, y: p.y + dy * t };
+    };
     edges.forEach((e) => {
       const f = idIdx.get(e.from), t = idIdx.get(e.to);
       if (f == null || t == null || f === t) return;
-      line(centres[f].x, centres[f].y, centres[t].x, centres[t].y);
+      const a = centres[f], b = centres[t];
+      const s = clipToBox(a, b);
+      const e2 = clipToBox(b, a);
+      line(s.x, s.y, e2.x, e2.y);
     });
+    centres.forEach((c, i) => node(i, c.x, c.y));
   },
 
   /**

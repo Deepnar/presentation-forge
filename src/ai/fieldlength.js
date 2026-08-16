@@ -1,5 +1,5 @@
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps } from "./ops.js";
+import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { deckSchema, catalogForType } from "./catalog.js";
 import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
 import { validateDeck } from "../validate.js";
@@ -112,11 +112,11 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
     `The slide type is "${slide.type}" and it stays "${slide.type}".`,
     "",
     "The fields below are too long for the layout to hold at a readable size.",
-    "Rewrite EACH of them as ONE complete, grammatically finished sentence no",
-    "longer than its cap — never truncate with an ellipsis mid-sentence. A",
-    "shorter complete sentence is correct; 'the…' is never acceptable. Keep",
-    "the meaning, the figures and the names; drop modifiers and subordinate",
-    "clauses before dropping any fact.",
+    "Rewrite EACH of them as ONE complete, grammatically finished sentence — as",
+    "short as it can honestly be, and never longer than its cap. Never truncate",
+    "with an ellipsis mid-sentence. A shorter complete sentence is correct;",
+    "'the…' is never acceptable. Keep the meaning, the figures and the names;",
+    "drop modifiers and subordinate clauses before dropping any fact.",
     "",
     "Fields to rewrite:",
     flagged.join("\n"),
@@ -153,25 +153,17 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
     ],
   });
 
-  const ops = (res.data?.ops ?? []).filter(
-    (o) =>
-      (o.op === "update_slide" && (o.index === index || o.index == null) && (o.patch || o.slide)) ||
-      (o.op === "replace_slide" && o.index === index && o.slide),
-  );
   // The ops grammar allows a full `slide` on any op, and models drift toward
-  // writing the whole slide rather than a patch — accept both: a patch merges,
-  // a full slide replaces. Either way the target slide is index 0 of the
-  // single-slide deck.
-  let candidate = null;
-  for (const op of ops) {
-    if (op.op === "replace_slide" && op.slide) { candidate = op.slide; break; }
-    if (op.patch) {
-      const applied = applyOps({ title: "t", slides: [slide] }, [{ op: "update_slide", index: 0, patch: op.patch }]);
-      if (applied.ok) { candidate = applied.deck.slides[0]; break; }
-    } else if (op.slide) {
-      candidate = op.slide;
-      break;
-    }
+  // writing the whole slide rather than a patch — resolve the intended shape
+  // tolerantly and apply it as the slide's replacement.
+  const got = slideFromOps(res.data?.ops, index);
+  if (!got) return null;
+  let candidate;
+  if (got.kind === "patch") {
+    const applied = applyOps({ title: "t", slides: [slide] }, [{ op: "update_slide", index: 0, patch: got.patch }]);
+    candidate = applied.ok ? applied.deck.slides[0] : null;
+  } else {
+    candidate = got.slide;
   }
   if (!candidate) return null;
   candidate = { ...candidate, type: slide.type, presenter: slide.presenter, section: slide.section };

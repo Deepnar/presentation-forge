@@ -158,6 +158,30 @@ export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, e
 
 const clone = (x) => structuredClone(x);
 
+/**
+ * The best-effort replacement slide for one index from a model's op list.
+ *
+ * Models drift between the legal shapes: `update_slide {patch}`, `update_slide
+ * {slide}` (a full replacement on the wrong key — the union grammar allows
+ * it), and `replace_slide {slide}`, with or without an index. Rather than let
+ * a model that chose the "wrong" but correct-in-intent shape fail a whole
+ * rewrite (the sweep/coherence "no usable rewrite" and "Unknown op undefined"
+ * defects), resolve to the first op that plausibly targets `index`. Returns
+ * null when nothing usable exists.
+ */
+export function slideFromOps(ops, index) {
+  for (const o of ops ?? []) {
+    if (o.op === "update_slide" && (o.index === index || o.index == null)) {
+      if (o.patch) return { kind: "patch", patch: o.patch };
+      if (o.slide) return { kind: "slide", slide: o.slide };
+    }
+    if (o.op === "replace_slide" && (o.index === index || o.index == null) && o.slide) {
+      return { kind: "slide", slide: o.slide };
+    }
+  }
+  return null;
+}
+
 class OpError extends Error {}
 
 function requireIndex(deck, i, op, { allowEnd = false } = {}) {

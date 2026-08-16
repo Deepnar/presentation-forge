@@ -198,10 +198,23 @@ export async function runTurn({
       signal,
     });
 
-    const ops = res.data?.ops ?? [];
-    attempts.push({ ops: ops.length, model: res.model });
+    // An op without an `op` field can never be valid — a model that emits one
+    // stray `{}` or `{index, patch}` item currently poisons the ENTIRE rewrite
+    // (applyOps is transactional), so the coherence/critic fix silently fails
+    // even when the other ops were fine. Drop the never-valid items first; a
+    // genuinely empty response is reported below like any other no-op, while a
+    // response whose ops were ALL malformed goes through the repair loop so the
+    // model gets the feedback instead of the caller.
+    const rawOps = res.data?.ops ?? [];
+    const ops = rawOps.filter((o) => o && typeof o === "object" && typeof o.op === "string");
+    attempts.push(
+      rawOps.length !== ops.length
+        ? { ops: ops.length, dropped: rawOps.length - ops.length, model: res.model }
+        : { ops: ops.length, model: res.model },
+    );
 
-    if (!ops.length) {
+    const malformed = rawOps.length > 0 && ops.length === 0;
+    if (!ops.length && !malformed) {
       return {
         ok: false, deck: base, changes: [], diff: [], ops: [],
         errors: ["The model proposed no changes."],
@@ -210,9 +223,11 @@ export async function runTurn({
     }
 
     const applied = applyOps(base, ops);
-    const problems = [...applied.errors];
+    const problems = malformed
+      ? ["all proposed operations were malformed (missing the `op` field)"]
+      : [...applied.errors];
 
-    if (applied.ok) {
+    if (applied.ok && !malformed) {
       const { ok, errors } = await validateDeck(applied.deck);
       if (ok) {
         return {

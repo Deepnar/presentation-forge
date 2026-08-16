@@ -26,6 +26,16 @@ test("shortenString cuts prose at a sentence boundary with an ellipsis", () => {
   assert.ok(out.length < s.length, "must get shorter");
   assert.ok(out.endsWith("…"), "must end with an ellipsis");
   assert.ok(s.includes(out.slice(0, -1)), "must be a prefix of the original");
+  assert.ok(out.endsWith("contact…"), "must stop at a sentence boundary, not a word");
+});
+
+test("shortenString refuses to cut mid-sentence — no 'the…' ever", () => {
+  // No sentence end inside the cut window → the field is left alone, never
+  // chopped at a word boundary into a fragment.
+  const s = "MPI ranks own NUMA domains and OpenMP threads share the same rank memory across every level";
+  assert.equal(shortenString(s), null);
+  // A comma is not a sentence end either.
+  assert.equal(shortenString("One rank per NUMA domain, not per core of the machine at all really"), null);
 });
 
 test("shortenString refuses short strings and single tokens", () => {
@@ -41,12 +51,12 @@ test("trimSlide drops the last bullet before shortening, and never below minItem
     section: 2,
     headline: "Key mechanisms",
     bullets: [
-      "First impressions form within four seconds of contact, faster than most people assume",
-      "Your posture, gaze, and tone arrive together as one combined signal to the listener",
-      "A warm open stance reads as approachable while crossed arms signal the opposite",
-      "Eye contact length and frequency change how much trust the exchange builds",
-      "Mirror-image postures between speakers are a reliable marker of rapport",
-      "The full channel set of sight hearing smell touch and taste is live at once",
+      "First impressions form within four seconds of contact. Faster than most people assume, the read lands early.",
+      "Your posture, gaze, and tone arrive together as one signal. The listener reads all three channels at once.",
+      "A warm open stance reads as approachable. Crossed arms and a turned shoulder signal the opposite.",
+      "Eye contact length and frequency change trust. The balance shifts the whole feel of an exchange.",
+      "Mirror-image postures between speakers mark rapport. The pair quietly synchronise as they talk.",
+      "The full channel set is live at once. Sight, hearing, smell, touch and taste all contribute.",
     ],
   };
   // Six bullets, minItems 4 → two drops allowed, then it must shorten instead.
@@ -86,7 +96,7 @@ test("trimSlide shortens a scalar body when there is no array to drop", async ()
   const slide = {
     type: "callout",
     label: "Key point",
-    body: "A long callout body that genuinely runs on and on past any reasonable single-slide budget and needs to be cut down to fit.",
+    body: "A long callout body that genuinely runs on and on past any reasonable single-slide budget. It needs to be cut down to a sentence that still fits.",
   };
   const next = await trimSlide(slide);
   assert.equal(next.type, "callout");
@@ -100,12 +110,12 @@ test("trimSlide touches nested side bodies on a compare slide", async () => {
     headline: "In person vs on screen",
     left: {
       title: "In Person",
-      body: "A deliberately long left-column body full of words so that it clearly exceeds the length needed to be worth trimming by this pass.",
+      body: "A deliberately long left-column body full of words. It clearly exceeds the length the column is worth trimming by this pass.",
       points: ["one"],
     },
     right: {
       title: "On Screen",
-      body: "A deliberately long right-column body full of words so that it clearly exceeds the length needed to be worth trimming by this pass.",
+      body: "A deliberately long right-column body full of words. It clearly exceeds the length the column is worth trimming by this pass.",
     },
   };
   // left.points can drop (minItems 0); then the longest body shortens.

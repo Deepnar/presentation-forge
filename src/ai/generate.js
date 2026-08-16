@@ -1,5 +1,5 @@
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps } from "./ops.js";
+import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, presentingNames, targetSections, distributePresenters } from "./team.js";
@@ -764,32 +764,41 @@ export async function sweepDeck({
       continue;
     }
 
-    const ops = (res.data?.ops ?? []).filter((o) => o.op === "update_slide" && o.index === i);
-    if (!ops.length) {
+    // Models drift toward update_slide without an index, or a full `slide`
+    // instead of a `patch` — resolve the usable shape tolerantly so a rewrite
+    // that meant well is not thrown away as "no usable rewrite".
+    const got = slideFromOps(res.data?.ops, i);
+    if (!got) {
       problems.push(`slide ${i + 1} (${slide.type}): no usable rewrite — kept original`);
       swept.push({ index: i, type: slide.type, kept: true });
       continue;
     }
-    const applied = applyOps(out, ops);
-    if (!applied.ok || !(await validateDeck(applied.deck)).ok) {
-      problems.push(`slide ${i + 1} (${slide.type}): density rewrite failed — kept original`);
-      swept.push({ index: i, type: slide.type, kept: true });
-      continue;
+    const next = structuredClone(out);
+    if (got.kind === "patch") {
+      next.slides[i] = { ...next.slides[i], ...got.patch };
+    } else {
+      next.slides[i] = got.slide;
     }
     // The grammar allows a patch to change anything; the sweep contract is that
     // type and presenter survive. Re-assert them so a verbose model cannot turn
     // a sweep into a redesign.
-    applied.deck.slides[i] = { ...applied.deck.slides[i], type: slide.type, presenter: slide.presenter };
+    next.slides[i] = { ...next.slides[i], type: slide.type, presenter: slide.presenter, section: slide.section };
+    const { ok } = await validateDeck(next);
+    if (!ok) {
+      problems.push(`slide ${i + 1} (${slide.type}): density rewrite failed — kept original`);
+      swept.push({ index: i, type: slide.type, kept: true });
+      continue;
+    }
+    out = next;
     // Same invented-image guard as the type swap: an external image URL renders
     // as a placeholder, so never let a sweep ship one silently.
-    const sweptImage = applied.deck.slides[i].image;
+    const sweptImage = out.slides[i].image;
     if (sweptImage && /^[a-z][a-z0-9+.-]*:\/\//i.test(sweptImage)) {
-      const s = applied.deck.slides[i];
+      const s = out.slides[i];
       delete s.image;
       const hint = `[image] ${sweptImage}`;
       s.notes = s.notes ? `${s.notes}\n${hint}` : hint;
     }
-    out = applied.deck;
     swept.push({ index: i, type: slide.type });
   }
 
@@ -923,12 +932,11 @@ export async function convertSlide({
     ],
   });
 
-  const ops = (res.data?.ops ?? []).filter((o) => o.op === "replace_slide" && o.index === index);
-  if (!ops.length) return { slide: null, method: "model", errors: ["no usable op"] };
-
-  const applied = applyOps(deck, ops);
-  const candidate = applied.ok ? applied.deck.slides[index] : null;
-  if (!candidate) return { slide: null, method: "model", errors: applied.errors };
+  // Tolerate the model's drift: replace_slide without an index, or update_slide
+  // with a full slide — the intended conversion survives either shape.
+  const got = slideFromOps(res.data?.ops, index);
+  if (!got || got.kind !== "slide") return { slide: null, method: "model", errors: ["no usable op"] };
+  const candidate = { ...got.slide, type: targetType };
 
   // Preserve section + presenter contract unless it's a divider.
   if (isDivider) delete candidate.presenter;
@@ -949,7 +957,7 @@ export async function convertSlide({
   // Validate against a deck that carries the SANITISED candidate — a model that
   // invented a URL may have left a type whose required image field is now gone,
   // in which case the conversion failed cleanly rather than shipping a stub.
-  const withSanitized = { ...applied.deck, slides: applied.deck.slides.map((s, i) => (i === index ? candidate : s)) };
+  const withSanitized = { ...deck, slides: deck.slides.map((s, i) => (i === index ? candidate : s)) };
   const { ok } = await validateDeck(withSanitized);
   return ok
     ? { slide: candidate, method: "model" }

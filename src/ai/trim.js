@@ -128,15 +128,28 @@ export function walkStrings(slide, path) {
     }));
 }
 
-/** Cut prose at a sentence/word boundary to ~72% of its length, with an ellipsis. */
+/**
+ * Cut prose at a sentence boundary with an ellipsis — and ONLY at a sentence
+ * boundary. A mid-sentence cut ("…the") is the exact defect the field-length
+ * pass exists to eliminate, so the trim refuses to produce one: when no
+ * sentence end falls inside the cut window, nothing is cut and the fitter's
+ * floor flag reports the slide instead. The field-length pass runs first and
+ * rewrites overfull fields as complete short sentences, so a trim cut lands
+ * on a whole sentence, never a fragment.
+ */
 export function shortenString(s) {
   const t = String(s).trim();
   if (t.length <= 40 || !t.includes(" ")) return null;
   const target = Math.max(40, Math.ceil(t.length * 0.72));
   const cut = t.slice(0, target);
-  const sent = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("; "), cut.lastIndexOf(", "));
-  const end = sent >= 32 ? sent + 1 : cut.lastIndexOf(" ");
-  const kept = (end > 0 ? t.slice(0, end) : t.slice(0, target)).trimEnd().replace(/[.,;:—–]+$/, "");
+  const sent = Math.max(
+    cut.lastIndexOf(". "),
+    cut.lastIndexOf("? "),
+    cut.lastIndexOf("! "),
+    cut.lastIndexOf("; "),
+  );
+  if (sent < 32) return null; // no sentence end reachable — do not cut mid-sentence
+  const kept = t.slice(0, sent + 1).trimEnd().replace(/[.,;:—–]+$/, "");
   if (kept.length >= t.length) return null;
   return `${kept}…`;
 }

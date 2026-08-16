@@ -110,3 +110,24 @@ test("sweepDeck re-asserts type and presenter even if the patch tries to change 
   assert.equal(r.deck.slides[1].type, "bullets");
   assert.equal(r.deck.slides[1].presenter, "Alice");
 });
+
+test("sweepDeck accepts an update_slide that omits the index (the model's drift)", async () => {
+  const chat = async ({ schema }) => {
+    const type = schema.properties.ops.items.properties.slide.properties.type.enum[0];
+    return { data: { ops: [{ op: "update_slide", patch: { headline: "H", bullets: ["a", "b", "c", "d"] } }] } };
+  };
+  const r = await sweepDeck({ deck: DECK, density: "balanced", model: "mock", chat });
+  // Both content slides rewrote despite the missing index.
+  assert.equal(r.swept.length, 2);
+  assert.equal(r.deck.slides[1].headline, "H");
+});
+
+test("sweepDeck accepts a full slide object on an update_slide op", async () => {
+  const chat = async ({ schema }) => {
+    const type = schema.properties.ops.items.properties.slide.properties.type.enum[0];
+    return { data: { ops: [{ op: "update_slide", slide: { type, headline: "Full", bullets: ["a", "b", "c", "d"] } }] } };
+  };
+  const r = await sweepDeck({ deck: DECK, density: "dense", model: "mock", chat });
+  assert.equal(r.deck.slides[1].headline, "Full");
+  assert.equal(r.deck.slides[1].type, "bullets", "type survives the full-slide form");
+});
