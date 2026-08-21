@@ -192,7 +192,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               )}
             </div>
             <div className="mt-4 text-[10.5px] leading-relaxed text-fg-faint">
-              Local-first and free — the default path never leaves this machine.
+              Hosted and ready — create, generate and share from anywhere.
             </div>
           </div>
         </div>
@@ -301,8 +301,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
           </form>
 
           <p className="mt-3 text-center text-[12px] leading-relaxed text-fg-faint">
-            Local accounts on this machine only — the Cloud-key section and future
-            hosting are gated behind one.
+            Hosted accounts — your decks stay on the server, Cloud keys are per account.
           </p>
         </div>
       </div>

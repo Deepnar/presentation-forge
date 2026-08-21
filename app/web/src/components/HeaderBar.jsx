@@ -45,10 +45,8 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const routingCloud = route === "cloud";
   const routingAuto = route === "auto";
   const autoKind = auto?.kind ?? (auto?.provider === "tcet-auto" ? "tcet" : "local");
-  const autoLabel = autoKind === "local" ? "LOCAL" : "AUTO";
-  const autoTitle = autoKind === "local"
-    ? "Local model — your machine, unlimited, private"
-    : "Auto — free shared model, rate-limited";
+  const autoLabel = "AUTO";
+  const autoTitle = "Auto — free shared model, rate-limited";
 
   async function setMode(next) {
     if (next === "cloud" && !cloudOn) return;
@@ -100,7 +98,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         <span className={`text-[10px] font-medium ${routingCloud ? "text-fg" : "text-fg-faint"}`}>CLOUD</span>
       </div>
       {auto?.keySet && (
-        <Badge className={`hidden border sm:inline-flex ${autoKind === "local" ? "border-line bg-panel text-fg-faint" : "border-accent/20 bg-accent/10 text-accent"}`}>{autoKind === "local" ? "Local" : "Ready"}</Badge>
+        <Badge className="hidden border border-accent/20 bg-accent/10 text-accent sm:inline-flex">Ready</Badge>
       )}
 
       <div className="ml-auto flex items-center gap-1">
@@ -116,19 +114,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
           )}
         </button>
-        <a
-          href="#/home"
-          className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] transition ${view === "home" ? "bg-sunken font-medium text-fg" : "text-fg-muted hover:bg-hover hover:text-fg"}`}
-        >
-          <DocIcon className="h-4 w-4" />
-          Tour
-        </a>
-        <a
-          href="#/tour-themes"
-          className={`hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] transition sm:inline-flex ${view === "tour-themes" || view === "themes" ? "bg-sunken font-medium text-fg" : "text-fg-muted hover:bg-hover hover:text-fg"}`}
-        >
-          Themes
-        </a>
+
         <a
           href="https://github.com/Deepnar/presentation-forge"
           target="_blank"

@@ -19,20 +19,25 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const css = getComputedStyle(document.documentElement);
-    const fill = {
-      dot: css.getPropertyValue("--color-fg").trim() || "#475569",
-      accent: css.getPropertyValue("--color-accent").trim() || "#6D5BFF",
-      line: css.getPropertyValue("--color-line-strong").trim() || "#D1D5E0",
+    const getFill = () => {
+      const css = getComputedStyle(document.documentElement);
+      const isDark = document.documentElement.dataset.theme === "dark";
+      return {
+        dot: css.getPropertyValue("--color-fg").trim() || "#475569",
+        accent: css.getPropertyValue("--color-accent").trim() || "#6D5BFF",
+        line: css.getPropertyValue("--color-line-strong").trim() || "#D1D5E0",
+        isDark,
+      };
     };
+    let fill = getFill();
     const hexToRgb = (h) => {
       const s = h.replace("#", "").trim();
       if (s.length < 6) return "100 100 100";
       const r = parseInt(s.slice(0, 2), 16), g = parseInt(s.slice(2, 4), 16), b = parseInt(s.slice(4, 6), 16);
       return `${r} ${g} ${b}`;
     };
-    const accentRgb = hexToRgb(fill.accent);
-    const dotRgb = hexToRgb(fill.dot);
+    let accentRgb = hexToRgb(fill.accent);
+    let dotRgb = hexToRgb(fill.dot);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const MAX = 560;
@@ -47,6 +52,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
 
     const makeDot = () => {
       const r = 0.7 + Math.random() * 1.8;
+      const darkBoost = fill.isDark ? 1.45 : 1;
       return {
         x: Math.random() * state.w,
         y: Math.random() * state.h,
@@ -54,13 +60,13 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         vy: (Math.random() - 0.5) * 0.35,
         r,
         baseR: r,
-        base: (0.14 + Math.random() * 0.32) * boost,
+        base: (fill.isDark ? 0.22 + Math.random() * 0.34 : 0.14 + Math.random() * 0.32) * boost * darkBoost,
         phase: Math.random() * Math.PI * 2,
         fx: 0.08 + Math.random() * 0.22,
         fy: 0.06 + Math.random() * 0.18,
         ax: 10 + Math.random() * 22,
         ay: 10 + Math.random() * 22,
-        accent: Math.random() < 0.28,
+        accent: Math.random() < (fill.isDark ? 0.34 : 0.28),
         tw: Math.random() * Math.PI * 2,
       };
     };
@@ -128,21 +134,23 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         const twinkle = 0.65 + 0.35 * Math.sin(now * 0.0012 + d.tw * 1.7);
         const pulse = 0.92 + 0.08 * Math.sin(now * 0.0009 + d.phase);
         const r = d.r * dpr * pulse * scale;
-        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.35 : 1));
+        const accentMul = fill.isDark ? 1.55 : 1.35;
+        const darkAlphaBoost = fill.isDark ? 1.22 : 1;
+        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? accentMul : 1) * darkAlphaBoost);
         ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-        // soft glow for accents
+        // soft glow for accents — stronger in dark so they pop
         if (d.accent) {
-          ctx.globalAlpha *= 0.18;
+          ctx.globalAlpha *= fill.isDark ? 0.28 : 0.18;
           ctx.beginPath();
           ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
           ctx.fill();
         }
       }
 
-      // constellation lines — denser, stronger near pointer
+      // constellation lines — stronger in dark
       ctx.globalAlpha = 1;
       if (pts.length < 360) {
         for (let i = 0; i < pts.length; i++) {
@@ -154,9 +162,10 @@ export default function ParticleField({ paused = false, boost = 1, className = "
             if (d2 < lim) {
               const t = 1 - Math.sqrt(d2) / (140 * dpr);
               if (t > 0.3 && (Math.random() < 0.16 || a.b > 1.1 || b.b > 1.1)) {
-                ctx.globalAlpha = t * 0.13 * boost;
+                const lineBoost = fill.isDark ? 1.75 : 1;
+                ctx.globalAlpha = t * 0.13 * boost * lineBoost;
                 ctx.strokeStyle = `rgb(${dotRgb})`;
-                ctx.lineWidth = 0.7 * dpr;
+                ctx.lineWidth = (fill.isDark ? 0.85 : 0.7) * dpr;
                 ctx.beginPath();
                 ctx.moveTo(a.x, a.y);
                 ctx.lineTo(b.x, b.y);
@@ -222,6 +231,18 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       else start();
     }
 
+    const syncTheme = () => {
+      fill = getFill();
+      accentRgb = hexToRgb(fill.accent);
+      dotRgb = hexToRgb(fill.dot);
+      // rebalance existing dots for new theme without respawning
+      state.dots.forEach((d) => {
+        d.base = (fill.isDark ? 0.22 + Math.random() * 0.34 : 0.14 + Math.random() * 0.32) * boost * (fill.isDark ? 1.45 : 1);
+      });
+    };
+    const mo = new MutationObserver(syncTheme);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
     resize();
     if (!reduceMotion && !paused) start();
     controlRef.current = { start, stop, reduceMotion };
@@ -234,6 +255,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     return () => {
       stop();
       controlRef.current = null;
+      mo.disconnect();
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("mousemove", onPointer);
