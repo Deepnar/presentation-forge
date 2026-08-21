@@ -44,8 +44,13 @@ config/local.yaml
 
 # Local single-install accounts and their sessions — the Cloud-key gate. Never
 # committed: users.json holds scrypt hashes, sessions.json holds bearer tokens.
+# SQLite DB (forge.db) holds the same data encrypted plus vault and auto usage.
 config/users.json
 config/sessions.json
+config/forge.db
+config/forge.db-*
+config/*.db
+config/*.db-*
 
 # Saved briefing formats — per-user, per the account store.
 config/presets/
