@@ -21,15 +21,15 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
       type="button"
       onClick={() => onClick?.(theme.name)}
       title={`${label} (${theme.name})`}
-      className={`card-hover group relative overflow-hidden rounded-card border bg-panel text-left transition ${
+      className={`card-hover group relative flex h-[220px] w-full flex-col overflow-hidden rounded-card border bg-panel text-left transition ${
         selected
           ? "border-accent ring-2 ring-accent/40"
           : "border-line hover:border-line-strong"
       }`}
     >
-      {/* Title band — the theme's hero treatment. */}
+      {/* Title band — fixed height, uniform */}
       <div
-        className="relative flex aspect-[16/8] flex-col justify-end px-2.5 pb-2 pt-2"
+        className="relative flex h-[110px] shrink-0 flex-col justify-end px-2.5 pb-2 pt-2"
         style={{ background: title.bg ?? p.ink }}
       >
         <div className="relative z-10">
@@ -68,8 +68,8 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         )}
       </div>
 
-      {/* Content strip — surface, cards and accent. */}
-      <div className="flex aspect-[16/5] items-center gap-1.5 px-2.5" style={{ background: p.bg }}>
+      {/* Content strip — fixed height */}
+      <div className="flex h-[52px] shrink-0 items-center gap-1.5 px-2.5" style={{ background: p.bg }}>
         <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
           01
         </span>
@@ -81,9 +81,8 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         </div>
       </div>
 
-      {/* Name bar — label plus the typefaces, so the briefing gallery shows
-          the theme's font names the way the Themes page does. */}
-      <div className="flex items-center justify-between gap-2 border-t border-line bg-sunken px-2.5 py-1.5">
+      {/* Name bar — fixed height */}
+      <div className="flex h-9 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-2.5">
         <span className={`min-w-0 truncate text-[10px] font-medium ${selected ? "text-accent" : "text-fg-muted"}`}>
           {sub}
         </span>

@@ -223,7 +223,7 @@ function ThemeCarousel({ onBrowseThemes }) {
       </p>
       {themes === null && (
         <div className="flex gap-4 overflow-hidden">
-          {[0, 1, 2, 3].map((i) => <div key={i} className="skeleton h-40 w-64 shrink-0 rounded-card" />)}
+          {[0, 1, 2, 3].map((i) => <div key={i} className="skeleton h-[220px] w-64 shrink-0 rounded-card" />)}
         </div>
       )}
       {themes?.length > 0 && (
