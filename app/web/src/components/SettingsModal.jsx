@@ -98,7 +98,7 @@ function AccountSection({ user, onClose, onLogout }) {
     } finally { setCloudBusy(false); }
   }
   async function removeKey() {
-    if (!window.confirm("Remove your personal API key? AUTO (TCET) will still work.")) return;
+    if (!window.confirm("Remove your personal API key? Auto will still work.")) return;
     setCloudBusy(true);
     try { await api.keysClear(); setVaultHasKey(false); setState({ status: "saved", message: "Personal key removed — using AUTO" }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
@@ -107,7 +107,7 @@ function AccountSection({ user, onClose, onLogout }) {
     try { const r = await api.cloudTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
   async function testAuto() {
-    setCloudBusy(true); setState({ status: "busy", message: "Testing TCET gateway…" });
+    setCloudBusy(true); setState({ status: "busy", message: "Testing Auto…" });
     try { const r = await api.autoTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
   async function setRoute(route) {
@@ -126,14 +126,14 @@ function AccountSection({ user, onClose, onLogout }) {
         <button onClick={() => setConfirmLogout(true)} className="rounded-lg border border-danger/30 px-2.5 py-1.5 text-xs font-medium text-danger transition hover:bg-danger/10">Log out</button>
       </div>
 
-      {/* AUTO — TCET shared */}
+      {/* AUTO — shared */}
       <div className="mt-4 rounded-lg border border-line bg-panel p-3.5">
         <div className="flex items-center justify-between gap-2">
-          <div className="text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Auto — TCET CoE Gateway</div>
-          {auto?.keySet ? <Badge className="bg-accent/10 text-accent">qwen3.6 · live</Badge> : <Badge className="bg-danger/10 text-danger">no key</Badge>}
+          <div className="text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Auto — Free shared model</div>
+          {auto?.keySet ? <Badge className="bg-accent/10 text-accent">Ready</Badge> : <Badge className="bg-danger/10 text-danger">Unavailable</Badge>}
         </div>
         <div className="mt-1.5 text-[12.5px] text-fg-muted">
-          {auto?.keySet ? `Shared campus model — free, rate-limited (${auto.models?.[0] ?? "qwen3.6"})` : "TCET gateway not configured — set FORGE_TCET_API_KEY"}
+          {auto?.keySet ? `Free model — rate-limited, no key needed` : "Auto not available — use Cloud or Local"}
         </div>
         {auto?.keySet && <div className="mt-1 font-mono text-[10.5px] text-fg-faint">{auto.baseURL}</div>}
         {usage && limits && (
@@ -181,7 +181,7 @@ function AccountSection({ user, onClose, onLogout }) {
                 <button key={r} onClick={() => setRoute(r)} disabled={cloudBusy} className={`pill px-2.5 py-1 text-[11.5px] font-medium uppercase transition disabled:opacity-50 ${ (cloud?.route ?? auto?.route ?? "auto") === r ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}>{r}</button>
               ))}
             </div>
-            <div className="mt-1 text-[10.5px] text-fg-faint">AUTO = TCET shared (free, limited) · CLOUD = your key (unlimited). AUTO falls back to CLOUD if you have a key.</div>
+            <div className="mt-1 text-[10.5px] text-fg-faint">AUTO = Free shared (limited) · CLOUD = your key (unlimited).</div>
           </div>
         </div>
       </div>

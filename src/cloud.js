@@ -153,7 +153,7 @@ export async function autoProvider() {
     const list = Array.isArray(tcet.models) && tcet.models.length ? [...tcet.models] : await providerModels(tcet);
     return {
       id: "tcet-auto",
-      label: tcet.label ?? "TCET CoE",
+      label: "Auto",
       baseURL: String(tcet.baseURL).replace(/\/+$/, ""),
       models: list.length ? list : ["qwen3.6"],
       apiKey: tcet.apiKey ?? "env:FORGE_TCET_API_KEY",
@@ -273,7 +273,7 @@ export async function testAutoConnection() {
     } catch (e) { return { ok: false, detail: `Ollama not reachable: ${e.message}` }; }
   }
   const key = await resolveSecret("FORGE_TCET_API_KEY");
-  if (!key) return { ok: false, detail: "no TCET API key set — set FORGE_TCET_API_KEY" };
+  if (!key) return { ok: false, detail: "no Auto key configured" };
   const probe = p.models[0] ?? "qwen3.6";
   try {
     const modelsRes = await fetch(`${p.baseURL}/models`, {
@@ -293,7 +293,7 @@ export async function testAutoConnection() {
     if (!res.ok) {
       const text = (await res.text()).slice(0, 200);
       if ([500, 520, 502, 503].includes(res.status)) {
-        return { ok: false, detail: `TCET gateway temporarily unavailable (HTTP ${res.status}) — campus server may be restarting or at 15-user limit. Models endpoint OK, key is valid (qwen3.6). Try again in a minute or switch to CLOUD/BYOK.` };
+        return { ok: false, detail: `Auto service temporarily unavailable (HTTP ${res.status}) — shared server may be restarting or at capacity. Try again or switch to Cloud.` };
       }
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }

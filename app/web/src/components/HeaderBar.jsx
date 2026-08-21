@@ -13,6 +13,18 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("auto");
+  const [dark, setDark] = useState(() => {
+    try {
+      const s = localStorage.getItem("forge.theme");
+      if (s === "dark" || s === "light") return s === "dark";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    } catch { return false; }
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    try { localStorage.setItem("forge.theme", dark ? "dark" : "light"); } catch {}
+  }, [dark]);
 
   useEffect(() => {
     Promise.all([api.autoStatus().catch(() => ({ auto: null })), api.cloud().catch(() => ({ cloud: null }))])
@@ -34,8 +46,8 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const autoKind = auto?.kind ?? (auto?.provider === "tcet-auto" ? "tcet" : "local");
   const autoLabel = autoKind === "local" ? "LOCAL" : "AUTO";
   const autoTitle = autoKind === "local"
-    ? "Local Ollama — your machine, unlimited, private"
-    : "TCET CoE Gateway — free shared campus model (qwen3.6), hourly/weekly caps";
+    ? "Local model — your machine, unlimited, private"
+    : "Auto — free shared model, rate-limited";
 
   async function setMode(next) {
     if (next === "cloud" && !cloudOn) return;
@@ -64,7 +76,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         <img
           src="/logo.svg"
           alt="Presentation Forge"
-          className="h-7 w-7 shrink-0 rounded-md"
+          className="h-8 w-8 shrink-0 rounded-lg shadow-sm ring-1 ring-line/60"
         />
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </a>
@@ -92,10 +104,22 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         </button>
       </div>
       {auto?.keySet && (
-        <Badge className={`hidden border sm:inline-flex ${autoKind === "local" ? "border-line bg-panel text-fg-faint" : "border-accent/20 bg-accent/10 text-accent"}`}>{autoKind === "local" ? "Local" : "TCET OK"}</Badge>
+        <Badge className={`hidden border sm:inline-flex ${autoKind === "local" ? "border-line bg-panel text-fg-faint" : "border-accent/20 bg-accent/10 text-accent"}`}>{autoKind === "local" ? "Local" : "Ready"}</Badge>
       )}
 
       <div className="ml-auto flex items-center gap-1">
+        <button
+          onClick={() => setDark((v) => !v)}
+          title={dark ? "Switch to light" : "Switch to dark"}
+          aria-label="Toggle theme"
+          className="grid h-8 w-8 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+        >
+          {dark ? (
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+          )}
+        </button>
         <a
           href="#/home"
           className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
