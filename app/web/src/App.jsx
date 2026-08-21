@@ -324,7 +324,7 @@ export default function App() {
   if (!user) {
     return (
       <div className="relative h-full overflow-hidden bg-base">
-        <ParticleField boost={1.2} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60" />
+        <ParticleField boost={1.8} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-80" />
         <div className="relative z-10 flex h-full flex-col">
           <TourHeader onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }} />
           <div className="flex-1 overflow-y-auto">
@@ -485,7 +485,7 @@ function TourHeader({ onAuth }) {
     try { localStorage.setItem("forge.theme", dark ? "dark" : "light"); } catch {}
   }, [dark]);
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel/90 px-4 backdrop-blur-md">
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel/95 px-4 backdrop-blur-md shadow-sm">
       <a href="#/home" className="flex items-center gap-2.5">
         <img src="/logo.svg" alt="Presentation Forge" className="h-8 w-8 rounded-lg shadow-sm ring-1 ring-line/60" />
         <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>

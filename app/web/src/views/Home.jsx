@@ -20,7 +20,6 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10">
-      {!authed && <AuthBar onAuth={onAuth} />}
       <Hero
         authed={authed}
         onStartChat={onStartChat}
