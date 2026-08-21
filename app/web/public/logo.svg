@@ -1,57 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Presentation Forge">
   <defs>
-    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1E1613"/>
-      <stop offset="1" stop-color="#100B09"/>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6D5BFF"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
     </linearGradient>
-    <linearGradient id="ember" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#C4503C"/>
-      <stop offset="0.45" stop-color="#E0705A"/>
-      <stop offset="0.8" stop-color="#F08A5D"/>
-      <stop offset="1" stop-color="#FFB36B"/>
-    </linearGradient>
-    <linearGradient id="emberCore" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#FFD9A0"/>
-      <stop offset="1" stop-color="#FFF3DE"/>
+    <linearGradient id="spark" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#FFB86B"/>
+      <stop offset="1" stop-color="#FFF2DE"/>
     </linearGradient>
     <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feGaussianBlur stdDeviation="8" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-
-  <!-- tile -->
+  <!-- tile — indigo, pops on both light #F8F9FC and dark #0B0F1A -->
   <rect x="8" y="8" width="496" height="496" rx="112" fill="url(#tile)"/>
-  <rect x="8" y="8" width="496" height="496" rx="112" fill="none" stroke="#3A2C26" stroke-width="3"/>
-
-  <!-- F: vertical stroke is a flame, bars in warm white -->
-  <g>
-    <!-- flame body (vertical stroke) -->
-    <path d="M150 372
-             C150 300 150 268 168 238
-             C180 218 188 206 188 186
-             C188 206 196 220 206 234
-             C226 262 234 282 234 308
-             C234 344 212 372 178 372
-             Z"
-          fill="url(#ember)" filter="url(#glow)"/>
-    <!-- flame inner core -->
-    <path d="M188 372
-             C188 332 188 306 196 288
-             C202 276 206 268 206 258
-             C206 268 212 278 218 288
-             C228 306 232 322 232 340
-             C232 358 222 372 206 372
-             Z"
-          fill="url(#emberCore)" opacity="0.9"/>
-
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+  <!-- F — white bars for max contrast at 1x, with soft shadow -->
+  <g filter="url(#glow)" opacity="0.98">
+    <!-- flame stem (left bar) -->
+    <path d="M150 372 C150 300 150 268 168 238 C180 218 188 206 188 186 C188 206 196 220 206 234 C226 262 234 282 234 308 C234 344 212 372 178 372 Z" fill="#FFFFFF" opacity="0.96"/>
+    <path d="M188 372 C188 332 188 306 196 288 C202 276 206 268 206 258 C206 268 212 278 218 288 C228 306 232 322 232 340 C232 358 222 372 206 372 Z" fill="#FFF2DE" opacity="0.95"/>
     <!-- top bar -->
-    <rect x="188" y="150" width="188" height="46" rx="23" fill="#F4EDE6"/>
-    <!-- middle bar (crossbar) -->
-    <rect x="188" y="248" width="158" height="46" rx="23" fill="#F4EDE6"/>
-
-    <!-- spark: forge shard right of the crossbar -->
-    <path d="M392 262 L402 246 L410 262 L402 268 Z" fill="#FFB36B" opacity="0.95"/>
-    <circle cx="406" cy="232" r="5" fill="#FFD9A0"/>
+    <rect x="188" y="150" width="188" height="46" rx="23" fill="#FFFFFF"/>
+    <!-- middle bar -->
+    <rect x="188" y="248" width="158" height="46" rx="23" fill="#FFFFFF"/>
+    <!-- spark -->
+    <path d="M392 262 L402 246 L410 262 L402 268 Z" fill="#FFB86B"/>
+    <circle cx="406" cy="232" r="5" fill="#FFF2DE"/>
   </g>
 </svg>

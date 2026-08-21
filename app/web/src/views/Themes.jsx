@@ -95,9 +95,9 @@ export default function Themes() {
         />
       )}
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 auto-rows-fr">
         {filtered?.map((t, i) => (
-          <div key={t.name} className="relative" style={{ ["--stagger-i"]: i }}>
+          <div key={t.name} className="relative h-full" style={{ ["--stagger-i"]: i }}>
             <ThemeCard
               theme={t}
               isDefault={t.name === defaultTheme}
@@ -146,7 +146,7 @@ function ThemeCard({ theme, isDefault, onClick }) {
       type="button"
       onClick={onClick}
       title={`Set ${theme.label} as the default theme`}
-      className={`card-hover panel-surface group relative overflow-hidden rounded-card border text-left ${
+      className={`card-hover panel-surface group relative flex h-full flex-col overflow-hidden rounded-card border text-left ${
         isDefault ? "border-accent/60 ring-2 ring-accent/30" : "border-line bg-panel hover:border-line-strong"
       }`}
     >
@@ -220,7 +220,7 @@ function ThemeCard({ theme, isDefault, onClick }) {
           <code className="shrink-0 font-mono text-[10px] text-fg-faint">{theme.name}</code>
         </div>
         {theme.summary && (
-          <p className="mt-1 text-xs leading-relaxed text-fg-muted">{theme.summary}</p>
+          <p className="mt-1 line-clamp-2 min-h-[2.5rem] text-xs leading-relaxed text-fg-muted">{theme.summary}</p>
         )}
 
         <div className="mt-3.5 flex items-center justify-between gap-3">

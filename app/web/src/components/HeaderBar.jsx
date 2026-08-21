@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { Badge } from "./ui.jsx";
 import { ChevronLeft, ChevronRight, DocIcon, GithubIcon } from "./icons.jsx";
-import { setModelMode } from "../lib/modelMode.js";
+import { setModelMode, subscribeModelMode, getModelMode } from "../lib/modelMode.js";
 /**
  * Full-width product bar. AUTO = TCET campus gateway (free, rate-limited),
  * CLOUD = your own key. The toggle writes the routing preference and flips the
@@ -33,11 +33,12 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         const cloudData = c.cloud ?? null;
         setAuto(autoData);
         setCloud(cloudData);
-        const r = cloudData?.route ?? autoData?.route ?? "auto";
+        const r = cloudData?.route ?? autoData?.route ?? getModelMode();
         setRoute(r);
         setModelMode(r);
       })
       .catch(() => {});
+    return subscribeModelMode((m) => setRoute(m));
   }, []);
 
   const cloudOn = Boolean(cloud?.configured && cloud.keySet);

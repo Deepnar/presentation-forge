@@ -1,20 +1,13 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Ambient dot field behind the app shell — the "something alive" layer.
- *
- * A capped set of dots drifts on slow sine paths and repels gently around the
- * pointer, so the page feels attended rather than static. It is deliberately
- * ambience: opacity stays low, the count is capped by area, and the whole
- * field must never compete with the deck content above it.
- *
- * Guardrails, all verified in the session notes:
- *  - prefers-reduced-motion draws one static frame and stops — no loop at all;
- *  - the requestAnimationFrame loop stops when the tab is hidden and when a
- *    navigation rail is focused (the parent passes `paused`), so nothing burns
- *    CPU on a field nobody is looking at;
- *  - a missing 2d context renders nothing, so an old browser gets a clean
- *    static shell instead of a crash.
+ * Ambient constellation field — richer than before.
+ * - 2x more dots, variable sizes, twinkle + size pulse
+ * - Nearby dots link with faint lines (constellation)
+ * - Velocity-based drift (vx/vy) + sine wander, not just sine
+ * - Strong reactive repulsion: push, scale, brighten on hover
+ * - Mouse trail: emit short-lived sparkles
+ * - Pause/resume, reduce-motion, visibility guards kept
  */
 export default function ParticleField({ paused = false, boost = 1, className = "" }) {
   const canvasRef = useRef(null);
@@ -26,46 +19,49 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Colours come from the theme variables, never from here — the palette
-    // stays owned by styles.css, exactly like every other surface.
     const css = getComputedStyle(document.documentElement);
     const fill = {
-      dot: css.getPropertyValue("--color-fg").trim() || "237 237 236",
-      accent: css.getPropertyValue("--color-accent").trim() || "201 106 89",
+      dot: css.getPropertyValue("--color-fg").trim() || "#475569",
+      accent: css.getPropertyValue("--color-accent").trim() || "#6D5BFF",
+      line: css.getPropertyValue("--color-line-strong").trim() || "#D1D5E0",
     };
+    const hexToRgb = (h) => {
+      const s = h.replace("#", "").trim();
+      if (s.length < 6) return "100 100 100";
+      const r = parseInt(s.slice(0, 2), 16), g = parseInt(s.slice(2, 4), 16), b = parseInt(s.slice(4, 6), 16);
+      return `${r} ${g} ${b}`;
+    };
+    const accentRgb = hexToRgb(fill.accent);
+    const dotRgb = hexToRgb(fill.dot);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 260;
-    // 60fps cap: the rAF loop can run at display refresh (144Hz+ screens), but
-    // nothing here needs more than 60 and the dot field is ambience. Skip a
-    // frame when one has arrived early.
+    const MAX = 420;
     const FRAME_MS = 1000 / 60;
 
     const state = {
       dots: [],
-      pointer: { x: -1, y: -1 },
-      w: 0, h: 0, dpr: 1, frames: 0, running: false,
-      last: 0,
+      trails: [],
+      pointer: { x: -1, y: -1, vx: 0, vy: 0, px: -1, py: -1 },
+      w: 0, h: 0, dpr: 1, frames: 0, running: false, last: 0,
     };
 
     const makeDot = () => {
-      const r = 0.6 + Math.random() * 1.4;
+      const r = 0.7 + Math.random() * 1.8;
       return {
-        // Home position; drift wanders around it on two axes. Keeping the base
-        // fixed and adding sine offsets means the field never drifts off-screen
-        // over a long session — it breathes in place.
-        bx: Math.random() * state.w,
-        by: Math.random() * state.h,
+        x: Math.random() * state.w,
+        y: Math.random() * state.h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
         r,
-        base: (0.16 + Math.random() * 0.24) * boost,
+        baseR: r,
+        base: (0.14 + Math.random() * 0.32) * boost,
         phase: Math.random() * Math.PI * 2,
-        // Two incommensurate frequencies give a Perlin-ish wander on each axis
-        // — a figure-eight wobble rather than a single left-right sway.
-        fx: 0.10 + Math.random() * 0.18,
-        fy: 0.07 + Math.random() * 0.15,
-        ax: 8 + Math.random() * 16,
-        ay: 8 + Math.random() * 16,
-        accent: Math.random() < 0.22,
+        fx: 0.08 + Math.random() * 0.22,
+        fy: 0.06 + Math.random() * 0.18,
+        ax: 10 + Math.random() * 22,
+        ay: 10 + Math.random() * 22,
+        accent: Math.random() < 0.28,
+        tw: Math.random() * Math.PI * 2,
       };
     };
 
@@ -77,9 +73,9 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      // More dots than before, smaller, so the field reads as a fine stipple.
-      const count = Math.max(40, Math.min(MAX, Math.round(area / 4200)));
+      const count = Math.max(60, Math.min(MAX, Math.round(area / 3000)));
       state.dots = Array.from({ length: count }, makeDot);
+      state.trails = [];
       if (reduceMotion) drawFrame(performance.now());
     }
 
@@ -87,44 +83,111 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       ctx.clearRect(0, 0, state.w, state.h);
       const { dpr, pointer } = state;
       let pushed = 0;
-      for (const d of state.dots) {
-        // Ambient drift: phase steps with wall-clock time so the motion stays
-        // smooth regardless of frame rate, and each axis rides its own sine.
-        d.phase += 0.0035;
-        let x = d.bx + Math.sin(d.phase * d.fx * 3) * d.ax;
-        let y = d.by + Math.sin(d.phase * d.fy * 3 + 1.3) * d.ay;
+      const pts = [];
 
-        // Gentle repulsion inside a radius around the pointer, easing back to
-        // the sine path as the pointer moves away. Parallax, not physics.
+      for (const d of state.dots) {
+        d.phase += 0.0032;
+        d.tw += 0.008;
+        // velocity + sine wander
+        d.x += d.vx * dpr + Math.sin(d.phase * d.fx * 2.1) * 0.18;
+        d.y += d.vy * dpr + Math.sin(d.phase * d.fy * 2.1 + 1.1) * 0.18;
+        // wrap softly
+        if (d.x < -20) d.x = state.w + 20;
+        if (d.x > state.w + 20) d.x = -20;
+        if (d.y < -20) d.y = state.h + 20;
+        if (d.y > state.h + 20) d.y = -20;
+
+        let x = d.x, y = d.y;
+        let scale = 1, bright = 1;
         if (pointer.x >= 0) {
           const dx = x - pointer.x * dpr;
           const dy = y - pointer.y * dpr;
-          const radius = 150 * dpr;
+          const radius = 180 * dpr;
           const dist2 = dx * dx + dy * dy;
           if (dist2 > 0 && dist2 < radius * radius) {
             const dist = Math.sqrt(dist2);
-            const push = (1 - dist / radius) * 1.2;
-            x += (dx / dist) * push * 9 * dpr;
-            y += (dy / dist) * push * 9 * dpr;
+            const t = 1 - dist / radius;
+            const push = t * t * 1.6;
+            x += (dx / dist) * push * 14 * dpr;
+            y += (dy / dist) * push * 14 * dpr;
+            scale = 1 + t * 0.9;
+            bright = 1 + t * 0.7;
             pushed += 1;
+          }
+          // repulse velocity a bit
+          if (dist2 < (120 * dpr) ** 2) {
+            d.vx += (dx / (Math.sqrt(dist2) || 1)) * 0.002;
+            d.vy += (dy / (Math.sqrt(dist2) || 1)) * 0.002;
+            d.vx = Math.max(-0.9, Math.min(0.9, d.vx));
+            d.vy = Math.max(-0.9, Math.min(0.9, d.vy));
           }
         }
 
-        if (y > state.h + 8) y = -8;
-        else if (y < -8) y = state.h + 8;
+        pts.push({ x, y, s: scale, b: bright, d });
 
-        const twinkle = 0.7 + 0.3 * Math.sin(now * 0.001 + d.phase * 3);
-        ctx.globalAlpha = d.base * twinkle * (d.accent ? 1.3 : 1);
-        ctx.fillStyle = d.accent ? fill.accent : fill.dot;
+        const twinkle = 0.65 + 0.35 * Math.sin(now * 0.0012 + d.tw * 1.7);
+        const pulse = 0.92 + 0.08 * Math.sin(now * 0.0009 + d.phase);
+        const r = d.r * dpr * pulse * scale;
+        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.35 : 1));
+        ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
         ctx.beginPath();
-        ctx.arc(x, y, d.r * dpr, 0, Math.PI * 2);
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        // soft glow for accents
+        if (d.accent) {
+          ctx.globalAlpha *= 0.18;
+          ctx.beginPath();
+          ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // constellation lines — faint, only when not too dense
+      ctx.globalAlpha = 1;
+      if (pts.length < 300) {
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            const a = pts[i], b = pts[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d2 = dx * dx + dy * dy;
+            const lim = (110 * dpr) ** 2;
+            if (d2 < lim) {
+              const t = 1 - Math.sqrt(d2) / (110 * dpr);
+              // only draw if at least one is near pointer or random sparseness
+              if (t > 0.35 && (Math.random() < 0.12 || a.b > 1.1 || b.b > 1.1)) {
+                ctx.globalAlpha = t * 0.09 * boost;
+                ctx.strokeStyle = `rgb(${dotRgb})`;
+                ctx.lineWidth = 0.6 * dpr;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+      }
+
+      // mouse trail sparkles
+      if (pointer.x >= 0 && (Math.abs(pointer.vx) > 0.5 || Math.abs(pointer.vy) > 0.5)) {
+        if (Math.random() < 0.55) {
+          state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 1, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2 });
+        }
+      }
+      for (let i = state.trails.length - 1; i >= 0; i--) {
+        const t = state.trails[i];
+        t.life -= 0.045;
+        if (t.life <= 0) { state.trails.splice(i, 1); continue; }
+        t.x += t.vx; t.y += t.vy; t.vy += 0.06;
+        ctx.globalAlpha = t.life * 0.55;
+        ctx.fillStyle = `rgb(${accentRgb})`;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, 1.6 * dpr * t.life, 0, Math.PI * 2);
         ctx.fill();
       }
+
       ctx.globalAlpha = 1;
       state.frames += 1;
-      // Instrumented hooks for behavioural checks: the frame count proves the
-      // loop runs, the pointer stamp proves the pointer path is live, and the
-      // pushed count proves dots actually respond to it.
       canvas.dataset.frames = String(state.frames);
       canvas.dataset.ptr = `${Math.round(pointer.x)}:${Math.round(pointer.y)}`;
       canvas.dataset.pushed = String(pushed);
@@ -132,7 +195,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
 
     function loop(now) {
       if (!state.running) return;
-      // Cap the field at 60fps on high-refresh displays.
       if (now - state.last >= FRAME_MS) {
         drawFrame(now);
         state.last = now;
@@ -144,16 +206,17 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       state.running = true;
       requestAnimationFrame(loop);
     }
-    function stop() {
-      state.running = false;
-    }
+    function stop() { state.running = false; }
 
     function onPointer(e) {
       const rect = canvas.getBoundingClientRect();
-      state.pointer.x = e.clientX - rect.left;
-      state.pointer.y = e.clientY - rect.top;
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      state.pointer.vx = x - state.pointer.px;
+      state.pointer.vy = y - state.pointer.py;
+      state.pointer.px = x; state.pointer.py = y;
+      state.pointer.x = x; state.pointer.y = y;
     }
-    function onLeave() { state.pointer.x = -1; state.pointer.y = -1; }
+    function onLeave() { state.pointer.x = -1; state.pointer.y = -1; state.pointer.vx = 0; state.pointer.vy = 0; }
     function onVisibility() {
       if (document.hidden) stop();
       else if (paused) stop();
@@ -162,16 +225,13 @@ export default function ParticleField({ paused = false, boost = 1, className = "
 
     resize();
     if (!reduceMotion && !paused) start();
-
     controlRef.current = { start, stop, reduceMotion };
-
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("mousemove", onPointer);
     window.addEventListener("mouseleave", onLeave);
     window.addEventListener("blur", stop);
     window.addEventListener("focus", onVisibility);
-
     return () => {
       stop();
       controlRef.current = null;
@@ -182,14 +242,8 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       window.removeEventListener("blur", stop);
       window.removeEventListener("focus", onVisibility);
     };
-    // `paused` and `reduceMotion` are read live through controlRef; this setup
-    // must not tear down (and re-seed the dots) when the parent's pause flag
-    // toggles while the user hovers a rail.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Pause when a navigation rail is focused, resume on the way back — without
-  // rebuilding the field, which would make the dots visibly re-seed.
   useEffect(() => {
     const c = controlRef.current;
     if (!c) return;

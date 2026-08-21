@@ -135,21 +135,23 @@ export default function App() {
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
   /**
-   * The one creation entry: a new chat, empty thread, welcome message. If the
-   * account already holds an EMPTY chat of that kind (nothing sent, nothing
-   * produced), "New chat" returns to it instead of stacking another empty row —
-   * repeated New-chat clicks stay one thread until a topic is actually sent.
+   * The one creation entry: always check storage directly, not React state,
+   * so double-clicks or stale closures cannot stack empty chats.
    */
-  function newChat(kind = "deck", from = chats) {
-    const existing = user ? findEmptyChat(from ?? chats, kind) : null;
+  function newChat(kind = "deck") {
+    if (!user) return;
+    const list = loadChats(user.email);
+    const existing = findEmptyChat(list, kind);
     if (existing) {
       setActiveChatId(existing.id);
       navigate("chat", { chatId: existing.id });
+      // keep React state in sync if storage had an empty we didn't know about
+      setChats(list);
       return;
     }
     const c = createChat({ kind });
-    if (user) saveChat(user.email, c);
-    setChats((list) => [c, ...list]);
+    saveChat(user.email, c);
+    setChats([c, ...list]);
     setActiveChatId(c.id);
     navigate("chat", { chatId: c.id });
   }
@@ -325,20 +327,19 @@ export default function App() {
   }
 
   if (!user) {
-    // The landing page IS the front door. A visitor lands here whatever the
-    // hash — an auth-gated deep link (#/deck/<slug>, #/chat/…) redirects to
-    // the landing too, and its hash survives so login can honour it. The
-    // landing carries the sign-up/login actions (the auth modal).
     return (
-      <div className="relative h-full overflow-hidden">
-        <ParticleField boost={1.5} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
-        <div className="relative z-10 h-full overflow-y-auto">
-          <Home
-            user={null}
-            onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
-            onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
-            onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
-          />
+      <div className="relative h-full overflow-hidden bg-base">
+        <ParticleField boost={1.2} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60" />
+        <div className="relative z-10 flex h-full flex-col">
+          <TourHeader onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }} />
+          <div className="flex-1 overflow-y-auto">
+            <Home
+              user={null}
+              onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
+              onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
+              onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
+            />
+          </div>
         </div>
         {authOpen && (
           <AuthModal
@@ -472,6 +473,46 @@ export default function App() {
         />
       </div>
     </div>
+  );
+}
+
+function TourHeader({ onAuth }) {
+  const [dark, setDark] = useState(() => {
+    try {
+      const s = localStorage.getItem("forge.theme");
+      if (s === "dark" || s === "light") return s === "dark";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    } catch { return false; }
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    try { localStorage.setItem("forge.theme", dark ? "dark" : "light"); } catch {}
+  }, [dark]);
+  return (
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel/90 px-4 backdrop-blur-md">
+      <a href="#/home" className="flex items-center gap-2.5">
+        <img src="/logo.svg" alt="Presentation Forge" className="h-8 w-8 rounded-lg shadow-sm ring-1 ring-line/60" />
+        <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>
+      </a>
+      <nav className="ml-6 hidden items-center gap-1 sm:flex">
+        <a href="#/home" className="rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-fg bg-sunken">Tour</a>
+        <a href="#/themes" onClick={(e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted hover:bg-hover hover:text-fg">Themes</a>
+      </nav>
+      <div className="ml-auto flex items-center gap-1">
+        <button onClick={() => setDark((v) => !v)} aria-label="Toggle theme" className="grid h-8 w-8 place-items-center rounded-md text-fg-faint hover:bg-hover hover:text-fg">
+          {dark ? (
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+          )}
+        </button>
+        <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="grid h-8 w-8 place-items-center rounded-md text-fg-faint hover:bg-hover hover:text-fg">
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 4.42 2.87 8.17 6.84 9.5.5.08.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.67.92.67 1.85v2.74c0 .26.18.57.69.47A10.02 10.02 0 0 0 22 12.06c0-5.53-4.5-10.02-10-10.02z" /></svg>
+        </a>
+        <button onClick={() => onAuth?.("login")} className="rounded-full border border-line bg-panel px-3 py-1.5 text-[13px] font-medium text-fg-muted hover:border-line-strong hover:text-fg">Log in</button>
+        <button onClick={() => onAuth?.("register")} className="rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white hover:bg-accent-hi">Sign up</button>
+      </div>
+    </header>
   );
 }
 

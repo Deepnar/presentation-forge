@@ -63,6 +63,43 @@
     0 16px 48px rgba(15, 23, 42, 0.12);
 }
 
+/* Dark mode — the same indigo accent, but on a deep slate canvas.
+   Toggle via <html data-theme="dark">. */
+[data-theme="dark"] {
+  --color-base: #0B0F1A;
+  --color-sunken: #111827;
+  --color-panel: #1A2236;
+  --color-raised: #1E2A44;
+  --color-prompt: #1A2236;
+  --color-hover: #243150;
+  --color-field: #1A2236;
+
+  --color-line: #27324A;
+  --color-line-strong: #32405E;
+
+  --color-fg: #E6EAF2;
+  --color-fg-muted: #9AA4B8;
+  --color-fg-faint: #6B7A90;
+
+  --color-accent: #7C6CFF;
+  --color-accent-hi: #8B7FFF;
+  --color-accent-dim: #2D2A5A;
+  --color-accent-tint: rgba(124, 108, 255, 0.14);
+  --color-accent-glow: rgba(124, 108, 255, 0.12);
+
+  --color-overlay: rgba(0, 0, 0, 0.55);
+
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-float:
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
 html,
 body,
 #root {

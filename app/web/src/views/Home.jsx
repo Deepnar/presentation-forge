@@ -87,32 +87,35 @@ function Reveal({ children, className = "" }) {
 
 function Hero({ authed, onStartChat, onBrowseThemes, onAuth }) {
   return (
-    <div className="hero-glow glow-breathe py-12 text-center sm:py-16">
-      <img src="/logo.svg" alt="" className="mx-auto h-16 w-16 rounded-2xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)]" />
-      <h1 className="mx-auto mt-6 max-w-2xl text-[3.25rem] font-semibold leading-[1.05] tracking-[-0.02em] text-fg">
-        From topic to deck — fast
-      </h1>
-      <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
-        The app does the bulk: research, structure, draft content, render. You
-        do the final touches: verify the facts, tune the words, make it yours.
-      </p>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
-          Bulk by machine, polish by you
-        </span>
-      </div>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button variant="primary" onClick={authed ? onStartChat : () => onAuth?.("register")}>
-          <ChatIcon className="h-4 w-4" />
-          Start a chat
-        </Button>
-        <button
-          onClick={authed ? onBrowseThemes : () => onAuth?.("register")}
-          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
-        >
-          <PaletteIcon className="h-4 w-4" />
-          Browse themes
-        </button>
+    <div className="relative overflow-hidden rounded-[2rem] border border-line bg-gradient-to-b from-accent-tint/40 via-panel to-panel px-6 py-12 text-center shadow-[var(--shadow-card)] sm:px-10 sm:py-16">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_30rem_at_50%_0%,var(--color-accent-tint),transparent_65%)] opacity-60" />
+      <div className="relative">
+        <img src="/logo.svg" alt="" className="mx-auto h-16 w-16 rounded-2xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] ring-1 ring-line" />
+        <h1 className="mx-auto mt-6 max-w-2xl text-[3.25rem] font-semibold leading-[1.05] tracking-[-0.02em] text-fg">
+          From topic to deck — fast
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
+          The app does the bulk: research, structure, draft content, render. You
+          do the final touches: verify the facts, tune the words, make it yours.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+            Bulk by machine, polish by you
+          </span>
+        </div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button variant="primary" onClick={authed ? onStartChat : () => onAuth?.("register")}>
+            <ChatIcon className="h-4 w-4" />
+            Start a chat
+          </Button>
+          <button
+            onClick={authed ? onBrowseThemes : () => onAuth?.("register")}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-panel px-3 py-2 text-[13px] font-medium text-fg-muted shadow-sm transition hover:border-line-strong hover:text-fg"
+          >
+            <PaletteIcon className="h-4 w-4" />
+            Browse themes
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -225,10 +228,10 @@ function ThemeCarousel({ onBrowseThemes }) {
         </div>
       )}
       {themes?.length > 0 && (
-        <div className="scroll-smooth overflow-x-auto pb-2" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--color-line-strong) transparent" }}>
-          <div className="flex w-max gap-4 px-1">
+        <div className="scroll-smooth snap-x snap-mandatory overflow-x-auto pb-3 [scrollbar-width:thin] [scrollbar-color:var(--color-line-strong)_transparent] px-1" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--color-line-strong) transparent" }}>
+          <div className="flex w-max gap-4 snap-x px-4 sm:px-6" style={{ scrollPaddingLeft: "1.5rem" }}>
             {themes.map((t, i) => (
-              <div key={t.name} className="w-64 shrink-0" style={{ ["--stagger-i"]: i }}>
+              <div key={t.name} className="w-64 shrink-0 snap-start" style={{ ["--stagger-i"]: i }}>
                 <ThemeMiniCard theme={t} onClick={onBrowseThemes} />
               </div>
             ))}
@@ -252,19 +255,18 @@ function ThemeCarousel({ onBrowseThemes }) {
 function LocalVsCloud() {
   return (
     <Reveal className="pb-20">
-      <SectionHead eyebrow="Local-first & private" title="Your machine, your models" />
+      <SectionHead eyebrow="Free or bring your own" title="Auto or Cloud — your call" />
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div className="panel-surface rounded-card border border-line bg-panel p-6 shadow-[var(--shadow-card)]">
           <div className="flex items-center gap-2.5">
-            <span className="pill border border-line-strong bg-raised px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg">LOCAL</span>
-            <span className="text-[12px] text-fg-faint">Ollama on this machine</span>
+            <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">AUTO</span>
+            <span className="text-[12px] text-fg-faint">Free shared model</span>
           </div>
           <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">
-            Zero egress — research, planning and writing run against a local
-            Ollama. A topic never leaves the box.
+            Start instantly — no key, no setup. Rate-limited so everyone gets a fair share. On this deployment it’s the free tier.
           </p>
           <ul className="mt-4 space-y-2">
-            {["Everything runs offline", "No API keys, no per-token cost", "Your decks stay yours"].map((s) => (
+            {["No key needed", "Hourly & weekly caps", "Great for trying out"].map((s) => (
               <li key={s} className="flex items-center gap-2 text-[15px] text-fg-muted">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
                 {s}
@@ -274,15 +276,14 @@ function LocalVsCloud() {
         </div>
         <div className="panel-surface rounded-card border border-line bg-panel p-6 shadow-[var(--shadow-card)]">
           <div className="flex items-center gap-2.5">
-            <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">CLOUD</span>
-            <span className="text-[12px] text-fg-faint">optional key, per role</span>
+            <span className="pill border border-line-strong bg-raised px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg">CLOUD</span>
+            <span className="text-[12px] text-fg-faint">Your own key</span>
           </div>
           <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">
-            Attach a key and the same pipeline runs at full strength — deeper
-            research, longer writing, no local limits.
+            Bring your own API key — unlimited, billed to you. The same pipeline, just with your quota.
           </p>
           <ul className="mt-4 space-y-2">
-            {["Deeper research budgets, per role", "Full-strength synthesis for the writer", "Opt-in — the default stays local"].map((s) => (
+            {["Unlimited generations", "Your quota, your billing", "Encrypted at rest"].map((s) => (
               <li key={s} className="flex items-center gap-2 text-[15px] text-fg-muted">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
                 {s}
@@ -331,25 +332,43 @@ function CapabilityGrid({ onStartChat }) {
 /* ---------------------------------------------------------------- footer */
 
 function FooterStrip() {
-  const tags = ["node", "pptxgenjs", "ollama", "local-first", "MIT"];
   return (
-    <footer className="border-t border-line pt-8 text-center">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        {tags.map((t) => (
-          <span key={t} className="pill border border-line bg-panel px-2.5 py-1 text-[12px] text-fg-muted">{t}</span>
-        ))}
-        <a
-          href="https://github.com/Deepnar/presentation-forge"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg"
-        >
-          <GithubIcon className="h-3.5 w-3.5" /> GitHub
-        </a>
+    <footer className="border-t border-line pt-8">
+      <div className="grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-4">
+        <div>
+          <div className="text-[12px] font-semibold tracking-tight">Product</div>
+          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <a href="#/home" className="hover:text-fg">Tour</a>
+            <a href="#/themes" className="hover:text-fg">Themes</a>
+            <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a>
+          </div>
+        </div>
+        <div>
+          <div className="text-[12px] font-semibold tracking-tight">Resources</div>
+          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <a href="/api/docs" target="_blank" className="hover:text-fg">Docs</a>
+            <a href="#/home" className="hover:text-fg">How it works</a>
+          </div>
+        </div>
+        <div>
+          <div className="text-[12px] font-semibold tracking-tight">Legal</div>
+          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Privacy Policy</a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Terms of Service</a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Contact</a>
+          </div>
+        </div>
+        <div>
+          <div className="text-[12px] font-semibold tracking-tight">Presentation Forge</div>
+          <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">Local-first when you want it, cloud when you need it. Your decks, your data.</p>
+        </div>
       </div>
-      <p className="mt-4 text-[12px] text-fg-faint">
-        Built to be yours — local-first, free, no cloud in the pipeline. Bulk by machine, polish by you.
-      </p>
+      <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-[12px] text-fg-faint sm:flex-row">
+        <span>© {new Date().getFullYear()} Presentation Forge. MIT for code.</span>
+        <span className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-success" /> All systems operational
+        </span>
+      </div>
     </footer>
   );
 }
