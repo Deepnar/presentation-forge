@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Gamma-grade design system: light, clean, trusted.
    The shell is light and airy — white panels on a whisper-gray page,

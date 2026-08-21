@@ -327,12 +327,16 @@ export default function App() {
   }
 
   if (user === undefined) {
-    // Auth is still resolving from /api/me. Render nothing but the shell so a
-    // reload for a logged-in user never flashes the landing (or the chat) —
-    // the resolved user decides which in the next frame.
+    // Auth is still resolving — show branded loading, not blank particles. Solid bg, not particle field (tour is solid per request).
     return (
-      <div className="relative h-full overflow-hidden bg-base">
-        <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+      <div className="grid h-full place-items-center bg-base">
+        <div className="flex flex-col items-center gap-4">
+          <img src="/logo.svg" alt="" className="h-12 w-12 animate-pulse rounded-xl shadow-sm ring-1 ring-line" />
+          <div className="h-1 w-24 overflow-hidden rounded-full bg-line">
+            <div className="h-full w-1/2 animate-[shimmer_1s_ease-in-out_infinite] bg-accent" />
+          </div>
+          <div className="text-[12px] tracking-wide text-fg-faint">Loading Presentation Forge…</div>
+        </div>
       </div>
     );
   }
@@ -342,7 +346,7 @@ export default function App() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative h-full overflow-hidden bg-base">
-        <ParticleField boost={1.8} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-80" />
+        {/* solid bg, no particles — per request: landing is solid color */}
         <div className="relative z-10 flex h-full flex-col">
           <HeaderBar
             leftOpen={leftOpen}
@@ -375,9 +379,10 @@ export default function App() {
     );
   }
 
+  const showParticles = view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   return (
-    <div className="relative h-full overflow-hidden">
-      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+    <div className="relative h-full overflow-hidden bg-base">
+      {showParticles && <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-40" />}
 
       <div className="relative z-10 flex h-full flex-col">
         <HeaderBar
