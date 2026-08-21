@@ -104,6 +104,8 @@
 html {
   height: auto;
   min-height: 100%;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 body,
 #root {
