@@ -2634,3 +2634,29 @@ steps.
 > writer fill the layout it is given.
 
 316 → 341 tests.
+
+---
+
+## 9. Backlog — told but deferred (not the next super-fancy tour session)
+
+These were named explicitly and are deliberately **not** part of the next tour redo, but they must not be lost. They live here so a future session can pull the right one without re-asking.
+
+### [ ] Image supply — auto, not just upload
+
+Today: upload an image → `assets/` → the slide is set to an image type with the real asset; invented URLs are stripped to `[image]` notes. What’s missing is **Gamma-like auto images**: when the writer wants an image, the system should find one, not just flag it. Design in `docs/HANDOFF.md` next-session notes: Unsplash Source / SearXNG image category, opt-in per deck, CC licence, cached in `decks/<slug>/assets/auto/`, `resolveAsset` prefers it, never invented. No model writes a URL.
+
+### [ ] Research — truly better, not just deeper caps
+
+Today: `deepResearch` 5-8 angle queries + follow-ups + gap pass, arXiv/Crossref opt-in, Jina second path, bounded excerpt per transport. What’s missing is **directed research**: the briefing’s audience + emphasis must steer the queries (not just the brief), and the planner prompt must demand the research be used. The next session’s tour redo already tightens the briefing asks (“who’s in the room, what must they remember”, “which 2–3 ideas own the most slides”), but the research engine itself still needs a post-pass that checks “does the notes actually contain the figures the plan will need?” and re-queries if not.
+
+### [ ] PPT themes — cull and sharpen, not just selector polish
+
+Today: 38 themes, selector fixed to uniform `h-[220px]` cards + search + visual picker in deck. What’s still janky is the **themes themselves**: some are good, some are bad, and the tour’s `ThemeCarousel` still shows them as a horizontal scroller that can feel cramped. Deferred work: run the contact-sheet scorer (`tools/themesheet.mjs`) + vision audit at readable size, cull or rework the weak ones, and give the tour marketing themes page its own look/feel distinct from the app’s `Themes` grid (full-bleed editorial vs. app grid).
+
+### [ ] PPTs themselves — better by default
+
+Today: density sweep, trim-to-fit, coherence pass, speaker script, image sanitizer. What’s still needed is **better by default from a single prompt + the few briefing questions**: the writer must fill layouts to their `TYPE_BUDGETS` without being told, the planner must vary types across families, and the themes must carry their own voice so a one-sentence purpose still lands a strong slide. The next tour session will ask more directed questions, but the generation pipeline still needs a post-pass that flags “this deck is 8 bullets in a row” or “this deck never used a data type despite 5 numeric facts”.
+
+These four are **not** the next session. The next session is the super-fancy split tour (left sticky copy, right scrolly slide-type showcase, pipeline as moving parts, footer to real pages). Keep them separate.
+
+316 → 341 tests.
