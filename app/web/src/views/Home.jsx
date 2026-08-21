@@ -15,15 +15,16 @@ import {
  */
 export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
+  const handleChat = () => onStartChat?.();
   return (
     <div className="w-full">
-      <HeroFull authed={authed} onStartChat={onStartChat} onAuth={onAuth} />
+      <HeroFull authed={authed} onStartChat={handleChat} onAuth={onAuth} />
       <PipelineImmersive />
-      <HowItWorksFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
-      <ThemesFullBleed onBrowseThemes={authed ? onBrowseThemes : () => onAuth?.("register")} />
+      <HowItWorksFull onStartChat={handleChat} />
+      <ThemesFullBleed onBrowseThemes={onBrowseThemes} />
       <PlansFull />
-      <CapabilityFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
-      <FinalCTAFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
+      <CapabilityFull onStartChat={handleChat} />
+      <FinalCTAFull onStartChat={handleChat} />
       <FooterFull />
     </div>
   );
@@ -62,7 +63,7 @@ function HeroFull({ authed, onStartChat, onAuth }) {
   const [phase, setPhase] = useState(false);
   useEffect(() => { const t = setTimeout(() => setPhase(true), 80); return () => clearTimeout(t); }, []);
   return (
-    <section className={`relative w-full overflow-hidden border-b border-line bg-gradient-to-b from-accent-tint/40 via-panel to-panel ${phase ? "view-in" : "opacity-0"}`}>
+    <section className={`relative w-full overflow-hidden bg-base ${phase ? "view-in" : "opacity-0"}`}>
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-[48rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_70%)] opacity-70" />
         <div className="absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.13),transparent_68%)]" />
@@ -154,11 +155,7 @@ const PIPELINE = [
 
 function PipelineImmersive() {
   const [active, setActive] = useState(0);
-  const [themes, setThemes] = useState(null);
   const refs = useRef([]);
-  useEffect(() => {
-    api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
-  }, []);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const io = new IntersectionObserver((entries) => {
@@ -167,35 +164,28 @@ function PipelineImmersive() {
     refs.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, []);
-  const themeFor = (i) => {
-    if (!themes || !themes.length) return null;
-    const order = ["editorial-serif-light","aurora-mesh","warm-humanist","isometric-dark","brutalist-paper","chalkboard","minimal-warm"];
-    const name = order[i % order.length];
-    return themes.find((t) => t.name === name) ?? themes[i % themes.length];
-  };
   return (
-    <section id="pipeline" className="w-full border-y border-line bg-panel">
+    <section id="pipeline" className="w-full bg-base">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-10 text-center">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">The pipeline</div>
           <h2 className="mt-2 text-[2.1rem] font-semibold tracking-[-0.02em] text-fg">How a topic becomes a deck</h2>
-          <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Scroll — each step slides in from the side with a real theme example. The ppt specimens live inside the flow, not as a separate list.</p>
+          <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Each step reveals its real slide type — the ppt specimen that this stage produces, not a random theme.</p>
         </div>
         <div className="relative">
-          <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-line md:block" />
-          <div className="pointer-events-none absolute left-1/2 top-0 hidden w-px -translate-x-1/2 bg-accent transition-all duration-700 md:block" style={{ height: `${(active + 1) / PIPELINE.length * 100}%` }} />
+          <div className="pointer-events-none absolute left-1/2 top-0 hidden h-[calc(100%-24px)] w-px -translate-x-1/2 bg-line/50 md:block" />
+          <div className="pointer-events-none absolute left-1/2 top-0 hidden w-px -translate-x-1/2 bg-accent/60 transition-all duration-700 md:block" style={{ height: `${(active + 1) / PIPELINE.length * 100}%` }} />
           <div className="space-y-10">
             {PIPELINE.map(({ icon: Icon, label, title, desc, mock }, i) => {
               const isActive = active === i;
-              const t = themeFor(i);
               const fromText = i % 2 === 0 ? "left" : "right";
               const fromCard = i % 2 === 0 ? "right" : "left";
               return (
                 <div key={label} ref={(el) => (refs.current[i] = el)} data-idx={i} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_48px_1fr] md:items-center">
                   <SlideIn from={fromText} active={isActive} className={i % 2 === 1 ? "md:order-3" : ""}>
-                    <div className={`rounded-[1.25rem] border p-6 shadow-[var(--shadow-card)] transition ${isActive ? "border-accent/30 bg-accent-tint/30" : "border-line bg-panel"}`}>
+                    <div className={`rounded-2xl border p-6 transition ${isActive ? "border-accent/20 bg-panel shadow-[var(--shadow-card)]" : "border-line/60 bg-panel/60 backdrop-blur"}`}>
                       <div className="flex items-center gap-2">
-                        <span className={`grid h-7 w-7 place-items-center rounded-full border text-[11px] font-bold ${label === "you approve" ? "border-accent bg-accent text-white" : isActive ? "border-accent/30 bg-accent text-white" : "border-line bg-sunken text-fg-muted"}`}>{label === "you approve" ? "✓" : i + 1}</span>
+                        <span className={`grid h-7 w-7 place-items-center rounded-full border text-[11px] font-bold ${label === "you approve" ? "border-accent bg-accent text-white" : isActive ? "border-accent/20 bg-accent text-white" : "border-line bg-sunken text-fg-muted"}`}>{label === "you approve" ? "✓" : i + 1}</span>
                         <span className={`text-[11px] font-semibold uppercase tracking-[0.10em] ${isActive ? "text-accent" : "text-fg-faint"}`}>{label}</span>
                       </div>
                       <div className="mt-3 text-[17px] font-semibold tracking-tight text-fg">{title}</div>
@@ -203,18 +193,15 @@ function PipelineImmersive() {
                     </div>
                   </SlideIn>
                   <div className="hidden place-items-center md:grid md:order-2">
-                    <span className={`grid h-10 w-10 place-items-center rounded-full border bg-panel shadow-sm transition ${isActive ? "scale-110 border-accent bg-accent text-white" : "border-line text-fg-muted"}`}><Icon className="h-4 w-4" /></span>
+                    <span className={`grid h-10 w-10 place-items-center rounded-full border bg-panel shadow-sm transition ${isActive ? "scale-110 border-accent bg-accent text-white" : "border-line/60 text-fg-muted"}`}><Icon className="h-4 w-4" /></span>
                   </div>
                   <SlideIn from={fromCard} active={isActive} className={i % 2 === 1 ? "md:order-1" : ""}>
-                    <div className={`overflow-hidden rounded-[1.25rem] border shadow-[var(--shadow-card)] transition ${isActive ? "border-accent/30" : "border-line"}`}>
-                      {t ? (
-                        <div className="p-2 bg-sunken">
-                          <ThemeMiniCard theme={t} onClick={() => {}} />
-                          <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-fg-faint"><span className="uppercase tracking-wider">{mock} · {t.label}</span><span className={`h-2 w-2 rounded-full ${isActive ? "bg-accent animate-pulse" : "bg-line-strong"}`} /></div>
-                        </div>
-                      ) : (
-                        <div className="h-[240px] skeleton" />
-                      )}
+                    <div className={`overflow-hidden rounded-2xl border bg-panel transition ${isActive ? "border-accent/20 shadow-[var(--shadow-card)]" : "border-line/60"}`}>
+                      <MockSlide type={mock} active={isActive} />
+                      <div className="flex items-center justify-between border-t border-line/60 bg-sunken/60 px-3 py-2">
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">{mock}</span>
+                        <span className={`h-2 w-2 rounded-full ${isActive ? "bg-accent animate-pulse" : "bg-line-strong"}`} />
+                      </div>
                     </div>
                   </SlideIn>
                 </div>
@@ -227,6 +214,80 @@ function PipelineImmersive() {
   );
 }
 
+function MockSlide({ type, active }) {
+  const wrap = "flex h-[154px] flex-col justify-center p-4";
+  switch (type) {
+    case "bullets":
+      return (
+        <div className={wrap}>
+          <div className="text-[12px] font-semibold tracking-tight text-fg">Why this matters</div>
+          <div className="mt-2 space-y-1.5">
+            {["Grounded claims from your notes", "Coherent framing per section", "One idea per slide"].map((t) => (
+              <div key={t} className="flex items-start gap-2 text-[12px] leading-snug text-fg-muted"><span className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${active ? "bg-accent" : "bg-line-strong"}`} />{t}</div>
+            ))}
+          </div>
+        </div>
+      );
+    case "stats":
+      return (
+        <div className={`${wrap} gap-3`}>
+          <div className="grid grid-cols-3 gap-3">
+            {[["128%", "more recall"],["3.2×", "faster review"],["0", "invented facts"]].map(([v,l]) => (
+              <div key={v} className="text-center"><div className="text-[18px] font-extrabold tracking-tight text-fg">{v}</div><div className="text-[11px] text-fg-faint">{l}</div></div>
+            ))}
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-sunken"><div className={`h-full rounded-full bg-accent transition-all duration-700 ${active ? "w-[78%]" : "w-[52%]"}`} /></div>
+        </div>
+      );
+    case "chart":
+      return (
+        <div className={wrap}>
+          <div className="text-[12px] font-semibold text-fg">Trend you can verify</div>
+          <div className="mt-3 flex items-end gap-1.5 h-16">
+            {[40,62,48,84,66].map((h,i) => <div key={i} className={`flex-1 rounded-t-md transition-all duration-700 ${i===3 ? "bg-accent" : "bg-accent/35"}`} style={{ height: `${h}%` }} />)}
+          </div>
+          <div className="mt-2 flex gap-1.5"><div className="h-1.5 w-12 rounded-full bg-line" /><div className="h-1.5 w-10 rounded-full bg-line" /></div>
+        </div>
+      );
+    case "compare":
+      return (
+        <div className={`${wrap} gap-2`}>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg bg-accent-tint p-2.5"><div className="text-[11px] font-semibold text-accent">Before</div><div className="mt-1 h-1.5 w-full rounded-full bg-accent/20" /><div className="mt-1 h-1.5 w-3/4 rounded-full bg-accent/20" /></div>
+            <div className="rounded-lg bg-sunken p-2.5"><div className="text-[11px] font-semibold text-fg">After</div><div className="mt-1 h-1.5 w-full rounded-full bg-line" /><div className="mt-1 h-1.5 w-3/4 rounded-full bg-line" /></div>
+          </div>
+          <div className="text-center text-[11px] text-fg-faint">Side-by-side keeps the point honest</div>
+        </div>
+      );
+    case "agenda":
+      return (
+        <div className={wrap}>
+          <div className="rounded-lg border border-line/60 bg-sunken/60 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">Section 02</div>
+            <div className="mt-1 text-[14px] font-semibold text-fg">The argument in three parts</div>
+            <div className="mt-2 flex gap-1.5"><span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-white">01</span><span className="rounded-full bg-line px-2 py-0.5 text-[10px] font-bold text-fg-faint">02</span><span className="rounded-full bg-line px-2 py-0.5 text-[10px] font-bold text-fg-faint">03</span></div>
+          </div>
+        </div>
+      );
+    case "quote":
+      return (
+        <div className={`${wrap} items-center text-center`}>
+          <div className="mx-auto grid h-6 w-6 place-items-center rounded-full bg-accent-tint text-accent">“</div>
+          <div className="mt-2 text-[13px] font-medium leading-snug text-fg">Nothing renders until a human says go.</div>
+          <div className="mt-1 text-[11px] text-fg-faint">— the gate, not a preset</div>
+        </div>
+      );
+    case "timeline":
+      return (
+        <div className={wrap}>
+          <div className="relative flex items-center justify-between"><div className="absolute left-0 right-0 top-1/2 h-px bg-line" />{["Brief","Outline","Render"].map((k) => <span key={k} className={`relative grid h-7 w-7 place-items-center rounded-full border text-[10px] font-bold ${k==="Render" && active ? "border-accent bg-accent text-white" : "border-line bg-panel text-fg-faint"}`}>•</span>)}</div>
+          <div className="mt-2 flex justify-between text-[11px] text-fg-faint"><span>Brief</span><span>Outline</span><span>Render</span></div>
+        </div>
+      );
+    default: return <div className={wrap}><div className="h-1.5 w-3/4 rounded-full bg-line" /></div>;
+  }
+}
+
 /* --------------------------------------------------------------- how it works full */
 
 function HowItWorksFull({ onStartChat }) {
@@ -236,7 +297,7 @@ function HowItWorksFull({ onStartChat }) {
     { icon: DocIcon, title: "Deck + report", body: "Same research powers slides and the graded .docx. Slides rasterise immediately — what you see is the output." },
   ];
   return (
-    <section className="w-full bg-base">
+    <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">How it works</div>
@@ -268,7 +329,7 @@ function ThemesFullBleed({ onBrowseThemes }) {
   const [themes, setThemes] = useState(null);
   useEffect(() => { api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([])); }, []);
   return (
-    <section className="w-full border-y border-line bg-sunken">
+    <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-6 text-center">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Design languages</div>
@@ -296,7 +357,7 @@ function ThemesFullBleed({ onBrowseThemes }) {
 
 function PlansFull() {
   return (
-    <section className="w-full bg-panel">
+    <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Plans</div>
@@ -334,7 +395,7 @@ const CAPABILITIES = [
 
 function CapabilityFull({ onStartChat }) {
   return (
-    <section className="w-full bg-base">
+    <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Capabilities</div>

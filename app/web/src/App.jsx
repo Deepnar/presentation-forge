@@ -385,6 +385,7 @@ export default function App() {
           onToggleLeft={() => setLeftOpen((o) => !o)}
           onHome={goHome}
           onOpenSettings={() => setSettingsOpen(true)}
+          onOpenProfile={() => setProfileOpen(true)}
           user={user}
           view={view}
           onAuthClick={() => setAuthOpen(true)}
