@@ -20,10 +20,11 @@ import { researchSummary } from "../../src/ai/research.js";
 import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
-import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, setRoutingPreference, routingPreference } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck } from "../../src/auth.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider } from "../../src/cloud.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
+import { getUsage, checkAutoLimits, recordAutoEvent, limitConfig } from "../../src/limits.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -71,6 +72,35 @@ app.use(express.json({ limit: "8mb" }));
 const PORT = process.env.FORGE_API_PORT || 5174;
 const ok = (res, data) => res.json({ ok: true, ...data });
 const fail = (res, code, message) => res.status(code).json({ ok: false, error: message });
+
+/** Auto-tier guard: when routing is auto (shared TCET gateway) enforce hourly/weekly caps.
+ *  Returns {ok:false,error} via SSE or HTTP 429. Record only on success. */
+async function isAutoRoute(model) {
+  if (model && String(model) === "qwen3.6") return true;
+  const route = await routingPreference();
+  if (route !== "auto") return false;
+  const ap = await autoProvider();
+  return Boolean(ap?.keySet);
+}
+async function enforceAuto(userEmail, upcomingSlides = 0) {
+  const uid = getUserId(userEmail);
+  if (!uid) return { allowed: true };
+  const chk = checkAutoLimits({ userId: uid, upcomingSlides });
+  if (!chk.allowed) {
+    const msg = chk.errors.join(" · ");
+    const e = new Error(msg);
+    e.status = 429;
+    throw e;
+  }
+  return chk;
+}
+function recordAutoFor(userEmail, slides = 0, tokens = 0) {
+  try {
+    const uid = getUserId(userEmail);
+    if (!uid) return;
+    recordAutoEvent({ userId: uid, eventType: "request", slides, tokens });
+  } catch {}
+}
 
 /**
  * Renderer mutex. A home box has one CPU and LibreOffice/Chrome are single-file
@@ -1242,6 +1272,11 @@ app.post("/api/decks", (req, res) => {
 
   const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density } = req.body ?? {};
   (async () => {
+    if (await isAutoRoute(model)) {
+      const upcoming = Number(maxSlides) > 0 ? Number(maxSlides) : 12;
+      await enforceAuto(req.user.email, upcoming);
+      recordAutoFor(req.user.email, upcoming, 0);
+    }
     const r = await createDeck({
       brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density,
       owner: req.user.email,
@@ -1260,8 +1295,8 @@ app.post("/api/decks", (req, res) => {
 /* --------------------------------------------------------------- chat panel */
 
 app.get("/api/models", wrap(async (_req, res) => {
-  const { models, default: def, cloud } = await modelChoices();
-  ok(res, { models, default: def, cloud });
+  const { models, default: def, cloud, auto, route } = await modelChoices();
+  ok(res, { models, default: def, cloud, auto, route });
 }));
 
 /** The deck's thread: rolling summary, recent turns, durable decisions. */
@@ -1280,7 +1315,7 @@ app.delete("/api/decks/:slug/chat", wrap(async (req, res) => {
  * One chat turn. Same SSE transport as generation — the pipeline aborts when
  * the socket closes, so a vanished client stops burning model time.
  */
-app.post("/api/decks/:slug/chat", (req, res) => {
+app.post("/api/decks/:slug/chat", async (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
@@ -1289,6 +1324,11 @@ app.post("/api/decks/:slug/chat", (req, res) => {
   if (!instruction?.trim()) {
     sse.send("error", { error: "body must include an `instruction`" });
     return sse.close();
+  }
+  if (await isAutoRoute(model)) {
+    try { await enforceAuto(req.user.email, 0); recordAutoFor(req.user.email, 0, 0); } catch (e) {
+      sse.send("error", { error: e.message }); return sse.close();
+    }
   }
 
   (async () => {
@@ -1340,6 +1380,10 @@ app.post("/api/reports", (req, res) => {
   }
 
   (async () => {
+    if (await isAutoRoute(model)) {
+      await enforceAuto(req.user.email, 0);
+      recordAutoFor(req.user.email, 0, 0);
+    }
     const r = await createReport({
       brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
       owner: req.user.email,
@@ -1491,13 +1535,11 @@ function attachToRun(res, run) {
 }
 
 /** Approved outline → deck, rendered and rasterised. Same SSE transport. */
-app.post("/api/decks/:slug/generate", (req, res) => {
+app.post("/api/decks/:slug/generate", async (req, res) => {
   const { plan, theme, model, resume } = req.body ?? {};
 
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
-    // A reload (or a duplicate approve) reconnects to the SAME run instead of
-    // starting a second pipeline — the "refresh restarted from slide 1" fix.
     attachToRun(res, live);
     return;
   }
@@ -1506,6 +1548,18 @@ app.post("/api/decks/:slug/generate", (req, res) => {
     sse.send("error", { error: "body must include an approved `plan` with slides" });
     return sse.close();
   }
+  // Auto-tier gate: hourly / weekly caps before burning the shared gateway
+  if (await isAutoRoute(model) && plan?.slides?.length) {
+    try { await enforceAuto(req.user.email, plan.slides.length); } catch (e) {
+      const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
+    }
+    recordAutoFor(req.user.email, plan.slides.length, 0);
+  } else if (await isAutoRoute(model)) {
+    try { await enforceAuto(req.user.email, 0); } catch (e) {
+      const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
+    }
+    recordAutoFor(req.user.email, 0, 0);
+  }
   startDeckRun({
     slug: req.params.slug,
     kind: resume ? "resume" : "generate",
@@ -1513,7 +1567,6 @@ app.post("/api/decks/:slug/generate", (req, res) => {
     theme,
     model,
   });
-  // The FIRST client owns the initial SSE; later reconnects attach via attachToRun.
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
@@ -1751,6 +1804,20 @@ app.post("/api/auth/login", rateLimit, wrap(async (req, res) => {
   ok(res, { token, user });
 }));
 
+app.post("/api/auth/google", rateLimit, wrap(async (req, res) => {
+  const { id_token, credential } = req.body ?? {};
+  const token = id_token ?? credential;
+  if (!token) return fail(res, 400, "missing Google id_token");
+  try {
+    const g = await verifyGoogleIdToken(token);
+    const user = await findOrCreateGoogleUser(g);
+    const bearer = await startSession(user);
+    ok(res, { token: bearer, user });
+  } catch (err) {
+    fail(res, 401, err.message);
+  }
+}));
+
 app.post("/api/auth/logout", wrap(async (req, res) => {
   await endSession(bearerToken(req.headers.authorization));
   ok(res, {});
@@ -1765,6 +1832,9 @@ app.get("/api/auth/me", wrap(async (req, res) => {
 /** Whether new accounts can self-register on this server. */
 app.get("/api/auth/registration", wrap(async (_req, res) => {
   ok(res, { open: OPEN_REGISTRATION });
+}));
+app.get("/api/auth/google/config", wrap(async (_req, res) => {
+  ok(res, { clientId: process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null });
 }));
 
 /** The cloud-key gate — writes and tests require a logged-in session. */
@@ -1811,12 +1881,55 @@ app.post("/api/cloud/test", wrap(async (_req, res) => {
   ok(res, await testCloudConnection());
 }));
 
-/** The LOCAL/CLOUD routing preference — a gitignored config/local.yaml value. */
+/** The AUTO/CLOUD routing preference — auto is TCET campus gateway (free, rate-limited). */
 app.put("/api/cloud/routing", wrap(async (req, res) => {
   if (!(await requireAuth(req, res))) return;
   const route = req.body?.route;
   await setRoutingPreference(route);
   ok(res, { route: await routingPreference() });
+}));
+
+/* ------------------------------------------------------------------ auto (TCET) */
+app.get("/api/auto/status", wrap(async (_req, res) => {
+  ok(res, { auto: await autoStatus(), limits: limitConfig() });
+}));
+app.post("/api/auto/test", wrap(async (_req, res) => {
+  ok(res, await testAutoConnection());
+}));
+app.get("/api/auto/usage", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to see usage");
+  const uid = getUserId(user.email);
+  if (!uid) return fail(res, 404, "no such user");
+  ok(res, { usage: getUsage({ userId: uid }), limits: limitConfig() });
+}));
+
+/* Per-user BYOK vault — encrypted at rest, operator-blind */
+app.get("/api/keys/status", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to see keys");
+  const uid = getUserId(user.email);
+  const hasKey = uid ? Boolean(await getUserApiKey(uid)) : false;
+  ok(res, { hasKey });
+}));
+app.put("/api/keys", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to save a key");
+  const { key, provider } = req.body ?? {};
+  if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
+    return fail(res, 400, "key must look like sk-... (at least 8 chars after prefix)");
+  }
+  const uid = getUserId(user.email);
+  if (!uid) return fail(res, 404, "no such user");
+  await setUserApiKey(uid, provider ?? "openai", key);
+  ok(res, {});
+}));
+app.delete("/api/keys", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in to clear keys");
+  const uid = getUserId(user.email);
+  if (uid) await clearUserApiKey(uid);
+  ok(res, {});
 }));
 
 /* -------------------------------------------------------------------- boot */
