@@ -4,42 +4,41 @@ import { Badge } from "./ui.jsx";
 import { ChevronLeft, ChevronRight, DocIcon, GithubIcon } from "./icons.jsx";
 import { setModelMode } from "../lib/modelMode.js";
 /**
- * Full-width product bar. Left: the sidebar collapse toggle, the mark and
- * wordmark (home link) with the routing badge. Right: Docs (README modal) and
- * the repo link.
- *
- * The LOCAL/CLOUD badge is also the mode switch: it writes the routing
- * preference (gitignored config/local.yaml) and flips the client model-mode
- * store so every model picker filters to that mode immediately. CLOUD is only
- * reachable when a key is attached; without one the button is disabled and
- * points at the Settings/Cloud section where the key lands.
+ * Full-width product bar. AUTO = TCET campus gateway (free, rate-limited),
+ * CLOUD = your own key. The toggle writes the routing preference and flips the
+ * client model-mode store so every picker filters immediately. CLOUD is only
+ * reachable when a BYOK key is attached — without one it points at Settings.
  */
 export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, user, onAuthClick }) {
+  const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
-  const [route, setRoute] = useState("local");
+  const [route, setRoute] = useState("auto");
 
   useEffect(() => {
-    api.cloud()
-      .then((r) => {
-        setCloud(r.cloud ?? null);
-        setRoute(r.cloud?.route ?? "local");
-        // Rehydrate the pickers' mode from the persisted preference on boot.
-        setModelMode(r.cloud?.route ?? "local");
+    Promise.all([api.autoStatus().catch(() => ({ auto: null })), api.cloud().catch(() => ({ cloud: null }))])
+      .then(([a, c]) => {
+        const autoData = a.auto ?? a ?? null;
+        const cloudData = c.cloud ?? null;
+        setAuto(autoData);
+        setCloud(cloudData);
+        const r = cloudData?.route ?? autoData?.route ?? "auto";
+        setRoute(r);
+        setModelMode(r);
       })
       .catch(() => {});
   }, []);
 
-  const configured = Boolean(cloud?.configured);
   const cloudOn = Boolean(cloud?.configured && cloud.keySet);
   const routingCloud = route === "cloud";
+  const routingAuto = route === "auto";
 
   async function setMode(next) {
-    if (next === "cloud" && !cloudOn) return; // no key — unreachable
+    if (next === "cloud" && !cloudOn) return;
     try {
       await api.cloudRoute(next);
       setRoute(next);
       setModelMode(next);
-    } catch { /* non-fatal — the badge just stays as it was */ }
+    } catch {}
   }
 
   return (
@@ -65,31 +64,30 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </a>
 
-      {configured ? (
-        <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
-          <button
-            onClick={() => setMode("local")}
-            title="Author model runs on this machine. Research and critique models are separate — the toggle moves only your writing model."
-            className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
-              !routingCloud ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
-            }`}
-          >
-            LOCAL
-          </button>
-          <button
-            onClick={() => (cloudOn ? setMode("cloud") : onOpenSettings?.())}
-            title={cloudOn
-              ? "Author model runs on a cloud provider. Research and critique stay local — this moves only your writing model."
-              : "Attach an API key in Settings → Cloud to use cloud models"}
-            className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
-              routingCloud ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
-            }`}
-          >
-            CLOUD
-          </button>
-        </div>
-      ) : (
-        <Badge className="border border-line-strong bg-transparent text-fg-faint">LOCAL</Badge>
+      <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
+        <button
+          onClick={() => setMode("auto")}
+          title="TCET CoE Gateway — free shared campus model (qwen3.6), hourly/weekly caps"
+          className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
+            routingAuto ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
+          }`}
+        >
+          AUTO
+        </button>
+        <button
+          onClick={() => (cloudOn ? setMode("cloud") : onOpenSettings?.())}
+          title={cloudOn
+            ? "Your own API key — unlimited, billed to you"
+            : "Attach your API key in Settings to use cloud"}
+          className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
+            routingCloud ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
+          }`}
+        >
+          CLOUD
+        </button>
+      </div>
+      {auto?.keySet && (
+        <Badge className="hidden border border-accent/20 bg-accent/10 text-accent sm:inline-flex">TCET OK</Badge>
       )}
 
       <div className="ml-auto flex items-center gap-1">

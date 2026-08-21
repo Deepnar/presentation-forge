@@ -3,14 +3,12 @@ import { api } from "../api.js";
 import { getModelMode, subscribeModelMode } from "./modelMode.js";
 
 /**
- * The model pickers' data source. Fetches the grouped local+cloud model list
- * once, then filters it to the active mode (LOCAL/CLOUD) reactively — so the
- * header toggle takes effect in every picker without each one re-fetching. The
- * "auto" default also follows the mode: the author role's local default in
- * LOCAL mode, the cloud provider's first model in CLOUD mode.
+ * The model pickers' data source. Now AUTO (TCET qwen3.6) or CLOUD (BYOK).
+ * Header toggle flips every picker without refetch; "auto" default is
+ * qwen3.6 when auto key is present.
  */
 export function useModels() {
-  const [raw, setRaw] = useState({ models: [], default: "", cloud: null });
+  const [raw, setRaw] = useState({ models: [], default: "", cloud: null, auto: null });
   const [mode, setMode] = useState(getModelMode());
 
   useEffect(() => {
@@ -19,13 +17,15 @@ export function useModels() {
         models: r.models ?? [],
         default: r.default ?? "",
         cloud: r.cloud ?? null,
+        auto: r.auto ?? null,
       }))
       .catch(() => {});
     return subscribeModelMode(setMode);
   }, []);
 
+  const autoOn = mode === "auto" && Boolean(raw.auto?.models?.length);
   const cloudOn = mode === "cloud" && Boolean(raw.cloud?.models?.length);
-  const models = cloudOn ? raw.cloud.models : raw.models;
-  const defaultModel = cloudOn ? raw.cloud.models[0] : raw.default;
-  return { models, cloud: raw.cloud, mode, cloudOn, defaultModel };
+  const models = autoOn ? raw.auto.models : cloudOn ? raw.cloud.models : raw.models;
+  const defaultModel = autoOn ? raw.auto.models[0] : cloudOn ? raw.cloud.models[0] : raw.default;
+  return { models, cloud: raw.cloud, auto: raw.auto, mode, cloudOn, autoOn, defaultModel };
 }

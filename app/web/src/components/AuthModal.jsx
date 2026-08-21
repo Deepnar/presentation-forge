@@ -17,6 +17,8 @@ import ThemeMiniCard from "./ThemeMiniCard.jsx";
 export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [mode, setMode] = useState(initialMode ?? "login"); // login | register
   const [regOpen, setRegOpen] = useState(true);
+  const [googleId, setGoogleId] = useState(null);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +31,18 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   useEffect(() => {
     api.registrationOpen().then(setRegOpen).catch(() => setRegOpen(true));
     api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
+    fetch("/api/auth/google/config").then((r) => r.json()).then((j) => setGoogleId(j.clientId ?? j.googleClientId ?? null)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!googleId) return;
+    if (document.getElementById("google-gsi")) return;
+    const s = document.createElement("script");
+    s.id = "google-gsi";
+    s.src = "https://accounts.google.com/gsi/client";
+    s.async = true;
+    document.head.appendChild(s);
+  }, [googleId]);
 
   // If registration closed while the form sat on the register tab, land on
   // login instead of showing a dead form.
@@ -86,6 +99,17 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     }
   }
 
+  async function googleCredential(credential) {
+    setGoogleBusy(true);
+    setFormError("");
+    try {
+      const user = await api.googleLogin(credential);
+      onDone?.(user);
+    } catch (err) {
+      setFormError(err.message);
+    } finally { setGoogleBusy(false); }
+  }
+
   /** Field with an inline error — danger border + message under it. */
   const fieldCls = (field) =>
     `${inputCls} ${fieldErrors[field] ? "border-danger/70 focus:border-danger" : ""}`;
@@ -99,6 +123,37 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
         {fieldErrors[field]}
       </div>
     ) : null;
+
+  function GoogleButton() {
+    if (!googleId) return null;
+    return (
+      <div className="space-y-2">
+        <button
+          type="button"
+          disabled={googleBusy}
+          onClick={() => {
+            if (!window.google?.accounts?.id) { setFormError("Google script not loaded — refresh and try again"); return; }
+            window.google.accounts.id.initialize({
+              client_id: googleId,
+              callback: (resp) => googleCredential(resp.credential),
+            });
+            window.google.accounts.id.prompt((n) => {
+              if (n.isNotDisplayed() || n.isSkippedMoment()) {
+                // fallback: popup
+                window.google.accounts.id.prompt();
+              }
+            });
+            // also try popup via renderButton fallback — if prompt blocked, user can click again
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-[13px] font-medium text-[#3c4043] transition hover:bg-gray-50 disabled:opacity-50"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          {googleBusy ? "Signing in…" : "Continue with Google"}
+        </button>
+        <div id="g_id_onload" style={{ display: "none" }} />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-[var(--color-overlay)] backdrop-blur-md" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose?.(); }}>
@@ -180,6 +235,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               ask them to add you, or use the account they set up.
             </div>
           )}
+
+          <GoogleButton />
+          {googleId && <div className="my-3 flex items-center gap-3"><div className="h-px flex-1 bg-line" /><span className="text-[11px] text-fg-faint">or</span><div className="h-px flex-1 bg-line" /></div>}
 
           <form onSubmit={submit} className="space-y-3" noValidate>
             {mode === "register" && (

@@ -1,18 +1,21 @@
 /**
- * The model-mode preference: LOCAL or CLOUD. Lives on the client (a tiny
- * pub/sub) so every picker reacts to the header toggle instantly; the persisted
- * source of truth is config/local.yaml's `routing.default`, rehydrated once at
- * boot from /api/cloud. Default is LOCAL.
+ * The model-mode preference: AUTO (TCET) or CLOUD (BYOK). Lives on the client
+ * (pub/sub) so every picker reacts to the header toggle instantly; persisted
+ * truth is config/local.yaml's `routing.default`, rehydrated from /api/cloud.
+ * Default is AUTO (free shared gateway).
  */
 const listeners = new Set();
-let mode = "local"; // local | cloud
+let mode = "auto"; // auto | cloud
 
 export function getModelMode() {
   return mode;
 }
 
 export function setModelMode(next) {
-  if (next !== "local" && next !== "cloud") return;
+  if (next !== "auto" && next !== "cloud") {
+    if (next === "local") next = "auto"; // legacy
+    else return;
+  }
   if (next === mode) return;
   mode = next;
   listeners.forEach((fn) => fn(mode));

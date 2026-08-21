@@ -67,157 +67,121 @@ export default function SettingsModal({ open, onClose, user, identity, onIdentit
 function AccountSection({ user, onClose, onLogout }) {
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [cloud, setCloud] = useState(null);
+  const [auto, setAuto] = useState(null);
+  const [usage, setUsage] = useState(null);
+  const [limits, setLimits] = useState(null);
   const [keyDraft, setKeyDraft] = useState("");
+  const [vaultHasKey, setVaultHasKey] = useState(false);
   const [cloudBusy, setCloudBusy] = useState(false);
   const [state, setState] = useState({ status: "idle", message: "" });
 
   useEffect(() => {
     api.cloud().then((r) => setCloud(r.cloud ?? null)).catch(() => setCloud(null));
+    api.autoStatus().then((r) => { setAuto(r.auto ?? null); setLimits(r.limits ?? null); }).catch(() => {});
+    api.autoUsage().then((r) => { setUsage(r.usage); setLimits(r.limits); }).catch(() => {});
+    api.keysStatus().then((r) => setVaultHasKey(Boolean(r.hasKey))).catch(() => {});
   }, []);
 
   async function saveKey() {
     setCloudBusy(true);
     setState({ status: "busy", message: "" });
     try {
-      await api.cloudSaveKey(keyDraft.trim());
+      // BYOK vault (per-user encrypted)
+      await api.keysSave(keyDraft.trim(), cloud?.provider ?? "openai");
       setKeyDraft("");
+      setVaultHasKey(true);
       const r = await api.cloud();
       setCloud(r.cloud);
-      setState({ status: "saved", message: "Key saved to config/local.yaml" });
+      setState({ status: "saved", message: "Key saved — encrypted at rest, never visible again" });
     } catch (err) {
       setState({ status: "error", message: err.message });
-    } finally {
-      setCloudBusy(false);
-    }
+    } finally { setCloudBusy(false); }
   }
-
   async function removeKey() {
-    if (!window.confirm("Remove the cloud API key from config/local.yaml?")) return;
+    if (!window.confirm("Remove your personal API key? AUTO (TCET) will still work.")) return;
     setCloudBusy(true);
-    setState({ status: "busy", message: "" });
-    try {
-      await api.cloudClearKey();
-      const r = await api.cloud();
-      setCloud(r.cloud);
-      setState({ status: "saved", message: "Key removed." });
-    } catch (err) {
-      setState({ status: "error", message: err.message });
-    } finally {
-      setCloudBusy(false);
-    }
+    try { await api.keysClear(); setVaultHasKey(false); setState({ status: "saved", message: "Personal key removed — using AUTO" }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
-
   async function testKey() {
-    setCloudBusy(true);
-    setState({ status: "busy", message: "Testing…" });
-    try {
-      const r = await api.cloudTest();
-      setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail });
-    } catch (err) {
-      setState({ status: "error", message: err.message });
-    } finally {
-      setCloudBusy(false);
-    }
+    setCloudBusy(true); setState({ status: "busy", message: "Testing your key…" });
+    try { const r = await api.cloudTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
-
+  async function testAuto() {
+    setCloudBusy(true); setState({ status: "busy", message: "Testing TCET gateway…" });
+    try { const r = await api.autoTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
+  }
   async function setRoute(route) {
-    setCloudBusy(true);
-    setState({ status: "busy", message: "" });
-    try {
-      await api.cloudRoute(route);
-      setModelMode(route);
-      const r = await api.cloud();
-      setCloud(r.cloud);
-      setState({ status: "saved", message: `Default routing: ${route}` });
-    } catch (err) {
-      setState({ status: "error", message: err.message });
-    } finally {
-      setCloudBusy(false);
-    }
+    setCloudBusy(true); try { await api.cloudRoute(route); setModelMode(route); const r = await api.cloud(); setCloud(r.cloud); const a = await api.autoStatus(); setAuto(a.auto); setState({ status: "saved", message: `Routing: ${route}` }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setCloudBusy(false); }
   }
 
   const name = user?.name ?? "Account";
+  const autoPctHour = usage && limits ? Math.min(100, Math.round((usage.hour.requests / limits.hourlyRequests) * 100)) : 0;
+  const autoPctWeek = usage && limits ? Math.min(100, Math.round((usage.week.requests / limits.weeklyRequests) * 100)) : 0;
 
   return (
     <section className="rounded-card border border-line bg-sunken/40 p-5">
       <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent/15 text-[14px] font-semibold uppercase text-accent">
-          {name[0] ?? "?"}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-[14px] font-semibold text-fg">{name}</div>
-          <div className="truncate text-[12px] text-fg-muted">{user?.email}</div>
-        </div>
-        <button
-          onClick={() => setConfirmLogout(true)}
-          className="rounded-lg border border-danger/30 px-2.5 py-1.5 text-xs font-medium text-danger transition hover:bg-danger/10"
-        >
-          Log out
-        </button>
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent/15 text-[14px] font-semibold uppercase text-accent">{name[0] ?? "?"}</span>
+        <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-semibold text-fg">{name}</div><div className="truncate text-[12px] text-fg-muted">{user?.email}</div></div>
+        <button onClick={() => setConfirmLogout(true)} className="rounded-lg border border-danger/30 px-2.5 py-1.5 text-xs font-medium text-danger transition hover:bg-danger/10">Log out</button>
       </div>
 
+      {/* AUTO — TCET shared */}
       <div className="mt-4 rounded-lg border border-line bg-panel p-3.5">
         <div className="flex items-center justify-between gap-2">
-          <div className="text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Cloud</div>
-          {cloud?.keySet && (
-            <Badge className="bg-accent/10 text-accent">{cloud.models?.length ?? 0} models</Badge>
-          )}
+          <div className="text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Auto — TCET CoE Gateway</div>
+          {auto?.keySet ? <Badge className="bg-accent/10 text-accent">qwen3.6 · live</Badge> : <Badge className="bg-danger/10 text-danger">no key</Badge>}
         </div>
         <div className="mt-1.5 text-[12.5px] text-fg-muted">
-          {cloud?.keySet
-            ? `${cloud.label ?? "Hosted models"} — connected`
-            : cloud?.configured
-              ? "No API key attached yet"
-              : "No cloud provider configured"}
+          {auto?.keySet ? `Shared campus model — free, rate-limited (${auto.models?.[0] ?? "qwen3.6"})` : "TCET gateway not configured — set FORGE_TCET_API_KEY"}
         </div>
-        {cloud?.keySet && (
-          <div className="mt-1 font-mono text-[10.5px] text-fg-faint">{cloud.baseURL}</div>
+        {auto?.keySet && <div className="mt-1 font-mono text-[10.5px] text-fg-faint">{auto.baseURL}</div>}
+        {usage && limits && (
+          <div className="mt-3 space-y-2">
+            <div className="grid grid-cols-2 gap-3 text-[11px]">
+              <div className="rounded border border-line bg-sunken/40 p-2"><div className="text-fg-faint">Hourly requests</div><div className="mt-1 flex items-center gap-2"><div className="h-1.5 flex-1 rounded-full bg-line"><div className="h-1.5 rounded-full bg-accent" style={{ width: `${autoPctHour}%` }} /></div><span className="font-mono text-fg">{usage.hour.requests}/{limits.hourlyRequests}</span></div><div className="mt-1 text-[10.5px] text-fg-faint">Slides: {usage.hour.slides}/{limits.hourlySlides}</div></div>
+              <div className="rounded border border-line bg-sunken/40 p-2"><div className="text-fg-faint">Weekly requests</div><div className="mt-1 flex items-center gap-2"><div className="h-1.5 flex-1 rounded-full bg-line"><div className="h-1.5 rounded-full bg-accent" style={{ width: `${autoPctWeek}%` }} /></div><span className="font-mono text-fg">{usage.week.requests}/{limits.weeklyRequests}</span></div><div className="mt-1 text-[10.5px] text-fg-faint">Slides: {usage.week.slides}/{limits.weeklySlides} · Tokens ~{usage.week.tokens}</div></div>
+            </div>
+            <div className="text-[10.5px] text-fg-faint">Max {limits.maxSlidesPerDeck} slides per deck on AUTO — split large decks or use your own key.</div>
+          </div>
         )}
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" onClick={testAuto} disabled={cloudBusy}>Test AUTO</Button>
+          {auto?.keySet && <span className="text-[11px] text-fg-faint">Rate limit: {limits?.hourlyRequests ?? 20}/hour · {limits?.weeklyRequests ?? 100}/week</span>}
+        </div>
+      </div>
 
+      {/* CLOUD — BYOK vault */}
+      <div className="mt-3 rounded-lg border border-line bg-panel p-3.5">
+        <div className="flex items-center justify-between gap-2">
+          <div className="text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Cloud — your key (BYOK)</div>
+          {vaultHasKey ? <Badge className="bg-accent/10 text-accent">encrypted</Badge> : <Badge className="bg-transparent text-fg-faint">none</Badge>}
+        </div>
+        <div className="mt-1.5 text-[12.5px] text-fg-muted">
+          {vaultHasKey ? `${cloud?.label ?? "Your key"} — encrypted at rest, operator cannot read it` : (cloud?.configured ? "No personal key — AUTO is used" : "Add your own OpenAI / OpenRouter key for unlimited use")}
+        </div>
+        {vaultHasKey && cloud?.keySet && <div className="mt-1 font-mono text-[10.5px] text-fg-faint">{cloud.baseURL}</div>}
         <div className="mt-3 space-y-2">
           <div className="flex flex-wrap items-end gap-2">
-            <label className="min-w-0 flex-1">
-              <div className="mb-1 text-[11px] font-medium text-fg-faint">API key</div>
-              <input
-                type="password"
-                value={keyDraft}
-                onChange={(e) => setKeyDraft(e.target.value)}
-                placeholder={cloud?.keySet ? "…(key attached — type to replace)" : "sk-…"}
-                autoComplete="off"
-                className={`${inputCls} font-mono`}
-              />
-            </label>
-            <Button variant="primary" size="sm" onClick={saveKey} disabled={cloudBusy || !keyDraft.trim()}>
-              Save key
-            </Button>
-            {cloud?.keySet && (
-              <Button variant="outline" size="sm" onClick={removeKey} disabled={cloudBusy}>Remove</Button>
-            )}
+            <label className="min-w-0 flex-1"><div className="mb-1 text-[11px] font-medium text-fg-faint">Personal API key</div><input type="password" value={keyDraft} onChange={(e) => setKeyDraft(e.target.value)} placeholder={vaultHasKey ? "…attached — type to replace (never shown again)" : "sk-…"} autoComplete="off" className={`${inputCls} font-mono`} /></label>
+            <Button variant="primary" size="sm" onClick={saveKey} disabled={cloudBusy || !keyDraft.trim()}>Save (encrypted)</Button>
+            {vaultHasKey && <Button variant="outline" size="sm" onClick={removeKey} disabled={cloudBusy}>Remove</Button>}
           </div>
-
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" onClick={testKey} disabled={cloudBusy}>Test connection</Button>
+            <Button variant="outline" size="sm" onClick={testKey} disabled={cloudBusy || !vaultHasKey}>Test your key</Button>
             {cloudBusy && <Spinner className="text-fg-faint" />}
             {state.status === "saved" && <span className="text-[11.5px] text-accent">{state.message}</span>}
             {state.status === "error" && <span className="text-[11.5px] text-danger">{state.message}</span>}
           </div>
-
+          {vaultHasKey && <div className="text-[10.5px] leading-relaxed text-fg-faint">Keys are AES-256-GCM encrypted with <code className="font-mono">FORGE_KEY_PEPPER</code> — server stores only ciphertext. No plaintext is logged or returned.</div>}
           <div className="border-t border-line pt-2.5">
-            <div className="mb-1 text-[11px] font-medium text-fg-faint">Default routing — where "auto" in the model pickers points</div>
+            <div className="mb-1 text-[11px] font-medium text-fg-faint">Default routing</div>
             <div className="flex w-fit items-center gap-0.5 rounded-full bg-sunken p-0.5">
-              {["local", "cloud"].map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setRoute(r)}
-                  disabled={cloudBusy}
-                  className={`pill px-2.5 py-1 text-[11.5px] font-medium uppercase transition disabled:opacity-50 ${
-                    cloud?.route === r ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
-                  }`}
-                >
-                  {r}
-                </button>
+              {["auto", "cloud"].map((r) => (
+                <button key={r} onClick={() => setRoute(r)} disabled={cloudBusy} className={`pill px-2.5 py-1 text-[11.5px] font-medium uppercase transition disabled:opacity-50 ${ (cloud?.route ?? auto?.route ?? "auto") === r ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}>{r}</button>
               ))}
             </div>
+            <div className="mt-1 text-[10.5px] text-fg-faint">AUTO = TCET shared (free, limited) · CLOUD = your key (unlimited). AUTO falls back to CLOUD if you have a key.</div>
           </div>
         </div>
       </div>
