@@ -15,16 +15,16 @@ import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
 
 async function loadIdentity(deckDir) {
-  // identity.yaml carries real personal and institutional details and is
-  // gitignored, so a fresh clone falls back to the committed template.
-  let raw;
+  // Always start from the example so a minimal identity.yaml (just institution)
+  // doesn't erase brand/chrome defaults — then overlay user and deck.
+  let base = {};
   try {
-    raw = await readFile(path.join(CONFIG, "identity.yaml"), "utf8");
-  } catch {
-    raw = await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8");
-  }
-  const base = YAML.parse(raw);
-  // Per-deck meta.yaml wins over the standing defaults, key by key.
+    base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
+  } catch {}
+  try {
+    const over = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
+    base = deepMerge(base, over);
+  } catch { /* no user identity */ }
   try {
     const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
     return deepMerge(base, over);

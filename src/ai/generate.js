@@ -135,6 +135,8 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
 
   const system = [
     "You plan presentation decks. You do not write slide content yet.",
+    "A strong deck is judged by one thing: after the last slide, the audience",
+    "remembers the takeaway and can act on it. Plan for that.",
     "",
     `Available slide types: ${types.join(", ")}.`,
     "",
@@ -144,14 +146,17 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     "- The first slide is always type `title`.",
     "- Use `section` dividers to open each major part.",
     "- Every slide's `section` is a 0-based index into your `sections` array.",
-    "- `purpose` states what that slide must convey — ONE short sentence, under",
-    "  ~140 characters. It is a private brief for the writer, never slide text,",
-    "  so it must stay brief even if the deck is large.",
+    "- `purpose` states what that slide must convey — ONE specific sentence, under",
+    "  ~140 characters, with a concrete claim when the research carries one. It is",
+    "  a private brief for the writer, never slide text, so it must stay brief.",
+    "- The audience and emphasis answers are strategy: every slide must serve the",
+    "  stated takeaway, and the ideas marked 'most important' must own the most",
+    "  slides and the strongest evidence. Cut anything that doesn't.",
     "- The deck must be a complete talk, in presentation flow: it opens on the",
-    "  title, then an INTRO beat that frames the topic, then the body sections",
-    "  in a sensible order, and it CLOSES with a conclusion/closing that lands",
-    "  the point. Always include the intro and the closing — do not leave the",
-    "  talk to trail off at the last body section, whatever the brief says.",
+    "  title, then an INTRO beat that frames the topic for THIS audience, then",
+    "  the body sections in a sensible story arc, and it CLOSES with a conclusion",
+    "  that lands the takeaway. Always include the intro and the closing — do not",
+    "  leave the talk to trail off at the last body section, whatever the brief says.",
     ...(fullStrength
       ? [
           "- On this path the `purpose` is the writer's brief at full strength: name the",
@@ -412,7 +417,9 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
   const isFreeform = spec.type === "freeform";
 
   const system = [
-    "You write the content of ONE presentation slide.",
+    "You write the content of ONE presentation slide for a live talk — the",
+    "audience just heard the previous slide and will remember only the claim",
+    "and one number from this one. Be short, specific, and memorable.",
     "",
     ...(isFreeform
       ? [

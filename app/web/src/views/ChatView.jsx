@@ -1594,35 +1594,31 @@ function AcademicCard({ academic, onNext }) {
   );
 }
 
-/** The theme gallery — visual previews from the themes' own tokens, never names. */
+/** The theme gallery — visual previews, searchable, Gamma-like. */
 function ThemeCard({ themes, value, onNext }) {
   const [sel, setSel] = useState(value ?? "");
-  const gridRef = useRef(null);
+  const [q, setQ] = useState("");
   const selectedRef = useRef(null);
-
-  // A deck defaults to warm-humanist; if it is not in the first scroll of the
-  // gallery, bring it into view so the chosen theme is never hidden.
-  useEffect(() => {
-    selectedRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [sel]);
-
+  useEffect(() => { selectedRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" }); }, [sel]);
+  const filtered = themes.filter((t) => {
+    if (!q.trim()) return true;
+    const s = q.toLowerCase();
+    return t.name.includes(s) || (t.label ?? "").toLowerCase().includes(s) || (t.summary ?? "").toLowerCase().includes(s);
+  });
   return (
     <div>
-      <div className="mb-1.5 text-[11px] text-fg-faint">
-        {themes.length} design languages, each drawn live from its own values.
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-[11px] text-fg-faint">{filtered.length} of {themes.length} themes — drawn live, this is exactly how slides look</span>
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter themes…" className="ml-auto w-36 rounded-full border border-line bg-sunken px-2.5 py-1 text-[11px] outline-none placeholder:text-fg-faint focus:border-accent" />
       </div>
       {themes.length === 0 && <div className="text-[12px] text-fg-faint">Loading themes…</div>}
-      <div ref={gridRef} className="grid max-h-60 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3">
-        {themes.map((t) => (
+      <div className="grid max-h-[420px] grid-cols-2 gap-3 overflow-y-auto pr-1 sm:grid-cols-3">
+        {filtered.map((t) => (
           <div key={t.name} ref={sel === t.name || (!sel && t.name === "warm-humanist") ? selectedRef : null} className="min-w-0">
-            <ThemeMiniCard
-              theme={t}
-              selected={sel === t.name || (!sel && t.name === "warm-humanist")}
-              defaultTheme={t.name === "warm-humanist"}
-              onClick={() => setSel(t.name)}
-            />
+            <ThemeMiniCard theme={t} selected={sel === t.name || (!sel && t.name === "warm-humanist")} defaultTheme={t.name === "warm-humanist"} onClick={() => setSel(t.name)} />
           </div>
         ))}
+        {filtered.length === 0 && <div className="col-span-full py-8 text-center text-[12px] text-fg-faint">No themes match “{q}”</div>}
       </div>
       <CardFooter onNext={() => onNext({ theme: sel })} nextLabel="Use this theme" />
     </div>

@@ -31,6 +31,11 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const cloudOn = Boolean(cloud?.configured && cloud.keySet);
   const routingCloud = route === "cloud";
   const routingAuto = route === "auto";
+  const autoKind = auto?.kind ?? (auto?.provider === "tcet-auto" ? "tcet" : "local");
+  const autoLabel = autoKind === "local" ? "LOCAL" : "AUTO";
+  const autoTitle = autoKind === "local"
+    ? "Local Ollama — your machine, unlimited, private"
+    : "TCET CoE Gateway — free shared campus model (qwen3.6), hourly/weekly caps";
 
   async function setMode(next) {
     if (next === "cloud" && !cloudOn) return;
@@ -67,12 +72,12 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
       <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
         <button
           onClick={() => setMode("auto")}
-          title="TCET CoE Gateway — free shared campus model (qwen3.6), hourly/weekly caps"
+          title={autoTitle}
           className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
             routingAuto ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
           }`}
         >
-          AUTO
+          {autoLabel}
         </button>
         <button
           onClick={() => (cloudOn ? setMode("cloud") : onOpenSettings?.())}
@@ -87,7 +92,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         </button>
       </div>
       {auto?.keySet && (
-        <Badge className="hidden border border-accent/20 bg-accent/10 text-accent sm:inline-flex">TCET OK</Badge>
+        <Badge className={`hidden border sm:inline-flex ${autoKind === "local" ? "border-line bg-panel text-fg-faint" : "border-accent/20 bg-accent/10 text-accent"}`}>{autoKind === "local" ? "Local" : "TCET OK"}</Badge>
       )}
 
       <div className="ml-auto flex items-center gap-1">

@@ -21,14 +21,16 @@ export function deepMerge(a, b) {
 }
 
 export async function loadIdentity(deckDir) {
-  // identity.yaml carries real personal and institutional details and is
-  // gitignored, so a fresh clone falls back to the committed template.
-  let base;
+  // identity.yaml is gitignored and may be minimal (just institution.name) —
+  // always start from the committed template so brand/chrome defaults survive.
+  let base = {};
   try {
-    base = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
-  } catch {
     base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
-  }
+  } catch {}
+  try {
+    const over = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
+    base = deepMerge(base, over);
+  } catch { /* no user identity yet */ }
   // Per-deck meta.yaml wins over the standing defaults, key by key — the same
   // merge the renderer performs, so what the model planned with matches what
   // gets drawn.

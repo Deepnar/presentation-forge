@@ -1,50 +1,43 @@
 @import "tailwindcss";
 
-/* Design tokens. Tailwind v4 exposes each of these as a utility, so the app has
-   one vocabulary instead of ad-hoc white/10 opacity values scattered around.
-   The shell is "ember on warm charcoal": the neutral ramp carries a red-brown
-   undertone so every surface belongs to the same family as the accent, and the
-   accent itself is bright enough to glow on dark instead of muting into it. */
+/* Gamma-grade design system: light, clean, trusted.
+   The shell is light and airy — white panels on a whisper-gray page,
+   indigo accent (Gamma's purple) for action, slate text. No ember,
+   no charcoal, no particle disco. */
 @theme {
-  /* Surfaces, darkest to lightest. Warm, not grey — a bindery at night. */
-  --color-base: #141110;
-  --color-sunken: #0e0b0a;
-  --color-panel: #1b1715;
-  --color-raised: #241f1b;
-  --color-prompt: #272119;
-  --color-hover: #2f2822;
-  --color-field: #221c17;
+  /* Surfaces: page → sunken → panel. All light, all neutral. */
+  --color-base: #F8F9FC;
+  --color-sunken: #F1F3F9;
+  --color-panel: #FFFFFF;
+  --color-raised: #FFFFFF;
+  --color-prompt: #FFFFFF;
+  --color-hover: #F1F3F9;
+  --color-field: #FFFFFF;
 
-  /* Hairlines. Two weights is enough; more reads as noise. */
-  --color-line: #332b25;
-  --color-line-strong: #4a3d33;
+  /* Hairlines: subtle, cool. */
+  --color-line: #E6E8F0;
+  --color-line-strong: #D1D5E0;
 
-  /* Text ramp — warm paper, and the muted register lifted to ~8:1 on panel. */
-  --color-fg: #f2ede8;
-  --color-fg-muted: #b6a99d;
-  --color-fg-faint: #82746a;
+  /* Text: slate, not warm paper. WCAG AA 7:1 on white. */
+  --color-fg: #0F172A;
+  --color-fg-muted: #475569;
+  --color-fg-faint: #94A3B8;
 
-  /* The ember: actions and moments. Brighter than before so it pops on warm
-     dark; the tints make accent-tinted surfaces a real material, not a blend. */
-  --color-accent: #e0705a;
-  --color-accent-hi: #ef8a70;
-  --color-accent-dim: #8a4433;
-  --color-accent-tint: rgb(224 112 92 / 0.12);
-  --color-accent-glow: rgb(224 112 92 / 0.16);
+  /* Accent: Gamma indigo — trustworthy, not playful. */
+  --color-accent: #6D5BFF;
+  --color-accent-hi: #7C6CFF;
+  --color-accent-dim: #DDD6FE;
+  --color-accent-tint: #F5F3FF;
+  --color-accent-glow: rgba(109, 91, 255, 0.10);
 
-  /* Supporting hues: amber is the spark (warnings, "new"), danger is crimson
-     so destructive actions are clearly distinct from the accent, success is a
-     low-chroma sage that sits in a warm palette. */
-  --color-amber: #e2a54a;
-  --color-danger: #e5484d;
-  --color-success: #93b576;
-  --color-overlay: rgb(12 9 8 / 0.72);
+  --color-amber: #F59E0B;
+  --color-danger: #EF4444;
+  --color-success: #10B981;
+  --color-overlay: rgba(15, 23, 42, 0.45);
 
   --radius-card: 0.75rem;
-  --radius-lg: 1.125rem;
+  --radius-lg: 1rem;
 
-  /* Type scale — one step per role, rem-based so it follows the root. The
-     caption floor is 12px; only the mono micro-labels in Badge sit below. */
   --text-display: 2.5rem;
   --text-heading: 1.75rem;
   --text-title: 1.125rem;
@@ -55,25 +48,19 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
-/* The shell's one easing and one duration. Everything that moves — view
-   switches, the rails, card hover, toasts — uses these same values so motion
-   reads as one system rather than a set of unrelated tweens. */
 :root {
   --ease-shell: cubic-bezier(0.2, 0.8, 0.2, 1);
   --dur-shell: 220ms;
 
-  /* Elevation. Cards rest on the page (border outlines, shadow lifts); hover
-     gives the lift a real shadow to rise out of; floating chrome (popovers,
-     toasts, the lightbox bar) gets the deepest drop. */
   --shadow-card:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 10px 24px -14px rgb(0 0 0 / 0.6);
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.06);
   --shadow-card-hover:
-    inset 0 1px 0 rgb(255 255 255 / 0.06),
-    0 20px 40px -18px rgb(0 0 0 / 0.75);
+    0 4px 16px rgba(15, 23, 42, 0.08),
+    0 8px 24px rgba(15, 23, 42, 0.08);
   --shadow-float:
-    inset 0 1px 0 rgb(255 255 255 / 0.06),
-    0 28px 56px -22px rgb(0 0 0 / 0.85);
+    0 8px 24px rgba(15, 23, 42, 0.10),
+    0 16px 48px rgba(15, 23, 42, 0.12);
 }
 
 html,
@@ -89,61 +76,44 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: 1.6;
-  font-feature-settings: "cv05" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
 }
 
-/* The text cursor over anything selectable — accent, never the UA blue. */
 ::selection {
-  background: rgb(224 112 92 / 0.35);
-  color: #fff;
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
 }
 
-/* Slides are light artefacts shown inside a dark tool. Matting them in white
-   reads as intentional framing rather than a rendering artefact. */
 .slide-frame {
   background: #fff;
   box-shadow:
-    0 0 0 1px rgb(255 255 255 / 0.06),
-    0 12px 28px -12px rgb(0 0 0 / 0.7);
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-/* One focus treatment everywhere, so keyboard navigation is legible. */
 :where(button, a, input, select, textarea):focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* A raised "well" surface: a soft top gradient catches light and an inset
-   highlight defines the inner edge, so controls sitting on it read as inside
-   the container rather than floating beside it. Same palette, only light. */
 .surface-well {
-  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.045), transparent 44%);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.03),
-    inset 0 1px 0 rgb(255 255 255 / 0.06),
-    var(--shadow-card);
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
 }
 
-/* Panel surfaces get the same light-catch, subtler — enough to read as a
-   raised card against the base, never loud enough to compete with content. */
 .panel-surface {
-  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.03), transparent 38%);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.028),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
 }
 
-/* Interactive cards (carousel, deck grid, theme cards): a slight lift with the
-   card shadow growing to sell it, and a settled press state. transform/
-   opacity/box-shadow only, on the shell's shared easing. */
 .card-hover {
   box-shadow: var(--shadow-card);
   transition:
     transform var(--dur-shell) var(--ease-shell),
     border-color var(--dur-shell) var(--ease-shell),
-    background-color var(--dur-shell) var(--ease-shell),
     box-shadow var(--dur-shell) var(--ease-shell);
 }
 .card-hover:hover {
@@ -155,18 +125,12 @@ body {
   transform: translateY(0);
 }
 
-/* The app header and pinned bars catch light on their top edge and cast a
-   hairline into the content below. */
 .shell-header {
-  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.02), transparent 55%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 1px 0 rgb(0 0 0 / 0.4);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(1.1) blur(10px);
+  border-bottom: 1px solid var(--color-line);
 }
 
-/* Designed empty states: a muted icon in a ring, then the message, warmed by
-   one ember glow. The bare dashed box was "no data" noise; this reads as an
-   intentional resting state. */
 .empty-state,
 .empty-state-mini {
   display: flex;
@@ -176,9 +140,9 @@ body {
 }
 .empty-state {
   padding: 3rem 2rem;
-  background:
-    radial-gradient(52rem 30rem at 50% 12%, var(--color-accent-glow), transparent 68%),
-    transparent;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
 }
 .empty-state-mini {
   gap: 0.4rem;
@@ -188,37 +152,29 @@ body {
   display: grid;
   place-items: center;
   border-radius: 9999px;
-  background: var(--color-raised);
+  background: var(--color-sunken);
   color: var(--color-fg-faint);
   border: 1px solid var(--color-line);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.05),
-    0 8px 16px -10px rgb(0 0 0 / 0.6);
 }
 
-/* The one radial glow each hero moment gets — login logo, chat-home hero,
-   landing hero, empty states. One per screen: a hearth, not a disco. */
 .hero-glow {
   background:
-    radial-gradient(52rem 30rem at 50% 12%, var(--color-accent-glow), transparent 68%);
+    radial-gradient(60rem 30rem at 50% 0%, var(--color-accent-tint), transparent 70%);
 }
 
-/* The ambient loop: the hero glow breathes 0.85→1 over six seconds — too slow
-   to notice as animation, perceptible as life. Skipped under reduced motion. */
 @keyframes glow-breathe {
-  from { opacity: 0.85; }
+  from { opacity: 0.9; }
   to { opacity: 1; }
 }
 .glow-breathe {
   animation: glow-breathe 6s ease-in-out infinite alternate;
 }
 
-/* Focus glow on text inputs and selects — the accent ring in soft form, so
-   keyboard users keep the strong outline and mousers get a gentle halo. */
 input:focus,
 select:focus,
 textarea:focus {
   box-shadow: 0 0 0 3px var(--color-accent-tint);
+  border-color: var(--color-accent);
 }
 
 @keyframes shimmer {
@@ -230,18 +186,17 @@ textarea:focus {
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: var(--color-raised);
+  background: var(--color-sunken);
 }
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.045), transparent);
+  background: linear-gradient(90deg, transparent, rgba(15,23,42,0.04), transparent);
   animation: shimmer 1.4s infinite;
 }
 
-/* Capsule pill — mode toggles, suggestion chips, model chip. */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -250,18 +205,12 @@ textarea:focus {
   white-space: nowrap;
 }
 
-/* Thumbnail fallback tile — shown when a deck has no rendered preview on disk.
-   Tonal step, no gradient, centred initial; never a broken <img>. Overflow is
-   clipped at the tile so a long theme label can never bleed into the row text
-   beside it (it did, on the sidebar's 36px tiles). */
 .thumb-fallback {
   display: grid;
   place-items: center;
   overflow: hidden;
   min-width: 0;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.035), transparent 45%),
-    var(--color-raised);
+  background: var(--color-sunken);
   color: var(--color-fg-faint);
 }
 .thumb-fallback > div {
@@ -270,13 +219,6 @@ textarea:focus {
   padding: 0 2px;
 }
 
-/* View switches: a short fade-and-rise on the shell's shared easing, driven by
-   React's key on the main column so each view change re-runs it. Only opacity
-   and transform animate. The fill mode is `backwards`, never `both`: a retained
-   transform on the scroll container — even the identity matrix — turns it into
-   a containing block for `position: fixed` descendants, so the lightbox and
-   the editors (which mount inside main) would position against scrolled main
-   instead of the viewport and the page would jump when they open. */
 @keyframes view-in {
   from {
     opacity: 0;
@@ -287,9 +229,6 @@ textarea:focus {
   animation: view-in var(--dur-shell) var(--ease-shell) backwards;
 }
 
-/* Staggered entrances: grid children assemble 40ms apart, capped at twelve so
-   a long grid never drags. Set --stagger-i (0-based) per child; the cascade
-   reads as the page assembling itself. */
 @keyframes stagger-in {
   from {
     opacity: 0;
@@ -310,8 +249,6 @@ textarea:focus {
   animation: fade-in var(--dur-shell) var(--ease-shell);
 }
 
-/* Toasts and the slim first-run hint rise into place, then exit as a plain
-   fade — rise confirms arrival, fade acknowledges departure. */
 @keyframes toast-in {
   from {
     opacity: 0;
@@ -322,8 +259,6 @@ textarea:focus {
   animation: toast-in var(--dur-shell) var(--ease-shell) both;
 }
 
-/* Chat streaming: three 4px dots pulse beside the status label while a turn
-   runs — opacity and a 2px hop, staggered 150ms, both ways on the shell ease. */
 @keyframes typing-dot {
   0%, 60%, 100% {
     opacity: 0.25;
@@ -344,8 +279,6 @@ textarea:focus {
 .typing-dot:nth-child(2) { animation-delay: 150ms; }
 .typing-dot:nth-child(3) { animation-delay: 300ms; }
 
-/* Primary/outline buttons press: a 2% shrink under the finger, on the shell
-   ease — subtle enough to feel, fast enough to confirm. */
 .press {
   transition:
     transform var(--dur-shell) var(--ease-shell),
@@ -355,8 +288,6 @@ textarea:focus {
   transform: scale(0.98);
 }
 
-/* Reduced motion: the field already draws one static frame, and every
-   transform/opacity transition above collapses to an instant state change. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -367,20 +298,18 @@ textarea:focus {
   }
 }
 
-/* Warm scrollbar — the thumb echoes the line-strong ramp, warms on hover, and
-   stays a quiet 11px content-box pill against a transparent track. */
 ::-webkit-scrollbar {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-line-strong);
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   background-clip: content-box;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #57493d;
+  background: #B0B8C9;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-track {
