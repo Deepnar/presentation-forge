@@ -11,7 +11,8 @@ import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
-import { Privacy, Terms, Contact } from "./views/Legal.jsx";
+import TourThemes from "./views/TourThemes.jsx";
+import { Privacy, Terms, Contact, Docs } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
@@ -198,10 +199,12 @@ export default function App() {
         }
         break;
       case "themes":
+      case "tour-themes":
       case "home":
       case "privacy":
       case "terms":
       case "contact":
+      case "docs":
         setView(r.view);
         break;
       case "chat":
@@ -326,14 +329,22 @@ export default function App() {
 
   if (!user) {
     const tourView = parseHash(window.location.hash).view;
-    const tourLegal = ["privacy","terms","contact"].includes(tourView) ? tourView : null;
+    const tourExtra = ["privacy","terms","contact","docs","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative h-full overflow-hidden bg-base">
         <ParticleField boost={1.8} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-80" />
         <div className="relative z-10 flex h-full flex-col">
-          <TourHeader onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }} />
+          <HeaderBar
+            leftOpen={leftOpen}
+            onToggleLeft={() => setLeftOpen((o) => !o)}
+            onOpenSettings={() => setAuthMode("register")}
+            onOpenProfile={() => {}}
+            user={null}
+            view={tourExtra ?? "home"}
+            onAuthClick={(mode) => { setAuthMode(mode === "register" ? "register" : "login"); setAuthOpen(true); }}
+          />
           <div className="flex-1 overflow-y-auto">
-            {tourLegal === "privacy" ? <Privacy /> : tourLegal === "terms" ? <Terms /> : tourLegal === "contact" ? <Contact /> : (
+            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : tourExtra === "themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : (
               <Home
                 user={null}
                 onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
@@ -370,7 +381,7 @@ export default function App() {
         />
 
         <div className="isolate flex min-h-0 flex-1">
-          {view !== "home" && !["privacy","terms","contact"].includes(view) && (
+          {view !== "home" && !["privacy","terms","contact","docs","tour-themes"].includes(view) && (
             <div
               onMouseEnter={() => setRailHover(true)}
               onMouseLeave={() => setRailHover(false)}
@@ -446,16 +457,18 @@ export default function App() {
               />
             )}
             {view === "themes" && <Themes />}
+            {view === "tour-themes" && <TourThemes onAuth={() => navigate("themes")} authed />}
             {view === "home" && (
               <Home
                 user={user}
                 onStartChat={newChat}
-                onBrowseThemes={() => navigate("themes")}
+                onBrowseThemes={() => navigate("tour-themes")}
               />
             )}
             {view === "privacy" && <Privacy />}
             {view === "terms" && <Terms />}
             {view === "contact" && <Contact />}
+            {view === "docs" && <Docs />}
           </main>
         </div>
 
@@ -484,46 +497,6 @@ export default function App() {
         />
       </div>
     </div>
-  );
-}
-
-function TourHeader({ onAuth }) {
-  const [dark, setDark] = useState(() => {
-    try {
-      const s = localStorage.getItem("forge.theme");
-      if (s === "dark" || s === "light") return s === "dark";
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch { return false; }
-  });
-  useEffect(() => {
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
-    try { localStorage.setItem("forge.theme", dark ? "dark" : "light"); } catch {}
-  }, [dark]);
-  return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel/95 px-4 backdrop-blur-md shadow-sm">
-      <a href="#/home" className="flex items-center gap-2.5">
-        <img src="/logo.svg" alt="Presentation Forge" className="h-8 w-8 rounded-lg shadow-sm ring-1 ring-line/60" />
-        <span className="text-[14px] font-semibold tracking-tight">Presentation Forge</span>
-      </a>
-      <nav className="ml-6 hidden items-center gap-1 sm:flex">
-        <a href="#/home" className="rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-fg bg-sunken">Tour</a>
-        <a href="#/themes" onClick={(e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted hover:bg-hover hover:text-fg">Themes</a>
-      </nav>
-      <div className="ml-auto flex items-center gap-1">
-        <button onClick={() => setDark((v) => !v)} aria-label="Toggle theme" className="grid h-8 w-8 place-items-center rounded-md text-fg-faint hover:bg-hover hover:text-fg">
-          {dark ? (
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" /></svg>
-          ) : (
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
-          )}
-        </button>
-        <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="grid h-8 w-8 place-items-center rounded-md text-fg-faint hover:bg-hover hover:text-fg">
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 4.42 2.87 8.17 6.84 9.5.5.08.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.67.92.67 1.85v2.74c0 .26.18.57.69.47A10.02 10.02 0 0 0 22 12.06c0-5.53-4.5-10.02-10-10.02z" /></svg>
-        </a>
-        <button onClick={() => onAuth?.("login")} className="rounded-full border border-line bg-panel px-3 py-1.5 text-[13px] font-medium text-fg-muted hover:border-line-strong hover:text-fg">Log in</button>
-        <button onClick={() => onAuth?.("register")} className="rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white hover:bg-accent-hi">Sign up</button>
-      </div>
-    </header>
   );
 }
 

@@ -59,7 +59,9 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
     } catch {}
   }
 
-  const hideToggle = view === "home";
+  const hideToggle = view === "home" || view === "tour-themes" || view === "privacy" || view === "terms" || view === "contact" || view === "docs";
+  const isTour = view === "home" || view === "tour-themes" || view === "privacy" || view === "terms" || view === "contact" || view === "docs";
+  const logoHref = isTour && !user ? "#/home" : "#/chat";
   return (
     <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-panel/90 px-3 backdrop-blur-md shadow-sm">
       {!hideToggle && (
@@ -73,7 +75,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
       )}
 
       <a
-        href="#/chat"
+        href={logoHref}
         title="Home"
         className="flex min-w-0 items-center gap-2.5 rounded-md transition hover:opacity-90"
       >
@@ -116,10 +118,16 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         </button>
         <a
           href="#/home"
-          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:bg-hover hover:text-fg"
+          className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] transition ${view === "home" ? "bg-sunken font-medium text-fg" : "text-fg-muted hover:bg-hover hover:text-fg"}`}
         >
           <DocIcon className="h-4 w-4" />
           Tour
+        </a>
+        <a
+          href="#/tour-themes"
+          className={`hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] transition sm:inline-flex ${view === "tour-themes" || view === "themes" ? "bg-sunken font-medium text-fg" : "text-fg-muted hover:bg-hover hover:text-fg"}`}
+        >
+          Themes
         </a>
         <a
           href="https://github.com/Deepnar/presentation-forge"
@@ -139,16 +147,22 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
             <span className="max-w-[7rem] truncate px-1 text-[12px] text-fg-muted">{user.name}</span>
           </button>
         ) : (
-          <button
-            onClick={onAuthClick}
-            title="Log in or register"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-[13px] text-fg-muted transition hover:border-line-strong hover:text-fg"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="8" r="4" /><path d="M4 21c1.2-3.6 4.2-5.5 8-5.5s6.8 1.9 8 5.5" />
-            </svg>
-            Log in
-          </button>
+          <>
+            <button
+              onClick={() => onAuthClick?.("login")}
+              title="Log in"
+              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-[13px] font-medium text-fg-muted transition hover:border-line-strong hover:text-fg"
+            >
+              Log in
+            </button>
+            <button
+              onClick={() => onAuthClick?.("register")}
+              title="Sign up"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white transition hover:bg-accent-hi"
+            >
+              Sign up
+            </button>
+          </>
         )}
       </div>
     </header>
