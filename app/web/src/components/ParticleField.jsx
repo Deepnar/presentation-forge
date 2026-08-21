@@ -40,7 +40,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     let dotRgb = hexToRgb(fill.dot);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 560;
+    const MAX = 220;
     const FRAME_MS = 1000 / 60;
 
     const state = {
@@ -51,22 +51,21 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     };
 
     const makeDot = () => {
-      const r = 0.7 + Math.random() * 1.8;
-      const darkBoost = fill.isDark ? 1.45 : 1;
+      const r = 0.6 + Math.random() * 1.1;
       return {
         x: Math.random() * state.w,
         y: Math.random() * state.h,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
         r,
         baseR: r,
-        base: (fill.isDark ? 0.22 + Math.random() * 0.34 : 0.14 + Math.random() * 0.32) * boost * darkBoost,
+        base: (fill.isDark ? 0.10 + Math.random() * 0.16 : 0.08 + Math.random() * 0.14) * boost,
         phase: Math.random() * Math.PI * 2,
-        fx: 0.08 + Math.random() * 0.22,
-        fy: 0.06 + Math.random() * 0.18,
+        fx: 0.06 + Math.random() * 0.14,
+        fy: 0.05 + Math.random() * 0.12,
         ax: 10 + Math.random() * 22,
         ay: 10 + Math.random() * 22,
-        accent: Math.random() < (fill.isDark ? 0.34 : 0.28),
+        accent: Math.random() < 0.16,
         tw: Math.random() * Math.PI * 2,
       };
     };
@@ -79,7 +78,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      const count = Math.max(80, Math.min(MAX, Math.round(area / 2400)));
+      const count = Math.max(40, Math.min(MAX, Math.round(area / 5200)));
       state.dots = Array.from({ length: count }, makeDot);
       state.trails = [];
       if (reduceMotion) drawFrame(performance.now());
@@ -108,64 +107,61 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         if (pointer.x >= 0) {
           const dx = x - pointer.x * dpr;
           const dy = y - pointer.y * dpr;
-          const radius = 220 * dpr;
+          const radius = 150 * dpr;
           const dist2 = dx * dx + dy * dy;
           if (dist2 > 0 && dist2 < radius * radius) {
             const dist = Math.sqrt(dist2);
             const t = 1 - dist / radius;
-            const push = t * t * 1.8;
-            x += (dx / dist) * push * 22 * dpr;
-            y += (dy / dist) * push * 22 * dpr;
-            scale = 1 + t * 1.6;
-            bright = 1 + t * 1.1;
+            const push = t * t * 1.0;
+            x += (dx / dist) * push * 10 * dpr;
+            y += (dy / dist) * push * 10 * dpr;
+            scale = 1 + t * 0.45;
+            bright = 1 + t * 0.35;
             pushed += 1;
           }
-          // repulse velocity a bit
-          if (dist2 < (120 * dpr) ** 2) {
-            d.vx += (dx / (Math.sqrt(dist2) || 1)) * 0.002;
-            d.vy += (dy / (Math.sqrt(dist2) || 1)) * 0.002;
-            d.vx = Math.max(-0.9, Math.min(0.9, d.vx));
-            d.vy = Math.max(-0.9, Math.min(0.9, d.vy));
+          // repulse velocity a bit — subtler
+          if (dist2 < (90 * dpr) ** 2) {
+            d.vx += (dx / (Math.sqrt(dist2) || 1)) * 0.001;
+            d.vy += (dy / (Math.sqrt(dist2) || 1)) * 0.001;
+            d.vx = Math.max(-0.6, Math.min(0.6, d.vx));
+            d.vy = Math.max(-0.6, Math.min(0.6, d.vy));
           }
         }
 
         pts.push({ x, y, s: scale, b: bright, d });
 
-        const twinkle = 0.65 + 0.35 * Math.sin(now * 0.0012 + d.tw * 1.7);
-        const pulse = 0.92 + 0.08 * Math.sin(now * 0.0009 + d.phase);
+        const twinkle = 0.72 + 0.28 * Math.sin(now * 0.001 + d.tw * 1.7);
+        const pulse = 0.94 + 0.06 * Math.sin(now * 0.0008 + d.phase);
         const r = d.r * dpr * pulse * scale;
-        const accentMul = fill.isDark ? 1.55 : 1.35;
-        const darkAlphaBoost = fill.isDark ? 1.22 : 1;
-        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? accentMul : 1) * darkAlphaBoost);
+        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
         ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-        // soft glow for accents — stronger in dark so they pop
+        // soft glow for accents — very faint now
         if (d.accent) {
-          ctx.globalAlpha *= fill.isDark ? 0.28 : 0.18;
+          ctx.globalAlpha *= 0.10;
           ctx.beginPath();
-          ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
+          ctx.arc(x, y, r * 2.0, 0, Math.PI * 2);
           ctx.fill();
         }
       }
 
-      // constellation lines — stronger in dark
+      // constellation lines — faint, only near pointer
       ctx.globalAlpha = 1;
-      if (pts.length < 360) {
+      if (pts.length < 180) {
         for (let i = 0; i < pts.length; i++) {
           for (let j = i + 1; j < pts.length; j++) {
             const a = pts[i], b = pts[j];
             const dx = a.x - b.x, dy = a.y - b.y;
             const d2 = dx * dx + dy * dy;
-            const lim = (140 * dpr) ** 2;
+            const lim = (110 * dpr) ** 2;
             if (d2 < lim) {
-              const t = 1 - Math.sqrt(d2) / (140 * dpr);
-              if (t > 0.3 && (Math.random() < 0.16 || a.b > 1.1 || b.b > 1.1)) {
-                const lineBoost = fill.isDark ? 1.75 : 1;
-                ctx.globalAlpha = t * 0.13 * boost * lineBoost;
+              const t = 1 - Math.sqrt(d2) / (110 * dpr);
+              if (t > 0.42 && (a.b > 1.12 || b.b > 1.12)) {
+                ctx.globalAlpha = t * 0.07 * boost;
                 ctx.strokeStyle = `rgb(${dotRgb})`;
-                ctx.lineWidth = (fill.isDark ? 0.85 : 0.7) * dpr;
+                ctx.lineWidth = 0.55 * dpr;
                 ctx.beginPath();
                 ctx.moveTo(a.x, a.y);
                 ctx.lineTo(b.x, b.y);
@@ -176,21 +172,21 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         }
       }
 
-      // mouse trail sparkles — slightly sparser to avoid overload with denser field
-      if (pointer.x >= 0 && (Math.abs(pointer.vx) > 0.6 || Math.abs(pointer.vy) > 0.6)) {
-        if (Math.random() < 0.4) {
-          state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 0.9, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4 });
+      // mouse trail — rare, subtle
+      if (pointer.x >= 0 && (Math.abs(pointer.vx) > 1.2 || Math.abs(pointer.vy) > 1.2)) {
+        if (Math.random() < 0.18) {
+          state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 0.7, vx: (Math.random() - 0.5) * 0.9, vy: (Math.random() - 0.5) * 0.9 });
         }
       }
       for (let i = state.trails.length - 1; i >= 0; i--) {
         const t = state.trails[i];
-        t.life -= 0.05;
+        t.life -= 0.06;
         if (t.life <= 0) { state.trails.splice(i, 1); continue; }
-        t.x += t.vx; t.y += t.vy; t.vy += 0.07;
-        ctx.globalAlpha = t.life * 0.6;
+        t.x += t.vx; t.y += t.vy; t.vy += 0.04;
+        ctx.globalAlpha = t.life * 0.32;
         ctx.fillStyle = `rgb(${accentRgb})`;
         ctx.beginPath();
-        ctx.arc(t.x, t.y, 1.7 * dpr * t.life, 0, Math.PI * 2);
+        ctx.arc(t.x, t.y, 1.2 * dpr * t.life, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -235,9 +231,8 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       fill = getFill();
       accentRgb = hexToRgb(fill.accent);
       dotRgb = hexToRgb(fill.dot);
-      // rebalance existing dots for new theme without respawning
       state.dots.forEach((d) => {
-        d.base = (fill.isDark ? 0.22 + Math.random() * 0.34 : 0.14 + Math.random() * 0.32) * boost * (fill.isDark ? 1.45 : 1);
+        d.base = (fill.isDark ? 0.10 + Math.random() * 0.16 : 0.08 + Math.random() * 0.14) * boost;
       });
     };
     const mo = new MutationObserver(syncTheme);
