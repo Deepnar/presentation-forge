@@ -325,18 +325,22 @@ export default function App() {
   }
 
   if (!user) {
+    const tourView = parseHash(window.location.hash).view;
+    const tourLegal = ["privacy","terms","contact"].includes(tourView) ? tourView : null;
     return (
       <div className="relative h-full overflow-hidden bg-base">
         <ParticleField boost={1.8} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-80" />
         <div className="relative z-10 flex h-full flex-col">
           <TourHeader onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }} />
           <div className="flex-1 overflow-y-auto">
-            <Home
-              user={null}
-              onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
-              onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
-              onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
-            />
+            {tourLegal === "privacy" ? <Privacy /> : tourLegal === "terms" ? <Terms /> : tourLegal === "contact" ? <Contact /> : (
+              <Home
+                user={null}
+                onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
+                onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
+                onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
+              />
+            )}
           </div>
         </div>
         {authOpen && (

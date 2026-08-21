@@ -9,6 +9,7 @@ import { progressLabel } from "../lib/progress.js";
 import { reportWrites } from "../lib/reportWrites.js";
 import { useModels } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
+import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 
 /**
  * One deck: header with theme/style + render + download, a Report panel (the
@@ -72,6 +73,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [future, setFuture] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [tplOpen, setTplOpen] = useState(false);
+  const [themePickerOpen, setThemePickerOpen] = useState(false);
   const renderTimer = useRef(null);
   const exportRef = useRef(null);
 
@@ -662,20 +664,29 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           {/* Settings — what the deck renders with. The action that applies
               them sits beside them so "why is this here" reads at a glance. */}
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <div className="relative">
-              <select
-                value={theme}
-                onChange={(e) => { setTheme(e.target.value); setRenderDirty(true); }}
-                title="Theme — the design language the deck renders in. Changing it marks the render stale."
-                className={selectCls}
-              >
-                <option value="">from deck.yaml</option>
-                {themes.map((t) => (
-                  <option key={t.name} value={t.name}>{t.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
-            </div>
+            <button
+              onClick={() => setThemePickerOpen(true)}
+              title="Theme — visual picker, changing it marks render stale"
+              className="inline-flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-1.5 text-[12.5px] text-fg shadow-sm transition hover:border-line-strong"
+            >
+              <span className="h-3 w-3 rounded-full" style={{ background: themes.find((t) => t.name === (theme || deck.theme))?.palette?.accent ?? "var(--color-accent)" }} />
+              {themes.find((t) => t.name === (theme || deck.theme))?.label ?? "Theme"} <ChevronDown className="h-3 w-3 text-fg-faint" />
+            </button>
+            {themePickerOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" onClick={() => setThemePickerOpen(false)}>
+                <div className="max-h-[80vh] w-full max-w-3xl overflow-hidden rounded-card border border-line bg-panel p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="text-[14px] font-semibold">Pick a theme</h3>
+                    <button onClick={() => setThemePickerOpen(false)} className="rounded p-1 text-fg-faint hover:bg-hover">✕</button>
+                  </div>
+                  <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 sm:grid-cols-3">
+                    {themes.map((t) => (
+                      <ThemeMiniCard key={t.name} theme={t} selected={(theme || deck.theme) === t.name} onClick={() => { setTheme(t.name); setRenderDirty(true); setThemePickerOpen(false); }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="relative">
               <select
