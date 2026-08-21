@@ -35,7 +35,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     const dotRgb = hexToRgb(fill.dot);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 420;
+    const MAX = 560;
     const FRAME_MS = 1000 / 60;
 
     const state = {
@@ -73,7 +73,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      const count = Math.max(60, Math.min(MAX, Math.round(area / 3000)));
+      const count = Math.max(80, Math.min(MAX, Math.round(area / 2400)));
       state.dots = Array.from({ length: count }, makeDot);
       state.trails = [];
       if (reduceMotion) drawFrame(performance.now());
@@ -102,16 +102,16 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         if (pointer.x >= 0) {
           const dx = x - pointer.x * dpr;
           const dy = y - pointer.y * dpr;
-          const radius = 180 * dpr;
+          const radius = 220 * dpr;
           const dist2 = dx * dx + dy * dy;
           if (dist2 > 0 && dist2 < radius * radius) {
             const dist = Math.sqrt(dist2);
             const t = 1 - dist / radius;
-            const push = t * t * 1.6;
-            x += (dx / dist) * push * 14 * dpr;
-            y += (dy / dist) * push * 14 * dpr;
-            scale = 1 + t * 0.9;
-            bright = 1 + t * 0.7;
+            const push = t * t * 1.8;
+            x += (dx / dist) * push * 22 * dpr;
+            y += (dy / dist) * push * 22 * dpr;
+            scale = 1 + t * 1.6;
+            bright = 1 + t * 1.1;
             pushed += 1;
           }
           // repulse velocity a bit
@@ -142,22 +142,21 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         }
       }
 
-      // constellation lines — faint, only when not too dense
+      // constellation lines — denser, stronger near pointer
       ctx.globalAlpha = 1;
-      if (pts.length < 300) {
+      if (pts.length < 360) {
         for (let i = 0; i < pts.length; i++) {
           for (let j = i + 1; j < pts.length; j++) {
             const a = pts[i], b = pts[j];
             const dx = a.x - b.x, dy = a.y - b.y;
             const d2 = dx * dx + dy * dy;
-            const lim = (110 * dpr) ** 2;
+            const lim = (140 * dpr) ** 2;
             if (d2 < lim) {
-              const t = 1 - Math.sqrt(d2) / (110 * dpr);
-              // only draw if at least one is near pointer or random sparseness
-              if (t > 0.35 && (Math.random() < 0.12 || a.b > 1.1 || b.b > 1.1)) {
-                ctx.globalAlpha = t * 0.09 * boost;
+              const t = 1 - Math.sqrt(d2) / (140 * dpr);
+              if (t > 0.3 && (Math.random() < 0.16 || a.b > 1.1 || b.b > 1.1)) {
+                ctx.globalAlpha = t * 0.13 * boost;
                 ctx.strokeStyle = `rgb(${dotRgb})`;
-                ctx.lineWidth = 0.6 * dpr;
+                ctx.lineWidth = 0.7 * dpr;
                 ctx.beginPath();
                 ctx.moveTo(a.x, a.y);
                 ctx.lineTo(b.x, b.y);
@@ -168,21 +167,21 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         }
       }
 
-      // mouse trail sparkles
-      if (pointer.x >= 0 && (Math.abs(pointer.vx) > 0.5 || Math.abs(pointer.vy) > 0.5)) {
-        if (Math.random() < 0.55) {
-          state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 1, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2 });
+      // mouse trail sparkles — slightly sparser to avoid overload with denser field
+      if (pointer.x >= 0 && (Math.abs(pointer.vx) > 0.6 || Math.abs(pointer.vy) > 0.6)) {
+        if (Math.random() < 0.4) {
+          state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 0.9, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4 });
         }
       }
       for (let i = state.trails.length - 1; i >= 0; i--) {
         const t = state.trails[i];
-        t.life -= 0.045;
+        t.life -= 0.05;
         if (t.life <= 0) { state.trails.splice(i, 1); continue; }
-        t.x += t.vx; t.y += t.vy; t.vy += 0.06;
-        ctx.globalAlpha = t.life * 0.55;
+        t.x += t.vx; t.y += t.vy; t.vy += 0.07;
+        ctx.globalAlpha = t.life * 0.6;
         ctx.fillStyle = `rgb(${accentRgb})`;
         ctx.beginPath();
-        ctx.arc(t.x, t.y, 1.6 * dpr * t.life, 0, Math.PI * 2);
+        ctx.arc(t.x, t.y, 1.7 * dpr * t.life, 0, Math.PI * 2);
         ctx.fill();
       }
 
