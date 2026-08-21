@@ -32,8 +32,18 @@ export function parseHash(hash) {
       return rest[0] ? { view: kind, slug: rest[0] } : { view: "chat" };
     case "themes":
       return { view: "themes" };
+    case "tour-themes":
+      return { view: "tour-themes" };
     case "home":
       return { view: "home" };
+    case "privacy":
+      return { view: "privacy" };
+    case "terms":
+      return { view: "terms" };
+    case "contact":
+      return { view: "contact" };
+    case "docs":
+      return { view: "docs" };
     case "chat":
       return { view: "chat", chatId: rest[0] || null };
     default:
@@ -53,8 +63,18 @@ export function hashFor(view, { slug, chatId } = {}) {
       return slug ? `#/research/${slug}` : "#/chat";
     case "themes":
       return "#/themes";
+    case "tour-themes":
+      return "#/tour-themes";
     case "home":
       return "#/home";
+    case "privacy":
+      return "#/privacy";
+    case "terms":
+      return "#/terms";
+    case "contact":
+      return "#/contact";
+    case "docs":
+      return "#/docs";
     case "chat":
     default:
       return chatId ? `#/chat/${chatId}` : "#/chat";
