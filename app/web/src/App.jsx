@@ -345,9 +345,9 @@ export default function App() {
     const tourView = parseHash(window.location.hash).view;
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
-      <div className="relative h-full overflow-hidden bg-base">
+      <div className="relative min-h-screen bg-base">
         <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />
-        <div className="relative z-10 flex h-full flex-col">
+        <div className="relative z-10 flex min-h-screen flex-col">
           <HeaderBar
             leftOpen={leftOpen}
             onToggleLeft={() => setLeftOpen((o) => !o)}
@@ -357,7 +357,7 @@ export default function App() {
             view={tourExtra ?? "home"}
             onAuthClick={(mode) => { setAuthMode(mode === "register" ? "register" : "login"); setAuthOpen(true); }}
           />
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1">
             {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : tourExtra === "themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : (
               <Home
                 user={null}
@@ -379,11 +379,12 @@ export default function App() {
     );
   }
 
+  const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   return (
-    <div className="relative h-full overflow-hidden bg-base">
-      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />
+    <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
+      {isTourView ? <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />}
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col" : "h-full flex-col"}`}>
         <HeaderBar
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
@@ -395,7 +396,7 @@ export default function App() {
           onAuthClick={() => setAuthOpen(true)}
         />
 
-        <div className="isolate flex min-h-0 flex-1">
+        <div className={`isolate flex ${isTourView ? "flex-1" : "min-h-0 flex-1"}`}>
           {view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view) && (
             <div
               onMouseEnter={() => setRailHover(true)}
@@ -424,7 +425,7 @@ export default function App() {
             </div>
           )}
 
-          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className="view-in relative min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible" : "overflow-y-auto"}`}>
             <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
               <ChatView

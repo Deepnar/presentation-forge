@@ -101,10 +101,14 @@
     0 24px 64px rgba(0, 0, 0, 0.6);
 }
 
-html,
+html {
+  height: auto;
+  min-height: 100%;
+}
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
+  height: auto;
 }
 
 body {
