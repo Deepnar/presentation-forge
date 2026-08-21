@@ -20,9 +20,9 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
-  user, identity, onOpenSettings,
+  user, identity, onOpenSettings, onOpenProfile,
 }) {
-  const [tab, setTab] = useState("chats"); // chats | decks
+  const [tab, setTab] = useState("chats"); // chats | projects
   const [query, setQuery] = useState("");
   const [contentHits, setContentHits] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
@@ -40,12 +40,12 @@ export default function Sidebar({
     return () => clearTimeout(t);
   }, [query]);
 
-  // Ctrl+K lands here from anywhere: switch to the Decks tab and focus search.
+  // Ctrl+K lands here from anywhere: switch to the Projects tab and focus search.
   useEffect(() => {
     if (focusSearch > 0) {
-      setTab("decks");
+      setTab("projects");
       requestAnimationFrame(() => {
-        document.querySelector("input[placeholder='Search decks']")?.focus();
+        document.querySelector("input[placeholder='Search projects']")?.focus();
       });
     }
   }, [focusSearch]);
@@ -91,16 +91,16 @@ export default function Sidebar({
                 </span>
               )}
             </TabButton>
-            <TabButton active={tab === "decks"} onClick={() => setTab("decks")}>Decks</TabButton>
+            <TabButton active={tab === "projects"} onClick={() => setTab("projects")}>Projects</TabButton>
           </div>
 
-          {tab === "decks" && (
+          {tab === "projects" && (
             <div className="relative px-3 pt-2.5">
               <SearchIcon className="pointer-events-none absolute left-4.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search decks"
+                placeholder="Search projects"
                 className="w-full rounded-lg border border-line bg-sunken py-1.5 pl-8 pr-3 text-[12.5px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
               />
             </div>
@@ -162,7 +162,7 @@ export default function Sidebar({
               </>
             )}
 
-            {tab === "decks" && (
+            {tab === "projects" && (
               <>
                 <div className="space-y-0.5">
                   {filtered.map((d) => (
@@ -191,7 +191,7 @@ export default function Sidebar({
                         onToggle={(v) => setOpenMenu(v ? `d-${d.slug}` : null)}
                         items={[
                           { label: "Open", onClick: () => onOpenDeck(d.slug) },
-                          { label: "Delete deck", danger: true, onClick: () => setConfirmDelete(d) },
+                          { label: "Delete project", danger: true, onClick: () => setConfirmDelete(d) },
                         ]}
                       />
                     </div>
@@ -203,8 +203,8 @@ export default function Sidebar({
                       <SearchIcon className="h-3.5 w-3.5" />
                     </div>
                     {query.trim()
-                      ? <div>No decks match <span className="text-fg-muted">“{query.trim()}”</span></div>
-                      : <div>No decks yet — one starts from a chat. The machine drafts, you do the final touches.</div>}
+                      ? <div>No projects match <span className="text-fg-muted">“{query.trim()}”</span></div>
+                      : <div>No projects yet — one starts from a chat. The machine drafts, you do the final touches.</div>}
                   </div>
                 )}
               </>
@@ -224,24 +224,23 @@ export default function Sidebar({
               <ProfileChip
                 user={user}
                 identity={identity}
-                onOpenSettings={onOpenSettings}
+                onOpenSettings={onOpenProfile ?? onOpenSettings}
               />
             </div>
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-1 py-3">
+        <div className="flex h-full flex-col items-center gap-1 py-3">
           <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" href="#/chat" />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
           <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
-          <div className="mt-auto" />
-          <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
-          <div className="pt-1">
+          <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-line pt-2">
+            <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
             <ProfileChip
               collapsed
               user={user}
               identity={identity}
-              onOpenSettings={onOpenSettings}
+              onOpenSettings={onOpenProfile ?? onOpenSettings}
             />
           </div>
         </div>

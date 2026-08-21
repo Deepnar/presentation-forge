@@ -321,9 +321,6 @@ function CapabilityGrid({ onStartChat }) {
           </div>
         ))}
       </div>
-      <div className="mt-10 text-center">
-        <Button variant="primary" onClick={onStartChat}>Start a chat</Button>
-      </div>
     </Reveal>
   );
 }
@@ -352,9 +349,9 @@ function FooterStrip() {
         <div>
           <div className="text-[12px] font-semibold tracking-tight">Legal</div>
           <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Privacy Policy</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Terms of Service</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-fg">Contact</a>
+            <a href="#/privacy" className="hover:text-fg">Privacy Policy</a>
+            <a href="#/terms" className="hover:text-fg">Terms of Service</a>
+            <a href="#/contact" className="hover:text-fg">Contact</a>
           </div>
         </div>
         <div>

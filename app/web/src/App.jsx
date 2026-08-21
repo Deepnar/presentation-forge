@@ -11,7 +11,9 @@ import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
+import { Privacy, Terms, Contact } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
+import ProfileModal from "./components/ProfileModal.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 
@@ -29,6 +31,7 @@ export default function App() {
   const [org, setOrg] = useState("");
   const [view, setView] = useState("chat"); // chat | deck | report | research | themes | home
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
@@ -196,14 +199,14 @@ export default function App() {
         break;
       case "themes":
       case "home":
+      case "privacy":
+      case "terms":
+      case "contact":
         setView(r.view);
         break;
       case "chat":
       default:
         setView("chat");
-        // Back/forward restore: the hash's chat id (if the thread is loaded)
-        // wins mid-session; on a fresh login the boot effect replaces the
-        // hash with a bare #/chat first, so New chat stays the landing.
         if (r.chatId && chats.some((c) => c.id === r.chatId)) setActiveChatId(r.chatId);
         break;
     }
@@ -363,7 +366,7 @@ export default function App() {
         />
 
         <div className="isolate flex min-h-0 flex-1">
-          {view !== "home" && (
+          {view !== "home" && !["privacy","terms","contact"].includes(view) && (
             <div
               onMouseEnter={() => setRailHover(true)}
               onMouseLeave={() => setRailHover(false)}
@@ -386,6 +389,7 @@ export default function App() {
                 user={user}
                 identity={identity}
                 onOpenSettings={() => setSettingsOpen(true)}
+                onOpenProfile={() => setProfileOpen(true)}
               />
             </div>
           )}
@@ -445,6 +449,9 @@ export default function App() {
                 onBrowseThemes={() => navigate("themes")}
               />
             )}
+            {view === "privacy" && <Privacy />}
+            {view === "terms" && <Terms />}
+            {view === "contact" && <Contact />}
           </main>
         </div>
 
@@ -459,12 +466,16 @@ export default function App() {
         <SettingsModal
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
-          user={user}
           identity={identity}
           onIdentityChanged={(next) => {
             setIdentity(next);
             setOrg(next?.institution?.short ?? "");
           }}
+        />
+        <ProfileModal
+          open={profileOpen}
+          onClose={() => setProfileOpen(false)}
+          user={user}
           onLogout={doLogout}
         />
       </div>
