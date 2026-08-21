@@ -73,14 +73,15 @@ const PORT = process.env.FORGE_API_PORT || 5174;
 const ok = (res, data) => res.json({ ok: true, ...data });
 const fail = (res, code, message) => res.status(code).json({ ok: false, error: message });
 
-/** Auto-tier guard: when routing is auto (shared TCET gateway) enforce hourly/weekly caps.
- *  Returns {ok:false,error} via SSE or HTTP 429. Record only on success. */
+/** Auto-tier guard: only the shared TCET gateway is rate-limited;
+ *  local fallback (Ollama) is unlimited. */
 async function isAutoRoute(model) {
-  if (model && String(model) === "qwen3.6") return true;
-  const route = await routingPreference();
-  if (route !== "auto") return false;
   const ap = await autoProvider();
-  return Boolean(ap?.keySet);
+  const isTcet = ap?.kind === "tcet" && ap?.keySet;
+  if (model && String(model) === "qwen3.6" && isTcet) return true;
+  const route = await routingPreference();
+  if (route !== "auto" || !isTcet) return false;
+  return true;
 }
 async function enforceAuto(userEmail, upcomingSlides = 0) {
   const uid = getUserId(userEmail);

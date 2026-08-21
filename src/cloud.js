@@ -142,34 +142,59 @@ export async function setRoutingPreference(route) {
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
 }
 
-// Auto provider (TCET)
+// Auto provider — the free tier. On hosted it's TCET CoE (qwen3.6), on a local
+// download with no TCET key it falls back to the local Ollama model so "AUTO"
+// always works. This is what the header shows as AUTO.
 export async function autoProvider() {
   const models = await readYaml(MODELS_FILE);
-  const p = models.providers?.["tcet-auto"];
-  if (!p) return null;
+  const tcet = models.providers?.["tcet-auto"];
   const key = await resolveSecret("FORGE_TCET_API_KEY");
-  const list = Array.isArray(p.models) && p.models.length ? [...p.models] : await providerModels(p);
+  if (tcet && key.length > 0) {
+    const list = Array.isArray(tcet.models) && tcet.models.length ? [...tcet.models] : await providerModels(tcet);
+    return {
+      id: "tcet-auto",
+      label: tcet.label ?? "TCET CoE",
+      baseURL: String(tcet.baseURL).replace(/\/+$/, ""),
+      models: list.length ? list : ["qwen3.6"],
+      apiKey: tcet.apiKey ?? "env:FORGE_TCET_API_KEY",
+      keySet: true,
+      kind: "tcet",
+    };
+  }
+  // Fallback: local Ollama as the free tier (download-and-run case)
+  const host = models.host ?? "http://localhost:11434";
+  let localModels = [];
+  try {
+    const res = await fetch(`${host}/api/tags`, { signal: AbortSignal.timeout(2000) });
+    if (res.ok) {
+      const body = await res.json();
+      localModels = (body.models ?? []).map((m) => m.name);
+    }
+  } catch {}
+  // If no Ollama installed, still return a synthetic entry so AUTO is visible
+  // but keySet false — the UI will show it as unavailable.
   return {
-    id: "tcet-auto",
-    label: p.label ?? "TCET CoE",
-    baseURL: String(p.baseURL).replace(/\/+$/, ""),
-    models: list,
-    apiKey: p.apiKey ?? "env:FORGE_TCET_API_KEY",
-    keySet: key.length > 0,
+    id: "local",
+    label: "Local",
+    baseURL: host,
+    models: localModels.length ? localModels : [models.roles?.author?.model ?? "qwen3-coder:30b-a3b-q4_K_M"],
+    apiKey: "",
+    keySet: localModels.length > 0,
+    kind: "local",
   };
 }
 export async function autoStatus() {
   const p = await autoProvider();
   if (!p) return { configured: false, keySet: false };
-  const key = await resolveSecret("FORGE_TCET_API_KEY");
   return {
     configured: true,
     provider: p.id,
     label: p.label,
     baseURL: p.baseURL,
     models: p.models,
-    keyName: "FORGE_TCET_API_KEY",
-    keySet: key.length > 0,
+    keyName: p.id === "tcet-auto" ? "FORGE_TCET_API_KEY" : null,
+    keySet: p.keySet,
+    kind: p.kind ?? (p.id === "tcet-auto" ? "tcet" : "local"),
     route: await routingPreference(),
   };
 }
@@ -237,11 +262,28 @@ export async function cloudStatus() {
  */
 export async function testAutoConnection() {
   const p = await autoProvider();
-  if (!p) return { ok: false, detail: "no tcet-auto provider configured" };
+  if (!p) return { ok: false, detail: "no auto provider configured" };
+  if (p.kind === "local" || p.id === "local") {
+    try {
+      const res = await fetch(`${p.baseURL}/api/tags`, { signal: AbortSignal.timeout(3000) });
+      if (!res.ok) return { ok: false, detail: `Ollama not reachable at ${p.baseURL} — run: ollama serve` };
+      const body = await res.json();
+      const n = (body.models ?? []).length;
+      return { ok: true, detail: `local Ollama OK — ${n} model(s) available`, model: p.models[0] };
+    } catch (e) { return { ok: false, detail: `Ollama not reachable: ${e.message}` }; }
+  }
   const key = await resolveSecret("FORGE_TCET_API_KEY");
   if (!key) return { ok: false, detail: "no TCET API key set — set FORGE_TCET_API_KEY" };
   const probe = p.models[0] ?? "qwen3.6";
   try {
+    const modelsRes = await fetch(`${p.baseURL}/models`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!modelsRes.ok) {
+      const t = (await modelsRes.text()).slice(0, 160);
+      return { ok: false, detail: `models check failed HTTP ${modelsRes.status}: ${t}` };
+    }
     const res = await fetch(`${p.baseURL}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
@@ -250,6 +292,9 @@ export async function testAutoConnection() {
     });
     if (!res.ok) {
       const text = (await res.text()).slice(0, 200);
+      if (res.status === 520 || res.status === 502 || res.status === 503) {
+        return { ok: false, detail: `TCET gateway temporarily unavailable (HTTP ${res.status}) — campus server may be restarting or at 15-user limit. Models endpoint OK, key is valid. Try again or use CLOUD.` };
+      }
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }
     return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };

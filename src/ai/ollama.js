@@ -56,13 +56,11 @@ export async function authorTransport({ model } = {}) {
   const route = await routingPreference();
   if (route === "auto") {
     const ap = await autoProvider();
-    if (ap?.keySet) return "auto";
+    if (ap?.keySet) {
+      if (ap.kind === "tcet") return "auto";
+      return "ollama"; // local fallback is just Ollama
+    }
   }
-  if (route === "cloud") {
-    const cp = await cloudProvider();
-    if (cp?.models?.length) return "cloud";
-  }
-  // legacy "local" preference maps to ollama
   if (route === "cloud") {
     const cp = await cloudProvider();
     if (cp?.models?.length) return "cloud";
@@ -300,7 +298,8 @@ export async function chat({
     const route = await routingPreference();
     if (route === "auto") {
       const ap = await autoProvider();
-      if (ap?.keySet && ap?.models?.length) model = ap.models[0];
+      if (ap?.kind === "tcet" && ap?.keySet && ap?.models?.length) model = ap.models[0];
+      // local fallback: let Ollama resolve the author's default, no explicit model
     } else if (route === "cloud") {
       const cp = await cloudProvider();
       if (cp?.models?.length) model = cp.models[0];
