@@ -9,7 +9,7 @@ import { setModelMode, subscribeModelMode, getModelMode } from "../lib/modelMode
  * client model-mode store so every picker filters immediately. CLOUD is only
  * reachable when a BYOK key is attached — without one it points at Settings.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, user, onAuthClick, view }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, onOpenProfile, user, onAuthClick, view }) {
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("auto");
@@ -85,27 +85,17 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </a>
 
-      <div className="inline-flex items-center rounded-full border border-line-strong bg-panel p-0.5">
+      <div className="flex items-center gap-2">
+        <span className={`text-[10px] font-medium ${routingAuto ? "text-accent" : "text-fg-faint"}`}>{autoLabel}</span>
         <button
-          onClick={() => setMode("auto")}
-          title={autoTitle}
-          className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
-            routingAuto ? "bg-accent/15 text-accent" : "text-fg-faint hover:text-fg-muted"
-          }`}
+          onClick={() => (routingCloud ? setMode("auto") : (cloudOn ? setMode("cloud") : onOpenSettings?.()))}
+          title={routingAuto ? autoTitle + " — click to switch to Cloud" : "Cloud — click to switch to Auto"}
+          className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border p-0.5 transition ${routingAuto ? "border-accent/30 bg-accent" : "border-line-strong bg-panel"}`}
+          aria-label="Toggle Auto/Cloud"
         >
-          {autoLabel}
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${routingAuto ? "translate-x-0.5" : "translate-x-5"}`} />
         </button>
-        <button
-          onClick={() => (cloudOn ? setMode("cloud") : onOpenSettings?.())}
-          title={cloudOn
-            ? "Your own API key — unlimited, billed to you"
-            : "Attach your API key in Settings to use cloud"}
-          className={`pill px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider transition ${
-            routingCloud ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"
-          }`}
-        >
-          CLOUD
-        </button>
+        <span className={`text-[10px] font-medium ${routingCloud ? "text-fg" : "text-fg-faint"}`}>CLOUD</span>
       </div>
       {auto?.keySet && (
         <Badge className={`hidden border sm:inline-flex ${autoKind === "local" ? "border-line bg-panel text-fg-faint" : "border-accent/20 bg-accent/10 text-accent"}`}>{autoKind === "local" ? "Local" : "Ready"}</Badge>
@@ -142,12 +132,12 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         </a>
 
         {user ? (
-          <div className="flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pl-1 pr-2">
+          <button onClick={() => onOpenProfile?.()} className="flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pl-1 pr-2 transition hover:border-line-strong hover:bg-hover">
             <span className="grid h-6 w-6 place-items-center rounded-full bg-accent/15 text-[11px] font-semibold uppercase text-accent">
               {user.name?.[0] ?? "?"}
             </span>
             <span className="max-w-[7rem] truncate px-1 text-[12px] text-fg-muted">{user.name}</span>
-          </div>
+          </button>
         ) : (
           <button
             onClick={onAuthClick}

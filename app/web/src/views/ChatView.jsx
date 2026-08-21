@@ -892,10 +892,10 @@ export default function ChatView({
           <div className="flex items-center gap-0.5 rounded-full bg-panel p-0.5">
             <button
               onClick={() => switchKind("deck")}
-              title="A topic becomes a themed deck"
+              title="A topic becomes a themed presentation (slides + report + script)"
               className={`pill px-2.5 py-1 text-[11.5px] font-medium transition ${chat.kind === "deck" ? "bg-hover text-fg" : "text-fg-faint hover:text-fg-muted"}`}
             >
-              <LayersIcon className="h-3 w-3" /> Chat
+              <LayersIcon className="h-3 w-3" /> PPT
             </button>
             <button
               onClick={() => switchKind("report")}
@@ -913,15 +913,16 @@ export default function ChatView({
               value={model}
               onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
               disabled={inputDisabled}
-              title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model does the work"}
+              title={model ? `Using ${model}` : (modelMode === "cloud" ? `Cloud · ${defaultModel}` : `Auto · ${defaultModel} (${auto?.provider === "tcet-auto" ? "shared" : "local"})`)}
               className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
             >
-              <option value="">auto · {defaultModel}</option>
+              <option value="">{modelMode === "cloud" ? "Cloud" : "Auto"} · {defaultModel || "auto"}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
             </select>
             <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
+          {modelMode === "auto" && !model && <span className="hidden text-[10px] text-fg-faint sm:inline">via {auto?.provider === "tcet-auto" ? "Auto" : "Local"} · {defaultModel}</span>}
         </div>
       </div>
     </div>
@@ -938,7 +939,7 @@ export default function ChatView({
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold text-fg">{chat.title}</div>
           <div className="truncate text-[10.5px] text-fg-faint">
-            {chat.kind === "report" ? "standalone report" : "guided deck briefing"}
+            {chat.kind === "report" ? "standalone report" : "project — slides + report + script"}
           </div>
         </div>
         {chat.produced && (
