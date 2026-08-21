@@ -7,571 +7,417 @@ import {
 } from "../components/icons.jsx";
 
 /**
- * Fancy tour — fully animated, no pinned split.
- * Hero scrolls and fades like every other section; the pipeline is the story,
- * each step paired with its slide specimen so the "ppt stuff fits in that only".
- * Every block reveals on IO with the shell easing, never a bare opacity jump.
- * Eye-catching tagline: "Topic in. Standing ovation out."
+ * Immersive tour — full-bleed, not middle-locked.
+ * Hero is one Register CTA (unauth) / Go to chat (authed), then every section
+ * animates across the viewport on scroll (slide-in from left/right + scale),
+ * pipeline steps are pinned-style stages with real theme specimens.
+ * No local-first copy — product is hosted.
  */
 export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-10 sm:px-10">
-      <HeroFancy
-        authed={authed}
-        onStartChat={onStartChat}
-        onBrowseThemes={onBrowseThemes}
-        onAuth={onAuth}
-      />
-      <PipelineScrolly />
-      <HowItWorksFancy onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
-      <ThemeCarouselFancy onBrowseThemes={authed ? onBrowseThemes : () => onAuth?.("register")} />
-      <LocalVsCloudFancy />
-      <CapabilityGridFancy onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
-      <FinalCTA onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
-      <FooterStrip />
+    <div className="w-full">
+      <HeroFull authed={authed} onStartChat={onStartChat} onAuth={onAuth} />
+      <PipelineImmersive />
+      <HowItWorksFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
+      <ThemesFullBleed onBrowseThemes={authed ? onBrowseThemes : () => onAuth?.("register")} />
+      <PlansFull />
+      <CapabilityFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
+      <FinalCTAFull onStartChat={authed ? onStartChat : () => onAuth?.("register")} />
+      <FooterFull />
     </div>
   );
 }
 
-/* ------------------------------------------------------------- scroll-reveal */
+/* ------------------------------------------------------------- reveal helpers */
 
-function Reveal({ children, className = "", delay = 0 }) {
+function useReveal(threshold = 0.18) {
   const ref = useRef(null);
   const [seen, setSeen] = useState(false);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setSeen(true); return; }
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) { setSeen(true); io.disconnect(); }
-      },
-      { threshold: 0.14 },
-    );
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setSeen(true); io.disconnect(); }
+    }, { threshold });
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [threshold]);
+  return [ref, seen];
+}
+
+function SlideIn({ children, from = "left", active, className = "" }) {
+  const base = from === "left" ? "-translate-x-10" : "translate-x-10";
   return (
-    <section ref={ref} className={`${seen ? "view-in" : "opacity-0"} ${className}`} style={seen && delay ? { animationDelay: `${delay}ms` } : undefined}>
+    <div className={`transition-all duration-[720ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] ${active ? "translate-x-0 opacity-100" : `${base} opacity-0`} ${className}`}>
       {children}
-    </section>
+    </div>
   );
 }
 
-/* --------------------------------------------------------------------- hero */
+/* --------------------------------------------------------------------- hero full */
 
-function HeroFancy({ authed, onStartChat, onBrowseThemes, onAuth }) {
+function HeroFull({ authed, onStartChat, onAuth }) {
   const [phase, setPhase] = useState(false);
   useEffect(() => { const t = setTimeout(() => setPhase(true), 80); return () => clearTimeout(t); }, []);
   return (
-    <div className={`relative overflow-hidden rounded-[2rem] border border-line bg-gradient-to-b from-accent-tint/40 via-panel to-panel shadow-[var(--shadow-card)] ${phase ? "view-in" : "opacity-0"}`}>
-      {/* fancy background: two gradient orbs + grid */}
+    <section className={`relative w-full overflow-hidden border-b border-line bg-gradient-to-b from-accent-tint/40 via-panel to-panel ${phase ? "view-in" : "opacity-0"}`}>
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-28 left-1/2 h-[42rem] w-[62rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_72%)] opacity-70" />
-        <div className="absolute -bottom-40 -right-40 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.14),transparent_70%)] blur-[1px]" />
-        <div className="absolute inset-0 opacity-[0.09] [background:linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute -top-24 left-1/2 h-[48rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_70%)] opacity-70" />
+        <div className="absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.13),transparent_68%)]" />
+        <div className="absolute inset-0 opacity-[0.08] [background:linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] [background-size:32px_32px]" />
       </div>
-
-      <div className="relative px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-              Bulk by machine, polish by you
-            </span>
-          </div>
-          <img src="/logo.svg" alt="" className="mx-auto mt-6 h-16 w-16 rounded-2xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] ring-1 ring-line" />
-          <h1 className="mx-auto mt-6 max-w-[18ch] text-[3.1rem] font-semibold leading-[0.95] tracking-[-0.035em] text-fg sm:text-[3.8rem]">
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 py-14 sm:px-10 sm:py-20 lg:flex-row lg:items-center lg:gap-8 lg:py-24">
+        <div className="max-w-xl flex-1">
+          <span className="inline-flex items-center gap-2 rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> Topic to deck — in minutes
+          </span>
+          <h1 className="mt-5 max-w-[14ch] text-[3rem] font-semibold leading-[0.92] tracking-[-0.04em] text-fg sm:text-[4rem]">
             Topic in.
             <br />
             <span className="bg-gradient-to-r from-accent via-[#8B5CF6] to-[#7C6CFF] bg-clip-text text-transparent">Standing ovation out.</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
-            The app does the bulk — research, outline, grounded content, render and critique. You verify the facts, tune the words and make it yours. No templates, no hand-layout.
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
+            Research, outline, grounded writing, precise render and vision critique — done for you. You verify the facts and make it yours. No templates, no hand-layout.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button variant="primary" onClick={authed ? onStartChat : () => onAuth?.("register")}>
-              <ChatIcon className="h-4 w-4" />
-              Start a chat
-            </Button>
-            <button
-              onClick={authed ? onBrowseThemes : () => onAuth?.("register")}
-              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-4 py-2.5 text-[13px] font-medium text-fg-muted shadow-sm transition hover:border-line-strong hover:text-fg"
-            >
-              <PaletteIcon className="h-4 w-4" />
-              Browse 38 themes
-            </button>
+          <div className="mt-7 flex flex-wrap gap-3">
+            {authed ? (
+              <Button variant="primary" onClick={onStartChat}>Go to chat</Button>
+            ) : (
+              <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>
+            )}
+            <a href="#pipeline" onClick={(e) => { e.preventDefault(); document.getElementById("pipeline")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-4 py-2.5 text-[13px] font-medium text-fg-muted hover:border-line-strong hover:text-fg">
+              See how it works ↓
+            </a>
           </div>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[12px] text-fg-faint">
-            <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-success" /> Local-first</span>
-            <span>·</span>
-            <span>50+ slide types</span>
-            <span>·</span>
-            <span>Graded .docx reports</span>
+          <div className="mt-5 flex flex-wrap items-center gap-3 text-[12px] text-fg-faint">
+            <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-success" /> Hosted & ready</span>
+            <span>·</span><span>50+ slide types</span><span>·</span><span>38 themes</span><span>·</span><span>Graded reports</span>
           </div>
         </div>
-
-        {/* floating mini deck stack — decorative, not layout code */}
-        <div className="pointer-events-none relative mx-auto mt-10 hidden max-w-4xl select-none sm:block">
-          <div className="relative mx-auto h-[168px] max-w-[660px]">
-            <div className="absolute left-1/2 top-2 h-[132px] w-[220px] -translate-x-1/2 rotate-[-2deg] rounded-xl border border-line bg-panel p-3 shadow-[var(--shadow-card)]">
-              <div className="h-2 w-12 rounded-full bg-accent/20" />
-              <div className="mt-2 h-1.5 w-3/4 rounded-full bg-line" />
-              <div className="mt-1.5 h-1.5 w-2/3 rounded-full bg-line" />
-              <div className="mt-4 flex gap-1.5">
-                <div className="h-12 flex-1 rounded-lg bg-accent-tint" />
-                <div className="h-12 flex-1 rounded-lg bg-sunken" />
-                <div className="h-12 flex-1 rounded-lg bg-sunken" />
-              </div>
-            </div>
-            <div className="absolute left-[8%] top-6 hidden h-[120px] w-[200px] rotate-[-6deg] rounded-xl border border-line bg-panel p-3 opacity-70 shadow-[var(--shadow-card)] md:block">
-              <div className="h-2 w-10 rounded-full bg-accent/15" />
-              <div className="mt-3 space-y-1.5">
-                <div className="h-1.5 w-full rounded-full bg-line" />
-                <div className="h-1.5 w-5/6 rounded-full bg-line" />
-                <div className="h-1.5 w-3/4 rounded-full bg-line" />
-              </div>
-            </div>
-            <div className="absolute right-[8%] top-6 hidden h-[120px] w-[200px] rotate-[5deg] rounded-xl border border-line bg-panel p-3 opacity-70 shadow-[var(--shadow-card)] md:block">
-              <div className="flex items-end gap-1 h-16">
-                <div className="flex-1 rounded-sm bg-accent" style={{ height: "48%" }} />
-                <div className="flex-1 rounded-sm bg-accent/70" style={{ height: "72%" }} />
-                <div className="flex-1 rounded-sm bg-accent/50" style={{ height: "100%" }} />
-              </div>
-              <div className="mt-2 h-1.5 w-1/2 rounded-full bg-line" />
-            </div>
+        {/* right: real theme stack — full width on desktop, moves on scroll via parallax */}
+        <div className="relative hidden flex-1 select-none lg:block">
+          <div className="relative mx-auto h-[360px] w-[520px] max-w-full">
+            <RealThemeStack />
           </div>
-        </div>
-
-        <div className="mt-8 flex justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-panel/80 px-3 py-1 text-[11px] text-fg-faint backdrop-blur">
-            Scroll to see the pipeline — it scrolls and fades with you
-            <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-          </span>
         </div>
       </div>
+      {/* mobile real stack */}
+      <div className="relative mx-auto max-w-6xl px-6 pb-10 sm:px-10 lg:hidden">
+        <RealThemeStackMobile />
+      </div>
+    </section>
+  );
+}
+
+function RealThemeStack() {
+  const [themes, setThemes] = useState(null);
+  useEffect(() => { api.themes().then((r) => setThemes(r.themes.slice(0, 3))).catch(() => setThemes([])); }, []);
+  if (!themes || themes.length < 3) return <div className="h-[300px] skeleton rounded-2xl" />;
+  return (
+    <>
+      <div className="absolute right-6 top-8 w-[300px] rotate-[4deg] opacity-90 shadow-[var(--shadow-float)]">
+        <ThemeMiniCard theme={themes[0]} onClick={() => {}} />
+      </div>
+      <div className="absolute left-8 top-0 w-[300px] -rotate-[3deg] opacity-95 shadow-[var(--shadow-float)]">
+        <ThemeMiniCard theme={themes[1]} onClick={() => {}} />
+      </div>
+      <div className="absolute left-1/2 top-28 w-[320px] -translate-x-1/2 rotate-[-1deg] shadow-[var(--shadow-float)]">
+        <ThemeMiniCard theme={themes[2]} onClick={() => {}} />
+      </div>
+    </>
+  );
+}
+function RealThemeStackMobile() {
+  const [themes, setThemes] = useState(null);
+  useEffect(() => { api.themes().then((r) => setThemes(r.themes.slice(0, 3))).catch(() => setThemes([])); }, []);
+  if (!themes) return <div className="flex gap-3 overflow-hidden"><div className="h-[220px] w-64 skeleton shrink-0 rounded-2xl" /><div className="h-[220px] w-64 skeleton shrink-0 rounded-2xl" /></div>;
+  return (
+    <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+      {themes.map((t) => <div key={t.name} className="w-64 shrink-0 snap-start"><ThemeMiniCard theme={t} onClick={() => {}} /></div>)}
     </div>
   );
 }
 
-/* ------------------------------------------------------------ pipeline scrolly */
+/* ------------------------------------------------------------ pipeline immersive */
 
 const PIPELINE = [
-  { icon: ChatIcon, label: "brief", title: "One question at a time", desc: "Topic → title → team → theme → density. Defaults unless you say otherwise. Saved formats skip the fixed parts.", mock: "bullets" },
-  { icon: SearchIcon, label: "research", title: "Research that researches", desc: "5–8 angle queries + follow-ups, arXiv & Crossref, source-diversity guard. Your notes stay editable — grounding checks every claim.", mock: "stats" },
-  { icon: LayersIcon, label: "outline", title: "Outline you can edit", desc: "Plain-language cards: reorder, switch type, rewrite purpose. Nothing renders until a human says go — the disk gate.", mock: "agenda" },
-  { icon: SparkleIcon, label: "you approve", title: "You’re the gate", desc: "Preset-free structure. A planned deck is meta+plan with no deck.yaml — unapprovable by construction.", mock: "quote" },
-  { icon: DocIcon, label: "content", title: "Content, grounded & coherent", desc: "One small-grammar call per slide from your notes. Coherence pass reframes drift; density sweep keeps fonts readable, never 8pt.", mock: "compare" },
+  { icon: ChatIcon, label: "brief", title: "One question at a time", desc: "Topic → title → team → guide → theme → density. Everything defaults; saved formats skip the fixed parts. No second wizard.", mock: "bullets" },
+  { icon: SearchIcon, label: "research", title: "Research that researches", desc: "Multi-angle SearXNG + arXiv/Crossref, source-diversity and examiner-gap passes. Notes stay editable — grounding checks every claim.", mock: "stats" },
+  { icon: LayersIcon, label: "outline", title: "Outline you can edit", desc: "Cards in plain language — reorder, retitle, switch type, regenerate. Disk gate: meta+plan with no deck.yaml until you approve.", mock: "agenda" },
+  { icon: SparkleIcon, label: "you approve", title: "You’re the gate", desc: "Presets are gone — the gate replaces them. Nothing reaches the renderer unapproved, by construction.", mock: "quote" },
+  { icon: DocIcon, label: "content", title: "Content, grounded & coherent", desc: "One small-grammar call per slide from your notes. Coherence reframes drift; density sweep keeps fonts readable, never 8pt.", mock: "compare" },
   { icon: LayersIcon, label: "render", title: "Render — deterministic", desc: "38 themes × styles, chrome locked after theme. pptxgenjs stays editable; plate themes add mesh gradients via Chrome raster.", mock: "chart" },
-  { icon: SparkleIcon, label: "critique", title: "Vision critique loop", desc: "Rendered PNGs are inspected; floor flags instead of shrinking. Fix is less text — the badge tells you which slide.", mock: "timeline" },
+  { icon: SparkleIcon, label: "critique", title: "Vision critique loop", desc: "Real PNGs are inspected; floor flags instead of shrinking. Fix is less text — the badge tells you which slide.", mock: "timeline" },
 ];
 
-function PipelineScrolly() {
+function PipelineImmersive() {
   const [active, setActive] = useState(0);
-  const refs = useRef([]);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            const idx = Number(e.target.dataset.idx);
-            if (!Number.isNaN(idx)) setActive(idx);
-          }
-        });
-      },
-      { threshold: 0.55, rootMargin: "-12% 0px -42% 0px" }
-    );
-    refs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <Reveal className="pt-12">
-      <SectionHead eyebrow="The pipeline" title="How a topic becomes a deck" />
-      <p className="mx-auto -mt-2 max-w-xl pb-8 text-center text-[14px] leading-relaxed text-fg-muted">
-        Each scroll step pairs a pipeline stage with the slide type it produces — the ppt specimens live inside the flow, not as a separate showcase.
-      </p>
-      <div className="relative">
-        {/* vertical line */}
-        <div className="pointer-events-none absolute left-1/2 top-2 hidden h-[calc(100%-16px)] w-px -translate-x-1/2 bg-line md:block" />
-        <div
-          className="pointer-events-none absolute left-1/2 top-2 hidden w-px -translate-x-1/2 bg-accent transition-all duration-700 md:block"
-          style={{ height: `calc(${(active + 1) / PIPELINE.length * 100}% - 16px)` }}
-        />
-        <div className="space-y-6">
-          {PIPELINE.map(({ icon: Icon, label, title, desc, mock }, i) => (
-            <div
-              key={label}
-              ref={(el) => (refs.current[i] = el)}
-              data-idx={i}
-              className={`group relative grid grid-cols-1 gap-4 md:grid-cols-[1fr_40px_1fr] md:items-center ${i % 2 === 1 ? "md:[&>*:first-child]:order-3 md:[&>*:last-child]:order-1" : ""}`}
-            >
-              {/* text side */}
-              <div className={`rounded-2xl border bg-panel p-5 shadow-[var(--shadow-card)] transition ${active === i ? "border-accent/30 shadow-[var(--shadow-card-hover)]" : "border-line"}`}>
-                <div className="flex items-center gap-2">
-                  <span className={`grid h-8 w-8 place-items-center rounded-full border text-[11px] font-bold uppercase tracking-wider ${label === "you approve" ? "border-accent bg-accent text-white" : active === i ? "border-accent/30 bg-accent-tint text-accent" : "border-line bg-sunken text-fg-muted"}`}>
-                    {label === "you approve" ? "✓" : String(i + 1)}
-                  </span>
-                  <span className={`text-[11px] font-semibold uppercase tracking-[0.10em] ${label === "you approve" ? "text-accent" : active === i ? "text-accent" : "text-fg-faint"}`}>{label}</span>
-                </div>
-                <div className="mt-3 text-[16px] font-semibold tracking-tight text-fg">{title}</div>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-fg-muted">{desc}</p>
-              </div>
-
-              {/* center dot */}
-              <div className="hidden place-items-center md:grid">
-                <span className={`grid h-9 w-9 place-items-center rounded-full border bg-panel shadow-sm transition ${active === i ? "border-accent bg-accent text-white scale-110" : label === "you approve" ? "border-accent bg-accent-tint text-accent" : "border-line bg-panel text-fg-muted"}`}>
-                  <Icon className="h-4 w-4" />
-                </span>
-              </div>
-
-              {/* mock slide */}
-              <div className={`overflow-hidden rounded-2xl border bg-panel shadow-[var(--shadow-card)] transition ${active === i ? "border-accent/30 -translate-y-0.5 shadow-[var(--shadow-card-hover)]" : "border-line"}`}>
-                <MockSlide type={mock} active={active === i} />
-                <div className="flex items-center justify-between border-t border-line bg-sunken px-3 py-2">
-                  <span className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">{mock}</span>
-                  <span className={`h-2 w-2 rounded-full ${active === i ? "bg-accent animate-pulse" : "bg-line-strong"}`} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Reveal>
-  );
-}
-
-function MockSlide({ type, active }) {
-  // tiny themed mocks — no network, no specimen API, works for visitors
-  const wrap = "flex h-[154px] flex-col justify-center p-4";
-  switch (type) {
-    case "bullets":
-      return (
-        <div className={wrap}>
-          <div className="text-[12px] font-semibold tracking-tight text-fg">Why this matters</div>
-          <div className="mt-2 space-y-1.5">
-            {["Grounded claims from your notes", "Coherent framing per section", "One idea per slide"].map((t) => (
-              <div key={t} className="flex items-start gap-2 text-[12px] leading-snug text-fg-muted"><span className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${active ? "bg-accent" : "bg-line-strong"}`} />{t}</div>
-            ))}
-          </div>
-        </div>
-      );
-    case "stats":
-      return (
-        <div className={`${wrap} gap-3`}>
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              ["128%", "more recall"],
-              ["3.2×", "faster review"],
-              ["0", "invented facts"],
-            ].map(([v, l]) => (
-              <div key={v} className="text-center">
-                <div className="text-[18px] font-extrabold tracking-tight text-fg">{v}</div>
-                <div className="text-[11px] text-fg-faint">{l}</div>
-              </div>
-            ))}
-          </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-sunken">
-            <div className={`h-full rounded-full bg-accent transition-all duration-700 ${active ? "w-[78%]" : "w-[52%]"}`} />
-          </div>
-        </div>
-      );
-    case "chart":
-      return (
-        <div className={wrap}>
-          <div className="text-[12px] font-semibold text-fg">Trend you can verify</div>
-          <div className="mt-3 flex items-end gap-1.5 h-16">
-            {[40, 62, 48, 84, 66].map((h, i) => (
-              <div key={i} className={`flex-1 rounded-t-md transition-all duration-700 ${i === 3 ? "bg-accent" : "bg-accent/35"}`} style={{ height: `${h}%` }} />
-            ))}
-          </div>
-          <div className="mt-2 flex gap-1.5">
-            <div className="h-1.5 w-12 rounded-full bg-line" />
-            <div className="h-1.5 w-10 rounded-full bg-line" />
-          </div>
-        </div>
-      );
-    case "compare":
-      return (
-        <div className={`${wrap} gap-2`}>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg bg-accent-tint p-2.5">
-              <div className="text-[11px] font-semibold text-accent">Before</div>
-              <div className="mt-1 h-1.5 w-full rounded-full bg-accent/20" />
-              <div className="mt-1 h-1.5 w-3/4 rounded-full bg-accent/20" />
-            </div>
-            <div className="rounded-lg bg-sunken p-2.5">
-              <div className="text-[11px] font-semibold text-fg">After</div>
-              <div className="mt-1 h-1.5 w-full rounded-full bg-line" />
-              <div className="mt-1 h-1.5 w-3/4 rounded-full bg-line" />
-            </div>
-          </div>
-          <div className="text-center text-[11px] text-fg-faint">Side-by-side keeps the point honest</div>
-        </div>
-      );
-    case "agenda":
-      return (
-        <div className={wrap}>
-          <div className="rounded-lg border border-line bg-sunken p-3">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">Section 02</div>
-            <div className="mt-1 text-[14px] font-semibold text-fg">The argument in three parts</div>
-            <div className="mt-2 flex gap-1.5">
-              <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-white">01</span>
-              <span className="rounded-full bg-line px-2 py-0.5 text-[10px] font-bold text-fg-faint">02</span>
-              <span className="rounded-full bg-line px-2 py-0.5 text-[10px] font-bold text-fg-faint">03</span>
-            </div>
-          </div>
-        </div>
-      );
-    case "quote":
-      return (
-        <div className={`${wrap} items-center text-center`}>
-          <div className="mx-auto h-6 w-6 rounded-full bg-accent-tint grid place-items-center text-accent">“</div>
-          <div className="mt-2 text-[13px] font-medium leading-snug text-fg">Nothing renders until a human says go.</div>
-          <div className="mt-1 text-[11px] text-fg-faint">— the gate, not a preset</div>
-        </div>
-      );
-    case "timeline":
-      return (
-        <div className={wrap}>
-          <div className="relative flex items-center justify-between">
-            <div className="absolute left-0 right-0 top-1/2 h-px bg-line" />
-            {["Brief", "Outline", "Render"].map((k) => (
-              <span key={k} className={`relative grid h-7 w-7 place-items-center rounded-full border text-[10px] font-bold ${k === "Render" && active ? "border-accent bg-accent text-white" : "border-line bg-panel text-fg-faint"}`}>•</span>
-            ))}
-          </div>
-          <div className="mt-2 flex justify-between text-[11px] text-fg-faint">
-            <span>Brief</span><span>Outline</span><span>Render</span>
-          </div>
-        </div>
-      );
-    default:
-      return <div className={wrap}><div className="h-1.5 w-3/4 rounded-full bg-line" /></div>;
-  }
-}
-
-/* --------------------------------------------------------------- how it works fancy */
-
-function HowItWorksFancy({ onStartChat }) {
-  const steps = [
-    { icon: ChatIcon, title: "Guided briefing", body: "One question at a time — theme, density, team, audience. Everything has a default; saved formats skip the fixed parts." },
-    { icon: LayersIcon, title: "Outline gate", body: "Plain-language cards you can reorder, retitle, retype. Approve to write; regenerate to rethink." },
-    { icon: DocIcon, title: "Deck + report, then yours", body: "Same research powers slides and the graded .docx. Slides rasterise immediately — what you see is the output." },
-  ];
-  return (
-    <Reveal className="pt-14">
-      <SectionHead eyebrow="How it works" title="Bulk by machine, polish by you" />
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {steps.map(({ icon: Icon, title, body }, i) => (
-          <div key={title} className="card-hover panel-surface rounded-2xl border border-line bg-panel p-6" style={{ ["--stagger-i"]: i }}>
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-accent-tint text-accent">
-              <Icon className="h-5 w-5" />
-            </div>
-            <div className="mt-4 text-[18px] font-semibold tracking-tight text-fg">{title}</div>
-            <p className="mt-1.5 text-[14px] leading-relaxed text-fg-muted">{body}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-6 text-center">
-        <button onClick={onStartChat} className="inline-flex items-center gap-1 rounded-full border border-line bg-panel px-4 py-2 text-[13px] text-fg-muted transition hover:border-line-strong hover:text-fg">
-          Start the first chat →
-        </button>
-      </div>
-    </Reveal>
-  );
-}
-
-/* ------------------------------------------------------------ theme showcase fancy */
-
-function ThemeCarouselFancy({ onBrowseThemes }) {
   const [themes, setThemes] = useState(null);
+  const refs = useRef([]);
   useEffect(() => {
     api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
   }, []);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { const idx = Number(e.target.dataset.idx); if (!Number.isNaN(idx)) setActive(idx); }});
+    }, { threshold: 0.5, rootMargin: "-18% 0px -40% 0px" });
+    refs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+  const themeFor = (i) => {
+    if (!themes || !themes.length) return null;
+    const order = ["editorial-serif-light","aurora-mesh","warm-humanist","isometric-dark","brutalist-paper","chalkboard","minimal-warm"];
+    const name = order[i % order.length];
+    return themes.find((t) => t.name === name) ?? themes[i % themes.length];
+  };
   return (
-    <Reveal className="pt-14">
-      <SectionHead eyebrow="Design languages" title="Thirty-eight themes, drawn live" />
-      <p className="mx-auto -mt-1 max-w-xl pb-6 text-center text-[14px] leading-relaxed text-fg-muted">
-        Each card renders from its own tokens — what you see is exactly what a deck gets. Full editorial grid at <a href="#/tour-themes" className="text-accent hover:underline">Tour → Themes</a>.
-      </p>
-      {themes === null && (
-        <div className="flex gap-4 overflow-hidden">
-          {[0, 1, 2, 3].map((i) => <div key={i} className="skeleton h-[220px] w-64 shrink-0 rounded-2xl" />)}
+    <section id="pipeline" className="w-full border-y border-line bg-panel">
+      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mb-10 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">The pipeline</div>
+          <h2 className="mt-2 text-[2.1rem] font-semibold tracking-[-0.02em] text-fg">How a topic becomes a deck</h2>
+          <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Scroll — each step slides in from the side with a real theme example. The ppt specimens live inside the flow, not as a separate list.</p>
         </div>
-      )}
-      {themes?.length > 0 && (
-        <div className="scroll-smooth snap-x snap-mandatory overflow-x-auto pb-3 [scrollbar-width:thin] [scrollbar-color:var(--color-line-strong)_transparent] px-1" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--color-line-strong) transparent" }}>
-          <div className="flex w-max gap-4 snap-x px-1">
-            {themes.slice(0, 12).map((t, i) => (
-              <div key={t.name} className="w-64 shrink-0 snap-start" style={{ ["--stagger-i"]: i }}>
-                <ThemeMiniCard theme={t} onClick={() => onBrowseThemes?.(t.name)} />
+        <div className="relative">
+          <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-line md:block" />
+          <div className="pointer-events-none absolute left-1/2 top-0 hidden w-px -translate-x-1/2 bg-accent transition-all duration-700 md:block" style={{ height: `${(active + 1) / PIPELINE.length * 100}%` }} />
+          <div className="space-y-10">
+            {PIPELINE.map(({ icon: Icon, label, title, desc, mock }, i) => {
+              const isActive = active === i;
+              const t = themeFor(i);
+              const fromText = i % 2 === 0 ? "left" : "right";
+              const fromCard = i % 2 === 0 ? "right" : "left";
+              return (
+                <div key={label} ref={(el) => (refs.current[i] = el)} data-idx={i} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_48px_1fr] md:items-center">
+                  <SlideIn from={fromText} active={isActive} className={i % 2 === 1 ? "md:order-3" : ""}>
+                    <div className={`rounded-[1.25rem] border p-6 shadow-[var(--shadow-card)] transition ${isActive ? "border-accent/30 bg-accent-tint/30" : "border-line bg-panel"}`}>
+                      <div className="flex items-center gap-2">
+                        <span className={`grid h-7 w-7 place-items-center rounded-full border text-[11px] font-bold ${label === "you approve" ? "border-accent bg-accent text-white" : isActive ? "border-accent/30 bg-accent text-white" : "border-line bg-sunken text-fg-muted"}`}>{label === "you approve" ? "✓" : i + 1}</span>
+                        <span className={`text-[11px] font-semibold uppercase tracking-[0.10em] ${isActive ? "text-accent" : "text-fg-faint"}`}>{label}</span>
+                      </div>
+                      <div className="mt-3 text-[17px] font-semibold tracking-tight text-fg">{title}</div>
+                      <p className="mt-1.5 text-[13.5px] leading-relaxed text-fg-muted">{desc}</p>
+                    </div>
+                  </SlideIn>
+                  <div className="hidden place-items-center md:grid md:order-2">
+                    <span className={`grid h-10 w-10 place-items-center rounded-full border bg-panel shadow-sm transition ${isActive ? "scale-110 border-accent bg-accent text-white" : "border-line text-fg-muted"}`}><Icon className="h-4 w-4" /></span>
+                  </div>
+                  <SlideIn from={fromCard} active={isActive} className={i % 2 === 1 ? "md:order-1" : ""}>
+                    <div className={`overflow-hidden rounded-[1.25rem] border shadow-[var(--shadow-card)] transition ${isActive ? "border-accent/30" : "border-line"}`}>
+                      {t ? (
+                        <div className="p-2 bg-sunken">
+                          <ThemeMiniCard theme={t} onClick={() => {}} />
+                          <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-fg-faint"><span className="uppercase tracking-wider">{mock} · {t.label}</span><span className={`h-2 w-2 rounded-full ${isActive ? "bg-accent animate-pulse" : "bg-line-strong"}`} /></div>
+                        </div>
+                      ) : (
+                        <div className="h-[240px] skeleton" />
+                      )}
+                    </div>
+                  </SlideIn>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------------------------------------- how it works full */
+
+function HowItWorksFull({ onStartChat }) {
+  const steps = [
+    { icon: ChatIcon, title: "Guided briefing", body: "One question at a time — theme, density, team, audience. Defaults + saved formats skip the fixed parts." },
+    { icon: LayersIcon, title: "Outline gate", body: "Cards you can reorder, retitle, retype. Approve to write; regenerate to rethink. Git history of the plan." },
+    { icon: DocIcon, title: "Deck + report", body: "Same research powers slides and the graded .docx. Slides rasterise immediately — what you see is the output." },
+  ];
+  return (
+    <section className="w-full bg-base">
+      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mb-8 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">How it works</div>
+          <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Bulk by machine, polish by you</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {steps.map(({ icon: Icon, title, body }, i) => {
+            const [ref, seen] = useReveal();
+            return (
+              <div key={title} ref={ref} className={`card-hover rounded-2xl border border-line bg-panel p-6 transition-all duration-700 ${seen ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`} style={{ transitionDelay: `${i * 90}ms` }}>
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-accent-tint text-accent"><Icon className="h-5 w-5" /></div>
+                <div className="mt-4 text-[18px] font-semibold tracking-tight text-fg">{title}</div>
+                <p className="mt-1.5 text-[14px] leading-relaxed text-fg-muted">{body}</p>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
-      <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <button onClick={() => onBrowseThemes?.()} className="inline-flex items-center gap-1 rounded-full border border-line bg-panel px-4 py-2 text-[13px] text-fg-muted transition hover:border-line-strong hover:text-fg">
-          Browse all themes
-        </button>
-        <a href="#/tour-themes" className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-2 text-[13px] font-medium text-white hover:bg-accent-hi">
-          Editorial showcase
-        </a>
+        <div className="mt-8 text-center">
+          <button onClick={onStartChat} className="inline-flex items-center gap-1 rounded-full border border-line bg-panel px-4 py-2 text-[13px] text-fg-muted hover:border-line-strong hover:text-fg">Start the first chat →</button>
+        </div>
       </div>
-    </Reveal>
+    </section>
   );
 }
 
-/* ------------------------------------------------------------- local vs cloud fancy */
+/* ------------------------------------------------------------ themes full-bleed */
 
-function LocalVsCloudFancy() {
+function ThemesFullBleed({ onBrowseThemes }) {
+  const [themes, setThemes] = useState(null);
+  useEffect(() => { api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([])); }, []);
   return (
-    <Reveal className="pt-14">
-      <SectionHead eyebrow="Free or bring your own" title="Auto or Cloud — your call" />
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="rounded-2xl border border-accent/20 bg-gradient-to-b from-accent-tint/60 to-panel p-6 shadow-[var(--shadow-card)]">
-          <div className="flex items-center gap-2.5">
-            <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">AUTO</span>
-            <span className="text-[12px] text-fg-faint">Free shared model</span>
-          </div>
-          <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">
-            Start instantly — no key, no setup. Rate-limited so everyone gets a fair share.
-          </p>
-          <ul className="mt-4 space-y-2">
-            {["No key needed", "Hourly & weekly caps", "Great for trying out"].map((s) => (
-              <li key={s} className="flex items-center gap-2 text-[13px] text-fg-muted">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
-                {s}
-              </li>
-            ))}
-          </ul>
+    <section className="w-full border-y border-line bg-sunken">
+      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mb-6 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Design languages</div>
+          <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Thirty-eight themes, drawn live</h2>
+          <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Each card is drawn from its own tokens — what you see is exactly what a deck gets. Editorial showcase at <a href="#/tour-themes" className="text-accent hover:underline">Tour → Themes</a>.</p>
         </div>
-        <div className="rounded-2xl border border-line bg-panel p-6 shadow-[var(--shadow-card)]">
-          <div className="flex items-center gap-2.5">
-            <span className="pill border border-line-strong bg-raised px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg">CLOUD</span>
-            <span className="text-[12px] text-fg-faint">Your own key</span>
+        {themes === null && <div className="flex gap-4 overflow-hidden">{[0,1,2,3].map((i) => <div key={i} className="h-[220px] w-64 shrink-0 rounded-2xl skeleton" />)}</div>}
+        {themes?.length > 0 && (
+          <div className="snap-x snap-mandatory overflow-x-auto pb-3 [scrollbar-width:thin] px-1" style={{ scrollbarWidth: "thin" }}>
+            <div className="flex w-max gap-4">
+              {themes.slice(0, 14).map((t) => <div key={t.name} className="w-64 shrink-0 snap-start"><ThemeMiniCard theme={t} onClick={() => onBrowseThemes?.(t.name)} /></div>)}
+            </div>
           </div>
-          <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">
-            Bring your own API key — unlimited, billed to you. The same pipeline, just with your quota. Encrypted at rest.
-          </p>
-          <ul className="mt-4 space-y-2">
-            {["Unlimited generations", "Your quota, your billing", "Encrypted at rest"].map((s) => (
-              <li key={s} className="flex items-center gap-2 text-[13px] text-fg-muted">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
-                {s}
-              </li>
-            ))}
-          </ul>
+        )}
+        <div className="mt-6 flex justify-center gap-2">
+          <button onClick={() => onBrowseThemes?.()} className="rounded-full border border-line bg-panel px-4 py-2 text-[13px] text-fg-muted hover:border-line-strong hover:text-fg">Browse all</button>
+          <a href="#/tour-themes" className="rounded-full bg-accent px-4 py-2 text-[13px] font-medium text-white hover:bg-accent-hi">Editorial showcase</a>
         </div>
       </div>
-    </Reveal>
+    </section>
   );
 }
 
-/* ----------------------------------------------------------- capability grid fancy */
+/* ------------------------------------------------------------- plans full */
+
+function PlansFull() {
+  return (
+    <section className="w-full bg-panel">
+      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mb-8 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Plans</div>
+          <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Auto or Cloud — your call</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-accent/20 bg-gradient-to-b from-accent-tint/60 to-panel p-6">
+            <span className="pill border border-accent-dim/60 bg-accent-tint px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">AUTO</span>
+            <span className="ml-2 text-[12px] text-fg-faint">Free shared model</span>
+            <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">Start instantly — rate-limited to keep it fair. Great for trying out.</p>
+            <ul className="mt-4 space-y-2 text-[13px] text-fg-muted">{["No key needed","Hourly & weekly caps","Great for trying out"].map((s) => <li key={s} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-accent" />{s}</li>)}</ul>
+          </div>
+          <div className="rounded-2xl border border-line bg-panel p-6">
+            <span className="pill border border-line-strong bg-raised px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg">CLOUD</span>
+            <span className="ml-2 text-[12px] text-fg-faint">Your own key</span>
+            <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">Bring your own API key — unlimited, billed to you. Encrypted at rest.</p>
+            <ul className="mt-4 space-y-2 text-[13px] text-fg-muted">{["Unlimited generations","Your quota, your billing","Encrypted at rest"].map((s) => <li key={s} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-accent" />{s}</li>)}</ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------------------------------- capability full */
 
 const CAPABILITIES = [
-  { icon: LayersIcon, title: "50+ slide types", body: "Bullets, cards, compare, stats, timelines, testimonials — a full vocabulary, not a template." },
-  { icon: SearchIcon, title: "Research that researches", body: "Multi-angle search plus arXiv and Crossref, source-diversity scoring, claim cross-checking." },
-  { icon: DocIcon, title: "Graded-format reports", body: "The institutional .docx donor, Word-page previews, one-click render and download." },
-  { icon: SparkleIcon, title: "Vision critique loop", body: "Rendered slides are inspected and re-rendered until the text fits and nothing overlaps." },
-  { icon: LayersIcon, title: "Versions & undo", body: "Every save snapshots deck.yaml; the version history is one restore away." },
-  { icon: IdIcon, title: "Your final touches", body: "An approvable outline, editable content, chat refinement — the machine drafts, you make it yours." },
+  { icon: LayersIcon, title: "50+ slide types", body: "Bullets, cards, compare, stats, timelines, testimonials — a vocabulary, not a template." },
+  { icon: SearchIcon, title: "Research that researches", body: "Multi-angle search + arXiv/Crossref, diversity scoring, claim cross-check." },
+  { icon: DocIcon, title: "Graded reports", body: "Institutional .docx donor, Word-page previews, one-click render." },
+  { icon: SparkleIcon, title: "Vision critique", body: "Rendered PNGs inspected; re-render until text fits." },
+  { icon: LayersIcon, title: "Versions & undo", body: "Every save snapshots deck.yaml; history is one restore away." },
+  { icon: IdIcon, title: "Your final touches", body: "Outline gate, editable content, chat refinement — drafts become yours." },
 ];
 
-function CapabilityGridFancy({ onStartChat }) {
+function CapabilityFull({ onStartChat }) {
   return (
-    <Reveal className="pt-14">
-      <SectionHead eyebrow="Capabilities" title="Everything a deck needs" />
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {CAPABILITIES.map(({ icon: Icon, title, body }, i) => (
-          <div key={title} className="card-hover panel-surface rounded-2xl border border-line bg-panel p-5" style={{ ["--stagger-i"]: i }}>
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent-tint text-accent">
-              <Icon className="h-4 w-4" />
-            </div>
-            <div className="mt-3 text-[16px] font-semibold tracking-tight text-fg">{title}</div>
-            <p className="mt-1 text-[13px] leading-relaxed text-fg-muted">{body}</p>
-          </div>
-        ))}
+    <section className="w-full bg-base">
+      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mb-8 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Capabilities</div>
+          <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Everything a deck needs</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {CAPABILITIES.map(({ icon: Icon, title, body }, i) => {
+            const [ref, seen] = useReveal();
+            return (
+              <div key={title} ref={ref} className={`card-hover rounded-2xl border border-line bg-panel p-5 transition-all duration-700 ${seen ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`} style={{ transitionDelay: `${i * 70}ms` }}>
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent-tint text-accent"><Icon className="h-4 w-4" /></div>
+                <div className="mt-3 text-[16px] font-semibold tracking-tight text-fg">{title}</div>
+                <p className="mt-1 text-[13px] leading-relaxed text-fg-muted">{body}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </Reveal>
+    </section>
   );
 }
 
-function FinalCTA({ onStartChat }) {
+function FinalCTAFull({ onStartChat }) {
   return (
-    <Reveal className="pt-14">
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-accent/20 bg-gradient-to-br from-accent via-[#6D5BFF] to-[#8B5CF6] p-8 text-white shadow-[var(--shadow-card)] sm:p-10">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
-        <div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <section className="w-full bg-accent">
+      <div className="mx-auto max-w-6xl px-6 py-10 sm:px-10 sm:py-12">
+        <div className="flex flex-col items-start gap-6 rounded-[1.5rem] border border-white/15 bg-white/10 p-8 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/70">Ready?</div>
-            <div className="mt-1 text-[1.7rem] font-semibold tracking-[-0.02em] leading-tight">Topic in. Standing ovation out.</div>
-            <p className="mt-1 max-w-xl text-[13.5px] leading-relaxed text-white/80">Start a chat — the briefing is one question at a time, everything else defaults.</p>
+            <div className="mt-1 text-[1.7rem] font-semibold leading-tight tracking-[-0.02em] text-white">Topic in. Standing ovation out.</div>
+            <p className="mt-1 max-w-xl text-[13.5px] leading-relaxed text-white/80">Join today — the briefing is one question at a time, everything else defaults.</p>
           </div>
-          <button onClick={onStartChat} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[13px] font-semibold text-accent shadow-sm transition hover:bg-white/90">
-            <ChatIcon className="h-4 w-4" />
-            Start a chat
+          <button onClick={onStartChat} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[13px] font-semibold text-accent hover:bg-white/90">
+            <ChatIcon className="h-4 w-4" /> Start a chat
           </button>
         </div>
       </div>
-    </Reveal>
+    </section>
   );
 }
 
-/* ---------------------------------------------------------------- footer */
+/* ---------------------------------------------------------------- footer full */
 
-function FooterStrip() {
+function FooterFull() {
   return (
-    <footer className="mt-12 border-t border-line pt-8">
-      <div className="grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-4">
-        <div>
-          <div className="text-[12px] font-semibold tracking-tight">Product</div>
-          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
-            <a href="#/home" className="hover:text-fg">Tour</a>
-            <a href="#/tour-themes" className="hover:text-fg">Themes</a>
-            <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a>
+    <footer className="w-full border-t border-line bg-panel">
+      <div className="mx-auto max-w-6xl px-6 py-10 sm:px-10">
+        <div className="grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-4">
+          <div>
+            <div className="text-[12px] font-semibold tracking-tight">Product</div>
+            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+              <a href="#/home" className="hover:text-fg">Tour</a>
+              <a href="#/tour-themes" className="hover:text-fg">Themes</a>
+              <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a>
+              <a href="#/usage" className="hover:text-fg">API usage</a>
+            </div>
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold tracking-tight">Resources</div>
+            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+              <a href="#/docs" className="hover:text-fg">Docs</a>
+              <a href="#/home" className="hover:text-fg">How it works</a>
+              <a href="#/usage" className="hover:text-fg">Usage & limits</a>
+            </div>
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold tracking-tight">Legal</div>
+            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+              <a href="#/privacy" className="hover:text-fg">Privacy</a>
+              <a href="#/terms" className="hover:text-fg">Terms</a>
+              <a href="#/contact" className="hover:text-fg">Contact</a>
+            </div>
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold tracking-tight">Presentation Forge</div>
+            <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">Hosted decks, fast generation, your data stays yours. Cloud when you need it.</p>
           </div>
         </div>
-        <div>
-          <div className="text-[12px] font-semibold tracking-tight">Resources</div>
-          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
-            <a href="#/docs" className="hover:text-fg">Docs</a>
-            <a href="#/home" className="hover:text-fg">How it works</a>
-          </div>
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-[12px] text-fg-faint sm:flex-row">
+          <span>© {new Date().getFullYear()} Presentation Forge. MIT for code.</span>
+          <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-success" /> All systems operational</span>
         </div>
-        <div>
-          <div className="text-[12px] font-semibold tracking-tight">Legal</div>
-          <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
-            <a href="#/privacy" className="hover:text-fg">Privacy Policy</a>
-            <a href="#/terms" className="hover:text-fg">Terms of Service</a>
-            <a href="#/contact" className="hover:text-fg">Contact</a>
-          </div>
-        </div>
-        <div>
-          <div className="text-[12px] font-semibold tracking-tight">Presentation Forge</div>
-          <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">Local-first when you want it, cloud when you need it. Your decks, your data.</p>
-        </div>
-      </div>
-      <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-[12px] text-fg-faint sm:flex-row">
-        <span>© {new Date().getFullYear()} Presentation Forge. MIT for code.</span>
-        <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-success" /> All systems operational
-        </span>
       </div>
     </footer>
-  );
-}
-
-/* ------------------------------------------------------------------ helpers */
-
-function SectionHead({ eyebrow, title }) {
-  return (
-    <div className="mb-6 text-center">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">{eyebrow}</div>
-      <h2 className="mt-1 text-[2rem] font-semibold tracking-[-0.015em] text-fg">{title}</h2>
-    </div>
   );
 }
