@@ -23,23 +23,29 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      // parallax for every section heading — subtle depth like landonorris
-      gsap.utils.toArray("[data-parallax]").forEach((el) => {
-        const depth = parseFloat(el.dataset.parallax) || 0.15;
-        gsap.fromTo(el, { y: depth * 60 }, {
-          y: depth * -60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
+      // entire tour as one scrubbed slideshow — pin and scrub like landonorris
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top top",
+          end: "+=450%",
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+        },
       });
-      // hero orbs drift at different speeds
-      gsap.fromTo(".hero-orb-1", { y: 0 }, { y: -80, ease: "none", scrollTrigger: { trigger: ".hero-orb-1", start: "top top", end: "bottom top", scrub: 1 } });
-      gsap.fromTo(".hero-orb-2", { y: 0 }, { y: -120, ease: "none", scrollTrigger: { trigger: ".hero-orb-2", start: "top top", end: "bottom top", scrub: 1 } });
+      // hero fades out as pipeline comes in
+      tl.to(".hero-section", { y: -80, opacity: 0, ease: "none" }, 0);
+      tl.fromTo(".pipeline-section", { y: 80, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.12);
+      tl.fromTo(".demo-section", { y: 100, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.28);
+      tl.fromTo(".how-section", { y: 80, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.42);
+      tl.fromTo(".themes-section", { y: 80, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.56);
+      tl.fromTo(".plans-section", { y: 80, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.70);
+      tl.fromTo(".capability-section", { y: 80, opacity: 0 }, { y: 0, opacity: 1, ease: "none" }, 0.84);
+      tl.fromTo(".final-cta-section", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, ease: "none" }, 0.94);
+      // parallax orbs within hero
+      gsap.fromTo(".hero-orb-1", { y: 0 }, { y: -80, ease: "none", scrollTrigger: { trigger: ".hero-section", start: "top top", end: "bottom top", scrub: 1 } });
+      gsap.fromTo(".hero-orb-2", { y: 0 }, { y: -120, ease: "none", scrollTrigger: { trigger: ".hero-section", start: "top top", end: "bottom top", scrub: 1 } });
     }, rootRef);
     return () => ctx.revert();
   }, []);
@@ -91,7 +97,7 @@ function HeroFull({ authed, onStartChat, onAuth }) {
   const [phase, setPhase] = useState(false);
   useEffect(() => { const t = setTimeout(() => setPhase(true), 80); return () => clearTimeout(t); }, []);
   return (
-    <section className={`relative w-full overflow-hidden bg-base ${phase ? "view-in" : "opacity-0"}`}>
+    <section className={`hero-section relative w-full overflow-hidden bg-base ${phase ? "view-in" : "opacity-0"}`}>
       <div className="pointer-events-none absolute inset-0">
         <div className="hero-orb-1 absolute -top-24 left-1/2 h-[48rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_70%)] opacity-70" />
         <div className="hero-orb-2 absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.13),transparent_68%)]" />
@@ -193,7 +199,7 @@ function PipelineImmersive() {
     return () => io.disconnect();
   }, []);
   return (
-    <section id="pipeline" className="w-full bg-base">
+    <section id="pipeline" className="pipeline-section w-full bg-base">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-10 text-center" data-parallax="0.12">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">The pipeline</div>
@@ -354,7 +360,7 @@ function LiveDemoScrolly({ onAuth, authed }) {
     return () => ctx.revert();
   }, []);
   return (
-    <section ref={containerRef} className="relative w-full overflow-hidden bg-[#0B0F1A] text-white">
+    <section ref={containerRef} className="demo-section relative w-full overflow-hidden bg-[#0B0F1A] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(40rem_30rem_at_20%_10%,rgba(124,108,255,0.18),transparent_60%),radial-gradient(36rem_24rem_at_80%_90%,rgba(232,90,212,0.12),transparent_60%)]" />
       <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 px-6 py-16 sm:px-10 lg:grid-cols-[420px_1fr] lg:py-0 lg:h-screen">
         <div ref={textRef} className="max-w-md">
@@ -419,7 +425,7 @@ function HowItWorksFull({ onStartChat }) {
     { icon: DocIcon, title: "Deck + report", body: "Same research powers slides and the graded .docx. Slides rasterise immediately — what you see is the output." },
   ];
   return (
-    <section className="w-full bg-base border-t border-line/60">
+    <section className="how-section w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center" data-parallax="0.14">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">How it works</div>
@@ -451,7 +457,7 @@ function ThemesFullBleed({ onBrowseThemes }) {
   const [themes, setThemes] = useState(null);
   useEffect(() => { api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([])); }, []);
   return (
-    <section className="w-full bg-base border-t border-line/60">
+    <section className="themes-section w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-6 text-center" data-parallax="0.12">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Design languages</div>
@@ -479,7 +485,7 @@ function ThemesFullBleed({ onBrowseThemes }) {
 
 function PlansFull() {
   return (
-    <section className="w-full bg-base border-t border-line/60">
+    <section className="plans-section w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center" data-parallax="0.13">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Plans</div>
@@ -517,7 +523,7 @@ const CAPABILITIES = [
 
 function CapabilityFull({ onStartChat }) {
   return (
-    <section className="w-full bg-base border-t border-line/60">
+    <section className="capability-section w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
         <div className="mb-8 text-center" data-parallax="0.11">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Capabilities</div>
@@ -542,7 +548,7 @@ function CapabilityFull({ onStartChat }) {
 
 function FinalCTAFull({ onStartChat }) {
   return (
-    <section className="w-full bg-accent">
+    <section className="final-cta-section w-full bg-accent">
       <div className="mx-auto max-w-6xl px-6 py-10 sm:px-10 sm:py-12">
         <div className="flex flex-col items-start gap-6 rounded-[1.5rem] border border-white/15 bg-white/10 p-8 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
