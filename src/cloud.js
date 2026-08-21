@@ -2,15 +2,17 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "./paths.js";
+import { getDb } from "./db.js";
+
+function getVault() {
+  try { return import("./vault.js"); } catch { return null; }
+}
 
 /**
- * Opt-in cloud backends — the OpenCode Go subscription surface.
- *
- * The key never lives in the repo: it is read from the environment first,
- * then from config/local.yaml, the gitignored file the Settings panel writes.
- * Nothing here ever returns the key value; the API hands out booleans and
- * status text only. models.yaml stays the single source for which providers
- * and models exist — this file only resolves secrets and tests reachability.
+ * Opt-in cloud backends — now with TCET auto tier.
+ * - `auto`  = campus gateway (tcet-auto) shared key, rate-limited per user
+ * - `cloud` = user's own BYOK (openai, opencode-go, etc.)
+ * The key never lives in the repo: env first, then DB vault, then local.yaml legacy.
  */
 
 const LOCAL_FILE = path.join(CONFIG, "local.yaml");
@@ -24,10 +26,34 @@ async function readYaml(file) {
   }
 }
 
-/** env first, then config/local.yaml — the file the Settings panel writes. */
+/** env first, then global_keys DB, then config/local.yaml — the file the Settings panel writes. */
 export async function resolveSecret(name) {
   if (process.env[name]) return process.env[name];
+  // DB global keys fallback for tcet
+  if (name === "FORGE_TCET_API_KEY") {
+    try {
+      const db = getDb();
+      const row = db.prepare("SELECT iv,ciphertext,tag FROM global_keys WHERE provider=?").get("tcet-auto");
+      if (row) {
+        const { decryptSecret } = await import("./vault.js");
+        return decryptSecret(row);
+      }
+    } catch {}
+  }
+  // per-user BYOK is resolved separately via vault per userId
   return (await readYaml(LOCAL_FILE)).api_keys?.[name] ?? "";
+}
+
+export async function resolveUserSecret(userId, providerId) {
+  if (!userId) return "";
+  try {
+    const { loadUserKey } = await import("./vault.js");
+    const k = loadUserKey(userId);
+    if (k && k.provider === providerId) return k.apiKey;
+    // fallback: try any key for user if provider mismatch?
+    if (k?.apiKey) return k.apiKey;
+  } catch {}
+  return "";
 }
 
 /**
@@ -62,6 +88,13 @@ export async function setApiKey(name, key) {
   const cfg = await readYaml(LOCAL_FILE);
   const next = { ...cfg, api_keys: { ...(cfg.api_keys ?? {}), [name]: key } };
   await writeFile(LOCAL_FILE, YAML.stringify(next), "utf8");
+  // also write to global vault for tcet so it persists encrypted?
+  if (name === "FORGE_TCET_API_KEY") {
+    try {
+      const { saveGlobalKey } = await import("./vault.js");
+      saveGlobalKey("tcet-auto", key);
+    } catch {}
+  }
 }
 
 export async function clearApiKey(name) {
@@ -69,33 +102,85 @@ export async function clearApiKey(name) {
   const keys = { ...(cfg.api_keys ?? {}) };
   delete keys[name];
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, api_keys: keys }), "utf8");
+  if (name === "FORGE_TCET_API_KEY") {
+    try {
+      const db = getDb();
+      db.prepare("DELETE FROM global_keys WHERE provider=?").run("tcet-auto");
+    } catch {}
+  }
 }
 
-/** Where the model pickers default: local Ollama or the attached cloud. The
- *  preference lives in gitignored config/local.yaml — a machine choice, not a
- *  repo one. */
+// Per-user BYOK helpers (encrypted at rest)
+export async function setUserApiKey(userId, provider, key) {
+  const { saveUserKey } = await import("./vault.js");
+  saveUserKey(userId, provider, key);
+}
+export async function clearUserApiKey(userId) {
+  const { clearUserKey } = await import("./vault.js");
+  clearUserKey(userId);
+}
+export async function getUserApiKey(userId) {
+  try {
+    const { loadUserKey } = await import("./vault.js");
+    const k = loadUserKey(userId);
+    return k?.apiKey ?? "";
+  } catch { return ""; }
+}
+
+/** Where the model pickers default: auto (TCET) or cloud (BYOK). */
 export async function routingPreference() {
-  return (await readYaml(LOCAL_FILE)).routing?.default ?? "local";
+  const v = (await readYaml(LOCAL_FILE)).routing?.default;
+  if (v === "auto" || v === "cloud" || v === "local") return v;
+  return "auto";
 }
 
 export async function setRoutingPreference(route) {
-  if (!["local", "cloud"].includes(route)) {
-    throw new Error(`routing default must be "local" or "cloud", got "${route}"`);
+  if (!["auto", "cloud", "local"].includes(route)) {
+    throw new Error(`routing default must be "auto" or "cloud" (or legacy "local"), got "${route}"`);
   }
   const cfg = await readYaml(LOCAL_FILE);
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
 }
 
+// Auto provider (TCET)
+export async function autoProvider() {
+  const models = await readYaml(MODELS_FILE);
+  const p = models.providers?.["tcet-auto"];
+  if (!p) return null;
+  const key = await resolveSecret("FORGE_TCET_API_KEY");
+  const list = Array.isArray(p.models) && p.models.length ? [...p.models] : await providerModels(p);
+  return {
+    id: "tcet-auto",
+    label: p.label ?? "TCET CoE",
+    baseURL: String(p.baseURL).replace(/\/+$/, ""),
+    models: list,
+    apiKey: p.apiKey ?? "env:FORGE_TCET_API_KEY",
+    keySet: key.length > 0,
+  };
+}
+export async function autoStatus() {
+  const p = await autoProvider();
+  if (!p) return { configured: false, keySet: false };
+  const key = await resolveSecret("FORGE_TCET_API_KEY");
+  return {
+    configured: true,
+    provider: p.id,
+    label: p.label,
+    baseURL: p.baseURL,
+    models: p.models,
+    keyName: "FORGE_TCET_API_KEY",
+    keySet: key.length > 0,
+    route: await routingPreference(),
+  };
+}
+
 /**
- * The first opt-in provider that declares a model list — the one the picker
- * exposes. Only openai-compatible providers qualify. A provider with an empty
- * `models:` array still qualifies: its list is fetched from the API (GET
- * {baseURL}/models) so a host that does not curate a list is not left with a
- * dead picker.
+ * The BYOK cloud provider (first opt-in provider with a key, excluding tcet-auto).
  */
 export async function cloudProvider() {
   const models = await readYaml(MODELS_FILE);
   for (const [id, p] of Object.entries(models.providers ?? {})) {
+    if (id === "tcet-auto") continue;
     if (p?.type !== "openai-compatible") continue;
     const list = await providerModels(p);
     if (!list.length) continue;
@@ -119,10 +204,21 @@ export async function cloudKeyName() {
 
 /** What the Settings panel renders — never the key itself. */
 export async function cloudStatus() {
+  const ap = await autoProvider();
   const p = await cloudProvider();
   const name = await cloudKeyName();
-  if (!p || !name) return { configured: false, keySet: false };
+  if (!p || !name) {
+    // still return auto info so UI can show auto status
+    const a = await autoStatus();
+    return {
+      configured: false,
+      keySet: false,
+      auto: a,
+      route: await routingPreference(),
+    };
+  }
   const key = await resolveSecret(name);
+  const a = await autoStatus();
   return {
     configured: true,
     provider: p.id,
@@ -132,15 +228,36 @@ export async function cloudStatus() {
     keyName: name,
     keySet: key.length > 0,
     route: await routingPreference(),
+    auto: a,
   };
 }
 
 /**
- * A live authentication check. A /models list is public on some providers, so
- * it proves nothing about a key — an authenticated chat probe does. Probes the
- * provider's first listed model with a one-token call; for opencode-go that is
- * deepseek-v4-flash. The detail string is safe to show — no key, no headers.
+ * A live authentication check. For tcet-auto it probes qwen3.6 with 1 token.
  */
+export async function testAutoConnection() {
+  const p = await autoProvider();
+  if (!p) return { ok: false, detail: "no tcet-auto provider configured" };
+  const key = await resolveSecret("FORGE_TCET_API_KEY");
+  if (!key) return { ok: false, detail: "no TCET API key set — set FORGE_TCET_API_KEY" };
+  const probe = p.models[0] ?? "qwen3.6";
+  try {
+    const res = await fetch(`${p.baseURL}/chat/completions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({ model: probe, messages: [{ role: "user", content: "ping" }], max_tokens: 1 }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) {
+      const text = (await res.text()).slice(0, 200);
+      return { ok: false, detail: `HTTP ${res.status}: ${text}` };
+    }
+    return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };
+  } catch (err) {
+    return { ok: false, detail: err.message };
+  }
+}
+
 export async function testCloudConnection() {
   const p = await cloudProvider();
   const name = await cloudKeyName();

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
-import { resolveSecret, routingPreference, cloudProvider } from "../cloud.js";
+import { resolveSecret, routingPreference, cloudProvider, autoProvider } from "../cloud.js";
 
 /**
  * Per-transport capability split. A role's sampling/output/context settings are
@@ -25,7 +25,9 @@ export const DEFAULT_EXCERPT_CHARS = 80_000;
  * alternative, not a patch.
  */
 export function applyTransport(spec, backend) {
-  const block = backend?.type === "openai-compatible" ? spec?.transports?.cloud : spec?.transports?.local;
+  // tcet-auto is an openai-compatible backend but uses the cloud overrides (larger caps)
+  const isCloud = backend?.type === "openai-compatible";
+  const block = isCloud ? spec?.transports?.cloud : spec?.transports?.local;
   if (!block || typeof block !== "object") return spec;
   return { ...spec, ...block, transports: spec.transports };
 }
@@ -42,16 +44,29 @@ export async function authorTransport({ model } = {}) {
   const spec = cfg.roles?.author ?? {};
   if (spec.provider) return "cloud";
   if (model) {
+    // tcet-auto's single model is qwen3.6 — treat as cloud-equivalent for caps
     for (const p of Object.values(cfg.providers ?? {})) {
       if (p?.type === "openai-compatible" && Array.isArray(p.models) && p.models.includes(model)) {
+        if (p === cfg.providers?.["tcet-auto"]) return "auto";
         return "cloud";
       }
     }
     return "ollama";
   }
   const route = await routingPreference();
-  const cp = await cloudProvider();
-  if (route === "cloud" && cp?.models?.length) return "cloud";
+  if (route === "auto") {
+    const ap = await autoProvider();
+    if (ap?.keySet) return "auto";
+  }
+  if (route === "cloud") {
+    const cp = await cloudProvider();
+    if (cp?.models?.length) return "cloud";
+  }
+  // legacy "local" preference maps to ollama
+  if (route === "cloud") {
+    const cp = await cloudProvider();
+    if (cp?.models?.length) return "cloud";
+  }
   return "ollama";
 }
 
@@ -197,9 +212,7 @@ export async function resolveRole(role) {
  * requests fail loudly on their own.
  *
  * The routing preference (gitignored config/local.yaml) chooses what "auto"
- * means: local Ollama, or the attached cloud's first model. The picker's
- * default label reflects it so the header's LOCAL/CLOUD toggle and the pickers
- * stay in agreement.
+ * means: tcet-auto's qwen3.6, or the attached cloud's first model.
  */
 export async function modelChoices() {
   const cfg = await config();
@@ -208,8 +221,13 @@ export async function modelChoices() {
   try {
     models = [...(await installed(cfg.host))].sort();
   } catch { /* offline — the picker just shows the default */ }
-  // The first opt-in provider (static `models:` or fetched from the API when
-  // the host does not declare a list) that has a key attached.
+  // auto (tcet) status
+  let auto = null;
+  const ap = await autoProvider();
+  if (ap?.keySet) {
+    auto = { provider: ap.id, label: ap.label, models: ap.models };
+  }
+  // cloud (BYOK) provider
   let cloud = null;
   const cp = await cloudProvider();
   if (cp) {
@@ -219,10 +237,10 @@ export async function modelChoices() {
     }
   }
   const route = await routingPreference();
-  const defaultModel = cloud && route === "cloud" && cloud.models.length
-    ? cloud.models[0]
-    : def;
-  return { models, default: defaultModel, cloud, route };
+  let defaultModel = def;
+  if (route === "auto" && auto?.models.length) defaultModel = auto.models[0];
+  else if (route === "cloud" && cloud?.models.length) defaultModel = cloud.models[0];
+  return { models, default: defaultModel, cloud, auto, route };
 }
 
 /**
@@ -280,7 +298,10 @@ export async function chat({
   // cloud routing is about where the user's work runs, not the plumbing.
   if (!model && role === "author") {
     const route = await routingPreference();
-    if (route === "cloud") {
+    if (route === "auto") {
+      const ap = await autoProvider();
+      if (ap?.keySet && ap?.models?.length) model = ap.models[0];
+    } else if (route === "cloud") {
       const cp = await cloudProvider();
       if (cp?.models?.length) model = cp.models[0];
     }

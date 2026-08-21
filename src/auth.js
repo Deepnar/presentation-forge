@@ -2,6 +2,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
+import { getDb, setDbPathForTest } from "./db.js";
 
 /**
  * Local single-install accounts. This is deliberately NOT a multi-user system:
@@ -21,9 +22,13 @@ let SESSIONS_FILE = path.join(CONFIG, "sessions.json");
 
 // Test seam: auth.test.js redirects the store to a scratch dir so it never
 // touches the real users/sessions.
+let useJsonOnly = false;
 export function setStoreDir(dir) {
   USERS_FILE = path.join(dir, "users.json");
   SESSIONS_FILE = path.join(dir, "sessions.json");
+  try { setDbPathForTest(path.join(dir, "forge.db")); } catch {}
+  // tests manipulate JSON directly — stay on JSON for that run
+  if (dir.includes("forge-auth-")) useJsonOnly = true;
 }
 
 export const MIN_PASSWORD_LENGTH = 8;
@@ -106,16 +111,43 @@ export function canAccessDeck(user, owner) {
   return owner === user.email;
 }
 
+function db() {
+  if (useJsonOnly) return null;
+  try { return getDb(); } catch { return null; }
+}
+
+function rowToUser(row) {
+  if (!row) return null;
+  return {
+    name: row.name,
+    email: row.email,
+    createdAt: row.created_at,
+    salt: row.salt,
+    hash: row.password_hash,
+    role: row.role,
+    google_sub: row.google_sub,
+  };
+}
+
 export async function register({ name, email, password }) {
   const error = validateRegistration({ name, email, password });
   if (error) throw new Error(error);
-
-  const users = await loadUsers();
   const normalized = email.trim().toLowerCase();
+  const d = db();
+  if (d) {
+    const exists = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
+    if (exists) throw new Error("an account with that email already exists");
+    const { salt, hash } = hashPassword(password);
+    const now = new Date().toISOString();
+    d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
+      .run(normalized, name.trim(), hash, salt, now);
+    const row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
+    return publicUser(rowToUser(row));
+  }
+  const users = await loadUsers();
   if (users.some((u) => u.email === normalized)) {
     throw new Error("an account with that email already exists");
   }
-
   const user = {
     name: name.trim(),
     email: normalized,
@@ -133,8 +165,18 @@ export async function register({ name, email, password }) {
 export async function seedAdmin({ name, email, password }) {
   const error = validateRegistration({ name, email, password });
   if (error) throw new Error(`FORGE_ADMIN_* misconfigured: ${error}`);
-  const users = await loadUsers();
   const normalized = email.trim().toLowerCase();
+  const d = db();
+  if (d) {
+    const exists = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
+    if (exists) return false;
+    const { salt, hash } = hashPassword(password);
+    const now = new Date().toISOString();
+    d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)")
+      .run(normalized, name.trim(), hash, salt, "admin", now);
+    return true;
+  }
+  const users = await loadUsers();
   if (users.some((u) => u.email === normalized)) return false;
   const user = {
     name: name.trim(),
@@ -149,10 +191,81 @@ export async function seedAdmin({ name, email, password }) {
 }
 
 export async function authenticate(email, password) {
+  const normalized = String(email ?? "").trim().toLowerCase();
+  const d = db();
+  if (d) {
+    const row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
+    if (!row || !row.password_hash || typeof password !== "string") return null;
+    const user = rowToUser(row);
+    return verifyPassword(password, user.salt, user.hash) ? publicUser(user) : null;
+  }
   const users = await loadUsers();
-  const user = users.find((u) => u.email === String(email ?? "").trim().toLowerCase());
+  const user = users.find((u) => u.email === normalized);
   if (!user || typeof password !== "string") return null;
   return verifyPassword(password, user.salt, user.hash) ? publicUser(user) : null;
+}
+
+// Google OAuth — any email, verified via tokeninfo. In dev without GOOGLE_CLIENT_ID, skip aud check.
+export async function verifyGoogleIdToken(idToken) {
+  const clientId = process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null;
+  const res = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`, { signal: AbortSignal.timeout(8000) });
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    throw new Error(`Google token invalid: ${t.slice(0,120)}`);
+  }
+  const info = await res.json();
+  if (clientId && info.aud !== clientId) throw new Error("Google token audience mismatch");
+  if (info.email_verified !== "true" && info.email_verified !== true) throw new Error("Google email not verified");
+  if (!info.email) throw new Error("Google token missing email");
+  const exp = Number(info.exp);
+  if (Number.isFinite(exp) && Date.now()/1000 > exp) throw new Error("Google token expired");
+  return {
+    sub: String(info.sub),
+    email: String(info.email).trim().toLowerCase(),
+    name: String(info.name ?? info.email.split("@")[0]),
+    picture: info.picture ?? null,
+  };
+}
+
+export async function findOrCreateGoogleUser({ sub, email, name }) {
+  const normalized = email.trim().toLowerCase();
+  const d = db();
+  if (d) {
+    let row = d.prepare("SELECT * FROM users WHERE google_sub=?").get(sub);
+    if (row) return publicUser(rowToUser(row));
+    row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
+    if (row) {
+      d.prepare("UPDATE users SET google_sub=?, google_email=? WHERE id=?").run(sub, normalized, row.id);
+      row = d.prepare("SELECT * FROM users WHERE id=?").get(row.id);
+      return publicUser(rowToUser(row));
+    }
+    const now = new Date().toISOString();
+    d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
+      .run(normalized, name.trim() || normalized, sub, normalized, now);
+    row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
+    return publicUser(rowToUser(row));
+  }
+  // JSON fallback
+  const users = await loadUsers();
+  let user = users.find((u) => u.google_sub === sub);
+  if (user) return publicUser(user);
+  user = users.find((u) => u.email === normalized);
+  if (user) {
+    user.google_sub = sub;
+    user.google_email = normalized;
+    await writeJson(USERS_FILE, users);
+    return publicUser(user);
+  }
+  const newUser = {
+    name: name.trim() || normalized,
+    email: normalized,
+    createdAt: new Date().toISOString(),
+    google_sub: sub,
+    google_email: normalized,
+  };
+  users.push(newUser);
+  await writeJson(USERS_FILE, users);
+  return publicUser(newUser);
 }
 
 export function createSession() {
@@ -161,19 +274,44 @@ export function createSession() {
 
 export async function startSession(user) {
   const token = createSession();
+  const now = new Date().toISOString();
+  const d = db();
+  if (d) {
+    // lookup user id
+    const row = d.prepare("SELECT id FROM users WHERE email=?").get(user.email.trim().toLowerCase());
+    const uid = row?.id ?? null;
+    if (uid) {
+      d.prepare("INSERT INTO sessions (token,user_id,email,created_at,last_used) VALUES (?,?,?,?,?)")
+        .run(token, uid, user.email.trim().toLowerCase(), now, now);
+      return token;
+    }
+  }
   const sessions = await loadSessions();
-  sessions[token] = { email: user.email, createdAt: new Date().toISOString() };
+  sessions[token] = { email: user.email, createdAt: now };
   await writeJson(SESSIONS_FILE, sessions);
   return token;
 }
 
 export async function endSession(token) {
   if (!token) return;
+  const d = db();
+  if (d) {
+    d.prepare("DELETE FROM sessions WHERE token=?").run(token);
+    return;
+  }
   const sessions = await loadSessions();
   if (sessions[token]) {
     delete sessions[token];
     await writeJson(SESSIONS_FILE, sessions);
   }
+}
+
+/** Helper for limits: get user DB id */
+export function getUserId(email) {
+  const d = db();
+  if (!d) return null;
+  const row = d.prepare("SELECT id FROM users WHERE email=?").get(String(email).trim().toLowerCase());
+  return row?.id ?? null;
 }
 
 /** Resolve a bearer token to a public user, or null. Expired sessions are
@@ -182,6 +320,22 @@ export async function endSession(token) {
  *  mid-project. */
 export async function userForToken(token) {
   if (!token) return null;
+  const d = db();
+  if (d) {
+    const sess = d.prepare("SELECT * FROM sessions WHERE token=?").get(token);
+    if (!sess) return null;
+    const created = Date.parse(sess.last_used ?? sess.created_at);
+    if (Number.isFinite(created) && Date.now() - created > SESSION_TTL_MS) {
+      d.prepare("DELETE FROM sessions WHERE token=?").run(token);
+      return null;
+    }
+    // refresh
+    d.prepare("UPDATE sessions SET last_used=? WHERE token=?").run(new Date().toISOString(), token);
+    const userRow = d.prepare("SELECT * FROM users WHERE id=?").get(sess.user_id);
+    if (!userRow) return null;
+    // also try email lookup if user deleted?
+    return publicUser(rowToUser(userRow));
+  }
   const sessions = await loadSessions();
   const now = Date.now();
   let changed = false;
