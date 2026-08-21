@@ -112,11 +112,6 @@ export default function App() {
 
   useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
 
-  // Ctrl+K focuses the sidebar search, Ctrl+N starts a new chat. The handler
-  // reads the live chat list through a ref — it binds once per session, so a
-  // stale closure would otherwise miss the empty-chat reuse in newChat.
-  const chatsRef = useRef(chats);
-  useEffect(() => { chatsRef.current = chats; }, [chats]);
   useEffect(() => {
     const onKey = (e) => {
       const mod = e.ctrlKey || e.metaKey;
@@ -125,7 +120,7 @@ export default function App() {
         setFocusSearch((n) => n + 1);
       } else if (mod && e.key.toLowerCase() === "n") {
         e.preventDefault();
-        newChat("deck", chatsRef.current);
+        newChat("deck");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -363,6 +358,7 @@ export default function App() {
           onHome={goHome}
           onOpenSettings={() => setSettingsOpen(true)}
           user={user}
+          view={view}
           onAuthClick={() => setAuthOpen(true)}
         />
 

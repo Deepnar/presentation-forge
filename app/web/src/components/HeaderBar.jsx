@@ -9,7 +9,7 @@ import { setModelMode, subscribeModelMode, getModelMode } from "../lib/modelMode
  * client model-mode store so every picker filters immediately. CLOUD is only
  * reachable when a BYOK key is attached — without one it points at Settings.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, user, onAuthClick }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, user, onAuthClick, view }) {
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("auto");
@@ -59,15 +59,18 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
     } catch {}
   }
 
+  const hideToggle = view === "home";
   return (
-    <header className="shell-header relative z-20 flex h-12 shrink-0 items-center gap-2.5 border-b border-line bg-base px-3">
-      <button
-        onClick={onToggleLeft}
-        title={leftOpen ? "Collapse navigation" : "Expand navigation"}
-        className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-      >
-        {leftOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-      </button>
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-panel/90 px-3 backdrop-blur-md shadow-sm">
+      {!hideToggle && (
+        <button
+          onClick={onToggleLeft}
+          title={leftOpen ? "Collapse navigation" : "Expand navigation"}
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+        >
+          {leftOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </button>
+      )}
 
       <a
         href="#/chat"
