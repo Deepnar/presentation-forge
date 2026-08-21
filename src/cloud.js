@@ -292,8 +292,8 @@ export async function testAutoConnection() {
     });
     if (!res.ok) {
       const text = (await res.text()).slice(0, 200);
-      if (res.status === 520 || res.status === 502 || res.status === 503) {
-        return { ok: false, detail: `TCET gateway temporarily unavailable (HTTP ${res.status}) — campus server may be restarting or at 15-user limit. Models endpoint OK, key is valid. Try again or use CLOUD.` };
+      if ([500, 520, 502, 503].includes(res.status)) {
+        return { ok: false, detail: `TCET gateway temporarily unavailable (HTTP ${res.status}) — campus server may be restarting or at 15-user limit. Models endpoint OK, key is valid (qwen3.6). Try again in a minute or switch to CLOUD/BYOK.` };
       }
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }
