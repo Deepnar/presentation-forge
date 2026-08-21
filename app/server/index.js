@@ -50,11 +50,15 @@ app.use((_req, res, next) => {
 // browser is same-origin and this never matters; when the built UI is served
 // from the API itself it is same-origin too. The allow-list only matters if
 // someone serves the UI from elsewhere, and then it is the ONLY origin allowed.
-// With no origin configured, emit NO CORS headers at all — a public box should
-// not advertise Access-Control-Allow-Origin: * to every site in the world.
+// With no origin configured we allow localhost/5173 origins for dev so a
+// direct :5174 fetch from the Vite shell does not look like a CORS failure
+// (which surfaced as "dark blue" blank chat because api.me() treated the
+// cors-blocked user as guest).
 const UI_ORIGIN = (process.env.FORGE_UI_ORIGIN ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 if (UI_ORIGIN.length) {
   app.use(cors({ origin: UI_ORIGIN }));
+} else {
+  app.use(cors({ origin: true }));
 }
 
 // When a reverse proxy fronts the box (the documented deployment), req.ip is

@@ -12,7 +12,7 @@ import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
 import Themes from "./views/Themes.jsx";
 import TourThemes from "./views/TourThemes.jsx";
-import { Privacy, Terms, Contact, Docs } from "./views/Legal.jsx";
+import { Privacy, Terms, Contact, Docs, Usage } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
@@ -139,6 +139,9 @@ export default function App() {
    */
   function newChat(kind = "deck") {
     if (!user) return;
+    // onClick passes SyntheticEvent — treat any non-string as default kind
+    if (typeof kind !== "string") kind = "deck";
+    if (kind !== "deck" && kind !== "report") kind = "deck";
     const list = loadChats(user.email);
     const existing = findEmptyChat(list, kind);
     if (existing) {
@@ -205,12 +208,19 @@ export default function App() {
       case "terms":
       case "contact":
       case "docs":
+      case "usage":
         setView(r.view);
         break;
       case "chat":
       default:
         setView("chat");
-        if (r.chatId && chats.some((c) => c.id === r.chatId)) setActiveChatId(r.chatId);
+        // use storage-direct check so a fresh hashchange before React commits still finds the chat
+        if (r.chatId) {
+          let fresh = chats;
+          try { if (user?.email) fresh = loadChats(user.email); } catch {}
+          if (fresh.some((c) => c.id === r.chatId)) setActiveChatId(r.chatId);
+          else if (r.chatId) setActiveChatId(r.chatId); // allow direct navigation even if list lags
+        }
         break;
     }
   }
@@ -329,7 +339,7 @@ export default function App() {
 
   if (!user) {
     const tourView = parseHash(window.location.hash).view;
-    const tourExtra = ["privacy","terms","contact","docs","tour-themes","themes"].includes(tourView) ? tourView : null;
+    const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative h-full overflow-hidden bg-base">
         <ParticleField boost={1.8} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-80" />
@@ -344,7 +354,7 @@ export default function App() {
             onAuthClick={(mode) => { setAuthMode(mode === "register" ? "register" : "login"); setAuthOpen(true); }}
           />
           <div className="flex-1 overflow-y-auto">
-            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : tourExtra === "themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : (
+            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : tourExtra === "themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : (
               <Home
                 user={null}
                 onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
@@ -381,7 +391,7 @@ export default function App() {
         />
 
         <div className="isolate flex min-h-0 flex-1">
-          {view !== "home" && !["privacy","terms","contact","docs","tour-themes"].includes(view) && (
+          {view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view) && (
             <div
               onMouseEnter={() => setRailHover(true)}
               onMouseLeave={() => setRailHover(false)}
@@ -469,6 +479,7 @@ export default function App() {
             {view === "terms" && <Terms />}
             {view === "contact" && <Contact />}
             {view === "docs" && <Docs />}
+            {view === "usage" && <Usage />}
           </main>
         </div>
 
@@ -527,8 +538,7 @@ function FirstRunHint({ userEmail }) {
           </svg>
         </span>
         <span className="whitespace-nowrap text-[12px] text-fg-muted">
-          Models come from <span className="font-medium text-fg">Ollama</span> or your{" "}
-          <span className="font-medium text-fg">cloud key</span> — switch in Settings.
+          Auto or <span className="font-medium text-fg">Cloud</span> — switch in Settings.
         </span>
         <button
           onClick={dismiss}
