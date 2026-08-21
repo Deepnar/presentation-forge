@@ -346,7 +346,7 @@ export default function App() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative h-full overflow-hidden bg-base">
-        {/* solid bg, no particles — per request: landing is solid color */}
+        <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />
         <div className="relative z-10 flex h-full flex-col">
           <HeaderBar
             leftOpen={leftOpen}
@@ -379,10 +379,9 @@ export default function App() {
     );
   }
 
-  const showParticles = view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   return (
     <div className="relative h-full overflow-hidden bg-base">
-      {showParticles && <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-40" />}
+      <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />
 
       <div className="relative z-10 flex h-full flex-col">
         <HeaderBar

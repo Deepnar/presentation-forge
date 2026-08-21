@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { marked } from "marked";
 import { api } from "../api.js";
+import Footer from "../components/Footer.jsx";
 
 function FullShell({ eyebrow, title, subtitle, children, aside }) {
   return (
@@ -39,6 +40,7 @@ function FullShell({ eyebrow, title, subtitle, children, aside }) {
           </article>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
@@ -186,7 +188,7 @@ export function Docs() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-faint">On this page</div>
               <div className="mt-3 flex flex-col gap-1.5 text-[13px]">
                 {toc.map((h) => (
-                  <a key={h.id} href={`#${h.id}`} className={`hover:text-fg ${h.level === 1 ? "font-medium text-fg" : "pl-3 text-fg-muted"}`}>{h.title}</a>
+                  <button key={h.id} onClick={(e) => { e.preventDefault(); document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className={`text-left hover:text-fg ${h.level === 1 ? "font-medium text-fg" : "pl-3 text-fg-muted"}`}>{h.title}</button>
                 ))}
                 {toc.length === 0 && <span className="text-fg-faint">Loading…</span>}
               </div>
@@ -206,12 +208,12 @@ export function Docs() {
               {html === null && !err && <div className="space-y-3"><div className="h-6 w-3/4 skeleton rounded" /><div className="h-64 skeleton rounded-xl" /></div>}
               {err && <div className="rounded-xl border border-danger/20 bg-danger/10 p-4 text-[13px] text-danger">{err}</div>}
               {html && (
-                <div className="prose prose-sm max-w-none prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-headings:text-fg prose-h1:text-[1.8rem] prose-h2:text-[1.35rem] prose-h2:mt-10 prose-h2:border-b prose-h2:border-line prose-h2:pb-2 prose-p:text-fg-muted prose-p:leading-relaxed prose-a:text-accent prose-strong:text-fg prose-code:rounded prose-code:bg-sunken prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-[12px] prose-pre:bg-[#0B0F1A] prose-pre:text-white prose-pre:rounded-xl prose-pre:p-4 prose-table:text-[13px] prose-th:text-fg prose-td:text-fg-muted" dangerouslySetInnerHTML={{ __html: html }} />
+                <div className="prose prose-sm max-w-none prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-headings:text-fg prose-h1:text-[1.8rem] prose-h2:text-[1.35rem] prose-h2:mt-10 prose-h2:border-b prose-h2:border-line prose-h2:pb-2 prose-p:text-fg-muted prose-p:leading-relaxed prose-a:text-accent prose-strong:text-fg prose-code:rounded prose-code:bg-sunken prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-[12px] prose-pre:bg-[#0B0F1A] prose-pre:text-white prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-table:text-[13px] prose-th:text-fg prose-td:text-fg-muted prose-li:text-fg-muted" dangerouslySetInnerHTML={{ __html: html }} />
               )}
             </div>
           </article>
           <aside className="hidden lg:block">
-            <div className="sticky top-20 rounded-xl border border-line bg-sunken p-4">
+            <div className="sticky top-20 rounded-xl border border-line bg-panel p-4">
               <div className="text-[12px] font-semibold text-fg">Quick links</div>
               <div className="mt-2 flex flex-col gap-1.5 text-[13px]">
                 <a href="#/usage" className="text-fg-muted hover:text-accent">API usage</a>
@@ -222,15 +224,31 @@ export function Docs() {
           </aside>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
 
 export function Usage() {
   const [usage, setUsage] = useState(null);
+  const [limits, setLimits] = useState(null);
   const [err, setErr] = useState(null);
   useEffect(() => {
-    api.autoUsage().then((r) => setUsage(r.usage ?? r)).catch((e) => setErr(String(e.message || e)));
+    // try per-user usage first, fall back to public limits so page is useful unauth
+    api.autoUsage()
+      .then((r) => {
+        setUsage(r.usage ?? r);
+        setLimits(r.limits ?? null);
+      })
+      .catch((e) => {
+        // if 401 (log in), still fetch public limits
+        setErr(String(e.message || e));
+        fetch("/api/auto/status").then((r) => r.json()).then((j) => {
+          if (j.ok) setLimits(j.limits ?? null);
+        }).catch(() => {});
+      });
+    // also fetch limits standalone for header
+    fetch("/api/auto/status").then((r) => r.json()).then((j) => { if (j.ok && j.limits) setLimits((prev) => prev ?? j.limits); }).catch(() => {});
   }, []);
   const hourly = usage?.hourly ?? usage?.hour ?? null;
   const weekly = usage?.weekly ?? usage?.week ?? null;
@@ -260,28 +278,31 @@ export function Usage() {
               <h1 className="mt-3 text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg">API usage & limits</h1>
               <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">Auto is free and rate-limited. Cloud (BYOK) is your key, unlimited. This page shows your current windows from <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">GET /api/auto/usage</code>.</p>
             </div>
-            {err && <div className="mt-8 rounded-xl border border-danger/20 bg-danger/10 p-4 text-[13px] text-danger">Could not load usage — {err}. Log in to see your windows.</div>}
-            {!err && !usage && <div className="mt-8 h-40 skeleton rounded-xl" />}
-            {usage && (
+            {err && !usage && limits && (
+              <div className="mt-8 rounded-xl border border-accent/20 bg-accent-tint p-4 text-[13px] text-accent">Log in to see your personal windows — showing public limits below.</div>
+            )}
+            {err && !usage && !limits && <div className="mt-8 rounded-xl border border-danger/20 bg-danger/10 p-4 text-[13px] text-danger">Could not load — {err}</div>}
+            {!err && !usage && !limits && <div className="mt-8 h-40 skeleton rounded-xl" />}
+            {(usage || limits) && (
               <div className="mt-8 space-y-8">
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="rounded-2xl border border-line bg-panel p-5">
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">Hourly</div>
-                    <div className="mt-2 font-mono text-[13px] leading-relaxed text-fg">{hourly ? JSON.stringify(hourly, null, 2) : "No data"}</div>
+                    <div className="mt-2 font-mono text-[13px] leading-relaxed text-fg">{hourly ? JSON.stringify(hourly, null, 2) : limits?.hourly ? JSON.stringify(limits.hourly, null, 2) : "Log in for personal"}</div>
                   </div>
                   <div className="rounded-2xl border border-line bg-panel p-5">
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">Weekly</div>
-                    <div className="mt-2 font-mono text-[13px] leading-relaxed text-fg">{weekly ? JSON.stringify(weekly, null, 2) : "No data"}</div>
+                    <div className="mt-2 font-mono text-[13px] leading-relaxed text-fg">{weekly ? JSON.stringify(weekly, null, 2) : limits?.weekly ? JSON.stringify(limits.weekly, null, 2) : "Log in for personal"}</div>
                   </div>
                   <div className="rounded-2xl border border-accent/20 bg-accent-tint p-5">
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Max slides/deck</div>
-                    <div className="mt-2 text-[22px] font-semibold tracking-tight text-fg">30</div>
+                    <div className="mt-2 text-[22px] font-semibold tracking-tight text-fg">{limits?.maxSlidesPerDeck ?? 30}</div>
                     <div className="text-[12px] text-fg-muted">Auto tier cap</div>
                   </div>
                 </div>
                 <div className="rounded-2xl border border-line bg-panel p-5">
-                  <div className="text-[13px] font-semibold text-fg">Raw response</div>
-                  <pre className="mt-3 max-h-[50vh] overflow-auto rounded-xl bg-[#0B0F1A] p-4 font-mono text-[12px] leading-relaxed text-white">{JSON.stringify(usage, null, 2)}</pre>
+                  <div className="text-[13px] font-semibold text-fg">Raw {usage ? "usage" : "limits"}</div>
+                  <pre className="mt-3 max-h-[50vh] overflow-auto rounded-xl bg-[#0B0F1A] p-4 font-mono text-[12px] leading-relaxed text-white">{JSON.stringify(usage ?? limits, null, 2)}</pre>
                 </div>
                 <p className="text-[12px] leading-relaxed text-fg-faint">Limits are sliding windows — oldest events fall out automatically. Switch to Cloud in the header toggle to bypass these.</p>
               </div>
@@ -293,6 +314,7 @@ export function Usage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

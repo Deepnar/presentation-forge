@@ -5,6 +5,9 @@ import { Button } from "../components/ui.jsx";
 import {
   ChatIcon, DocIcon, GithubIcon, IdIcon, LayersIcon, PaletteIcon, SearchIcon, SparkleIcon,
 } from "../components/icons.jsx";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Immersive tour — full-bleed, not middle-locked.
@@ -20,6 +23,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
     <div className="w-full">
       <HeroFull authed={authed} onStartChat={handleChat} onAuth={onAuth} />
       <PipelineImmersive />
+      <LiveDemoScrolly onAuth={onAuth} authed={authed} />
       <HowItWorksFull onStartChat={handleChat} />
       <ThemesFullBleed onBrowseThemes={onBrowseThemes} />
       <PlansFull />
@@ -286,6 +290,92 @@ function MockSlide({ type, active }) {
       );
     default: return <div className={wrap}><div className="h-1.5 w-3/4 rounded-full bg-line" /></div>;
   }
+}
+
+/* ------------------------------------------------ live demo — GSAP scrolly like landonorris */
+
+function LiveDemoScrolly({ onAuth, authed }) {
+  const containerRef = useRef(null);
+  const trackRef = useRef(null);
+  const textRef = useRef(null);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=110%",
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+      // parallax: track moves left, text moves slightly up with depth
+      tl.to(trackRef.current, { x: -360, ease: "none" }, 0);
+      tl.to(textRef.current, { y: -40, ease: "none" }, 0);
+      // stagger slides in
+      tl.fromTo(".demo-slide-1", { x: 120, opacity: 0, rotate: 2 }, { x: 0, opacity: 1, rotate: -1, ease: "none" }, 0);
+      tl.fromTo(".demo-slide-2", { x: 180, opacity: 0, rotate: -2 }, { x: 0, opacity: 1, rotate: 1.5, ease: "none" }, 0.15);
+      tl.fromTo(".demo-slide-3", { x: 220, opacity: 0, rotate: 3 }, { x: 0, opacity: 1, rotate: -1, ease: "none" }, 0.3);
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+  return (
+    <section ref={containerRef} className="relative w-full overflow-hidden bg-[#0B0F1A] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(40rem_30rem_at_20%_10%,rgba(124,108,255,0.18),transparent_60%),radial-gradient(36rem_24rem_at_80%_90%,rgba(232,90,212,0.12),transparent_60%)]" />
+      <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 px-6 py-16 sm:px-10 lg:grid-cols-[420px_1fr] lg:py-0 lg:h-screen">
+        <div ref={textRef} className="max-w-md">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Live demo — no API call
+          </div>
+          <h2 className="mt-4 text-[2.2rem] font-semibold leading-[0.95] tracking-[-0.03em] sm:text-[2.6rem]">We generate, you watch.</h2>
+          <p className="mt-3 text-[14px] leading-relaxed text-white/60">Scroll — this is our own site rendered as slides. A title, a bullets slide, a chart — each glides in at a different speed (parallax) like <a href="https://landonorris.com" target="_blank" rel="noreferrer" className="underline decoration-white/20 underline-offset-4 hover:decoration-white/60">landonorris.com</a>. No real PPT is written, it’s a scroll-driven story of how your deck would build.</p>
+          <div className="mt-6 flex gap-2">
+            <button onClick={() => (authed ? window.location.hash = "#/chat" : onAuth?.("register"))} className="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[#0B0F1A] hover:bg-white/90">{authed ? "Go to chat" : "Join today"}</button>
+            <a href="#pipeline" onClick={(e) => { e.preventDefault(); document.getElementById("pipeline")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-full border border-white/15 px-4 py-2 text-[13px] text-white/70 hover:bg-white/5">How it works</a>
+          </div>
+          <div className="mt-6 text-[11px] uppercase tracking-[0.12em] text-white/30">Scroll to scrub →</div>
+        </div>
+        <div className="relative h-[380px] overflow-visible lg:h-[420px]">
+          <div ref={trackRef} className="absolute inset-0 flex items-center gap-5 will-change-transform">
+            <div className="demo-slide-1 w-[300px] shrink-0 rotate-[-1deg] rounded-2xl border border-white/10 bg-white p-3 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+              <div className="rounded-xl bg-[#0B0F1A] p-4 text-white">
+                <div className="text-[11px] uppercase tracking-wider text-white/40">Title</div>
+                <div className="mt-1 text-[15px] font-semibold leading-tight">Green Hydrogen 2026</div>
+                <div className="mt-1 text-[12px] leading-relaxed text-white/60">Cost, electrolysis and policy — a 12-slide talk.</div>
+                <div className="mt-3 h-2 w-12 rounded-full bg-accent" />
+              </div>
+              <div className="mt-2 text-[11px] text-fg-faint">slide 01 — title</div>
+            </div>
+            <div className="demo-slide-2 w-[280px] shrink-0 rotate-[1.5deg] rounded-2xl border border-white/10 bg-white p-3 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+              <div className="p-2">
+                <div className="text-[12px] font-semibold text-fg">Why it matters</div>
+                <div className="mt-2 space-y-1.5">
+                  <div className="flex gap-2 text-[12px] text-fg-muted"><span className="mt-1 h-1 w-1 rounded-full bg-accent" /> $2/kg by 2030 in best sites</div>
+                  <div className="flex gap-2 text-[12px] text-fg-muted"><span className="mt-1 h-1 w-1 rounded-full bg-accent" /> 60% of cost is electricity</div>
+                  <div className="flex gap-2 text-[12px] text-fg-muted"><span className="mt-1 h-1 w-1 rounded-full bg-accent" /> Policy unlocks the first GW</div>
+                </div>
+              </div>
+              <div className="mt-2 text-[11px] text-fg-faint">slide 04 — bullets</div>
+            </div>
+            <div className="demo-slide-3 w-[320px] shrink-0 rotate-[-1deg] rounded-2xl border border-white/10 bg-white p-3 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+              <div className="p-2">
+                <div className="text-[12px] font-semibold text-fg">Cost by technology</div>
+                <div className="mt-3 flex items-end gap-1.5 h-20">
+                  <div className="flex-1 rounded-t bg-accent/30" style={{ height: "45%" }} />
+                  <div className="flex-1 rounded-t bg-accent/60" style={{ height: "68%" }} />
+                  <div className="flex-1 rounded-t bg-accent" style={{ height: "92%" }} />
+                </div>
+                <div className="mt-2 flex gap-2 text-[10px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span></div>
+              </div>
+              <div className="mt-2 text-[11px] text-fg-faint">slide 07 — chart</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 /* --------------------------------------------------------------- how it works full */

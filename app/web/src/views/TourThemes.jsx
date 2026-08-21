@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api.js";
 import { SearchIcon } from "../components/icons.jsx";
+import Footer from "../components/Footer.jsx";
 
 /**
  * Marketing themes showcase — distinct from the app's Themes grid.
@@ -77,6 +78,7 @@ export default function TourThemes({ onAuth, authed = false }) {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
