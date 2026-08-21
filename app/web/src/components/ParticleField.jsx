@@ -40,7 +40,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     let dotRgb = hexToRgb(fill.dot);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const MAX = 220;
+    const MAX = 340;
     const FRAME_MS = 1000 / 60;
 
     const state = {
@@ -51,21 +51,21 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     };
 
     const makeDot = () => {
-      const r = 0.6 + Math.random() * 1.1;
+      const r = 1.0 + Math.random() * 1.8;
       return {
         x: Math.random() * state.w,
         y: Math.random() * state.h,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.22,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
         r,
         baseR: r,
-        base: (fill.isDark ? 0.10 + Math.random() * 0.16 : 0.08 + Math.random() * 0.14) * boost,
+        base: (fill.isDark ? 0.18 + Math.random() * 0.22 : 0.14 + Math.random() * 0.20) * boost,
         phase: Math.random() * Math.PI * 2,
-        fx: 0.06 + Math.random() * 0.14,
-        fy: 0.05 + Math.random() * 0.12,
+        fx: 0.07 + Math.random() * 0.16,
+        fy: 0.06 + Math.random() * 0.14,
         ax: 10 + Math.random() * 22,
         ay: 10 + Math.random() * 22,
-        accent: Math.random() < 0.16,
+        accent: Math.random() < 0.22,
         tw: Math.random() * Math.PI * 2,
       };
     };
@@ -78,7 +78,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       canvas.width = state.w;
       canvas.height = state.h;
       const area = rect.width * rect.height;
-      const count = Math.max(40, Math.min(MAX, Math.round(area / 5200)));
+      const count = Math.max(60, Math.min(MAX, Math.round(area / 3400)));
       state.dots = Array.from({ length: count }, makeDot);
       state.trails = [];
       if (reduceMotion) drawFrame(performance.now());

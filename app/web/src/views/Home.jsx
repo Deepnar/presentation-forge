@@ -19,8 +19,32 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
   const handleChat = () => onStartChat?.();
+  const rootRef = useRef(null);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      // parallax for every section heading — subtle depth like landonorris
+      gsap.utils.toArray("[data-parallax]").forEach((el) => {
+        const depth = parseFloat(el.dataset.parallax) || 0.15;
+        gsap.fromTo(el, { y: depth * 60 }, {
+          y: depth * -60,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+      });
+      // hero orbs drift at different speeds
+      gsap.fromTo(".hero-orb-1", { y: 0 }, { y: -80, ease: "none", scrollTrigger: { trigger: ".hero-orb-1", start: "top top", end: "bottom top", scrub: 1 } });
+      gsap.fromTo(".hero-orb-2", { y: 0 }, { y: -120, ease: "none", scrollTrigger: { trigger: ".hero-orb-2", start: "top top", end: "bottom top", scrub: 1 } });
+    }, rootRef);
+    return () => ctx.revert();
+  }, []);
   return (
-    <div className="w-full">
+    <div ref={rootRef} className="w-full">
       <HeroFull authed={authed} onStartChat={handleChat} onAuth={onAuth} />
       <PipelineImmersive />
       <LiveDemoScrolly onAuth={onAuth} authed={authed} />
@@ -69,8 +93,8 @@ function HeroFull({ authed, onStartChat, onAuth }) {
   return (
     <section className={`relative w-full overflow-hidden bg-base ${phase ? "view-in" : "opacity-0"}`}>
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-1/2 h-[48rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_70%)] opacity-70" />
-        <div className="absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.13),transparent_68%)]" />
+        <div className="hero-orb-1 absolute -top-24 left-1/2 h-[48rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-accent-tint),transparent_70%)] opacity-70" />
+        <div className="hero-orb-2 absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(124,108,255,0.13),transparent_68%)]" />
         <div className="absolute inset-0 opacity-[0.08] [background:linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] [background-size:32px_32px]" />
       </div>
       <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 py-14 sm:px-10 sm:py-20 lg:flex-row lg:items-center lg:gap-8 lg:py-24">
@@ -171,7 +195,7 @@ function PipelineImmersive() {
   return (
     <section id="pipeline" className="w-full bg-base">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mb-10 text-center">
+        <div className="mb-10 text-center" data-parallax="0.12">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">The pipeline</div>
           <h2 className="mt-2 text-[2.1rem] font-semibold tracking-[-0.02em] text-fg">How a topic becomes a deck</h2>
           <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Each step reveals its real slide type — the ppt specimen that this stage produces, not a random theme.</p>
@@ -301,23 +325,31 @@ function LiveDemoScrolly({ onAuth, authed }) {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      // no pin — free scroll, just parallax as you scroll through section
+      gsap.fromTo(trackRef.current, { x: 0 }, {
+        x: -120,
+        ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top top",
-          end: "+=110%",
+          start: "top bottom",
+          end: "bottom top",
           scrub: 1,
-          pin: true,
-          anticipatePin: 1,
         },
       });
-      // parallax: track moves left, text moves slightly up with depth
-      tl.to(trackRef.current, { x: -360, ease: "none" }, 0);
-      tl.to(textRef.current, { y: -40, ease: "none" }, 0);
-      // stagger slides in
-      tl.fromTo(".demo-slide-1", { x: 120, opacity: 0, rotate: 2 }, { x: 0, opacity: 1, rotate: -1, ease: "none" }, 0);
-      tl.fromTo(".demo-slide-2", { x: 180, opacity: 0, rotate: -2 }, { x: 0, opacity: 1, rotate: 1.5, ease: "none" }, 0.15);
-      tl.fromTo(".demo-slide-3", { x: 220, opacity: 0, rotate: 3 }, { x: 0, opacity: 1, rotate: -1, ease: "none" }, 0.3);
+      gsap.fromTo(textRef.current, { y: 20 }, {
+        y: -30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+      // slides drift at different speeds for depth
+      gsap.fromTo(".demo-slide-1", { y: 30 }, { y: -20, ease: "none", scrollTrigger: { trigger: containerRef.current, start: "top bottom", end: "bottom top", scrub: 1 } });
+      gsap.fromTo(".demo-slide-2", { y: 50 }, { y: -40, ease: "none", scrollTrigger: { trigger: containerRef.current, start: "top bottom", end: "bottom top", scrub: 1 } });
+      gsap.fromTo(".demo-slide-3", { y: 70 }, { y: -60, ease: "none", scrollTrigger: { trigger: containerRef.current, start: "top bottom", end: "bottom top", scrub: 1 } });
     }, containerRef);
     return () => ctx.revert();
   }, []);
@@ -389,7 +421,7 @@ function HowItWorksFull({ onStartChat }) {
   return (
     <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center" data-parallax="0.14">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">How it works</div>
           <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Bulk by machine, polish by you</h2>
         </div>
@@ -421,7 +453,7 @@ function ThemesFullBleed({ onBrowseThemes }) {
   return (
     <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mb-6 text-center">
+        <div className="mb-6 text-center" data-parallax="0.12">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Design languages</div>
           <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Thirty-eight themes, drawn live</h2>
           <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-fg-muted">Each card is drawn from its own tokens — what you see is exactly what a deck gets. Editorial showcase at <a href="#/tour-themes" className="text-accent hover:underline">Tour → Themes</a>.</p>
@@ -449,7 +481,7 @@ function PlansFull() {
   return (
     <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center" data-parallax="0.13">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Plans</div>
           <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Auto or Cloud — your call</h2>
         </div>
@@ -487,7 +519,7 @@ function CapabilityFull({ onStartChat }) {
   return (
     <section className="w-full bg-base border-t border-line/60">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center" data-parallax="0.11">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Capabilities</div>
           <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.015em] text-fg">Everything a deck needs</h2>
         </div>

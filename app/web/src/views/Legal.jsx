@@ -36,7 +36,7 @@ function FullShell({ eyebrow, title, subtitle, children, aside }) {
               {subtitle && <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-fg-muted">{subtitle}</p>}
               <div className="mt-6 h-px bg-line" />
             </div>
-            <div className="mt-8 max-w-3xl text-[15px] leading-relaxed text-fg-muted">{children}</div>
+            <div className="mt-8 max-w-3xl text-[15px] leading-relaxed text-fg">{children}</div>
           </article>
         </div>
       </div>
@@ -208,7 +208,7 @@ export function Docs() {
               {html === null && !err && <div className="space-y-3"><div className="h-6 w-3/4 skeleton rounded" /><div className="h-64 skeleton rounded-xl" /></div>}
               {err && <div className="rounded-xl border border-danger/20 bg-danger/10 p-4 text-[13px] text-danger">{err}</div>}
               {html && (
-                <div className="prose prose-sm max-w-none prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-headings:text-fg prose-h1:text-[1.8rem] prose-h2:text-[1.35rem] prose-h2:mt-10 prose-h2:border-b prose-h2:border-line prose-h2:pb-2 prose-p:text-fg-muted prose-p:leading-relaxed prose-a:text-accent prose-strong:text-fg prose-code:rounded prose-code:bg-sunken prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-[12px] prose-pre:bg-[#0B0F1A] prose-pre:text-white prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-table:text-[13px] prose-th:text-fg prose-td:text-fg-muted prose-li:text-fg-muted" dangerouslySetInnerHTML={{ __html: html }} />
+                <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-headings:text-fg prose-h1:text-[1.8rem] prose-h2:text-[1.35rem] prose-h2:mt-10 prose-h2:border-b prose-h2:border-line prose-h2:pb-2 prose-p:text-fg prose-p:leading-relaxed prose-a:text-accent prose-strong:text-fg prose-code:rounded prose-code:bg-sunken prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-[12px] prose-code:text-fg prose-pre:bg-[#0B0F1A] prose-pre:text-white prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-table:text-[13px] prose-th:text-fg prose-td:text-fg prose-li:text-fg prose-ul:text-fg" dangerouslySetInnerHTML={{ __html: html }} />
               )}
             </div>
           </article>
