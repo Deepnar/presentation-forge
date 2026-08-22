@@ -98,14 +98,14 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
       onClick={onClick}
       className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111827] text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition hover:border-accent/30 hover:shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
     >
-      {/* specimen — larger editorial aspect */}
+      {/* specimen — empty for light consistency */}
       <div className="relative flex aspect-[16/10] flex-col justify-end p-4" style={{ background: title.bg ?? p.ink }}>
         <div className="relative z-10">
           <div className="truncate leading-tight" style={{ color: title.ink ?? p.surface, fontFamily: `"${theme.fonts.heading}", serif`, fontWeight: 800, fontSize: 22, letterSpacing: "-0.02em" }}>
-            Title
+            
           </div>
           <div className="mt-1 truncate" style={{ color: title.muted ?? p.ink_muted, fontFamily: `"${theme.fonts.body}", sans-serif`, fontSize: 12, fontStyle: "italic" }}>
-            subtitle line — editorial scale
+            
           </div>
         </div>
         {useThumb && (
@@ -120,19 +120,19 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
           <div className="mt-1.5 h-[3px] w-1/2 rounded-full opacity-60" style={{ background: p.ink_muted }} />
         </div>
       </div>
-      <div className="flex flex-1 flex-col bg-[#0F1629] p-4">
+      <div className="flex flex-1 flex-col bg-[#0F1629] p-5">
         <div className="flex items-baseline justify-between gap-2">
-          <div className="text-[15px] font-medium text-white group-hover:text-white">{theme.label}</div>
+          <div className="text-[16px] font-semibold text-white group-hover:text-white">{theme.label}</div>
           <code className="font-mono text-[10px] text-white/30">{theme.name}</code>
         </div>
-        {theme.summary && <p className="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-white/50">{theme.summary}</p>}
+        {theme.summary && <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-white/60">{theme.summary}</p>}
         <div className="mt-3 flex items-center justify-between">
           <div className="flex gap-1">
             {[p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean).slice(0, 5).map((c, i) => (
-              <span key={`${c}-${i}`} className="h-3.5 w-3.5 rounded-[3px] ring-1 ring-white/10" style={{ background: c }} />
+              <span key={`${c}-${i}`} className="h-4 w-4 rounded-[3px] ring-1 ring-white/10" style={{ background: c }} />
             ))}
           </div>
-          <span className="font-mono text-[10px] text-white/25">{theme.fonts.heading} / {theme.fonts.body}</span>
+          <span className="font-mono text-[11px] text-white/35">{theme.fonts.heading} / {theme.fonts.body}</span>
         </div>
       </div>
     </a>

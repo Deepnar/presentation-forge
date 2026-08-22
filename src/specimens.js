@@ -159,7 +159,7 @@ export async function specimenDeck() {
   }
 
   return {
-    title: "Title",
+    title: "",
     theme: "warm-humanist",
     sections: ["Specimens"],
     slides,

@@ -39,22 +39,22 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
               color: title.ink ?? p.surface,
               fontFamily: `"${theme.fonts.heading}", serif`,
               fontWeight: 800,
-              fontSize: 12,
-              letterSpacing: "-0.01em",
+              fontSize: 20,
+              letterSpacing: "-0.02em",
             }}
           >
-            Title
+            
           </div>
           <div
-            className="mt-0.5 truncate"
+            className="mt-1 truncate"
             style={{
               color: title.muted ?? p.ink_muted,
               fontFamily: `"${theme.fonts.body}", sans-serif`,
-              fontSize: 7.5,
+              fontSize: 11,
               fontStyle: "italic",
             }}
           >
-            subtitle line
+            
           </div>
         </div>
         {useThumb && (
@@ -84,11 +84,11 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
       )}
 
       {/* Name bar — fixed height */}
-      <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-2.5">
-        <span className={`min-w-0 truncate text-[10px] font-medium ${selected ? "text-accent" : "text-fg-muted"}`}>
+      <div className="flex h-16 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-3.5">
+        <span className={`min-w-0 truncate text-[15px] font-semibold ${selected ? "text-accent" : "text-fg-muted"}`}>
           {sub}
         </span>
-        <span className="shrink-0 truncate font-mono text-[8.5px] text-fg-faint">
+        <span className="shrink-0 truncate font-mono text-[11px] text-fg-faint">
           {theme.fonts.heading} <span className="text-line-strong">/</span> {theme.fonts.body}
         </span>
         {selected && (
