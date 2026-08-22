@@ -918,32 +918,68 @@ export default function ChatView({
         )}
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="relative">
-            <select
-              value={modelMode}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (v === "cloud" || v === "auto") {
-                  // Model mode toggle, not specific model
-                  import("../lib/modelMode.js").then(({ setModelMode }) => setModelMode(v));
-                  // Also update via API if needed
-                  import("../api.js").then(({ api }) => api.cloudRoute(v).catch(()=>{}));
-                  // Clear specific model selection
-                  setModel("");
-                  persist({ ...chat, model: undefined, updatedAt: new Date().toISOString() });
-                }
+          {modelMode === "cloud" ? (
+            <div className="relative">
+              <select
+                value={model}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setModel(v);
+                  persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() });
+                }}
+                disabled={inputDisabled}
+                title={model ? `Using ${model}` : `Cloud · ${models[0] || "select model"}`}
+                className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+              >
+                <option value="">{models[0] ? `Cloud · ${models[0]}` : "Cloud"}</option>
+                {models.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+              <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted">
+              <SparkleIcon className="h-3 w-3 text-fg-faint" />
+              Auto
+            </div>
+          )}
+          {modelMode === "cloud" ? (
+            <button
+              onClick={async () => {
+                const { setModelMode } = await import("../lib/modelMode.js");
+                const { api } = await import("../api.js");
+                await api.cloudRoute("auto").catch(() => {});
+                setModelMode("auto");
+                setModel("");
+                persist({ ...chat, model: undefined, updatedAt: new Date().toISOString() });
               }}
-              disabled={inputDisabled}
-              title={modelMode === "cloud" ? `Cloud` : `Auto`}
-              className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
+              className="hidden text-[10px] text-fg-faint underline sm:inline hover:text-fg"
             >
-              <option value="auto">Auto</option>
-              <option value="cloud">Cloud</option>
-            </select>
-            <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-          </div>
-          {modelMode === "auto" && !model && <span className="hidden text-[10px] text-fg-faint sm:inline">via {auto?.provider === "tcet-auto" ? "Auto" : "Local"}</span>}
+              Switch to Auto
+            </button>
+          ) : (
+            <button
+              onClick={async () => {
+                if (!cloudOn) {
+                  // Need to set up cloud key first
+                  const { api } = await import("../api.js");
+                  // Open settings modal via dispatch? For now, just switch mode and let the UI handle missing key
+                  await api.cloudRoute("cloud").catch(() => {});
+                }
+                const { setModelMode } = await import("../lib/modelMode.js");
+                const { api } = await import("../api.js");
+                await api.cloudRoute("cloud").catch(() => {});
+                setModelMode("cloud");
+              }}
+              className="hidden text-[10px] text-fg-faint underline sm:inline hover:text-fg"
+            >
+              Switch to Cloud
+            </button>
+          )}
           <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send" className="ml-1 hidden sm:inline-flex">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />

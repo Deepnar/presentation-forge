@@ -60,8 +60,8 @@ export default function Themes({ leftOpen, onToggleLeft }) {
   }, [toast]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto px-10 py-10">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto">
+      <div className="mx-auto w-full max-w-6xl flex-1 px-10 py-10">
         <header className="mb-7">
           <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Themes</h1>
           <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
