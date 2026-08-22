@@ -17,7 +17,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
     try {
       const s = localStorage.getItem("forge.theme");
       if (s === "dark" || s === "light") return s === "dark";
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return false;
     } catch { return false; }
   });
 

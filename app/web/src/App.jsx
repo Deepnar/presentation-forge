@@ -381,10 +381,10 @@ export default function App() {
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   return (
-    <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
+    <div className={`relative bg-base overflow-x-hidden ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
       {isTourView ? <ParticleField boost={1.9} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />}
 
-      <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col" : "h-full flex-col"}`}>
+      <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col" : "h-full flex-col"}`}>
         <HeaderBar
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
@@ -425,7 +425,7 @@ export default function App() {
             </div>
           )}
 
-          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible" : "overflow-y-auto"}`}>
+          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible overflow-x-hidden" : "overflow-y-auto"}`}>
             <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
               <ChatView
