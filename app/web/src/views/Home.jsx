@@ -201,21 +201,25 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat — not the template.</p>
               </div>
-              <div className="specimen mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
-                {[
-                  ["Bullets", "bullets"],
-                  ["Stats", "stats"],
-                  ["Chart", "chart"],
-                  ["Compare", "compare"],
-                  ["Timeline", "timeline"],
-                  ["Quote", "quote"],
-                ].map(([label, kind]) => (
-                  <div key={label} className="rounded-xl border bg-panel p-3 text-center">
-                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">{label}</div>
-                    <div className="mt-2 h-8 rounded bg-sunken" />
-                    <div className="mt-1 text-[10px] text-fg-faint">{kind}</div>
-                  </div>
-                ))}
+              <div className="specimen mt-6 flex gap-4 overflow-hidden">
+                <div className="flex w-max gap-4 will-change-transform">
+                  {[
+                    ["Bullets", "bullets"],
+                    ["Stats", "stats"],
+                    ["Chart", "chart"],
+                    ["Compare", "compare"],
+                    ["Timeline", "timeline"],
+                    ["Quote", "quote"],
+                    ["Cards", "cards"],
+                    ["Pros/Cons", "pros-cons"],
+                  ].map(([label, kind]) => (
+                    <div key={label} className="w-72 shrink-0 rounded-2xl border bg-panel p-4 text-center shadow-sm">
+                      <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">{label}</div>
+                      <div className="mt-3 h-20 rounded-xl bg-sunken" />
+                      <div className="mt-2 text-[11px] text-fg-faint">{kind} · live</div>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="marquee-stack mt-6 flex gap-3 overflow-hidden opacity-60">
                 <div className="flex w-max gap-3"><div className="h-12 w-20 rounded bg-accent" /><div className="h-12 w-20 rounded bg-accent/60" /><div className="h-12 w-20 rounded bg-accent/30" /><div className="h-12 w-20 rounded bg-accent/20" /></div>
@@ -228,20 +232,21 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
               <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 6 live themes then 32 more.</p>
               <div className="themes-track mt-6 flex gap-4 overflow-hidden will-change-transform">
-                {(themes ?? []).slice(0, 6).map(t => (
-                  <div key={t.name} className="w-64 shrink-0 overflow-hidden rounded-2xl border border-line bg-panel">
-                    <div className="h-24" style={{ background: t.palette?.bg ?? "#FFF", borderBottom: `4px solid ${t.palette?.accent ?? "#6D5BFF"}` }} />
-                    <div className="p-3">
-                      <div className="flex gap-1">
-                        {[t.palette?.bg, t.palette?.accent, t.palette?.ink].filter(Boolean).slice(0,3).map((c,i) => <span key={i} className="h-3 w-8 rounded" style={{ background: c }} />)}
+                {(themes ?? []).slice(0, 12).map(t => (
+                  <div key={t.name} className="w-80 shrink-0 overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
+                    <div className="h-32" style={{ background: t.palette?.bg ?? "#FFF", borderBottom: `4px solid ${t.palette?.accent ?? "#6D5BFF"}` }} />
+                    <div className="p-4">
+                      <div className="text-[14px] font-semibold">{t.label}</div>
+                      <div className="mt-1 flex gap-1">
+                        {[t.palette?.bg, t.palette?.accent, t.palette?.ink].filter(Boolean).slice(0,3).map((c,i) => <span key={i} className="h-3 w-10 rounded" style={{ background: c }} />)}
                       </div>
                     </div>
                   </div>
                 ))}
-                <div className="grid w-64 shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
-                  <div className="text-[11px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 6)} more</div>
-                  <div className="mt-1 text-[13px] font-medium">Explore all</div>
-                  <button onClick={() => onBrowseThemes?.()} className="mt-2 rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-white">Browse themes</button>
+                <div className="grid w-80 shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
+                  <div className="text-[12px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 12)} more themes</div>
+                  <div className="mt-2 text-[14px] font-medium">Explore all 38 in app</div>
+                  <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-white">Browse themes</button>
                 </div>
               </div>
             </div>
