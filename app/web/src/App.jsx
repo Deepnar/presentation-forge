@@ -136,9 +136,9 @@ export default function App() {
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   const isChatView = view === "chat";
-  // Landing header auto-hide on scroll (immersive), reappear at footer
+  // Landing header auto-hide on scroll (immersive), reappear at footer — only for home
   useEffect(() => {
-    if (!isTourView) return;
+    if (view !== "home") return;
     const header = document.querySelector("header");
     if (!header) return;
     header.style.transition = "transform var(--dur-shell) var(--ease-shell)";

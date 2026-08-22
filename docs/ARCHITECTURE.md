@@ -736,30 +736,9 @@ auth still gates it, and a route's hash survives logout, so logging back in
 restores where the user was). Settings is deliberately NOT a route — it is a
 modal over whatever view is open (an old `#/identity` hash resolves to chat).
 
-**Entry flow — landing-first.** The `#/home` landing page is the front door.
-An unauthenticated visitor lands on it whatever the hash (an auth-gated deep
-link redirects there, and its hash survives so login can honour it); the
-landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the
-rest as quiet text links (Log in, Browse themes), so a visitor sees a single
-button instead of a wall of them. The actions open the `AuthModal`, which is
-now a **split screen**: a visual left half (logo, the product tagline, a live
-strip of theme specimens) beside a clean sign-up/login card labelled "Sign up".
-The constant landing after login/register is a fresh **New chat** — the account's
-empty thread is reused if one exists, else minted — never the last route,
-never the decks list. The boot effect honours only an explicitly-opened
-artefact deep link (`#/deck/<slug>`, `#/report/…`, `#/research/…`); a chat id
-left in the URL is the last route, not a deep link, so it resets to a bare
-`#/chat`. Logout resets the hash to `#/home`.
+**Entry flow — landing-first.** The `#/home` landing page is the front door, now with a pinned scroll tour (GSAP `ScrollTrigger` pin `2000%`, `scrub 1.2`) and a `fixed` header that auto-hides on scroll down and reappears at the footer. An unauthenticated visitor lands on it whatever the hash; the landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the rest as quiet links. The `AuthModal` is split screen. After login the landing is a **pending New chat** (lazy, not in sidebar until first prompt) — `pendingChat` in `App.jsx` holds it, `handleChatChanged` saves on `topic`.
 
-- **`HeaderBar`** — the wordmark is a real `<a href="#/chat">` (middle-click
-  opens a new tab), the sidebar collapse toggle, a **Tour** anchor to `#/home`
-  (the README's replacement; the raw doc stays at `GET /api/docs` for
-   developers only) and the GitHub link. When a cloud provider is configured it
-   shows the LOCAL/CLOUD toggle, which writes the routing preference and flips
-   the client model-mode store so every picker filters to that mode; CLOUD is
-   only reachable when a key is attached, and without one the button points at
-   Settings/Cloud. The account entry is a quiet name chip — login/register live
-   on the landing's auth modal, and logout moved to the sidebar's profile chip.
+- **`HeaderBar` / `LandingHeader`** — `fixed` on `isTourView` (`home`, `tour-themes`, legal) with auto-hide on scroll down (reappear on up or footer `IntersectionObserver`), `sticky` elsewhere. Wordmark `href="#/home"` vs `"#/chat"`, `AUTO/CLOUD` toggle hidden on tour (now in `Sidebar` top bar and `ChatView` composer), GitHub link, auth buttons. `isTourView` drives `pt-14` offset and `ParticleField` boost. For `view==="chat"` the global header is hidden and `ChatView`'s own header carries the left-nav `PanelLeft` and slides-panel toggle.
 - **`Home`** — the landing tour at `#/home`, the front door. For a visitor it
    adds a slim auth bar (a single "Log in" link — the hero's one strong CTA is
    "Start a chat", which routes to register) and the tour; for a signed-in user
