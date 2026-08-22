@@ -21,15 +21,15 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
       type="button"
       onClick={() => onClick?.(theme.name)}
       title={`${label} (${theme.name})`}
-      className={`card-hover group relative flex h-[220px] w-full flex-col overflow-hidden rounded-card border bg-panel text-left transition ${
+      className={`card-hover group relative flex h-[300px] w-full flex-col overflow-hidden rounded-card border bg-panel text-left transition ${
         selected
           ? "border-accent ring-2 ring-accent/40"
           : "border-line hover:border-line-strong"
       }`}
     >
-      {/* Title band — fixed height, uniform */}
+      {/* Title band — taller for vertical presence */}
       <div
-        className="relative flex h-[110px] shrink-0 flex-col justify-end px-2.5 pb-2 pt-2"
+        className="relative flex h-[150px] shrink-0 flex-col justify-end px-3 pb-3 pt-3"
         style={{ background: title.bg ?? p.ink }}
       >
         <div className="relative z-10">
@@ -68,9 +68,9 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         )}
       </div>
 
-      {/* Content strip — hidden on tour per request to keep thumbnail clean */}
+      {/* Content strip — taller to keep proportions */}
       {!hideSpecimen && (
-        <div className="flex h-[52px] shrink-0 items-center gap-1.5 px-2.5" style={{ background: p.bg }}>
+        <div className="flex h-[68px] shrink-0 items-center gap-2 px-3" style={{ background: p.bg }}>
           <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
             01
           </span>

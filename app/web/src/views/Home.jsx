@@ -33,65 +33,65 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         scrollTrigger: {
           trigger: wrap,
           start: "top top",
-          end: "+=1400%",
-          scrub: true,
+          end: "+=2000%",
+          scrub: 1.2,
           pin: pin,
           anticipatePin: 1,
         }
       });
       tl.addLabel("hero", 0);
-      tl.to({}, { duration: 1.0 });
-      tl.to(".beat-hero .hero-copy", { y: -30, autoAlpha: 0, ease: "none", duration: 0.5 }, 1.2);
-      tl.to(".beat-hero .hero-cards", { y: -60, autoAlpha: 0, ease: "none", duration: 0.5 }, 1.2);
-      tl.to(".sheet-hero", { autoAlpha: 0, ease: "none", duration: 0.4 }, 1.5);
-      tl.to(".sheet-warm", { autoAlpha: 1, ease: "none", duration: 0.5 }, 1.6);
-      tl.addLabel("brief", 2.0);
-      tl.fromTo(".beat-brief", { x: "100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 2.0);
-      tl.fromTo(".beat-brief .copy", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "none", duration: 0.5 }, 2.2);
-      tl.to({}, { duration: 1.0 });
-      tl.to(".beat-brief", { x: "-20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 4.0);
-      tl.addLabel("research", 4.2);
-      tl.fromTo(".beat-research", { x: "-100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 4.2);
-      tl.fromTo(".beat-research .stagger > *", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 4.4);
-      tl.to({}, { duration: 1.0 });
-      tl.to(".beat-research", { x: "20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 6.2);
-      tl.to(".sheet-warm", { autoAlpha: 0, ease: "none", duration: 0.4 }, 6.0);
-      tl.to(".sheet-deep", { autoAlpha: 1, ease: "none", duration: 0.5 }, 6.1);
-      tl.addLabel("outline", 6.4);
-      tl.fromTo(".beat-outline", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.7 }, 6.4);
-      tl.to({}, { duration: 0.9 });
-      tl.to(".beat-outline", { scale: 0.95, autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 8.0);
-      tl.addLabel("approve", 8.2);
-      tl.fromTo(".beat-approve", { y: "-80%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 8.2);
-      tl.fromTo(".beat-approve .check", { scale: 0 }, { scale: 1, ease: "back.out(1.4)", duration: 0.5 }, 8.5);
-      tl.to({}, { duration: 0.9 });
-      tl.to(".beat-approve", { y: "50%", autoAlpha: 0, ease: "none", duration: 0.4 }, 9.8);
-      tl.addLabel("content", 10.0);
-      tl.fromTo(".beat-content", { x: "-30%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 10.0);
-      tl.fromTo(".beat-content .content-card", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 10.2);
-      tl.to({}, { duration: 0.9 });
-      tl.to(".beat-content", { x: "20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 12.0);
-      tl.addLabel("render", 12.2);
-      tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 12.2);
-      tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 12.4);
-      // Render track scrubs left as you stay on the beat — same mechanic as themes
-      tl.to(".render-track", { x: -1380, ease: "none", duration: 1.3 }, 12.6);
-      tl.to({}, { duration: 0.5 });
-      tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 14.0);
-      tl.addLabel("themes", 14.2);
-      tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 14.2);
-      // Themes track: 12 live + 1 summary card, way bigger — long scrub reveals the row
-      tl.to(".themes-track", { x: -2180, ease: "none", duration: 1.7 }, 14.4);
-      tl.to({}, { duration: 0.6 });
-      tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "none", duration: 0.4 }, 16.0);
-      tl.addLabel("critique", 16.2);
-      tl.fromTo(".beat-critique", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.7 }, 16.2);
-      tl.to({}, { duration: 0.7 });
-      tl.to(".beat-critique", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 17.6);
-      tl.addLabel("cta", 17.8);
-      tl.fromTo(".beat-cta", { y: "60%", autoAlpha: 0, scale: 0.96 }, { y: "0%", autoAlpha: 1, scale: 1, ease: "none", duration: 0.7 }, 17.8);
-      tl.to(".sheet-accent", { autoAlpha: 1, ease: "none", duration: 0.5 }, 17.8);
+      tl.to({}, { duration: 1.4 });
+      tl.to(".beat-hero .hero-copy", { y: -30, autoAlpha: 0, ease: "power2.inOut", duration: 0.9 }, 1.4);
+      tl.to(".beat-hero .hero-cards", { y: -60, autoAlpha: 0, ease: "power2.inOut", duration: 0.9 }, 1.4);
+      tl.to(".sheet-hero", { autoAlpha: 0, ease: "power1.inOut", duration: 0.7 }, 1.8);
+      tl.to(".sheet-warm", { autoAlpha: 1, ease: "power1.inOut", duration: 0.8 }, 1.9);
+      tl.addLabel("brief", 2.6);
+      tl.fromTo(".beat-brief", { x: "100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.2 }, 2.6);
+      tl.fromTo(".beat-brief .copy", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "power2.out", duration: 0.9 }, 2.9);
+      tl.to({}, { duration: 1.4 });
+      tl.to(".beat-brief", { x: "-20%", autoAlpha: 0, ease: "power2.inOut", duration: 0.7 }, 5.2);
+      tl.addLabel("research", 5.5);
+      tl.fromTo(".beat-research", { x: "-100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.2 }, 5.5);
+      tl.fromTo(".beat-research .stagger > *", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "power2.out", duration: 0.8 }, 5.8);
+      tl.to({}, { duration: 1.4 });
+      tl.to(".beat-research", { x: "20%", autoAlpha: 0, ease: "power2.inOut", duration: 0.7 }, 8.2);
+      tl.to(".sheet-warm", { autoAlpha: 0, ease: "power1.inOut", duration: 0.7 }, 8.0);
+      tl.to(".sheet-deep", { autoAlpha: 1, ease: "power1.inOut", duration: 0.8 }, 8.1);
+      tl.addLabel("outline", 8.5);
+      tl.fromTo(".beat-outline", { scale: 0.88, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "power2.out", duration: 1.1 }, 8.5);
+      tl.to({}, { duration: 1.3 });
+      tl.to(".beat-outline", { scale: 0.96, autoAlpha: 0, y: -30, ease: "power2.inOut", duration: 0.7 }, 10.6);
+      tl.addLabel("approve", 10.9);
+      tl.fromTo(".beat-approve", { y: "-80%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.1 }, 10.9);
+      tl.fromTo(".beat-approve .check", { scale: 0 }, { scale: 1, ease: "back.out(1.2)", duration: 0.7 }, 11.3);
+      tl.to({}, { duration: 1.3 });
+      tl.to(".beat-approve", { y: "50%", autoAlpha: 0, ease: "power2.inOut", duration: 0.7 }, 13.0);
+      tl.addLabel("content", 13.4);
+      tl.fromTo(".beat-content", { x: "-30%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.2 }, 13.4);
+      tl.fromTo(".beat-content .content-card", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "power2.out", duration: 0.8 }, 13.7);
+      tl.to({}, { duration: 1.3 });
+      tl.to(".beat-content", { x: "20%", autoAlpha: 0, ease: "power2.inOut", duration: 0.7 }, 15.8);
+      tl.addLabel("render", 16.0);
+      tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.0 }, 16.0);
+      tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "power2.out", duration: 0.8 }, 16.3);
+      // Render track scrubs left as you stay on the beat — same mechanic as themes, smoother
+      tl.to(".render-track", { x: -1380, ease: "sine.inOut", duration: 1.9 }, 16.5);
       tl.to({}, { duration: 0.8 });
+      tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "power2.inOut", duration: 0.7 }, 18.4);
+      tl.addLabel("themes", 18.7);
+      tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.0 }, 18.7);
+      // Themes track: 12 live + 1 summary card, way bigger — long scrub reveals the row
+      tl.to(".themes-track", { x: -2180, ease: "sine.inOut", duration: 2.4 }, 19.0);
+      tl.to({}, { duration: 0.9 });
+      tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "power2.inOut", duration: 0.7 }, 21.2);
+      tl.addLabel("critique", 21.5);
+      tl.fromTo(".beat-critique", { scale: 0.88, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "power2.out", duration: 1.0 }, 21.5);
+      tl.to({}, { duration: 1.0 });
+      tl.to(".beat-critique", { autoAlpha: 0, y: -30, ease: "power2.inOut", duration: 0.7 }, 23.0);
+      tl.addLabel("cta", 23.3);
+      tl.fromTo(".beat-cta", { y: "60%", autoAlpha: 0, scale: 0.96 }, { y: "0%", autoAlpha: 1, scale: 1, ease: "power3.out", duration: 1.0 }, 23.3);
+      tl.to(".sheet-accent", { autoAlpha: 1, ease: "power1.inOut", duration: 0.8 }, 23.3);
+      tl.to({}, { duration: 1.0 });
     }, wrap);
     return () => ctx.revert();
   }, [reduced, themes]);
@@ -212,52 +212,53 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
               <div className="specimen mt-6 overflow-visible px-1">
                 <div className="render-track flex w-max gap-5 will-change-transform">
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Bullets</div>
-                    <div className="mt-4 space-y-2.5 text-left">
-                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> Grounded claim from notes</div>
-                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> Coherent framing</div>
-                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> One idea per slide</div>
+                    <div className="mt-5 space-y-3 text-left flex-1">
+                      <div className="flex gap-2 text-[15px]"><span className="text-accent">•</span> Grounded claim from notes</div>
+                      <div className="flex gap-2 text-[15px]"><span className="text-accent">•</span> Coherent framing</div>
+                      <div className="flex gap-2 text-[15px]"><span className="text-accent">•</span> One idea per slide</div>
                     </div>
+                    <div className="mt-4 text-[11px] text-fg-faint">one idea · one slide</div>
                   </div>
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Stats</div>
-                    <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-                      <div className="rounded-lg bg-sunken p-4"><div className="text-[20px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
-                      <div className="rounded-lg bg-sunken p-4"><div className="text-[20px] font-bold">3.2×</div><div className="text-[11px] text-fg-faint">faster</div></div>
-                      <div className="rounded-lg bg-accent p-4 text-white"><div className="text-[20px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
+                    <div className="mt-5 grid grid-cols-3 gap-3 text-center flex-1 content-center">
+                      <div className="rounded-xl bg-sunken p-5"><div className="text-[22px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
+                      <div className="rounded-xl bg-sunken p-5"><div className="text-[22px] font-bold">3.2×</div><div className="text-[11px] text-fg-faint">faster</div></div>
+                      <div className="rounded-xl bg-accent p-5 text-white"><div className="text-[22px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
                     </div>
                   </div>
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Chart</div>
-                    <div className="mt-4 flex h-24 items-end gap-1.5">
+                    <div className="mt-5 flex h-32 items-end gap-2 flex-1">
                       <div className="flex-1 rounded-t bg-accent/20" style={{height:"40%"}} />
                       <div className="flex-1 rounded-t bg-accent/40" style={{height:"65%"}} />
                       <div className="flex-1 rounded-t bg-accent/60" style={{height:"50%"}} />
                       <div className="flex-1 rounded-t bg-accent" style={{height:"85%"}} />
                       <div className="flex-1 rounded-t bg-accent/80" style={{height:"70%"}} />
                     </div>
-                    <div className="mt-2 flex justify-between text-[10px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span><span>--</span></div>
+                    <div className="mt-3 flex justify-between text-[11px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span><span>--</span></div>
                   </div>
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Compare</div>
-                    <div className="mt-4 grid grid-cols-2 gap-3">
-                      <div className="rounded-lg bg-accent-tint p-3"><div className="font-semibold text-accent">PEM</div><div className="mt-1 text-[12px]">High efficiency</div><div className="mt-2 h-2 rounded-full bg-accent/30" /></div>
-                      <div className="rounded-lg bg-sunken p-3 border"><div className="font-semibold">ALK</div><div className="mt-1 text-[12px]">Low cost</div><div className="mt-2 h-2 rounded-full bg-line" /></div>
+                    <div className="mt-5 grid grid-cols-2 gap-3 flex-1 content-center">
+                      <div className="rounded-xl bg-accent-tint p-4"><div className="font-semibold text-accent">PEM</div><div className="mt-1 text-[13px]">High efficiency</div><div className="mt-3 h-2 rounded-full bg-accent/30" /></div>
+                      <div className="rounded-xl bg-sunken p-4 border"><div className="font-semibold">ALK</div><div className="mt-1 text-[13px]">Low cost</div><div className="mt-3 h-2 rounded-full bg-line" /></div>
                     </div>
                   </div>
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Timeline</div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" />
+                    <div className="mt-6 flex items-center justify-between flex-1">
+                      <div className="h-px flex-1 bg-line" /><span className="mx-1.5 h-2.5 w-2.5 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" /><span className="mx-1.5 h-2.5 w-2.5 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" />
                     </div>
-                    <div className="mt-3 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
+                    <div className="mt-4 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
                   </div>
-                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
+                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Quote</div>
-                    <div className="mt-4 rounded-xl bg-sunken p-5 text-center">
-                      <div className="text-[19px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
-                      <div className="mt-2 text-[11px] text-fg-faint">-- Critique loop</div>
+                    <div className="mt-5 rounded-xl bg-sunken p-6 text-center flex-1 flex flex-col justify-center">
+                      <div className="text-[20px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
+                      <div className="mt-3 text-[11px] text-fg-faint">-- Critique loop</div>
                     </div>
                   </div>
                 </div>
@@ -297,12 +298,12 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                     </span>
                     Vision flagged · 9.9pt would be needed
                   </div>
-                  <div className="mt-3 text-[13px] leading-relaxed text-fg">"Bullets would need <span className="font-semibold text-amber-700">9.9pt</span> — floor is <span className="font-semibold">14pt</span>. Trim to 3 bullets."</div>
+                  <div className="mt-3 text-[13px] leading-relaxed text-slate-900">"Bullets would need <span className="font-semibold text-amber-700">9.9pt</span> — floor is <span className="font-semibold text-slate-900">14pt</span>. Trim to 3 bullets."</div>
                   <div className="mt-4 flex gap-2">
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm">Fix — trim now</span>
-                    <span className="inline-flex items-center rounded-full border border-line bg-panel px-3 py-1.5 text-[11px] font-medium text-fg-muted">Keep anyway</span>
+                    <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600">Keep anyway</span>
                   </div>
-                  <div className="mt-3 text-[11px] leading-relaxed text-fg-faint">The loop re-renders after trimming — no tiny type ships.</div>
+                  <div className="mt-3 text-[11px] leading-relaxed text-slate-500">The loop re-renders after trimming — no tiny type ships.</div>
                 </div>
               </BrowserFrame>
             </div>
@@ -318,7 +319,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <div className="mt-4 flex items-center gap-3 text-[11px] text-white/60"><span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /> Hosted</span><span>·</span><span>38 themes</span><span>·</span><span>50+ types</span></div>
               </div>
               <div className="grid gap-3">
-                <div className="rounded-xl bg-white p-4 text-fg shadow-sm"><div className="text-[11px] uppercase tracking-wider text-accent">Up next</div><div className="mt-1 font-semibold">Green hydrogen: how electrolysis compares</div><div className="mt-2 flex gap-1.5"><span className="h-2 w-12 rounded-full bg-accent" /><span className="h-2 w-8 rounded-full bg-line" /></div></div>
+                <div className="rounded-xl bg-white p-4 text-slate-900 shadow-sm"><div className="text-[11px] uppercase tracking-wider text-accent">Up next</div><div className="mt-1 font-semibold text-slate-900">Green hydrogen: how electrolysis compares</div><div className="mt-2 flex gap-1.5"><span className="h-2 w-12 rounded-full bg-accent" /><span className="h-2 w-8 rounded-full bg-slate-200" /></div></div>
                 <div className="grid grid-cols-3 gap-2 text-center text-white">
                   <div className="rounded-xl bg-white/10 p-3 backdrop-blur"><div className="text-[18px] font-bold">12</div><div className="text-[11px] text-white/70">slides</div></div>
                   <div className="rounded-xl bg-white/10 p-3 backdrop-blur"><div className="text-[18px] font-bold">38</div><div className="text-[11px] text-white/70">themes</div></div>
