@@ -220,7 +220,7 @@ export function suggestTitle(topic) {
 
 /** One-line echo of a recorded answer, shown in the thread under the card. */
 export function echoAnswer(briefing, key, opts = {}) {
-  const b = briefing;
+  const b = briefing ?? {};
   switch (key) {
     case "preset": {
       const name = opts.presetLabel?.(b.presetId) ?? (b.presetId ? b.presetId : "none");
@@ -267,7 +267,7 @@ export function echoAnswer(briefing, key, opts = {}) {
 export function applyFreeText(briefing, key, text) {
   const t = String(text ?? "").trim();
   if (!t) return null;
-  const b = briefing;
+  const b = briefing ?? {};
   switch (key) {
     case "preset":
       // Free text names a preset to use, or "none"/"fresh" to start clean.
@@ -281,7 +281,7 @@ export function applyFreeText(briefing, key, text) {
       return {
         briefing: {
           ...b,
-          team: { ...b.team, members: [...(b.team.members ?? []), { name, roll: "", presenting: false }] },
+          team: { ...(b.team ?? {}), members: [...((b.team?.members) ?? []), { name, roll: "", presenting: false }] },
         },
         echo: `Added ${name}`,
       };
@@ -290,12 +290,12 @@ export function applyFreeText(briefing, key, text) {
       const [name, ...rest] = t.split(",").map((s) => s.trim());
       if (!name) return null;
       return {
-        briefing: { ...b, guide: { ...b.guide, name, designation: rest.join(",").trim() || b.guide.designation } },
+        briefing: { ...b, guide: { ...(b.guide ?? {}), name, designation: rest.join(",").trim() || b.guide?.designation } },
         echo: `Guide: ${name}`,
       };
     }
     case "academic":
-      return { briefing: { ...b, academic: { ...b.academic, subject: t } }, echo: `Subject: ${t}` };
+      return { briefing: { ...b, academic: { ...(b.academic ?? {}), subject: t } }, echo: `Subject: ${t}` };
     case "audience":
       return { briefing: { ...b, audience: t }, echo: `For: ${t}` };
     case "emphasis":

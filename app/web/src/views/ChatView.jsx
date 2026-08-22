@@ -210,8 +210,8 @@ export default function ChatView({
   }, [chat, status, busy, themes.length]);
 
   const questions = questionsFor(chat.kind);
-  const phase = phaseOf(chat, effectiveBriefStep(chat.briefing, chat.briefStep, questions), questions);
-  const qIndex = Math.min(effectiveBriefStep(chat.briefing, chat.briefStep, questions), questions.length - 1);
+  const phase = phaseOf(chat, effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions), questions);
+  const qIndex = Math.min(effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions), questions.length - 1);
   const currentQuestion = phase === "briefing" ? questions[qIndex] : null;
 
   const themeLabel = (name) => {
@@ -241,7 +241,7 @@ export default function ChatView({
 
   /** One question answered (via the card's controls or free text). */
   function onNext(patch) {
-    const briefing = { ...chat.briefing, ...patch };
+    const briefing = { ...(chat.briefing ?? {}), ...patch };
     const named = patch.title ? chatName(patch.title, chat.topic) : chat.title;
     persist({
       ...chat,
@@ -258,8 +258,8 @@ export default function ChatView({
     // Rewinding to a preset-fixed question un-skips it so the user can change
     // the preset's value for this deck without abandoning the whole format.
     const briefing = q && PRESET_KEYS.includes(q.key)
-      ? { ...chat.briefing, unskip: [...(chat.briefing?.unskip ?? []), q.key] }
-      : chat.briefing;
+      ? { ...(chat.briefing ?? {}), unskip: [...(chat.briefing?.unskip ?? []), q.key] }
+      : (chat.briefing ?? {});
     persist({ ...chat, briefing, briefStep: Math.min(i, questions.length), updatedAt: new Date().toISOString() });
   }
 
@@ -271,8 +271,8 @@ export default function ChatView({
    */
   function pickPreset(preset) {
     const briefing = preset
-      ? applyPresetToBriefing(chat.briefing, { ...preset, id: preset.id })
-      : chat.briefing;
+      ? applyPresetToBriefing(chat.briefing ?? {}, { ...preset, id: preset.id })
+      : (chat.briefing ?? {});
     persist({
       ...chat,
       briefing: { ...briefing, presetId: preset?.id ?? null },
@@ -289,8 +289,8 @@ export default function ChatView({
     try {
       const existing = presets.find((p) => p.name.toLowerCase() === clean.toLowerCase());
       const saved = existing
-        ? await api.updatePreset(existing.id, { ...presetPayload(chat.briefing), name: clean })
-        : await api.savePreset({ ...presetPayload(chat.briefing), name: clean });
+        ? await api.updatePreset(existing.id, { ...presetPayload(chat.briefing ?? {}), name: clean })
+        : await api.savePreset({ ...presetPayload(chat.briefing ?? {}), name: clean });
       const list = existing
         ? presets.map((p) => (p.id === saved.preset?.id ? saved.preset : p))
         : [saved.preset, ...presets];
@@ -319,7 +319,7 @@ export default function ChatView({
 
   /** The ONLY trigger of research/planning. Everything before this was local. */
   function planDeck() {
-    const b = chat.briefing;
+    const b = chat.briefing ?? {};
     let brief = chat.topic;
     const notes = [];
     if (b.density !== "balanced") notes.push(`Keep the slides ${b.density} density — ${densityNote(b.density)}.`);
@@ -405,7 +405,7 @@ export default function ChatView({
       chat.deckSlug,
       {
         plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean },
-        theme: chat.briefing.theme || undefined,
+        theme: (chat.briefing ?? {}).theme || undefined,
         model: model || undefined,
       },
       {
@@ -840,7 +840,7 @@ export default function ChatView({
         setFreeHint("No preset by that name — pick one from the card, or type 'none' to start fresh.");
         return;
       }
-      const r = applyFreeText(chat.briefing, currentQuestion.key, text);
+      const r = applyFreeText(chat.briefing ?? {}, currentQuestion.key, text);
       if (!r) {
         setFreeHint(currentQuestion.key === "theme"
           ? "Pick a theme from the gallery above — typing a name here can't see the previews."
@@ -854,7 +854,7 @@ export default function ChatView({
   }
 
   const answered = [];
-  const effStep = effectiveBriefStep(chat.briefing, chat.briefStep, questions);
+  const effStep = effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions);
   for (let i = 0; i < effStep && i < questions.length; i++) {
     answered.push({ ...questions[i], idx: i });
   }
@@ -1061,7 +1061,7 @@ export default function ChatView({
             <div key={q.key}>
               <Bubble role="assistant">
                 <div className="mb-0.5 text-[12px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
-                <div className="text-[15px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
+                <div className="text-[15px] text-fg">{echoAnswer(chat.briefing ?? {}, q.key, { themeLabel, presetLabel })}</div>
               </Bubble>
               <div className="mt-0.5 flex justify-start pl-1">
                 <button
@@ -1120,10 +1120,10 @@ export default function ChatView({
               onPatchBriefing={(patch) => {
                 // A non-advancing briefing update — the upload card stages a
                 // file without leaving the question.
-                persist({ ...chat, briefing: { ...chat.briefing, ...patch }, updatedAt: new Date().toISOString() });
+                persist({ ...chat, briefing: { ...(chat.briefing ?? {}), ...patch }, updatedAt: new Date().toISOString() });
               }}
               onFreeText={(text) => {
-                const r = applyFreeText(chat.briefing, currentQuestion.key, text);
+                const r = applyFreeText(chat.briefing ?? {}, currentQuestion.key, text);
                 if (r) { onNext(r.briefing); return true; }
                 return false;
               }}
@@ -1461,7 +1461,7 @@ function PresetCard({ presets, value, themeLabel, onPick, onDelete }) {
 }
 
 function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onNext, onPatchBriefing, onFreeText }) {
-  const b = chat.briefing;
+  const b = chat.briefing ?? {};
   return (
     <Bubble role="assistant">
       <div className="mb-1 text-[12px] font-medium text-fg">{q.ask}</div>
@@ -1994,7 +1994,7 @@ function researchLabel(b) {
 }
 
 function SummaryLine({ chat, themeLabel }) {
-  const b = chat.briefing;
+  const b = chat.briefing ?? {};
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
   const bits = chat.kind === "report"
     ? [
@@ -2039,7 +2039,7 @@ function SummaryLine({ chat, themeLabel }) {
  *  stays inside it, expandable, so nothing said for the deck is lost. */
 function DeckBriefing({ chat, answered, echoAnswer, themeLabel, presetLabel }) {
   const [open, setOpen] = useState(false);
-  const b = chat.briefing;
+  const b = chat.briefing ?? {};
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
   const bits = [
     b.title?.trim() || chat.title || "Untitled",
@@ -2071,7 +2071,7 @@ function DeckBriefing({ chat, answered, echoAnswer, themeLabel, presetLabel }) {
           {answered.map((q) => (
             <div key={q.key} className="rounded-lg bg-sunken px-2.5 py-1.5">
               <div className="text-[10px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
-              <div className="text-[12.5px] text-fg">{echoAnswer(chat.briefing, q.key, { themeLabel, presetLabel })}</div>
+              <div className="text-[12.5px] text-fg">{echoAnswer(chat.briefing ?? {}, q.key, { themeLabel, presetLabel })}</div>
             </div>
           ))}
         </div>
@@ -2231,7 +2231,7 @@ function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApprove })
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
         <span className="text-[12px] text-fg-muted">
-          Theme: <span className="font-medium text-fg">{themeLabel(chat.briefing.theme)}</span>
+          Theme: <span className="font-medium text-fg">{themeLabel((chat.briefing ?? {}).theme)}</span>
         </span>
         <Button variant="primary" onClick={onApprove} disabled={busy}>
           {busy && <Spinner />}

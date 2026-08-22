@@ -9,12 +9,90 @@
 
 export const chatsKey = (email) => `forge.chats.${email.toLowerCase()}`;
 
+export function normalizeChat(raw) {
+  if (!raw || typeof raw !== "object") return createChat();
+  const c = { ...raw };
+  c.kind = c.kind === "report" ? "report" : "deck";
+  c.title = typeof c.title === "string" && c.title.trim() ? c.title : (typeof c.topic === "string" && c.topic.trim() ? c.topic.trim().slice(0, 48) : "New chat");
+  c.topic = typeof c.topic === "string" ? c.topic : "";
+  c.briefStep = Number.isFinite(c.briefStep) ? c.briefStep : 0;
+  c.createdAt = c.createdAt || c.updatedAt || new Date().toISOString();
+  c.updatedAt = c.updatedAt || c.createdAt || new Date().toISOString();
+  c.plan = c.plan ?? null;
+  c.deckSlug = c.deckSlug ?? null;
+  c.turns = Array.isArray(c.turns) ? c.turns : [];
+  c.selectedSlides = Array.isArray(c.selectedSlides) ? c.selectedSlides : [];
+  c.produced = Boolean(c.produced);
+  if (typeof c.error === "string" && c.error.trim()) c.error = c.error;
+  else delete c.error;
+  if (typeof c.model === "string" && c.model.trim()) c.model = c.model;
+  else delete c.model;
+  if (Array.isArray(c.deckThumbs)) c.deckThumbs = c.deckThumbs;
+  else if (c.deckThumbs != null) delete c.deckThumbs;
+
+  const b = c.briefing && typeof c.briefing === "object" ? { ...c.briefing } : {};
+  b.title = typeof b.title === "string" ? b.title : "";
+  b.presetId = b.presetId ?? null;
+  b.unskip = Array.isArray(b.unskip) ? b.unskip : [];
+  const team = b.team && typeof b.team === "object" ? b.team : {};
+  b.team = {
+    label: typeof team.label === "string" ? team.label : "",
+    members: Array.isArray(team.members)
+      ? team.members.map((m) => ({
+          name: typeof m?.name === "string" ? m.name : "",
+          roll: typeof m?.roll === "string" ? m.roll : "",
+          presenting: Boolean(m?.presenting),
+        }))
+      : [],
+  };
+  const guide = b.guide && typeof b.guide === "object" ? b.guide : {};
+  b.guide = {
+    name: typeof guide.name === "string" ? guide.name : "",
+    designation: typeof guide.designation === "string" ? guide.designation : "",
+  };
+  const acad = b.academic && typeof b.academic === "object" ? b.academic : {};
+  b.academic = {
+    subject: typeof acad.subject === "string" ? acad.subject : "",
+    year: typeof acad.year === "string" ? acad.year : "",
+    semester: typeof acad.semester === "string" ? acad.semester : "",
+    exam_type: typeof acad.exam_type === "string" ? acad.exam_type : "",
+  };
+  b.audience = typeof b.audience === "string" ? b.audience : "";
+  b.emphasis = typeof b.emphasis === "string" ? b.emphasis : "";
+  b.theme = typeof b.theme === "string" ? b.theme : "";
+  b.maxSlides = Number.isFinite(b.maxSlides) ? b.maxSlides : 0;
+  b.slidesPerMember = b.slidesPerMember == null ? null : (Number.isFinite(Number(b.slidesPerMember)) ? Number(b.slidesPerMember) : null);
+  b.density = ["sparse", "balanced", "dense"].includes(b.density) ? b.density : "balanced";
+  b.branding = ["full", "minimal", "none"].includes(b.branding) ? b.branding : "full";
+  b.depth = ["full", "brief"].includes(b.depth) ? b.depth : "full";
+  if (!["web", "upload", "none"].includes(b.researchSource)) {
+    // Migrate old `research` boolean — default remains web
+    b.researchSource = "web";
+  }
+  b.uploadedSource = b.uploadedSource && typeof b.uploadedSource === "object" ? b.uploadedSource : null;
+  b.research = Boolean(b.research);
+  b.papers = Boolean(b.papers);
+  c.briefing = b;
+  return c;
+}
+
 export function loadChats(email) {
   if (!email) return [];
   try {
     const raw = localStorage.getItem(chatsKey(email));
     const list = raw ? JSON.parse(raw) : [];
-    return Array.isArray(list) ? list : [];
+    if (!Array.isArray(list)) return [];
+    let migrated = false;
+    const normalized = list.map((c) => {
+      const n = normalizeChat(c);
+      // Detect if normalization changed shape — shallow json compare
+      if (JSON.stringify(n) !== JSON.stringify(c)) migrated = true;
+      return n;
+    });
+    if (migrated) {
+      try { localStorage.setItem(chatsKey(email), JSON.stringify(normalized)); } catch {}
+    }
+    return normalized;
   } catch {
     return [];
   }

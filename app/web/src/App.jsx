@@ -15,8 +15,9 @@ import TourThemes from "./views/TourThemes.jsx";
 import { Privacy, Terms, Contact, Docs, Usage } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
-import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat } from "./lib/chats.js";
+import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat, normalizeChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 /**
  * The chat-first shell. Logging in is the landing; the chat window is the app.
@@ -301,7 +302,8 @@ export default function App() {
     if (!window.location.hash) window.history.replaceState(null, "", "#/home");
   }, [user]);
 
-  const activeChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
+  const rawActiveChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
+  const activeChat = rawActiveChat ? normalizeChat(rawActiveChat) : null;
   const goHome = () => navigate("chat");
 
   /** Logging out is consequential (it clears the session) — the confirm lives
@@ -479,16 +481,18 @@ export default function App() {
           <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible overflow-x-hidden" : "overflow-y-auto"}`}>
             <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
-              <ChatView
-                chat={activeChat}
-                identity={identity}
-                onChatChanged={handleChatChanged}
-                leftOpen={leftOpen}
-                onToggleLeft={() => setLeftOpen((o) => !o)}
-                onOpenDeck={openDeck}
-                onOpenReport={openReport}
-                onDeckChanged={bumpDeck}
-              />
+              <ErrorBoundary key={`chat-err-${activeChat.id}`}>
+                <ChatView
+                  chat={activeChat}
+                  identity={identity}
+                  onChatChanged={handleChatChanged}
+                  leftOpen={leftOpen}
+                  onToggleLeft={() => setLeftOpen((o) => !o)}
+                  onOpenDeck={openDeck}
+                  onOpenReport={openReport}
+                  onDeckChanged={bumpDeck}
+                />
+              </ErrorBoundary>
             )}
             {view === "chat" && !activeChat && (
               <div className="flex h-full items-center justify-center">
