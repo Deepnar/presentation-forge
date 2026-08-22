@@ -346,7 +346,7 @@ export default function App() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative min-h-screen bg-base">
-        <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />
+        <ParticleField boost={1.9} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" />
         <div className="relative z-10 flex min-h-screen flex-col">
           <HeaderBar
             leftOpen={leftOpen}
@@ -382,7 +382,7 @@ export default function App() {
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   return (
     <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
-      {isTourView ? <ParticleField className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />}
+      {isTourView ? <ParticleField boost={1.9} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-30" />}
 
       <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col" : "h-full flex-col"}`}>
         <HeaderBar

@@ -264,15 +264,10 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
             <button onClick={handleChat} className="mt-6 rounded-full bg-white px-6 py-2.5 font-semibold text-accent">Start a chat</button>
           </div>
         </div>
-        {/* FOOTER */}
-        <div className="beat beat-footer absolute inset-0 flex items-end justify-center p-6">
-          <div className="w-full max-w-6xl rounded-[1.5rem] border border-line bg-panel p-6 shadow-[var(--shadow-float)]">
-            <div className="footer-col grid grid-cols-2 gap-6 text-[13px] sm:grid-cols-4">
-              <div><div className="font-semibold">Product</div><div className="mt-2 flex flex-col gap-1.5 text-fg-muted"><a href="#/home" className="hover:text-fg">Tour</a><a href="#/tour-themes" className="hover:text-fg">Themes</a><a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a><a href="#/usage" className="hover:text-fg">API usage</a></div></div>
-              <div><div className="font-semibold">Resources</div><div className="mt-2 flex flex-col gap-1.5 text-fg-muted"><a href="#/docs" className="hover:text-fg">Docs</a><a href="#/usage" className="hover:text-fg">Usage</a></div></div>
-              <div><div className="font-semibold">Legal</div><div className="mt-2 flex flex-col gap-1.5 text-fg-muted"><a href="#/privacy" className="hover:text-fg">Privacy</a><a href="#/terms" className="hover:text-fg">Terms</a><a href="#/contact" className="hover:text-fg">Contact</a></div></div>
-              <div><div className="font-semibold">Presentation Forge</div><p className="mt-2 text-fg-muted">Hosted decks, fast generation.</p></div>
-            </div>
+        {/* FOOTER — full Footer.jsx, scrubbed in as last beat */}
+        <div className="beat beat-footer absolute inset-0 flex items-end">
+          <div className="footer-col w-full">
+            <Footer />
           </div>
         </div>
       </div>
