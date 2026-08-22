@@ -48,7 +48,7 @@ These are real outputs from the pipeline, committed and sanitized so nothing pri
   <img src="docs/assets/examples/soft-skills-01.png" width="48%" alt="First impressions deck preview — title slide" />
 </p>
 
-Source YAML for the examples lives in `decks/_public/` — `deck.yaml` + `plan.yaml` + `report.yaml` where applicable, sanitized (generic team, demo guide, no institution data). Rendered `.pptx`/`.docx` and `out/` are gitignored; previews above are rasterised via `npm run preview` and committed as static PNGs for the README and the landing page gallery (`app/web/public/examples/`). Private decks remain in `decks/<slug>/` and are never committed.
+Source YAML for the examples lives in [`decks/_public/`](decks/_public/) — `deck.yaml` + `plan.yaml` + `report.yaml` where applicable, sanitized (generic team, demo guide, no institution data). Browse it on GitHub: [github.com/Deepnar/presentation-forge/tree/main/decks/_public](https://github.com/Deepnar/presentation-forge/tree/main/decks/_public). Rendered `.pptx`/`.docx` and `out/` are gitignored; previews above are rasterised via `npm run preview` and committed as static PNGs for the README and the landing page gallery (`app/web/public/examples/`). Private decks remain in `decks/<slug>/` and are never committed.
 
 ## Quick start
 
