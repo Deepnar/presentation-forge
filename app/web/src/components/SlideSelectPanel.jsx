@@ -49,7 +49,7 @@ export default function SlideSelectPanel({
           aria-label="Collapse slides"
           className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
         >
-          <PanelLeftCloseIcon />
+          <PanelLeftClose className="h-4 w-4" />
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[11.5px] font-semibold text-fg">Slides</div>
