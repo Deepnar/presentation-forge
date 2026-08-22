@@ -47,8 +47,18 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       dots: [],
       trails: [],
       pointer: { x: -1, y: -1, vx: 0, vy: 0, px: -1, py: -1 },
+      scrollVel: 0,
       w: 0, h: 0, dpr: 1, frames: 0, running: false, last: 0,
     };
+
+    // Scroll drives the field: velocity smears dots vertically and biases drift.
+    let lastScrollY = window.scrollY;
+    function onScroll() {
+      const y = window.scrollY;
+      const d = y - lastScrollY;
+      lastScrollY = y;
+      state.scrollVel = Math.max(-60, Math.min(60, state.scrollVel + d * 0.25));
+    }
 
     const makeDot = () => {
       const r = 1.0 + Math.random() * 1.8;
@@ -93,9 +103,10 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       for (const d of state.dots) {
         d.phase += 0.0032;
         d.tw += 0.008;
-        // velocity + sine wander
+        // velocity + sine wander, plus scroll-velocity smear
+        const sv = state.scrollVel * 0.06 * dpr;
         d.x += d.vx * dpr + Math.sin(d.phase * d.fx * 2.1) * 0.18;
-        d.y += d.vy * dpr + Math.sin(d.phase * d.fy * 2.1 + 1.1) * 0.18;
+        d.y += d.vy * dpr + Math.sin(d.phase * d.fy * 2.1 + 1.1) * 0.18 - sv;
         // wrap softly
         if (d.x < -20) d.x = state.w + 20;
         if (d.x > state.w + 20) d.x = -20;
@@ -133,17 +144,28 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         const twinkle = 0.72 + 0.28 * Math.sin(now * 0.001 + d.tw * 1.7);
         const pulse = 0.94 + 0.06 * Math.sin(now * 0.0008 + d.phase);
         const r = d.r * dpr * pulse * scale;
-        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
-        ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-        // soft glow for accents — very faint now
-        if (d.accent) {
-          ctx.globalAlpha *= 0.10;
+        // fast scroll stretches dots into faint streaks
+        if (Math.abs(state.scrollVel) > 6) {
+          ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
+          ctx.strokeStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
+          ctx.lineWidth = r * 2;
           ctx.beginPath();
-          ctx.arc(x, y, r * 2.0, 0, Math.PI * 2);
+          ctx.moveTo(x, y - sv * 2.2);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        } else {
+          ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
+          ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
           ctx.fill();
+          // soft glow for accents — very faint now
+          if (d.accent) {
+            ctx.globalAlpha *= 0.10;
+            ctx.beginPath();
+            ctx.arc(x, y, r * 2.0, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
 
@@ -192,6 +214,8 @@ export default function ParticleField({ paused = false, boost = 1, className = "
 
       ctx.globalAlpha = 1;
       state.frames += 1;
+      state.scrollVel *= 0.92; // decay so the smear settles when scrolling stops
+      if (Math.abs(state.scrollVel) < 0.05) state.scrollVel = 0;
       canvas.dataset.frames = String(state.frames);
       canvas.dataset.ptr = `${Math.round(pointer.x)}:${Math.round(pointer.y)}`;
       canvas.dataset.pushed = String(pushed);
@@ -242,6 +266,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
     if (!reduceMotion && !paused) start();
     controlRef.current = { start, stop, reduceMotion };
     window.addEventListener("resize", resize);
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("mousemove", onPointer);
     window.addEventListener("mouseleave", onLeave);
@@ -252,6 +277,7 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       controlRef.current = null;
       mo.disconnect();
       window.removeEventListener("resize", resize);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("mousemove", onPointer);
       window.removeEventListener("mouseleave", onLeave);

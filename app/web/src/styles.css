@@ -104,8 +104,6 @@
 html {
   height: auto;
   min-height: 100%;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
 }
 body,
 #root {
@@ -225,6 +223,35 @@ textarea:focus {
   100% {
     transform: translateX(100%);
   }
+}
+
+/* Journey background sheets — stacked, opacity-scrubbed by GSAP so page
+   colors morph continuously instead of hard section blocks. */
+.journey-sheet {
+  position: absolute;
+  inset: -20%;
+  will-change: opacity, transform;
+}
+
+/* Theme marquee rows — auto drift, duplicated content for seamless wrap. */
+@keyframes marquee-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes marquee-rtl {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-row {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  will-change: transform;
+}
+.marquee-ltr { animation: marquee-ltr var(--marquee-dur, 40s) linear infinite; }
+.marquee-rtl { animation: marquee-rtl var(--marquee-dur, 40s) linear infinite; }
+.marquee-paused, .marquee-paused .marquee-ltr, .marquee-paused .marquee-rtl {
+  animation-play-state: paused;
 }
 
 .skeleton {
