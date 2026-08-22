@@ -216,7 +216,9 @@ docker compose -f docker-compose.app.yml up -d --build
 
 The application is served on `FORGE_PORT` (8080 by default). For a public deployment, set a strong `FORGE_KEY_PEPPER`, set `FORGE_OPEN_REGISTRATION=0` if registration should be closed, seed the administrator credentials, and place a TLS reverse proxy in front of the container. When a proxy is used, set `FORGE_TRUST_PROXY=1`.
 
-Important deployment settings are documented in [`.env.example`](.env.example), including session lifetime, authentication rate limiting, CORS, retention sweeps, SMTP notifications, the Auto provider, and SearXNG.
+Single repo, two modes: `FORGE_HOSTED=1` (hosted — Auto is TCET gateway + BYOK only, no Ollama) vs unset/`0` (local — Auto falls back to Ollama). Toggle at runtime in Admin → System or Settings (admin) — writes `config/hosted.json` and reloads. Admin is `role=admin` or `18deepnar@gmail.com` / `FORGE_ADMIN_EMAIL`; see `#/admin` for users, decks, analytics and the hosted switch.
+
+Important deployment settings are documented in [`.env.example`](.env.example), including `FORGE_HOSTED`, session lifetime, authentication rate limiting, CORS, retention sweeps, SMTP notifications, the Auto provider, and SearXNG.
 
 Ollama is not bundled in the image. For local-model generation, run Ollama on the host or a reachable machine and point the `host` in `config/models.yaml` to it.
 

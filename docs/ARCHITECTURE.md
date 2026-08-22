@@ -216,6 +216,15 @@ synthesis note (claim-first prose, real hooks, figures from the notes) while
 the local writer keeps the conservative instructions that small models survive
 on.
 
+### Hosted vs local — single repo, one switch
+
+`FORGE_HOSTED` is the only fork. `isHosted()` (`src/cloud.js:15`) checks `config/hosted.json` (admin runtime toggle, file wins) then `process.env.FORGE_HOSTED`/`FORGE_DISABLE_LOCAL`, so the same image runs both ways:
+
+- `FORGE_HOSTED=1` (hosted): `autoProvider()` returns TCET `qwen3.6` when `FORGE_TCET_API_KEY` is set and `null` otherwise — no local Ollama fallback. `resolveRole()` and `modelChoices()` hide local models, `chat()` for `role=author` surfaces a clear "Hosted auto not configured — switch to Cloud" error instead of "Ollama unreachable". Internal roles (`research`/`critic`/`utility`) fall through TCET → Cloud when hosted.
+- unset / `0` (local clone): `autoProvider()` falls back to `localhost:11434` Ollama, `modelChoices()` lists installed models, and the author route falls back to the local default. `docker-compose.app.yml` wires `FORGE_HOSTED` + provider keys into the container; `config/models.yaml` header documents the switch.
+
+The admin UI (`#/admin` → System) and `Settings → Deployment mode` both call `POST /api/admin/hosted` (`src/cloud.js:setHosted`) which writes `config/hosted.json` and reloads the frontend (`forge:hostedChanged` + `window.location.reload()`), so Chat's `hosted/local` badge (`ChatView.jsx:1015`) and `Local·Ollama` / `Auto·TCET` pill (`ChatView.jsx:944`) plus the Sidebar `Auto/Cloud` toggle reflect instantly. No fork, no second branch — one repo, one image, one env var.
+
 ## Why the human gate replaces presets
 
 Presets guess the deck's structure in advance and are wrong whenever the
@@ -547,6 +556,22 @@ deliberate: chat is structural, inline is precision. Every mutation the deck
 detail performs — edit, presenter assign, reorder, delete, duplicate — goes
 through the immutable ops in `app/web/src/lib/slides.js`, persists deck.yaml
 immediately, and re-renders on a short debounce.
+
+### Admin — RBAC, analytics and hosted toggle
+
+`#/admin` (`app/web/src/views/Admin.jsx`) is the operator surface, gated by `src/auth.js:isAdmin` — `role=admin` in `users` table, or `email==18deepnar@gmail.com` (hardcoded seed, auto-promoted on `register`/`findOrCreateGoogleUser`), or `FORGE_ADMIN_EMAIL` env. `App.jsx:139` `isAdminUser` controls the Sidebar shield link (`Sidebar.jsx:287`) and `App.jsx:244` `#/admin` route; the view itself also handles `403` from the API.
+
+Server `app/server/index.js:486` `requireAdmin` guards `GET /api/admin/hosted` / `POST /api/admin/hosted` (`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env for runtime flips), `GET /api/admin/users` / `POST /api/admin/users/:email/role` / `DELETE /api/admin/users/:email` (`src/auth.js:listUsers`/`setUserRole`/`deleteUserAccount` with last-admin guard), `GET /api/admin/decks` (all owners + `deck.pptx` size), and `GET /api/admin/stats` (users total/admins/week, decks total/slides/reports/size, `byTheme`/`byOwner`/`recent`, `auto_events` aggregate total/top-10, `limits`, `system` — TCET key, Ollama/SearXNG health, disk `df`, uptime, node). `published/` (`published/*.pptx|*.pdf|*.docx`) is the public showcase, force-added via `!published/**` in `.gitignore:28` while private `decks/*` stays ignored except `!decks/_public/**`.
+
+Frontend `Admin.jsx` has five tabs — Overview (4 stat cards + `BarChart` for themes/owners + recent decks), Users (search, Make/Remove admin, Delete), Decks (search, all decks table), Analytics (total requests/slides/tokens, top users bar chart, limits grid), System (hosted/local switch with `forge:hostedChanged` + reload, backend health, disk/uptime, RBAC explanation). `SettingsModal.jsx:522` `HostedSection` (admin only) also toggles hosted and reloads, so Settings and Chat (`ChatView.jsx:1015` `hosted/local` badge + `944` `Local·Ollama`/`Auto·TCET` pill) stay linked.
+
+### Published presentations — public without leaking private decks
+
+`published/` (`published/*.pptx|*.pdf|*.docx` + `published/README.md`) holds only decks owned by `18deepnar@gmail.com` (3 decks: `recent-trends-mixed-mode` + 2× `first-impressions`, 6 files, 9.2 MB total) force-added via `!published/**` in `.gitignore:28` while private `decks/*` stays ignored (`decks/*` + `!decks/_public/**`). `decks/_public` (previous sanitized yaml-only examples) and `app/web/public/examples`/`docs/assets/examples` previews were removed per request to only publish your own PDFs. `README.md` links to `[published/](published/)` (`app/web/src/views/Home.jsx` gallery removed). `src/sweep.js:37` skips `public` and `.`/`_` prefixed decks so the sweep never deletes the showcase.
+
+### Security — no leaks
+
+`FORGE_TCET_API_KEY` in `.env.example` is now `sk-change-me-tcet-key` placeholder, `config/hosted.json` is gitignored (`config/hosted.json`), `config/local.yaml`/`users.json`/`sessions.json`/`forge.db` stay gitignored. `git ls-files` shows no real `sk-` keys; `config/local.yaml` on disk holds the real `OPENCODE_GO_API_KEY` but is ignored. Chat normalization (`app/web/src/lib/chats.js:12` `normalizeChat`, `briefing.js:222` `echoAnswer` guard) and `ErrorBoundary.jsx:1` + `SlideSelectPanel.jsx:52` `PanelLeftClose` fix prevent the white-screen on existing chats; favicon regenerated from `logo.svg` (`app/web/public/favicon.png` 32 + `apple-touch-icon.png` 180).
 
 ## The grounding guard — research is the contract
 
