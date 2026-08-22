@@ -144,28 +144,17 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         const twinkle = 0.72 + 0.28 * Math.sin(now * 0.001 + d.tw * 1.7);
         const pulse = 0.94 + 0.06 * Math.sin(now * 0.0008 + d.phase);
         const r = d.r * dpr * pulse * scale;
-        // fast scroll stretches dots into faint streaks
-        if (Math.abs(state.scrollVel) > 6) {
-          ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
-          ctx.strokeStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
-          ctx.lineWidth = r * 2;
+        ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
+        ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        // soft glow for accents — very faint now
+        if (d.accent) {
+          ctx.globalAlpha *= 0.10;
           ctx.beginPath();
-          ctx.moveTo(x, y - sv * 2.2);
-          ctx.lineTo(x, y);
-          ctx.stroke();
-        } else {
-          ctx.globalAlpha = Math.min(1, d.base * twinkle * bright * (d.accent ? 1.18 : 1));
-          ctx.fillStyle = d.accent ? `rgb(${accentRgb})` : `rgb(${dotRgb})`;
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.arc(x, y, r * 2.0, 0, Math.PI * 2);
           ctx.fill();
-          // soft glow for accents — very faint now
-          if (d.accent) {
-            ctx.globalAlpha *= 0.10;
-            ctx.beginPath();
-            ctx.arc(x, y, r * 2.0, 0, Math.PI * 2);
-            ctx.fill();
-          }
         }
       }
 
