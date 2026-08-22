@@ -9,6 +9,15 @@ import { getModelMode, setModelMode, subscribeModelMode } from "../lib/modelMode
 
 const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 
+function ShieldIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l7 4v5c0 4-2.5 7.5-7 9-4.5-1.5-7-5-7-9V7l7-4z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
 function SidebarToggle({ onOpenSettings }) {
   const [route, setRoute] = useState("auto");
   const [cloudOn, setCloudOn] = useState(false);
@@ -69,7 +78,7 @@ function SidebarToggle({ onOpenSettings }) {
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
-  user, identity, onOpenSettings, onOpenProfile, onToggleLeft,
+  user, identity, onOpenSettings, onOpenProfile, onToggleLeft, isAdmin,
 }) {
   const [tab, setTab] = useState("chats"); // chats | projects
   const [query, setQuery] = useState("");
@@ -288,6 +297,7 @@ export default function Sidebar({
             <div className="mb-2 space-y-0.5">
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
               <SettingsRow icon={IdIcon} label="Settings" onClick={onOpenSettings} />
+              {isAdmin && <NavRow active={view === "admin"} icon={ShieldIcon} label="Admin" href="#/admin" />}
             </div>
             <div className="mt-2 border-t border-line/60 pt-2">
               <ProfileChip
@@ -312,6 +322,7 @@ export default function Sidebar({
           />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
           <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
+          {isAdmin && <IconButton active={view === "admin"} icon={ShieldIcon} title="Admin" href="#/admin" />}
           <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-line pt-2">
             <ProfileChip
               collapsed

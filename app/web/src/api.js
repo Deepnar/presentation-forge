@@ -239,4 +239,12 @@ export const api = {
   savePreset: (preset) => call("/api/presets", { method: "POST", body: JSON.stringify(preset) }),
   updatePreset: (id, preset) => call(`/api/presets/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(preset) }),
   deletePreset: (id) => call(`/api/presets/${encodeURIComponent(id)}`, { method: "DELETE" }),
+  // Admin — RBAC + analytics (admin only)
+  adminStats: () => call("/api/admin/stats"),
+  adminUsers: () => call("/api/admin/users"),
+  adminSetRole: (email, role) => call(`/api/admin/users/${encodeURIComponent(email)}/role`, { method: "POST", body: JSON.stringify({ role }) }),
+  adminDeleteUser: (email) => call(`/api/admin/users/${encodeURIComponent(email)}`, { method: "DELETE" }),
+  adminDecks: () => call("/api/admin/decks"),
+  adminHosted: () => call("/api/admin/hosted"),
+  adminSetHosted: (hosted) => call("/api/admin/hosted", { method: "POST", body: JSON.stringify({ hosted }) }),
 };

@@ -95,8 +95,83 @@ export function publicUser(u) {
 export function isAdmin(user) {
   if (!user) return false;
   if (user.role === "admin") return true;
+  if (user.email && String(user.email).toLowerCase() === "18deepnar@gmail.com") return true;
   const adminEmail = process.env.FORGE_ADMIN_EMAIL;
   return typeof adminEmail === "string" && user.email === adminEmail.trim().toLowerCase();
+}
+
+/** RBAC — list all users for the admin panel. */
+export async function listUsers() {
+  const d = db();
+  if (d) {
+    try {
+      const rows = d.prepare("SELECT email,name,role,created_at,google_sub FROM users ORDER BY created_at DESC").all();
+      return rows.map((r) => ({
+        email: r.email,
+        name: r.name,
+        role: r.role ?? null,
+        createdAt: r.created_at,
+        google: Boolean(r.google_sub),
+        admin: r.role === "admin" || (process.env.FORGE_ADMIN_EMAIL && r.email === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase()),
+      }));
+    } catch {}
+  }
+  const users = await loadUsers();
+  return users.map((u) => ({
+    email: u.email,
+    name: u.name,
+    role: u.role ?? null,
+    createdAt: u.createdAt,
+    google: Boolean(u.google_sub),
+    admin: u.role === "admin" || (process.env.FORGE_ADMIN_EMAIL && u.email === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase()),
+  }));
+}
+
+export async function setUserRole(email, role) {
+  const normalized = String(email).trim().toLowerCase();
+  const clean = role === "admin" ? "admin" : null;
+  // never demote the seed admin via API if it's the env admin and the only admin?
+  const d = db();
+  if (d) {
+    const row = d.prepare("SELECT role FROM users WHERE email=?").get(normalized);
+    if (!row) throw new Error("no such user");
+    d.prepare("UPDATE users SET role=? WHERE email=?").run(clean, normalized);
+    return;
+  }
+  const users = await loadUsers();
+  const u = users.find((x) => x.email === normalized);
+  if (!u) throw new Error("no such user");
+  if (clean) u.role = clean;
+  else delete u.role;
+  await writeJson(USERS_FILE, users);
+}
+
+export async function deleteUserAccount(email) {
+  const normalized = String(email).trim().toLowerCase();
+  const d = db();
+  if (d) {
+    const row = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
+    if (!row) throw new Error("no such user");
+    // forbid deleting the last admin
+    const admins = d.prepare("SELECT COUNT(*) as c FROM users WHERE role='admin'").get()?.c ?? 0;
+    const targetIsAdmin = d.prepare("SELECT role FROM users WHERE email=?").get(normalized)?.role === "admin" ||
+      (process.env.FORGE_ADMIN_EMAIL && normalized === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase());
+    if (targetIsAdmin && admins <= 1) throw new Error("cannot delete the last admin");
+    d.prepare("DELETE FROM users WHERE email=?").run(normalized);
+    d.prepare("DELETE FROM sessions WHERE email=?").run(normalized);
+    if (row?.id) d.prepare("DELETE FROM auto_events WHERE user_id=?").run(row.id);
+    return;
+  }
+  const users = await loadUsers();
+  const idx = users.findIndex((u) => u.email === normalized);
+  if (idx === -1) throw new Error("no such user");
+  users.splice(idx, 1);
+  await writeJson(USERS_FILE, users);
+  const sessions = await loadSessions();
+  for (const [tok, sess] of Object.entries(sessions)) {
+    if (sess.email === normalized) delete sessions[tok];
+  }
+  await writeJson(SESSIONS_FILE, sessions);
 }
 
 /**
@@ -133,14 +208,20 @@ export async function register({ name, email, password }) {
   const error = validateRegistration({ name, email, password });
   if (error) throw new Error(error);
   const normalized = email.trim().toLowerCase();
+  const isSeedAdmin = normalized === "18deepnar@gmail.com";
   const d = db();
   if (d) {
     const exists = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
     if (exists) throw new Error("an account with that email already exists");
     const { salt, hash } = hashPassword(password);
     const now = new Date().toISOString();
-    d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
-      .run(normalized, name.trim(), hash, salt, now);
+    if (isSeedAdmin) {
+      d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)")
+        .run(normalized, name.trim(), hash, salt, "admin", now);
+    } else {
+      d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
+        .run(normalized, name.trim(), hash, salt, now);
+    }
     const row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -152,6 +233,7 @@ export async function register({ name, email, password }) {
     name: name.trim(),
     email: normalized,
     createdAt: new Date().toISOString(),
+    ...(isSeedAdmin ? { role: "admin" } : {}),
     ...hashPassword(password),
   };
   users.push(user);
@@ -240,8 +322,14 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
       return publicUser(rowToUser(row));
     }
     const now = new Date().toISOString();
-    d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
-      .run(normalized, name.trim() || normalized, sub, normalized, now);
+    const isSeedAdmin = normalized === "18deepnar@gmail.com";
+    if (isSeedAdmin) {
+      d.prepare("INSERT INTO users (email,name,google_sub,google_email,role,created_at) VALUES (?,?,?,?,?,?)")
+        .run(normalized, name.trim() || normalized, sub, normalized, "admin", now);
+    } else {
+      d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
+        .run(normalized, name.trim() || normalized, sub, normalized, now);
+    }
     row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -256,12 +344,14 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
     await writeJson(USERS_FILE, users);
     return publicUser(user);
   }
+  const isSeedAdminJson = normalized === "18deepnar@gmail.com";
   const newUser = {
     name: name.trim() || normalized,
     email: normalized,
     createdAt: new Date().toISOString(),
     google_sub: sub,
     google_email: normalized,
+    ...(isSeedAdminJson ? { role: "admin" } : {}),
   };
   users.push(newUser);
   await writeJson(USERS_FILE, users);

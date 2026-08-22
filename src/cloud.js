@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "./paths.js";
@@ -142,8 +143,23 @@ export async function setRoutingPreference(route) {
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
 }
 
+const HOSTED_FILE = path.join(CONFIG, "hosted.json");
 export function isHosted() {
-  return process.env.FORGE_HOSTED === "1" || process.env.FORGE_DISABLE_LOCAL === "1";
+  // Runtime file (admin toggle) wins over env, so testing flips take effect without redeploy
+  try {
+    if (existsSync(HOSTED_FILE)) {
+      const j = JSON.parse(readFileSync(HOSTED_FILE, "utf8"));
+      if (j && typeof j.hosted === "boolean") return j.hosted;
+    }
+  } catch {}
+  if (process.env.FORGE_HOSTED === "1" || process.env.FORGE_DISABLE_LOCAL === "1") return true;
+  if (process.env.FORGE_HOSTED === "0") return false;
+  return false;
+}
+export async function setHosted(flag) {
+  const next = Boolean(flag);
+  await writeFile(HOSTED_FILE, JSON.stringify({ hosted: next, updatedAt: new Date().toISOString() }, null, 2), "utf8");
+  return next;
 }
 
 // Auto provider — the free tier. On hosted it's TCET CoE (qwen3.6), on a local

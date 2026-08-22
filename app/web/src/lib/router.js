@@ -48,6 +48,8 @@ export function parseHash(hash) {
       return { view: "usage" };
     case "chat":
       return { view: "chat", chatId: rest[0] || null };
+    case "admin":
+      return { view: "admin" };
     default:
       return { view: "chat" };
   }
@@ -79,6 +81,8 @@ export function hashFor(view, { slug, chatId } = {}) {
       return "#/docs";
     case "usage":
       return "#/usage";
+    case "admin":
+      return "#/admin";
     case "chat":
     default:
       return chatId ? `#/chat/${chatId}` : "#/chat";

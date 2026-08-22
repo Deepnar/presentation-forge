@@ -15,6 +15,7 @@ import TourThemes from "./views/TourThemes.jsx";
 import { Privacy, Terms, Contact, Docs, Usage } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
+import Admin from "./views/Admin.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat, normalizeChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
@@ -134,6 +135,7 @@ export default function App() {
   }, [user]);
 
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
+  const isAdminUser = Boolean(user && (user.role === "admin" || user.email?.toLowerCase() === "18deepnar@gmail.com"));
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   const isChatView = view === "chat";
@@ -257,6 +259,7 @@ export default function App() {
       case "contact":
       case "docs":
       case "usage":
+      case "admin":
         setView(r.view);
         break;
       case "chat":
@@ -474,6 +477,7 @@ export default function App() {
                 onOpenSettings={() => setSettingsOpen(true)}
                 onOpenProfile={() => setProfileOpen(true)}
                 onToggleLeft={() => setLeftOpen((o) => !o)}
+                isAdmin={isAdminUser}
               />
             </div>
           )}
@@ -543,6 +547,7 @@ export default function App() {
             {view === "contact" && <Contact />}
             {view === "docs" && <Docs />}
             {view === "usage" && <Usage />}
+            {view === "admin" && <Admin onBack={goHome} />}
           </main>
         </div>
 

@@ -20,8 +20,8 @@ import { researchSummary } from "../../src/ai/research.js";
 import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
-import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId } from "../../src/auth.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, checkAutoLimits, recordAutoEvent, limitConfig } from "../../src/limits.js";
@@ -492,6 +492,146 @@ app.post("/api/sweep", wrap(async (req, res) => {
   const olderThanDays = Number(req.body?.olderThanDays || NaN);
   const r = await sweep({ dryRun, ...(Number.isFinite(olderThanDays) && olderThanDays > 0 ? { olderThanDays } : {}) });
   ok(res, r);
+}));
+
+/* --------------------------------------------------------------- admin — RBAC + analytics */
+const requireAdmin = async (req, res, next) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user) return fail(res, 401, "log in");
+  if (!isAdmin(user)) return fail(res, 403, "admin only");
+  req.user = user;
+  next();
+};
+
+// Hosted toggle — admin flips hosted/local at runtime (persists to config/hosted.json)
+app.get("/api/admin/hosted", wrap(async (_req, res) => {
+  const user = await userForToken(bearerToken(_req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  ok(res, { hosted: isHosted() });
+}));
+app.post("/api/admin/hosted", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const hosted = Boolean(req.body?.hosted);
+  await setHosted(hosted);
+  ok(res, { hosted: isHosted() });
+}));
+
+// Users — RBAC management
+app.get("/api/admin/users", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const users = await listUsers();
+  ok(res, { users });
+}));
+app.post("/api/admin/users/:email/role", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const role = req.body?.role === "admin" ? "admin" : null;
+  // never demote self via this endpoint without explicit confirm? allow but guard last admin in setUserRole
+  await setUserRole(req.params.email, role);
+  ok(res, {});
+}));
+app.delete("/api/admin/users/:email", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  if (String(req.params.email).toLowerCase() === String(user.email).toLowerCase()) {
+    return fail(res, 400, "cannot delete your own account");
+  }
+  await deleteUserAccount(req.params.email);
+  ok(res, {});
+}));
+
+// Decks — admin sees all, not just own
+app.get("/api/admin/decks", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  let entries = [];
+  try { entries = await readdir(DECKS, { withFileTypes: true }); } catch { return ok(res, { decks: [] }); }
+  const decks = [];
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    try { decks.push(await deckMeta(e.name)); } catch {}
+  }
+  decks.sort((a, b) => b.updated - a.updated);
+  // enrich with disk size
+  for (const d of decks) {
+    try {
+      const outStat = await stat(path.join(DECKS, d.slug, "out", "deck.pptx"));
+      d.size = outStat.size;
+    } catch { d.size = 0; }
+  }
+  ok(res, { decks });
+}));
+
+// Stats — overview for graphs
+app.get("/api/admin/stats", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  // users
+  const users = await listUsers();
+  const now = Date.now();
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const usersWeek = users.filter((u) => Date.parse(u.createdAt) > weekAgo).length;
+  // decks
+  let entries = [];
+  try { entries = await readdir(DECKS, { withFileTypes: true }); } catch {}
+  let totalDecks = 0, totalSlides = 0, totalReports = 0, totalSize = 0;
+  const byTheme = {};
+  const byOwner = {};
+  const recent = [];
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    try {
+      const m = await deckMeta(e.name);
+      totalDecks++;
+      totalSlides += m.slides ?? 0;
+      if (m.report) totalReports++;
+      byTheme[m.theme ?? "none"] = (byTheme[m.theme ?? "none"] ?? 0) + 1;
+      byOwner[m.owner ?? "legacy"] = (byOwner[m.owner ?? "legacy"] ?? 0) + 1;
+      recent.push(m);
+      try { const s = await stat(path.join(DECKS, e.name, "out", "deck.pptx")); totalSize += s.size; } catch {}
+    } catch {}
+  }
+  recent.sort((a, b) => b.updated - a.updated);
+  // model usage — aggregate auto_events
+  let usageAgg = { totalRequests: 0, totalSlides: 0, totalTokens: 0, byUser: [] };
+  let limits = limitConfig();
+  try {
+    const { getDb } = await import("../../src/db.js");
+    const db = getDb();
+    const rows = db.prepare("SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events GROUP BY user_id ORDER BY reqs DESC LIMIT 10").all();
+    // map user_id -> email
+    const userById = new Map();
+    for (const u of users) {
+      const id = getUserId(u.email);
+      if (id) userById.set(id, u.email);
+    }
+    usageAgg.byUser = rows.map((r) => ({ email: userById.get(r.user_id) ?? `id:${r.user_id}`, requests: r.reqs, slides: r.slides, tokens: r.tokens }));
+    const tot = db.prepare("SELECT COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events").get();
+    usageAgg.totalRequests = tot.reqs ?? 0;
+    usageAgg.totalSlides = tot.slides ?? 0;
+    usageAgg.totalTokens = tot.tokens ?? 0;
+  } catch {}
+  // system
+  let ollamaOk = false, searxngOk = false;
+  try { const r = await fetch("http://localhost:11434/api/tags", { signal: AbortSignal.timeout(2000) }); ollamaOk = r.ok; } catch {}
+  try { const searx = process.env.SEARXNG_URL || "http://localhost:8888"; const r = await fetch(`${searx}/healthz`, { signal: AbortSignal.timeout(2000) }); searxngOk = r.ok; } catch {}
+  // disk
+  let diskFree = null;
+  try {
+    const { execSync } = await import("node:child_process");
+    const out = execSync("df -h / 2>/dev/null | tail -1 || df -h . 2>/dev/null | tail -1", { encoding: "utf8" });
+    diskFree = out.trim();
+  } catch {}
+  ok(res, {
+    hosted: isHosted(),
+    users: { total: users.length, admins: users.filter((u) => u.admin).length, week: usersWeek, list: users.slice(0, 5) },
+    decks: { total: totalDecks, reports: totalReports, slides: totalSlides, size: totalSize, byTheme, byOwner, recent: recent.slice(0, 10) },
+    usage: usageAgg,
+    limits,
+    system: { ollamaOk, searxngOk, diskFree, uptime: process.uptime(), node: process.version, tcetOk: (await autoStatus()).keySet },
+  });
 }));
 
 /** The deck's version history — timestamped backups of deck.yaml, newest first. */
