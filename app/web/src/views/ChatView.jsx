@@ -895,11 +895,6 @@ export default function ChatView({
           placeholder={placeholder}
           className="max-h-36 flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-relaxed text-fg outline-none placeholder:text-fg-faint/60 disabled:opacity-50"
         />
-        <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
-          </svg>
-        </Button>
       </div>
 
       <div className="flex items-center gap-2 border-t border-line/60 px-3 pb-2.5 pt-2">
@@ -964,16 +959,6 @@ export default function ChatView({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
-        {onToggleLeft && (
-          <button
-            onClick={onToggleLeft}
-            title={leftOpen ? "Collapse navigation" : "Expand navigation"}
-            aria-label={leftOpen ? "Collapse navigation" : "Expand navigation"}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-          >
-            <PanelLeft className="h-4 w-4" />
-          </button>
-        )}
         {showPanel && (
           <button
             onClick={() => setPanelOpen((v) => !v)}
@@ -1527,8 +1512,8 @@ function FreeTextCard({ field, value, onNext, placeholder = "" }) {
 }
 
 function TeamCard({ team, onNext }) {
-  const [label, setLabel] = useState(team.label ?? "");
-  const [members, setMembers] = useState((team.members ?? []).map((m) => ({ ...m })));
+  const [label, setLabel] = useState(team?.label ?? "");
+  const [members, setMembers] = useState(((team?.members ?? []).map((m) => ({ ...m }))));
   const edit = (i, patch) => setMembers((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)));
   const add = () => setMembers((ms) => [...ms, { name: "", roll: "", presenting: false }]);
   const named = members.filter((m) => m.name?.trim());
@@ -1611,8 +1596,8 @@ function TeamCard({ team, onNext }) {
 }
 
 function GuideCard({ guide, onNext }) {
-  const [name, setName] = useState(guide.name ?? "");
-  const [designation, setDesignation] = useState(guide.designation ?? "");
+  const [name, setName] = useState(guide?.name ?? "");
+  const [designation, setDesignation] = useState(guide?.designation ?? "");
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
       <label className="block">
@@ -1631,7 +1616,7 @@ function GuideCard({ guide, onNext }) {
 }
 
 function AcademicCard({ academic, onNext }) {
-  const [v, setV] = useState({ ...academic });
+  const [v, setV] = useState({ ...(academic ?? {}) });
   const set = (patch) => setV((x) => ({ ...x, ...patch }));
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">

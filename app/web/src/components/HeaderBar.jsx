@@ -55,15 +55,6 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const logoHref = isTour && !user ? "#/home" : "#/chat";
   return (
     <header className={`${isTour ? "fixed top-0 left-0 right-0 z-30" : "sticky top-0 z-20"} flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-panel px-3 shadow-sm`}>
-      {!hideToggle && (
-        <button
-          onClick={onToggleLeft}
-          title={leftOpen ? "Collapse navigation" : "Expand navigation"}
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-        >
-          {leftOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
-      )}
 
       <a
         href={logoHref}

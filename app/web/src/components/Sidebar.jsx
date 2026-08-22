@@ -4,7 +4,7 @@ import { api } from "../api.js";
 import DeckThumb from "./DeckThumb.jsx";
 import ProfileChip from "./ProfileChip.jsx";
 import { Button } from "./ui.jsx";
-import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PlusIcon, SearchIcon } from "./icons.jsx";
+import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PanelLeftOpen, PlusIcon, SearchIcon } from "./icons.jsx";
 
 const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 
@@ -239,6 +239,7 @@ export default function Sidebar({
         </>
       ) : (
         <div className="flex h-full flex-col items-center gap-1 py-3">
+          <IconButton icon={PanelLeftOpen} title="Expand navigation" onClick={onToggleLeft} />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
           <IconButton
             icon={LayersIcon}

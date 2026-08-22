@@ -433,14 +433,14 @@ export default function App() {
       {isTourView ? <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" />}
 
       <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col"}`}>
-        {!isChatView && (
+        {isTourView && (
           <HeaderBar
             leftOpen={leftOpen}
             onToggleLeft={() => setLeftOpen((o) => !o)}
             onHome={goHome}
             onOpenSettings={() => setSettingsOpen(true)}
             onOpenProfile={() => setProfileOpen(true)}
-            user={isTourView ? user : null}
+            user={user}
             view={view}
             onAuthClick={() => setAuthOpen(true)}
           />
@@ -525,7 +525,7 @@ export default function App() {
                 onBack={goHome}
               />
             )}
-            {view === "themes" && <Themes />}
+            {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
             {view === "tour-themes" && <TourThemes onAuth={() => navigate("themes")} authed />}
             {view === "home" && (
               <Home

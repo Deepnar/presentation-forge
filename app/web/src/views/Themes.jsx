@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api.js";
 import { Empty, Button } from "../components/ui.jsx";
-import { SearchIcon } from "../components/icons.jsx";
+import { SearchIcon, PanelLeft } from "../components/icons.jsx";
 
 /**
  * The theme gallery. Clicking a card sets it as the deck default (written to
@@ -10,7 +10,7 @@ import { SearchIcon } from "../components/icons.jsx";
  * current default carries a badge so "which one will my next deck use?" is
  * answered at a glance.
  */
-export default function Themes() {
+export default function Themes({ leftOpen, onToggleLeft }) {
   const [themes, setThemes] = useState(null);
   const [query, setQuery] = useState("");
   const [defaultTheme, setDefaultTheme] = useState("warm-humanist");
@@ -60,27 +60,44 @@ export default function Themes() {
   }, [toast]);
 
   return (
-    <div className="mx-auto max-w-6xl px-10 py-10">
-      <header className="mb-7">
-        <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Themes</h1>
-        <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
-          A design language is one YAML file, kept in two halves that never
-          overlap: exact machine values drive the renderer, tone guidance steers
-          the model. Click a card to make it your default — your next deck
-          starts there. Every card below is drawn live from the theme's own
-          values, so it cannot drift from what actually renders.
-        </p>
-
-        <div className="relative mt-5 max-w-sm">
-          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-faint" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search themes by name or vibe…"
-            className="w-full rounded-lg border border-line-strong bg-field py-2 pl-9 pr-3 text-[15px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
-          />
+    <div className="flex h-full min-h-0 flex-col">
+      <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
+        {onToggleLeft && (
+          <button
+            onClick={onToggleLeft}
+            title={leftOpen ? "Collapse navigation" : "Expand navigation"}
+            aria-label={leftOpen ? "Collapse navigation" : "Expand navigation"}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+          >
+            <PanelLeft className="h-4 w-4" />
+          </button>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[13px] font-semibold text-fg">Themes</div>
+          <div className="truncate text-[10.5px] text-fg-faint">A design language is one YAML file — click a card to set default</div>
         </div>
       </header>
+      <div className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto px-10 py-10">
+        <header className="mb-7">
+          <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Themes</h1>
+          <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
+            A design language is one YAML file, kept in two halves that never
+            overlap: exact machine values drive the renderer, tone guidance steers
+            the model. Click a card to make it your default — your next deck
+            starts there. Every card below is drawn live from the theme's own
+            values, so it cannot drift from what actually renders.
+          </p>
+
+          <div className="relative mt-5 max-w-sm">
+            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-faint" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search themes by name or vibe…"
+              className="w-full rounded-lg border border-line-strong bg-field py-2 pl-9 pr-3 text-[15px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
+            />
+          </div>
+        </header>
 
       {themes === null && (
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -125,9 +142,10 @@ export default function Themes() {
           </div>
         </div>
       )}
+      </div>
     </div>
-  );
-}
+   );
+ }
 
 function ThemeCard({ theme, isDefault, onClick }) {
   const p = theme.palette;
