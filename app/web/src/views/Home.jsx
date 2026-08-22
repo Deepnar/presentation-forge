@@ -124,7 +124,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="journey-sheet sheet-deep absolute inset-0 bg-[radial-gradient(50rem_30rem_at_50%_50%,rgba(124,108,255,0.06),transparent_70%)] opacity-0" />
           <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.18),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.12),transparent_60%)] opacity-0" />
         </div>
-        <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
+        <div ref={pinRef} className="relative h-screen w-full overflow-visible">
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
             <div className="hero-copy max-w-3xl flex flex-col items-center">
               <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck — in minutes</span>
@@ -208,8 +208,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat — not the template.</p>
               </div>
-              <div className="specimen mt-6 flex gap-4 overflow-hidden">
-                <div className="flex w-max gap-4 will-change-transform">
+              <div className="specimen mt-6 flex gap-4 overflow-visible px-1">
+                <div className="flex w-max gap-4 will-change-transform pr-6">
                   {[
                     ["Bullets", "bullets", "• Grounded claim\n• Coherent angle\n• One idea"],
                     ["Stats", "stats", "128%  ·  3.2×  ·  0"],
@@ -220,12 +220,12 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                     ["Cards", "cards", "▢ ▢ ▢  grid"],
                     ["Pros/Cons", "pros-cons", "✓ 3  ·  ✗ 2"],
                   ].map(([label, kind, preview]) => (
-                    <div key={label} className="w-72 shrink-0 rounded-2xl border bg-panel p-4 text-center shadow-sm">
-                      <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">{label}</div>
-                      <div className="mt-3 rounded-xl bg-sunken p-3 text-left">
-                        <div className="whitespace-pre-line font-mono text-[11px] leading-relaxed text-fg-muted">{preview}</div>
+                    <div key={label} className="w-80 shrink-0 rounded-2xl border bg-panel p-5 text-center shadow-sm">
+                      <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">{label}</div>
+                      <div className="mt-3 rounded-xl bg-sunken p-4 text-left">
+                        <div className="whitespace-pre-line font-mono text-[12px] leading-relaxed text-fg-muted">{preview}</div>
                       </div>
-                      <div className="mt-2 text-[10px] uppercase tracking-wide text-fg-faint">{kind}</div>
+                      <div className="mt-2 text-[11px] uppercase tracking-wide text-fg-faint">{kind}</div>
                     </div>
                   ))}
                 </div>
@@ -240,7 +240,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 — Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
               <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 6 live themes then 32 more.</p>
-              <div className="themes-track mt-6 flex gap-4 overflow-hidden will-change-transform">
+              <div className="themes-track mt-6 flex gap-4 overflow-visible will-change-transform">
                 {(themes ?? []).slice(0, 12).map(t => (
                   <div key={t.name} className="w-80 shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
                 ))}

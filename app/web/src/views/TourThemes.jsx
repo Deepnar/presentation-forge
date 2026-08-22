@@ -56,7 +56,7 @@ export default function TourThemes({ onAuth, authed = false }) {
       </div>
 
       {/* gallery — not cut off, full height, no max-h */}
-      <div className="bg-[#0B0F1A] px-6 pb-20 sm:px-10">
+      <div className="bg-[#0B0F1A] px-6 pb-32 sm:px-10">
         <div className="mx-auto max-w-6xl">
           {themes === null && (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
