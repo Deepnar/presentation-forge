@@ -33,11 +33,11 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         scrollTrigger: {
           trigger: wrap,
           start: "top top",
-          end: "+=1200%",
-          scrub: 1.5,
+          end: "+=1400%",
+          scrub: 1.8,
           pin: pin,
           anticipatePin: 1,
-          snap: { snapTo: "labels", duration: { min: 0.4, max: 0.8 }, delay: 0.2, ease: "power1.inOut" },
+          snap: { snapTo: "labelsDirectional", duration: { min: 0.5, max: 0.9 }, delay: 0.35, ease: "power1.inOut" },
         }
       });
       tl.addLabel("hero", 0);
@@ -125,16 +125,16 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.22),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.16),transparent_60%)] opacity-0" />
         </div>
         <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
-          <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-            <div className="hero-copy max-w-3xl">
+          <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
+            <div className="hero-copy max-w-3xl flex flex-col items-center">
               <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck — in minutes</span>
               <h1 className="mt-6 text-[3.6rem] font-semibold leading-[0.88] tracking-[-0.04em] sm:text-[5.2rem]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
               <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you. No templates, no hand-layout.</p>
               <div className="mt-8 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
+              <div className="hero-cards mt-8 flex justify-center gap-3">
+                {(themes ?? []).slice(0, 3).map(t => <div key={t.name} className="w-48 sm:w-56"><ThemeMiniCard theme={t} /></div>)}
+              </div>
               <div className="mt-6 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll — one step at a time ↓</div>
-            </div>
-            <div className="hero-cards pointer-events-none absolute inset-x-0 bottom-[6vh] hidden justify-center gap-3 sm:flex">
-              {(themes ?? []).slice(0, 3).map(t => <div key={t.name} className="w-56"><ThemeMiniCard theme={t} /></div>)}
             </div>
           </div>
           <div className="beat beat-brief absolute inset-0 flex items-center justify-center px-6 sm:px-10">
@@ -176,7 +176,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           </div>
           <div className="beat beat-approve absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
             <div className="check grid h-24 w-24 place-items-center rounded-full bg-accent text-[32px] text-white shadow-[0_20px_60px_rgba(109,91,255,0.4)]">✓</div>
-            <h2 className="mt-6 text-[3.2rem] font-semibold tracking-[-0.03em]">You’re the gate.</h2>
+            <div class="text-[11px] uppercase tracking-[0.12em] text-accent">04 — You are the gate</div>
+            <h2 className="mt-2 text-[3.2rem] font-semibold tracking-[-0.03em]">You’re the gate.</h2>
             <p className="mx-auto mt-2 max-w-md text-[14px] text-fg-muted">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml.</p>
           </div>
           <div className="beat beat-content absolute inset-0 flex items-center px-6 sm:px-10">
@@ -196,7 +197,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="beat beat-render absolute inset-0 flex flex-col justify-center px-6 sm:px-10">
             <div className="mx-auto w-full max-w-[1400px]">
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">05 — Render</div>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 — Render</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck.yaml, any of 38 themes. Chrome after theme, so marks never vanish. Editable pptx, plus plate mesh.</p>
               </div>
@@ -236,12 +237,24 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
             <p className="mx-auto mt-2 max-w-md text-[14px] text-fg-muted">Real PNGs inspected; floor flags instead of shrinking. Fix is less text. The loop runs after every generation.</p>
             <div className="mt-4 rounded-full bg-sunken px-3 py-1 text-[11px] text-fg-faint">PNG → vision → fix → re-render</div>
           </div>
-          <div className="beat beat-cta absolute inset-0 flex items-center justify-center px-6">
-            <div className="cta-glow pointer-events-none absolute inset-0 bg-[radial-gradient(50rem_30rem_at_50%_100%,rgba(124,108,255,0.22),transparent_65%)] opacity-0" />
-            <div className="relative w-full max-w-2xl rounded-[1.5rem] bg-accent p-10 text-center text-white shadow-[0_40px_80px_rgba(109,91,255,0.35)]">
-              <div className="text-[11px] uppercase tracking-[0.12em] text-white/70">Ready?</div>
-              <div className="mt-2 text-[2.4rem] font-semibold">Topic in. Standing ovation out.</div>
-              <button onClick={handleChat} className="mt-6 rounded-full bg-white px-6 py-2.5 font-semibold text-accent">Start a chat</button>
+          <div className="beat beat-cta absolute inset-0 flex items-center justify-center px-6 sm:px-10">
+            <div className="cta-glow pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_100%,rgba(124,108,255,0.18),transparent_70%)] opacity-0" />
+            <div className="relative mx-auto grid w-full max-w-[1100px] gap-8 rounded-[2rem] border border-white/10 bg-accent p-8 text-white shadow-[0_40px_80px_rgba(109,91,255,0.35)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-10">
+              <div className="text-left">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">Ready to build?</div>
+                <h2 className="mt-3 text-[2.6rem] font-semibold leading-[0.9] tracking-[-0.03em] sm:text-[3rem]">Topic in.<br />Standing ovation out.</h2>
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/80">Join today — the briefing is one question at a time, everything else defaults. Your first deck in minutes.</p>
+                <button onClick={handleChat} className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-[13px] font-semibold text-accent shadow-sm hover:bg-white/90">Start a chat →</button>
+                <div className="mt-4 flex items-center gap-3 text-[11px] text-white/60"><span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /> Hosted</span><span>·</span><span>38 themes</span><span>·</span><span>50+ types</span></div>
+              </div>
+              <div className="grid gap-3">
+                <div className="rounded-xl bg-white p-4 text-fg shadow-sm"><div className="text-[11px] uppercase tracking-wider text-accent">Up next</div><div className="mt-1 font-semibold">Green hydrogen: how electrolysis compares</div><div className="mt-2 flex gap-1.5"><span className="h-2 w-12 rounded-full bg-accent" /><span className="h-2 w-8 rounded-full bg-line" /></div></div>
+                <div className="grid grid-cols-3 gap-2 text-center text-white">
+                  <div className="rounded-xl bg-white/10 p-3 backdrop-blur"><div className="text-[18px] font-bold">12</div><div className="text-[11px] text-white/70">slides</div></div>
+                  <div className="rounded-xl bg-white/10 p-3 backdrop-blur"><div className="text-[18px] font-bold">38</div><div className="text-[11px] text-white/70">themes</div></div>
+                  <div className="rounded-xl bg-white p-3 text-accent"><div className="text-[18px] font-bold">0</div><div className="text-[11px] text-accent/70">hand-layout</div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -5,8 +5,8 @@ import Footer from "../components/Footer.jsx";
 
 function FullShell({ eyebrow, title, subtitle, children, aside }) {
   return (
-    <div className="w-full bg-base">
-      <div className="mx-auto max-w-[1440px] px-6 py-8 sm:px-10 sm:py-12">
+    <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-base">
+      <div className="mx-auto w-full max-w-[1440px] flex-1 px-6 py-8 sm:px-10 sm:py-12">
         <div className="flex items-center gap-2 text-[12px] text-fg-faint">
           <a href="#/home" className="hover:text-fg">Tour</a>
           <span>›</span>
