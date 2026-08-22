@@ -563,6 +563,8 @@ export default function App() {
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
           identity={identity}
+          user={user}
+          isAdmin={isAdminUser}
           onIdentityChanged={(next) => {
             setIdentity(next);
             setOrg(next?.institution?.short ?? "");

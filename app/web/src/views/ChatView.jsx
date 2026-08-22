@@ -942,9 +942,11 @@ export default function ChatView({
               <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             </div>
           ) : (
-            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted">
+            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted" title={hosted ? "Hosted: Auto is TCET gateway" : "Local: Auto is Ollama on this machine"}>
               <SparkleIcon className="h-3 w-3 text-fg-faint" />
-              Auto
+              {hosted ? "Auto" : (auto?.kind === "local" ? "Local" : "Auto")}
+              {hosted && <span className="hidden sm:inline text-[10px] text-fg-faint">· TCET</span>}
+              {!hosted && auto?.kind === "local" && <span className="hidden sm:inline text-[10px] text-fg-faint">· Ollama</span>}
             </div>
           )}
           {modelMode === "cloud" ? (
@@ -959,7 +961,7 @@ export default function ChatView({
               }}
               className="hidden text-[10px] text-fg-faint underline sm:inline hover:text-fg"
             >
-              Switch to Auto
+              {hosted ? "Switch to Auto" : "Switch to Local"}
             </button>
           ) : (
             <button
@@ -1015,6 +1017,9 @@ export default function ChatView({
         {chat.produced && (
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
+        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"} title={hosted ? "Hosted: TCET + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
+          {hosted ? "hosted" : "local"}
+        </Badge>
       </header>
       {hosted && modelMode === "auto" && !auto?.keySet && (
         <div className="mx-auto w-full max-w-3xl px-6 pt-3">

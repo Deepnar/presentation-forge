@@ -34,6 +34,22 @@ brief → research → outline → approval → content → render → preview �
 - A local default using Ollama. Hosted OpenAI-compatible providers are optional and explicitly configured.
 - A browser application, a headless CLI, and a Docker deployment that all use the same Node core.
 
+## Public examples — see the product without logging in
+
+These are real outputs from the pipeline, committed and sanitized so nothing private leaks. Your decks stay private per-account; these are the showroom.
+
+| Deck / Report | What you see |
+|---|---|
+| **Green Hydrogen Economics 2026** — 20 slides, `warm-humanist` | Cost and electrolysis compared — stats, metric comparison, scorecard, pipeline |
+| **First Impressions & Networking** — 21 slides, `linear-dark` | Soft-skills deck — section dividers, feature grid, journey |
+
+<p align="center">
+  <img src="docs/assets/examples/green-hydrogen-01.png" width="48%" alt="Green hydrogen deck preview — title slide" />
+  <img src="docs/assets/examples/soft-skills-01.png" width="48%" alt="First impressions deck preview — title slide" />
+</p>
+
+Source YAML for the examples lives in `decks/_public/` — `deck.yaml` + `plan.yaml` + `report.yaml` where applicable, sanitized (generic team, demo guide, no institution data). Rendered `.pptx`/`.docx` and `out/` are gitignored; previews above are rasterised via `npm run preview` and committed as static PNGs for the README and the landing page gallery (`app/web/public/examples/`). Private decks remain in `decks/<slug>/` and are never committed.
+
 ## Quick start
 
 ### 1. Install the local prerequisites

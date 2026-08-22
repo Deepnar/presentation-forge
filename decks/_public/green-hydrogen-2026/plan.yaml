@@ -1,0 +1,110 @@
+title: "Green Hydrogen Economics 2026: Cost and Electrolysis Compared"
+subtitle: An engineering briefing on LCOH, electrolyser choice, and the road to 2030
+sections:
+  - Why Green Hydrogen
+  - Costs in 2026
+  - Electrolysis Compared
+  - Performance & Durability
+  - System Integration
+  - Market & Policy
+  - Roadmap to 2030
+  - What It Means
+slides:
+  - type: title
+    section: 0
+    purpose: "Set the stage for why green hydrogen economics in 2026 turn on two
+      variables: dollar-per-kilogram cost and electrolyser technology choice."
+  - type: section
+    section: 0
+    purpose: "Open the Why Green Hydrogen part and state the clean-energy mandate:
+      hard-to-abate sectors need a scalable molecule, and 2026 is the inflection
+      point."
+  - type: stats
+    section: 0
+    purpose: Show demand for green hydrogen more than doubling by 2026 and
+      electrolyser capex falling ~40% from 2020, making cost the sole remaining
+      barrier.
+  - type: section
+    section: 1
+    purpose: Open the Costs in 2026 part, shifting focus to the levelised cost of
+      hydrogen and its breakeven gap versus grey.
+  - type: big-number
+    section: 1
+    purpose: "Land the headline 2026 LCOH figure of $3.0/kg at best renewable sites
+      and name the three components that dominate it: electricity, capex, and
+      utilisation."
+  - type: metric-comparison
+    section: 1
+    purpose: "Contrast green vs grey hydrogen cost in 2026: green at $3.0/kg vs grey
+      at $1.6/kg, a $1.4/kg premium that falls to zero with carbon pricing."
+  - type: section
+    section: 2
+    purpose: Open the Electrolysis Compared part, announcing three
+      technologies—alkaline, PEM, solid oxide—and the unavoidable trade-offs
+      between cost and flexibility.
+  - type: feature-grid
+    section: 2
+    purpose: Profile alkaline, PEM, and solid oxide electrolysers across maturity,
+      turndown, and stack lifetime, establishing no single winner for every use
+      case.
+  - type: scorecard
+    section: 2
+    purpose: Score the three electrolyser options across capex, efficiency,
+      flexibility, and scalability; overall weighted leader is PEM for dynamic
+      renewables, alkaline for lowest capex.
+  - type: section
+    section: 3
+    purpose: Open the Performance & Durability part, focusing on efficiency and
+      degradation as the hidden cost drivers over a 10-year plant life.
+  - type: data-table
+    section: 3
+    purpose: Tabulate 2026 performance metrics—system efficiency 55–63%, stack life
+      60–80 kh, degradation 0.3–0.6%/kh—showing how technology choice shifts
+      stack replacement frequency.
+  - type: progress-bars
+    section: 3
+    purpose: Compare stack lifetime and efficiency targets against 2026 baseline,
+      showing PEM meets flexibility requirements but alkaline still wins on
+      longest service intervals.
+  - type: section
+    section: 4
+    purpose: Open the System Integration part, explaining that electrolyser capex is
+      only part of the bill; balance-of-plant and grid connection dominate
+      project cost.
+  - type: pipeline
+    section: 4
+    purpose: Walk through the green hydrogen production chain—power, electrolyser,
+      balance-of-plant, compression, storage—and pinpoint where 2026 design
+      choices ease or raise system cost.
+  - type: section
+    section: 5
+    purpose: Open the Market & Policy part, connecting cost curves to carbon prices,
+      subsidies, and offtake mandates that close the green premium.
+  - type: kpi-dashboard
+    section: 5
+    purpose: Show the 2026 policy levers—CO2 price, H2 auction strike prices, and
+      electrolyser deployment targets—that together justify a green-hydrogen
+      investment case.
+  - type: section
+    section: 6
+    purpose: Open the Roadmap to 2030 part, framing 2026 as the bridge between pilot
+      projects and the terawatt-scale market.
+  - type: roadmap
+    section: 6
+    purpose: "Chart the 2026–2030 roadmap: capacity quadrupling, LCOH falling below
+      $2.5/kg, and technology mix shifting to high-efficiency solid-oxide in
+      low-cost-power regions."
+  - type: section
+    section: 7
+    purpose: Open the What It Means part, moving from analysis to implications for
+      engineering choices and procurement decisions.
+  - type: takeaway
+    section: 7
+    purpose: "Consolidate the case: in 2026, choose electrolyser technology by
+      site-specific electricity profile, and target projects where LCOH can beat
+      $3/kg with carbon pricing."
+  - type: closing
+    section: 7
+    purpose: "Close with the engineering challenge: the 2026 cost curve still hinges
+      on integrating electrolysers with cheap renewables, not on any single
+      technology breakthrough."

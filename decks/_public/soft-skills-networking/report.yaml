@@ -1,0 +1,44 @@
+title: "Compare GPU Architecture: NVIDIA vs AMD"
+subtitle: "Two companies, two bets on parallelism"
+
+content:
+  Abstract:
+    paragraphs:
+      - "This report presents a comparative study of the GPU architectures of NVIDIA and AMD, examining how two companies took the same hardware premise — thousands of small cores working in parallel — and built fundamentally different machines around it. NVIDIA pairs a monolithic silicon philosophy with a proprietary software moat (CUDA), while AMD pairs a chiplet-based manufacturing approach with an open software strategy (ROCm). The comparison spans silicon philosophy, core architecture, memory and bandwidth, ray tracing, software ecosystems and manufacturing economics."
+  Acknowledgement:
+    paragraphs:
+      - "We express our sincere gratitude to our course instructor for the conceptual framework and guidance that shaped this study. We also acknowledge the standard reference texts and vendor documentation on GPU architecture that served as the factual basis for the comparison presented here."
+  Introduction:
+    paragraphs:
+      - "A GPU is thousands of small cores working at once. NVIDIA and AMD accepted the same premise but answered the design questions differently. NVIDIA built the Streaming Multiprocessor, an SIMT machine where warps of 32 threads march in lockstep; AMD built the Compute Unit, an SIMD machine where wavefronts of 32 or 64 threads execute one instruction together. This report compares the two architectures across the layers that decide what a modern GPU can do: silicon, cores, memory, ray tracing hardware, the software that unlocks it, and the economics of manufacturing the next generation."
+      - "The two vendors are not simply competing on raw numbers. The same headline figures — RTX 4090 versus RX 7900 XTX — hide different bets on where the industry is going. NVIDIA invests in proprietary acceleration (Tensor Cores, DLSS, CUDA) on a monolithic die; AMD invests in open algorithms and cost-efficient packaging (FSR, ROCm, chiplets). Understanding GPU architecture today means understanding both bets."
+  Theoretical Background:
+    paragraphs:
+      - "Both vendors tile a small execution cluster across the chip. NVIDIA calls it a Streaming Multiprocessor (SM); AMD calls it a Compute Unit (CU). The internal recipe differs. The NVIDIA SM follows the SIMT (Single Instruction, Multiple Threads) model, where 32 threads — a warp — execute one instruction in lockstep. The AMD Compute Unit in RDNA 3 follows the SIMD model, where a 32- or 64-wide wavefront executes one instruction together. The RTX 4090 packs 128 SMs totalling 16,384 CUDA cores, while the RX 7900 XTX packs 96 CUs totalling 6,144 stream processors."
+      - "More cores are useless if data cannot reach them fast enough, and NVIDIA and AMD solve that with very different memory systems. NVIDIA prefers a wide memory bus with a large L2 cache, keeping memory bandwidth high and the design relatively simple; AMD favours an Infinity Cache on top of a fast GDDR6 interface, trading raw bandwidth for a large on-die cache that reduces how often the GPU must hit main memory."
+    table:
+      caption: "Table 1: High-level architectural comparison."
+      header: ["Parameter", "NVIDIA", "AMD"]
+      rows:
+        - ["Execution Model", "SIMT — 32-thread warp in lockstep per SM", "SIMD — 32/64-wide wavefront per CU"]
+        - ["Flagship (2022-23)", "RTX 4090 — 128 SMs, 16,384 CUDA cores", "RX 7900 XTX — 96 CUs, 6,144 stream processors"]
+        - ["Ray Tracing", "3rd-gen RT Cores for BVH traversal", "Ray Accelerators inside each CU"]
+        - ["AI Upscaling", "Tensor Cores + DLSS (proprietary)", "FSR (open-source, algorithmic)"]
+        - ["Software Stack", "CUDA — proprietary, 15-year head start", "ROCm — open-source alternative"]
+        - ["Manufacturing", "Monolithic — highest performance, expensive yields", "Chiplets — small cheap dies stitched together"]
+  Application:
+    paragraphs:
+      - "The architectural choices of both vendors translate directly into real-world applications. NVIDIA's CUDA ecosystem is deeply integrated into AI frameworks such as PyTorch and TensorFlow, making NVIDIA hardware the default choice for seamless AI deployment today. AMD's ROCm has recently gained integration with PyTorch 2.0, making AMD hardware viable for machine learning workloads at a lower cost. In gaming, NVIDIA DLSS and AMD FSR both deliver high-frame-rate, high-resolution rendering on mid-range hardware, while ray tracing hardware in both architectures powers realistic lighting, reflections and shadows in modern games."
+  Future Scope:
+    paragraphs:
+      - "As transistors shrink, large chips become incredibly expensive to manufacture, and the two rivals have adopted entirely different strategies to build the next generation of GPUs. NVIDIA's monolithic approach delivers the highest possible performance but pays expensive yields, while AMD's chiplet approach stitches together small, cheap chips to scale economically. The software war is equally decisive: CUDA's walled garden has a 15-year head start and is deeply integrated into AI frameworks, while ROCm's open-source strategy aims to break that monopoly. The future of graphics and AI will be shaped by whoever wins the balance between raw silicon physics and the software that controls it."
+  Conclusion:
+    paragraphs:
+      - "This report compared the GPU architectures of NVIDIA and AMD across silicon philosophy, core architecture, memory, ray tracing, software and manufacturing. NVIDIA's closed, monolithic stack delivers maximum performance with an unrivalled software moat in CUDA, while AMD's open, chiplet-based approach maximises reach and economic scalability. NVIDIA currently dominates AI and high-end graphics through its RT and Tensor Core hardware and CUDA integration, but AMD's Ray Accelerators, FSR, ROCm and chiplet economics keep the rivalry alive."
+  References:
+    entries:
+      - "1. NVIDIA Corporation. (2022). NVIDIA Ada Lovelace Architecture Whitepaper. NVIDIA Developer Documentation."
+      - "2. AMD Corporation. (2022). AMD RDNA 3 Architecture Whitepaper. AMD Developer Documentation."
+      - "3. Kirk, D. B., & Hwu, W. W. (2016). Programming Massively Parallel Processors (3rd ed.). Morgan Kaufmann."
+      - "4. Hennessy, J. L., & Patterson, D. A. (2019). Computer Architecture: A Quantitative Approach (6th ed.). Morgan Kaufmann."
+      - "5. Group 2b, ISE-III. (2026). GPU Architectures: NVIDIA vs AMD — Class Presentation. A.Y. 2025-2026."

@@ -19,7 +19,7 @@ const BRAND_ASSETS = ["crest", "banner", "watermark"];
  * routing, logout) and both close with Esc. This keeps the two concerns
  * distinct: one is "how you work", the other is "who you are / how you pay".
  */
-export default function SettingsModal({ open, onClose, identity, onIdentityChanged }) {
+export default function SettingsModal({ open, onClose, identity, user, isAdmin, onIdentityChanged }) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
@@ -52,6 +52,7 @@ export default function SettingsModal({ open, onClose, identity, onIdentityChang
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <PresetsSection />
           <IdentitySection identity={identity} onIdentityChanged={onIdentityChanged} />
+          {isAdmin && <HostedSection />}
         </div>
       </div>
     </div>
@@ -513,6 +514,34 @@ function IdentitySection({ identity, onIdentityChanged }) {
         {state.status === "dirty" && <span className="text-xs text-fg-faint">Unsaved changes</span>}
         {state.status === "saved" && <span className="text-xs text-accent">{state.message}</span>}
         {state.status === "error" && <span className="text-xs text-danger">{state.message}</span>}
+      </div>
+    </section>
+  );
+}
+
+function HostedSection() {
+  const [hosted, setHosted] = useState(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    api.adminHosted().then((r) => setHosted(Boolean(r.hosted))).catch(() => setHosted(false));
+  }, []);
+  const toggle = async () => {
+    if (hosted == null) return;
+    setBusy(true);
+    try {
+      const r = await api.adminSetHosted(!hosted);
+      setHosted(Boolean(r.hosted));
+    } catch (e) { window.alert(e.message); }
+    finally { setBusy(false); }
+  };
+  return (
+    <section className="rounded-card border border-line bg-panel p-5">
+      <h2 className="text-[13px] font-semibold tracking-tight text-fg">Deployment mode</h2>
+      <p className="mt-0.5 text-[11px] leading-relaxed text-fg-faint">Hosted = TCET + BYOK only (no Ollama). Local = Ollama fallback on. Same repo, one switch — also available in Admin → System.</p>
+      <div className="mt-3 flex items-center gap-3">
+        <span className={`rounded-full px-2.5 py-1 text-[12px] font-medium ${hosted ? "bg-amber/15 text-amber" : "bg-emerald-500/10 text-emerald-600"}`}>{hosted == null ? "…" : hosted ? "HOSTED" : "LOCAL"}</span>
+        <Button size="sm" variant="outline" onClick={toggle} disabled={busy || hosted == null}>{busy ? <Spinner /> : hosted ? "Switch to local" : "Switch to hosted"}</Button>
+        <span className="text-[11px] text-fg-faint">Writes <code className="font-mono">config/hosted.json</code></span>
       </div>
     </section>
   );

@@ -36,11 +36,13 @@ export async function sweep({ olderThanDays = SWEEP_DEFAULT_DAYS, dryRun = false
 
   for (const e of entries) {
     if (!e.isDirectory()) continue;
+    if (e.name.startsWith(".") || e.name.startsWith("_")) continue; // cache and public examples
     const dir = path.join(DECKS, e.name);
     let meta = {};
     try {
       meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
     } catch { /* no meta — legacy deck */ }
+    if (meta.public) { skipped.push({ slug: e.name, title: meta.brief ?? meta.title ?? e.name, reason: "public example" }); continue; }
 
     let updated = now;
     for (const f of ["meta.yaml", "deck.yaml", "report.yaml"]) {

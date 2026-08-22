@@ -1,0 +1,24 @@
+slug: green-hydrogen-2026
+brief: "Green hydrogen economics 2026: cost and electrolysis compared"
+theme: warm-humanist
+public: true
+status: ready
+createdAt: 2026-08-22T17:12:41.541Z
+updatedAt: 2026-08-22T17:12:41.541Z
+owner: null
+academic:
+  subject: Energy Systems
+  year: 2025-2026
+guide:
+  name: Demo Guide
+  designation: Professor
+team:
+  label: Demo Team
+  members:
+    - name: Alex
+      presenting: true
+    - name: Sam
+      presenting: true
+chrome:
+  branding: full
+report: false

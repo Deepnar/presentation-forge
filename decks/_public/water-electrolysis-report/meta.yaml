@@ -1,0 +1,16 @@
+slug: water-electrolysis-report
+brief: "Water electrolysis: historical development and comparison"
+public: true
+status: ready
+createdAt: 2026-08-22T17:12:41.541Z
+updatedAt: 2026-08-22T17:12:41.541Z
+owner: null
+report: true
+theme: null
+team:
+  label: Demo
+  members:
+    - name: Alex
+      presenting: true
+chrome:
+  branding: full
