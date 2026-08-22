@@ -74,13 +74,13 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.0 }, 16.0);
       tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "power2.out", duration: 0.8 }, 16.3);
       // Render track scrubs left as you stay on the beat — same mechanic as themes, smoother
-      tl.to(".render-track", { x: -1380, ease: "sine.inOut", duration: 1.9 }, 16.5);
+      tl.to(".render-track", { x: -2200, ease: "sine.inOut", duration: 2.2 }, 16.5);
       tl.to({}, { duration: 0.8 });
       tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "power2.inOut", duration: 0.7 }, 18.4);
       tl.addLabel("themes", 18.7);
       tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.0 }, 18.7);
       // Themes track: 12 live + 1 summary card, way bigger — long scrub reveals the row
-      tl.to(".themes-track", { x: -2180, ease: "sine.inOut", duration: 2.4 }, 19.0);
+      tl.to(".themes-track", { x: -4200, ease: "sine.inOut", duration: 2.8 }, 19.0);
       tl.to({}, { duration: 0.9 });
       tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "power2.inOut", duration: 0.7 }, 21.2);
       tl.addLabel("critique", 21.5);
@@ -129,7 +129,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
             <div className="hero-copy max-w-4xl flex flex-col items-center">
               <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck -- in minutes</span>
-              <h1 className="mt-6 font-serif text-[4.6rem] font-black leading-[0.82] tracking-[-0.06em] sm:text-[6.8rem]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent font-sans tracking-[-0.04em]">Standing ovation out.</span></h1>
+              <h1 className="mt-6 text-[4.6rem] font-black leading-[0.82] tracking-[-0.06em] sm:text-[6.8rem]"><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Topic in.</span><br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
               <p className="mx-auto mt-5 max-w-xl text-[18px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you. No templates, no hand-layout.</p>
               <div className="mt-9 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
               <div className="mt-7 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll — one step at a time ↓</div>
@@ -199,16 +199,17 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
             </div>
           </div>
-          <div className="beat beat-render absolute inset-0 flex flex-col justify-center px-6 sm:px-10">
-            <div className="mx-auto w-full max-w-[1400px]">
+          <div className="beat beat-render absolute inset-0 flex flex-col justify-center overflow-hidden">
+            <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10">
               <div className="copy">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 -- Render</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic -- chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat -- not the template.</p>
               </div>
-              <div className="specimen mt-6 overflow-hidden px-1">
-                <div className="render-track flex w-max gap-5 will-change-transform">
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+            </div>
+            <div className="specimen mt-6 overflow-hidden">
+              <div className="render-track flex w-max gap-6 will-change-transform pl-6 sm:pl-10 pr-6">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Bullets</div>
                     <div className="mt-5 space-y-3 text-left flex-1">
                       <div className="flex gap-2 text-[15px]"><span className="text-accent">•</span> Grounded claim from notes</div>
@@ -217,7 +218,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                     </div>
                     <div className="mt-4 text-[11px] text-fg-faint">one idea · one slide</div>
                   </div>
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Stats</div>
                     <div className="mt-5 grid grid-cols-3 gap-3 text-center flex-1 content-center">
                       <div className="rounded-xl bg-sunken p-5"><div className="text-[22px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
@@ -225,7 +226,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                       <div className="rounded-xl bg-accent p-5 text-white"><div className="text-[22px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
                     </div>
                   </div>
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Chart</div>
                     <div className="mt-5 flex h-32 items-end gap-2 flex-1">
                       <div className="flex-1 rounded-t bg-accent/20" style={{height:"40%"}} />
@@ -236,21 +237,21 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                     </div>
                     <div className="mt-3 flex justify-between text-[11px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span><span>--</span></div>
                   </div>
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Compare</div>
                     <div className="mt-5 grid grid-cols-2 gap-3 flex-1 content-center">
                       <div className="rounded-xl bg-accent-tint p-4"><div className="font-semibold text-accent">PEM</div><div className="mt-1 text-[13px]">High efficiency</div><div className="mt-3 h-2 rounded-full bg-accent/30" /></div>
                       <div className="rounded-xl bg-sunken p-4 border"><div className="font-semibold">ALK</div><div className="mt-1 text-[13px]">Low cost</div><div className="mt-3 h-2 rounded-full bg-line" /></div>
                     </div>
                   </div>
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Timeline</div>
                     <div className="mt-6 flex items-center justify-between flex-1">
                       <div className="h-px flex-1 bg-line" /><span className="mx-1.5 h-2.5 w-2.5 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" /><span className="mx-1.5 h-2.5 w-2.5 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" />
                     </div>
                     <div className="mt-4 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
                   </div>
-                  <div className="w-[460px] min-h-[320px] shrink-0 rounded-2xl border bg-panel p-7 shadow-sm flex flex-col">
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Quote</div>
                     <div className="mt-5 rounded-xl bg-sunken p-6 text-center flex-1 flex flex-col justify-center">
                       <div className="text-[20px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
@@ -259,18 +260,19 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                   </div>
                 </div>
               </div>
-            </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent px-6 text-fg sm:px-10 backdrop-blur-sm overflow-hidden">
-            <div className="mx-auto w-full max-w-[1400px] overflow-hidden">
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent overflow-hidden backdrop-blur-sm">
+            <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10">
               <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 -- Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
               <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 12 live themes then 32 more.</p>
-              <div className="themes-track mt-6 flex gap-5 overflow-visible will-change-transform">
+            </div>
+            <div className="overflow-hidden">
+              <div className="themes-track mt-6 flex gap-6 overflow-visible will-change-transform pl-6 sm:pl-10 pr-6">
                 {(themes ?? []).slice(0, 12).map(t => (
-                  <div key={t.name} className="w-[420px] shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
+                  <div key={t.name} className="w-[520px] shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
                 ))}
-                <div className="grid w-[420px] shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
+                <div className="grid w-[520px] shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
                   <div className="text-[12px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 12)} more themes</div>
                   <div className="mt-2 text-[14px] font-medium">Explore all 38 in app</div>
                   <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-white">Browse themes</button>

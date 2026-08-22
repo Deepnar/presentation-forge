@@ -21,7 +21,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
       type="button"
       onClick={() => onClick?.(theme.name)}
       title={`${label} (${theme.name})`}
-      className={`card-hover group relative flex h-[300px] w-full flex-col overflow-hidden rounded-card border bg-panel text-left transition ${
+      className={`card-hover group relative flex h-[360px] w-full flex-col overflow-hidden rounded-card border bg-panel text-left transition ${
         selected
           ? "border-accent ring-2 ring-accent/40"
           : "border-line hover:border-line-strong"
@@ -29,7 +29,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
     >
       {/* Title band — taller for vertical presence */}
       <div
-        className="relative flex h-[150px] shrink-0 flex-col justify-end px-3 pb-3 pt-3"
+        className="relative flex h-[190px] shrink-0 flex-col justify-end px-3 pb-3 pt-3"
         style={{ background: title.bg ?? p.ink }}
       >
         <div className="relative z-10">
@@ -70,7 +70,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
 
       {/* Content strip — taller to keep proportions */}
       {!hideSpecimen && (
-        <div className="flex h-[68px] shrink-0 items-center gap-2 px-3" style={{ background: p.bg }}>
+        <div className="flex h-[82px] shrink-0 items-center gap-2 px-3" style={{ background: p.bg }}>
           <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
             01
           </span>
@@ -84,7 +84,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
       )}
 
       {/* Name bar — fixed height */}
-      <div className="flex h-9 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-2.5">
+      <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-2.5">
         <span className={`min-w-0 truncate text-[10px] font-medium ${selected ? "text-accent" : "text-fg-muted"}`}>
           {sub}
         </span>
