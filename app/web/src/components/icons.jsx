@@ -30,6 +30,32 @@ export function ChevronDown(props) {
     </svg>
   );
 }
+export function PanelLeftClose(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+      <path d="m13 8 3 4-3 4" />
+    </svg>
+  );
+}
+export function PanelLeftOpen(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+      <path d="m14 8 3 4-3 4" />
+    </svg>
+  );
+}
+export function PanelLeft(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+    </svg>
+  );
+}
 export function LayersIcon(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>

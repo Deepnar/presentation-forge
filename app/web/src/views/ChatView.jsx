@@ -4,7 +4,7 @@ import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
-import { ChevronDown, DocIcon, LayersIcon, SparkleIcon } from "../components/icons.jsx";
+import { ChevronDown, DocIcon, LayersIcon, PanelLeftClose, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
@@ -67,6 +67,7 @@ function chatName(title, topic) {
  */
 export default function ChatView({
   chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
+  leftOpen, onToggleLeft,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -94,10 +95,22 @@ export default function ChatView({
   // needs the finalize pass. This is what lets a reload offer "resume" or
   // "finalize" instead of only a fresh run.
   const [deckRun, setDeckRun] = useState(null);
+  const [panelOpen, setPanelOpen] = useState(() => {
+    try { return localStorage.getItem("forge.panelOpen") !== "0"; } catch { return true; }
+  });
   const autoAttachedRef = useRef(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(chat);
+
+  useEffect(() => {
+    try { localStorage.setItem("forge.panelOpen", panelOpen ? "1" : "0"); } catch {}
+  }, [panelOpen]);
+  useEffect(() => {
+    const onToggle = () => setPanelOpen((v) => !v);
+    window.addEventListener("forge:togglePanel", onToggle);
+    return () => window.removeEventListener("forge:togglePanel", onToggle);
+  }, []);
 
   useEffect(() => { chatRef.current = chat; }, [chat]);
 
@@ -862,8 +875,10 @@ export default function ChatView({
               : "Review the card above…";
   const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "record";
   // The slide-selection panel shows beside the thread once the deck is ready
-  // and its content is loaded. ~40% of the row; the chat shifts left.
+  // and its content is loaded. ~40% of the row; the chat shifts left. Collapsable.
   const showPanel = phase === "editing" && deckData && deckData.slides.length > 0;
+  const showPanelVisible = showPanel && panelOpen;
+  const showPanelCollapsed = showPanel && !panelOpen;
 
   /** The bottom input bar — topic first, then free-text answers to questions,
    *  then — once the deck exists — deck-editing turns. Shared by the greeting
@@ -923,7 +938,20 @@ export default function ChatView({
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
           {modelMode === "auto" && !model && <span className="hidden text-[10px] text-fg-faint sm:inline">via {auto?.provider === "tcet-auto" ? "Auto" : "Local"}</span>}
+          <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send" className="ml-1 hidden sm:inline-flex">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+            </svg>
+          </Button>
         </div>
+      </div>
+      <div className="flex justify-end border-t border-line/40 px-3 py-2 sm:hidden">
+        <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send" className="w-full">
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+          </svg>
+          Send
+        </Button>
       </div>
     </div>
   );
@@ -936,6 +964,26 @@ export default function ChatView({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
+        {onToggleLeft && (
+          <button
+            onClick={onToggleLeft}
+            title={leftOpen ? "Collapse navigation" : "Expand navigation"}
+            aria-label={leftOpen ? "Collapse navigation" : "Expand navigation"}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+          >
+            <PanelLeft className="h-4 w-4" />
+          </button>
+        )}
+        {showPanel && (
+          <button
+            onClick={() => setPanelOpen((v) => !v)}
+            title={panelOpen ? "Collapse slides" : "Expand slides"}
+            aria-label={panelOpen ? "Collapse slides" : "Expand slides"}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+          >
+            {panelOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+          </button>
+        )}
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold text-fg">{chat.title}</div>
           <div className="truncate text-[10.5px] text-fg-faint">
@@ -1134,7 +1182,7 @@ export default function ChatView({
             </Bubble>
           )}
 
-          {(phase === "editing" || phase === "record") && (
+          {(phase === "editing" || phase === "record") && (!chat.turns || chat.turns.length === 0) && (
             <Panel className="p-5">
               <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 text-accent" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1182,7 +1230,7 @@ export default function ChatView({
       </footer>
           </div>
 
-          {showPanel && (
+          {showPanelVisible && (
             <div className="w-[40%] max-w-[30rem] shrink-0">
               <SlideSelectPanel
                 slides={deckData.slides}
@@ -1199,6 +1247,21 @@ export default function ChatView({
                 onSwap={() => setSwapOpen(true)}
                 swapping={swapping}
               />
+            </div>
+          )}
+          {showPanelCollapsed && (
+            <div className="flex w-10 shrink-0 flex-col items-center border-l border-line bg-base py-3">
+              <button
+                onClick={() => setPanelOpen(true)}
+                title="Expand slides"
+                aria-label="Expand slides"
+                className="grid h-8 w-8 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </button>
+              <div className="mt-2 text-[10px] font-medium uppercase tracking-wider text-fg-faint" style={{ writingMode: "vertical-rl" }}>
+                {deckData.slides.length}
+              </div>
             </div>
           )}
         </div>

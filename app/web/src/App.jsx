@@ -35,6 +35,7 @@ export default function App() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
+  const [pendingChat, setPendingChat] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
@@ -63,26 +64,26 @@ export default function App() {
   // The "reopen at last position" restore is gone: a stale chat id in the URL
   // is the last route, not a deep link, so it never wins.
   useEffect(() => {
-    if (!user) { setChats([]); setActiveChatId(null); return; }
-    let list = loadChats(user.email);
+    if (!user) { setChats([]); setActiveChatId(null); setPendingChat(null); return; }
+    const list = loadChats(user.email);
+    setChats(list);
+    // If there's a pending chat already, keep it
+    if (pendingChat && !pendingChat.topic) return;
     if (!list.length) {
       const c = createChat();
-      saveChat(user.email, c);
-      list = [c];
-    }
-    // New chat is the constant landing — reuse the account's empty thread, or
-    // mint one so the landing is always a New chat, not the last route or the
-    // decks list. StrictMode double-fires this, but the guard reads storage so
-    // the second run reuses the thread the first minted.
-    const empty = findEmptyChat(list, "deck");
-    if (empty) {
-      setChats(list);
-      setActiveChatId(empty.id);
+      setPendingChat(c);
+      setActiveChatId(c.id);
       return;
     }
+    const empty = findEmptyChat(list, "deck");
+    if (empty) {
+      setActiveChatId(empty.id);
+      setPendingChat(null);
+      return;
+    }
+    // No empty chat — show pending new chat as landing, not yet saved
     const c = createChat();
-    saveChat(user.email, c);
-    setChats([c, ...list]);
+    setPendingChat(c);
     setActiveChatId(c.id);
   }, [user?.email]);
 
@@ -134,38 +135,53 @@ export default function App() {
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
   /**
-   * The one creation entry: always check storage directly, not React state,
-   * so double-clicks or stale closures cannot stack empty chats.
+   * The one creation entry: lazy — don't spawn in the sidebar until the
+   * first prompt is sent, so the list doesn't fill with empties.
    */
   function newChat(kind = "deck") {
     if (!user) return;
-    // onClick passes SyntheticEvent — treat any non-string as default kind
     if (typeof kind !== "string") kind = "deck";
     if (kind !== "deck" && kind !== "report") kind = "deck";
+    if (pendingChat && !pendingChat.topic && pendingChat.kind === kind) {
+      setActiveChatId(pendingChat.id);
+      navigate("chat", { chatId: pendingChat.id });
+      return;
+    }
     const list = loadChats(user.email);
     const existing = findEmptyChat(list, kind);
     if (existing) {
       setActiveChatId(existing.id);
       navigate("chat", { chatId: existing.id });
-      // keep React state in sync if storage had an empty we didn't know about
       setChats(list);
+      setPendingChat(null);
       return;
     }
     const c = createChat({ kind });
-    saveChat(user.email, c);
-    setChats([c, ...list]);
+    setPendingChat(c);
     setActiveChatId(c.id);
     navigate("chat", { chatId: c.id });
   }
 
   function openChat(id) {
     setActiveChatId(id);
+    // Leaving a pending new chat without using it — keep it for now, it
+    // will be reused on next New chat or discarded on next boot.
     navigate("chat", { chatId: id });
   }
 
   /** Persist a chat the view changed (briefing progress, produced deck, …). */
   function handleChatChanged(chat) {
     if (!user) return;
+    const isPending = pendingChat && chat.id === pendingChat.id;
+    const shouldSave = Boolean(chat.topic || chat.produced || chat.plan);
+    if (isPending) {
+      if (!shouldSave) {
+        setPendingChat(chat);
+        setActiveChatId(chat.id);
+        return;
+      }
+      setPendingChat(null);
+    }
     saveChat(user.email, chat);
     setChats((list) => {
       const i = list.findIndex((c) => c.id === chat.id);
@@ -254,7 +270,7 @@ export default function App() {
     if (!window.location.hash) window.history.replaceState(null, "", "#/home");
   }, [user]);
 
-  const activeChat = chats.find((c) => c.id === activeChatId) ?? null;
+  const activeChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
   const goHome = () => navigate("chat");
 
   /** Logging out is consequential (it clears the session) — the confirm lives
@@ -274,6 +290,9 @@ export default function App() {
   /** Delete a chat thread locally; if it was active, land on another. */
   function handleDeleteChat(id) {
     if (!user) return;
+    if (pendingChat?.id === id) {
+      setPendingChat(null);
+    }
     const remaining = deleteChatStore(user.email, id);
     setChats(remaining);
     if (activeChatId !== id) return;
@@ -283,8 +302,7 @@ export default function App() {
       navigate("chat", { chatId: next.id });
     } else {
       const c = createChat();
-      saveChat(user.email, c);
-      setChats([c]);
+      setPendingChat(c);
       setActiveChatId(c.id);
       navigate("chat", { chatId: c.id });
     }
@@ -380,21 +398,53 @@ export default function App() {
   }
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
+  const isChatView = view === "chat";
+  // Landing header auto-hide on scroll (immersive), reappear at footer
+  useEffect(() => {
+    if (!isTourView) return;
+    const header = document.querySelector("header");
+    if (!header) return;
+    header.style.transition = "transform var(--dur-shell) var(--ease-shell)";
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY;
+        lastY = y;
+        const footer = document.querySelector("footer");
+        const footerVisible = footer && footer.getBoundingClientRect().top < window.innerHeight;
+        if (footerVisible || y < 80 || delta < 0) {
+          header.style.transform = "translateY(0)";
+        } else if (delta > 0 && y > 100) {
+          header.style.transform = "translateY(-100%)";
+        }
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isTourView, view]);
+
   return (
     <div className={`relative bg-base overflow-x-hidden ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
       {isTourView ? <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" />}
 
       <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col"}`}>
-        <HeaderBar
-          leftOpen={leftOpen}
-          onToggleLeft={() => setLeftOpen((o) => !o)}
-          onHome={goHome}
-          onOpenSettings={() => setSettingsOpen(true)}
-          onOpenProfile={() => setProfileOpen(true)}
-          user={user}
-          view={view}
-          onAuthClick={() => setAuthOpen(true)}
-        />
+        {!isChatView && (
+          <HeaderBar
+            leftOpen={leftOpen}
+            onToggleLeft={() => setLeftOpen((o) => !o)}
+            onHome={goHome}
+            onOpenSettings={() => setSettingsOpen(true)}
+            onOpenProfile={() => setProfileOpen(true)}
+            user={isTourView ? user : null}
+            view={view}
+            onAuthClick={() => setAuthOpen(true)}
+          />
+        )}
 
         <div className={`isolate flex ${isTourView ? "flex-1" : "min-h-0 flex-1"}`}>
           {view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view) && (
@@ -421,6 +471,7 @@ export default function App() {
                 identity={identity}
                 onOpenSettings={() => setSettingsOpen(true)}
                 onOpenProfile={() => setProfileOpen(true)}
+                onToggleLeft={() => setLeftOpen((o) => !o)}
               />
             </div>
           )}
@@ -432,6 +483,8 @@ export default function App() {
                 chat={activeChat}
                 identity={identity}
                 onChatChanged={handleChatChanged}
+                leftOpen={leftOpen}
+                onToggleLeft={() => setLeftOpen((o) => !o)}
                 onOpenDeck={openDeck}
                 onOpenReport={openReport}
                 onDeckChanged={bumpDeck}

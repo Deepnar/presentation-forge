@@ -68,8 +68,8 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         )}
       </div>
 
-      {/* Content strip — taller to keep proportions */}
-      {!hideSpecimen && (
+      {/* Content strip — removed per request (all without header) */}
+      {false && !hideSpecimen && (
         <div className="flex h-[82px] shrink-0 items-center gap-2 px-3" style={{ background: p.bg }}>
           <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
             01

@@ -20,7 +20,7 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
-  user, identity, onOpenSettings, onOpenProfile,
+  user, identity, onOpenSettings, onOpenProfile, onToggleLeft,
 }) {
   const [tab, setTab] = useState("chats"); // chats | projects
   const [query, setQuery] = useState("");
@@ -240,7 +240,14 @@ export default function Sidebar({
       ) : (
         <div className="flex h-full flex-col items-center gap-1 py-3">
           <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
-          <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" href="#/chat" />
+          <IconButton
+            icon={LayersIcon}
+            title="Projects"
+            onClick={() => {
+              setTab("projects");
+              if (!open && onToggleLeft) onToggleLeft();
+            }}
+          />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
           <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
           <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-line pt-2">

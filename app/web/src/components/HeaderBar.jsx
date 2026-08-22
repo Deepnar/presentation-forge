@@ -105,7 +105,20 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
           <GithubIcon className="h-4 w-4" />
         </a>
 
-        {!user && (
+        {user ? (
+          isTour ? (
+            <button
+              onClick={() => onOpenProfile?.()}
+              className="flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pl-1 pr-2 transition hover:border-line-strong hover:bg-hover"
+              title={user.name}
+            >
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-accent/15 text-[11px] font-semibold uppercase text-accent">
+                {user.name?.[0] ?? "?"}
+              </span>
+              <span className="max-w-[7rem] truncate px-1 text-[12px] text-fg-muted">{user.name}</span>
+            </button>
+          ) : null
+        ) : (
           <>
             <button
               onClick={() => onAuthClick?.("login")}

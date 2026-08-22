@@ -113,13 +113,15 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
       </div>
-      <div className="flex h-[62px] items-center gap-2 px-4" style={{ background: p.bg }}>
-        <span className="rounded-full px-2 py-[3px] text-[8px] font-bold tracking-[0.08em]" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>01</span>
-        <div className="h-7 min-w-0 flex-1 rounded-[4px] px-2 py-1.5" style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}>
-          <div className="h-[4px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
-          <div className="mt-1.5 h-[3px] w-1/2 rounded-full opacity-60" style={{ background: p.ink_muted }} />
+      {false && (
+        <div className="flex h-[62px] items-center gap-2 px-4" style={{ background: p.bg }}>
+          <span className="rounded-full px-2 py-[3px] text-[8px] font-bold tracking-[0.08em]" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>01</span>
+          <div className="h-7 min-w-0 flex-1 rounded-[4px] px-2 py-1.5" style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}>
+            <div className="h-[4px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
+            <div className="mt-1.5 h-[3px] w-1/2 rounded-full opacity-60" style={{ background: p.ink_muted }} />
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex flex-1 flex-col bg-[#0F1629] p-5">
         <div className="flex items-baseline justify-between gap-2">
           <div className="text-[16px] font-semibold text-white group-hover:text-white">{theme.label}</div>

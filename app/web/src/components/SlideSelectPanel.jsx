@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Spinner, Tooltip } from "./ui.jsx";
-import { ChevronDown } from "./icons.jsx";
+import { ChevronDown, PanelLeftClose } from "./icons.jsx";
 
 /**
  * The chat's slide-selection panel — how the user tells the AI WHICH slides
@@ -43,6 +43,14 @@ export default function SlideSelectPanel({
   return (
     <div className="flex h-full min-w-0 flex-col border-l border-line bg-base/60">
       <div className="flex shrink-0 items-center gap-2 border-b border-line px-3 py-2.5">
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("forge:togglePanel"))}
+          title="Collapse slides"
+          aria-label="Collapse slides"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+        >
+          <PanelLeftCloseIcon />
+        </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[11.5px] font-semibold text-fg">Slides</div>
           <div className="truncate text-[10.5px] text-fg-faint">
