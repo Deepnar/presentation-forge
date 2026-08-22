@@ -14,21 +14,9 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
   const handleChat = () => onStartChat?.();
   const [themes, setThemes] = useState(null);
-  const [slideSpecimens, setSlideSpecimens] = useState(null);
   const wrapRef = useRef(null);
   const pinRef = useRef(null);
   useEffect(() => { api.themes().then(r => setThemes(r.themes)).catch(() => setThemes([])); }, []);
-  useEffect(() => {
-    // fetch real slide type specimens for render beat — same chrome the app uses
-    fetch("/api/types/warm-humanist/specimens").then(r => r.json()).then(j => {
-      if (j.ok && j.previews) setSlideSpecimens(j.previews.slice(0, 12));
-      else if (j.previews) setSlideSpecimens(j.previews.slice(0, 12));
-    }).catch(() => setSlideSpecimens([]));
-    // also try /api/specimens/warm-humanist for older API
-    fetch("/api/specimens/warm-humanist").then(r => r.json()).then(j => {
-      if (j.ok && j.previews && !slideSpecimens) setSlideSpecimens(j.previews.slice(0, 12));
-    }).catch(() => {});
-  }, []);
   const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
@@ -222,10 +210,23 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
               <div className="specimen mt-6 flex gap-4 overflow-hidden">
                 <div className="flex w-max gap-4 will-change-transform">
-                  {(slideSpecimens && slideSpecimens.length > 0 ? slideSpecimens : [null,null,null,null,null,null]).slice(0, 12).map((src, i) => src ? (
-                    <img key={i} src={src} alt={`Slide ${i+1}`} className="h-56 w-96 shrink-0 rounded-xl border border-line object-cover shadow-sm bg-white" loading="lazy" />
-                  ) : (
-                    <div key={`ph-${i}`} className="grid h-56 w-96 shrink-0 place-items-center rounded-xl border border-dashed border-line bg-panel text-[13px] text-fg-faint">Slide {i+1} · {["bullets","stats","chart","compare","timeline","quote"][i%6]}</div>
+                  {[
+                    ["Bullets", "bullets", "• Grounded claim\n• Coherent angle\n• One idea"],
+                    ["Stats", "stats", "128%  ·  3.2×  ·  0"],
+                    ["Chart", "chart", "▁▂▃▅▇  trend"],
+                    ["Compare", "compare", "Before  →  After"],
+                    ["Timeline", "timeline", "2019 — 2021 — 2024"],
+                    ["Quote", "quote", "“Standing ovation”"],
+                    ["Cards", "cards", "▢ ▢ ▢  grid"],
+                    ["Pros/Cons", "pros-cons", "✓ 3  ·  ✗ 2"],
+                  ].map(([label, kind, preview]) => (
+                    <div key={label} className="w-72 shrink-0 rounded-2xl border bg-panel p-4 text-center shadow-sm">
+                      <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">{label}</div>
+                      <div className="mt-3 rounded-xl bg-sunken p-3 text-left">
+                        <div className="whitespace-pre-line font-mono text-[11px] leading-relaxed text-fg-muted">{preview}</div>
+                      </div>
+                      <div className="mt-2 text-[10px] uppercase tracking-wide text-fg-faint">{kind}</div>
+                    </div>
                   ))}
                 </div>
               </div>

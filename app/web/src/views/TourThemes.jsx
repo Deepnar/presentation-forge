@@ -55,8 +55,8 @@ export default function TourThemes({ onAuth, authed = false }) {
         </div>
       </div>
 
-      {/* gallery */}
-      <div className="bg-[#0B0F1A] px-6 pb-12 sm:px-10">
+      {/* gallery — not cut off, full height, no max-h */}
+      <div className="bg-[#0B0F1A] px-6 pb-20 sm:px-10">
         <div className="mx-auto max-w-6xl">
           {themes === null && (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -73,7 +73,7 @@ export default function TourThemes({ onAuth, authed = false }) {
               <MarketingThemeCard key={t.name} theme={t} onAuth={onAuth} authed={authed} />
             ))}
           </div>
-          <div className="mt-8 text-center text-[12px] text-white/40">
+          <div className="mt-10 text-center text-[12px] text-white/40">
             The app’s gallery at <a href="#/themes" className="text-white/70 hover:text-white underline"> #/themes</a> lets you set your default — your next deck starts there.
           </div>
         </div>
