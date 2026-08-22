@@ -34,21 +34,17 @@ brief → research → outline → approval → content → render → preview �
 - A local default using Ollama. Hosted OpenAI-compatible providers are optional and explicitly configured.
 - A browser application, a headless CLI, and a Docker deployment that all use the same Node core.
 
-## Public examples — see the product without logging in
+## Published presentations — from my account
 
-These are real outputs from the pipeline, committed and sanitized so nothing private leaks. Your decks stay private per-account; these are the showroom.
+These are real decks and reports I made with this app, committed as PDFs/PPTXs so you can see the product without logging in. No private data beyond the deck content itself — team and institution are as shown in the files. More will be added as I make them.
 
-| Deck / Report | What you see |
+| Presentation | Files |
 |---|---|
-| **Green Hydrogen Economics 2026** — 20 slides, `warm-humanist` | Cost and electrolysis compared — stats, metric comparison, scorecard, pipeline |
-| **First Impressions & Networking** — 21 slides, `linear-dark` | Soft-skills deck — section dividers, feature grid, journey |
+| **Recent Trends in Mixed-Mode Programming** — 12 slides + report | [PPTX](./published/recent-trends-mixed-mode-presentation.pptx) · [Report DOCX](./published/recent-trends-mixed-mode-report.docx) |
+| **First Impressions & Networking (variant 1)** — topic-exploring | [PDF](./published/first-impressions-networking-presentation.pdf) · [PPTX](./published/first-impressions-networking-presentation.pptx) · [Report DOCX](./published/first-impressions-networking-report.docx) |
+| **First Impressions & Networking (variant 2)** — topic-topic | [PPTX](./published/first-impressions-topic2-presentation.pptx) |
 
-<p align="center">
-  <img src="docs/assets/examples/green-hydrogen-01.png" width="48%" alt="Green hydrogen deck preview — title slide" />
-  <img src="docs/assets/examples/soft-skills-01.png" width="48%" alt="First impressions deck preview — title slide" />
-</p>
-
-Source YAML for the examples lives in [`decks/_public/`](decks/_public/) — `deck.yaml` + `plan.yaml` + `report.yaml` where applicable, sanitized (generic team, demo guide, no institution data). Browse it on GitHub: [github.com/Deepnar/presentation-forge/tree/main/decks/_public](https://github.com/Deepnar/presentation-forge/tree/main/decks/_public). Rendered `.pptx`/`.docx` and `out/` are gitignored; previews above are rasterised via `npm run preview` and committed as static PNGs for the README and the landing page gallery (`app/web/public/examples/`). Private decks remain in `decks/<slug>/` and are never committed.
+Browse all files: [`published/`](./published/) — previews are also rasterised via `npm run preview` for the landing page when running locally. Private decks stay in `decks/<slug>/` and are gitignored (see `.gitignore: decks/*`).
 
 ## Quick start
 

@@ -30,6 +30,9 @@ brand/fonts/
 !reference/*.docx
 *.pdf
 !reference/*.pdf
+# Published presentations — your actual decks, intentionally committed for showcase
+!published/
+!published/**
 
 # LibreOffice scratch profiles created during rasterisation.
 **/.lo-profile/

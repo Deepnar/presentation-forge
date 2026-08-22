@@ -111,16 +111,6 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <OutlineMock />
           <ResearchMock />
         </div>
-        <section className="mx-auto max-w-6xl px-6 py-8">
-          <div className="text-center">
-            <div className="text-[11px] uppercase tracking-[0.12em] text-accent">See the product</div>
-            <h2 className="mt-1 text-[1.8rem] font-semibold tracking-tight">Actual decks from the pipeline</h2>
-          </div>
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="overflow-hidden rounded-2xl border bg-panel"><img src="/examples/green-hydrogen-01.png" alt="Green hydrogen deck" className="w-full" /><div className="p-3 text-[12px] font-medium">Green Hydrogen Economics 2026 · 20 slides</div></div>
-            <div className="overflow-hidden rounded-2xl border bg-panel"><img src="/examples/soft-skills-01.png" alt="Soft skills deck" className="w-full" /><div className="p-3 text-[12px] font-medium">First Impressions & Networking · 21 slides</div></div>
-          </div>
-        </section>
         <Footer />
       </div>
     );
@@ -363,61 +353,6 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           </div>
         </div>
       </div>
-      <section className="mx-auto max-w-6xl px-6 py-12">
-        <div className="text-center">
-          <div className="text-[11px] uppercase tracking-[0.12em] text-accent">See the product</div>
-          <h2 className="mt-2 text-[2.2rem] font-semibold tracking-[-0.02em]">Actual decks from the pipeline</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-[14px] leading-relaxed text-fg-muted">These are not mockups — they were generated, rendered, and rasterised by the same pipeline you get. No hand-layout, no hidden templates. Log in to make your own.</p>
-        </div>
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
-            <img src="/examples/green-hydrogen-01.png" alt="Green hydrogen deck preview" className="w-full" loading="lazy" />
-            <div className="p-4">
-              <div className="text-[11px] uppercase tracking-wider text-accent">Deck · 20 slides · warm-humanist</div>
-              <div className="mt-1 text-[15px] font-semibold text-fg">Green Hydrogen Economics 2026</div>
-              <div className="mt-1 text-[12px] leading-relaxed text-fg-muted">Cost and electrolysis compared — stats, metric comparison, scorecard and pipeline. Grounded, coherent, 20 slides.</div>
-              <div className="mt-3 flex gap-2">
-                <span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">LCOH $3.0/kg</span>
-                <span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">public example</span>
-              </div>
-            </div>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
-            <img src="/examples/soft-skills-01.png" alt="First impressions deck preview" className="w-full" loading="lazy" />
-            <div className="p-4">
-              <div className="text-[11px] uppercase tracking-wider text-accent">Deck · 21 slides · linear-dark</div>
-              <div className="mt-1 text-[15px] font-semibold text-fg">First Impressions & Networking</div>
-              <div className="mt-1 text-[12px] leading-relaxed text-fg-muted">Soft-skills deck — section dividers, feature grid, journey. Same renderer, different story.</div>
-              <div className="mt-3 flex gap-2">
-                <span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">21 slides</span>
-                <span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">public example</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-panel shadow-sm md:col-span-2">
-          <div className="grid grid-cols-1 gap-0 md:grid-cols-[1.2fr_1fr]">
-            <div className="p-6">
-              <div className="text-[11px] uppercase tracking-wider text-accent">Report · water electrolysis</div>
-              <div className="mt-1 text-[15px] font-semibold text-fg">Water Electrolysis: Historical Development and Comparison</div>
-              <div className="mt-1 text-[12px] leading-relaxed text-fg-muted">A companion report rendered into the institutional .docx template — TOC, cover, tables, references. Same research, same briefing, different artefact. The report lives beside the deck in <code className="font-mono">decks/_public</code> and is never hand-edited.</div>
-              <div className="mt-3 flex gap-2">
-                <span className="rounded-full bg-accent-tint px-2.5 py-1 text-[11px] font-medium text-accent">report.yaml → .docx</span>
-                <span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">public example</span>
-              </div>
-            </div>
-            <div className="grid place-items-center bg-sunken p-6">
-              <div className="w-full max-w-[320px] rounded-xl border bg-white p-4 shadow-sm">
-                <div className="text-[11px] uppercase tracking-wider text-accent">Abstract</div>
-                <div className="mt-1 text-[12px] leading-relaxed text-slate-800">This report presents a comparative study of electrolysis technologies — alkaline, PEM and solid oxide — tracing historical development...</div>
-                <div className="mt-3 h-2 rounded-full bg-line" />
-                <div className="mt-2 h-2 w-3/4 rounded-full bg-line" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4 text-center text-[11px] text-fg-faint">Public examples live in <code className="font-mono">decks/_public</code> — committed, sanitized, no private team or institution data. Your decks stay private per-account.</div>
-      </section>
       <Footer />
     </>
   );
