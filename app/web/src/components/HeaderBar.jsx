@@ -69,19 +69,21 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
         <span className="truncate text-[14px] font-semibold tracking-tight">Presentation Forge</span>
       </a>
 
-      <div className="flex items-center gap-2">
-        <span className={`text-[10px] font-medium ${routingAuto ? "text-accent" : "text-fg-faint"}`}>{autoLabel}</span>
-        <button
-          onClick={() => (routingCloud ? setMode("auto") : (cloudOn ? setMode("cloud") : onOpenSettings?.()))}
-          title={routingAuto ? autoTitle + " — click to switch to Cloud" : "Cloud — click to switch to Auto"}
-          className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border p-0.5 transition ${routingAuto ? "border-accent/30 bg-accent" : "border-line-strong bg-panel"}`}
-          aria-label="Toggle Auto/Cloud"
-        >
-          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${routingAuto ? "translate-x-0.5" : "translate-x-5"}`} />
-        </button>
-        <span className={`text-[10px] font-medium ${routingCloud ? "text-fg" : "text-fg-faint"}`}>CLOUD</span>
-      </div>
-      {auto?.keySet && (
+      {!isTour && (
+        <div className="flex items-center gap-2">
+          <span className={`text-[10px] font-medium ${routingAuto ? "text-accent" : "text-fg-faint"}`}>{autoLabel}</span>
+          <button
+            onClick={() => (routingCloud ? setMode("auto") : (cloudOn ? setMode("cloud") : onOpenSettings?.()))}
+            title={routingAuto ? autoTitle + " — click to switch to Cloud" : "Cloud — click to switch to Auto"}
+            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border p-0.5 transition ${routingAuto ? "border-accent/30 bg-accent" : "border-line-strong bg-panel"}`}
+            aria-label="Toggle Auto/Cloud"
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${routingAuto ? "translate-x-0.5" : "translate-x-5"}`} />
+          </button>
+          <span className={`text-[10px] font-medium ${routingCloud ? "text-fg" : "text-fg-faint"}`}>CLOUD</span>
+        </div>
+      )}
+      {!isTour && auto?.keySet && (
         <Badge className="hidden border border-accent/20 bg-accent/10 text-accent sm:inline-flex">Ready</Badge>
       )}
 

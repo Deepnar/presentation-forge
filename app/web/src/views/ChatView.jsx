@@ -920,14 +920,25 @@ export default function ChatView({
         <div className="ml-auto flex items-center gap-2">
           <div className="relative">
             <select
-              value={model}
-              onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
+              value={modelMode}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (v === "cloud" || v === "auto") {
+                  // Model mode toggle, not specific model
+                  import("../lib/modelMode.js").then(({ setModelMode }) => setModelMode(v));
+                  // Also update via API if needed
+                  import("../api.js").then(({ api }) => api.cloudRoute(v).catch(()=>{}));
+                  // Clear specific model selection
+                  setModel("");
+                  persist({ ...chat, model: undefined, updatedAt: new Date().toISOString() });
+                }
+              }}
               disabled={inputDisabled}
-              title={model ? `Using ${model}` : (modelMode === "cloud" ? `Cloud` : `Auto`)}
+              title={modelMode === "cloud" ? `Cloud` : `Auto`}
               className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
             >
-              <option value="">{modelMode === "cloud" ? "Cloud" : "Auto"}</option>
-              {models.map((m) => <option key={m} value={m}>{m}</option>)}
+              <option value="auto">Auto</option>
+              <option value="cloud">Cloud</option>
             </select>
             <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />

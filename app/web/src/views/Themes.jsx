@@ -141,7 +141,7 @@ function ThemeCard({ theme, isDefault, onClick }) {
   // synthesis; if it's missing (a clone that never ran `npm run gallery`) the
   // synthesis stays visible underneath rather than an empty band.
   const [thumbFailed, setThumbFailed] = useState(false);
-  const useThumb = theme.plate && !thumbFailed;
+  const useThumb = false; // no header on any thumbnail
 
   return (
     <button
@@ -158,38 +158,8 @@ function ThemeCard({ theme, isDefault, onClick }) {
           default
         </span>
       )}
-      {/* The specimen shows the DESIGN, never a real deck: the title band and
-          the content strip carry the theme's own neutral "Title" / "subtitle
-          line" placeholders and its own accent badge, so the card reads as
-          what the theme looks like, not as content someone else wrote. The
-          proportions match the briefing/home mini card, so a theme previews
-          at the same shape on every surface. */}
-      <div className="relative flex aspect-[16/8] flex-col justify-end px-3 pb-2.5 pt-2.5" style={{ background: title.bg ?? p.ink }}>
-        <div className="relative z-10">
-          <div
-            className="truncate leading-tight"
-            style={{
-              color: title.ink ?? p.surface,
-              fontFamily: `"${theme.fonts.heading}", serif`,
-              fontWeight: 800,
-              fontSize: 16,
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Title
-          </div>
-          <div
-            className="mt-0.5 truncate"
-            style={{
-              color: title.muted ?? p.ink_muted,
-              fontFamily: `"${theme.fonts.body}", sans-serif`,
-              fontSize: 9,
-              fontStyle: "italic",
-            }}
-          >
-            subtitle line
-          </div>
-        </div>
+      {/* Preview — solid color only, no header */}
+      <div className="relative flex aspect-[16/8] p-3" style={{ background: title.bg ?? p.ink }}>
         {useThumb && (
           <img
             src={theme.thumb}
@@ -199,21 +169,6 @@ function ThemeCard({ theme, isDefault, onClick }) {
             onError={() => setThumbFailed(true)}
           />
         )}
-      </div>
-
-      <div className="flex aspect-[16/5] items-center gap-2 px-3" style={{ background: p.bg }}>
-        <span
-          className="rounded-full px-2 py-[2px] text-[7px] font-bold"
-          style={{ background: p.accent, color: p.on_accent ?? "#fff", letterSpacing: "0.1em" }}
-        >
-          01
-        </span>
-        <div
-          className="h-6 min-w-0 flex-1 rounded-[3px] px-2 py-1"
-          style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}
-        >
-          <div className="h-[3px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
-        </div>
       </div>
 
       <div className="p-4">
