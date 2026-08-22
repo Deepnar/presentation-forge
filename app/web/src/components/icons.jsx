@@ -109,6 +109,14 @@ export function SlidersIcon(props) {
     </svg>
   );
 }
+export function GearIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+      <path d="M12 3v2M12 19v2M4.5 12H3m17 0h1.5M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" />
+    </svg>
+  );
+}
 export function UpArrowIcon(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>

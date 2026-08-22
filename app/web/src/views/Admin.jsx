@@ -34,9 +34,10 @@ export default function Admin({ onBack }) {
     try {
       const r = await api.adminSetHosted(!hosted);
       setHosted(Boolean(r.hosted));
-      // refresh stats to reflect new hosted mode
+      window.dispatchEvent(new CustomEvent("forge:hostedChanged", { detail: { hosted: r.hosted } }));
       const s = await api.adminStats();
       setStats(s);
+      setTimeout(() => window.location.reload(), 500);
     } catch (e) { window.alert(e.message); }
   };
 

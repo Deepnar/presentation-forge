@@ -4,7 +4,7 @@ import { api } from "../api.js";
 import DeckThumb from "./DeckThumb.jsx";
 import ProfileChip from "./ProfileChip.jsx";
 import { Button } from "./ui.jsx";
-import { ChevronDown, DocIcon, IdIcon, LayersIcon, PaletteIcon, PanelLeftOpen, PlusIcon, SearchIcon } from "./icons.jsx";
+import { ChevronDown, DocIcon, GearIcon, IdIcon, LayersIcon, PaletteIcon, PanelLeftOpen, PlusIcon, SearchIcon } from "./icons.jsx";
 import { getModelMode, setModelMode, subscribeModelMode } from "../lib/modelMode.js";
 
 const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
@@ -296,7 +296,7 @@ export default function Sidebar({
           <div className="mt-auto border-t border-line p-2.5">
             <div className="mb-2 space-y-0.5">
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
-              <SettingsRow icon={IdIcon} label="Settings" onClick={onOpenSettings} />
+              <SettingsRow icon={GearIcon} label="Settings" onClick={onOpenSettings} />
               {isAdmin && <NavRow active={view === "admin"} icon={ShieldIcon} label="Admin" href="#/admin" />}
             </div>
             <div className="mt-2 border-t border-line/60 pt-2">
@@ -321,7 +321,7 @@ export default function Sidebar({
             }}
           />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
-          <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
+          <IconButton icon={GearIcon} title="Settings" onClick={onOpenSettings} />
           {isAdmin && <IconButton active={view === "admin"} icon={ShieldIcon} title="Admin" href="#/admin" />}
           <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-line pt-2">
             <ProfileChip

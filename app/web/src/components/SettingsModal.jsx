@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Badge, Field, Spinner, ConfirmModal, inputCls } from "./ui.jsx";
+import { GearIcon } from "./icons.jsx";
 import { presetsStore } from "../lib/presets.js";
 import { setModelMode } from "../lib/modelMode.js";
 
@@ -34,6 +35,9 @@ export default function SettingsModal({ open, onClose, identity, user, isAdmin, 
     >
       <div className="fade-in flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-[var(--radius-lg)] border border-line bg-panel shadow-[var(--shadow-float)]">
         <header className="flex shrink-0 items-center gap-3 border-b border-line px-6 py-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-tint text-accent">
+            <GearIcon className="h-5 w-5" />
+          </div>
           <div className="min-w-0 flex-1">
             <div className="text-[16px] font-semibold tracking-tight text-fg">Settings</div>
             <div className="text-[11.5px] text-fg-faint">
@@ -531,6 +535,8 @@ function HostedSection() {
     try {
       const r = await api.adminSetHosted(!hosted);
       setHosted(Boolean(r.hosted));
+      window.dispatchEvent(new CustomEvent("forge:hostedChanged", { detail: { hosted: r.hosted } }));
+      setTimeout(() => window.location.reload(), 500);
     } catch (e) { window.alert(e.message); }
     finally { setBusy(false); }
   };
