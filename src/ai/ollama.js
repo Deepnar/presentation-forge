@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
-import { resolveSecret, routingPreference, cloudProvider, autoProvider } from "../cloud.js";
+import { resolveSecret, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
 
 /**
  * Per-transport capability split. A role's sampling/output/context settings are
@@ -184,6 +184,41 @@ export async function resolveRole(role) {
     return { ...spec, role, backend, model: spec.model, fellBack: false };
   }
 
+  // Hosted has no Ollama — internal roles (research, critic, utility) fall
+  // through TCET or BYOK. The author role is routed explicitly in chat()
+  // via routingPreference, so it should not silently fall back here — a
+  // missing route there must surface as a clear hosted error.
+  if (isHosted()) {
+    if (role !== "author") {
+      const ap = await autoProvider();
+      if (ap?.kind === "tcet" && ap?.keySet) {
+        return {
+          ...spec,
+          role,
+          backend: { type: "openai-compatible", baseURL: ap.baseURL, apiKey: await resolveEnv(ap.apiKey) },
+          model: ap.models[0],
+          fellBack: spec.model,
+        };
+      }
+      const cp = await cloudProvider();
+      if (cp) {
+        const key = await resolveEnv(cp.apiKey);
+        if (key) {
+          return {
+            ...spec,
+            role,
+            backend: { type: "openai-compatible", baseURL: cp.baseURL, apiKey: key },
+            model: cp.models[0],
+            fellBack: spec.model,
+          };
+        }
+      }
+    }
+    throw new Error(
+      `Hosted mode: role "${role}" needs TCET or BYOK — no local Ollama available. Add FORGE_TCET_API_KEY or switch to Cloud and add a BYOK key in Settings.`,
+    );
+  }
+
   const have = await installed(cfg.host);
   if (have.has(spec.model)) {
     return { ...spec, role, backend, model: spec.model, fellBack: false };
@@ -216,9 +251,14 @@ export async function modelChoices() {
   const cfg = await config();
   const def = cfg.roles?.author?.model ?? null;
   let models = [];
-  try {
-    models = [...(await installed(cfg.host))].sort();
-  } catch { /* offline — the picker just shows the default */ }
+  if (!isHosted()) {
+    try {
+      models = [...(await installed(cfg.host))].sort();
+    } catch { /* offline — the picker just shows the default */ }
+  } else {
+    // Hosted has no local Ollama
+    models = [];
+  }
   // auto (tcet) status
   let auto = null;
   const ap = await autoProvider();
@@ -299,6 +339,20 @@ export async function chat({
     if (route === "auto") {
       const ap = await autoProvider();
       if (ap?.kind === "tcet" && ap?.keySet && ap?.models?.length) model = ap.models[0];
+      else if (isHosted()) {
+        // Hosted has no local fallback — surface a clear error instead of
+        // "Ollama unreachable". If BYOK is present, hint to switch to Cloud.
+        const cp = await cloudProvider();
+        const hasCloudKey = cp ? Boolean(await resolveEnv(cp.apiKey)) : false;
+        if (hasCloudKey) {
+          throw new Error(
+            "Hosted auto is not configured (no TCET key). Switch to Cloud in Settings and pick a BYOK model, or set FORGE_TCET_API_KEY.",
+          );
+        }
+        throw new Error(
+          "Hosted mode has no local model — add FORGE_TCET_API_KEY for Auto or add a BYOK Cloud key and switch to Cloud.",
+        );
+      }
       // local fallback: let Ollama resolve the author's default, no explicit model
     } else if (route === "cloud") {
       const cp = await cloudProvider();

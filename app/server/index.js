@@ -20,7 +20,7 @@ import { researchSummary } from "../../src/ai/research.js";
 import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
-import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider } from "../../src/cloud.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted } from "../../src/cloud.js";
 import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
@@ -1301,7 +1301,7 @@ app.post("/api/decks", (req, res) => {
 
 app.get("/api/models", wrap(async (_req, res) => {
   const { models, default: def, cloud, auto, route } = await modelChoices();
-  ok(res, { models, default: def, cloud, auto, route });
+  ok(res, { models, default: def, cloud, auto, route, hosted: isHosted() });
 }));
 
 /** The deck's thread: rolling summary, recent turns, durable decisions. */

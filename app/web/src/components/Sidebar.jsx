@@ -12,12 +12,17 @@ const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
 function SidebarToggle({ onOpenSettings }) {
   const [route, setRoute] = useState("auto");
   const [cloudOn, setCloudOn] = useState(false);
+  const [autoOn, setAutoOn] = useState(true);
+  const [hosted, setHosted] = useState(false);
   useEffect(() => {
     Promise.all([api.autoStatus().catch(() => ({ auto: null })), api.cloud().catch(() => ({ cloud: null }))])
       .then(([a, c]) => {
+        const autoData = a.auto ?? a ?? null;
         const cloudData = c.cloud ?? null;
+        setAutoOn(Boolean(autoData?.keySet));
+        setHosted(Boolean(autoData?.hosted || c.hosted));
         setCloudOn(Boolean(cloudData?.configured && cloudData.keySet));
-        const r = cloudData?.route ?? a.auto?.route ?? a.route ?? getModelMode();
+        const r = cloudData?.route ?? autoData?.route ?? a.route ?? getModelMode();
         setRoute(r);
       })
       .catch(() => {});
@@ -26,6 +31,10 @@ function SidebarToggle({ onOpenSettings }) {
   const isAuto = route === "auto";
   const isCloud = route === "cloud";
   async function setMode(next) {
+    if (next === "auto" && hosted && !autoOn) {
+      onOpenSettings?.();
+      return;
+    }
     if (next === "cloud" && !cloudOn) {
       onOpenSettings?.();
       return;

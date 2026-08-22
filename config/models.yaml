@@ -4,6 +4,13 @@
 # backends are opt-in — define one under `providers:`, then point a role at it
 # with `provider: <name>`. Nothing uses a cloud model unless a role says so.
 #
+# Hosted vs local split (single repo, no fork):
+#   FORGE_HOSTED=1  → hosted site — Auto = TCET gateway only, BYOK = Cloud,
+#                     no local Ollama fallback. Needs FORGE_TCET_API_KEY or a
+#                     BYOK key. Set this in docker/.env or the hosting env.
+#   unset / 0       → local download — Auto falls back to localhost:11434
+#                     Ollama so it works offline, BYOK still optional.
+#
 # Sized against a 24 GB VRAM ceiling. The two MoE models are ~17-18 GB but only
 # activate 3-4B parameters per token, so they run at small-model speed with
 # large-model quality. Keep `utility` tiny — it runs often and its jobs are

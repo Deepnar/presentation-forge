@@ -80,7 +80,7 @@ export default function ChatView({
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
   const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
-  const { models, auto, mode: modelMode, cloudOn, defaultModel } = useModels();
+  const { models, auto, mode: modelMode, cloudOn, hosted, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
   // The slide-selection panel: the deck's content + previews (fetched when the
   // deck is ready), which slides the user has picked, and the enlarged slide.
@@ -1016,6 +1016,32 @@ export default function ChatView({
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
       </header>
+      {hosted && modelMode === "auto" && !auto?.keySet && (
+        <div className="mx-auto w-full max-w-3xl px-6 pt-3">
+          <div className="rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
+            Hosted mode — Auto (TCET) not configured.{" "}
+            <button
+              onClick={async () => {
+                const { setModelMode } = await import("../lib/modelMode.js");
+                const { api } = await import("../api.js");
+                await api.cloudRoute("cloud").catch(() => {});
+                setModelMode("cloud");
+              }}
+              className="font-medium underline hover:text-amber/80"
+            >
+              Switch to Cloud
+            </button>{" "}
+            or add a TCET key in Settings.
+          </div>
+        </div>
+      )}
+      {hosted && modelMode === "cloud" && !cloudOn && (
+        <div className="mx-auto w-full max-w-3xl px-6 pt-3">
+          <div className="rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
+            Hosted mode — Cloud BYOK not configured. Add your OpenCode Go / OpenAI key in Settings → Cloud.
+          </div>
+        </div>
+      )}
 
       {greeting ? (
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6 py-10">

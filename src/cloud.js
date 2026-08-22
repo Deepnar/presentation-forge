@@ -142,9 +142,14 @@ export async function setRoutingPreference(route) {
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
 }
 
+export function isHosted() {
+  return process.env.FORGE_HOSTED === "1" || process.env.FORGE_DISABLE_LOCAL === "1";
+}
+
 // Auto provider — the free tier. On hosted it's TCET CoE (qwen3.6), on a local
 // download with no TCET key it falls back to the local Ollama model so "AUTO"
-// always works. This is what the header shows as AUTO.
+// always works. This is what the header shows as AUTO. When FORGE_HOSTED=1 the
+// local fallback is disabled — hosted has only Auto (TCET) + BYOK.
 export async function autoProvider() {
   const models = await readYaml(MODELS_FILE);
   const tcet = models.providers?.["tcet-auto"];
@@ -162,6 +167,8 @@ export async function autoProvider() {
     };
   }
   // Fallback: local Ollama as the free tier (download-and-run case)
+  // Hosted has no local fallback — only TCET + BYOK.
+  if (isHosted()) return null;
   const host = models.host ?? "http://localhost:11434";
   let localModels = [];
   try {
@@ -185,7 +192,7 @@ export async function autoProvider() {
 }
 export async function autoStatus() {
   const p = await autoProvider();
-  if (!p) return { configured: false, keySet: false };
+  if (!p) return { configured: false, keySet: false, hosted: isHosted(), kind: isHosted() ? "hosted" : "none", route: await routingPreference() };
   return {
     configured: true,
     provider: p.id,
@@ -195,6 +202,7 @@ export async function autoStatus() {
     keyName: p.id === "tcet-auto" ? "FORGE_TCET_API_KEY" : null,
     keySet: p.keySet,
     kind: p.kind ?? (p.id === "tcet-auto" ? "tcet" : "local"),
+    hosted: isHosted(),
     route: await routingPreference(),
   };
 }
@@ -262,7 +270,10 @@ export async function cloudStatus() {
  */
 export async function testAutoConnection() {
   const p = await autoProvider();
-  if (!p) return { ok: false, detail: "no auto provider configured" };
+  if (!p) {
+    if (isHosted()) return { ok: false, detail: "hosted mode — auto requires TCET key, or use BYOK Cloud" };
+    return { ok: false, detail: "no auto provider configured" };
+  }
   if (p.kind === "local" || p.id === "local") {
     try {
       const res = await fetch(`${p.baseURL}/api/tags`, { signal: AbortSignal.timeout(3000) });

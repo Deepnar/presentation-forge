@@ -26,6 +26,10 @@ services:
       FORGE_PLATE_CACHE: /data/plate-cache
       FORGE_API_PORT: "5174"
       SEARXNG_URL: "http://searxng:8080"
+      FORGE_HOSTED: "${FORGE_HOSTED:-1}"
+      FORGE_TCET_API_KEY: "${FORGE_TCET_API_KEY:-}"
+      OPENCODE_GO_API_KEY: "${OPENCODE_GO_API_KEY:-}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       # Sweep + mail. Set these in a .env file next to this compose file:
       #   FORGE_SWEEP_DAYS=30          (delete decks older than 30 days)
       #   FORGE_SWEEP_HOUR=3           (run daily at 3 AM)

@@ -14,6 +14,8 @@ Two ways to run this yourself — pick the one that fits your machine:
 Both share the same setup steps below; the difference is just which model
 backend you point at.
 
+> **Single repo, two modes:** `main` ships hosted-ready (`FORGE_HOSTED=1` in `docker/.env`). Clone locally = `FORGE_HOSTED` unset, so it falls back to Ollama. No fork needed — one codebase, one switch, GitHub only.
+
 ---
 
 ## What you need
@@ -53,14 +55,16 @@ ollama pull qwen3:4b          # or any instruction-following model you have
 
 ## Choose your model backend
 
-**Local models (default):** nothing to do — the app resolves every role to
+**Local models (default when you clone):** nothing to do — the app resolves every role to
 Ollama automatically. Check `config/models.yaml` if you want to change which
-local model handles which role.
+local model handles which role. Keep `FORGE_HOSTED` unset or `0` so Auto falls
+back to `localhost:11434`.
 
-**Cloud models:** in the app, go to Identity → Cloud, paste your API key, and
-flip the header toggle to CLOUD. The key is stored in the gitignored
-`config/local.yaml` on your machine and never sent anywhere but the model
-provider. Supported: any OpenAI-compatible endpoint.
+**Hosted (TCET gateway):** set `FORGE_HOSTED=1` and `FORGE_TCET_API_KEY` (or add the key via Settings → Cloud / admin vault). Then Auto = TCET `qwen3.6` only, Cloud = your BYOK, **no local Ollama fallback** — the same code, one env switch. The Docker hosted compose already sets `FORGE_HOSTED=1`.
+
+**Cloud models (either mode):** in the app, go to Settings → Cloud, paste your API key, and
+flip the header toggle to CLOUD. The key is stored encrypted in the vault / gitignored
+`config/local.yaml` and never sent anywhere but the model provider. Supported: any OpenAI-compatible endpoint (OpenCode Go, OpenAI, etc).
 
 ## Run it
 
