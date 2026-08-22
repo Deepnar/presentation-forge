@@ -79,7 +79,7 @@ export default function ChatView({
   const [job, setJob] = useState(null);
   const [draftPlan, setDraftPlan] = useState(null);
   const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
-  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
+  const { models, auto, mode: modelMode, cloudOn, defaultModel } = useModels();
   const [model, setModel] = useState(chat.model ?? "");
   // The slide-selection panel: the deck's content + previews (fetched when the
   // deck is ready), which slides the user has picked, and the enlarged slide.
