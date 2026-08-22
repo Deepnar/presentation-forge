@@ -98,10 +98,10 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
     return (
       <div className="w-full">
         <section className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck — in minutes</span>
+          <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck -- in minutes</span>
           <h1 className="mt-4 text-[3rem] font-semibold leading-[0.9] tracking-[-0.04em]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
-          <p className="mx-auto mt-3 max-w-xl text-[15px] text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you.</p>
-          <div className="mt-6 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
+          <p className="mx-auto mt-3 max-w-xl text-[15px] text-fg-muted">Research, outline, grounded writing, precise render and vision critique -- done for you.</p>
+          <div className="mt-6 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today -- free</Button>}</div>
         </section>
         <div className="mx-auto max-w-6xl px-6 py-8 space-y-8">
           <BrowserFrame><TitleMock /></BrowserFrame>
@@ -127,20 +127,20 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         <div ref={pinRef} className="relative h-screen w-full overflow-visible">
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
             <div className="hero-copy max-w-3xl flex flex-col items-center">
-              <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck — in minutes</span>
+              <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck -- in minutes</span>
               <h1 className="mt-6 text-[3.6rem] font-semibold leading-[0.88] tracking-[-0.04em] sm:text-[5.2rem]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
-              <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you. No templates, no hand-layout.</p>
-              <div className="mt-8 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
+              <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique -- done for you. No templates, no hand-layout.</p>
+              <div className="mt-8 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today -- free</Button>}</div>
             <div className="hero-cards mt-8 flex justify-center gap-3">
               {(themes ?? []).slice(0, 3).map(t => <div key={t.name} className="w-56"><ThemeMiniCard theme={t} hideSpecimen /></div>)}
             </div>
-              <div className="mt-6 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll — one step at a time ↓</div>
+              <div className="mt-6 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll -- one step at a time ↓</div>
             </div>
           </div>
           <div className="beat beat-brief absolute inset-0 flex items-center justify-center px-6 sm:px-10">
             <div className="mx-auto grid w-full max-w-[1400px] gap-8 lg:grid-cols-[420px_1fr] lg:items-center">
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">01 — Brief</div>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">01 -- Brief</div>
                 <h2 className="mt-2 text-[2.6rem] font-semibold leading-[0.9] tracking-[-0.03em] sm:text-[3.2rem]">One question at a time.</h2>
                 <p className="mt-3 max-w-md text-[14px] leading-relaxed text-fg-muted">Topic → title → team → theme → density. Everything defaults; saved formats skip the fixed parts. This is the real card you type in.</p>
               </div>
@@ -160,7 +160,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 </div>
               </BrowserFrame>
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">02 — Research</div>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">02 -- Research</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">Research that researches.</h2>
                 <p className="mt-3 max-w-md text-[14px] text-fg-muted">Multi-angle SearXNG + arXiv/Crossref, source-diversity guard. Your notes stay editable.</p>
               </div>
@@ -168,18 +168,18 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           </div>
           <div className="beat beat-outline absolute inset-0 flex items-center justify-center px-6">
             <div className="w-full max-w-4xl text-center">
-              <div className="text-[11px] uppercase tracking-[0.12em] text-accent">03 — Outline</div>
+              <div className="text-[11px] uppercase tracking-[0.12em] text-accent">03 -- Outline</div>
               <h2 className="mt-2 text-[3rem] font-semibold tracking-[-0.03em] sm:text-[4rem]">Outline you can edit.</h2>
-              <p className="mx-auto mt-2 max-w-xl text-[14px] text-fg-muted">Cards in plain language — reorder, retitle, switch type. Nothing renders until you approve.</p>
+              <p className="mx-auto mt-2 max-w-xl text-[14px] text-fg-muted">Cards in plain language -- reorder, retitle, switch type. Nothing renders until you approve.</p>
               <div className="mx-auto mt-6 max-w-2xl"><OutlineMock /></div>
             </div>
           </div>
           <div className="beat beat-approve absolute inset-0 flex items-center justify-center px-6 sm:px-10">
             <div className="mx-auto grid w-full max-w-[1100px] gap-8 lg:grid-cols-[420px_1fr] lg:items-center">
               <div className="text-center lg:text-left">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">04 — You are the gate</div>
-                <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">You’re the gate.</h2>
-                <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-fg-muted lg:mx-0">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml — the gate is the product, not a feature.</p>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">04 -- You are the gate</div>
+                <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">You're the gate.</h2>
+                <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-fg-muted lg:mx-0">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml -- the gate is the product, not a feature.</p>
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent-tint px-3 py-1 text-[11px] font-medium text-accent">Human approval required</div>
               </div>
               <BrowserFrame url="forge.local/outline · 4 sections · 12 slides">
@@ -190,76 +190,95 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="beat beat-content absolute inset-0 flex items-center px-6 sm:px-10">
             <div className="mx-auto grid w-full max-w-[1400px] gap-10 lg:grid-cols-2">
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">05 — Content</div>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">05 -- Content</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">Grounded &amp; coherent.</h2>
                 <p className="mt-3 max-w-md text-[14px] text-fg-muted">One small-grammar call per slide from your notes. Coherence reframes drift and density keeps fonts readable.</p>
                 <div className="mt-4 flex gap-2"><span className="rounded-full bg-accent-tint px-2.5 py-1 text-[11px] font-medium text-accent">balanced</span><span className="rounded-full bg-hover px-2.5 py-1 text-[11px]">sparse</span><span className="rounded-full bg-sunken px-2.5 py-1 text-[11px] text-fg-faint">dense</span></div>
               </div>
               <div className="content-card rounded-[1.5rem] border bg-panel p-6 shadow-[var(--shadow-float)]">
-                <div className="content-card rounded-xl bg-accent-tint p-4"><div className="font-semibold text-accent">Grounded claim</div><div className="mt-2 text-[13px] leading-relaxed">Electrolyser cost fell 60% since 2020 — from our research notes, not invented.</div><div className="mt-2 text-[11px] text-accent">✓ grounded</div></div>
-                <div className="content-card mt-3 rounded-xl border bg-sunken p-4"><div className="font-semibold">Coherent angle</div><div className="mt-1 text-[13px] text-fg-muted">Same fact, framed for *your* deck’s story — not a generic dump.</div></div>
+                <div className="content-card rounded-xl bg-accent-tint p-4"><div className="font-semibold text-accent">Grounded claim</div><div className="mt-2 text-[13px] leading-relaxed">Electrolyser cost fell 60% since 2020 -- from our research notes, not invented.</div><div className="mt-2 text-[11px] text-accent">✓ grounded</div></div>
+                <div className="content-card mt-3 rounded-xl border bg-sunken p-4"><div className="font-semibold">Coherent angle</div><div className="mt-1 text-[13px] text-fg-muted">Same fact, framed for *your* deck's story -- not a generic dump.</div></div>
               </div>
             </div>
           </div>
           <div className="beat beat-render absolute inset-0 flex flex-col justify-center px-6 sm:px-10">
             <div className="mx-auto w-full max-w-[1400px]">
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 — Render</div>
-                <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
-                <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat — not the template.</p>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 -- Render</div>
+                <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic -- chrome locked.</h2>
+                <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat -- not the template.</p>
               </div>
               <div className="specimen mt-6 flex gap-4 overflow-visible px-1">
-                <div className="flex w-max gap-4 will-change-transform pr-6">
-                  {[
-                    ["Bullets", "bullets", "• Grounded claim\n• Coherent angle\n• One idea"],
-                    ["Stats", "stats", "128%  ·  3.2×  ·  0"],
-                    ["Chart", "chart", "▁▂▃▅▇  trend"],
-                    ["Compare", "compare", "Before  →  After"],
-                    ["Timeline", "timeline", "2019 — 2021 — 2024"],
-                    ["Quote", "quote", "“Standing ovation”"],
-                    ["Cards", "cards", "▢ ▢ ▢  grid"],
-                    ["Pros/Cons", "pros-cons", "✓ 3  ·  ✗ 2"],
-                  ].map(([label, kind, preview]) => (
-                    <div key={label} className="w-80 shrink-0 rounded-2xl border bg-panel p-5 text-center shadow-sm">
-                      <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">{label}</div>
-                      <div className="mt-3 rounded-xl bg-sunken p-4 text-left">
-                        <div className="whitespace-pre-line font-mono text-[12px] leading-relaxed text-fg-muted">{preview}</div>
-                      </div>
+                <div className="flex w-max gap-4 will-change-transform">
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Bullets</div>
+                    <div className="mt-3 space-y-2 text-left">
+                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> Grounded claim from notes</div>
+                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> Coherent framing</div>
+                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> One idea per slide</div>
+                    </div>
+                  </div>
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Stats</div>
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                      <div className="rounded-lg bg-sunken p-3"><div className="text-[18px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
+                      <div className="rounded-lg bg-sunken p-3"><div className="text-[18px] font-bold">3.2×</div><div className="text-[11px] text-fg-faint">faster</div></div>
+                      <div className="rounded-lg bg-accent p-3 text-white"><div className="text-[18px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
+                    </div>
+                  </div>
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Chart</div>
+                    <div className="mt-3 flex h-20 items-end gap-1">
+                      <div className="flex-1 rounded-t bg-accent/20" style={{height:"40%"}} />
+                      <div className="flex-1 rounded-t bg-accent/40" style={{height:"65%"}} />
+                      <div className="flex-1 rounded-t bg-accent/60" style={{height:"50%"}} />
+                      <div className="flex-1 rounded-t bg-accent" style={{height:"85%"}} />
+                      <div className="flex-1 rounded-t bg-accent/80" style={{height:"70%"}} />
+                    </div>
+                    <div className="mt-2 flex justify-between text-[10px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span><span>--</span></div>
+                  </div>
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Compare</div>
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <div className="rounded-lg bg-accent-tint p-3"><div className="font-semibold text-accent">PEM</div><div className="mt-1 text-[12px]">High efficiency</div><div className="mt-2 h-2 rounded-full bg-accent/30" /></div>
+                      <div className="rounded-lg bg-sunken p-3 border"><div className="font-semibold">ALK</div><div className="mt-1 text-[12px]">Low cost</div><div className="mt-2 h-2 rounded-full bg-line" /></div>
+                    </div>
+                  </div>
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Timeline</div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" />
+                    </div>
+                    <div className="mt-2 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
+                  </div>
+                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Quote</div>
+                    <div className="mt-3 rounded-xl bg-sunken p-4 text-center">
+                      <div className="text-[18px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
+                      <div className="mt-2 text-[11px] text-fg-faint">-- Critique loop</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
                       <div className="mt-2 text-[11px] uppercase tracking-wide text-fg-faint">{kind}</div>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="marquee-stack mt-6 flex gap-3 overflow-hidden opacity-60">
-                <div className="flex w-max gap-3"><div className="h-12 w-20 rounded bg-accent" /><div className="h-12 w-20 rounded bg-accent/60" /><div className="h-12 w-20 rounded bg-accent/30" /><div className="h-12 w-20 rounded bg-accent/20" /></div>
-              </div>
-            </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent px-6 text-fg sm:px-10 backdrop-blur-sm">
-            <div className="mx-auto w-full max-w-[1400px]">
-              <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 — Themes</div>
-              <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
-              <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 6 live themes then 32 more.</p>
-              <div className="themes-track mt-6 flex gap-4 overflow-visible will-change-transform">
-                {(themes ?? []).slice(0, 12).map(t => (
-                  <div key={t.name} className="w-80 shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
-                ))}
-                <div className="grid w-80 shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
-                  <div className="text-[12px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 12)} more themes</div>
-                  <div className="mt-2 text-[14px] font-medium">Explore all 38 in app</div>
-                  <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-white">Browse themes</button>
-                </div>
+          <div className="beat beat-critique absolute inset-0 flex items-center justify-center px-6 sm:px-10">
+            <div className="mx-auto grid w-full max-w-[1100px] gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div className="text-center lg:text-left">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">08 -- Vision critique</div>
+                <h2 className="mt-2 text-[2.6rem] font-semibold leading-[0.9] tracking-[-0.03em]">Loop that sees.</h2>
+                <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-fg-muted lg:mx-0">Every slide is rasterised to PNG and inspected. If text would need 8pt to fit, we flag it -- fix is less text, not smaller font.</p>
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-sunken px-3 py-1 text-[11px] text-fg-faint">PNG → <span className="text-accent">vision</span> → fix → re-render</div>
               </div>
+              <BrowserFrame url="forge.local/slide-07.png · vision">
+                <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
+                  <div className="flex items-center gap-2 text-amber-700"><span className="h-2 w-2 rounded-full bg-amber-500" /> Vision flagged</div>
+                  <div className="mt-2 text-[13px] leading-relaxed">"Bullets would need 9.9pt -- floor 14pt. Trim to 3 bullets."</div>
+                  <div className="mt-3 flex gap-2"><span className="rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-medium text-white">Fix</span><span className="rounded-full bg-white border px-2.5 py-1 text-[11px]">Keep</span></div>
+                </div>
+              </BrowserFrame>
             </div>
-          </div>
-          <div className="beat beat-critique absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-            <div className="relative">
-              <div className="ring absolute inset-0 rounded-full border border-accent/30" />
-              <div className="relative grid h-20 w-20 place-items-center rounded-full bg-accent-tint text-accent text-2xl">◯</div>
-            </div>
-            <h2 className="mt-6 text-[2.6rem] font-semibold tracking-[-0.03em]">08 — Vision critique loop.</h2>
-            <p className="mx-auto mt-2 max-w-md text-[14px] text-fg-muted">Real PNGs inspected; floor flags instead of shrinking. Fix is less text. The loop runs after every generation.</p>
-            <div className="mt-4 rounded-full bg-sunken px-3 py-1 text-[11px] text-fg-faint">PNG → vision → fix → re-render</div>
           </div>
           <div className="beat beat-cta absolute inset-0 flex items-center justify-center px-6 sm:px-10">
             <div className="cta-glow pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_100%,rgba(124,108,255,0.18),transparent_70%)] opacity-0" />
@@ -267,7 +286,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <div className="text-left">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">Ready to build?</div>
                 <h2 className="mt-3 text-[2.6rem] font-semibold leading-[0.9] tracking-[-0.03em] sm:text-[3rem]">Topic in.<br />Standing ovation out.</h2>
-                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/80">Join today — the briefing is one question at a time, everything else defaults. Your first deck in minutes.</p>
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/80">Join today -- the briefing is one question at a time, everything else defaults. Your first deck in minutes.</p>
                 <button onClick={handleChat} className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-[13px] font-semibold text-accent shadow-sm hover:bg-white/90">Start a chat →</button>
                 <div className="mt-4 flex items-center gap-3 text-[11px] text-white/60"><span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /> Hosted</span><span>·</span><span>38 themes</span><span>·</span><span>50+ types</span></div>
               </div>
