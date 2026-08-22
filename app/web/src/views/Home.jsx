@@ -33,66 +33,63 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         scrollTrigger: {
           trigger: wrap,
           start: "top top",
-          end: "+=950%",
-          scrub: 1.2,
+          end: "+=1200%",
+          scrub: 1.5,
           pin: pin,
           anticipatePin: 1,
-          snap: { snapTo: "labels", duration: { min: 0.32, max: 0.65 }, delay: 0.12, ease: "power1.inOut" },
+          snap: { snapTo: "labels", duration: { min: 0.4, max: 0.8 }, delay: 0.2, ease: "power1.inOut" },
         }
       });
       tl.addLabel("hero", 0);
+      tl.to({}, { duration: 1.0 });
+      tl.to(".beat-hero .hero-copy", { y: -30, autoAlpha: 0, ease: "none", duration: 0.5 }, 1.2);
+      tl.to(".beat-hero .hero-cards", { y: -60, autoAlpha: 0, ease: "none", duration: 0.5 }, 1.2);
+      tl.to(".sheet-hero", { autoAlpha: 0, ease: "none", duration: 0.4 }, 1.5);
+      tl.to(".sheet-warm", { autoAlpha: 1, ease: "none", duration: 0.5 }, 1.6);
+      tl.addLabel("brief", 2.0);
+      tl.fromTo(".beat-brief", { x: "100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 2.0);
+      tl.fromTo(".beat-brief .copy", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "none", duration: 0.5 }, 2.2);
+      tl.to({}, { duration: 1.0 });
+      tl.to(".beat-brief", { x: "-20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 4.0);
+      tl.addLabel("research", 4.2);
+      tl.fromTo(".beat-research", { x: "-100%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 4.2);
+      tl.fromTo(".beat-research .stagger > *", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 4.4);
+      tl.to({}, { duration: 1.0 });
+      tl.to(".beat-research", { x: "20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 6.2);
+      tl.to(".sheet-warm", { autoAlpha: 0, ease: "none", duration: 0.4 }, 6.0);
+      tl.to(".sheet-deep", { autoAlpha: 1, ease: "none", duration: 0.5 }, 6.1);
+      tl.addLabel("outline", 6.4);
+      tl.fromTo(".beat-outline", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.7 }, 6.4);
       tl.to({}, { duration: 0.9 });
-      tl.to(".beat-hero .hero-copy", { y: -50, autoAlpha: 0, ease: "none", duration: 0.6 }, 1.0);
-      tl.to(".beat-hero .hero-cards", { y: -90, x: 30, rotate: 3, autoAlpha: 0, ease: "none", duration: 0.6 }, 1.0);
-      tl.to(".sheet-hero", { autoAlpha: 0, ease: "none", duration: 0.5 }, 1.2);
-      tl.to(".sheet-warm", { autoAlpha: 1, ease: "none", duration: 0.6 }, 1.3);
-      tl.addLabel("brief", 1.9);
-      tl.fromTo(".beat-brief", { x: "110%", rotate: 5, autoAlpha: 0 }, { x: "0%", rotate: -1, autoAlpha: 1, ease: "none", duration: 0.7 }, 1.9);
-      tl.fromTo(".beat-brief .copy", { y: 60, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "none", duration: 0.6 }, 2.05);
-      tl.to({}, { duration: 0.85 });
-      tl.to(".beat-brief", { x: "-25%", autoAlpha: 0, scale: 0.97, ease: "none", duration: 0.45 }, 3.6);
-      tl.addLabel("research", 3.8);
-      tl.fromTo(".beat-research .stagger > *", { x: -90, autoAlpha: 0 }, { x: 0, autoAlpha: 1, stagger: 0.12, ease: "none", duration: 0.55 }, 3.8);
-      tl.fromTo(".beat-research .copy", { x: 60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "none", duration: 0.6 }, 3.95);
+      tl.to(".beat-outline", { scale: 0.95, autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 8.0);
+      tl.addLabel("approve", 8.2);
+      tl.fromTo(".beat-approve", { y: "-80%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 8.2);
+      tl.fromTo(".beat-approve .check", { scale: 0 }, { scale: 1, ease: "back.out(1.4)", duration: 0.5 }, 8.5);
+      tl.to({}, { duration: 0.9 });
+      tl.to(".beat-approve", { y: "50%", autoAlpha: 0, ease: "none", duration: 0.4 }, 9.8);
+      tl.addLabel("content", 10.0);
+      tl.fromTo(".beat-content", { x: "-30%", autoAlpha: 0 }, { x: "0%", autoAlpha: 1, ease: "none", duration: 0.8 }, 10.0);
+      tl.fromTo(".beat-content .content-card", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 10.2);
+      tl.to({}, { duration: 0.9 });
+      tl.to(".beat-content", { x: "20%", autoAlpha: 0, ease: "none", duration: 0.4 }, 12.0);
+      tl.addLabel("render", 12.2);
+      tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 12.2);
+      tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 12.4);
+      tl.to({}, { duration: 0.9 });
+      tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 14.0);
+      tl.addLabel("themes", 14.2);
+      tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 14.2);
+      tl.to(".themes-track", { x: -120, ease: "none", duration: 1.0 }, 14.2);
       tl.to({}, { duration: 0.8 });
-      tl.to(".beat-research", { x: "30%", autoAlpha: 0, rotate: 2, ease: "none", duration: 0.45 }, 5.2);
-      tl.to(".sheet-warm", { autoAlpha: 0, ease: "none", duration: 0.5 }, 5.0);
-      tl.to(".sheet-deep", { autoAlpha: 1, ease: "none", duration: 0.6 }, 5.2);
-      tl.addLabel("outline", 5.4);
-      tl.fromTo(".beat-outline", { scale: 0.58, autoAlpha: 0, filter: "blur(8px)" }, { scale: 1, autoAlpha: 1, filter: "blur(0px)", ease: "none", duration: 0.75 }, 5.4);
+      tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "none", duration: 0.4 }, 16.0);
+      tl.addLabel("critique", 16.2);
+      tl.fromTo(".beat-critique", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.7 }, 16.2);
       tl.to({}, { duration: 0.7 });
-      tl.to(".beat-outline", { scale: 0.88, autoAlpha: 0, y: -60, ease: "none", duration: 0.45 }, 6.8);
-      tl.addLabel("approve", 7.0);
-      tl.fromTo(".beat-approve", { y: "-110%", rotate: -6, autoAlpha: 0 }, { y: "0%", rotate: 0, autoAlpha: 1, ease: "none", duration: 0.7 }, 7.0);
-      tl.fromTo(".beat-approve .check", { scale: 0, rotate: -30 }, { scale: 1, rotate: 0, ease: "back.out(1.6)", duration: 0.5 }, 7.4);
+      tl.to(".beat-critique", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 17.6);
+      tl.addLabel("cta", 17.8);
+      tl.fromTo(".beat-cta", { y: "60%", autoAlpha: 0, scale: 0.96 }, { y: "0%", autoAlpha: 1, scale: 1, ease: "none", duration: 0.7 }, 17.8);
+      tl.to(".sheet-accent", { autoAlpha: 1, ease: "none", duration: 0.5 }, 17.8);
       tl.to({}, { duration: 0.8 });
-      tl.to(".beat-approve", { y: "60%", autoAlpha: 0, scale: 0.92, ease: "none", duration: 0.45 }, 8.3);
-      tl.addLabel("content", 8.5);
-      tl.fromTo(".beat-content", { x: "-25%", y: "65%", rotate: 4, autoAlpha: 0 }, { x: "0%", y: "0%", rotate: 0, autoAlpha: 1, ease: "none", duration: 0.8 }, 8.5);
-      tl.fromTo(".beat-content .content-card", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "none", duration: 0.5 }, 8.7);
-      tl.to({}, { duration: 0.75 });
-      tl.to(".beat-content", { x: "25%", y: "-35%", autoAlpha: 0, rotate: -3, ease: "none", duration: 0.45 }, 10.0);
-      tl.to(".sheet-deep", { autoAlpha: 0.85, ease: "none", duration: 0.4 }, 9.7);
-      tl.addLabel("render", 10.2);
-      tl.fromTo(".beat-render .copy", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "none", duration: 0.55 }, 10.2);
-      tl.fromTo(".beat-render .specimen", { y: 80, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "none", duration: 0.6 }, 10.35);
-      tl.to(".marquee-stack", { x: -140, ease: "none", duration: 1.0 }, 10.2);
-      tl.to({}, { duration: 0.6 });
-      tl.to(".beat-render", { autoAlpha: 0, y: -40, ease: "none", duration: 0.45 }, 11.6);
-      tl.addLabel("themes", 11.8);
-      tl.fromTo(".beat-themes", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 11.8);
-      tl.to({}, { duration: 0.6 });
-      tl.to(".beat-themes", { autoAlpha: 0, y: -30, ease: "none", duration: 0.45 }, 13.2);
-      tl.addLabel("critique", 13.4);
-      tl.fromTo(".beat-critique", { scale: 0.78, autoAlpha: 0, y: 30 }, { scale: 1, autoAlpha: 1, y: 0, ease: "none", duration: 0.7 }, 13.4);
-      tl.to(".beat-critique .ring", { scale: 1.4, autoAlpha: 0, ease: "none", duration: 0.9 }, 13.55);
-      tl.to({}, { duration: 0.5 });
-      tl.to(".beat-critique", { scale: 1.07, autoAlpha: 0, y: -40, ease: "none", duration: 0.45 }, 14.3);
-      tl.addLabel("cta", 14.5);
-      tl.fromTo(".beat-cta", { y: "70%", autoAlpha: 0, scale: 0.94 }, { y: "0%", autoAlpha: 1, scale: 1, ease: "none", duration: 0.75 }, 14.5);
-      tl.to(".sheet-accent", { autoAlpha: 1, ease: "none", duration: 0.6 }, 14.5);
-      tl.fromTo(".beat-cta .cta-glow", { scale: 0.7, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.6 }, 14.65);
-      tl.to({}, { duration: 0.7 });
     }, wrap);
     return () => ctx.revert();
   }, [reduced, themes]);
@@ -124,7 +121,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         <div className="pointer-events-none fixed inset-0 -z-10">
           <div className="journey-sheet sheet-hero absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_0%,var(--color-accent-tint),transparent_70%),radial-gradient(40rem_28rem_at_90%_85%,rgba(124,108,255,0.10),transparent_65%)] opacity-100" />
           <div className="journey-sheet sheet-warm absolute inset-0 bg-[radial-gradient(55rem_32rem_at_20%_25%,rgba(251,191,120,0.14),transparent_62%),radial-gradient(36rem_24rem_at_80%_60%,rgba(244,114,182,0.10),transparent_60%)] opacity-0" />
-          <div className="journey-sheet sheet-deep absolute inset-0 bg-[#0B0F1A] opacity-0" />
+          <div className="journey-sheet sheet-deep absolute inset-0 bg-base opacity-0" />
           <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.22),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.16),transparent_60%)] opacity-0" />
         </div>
         <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -199,7 +196,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           <div className="beat beat-render absolute inset-0 flex flex-col justify-center px-6 sm:px-10">
             <div className="mx-auto w-full max-w-[1400px]">
               <div className="copy">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 — Render</div>
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">05 — Render</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck.yaml, any of 38 themes. Chrome after theme, so marks never vanish. Editable pptx, plus plate mesh.</p>
               </div>
@@ -213,20 +210,19 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
             </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-[#0B0F1A]/90 px-6 text-white sm:px-10 backdrop-blur-sm">
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-base/90 px-6 text-fg sm:px-10 backdrop-blur-sm">
             <div className="mx-auto w-full max-w-[1400px]">
-              <div className="text-[11px] uppercase tracking-[0.12em] text-white/40">Design languages</div>
+              <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 — Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
-              <p className="mt-2 text-[14px] text-white/60">Auto-drifts — scroll scrubs it faster. Hover to pause, showing 6 live + 32 more.</p>
-              <div className="mt-6 marquee-row overflow-hidden" onMouseEnter={(e) => e.currentTarget.classList.add("marquee-paused")} onMouseLeave={(e) => e.currentTarget.classList.remove("marquee-paused")}>
-                <div className="marquee-ltr flex gap-4" style={{"--marquee-dur":"22s"}}>
+              <p className="mt-2 text-[14px] text-fg-muted">Scroll scrubs the row — auto drifts when idle.</p>
+              <div className="mt-6 overflow-hidden" onMouseEnter={(e) => e.currentTarget.classList.add("marquee-paused")} onMouseLeave={(e) => e.currentTarget.classList.remove("marquee-paused")}>
+                <div className="flex gap-4 will-change-transform" style={{ transform: "translateX(0)" }}>
                   {(themes ?? []).slice(0, 6).map(t => <div key={t.name} className="w-64 shrink-0"><ThemeMiniCard theme={t} /></div>)}
-                  <div className="grid w-64 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-                    <div className="text-[11px] uppercase tracking-[0.12em] text-white/40">+ {Math.max(0, (themes?.length ?? 38) - 6)} more</div>
-                    <div className="mt-1 text-[13px] font-medium text-white">Explore all in app</div>
-                    <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-[#0B0F1A]">Browse themes</button>
+                  <div className="grid w-64 shrink-0 place-items-center rounded-2xl border border-line bg-panel p-6 text-center">
+                    <div className="text-[11px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 6)} more</div>
+                    <div className="mt-1 text-[13px] font-medium">Explore all in app</div>
+                    <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-white">Browse themes</button>
                   </div>
-                  {(themes ?? []).slice(0, 6).map(t => <div key={`${t.name}-dup`} className="w-64 shrink-0"><ThemeMiniCard theme={t} /></div>)}
                 </div>
               </div>
             </div>
@@ -236,7 +232,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <div className="ring absolute inset-0 rounded-full border border-accent/30" />
               <div className="relative grid h-20 w-20 place-items-center rounded-full bg-accent-tint text-accent text-2xl">◯</div>
             </div>
-            <h2 className="mt-6 text-[2.6rem] font-semibold tracking-[-0.03em]">Vision critique loop.</h2>
+            <h2 className="mt-6 text-[2.6rem] font-semibold tracking-[-0.03em]">08 — Vision critique loop.</h2>
             <p className="mx-auto mt-2 max-w-md text-[14px] text-fg-muted">Real PNGs inspected; floor flags instead of shrinking. Fix is less text. The loop runs after every generation.</p>
             <div className="mt-4 rounded-full bg-sunken px-3 py-1 text-[11px] text-fg-faint">PNG → vision → fix → re-render</div>
           </div>
