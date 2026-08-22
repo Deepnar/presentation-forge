@@ -4,7 +4,7 @@ import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
-import { ChevronDown, DocIcon, LayersIcon, PanelLeftClose, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
+import { ChevronDown, DocIcon, LayersIcon, PanelLeft, PanelLeftClose, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";

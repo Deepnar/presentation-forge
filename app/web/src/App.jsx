@@ -134,6 +134,37 @@ export default function App() {
 
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
 
+  const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
+  const isChatView = view === "chat";
+  // Landing header auto-hide on scroll (immersive), reappear at footer
+  useEffect(() => {
+    if (!isTourView) return;
+    const header = document.querySelector("header");
+    if (!header) return;
+    header.style.transition = "transform var(--dur-shell) var(--ease-shell)";
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY;
+        lastY = y;
+        const footer = document.querySelector("footer");
+        const footerVisible = footer && footer.getBoundingClientRect().top < window.innerHeight;
+        if (footerVisible || y < 80 || delta < 0) {
+          header.style.transform = "translateY(0)";
+        } else if (delta > 0 && y > 100) {
+          header.style.transform = "translateY(-100%)";
+        }
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isTourView, view]);
+
   /**
    * The one creation entry: lazy — don't spawn in the sidebar until the
    * first prompt is sent, so the list doesn't fill with empties.
@@ -396,37 +427,6 @@ export default function App() {
       </div>
     );
   }
-
-  const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
-  const isChatView = view === "chat";
-  // Landing header auto-hide on scroll (immersive), reappear at footer
-  useEffect(() => {
-    if (!isTourView) return;
-    const header = document.querySelector("header");
-    if (!header) return;
-    header.style.transition = "transform var(--dur-shell) var(--ease-shell)";
-    let lastY = window.scrollY;
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        const delta = y - lastY;
-        lastY = y;
-        const footer = document.querySelector("footer");
-        const footerVisible = footer && footer.getBoundingClientRect().top < window.innerHeight;
-        if (footerVisible || y < 80 || delta < 0) {
-          header.style.transform = "translateY(0)";
-        } else if (delta > 0 && y > 100) {
-          header.style.transform = "translateY(-100%)";
-        }
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isTourView, view]);
 
   return (
     <div className={`relative bg-base overflow-x-hidden ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
