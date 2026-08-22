@@ -27,41 +27,16 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
           : "border-line hover:border-line-strong"
       }`}
     >
-      {/* Title band — taller for vertical presence */}
+      {/* Preview — solid color only, no header */}
       <div
-        className="relative flex h-[190px] shrink-0 flex-col justify-end px-3 pb-3 pt-3"
+        className="relative flex h-[190px] shrink-0"
         style={{ background: title.bg ?? p.ink }}
       >
-        <div className="relative z-10">
-          <div
-            className="truncate leading-tight"
-            style={{
-              color: title.ink ?? p.surface,
-              fontFamily: `"${theme.fonts.heading}", serif`,
-              fontWeight: 800,
-              fontSize: 20,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            
-          </div>
-          <div
-            className="mt-1 truncate"
-            style={{
-              color: title.muted ?? p.ink_muted,
-              fontFamily: `"${theme.fonts.body}", sans-serif`,
-              fontSize: 11,
-              fontStyle: "italic",
-            }}
-          >
-            
-          </div>
-        </div>
         {useThumb && (
           <img
             src={theme.thumb}
             alt=""
-            className="absolute inset-0 z-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
             onError={() => setThumbFailed(true)}
           />

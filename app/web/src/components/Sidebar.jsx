@@ -92,6 +92,14 @@ export default function Sidebar({
               )}
             </TabButton>
             <TabButton active={tab === "projects"} onClick={() => setTab("projects")}>Projects</TabButton>
+            <button
+              onClick={onToggleLeft}
+              title="Collapse navigation"
+              aria-label="Collapse navigation"
+              className="ml-auto grid h-7 w-7 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /><path d="m13 8 3 4-3 4" /></svg>
+            </button>
           </div>
 
           {tab === "projects" && (
@@ -140,8 +148,8 @@ export default function Sidebar({
                                   : "hover:bg-hover"
                               }`}
                             >
-                              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${c.produced ? "border-accent/30 bg-accent/10 text-accent" : "border-line bg-sunken text-fg-faint"}`}>
-                                <span className="text-[13px] font-semibold uppercase">{(c.title?.[0] ?? "?").toUpperCase()}</span>
+                              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-line bg-sunken">
+                                <span className="h-2.5 w-2.5 rounded-full bg-accent/60"></span>
                               </span>
                               <span className="min-w-0 flex-1">
                                 <span className="block truncate text-[12.5px] font-medium text-fg">{c.title}</span>

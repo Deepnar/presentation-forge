@@ -98,16 +98,8 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
       onClick={onClick}
       className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111827] text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition hover:border-accent/30 hover:shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
     >
-      {/* specimen — empty for light consistency */}
-      <div className="relative flex aspect-[16/10] flex-col justify-end p-4" style={{ background: title.bg ?? p.ink }}>
-        <div className="relative z-10">
-          <div className="truncate leading-tight" style={{ color: title.ink ?? p.surface, fontFamily: `"${theme.fonts.heading}", serif`, fontWeight: 800, fontSize: 22, letterSpacing: "-0.02em" }}>
-            
-          </div>
-          <div className="mt-1 truncate" style={{ color: title.muted ?? p.ink_muted, fontFamily: `"${theme.fonts.body}", sans-serif`, fontSize: 12, fontStyle: "italic" }}>
-            
-          </div>
-        </div>
+      {/* specimen — solid color only, no header */}
+      <div className="relative flex aspect-[16/10] p-4" style={{ background: title.bg ?? p.ink }}>
         {useThumb && (
           <img src={theme.thumb} alt="" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" loading="lazy" onError={() => setThumbFailed(true)} />
         )}
