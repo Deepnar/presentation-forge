@@ -120,10 +120,10 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
     <>
       <div ref={wrapRef} className="relative w-full overflow-x-hidden">
         <div className="pointer-events-none fixed inset-0 -z-10">
-          <div className="journey-sheet sheet-hero absolute inset-0 bg-base opacity-100" />
-          <div className="journey-sheet sheet-warm absolute inset-0 bg-base opacity-0" />
-          <div className="journey-sheet sheet-deep absolute inset-0 bg-base opacity-0" />
-          <div className="journey-sheet sheet-accent absolute inset-0 bg-base opacity-0" />
+          <div className="journey-sheet sheet-hero absolute inset-0 bg-transparent opacity-100" />
+          <div className="journey-sheet sheet-warm absolute inset-0 bg-transparent opacity-0" />
+          <div className="journey-sheet sheet-deep absolute inset-0 bg-transparent opacity-0" />
+          <div className="journey-sheet sheet-accent absolute inset-0 bg-transparent opacity-0" />
         </div>
         <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
@@ -332,8 +332,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
             </div>
           </div>
           <div className="beat beat-cta absolute inset-0 flex items-center justify-center px-6 sm:px-10">
-            <div className="cta-glow pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_100%,rgba(124,108,255,0.18),transparent_70%)] opacity-0" />
-            <div className="relative mx-auto grid w-full max-w-[1100px] gap-8 rounded-[2rem] border border-white/10 bg-accent p-8 text-white shadow-[0_40px_80px_rgba(109,91,255,0.35)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-10">
+            <div className="cta-glow pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_100%,rgba(11,15,26,0.06),transparent_70%)] opacity-0" />
+            <div className="relative mx-auto grid w-full max-w-[1100px] gap-8 rounded-[2rem] border border-white/10 bg-accent p-8 text-white shadow-[0_32px_64px_rgba(11,15,26,0.22)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-10">
               <div className="text-left">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">Ready to build?</div>
                 <h2 className="mt-3 text-[2.6rem] font-semibold leading-[0.9] tracking-[-0.03em] sm:text-[3rem]">Topic in.<br />Standing ovation out.</h2>
