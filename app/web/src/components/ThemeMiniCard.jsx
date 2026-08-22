@@ -8,7 +8,7 @@ import { useState } from "react";
  * their real rendered background thumbnail instead, falling back to the token
  * synthesis when the thumbnail has not been generated.
  */
-export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme = false }) {
+export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme = false, hideSpecimen = false }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const label = theme.label;
@@ -68,18 +68,20 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
         )}
       </div>
 
-      {/* Content strip — fixed height */}
-      <div className="flex h-[52px] shrink-0 items-center gap-1.5 px-2.5" style={{ background: p.bg }}>
-        <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
-          01
-        </span>
-        <div
-          className="h-5 min-w-0 flex-1 rounded-[3px] px-1.5 py-1"
-          style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}
-        >
-          <div className="h-[3px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
+      {/* Content strip — hidden on tour per request to keep thumbnail clean */}
+      {!hideSpecimen && (
+        <div className="flex h-[52px] shrink-0 items-center gap-1.5 px-2.5" style={{ background: p.bg }}>
+          <span className="rounded-full px-1.5 py-[2px] text-[6px] font-bold" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>
+            01
+          </span>
+          <div
+            className="h-5 min-w-0 flex-1 rounded-[3px] px-1.5 py-1"
+            style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}
+          >
+            <div className="h-[3px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Name bar — fixed height */}
       <div className="flex h-9 shrink-0 items-center justify-between gap-2 border-t border-line bg-sunken px-2.5">

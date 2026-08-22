@@ -34,10 +34,9 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
           trigger: wrap,
           start: "top top",
           end: "+=1400%",
-          scrub: 1.8,
+          scrub: true,
           pin: pin,
           anticipatePin: 1,
-          snap: { snapTo: "labelsDirectional", duration: { min: 0.5, max: 0.9 }, delay: 0.35, ease: "power1.inOut" },
         }
       });
       tl.addLabel("hero", 0);
@@ -121,8 +120,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
         <div className="pointer-events-none fixed inset-0 -z-10">
           <div className="journey-sheet sheet-hero absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_0%,var(--color-accent-tint),transparent_70%),radial-gradient(40rem_28rem_at_90%_85%,rgba(124,108,255,0.10),transparent_65%)] opacity-100" />
           <div className="journey-sheet sheet-warm absolute inset-0 bg-[radial-gradient(55rem_32rem_at_20%_25%,rgba(251,191,120,0.14),transparent_62%),radial-gradient(36rem_24rem_at_80%_60%,rgba(244,114,182,0.10),transparent_60%)] opacity-0" />
-          <div className="journey-sheet sheet-deep absolute inset-0 bg-base opacity-0" />
-          <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.22),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.16),transparent_60%)] opacity-0" />
+          <div className="journey-sheet sheet-deep absolute inset-0 bg-[radial-gradient(50rem_30rem_at_50%_50%,rgba(124,108,255,0.06),transparent_70%)] opacity-0" />
+          <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.18),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.12),transparent_60%)] opacity-0" />
         </div>
         <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
@@ -131,9 +130,9 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <h1 className="mt-6 text-[3.6rem] font-semibold leading-[0.88] tracking-[-0.04em] sm:text-[5.2rem]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
               <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you. No templates, no hand-layout.</p>
               <div className="mt-8 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
-              <div className="hero-cards mt-8 flex justify-center gap-3">
-                {(themes ?? []).slice(0, 3).map(t => <div key={t.name} className="w-48 sm:w-56"><ThemeMiniCard theme={t} /></div>)}
-              </div>
+            <div className="hero-cards mt-8 flex justify-center gap-3">
+              {(themes ?? []).slice(0, 3).map(t => <div key={t.name} className="w-56"><ThemeMiniCard theme={t} hideSpecimen /></div>)}
+            </div>
               <div className="mt-6 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll — one step at a time ↓</div>
             </div>
           </div>
@@ -226,7 +225,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
             </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-base/80 px-6 text-fg sm:px-10 backdrop-blur-sm">
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent px-6 text-fg sm:px-10 backdrop-blur-sm">
             <div className="mx-auto w-full max-w-[1400px]">
               <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 — Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
