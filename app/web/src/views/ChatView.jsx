@@ -4,7 +4,7 @@ import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
-import { ChevronDown, DocIcon, LayersIcon, PanelLeft, PanelLeftClose, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
+import { ChevronDown, DocIcon, LayersIcon, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
@@ -1003,19 +1003,9 @@ export default function ChatView({
   // scroll viewport is gone, so there is no void between the chips and the bar.
   const greeting = !chat.topic && !chat.produced;
 
-  return (
+    return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
-        {showPanel && (
-          <button
-            onClick={() => setPanelOpen((v) => !v)}
-            title={panelOpen ? "Collapse slides" : "Expand slides"}
-            aria-label={panelOpen ? "Collapse slides" : "Expand slides"}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-          >
-            {panelOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
-          </button>
-        )}
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold text-fg">{chat.title}</div>
           <div className="truncate text-[10.5px] text-fg-faint">
