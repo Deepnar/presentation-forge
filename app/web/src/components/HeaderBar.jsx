@@ -54,7 +54,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const isTour = view === "home" || view === "tour-themes" || view === "privacy" || view === "terms" || view === "contact" || view === "docs";
   const logoHref = isTour && !user ? "#/home" : "#/chat";
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-panel/90 px-3 backdrop-blur-md shadow-sm">
+    <header className={`${isTour ? "fixed top-0 left-0 right-0 z-30" : "sticky top-0 z-20"} flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-panel px-3 shadow-sm`}>
       {!hideToggle && (
         <button
           onClick={onToggleLeft}

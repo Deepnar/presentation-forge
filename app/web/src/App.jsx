@@ -347,7 +347,7 @@ export default function App() {
     return (
       <div className="relative min-h-screen bg-base">
         <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" />
-        <div className="relative z-10 flex min-h-screen flex-col">
+        <div className="relative z-10 flex min-h-screen flex-col pt-14">
           <HeaderBar
             leftOpen={leftOpen}
             onToggleLeft={() => setLeftOpen((o) => !o)}
@@ -384,7 +384,7 @@ export default function App() {
     <div className={`relative bg-base overflow-x-hidden ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
       {isTourView ? <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" />}
 
-      <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col" : "h-full flex-col"}`}>
+      <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col"}`}>
         <HeaderBar
           leftOpen={leftOpen}
           onToggleLeft={() => setLeftOpen((o) => !o)}
