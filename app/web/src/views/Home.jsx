@@ -79,7 +79,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 14.0);
       tl.addLabel("themes", 14.2);
       tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 14.2);
-      tl.to(".themes-track", { x: -120, ease: "none", duration: 1.0 }, 14.2);
+      tl.to(".themes-track", { x: -520, ease: "none", duration: 1.4 }, 14.2);
       tl.to({}, { duration: 0.8 });
       tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "none", duration: 0.4 }, 16.0);
       tl.addLabel("critique", 16.2);
@@ -199,31 +199,49 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <div className="copy">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-accent">06 — Render</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic — chrome locked.</h2>
-                <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck.yaml, any of 38 themes. Chrome after theme, so marks never vanish. Editable pptx, plus plate mesh.</p>
+                <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat — not the template.</p>
               </div>
-              <div className="specimen mt-6 grid grid-cols-3 gap-3">
-                <ThemeMiniCard theme={themes?.[0] ?? { palette:{bg:"#FFF",surface:"#F1F3F9",ink:"#0F172A",ink_muted:"#94A3B8",accent:"#6D5BFF"}, surfaces:{title:{bg:"#0F172A",ink:"#FFF",muted:"#94A3B8"}}, fonts:{heading:"Inter",body:"Inter"}, label:"Demo", name:"demo" }} />
-                <ThemeMiniCard theme={themes?.[1] ?? { palette:{bg:"#FFF",surface:"#F1F3F9",ink:"#0F172A",ink_muted:"#94A3B8",accent:"#6D5BFF"}, surfaces:{title:{bg:"#0F172A",ink:"#FFF",muted:"#94A3B8"}}, fonts:{heading:"Inter",body:"Inter"}, label:"Demo 2", name:"demo2" }} />
-                <ThemeMiniCard theme={themes?.[2] ?? { palette:{bg:"#FFF",surface:"#F1F3F9",ink:"#0F172A",ink_muted:"#94A3B8",accent:"#6D5BFF"}, surfaces:{title:{bg:"#0F172A",ink:"#FFF",muted:"#94A3B8"}}, fonts:{heading:"Inter",body:"Inter"}, label:"Demo 3", name:"demo3" }} />
+              <div className="specimen mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
+                {[
+                  ["Bullets", "bullets"],
+                  ["Stats", "stats"],
+                  ["Chart", "chart"],
+                  ["Compare", "compare"],
+                  ["Timeline", "timeline"],
+                  ["Quote", "quote"],
+                ].map(([label, kind]) => (
+                  <div key={label} className="rounded-xl border bg-panel p-3 text-center">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">{label}</div>
+                    <div className="mt-2 h-8 rounded bg-sunken" />
+                    <div className="mt-1 text-[10px] text-fg-faint">{kind}</div>
+                  </div>
+                ))}
               </div>
               <div className="marquee-stack mt-6 flex gap-3 overflow-hidden opacity-60">
                 <div className="flex w-max gap-3"><div className="h-12 w-20 rounded bg-accent" /><div className="h-12 w-20 rounded bg-accent/60" /><div className="h-12 w-20 rounded bg-accent/30" /><div className="h-12 w-20 rounded bg-accent/20" /></div>
               </div>
             </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-base/90 px-6 text-fg sm:px-10 backdrop-blur-sm">
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-base/80 px-6 text-fg sm:px-10 backdrop-blur-sm">
             <div className="mx-auto w-full max-w-[1400px]">
               <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 — Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
-              <p className="mt-2 text-[14px] text-fg-muted">Scroll scrubs the row — auto drifts when idle.</p>
-              <div className="mt-6 overflow-hidden" onMouseEnter={(e) => e.currentTarget.classList.add("marquee-paused")} onMouseLeave={(e) => e.currentTarget.classList.remove("marquee-paused")}>
-                <div className="flex gap-4 will-change-transform" style={{ transform: "translateX(0)" }}>
-                  {(themes ?? []).slice(0, 6).map(t => <div key={t.name} className="w-64 shrink-0"><ThemeMiniCard theme={t} /></div>)}
-                  <div className="grid w-64 shrink-0 place-items-center rounded-2xl border border-line bg-panel p-6 text-center">
-                    <div className="text-[11px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 6)} more</div>
-                    <div className="mt-1 text-[13px] font-medium">Explore all in app</div>
-                    <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-white">Browse themes</button>
+              <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 6 live themes then 32 more.</p>
+              <div className="themes-track mt-6 flex gap-4 overflow-hidden will-change-transform">
+                {(themes ?? []).slice(0, 6).map(t => (
+                  <div key={t.name} className="w-64 shrink-0 overflow-hidden rounded-2xl border border-line bg-panel">
+                    <div className="h-24" style={{ background: t.palette?.bg ?? "#FFF", borderBottom: `4px solid ${t.palette?.accent ?? "#6D5BFF"}` }} />
+                    <div className="p-3">
+                      <div className="flex gap-1">
+                        {[t.palette?.bg, t.palette?.accent, t.palette?.ink].filter(Boolean).slice(0,3).map((c,i) => <span key={i} className="h-3 w-8 rounded" style={{ background: c }} />)}
+                      </div>
+                    </div>
                   </div>
+                ))}
+                <div className="grid w-64 shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
+                  <div className="text-[11px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 6)} more</div>
+                  <div className="mt-1 text-[13px] font-medium">Explore all</div>
+                  <button onClick={() => onBrowseThemes?.()} className="mt-2 rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-white">Browse themes</button>
                 </div>
               </div>
             </div>
