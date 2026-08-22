@@ -24,12 +24,12 @@
   --color-fg-muted: #475569;
   --color-fg-faint: #94A3B8;
 
-  /* Accent: Gamma indigo — trustworthy, not playful. */
-  --color-accent: #6D5BFF;
-  --color-accent-hi: #7C6CFF;
-  --color-accent-dim: #DDD6FE;
-  --color-accent-tint: #F5F3FF;
-  --color-accent-glow: rgba(109, 91, 255, 0.10);
+  /* Accent: near-black — no lavender slop, slate ink for light. */
+  --color-accent: #0B0F1A;
+  --color-accent-hi: #1A2236;
+  --color-accent-dim: #E2E8F0;
+  --color-accent-tint: #F1F5F9;
+  --color-accent-glow: rgba(11, 15, 26, 0.08);
 
   --color-amber: #F59E0B;
   --color-danger: #EF4444;
@@ -64,41 +64,40 @@
     0 16px 48px rgba(15, 23, 42, 0.12);
 }
 
-/* Dark mode — the same indigo accent, but on a deep slate canvas.
-   Toggle via <html data-theme="dark">. */
+/* Dark mode removed — single light system. [data-theme="dark"] now mirrors light so no flash. */
 [data-theme="dark"] {
-  --color-base: #0B0F1A;
-  --color-sunken: #111827;
-  --color-panel: #1A2236;
-  --color-raised: #1E2A44;
-  --color-prompt: #1A2236;
-  --color-hover: #243150;
-  --color-field: #1A2236;
+  --color-base: #F8F9FC;
+  --color-sunken: #F1F3F9;
+  --color-panel: #FFFFFF;
+  --color-raised: #FFFFFF;
+  --color-prompt: #FFFFFF;
+  --color-hover: #F1F3F9;
+  --color-field: #FFFFFF;
 
-  --color-line: #27324A;
-  --color-line-strong: #32405E;
+  --color-line: #E6E8F0;
+  --color-line-strong: #D1D5E0;
 
-  --color-fg: #E6EAF2;
-  --color-fg-muted: #9AA4B8;
-  --color-fg-faint: #6B7A90;
+  --color-fg: #0F172A;
+  --color-fg-muted: #475569;
+  --color-fg-faint: #94A3B8;
 
-  --color-accent: #7C6CFF;
-  --color-accent-hi: #8B7FFF;
-  --color-accent-dim: #2D2A5A;
-  --color-accent-tint: rgba(124, 108, 255, 0.14);
-  --color-accent-glow: rgba(124, 108, 255, 0.12);
+  --color-accent: #0B0F1A;
+  --color-accent-hi: #1A2236;
+  --color-accent-dim: #E2E8F0;
+  --color-accent-tint: #F1F5F9;
+  --color-accent-glow: rgba(11, 15, 26, 0.08);
 
-  --color-overlay: rgba(0, 0, 0, 0.55);
+  --color-overlay: rgba(15, 23, 42, 0.45);
 
   --shadow-card:
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    0 8px 24px rgba(0, 0, 0, 0.4);
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.06);
   --shadow-card-hover:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    0 16px 40px rgba(0, 0, 0, 0.5);
+    0 4px 16px rgba(15, 23, 42, 0.08),
+    0 8px 24px rgba(15, 23, 42, 0.08);
   --shadow-float:
-    0 16px 40px rgba(0, 0, 0, 0.6),
-    0 24px 64px rgba(0, 0, 0, 0.6);
+    0 8px 24px rgba(15, 23, 42, 0.10),
+    0 16px 48px rgba(15, 23, 42, 0.12);
 }
 
 html {

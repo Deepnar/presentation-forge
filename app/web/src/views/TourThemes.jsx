@@ -24,47 +24,47 @@ export default function TourThemes({ onAuth, authed = false }) {
 
   return (
     <div className="min-h-full">
-      {/* dark hero band */}
-      <div className="border-b border-white/10 bg-[#0B0F1A] px-6 py-10 sm:px-10 sm:py-14">
+      {/* light hero band */}
+      <div className="border-b border-line bg-base px-6 py-10 sm:px-10 sm:py-14">
         <div className="mx-auto max-w-6xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/60">
+          <div className="inline-flex items-center gap-2 rounded-full border border-line bg-sunken px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             38 design languages
           </div>
-          <h1 className="mt-4 max-w-2xl text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-white sm:text-[3.2rem]">
-            Every deck gets its own <span className="bg-gradient-to-r from-[#8B5CF6] to-[#6D5BFF] bg-clip-text text-transparent">design language.</span>
+          <h1 className="mt-4 max-w-2xl text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg sm:text-[3.2rem]">
+            Every deck gets its own <span className="bg-gradient-to-r from-[#0B0F1A] to-black bg-clip-text text-transparent">design language.</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/60">
-            One YAML file per theme — <em className="text-white/80">tokens</em> drive the renderer, <em className="text-white/80">voice</em> steers the model. No overlap, no hex leaking into prompts. Each card below is drawn live from the theme’s own values.
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
+            One YAML file per theme — <em className="text-fg">tokens</em> drive the renderer, <em className="text-fg">voice</em> steers the model. No overlap, no hex leaking into prompts. Each card below is drawn live from the theme’s own values.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <a href={authed ? "#/themes" : "#/home"} onClick={authed ? undefined : (e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[#0B0F1A] hover:bg-white/90">
+            <a href={authed ? "#/themes" : "#/home"} onClick={authed ? undefined : (e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-white hover:bg-accent-hi">
               {authed ? "Open app gallery" : "Start a chat to use these"}
             </a>
-            <a href="#/home" className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[13px] font-medium text-white hover:bg-white/10">Back to tour</a>
+            <a href="#/home" className="rounded-full border border-line bg-panel px-4 py-2 text-[13px] font-medium text-fg-muted hover:bg-hover hover:text-fg">Back to tour</a>
           </div>
           <div className="relative mt-8 max-w-sm">
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-faint" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by vibe or name…"
-              className="w-full rounded-full border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-[14px] text-white outline-none placeholder:text-white/30 focus:border-accent"
+              className="w-full rounded-full border border-line bg-panel py-2 pl-9 pr-3 text-[14px] text-fg outline-none placeholder:text-fg-faint focus:border-accent"
             />
           </div>
         </div>
       </div>
 
-      {/* gallery — not cut off, full height, no max-h */}
-      <div className="bg-[#0B0F1A] px-6 pb-32 sm:px-10">
+      {/* gallery — light, full height */}
+      <div className="bg-base px-6 pb-32 sm:px-10">
         <div className="mx-auto max-w-6xl">
           {themes === null && (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="h-[300px] rounded-2xl bg-white/5 skeleton" />)}
+              {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="h-[300px] rounded-2xl bg-sunken skeleton" />)}
             </div>
           )}
           {filtered?.length === 0 && (
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-12 text-center text-white/60">
+            <div className="rounded-2xl border border-line bg-panel p-12 text-center text-fg-muted">
               No themes match “{query.trim()}”.
             </div>
           )}
@@ -73,8 +73,8 @@ export default function TourThemes({ onAuth, authed = false }) {
               <MarketingThemeCard key={t.name} theme={t} onAuth={onAuth} authed={authed} />
             ))}
           </div>
-          <div className="mt-10 text-center text-[12px] text-white/40">
-            The app’s gallery at <a href="#/themes" className="text-white/70 hover:text-white underline"> #/themes</a> lets you set your default — your next deck starts there.
+          <div className="mt-10 text-center text-[12px] text-fg-faint">
+            The app’s gallery at <a href="#/themes" className="text-fg-muted hover:text-fg underline"> #/themes</a> lets you set your default — your next deck starts there.
           </div>
         </div>
       </div>

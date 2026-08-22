@@ -74,7 +74,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "power3.out", duration: 1.0 }, 16.0);
       tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.12, ease: "power2.out", duration: 0.8 }, 16.3);
       // Render track scrubs left as you stay on the beat — same mechanic as themes, smoother
-      tl.to(".render-track", { x: -2200, ease: "sine.inOut", duration: 2.2 }, 16.5);
+      tl.to(".render-track", { x: -3600, ease: "sine.inOut", duration: 2.5 }, 16.5);
       tl.to({}, { duration: 0.8 });
       tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "power2.inOut", duration: 0.7 }, 18.4);
       tl.addLabel("themes", 18.7);
@@ -100,7 +100,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       <div className="w-full">
         <section className="mx-auto max-w-6xl px-6 py-16 text-center">
           <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck -- in minutes</span>
-          <h1 className="mt-4 text-[3rem] font-semibold leading-[0.9] tracking-[-0.04em]">Topic in.<br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
+          <h1 className="mt-4 text-[3rem] font-black leading-[0.9] tracking-[-0.05em]"><span className="bg-gradient-to-r from-[#0B0F1A] to-black bg-clip-text text-transparent">Topic in.</span><br /><span className="bg-gradient-to-r from-black to-[#0B0F1A] bg-clip-text text-transparent">Standing ovation out.</span></h1>
           <p className="mx-auto mt-3 max-w-xl text-[15px] text-fg-muted">Research, outline, grounded writing, precise render and vision critique -- done for you.</p>
           <div className="mt-6 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today -- free</Button>}</div>
         </section>
@@ -120,16 +120,16 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
     <>
       <div ref={wrapRef} className="relative w-full overflow-x-hidden">
         <div className="pointer-events-none fixed inset-0 -z-10">
-          <div className="journey-sheet sheet-hero absolute inset-0 bg-[radial-gradient(60rem_36rem_at_50%_0%,var(--color-accent-tint),transparent_70%),radial-gradient(40rem_28rem_at_90%_85%,rgba(124,108,255,0.10),transparent_65%)] opacity-100" />
-          <div className="journey-sheet sheet-warm absolute inset-0 bg-[radial-gradient(55rem_32rem_at_20%_25%,rgba(251,191,120,0.14),transparent_62%),radial-gradient(36rem_24rem_at_80%_60%,rgba(244,114,182,0.10),transparent_60%)] opacity-0" />
-          <div className="journey-sheet sheet-deep absolute inset-0 bg-[radial-gradient(50rem_30rem_at_50%_50%,rgba(124,108,255,0.06),transparent_70%)] opacity-0" />
-          <div className="journey-sheet sheet-accent absolute inset-0 bg-[radial-gradient(60rem_40rem_at_50%_100%,rgba(124,108,255,0.18),transparent_65%),radial-gradient(30rem_20rem_at_20%_20%,rgba(139,92,246,0.12),transparent_60%)] opacity-0" />
+          <div className="journey-sheet sheet-hero absolute inset-0 bg-base opacity-100" />
+          <div className="journey-sheet sheet-warm absolute inset-0 bg-base opacity-0" />
+          <div className="journey-sheet sheet-deep absolute inset-0 bg-base opacity-0" />
+          <div className="journey-sheet sheet-accent absolute inset-0 bg-base opacity-0" />
         </div>
         <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
           <div className="beat beat-hero absolute inset-0 flex flex-col items-center justify-center px-6 text-center py-10">
             <div className="hero-copy max-w-4xl flex flex-col items-center">
               <span className="rounded-full border border-accent-dim/60 bg-accent-tint px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">Topic to deck -- in minutes</span>
-              <h1 className="mt-6 text-[4.6rem] font-black leading-[0.82] tracking-[-0.06em] sm:text-[6.8rem]"><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Topic in.</span><br /><span className="bg-gradient-to-r from-accent to-[#8B5CF6] bg-clip-text text-transparent">Standing ovation out.</span></h1>
+              <h1 className="mt-6 text-[4.6rem] font-black leading-[0.82] tracking-[-0.06em] sm:text-[6.8rem]"><span className="bg-gradient-to-r from-[#0B0F1A] to-black bg-clip-text text-transparent">Topic in.</span><br /><span className="bg-gradient-to-r from-black to-[#0B0F1A] bg-clip-text text-transparent">Standing ovation out.</span></h1>
               <p className="mx-auto mt-5 max-w-xl text-[18px] leading-relaxed text-fg-muted">Research, outline, grounded writing, precise render and vision critique — done for you. No templates, no hand-layout.</p>
               <div className="mt-9 flex justify-center">{authed ? <Button variant="primary" onClick={handleChat}>Go to chat</Button> : <Button variant="primary" onClick={() => onAuth?.("register")}>Join today — free</Button>}</div>
               <div className="mt-7 text-[11px] uppercase tracking-[0.12em] text-fg-faint">Scroll — one step at a time ↓</div>
@@ -258,10 +258,35 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                       <div className="mt-3 text-[11px] text-fg-faint">-- Critique loop</div>
                     </div>
                   </div>
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Feature Grid</div>
+                    <div className="mt-5 grid grid-cols-3 gap-3 flex-1 content-center">
+                      <div className="rounded-xl border border-line bg-sunken p-4 text-center"><div className="mx-auto h-8 w-8 rounded-lg bg-accent/10 grid place-items-center text-accent">◈</div><div className="mt-2 text-[13px] font-semibold">Modular</div><div className="text-[11px] text-fg-faint">reusable</div></div>
+                      <div className="rounded-xl border border-line bg-sunken p-4 text-center"><div className="mx-auto h-8 w-8 rounded-lg bg-accent/10 grid place-items-center text-accent">⬢</div><div className="mt-2 text-[13px] font-semibold">Scalable</div><div className="text-[11px] text-fg-faint">grows</div></div>
+                      <div className="rounded-xl border border-line bg-sunken p-4 text-center"><div className="mx-auto h-8 w-8 rounded-lg bg-accent/10 grid place-items-center text-accent">⬣</div><div className="mt-2 text-[13px] font-semibold">Coherent</div><div className="text-[11px] text-fg-faint">aligned</div></div>
+                    </div>
+                  </div>
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Metrics</div>
+                    <div className="mt-5 flex gap-3 flex-1">
+                      <div className="flex-1 rounded-xl bg-accent p-5 text-white flex flex-col justify-center"><div className="text-[28px] font-black leading-none">47%</div><div className="mt-1 text-[11px] text-white/80 uppercase tracking-wide">efficiency gain</div><div className="mt-2 h-1 rounded-full bg-white/20"><div className="h-1 w-[47%] rounded-full bg-white" /></div></div>
+                      <div className="flex-1 rounded-xl border border-line bg-sunken p-5 flex flex-col justify-center"><div className="text-[28px] font-black leading-none text-fg">12</div><div className="mt-1 text-[11px] text-fg-faint uppercase tracking-wide">slides avg</div><div className="mt-2 text-[12px] text-fg-muted">auto grounded</div></div>
+                    </div>
+                  </div>
+                  <div className="w-[560px] min-h-[380px] shrink-0 rounded-2xl border bg-panel p-8 shadow-sm flex flex-col">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Process</div>
+                    <div className="mt-6 flex items-center gap-2 flex-1">
+                      <div className="flex-1 text-center"><div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-accent text-white font-bold">1</div><div className="mt-2 text-[12px] font-semibold">Brief</div></div>
+                      <div className="h-px flex-1 bg-line" />
+                      <div className="flex-1 text-center"><div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-accent/15 text-accent font-bold border border-accent/20">2</div><div className="mt-2 text-[12px] font-semibold">Research</div></div>
+                      <div className="h-px flex-1 bg-line" />
+                      <div className="flex-1 text-center"><div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-accent/15 text-accent font-bold border border-accent/20">3</div><div className="mt-2 text-[12px] font-semibold">Render</div></div>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>
-          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent overflow-hidden backdrop-blur-sm">
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent overflow-hidden">
             <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10">
               <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 -- Themes</div>
               <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
