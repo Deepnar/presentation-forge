@@ -61,22 +61,6 @@ export default function Themes({ leftOpen, onToggleLeft }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
-        {onToggleLeft && (
-          <button
-            onClick={onToggleLeft}
-            title={leftOpen ? "Collapse navigation" : "Expand navigation"}
-            aria-label={leftOpen ? "Collapse navigation" : "Expand navigation"}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-          >
-            <PanelLeft className="h-4 w-4" />
-          </button>
-        )}
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-semibold text-fg">Themes</div>
-          <div className="truncate text-[10.5px] text-fg-faint">A design language is one YAML file — click a card to set default</div>
-        </div>
-      </header>
       <div className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto px-10 py-10">
         <header className="mb-7">
           <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Themes</h1>

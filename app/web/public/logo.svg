@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Presentation Forge">
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#6D5BFF"/>
-      <stop offset="1" stop-color="#8B5CF6"/>
+      <stop offset="0" stop-color="#0B0F1A"/>
+      <stop offset="1" stop-color="#1A2236"/>
     </linearGradient>
     <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0" stop-color="#FFFFFF"/>
@@ -10,8 +10,8 @@
       <stop offset="1" stop-color="#DDD6FE"/>
     </linearGradient>
     <linearGradient id="flameInner" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#A78BFA"/>
-      <stop offset="1" stop-color="#C4B5FD"/>
+      <stop offset="0" stop-color="#E2E8F0"/>
+      <stop offset="1" stop-color="#F1F5F9"/>
     </linearGradient>
     <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="7" result="b"/>
@@ -26,6 +26,6 @@
     <rect x="188" y="150" width="188" height="46" rx="23" fill="#FFFFFF"/>
     <rect x="188" y="248" width="158" height="46" rx="23" fill="#FFFFFF"/>
     <circle cx="406" cy="168" r="14" fill="#FFFFFF" opacity="0.92"/>
-    <circle cx="406" cy="168" r="6" fill="#6D5BFF"/>
+    <circle cx="406" cy="168" r="6" fill="#0B0F1A"/>
   </g>
 </svg>
