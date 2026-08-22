@@ -14,9 +14,21 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const authed = Boolean(user);
   const handleChat = () => onStartChat?.();
   const [themes, setThemes] = useState(null);
+  const [slideSpecimens, setSlideSpecimens] = useState(null);
   const wrapRef = useRef(null);
   const pinRef = useRef(null);
   useEffect(() => { api.themes().then(r => setThemes(r.themes)).catch(() => setThemes([])); }, []);
+  useEffect(() => {
+    // fetch real slide type specimens for render beat — same chrome the app uses
+    fetch("/api/types/warm-humanist/specimens").then(r => r.json()).then(j => {
+      if (j.ok && j.previews) setSlideSpecimens(j.previews.slice(0, 12));
+      else if (j.previews) setSlideSpecimens(j.previews.slice(0, 12));
+    }).catch(() => setSlideSpecimens([]));
+    // also try /api/specimens/warm-humanist for older API
+    fetch("/api/specimens/warm-humanist").then(r => r.json()).then(j => {
+      if (j.ok && j.previews && !slideSpecimens) setSlideSpecimens(j.previews.slice(0, 12));
+    }).catch(() => {});
+  }, []);
   const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
@@ -79,6 +91,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       tl.addLabel("themes", 14.2);
       tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 14.2);
       tl.to(".themes-track", { x: -520, ease: "none", duration: 1.4 }, 14.2);
+      tl.to(".beat-render .specimen", { x: 320, ease: "none", duration: 1.4 }, 14.2);
       tl.to({}, { duration: 0.8 });
       tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "none", duration: 0.4 }, 16.0);
       tl.addLabel("critique", 16.2);
@@ -173,11 +186,18 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <div className="mx-auto mt-6 max-w-2xl"><OutlineMock /></div>
             </div>
           </div>
-          <div className="beat beat-approve absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-            <div className="check grid h-24 w-24 place-items-center rounded-full bg-accent text-[32px] text-white shadow-[0_20px_60px_rgba(109,91,255,0.4)]">✓</div>
-            <div class="text-[11px] uppercase tracking-[0.12em] text-accent">04 — You are the gate</div>
-            <h2 className="mt-2 text-[3.2rem] font-semibold tracking-[-0.03em]">You’re the gate.</h2>
-            <p className="mx-auto mt-2 max-w-md text-[14px] text-fg-muted">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml.</p>
+          <div className="beat beat-approve absolute inset-0 flex items-center justify-center px-6 sm:px-10">
+            <div className="mx-auto grid w-full max-w-[1100px] gap-8 lg:grid-cols-[420px_1fr] lg:items-center">
+              <div className="text-center lg:text-left">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-accent">04 — You are the gate</div>
+                <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">You’re the gate.</h2>
+                <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-fg-muted lg:mx-0">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml — the gate is the product, not a feature.</p>
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent-tint px-3 py-1 text-[11px] font-medium text-accent">Human approval required</div>
+              </div>
+              <BrowserFrame url="forge.local/outline · 4 sections · 12 slides">
+                <OutlineMock />
+              </BrowserFrame>
+            </div>
           </div>
           <div className="beat beat-content absolute inset-0 flex items-center px-6 sm:px-10">
             <div className="mx-auto grid w-full max-w-[1400px] gap-10 lg:grid-cols-2">
@@ -202,21 +222,10 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               </div>
               <div className="specimen mt-6 flex gap-4 overflow-hidden">
                 <div className="flex w-max gap-4 will-change-transform">
-                  {[
-                    ["Bullets", "bullets"],
-                    ["Stats", "stats"],
-                    ["Chart", "chart"],
-                    ["Compare", "compare"],
-                    ["Timeline", "timeline"],
-                    ["Quote", "quote"],
-                    ["Cards", "cards"],
-                    ["Pros/Cons", "pros-cons"],
-                  ].map(([label, kind]) => (
-                    <div key={label} className="w-72 shrink-0 rounded-2xl border bg-panel p-4 text-center shadow-sm">
-                      <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">{label}</div>
-                      <div className="mt-3 h-20 rounded-xl bg-sunken" />
-                      <div className="mt-2 text-[11px] text-fg-faint">{kind} · live</div>
-                    </div>
+                  {(slideSpecimens && slideSpecimens.length > 0 ? slideSpecimens : [null,null,null,null,null,null]).slice(0, 12).map((src, i) => src ? (
+                    <img key={i} src={src} alt={`Slide ${i+1}`} className="h-56 w-96 shrink-0 rounded-xl border border-line object-cover shadow-sm bg-white" loading="lazy" />
+                  ) : (
+                    <div key={`ph-${i}`} className="grid h-56 w-96 shrink-0 place-items-center rounded-xl border border-dashed border-line bg-panel text-[13px] text-fg-faint">Slide {i+1} · {["bullets","stats","chart","compare","timeline","quote"][i%6]}</div>
                   ))}
                 </div>
               </div>
@@ -232,15 +241,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
               <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 6 live themes then 32 more.</p>
               <div className="themes-track mt-6 flex gap-4 overflow-hidden will-change-transform">
                 {(themes ?? []).slice(0, 12).map(t => (
-                  <div key={t.name} className="w-80 shrink-0 overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
-                    <div className="h-32" style={{ background: t.palette?.bg ?? "#FFF", borderBottom: `4px solid ${t.palette?.accent ?? "#6D5BFF"}` }} />
-                    <div className="p-4">
-                      <div className="text-[14px] font-semibold">{t.label}</div>
-                      <div className="mt-1 flex gap-1">
-                        {[t.palette?.bg, t.palette?.accent, t.palette?.ink].filter(Boolean).slice(0,3).map((c,i) => <span key={i} className="h-3 w-10 rounded" style={{ background: c }} />)}
-                      </div>
-                    </div>
-                  </div>
+                  <div key={t.name} className="w-80 shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
                 ))}
                 <div className="grid w-80 shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
                   <div className="text-[12px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 12)} more themes</div>
