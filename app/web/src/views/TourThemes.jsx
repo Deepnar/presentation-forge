@@ -87,7 +87,7 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const [thumbFailed, setThumbFailed] = useState(false);
-  const useThumb = theme.plate && !thumbFailed;
+  const useThumb = false; // no college header on any thumbnail
   const link = authed ? "#/themes" : "#/home";
   const onClick = (e) => {
     if (!authed) { e.preventDefault(); onAuth?.("register"); }

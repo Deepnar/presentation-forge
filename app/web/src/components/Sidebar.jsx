@@ -109,6 +109,18 @@ export default function Sidebar({
           <div className="mt-3 flex-1 space-y-3 overflow-y-auto px-3 pb-3">
             {tab === "chats" && (
               <>
+                <button
+                  onClick={() => onNewChat("deck")}
+                  className="flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-2 text-left transition hover:bg-hover group/new"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-line bg-sunken text-fg-faint group-hover/new:bg-accent/10 group-hover/new:text-accent group-hover/new:border-accent/30 transition">
+                    <PlusIcon className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[12.5px] font-medium text-fg">New chat</span>
+                    <span className="block truncate text-[10.5px] text-fg-faint">project — slides + report + script</span>
+                  </span>
+                </button>
                 {GROUPS.map((g) => {
                   const list = grouped.get(g);
                   if (!list?.length) return null;
@@ -216,10 +228,6 @@ export default function Sidebar({
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
               <SettingsRow icon={IdIcon} label="Settings" onClick={onOpenSettings} />
             </div>
-            <Button variant="primary" className="w-full" onClick={() => onNewChat("deck")}>
-              <PlusIcon className="h-3.5 w-3.5" />
-              New chat
-            </Button>
             <div className="mt-2 border-t border-line/60 pt-2">
               <ProfileChip
                 user={user}
@@ -231,11 +239,11 @@ export default function Sidebar({
         </>
       ) : (
         <div className="flex h-full flex-col items-center gap-1 py-3">
+          <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
           <IconButton active={view === "chat"} icon={LayersIcon} title="Chats" href="#/chat" />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
           <IconButton icon={IdIcon} title="Settings" onClick={onOpenSettings} />
           <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-line pt-2">
-            <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
             <ProfileChip
               collapsed
               user={user}

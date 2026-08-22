@@ -913,16 +913,16 @@ export default function ChatView({
               value={model}
               onChange={(e) => { const v = e.target.value; setModel(v); persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() }); }}
               disabled={inputDisabled}
-              title={model ? `Using ${model}` : (modelMode === "cloud" ? `Cloud · ${defaultModel}` : `Auto · ${defaultModel} (${auto?.provider === "tcet-auto" ? "shared" : "local"})`)}
+              title={model ? `Using ${model}` : (modelMode === "cloud" ? `Cloud` : `Auto`)}
               className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
             >
-              <option value="">{modelMode === "cloud" ? "Cloud" : "Auto"} · {defaultModel || "auto"}</option>
+              <option value="">{modelMode === "cloud" ? "Cloud" : "Auto"}</option>
               {models.map((m) => <option key={m} value={m}>{m}</option>)}
             </select>
             <SparkleIcon className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
-          {modelMode === "auto" && !model && <span className="hidden text-[10px] text-fg-faint sm:inline">via {auto?.provider === "tcet-auto" ? "Auto" : "Local"} · {defaultModel}</span>}
+          {modelMode === "auto" && !model && <span className="hidden text-[10px] text-fg-faint sm:inline">via {auto?.provider === "tcet-auto" ? "Auto" : "Local"}</span>}
         </div>
       </div>
     </div>

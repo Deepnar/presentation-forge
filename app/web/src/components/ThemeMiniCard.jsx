@@ -14,7 +14,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
   const label = theme.label;
   const sub = defaultTheme ? `${label} · default` : label;
   const [thumbFailed, setThumbFailed] = useState(false);
-  const useThumb = theme.plate && !thumbFailed;
+  const useThumb = false; // all without college header per request
 
   return (
     <button
