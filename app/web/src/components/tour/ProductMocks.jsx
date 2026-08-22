@@ -113,19 +113,19 @@ export function DensityMock() {
   );
 }
 
-/** Outline review — plain-language slide cards awaiting approval. */
+/** Outline review — plain-language slide cards, each visually distinct. */
 export function OutlineMock() {
   const rows = [
-    { t: "Title", d: "Opening — topic + team", n: "01" },
-    { t: "Stats", d: "Big numbers with captions", n: "02" },
-    { t: "Compare", d: "Side-by-side technologies", n: "03" },
-    { t: "Timeline", d: "Policy milestones to 2030", n: "04" },
+    { n: "01", t: "Title", d: "Opening — topic + team", icon: "◈", accent: "bg-accent-tint text-accent" },
+    { n: "02", t: "Stats", d: "Big numbers with captions", icon: "▦", accent: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+    { n: "03", t: "Compare", d: "Side-by-side technologies", icon: "◧", accent: "bg-amber-50 text-amber-600 border-amber-200" },
+    { n: "04", t: "Timeline", d: "Policy milestones to 2030", icon: "→", accent: "bg-sky-50 text-sky-600 border-sky-200" },
   ];
   return (
     <div className="space-y-2">
       {rows.map((r) => (
         <div key={r.n} className="flex items-center gap-3 rounded-xl border border-line bg-panel p-3">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-tint text-[11px] font-bold text-accent">{r.n}</span>
+          <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-[11px] font-bold ${r.accent}`}>{r.icon}</span>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[13px] font-semibold text-fg">{r.t} — {r.d}</div>
             <div className="text-[10.5px] text-fg-faint">purpose editable · type switchable</div>

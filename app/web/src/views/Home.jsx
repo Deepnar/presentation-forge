@@ -74,13 +74,15 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
       tl.addLabel("render", 12.2);
       tl.fromTo(".beat-render", { y: "40%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 12.2);
       tl.fromTo(".beat-render .specimen", { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.1, ease: "none", duration: 0.5 }, 12.4);
-      tl.to({}, { duration: 0.9 });
+      // Render track scrubs left as you stay on the beat — same mechanic as themes
+      tl.to(".render-track", { x: -1380, ease: "none", duration: 1.3 }, 12.6);
+      tl.to({}, { duration: 0.5 });
       tl.to(".beat-render", { autoAlpha: 0, y: -30, ease: "none", duration: 0.4 }, 14.0);
       tl.addLabel("themes", 14.2);
       tl.fromTo(".beat-themes", { y: "30%", autoAlpha: 0 }, { y: "0%", autoAlpha: 1, ease: "none", duration: 0.7 }, 14.2);
-      tl.to(".themes-track", { x: -520, ease: "none", duration: 1.4 }, 14.2);
-      tl.to(".beat-render .specimen", { x: 320, ease: "none", duration: 1.4 }, 14.2);
-      tl.to({}, { duration: 0.8 });
+      // Themes track: 12 live + 1 summary card, way bigger — long scrub reveals the row
+      tl.to(".themes-track", { x: -2180, ease: "none", duration: 1.7 }, 14.4);
+      tl.to({}, { duration: 0.6 });
       tl.to(".beat-themes", { autoAlpha: 0, y: -20, ease: "none", duration: 0.4 }, 16.0);
       tl.addLabel("critique", 16.2);
       tl.fromTo(".beat-critique", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: "none", duration: 0.7 }, 16.2);
@@ -180,7 +182,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <div className="text-[11px] uppercase tracking-[0.12em] text-accent">04 -- You are the gate</div>
                 <h2 className="mt-2 text-[2.8rem] font-semibold leading-[0.9] tracking-[-0.03em]">You're the gate.</h2>
                 <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-fg-muted lg:mx-0">Nothing reaches the renderer unapproved. A planned deck is meta+plan with no deck.yaml -- the gate is the product, not a feature.</p>
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent-tint px-3 py-1 text-[11px] font-medium text-accent">Human approval required</div>
+                <div className="check mt-4 inline-flex items-center gap-2 rounded-full bg-accent-tint px-3 py-1 text-[11px] font-medium text-accent">Human approval required</div>
               </div>
               <BrowserFrame url="forge.local/outline · 4 sections · 12 slides">
                 <OutlineMock />
@@ -208,27 +210,27 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Deterministic -- chrome locked.</h2>
                 <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Same deck, 75 slide styles. Pick the one that fits the beat -- not the template.</p>
               </div>
-              <div className="specimen mt-6 flex gap-4 overflow-visible px-1">
-                <div className="flex w-max gap-4 will-change-transform">
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+              <div className="specimen mt-6 overflow-visible px-1">
+                <div className="render-track flex w-max gap-5 will-change-transform">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Bullets</div>
-                    <div className="mt-3 space-y-2 text-left">
-                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> Grounded claim from notes</div>
-                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> Coherent framing</div>
-                      <div className="flex gap-2 text-[13px]"><span className="text-accent">•</span> One idea per slide</div>
+                    <div className="mt-4 space-y-2.5 text-left">
+                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> Grounded claim from notes</div>
+                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> Coherent framing</div>
+                      <div className="flex gap-2 text-[14px]"><span className="text-accent">•</span> One idea per slide</div>
                     </div>
                   </div>
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Stats</div>
-                    <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                      <div className="rounded-lg bg-sunken p-3"><div className="text-[18px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
-                      <div className="rounded-lg bg-sunken p-3"><div className="text-[18px] font-bold">3.2×</div><div className="text-[11px] text-fg-faint">faster</div></div>
-                      <div className="rounded-lg bg-accent p-3 text-white"><div className="text-[18px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
+                    <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+                      <div className="rounded-lg bg-sunken p-4"><div className="text-[20px] font-bold">128%</div><div className="text-[11px] text-fg-faint">recall</div></div>
+                      <div className="rounded-lg bg-sunken p-4"><div className="text-[20px] font-bold">3.2×</div><div className="text-[11px] text-fg-faint">faster</div></div>
+                      <div className="rounded-lg bg-accent p-4 text-white"><div className="text-[20px] font-bold">0</div><div className="text-[11px] text-white/70">invented</div></div>
                     </div>
                   </div>
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Chart</div>
-                    <div className="mt-3 flex h-20 items-end gap-1">
+                    <div className="mt-4 flex h-24 items-end gap-1.5">
                       <div className="flex-1 rounded-t bg-accent/20" style={{height:"40%"}} />
                       <div className="flex-1 rounded-t bg-accent/40" style={{height:"65%"}} />
                       <div className="flex-1 rounded-t bg-accent/60" style={{height:"50%"}} />
@@ -237,31 +239,47 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                     </div>
                     <div className="mt-2 flex justify-between text-[10px] text-fg-faint"><span>ALK</span><span>PEM</span><span>SOEC</span><span>--</span></div>
                   </div>
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Compare</div>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="mt-4 grid grid-cols-2 gap-3">
                       <div className="rounded-lg bg-accent-tint p-3"><div className="font-semibold text-accent">PEM</div><div className="mt-1 text-[12px]">High efficiency</div><div className="mt-2 h-2 rounded-full bg-accent/30" /></div>
                       <div className="rounded-lg bg-sunken p-3 border"><div className="font-semibold">ALK</div><div className="mt-1 text-[12px]">Low cost</div><div className="mt-2 h-2 rounded-full bg-line" /></div>
                     </div>
                   </div>
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Timeline</div>
-                    <div className="mt-3 flex items-center justify-between">
+                    <div className="mt-4 flex items-center justify-between">
                       <div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" /><span className="mx-1 h-2 w-2 rounded-full bg-accent" /><div className="h-px flex-1 bg-line" />
                     </div>
-                    <div className="mt-2 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
+                    <div className="mt-3 flex justify-between text-[11px] text-fg-faint"><span>2019</span><span>2021</span><span>2024</span><span>2030</span></div>
                   </div>
-                  <div className="w-80 shrink-0 rounded-2xl border bg-panel p-4 shadow-sm">
+                  <div className="w-[460px] shrink-0 rounded-2xl border bg-panel p-6 shadow-sm">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-accent">Quote</div>
-                    <div className="mt-3 rounded-xl bg-sunken p-4 text-center">
-                      <div className="text-[18px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
+                    <div className="mt-4 rounded-xl bg-sunken p-5 text-center">
+                      <div className="text-[19px] leading-tight">"Standing ovation is not about perfection -- it's about coherence."</div>
                       <div className="mt-2 text-[11px] text-fg-faint">-- Critique loop</div>
                     </div>
                   </div>
                 </div>
               </div>
-                      <div className="mt-2 text-[11px] uppercase tracking-wide text-fg-faint">{kind}</div>
-                    </div>
+            </div>
+          </div>
+          <div className="beat beat-themes absolute inset-0 flex flex-col justify-center bg-transparent px-6 text-fg sm:px-10 backdrop-blur-sm">
+            <div className="mx-auto w-full max-w-[1400px]">
+              <div className="text-[11px] uppercase tracking-[0.12em] text-accent">07 -- Themes</div>
+              <h2 className="mt-2 text-[2.8rem] font-semibold tracking-[-0.03em]">Thirty-eight themes, drawn live.</h2>
+              <p className="mt-2 max-w-xl text-[14px] text-fg-muted">Scroll to scrub — the row follows your scroll, showing 12 live themes then 32 more.</p>
+              <div className="themes-track mt-6 flex gap-5 overflow-visible will-change-transform">
+                {(themes ?? []).slice(0, 12).map(t => (
+                  <div key={t.name} className="w-[420px] shrink-0"><ThemeMiniCard theme={t} hideSpecimen /></div>
+                ))}
+                <div className="grid w-[420px] shrink-0 place-items-center rounded-2xl border border-dashed border-line bg-panel p-6 text-center">
+                  <div className="text-[12px] uppercase tracking-[0.12em] text-fg-faint">+ {Math.max(0, (themes?.length ?? 38) - 12)} more themes</div>
+                  <div className="mt-2 text-[14px] font-medium">Explore all 38 in app</div>
+                  <button onClick={() => onBrowseThemes?.()} className="mt-3 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-white">Browse themes</button>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="beat beat-critique absolute inset-0 flex items-center justify-center px-6 sm:px-10">
             <div className="mx-auto grid w-full max-w-[1100px] gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -272,10 +290,19 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-sunken px-3 py-1 text-[11px] text-fg-faint">PNG → <span className="text-accent">vision</span> → fix → re-render</div>
               </div>
               <BrowserFrame url="forge.local/slide-07.png · vision">
-                <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
-                  <div className="flex items-center gap-2 text-amber-700"><span className="h-2 w-2 rounded-full bg-amber-500" /> Vision flagged</div>
-                  <div className="mt-2 text-[13px] leading-relaxed">"Bullets would need 9.9pt -- floor 14pt. Trim to 3 bullets."</div>
-                  <div className="mt-3 flex gap-2"><span className="rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-medium text-white">Fix</span><span className="rounded-full bg-white border px-2.5 py-1 text-[11px]">Keep</span></div>
+                <div className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-amber-100 text-amber-700">
+                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.3 3.3 10.3a1.5 1.5 0 0 0 0 2.1l6.9 6.9a1.5 1.5 0 0 0 2.1 0l6.9-6.9a1.5 1.5 0 0 0 0-2.1L12.4 3.3a1.5 1.5 0 0 0-2.1 0Z"/></svg>
+                    </span>
+                    Vision flagged · 9.9pt would be needed
+                  </div>
+                  <div className="mt-3 text-[13px] leading-relaxed text-fg">"Bullets would need <span className="font-semibold text-amber-700">9.9pt</span> — floor is <span className="font-semibold">14pt</span>. Trim to 3 bullets."</div>
+                  <div className="mt-4 flex gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm">Fix — trim now</span>
+                    <span className="inline-flex items-center rounded-full border border-line bg-panel px-3 py-1.5 text-[11px] font-medium text-fg-muted">Keep anyway</span>
+                  </div>
+                  <div className="mt-3 text-[11px] leading-relaxed text-fg-faint">The loop re-renders after trimming — no tiny type ships.</div>
                 </div>
               </BrowserFrame>
             </div>
