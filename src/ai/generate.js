@@ -149,6 +149,8 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     "- `purpose` states what that slide must convey — ONE specific sentence, under",
     "  ~140 characters, with a concrete claim when the research carries one. It is",
     "  a private brief for the writer, never slide text, so it must stay brief.",
+    "- If the briefing contains a Thesis/takeaway line, it is the deck's central claim — every major part and the closing must prove it; the closing lands that sentence.",
+    "- Respect the Evidence / constraints line — never invent figures beyond it, and the research must cover it.",
     "- The audience and emphasis answers are strategy: every slide must serve the",
     "  stated takeaway, and the ideas marked 'most important' must own the most",
     "  slides and the strongest evidence. Cut anything that doesn't.",
