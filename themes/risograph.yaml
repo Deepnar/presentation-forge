@@ -1,27 +1,26 @@
-# Risograph / Print Zine — two-ink duotone with misregistration.
-# Warm red + navy on cream, offset "misprint" accent shapes, halftone-dot
-# language via native shapes. A print-punk two-colour look, nothing like the
-# clean natives.
-
 name: risograph
 label: Risograph Print
 summary: Two-ink duotone print zine — red and navy on cream with misregistration.
-
 tokens:
   palette:
-    bg: "#F2EBD8"          # cream paper
+    bg: "#F2EBD8"
     surface: "#FBF7EC"
-    ink: "#1F2A44"         # navy ink
+    ink: "#1F2A44"
     ink_muted: "#3A4764"
-    accent: "#D64541"      # riso red
-    accent_alt: "#1F2A44"  # navy
+    accent: "#D64541"
+    accent_alt: "#3A4764"
     rule: "#C9BFA4"
-    on_accent: "#F2EBD8"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#1F2A44", ink: "#F2EBD8", muted: "#B8C2D8", accent: "#D64541" }
-    section: { bg: "#D64541", ink: "#F2EBD8", muted: "#F5CFCC" }
-
+    title:
+      bg: "#1F2A44"
+      ink: "#F2EBD8"
+      muted: "#B8C2D8"
+      accent: "#D64541"
+    section:
+      bg: "#D64541"
+      ink: "#F2EBD8"
+      muted: "#F5CFCC"
   dark:
     bg: "#151C2E"
     surface: "#202842"
@@ -31,31 +30,79 @@ tokens:
     accent_alt: "#6B7AA0"
     rule: "#33405F"
     on_accent: "#151C2E"
-
   type:
-    display:  { family: "Bebas Neue",        weight: 400, size: 46, line: 1.0,  tracking: 1.0 }
-    heading:  { family: "Bebas Neue",        weight: 400, size: 34, line: 1.05, tracking: 0.8 }
-    subhead:  { family: "Karla",             weight: 600, size: 14, line: 1.4,  tracking: 0 }
-    body:     { family: "Karla",             weight: 400, size: 12.5, line: 1.55, tracking: 0 }
-    caption:  { family: "Karla",             weight: 600, size: 10, line: 1.35, tracking: 0.3 }
-    eyebrow:  { family: "Karla",             weight: 700, size: 10, line: 1.2,  tracking: 1.8, transform: upper }
-    stat:     { family: "Bebas Neue",        weight: 400, size: 56, line: 1.0,  tracking: 1 }
-
+    display:
+      family: Bebas Neue
+      weight: 400
+      size: 46
+      line: 1
+      tracking: 1
+    heading:
+      family: Bebas Neue
+      weight: 400
+      size: 34
+      line: 1.05
+      tracking: 0.8
+    subhead:
+      family: Karla
+      weight: 600
+      size: 14
+      line: 1.4
+      tracking: 0
+    body:
+      family: Karla
+      weight: 400
+      size: 12.5
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Karla
+      weight: 600
+      size: 10
+      line: 1.35
+      tracking: 0.3
+    eyebrow:
+      family: Karla
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.8
+      transform: upper
+    stat:
+      family: Bebas Neue
+      weight: 400
+      size: 56
+      line: 1
+      tracking: 1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.06, pill: 0.40, chip: 0.04 }
-    border: { width: 2, color: "#1F2A44" }          # heavy navy outlines
-    card_pad: 0.30
-
+    radius:
+      card: 0.06
+      pill: 0.4
+      chip: 0.04
+    border:
+      width: 2
+      color: "#1F2A44"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 0, offset: 3, angle: 90, color: "D64541", opacity: 1 }
-
-  # A misregistered red circle offset from a navy one — the print-press tell.
+    card:
+      type: outer
+      blur: 0
+      offset: 3
+      angle: 90
+      color: D64541
+      opacity: 1
   background:
     decor:
       - shape: ellipse
@@ -79,10 +126,8 @@ tokens:
         h: 0.48
         fill: "#D64541"
         transparency: 0
-
   plate:
     enabled: false
-
 voice:
   feel: handmade, urgent, analog, punk-print
   density: medium
@@ -97,5 +142,5 @@ voice:
   headline_style: >
     Loud and specific. "PRINT IT YOURSELF" over "An Overview of Printing".
     Short, caps-able, declarative.
-  body_style: >
+  body_style: |
     Punchy sentences with attitude. Cut every polite word.

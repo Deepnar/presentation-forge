@@ -1,26 +1,26 @@
-# Paper Pastel / Soft Block — muted pastel blocks, rounded tiles.
-# Mint, blush and lilac tiles on a faint grey — a light, friendly alternative
-# that is NOT another grey minimal. The "clean doodle" energy.
-
 name: paper-pastel
 label: Paper Pastel
 summary: Muted pastel blocks and rounded tiles — mint, blush, lilac.
-
 tokens:
   palette:
-    bg: "#F5F4F1"          # faint warm grey
+    bg: "#F5F4F1"
     surface: "#FFFFFF"
-    ink: "#3A3D44"         # soft charcoal
+    ink: "#3A3D44"
     ink_muted: "#7C7F88"
-    accent: "#9CC4A7"      # mint
-    accent_alt: "#E7B8B4"  # blush
+    accent: "#6E9A84"
+    accent_alt: "#E7B8B4"
     rule: "#E2E0DC"
     on_accent: "#3A3D44"
-
   surfaces:
-    title:   { bg: "#3A3D44", ink: "#FFFFFF", muted: "#C2C5CC", accent: "#B7D3C0" }
-    section: { bg: "#9CC4A7", ink: "#3A3D44", muted: "#5C7563" }
-
+    title:
+      bg: "#3A3D44"
+      ink: "#FFFFFF"
+      muted: "#C2C5CC"
+      accent: "#B7D3C0"
+    section:
+      bg: "#6E9A84"
+      ink: "#3A3D44"
+      muted: "#A8C9B5"
   dark:
     bg: "#26282E"
     surface: "#32353D"
@@ -30,51 +30,97 @@ tokens:
     accent_alt: "#D8ABA6"
     rule: "#454950"
     on_accent: "#3A3D44"
-
   type:
-    display:  { family: "Outfit",   weight: 600, size: 38, line: 1.1,  tracking: -0.5 }
-    heading:  { family: "Outfit",   weight: 600, size: 28, line: 1.15, tracking: -0.3 }
-    subhead:  { family: "Karla",    weight: 400, size: 14, line: 1.45, tracking: 0 }
-    body:     { family: "Karla",    weight: 400, size: 12.5, line: 1.6, tracking: 0 }
-    caption:  { family: "Karla",    weight: 600, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: "Karla",    weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: "Outfit",   weight: 600, size: 52, line: 1.05, tracking: -1 }
-
+    display:
+      family: Outfit
+      weight: 600
+      size: 38
+      line: 1.1
+      tracking: -0.5
+    heading:
+      family: Outfit
+      weight: 600
+      size: 28
+      line: 1.15
+      tracking: -0.3
+    subhead:
+      family: Karla
+      weight: 400
+      size: 14
+      line: 1.45
+      tracking: 0
+    body:
+      family: Karla
+      weight: 400
+      size: 12.5
+      line: 1.6
+      tracking: 0
+    caption:
+      family: Karla
+      weight: 600
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Karla
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Outfit
+      weight: 600
+      size: 52
+      line: 1.05
+      tracking: -1
   grid:
-    margin: { top: 0.66, right: 0.75, bottom: 0.58, left: 0.75 }
-    gutter: 0.30
+    margin:
+      top: 0.66
+      right: 0.75
+      bottom: 0.58
+      left: 0.75
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
-
+    band:
+      eyebrow_y: 0.66
+      title_y: 1.36
+      body_y: 2.62
   shape:
-    radius: { card: 0.26, pill: 0.44, chip: 0.14 }   # friendly rounding
-    border: { width: 0, color: "#00000000" }
-    card_pad: 0.30
-
+    radius:
+      card: 0.26
+      pill: 0.44
+      chip: 0.14
+    border:
+      width: 0
+      color: "#00000000"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 10, offset: 2, angle: 90, color: "3A3D44", opacity: 0.06 }
-
-  # Blush and lilac blobs in opposite corners — the pastel wash.
+    card:
+      type: outer
+      blur: 10
+      offset: 2
+      angle: 90
+      color: 3A3D44
+      opacity: 0.06
   background:
     decor:
       - shape: ellipse
         x: 10.4
         y: -2.4
-        w: 5.0
-        h: 5.0
+        w: 5
+        h: 5
         fill: "#E7B8B4"
         transparency: 64
       - shape: ellipse
-        x: -2.0
+        x: -2
         y: 5.4
         w: 4.6
         h: 4.2
         fill: "#C7C0E0"
         transparency: 72
-
   plate:
     enabled: false
-
 voice:
   feel: friendly, light, approachable, encouraging
   density: medium
@@ -89,5 +135,5 @@ voice:
   headline_style: >
     Friendly and specific. "A Gentle Way to Learn" over "Learning Methods".
     Warm, clear, simple.
-  body_style: >
+  body_style: |
     Short friendly sentences. Encourage; never lecture.

@@ -1,26 +1,27 @@
-# Retro Terminal — green-on-black, monospace, blocky.
-# A full IBM Plex Mono terminal: green phosphor on black, amber and red
-# highlights, bordered "terminal window" panels and a strict machine tone.
-
 name: retro-terminal
 label: Retro Terminal
 summary: Green phosphor on black — a full monospace terminal look.
-
 tokens:
   palette:
-    bg: "#0A0E0A"          # black with a green cast
+    bg: "#0A0E0A"
     surface: "#10160F"
-    ink: "#33FF66"         # phosphor green
+    ink: "#33FF66"
     ink_muted: "#5E8C6A"
-    accent: "#FFD166"      # amber
-    accent_alt: "#FF5C5C"  # red
+    accent: "#FFD166"
+    accent_alt: "#FF5C5C"
     rule: "#FFFFFF26"
     on_accent: "#0A0E0A"
-
   surfaces:
-    title:   { bg: "#000000", ink: "#33FF66", muted: "#8FD8A4", accent: "#FFD166" }
-    section: { bg: "#0A1A0E", ink: "#33FF66", muted: "#8FD8A4", accent: "#FFD166" }
-
+    title:
+      bg: "#000000"
+      ink: "#33FF66"
+      muted: "#8FD8A4"
+      accent: "#FFD166"
+    section:
+      bg: "#0A1A0E"
+      ink: "#33FF66"
+      muted: "#8FD8A4"
+      accent: "#FFD166"
   dark:
     bg: "#070A07"
     surface: "#0D130C"
@@ -30,33 +31,81 @@ tokens:
     accent_alt: "#FF5C5C"
     rule: "#FFFFFF1C"
     on_accent: "#070A07"
-
   type:
-    display:  { family: "IBM Plex Mono", weight: 600, size: 36, line: 1.15, tracking: -0.5 }
-    heading:  { family: "IBM Plex Mono", weight: 600, size: 27, line: 1.2,  tracking: -0.3 }
-    subhead:  { family: "IBM Plex Mono", weight: 400, size: 14, line: 1.5,  tracking: 0 }
-    body:     { family: "IBM Plex Mono", weight: 400, size: 11.5, line: 1.55, tracking: 0 }
-    caption:  { family: "IBM Plex Mono", weight: 400, size: 9.5, line: 1.4,  tracking: 0.2 }
-    eyebrow:  { family: "IBM Plex Mono", weight: 600, size: 10.5, line: 1.25, tracking: 1.0, transform: upper }
-    stat:     { family: "IBM Plex Mono", weight: 600, size: 48, line: 1.0,  tracking: -1 }
-
+    display:
+      family: IBM Plex Mono
+      weight: 600
+      size: 36
+      line: 1.15
+      tracking: -0.5
+    heading:
+      family: IBM Plex Mono
+      weight: 600
+      size: 27
+      line: 1.2
+      tracking: -0.3
+    subhead:
+      family: IBM Plex Mono
+      weight: 400
+      size: 14
+      line: 1.5
+      tracking: 0
+    body:
+      family: IBM Plex Mono
+      weight: 400
+      size: 11.5
+      line: 1.55
+      tracking: 0
+    caption:
+      family: IBM Plex Mono
+      weight: 400
+      size: 9.5
+      line: 1.4
+      tracking: 0.2
+    eyebrow:
+      family: IBM Plex Mono
+      weight: 600
+      size: 10.5
+      line: 1.25
+      tracking: 1
+      transform: upper
+    stat:
+      family: IBM Plex Mono
+      weight: 600
+      size: 48
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.08, pill: 0.40, chip: 0.06 }
-    border: { width: 1.25, color: "#33FF66" }       # terminal window frames
+    radius:
+      card: 0.08
+      pill: 0.4
+      chip: 0.06
+    border:
+      width: 1.25
+      color: "#33FF66"
     card_pad: 0.28
-
   shadow:
-    card: { type: outer, blur: 0, offset: 3, angle: 90, color: "33FF66", opacity: 16 }
-
+    card:
+      type: outer
+      blur: 0
+      offset: 3
+      angle: 90
+      color: 33FF66
+      opacity: 0.16
   plate:
     enabled: false
-
 voice:
   feel: technical, terse, nostalgic, hacker
   density: low
@@ -71,5 +120,5 @@ voice:
   headline_style: >
     Terse and exact. "> RENDER ALL THE LIGHT" over "An Introduction to Ray
     Tracing". Like a command, not a sentence.
-  body_style: >
+  body_style: |
     Short lines. One statement per line, terminal style.

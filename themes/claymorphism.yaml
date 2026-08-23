@@ -1,30 +1,26 @@
-# Claymorphism — soft extruded clay panels.
-#
-# The background plate is a warm clay wash with a large rounded "clay board"
-# behind the content area — translucent, softly shadowed, with an inset top
-# highlight and bottom shade that read as extruded material. Native cards are
-# translucent clay on top (tokens.shape.card_fill) so the board's depth shows
-# through; text stays native.
-
 name: claymorphism
 label: Claymorphism
 summary: Soft extruded clay panels with inner shadows — warm, rounded, playful.
-
 tokens:
   palette:
-    bg: "#F4EBDE"          # warm cream
-    surface: "#EFD8C0"     # clay tan
-    ink: "#463B30"         # warm umber
+    bg: "#F4EBDE"
+    surface: "#EFD8C0"
+    ink: "#463B30"
     ink_muted: "#8B7B68"
-    accent: "#E07A5F"      # terracotta
-    accent_alt: "#F2CC8F"  # sand
+    accent: "#E07A5F"
+    accent_alt: "#F2CC8F"
     rule: "#E7D6BE"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#463B30", ink: "#F7EFE3", muted: "#CDBB9F", accent: "#E07A5F" }
-    section: { bg: "#E07A5F", ink: "#FFFFFF", muted: "#FBE0D4" }
-
+    title:
+      bg: "#463B30"
+      ink: "#F7EFE3"
+      muted: "#CDBB9F"
+      accent: "#E07A5F"
+    section:
+      bg: "#E07A5F"
+      ink: "#FFFFFF"
+      muted: "#FBE0D4"
   dark:
     bg: "#2A2118"
     surface: "#3D3225"
@@ -34,34 +30,85 @@ tokens:
     accent_alt: "#E8BC82"
     rule: "#FFFFFF1A"
     on_accent: "#FFFFFF"
-
   type:
-    display:  { family: Poppins, weight: 700, size: 36, line: 1.12, tracking: -0.4 }
-    heading:  { family: Poppins, weight: 600, size: 28, line: 1.18, tracking: -0.2 }
-    subhead:  { family: Inter,   weight: 500, size: 15, line: 1.4,  tracking: 0 }
-    body:     { family: Inter,   weight: 400, size: 13, line: 1.55, tracking: 0 }
-    caption:  { family: Inter,   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: Inter,   weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
-    stat:     { family: Poppins, weight: 700, size: 52, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Poppins
+      weight: 700
+      size: 36
+      line: 1.12
+      tracking: -0.4
+    heading:
+      family: Poppins
+      weight: 600
+      size: 28
+      line: 1.18
+      tracking: -0.2
+    subhead:
+      family: Inter
+      weight: 500
+      size: 15
+      line: 1.4
+      tracking: 0
+    body:
+      family: Inter
+      weight: 400
+      size: 13
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Inter
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Inter
+      weight: 600
+      size: 10
+      line: 1.2
+      tracking: 1.2
+      transform: upper
+    stat:
+      family: Poppins
+      weight: 700
+      size: 52
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.55, pill: 0.40, chip: 0.14 }   # clay is very rounded
-    border: { width: 0, color: "#00000000" }
-    card_pad: 0.30
-    card_fill: { color: "#EFD8C0", transparency: 18 }
-
+    radius:
+      card: 0.55
+      pill: 0.4
+      chip: 0.14
+    border:
+      width: 0
+      color: "#00000000"
+    card_pad: 0.3
+    card_fill:
+      color: "#EFD8C0"
+      transparency: 18
   shadow:
-    card: { type: outer, blur: 20, offset: 7, angle: 90, color: "463B30", opacity: 0.16 }
-
+    card:
+      type: outer
+      blur: 20
+      offset: 7
+      angle: 90
+      color: 463B30
+      opacity: 0.16
   plate:
     enabled: true
-    html: |
+    html: >
       <style>
         .wash{position:absolute;inset:0;background:
           radial-gradient(75% 65% at 16% 18%, {{tokens.palette.accent_alt}}55 0%, transparent 55%),
@@ -75,10 +122,12 @@ tokens:
             inset 0 10px 16px {{tokens.palette.surface}}99,
             inset 0 -12px 20px {{tokens.palette.ink}}2e;}
       </style>
+
       <div class="wash"></div>
+
       <div class="board"></div>
     surfaces:
-      title: |
+      title: >
         <style>
           .hero{position:absolute;inset:0;background:
             radial-gradient(70% 60% at 20% 18%, {{tokens.palette.accent}}99 0%, transparent 52%),
@@ -87,17 +136,19 @@ tokens:
           .lump{position:absolute;right:8%;bottom:8%;width:30%;height:26%;border-radius:50%;
             background:{{tokens.palette.surface}}22;filter:blur(40px);}
         </style>
+
         <div class="hero"></div>
+
         <div class="lump"></div>
-      section: |
+      section: >
         <style>
           .sec{position:absolute;inset:0;background:
             radial-gradient(70% 60% at 18% 22%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
             radial-gradient(65% 55% at 84% 78%, {{tokens.palette.accent_alt}}88 0%, transparent 55%),
             linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
         </style>
-        <div class="sec"></div>
 
+        <div class="sec"></div>
 voice:
   feel: warm, playful, tactile, handmade
   density: medium
@@ -112,5 +163,5 @@ voice:
   headline_style: >
     Friendly and concrete. "Clay, One Mould at a Time" over "Introduction to
     Claymorphism". Keep the warmth, lose the filler.
-  body_style: >
+  body_style: |
     Full sentences, plain words. Explain like you are showing a colleague.

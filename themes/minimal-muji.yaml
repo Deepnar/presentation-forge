@@ -1,26 +1,26 @@
-# Minimal Muji — quiet, material, almost empty.
-# Greige paper, a muted muji red, generous whitespace and nothing decorative.
-# The design language is restraint: the empty space is the design.
-
 name: minimal-muji
 label: Minimal Muji
 summary: Quiet material restraint — greige paper, one muted red, mostly empty.
-
 tokens:
   palette:
-    bg: "#F4F1EA"          # greige
+    bg: "#F4F1EA"
     surface: "#FBFAF6"
     ink: "#3B3B37"
     ink_muted: "#8A867C"
-    accent: "#C65D3B"      # muji red
-    accent_alt: "#7A8B6F"  # olive
+    accent: "#C65D3B"
+    accent_alt: "#7A8B6F"
     rule: "#E0DCD1"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#3B3B37", ink: "#F4F1EA", muted: "#A9A49A", accent: "#C65D3B" }
-    section: { bg: "#C65D3B", ink: "#FFFFFF", muted: "#F4D6CC" }
-
+    title:
+      bg: "#3B3B37"
+      ink: "#F4F1EA"
+      muted: "#A9A49A"
+      accent: "#C65D3B"
+    section:
+      bg: "#C65D3B"
+      ink: "#FFFFFF"
+      muted: "#F4D6CC"
   dark:
     bg: "#2E2C27"
     surface: "#39372F"
@@ -30,32 +30,79 @@ tokens:
     accent_alt: "#8FA07F"
     rule: "#FFFFFF22"
     on_accent: "#FFFFFF"
-
   type:
-    display:  { family: Manrope, weight: 600, size: 40, line: 1.1,  tracking: -0.8 }
-    heading:  { family: Manrope, weight: 600, size: 29, line: 1.15, tracking: -0.4 }
-    subhead:  { family: Manrope, weight: 400, size: 15, line: 1.45, tracking: 0 }
-    body:     { family: Manrope, weight: 400, size: 13, line: 1.6,  tracking: 0 }
-    caption:  { family: Manrope, weight: 500, size: 10, line: 1.35, tracking: 0.4 }
-    eyebrow:  { family: Manrope, weight: 600, size: 10, line: 1.2,  tracking: 2.4, transform: upper }
-    stat:     { family: Manrope, weight: 600, size: 52, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Manrope
+      weight: 600
+      size: 40
+      line: 1.1
+      tracking: -0.8
+    heading:
+      family: Manrope
+      weight: 600
+      size: 29
+      line: 1.15
+      tracking: -0.4
+    subhead:
+      family: Manrope
+      weight: 400
+      size: 15
+      line: 1.45
+      tracking: 0
+    body:
+      family: Manrope
+      weight: 400
+      size: 13
+      line: 1.6
+      tracking: 0
+    caption:
+      family: Manrope
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.4
+    eyebrow:
+      family: Manrope
+      weight: 600
+      size: 10
+      line: 1.2
+      tracking: 2.4
+      transform: upper
+    stat:
+      family: Manrope
+      weight: 600
+      size: 52
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.72, right: 0.85, bottom: 0.65, left: 0.85 }   # more air
+    margin:
+      top: 0.72
+      right: 0.85
+      bottom: 0.65
+      left: 0.85
     gutter: 0.35
     columns: 12
-    band: { eyebrow_y: 0.72, title_y: 1.45, body_y: 2.70 }
-
+    band:
+      eyebrow_y: 0.72
+      title_y: 1.45
+      body_y: 2.7
   shape:
-    radius: { card: 0.04, pill: 0.40, chip: 0.04 }
-    border: { width: 0, color: "#00000000" }
+    radius:
+      card: 0.04
+      pill: 0.4
+      chip: 0.04
+    border:
+      width: 0
+      color: "#00000000"
     card_pad: 0.32
-
   shadow:
-    card: { type: outer, blur: 10, offset: 2, angle: 90, color: "3B3B37", opacity: 0.05 }
-
-  # One very faint muji-red wash in the lower-right corner — the only decor the
-  # theme allows. Native shape + transparency, drawn behind the content box.
+    card:
+      type: outer
+      blur: 10
+      offset: 2
+      angle: 90
+      color: 3B3B37
+      opacity: 0.05
   background:
     decor:
       - shape: ellipse
@@ -65,10 +112,8 @@ tokens:
         h: 4.4
         fill: "#C65D3B"
         transparency: 92
-
   plate:
     enabled: false
-
 voice:
   feel: quiet, calm, honest, unadorned
   density: low
@@ -83,5 +128,5 @@ voice:
   headline_style: >
     Short and plain. "Light, Simply" over "Introduction to Light". Fewer words
     than you think you need.
-  body_style: >
+  body_style: |
     Short sentences. Leave the rest to the empty space.

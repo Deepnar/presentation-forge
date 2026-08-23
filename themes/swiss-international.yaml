@@ -1,26 +1,26 @@
-# Swiss International — the International Typographic Style.
-# Helvetica-like sans, strict grid, generous whitespace, hairline rules and a
-# single red accent. Flat and sharp: no rounded corners, no shadows.
-
 name: swiss-international
 label: Swiss International
 summary: Strict grid typography — black on white, hairline rules, one red accent.
-
 tokens:
   palette:
     bg: "#FFFFFF"
     surface: "#F6F6F4"
     ink: "#141414"
     ink_muted: "#6B6B6B"
-    accent: "#E63946"      # international red
-    accent_alt: "#1D3557"  # deep blue
+    accent: "#E63946"
+    accent_alt: "#1D3557"
     rule: "#D9D9D4"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#141414", ink: "#FFFFFF", muted: "#B9B9B9", accent: "#E63946" }
-    section: { bg: "#E63946", ink: "#FFFFFF", muted: "#F7C9CC" }
-
+    title:
+      bg: "#141414"
+      ink: "#FFFFFF"
+      muted: "#B9B9B9"
+      accent: "#E63946"
+    section:
+      bg: "#E63946"
+      ink: "#FFFFFF"
+      muted: "#F7C9CC"
   dark:
     bg: "#141414"
     surface: "#1F1F1F"
@@ -30,43 +30,118 @@ tokens:
     accent_alt: "#6C8BBF"
     rule: "#FFFFFF24"
     on_accent: "#FFFFFF"
-
   type:
-    display:  { family: Inter,         weight: 700, size: 40, line: 1.08, tracking: -1.0 }
-    heading:  { family: Inter,         weight: 600, size: 30, line: 1.12, tracking: -0.5 }
-    subhead:  { family: Inter,         weight: 400, size: 15, line: 1.4,  tracking: 0 }
-    body:     { family: Inter,         weight: 400, size: 13, line: 1.55, tracking: 0 }
-    caption:  { family: Inter,         weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: Inter,         weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: Inter,         weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
-
+    display:
+      family: Inter
+      weight: 700
+      size: 40
+      line: 1.08
+      tracking: -1
+    heading:
+      family: Inter
+      weight: 600
+      size: 30
+      line: 1.12
+      tracking: -0.5
+    subhead:
+      family: Inter
+      weight: 400
+      size: 15
+      line: 1.4
+      tracking: 0
+    body:
+      family: Inter
+      weight: 400
+      size: 13
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Inter
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Inter
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Inter
+      weight: 700
+      size: 54
+      line: 1
+      tracking: -1.5
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0, pill: 0.40, chip: 0 }       # sharp — the style is the grid
-    border: { width: 1, color: "#D9D9D4" }          # hairline card outlines, not shadows
-    card_pad: 0.30
-
+    radius:
+      card: 0
+      pill: 0.4
+      chip: 0
+    border:
+      width: 1
+      color: "#D9D9D4"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 0, offset: 0, angle: 90, color: "141414", opacity: 0 }
-
-  # The Swiss grid as a barely-there hairline background — the style IS the
-  # grid. Faint neutral lines, far below text-contrast range.
+    card:
+      type: outer
+      blur: 0
+      offset: 0
+      angle: 90
+      color: "141414"
+      opacity: 0
   background:
     decor:
-      - { shape: rect, x: 0, y: 2.5, w: 13.333, h: 0.015, fill: "#B9B9B9", transparency: 70 }
-      - { shape: rect, x: 0, y: 5.0, w: 13.333, h: 0.015, fill: "#B9B9B9", transparency: 70 }
-      - { shape: rect, x: 3.33, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
-      - { shape: rect, x: 6.66, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
-      - { shape: rect, x: 9.99, y: 0, w: 0.015, h: 7.5, fill: "#B9B9B9", transparency: 70 }
-
+      - shape: rect
+        x: 0
+        y: 2.5
+        w: 13.333
+        h: 0.015
+        fill: "#B9B9B9"
+        transparency: 70
+      - shape: rect
+        x: 0
+        y: 5
+        w: 13.333
+        h: 0.015
+        fill: "#B9B9B9"
+        transparency: 70
+      - shape: rect
+        x: 3.33
+        y: 0
+        w: 0.015
+        h: 7.5
+        fill: "#B9B9B9"
+        transparency: 70
+      - shape: rect
+        x: 6.66
+        y: 0
+        w: 0.015
+        h: 7.5
+        fill: "#B9B9B9"
+        transparency: 70
+      - shape: rect
+        x: 9.99
+        y: 0
+        w: 0.015
+        h: 7.5
+        fill: "#B9B9B9"
+        transparency: 70
   plate:
     enabled: false
-
 voice:
   feel: clinical, precise, objective, confident
   density: medium
@@ -79,7 +154,7 @@ voice:
     - more than one accent colour per slide
     - casual or playful phrasing
   headline_style: >
-    Declarative and noun-first. "Rasterisation Is the Bottleneck" over
-    "An Introduction to Rasterisation". Short, specific, matter-of-fact.
-  body_style: >
+    Declarative and noun-first. "Rasterisation Is the Bottleneck" over "An
+    Introduction to Rasterisation". Short, specific, matter-of-fact.
+  body_style: |
     Full sentences, plain words. State the claim, give the evidence, stop.

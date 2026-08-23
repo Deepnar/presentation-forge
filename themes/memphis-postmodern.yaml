@@ -1,26 +1,26 @@
-# Memphis Postmodern — 80s Memphis: bright, playful, geometric.
-# Teal and magenta on warm cream, rounded friendly type, bold colour blocks
-# and a cheerful energy that the strict grid themes deliberately avoid.
-
 name: memphis-postmodern
 label: Memphis Postmodern
 summary: Bright geometric playfulness — teal and magenta on warm cream.
-
 tokens:
   palette:
-    bg: "#F6F1E7"          # warm cream
+    bg: "#F6F1E7"
     surface: "#FFFFFF"
     ink: "#212121"
     ink_muted: "#6E6E6E"
-    accent: "#008A8A"      # teal
-    accent_alt: "#FF5A8A"  # magenta
+    accent: "#008A8A"
+    accent_alt: "#FF5A8A"
     rule: "#E0D9C8"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#212121", ink: "#FFFFFF", muted: "#C9C9C9", accent: "#FF5A8A" }
-    section: { bg: "#008A8A", ink: "#FFFFFF", muted: "#BFE9E9" }
-
+    title:
+      bg: "#212121"
+      ink: "#FFFFFF"
+      muted: "#C9C9C9"
+      accent: "#FF5A8A"
+    section:
+      bg: "#008A8A"
+      ink: "#FFFFFF"
+      muted: "#BFE9E9"
   dark:
     bg: "#1F1F1F"
     surface: "#2A2A2A"
@@ -30,33 +30,81 @@ tokens:
     accent_alt: "#FF7BA3"
     rule: "#FFFFFF28"
     on_accent: "#1F1F1F"
-
   type:
-    display:  { family: Outfit, weight: 700, size: 40, line: 1.1,  tracking: -0.5 }
-    heading:  { family: Outfit, weight: 700, size: 30, line: 1.15, tracking: -0.3 }
-    subhead:  { family: Inter,  weight: 500, size: 15, line: 1.4,  tracking: 0 }
-    body:     { family: Inter,  weight: 400, size: 13, line: 1.55, tracking: 0 }
-    caption:  { family: Inter,  weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: Outfit, weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: Outfit, weight: 700, size: 54, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Outfit
+      weight: 700
+      size: 40
+      line: 1.1
+      tracking: -0.5
+    heading:
+      family: Outfit
+      weight: 700
+      size: 30
+      line: 1.15
+      tracking: -0.3
+    subhead:
+      family: Inter
+      weight: 500
+      size: 15
+      line: 1.4
+      tracking: 0
+    body:
+      family: Inter
+      weight: 400
+      size: 13
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Inter
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Outfit
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Outfit
+      weight: 700
+      size: 54
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.18, pill: 0.40, chip: 0.10 }
-    border: { width: 0, color: "#00000000" }
-    card_pad: 0.30
-
+    radius:
+      card: 0.18
+      pill: 0.4
+      chip: 0.1
+    border:
+      width: 0
+      color: "#00000000"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 12, offset: 3, angle: 90, color: "212121", opacity: 0.08 }
-
+    card:
+      type: outer
+      blur: 12
+      offset: 3
+      angle: 90
+      color: "212121"
+      opacity: 0.08
   plate:
     enabled: false
-
 voice:
   feel: playful, exuberant, optimistic, colourful
   density: medium
@@ -69,7 +117,7 @@ voice:
     - more than two accent colours per slide
     - serious bureaucratic tone
   headline_style: >
-    Bright and confident. "Light Gets Loud" over "Introduction to Ray
-    Tracing". Energy in the words, not just the palette.
-  body_style: >
+    Bright and confident. "Light Gets Loud" over "Introduction to Ray Tracing".
+    Energy in the words, not just the palette.
+  body_style: |
     Full sentences, friendly tone. Keep it moving.

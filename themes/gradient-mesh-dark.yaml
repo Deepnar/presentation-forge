@@ -1,26 +1,26 @@
-# Gradient Mesh Dark — rich saturated dark aurora.
-# Deep plum through teal to amber — a premium keynote dark. The moody sibling
-# of aurora-mesh's light pastel and glassmorphism's violet.
-
 name: gradient-mesh-dark
 label: Gradient Mesh Dark
 summary: A rich dark aurora — deep plum through teal to amber. Premium keynote.
-
 tokens:
   palette:
-    bg: "#171226"          # deep plum-black
+    bg: "#171226"
     surface: "#231A33"
-    ink: "#EFE9F7"         # lavender white
+    ink: "#EFE9F7"
     ink_muted: "#A99FC2"
-    accent: "#7A5CF0"      # violet
-    accent_alt: "#37C8C0"  # teal
+    accent: "#7A5CF0"
+    accent_alt: "#37C8C0"
     rule: "#3A3050"
-    on_accent: "#171226"
-
+    on_accent: "#FFFFFF"
   surfaces:
-    title:   { bg: "#0F0B1C", ink: "#EFE9F7", muted: "#9C8FC0", accent: "#37C8C0" }
-    section: { bg: "#7A5CF0", ink: "#FFFFFF", muted: "#D6CDFB" }
-
+    title:
+      bg: "#0F0B1C"
+      ink: "#EFE9F7"
+      muted: "#9C8FC0"
+      accent: "#37C8C0"
+    section:
+      bg: "#7A5CF0"
+      ink: "#FFFFFF"
+      muted: "#D6CDFB"
   dark:
     bg: "#0F0B1C"
     surface: "#1B1429"
@@ -30,33 +30,82 @@ tokens:
     accent_alt: "#4AD3CB"
     rule: "#312A4A"
     on_accent: "#0F0B1C"
-
   type:
-    display:  { family: "Syne",        weight: 700, size: 38, line: 1.1,  tracking: -0.5 }
-    heading:  { family: "Syne",        weight: 600, size: 28, line: 1.15, tracking: -0.3 }
-    subhead:  { family: "Manrope",     weight: 400, size: 14, line: 1.5,  tracking: 0 }
-    body:     { family: "Manrope",     weight: 400, size: 12.5, line: 1.6, tracking: 0 }
-    caption:  { family: "Manrope",     weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: "Manrope",     weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: "Syne",        weight: 700, size: 54, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Syne
+      weight: 700
+      size: 38
+      line: 1.1
+      tracking: -0.5
+    heading:
+      family: Syne
+      weight: 600
+      size: 28
+      line: 1.15
+      tracking: -0.3
+    subhead:
+      family: Manrope
+      weight: 400
+      size: 14
+      line: 1.5
+      tracking: 0
+    body:
+      family: Manrope
+      weight: 400
+      size: 12.5
+      line: 1.6
+      tracking: 0
+    caption:
+      family: Manrope
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Manrope
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Syne
+      weight: 700
+      size: 54
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.16, pill: 0.40, chip: 0.08 }
-    border: { width: 1, color: "#FFFFFF1A" }
-    card_pad: 0.30
-
+    radius:
+      card: 0.16
+      pill: 0.4
+      chip: 0.08
+    border:
+      width: 1
+      color: "#FFFFFF1A"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 16, offset: 4, angle: 90, color: "0F0B1C", opacity: 0.35 }
-
+    card:
+      type: outer
+      blur: 16
+      offset: 4
+      angle: 90
+      color: 0F0B1C
+      opacity: 0.35
   plate:
     enabled: true
-    html: |
+    html: >
       <style>
         .mesh{position:absolute;inset:0;background:
           radial-gradient(70% 60% at 14% 14%, {{tokens.palette.accent}}66 0%, transparent 55%),
@@ -68,10 +117,12 @@ tokens:
         .b2{right:4%;top:4%;width:28%;height:32%;background:{{tokens.palette.accent_alt}}77}
         .b3{left:24%;bottom:-12%;width:52%;height:40%;background:{{tokens.palette.accent}}55}
       </style>
+
       <div class="mesh"></div>
+
       <div class="b b1"></div><div class="b b2"></div><div class="b b3"></div>
     surfaces:
-      title: |
+      title: >
         <style>
           .hero{position:absolute;inset:0;background:
             radial-gradient(82% 72% at 16% 14%, {{tokens.palette.accent}}aa 0%, transparent 52%),
@@ -82,9 +133,11 @@ tokens:
           .b1{left:8%;top:10%;width:30%;height:34%;background:{{tokens.palette.accent}}99}
           .b2{right:6%;top:6%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}88}
         </style>
+
         <div class="hero"></div>
+
         <div class="b b1"></div><div class="b b2"></div>
-      section: |
+      section: >
         <style>
           .sec{position:absolute;inset:0;background:
             radial-gradient(78% 68% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 56%),
@@ -93,9 +146,10 @@ tokens:
           .s{position:absolute;border-radius:50%;filter:blur(64px);opacity:.5}
           .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
         </style>
-        <div class="sec"></div>
-        <div class="s s1"></div>
 
+        <div class="sec"></div>
+
+        <div class="s s1"></div>
 voice:
   feel: dramatic, premium, confident, immersive
   density: medium
@@ -108,7 +162,7 @@ voice:
     - dense paragraphs
     - pastel or washed-out imagery
   headline_style: >
-    Bold and cinematic. "The Pipeline After Dark" over "Rendering". Make it
-    feel like the headline of a keynote.
-  body_style: >
+    Bold and cinematic. "The Pipeline After Dark" over "Rendering". Make it feel
+    like the headline of a keynote.
+  body_style: |
     Confident full sentences. State the claim, then the evidence, briefly.

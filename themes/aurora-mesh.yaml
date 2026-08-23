@@ -1,28 +1,26 @@
-# Aurora Mesh — flowing multi-stop colour fields.
-#
-# A pure background plate: several radial gradient stops built from the theme's
-# own accent/alt/ink/surface tones blend into a soft aurora. A gentle light halo
-# sits behind the content area so native text stays readable over the wash.
-
 name: aurora-mesh
 label: Aurora Mesh
 summary: Flowing multi-stop mesh gradients — violet, pink and indigo light.
-
 tokens:
   palette:
-    bg: "#F6F3FF"          # pale lavender
+    bg: "#F6F3FF"
     surface: "#FFFFFF"
-    ink: "#2B2255"         # deep indigo
+    ink: "#2B2255"
     ink_muted: "#6E6596"
-    accent: "#7B5CF5"      # violet
-    accent_alt: "#E84393"  # pink
+    accent: "#6B3CE8"
+    accent_alt: "#E84393"
     rule: "#E5E0F7"
     on_accent: "#FFFFFF"
-
   surfaces:
-    title:   { bg: "#2B2255", ink: "#FFFFFF", muted: "#BFB4E8", accent: "#E84393" }
-    section: { bg: "#7B5CF5", ink: "#FFFFFF", muted: "#E3DBFF" }
-
+    title:
+      bg: "#2B2255"
+      ink: "#FFFFFF"
+      muted: "#BFB4E8"
+      accent: "#E84393"
+    section:
+      bg: "#6B3CE8"
+      ink: "#FFFFFF"
+      muted: "#E3DBFF"
   dark:
     bg: "#191530"
     surface: "#241E48"
@@ -32,34 +30,85 @@ tokens:
     accent_alt: "#F0659F"
     rule: "#FFFFFF1A"
     on_accent: "#FFFFFF"
-
   type:
-    display:  { family: Outfit, weight: 700, size: 40, line: 1.1,  tracking: -0.6 }
-    heading:  { family: Outfit, weight: 600, size: 30, line: 1.15, tracking: -0.4 }
-    subhead:  { family: Inter,  weight: 500, size: 15, line: 1.4,  tracking: 0 }
-    body:     { family: Inter,  weight: 400, size: 13, line: 1.55, tracking: 0 }
-    caption:  { family: Inter,  weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: Inter,  weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
-    stat:     { family: Outfit, weight: 700, size: 54, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Outfit
+      weight: 700
+      size: 40
+      line: 1.1
+      tracking: -0.6
+    heading:
+      family: Outfit
+      weight: 600
+      size: 30
+      line: 1.15
+      tracking: -0.4
+    subhead:
+      family: Inter
+      weight: 500
+      size: 15
+      line: 1.4
+      tracking: 0
+    body:
+      family: Inter
+      weight: 400
+      size: 13
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Inter
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Inter
+      weight: 600
+      size: 10
+      line: 1.2
+      tracking: 1.2
+      transform: upper
+    stat:
+      family: Outfit
+      weight: 700
+      size: 54
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.22, pill: 0.40, chip: 0.12 }
-    border: { width: 0, color: "#00000000" }
-    card_pad: 0.30
-    card_fill: { color: "#FFFFFF", transparency: 0 }
-
+    radius:
+      card: 0.22
+      pill: 0.4
+      chip: 0.12
+    border:
+      width: 0
+      color: "#00000000"
+    card_pad: 0.3
+    card_fill:
+      color: "#FFFFFF"
+      transparency: 0
   shadow:
-    card: { type: outer, blur: 18, offset: 5, angle: 90, color: "2B2255", opacity: 0.08 }
-
+    card:
+      type: outer
+      blur: 18
+      offset: 5
+      angle: 90
+      color: 2B2255
+      opacity: 0.08
   plate:
     enabled: true
-    html: |
+    html: >
       <style>
         .mesh{position:absolute;inset:0;background:
           radial-gradient(55% 45% at 12% 14%, {{tokens.palette.accent}} 0%, transparent 52%),
@@ -71,10 +120,12 @@ tokens:
         .halo{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
           background:radial-gradient(60% 65% at 50% 32%, {{tokens.palette.surface}}8c 0%, {{tokens.palette.surface}}00 78%);}
       </style>
+
       <div class="mesh"></div>
+
       <div class="halo"></div>
     surfaces:
-      title: |
+      title: >
         <style>
           .hero{position:absolute;inset:0;background:
             radial-gradient(65% 55% at 16% 18%, {{tokens.palette.accent}} 0%, transparent 52%),
@@ -82,16 +133,17 @@ tokens:
             radial-gradient(75% 70% at 30% 100%, {{tokens.surfaces.title.accent}} 0%, transparent 60%),
             linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
         </style>
+
         <div class="hero"></div>
-      section: |
+      section: >
         <style>
           .sec{position:absolute;inset:0;background:
             radial-gradient(70% 60% at 18% 22%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
             radial-gradient(60% 50% at 82% 30%, {{tokens.palette.accent_alt}} 0%, transparent 55%),
             linear-gradient(140deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
         </style>
-        <div class="sec"></div>
 
+        <div class="sec"></div>
 voice:
   feel: luminous, fluid, futuristic but warm
   density: medium
@@ -104,7 +156,7 @@ voice:
     - muddy dark-on-dark text
     - more than three or four accent colours in one slide
   headline_style: >
-    Bold and confident. "Light Is the Renderer" over "What Is Ray Tracing?".
-    Let the gradient be loud; keep the words calm.
-  body_style: >
+    Bold and confident. "Light Is the Renderer" over "What Is Ray Tracing?". Let
+    the gradient be loud; keep the words calm.
+  body_style: |
     Full sentences. Short paragraphs. Let the mesh breathe — do not crowd it.

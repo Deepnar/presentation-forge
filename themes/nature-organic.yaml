@@ -1,27 +1,26 @@
-# Nature Organic — earth greens and clay, soft rounded everything.
-# A botanical report: sage, moss, terracotta on warm off-white, generous
-# rounding, no sharp edges. Distinct from the neutral-minimal cluster by
-# colour and from corporate by warmth.
-
 name: nature-organic
 label: Nature Organic
 summary: Earth greens and clay, rounded and soft — a botanical report feel.
-
 tokens:
   palette:
-    bg: "#F4F2E9"          # warm sand
+    bg: "#F4F2E9"
     surface: "#FFFFFF"
-    ink: "#2C3528"         # deep moss charcoal
+    ink: "#2C3528"
     ink_muted: "#6E7564"
-    accent: "#6A8E5A"      # sage green
-    accent_alt: "#C4704A"  # clay terracotta
+    accent: "#6A8E5A"
+    accent_alt: "#C4704A"
     rule: "#DFD9C8"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#2C3528", ink: "#F4F2E9", muted: "#A9B39C", accent: "#C4704A" }
-    section: { bg: "#6A8E5A", ink: "#FFFFFF", muted: "#D6E0CE" }
-
+    title:
+      bg: "#2C3528"
+      ink: "#F4F2E9"
+      muted: "#A9B39C"
+      accent: "#C4704A"
+    section:
+      bg: "#6A8E5A"
+      ink: "#FFFFFF"
+      muted: "#D6E0CE"
   dark:
     bg: "#23281F"
     surface: "#2F362A"
@@ -31,31 +30,79 @@ tokens:
     accent_alt: "#CF8259"
     rule: "#FFFFFF1F"
     on_accent: "#FFFFFF"
-
   type:
-    display:  { family: "Source Serif 4", weight: 700, size: 38, line: 1.15, tracking: -0.3 }
-    heading:  { family: "Source Serif 4", weight: 600, size: 28, line: 1.2,  tracking: -0.2 }
-    subhead:  { family: "Karla",          weight: 400, size: 14, line: 1.5,  tracking: 0 }
-    body:     { family: "Karla",          weight: 400, size: 12.5, line: 1.6, tracking: 0 }
-    caption:  { family: "Karla",          weight: 600, size: 10, line: 1.35, tracking: 0.3 }
-    eyebrow:  { family: "Karla",          weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: "Source Serif 4", weight: 700, size: 52, line: 1.05, tracking: -1 }
-
+    display:
+      family: Source Serif 4
+      weight: 700
+      size: 38
+      line: 1.15
+      tracking: -0.3
+    heading:
+      family: Source Serif 4
+      weight: 600
+      size: 28
+      line: 1.2
+      tracking: -0.2
+    subhead:
+      family: Karla
+      weight: 400
+      size: 14
+      line: 1.5
+      tracking: 0
+    body:
+      family: Karla
+      weight: 400
+      size: 12.5
+      line: 1.6
+      tracking: 0
+    caption:
+      family: Karla
+      weight: 600
+      size: 10
+      line: 1.35
+      tracking: 0.3
+    eyebrow:
+      family: Karla
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Source Serif 4
+      weight: 700
+      size: 52
+      line: 1.05
+      tracking: -1
   grid:
-    margin: { top: 0.66, right: 0.75, bottom: 0.58, left: 0.75 }
-    gutter: 0.30
+    margin:
+      top: 0.66
+      right: 0.75
+      bottom: 0.58
+      left: 0.75
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
-
+    band:
+      eyebrow_y: 0.66
+      title_y: 1.36
+      body_y: 2.62
   shape:
-    radius: { card: 0.34, pill: 0.45, chip: 0.18 }   # soft everywhere
-    border: { width: 0, color: "#00000000" }
-    card_pad: 0.30
-
+    radius:
+      card: 0.34
+      pill: 0.45
+      chip: 0.18
+    border:
+      width: 0
+      color: "#00000000"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 14, offset: 3, angle: 90, color: "2C3528", opacity: 0.07 }
-
-  # A soft sage bloom in the bottom-left — the organic wash.
+    card:
+      type: outer
+      blur: 14
+      offset: 3
+      angle: 90
+      color: 2C3528
+      opacity: 0.07
   background:
     decor:
       - shape: ellipse
@@ -65,10 +112,8 @@ tokens:
         h: 4.6
         fill: "#6A8E5A"
         transparency: 88
-
   plate:
     enabled: false
-
 voice:
   feel: warm, grounded, clear, unhurried
   density: medium
@@ -84,5 +129,4 @@ voice:
     Grounded and specific. "What the Soil Actually Needs" over "Soil Science".
     Prefer the concrete image over the abstract label.
   body_style: >
-    Full sentences, warm but precise. Lead with the observation, then the
-    reason.
+    Full sentences, warm but precise. Lead with the observation, then the reason.

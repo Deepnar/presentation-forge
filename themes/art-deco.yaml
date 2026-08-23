@@ -14,9 +14,9 @@ tokens:
     ink: "#201D18"
     ink_muted: "#716A5A"
     accent: "#C9A227"      # gold
-    accent_alt: "#201D18"  # black
+    accent_alt: "#6E5A12"  # deep gold (was ink duplicate)
     rule: "#D9CFB6"
-    on_accent: "#FFFFFF"
+    on_accent: "#1A1608"   # near-black for gold (2.42→7.6:1)
 
   surfaces:
     title:   { bg: "#201D18", ink: "#F3EDDE", muted: "#C9C2B0", accent: "#C9A227" }

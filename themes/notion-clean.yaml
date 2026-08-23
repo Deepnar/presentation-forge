@@ -1,26 +1,27 @@
-# Notion Clean — a neutral, quietly confident workspace.
-# White, Notion's ink gray, a single blue accent, thin card borders and almost
-# no shadow. The design recedes so the content is all you notice.
-
 name: notion-clean
 label: Notion Clean
 summary: Neutral workspace — white, gray ink, one blue accent, minimal.
-
 tokens:
   palette:
     bg: "#FFFFFF"
-    surface: "#FFFFFF"     # cards are white too — the border delineates them
+    surface: "#FFFFFF"
     ink: "#37352F"
     ink_muted: "#787774"
-    accent: "#2383E2"      # notion blue
-    accent_alt: "#9C6CFE"  # purple
+    accent: "#2383E2"
+    accent_alt: "#9C6CFE"
     rule: "#E9E9E7"
-    on_accent: "#FFFFFF"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#37352F", ink: "#FFFFFF", muted: "#C9C6C0", accent: "#2383E2" }
-    section: { bg: "#F1F1EF", ink: "#37352F", muted: "#787774", accent: "#2383E2" }
-
+    title:
+      bg: "#37352F"
+      ink: "#FFFFFF"
+      muted: "#C9C6C0"
+      accent: "#2383E2"
+    section:
+      bg: "#F1F1EF"
+      ink: "#37352F"
+      muted: "#787774"
+      accent: "#2383E2"
   dark:
     bg: "#191919"
     surface: "#202020"
@@ -30,45 +31,90 @@ tokens:
     accent_alt: "#B69DFA"
     rule: "#FFFFFF1E"
     on_accent: "#191919"
-
   type:
-    display:  { family: Inter, weight: 700, size: 40, line: 1.08, tracking: -0.8 }
-    heading:  { family: Inter, weight: 600, size: 30, line: 1.12, tracking: -0.4 }
-    subhead:  { family: Inter, weight: 400, size: 15, line: 1.4,  tracking: 0 }
-    body:     { family: Inter, weight: 400, size: 13, line: 1.55, tracking: 0 }
-    caption:  { family: Inter, weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: Inter, weight: 600, size: 10, line: 1.2,  tracking: 1.2, transform: upper }
-    stat:     { family: Inter, weight: 700, size: 54, line: 1.0,  tracking: -1.5 }
-
+    display:
+      family: Inter
+      weight: 700
+      size: 40
+      line: 1.08
+      tracking: -0.8
+    heading:
+      family: Inter
+      weight: 600
+      size: 30
+      line: 1.12
+      tracking: -0.4
+    subhead:
+      family: Inter
+      weight: 400
+      size: 15
+      line: 1.4
+      tracking: 0
+    body:
+      family: Inter
+      weight: 400
+      size: 13
+      line: 1.55
+      tracking: 0
+    caption:
+      family: Inter
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Inter
+      weight: 600
+      size: 10
+      line: 1.2
+      tracking: 1.2
+      transform: upper
+    stat:
+      family: Inter
+      weight: 700
+      size: 54
+      line: 1
+      tracking: -1.5
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
-    gutter: 0.30
+    margin:
+      top: 0.62
+      right: 0.7
+      bottom: 0.55
+      left: 0.7
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
-
+    band:
+      eyebrow_y: 0.62
+      title_y: 1.3
+      body_y: 2.55
   shape:
-    radius: { card: 0.14, pill: 0.40, chip: 0.10 }
-    border: { width: 1, color: "#E9E9E7" }          # thin neutral card borders
-    card_pad: 0.30
-
+    radius:
+      card: 0.14
+      pill: 0.4
+      chip: 0.1
+    border:
+      width: 1
+      color: "#E9E9E7"
+    card_pad: 0.3
   shadow:
-    card: { type: outer, blur: 0, offset: 1, angle: 90, color: "37352F", opacity: 3 }
-
-  # A faint blue halo hugging the top-right corner — notion's blue as a soft
-  # ambient wash, distinct from a centred or bottom-corner treatment.
+    card:
+      type: outer
+      blur: 0
+      offset: 1
+      angle: 90
+      color: 37352F
+      opacity: 0.08
   background:
     decor:
       - shape: ellipse
-        x: 10.0
+        x: 10
         y: -2.6
         w: 6.4
         h: 6.4
         fill: "#2383E2"
         transparency: 94
-
   plate:
     enabled: false
-
 voice:
   feel: neutral, calm, clear, unopinionated
   density: medium
@@ -81,7 +127,7 @@ voice:
     - decorative language
     - shouting
   headline_style: >
-    Plain and exact. "Rendering Basics" over "An Introduction to Ray
-    Tracing". Say what it is, not what you feel about it.
-  body_style: >
+    Plain and exact. "Rendering Basics" over "An Introduction to Ray Tracing".
+    Say what it is, not what you feel about it.
+  body_style: |
     Simple, clear sentences. No ornament.

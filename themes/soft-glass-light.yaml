@@ -1,26 +1,26 @@
-# Soft Glass Light — frosted glass, warm neutral.
-# Oat/amber temperature instead of glassmorphism's violet/teal; softer blur,
-# larger radius. Distinct from glassmorphism by palette and temperature alone.
-
 name: soft-glass-light
 label: Soft Glass Light
 summary: Warm frosted glass — oat and amber, soft and calm.
-
 tokens:
   palette:
-    bg: "#EFE7D8"          # warm oat
+    bg: "#EFE7D8"
     surface: "#FDF9F1"
-    ink: "#3D3226"         # warm umber
+    ink: "#3D3226"
     ink_muted: "#8A7A67"
-    accent: "#C98A3B"      # amber
-    accent_alt: "#B2574C"  # soft clay
+    accent: "#C98A3B"
+    accent_alt: "#B2574C"
     rule: "#DCCEB8"
-    on_accent: "#FDF9F1"
-
+    on_accent: "#0A0A0A"
   surfaces:
-    title:   { bg: "#3D3226", ink: "#FDF9F1", muted: "#C9BBA6", accent: "#D9A45C" }
-    section: { bg: "#B2574C", ink: "#FDF9F1", muted: "#F0D8D3" }
-
+    title:
+      bg: "#3D3226"
+      ink: "#FDF9F1"
+      muted: "#C9BBA6"
+      accent: "#D9A45C"
+    section:
+      bg: "#B2574C"
+      ink: "#FDF9F1"
+      muted: "#F0D8D3"
   dark:
     bg: "#241D14"
     surface: "#332A1E"
@@ -30,34 +30,85 @@ tokens:
     accent_alt: "#C26357"
     rule: "#4A3E2E"
     on_accent: "#F4EDDF"
-
   type:
-    display:  { family: "Fraunces",  weight: 500, size: 40, line: 1.1,  tracking: -0.4 }
-    heading:  { family: "Fraunces",  weight: 500, size: 30, line: 1.15, tracking: -0.3 }
-    subhead:  { family: "Manrope",   weight: 400, size: 14, line: 1.5,  tracking: 0 }
-    body:     { family: "Manrope",   weight: 400, size: 12.5, line: 1.6, tracking: 0 }
-    caption:  { family: "Manrope",   weight: 500, size: 10, line: 1.35, tracking: 0.2 }
-    eyebrow:  { family: "Manrope",   weight: 700, size: 10, line: 1.2,  tracking: 1.6, transform: upper }
-    stat:     { family: "Fraunces",  weight: 500, size: 54, line: 1.0,  tracking: -1 }
-
+    display:
+      family: Fraunces
+      weight: 500
+      size: 40
+      line: 1.1
+      tracking: -0.4
+    heading:
+      family: Fraunces
+      weight: 500
+      size: 30
+      line: 1.15
+      tracking: -0.3
+    subhead:
+      family: Manrope
+      weight: 400
+      size: 14
+      line: 1.5
+      tracking: 0
+    body:
+      family: Manrope
+      weight: 400
+      size: 12.5
+      line: 1.6
+      tracking: 0
+    caption:
+      family: Manrope
+      weight: 500
+      size: 10
+      line: 1.35
+      tracking: 0.2
+    eyebrow:
+      family: Manrope
+      weight: 700
+      size: 10
+      line: 1.2
+      tracking: 1.6
+      transform: upper
+    stat:
+      family: Fraunces
+      weight: 500
+      size: 54
+      line: 1
+      tracking: -1
   grid:
-    margin: { top: 0.66, right: 0.75, bottom: 0.58, left: 0.75 }
-    gutter: 0.30
+    margin:
+      top: 0.66
+      right: 0.75
+      bottom: 0.58
+      left: 0.75
+    gutter: 0.3
     columns: 12
-    band: { eyebrow_y: 0.66, title_y: 1.36, body_y: 2.62 }
-
+    band:
+      eyebrow_y: 0.66
+      title_y: 1.36
+      body_y: 2.62
   shape:
-    radius: { card: 0.34, pill: 0.45, chip: 0.14 }   # larger radius, softer
-    border: { width: 1, color: "#FDF9F180" }
-    card_pad: 0.30
-    card_fill: { color: "#FDF9F1", transparency: 44 }
-
+    radius:
+      card: 0.34
+      pill: 0.45
+      chip: 0.14
+    border:
+      width: 1
+      color: "#FDF9F180"
+    card_pad: 0.3
+    card_fill:
+      color: "#FDF9F1"
+      transparency: 44
   shadow:
-    card: { type: outer, blur: 20, offset: 5, angle: 90, color: "3D3226", opacity: 0.10 }
-
+    card:
+      type: outer
+      blur: 20
+      offset: 5
+      angle: 90
+      color: 3D3226
+      opacity: 0.1
   plate:
     enabled: true
-    html: |
+    html: >
       <style>
         .mesh{position:absolute;inset:0;background:
           radial-gradient(72% 62% at 16% 14%, {{tokens.palette.accent}}55 0%, transparent 56%),
@@ -73,11 +124,14 @@ tokens:
           border:1px solid {{tokens.palette.surface}}99;
           box-shadow:0 16px 48px {{tokens.palette.ink}}26;}
       </style>
+
       <div class="mesh"></div>
+
       <div class="b b1"></div><div class="b b2"></div>
+
       <div class="frost"></div>
     surfaces:
-      title: |
+      title: >
         <style>
           .hero{position:absolute;inset:0;background:
             radial-gradient(82% 72% at 18% 14%, {{tokens.palette.accent}}bb 0%, transparent 52%),
@@ -88,9 +142,11 @@ tokens:
           .b1{left:9%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
           .b2{right:6%;top:7%;width:27%;height:31%;background:{{tokens.palette.accent_alt}}77}
         </style>
+
         <div class="hero"></div>
+
         <div class="b b1"></div><div class="b b2"></div>
-      section: |
+      section: >
         <style>
           .sec{position:absolute;inset:0;background:
             radial-gradient(76% 66% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 56%),
@@ -99,9 +155,10 @@ tokens:
           .s{position:absolute;border-radius:50%;filter:blur(64px);opacity:.45}
           .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
         </style>
-        <div class="sec"></div>
-        <div class="s s1"></div>
 
+        <div class="sec"></div>
+
+        <div class="s s1"></div>
 voice:
   feel: calm, tactile, warm, crafted
   density: medium
@@ -116,5 +173,5 @@ voice:
   headline_style: >
     Warm and specific. "Soft Light, Clear Thinking" over "An Introduction".
     Calm, crafted, unhurried.
-  body_style: >
+  body_style: |
     Gentle full sentences. Say the warm thing, then the true thing.
