@@ -119,8 +119,12 @@ const ANGLES = [
  * concrete search term. Falls back to the brief alone when the model is
  * unavailable, so a dead model degrades depth, never the pass. `max` is the
  * per-transport budget — the cloud research profile opens it up.
+ *
+ * `briefing` is the verbatim `briefingAnsweredText` (thesis/audience/emphasis/
+ * evidence) so queries can target the figures the plan will need. When present
+ * it is appended to the user message but never replaces the brief.
  */
-export async function expandQueries(brief, { chat, max = 8 } = {}) {
+export async function expandQueries(brief, { chat, max = 8, briefing = "" } = {}) {
   const schema = {
     type: "object",
     required: ["queries"],
@@ -136,6 +140,9 @@ export async function expandQueries(brief, { chat, max = 8 } = {}) {
   try {
     const run = chat ?? chatJSON;
     const angleList = ANGLES.map((a) => `${a.key}: ${a.hint}`).join("\n");
+    const userBlock = briefing?.trim()
+      ? `TOPIC\n${brief}\n\nBRIEFING (use thesis/evidence to steer data queries)\n${briefing}`
+      : `TOPIC\n${brief}`;
     const res = await run({
       role: "research",
       schema,
@@ -146,15 +153,17 @@ export async function expandQueries(brief, { chat, max = 8 } = {}) {
             "You turn one topic into 5-7 concrete web-search queries, one per angle:\n" +
             angleList +
             "\nQueries must be specific search terms (plain noun phrases, not questions). " +
-            "Each must retrieve DIFFERENT material. Return {queries}.",
+            "Each must retrieve DIFFERENT material and be 3-8 words, never a single generic word and never the whole topic sentence verbatim. " +
+            "Include the evidence figures (numbers, scheme names from the briefing) in at least one data-angle query so the notes will contain the figures the plan needs. Return {queries}.",
         },
-        { role: "user", content: `TOPIC\n${brief}` },
+        { role: "user", content: userBlock },
       ],
     });
     const queries = (res.data?.queries ?? []).filter((q) => typeof q === "string" && q.trim().length >= 3);
-    return [...new Set([String(brief).trim(), ...queries])].slice(0, max);
+    const base = String(brief).split("\n")[0].trim().slice(0, 120);
+    return [...new Set([base, ...queries])].slice(0, max);
   } catch {
-    return [String(brief).trim()];
+    return [String(brief).trim().split("\n")[0].trim()];
   }
 }
 
@@ -214,22 +223,59 @@ export async function gapQueries(brief, notes, { chat, max = 3 } = {}) {
   }
 }
 
+/** Extract the evidence figures/phrases the briefing says must not be invented — numbers with units etc. */
+function evidenceFacts(evidence) {
+  const t = String(evidence ?? "");
+  if (!t.trim()) return [];
+  const parts = t.split(/[,;|\n]+/).map((s) => s.trim()).filter(Boolean);
+  const facts = [];
+  for (const p of parts) {
+    if (/\d/.test(p)) facts.push(p.slice(0, 90));
+  }
+  if (!facts.length && parts.length) return parts.slice(0, 2).map((s) => s.slice(0, 90));
+  return facts.slice(0, 4);
+}
+
+/** Which evidence facts are absent from the accumulated notes (normalized). */
+function missingFacts(facts, notes) {
+  const norm = String(notes ?? "").toLowerCase().replace(/,/g, "");
+  const out = [];
+  for (const f of facts) {
+    const key = f.toLowerCase().replace(/,/g, "").split(/\s+/).filter(Boolean).slice(0, 3).join(" ");
+    // Check for any token of the fact (numbers or scheme name) in notes
+    const tokens = f.toLowerCase().split(/\s+/).filter((w) => /\d/.test(w) || w.length > 4);
+    const hit = tokens.some((tok) => norm.includes(tok.toLowerCase().replace(/,/g, "")));
+    if (!hit) out.push(f);
+    else if (key && !norm.includes(key)) {
+      // still consider missing if the exact phrase not found, but token hit is enough for now
+    }
+  }
+  // Dedupe by first token
+  return [...new Set(out)];
+}
+
 /**
  * The deep research pass: expand the brief into angle queries, run each at a
  * higher read budget than the single-shot `researchQuery`, then follow up on
  * the top sources, then close the two gaps the diversity guard finds (missing
  * domains / missing academic voice). The `profile` is the research role's
  * per-transport depth budget — the cloud override runs every stage deeper.
- * Returns the deduplicated accumulated pages.
+ * `briefing` is the verbatim briefingAnsweredText so evidence figures steer queries
+ * and the post-pass can verify coverage. Returns the deduplicated accumulated pages.
  */
-export async function deepResearch(brief, { onProgress, profile } = {}) {
+export async function deepResearch(brief, { onProgress, profile, briefing = "" } = {}) {
   const p = {
     per_query_limit: 8, per_query_read: 4,
     followup_sources: 3, followup_limit: 6, followup_read: 3,
     gap_max: 3, gap_limit: 5, gap_read: 3,
     ...(profile ?? {}),
   };
-  const queries = await expandQueries(brief, { max: profile?.angle_max ?? 8 });
+  const evidence = (() => {
+    const m = String(briefing).match(/Evidence \/ constraints:\s*(.+)/i);
+    return m ? m[1] : "";
+  })();
+  const facts = evidenceFacts(evidence);
+  const queries = await expandQueries(brief, { max: profile?.angle_max ?? 8, briefing });
   const pages = [];
   const seenUrl = new Set();
 
@@ -269,6 +315,18 @@ export async function deepResearch(brief, { onProgress, profile } = {}) {
   for (const q of await gapQueries(brief, pages.map((page) => page.text).join("\n\n").slice(0, 4000), { max: p.gap_max })) {
     onProgress?.({ query: `gap ↳ ${q}` });
     absorb((await researchQuery(q, { limit: p.gap_limit, read: p.gap_read })).pages);
+  }
+
+  // Evidence-coverage post-pass: if the briefing named figures that the notes still lack,
+  // re-query specifically for them — this is what makes "the notes contain the figures the plan will need" true.
+  if (facts.length) {
+    const notesSoFar = pages.map((page) => page.text).join("\n\n");
+    const missing = missingFacts(facts, notesSoFar);
+    for (const f of missing.slice(0, 3)) {
+      const q = `${f} ${String(brief).split("\n")[0].slice(0, 50)}`.slice(0, 120);
+      onProgress?.({ query: `evidence ↳ ${q}` });
+      absorb((await researchQuery(q, { limit: p.gap_limit, read: p.gap_read })).pages);
+    }
   }
 
   return { query: brief, pages };

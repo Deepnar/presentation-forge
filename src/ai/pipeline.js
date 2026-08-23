@@ -21,6 +21,8 @@ import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
 import { renderReport, REPORT_SECTIONS } from "../report.js";
+import { analyzeQuality, qualityProblems } from "./quality.js";
+import { supplyDeckImages } from "./images.js";
 
 /**
  * Orchestration shared by the CLI and the API: creating a deck from a brief and
@@ -69,10 +71,12 @@ export async function uniqueSlug(base) {
   * Crossref, and the top papers' full text joins the notes. Returns text for
   * the model plus a sources list (web sources and papers marked kind:"paper").
   */
-export async function runResearch(brief, sources = [], onProgress, { papers = false } = {}) {
+export async function runResearch(brief, sources = [], onProgress, { papers = false, briefing = "" } = {}) {
   // The research role's per-transport depth budget: the cloud override runs
   // every stage of the pass deeper (more queries, higher source/read caps,
-  // more papers and fuller full-text coverage).
+  // more papers and fuller full-text coverage). `briefing` is the verbatim
+  // briefingAnsweredText so the pass can steer queries toward the thesis/
+  // evidence figures the plan will need and re-query if they are absent.
   const profile = await researchProfile();
   let out = [];
   const allSources = [];
@@ -80,7 +84,7 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
     const pages = await Promise.all(sources.map((url) => fetchPage(url)));
     out = pages.filter((p) => p.ok);
   } else if (brief?.trim()) {
-    const r = await deepResearch(brief.trim(), { onProgress, profile });
+    const r = await deepResearch(brief.trim(), { onProgress, profile, briefing });
     out = r.pages;
   }
   allSources.push(...out.map(({ url, title, words }) => ({ url, title, words })));
@@ -232,7 +236,7 @@ export async function createDeck({
     // --research would otherwise silently skip research and later fail report
     // generation with "no research/notes.md" for a reason nothing explains.
     onProgress?.({ status: "researching" });
-    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
+    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
     if (r.text) {
       await writeResearch(dir, { text: r.text, sources: r.sources });
       researchText = r.text;
@@ -266,7 +270,7 @@ export async function createDeck({
  * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
  */
 export async function createReport({
-  brief, sources = [], research = false, papers = false, researchSource = null,
+  brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
   upload = null, depth = "full", density = "balanced",
   model, identity, owner, onProgress, signal,
 }) {
@@ -304,7 +308,7 @@ export async function createReport({
     });
   } else {
     onProgress?.({ status: "researching" });
-    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers });
+    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
     if (!r.text) throw new Error("Research produced nothing to write the report from.");
     await writeResearch(dir, { text: r.text, sources: r.sources });
   }
@@ -620,6 +624,27 @@ export async function finalizeDeck({
     }
   }
 
+  // Image supply — auto, not just upload: when the writer wants an image it
+  // emitted `[image] description` (sanitized, never a URL). Try to find a CC
+  // image via SearXNG images / Unsplash Source, cache to assets/auto/, set
+  // slide.image. No model writes a URL, every file is local. Opt-in today is
+  // any deck with an [image] note — manual upload still wins (assets/ over auto/).
+  try {
+    const supplied = await supplyDeckImages(tr.grounded.deck, dir);
+    if (supplied.length) {
+      onProgress?.({ status: "images", count: supplied.length });
+      await writeFile(deckFile, YAML.stringify(tr.grounded.deck), "utf8");
+    }
+  } catch {}
+
+  // PPTs themselves — better by default: deterministic quality gate.
+  // Flags monotony (8 bullets in a row, one family dominating) and data-blind
+  // (research has >=5 numeric facts but deck uses zero data slides). Surfaces as
+  // problems[] so DeckDetail can show it; a future rewrite pass can use the
+  // same findings. No model, no second-guessing — the flag is the feature.
+  const qualityFindings = analyzeQuality(tr.grounded.deck, researchText);
+  const qualityProbs = qualityProblems(qualityFindings);
+
   // Presenter distribution runs on finalize too, not just in the write half.
   // The write half checkpoints deck.yaml per slide DURING the write loop and
   // only assigns presenters in memory at the very end, so a deck that reached
@@ -653,7 +678,7 @@ export async function finalizeDeck({
         plan,
         slides: [],
         thumbs: [],
-        problems: [...(tr.grounded.problems ?? []), err.message],
+        problems: [...(tr.grounded.problems ?? []), ...qualityProbs, err.message],
         skipped: [],
         stats: {},
         trimmed: tr.trimmed,
@@ -701,12 +726,14 @@ export async function finalizeDeck({
       ...tr.grounded.problems,
       ...(write?.problems ?? []),
       ...(coherence?.problems ?? []),
+      ...qualityProbs,
     ],
     skipped: write?.skipped ?? [],
     stats: write?.stats ?? {},
     critic: criticReport,
     trimmed: tr.trimmed,
     coherence: coherence ? { findings: coherence.findings.length, fixed: coherence.findings.length > 0 } : { findings: 0, fixed: false },
+    quality: { findings: qualityFindings.length },
   };
 }
 

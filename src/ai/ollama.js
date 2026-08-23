@@ -557,11 +557,12 @@ async function cloudChat(spec, {
 function cloudMessages(messages, images, format) {
   const out = messages.map((m) => ({ role: m.role, content: m.content }));
   if (format) {
-    out.unshift({
-      role: "system",
-      content: "Respond in JSON only, matching this JSON Schema exactly:\n" +
-        JSON.stringify(format),
-    });
+    const schemaNote = "Respond in JSON only, matching this JSON Schema exactly:\n" + JSON.stringify(format);
+    if (out.length && out[0].role === "system") {
+      out[0] = { role: "system", content: `${schemaNote}\n\n${out[0].content}` };
+    } else {
+      out.unshift({ role: "system", content: schemaNote });
+    }
   }
   if (images?.length) {
     const last = out[out.length - 1];
