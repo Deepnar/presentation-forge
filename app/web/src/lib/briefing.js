@@ -1,6 +1,6 @@
 /**
- * The guided deck-briefing: thesis-driven, 7-8 turns instead of 13.
- * Each answer maps 1:1 to plan/research — thesis → planner purpose/coherence,
+ * The guided deck-briefing: 15 questions — the original 13 plus thesis + evidence.
+ * Every answer maps to plan/research — thesis → planner purpose/coherence,
  * audience+emphasis+evidence → research angles + dataAffinityNote + TYPE_USE_WHEN.
  * This is the data model the old NewDeck wizard had, re-expressed as a conversation.
  */
@@ -8,24 +8,33 @@
 export const BRIEFING_QUESTIONS = [
   { key: "preset", ask: "Use a saved format, or start fresh?" },
   { key: "title", ask: "What should the deck be called?" },
+  { key: "team", ask: "Who is on the team — and who presents?" },
+  { key: "guide", ask: "Who is your guide?" },
+  { key: "academic", ask: "Which subject and academic year is this for?" },
   { key: "thesis", ask: "What is the ONE thing the audience must remember or do after your last slide? (your thesis in one sentence)" },
-  { key: "audience", ask: "Who is in the room and what do they already know about this topic?" },
-  { key: "emphasis", ask: "Which 2–3 ideas must own the most slides — and one line why each matters to that audience?" },
+  { key: "audience", ask: "Who will be in the room, what do they already know, and what must they remember or do after your last slide?" },
+  { key: "emphasis", ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
   { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
   { key: "theme", ask: "Which visual style should it use?" },
+  { key: "maxSlides", ask: "How many slides?" },
+  { key: "slidesPerMember", ask: "Slides per presenting member?" },
   { key: "density", ask: "How much text per slide?" },
+  { key: "branding", ask: "How much institutional branding should the slides carry?" },
   { key: "research", ask: "Run a research pass over the topic?" },
 ];
 
 /**
- * The report briefing — same thesis-driven core, report-relevant depth.
+ * The report briefing — original 11 plus thesis + evidence (13).
  * Sections scale with the team already, so they are not asked.
  */
 export const REPORT_QUESTIONS = [
   { key: "preset", ask: "Use a saved format, or start fresh?" },
   { key: "title", ask: "What should the report be called?" },
+  { key: "team", ask: "Who is on the team?" },
+  { key: "guide", ask: "Who is your guide?" },
+  { key: "academic", ask: "Which subject and academic year is this for?" },
   { key: "thesis", ask: "What is the ONE thing the reader must remember or do after reading? (your thesis in one sentence)" },
-  { key: "audience", ask: "Who is this for — and what do they already know?" },
+  { key: "audience", ask: "Who is this for — and what should they take away?" },
   { key: "emphasis", ask: "Which parts matter most — and why?" },
   { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
   { key: "depth", ask: "How deep should the report be?" },
@@ -42,16 +51,14 @@ export function questionsFor(kind) {
 /**
  * The briefing fields a preset fixes. When a preset is picked these questions
  * are treated as answered and skipped; the user still walks the changing bits
- * (title, thesis, audience, emphasis, evidence, research). Team/guide/academic
- * now live in identity (Settings) and not in the briefing walk; maxSlides/
- * slidesPerMember are collapsed into density (auto sizing via targetSections).
- * Old presets with maxSlides/slidesPerMember still hydrate via briefingFromPreset.
+ * (title, thesis, audience, emphasis, evidence, research and academic context).
+ * Guide/academic live in identity (Settings) but are still asked per-submission;
+ * maxSlides/slidesPerMember/density/theme/branding are preset-fixable.
  */
-export const PRESET_KEYS = ["team", "theme", "density", "branding"];
+export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
  /**
-  * Alias for older callers that import PRESET_KEYS expecting maxSlides to be there.
-  * Kept so listPresets migration that checks PRESET_KEYS still sees the legacy keys.
+  * Alias for older callers — now identical to PRESET_KEYS.
   */
 export const PRESET_KEYS_LEGACY = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 

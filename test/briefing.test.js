@@ -5,13 +5,10 @@ import {
   presetPayload, effectiveBriefStep, BRIEFING_QUESTIONS,
 } from "../app/web/src/lib/briefing.js";
 
-test("PRESET_KEYS fixes team, density, theme and branding — never guide or academic", () => {
-  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "team", "theme"]);
+test("PRESET_KEYS fixes team, slide counts, density, theme and branding — never guide or academic", () => {
+  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "maxSlides", "slidesPerMember", "team", "theme"]);
   assert.ok(!PRESET_KEYS.includes("guide"));
   assert.ok(!PRESET_KEYS.includes("academic"));
-  // legacy presets still carry maxSlides/slidesPerMember but they are collapsed into density
-  assert.ok(!PRESET_KEYS.includes("maxSlides"));
-  assert.ok(!PRESET_KEYS.includes("slidesPerMember"));
 });
 
 test("initialBriefing pre-fills the guide from identity but never team or academic", () => {
@@ -72,26 +69,28 @@ test("a picked preset skips its fixed questions in the briefing walk", () => {
   const briefing = {
     presetId: "p1",
     team: {},
+    maxSlides: 16,
+    slidesPerMember: 2,
     density: "dense",
     theme: "x",
     branding: "none",
   };
-  // Question order (thesis-driven): 0 preset, 1 title, 2 thesis, 3 audience,
-  // 4 emphasis, 5 evidence, 6 theme, 7 density, 8 research. Preset-fixed are
-  // theme/density/branding (team is preset-stored but not asked). Skipped from
-  // the current step onward.
-  assert.equal(effectiveBriefStep(briefing, 6, BRIEFING_QUESTIONS), 8); // skip theme+ density → research
-  assert.equal(effectiveBriefStep(briefing, 7, BRIEFING_QUESTIONS), 8); // skip density → research
-  // Title/thesis/audience/emphasis/evidence are never preset-fixed.
+  // Question order: 0 preset, 1 title, 2 team, 3 guide, 4 academic,
+  // 5 thesis, 6 audience, 7 emphasis, 8 evidence, 9 theme, 10 maxSlides,
+  // 11 slidesPerMember, 12 density, 13 branding, 14 research. Preset-fixed
+  // are team/maxSlides/slidesPerMember/density/theme/branding.
+  assert.equal(effectiveBriefStep(briefing, 2, BRIEFING_QUESTIONS), 5);  // skip team -> thesis
+  assert.equal(effectiveBriefStep(briefing, 9, BRIEFING_QUESTIONS), 14); // skip theme..branding -> research
+  assert.equal(effectiveBriefStep(briefing, 10, BRIEFING_QUESTIONS), 14);
+  assert.equal(effectiveBriefStep(briefing, 12, BRIEFING_QUESTIONS), 14);
+  // Title/guide/academic/thesis/audience/emphasis/evidence are never preset-fixed.
   assert.equal(effectiveBriefStep(briefing, 1, BRIEFING_QUESTIONS), 1);
-  assert.equal(effectiveBriefStep(briefing, 2, BRIEFING_QUESTIONS), 2);
   assert.equal(effectiveBriefStep(briefing, 3, BRIEFING_QUESTIONS), 3);
-  assert.equal(effectiveBriefStep(briefing, 4, BRIEFING_QUESTIONS), 4);
   assert.equal(effectiveBriefStep(briefing, 5, BRIEFING_QUESTIONS), 5);
-  assert.equal(effectiveBriefStep(briefing, 8, BRIEFING_QUESTIONS), 8);
+  assert.equal(effectiveBriefStep(briefing, 6, BRIEFING_QUESTIONS), 6);
   // An un-skipped preset question is editable without abandoning the preset.
   const rewound = { ...briefing, unskip: ["theme"] };
-  assert.equal(effectiveBriefStep(rewound, 6, BRIEFING_QUESTIONS), 6);
+  assert.equal(effectiveBriefStep(rewound, 9, BRIEFING_QUESTIONS), 9);
 });
 
 test("applyPresetToBriefing refills fixed fields without touching the user's answers", () => {
