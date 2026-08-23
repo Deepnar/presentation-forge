@@ -27,10 +27,12 @@ brief → research → outline → approval → content → render → preview �
                                                         .docx
 ```
 
-- Chat-first creation with guided briefing, editable outlines, persistent deck conversations, and per-user workspaces.
+- Chat-first creation with thesis-driven briefing (thesis, audience, emphasis, evidence steer research and plan), editable outlines, persistent deck conversations, and per-user workspaces.
 - A deterministic renderer with 75 slide types, 38 themes, text fitting, speaker notes, presenter distribution, and editable PowerPoint text for native slides.
-- Research from SearXNG, uploaded source material, arXiv, and Crossref; claims are checked against saved research notes before a deck is finalised.
+- Research from SearXNG, uploaded source material, arXiv, and Crossref; briefing-aware query expansion and evidence-coverage re-query, and claims are checked against saved research notes before a deck is finalised.
 - Standalone reports, companion reports, and deck-from-report generation, all based on the same research record.
+- Auto image supply for `[image]` notes via SearXNG images / Unsplash Source, cached under `assets/auto/` (no model writes a URL), plus manual upload.
+- Deterministic quality gate (monotony, data-blind) and coherence review after generation.
 - A local default using Ollama. Hosted OpenAI-compatible providers are optional and explicitly configured.
 - A browser application, a headless CLI, and a Docker deployment that all use the same Node core.
 
