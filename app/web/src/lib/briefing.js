@@ -1,39 +1,33 @@
 /**
- * The guided deck-briefing: nine questions asked one at a time in the thread,
- * each with a sensible default. This is the data model the old NewDeck wizard
- * form had, re-expressed as a conversation — the chat writes the same deck
- * params the pipeline has always consumed.
+ * The guided deck-briefing: thesis-driven, 7-8 turns instead of 13.
+ * Each answer maps 1:1 to plan/research — thesis → planner purpose/coherence,
+ * audience+emphasis+evidence → research angles + dataAffinityNote + TYPE_USE_WHEN.
+ * This is the data model the old NewDeck wizard had, re-expressed as a conversation.
  */
 
 export const BRIEFING_QUESTIONS = [
   { key: "preset", ask: "Use a saved format, or start fresh?" },
   { key: "title", ask: "What should the deck be called?" },
-  { key: "team", ask: "Who is on the team — and who presents?" },
-  { key: "guide", ask: "Who is your guide?" },
-  { key: "academic", ask: "Which subject and academic year is this for?" },
-  { key: "audience", ask: "Who will be in the room, what do they already know, and what must they remember or do after your last slide?" },
-  { key: "emphasis", ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
+  { key: "thesis", ask: "What is the ONE thing the audience must remember or do after your last slide? (your thesis in one sentence)" },
+  { key: "audience", ask: "Who is in the room and what do they already know about this topic?" },
+  { key: "emphasis", ask: "Which 2–3 ideas must own the most slides — and one line why each matters to that audience?" },
+  { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
   { key: "theme", ask: "Which visual style should it use?" },
-  { key: "maxSlides", ask: "How many slides?" },
-  { key: "slidesPerMember", ask: "Slides per presenting member?" },
   { key: "density", ask: "How much text per slide?" },
-  { key: "branding", ask: "How much institutional branding should the slides carry?" },
   { key: "research", ask: "Run a research pass over the topic?" },
 ];
 
 /**
- * The report briefing — the same guided walk, but report-relevant: no theme
- * (the graded template has none), no slide count, and a depth choice instead.
- * Sections scale with the team already, so they are not asked either.
+ * The report briefing — same thesis-driven core, report-relevant depth.
+ * Sections scale with the team already, so they are not asked.
  */
 export const REPORT_QUESTIONS = [
   { key: "preset", ask: "Use a saved format, or start fresh?" },
   { key: "title", ask: "What should the report be called?" },
-  { key: "team", ask: "Who is on the team?" },
-  { key: "guide", ask: "Who is your guide?" },
-  { key: "academic", ask: "Which subject and academic year is this for?" },
-  { key: "audience", ask: "Who is this for — and what should they take away?" },
-  { key: "emphasis", ask: "Which parts matter most?" },
+  { key: "thesis", ask: "What is the ONE thing the reader must remember or do after reading? (your thesis in one sentence)" },
+  { key: "audience", ask: "Who is this for — and what do they already know?" },
+  { key: "emphasis", ask: "Which parts matter most — and why?" },
+  { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
   { key: "depth", ask: "How deep should the report be?" },
   { key: "density", ask: "How much text per section?" },
   { key: "branding", ask: "How much institutional branding should it carry?" },
@@ -48,12 +42,18 @@ export function questionsFor(kind) {
 /**
  * The briefing fields a preset fixes. When a preset is picked these questions
  * are treated as answered and skipped; the user still walks the changing bits
- * (title, subject, teacher) and the per-deck choices (audience, emphasis,
- * research). Guide and academic are deliberately NOT here — the guide is a
- * long-term fact that lives in identity, and the academic context is per
- * submission.
+ * (title, thesis, audience, emphasis, evidence, research). Team/guide/academic
+ * now live in identity (Settings) and not in the briefing walk; maxSlides/
+ * slidesPerMember are collapsed into density (auto sizing via targetSections).
+ * Old presets with maxSlides/slidesPerMember still hydrate via briefingFromPreset.
  */
-export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
+export const PRESET_KEYS = ["team", "theme", "density", "branding"];
+
+ /**
+  * Alias for older callers that import PRESET_KEYS expecting maxSlides to be there.
+  * Kept so listPresets migration that checks PRESET_KEYS still sees the legacy keys.
+  */
+export const PRESET_KEYS_LEGACY = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
 /**
  * Pre-fill a briefing from a saved preset, over the identity defaults.
@@ -66,6 +66,7 @@ export function briefingFromPreset(preset, identity) {
   return {
     ...b,
     team: p.team ?? b.team,
+    // legacy: old presets store maxSlides/slidesPerMember — keep them for sizing
     maxSlides: p.maxSlides ?? b.maxSlides,
     theme: p.theme ?? b.theme,
     density: p.density ?? b.density,
@@ -76,7 +77,7 @@ export function briefingFromPreset(preset, identity) {
 
 /**
  * Re-fill the fixed briefing fields from a preset without touching the fields
- * the user has already answered in this thread (title, audience, …).
+ * the user has already answered in this thread (title, thesis, audience, …).
  */
 export function applyPresetToBriefing(briefing, preset) {
   const p = preset ?? {};
@@ -124,16 +125,14 @@ export function presetPayload(briefing) {
  * The full briefing record as explicit text for the plan prompt — "The user
  * answered: …". Every guided question the user actually answered must reach
  * the planner verbatim; a plan built from the topic sentence alone ignores
- * the team, the guide, the audience, the emphasis, the branding. Only
- * non-empty answers are listed, so a skipped question (defaulted) reads as
- * "not stated" rather than inventing a value. `label` supplies human theme
- * names when the caller has them.
+ * the thesis, audience, emphasis, evidence. Only non-empty answers are listed,
+ * so a skipped question (defaulted) reads as "not stated" rather than inventing
+ * a value. `label` supplies human theme names when the caller has them.
  */
 export function briefingAnsweredText(briefing, label = (t) => t) {
   const b = briefing ?? {};
   const team = b.team ?? {};
   const members = (team.members ?? []).filter((m) => m.name?.trim());
-  const presenting = members.filter((m) => m.presenting);
   const acad = b.academic ?? {};
   const lines = [];
 
@@ -143,6 +142,11 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   };
 
   put("Title", b.title);
+  put("Thesis", b.thesis);
+  // Thesis is the ONE thing to remember — also surface as Takeaway for prompts that key on it
+  if (b.thesis?.trim() && !b.takeaway?.trim()) {
+    // no-op, thesis already the takeaway contract
+  }
   if (members.length) {
     const names = members.map((m) => `${m.name}${m.roll ? ` (${m.roll})` : ""}${m.presenting ? " — presents" : ""}`).join(", ");
     const teamLine = `- Team: ${names}`;
@@ -155,10 +159,12 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   put("Exam type", acad.exam_type);
   put("Audience", b.audience);
   put("Emphasis", b.emphasis);
+  put("Evidence / constraints", b.evidence);
   if (b.theme) lines.push(`- Theme: ${label(b.theme)}`);
   put("Slide count", b.maxSlides ? `${b.maxSlides}` : "auto");
   put("Slides per member", b.slidesPerMember ? `${b.slidesPerMember}` : "auto");
   put("Density", b.density);
+  if (b.depth) put("Depth", b.depth);
   put("Branding", b.branding === "none" ? "no institutional branding" : b.branding === "minimal" ? "minimal branding" : "full branding");
   if (b.researchSource === "upload") {
     lines.push(`- Research source: my uploaded file${b.uploadedSource?.name ? ` (${b.uploadedSource.name})` : ""} — no web search`);
@@ -174,7 +180,8 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
 
 /** Pre-fill from config/identity.yaml — the remembered defaults, not truth.
  *  The identity file now holds only the long-term facts (institution, guide);
- *  team and academic context are per-submission and start blank here. */
+ *  team and academic context are per-submission and start blank here. Thesis and
+ *  evidence are per-deck and always start blank. */
 export function initialBriefing(identity) {
   const id = identity ?? {};
   const guide = id.guide ?? {};
@@ -189,15 +196,17 @@ export function initialBriefing(identity) {
       semester: "",
       exam_type: "",
     },
+    thesis: "",
     audience: "",
     emphasis: "",
+    evidence: "",
     // The remembered default theme (set from the Themes gallery) wins over the
     // generic default; a saved preset overrides it on pick.
     theme: (() => {
       try { return localStorage.getItem("forge.defaultTheme") ?? ""; } catch { return ""; }
     })(),
-    maxSlides: 0,        // 0 = auto
-    slidesPerMember: null,
+    maxSlides: 0,        // 0 = auto (collapsed into density; kept for preset compat)
+    slidesPerMember: null, // collapsed into density; kept for preset compat
     density: "balanced",
     branding: "full",   // full | minimal | none
     depth: "full",      // report only: full | brief
@@ -227,6 +236,7 @@ export function echoAnswer(briefing, key, opts = {}) {
       return b.presetId ? `Preset: ${name}` : "Fresh briefing";
     }
     case "title": return b.title?.trim() || "(untitled)";
+    case "thesis": return b.thesis?.trim() || "no thesis set";
     case "team": {
       const n = (b.team?.members ?? []).length;
       const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).length;
@@ -243,6 +253,7 @@ export function echoAnswer(briefing, key, opts = {}) {
     }
     case "audience": return b.audience?.trim() || "no audience set";
     case "emphasis": return b.emphasis?.trim() || "no emphasis set";
+    case "evidence": return b.evidence?.trim() || "no constraints set";
     case "theme": return opts.themeLabel?.(b.theme) || "Default";
     case "maxSlides": return b.maxSlides ? `${b.maxSlides} slides` : "auto";
     case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
@@ -275,6 +286,8 @@ export function applyFreeText(briefing, key, text) {
       return { briefing: { ...b, presetId: t }, echo: `Preset: ${t}` };
     case "title":
       return { briefing: { ...b, title: t }, echo: t };
+    case "thesis":
+      return { briefing: { ...b, thesis: t }, echo: `Thesis: ${t}` };
     case "team": {
       const name = t.replace(/^add\s+/i, "").trim();
       if (!name) return null;
@@ -300,6 +313,8 @@ export function applyFreeText(briefing, key, text) {
       return { briefing: { ...b, audience: t }, echo: `For: ${t}` };
     case "emphasis":
       return { briefing: { ...b, emphasis: t }, echo: `Emphasis: ${t}` };
+    case "evidence":
+      return { briefing: { ...b, evidence: t }, echo: `Evidence: ${t}` };
     case "maxSlides": {
       const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? 0 : NaN;
       if (Number.isNaN(n)) return null;

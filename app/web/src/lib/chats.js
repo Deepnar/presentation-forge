@@ -57,8 +57,10 @@ export function normalizeChat(raw) {
     semester: typeof acad.semester === "string" ? acad.semester : "",
     exam_type: typeof acad.exam_type === "string" ? acad.exam_type : "",
   };
+  b.thesis = typeof b.thesis === "string" ? b.thesis : "";
   b.audience = typeof b.audience === "string" ? b.audience : "";
   b.emphasis = typeof b.emphasis === "string" ? b.emphasis : "";
+  b.evidence = typeof b.evidence === "string" ? b.evidence : "";
   b.theme = typeof b.theme === "string" ? b.theme : "";
   b.maxSlides = Number.isFinite(b.maxSlides) ? b.maxSlides : 0;
   b.slidesPerMember = b.slidesPerMember == null ? null : (Number.isFinite(Number(b.slidesPerMember)) ? Number(b.slidesPerMember) : null);
@@ -146,13 +148,15 @@ export function createChat({ kind = "deck" } = {}) {
     briefStep: 0,          // briefing questions completed (0..9)
     briefing: {
       title: "",
+      thesis: "",
       team: { label: "", members: [] },
       guide: { name: "", designation: "" },
       academic: { subject: "", year: "", semester: "", exam_type: "" },
       audience: "",
       emphasis: "",
+      evidence: "",
       theme: "",
-      maxSlides: 0,        // 0 = auto
+      maxSlides: 0,        // 0 = auto (legacy, collapsed into density)
       slidesPerMember: null,
       density: "balanced",
       researchSource: "web",

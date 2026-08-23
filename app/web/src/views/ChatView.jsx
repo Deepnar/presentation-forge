@@ -322,10 +322,12 @@ export default function ChatView({
     const b = chat.briefing ?? {};
     let brief = chat.topic;
     const notes = [];
+    if (b.thesis?.trim()) notes.push(`Thesis / takeaway that must land on the final slides: ${b.thesis.trim()}. Every slide must serve this claim and the conclusion must land it.`);
     if (b.density !== "balanced") notes.push(`Keep the slides ${b.density} density — ${densityNote(b.density)}.`);
     if (b.slidesPerMember) notes.push(`Distribute the CONTENT slides (not section dividers) roughly evenly, about ${b.slidesPerMember} per presenting member.`);
     if (b.audience?.trim()) notes.push(`The deck is for: ${b.audience.trim()}. Write to that audience and make sure they leave having absorbed it.`);
     if (b.emphasis?.trim()) notes.push(`Emphasis: ${b.emphasis.trim()}. These parts matter most — give them the most slides and the deepest treatment.`);
+    if (b.evidence?.trim()) notes.push(`Figures/sources/constraints to respect — never invent beyond these: ${b.evidence.trim()}`);
     if (notes.length) brief = `${chat.topic}\n\n${notes.join(" ")}`;
 
     setBusy(true);
@@ -454,6 +456,13 @@ export default function ChatView({
     setError("");
     setStatus("Queued…");
     const b = c.briefing ?? {};
+    let brief = c.topic;
+    const notes = [];
+    if (b.thesis?.trim()) notes.push(`Thesis: ${b.thesis.trim()}. The report must prove and close on this claim.`);
+    if (b.audience?.trim()) notes.push(`For: ${b.audience.trim()}`);
+    if (b.emphasis?.trim()) notes.push(`Emphasis: ${b.emphasis.trim()}`);
+    if (b.evidence?.trim()) notes.push(`Evidence/constraints to respect — never invent beyond these: ${b.evidence.trim()}`);
+    if (notes.length) brief = `${c.topic}\n\n${notes.join(" ")}`;
     const identityPayload = {
       academic: b.academic ?? identity?.academic ?? {},
       guide: b.guide ?? identity?.guide ?? {},
@@ -463,7 +472,7 @@ export default function ChatView({
     runs.begin(c.id, { abort: () => {}, status: "Queued…" });
     const j = api.createReport(
       {
-        brief: c.topic,
+        brief,
         depth: b.depth ?? "full",
         density: b.density ?? "balanced",
         research: b.research ?? true,
@@ -1488,6 +1497,14 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
       <div className="mb-1 text-[12px] font-medium text-fg">{q.ask}</div>
       {q.key === "preset" && <PresetCard presets={presets} value={b.presetId} themeLabel={themeLabel} onPick={onPickPreset} onDelete={onDeletePreset} />}
       {q.key === "title" && <TitleCard value={b.title} onNext={onNext} />}
+      {q.key === "thesis" && (
+        <FreeTextCard
+          field="thesis"
+          value={b.thesis}
+          placeholder="e.g. Green hydrogen can decarbonise steel but only if storage scales — and the numbers prove it"
+          onNext={onNext}
+        />
+      )}
       {q.key === "team" && <TeamCard team={b.team} onNext={onNext} />}
       {q.key === "guide" && <GuideCard guide={b.guide} onNext={onNext} />}
       {q.key === "academic" && <AcademicCard academic={b.academic} onNext={onNext} />}
@@ -1495,7 +1512,7 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
         <FreeTextCard
           field="audience"
           value={b.audience}
-          placeholder="e.g. classmates and the guide — they should leave knowing how the parts fit"
+          placeholder="e.g. final-year classmates and the guide — familiar with basics, sceptical on costs"
           onNext={onNext}
         />
       )}
@@ -1503,7 +1520,15 @@ function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDe
         <FreeTextCard
           field="emphasis"
           value={b.emphasis}
-          placeholder="e.g. the cost comparison and the environmental case"
+          placeholder="e.g. the cost comparison and the environmental case — why they change the decision"
+          onNext={onNext}
+        />
+      )}
+      {q.key === "evidence" && (
+        <FreeTextCard
+          field="evidence"
+          value={b.evidence}
+          placeholder="e.g. 53 kWh/kg, 1.23 V, 180 GW by 2030 — and don't invent steel-plant capex"
           onNext={onNext}
         />
       )}
