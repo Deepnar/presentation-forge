@@ -56,6 +56,11 @@ npm run searxng                             # local search backend (docker)
 Note `npm run dev` starts the UI on 5173 and the API on 5174 (`FORGE_API_PORT`,
 deliberately not `PORT`). Vite proxies `/api` so the browser stays same-origin.
 
+The API and every CLI entry point load a gitignored `.env` from the repo root
+(`--env-file-if-exists`), so a gateway or provider key lives there rather than
+being exported per shell. `.env.example` is the template for both this and the
+container.
+
 ## Verification that actually proves something
 
 A written `.pptx` proves the file parsed, nothing more. `pres.writeFile()`

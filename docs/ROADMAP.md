@@ -2684,3 +2684,155 @@ Now a **thesis-driven 9/10-question walk**: Deck `preset→title→thesis→audi
 These were **not** the next super-fancy tour; the tour stays separate. Briefing + Research + PPTs themselves + PPT themes are now done — the remaining backlog item (`Image supply — auto`) runs next. No rendering in this session per user — verification is user-side.
 
 353 tests.
+
+---
+
+## 10. Product-quality round — hosting, then the things that still do not feel good
+
+Opened when the project was audited for public hosting. The hosting half is
+done; the quality half is the standing list, written down so nothing named in
+conversation is lost. Order is not priority — the priority note is on each item.
+
+**Testing constraint, applies to the whole section.** Generation must run
+against the shared gateway only, with the key supplied through the env file.
+The local Ollama install and its GPU are committed to other work and must not
+be touched. Every item below marked *needs a model* is therefore blocked until
+the key is present, and the visual items are deliberately separated out because
+they need only the renderer.
+
+### [x] Hosting readiness — tenancy, credentials, and an image that renders correctly
+
+See the commits from `paths:` through `docs:`. Per-account identity, brand and
+BYOK keys; admin as a role rather than an address; media routes authenticated
+by session cookie; the shared gateway key and the routing default gated;
+container fonts and brand-path resolution fixed; CI added; `docs/DEPLOY.md`.
+
+> **Learned.** Two of the worst faults were invisible rather than loud. BYOK
+> keys were stored encrypted and never read, so every "bring your own key"
+> generation silently billed the operator. The container shipped without the
+> theme typefaces, which the `.pptx` hides completely — OOXML stores font names,
+> so the downloaded file is correct on a machine that has them, and only the
+> server's own renders were wrong. Both had been in place for a while.
+
+### [x] Chart series must carry data, not decoration
+
+`src/chartpalette.js`. Series colours came from `ink_muted` and `rule`, which
+are secondary text and a hairline. On `high-contrast-mono` a four-series chart
+drew three identical blacks and one white one that vanished.
+
+### [x] Theme cards must show the theme
+
+`tools/gallery.mjs`, `ThemeMiniCard`, `Themes.jsx`. Every card was one
+rectangle of the title colour, so choosing a theme was guessing from a name.
+
+### [ ] The themes themselves — variation, and less glow
+
+*Priority: high. Renderer only, no model.*
+
+Named directly: the glow-and-blur family reads as one idea repeated —
+`glassmorphism`, `aurora-mesh`, `gradient-mesh-dark`, and the others that lean
+on a soft luminous plate. `claymorphism` is disliked outright. Underneath that
+is the broader complaint: 38 themes do not feel like 38 designs.
+
+The contact sheet from `npm run gallery` shows why. Most themes differ only in
+palette and typeface, because the body layout is identical in all of them — the
+same headline, standfirst and bullet column. Real variation lives in things the
+theme is currently barely allowed to touch: where the content box sits, whether
+a rule or a block opens the slide, how a section divider is composed, whether
+the type is set flush or centred. `tokens.editorial` and `tokens.bauhaus`
+already prove per-theme layout flags work; there is no reason for there to be
+only two of them.
+
+So this is not a palette pass. It is: decide which themes are genuinely
+distinct designs and which are duplicates to cull, then give the survivors
+layout-level differences rather than colour-level ones. The plate themes should
+be reconsidered as a group — the glow is doing the work that composition should.
+
+### [ ] Institutional chrome — the crest on a coloured surface
+
+*Priority: high. Renderer only, no model.*
+
+Reported with a screenshot of a section divider: the white knockout crest on
+the terracotta ground reads as a flat pale stamp rather than a mark. The
+knockout variant exists so the crest stays legible on dark grounds, and it does
+— but "legible" and "looks deliberate" are not the same thing, and a mid-tone
+chromatic surface is the case neither variant was designed for.
+
+Worth reviewing at the same time: size and placement on divider surfaces
+generally, whether a divider needs the crest at all when the title slide
+already carries the banner, and whether the mark should sit in the corner or in
+the composition. The report of this item was cut off mid-sentence, so ask for
+the rest before acting.
+
+### [ ] Every theme against every slide type
+
+*Priority: high. Renderer only, no model — `src/specimens.js` supplies content.*
+
+38 themes × 75 types has never been looked at as a whole. `tools/slideqa.mjs`
+and `tools/contrast-audit.mjs` exist but cover a handful of types on a handful
+of themes. The specimen deck already carries one valid payload per type, so
+this needs no generation at all: render the specimen deck in every theme,
+rasterise, and look. Expect the algorithmic diagram types and the dense data
+types to be where the failures are.
+
+### [ ] The front end, and the landing page
+
+*Priority: high. No model.*
+
+Standing dissatisfaction with the whole surface, landing page first, with
+motion and polish of the kind Framer produces. Distinct from the theme work:
+this is the product's own interface, not the decks it renders.
+
+### [ ] Reports — structure, and the wait
+
+*Priority: medium. The speed half needs no model.*
+
+Two complaints. The output does not feel good, which is a content and structure
+question. And generation feels slow — the renderer alone is two LibreOffice
+passes for the table-of-contents page numbers, before any model time, and that
+half can be profiled and improved today against a committed `report.yaml`.
+
+### [ ] Research and content flow, end to end
+
+*Priority: medium. Needs a model.*
+
+Standing distrust of both the research pass and the argument the deck makes.
+The research half has been through one round already (section 9) and the
+briefing now steers queries; whether that reaches the page is unverified.
+Deferred by request until the whole surface can be exercised at once.
+
+### [ ] The full functional sweep
+
+*Priority: medium. Needs a model for the generation-dependent half.*
+
+Explicitly asked for: every function exercised in the running app rather than
+by unit test. Named specifically — every theme against every slide type,
+deck→report, report→deck, and the speaker scripts. Deferred by request until
+the gateway key is in place, and to be done in one pass rather than piecemeal.
+
+### [ ] Model configuration names models that are not installed
+
+*Priority: medium. Blocks any local run.*
+
+`config/models.yaml` addresses `qwen3-coder:30b-a3b-q4_K_M`,
+`gemma4:26b-a4b-it-q4_K_M` and `qwen3:4b-instruct`, and its `fallbacks:` list
+names three more. None of the six is installed on the development machine.
+Role resolution therefore falls through silently, which section 9 already
+identified as the cause of a thin outline once. The config should either name
+what is actually available or fail loudly instead of degrading quietly.
+
+### [ ] Housekeeping found during the audit
+
+*Priority: low.*
+
+- `config/identity.yaml` contains `institution.name: HACKED`; the real values
+  are gone. Identity is per account now, so the fix is to set it in Settings.
+- The account store holds well over a hundred throwaway test accounts. Harmless
+  locally, but that database must not travel to production.
+- `uniqueSlug` appends `-2`, `-4` on collision against a global namespace, so
+  creating a deck reveals whether a title already exists. Per-account slug
+  namespacing would close it.
+- A monochrome theme can only carry three or four distinguishable greys. OOXML
+  pattern fills are the real answer for a mono chart with more series than that.
+- The report donor is install-wide. A hosted box serving more than one
+  institution needs it per account, like identity and brand.
