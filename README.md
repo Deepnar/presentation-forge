@@ -33,7 +33,7 @@ brief → research → outline → approval → content → render → preview �
 - Standalone reports, companion reports, and deck-from-report generation, all based on the same research record.
 - Auto image supply for `[image]` notes via SearXNG images / Unsplash Source, cached under `assets/auto/` (no model writes a URL), plus manual upload.
 - Deterministic quality gate (monotony, data-blind) and coherence review after generation.
-- A local default using Ollama. Hosted OpenAI-compatible providers are optional and explicitly configured.
+- A local default using Ollama for clones; the hosted site runs on a shared gateway plus per-account BYOK keys, encrypted at rest.
 - A browser application, a headless CLI, and a Docker deployment that all use the same Node core.
 
 ## Published presentations — from my account
@@ -198,29 +198,31 @@ Presentation Forge has no external database requirement. Deck workspaces are ord
 | Data | Location | Versioned? |
 |---|---|---|
 | Deck content, outline, research, scripts, and output | `decks/<slug>/` | Deck definitions are; rendered output is ignored. |
-| Institution identity | `config/identity.yaml` | No; kept local. |
-| Accounts and sessions | `config/users.json`, `config/sessions.json` | No; stored locally. |
-| Provider keys | `config/local.yaml` | No; kept local and encrypted at rest when configured. |
-| Brand source and generated assets | `brand/logos/`, `brand/generated/` | No; they may contain protected marks. |
+| Institution identity | `config/identity.yaml` (install default), `config/identities/` (per account) | No; kept local. |
+| Accounts, sessions, per-user API keys, usage | `config/forge.db` | No; keys are encrypted at rest under `FORGE_KEY_PEPPER`. |
+| Provider keys (install-wide) | `config/local.yaml` | No; kept local. |
+| Brand source and generated assets | `brand/logos/`, `brand/users/<account>/` | No; they may contain protected marks. |
 
 Model calls remain on the machine when using Ollama. Research providers and an explicitly selected hosted model provider involve network requests; the saved deck, research files, and account data remain in the configured local storage.
 
 ## Docker deployment
 
-The Compose setup builds the application with Node, LibreOffice, Poppler, Chromium, and a separate SearXNG service. Persistent state lives in the `forge_data` volume, so rebuilding the image does not remove decks, configuration, brand assets, or the plate cache.
+The Compose setup builds the application with Node, LibreOffice, Poppler, Chromium, the 27 theme font families, and a separate SearXNG service, behind an optional Caddy TLS terminator. Persistent state lives in the `forge_data` volume, so rebuilding the image does not remove decks, accounts, configuration, brand assets, the report donor, or the plate cache.
 
 ```bash
 cd docker
 cp ../.env.example .env
-# Review .env and set production values before exposing the service.
-docker compose -f docker-compose.app.yml up -d --build
+# FORGE_KEY_PEPPER, SEARXNG_SECRET and FORGE_DOMAIN have no defaults.
+docker compose -f docker-compose.app.yml --profile tls up -d --build
 ```
 
-The application is served on `FORGE_PORT` (8080 by default). For a public deployment, set a strong `FORGE_KEY_PEPPER`, set `FORGE_OPEN_REGISTRATION=0` if registration should be closed, seed the administrator credentials, and place a TLS reverse proxy in front of the container. When a proxy is used, set `FORGE_TRUST_PROXY=1`.
+[`docs/DEPLOY.md`](docs/DEPLOY.md) is the full walkthrough, including which free hosts can actually run this — it needs a long-running container with ~2 GB of RAM, a writable disk, and the ability to run LibreOffice and Chromium, so serverless platforms are out regardless of how the UI is written.
 
-Single repo, two modes: `FORGE_HOSTED=1` (hosted — Auto is TCET gateway + BYOK only, no Ollama) vs unset/`0` (local — Auto falls back to Ollama). Toggle at runtime in Admin → System or Settings (admin) — writes `config/hosted.json` and reloads. Admin is `role=admin` or `18deepnar@gmail.com` / `FORGE_ADMIN_EMAIL`; see `#/admin` for users, decks, analytics and the hosted switch.
+Single repo, two modes: `FORGE_HOSTED=1` (hosted — Auto is the shared gateway, Cloud is per-user BYOK, no Ollama) vs unset/`0` (local — Auto falls back to Ollama). Toggle at runtime in Admin → System or Settings (admin), which writes `config/hosted.json`.
 
-Important deployment settings are documented in [`.env.example`](.env.example), including `FORGE_HOSTED`, session lifetime, authentication rate limiting, CORS, retention sweeps, SMTP notifications, the Auto provider, and SearXNG.
+Admin is the `admin` role and nothing else. The operator's account is created or promoted at boot from `FORGE_ADMIN_EMAIL`/`FORGE_ADMIN_PASSWORD`; an email address alone never grants admin, because self-registration does not verify email ownership. See `#/admin` for users, decks, analytics and the hosted switch.
+
+Reports need an institutional `.docx` donor, which is gitignored and not in the image — an admin uploads one after first boot, or you point `FORGE_REFERENCE_DIR` at a directory containing it. Deck generation works without it.
 
 Ollama is not bundled in the image. For local-model generation, run Ollama on the host or a reachable machine and point the `host` in `config/models.yaml` to it.
 
