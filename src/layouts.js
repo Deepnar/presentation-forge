@@ -104,13 +104,28 @@ function heading(slide, ctx) {
   return drawHeading(slide, ctx);
 }
 
+/**
+ * Paint a full-bleed surface.
+ *
+ * The renderer places a plate as the slide background BEFORE the layout runs,
+ * because pptxgenjs numbers a background image's relationship without counting
+ * chart relationships: a background assigned after `addChart` is written as a
+ * second rId1, the reader resolves the blip to the chart part, and the slide
+ * loses its background and rasterises white. So a layout paints only when
+ * there is no plate under it. See docs/TRAPS.md.
+ */
+function paint(slide, ctx, color) {
+  if (ctx.plate) return;
+  slide.background = { color: hex(color) };
+}
+
 /* ---------------------------------------------------------------- layouts */
 
 export const layouts = {
   title(slide, ctx) {
     const { theme, deck, identity } = ctx;
     const s = theme.surfaces.title;
-    slide.background = { color: hex(s.bg) };
+    paint(slide, ctx, s.bg);
 
     const m = theme.grid.margin;
     const comp = titlePlacement(theme);
@@ -203,7 +218,7 @@ export const layouts = {
   section(slide, ctx) {
     const { theme, data, deck } = ctx;
     const s = theme.surfaces.section;
-    slide.background = { color: hex(s.bg) };
+    paint(slide, ctx, s.bg);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
     const { place, field } = sectionStyle(theme);
@@ -809,7 +824,7 @@ export const layouts = {
 
   quote(slide, ctx) {
     const { theme, data } = ctx;
-    slide.background = { color: hex(theme.palette.surface) };
+    paint(slide, ctx, theme.palette.surface);
     const m = theme.grid.margin;
     const w = (CANVAS.w - m.left - m.right) * 0.82;
     const st = theme.type.heading;
@@ -1231,7 +1246,7 @@ export const layouts = {
   chapter(slide, ctx) {
     const { theme, data } = ctx;
     const s = theme.surfaces.section;
-    slide.background = { color: hex(s.bg) };
+    paint(slide, ctx, s.bg);
     // A chapter paints the same surface as a section, so it carries the same
     // field — a theme whose dividers are banded must band both or the deck
     // reads as two themes.
@@ -1261,7 +1276,7 @@ export const layouts = {
   closing(slide, ctx) {
     const { theme, data } = ctx;
     const s = theme.surfaces.title;
-    slide.background = { color: hex(s.bg) };
+    paint(slide, ctx, s.bg);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
     const scale = fitScale(data.headline, w, 2.2, theme.type.display, { min: 0.55 });
@@ -1879,7 +1894,13 @@ export const layouts = {
     const cw = (box.w - gut - arrow) / 2;
     const ch = box.bottom - y - 0.1;
     const pad = theme.shape?.card_pad ?? 0.28;
-    const titleScale = fitScaleAll([data.before.title, data.after.title], cw - pad * 2, 0.5, theme.type.heading, { min: 0.55 });
+    // The two card titles used to be budgeted a flat 0.5in — one line of
+    // heading type — so a title that wanted two lines was shrunk to the
+    // readable floor instead, and a narrower frame put every theme there.
+    // Sizing the box to the real line count gives them their lines.
+    const titleW = cw - pad * 2;
+    const titleH = linesBox(theme, "heading", [data.before.title, data.after.title], titleW);
+    const titleScale = fitScaleAll([data.before.title, data.after.title], titleW, titleH, theme.type.heading, { min: 0.55 });
     const bodyScale = fitScaleAll([data.before.body, data.after.body], cw - pad * 2, 1.8, theme.type.body);
     const pill = (x, text, filled) => {
       const pw2 = Math.min(cw - pad * 2, measure(text, theme.type.eyebrow) + 0.5);
@@ -1905,11 +1926,11 @@ export const layouts = {
       pill(x + pad, isAfter ? "After" : "Before", isAfter);
       let ty = y + pad + 0.5;
       slide.addText(side.title, {
-        x: x + pad, y: ty, w: cw - pad * 2, h: 0.55,
+        x: x + pad, y: ty, w: titleW, h: titleH,
         ...textStyle(theme, "heading", { scale: titleScale }),
         valign: "top",
       });
-      ty += 0.6;
+      ty += titleH + 0.1;
       slide.addText(side.body, {
         x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
         ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
@@ -3117,7 +3138,7 @@ export const layouts = {
   epigraph(slide, ctx) {
     const { theme, data } = ctx;
     const s = theme.surfaces.section;
-    slide.background = { color: hex(s.bg) };
+    paint(slide, ctx, s.bg);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
     const quoteScale = fitScale(data.quote, w * 0.78, 3.0, theme.type.heading, { min: 0.55 });
@@ -3320,7 +3341,7 @@ export const layouts = {
         sizing: { type: "cover", w: CANVAS.w, h: CANVAS.h },
       });
     } else {
-      slide.background = { color: hex(theme.palette.ink) };
+      paint(slide, ctx, theme.palette.ink);
     }
     const ovH = 2.6;
     slide.addShape("rect", {
@@ -4035,8 +4056,15 @@ export const layouts = {
     const imgSize = 0.95;
     const tx = (x) => x + pad + imgSize + 0.25;
     const tw = (cw) => cw - pad * 2 - imgSize - 0.25;
-    const nameScale = fitScaleAll(data.members.map((m) => m.name), tw(cw), 0.4, theme.type.subhead, { min: 0.65 });
-    const roleScale = fitScaleAll(data.members.map((m) => m.role), tw(cw), 0.35, theme.type.caption);
+    // Name and role were each budgeted one flat line, so a long name in a
+    // narrow column was shrunk to the readable floor rather than wrapped.
+    // The pair is sized to its real line count and centred in the card as one
+    // block, which keeps the rows aligned however many lines a name takes.
+    const nameH = linesBox(theme, "subhead", data.members.map((m) => m.name), tw(cw));
+    const roleH = linesBox(theme, "caption", data.members.map((m) => m.role), tw(cw));
+    const blockH = nameH + roleH;
+    const nameScale = fitScaleAll(data.members.map((m) => m.name), tw(cw), nameH, theme.type.subhead, { min: 0.65 });
+    const roleScale = fitScaleAll(data.members.map((m) => m.role), tw(cw), roleH, theme.type.caption);
     data.members.forEach((m, i) => {
       const r = Math.floor(i / cols), c = i % cols;
       const x = box.x + c * (cw + gut);
@@ -4062,13 +4090,14 @@ export const layouts = {
           align: "center", valign: "middle",
         });
       }
+      const ty = cy - blockH / 2;
       slide.addText(m.name, {
-        x: tx(x), y: cy - 0.42, w: tw(cw), h: 0.4,
+        x: tx(x), y: ty, w: tw(cw), h: nameH,
         ...textStyle(theme, "subhead", { bold: true, scale: nameScale }),
-        valign: "middle",
+        valign: "top",
       });
       slide.addText(m.role, {
-        x: tx(x), y: cy - 0.02, w: tw(cw), h: 0.35,
+        x: tx(x), y: ty + nameH, w: tw(cw), h: roleH,
         ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: roleScale }),
         valign: "top",
       });

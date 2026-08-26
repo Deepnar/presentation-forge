@@ -25,6 +25,15 @@ hard 60-char `slice` of the purpose rendered as a headline clipped mid-word at
 the right edge. Validation proves the fields exist, never that the text fits.
 The vision critic caught it; no unit test could have. Rasterise and look.
 
+**A background assigned after `addChart` is silently dropped.** pptxgenjs
+numbers a background image's relationship without counting chart
+relationships, so `slide.background = { data }` after `addChart` is written as
+a *second* `rId1`. The reader resolves the background blip to the chart part,
+paints nothing, and the slide rasterises white — which on a dark theme means
+near-white text on white. Every chart slide in every plate theme was doing
+this. Assign the background BEFORE the layout draws; `paint()` in
+`src/layouts.js` is what keeps a full-bleed layout from overwriting it.
+
 **pptxgenjs numbers every paragraph "1."** `bullet: { type: "number" }` writes
 `<a:buAutoNum startAt="1"/>` on *each* paragraph rather than once for the list,
 so the count restarts at every item and a four-point list renders 1. 1. 1. 1.

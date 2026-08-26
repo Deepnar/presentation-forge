@@ -143,13 +143,6 @@ export async function render({
       : data.type === "hero-image" ? theme.palette.ink
       : theme.palette.bg;
 
-    if (!isFull) {
-      slide.background = { color: hex(theme.palette.bg) };
-      // The decorative background layer paints before any layout, so cards and
-      // text sit on top of it. Theme-owned tokens only — see drawBackground.
-      drawBackground(slide, theme);
-    }
-
     // A speaker note reserves 0.7in of the content box bottom and draws a bar
     // there, so no standard layout can collide with it and the chrome footer
     // stays free. Full-bleed slides (title, section, quote, image, freeform)
@@ -157,6 +150,30 @@ export async function render({
     const noteBar = data.speaker_note && !isFull;
     const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity, type: data.type });
     const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
+
+    // A plate replaces the flat background: headless Chrome rasterises the
+    // theme's (or the slide's) HTML and the PNG becomes the true slide
+    // background, under every shape and the chrome. Text stays native. The
+    // content box rides along so a template can soft-panel the content area.
+    //
+    // It is placed BEFORE the layout draws. pptxgenjs numbers a background
+    // image's relationship without counting chart relationships, so a
+    // background assigned after addChart is written as a second rId1 and the
+    // reader resolves the blip to the chart part — every chart slide in every
+    // plate theme lost its background and rasterised white, with near-white
+    // ink on it. The layouts paint through `paint()`, which stands aside when
+    // a plate is already there.
+    const plate = await renderSlidePlate({ theme, surface, slide: data, box, signal });
+    if (plate) {
+      const b64 = (await readFile(plate.png)).toString("base64");
+      slide.background = { data: b64, path: "plate.png" };
+      ctx.plate = true;
+    } else if (!isFull) {
+      slide.background = { color: hex(theme.palette.bg) };
+    }
+    // The decorative background layer paints before any layout, so cards and
+    // text sit on top of it. Theme-owned tokens only — see drawBackground.
+    if (!isFull) drawBackground(slide, theme);
 
     try {
       // A freeform slide has no native layout — the whole slide rasterises
@@ -170,16 +187,6 @@ export async function render({
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
     for (const e of drainFloorEvents()) problems.push(`slide ${i + 1} (${data.type}): ${e}`);
-
-    // A plate replaces the flat background: headless Chrome rasterises the
-    // theme's (or the slide's) HTML and the PNG becomes the true slide
-    // background, under every shape and the chrome. Text stays native. The
-    // content box rides along so a template can soft-panel the content area.
-    const plate = await renderSlidePlate({ theme, surface, slide: data, box, signal });
-    if (plate) {
-      const b64 = (await readFile(plate.png)).toString("base64");
-      slide.background = { data: b64, path: "plate.png" };
-    }
 
     // A speaker note bar above the chrome footer: a thin accent-bordered panel
     // holding the note text in italic caption, for instructions the audience
