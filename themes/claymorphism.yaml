@@ -77,11 +77,15 @@ tokens:
       line: 1
       tracking: -1
   grid:
+    # Wider margins than a flat theme needs. The content box is the inside of
+    # the clay board, not the edge of the slide: the board is drawn past the box
+    # on every side, and the ground and its pebbles have to stay visible around
+    # that. Tight margins made the board fill the slide edge to edge.
     margin:
-      top: 0.62
-      right: 0.7
-      bottom: 0.55
-      left: 0.7
+      top: 0.95
+      right: 1.0
+      bottom: 0.8
+      left: 1.0
     gutter: 0.3
     columns: 12
     band:
@@ -123,8 +127,15 @@ tokens:
           box-shadow:0 18px 30px {{tokens.palette.ink}}24, inset 0 8px 14px #FFFFFF80, inset 0 -10px 18px {{tokens.palette.ink}}1f;}
         .p1{left:-6%;top:-14%;width:26%;height:38%;}
         .p2{right:-4%;bottom:-16%;width:22%;height:34%;background:{{tokens.palette.accent}};opacity:.9;}
-        .board{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
-          border-radius:48px;
+        /* The board is drawn LARGER than the content box on every side. It used
+           to sit exactly on it, so the headline began at the slab's edge and
+           the cards inside a comparison touched it. A panel needs to read as
+           something the content rests on, which means the content has to be
+           visibly inside it. */
+        .board{position:absolute;
+          left:calc({{box.x}}px - 30px);top:calc({{box.y}}px - 26px);
+          width:calc({{box.w}}px + 60px);height:calc({{box.h}}px + 52px);
+          border-radius:56px;
           background:{{tokens.palette.surface}};
           box-shadow:
             0 26px 50px {{tokens.palette.ink}}2b,
