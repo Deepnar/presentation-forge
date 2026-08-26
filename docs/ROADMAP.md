@@ -2764,6 +2764,19 @@ already carries the banner, and whether the mark should sit in the corner or in
 the composition. The report of this item was cut off mid-sentence, so ask for
 the rest before acting.
 
+### [ ] `flow`'s vertical spine is one line from failing
+
+*Priority: medium. Renderer only, no model.*
+
+Found while widening plate-theme margins: the six-step `ttb` flow fits its step
+bodies so tightly that roughly 0.02in of content width decides whether they
+clear the readable floor. `chalkboard` was already over the line before
+anything changed, and two more themes crossed it under a 0.08in margin
+increase. The layout drops a body rather than shrinking it below the floor,
+which is the right call — but a budget that fine means any future content or
+margin change silently costs a slide its text. Worth re-budgeting before the
+type sweep, since the sweep will otherwise report it 38 times.
+
 ### [ ] Every theme against every slide type
 
 *Priority: high. Renderer only, no model — `src/specimens.js` supplies content.*

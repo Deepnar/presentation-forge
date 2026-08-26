@@ -155,7 +155,11 @@ export function plateHtmlFor({ theme, surface, slide, box }) {
   if (!plate || plate.enabled === false) return null;
   const tpl = (surface && plate.surfaces?.[surface]) || plate.html;
   if (!tpl) return null;
-  return { html: interpolateTemplate(tpl, { ...theme, box: boxPx(box) }), kind: "theme" };
+  const px = boxPx(box);
+  return {
+    html: interpolateTemplate(tpl, { ...theme, box: px, panel: panelPx(px) }),
+    kind: "theme",
+  };
 }
 
 /**
@@ -170,6 +174,33 @@ function boxPx(box) {
   // {{box.h}} is always a real number.
   const h = box.h ?? box.bottom - box.y;
   return { x: Math.round(box.x * 96), y: Math.round(box.y * 96), w: Math.round(box.w * 96), h: Math.round(h * 96) };
+}
+
+/**
+ * The region a theme should draw a panel in, if it draws one.
+ *
+ * Every plate theme that panelled the content area placed it at exactly
+ * `{{box.*}}`, so the headline began on the panel's edge and cards inside a
+ * comparison touched it — the panel read as a backdrop the text was pasted
+ * over rather than a surface the content rests on. That relationship is
+ * renderer geometry, not a per-theme decision, so it is expressed once here
+ * instead of as `calc()` arithmetic repeated in every template.
+ *
+ * A theme still decides whether there is a panel and what it looks like; it
+ * just no longer has to work out where the edge belongs. Themes must leave room
+ * for the overhang in their margins, or the panel reaches the slide edge and
+ * whatever the ground was doing is lost.
+ */
+const PANEL_INSET = { x: 30, y: 26 };
+
+function panelPx(box) {
+  if (!box) return null;
+  return {
+    x: box.x - PANEL_INSET.x,
+    y: box.y - PANEL_INSET.y,
+    w: box.w + PANEL_INSET.x * 2,
+    h: box.h + PANEL_INSET.y * 2,
+  };
 }
 
 /** Resolve a plate's source into a rendered PNG path, or null if none. */

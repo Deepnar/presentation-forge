@@ -75,11 +75,16 @@ tokens:
       line: 1
       tracking: -1
   grid:
+    # A little wider than a flat theme: the content box is the inside of the
+    # plate's panel, which the renderer draws past it on every side, and the
+    # ground behind has to stay visible. Only a little — `flow`'s vertical
+    # spine stops fitting its body above the readable floor past about 0.76in,
+    # so this is the widest step that costs no theme a slide.
     margin:
-      top: 0.62
-      right: 0.7
-      bottom: 0.55
-      left: 0.7
+      top: 0.66
+      right: 0.74
+      bottom: 0.58
+      left: 0.74
     gutter: 0.3
     columns: 12
     band:
@@ -117,7 +122,7 @@ tokens:
           radial-gradient(60% 55% at 78% 88%, {{tokens.palette.surface}} 0%, transparent 60%),
           radial-gradient(90% 80% at 50% 45%, {{tokens.palette.bg}} 0%, transparent 70%),
           linear-gradient(135deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .halo{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+        .halo{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           background:radial-gradient(60% 65% at 50% 32%, {{tokens.palette.surface}}8c 0%, {{tokens.palette.surface}}00 78%);}
       </style>
 

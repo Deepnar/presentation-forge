@@ -42,7 +42,12 @@ tokens:
     stat:     { family: "Source Serif 4", weight: 700, size: 54, line: 1.0,  tracking: -0.6 }
 
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    # A little wider than a flat theme: the content box is the inside of the
+    # plate's panel, which the renderer draws past it on every side, and the
+    # ground behind has to stay visible. Only a little — `flow`'s vertical
+    # spine stops fitting its body above the readable floor past about 0.76in,
+    # so this is the widest step that costs no theme a slide.
+    margin: { top: 0.66, right: 0.74, bottom: 0.58, left: 0.74 }
     gutter: 0.30
     columns: 12
     band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
@@ -65,7 +70,7 @@ tokens:
         .board:after{content:"";position:absolute;inset:0;
           background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/></svg>");
           opacity:0.7;}
-        .panel{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+        .panel{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           background:{{tokens.palette.surface}}77;border:1px solid {{tokens.palette.rule}};border-radius:10px;}
       </style>
       <div class="board"></div>

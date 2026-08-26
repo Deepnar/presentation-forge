@@ -44,7 +44,12 @@ tokens:
     stat:     { family: "Space Grotesk", weight: 700, size: 52, line: 1.0,  tracking: -1 }
 
   grid:
-    margin: { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 }
+    # A little wider than a flat theme: the content box is the inside of the
+    # plate's panel, which the renderer draws past it on every side, and the
+    # ground behind has to stay visible. Only a little — `flow`'s vertical
+    # spine stops fitting its body above the readable floor past about 0.76in,
+    # so this is the widest step that costs no theme a slide.
+    margin: { top: 0.66, right: 0.74, bottom: 0.58, left: 0.74 }
     gutter: 0.30
     columns: 12
     band: { eyebrow_y: 0.62, title_y: 1.30, body_y: 2.55 }
@@ -72,7 +77,7 @@ tokens:
         .b1{left:6%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}66}
         .b2{right:4%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}55}
         .b3{left:26%;bottom:-10%;width:48%;height:38%;background:{{tokens.palette.ink_muted}}44}
-        .frost{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
+        .frost{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           border-radius:26px;background:{{tokens.palette.surface}}40;
           backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
           border:1px solid {{tokens.palette.surface}}99;
