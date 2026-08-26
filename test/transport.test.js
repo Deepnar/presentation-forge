@@ -6,7 +6,13 @@ import YAML from "yaml";
 import { ROOT } from "../src/paths.js";
 import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
 import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
-import { providerModels } from "../src/cloud.js";
+import { providerModels, setHostedForTest } from "../src/cloud.js";
+
+// These exercise the LOCAL Ollama transport, so they must run in local mode.
+// Without this the result depends on whether this machine's admin toggle
+// (config/hosted.json) happens to be flipped — green in CI, red on a box that
+// has been switched to hosted.
+setHostedForTest(false);
 
 /* -------------------------------------------------------- applyTransport */
 

@@ -2,7 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
-import { resolveSecret, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
+import { resolveSecret, resolveProviderKey, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
+import { currentUserId } from "../account.js";
 
 /**
  * Per-transport capability split. A role's sampling/output/context settings are
@@ -53,7 +54,7 @@ export async function authorTransport({ model } = {}) {
     }
     return "ollama";
   }
-  const route = await routingPreference();
+  const route = await routingPreference(currentUserId());
   if (route === "auto") {
     const ap = await autoProvider();
     if (ap?.keySet) {
@@ -134,6 +135,14 @@ async function resolveEnv(value) {
 }
 
 /**
+ * The same lookup, but for a provider we can name — so the signed-in account's
+ * own BYOK key is used instead of the operator's. Every backend built for a
+ * request goes through this; `resolveEnv` remains for references with no
+ * provider attached.
+ */
+const providerKey = (providerId, ref) => resolveProviderKey(providerId, ref);
+
+/**
  * The transport a role's model runs on. No `provider` on the role means the
  * local Ollama backend; anything else must be a defined `providers:` entry.
  */
@@ -148,7 +157,7 @@ async function backendFor(cfg, spec) {
   if (p.type !== "openai-compatible") {
     throw new Error(`models.yaml: unknown provider type "${p.type}" for "${spec.provider}".`);
   }
-  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: await resolveEnv(p.apiKey) };
+  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: await providerKey(spec.provider, p.apiKey) };
 }
 
 let _installed;
@@ -195,14 +204,14 @@ export async function resolveRole(role) {
         return {
           ...spec,
           role,
-          backend: { type: "openai-compatible", baseURL: ap.baseURL, apiKey: await resolveEnv(ap.apiKey) },
+          backend: { type: "openai-compatible", baseURL: ap.baseURL, apiKey: await providerKey(ap.id, ap.apiKey) },
           model: ap.models[0],
           fellBack: spec.model,
         };
       }
       const cp = await cloudProvider();
       if (cp) {
-        const key = await resolveEnv(cp.apiKey);
+        const key = await providerKey(cp.id, cp.apiKey);
         if (key) {
           return {
             ...spec,
@@ -215,7 +224,7 @@ export async function resolveRole(role) {
       }
     }
     throw new Error(
-      `Hosted mode: role "${role}" needs TCET or BYOK — no local Ollama available. Add FORGE_TCET_API_KEY or switch to Cloud and add a BYOK key in Settings.`,
+      `Hosted mode: role "${role}" needs Forge hosted gateway or BYOK — no local Ollama available. Add hosted key or switch to Cloud and add a BYOK key in Settings.`,
     );
   }
 
@@ -269,12 +278,11 @@ export async function modelChoices() {
   let cloud = null;
   const cp = await cloudProvider();
   if (cp) {
-    const keyName = String(cp.apiKey).match(/^env:(.+)$/)?.[1] ?? null;
-    if (keyName && (await resolveEnv(cp.apiKey))) {
+    if (await providerKey(cp.id, cp.apiKey)) {
       cloud = { provider: cp.id, label: cp.label, models: cp.models };
     }
   }
-  const route = await routingPreference();
+  const route = await routingPreference(currentUserId());
   let defaultModel = def;
   if (route === "auto" && auto?.models.length) defaultModel = auto.models[0];
   else if (route === "cloud" && cloud?.models.length) defaultModel = cloud.models[0];
@@ -299,7 +307,7 @@ async function cloudSpec(cfg, model, role) {
       // Carried so the per-transport override can raise the cap for the cloud
       // backend the model override just selected.
       transports: author.transports,
-      backend: { type: "openai-compatible", baseURL: p.baseURL, apiKey: await resolveEnv(p.apiKey) },
+      backend: { type: "openai-compatible", baseURL: p.baseURL, apiKey: await providerKey(name, p.apiKey) },
       model,
       fellBack: false,
     };
@@ -335,7 +343,7 @@ export async function chat({
   // roles (research, utility, critic) stay on their configured backends —
   // cloud routing is about where the user's work runs, not the plumbing.
   if (!model && role === "author") {
-    const route = await routingPreference();
+    const route = await routingPreference(currentUserId());
     if (route === "auto") {
       const ap = await autoProvider();
       if (ap?.kind === "tcet" && ap?.keySet && ap?.models?.length) model = ap.models[0];
@@ -343,14 +351,14 @@ export async function chat({
         // Hosted has no local fallback — surface a clear error instead of
         // "Ollama unreachable". If BYOK is present, hint to switch to Cloud.
         const cp = await cloudProvider();
-        const hasCloudKey = cp ? Boolean(await resolveEnv(cp.apiKey)) : false;
+        const hasCloudKey = cp ? Boolean(await providerKey(cp.id, cp.apiKey)) : false;
         if (hasCloudKey) {
           throw new Error(
-            "Hosted auto is not configured (no TCET key). Switch to Cloud in Settings and pick a BYOK model, or set FORGE_TCET_API_KEY.",
+            "Hosted auto is not configured (no hosted key). Switch to Cloud in Settings and pick a BYOK model, or set hosted gateway key.",
           );
         }
         throw new Error(
-          "Hosted mode has no local model — add FORGE_TCET_API_KEY for Auto or add a BYOK Cloud key and switch to Cloud.",
+          "Hosted mode has no local model — add hosted gateway key for Auto or add a BYOK Cloud key and switch to Cloud.",
         );
       }
       // local fallback: let Ollama resolve the author's default, no explicit model

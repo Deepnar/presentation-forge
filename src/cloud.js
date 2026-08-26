@@ -4,6 +4,7 @@ import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "./paths.js";
 import { getDb } from "./db.js";
+import { currentUserId } from "./account.js";
 
 function getVault() {
   try { return import("./vault.js"); } catch { return null; }
@@ -45,6 +46,25 @@ export async function resolveSecret(name) {
   return (await readYaml(LOCAL_FILE)).api_keys?.[name] ?? "";
 }
 
+/**
+ * The key a provider actually authenticates with, for whoever is calling.
+ *
+ * BYOK means the signed-in account's own key, so that wins for every provider
+ * except the shared gateway — which is deliberately install-wide, because it is
+ * the operator's key being rate-limited per user, not the user's own. Without
+ * an account (CLI, tests) this is exactly the old env-then-local.yaml lookup.
+ */
+export async function resolveProviderKey(providerId, apiKeyRef) {
+  const userId = currentUserId();
+  if (userId && providerId && providerId !== "tcet-auto") {
+    const own = await resolveUserSecret(userId, providerId);
+    if (own) return own;
+  }
+  const m = typeof apiKeyRef === "string" && apiKeyRef.match(/^env:(.+)$/);
+  if (!m) return apiKeyRef ?? "";
+  return resolveSecret(m[1]);
+}
+
 export async function resolveUserSecret(userId, providerId) {
   if (!userId) return "";
   try {
@@ -64,11 +84,10 @@ export async function resolveUserSecret(userId, providerId) {
  * provider that does not declare models still offers a picker. The fetch is
  * best-effort and key-gated: no key, no fetch, empty result.
  */
-export async function providerModels(p) {
+export async function providerModels(p, providerId = null) {
   if (p && Array.isArray(p.models) && p.models.length) return [...p.models];
   if (!p || !p.baseURL) return [];
-  const name = String(p.apiKey ?? "").match(/^env:(.+)$/)?.[1] ?? null;
-  const key = name ? await resolveSecret(name) : "";
+  const key = await resolveProviderKey(providerId, p.apiKey);
   if (!key) return [];
   const base = String(p.baseURL).replace(/\/+$/, "");
   try {
@@ -128,24 +147,60 @@ export async function getUserApiKey(userId) {
   } catch { return ""; }
 }
 
-/** Where the model pickers default: auto (TCET) or cloud (BYOK). */
-export async function routingPreference() {
+const ROUTES = ["auto", "cloud", "local"];
+
+/**
+ * Where the model pickers default: auto (shared gateway) or cloud (BYOK).
+ *
+ * This is a PER-ACCOUNT preference. It used to live only in config/local.yaml,
+ * which meant one user flipping the header toggle re-routed every other user's
+ * generations — including onto a key that was not theirs. The install-wide
+ * value survives as the default for accounts that have never chosen, and as
+ * the whole answer for the CLI, which has no account.
+ */
+export async function routingPreference(userId = null) {
+  if (userId) {
+    try {
+      const row = getDb().prepare("SELECT routing FROM user_prefs WHERE user_id=?").get(userId);
+      if (row && ROUTES.includes(row.routing)) return row.routing;
+    } catch { /* no DB (JSON-only tests) — fall through to the install default */ }
+  }
   const v = (await readYaml(LOCAL_FILE)).routing?.default;
-  if (v === "auto" || v === "cloud" || v === "local") return v;
-  return "auto";
+  return ROUTES.includes(v) ? v : "auto";
 }
 
-export async function setRoutingPreference(route) {
-  if (!["auto", "cloud", "local"].includes(route)) {
+export async function setRoutingPreference(route, userId = null) {
+  if (!ROUTES.includes(route)) {
     throw new Error(`routing default must be "auto" or "cloud" (or legacy "local"), got "${route}"`);
+  }
+  if (userId) {
+    getDb().prepare(`
+      INSERT INTO user_prefs (user_id, routing, updated_at) VALUES (?,?,?)
+      ON CONFLICT(user_id) DO UPDATE SET routing=excluded.routing, updated_at=excluded.updated_at
+    `).run(userId, route, new Date().toISOString());
+    return;
   }
   const cfg = await readYaml(LOCAL_FILE);
   await writeFile(LOCAL_FILE, YAML.stringify({ ...cfg, routing: { default: route } }), "utf8");
 }
 
 const HOSTED_FILE = path.join(CONFIG, "hosted.json");
+
+/**
+ * Test seam. `isHosted()` reads a runtime file in the real config dir, so a
+ * developer box that an admin has flipped to hosted changes the outcome of
+ * tests that are about the local transport. A test that depends on the mode
+ * states which mode it means instead of inheriting the machine's.
+ */
+let hostedOverride = null;
+export function setHostedForTest(flag) {
+  hostedOverride = flag === null ? null : Boolean(flag);
+}
+
 export function isHosted() {
-  // Runtime file (admin toggle) wins over env, so testing flips take effect without redeploy
+  if (hostedOverride !== null) return hostedOverride;
+  // Runtime file (admin toggle) wins over env, so a flip takes effect without a
+  // redeploy on a box whose compose file pins FORGE_HOSTED.
   try {
     if (existsSync(HOSTED_FILE)) {
       const j = JSON.parse(readFileSync(HOSTED_FILE, "utf8"));
@@ -171,7 +226,7 @@ export async function autoProvider() {
   const tcet = models.providers?.["tcet-auto"];
   const key = await resolveSecret("FORGE_TCET_API_KEY");
   if (tcet && key.length > 0) {
-    const list = Array.isArray(tcet.models) && tcet.models.length ? [...tcet.models] : await providerModels(tcet);
+    const list = Array.isArray(tcet.models) && tcet.models.length ? [...tcet.models] : await providerModels(tcet, "tcet-auto");
     return {
       id: "tcet-auto",
       label: "Auto",
@@ -206,9 +261,9 @@ export async function autoProvider() {
     kind: "local",
   };
 }
-export async function autoStatus() {
+export async function autoStatus(userId = null) {
   const p = await autoProvider();
-  if (!p) return { configured: false, keySet: false, hosted: isHosted(), kind: isHosted() ? "hosted" : "none", route: await routingPreference() };
+  if (!p) return { configured: false, keySet: false, hosted: isHosted(), kind: isHosted() ? "hosted" : "none", route: await routingPreference(userId) };
   return {
     configured: true,
     provider: p.id,
@@ -219,7 +274,7 @@ export async function autoStatus() {
     keySet: p.keySet,
     kind: p.kind ?? (p.id === "tcet-auto" ? "tcet" : "local"),
     hosted: isHosted(),
-    route: await routingPreference(),
+    route: await routingPreference(userId),
   };
 }
 
@@ -231,7 +286,7 @@ export async function cloudProvider() {
   for (const [id, p] of Object.entries(models.providers ?? {})) {
     if (id === "tcet-auto") continue;
     if (p?.type !== "openai-compatible") continue;
-    const list = await providerModels(p);
+    const list = await providerModels(p, id);
     if (!list.length) continue;
     return {
       id,
@@ -252,22 +307,22 @@ export async function cloudKeyName() {
 }
 
 /** What the Settings panel renders — never the key itself. */
-export async function cloudStatus() {
+export async function cloudStatus(userId = null) {
   const ap = await autoProvider();
   const p = await cloudProvider();
   const name = await cloudKeyName();
   if (!p || !name) {
     // still return auto info so UI can show auto status
-    const a = await autoStatus();
+    const a = await autoStatus(userId);
     return {
       configured: false,
       keySet: false,
       auto: a,
-      route: await routingPreference(),
+      route: await routingPreference(userId),
     };
   }
-  const key = await resolveSecret(name);
-  const a = await autoStatus();
+  const key = await resolveProviderKey(p.id, p.apiKey);
+  const a = await autoStatus(userId);
   return {
     configured: true,
     provider: p.id,
@@ -276,7 +331,7 @@ export async function cloudStatus() {
     models: p.models,
     keyName: name,
     keySet: key.length > 0,
-    route: await routingPreference(),
+    route: await routingPreference(userId),
     auto: a,
   };
 }
@@ -287,7 +342,7 @@ export async function cloudStatus() {
 export async function testAutoConnection() {
   const p = await autoProvider();
   if (!p) {
-    if (isHosted()) return { ok: false, detail: "hosted mode — auto requires TCET key, or use BYOK Cloud" };
+    if (isHosted()) return { ok: false, detail: "hosted mode — auto requires hosted gateway key, or use BYOK Cloud" };
     return { ok: false, detail: "no auto provider configured" };
   }
   if (p.kind === "local" || p.id === "local") {
@@ -332,11 +387,10 @@ export async function testAutoConnection() {
 
 export async function testCloudConnection() {
   const p = await cloudProvider();
-  const name = await cloudKeyName();
-  if (!p || !name) {
+  if (!p) {
     return { ok: false, detail: "no cloud provider configured in config/models.yaml" };
   }
-  const key = await resolveSecret(name);
+  const key = await resolveProviderKey(p.id, p.apiKey);
   if (!key) {
     return { ok: false, detail: "no API key set — add one in Settings or export the env var" };
   }

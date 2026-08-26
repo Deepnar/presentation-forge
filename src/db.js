@@ -70,6 +70,12 @@ function ensureSchema(d) {
       updated_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS user_prefs (
+      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      routing TEXT,
+      updated_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS auto_events (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
