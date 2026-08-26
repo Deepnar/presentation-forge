@@ -56,11 +56,19 @@ async function plateChromeBg(png) {
       .extract({ left: Math.floor(w * 0.84), top: 0, width: Math.floor(w * 0.16), height: Math.floor(h * 0.16) })
       .raw()
       .toBuffer();
-    let lum = 0;
+    // Return the colour that was actually painted, not a verdict about it.
+    // Collapsing the sample to pure black or white threw away the hue, so every
+    // plate theme reported a neutral ground: a salmon divider came back as
+    // #FFFFFF and the chrome then chose its mark for white paper.
+    let r = 0, g = 0, b = 0;
+    const px = data.length / 3;
     for (let i = 0; i < data.length; i += 3) {
-      lum += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+      r += data[i]; g += data[i + 1]; b += data[i + 2];
     }
-    return lum / (data.length / 3) < 128 ? "#000000" : "#FFFFFF";
+    const mean = [r / px, g / px, b / px]
+      .map((v) => Math.round(v).toString(16).padStart(2, "0"))
+      .join("");
+    return `#${mean.toUpperCase()}`;
   } catch {
     return null;
   }

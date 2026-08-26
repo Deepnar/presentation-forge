@@ -122,8 +122,13 @@ export async function normalizeBrand({ srcDir = SRC, outDir = OUT, placeholders 
     const keyed = await keyWhite(crestSrc);
     const trimmed = await sharp(await keyed.toBuffer()).trim({ threshold: 1 }).png().toBuffer();
     await emit(outDir, "crest", sharp(trimmed).png({ compressionLevel: 9 }));
-    // Reversed mark for dark themes.
+    // Two single-colour knockouts, not one. A white mark is right on a dark or
+    // strongly saturated ground and wrong on a light chromatic one — a salmon
+    // section divider gives a white mark 3.1:1 and a dark mark 5.6:1. With only
+    // a reversed variant to choose from, the renderer had to take the worse
+    // mark on every warm mid-tone surface.
     await emit(outDir, "crest-light", await monochrome(trimmed, { r: 255, g: 255, b: 255 }));
+    await emit(outDir, "crest-dark", await monochrome(trimmed, { r: 20, g: 20, b: 20 }));
   } else if (!placeholder) {
     console.log("  crest      — no source, skipped");
   }

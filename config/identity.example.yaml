@@ -29,7 +29,8 @@ guide:
 brand:
   banner: "brand/generated/banner.png"        # wide dept strip — title slide + report header
   crest: "brand/generated/crest.png"          # shield — top-right of content slides
-  crest_light: "brand/generated/crest-light.png"  # reversed mark, used on dark backgrounds
+  crest_light: "brand/generated/crest-light.png"  # reversed mark, for dark or saturated grounds
+  crest_dark: "brand/generated/crest-dark.png"    # single-colour mark, for light chromatic grounds
   watermark: "brand/generated/watermark.png"  # faded crest — report body background
 
 chrome:

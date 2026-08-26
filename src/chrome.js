@@ -3,6 +3,7 @@ import path from "node:path";
 import sharp from "sharp";
 import { ROOT } from "./paths.js";
 import { resolveBrandPath } from "./tenant.js";
+import { contrast, parseHex } from "./chartpalette.js";
 import { hex } from "./theme.js";
 import { DIVIDER_TYPES } from "./ai/team.js";
 
@@ -41,10 +42,11 @@ async function probe(file) {
 /** Resolve brand assets once per render; report what's missing exactly once. */
 export async function loadBrand(identity) {
   const b = identity.brand ?? {};
-  const [banner, crest, crestLight, watermark] = await Promise.all([
+  const [banner, crest, crestLight, crestDark, watermark] = await Promise.all([
     b.banner ? probe(b.banner) : null,
     b.crest ? probe(b.crest) : null,
     b.crest_light ? probe(b.crest_light) : null,
+    b.crest_dark ? probe(b.crest_dark) : null,
     b.watermark ? probe(b.watermark) : null,
   ]);
 
@@ -54,7 +56,7 @@ export async function loadBrand(identity) {
   if (b.watermark && !watermark) missing.push(b.watermark);
   // crest_light is an enhancement, not a requirement — don't nag for it.
 
-  return { banner, crest, crestLight, watermark, missing };
+  return { banner, crest, crestLight, crestDark, watermark, missing };
 }
 
 /** Relative luminance of a hex colour, 0..1. */
@@ -66,13 +68,49 @@ function luminance(c) {
 }
 
 /**
- * Pick the crest variant that will actually be legible.
- * The full-colour mark has a dark navy wordmark that disappears on dark
- * backgrounds, so anything below mid-luminance gets the reversed mark.
+ * Pick the crest variant that is actually most legible on the ground the layout
+ * painted.
+ *
+ * This used to be a luminance threshold: below 0.45, take the reversed mark.
+ * That is right for a dark ground and demonstrably wrong for a light chromatic
+ * one. A salmon section divider sits at 0.29 luminance, so the rule took the
+ * white mark at 3.1:1 while the dark mark was available at 5.6:1; a terracotta
+ * divider is 4.27 against 4.08, near enough a coin toss that a threshold has no
+ * business deciding it. Measuring both and taking the better one removes the
+ * guess.
+ *
+ * The full-colour mark stays preferred on a near-neutral page — it is the real
+ * mark, and a knockout is a compromise made for legibility. It is only set
+ * aside when the ground is saturated enough that a full-colour shield reads as
+ * a sticker rather than a mark.
  */
-function crestFor(brand, bgColor) {
-  if (brand.crestLight && luminance(bgColor) < 0.45) return brand.crestLight;
-  return brand.crest;
+export function crestFor(brand, bgColor) {
+  // A near-neutral page keeps the real mark. Chroma, not HSL saturation: HSL
+  // saturation approaches 1 near white, so a warm paper like #F7F3EA scored
+  // 0.45 and was treated as a coloured ground.
+  if (chroma(bgColor) < 0.10 && contrast("#FFFFFF", bgColor) < 2.2) return brand.crest;
+
+  const options = [
+    brand.crestLight ? { mark: brand.crestLight, ink: "#FFFFFF" } : null,
+    brand.crestDark ? { mark: brand.crestDark, ink: "#141414" } : null,
+  ].filter(Boolean);
+  if (!options.length) return brand.crest;
+
+  let best = options[0];
+  let bestRatio = contrast(best.ink, bgColor);
+  for (const o of options.slice(1)) {
+    const r = contrast(o.ink, bgColor);
+    if (r > bestRatio) { best = o; bestRatio = r; }
+  }
+  return best.mark;
+}
+
+/** Colourfulness, 0..1, stable at both ends of the lightness range. */
+function chroma(c) {
+  const rgb = parseHex(c);
+  if (!rgb) return 0;
+  const [r, g, b] = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
+  return Math.max(r, g, b) - Math.min(r, g, b);
 }
 
 /** How much of the institution's marks a deck carries: full | minimal | none.
