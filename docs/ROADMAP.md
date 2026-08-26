@@ -2801,6 +2801,16 @@ So this is not a palette pass. It is: decide which themes are genuinely
 distinct designs and which are duplicates to cull, then give the survivors
 layout-level differences rather than colour-level ones.
 
+Four were culled as duplicates of a survivor rather than designs of their own:
+`flat-2` (Inter on white with one blue accent — `notion-clean`), `minimal-warm`
+(cream paper, serif display, terracotta — `warm-humanist`), `dark-neon`
+(near-black and cyan in Space Grotesk — `sci-fi-hud`, which carries the HUD
+linework) and `retro-terminal` (green phosphor on black — `retro-crt`, which
+carries the scanlines and glow). The near-pairs that remain — brutalist paper
+against neubrutalism, the two corporate blues, newsprint against editorial
+serif — keep their places and are separated by composition and typeface, which
+is the point of the item.
+
 ### [ ] `flow`'s vertical spine is one line from failing
 
 *Priority: medium. Renderer only, no model.*

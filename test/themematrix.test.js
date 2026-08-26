@@ -24,7 +24,6 @@ const ALLOWED = [
   "editorial-serif-light flow",
   "high-contrast-mono flow",
   "minimal-muji flow",
-  "minimal-warm flow",
   // Branch captions sit in the narrowest cell any layout allocates; mono and
   // condensed faces measure wider than the budget assumes.
   "blueprint branching-flow",
@@ -34,7 +33,6 @@ const ALLOWED = [
   // Two column headings on one row, in a monospace face.
   "mono-terminal-light before-after",
   "retro-crt before-after",
-  "retro-terminal before-after",
 ];
 
 test("every theme seats every slide type at a readable size", async () => {

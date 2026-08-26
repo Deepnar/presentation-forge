@@ -769,7 +769,7 @@ export default function ChatView({
         if (!arg) { slashReply("Pick a theme by name — e.g. /theme swiss-international. The gallery still shows each one live."); return true; }
         const t = themes.find((x) => x.name === arg || (x.label ?? "").toLowerCase() === arg.toLowerCase());
         if (!t) {
-          slashReply(`No theme named "${arg}" — try /theme then a name from the gallery (e.g. /theme dark-neon).`);
+          slashReply(`No theme named "${arg}" — try /theme then a name from the gallery (e.g. /theme sci-fi-hud).`);
           return true;
         }
         setBriefing({ theme: t.name });

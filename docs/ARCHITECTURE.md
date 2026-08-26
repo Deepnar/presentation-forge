@@ -102,14 +102,16 @@ treatments expressible as plain translucent shapes. `drawBackground()` in
 `render.js` reads it and nothing in deck.yaml can reach it — same three-layer
 boundary as the palette.
 
-The gallery sits at **38 themes**: the native reference (warm-humanist), a
-broad native family (Swiss grid, editorial magazine with its layout flags,
-Muji, neubrutalism, Bauhaus with its section block, Memphis, Art Deco,
-dark-neon, Linear, Material You, flat, retro-terminal, newsprint, Notion,
-Alegria, corporate blue, nature organic, blueprint, high-contrast mono,
-risograph, letterpress, paper pastel, sci-fi HUD) and plated ones
-(glassmorphism, claymorphism, neumorphism, aurora-mesh, soft glass, sunset,
-gradient mesh dark, retro CRT). Theme cards are REAL renders — two surfaces
+The gallery sits at **34 themes**: the native reference (warm-humanist), a
+broad native family (Swiss grid, editorial magazine, Muji, neubrutalism,
+brutalist paper, Bauhaus, Memphis, Art Deco, Linear, Material You, newsprint,
+editorial serif, Notion, Alegria, corporate blue, nature organic, blueprint,
+high-contrast mono, mono terminal, risograph, letterpress, paper pastel,
+chalkboard, sci-fi HUD) and plated ones (glassmorphism, claymorphism,
+neumorphism, aurora-mesh, soft glass, sunset, gradient mesh dark, isometric
+dark, retro CRT). It sat at 38 until four were culled as duplicates of a
+survivor rather than designs of their own — a theme earns its place by being a
+different design, and palette alone is not one. Theme cards are REAL renders — two surfaces
 side by side, a title and a body slide, produced by `npm run gallery` from the
 neutral specimen deck with institutional branding off, so the card shows the
 design and never an institution. That branding is why they were once switched

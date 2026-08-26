@@ -9,7 +9,7 @@
  *   3. `sheets/<theme>-<chunk>.png` — labelled contact sheets, chunked so each
  *      cell stays readable for a vision model (cells at ~360px, ~20 per sheet).
  *
- *   node tools/slideqa.mjs [--themes warm-humanist,swiss-international,dark-neon] [--out /tmp/slideqa]
+ *   node tools/slideqa.mjs [--themes warm-humanist,swiss-international,sci-fi-hud] [--out /tmp/slideqa]
  *
  * The sheets are the deliverable the vision pass reads; the full-size PNGs let
  * it zoom a suspect type. problems.json is the deterministic half of the audit.
@@ -23,7 +23,7 @@ import { specimenDeck, specimenIndex } from "../src/specimens.js";
 import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_THEMES = ["warm-humanist", "swiss-international", "dark-neon"];
+const DEFAULT_THEMES = ["warm-humanist", "swiss-international", "sci-fi-hud"];
 
 const pick = (flag) => {
   const i = process.argv.indexOf(flag);
