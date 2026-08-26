@@ -1,10 +1,13 @@
-# Full deployment for a friend's home Linux server: the app container plus the
-# local SearXNG research backend. One command:
+# The hosted deployment: app + research backend + TLS terminator.
 #
-#   docker compose -f docker/docker-compose.app.yml up -d --build
+#   cd docker && cp ../.env.example .env    # then fill it in
+#   docker compose -f docker-compose.app.yml up -d --build
 #
-# Config comes from env (see the README's deployment section). The stateful
-# directories are a named volume so a redeploy never loses decks/brand/config.
+# Sized for a 2 vCPU / 12 GB box, which is what the Oracle Cloud Always Free
+# ARM shape gives you. See docs/DEPLOY.md for the whole walkthrough.
+#
+# State lives in the forge_data volume, so a rebuild never loses decks, config,
+# brand marks, accounts or the report donor template.
 
 services:
   forge:
@@ -14,32 +17,40 @@ services:
     container_name: forge_app
     restart: unless-stopped
     # The image runs as an unprivileged user (uid 1001); the named volume must
-    # be owned by it or /data writes fail. On a fresh host Docker names the
-    # volume after the compose project, so this is created by the first `up`.
+    # be owned by it or /data writes fail.
     user: "1001:1001"
+    expose:
+      - "5174"
+    # Published on localhost only — Caddy is the public listener. Set
+    # FORGE_BIND=0.0.0.0 to expose the app directly (no TLS) instead.
     ports:
-      - "${FORGE_PORT:-8080}:5174"
+      - "${FORGE_BIND:-127.0.0.1}:${FORGE_PORT:-8080}:5174"
     environment:
       FORGE_DECKS_DIR: /data/decks
       FORGE_BRAND_DIR: /data/brand
       FORGE_CONFIG_DIR: /data/config
+      FORGE_REFERENCE_DIR: /data/reference
       FORGE_PLATE_CACHE: /data/plate-cache
       FORGE_API_PORT: "5174"
       SEARXNG_URL: "http://searxng:8080"
+      # Hosted: Auto is the shared gateway, Cloud is per-user BYOK, no Ollama.
       FORGE_HOSTED: "${FORGE_HOSTED:-1}"
       FORGE_TCET_API_KEY: "${FORGE_TCET_API_KEY:-}"
-      OPENCODE_GO_API_KEY: "${OPENCODE_GO_API_KEY:-}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
-      # Sweep + mail. Set these in a .env file next to this compose file:
-      #   FORGE_SWEEP_DAYS=30          (delete decks older than 30 days)
-      #   FORGE_SWEEP_HOUR=3           (run daily at 3 AM)
-      #   FORGE_SMTP_HOST=smtp.example.com
-      #   FORGE_SMTP_PORT=587
-      #   FORGE_SMTP_USER=...
-      #   FORGE_SMTP_PASS=...
-      #   FORGE_SMTP_FROM=sweep@example.com
-      #   FORGE_SMTP_TO=owner@example.com
-      FORGE_SWEEP_DAYS: "${FORGE_SWEEP_DAYS:-}"
+      OPENCODE_GO_API_KEY: "${OPENCODE_GO_API_KEY:-}"
+      # Required in hosted mode — per-user API keys are encrypted under it, and
+      # the app refuses to start rather than fall back to the published default.
+      FORGE_KEY_PEPPER: "${FORGE_KEY_PEPPER:?set FORGE_KEY_PEPPER to a long random string}"
+      # Behind Caddy, so honour X-Forwarded-For and mark cookies Secure.
+      FORGE_TRUST_PROXY: "1"
+      FORGE_UI_ORIGIN: "${FORGE_UI_ORIGIN:-}"
+      FORGE_OPEN_REGISTRATION: "${FORGE_OPEN_REGISTRATION:-1}"
+      FORGE_ADMIN_EMAIL: "${FORGE_ADMIN_EMAIL:-}"
+      FORGE_ADMIN_PASSWORD: "${FORGE_ADMIN_PASSWORD:-}"
+      FORGE_SESSION_TTL_DAYS: "${FORGE_SESSION_TTL_DAYS:-30}"
+      FORGE_AUTH_RATE_LIMIT: "${FORGE_AUTH_RATE_LIMIT:-20}"
+      # Retention sweep — the thing that stops a free-tier disk filling up.
+      FORGE_SWEEP_DAYS: "${FORGE_SWEEP_DAYS:-30}"
       FORGE_SWEEP_HOUR: "${FORGE_SWEEP_HOUR:-3}"
       FORGE_SMTP_HOST: "${FORGE_SMTP_HOST:-}"
       FORGE_SMTP_PORT: "${FORGE_SMTP_PORT:-587}"
@@ -48,23 +59,32 @@ services:
       FORGE_SMTP_FROM: "${FORGE_SMTP_FROM:-}"
       FORGE_SMTP_TO: "${FORGE_SMTP_TO:-}"
       FORGE_SMTP_SECURE: "${FORGE_SMTP_SECURE:-0}"
-      FORGE_AUTH_RATE_LIMIT: "${FORGE_AUTH_RATE_LIMIT:-20}"
-      FORGE_OPEN_REGISTRATION: "${FORGE_OPEN_REGISTRATION:-1}"
-      FORGE_ADMIN_EMAIL: "${FORGE_ADMIN_EMAIL:-}"
-      FORGE_ADMIN_PASSWORD: "${FORGE_ADMIN_PASSWORD:-}"
-      FORGE_SESSION_TTL_DAYS: "${FORGE_SESSION_TTL_DAYS:-30}"
-      FORGE_TRUST_PROXY: "${FORGE_TRUST_PROXY:-0}"
-      FORGE_UI_ORIGIN: "${FORGE_UI_ORIGIN:-}"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
+      # Auto-tier caps. These are what keep one user from spending the shared
+      # gateway's whole budget in an afternoon.
+      FORGE_AUTO_HOURLY_REQUESTS: "${FORGE_AUTO_HOURLY_REQUESTS:-20}"
+      FORGE_AUTO_WEEKLY_REQUESTS: "${FORGE_AUTO_WEEKLY_REQUESTS:-100}"
+      FORGE_AUTO_HOURLY_SLIDES: "${FORGE_AUTO_HOURLY_SLIDES:-60}"
+      FORGE_AUTO_WEEKLY_SLIDES: "${FORGE_AUTO_WEEKLY_SLIDES:-300}"
+      FORGE_AUTO_WEEKLY_TOKENS: "${FORGE_AUTO_WEEKLY_TOKENS:-200000}"
+      FORGE_AUTO_MAX_SLIDES_PER_DECK: "${FORGE_AUTO_MAX_SLIDES_PER_DECK:-30}"
     volumes:
       - forge_data:/data
     depends_on:
       - searxng
+    # LibreOffice and Chromium are the memory spikes; without a ceiling a burst
+    # of renders can OOM the whole box rather than just failing one render.
+    deploy:
+      resources:
+        limits:
+          memory: ${FORGE_MEM_LIMIT:-6g}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:5174/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 20s
+      start_period: 40s
 
   searxng:
     image: docker.io/searxng/searxng:latest
@@ -74,7 +94,7 @@ services:
       - ./searxng:/etc/searxng:rw
     environment:
       - SEARXNG_BASE_URL=http://forge:5174/
-      - SEARXNG_SECRET=${SEARXNG_SECRET:-forge-deployment-secret}
+      - SEARXNG_SECRET=${SEARXNG_SECRET:?set SEARXNG_SECRET to a long random string}
       - UWSGI_WORKERS=2
       - UWSGI_THREADS=2
     cap_drop:
@@ -90,5 +110,32 @@ services:
       retries: 5
       start_period: 20s
 
+  # TLS and the public listener. Caddy gets a certificate from Let's Encrypt
+  # automatically for FORGE_DOMAIN. The session cookie is only marked Secure on
+  # an HTTPS request, so this is what makes deck downloads authenticate in a
+  # real browser. Drop this service only if something else already terminates
+  # TLS in front of the box.
+  caddy:
+    image: docker.io/library/caddy:2-alpine
+    container_name: forge_caddy
+    restart: unless-stopped
+    profiles: ["tls"]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Compose interpolates this even when the tls profile is inactive, so it
+      # cannot be `:?required`. With the profile enabled, set it to the real
+      # hostname — `localhost` gets a self-signed cert, not a public one.
+      FORGE_DOMAIN: "${FORGE_DOMAIN:-localhost}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - forge
+
 volumes:
   forge_data:
+  caddy_data:
+  caddy_config:

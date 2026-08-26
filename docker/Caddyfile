@@ -1,0 +1,39 @@
+# TLS terminator for the hosted deployment.
+#
+# Caddy obtains and renews a Let's Encrypt certificate for FORGE_DOMAIN with no
+# configuration beyond the hostname. HTTPS matters for more than eavesdropping
+# here: the session cookie that authenticates deck rasters and downloads is only
+# marked Secure on an HTTPS request.
+
+{$FORGE_DOMAIN} {
+	encode zstd gzip
+
+	# Generation is a server-sent-events stream that can run for minutes while
+	# the model writes each slide. The defaults would cut it off mid-deck.
+	reverse_proxy forge:5174 {
+		flush_interval -1
+		transport http {
+			response_header_timeout 10m
+			read_timeout 15m
+			write_timeout 15m
+		}
+	}
+
+	# A deck upload is bounded by the app's own limits; this stops anything
+	# larger from reaching Node at all.
+	request_body {
+		max_size 30MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
