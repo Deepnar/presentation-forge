@@ -127,10 +127,16 @@ tokens:
       <style>
         .ground{position:absolute;inset:0;
           background:linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
-        .k1{left:-12%;top:-16%;width:46%;height:15%;background:{{tokens.palette.accent}};opacity:.26;}
-        .k2{left:-6%;top:6%;width:34%;height:11%;background:{{tokens.palette.accent_alt}};opacity:.22;}
-        .k3{right:-14%;bottom:-6%;width:44%;height:14%;background:{{tokens.palette.accent}};opacity:.2;}
+        /* Strips that cross the whole frame, entering one edge and leaving the
+           other. A bar that stops short reads as an object placed on the
+           slide; one that runs the full width reads as light laid across it —
+           and, because the panel sits over the middle, the same strip is
+           hard-edged out at the margins and soft where it passes behind the
+           glass. That one strip being both at once is the material explaining
+           itself, which a shape tucked in a corner can never do. */
+        .bar{position:absolute;border-radius:5px;transform:rotate(-7deg);}
+        .k1{left:-8%;top:12%;width:116%;height:11%;background:{{tokens.palette.accent}};opacity:.3;}
+        .k2{left:-8%;bottom:14%;width:116%;height:8%;background:{{tokens.palette.accent_alt}};opacity:.24;}
         .frost{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           border-radius:30px;background:{{tokens.palette.surface}}52;
           backdrop-filter:blur(26px) saturate(120%);-webkit-backdrop-filter:blur(26px) saturate(120%);
@@ -138,17 +144,19 @@ tokens:
           box-shadow:0 16px 48px {{tokens.palette.ink}}26;}
       </style>
       <div class="ground"></div>
-      <div class="bar k1"></div><div class="bar k2"></div><div class="bar k3"></div>
+      <div class="bar k1"></div><div class="bar k2"></div>
       <div class="frost"></div>
     surfaces:
       title: |
         <style>
           .ground{position:absolute;inset:0;
             background:linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
-          .k1{right:-10%;top:-14%;width:52%;height:17%;background:{{tokens.palette.accent}};opacity:.5;}
-          .k2{right:-4%;top:12%;width:38%;height:12%;background:{{tokens.palette.accent_alt}};opacity:.4;}
-          .k3{right:2%;bottom:-12%;width:44%;height:15%;background:{{tokens.palette.accent}};opacity:.3;}
+          /* The pane covers the left of the frame, so a strip crossing the
+             whole width is sharp beside the title and soft behind it — the
+             clearest reading of the material this theme gets. */
+          .bar{position:absolute;border-radius:5px;transform:rotate(-7deg);}
+          .k1{left:-8%;top:16%;width:116%;height:14%;background:{{tokens.palette.accent}};opacity:.5;}
+          .k2{left:-8%;bottom:16%;width:116%;height:10%;background:{{tokens.palette.accent_alt}};opacity:.4;}
           /* Glass over the left of the frame, where the title sits: the bars
              stay hard-edged beside it and go soft behind it. */
           .pane{position:absolute;left:0;top:0;width:60%;height:100%;
@@ -157,15 +165,15 @@ tokens:
             border-right:1px solid {{tokens.palette.surface}}2e;}
         </style>
         <div class="ground"></div>
-        <div class="bar k1"></div><div class="bar k2"></div><div class="bar k3"></div>
+        <div class="bar k1"></div><div class="bar k2"></div>
         <div class="pane"></div>
       section: |
         <style>
           .ground{position:absolute;inset:0;
             background:linear-gradient(152deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
-          .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
-          .k1{right:-12%;top:-18%;width:50%;height:16%;background:{{tokens.palette.surface}};opacity:.22;}
-          .k2{right:-6%;bottom:-14%;width:42%;height:14%;background:{{tokens.palette.surface}};opacity:.16;}
+          .bar{position:absolute;border-radius:5px;transform:rotate(-7deg);}
+          .k1{left:-8%;top:12%;width:116%;height:13%;background:{{tokens.palette.surface}};opacity:.24;}
+          .k2{left:-8%;bottom:13%;width:116%;height:9%;background:{{tokens.palette.surface}};opacity:.18;}
           .band{position:absolute;left:0;top:24%;width:70%;height:48%;
             border-radius:0 999px 999px 0;
             background:{{tokens.palette.surface}}24;

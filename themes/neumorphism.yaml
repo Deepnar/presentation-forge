@@ -141,13 +141,13 @@ tokens:
               -18px -18px 44px {{tokens.palette.ink_muted}}3d,
               inset 2px 2px 3px {{tokens.palette.ink_muted}}59,
               inset -2px -2px 3px #00000047;}
-          /* A straight cut pressed into the ground, entering from the corner
-             and running off the frame. A circle floating in the corner read as
-             a button nobody put there; a channel reads as the material having
-             been machined, which is the same lighting model doing something
-             with a direction to it. */
-          .cut{position:absolute;right:-16%;bottom:9%;width:62%;height:12%;
-            border-radius:8px;transform:rotate(-19deg);
+          /* A channel machined right across the panel, entering at one edge and
+             leaving at the other. Stopping short of an edge makes it an object
+             sitting on the surface; running the full width makes it something
+             cut into it, which is the whole idea. Kept below the slab so the
+             two forms read as one plane at different depths. */
+          .cut{position:absolute;left:-6%;bottom:11%;width:112%;height:10%;
+            border-radius:7px;transform:rotate(-7deg);
             background:{{tokens.surfaces.title.bg}};
             box-shadow:
               inset 9px 9px 18px #00000075,
@@ -168,12 +168,12 @@ tokens:
               -16px -16px 40px #ffffff33,
               inset 2px 2px 3px #ffffff4d,
               inset -2px -2px 3px {{tokens.palette.ink}}3d;}
-          /* Low and right, clear of the crest corner. The light inset runs
-             weaker than the dark one: matched evenly on a mid-tone ground the
-             bright edge wins and the channel reads as a ridge standing proud
-             rather than a groove cut in. */
-          .cut{position:absolute;right:-15%;bottom:7%;width:60%;height:11%;
-            border-radius:8px;transform:rotate(-19deg);
+          /* The same channel, edge to edge, below the slab and clear of the
+             crest. The light inset runs weaker than the dark one: matched
+             evenly on a mid-tone ground the bright edge wins and the channel
+             reads as a ridge standing proud rather than a groove cut in. */
+          .cut{position:absolute;left:-6%;bottom:9%;width:112%;height:10%;
+            border-radius:7px;transform:rotate(-7deg);
             background:{{tokens.surfaces.section.bg}};
             box-shadow:
               inset 10px 10px 20px {{tokens.palette.ink}}80,
