@@ -83,13 +83,16 @@ tokens:
         .ground{position:absolute;inset:0;
           background:linear-gradient(155deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
         .sh{position:absolute;}
-        /* Two shapes, each straddling an edge of the panel so the same circle
-           is sharp on the ground and soft through the glass. Both stay clear of
-           the top-right corner, which belongs to the crest. */
+        /* Two shapes, each straddling an edge of the panel so the same circle is
+           sharp on the ground and soft through the glass. Kept faint: at full
+           strength they read as objects dropped on the slide and compete with
+           the content. A tint the ground shifts into still shows the sharp/soft
+           edge, which is the only thing they are there to do. Both stay clear
+           of the top-right corner, which belongs to the crest. */
         .c1{left:-7%;top:22%;width:26%;height:46%;border-radius:50%;
-          background:{{tokens.palette.accent}};opacity:.8;}
+          background:{{tokens.palette.accent}};opacity:.24;}
         .c2{right:9%;bottom:-16%;width:23%;height:40%;border-radius:50%;
-          background:{{tokens.palette.accent_alt}};opacity:.7;}
+          background:{{tokens.palette.accent_alt}};opacity:.22;}
         .frost{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           border-radius:26px;background:{{tokens.palette.surface}}52;
           backdrop-filter:blur(26px) saturate(140%);-webkit-backdrop-filter:blur(26px) saturate(140%);
@@ -106,9 +109,9 @@ tokens:
             background:linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
           .sh{position:absolute;}
           .c1{right:-5%;bottom:-18%;width:28%;height:52%;border-radius:50%;
-            background:{{tokens.palette.accent}};opacity:.85;}
+            background:{{tokens.palette.accent}};opacity:.42;}
           .c2{right:22%;top:14%;width:16%;height:28%;border-radius:50%;
-            background:{{tokens.palette.accent_alt}};opacity:.7;}
+            background:{{tokens.palette.accent_alt}};opacity:.34;}
           /* A full-height pane of glass over the left third, where the title
              sits — the shapes go soft behind it and stay sharp beside it. */
           .pane{position:absolute;left:0;top:0;width:62%;height:100%;
@@ -125,14 +128,16 @@ tokens:
             background:linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.ink}} 130%);}
           .sh{position:absolute;}
           .c1{right:8%;bottom:-24%;width:30%;height:56%;border-radius:50%;
-            background:{{tokens.palette.accent_alt}};opacity:.8;}
+            background:{{tokens.palette.accent_alt}};opacity:.34;}
           .c2{left:52%;top:-18%;width:18%;height:34%;border-radius:50%;
-            background:{{tokens.palette.surface}};opacity:.22;}
-          .band{position:absolute;left:0;top:26%;width:74%;height:44%;
-            background:{{tokens.palette.surface}}1f;
+            background:{{tokens.palette.surface}};opacity:.14;}
+          /* The band runs off the left edge and is rounded on the right, so it
+             reads as a pane the section title rests on rather than a stripe. */
+          .band{position:absolute;left:0;top:24%;width:72%;height:48%;
+            border-radius:0 999px 999px 0;
+            background:{{tokens.palette.surface}}24;
             backdrop-filter:blur(26px) saturate(130%);-webkit-backdrop-filter:blur(26px) saturate(130%);
-            border-top:1px solid {{tokens.palette.surface}}3d;
-            border-bottom:1px solid {{tokens.palette.surface}}3d;}
+            border:1px solid {{tokens.palette.surface}}3d;border-left:none;}
         </style>
         <div class="ground"></div>
         <div class="sh c1"></div><div class="sh c2"></div>
