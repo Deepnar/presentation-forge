@@ -21,6 +21,24 @@ tokens:
     title:   { bg: "#000000", ink: "#FFFFFF", muted: "#FFFFFF", accent: "#FFFFFF" }
     section: { bg: "#000000", ink: "#FFFFFF", muted: "#FFFFFF" }
 
+  # Charts are the one place this theme breaks its own rule, and it has to.
+  # Colour on a chart is data, not decoration: with a black accent and a white
+  # accent_alt the derived palette drew three identical black series and one
+  # white one that disappeared into the page. Greys alone cannot carry four
+  # series at a readable contrast either.
+  #
+  # These are flat poster primaries, which is the same design language the
+  # display face and the hard black rules already speak. Ink leads so a
+  # single-series chart still reads as this theme.
+  chart:
+    series:
+      - "#111111"   # ink
+      - "#D32F2F"   # vermillion
+      - "#1565C0"   # cobalt
+      - "#B26A00"   # ochre
+      - "#2E7D32"   # green
+      - "#6A1B9A"   # violet
+
   dark:
     bg: "#000000"
     surface: "#111111"

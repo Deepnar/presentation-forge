@@ -1,6 +1,7 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
 import { fitScale, fitScaleAll, fitOneLine, lineCount, measure } from "./fit.js";
 import { CANVAS, reservedTopRight } from "./chrome.js";
+import { chartSeries, ensureContrast } from "./chartpalette.js";
 
 /**
  * One renderer per slide type. Each receives a fully resolved context and
@@ -894,11 +895,18 @@ export const layouts = {
       : raw;
 
     // One series means one colour — varying hue across bars of a single series
-    // encodes a distinction that does not exist, and drags in low-contrast
-    // palette entries that were never meant to sit on the background.
-    const ramp = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.ink, theme.palette.ink_muted, theme.palette.rule];
+    // encodes a distinction that does not exist.
+    //
+    // Everything else reads the theme's categorical chart palette. It used to
+    // improvise a ramp from ink_muted and rule, which are secondary text and a
+    // hairline: the third series came out washed out, the fourth sat almost on
+    // the background, and a monochrome theme drew several identical black
+    // series plus a white one that was invisible.
     const isCircular = c.kind === "pie" || c.kind === "doughnut";
-    const colors = (c.series.length === 1 && !isCircular ? [theme.palette.accent] : ramp).map((x) => hex(x));
+    const count = isCircular ? Math.max(c.categories.length, 1) : Math.max(c.series.length, 1);
+    const colors = (c.series.length === 1 && !isCircular
+      ? [ensureContrast(theme.palette.accent, theme.palette.bg)]
+      : chartSeries(theme, count)).map((x) => hex(x));
 
     const kindMap = {
       bar: "bar", hbar: "bar", line: "line", pie: "pie", doughnut: "doughnut", area: "area",
@@ -1808,7 +1816,7 @@ export const layouts = {
       const chartH = Math.min(1.1, ch - pad * 2 - 0.45);
       slide.addChart("line", [{ name: it.label, labels: it.values.map((_, j) => String(j + 1)), values: it.values }], {
         x: x + pad, y: ry + pad + 0.42, w: cw2, h: chartH,
-        chartColors: [hex(theme.palette.accent)],
+        chartColors: [hex(ensureContrast(theme.palette.accent, theme.palette.bg))],
         showLegend: false,
         showTitle: false,
         showValue: false,
