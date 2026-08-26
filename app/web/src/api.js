@@ -175,10 +175,13 @@ export const api = {
   // Opt-in cloud backend (Settings/Cloud). The key itself never travels back
   // to the browser — status and test results are booleans and strings.
   cloud: () => call("/api/cloud"),
+  // The INSTALL-WIDE provider key — admin only, and it bills the operator. A
+  // user attaching their own key wants keysSave() below, which stores it
+  // encrypted against their account and is what generation actually reads.
   cloudSaveKey: (key) => call("/api/cloud/key", { method: "PUT", body: JSON.stringify({ key }) }),
   cloudClearKey: () => call("/api/cloud/key", { method: "DELETE" }),
   cloudTest: () => call("/api/cloud/test", { method: "POST", body: JSON.stringify({}) }),
-  // AUTO/CLOUD routing preference — auto is TCET campus gateway (free, rate-limited).
+  // AUTO/CLOUD routing preference — auto is Forge hosted gateway (free, rate-limited).
   cloudRoute: (route) => call("/api/cloud/routing", { method: "PUT", body: JSON.stringify({ route }) }),
   autoStatus: () => call("/api/auto/status"),
   autoTest: () => call("/api/auto/test", { method: "POST", body: JSON.stringify({}) }),

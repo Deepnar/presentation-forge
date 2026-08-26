@@ -57,7 +57,7 @@ export default function Admin({ onBack }) {
         <Panel className="p-6 text-center">
           <div className="text-[14px] font-semibold text-fg">{is403 ? "Admin only" : "Failed to load admin"}</div>
           <div className="mt-1 text-[12px] text-fg-muted break-words">{err}</div>
-          {is403 && <div className="mt-2 text-[11px] text-fg-faint">Signed in as non-admin. Ask 18deepnar@gmail.com or an existing admin to promote you. Env <code className="font-mono">FORGE_ADMIN_EMAIL</code> also grants admin.</div>}
+          {is403 && <div className="mt-2 text-[11px] text-fg-faint">Signed in as a non-admin account. Ask an existing admin to promote you. The operator account is seeded at boot from <code className="font-mono">FORGE_ADMIN_EMAIL</code>.</div>}
           {onBack && <Button className="mt-4" variant="outline" onClick={onBack}>Back</Button>}
         </Panel>
       </div>
@@ -73,7 +73,7 @@ export default function Admin({ onBack }) {
             <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"}>{hosted ? "hosted" : "local"}</Badge>
             {stats?.users?.total != null && <Badge className="bg-raised text-fg-faint">{stats.users.total} users · {stats.decks.total} decks</Badge>}
           </div>
-          <div className="text-[12px] text-fg-faint">RBAC for 18deepnar@gmail.com + any promoted admin · switch hosted/local here for testing · full PPT + system stats</div>
+          <div className="text-[12px] text-fg-faint">RBAC for the seeded operator + any promoted admin · switch hosted/local here for testing · full PPT + system stats</div>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" onClick={load}>Refresh</Button>
@@ -144,7 +144,7 @@ function Overview({ stats, hosted }) {
       </Panel>
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Hosted vs local</div>
-        <div className="text-[12px] leading-relaxed text-fg-muted">Hosted = <code className="font-mono">FORGE_HOSTED=1</code> — Auto is TCET only + BYOK. Local = Auto falls back to Ollama at <code className="font-mono">localhost:11434</code>. Toggle above flips <code className="font-mono">config/hosted.json</code> at runtime for testing (env wins on next deploy).</div>
+        <div className="text-[12px] leading-relaxed text-fg-muted">Hosted = <code className="font-mono">FORGE_HOSTED=1</code> — Auto is Forge only + BYOK. Local = Auto falls back to Ollama at <code className="font-mono">localhost:11434</code>. Toggle above flips <code className="font-mono">config/hosted.json</code> at runtime for testing (env wins on next deploy).</div>
       </Panel>
     </div>
   );
@@ -204,7 +204,7 @@ function UsersTab({ users, onRole, onDelete }) {
           </tbody>
         </table>
       </div>
-      <div className="mt-2 text-[11px] text-fg-faint">RBAC: role is <code className="font-mono">admin</code> or none (user). Env <code className="font-mono">FORGE_ADMIN_EMAIL</code> is always admin. Add 18deepnar@gmail.com or any email as admin here.</div>
+      <div className="mt-2 text-[11px] text-fg-faint">RBAC: role is <code className="font-mono">admin</code> or none (user). <code className="font-mono">FORGE_ADMIN_EMAIL</code> is seeded or promoted at boot, never granted by the address itself — registration does not verify email. Promote any account here.</div>
     </Panel>
   );
 }
@@ -288,7 +288,7 @@ function SystemTab({ stats, hosted, onToggle }) {
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Website mode — hosted ↔ local</div>
         <div className="flex items-center gap-3">
-          <span className={`rounded-full px-2.5 py-1 text-[12px] font-medium ${hosted ? "bg-amber/15 text-amber" : "bg-emerald-500/10 text-emerald-600"}`}>{hosted ? "HOSTED — TCET + BYOK only" : "LOCAL — Ollama fallback on"}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[12px] font-medium ${hosted ? "bg-amber/15 text-amber" : "bg-emerald-500/10 text-emerald-600"}`}>{hosted ? "HOSTED — Forge + BYOK only" : "LOCAL — Ollama fallback on"}</span>
           <Button size="sm" variant="outline" onClick={onToggle}>{hosted ? "Switch to local (test)" : "Switch to hosted"}</Button>
           <span className="text-[11px] text-fg-faint">Writes <code className="font-mono">config/hosted.json</code> — no restart, env still wins on deploy.</span>
         </div>
@@ -297,7 +297,7 @@ function SystemTab({ stats, hosted, onToggle }) {
         <Panel className="p-4">
           <div className="mb-2 text-[12px] font-semibold text-fg">Backends</div>
           <div className="space-y-1.5 text-[12px]">
-            <Row label="TCET Auto" ok={stats.system.tcetOk} detail={stats.system.tcetOk ? "keySet" : "no key"} />
+            <Row label="Forge Auto" ok={stats.system.tcetOk} detail={stats.system.tcetOk ? "keySet" : "no key"} />
             <Row label="Ollama" ok={stats.system.ollamaOk} detail={hosted ? "disabled in hosted" : (stats.system.ollamaOk ? "reachable" : "not reachable")} />
             <Row label="SearXNG" ok={stats.system.searxngOk} detail={stats.system.searxngOk ? "ok" : "down"} />
           </div>
@@ -313,7 +313,7 @@ function SystemTab({ stats, hosted, onToggle }) {
       </div>
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">How this admin page is gated</div>
-        <div className="text-[12px] leading-relaxed text-fg-muted">RBAC: <code className="font-mono">role=admin</code> in users table, plus <code className="font-mono">FORGE_ADMIN_EMAIL</code> (currently 18deepnar@gmail.com if you set it). Use Users tab to promote anyone — search email → Make admin. That email then sees Admin in sidebar and can hit all <code className="font-mono">/api/admin/*</code>. Demote via Remove admin. Last admin cannot be deleted.</div>
+        <div className="text-[12px] leading-relaxed text-fg-muted">RBAC: <code className="font-mono">role=admin</code> in the users table — the only thing that grants admin. <code className="font-mono">FORGE_ADMIN_EMAIL</code> sets that role at boot; it is not a credential at request time. Use the Users tab to promote anyone — search email → Make admin. That account then sees Admin in the sidebar and can reach all <code className="font-mono">/api/admin/*</code>. Demote via Remove admin. The last admin cannot be deleted.</div>
       </Panel>
     </div>
   );

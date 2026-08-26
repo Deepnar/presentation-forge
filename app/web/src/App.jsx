@@ -53,8 +53,18 @@ export default function App() {
   // authed visitor; it resolves to the session or null before anything renders.
   useEffect(() => {
     api.me().then((r) => setUser(r.user)).catch(() => setUser(null));
-    api.identity().then((r) => { setIdentity(r.identity ?? {}); setOrg(r.identity?.institution?.short ?? ""); }).catch(() => {});
   }, []);
+
+  // Identity is per account, and reading it needs a session — institution,
+  // department and guide are the personal details the file is gitignored to
+  // protect, so an anonymous visitor is not told them. Refetched on sign-in and
+  // cleared on sign-out so one account's college never lingers into another's.
+  useEffect(() => {
+    if (!user) { setIdentity({}); setOrg(""); return; }
+    api.identity()
+      .then((r) => { setIdentity(r.identity ?? {}); setOrg(r.identity?.institution?.short ?? ""); })
+      .catch(() => {});
+  }, [user?.email]);
 
   // A logged-in user gets their own chat list; the first visit starts one
   // empty thread so the landing is already a chat. StrictMode double-fires this
@@ -135,7 +145,9 @@ export default function App() {
   }, [user]);
 
   const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
-  const isAdminUser = Boolean(user && (user.role === "admin" || user.email?.toLowerCase() === "18deepnar@gmail.com"));
+  // Mirrors the server's isAdmin(): the role, and nothing derived from the
+  // address. The Admin routes enforce this server-side regardless.
+  const isAdminUser = Boolean(user && user.role === "admin");
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   const isChatView = view === "chat";
