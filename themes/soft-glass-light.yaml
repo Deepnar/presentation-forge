@@ -113,57 +113,69 @@ tokens:
       opacity: 0.1
   plate:
     enabled: true
-    html: >
+    # Glass, like glassmorphism — and deliberately not the same glass.
+    #
+    # Both themes had the same fault: blurred blobs behind a frosted panel, so
+    # the frost had nothing to frost and the slide became haze. Both are fixed
+    # the same way, by putting something with a hard edge behind the glass.
+    #
+    # What is behind it differs, or the two are one design in two palettes.
+    # Glassmorphism sets circles on a cool ground; this is warm and orthogonal —
+    # long rectangular bars at a slight tilt, like light falling through a
+    # window onto a table. Same material, different room.
+    html: |
       <style>
-        .mesh{position:absolute;inset:0;background:
-          radial-gradient(72% 62% at 16% 14%, {{tokens.palette.accent}}55 0%, transparent 56%),
-          radial-gradient(62% 56% at 86% 20%, {{tokens.palette.accent_alt}}44 0%, transparent 56%),
-          radial-gradient(90% 82% at 50% 118%, {{tokens.palette.surface}}cc 0%, transparent 72%),
-          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
-        .b1{left:7%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}66}
-        .b2{right:5%;top:5%;width:27%;height:31%;background:{{tokens.palette.accent_alt}}55}
+        .ground{position:absolute;inset:0;
+          background:linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
+        .k1{left:-12%;top:-16%;width:46%;height:15%;background:{{tokens.palette.accent}};opacity:.26;}
+        .k2{left:-6%;top:6%;width:34%;height:11%;background:{{tokens.palette.accent_alt}};opacity:.22;}
+        .k3{right:-14%;bottom:-6%;width:44%;height:14%;background:{{tokens.palette.accent}};opacity:.2;}
         .frost{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
-          border-radius:30px;background:{{tokens.palette.surface}}40;
-          backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
-          border:1px solid {{tokens.palette.surface}}99;
+          border-radius:30px;background:{{tokens.palette.surface}}52;
+          backdrop-filter:blur(26px) saturate(120%);-webkit-backdrop-filter:blur(26px) saturate(120%);
+          border:1px solid {{tokens.palette.surface}}a6;
           box-shadow:0 16px 48px {{tokens.palette.ink}}26;}
       </style>
-
-      <div class="mesh"></div>
-
-      <div class="b b1"></div><div class="b b2"></div>
-
+      <div class="ground"></div>
+      <div class="bar k1"></div><div class="bar k2"></div><div class="bar k3"></div>
       <div class="frost"></div>
     surfaces:
-      title: >
+      title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(82% 72% at 18% 14%, {{tokens.palette.accent}}bb 0%, transparent 52%),
-            radial-gradient(66% 56% at 84% 22%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
-            radial-gradient(100% 92% at 50% 122%, {{tokens.surfaces.title.bg}} 0%, transparent 76%),
-            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .b{position:absolute;border-radius:50%;filter:blur(76px);opacity:.55}
-          .b1{left:9%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
-          .b2{right:6%;top:7%;width:27%;height:31%;background:{{tokens.palette.accent_alt}}77}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
+          .k1{right:-10%;top:-14%;width:52%;height:17%;background:{{tokens.palette.accent}};opacity:.5;}
+          .k2{right:-4%;top:12%;width:38%;height:12%;background:{{tokens.palette.accent_alt}};opacity:.4;}
+          .k3{right:2%;bottom:-12%;width:44%;height:15%;background:{{tokens.palette.accent}};opacity:.3;}
+          /* Glass over the left of the frame, where the title sits: the bars
+             stay hard-edged beside it and go soft behind it. */
+          .pane{position:absolute;left:0;top:0;width:60%;height:100%;
+            background:{{tokens.surfaces.title.bg}}52;
+            backdrop-filter:blur(30px) saturate(115%);-webkit-backdrop-filter:blur(30px) saturate(115%);
+            border-right:1px solid {{tokens.palette.surface}}2e;}
         </style>
-
-        <div class="hero"></div>
-
-        <div class="b b1"></div><div class="b b2"></div>
-      section: >
+        <div class="ground"></div>
+        <div class="bar k1"></div><div class="bar k2"></div><div class="bar k3"></div>
+        <div class="pane"></div>
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(76% 66% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 56%),
-            radial-gradient(70% 60% at 86% 28%, {{tokens.palette.accent}}88 0%, transparent 56%),
-            linear-gradient(152deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
-          .s{position:absolute;border-radius:50%;filter:blur(64px);opacity:.45}
-          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(152deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
+          .bar{position:absolute;border-radius:6px;transform:rotate(-15deg);}
+          .k1{right:-12%;top:-18%;width:50%;height:16%;background:{{tokens.palette.surface}};opacity:.22;}
+          .k2{right:-6%;bottom:-14%;width:42%;height:14%;background:{{tokens.palette.surface}};opacity:.16;}
+          .band{position:absolute;left:0;top:24%;width:70%;height:48%;
+            border-radius:0 999px 999px 0;
+            background:{{tokens.palette.surface}}24;
+            backdrop-filter:blur(26px) saturate(115%);-webkit-backdrop-filter:blur(26px) saturate(115%);
+            border:1px solid {{tokens.palette.surface}}3d;border-left:none;}
         </style>
+        <div class="ground"></div>
+        <div class="bar k1"></div><div class="bar k2"></div>
+        <div class="band"></div>
 
-        <div class="sec"></div>
-
-        <div class="s s1"></div>
 voice:
   feel: calm, tactile, warm, crafted
   density: medium
