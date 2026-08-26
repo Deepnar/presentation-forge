@@ -1,10 +1,13 @@
-# Handoff — 2026-08-26, hosting readiness + the glow family (37 local commits, unpushed)
+# Handoff — 2026-08-26, hosting readiness + the glow family
 
-Two pieces of work, both finished. Everything is committed to `main` and
-nothing is pushed. `npm test` is 370 passing.
+Two pieces of work, both finished, both on `origin/main` (`170f30f`, 39
+commits). `npm test` is 370 passing, the UI builds, the working tree is clean.
 
-Read `docs/ROADMAP.md` §10 first — it is the standing quality list and it is
-current as of this session.
+**Start here.** `AGENTS.md` is the working agreement — commit discipline, how
+the roadmap is worked, conventions. `CLAUDE.md` is the operational map: what
+runs where, the invariants, the multi-tenancy rules. Then `docs/ROADMAP.md` §10,
+which is the standing quality list and is current as of this session. This file
+is only what the last session learned that those three do not already say.
 
 ## Part one: safe to put in front of strangers
 
@@ -66,8 +69,9 @@ good and put its title at 2.2:1. Sample beside the text, not through it — glyp
 are the brightest thing in the crop and will flatter the reading.
 
 After changing a theme: render all 75 types (`render({ write: false })` and
-check `problems`), then `npm run gallery --themes <name>` — the gallery
-thumbnails are committed and go stale otherwise.
+check `problems`), then `npm run gallery -- --themes <name>` — the
+gallery thumbnails are committed and go stale otherwise. Both scripts need the
+`--` separator or npm eats the flags.
 
 ## Constraints that shaped the work
 
