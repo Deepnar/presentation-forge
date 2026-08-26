@@ -66,55 +66,77 @@ tokens:
 
   plate:
     enabled: true
+    # The blur belongs to the glass, not to the background.
+    #
+    # This used to paint three blobs at 64px blur over stacked radial
+    # gradients, and then put a frosted panel on top. Frosting a blur leaves
+    # nothing to frost: the whole slide became fog, which is both why it read as
+    # "glow" and why it was indistinguishable from the other soft themes.
+    #
+    # The shapes behind the glass are now crisp — hard-edged circles and bars in
+    # the accent colours, no filter on any of them. The only blur in the theme
+    # is the panel's own backdrop-filter, so a shape is sharp where it crosses
+    # the ground and soft where it passes behind the panel. That edge, visible
+    # in the same image, is what the material actually looks like.
     html: |
       <style>
-        .mesh{position:absolute;inset:0;background:
-          radial-gradient(70% 60% at 14% 16%, {{tokens.palette.accent}}55 0%, transparent 55%),
-          radial-gradient(60% 55% at 86% 22%, {{tokens.palette.accent_alt}}44 0%, transparent 55%),
-          radial-gradient(90% 80% at 50% 115%, {{tokens.palette.surface}}cc 0%, transparent 70%),
-          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.65}
-        .b1{left:6%;top:10%;width:30%;height:36%;background:{{tokens.palette.accent}}66}
-        .b2{right:4%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}55}
-        .b3{left:26%;bottom:-10%;width:48%;height:38%;background:{{tokens.palette.ink_muted}}44}
+        .ground{position:absolute;inset:0;
+          background:linear-gradient(155deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .sh{position:absolute;}
+        /* Two shapes, each straddling an edge of the panel so the same circle
+           is sharp on the ground and soft through the glass. Both stay clear of
+           the top-right corner, which belongs to the crest. */
+        .c1{left:-7%;top:22%;width:26%;height:46%;border-radius:50%;
+          background:{{tokens.palette.accent}};opacity:.8;}
+        .c2{right:9%;bottom:-16%;width:23%;height:40%;border-radius:50%;
+          background:{{tokens.palette.accent_alt}};opacity:.7;}
         .frost{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
-          border-radius:26px;background:{{tokens.palette.surface}}40;
-          backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-          border:1px solid {{tokens.palette.surface}}99;
-          box-shadow:0 14px 44px {{tokens.palette.ink}}26;}
+          border-radius:26px;background:{{tokens.palette.surface}}52;
+          backdrop-filter:blur(26px) saturate(140%);-webkit-backdrop-filter:blur(26px) saturate(140%);
+          border:1px solid {{tokens.palette.surface}}a6;
+          box-shadow:0 16px 48px {{tokens.palette.ink}}26;}
       </style>
-      <div class="mesh"></div>
-      <div class="b1 blob"></div><div class="b2 blob"></div><div class="b3 blob"></div>
+      <div class="ground"></div>
+      <div class="sh c1"></div><div class="sh c2"></div>
       <div class="frost"></div>
     surfaces:
       title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(80% 70% at 18% 16%, {{tokens.palette.accent}}bb 0%, transparent 52%),
-            radial-gradient(65% 55% at 84% 24%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
-            radial-gradient(100% 90% at 50% 120%, {{tokens.surfaces.title.bg}} 0%, transparent 75%),
-            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .scrim{position:absolute;inset:0;background:
-            linear-gradient(120deg, {{tokens.surfaces.title.bg}}aa 0%, transparent 55%),
-            linear-gradient(0deg, {{tokens.surfaces.title.bg}}66 0%, transparent 40%);}
-          .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.65}
-          .b1{left:8%;top:12%;width:30%;height:34%;background:{{tokens.palette.accent}}88}
-          .b2{right:6%;top:6%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}77}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .sh{position:absolute;}
+          .c1{right:-5%;bottom:-18%;width:28%;height:52%;border-radius:50%;
+            background:{{tokens.palette.accent}};opacity:.85;}
+          .c2{right:22%;top:14%;width:16%;height:28%;border-radius:50%;
+            background:{{tokens.palette.accent_alt}};opacity:.7;}
+          /* A full-height pane of glass over the left third, where the title
+             sits — the shapes go soft behind it and stay sharp beside it. */
+          .pane{position:absolute;left:0;top:0;width:62%;height:100%;
+            background:{{tokens.surfaces.title.bg}}59;
+            backdrop-filter:blur(30px) saturate(130%);-webkit-backdrop-filter:blur(30px) saturate(130%);
+            border-right:1px solid {{tokens.palette.surface}}2e;}
         </style>
-        <div class="hero"></div>
-        <div class="scrim"></div>
-        <div class="b b1"></div><div class="b b2"></div>
+        <div class="ground"></div>
+        <div class="sh c1"></div><div class="sh c2"></div>
+        <div class="pane"></div>
       section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(75% 65% at 16% 20%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
-            radial-gradient(70% 60% at 85% 30%, {{tokens.palette.accent_alt}}88 0%, transparent 55%),
-            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
-          .s{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45}
-          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}44}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.ink}} 130%);}
+          .sh{position:absolute;}
+          .c1{right:8%;bottom:-24%;width:30%;height:56%;border-radius:50%;
+            background:{{tokens.palette.accent_alt}};opacity:.8;}
+          .c2{left:52%;top:-18%;width:18%;height:34%;border-radius:50%;
+            background:{{tokens.palette.surface}};opacity:.22;}
+          .band{position:absolute;left:0;top:26%;width:74%;height:44%;
+            background:{{tokens.palette.surface}}1f;
+            backdrop-filter:blur(26px) saturate(130%);-webkit-backdrop-filter:blur(26px) saturate(130%);
+            border-top:1px solid {{tokens.palette.surface}}3d;
+            border-bottom:1px solid {{tokens.palette.surface}}3d;}
         </style>
-        <div class="sec"></div>
-        <div class="s s1"></div>
+        <div class="ground"></div>
+        <div class="sh c1"></div><div class="sh c2"></div>
+        <div class="band"></div>
 
 voice:
   feel: airy, modern, translucent, premium software
