@@ -11,6 +11,19 @@ tokens:
     accent_alt: "#37C8C0"
     rule: "#3A3050"
     on_accent: "#FFFFFF"
+  # The curtain's hue travel. The theme is described as plum through teal to
+  # amber and its palette carried neither plum nor amber, so the background
+  # could only ever be violet and teal. These are the stops that make the
+  # description true; the palette proper stays two accents, because the
+  # renderer draws text and shapes from that and it should not grow a colour it
+  # has nowhere to use.
+  aurora:
+    edge: "#1B1430"
+    plum: "#6B2E7A"
+    violet: "#7A5CF0"
+    teal: "#37C8C0"
+    amber: "#E8A33D"
+
   surfaces:
     title:
       bg: "#0F0B1C"
@@ -75,11 +88,13 @@ tokens:
       line: 1
       tracking: -1
   grid:
+    # Room for the panel the plate draws past the content box, as on every
+    # other plate theme.
     margin:
-      top: 0.62
-      right: 0.7
-      bottom: 0.55
-      left: 0.7
+      top: 0.7
+      right: 0.78
+      bottom: 0.62
+      left: 0.78
     gutter: 0.3
     columns: 12
     band:
@@ -105,51 +120,138 @@ tokens:
       opacity: 0.35
   plate:
     enabled: true
-    html: >
+    # A dark keynote, so the content sits on a dark sheet rather than a white
+    # page. That is also what keeps the three curtain themes apart: this one
+    # reads through a dark pane, aurora-mesh puts an opaque light page on the
+    # colour, and glassmorphism frosts crisp shapes behind translucent glass.
+    # Same technique, three materials.
+    html: |
       <style>
-        .mesh{position:absolute;inset:0;background:
-          radial-gradient(70% 60% at 14% 14%, {{tokens.palette.accent}}66 0%, transparent 55%),
-          radial-gradient(65% 58% at 88% 18%, {{tokens.palette.accent_alt}}55 0%, transparent 55%),
-          radial-gradient(95% 85% at 50% 118%, {{tokens.palette.accent_alt}}44 0%, transparent 72%),
-          linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.palette.ink}} 100%);}
-        .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
-        .b1{left:6%;top:8%;width:32%;height:38%;background:{{tokens.palette.accent}}88}
-        .b2{right:4%;top:4%;width:28%;height:32%;background:{{tokens.palette.accent_alt}}77}
-        .b3{left:24%;bottom:-12%;width:52%;height:40%;background:{{tokens.palette.accent}}55}
+        .ground{position:absolute;inset:0;
+          background:linear-gradient(150deg, {{tokens.palette.bg}} 0%, {{tokens.aurora.edge}} 100%);}
+        /* One sheet of light whose colour travels along it, masked into shape
+           rather than faded out — fading dissolves the hue into the ground
+           before it reaches the edge, and the travel is the point. Blurred
+           blobs cannot do this: each blob is one hue, so what happens between
+           two of them is an overlap, not a shift. */
+        .curtain{position:absolute;
+          background:linear-gradient(97deg,
+            {{tokens.aurora.edge}} 0%, {{tokens.aurora.plum}} 14%,
+            {{tokens.aurora.violet}} 32%, {{tokens.aurora.teal}} 54%,
+            {{tokens.aurora.amber}} 74%, {{tokens.aurora.plum}} 92%,
+            {{tokens.aurora.edge}} 100%);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);}
+        .rays{position:absolute;
+          background:repeating-linear-gradient(95deg,
+            #ffffff12 0px, #ffffff12 2px, #0000 2px, #0000 10px);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);}
+        .grain{position:absolute;inset:0;opacity:.26;mix-blend-mode:soft-light;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size:200px 200px;}
+        .c1{left:-16%;top:-28%;width:134%;height:84%;transform:rotate(-9deg);}
+        .c2{left:-12%;bottom:-38%;width:128%;height:72%;transform:rotate(-4deg);opacity:.7;}
+        .pane{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
+          border-radius:18px;background:{{tokens.palette.bg}}d9;
+          border:1px solid #ffffff1f;
+          box-shadow:0 26px 64px #00000059;}
       </style>
-
-      <div class="mesh"></div>
-
-      <div class="b b1"></div><div class="b b2"></div><div class="b b3"></div>
+      <div class="ground"></div>
+      <div class="curtain c1"></div><div class="rays c1"></div>
+      <div class="curtain c2"></div>
+      <div class="grain"></div>
+      <div class="pane"></div>
     surfaces:
-      title: >
+      title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(82% 72% at 16% 14%, {{tokens.palette.accent}}aa 0%, transparent 52%),
-            radial-gradient(70% 60% at 86% 20%, {{tokens.palette.accent_alt}}99 0%, transparent 52%),
-            radial-gradient(105% 95% at 50% 125%, {{tokens.surfaces.title.bg}} 0%, transparent 78%),
-            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .b{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55}
-          .b1{left:8%;top:10%;width:30%;height:34%;background:{{tokens.palette.accent}}99}
-          .b2{right:6%;top:6%;width:26%;height:30%;background:{{tokens.palette.accent_alt}}88}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.aurora.edge}} 100%);}
+        /* One sheet of light whose colour travels along it, masked into shape
+           rather than faded out — fading dissolves the hue into the ground
+           before it reaches the edge, and the travel is the point. Blurred
+           blobs cannot do this: each blob is one hue, so what happens between
+           two of them is an overlap, not a shift. */
+        .curtain{position:absolute;
+          background:linear-gradient(97deg,
+            {{tokens.aurora.edge}} 0%, {{tokens.aurora.plum}} 14%,
+            {{tokens.aurora.violet}} 32%, {{tokens.aurora.teal}} 54%,
+            {{tokens.aurora.amber}} 74%, {{tokens.aurora.plum}} 92%,
+            {{tokens.aurora.edge}} 100%);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);}
+        .rays{position:absolute;
+          background:repeating-linear-gradient(95deg,
+            #ffffff12 0px, #ffffff12 2px, #0000 2px, #0000 10px);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);}
+        .grain{position:absolute;inset:0;opacity:.26;mix-blend-mode:soft-light;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size:200px 200px;}
+          /* Held back on the title. Lit corner to corner the slide stops being
+             a dark keynote and becomes a colour field, and this theme's whole
+             claim is the dark. The curtain sits high and the ground keeps the
+             lower half. */
+          .c1{left:-18%;top:-40%;width:138%;height:78%;transform:rotate(-10deg);opacity:.82;}
+          .c2{left:-14%;bottom:-52%;width:132%;height:64%;transform:rotate(-4deg);opacity:.42;}
+          .rule{position:absolute;left:0;top:70%;width:44%;height:2px;
+            background:{{tokens.palette.accent_alt}}99;}
         </style>
-
-        <div class="hero"></div>
-
-        <div class="b b1"></div><div class="b b2"></div>
-      section: >
+        <div class="ground"></div>
+        <div class="curtain c1"></div><div class="rays c1"></div>
+        <div class="curtain c2"></div>
+        <div class="grain"></div>
+        <div class="rule"></div>
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(78% 68% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 56%),
-            radial-gradient(70% 60% at 86% 26%, {{tokens.palette.accent_alt}}88 0%, transparent 56%),
-            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
-          .s{position:absolute;border-radius:50%;filter:blur(64px);opacity:.5}
-          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(150deg, {{tokens.aurora.edge}} 0%, {{tokens.palette.bg}} 120%);}
+        /* One sheet of light whose colour travels along it, masked into shape
+           rather than faded out — fading dissolves the hue into the ground
+           before it reaches the edge, and the travel is the point. Blurred
+           blobs cannot do this: each blob is one hue, so what happens between
+           two of them is an overlap, not a shift. */
+        .curtain{position:absolute;
+          background:linear-gradient(97deg,
+            {{tokens.aurora.edge}} 0%, {{tokens.aurora.plum}} 14%,
+            {{tokens.aurora.violet}} 32%, {{tokens.aurora.teal}} 54%,
+            {{tokens.aurora.amber}} 74%, {{tokens.aurora.plum}} 92%,
+            {{tokens.aurora.edge}} 100%);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 50%,
+            #000 0%, #000 28%, #000c 56%, #0006 78%, #0000 96%);}
+        .rays{position:absolute;
+          background:repeating-linear-gradient(95deg,
+            #ffffff12 0px, #ffffff12 2px, #0000 2px, #0000 10px);
+          -webkit-mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);
+          mask-image:radial-gradient(closest-side ellipse at 50% 52%,
+            #000 0%, #0009 40%, #0000 82%);}
+        .grain{position:absolute;inset:0;opacity:.26;mix-blend-mode:soft-light;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size:200px 200px;}
+          .c1{left:-16%;top:-24%;width:134%;height:80%;transform:rotate(-9deg);}
+          .c2{left:-12%;bottom:-36%;width:128%;height:70%;transform:rotate(-4deg);opacity:.72;}
+          .slab{position:absolute;left:0;top:26%;width:66%;height:44%;
+            border-radius:0 999px 999px 0;
+            background:{{tokens.aurora.edge}}b3;
+            border:1px solid #ffffff26;border-left:none;}
         </style>
+        <div class="ground"></div>
+        <div class="curtain c1"></div><div class="rays c1"></div>
+        <div class="curtain c2"></div>
+        <div class="grain"></div>
+        <div class="slab"></div>
 
-        <div class="sec"></div>
-
-        <div class="s s1"></div>
 voice:
   feel: dramatic, premium, confident, immersive
   density: medium
