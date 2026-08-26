@@ -543,7 +543,7 @@ function HostedSection() {
   return (
     <section className="rounded-card border border-line bg-panel p-5">
       <h2 className="text-[13px] font-semibold tracking-tight text-fg">Deployment mode</h2>
-      <p className="mt-0.5 text-[11px] leading-relaxed text-fg-faint">Hosted = TCET + BYOK only (no Ollama). Local = Ollama fallback on. Same repo, one switch — also available in Admin → System.</p>
+      <p className="mt-0.5 text-[11px] leading-relaxed text-fg-faint">Hosted = Forge + BYOK only (no Ollama). Local = Ollama fallback on. Same repo, one switch — also available in Admin → System.</p>
       <div className="mt-3 flex items-center gap-3">
         <span className={`rounded-full px-2.5 py-1 text-[12px] font-medium ${hosted ? "bg-amber/15 text-amber" : "bg-emerald-500/10 text-emerald-600"}`}>{hosted == null ? "…" : hosted ? "HOSTED" : "LOCAL"}</span>
         <Button size="sm" variant="outline" onClick={toggle} disabled={busy || hosted == null}>{busy ? <Spinner /> : hosted ? "Switch to local" : "Switch to hosted"}</Button>

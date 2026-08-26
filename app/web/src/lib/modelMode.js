@@ -1,5 +1,5 @@
 /**
- * The model-mode preference: AUTO (TCET) or CLOUD (BYOK). Lives on the client
+ * The model-mode preference: AUTO (Forge hosted) or CLOUD (BYOK). Lives on the client
  * (pub/sub) so every picker reacts to the header toggle instantly; persisted
  * truth is config/local.yaml's `routing.default`, rehydrated from /api/cloud.
  * Default is AUTO (free shared gateway).

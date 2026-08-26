@@ -5,7 +5,7 @@ import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
 import { ChevronDown, DocIcon, LayersIcon, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
-import { useModels } from "../lib/useModels.js";
+import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
@@ -937,13 +937,13 @@ export default function ChatView({
                   persist({ ...chat, model: v || undefined, updatedAt: new Date().toISOString() });
                 }}
                 disabled={inputDisabled}
-                title={model ? `Using ${model}` : `Cloud · ${models[0] || "select model"}`}
+                title={model ? `Using ${anonymizeModel(model)}` : `Cloud · ${anonymizeModel(models[0]) || "select model"}`}
                 className="max-w-[15rem] appearance-none rounded-full border border-line bg-sunken py-1 pl-7 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent disabled:opacity-50"
               >
-                <option value="">{models[0] ? `Cloud · ${models[0]}` : "Cloud"}</option>
+                <option value="">{models[0] ? `Cloud · ${anonymizeModel(models[0])}` : "Cloud"}</option>
                 {models.map((m) => (
                   <option key={m} value={m}>
-                    {m}
+                    {anonymizeModel(m)}
                   </option>
                 ))}
               </select>
@@ -951,10 +951,10 @@ export default function ChatView({
               <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             </div>
           ) : (
-            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted" title={hosted ? "Hosted: Auto is TCET gateway" : "Local: Auto is Ollama on this machine"}>
+            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted" title={hosted ? "Hosted: Auto is Forge hosted gateway" : "Local: Auto is Ollama on this machine"}>
               <SparkleIcon className="h-3 w-3 text-fg-faint" />
               {hosted ? "Auto" : (auto?.kind === "local" ? "Local" : "Auto")}
-              {hosted && <span className="hidden sm:inline text-[10px] text-fg-faint">· TCET</span>}
+              {hosted && <span className="hidden sm:inline text-[10px] text-fg-faint">· Forge</span>}
               {!hosted && auto?.kind === "local" && <span className="hidden sm:inline text-[10px] text-fg-faint">· Ollama</span>}
             </div>
           )}
@@ -1026,14 +1026,14 @@ export default function ChatView({
         {chat.produced && (
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
-        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"} title={hosted ? "Hosted: TCET + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
+        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"} title={hosted ? "Hosted: Forge + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
           {hosted ? "hosted" : "local"}
         </Badge>
       </header>
       {hosted && modelMode === "auto" && !auto?.keySet && (
         <div className="mx-auto w-full max-w-3xl px-6 pt-3">
           <div className="rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
-            Hosted mode — Auto (TCET) not configured.{" "}
+            Hosted mode — Auto not configured.{" "}
             <button
               onClick={async () => {
                 const { setModelMode } = await import("../lib/modelMode.js");
@@ -1045,7 +1045,7 @@ export default function ChatView({
             >
               Switch to Cloud
             </button>{" "}
-            or add a TCET key in Settings.
+            or add a hosted key in Settings.
           </div>
         </div>
       )}
