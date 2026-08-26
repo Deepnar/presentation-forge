@@ -113,42 +113,69 @@ tokens:
       opacity: 0.08
   plate:
     enabled: true
+    # The mesh is the theme and it stays. What was missing is somewhere for the
+    # words to live.
+    #
+    # The content surface used to be a radial white wash sitting on top of six
+    # stacked gradients, which left body text on a blotchy, uneven ground — the
+    # reason it read as glow rather than design. The mesh now frames the slide
+    # and the content sits on an opaque panel, so the aurora is a border you
+    # notice and never something you read through.
+    #
+    # Opaque, deliberately: glassmorphism is the theme where you see through the
+    # panel. Here the mesh belongs to the edges and the page belongs to the
+    # reader, which is what makes the two look like different designs rather
+    # than two settings of one.
     html: >
       <style>
         .mesh{position:absolute;inset:0;background:
-          radial-gradient(55% 45% at 12% 14%, {{tokens.palette.accent}} 0%, transparent 52%),
-          radial-gradient(50% 42% at 88% 20%, {{tokens.palette.accent_alt}} 0%, transparent 52%),
-          radial-gradient(70% 60% at 25% 95%, {{tokens.palette.ink}}40 0%, transparent 60%),
-          radial-gradient(60% 55% at 78% 88%, {{tokens.palette.surface}} 0%, transparent 60%),
-          radial-gradient(90% 80% at 50% 45%, {{tokens.palette.bg}} 0%, transparent 70%),
+          radial-gradient(58% 52% at 6% 4%, {{tokens.palette.accent}} 0%, transparent 58%),
+          radial-gradient(52% 46% at 96% 12%, {{tokens.palette.accent_alt}} 0%, transparent 58%),
+          radial-gradient(62% 55% at 88% 100%, {{tokens.palette.accent}}b3 0%, transparent 62%),
           linear-gradient(135deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
-        .halo{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
-          background:radial-gradient(60% 65% at 50% 32%, {{tokens.palette.surface}}8c 0%, {{tokens.palette.surface}}00 78%);}
+        .page{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
+          border-radius:22px;background:{{tokens.palette.surface}};
+          box-shadow:0 24px 60px {{tokens.palette.ink}}2b;}
       </style>
 
       <div class="mesh"></div>
 
-      <div class="halo"></div>
+      <div class="page"></div>
     surfaces:
       title: >
         <style>
           .hero{position:absolute;inset:0;background:
-            radial-gradient(65% 55% at 16% 18%, {{tokens.palette.accent}} 0%, transparent 52%),
-            radial-gradient(55% 48% at 86% 26%, {{tokens.palette.accent_alt}} 0%, transparent 52%),
-            radial-gradient(75% 70% at 30% 100%, {{tokens.surfaces.title.accent}} 0%, transparent 60%),
+            radial-gradient(62% 54% at 8% 8%, {{tokens.palette.accent}} 0%, transparent 56%),
+            radial-gradient(54% 48% at 94% 16%, {{tokens.palette.accent_alt}} 0%, transparent 56%),
+            radial-gradient(70% 62% at 72% 104%, {{tokens.surfaces.title.accent}}cc 0%, transparent 60%),
             linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          /* A single hairline rule under the title band, so the hero has one
+             hard edge to sit against and does not read as pure vapour. */
+          .rule{position:absolute;left:0;top:70%;width:46%;height:2px;
+            background:{{tokens.palette.surface}}80;}
         </style>
 
         <div class="hero"></div>
+
+        <div class="rule"></div>
       section: >
         <style>
           .sec{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 18% 22%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
-            radial-gradient(60% 50% at 82% 30%, {{tokens.palette.accent_alt}} 0%, transparent 55%),
-            linear-gradient(140deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+            radial-gradient(62% 54% at 10% 10%, {{tokens.palette.accent_alt}}d9 0%, transparent 58%),
+            radial-gradient(66% 58% at 92% 96%, {{tokens.palette.accent}} 0%, transparent 62%),
+            linear-gradient(140deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.ink}} 120%);}
+          /* The section title rests on a solid slab, curved on the open end —
+             the same device the content page uses, at divider scale. */
+          .slab{position:absolute;left:0;top:26%;width:68%;height:44%;
+            border-radius:0 999px 999px 0;
+            background:{{tokens.palette.ink}}59;
+            border:1px solid {{tokens.palette.surface}}2e;border-left:none;}
         </style>
 
         <div class="sec"></div>
+
+        <div class="slab"></div>
+
 voice:
   feel: luminous, fluid, futuristic but warm
   density: medium
