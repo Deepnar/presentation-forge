@@ -12,11 +12,13 @@ tokens:
     rule: "#E7D6BE"
     on_accent: "#0A0A0A"
   surfaces:
+    # Clay is a light material. A dark brown title surface under two accent
+    # glows read as mud, and contradicted every other slide in the deck.
     title:
-      bg: "#463B30"
-      ink: "#F7EFE3"
-      muted: "#CDBB9F"
-      accent: "#E07A5F"
+      bg: "#F6E3D3"
+      ink: "#463B30"
+      muted: "#8B7B68"
+      accent: "#D6634A"
     section:
       bg: "#E07A5F"
       ink: "#FFFFFF"
@@ -108,47 +110,80 @@ tokens:
       opacity: 0.16
   plate:
     enabled: true
+    # Clay's depth is geometry, not luminosity: a large soft drop shadow with a
+    # bright inner rim reads as a thick extruded slab. The radial accent washes
+    # this used to carry made it glow instead, which is the same trick three
+    # other themes already use and is not what this style is.
     html: >
       <style>
-        .wash{position:absolute;inset:0;background:
-          radial-gradient(75% 65% at 16% 18%, {{tokens.palette.accent_alt}}55 0%, transparent 55%),
-          radial-gradient(70% 60% at 86% 80%, {{tokens.palette.accent}}44 0%, transparent 55%),
-          linear-gradient(155deg, {{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
+        .ground{position:absolute;inset:0;
+          background:linear-gradient(168deg, {{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
+        .pebble{position:absolute;border-radius:50%;
+          background:{{tokens.palette.accent_alt}};
+          box-shadow:0 18px 30px {{tokens.palette.ink}}24, inset 0 8px 14px #FFFFFF80, inset 0 -10px 18px {{tokens.palette.ink}}1f;}
+        .p1{left:-6%;top:-14%;width:26%;height:38%;}
+        .p2{right:-4%;bottom:-16%;width:22%;height:34%;background:{{tokens.palette.accent}};opacity:.9;}
         .board{position:absolute;left:{{box.x}}px;top:{{box.y}}px;width:{{box.w}}px;height:{{box.h}}px;
-          border-radius:44px;
-          background:linear-gradient(160deg, {{tokens.palette.surface}}d9 0%, {{tokens.palette.bg}} 100%);
+          border-radius:48px;
+          background:{{tokens.palette.surface}};
           box-shadow:
-            0 22px 44px {{tokens.palette.ink}}2e,
-            inset 0 10px 16px {{tokens.palette.surface}}99,
-            inset 0 -12px 20px {{tokens.palette.ink}}2e;}
+            0 26px 50px {{tokens.palette.ink}}2b,
+            inset 0 12px 18px #FFFFFF9e,
+            inset 0 -14px 22px {{tokens.palette.ink}}26;}
       </style>
 
-      <div class="wash"></div>
+      <div class="ground"></div>
+
+      <div class="pebble p1"></div>
+
+      <div class="pebble p2"></div>
 
       <div class="board"></div>
     surfaces:
       title: >
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 20% 18%, {{tokens.palette.accent}}99 0%, transparent 52%),
-            radial-gradient(65% 55% at 84% 26%, {{tokens.palette.accent_alt}}88 0%, transparent 52%),
-            linear-gradient(155deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          .lump{position:absolute;right:8%;bottom:8%;width:30%;height:26%;border-radius:50%;
-            background:{{tokens.palette.surface}}22;filter:blur(40px);}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(168deg, #FBF1E6 0%, {{tokens.surfaces.title.bg}} 100%);}
+          .slab{position:absolute;left:6%;top:16%;width:88%;height:68%;border-radius:72px;
+            background:{{tokens.palette.surface}};
+            box-shadow:
+              0 34px 60px {{tokens.palette.ink}}30,
+              inset 0 16px 24px #FFFFFFad,
+              inset 0 -18px 28px {{tokens.palette.ink}}24;}
+          .pebble{position:absolute;border-radius:50%;
+            box-shadow:0 16px 26px {{tokens.palette.ink}}26, inset 0 8px 12px #FFFFFF8c, inset 0 -9px 16px {{tokens.palette.ink}}1f;}
+          .a{right:9%;top:9%;width:15%;height:24%;background:{{tokens.palette.accent}};}
+          .b{left:10%;bottom:7%;width:10%;height:16%;background:{{tokens.palette.accent_alt}};}
         </style>
 
-        <div class="hero"></div>
+        <div class="ground"></div>
 
-        <div class="lump"></div>
+        <div class="slab"></div>
+
+        <div class="pebble a"></div>
+
+        <div class="pebble b"></div>
       section: >
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 18% 22%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
-            radial-gradient(65% 55% at 84% 78%, {{tokens.palette.accent_alt}}88 0%, transparent 55%),
-            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(168deg, {{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
+          .slab{position:absolute;left:0;top:14%;width:74%;height:72%;
+            border-radius:0 96px 96px 0;
+            background:{{tokens.surfaces.section.bg}};
+            box-shadow:
+              0 30px 56px {{tokens.palette.ink}}33,
+              inset 0 14px 22px #FFFFFF5c,
+              inset 0 -16px 26px {{tokens.palette.ink}}2b;}
+          .pebble{position:absolute;right:8%;top:30%;width:14%;height:24%;border-radius:50%;
+            background:{{tokens.palette.accent_alt}};
+            box-shadow:0 18px 28px {{tokens.palette.ink}}26, inset 0 8px 12px #FFFFFF8c, inset 0 -9px 16px {{tokens.palette.ink}}1f;}
         </style>
 
-        <div class="sec"></div>
+        <div class="ground"></div>
+
+        <div class="slab"></div>
+
+        <div class="pebble"></div>
 voice:
   feel: warm, playful, tactile, handmade
   density: medium
