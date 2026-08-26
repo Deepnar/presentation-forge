@@ -7,7 +7,7 @@ import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/sli
 import { deckContext } from "../lib/deckContext.js";
 import { progressLabel } from "../lib/progress.js";
 import { reportWrites } from "../lib/reportWrites.js";
-import { useModels } from "../lib/useModels.js";
+import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 
@@ -106,10 +106,21 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`),
       });
       setPlaceholders(r.placeholders ?? []);
-      setTheme(r.deck.theme ?? "");
-      setStyle(r.deck.style ?? "");
-      setMode(r.meta?.mode ?? null);
-      setDensity(r.meta?.density ?? "balanced");
+      // Theme/style/density/mode are human-picked and may be dirty locally
+      // (e.g. picker changed theme but deck.yaml not yet re-fetched after save).
+      // Don't clobber a dirty local pick with the stale deck value that just
+      // arrived from a refresh triggered by an unrelated mutation (swap, move,
+      // etc.) — the save for the new theme is already in flight or the deck
+      // refetch simply hasn't seen it yet. Once the save lands, deck.theme
+      // equals the local pick and the guard falls through.
+      const nextTheme = r.deck.theme ?? "";
+      const nextStyle = r.deck.style ?? "";
+      const nextMode = r.meta?.mode ?? null;
+      const nextDensity = r.meta?.density ?? "balanced";
+      setTheme((prev) => (prev && prev !== nextTheme ? prev : nextTheme));
+      setStyle((prev) => (prev && prev !== nextStyle ? prev : nextStyle));
+      setMode((prev) => (prev != null && prev !== nextMode ? prev : nextMode));
+      setDensity((prev) => (prev && prev !== nextDensity ? prev : nextDensity));
       setRenderDirty(r.dirty ?? true);
       setDeckRun(r.run ?? null);
     });
@@ -499,6 +510,48 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       .finally(() => setSyncing(false));
   }
 
+  /**
+   * Persist a theme change: the deck's `theme` lives in deck.yaml, so picking
+   * a new theme must save it there, otherwise a later deck reload (swap,
+   * move, chat) would clobber the local `theme` state with the old
+   * deck.theme and the gallery would keep showing the old theme's previews.
+   * This was the "selector turned back to Glassmorphism" regression.
+   */
+  function changeTheme(newTheme) {
+    if (!deck || newTheme === (theme || deck.theme)) {
+      setThemePickerOpen(false);
+      return;
+    }
+    setTheme(newTheme);
+    setThemePickerOpen(false);
+    setRenderDirty(true);
+    const nextDeck = { ...deck, theme: newTheme };
+    // Optimistic UI — the header pill and the gallery read `theme || deck.theme`
+    setData((d) => (d ? { ...d, deck: nextDeck } : d));
+    setPast((p) => [...p.slice(-19), deck]);
+    setFuture([]);
+    // Persist so the server's deck.theme matches the UI and future reloads,
+    // conversions and specimen renders all use the new theme.
+    api.saveDeck(slug, nextDeck, data?.meta)
+      .catch((e) => setProblems([e.message, ...(e.errors ?? [])]));
+    clearTimeout(renderTimer.current);
+    setSyncing(true);
+    api.renderDeck(slug, { theme: newTheme, style: style || undefined, mode: mode ?? undefined })
+      .then((r) => {
+        const stamp = Date.now();
+        setData((d) => (d ? {
+          ...d,
+          deck: nextDeck,
+          slides: r.slides.map((s) => `${s}?t=${stamp}`),
+          thumbs: (r.thumbs ?? r.slides).map((s) => `${s}?t=${stamp}`),
+        } : d));
+        setProblems(r.problems ?? []);
+        setRenderDirty(false);
+      })
+      .catch((e) => setProblems([e.message, ...(e.errors ?? [])]))
+      .finally(() => setSyncing(false));
+  }
+
   function doClone() {
     setActionErr("");
     api.cloneDeck(slug)
@@ -681,7 +734,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                   </div>
                   <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 sm:grid-cols-3">
                     {themes.map((t) => (
-                      <ThemeMiniCard key={t.name} theme={t} selected={(theme || deck.theme) === t.name} onClick={() => { setTheme(t.name); setRenderDirty(true); setThemePickerOpen(false); }} />
+                      <ThemeMiniCard key={t.name} theme={t} selected={(theme || deck.theme) === t.name} onClick={() => changeTheme(t.name)} />
                     ))}
                   </div>
                 </div>
@@ -1414,9 +1467,9 @@ function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport 
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
           <div className="relative">
-            <select value={model} onChange={(e) => setModel(e.target.value)} title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which local model writes the report"} className={`${selectCls} max-w-[16rem]`}>
+            <select value={model} onChange={(e) => setModel(e.target.value)} title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which model writes the report"} className={`${selectCls} max-w-[16rem]`}>
               <option value="">auto · {defaultModel}</option>
-              {models.map((m) => <option key={m} value={m}>{m}</option>)}
+              {models.map((m) => <option key={m} value={m}>{anonymizeModel(m)}</option>)}
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
           </div>
