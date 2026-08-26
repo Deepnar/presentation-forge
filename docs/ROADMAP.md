@@ -2725,7 +2725,54 @@ drew three identical blacks and one white one that vanished.
 `tools/gallery.mjs`, `ThemeMiniCard`, `Themes.jsx`. Every card was one
 rectangle of the title colour, so choosing a theme was guessing from a name.
 
-### [ ] The themes themselves — variation, and less glow
+### [x] The glow family — eight themes rebuilt
+
+Named directly: the glow-and-blur family read as one idea repeated.
+
+`glassmorphism` and `soft-glass-light` were frosting a blur, which leaves
+nothing to frost — both now put hard-edged shapes behind the glass, circles on
+a cool ground and warm bars at right angles respectively, so they are not one
+design in two palettes. `aurora-mesh` and `gradient-mesh-dark` use a single
+masked curtain whose colour travels along its length. `sunset` is a layered
+sky with the bright end at the horizon. `claymorphism` swapped glow for
+extrusion. `neumorphism` had radial glows on its heroes, which is the opposite
+of soft UI, and now lights across the surface rather than out of it.
+`isometric-dark` gained a third grid axis, a painted ground, and legible ink.
+
+> **Learned.** Three things, all found by rendering rather than by test.
+>
+> Stacked radial gradients read as circles however carefully the falloff is
+> eased, because a circle is what they are — a row of soft circles is what
+> every CSS mesh generator produces. A continuous shade change needs *one*
+> element with one gradient across it, shaped by a mask rather than by fading
+> the colour out: fading dissolves the hue into the ground before it reaches
+> the edge, and the travel is the point.
+>
+> A theme's summary is not documentation, it is a promise that can go stale.
+> `gradient-mesh-dark` described plum-through-teal-to-amber with neither plum
+> nor amber in its palette; `sunset` promised a violet it did not have.
+>
+> Contrast has to be measured on the rendered pixels, not judged. `sunset`
+> looked good and put its title at 2.2:1 and its subtitle at 1.2:1;
+> `isometric-dark` shipped a title slide that rasterised pure white under
+> near-white ink at 1.2:1, because its plate drew lines onto transparency and
+> never painted a ground. Neither was visible as a defect until measured.
+
+### [x] Institutional chrome — the crest on a coloured surface
+
+Resolved by the owner of the mark: the crest is the real full-colour crest on
+every surface, never a black or white knockout. Checked against the darkest
+themes before removing the substitution — the shield carries unaided. The
+knockout variants are still generated for an identity that asks for one.
+
+> **Learned.** The renderer had three separate faults stacked under one
+> complaint: a luminance threshold picking the worse mark, a `luminance()` that
+> omitted the sRGB gamma step so its contrast figures were wrong, and a plate
+> sampler that collapsed the ground to pure black or white and threw the hue
+> away. Measuring correctly still produced the wrong *product* answer, because
+> which trade to make was never the renderer's call.
+
+### [ ] Theme variation — one composition, thirty-eight times
 
 *Priority: high. Renderer only, no model.*
 
@@ -2734,35 +2781,25 @@ Named directly: the glow-and-blur family reads as one idea repeated —
 on a soft luminous plate. `claymorphism` is disliked outright. Underneath that
 is the broader complaint: 38 themes do not feel like 38 designs.
 
-The contact sheet from `npm run gallery` shows why. Most themes differ only in
-palette and typeface, because the body layout is identical in all of them — the
-same headline, standfirst and bullet column. Real variation lives in things the
-theme is currently barely allowed to touch: where the content box sits, whether
-a rule or a block opens the slide, how a section divider is composed, whether
-the type is set flush or centred. `tokens.editorial` and `tokens.bauhaus`
-already prove per-theme layout flags work; there is no reason for there to be
-only two of them.
+*Priority: high. Renderer only, no model. The largest remaining theme item.*
+
+With the glow family rebuilt, this is what is left of "38 themes do not feel
+like 38 designs", and it is the harder half. The contact sheet from
+`npm run gallery` shows why: most themes differ only in palette and typeface,
+because the body layout is identical in all of them — the same headline,
+standfirst and bullet column. The eight plate themes now differ in what their
+background *is*; the thirty native ones are still one layout in thirty
+colourways.
+
+Real variation lives in what a theme is currently barely allowed to touch:
+where the content box sits, whether a rule or a block opens the slide, how a
+section divider is composed, whether type is set flush or centred.
+`tokens.editorial` and `tokens.bauhaus` already prove per-theme layout flags
+work; there is no reason for there to be only two of them.
 
 So this is not a palette pass. It is: decide which themes are genuinely
 distinct designs and which are duplicates to cull, then give the survivors
-layout-level differences rather than colour-level ones. The plate themes should
-be reconsidered as a group — the glow is doing the work that composition should.
-
-### [ ] Institutional chrome — the crest on a coloured surface
-
-*Priority: high. Renderer only, no model.*
-
-Reported with a screenshot of a section divider: the white knockout crest on
-the terracotta ground reads as a flat pale stamp rather than a mark. The
-knockout variant exists so the crest stays legible on dark grounds, and it does
-— but "legible" and "looks deliberate" are not the same thing, and a mid-tone
-chromatic surface is the case neither variant was designed for.
-
-Worth reviewing at the same time: size and placement on divider surfaces
-generally, whether a divider needs the crest at all when the title slide
-already carries the banner, and whether the mark should sit in the corner or in
-the composition. The report of this item was cut off mid-sentence, so ask for
-the rest before acting.
+layout-level differences rather than colour-level ones.
 
 ### [ ] `flow`'s vertical spine is one line from failing
 
