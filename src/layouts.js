@@ -886,6 +886,17 @@ export const layouts = {
     // pptxgenjs scatters read the x coordinates from a synthetic first "X-Axis"
     // series (its values are the x positions); every real series supplies the
     // y values. All other kinds share the category/value shape.
+    // A plated theme puts a native panel behind the chart. Two reasons, and the
+    // second is not cosmetic: LibreOffice drops a slide's background image on
+    // any slide carrying a chart, so the plate is present and correct in the
+    // .pptx — it opens right in PowerPoint — and absent from the preview the
+    // app rasterises. Every chart slide in a plate theme therefore previewed as
+    // a bare white page. The panel restores the surface the rest of the deck
+    // sits on, and matches what the other content layouts already draw.
+    if (theme.plate?.enabled) {
+      card(slide, theme, { x: box.x, y, w: hasAside ? box.w : cw, h: ch });
+    }
+
     const raw = c.series.map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
     const series = c.kind === "scatter"
       ? [
