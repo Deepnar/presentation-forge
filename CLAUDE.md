@@ -1,0 +1,194 @@
+# CLAUDE.md
+
+Guidance for Claude Code working in this repository.
+
+`AGENTS.md` is the working agreement (commit discipline, roadmap process,
+conventions) — read it before changing anything. This file is the operational
+map: what the system is, how to run it, and the invariants that are expensive to
+rediscover.
+
+## What this is
+
+Presentation Forge turns a topic into a themed `.pptx` deck and a companion
+`.docx` report, for academic submissions. Node 24, ESM, no TypeScript. Same core
+(`src/`) drives three surfaces: a CLI (`src/ai/pipeline.js`), an Express API
+(`app/server/index.js`), and a Vite/React UI (`app/web/`).
+
+```
+brief → research → outline → HUMAN GATE → content → validate → render → preview → critique
+         notes.md  plan.yaml               deck.yaml            .pptx     PNGs
+                                                                .docx
+```
+
+## The rule that governs everything
+
+**The model never writes layout.** Three strictly separated layers:
+
+| Layer | Owns | Written by |
+|---|---|---|
+| chrome | crest, banner, presenter line, slide number | `src/chrome.js`, locked code |
+| theme | palette, type, spacing, shape | `themes/*.yaml`, human-authored |
+| content | what the slides say | the model, as schema-validated YAML |
+
+A change that lets content specify a coordinate, a hex colour, or a font name is
+wrong however convenient it looks. If a slide needs a layout that does not
+exist, add a slide *type*, never an escape hatch in the schema.
+
+Themes split into `tokens` (exact machine values, read only by the renderer) and
+`voice` (tone guidance, read only by the model). These must never overlap — the
+moment a model can see a hex value it starts inventing them. A theme-contract
+test machine-checks the split.
+
+## Commands
+
+```bash
+npm run dev                                 # API :5174 + UI :5173
+npm test                                    # node --test over test/
+npm run render decks/<slug>/deck.yaml       # content -> .pptx
+npm run preview decks/<slug>/out/deck.pptx  # .pptx -> PNGs + thumbs
+npm run forge -- new "<topic>" --research   # headless: outline
+npm run forge -- generate <slug> --critic   # headless: deck
+npm run fonts                               # download + install the 27 families
+npm run brand                               # normalise brand/logos -> brand/generated
+npm run searxng                             # local search backend (docker)
+```
+
+Note `npm run dev` starts the UI on 5173 and the API on 5174 (`FORGE_API_PORT`,
+deliberately not `PORT`). Vite proxies `/api` so the browser stays same-origin.
+
+## Verification that actually proves something
+
+A written `.pptx` proves the file parsed, nothing more. `pres.writeFile()`
+succeeds for decks with text running off the canvas and invisible-on-invisible
+colour pairs. **Rasterise and look at the image** before claiming a render
+works. That is why `src/preview.js` exists.
+
+`docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
+headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
+Read it before touching the renderer or the fitter.
+
+## Layout of the code
+
+```
+src/render.js      deck -> pptx; owns the background/plate decision
+src/layouts.js     the 75 slide-type layouts (4k lines — the bulk of the renderer)
+src/fit.js         text measurement and shrink-only fitting, per-role floors
+src/chrome.js      locked institutional marks pass, runs after the layout
+src/theme.js       theme + style load and deep-merge
+src/plate.js       headless-Chrome HTML -> PNG background, sha256-cached
+src/report.js      donor .docx surgery (jszip), two-pass TOC page numbers
+src/validate.js    ajv errors resolved to "slide N, type T, do X"
+src/ai/pipeline.js the CLI and the orchestration both the CLI and API call
+src/ai/ollama.js   role-addressed model client (ollama | openai-compatible)
+src/auth.js        accounts and sessions (SQLite via node:sqlite, JSON fallback)
+src/cloud.js       provider resolution, hosted/local switch, key resolution
+app/server/        Express transport — must hold NO pipeline logic
+```
+
+`app/server` stays a thin wrapper: anything it can do, the CLI must also do,
+because the pipeline has to run headless.
+
+## Runtime dependencies that are easy to forget
+
+- **LibreOffice** (`soffice`) — every preview and the report TOC pass.
+- **Poppler** (`pdftoppm`) — splits the PDF into slide PNGs.
+- **Headless Chrome** — plate themes and `type: freeform`. Resolved from
+  `FORGE_CHROME`, defaulting to `/usr/bin/google-chrome-stable`.
+- **Installed fonts** — `npm run fonts` puts 27 families in the *user* font dir.
+  A machine with only DejaVu/Liberation rasterises every theme wrong. This bites
+  containers specifically (see Deployment).
+- **Ollama** — the local default backend, `localhost:11434`.
+- **SearXNG** — research and auto image supply, `SEARXNG_URL`.
+- **A donor `.docx` in `reference/`** — reports cannot render without one. The
+  directory is gitignored; `FORGE_REFERENCE_DIR` relocates it for a container.
+
+## State and paths
+
+Every stateful directory is env-overridable so the app can run against a volume:
+`FORGE_DECKS_DIR`, `FORGE_THEMES_DIR`, `FORGE_BRAND_DIR`, `FORGE_CONFIG_DIR`,
+`FORGE_PLATE_CACHE`, `FORGE_REFERENCE_DIR`, `FORGE_DB_PATH` (`src/paths.js`).
+
+| Data | Location |
+|---|---|
+| Deck content, plan, research, output | `decks/<slug>/` (gitignored) |
+| Accounts, sessions, BYOK keys, routing, usage | `config/forge.db` (SQLite, WAL) |
+| Operator identity default | `config/identity.yaml` (gitignored) |
+| Per-account identity | `config/identities/<hash>.yaml` |
+| Provider keys, routing preference | `config/local.yaml` (gitignored, global) |
+| Hosted/local runtime switch | `config/hosted.json` (gitignored) |
+
+A deck with previews runs 5–15 MB, dominated by the slide PNGs. That is the
+storage driver for any deployment.
+
+## Hosted vs local
+
+`FORGE_HOSTED` is the only fork, checked by `isHosted()` in `src/cloud.js`:
+`config/hosted.json` (admin runtime toggle) wins, then the env var.
+
+- **hosted** — Auto is the configured gateway only, Cloud is BYOK, no Ollama
+  fallback. Local models are hidden from every picker.
+- **local (default)** — Auto falls back to Ollama; installed models are listed.
+
+`config/hosted.json` is read from the real config dir even under `npm test`, so a
+test whose outcome depends on the mode must pin it with `setHostedForTest()`
+rather than inherit whatever this machine is flipped to.
+
+## Multi-tenancy — the rules
+
+The account system began as a gate on the operator's cloud key. It is now
+per-account, and these boundaries are load-bearing. `docs/ARCHITECTURE.md` has
+the reasoning; `test/tenancy.test.js` is the executable contract.
+
+- **Admin is `user.role === "admin"`, never an email address.** Registration does
+  not verify email, so any address-derived privilege means whoever signs up
+  first owns the box. Roles are granted at boot (`seedAdmin` / `promoteToAdmin`
+  from `FORGE_ADMIN_EMAIL`) or by an existing admin.
+- **Identity and brand marks are per account**, layered template → operator →
+  account → deck `meta.yaml`. `loadIdentity(deckDir)` finds the account from
+  `meta.owner`, so callers do not thread a user through.
+- **BYOK keys are per account**, resolved by `resolveProviderKey()`. The shared
+  gateway key is deliberately install-wide and admin-only — it bills the
+  operator and is rate-limited per user by `src/limits.js`.
+- **The account reaches the model client through `src/account.js`**
+  (AsyncLocalStorage), not through parameters. No account (CLI, tests) means the
+  install-wide configuration, which is the old behaviour.
+- **Media routes authenticate.** `/preview/*`, `/download/*` and `/assets/*`
+  accept an httpOnly session cookie because `<img>` cannot send a bearer header —
+  they are not public, and ownership is still enforced. Every state-changing
+  route reads the bearer header only and ignores the cookie; keep it that way or
+  the cookie becomes a CSRF vector.
+
+When adding a route, ask which of these it touches. A setting that is written to
+`config/` and not keyed by account is install-wide by definition, and must be
+admin-gated.
+
+## Deployment
+
+`docker/Dockerfile` + `docker/docker-compose.app.yml` build the app with
+LibreOffice, Poppler, Chromium and the theme fonts, plus a SearXNG sidecar and
+an optional Caddy TLS terminator, with `/data` as the persistent volume.
+`docs/DEPLOY.md` is the walkthrough.
+
+Two things about that image are easy to undo by accident:
+
+- The build stage runs `tools/install-fonts.mjs` and the runtime stage runs
+  `fc-cache` **and asserts `fc-match "Inter"` resolves**. Without the fonts every
+  server-side render — preview PNGs, plates, report pagination — uses substituted
+  type, and the `.pptx` looks fine, so nothing tells you.
+- `FORGE_REFERENCE_DIR` points the report donor at the volume. The template is
+  gitignored and not in the build context, so an admin uploads it at runtime via
+  `POST /api/admin/donor`.
+
+The workload is **not serverless-compatible**: generation is a multi-minute SSE
+stream, rendering shells out to LibreOffice and Chrome, and state is a local
+SQLite file plus a deck directory tree. It needs a long-running container with a
+writable disk. Porting the UI to Next.js changes none of that.
+
+## Conventions
+
+- ES modules, Node 24, no TypeScript.
+- Comments explain *why*, never *what*. No comment that restates the next line.
+- Never hardcode institution details in `src/` — they belong in `config/identity.yaml`.
+- Generated artefacts (`decks/*/out/`, `brand/generated/`, `brand/fonts/`) are
+  gitignored and must be reproducible from a clean checkout.
+- Keep `docs/ARCHITECTURE.md` in sync when a subsystem changes shape.

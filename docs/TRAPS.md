@@ -419,3 +419,46 @@ renders text wider than the untransformed source, so a box sized with
 `measure(label, token)` is too narrow and the label wraps mid-word — the matrix
 y-axis name "Impact" rendered as "Imp/act". Apply the token's transform to the
 string before measuring, then size the box to that width.
+
+---
+
+## Hosting and multi-tenancy
+
+**A container with only DejaVu and Liberation renders every theme wrong, and
+nothing tells you.** The `.pptx` is unaffected — OOXML stores font *names*, so
+the file looks correct on a machine that has the typefaces. What breaks is
+everything rendered server-side: preview PNGs, plate backgrounds, the report's
+page-number pass. The image must run `tools/install-fonts.mjs` at build time
+and `fc-cache` after, and the build should fail on `fc-match` not resolving a
+real family rather than shipping substituted type.
+
+**A path that is relative to ROOT stops being relative to anything once a
+directory is an env override.** Identity addresses brand marks as
+`brand/generated/crest.png`; joining that onto ROOT in a container whose
+`FORGE_BRAND_DIR` is `/data/brand` finds nothing, and the slides simply come out
+with no institutional marks and one warning in a log nobody reads. Anything
+addressing a configurable directory has to resolve through that directory.
+
+**"The URL is unguessable" is not access control.** The deck slug is
+`slugify(title)`, so guessing "the title" was enough to fetch any account's
+`.pptx`. If a browser context cannot carry your usual credential — `<img>`,
+`<a download>` — give it a different credential, not an exemption.
+
+**An email address is not a credential when registration does not verify
+email.** Treating one as inherently privileged means whoever signs up with it
+first owns the box. Grant roles at boot from the environment, where nothing
+reachable over HTTP can interfere.
+
+**A test that reads runtime state fails on the developer's machine and passes
+in CI.** `isHosted()` reads a file an admin toggle writes into the real config
+directory, so two transport tests failed on a box that had been flipped to
+hosted. A test that depends on a mode has to state which mode it means.
+
+**Decrementing a counter in both the timeout and the completion path drives it
+negative, and a negative counter never trips its ceiling.** The render mutex's
+queue limit silently stopped applying after the first render that waited out
+its timeout — the backpressure was gone precisely when it was needed.
+
+**`pathToFileURL(process.argv[1])` throws when argv[1] is undefined.** A CLI
+guard written that way makes the module unimportable from `node -e`, which is
+how a container entrypoint calls it. Check argv first.

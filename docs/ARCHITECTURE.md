@@ -1058,17 +1058,93 @@ public box: secure headers, a CORS allow-list (`FORGE_UI_ORIGIN`), rate-limited
 auth endpoints, and validated uploads (extension + size) for brand marks and
 deck images. `POST /api/sweep` and `npm run sweep` run the sweep manually.
 
+## Multi-tenancy — what one account can reach
+
+The account system began as a gate on the operator's cloud key, and for a while
+several surfaces stayed install-wide while looking per-user. On a hosted box
+that is not a hardening detail, it is a correctness bug: two students from
+different colleges get each other's institution on their slides.
+
+Four things are now per account, and one deliberately is not.
+
+**Identity** (`src/ai/identity.js`) resolves in four layers: the committed
+template, the operator's `config/identity.yaml`, the account's own overrides,
+then the deck's `meta.yaml`. The account layer needs no plumbing — the deck
+folder already records `meta.owner`, so the same read that supplies the last
+layer identifies the third. A deck therefore renders with the identity of
+whoever owns it, whatever anyone else has since changed in Settings.
+
+**Brand marks** follow identity. Each account normalises into
+`brand/users/<hash>/` and its identity points at those paths; an account that
+has uploaded nothing falls through to the operator's marks rather than getting
+placeholders. `normalizeBrand({ srcDir, outDir, placeholders })` is the one
+implementation, called with different directories.
+
+**BYOK keys** were the sharpest edge: they were stored encrypted per user and
+then never read, because the model client resolved `env:NAME` against the
+install-wide config. Every "bring your own key" generation actually billed the
+operator. `resolveProviderKey()` now prefers the calling account's vault entry
+for every provider except the shared gateway.
+
+**Routing** (Auto vs Cloud) is per account in `user_prefs`, with the
+`config/local.yaml` value as the default for accounts that have never chosen —
+and as the whole answer for the CLI, which has no account.
+
+**The shared gateway key is deliberately install-wide.** It is the operator's
+key, billed to the operator and rate-limited per user by `src/limits.js`. Only
+an admin may set it.
+
+### How the account reaches the model client
+
+`chat()` sits five or six calls below the HTTP layer, and the CLI must keep
+working with no account at all. Threading a user id through `pipeline` →
+`generate` → `turn` → `chat` → `resolveRole` would put a parameter nobody else
+needs into every signature.
+
+`src/account.js` uses `AsyncLocalStorage` instead: one middleware makes the
+caller ambient for the request, and anything underneath asks
+`currentUserId()`. A detached generation task started inside a handler inherits
+the context, which is what makes a multi-minute SSE run resolve the right key.
+Outside a request there is no account and every lookup falls back to the
+install-wide configuration — exactly the old behaviour.
+
+### Admin is a role, never an address
+
+`isAdmin()` reads `user.role` and nothing else. It used to also return true for
+a hardcoded email and for `FORGE_ADMIN_EMAIL`, but registration does not verify
+email ownership, so on a public box whoever signed up with that address first
+owned the instance. The env var still designates the operator — at boot, where
+`seedAdmin()` creates the account or `promoteToAdmin()` promotes an existing
+one, and where nothing reachable over HTTP can interfere.
+
+### Media URLs authenticate; they are not public
+
+Rasters, downloads and uploaded assets used to skip authentication entirely,
+because an `<img>` tag cannot send an `Authorization` header and the slug was
+assumed undiscoverable. A slug is `slugify(title)`, so it was guessable, and
+the whole deck store was readable by anyone who could guess a title.
+
+They now authenticate with an httpOnly cookie carrying the same session token,
+scoped to `Path=/api/decks` and accepted *only* on those media paths. Every
+state-changing route still reads the bearer header and ignores the cookie, so
+broadening the credential cannot broaden CSRF exposure. Ownership is then
+checked exactly as it is for the deck itself. The cookie is marked `Secure` on
+an HTTPS request, which is why the deployment terminates TLS.
+
 ## Data locations
 
 | Path | Committed | Notes |
 |---|---|---|
 | `themes/`, `schema/`, `src/`, `app/` | yes | source |
-| `config/identity.yaml` | yes | remembered defaults, user-editable |
-| `config/local.yaml` | no | cloud API keys + `routing.default` — written by the Cloud panel and header toggle |
+| `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it |
+| `config/identities/<hash>.yaml` | no | one account's identity overrides — institution, guide, brand paths |
+| `config/local.yaml` | no | the install-wide provider key + the fallback `routing.default`; per-account keys live encrypted in the DB |
+| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), per-user routing, auto-tier usage |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `config/presets/` | no | saved briefing formats, one file per user |
 | `config/uploads/` | no | staged briefing documents — upload-only research mode; short-lived (swept after the TTL), resolved by token at planning |
-| `brand/logos/` | no | raw supplied marks — trademarks stay local; uploaded via the Brand panel |
+| `brand/logos/` | no | the operator's raw marks — trademarks stay local |
+| `brand/users/<hash>/logos`, `.../generated` | no | one account's own marks, uploaded via the Brand panel |
 | `brand/generated/`, `brand/fonts/` | no | reproducible via tools |
 | `decks/<slug>/deck.yaml`, `meta.yaml` | yes | the deck |
 | `decks/<slug>/plan.yaml` | yes | the approved outline |
@@ -1081,4 +1157,4 @@ deck images. `POST /api/sweep` and `npm run sweep` run the sweep manually.
 | `decks/<slug>/backups/` | no | timestamped deck.yaml snapshots — the version history (F14) |
 | `decks/<slug>/report.yaml` | yes | the report content (sibling of deck.yaml) |
 | `templates/` | yes | reusable partial slides the "+ Add slide" menu inserts |
-| `reference/` | no | institutional templates to check against — the report donor; gitignored because it carries third-party names |
+| `reference/` | no | the report donor `.docx`; gitignored because it carries third-party names, and `FORGE_REFERENCE_DIR` points it at the volume on a hosted box where an admin uploads it |
