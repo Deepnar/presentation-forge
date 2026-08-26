@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      # The renderer's preview path shells out to these; without them the
+      # export and report tests skip the half that matters.
+      - name: Install LibreOffice and Poppler
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libreoffice-impress libreoffice-writer poppler-utils
+      - run: npm test
+      - name: Build the UI
+        run: npx vite build --config app/web/vite.config.js
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # The image build is itself a test: it downloads and indexes the theme
+      # typefaces and fails if fc-match cannot resolve them, which is the check
+      # that catches "every preview renders with substituted fonts".
+      - name: Build the deployment image
+        run: docker build -f docker/Dockerfile -t presentation-forge:ci .
+      - name: Boot it and check health
+        run: |
+          docker run -d --name forge_ci -p 5174:5174 \
+            -e FORGE_HOSTED=1 -e FORGE_KEY_PEPPER=ci-pepper-long-random-value \
+            presentation-forge:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:5174/api/health >/dev/null 2>&1; then
+              echo "healthy"; exit 0
+            fi
+            sleep 2
+          done
+          echo "did not become healthy"; docker logs forge_ci; exit 1
+      - name: Render a deck inside the image
+        run: |
+          docker exec forge_ci sh -c 'mkdir -p /data/decks/ci && cat > /data/decks/ci/deck.yaml <<YAML
+          title: CI render
+          theme: warm-humanist
+          slides:
+            - type: title
+              headline: CI
+            - type: bullets
+              headline: The renderer produces real output
+              bullets:
+                - A written pptx proves only that the file parsed
+                - Rasterising is the check that means something
+                - LibreOffice and Poppler must both be present
+                - Substituted fonts change every measurement
+          YAML
+          node src/render.js /data/decks/ci/deck.yaml && node src/preview.js /data/decks/ci/out/deck.pptx'
+      - name: Stop
+        if: always()
+        run: docker rm -f forge_ci || true
