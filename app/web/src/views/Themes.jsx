@@ -140,8 +140,11 @@ function ThemeCard({ theme, isDefault, onClick }) {
   // can't fake a mesh. When a gallery thumbnail exists, show it over the token
   // synthesis; if it's missing (a clone that never ran `npm run gallery`) the
   // synthesis stays visible underneath rather than an empty band.
+  // The specimen renders with branding off, so it shows the design and never an
+  // institution — which is why it was switched off before, leaving every card a
+  // flat block of the title colour.
   const [thumbFailed, setThumbFailed] = useState(false);
-  const useThumb = false; // no header on any thumbnail
+  const useThumb = Boolean(theme.thumb) && !thumbFailed;
 
   return (
     <button
@@ -158,12 +161,12 @@ function ThemeCard({ theme, isDefault, onClick }) {
           default
         </span>
       )}
-      {/* Preview — solid color only, no header */}
-      <div className="relative flex aspect-[16/8] p-3" style={{ background: title.bg ?? p.ink }}>
+      {/* Two surfaces side by side — the title and a body slide, as rendered. */}
+      <div className="relative flex aspect-[32/9] overflow-hidden" style={{ background: title.bg ?? p.ink }}>
         {useThumb && (
           <img
             src={theme.thumb}
-            alt={`${theme.label} preview`}
+            alt={`${theme.label} — title and body slide`}
             className="absolute inset-0 z-0 h-full w-full object-cover"
             loading="lazy"
             onError={() => setThumbFailed(true)}
