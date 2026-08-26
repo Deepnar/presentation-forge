@@ -1,7 +1,11 @@
 # Retro CRT — phosphor glow, scanlines and a screen vignette.
-# A real plate carries the CRT: scanline pattern, phosphor glow, rounded
-# screen with a vignette. Distinct from retro-terminal's flat green by the
-# whole tube-and-phosphor language.
+#
+# The tube is one curved piece of glass, and the plate has to read as that.
+# Every layer is therefore concentric on the same centre: the phosphor bloom,
+# the sheen on the glass and the vignette that darkens the corners are the
+# same curvature seen three ways. The earlier plate put a blurred ellipse at
+# 20%/14% and a bloom at 50%/40%, so two unrelated smears crossed the screen
+# and the result read as a stain rather than a tube.
 
 name: retro-crt
 label: Retro CRT
@@ -12,21 +16,21 @@ tokens:
     bg: "#0B120B"          # off-tube black
     surface: "#0F180F"
     ink: "#C9FFCE"         # phosphor green
-    ink_muted: "#5E8A63"
+    ink_muted: "#83B288"   # sized against the lit band, not the dark rim
     accent: "#33FF5C"      # bright phosphor
     accent_alt: "#FFE14A"  # amber secondary
     rule: "#1F3A22"
     on_accent: "#0B120B"
 
   surfaces:
-    title:   { bg: "#050A05", ink: "#C9FFCE", muted: "#6F9E74", accent: "#33FF5C" }
-    section: { bg: "#1A3A1E", ink: "#C9FFCE", muted: "#7FB784" }
+    title:   { bg: "#050A05", ink: "#C9FFCE", muted: "#93C298", accent: "#33FF5C" }
+    section: { bg: "#1A3A1E", ink: "#C9FFCE", muted: "#99CE9E" }
 
   dark:
     bg: "#050A05"
     surface: "#0C140C"
     ink: "#C9FFCE"
-    ink_muted: "#5E8A63"
+    ink_muted: "#83B288"
     accent: "#3BFF68"
     accent_alt: "#FFE14A"
     rule: "#1A3320"
@@ -59,45 +63,82 @@ tokens:
     enabled: true
     html: |
       <style>
+        /* The glass itself: brightest where the beam lands, falling to the
+           unlit tube at the rim. One gradient, one centre. */
         .tube{position:absolute;inset:0;background:
-          radial-gradient(75% 65% at 50% 42%, {{tokens.palette.ink_muted}}44 0%, transparent 70%),
-          linear-gradient({{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
+          radial-gradient(118% 104% at 50% 52%,
+            {{tokens.palette.surface}} 0%, {{tokens.palette.bg}} 62%, #040704 100%);}
+        /* Phosphor bloom. Wide and weak — a beam lights the screen, it does
+           not sit on it as an object, so there is no blur and no hard edge. */
+        .beam{position:absolute;inset:0;background:
+          radial-gradient(62% 52% at 50% 52%,
+            {{tokens.palette.accent}}30 0%, {{tokens.palette.accent}}14 40%, transparent 76%);}
+        /* Every other line, across the whole screen rather than fading out
+           where the ground goes dark. */
         .scan{position:absolute;inset:0;
-          background:repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 4px);}
-        .glow{position:absolute;left:20%;top:14%;width:60%;height:55%;
-          background:radial-gradient(50% 50% at 50% 50%, {{tokens.palette.accent}}22 0%, transparent 70%);
-          filter:blur(30px);}
+          background:repeating-linear-gradient(0deg,
+            rgba(0,0,0,.34) 0 1.5px, rgba(0,0,0,0) 1.5px 3.5px);}
+        /* The reflection that says "glass": one soft diagonal, top-left. */
+        .sheen{position:absolute;inset:0;background:
+          linear-gradient(118deg,
+            rgba(255,255,255,.055) 0%, rgba(255,255,255,.014) 28%, rgba(255,255,255,0) 48%);}
         .vig{position:absolute;inset:0;background:
-          radial-gradient(120% 120% at 50% 50%, transparent 62%, {{tokens.palette.bg}}aa 100%);}
+          radial-gradient(110% 104% at 50% 52%, rgba(0,0,0,0) 52%, rgba(0,0,0,.5) 100%);}
       </style>
       <div class="tube"></div>
-      <div class="glow"></div>
+      <div class="beam"></div>
       <div class="scan"></div>
+      <div class="sheen"></div>
       <div class="vig"></div>
     surfaces:
       title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(80% 70% at 50% 40%, {{tokens.palette.accent}}33 0%, transparent 70%),
-            linear-gradient({{tokens.surfaces.title.bg}} 0%, {{tokens.palette.surface}} 120%);}
+          /* The title is the tube warming up: the same geometry, the beam
+             pushed to where the type sits so the lit area holds the words
+             rather than the empty band above them. */
+          .tube{position:absolute;inset:0;background:
+            radial-gradient(120% 108% at 46% 62%,
+              {{tokens.palette.surface}} 0%, {{tokens.surfaces.title.bg}} 60%, #030603 100%);}
+          .beam{position:absolute;inset:0;background:
+            radial-gradient(70% 60% at 46% 62%,
+              {{tokens.palette.accent}}4a 0%, {{tokens.palette.accent}}1c 40%, transparent 76%);}
           .scan{position:absolute;inset:0;
-            background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px);}
+            background:repeating-linear-gradient(0deg,
+              rgba(0,0,0,.34) 0 1.5px, rgba(0,0,0,0) 1.5px 3.5px);}
+          .sheen{position:absolute;inset:0;background:
+            linear-gradient(118deg,
+              rgba(255,255,255,.07) 0%, rgba(255,255,255,.018) 26%, rgba(255,255,255,0) 46%);}
           .vig{position:absolute;inset:0;background:
-            radial-gradient(120% 120% at 50% 50%, transparent 60%, {{tokens.surfaces.title.bg}}cc 100%);}
+            radial-gradient(112% 106% at 46% 62%, rgba(0,0,0,0) 48%, rgba(0,0,0,.52) 100%);}
         </style>
-        <div class="hero"></div>
+        <div class="tube"></div>
+        <div class="beam"></div>
         <div class="scan"></div>
+        <div class="sheen"></div>
         <div class="vig"></div>
       section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 50% 40%, {{tokens.surfaces.section.bg}} 0%, transparent 72%),
-            linear-gradient({{tokens.palette.bg}} 0%, {{tokens.surfaces.section.bg}} 130%);}
+          /* A divider is the beam at full drive — the same tube, brighter. */
+          .tube{position:absolute;inset:0;background:
+            radial-gradient(118% 106% at 50% 50%,
+              {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.bg}} 78%, #040704 100%);}
+          .beam{position:absolute;inset:0;background:
+            radial-gradient(58% 50% at 50% 50%,
+              {{tokens.palette.accent}}3c 0%, {{tokens.palette.accent}}16 44%, transparent 78%);}
           .scan{position:absolute;inset:0;
-            background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px);}
+            background:repeating-linear-gradient(0deg,
+              rgba(0,0,0,.32) 0 1.5px, rgba(0,0,0,0) 1.5px 3.5px);}
+          .sheen{position:absolute;inset:0;background:
+            linear-gradient(118deg,
+              rgba(255,255,255,.06) 0%, rgba(255,255,255,.015) 27%, rgba(255,255,255,0) 47%);}
+          .vig{position:absolute;inset:0;background:
+            radial-gradient(110% 104% at 50% 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,.46) 100%);}
         </style>
-        <div class="sec"></div>
+        <div class="tube"></div>
+        <div class="beam"></div>
         <div class="scan"></div>
+        <div class="sheen"></div>
+        <div class="vig"></div>
 
 voice:
   feel: retro, precise, immersive, playful-tech
