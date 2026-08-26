@@ -19,7 +19,8 @@
     "gallery": "node --env-file-if-exists=.env tools/gallery.mjs",
     "forge": "node --env-file-if-exists=.env src/ai/pipeline.js",
     "searxng": "docker compose -f docker/docker-compose.yml up -d",
-    "themeaudit": "node --env-file-if-exists=.env tools/themeaudit.mjs"
+    "themeaudit": "node --env-file-if-exists=.env tools/themeaudit.mjs",
+    "themematrix": "node --env-file-if-exists=.env tools/themematrix.mjs"
   },
   "keywords": [],
   "author": "",
