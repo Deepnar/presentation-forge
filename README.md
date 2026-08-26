@@ -102,6 +102,8 @@ The model can select a semantic slide type and provide its content. It cannot su
 
 Each theme also separates machine-readable `tokens` from model-facing `voice`. Renderer tokens contain exact values; voice contains only editorial direction. The two are deliberately never shared across their boundary.
 
+The same rule decides where colour comes from. A chart's series palette is a theme token, because on a chart colour carries data rather than decoration — a theme that leaves it unset gets one derived to be legible, never one improvised from text and hairline colours. A plate theme is told where its panel belongs (`{{panel.*}}`) rather than working it out, because the relationship between a panel's edge and the content box is renderer geometry. And the institutional marks are not themeable at all: they are applied after the theme has drawn, so a theme cannot omit or misplace the one thing that is actually graded.
+
 ## What the application produces
 
 ### Presentations
@@ -109,8 +111,8 @@ Each theme also separates machine-readable `tokens` from model-facing `voice`. R
 The deck pipeline combines research, an approval gate, schema validation, deterministic layout, and visual review.
 
 - 75 slide types across title and section surfaces, lists, statistics, charts, comparisons, processes, timelines, quotations, media, tables, diagrams, definitions, teams, and special-purpose slides.
-- Nine chart variants, including bar, line, area, pie, doughnut, scatter, radar, and stacked bar.
-- 38 bundled themes, with native PowerPoint shapes where possible and an optional Chrome-rendered background plate for effects that Office cannot represent cleanly.
+- Nine chart variants, including bar, line, area, pie, doughnut, scatter, radar, and stacked bar, each drawn from the theme's own categorical palette so no series is ever invisible against the page.
+- 38 bundled themes, with native PowerPoint shapes where possible and an optional Chrome-rendered background plate for effects that Office cannot represent cleanly — frosted glass over hard-edged shapes, a masked aurora curtain whose colour travels along its length, a layered golden-hour sky, extruded clay, soft-UI light falling across a surface, an isometric wireframe.
 - Readability controls: measured text fitting, per-role font floors, density sweeping, field-length rewrites, and a final trim pass that avoids mid-sentence truncation.
 - Presentation workflow controls: balanced contiguous presenter assignments, speaker-script generation, content grounding, coherence review, slide-type conversion, version backups, export, and editable deck YAML.
 
@@ -145,6 +147,11 @@ npm run preview decks/gpu-demo/out/deck.pptx
 # Search from the terminal. Start local SearXNG first if desired.
 npm run searxng
 npm run search "recent developments in green hydrogen"
+
+# Look at a theme. Renders chosen slide types in chosen themes and tiles them,
+# because a passing contrast test says nothing about whether a theme looks like
+# anything.
+npm run themeaudit -- --themes glassmorphism,aurora-mesh --types title,section,bullets
 
 # Maintain local assets and inspect theme output.
 npm run fonts
@@ -182,11 +189,12 @@ themes/           presentation design languages
 styles/           reusable token overrides layered over a theme
 schema/           content contracts for decks and reports
 templates/        starting content templates
-config/           model configuration and local identity defaults
-brand/            source and normalised institutional marks
+config/           model configuration, per-account identity, accounts and keys
+brand/            institutional marks, per operator and per account
+app/gallery/      committed theme specimens — what the theme picker shows
 decks/<slug>/     portable deck workspace: content, plan, research, output
-docker/           home-server image, Compose deployment, and SearXNG setup
-docs/             architecture decisions, roadmap, operational lessons
+docker/           deployment image, Compose stack, TLS, and SearXNG setup
+docs/             architecture, deployment, roadmap, operational lessons
 ```
 
 The API deliberately holds no presentation logic: anything available in the web application is built on the same `src/` primitives that the CLI uses.
@@ -241,6 +249,7 @@ The test suite covers the renderer’s supporting contracts, generation stages, 
 ## Further reading
 
 - [Local setup guide](LOCAL_SETUP.md) — prerequisites, configuration, troubleshooting, and headless usage.
+- [Deployment](docs/DEPLOY.md) — what the workload actually needs, where it can run, and how to stand it up.
 - [Architecture](docs/ARCHITECTURE.md) — design boundaries, the rendering paths, research, reports, chat, and deployment rationale.
 - [Traps](docs/TRAPS.md) — hard-won implementation constraints and failure modes.
 - [Roadmap](docs/ROADMAP.md) — completed work, future work, and feature-specific lessons.

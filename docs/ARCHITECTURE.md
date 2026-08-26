@@ -109,14 +109,26 @@ dark-neon, Linear, Material You, flat, retro-terminal, newsprint, Notion,
 Alegria, corporate blue, nature organic, blueprint, high-contrast mono,
 risograph, letterpress, paper pastel, sci-fi HUD) and plated ones
 (glassmorphism, claymorphism, neumorphism, aurora-mesh, soft glass, sunset,
-gradient mesh dark, retro CRT). Theme cards carry NEUTRAL specimens — "Title" /
-"subtitle line" placeholders on the theme's own proportions (16/8 title band,
-16/5 content strip), never real deck content — so the card shows the design,
-not someone else's slides; the type-swap gallery's specimen slides are neutral
-the same way (`src/specimens.js` prefers hand-written neutral payloads over
-demo-deck content). Layout-LEVEL distinctness is carried by
-per-theme flags the layouts read (`tokens.editorial`, `tokens.bauhaus`) and
-falls back to the default when absent. The themes rely on the fitter's family
+gradient mesh dark, retro CRT). Theme cards are REAL renders — two surfaces
+side by side, a title and a body slide, produced by `npm run gallery` from the
+neutral specimen deck with institutional branding off, so the card shows the
+design and never an institution. That branding is why they were once switched
+off, leaving every card a flat block of the title colour: two themes with
+similar title grounds became indistinguishable, and type, which is most of what
+separates these designs, was not shown at all. The images are committed —
+without them the picker falls back to a token synthesis that cannot show a
+plate background, and regenerating 38 themes needs LibreOffice and several
+minutes, which is the wrong thing to do on a container's first boot. The
+type-swap gallery's specimen slides are neutral the same way (`src/specimens.js`
+carries hand-written payloads rather than reaching into demo decks, which is
+what broke when those decks were pruned).
+
+Layout-LEVEL distinctness is carried by per-theme flags the layouts read
+(`tokens.editorial`, `tokens.bauhaus`) and falls back to the default when
+absent. There are only two such flags, and that is the honest limit of the
+current gallery: the plate themes differ in what their background *is*, and the
+thirty native themes are one composition in thirty colourways. Palette and
+typeface are not enough to make a design feel like its own. The themes rely on the fitter's family
 table — its per-family advance estimates are what keep a one-line title on one
 line — and on their section-surface luminance, which the chrome's
 crest/footer variant derives from. A theme-contract test loads every theme and
@@ -232,6 +244,37 @@ material does not fit the template. Reviewing the outline lets the model propose
 structure freely, because nothing reaches the renderer unapproved. The UI is the
 guardrail; presets survive only as a soft density hint the model may ignore.
 
+## Colour that carries data
+
+A chart is the one place in a deck where colour is information rather than
+decoration, and the renderer treated it as decoration. Series took their
+colours from `[accent, accent_alt ?? ink, ink_muted, rule]` — two of those are
+deliberately low-contrast, `ink_muted` being secondary text and `rule` a
+hairline — so the third series was always washed out and the fourth sat almost
+on the background. On `high-contrast-mono`, whose accent is black and whose
+`accent_alt` is white, a four-series chart drew three identical black series
+and one white one that vanished into the page. The chart claimed to show four
+things and showed three.
+
+`src/chartpalette.js` makes the palette a theme concern with a floor under it.
+A theme may declare `tokens.chart.series`; when it does not, a palette is
+derived that is at least legible — hues chosen greedily against those already
+on the chart for a chromatic theme, a value ramp for a monochrome one, every
+entry held above 3:1 against its own background. Greedy selection rather than
+fixed rotations, because a fixed table collided with a theme's own `accent_alt`
+and produced two series the same colour.
+
+`high-contrast-mono` declares its palette explicitly. Greys alone cannot carry
+four series at a readable contrast, so it uses flat poster primaries — the
+language its display face and hard black rules already speak — with ink
+leading, so a single-series chart still reads as that theme. A monochrome theme
+that declares nothing still gets greys: the derivation must not colourise a
+design that is deliberately colourless.
+
+A contract test holds every theme to this in both modes, checking each series
+against the ground it is drawn on and against its neighbour, with the
+neighbour rule relaxed where hue already does the separating.
+
 ## Two rendering paths
 
 **Native (default).** pptxgenjs shapes and text. Editable in PowerPoint,
@@ -267,6 +310,51 @@ or the slide, in that order of precedence:
   its template interpolates `{{tokens.palette.bg}}`-style paths against the
   resolved theme (mode-adjusted), keeping the theme YAML the single source of
   colours.
+
+### Where a panel belongs
+
+Plate themes panelled the content area by interpolating `{{box.*}}`, the content
+region, so a headline began exactly on the panel's edge and the cards in a
+comparison touched it. The panel read as a backdrop the text was pasted over
+rather than a surface the content rests on.
+
+Where a panel's edge sits relative to the content is renderer geometry, not a
+per-theme decision, so `plateHtmlFor` supplies `{{panel.*}}` — the content box
+grown by a fixed inset — alongside `{{box.*}}`. A theme still decides whether it
+draws a panel and what it looks like; it no longer works out where the edge
+goes, and seven themes stopped repeating the same `calc()` arithmetic.
+
+Themes must leave room for the overhang in their margins. Only a little: the
+vertical `flow` spine fits its step bodies within about 0.02 in of the readable
+floor, and a wider step costs two themes a slide.
+
+### What a plate is for
+
+The plate exists for effects OOXML cannot express, and the temptation is to
+reach for blur because blur is the effect a browser makes easiest. Eight themes
+had done exactly that, and the result was that they all looked like each other.
+
+Blur is not a style. It is what a material does to what is behind it, which
+means there has to be something behind it:
+
+- **Frosted glass** needs hard edges to frost. Blurring a blur leaves nothing to
+  frost, and the slide becomes fog — `glassmorphism` and `soft-glass-light` both
+  now set crisp shapes behind the panel, so the same shape is sharp on the
+  ground and soft through the glass, both visible in one image.
+- **A continuous colour shift** cannot be built from separate light sources.
+  Each blurred blob is a single hue, so what happens between two of them is an
+  overlap, not a shift. `aurora-mesh` and `gradient-mesh-dark` draw one element
+  filled with one gradient running its length, shaped by a **mask** — fading the
+  colour out instead dissolves the hue into the ground before it reaches the
+  edge, and the travel is the whole point.
+- **Extrusion and soft UI** are shadow geometry, not luminosity. `claymorphism`
+  reads as clay because of a drop shadow and a bright inner rim; `neumorphism`
+  is light falling *across* a surface, which is the opposite of a glow, which is
+  light coming *out* of one.
+
+A smooth gradient bands into visible steps at slide scale, so these carry a
+grain overlay — coarse enough to survive LibreOffice rasterising the preview at
+half the plate's resolution, which an earlier finer grain did not.
 
 `type: freeform` is a real schema type, not a hidden flag: it requires a
 non-empty `html` field, every other type forbids it, the writer prompt
