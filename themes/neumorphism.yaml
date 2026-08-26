@@ -122,24 +122,66 @@ tokens:
 
       <div class="field"></div>
     surfaces:
-      title: >
+      # Soft UI is one colour lit from one direction. The title and section
+      # surfaces were carrying radial accent glows borrowed from the soft-glow
+      # themes, which is the precise opposite of what this style is: a glow is
+      # light coming out of the surface, and neumorphism is light falling
+      # across it. Both are now the same material as the content field —
+      # same-colour ground, form entirely from a raised or recessed edge.
+      title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 18% 18%, {{tokens.palette.accent}}77 0%, transparent 55%),
-            radial-gradient(60% 50% at 84% 26%, {{tokens.palette.accent_alt}}66 0%, transparent 55%),
-            linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          /* A slab lifted off the ground, holding the title. */
+          .slab{position:absolute;left:0;top:22%;width:74%;height:52%;
+            border-radius:0 56px 56px 0;
+            background:{{tokens.surfaces.title.bg}};
+            box-shadow:
+              28px 28px 56px #00000059,
+              -18px -18px 44px {{tokens.palette.ink_muted}}3d,
+              inset 2px 2px 3px {{tokens.palette.ink_muted}}59,
+              inset -2px -2px 3px #00000047;}
+          /* A straight cut pressed into the ground, entering from the corner
+             and running off the frame. A circle floating in the corner read as
+             a button nobody put there; a channel reads as the material having
+             been machined, which is the same lighting model doing something
+             with a direction to it. */
+          .cut{position:absolute;right:-16%;bottom:9%;width:62%;height:12%;
+            border-radius:8px;transform:rotate(-19deg);
+            background:{{tokens.surfaces.title.bg}};
+            box-shadow:
+              inset 9px 9px 18px #00000075,
+              inset -9px -9px 18px {{tokens.palette.ink_muted}}47;}
         </style>
-
-        <div class="hero"></div>
-      section: >
+        <div class="ground"></div>
+        <div class="slab"></div>
+        <div class="cut"></div>
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(70% 60% at 18% 20%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
-            radial-gradient(60% 50% at 84% 80%, {{tokens.palette.accent_alt}}77 0%, transparent 55%),
-            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent}} 100%);}
+          .slab{position:absolute;left:0;top:24%;width:70%;height:50%;
+            border-radius:0 999px 999px 0;
+            background:{{tokens.surfaces.section.bg}};
+            box-shadow:
+              26px 26px 52px {{tokens.palette.ink}}4d,
+              -16px -16px 40px #ffffff33,
+              inset 2px 2px 3px #ffffff4d,
+              inset -2px -2px 3px {{tokens.palette.ink}}3d;}
+          /* Low and right, clear of the crest corner. The light inset runs
+             weaker than the dark one: matched evenly on a mid-tone ground the
+             bright edge wins and the channel reads as a ridge standing proud
+             rather than a groove cut in. */
+          .cut{position:absolute;right:-15%;bottom:7%;width:60%;height:11%;
+            border-radius:8px;transform:rotate(-19deg);
+            background:{{tokens.surfaces.section.bg}};
+            box-shadow:
+              inset 10px 10px 20px {{tokens.palette.ink}}80,
+              inset -8px -8px 16px #ffffff2e;}
         </style>
-
-        <div class="sec"></div>
+        <div class="ground"></div>
+        <div class="slab"></div>
+        <div class="cut"></div>
   shadow:
     card:
       type: outer
