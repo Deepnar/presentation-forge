@@ -25,6 +25,13 @@ hard 60-char `slice` of the purpose rendered as a headline clipped mid-word at
 the right edge. Validation proves the fields exist, never that the text fits.
 The vision critic caught it; no unit test could have. Rasterise and look.
 
+**pptxgenjs numbers every paragraph "1."** `bullet: { type: "number" }` writes
+`<a:buAutoNum startAt="1"/>` on *each* paragraph rather than once for the list,
+so the count restarts at every item and a four-point list renders 1. 1. 1. 1.
+Pass the running position — `bullet: { type: "number", startAt: i + 1 }` — and
+carry it across column splits. `bulletOptions()` in `src/composition.js` is the
+one place that should know this.
+
 **pptxgenjs wants bare hex.** `#C05D4E` silently misbehaves; pass `C05D4E`. Use
 `hex()` from `src/theme.js` rather than stripping inline — it also drops the
 alpha channel from `#RRGGBBAA` tokens, which OOXML cannot express as a fill.
@@ -33,6 +40,15 @@ alpha channel from `#RRGGBBAA` tokens, which OOXML cannot express as a fill.
 and encodes a distinction that does not exist, while pulling low-contrast
 palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
 and doughnut should vary.
+
+**A word wider than its column breaks in the middle of itself, silently.**
+The fitter budgets *height*: it shrinks until the wrapped text fits the box, so
+a single word too wide to fit the measure passes the fit and then hyphenates
+itself at the raster ("Acknowledgemen / ts"). Nothing reports it, because every
+fragment fits. Any layout that narrows a column has to fit the longest word to
+the measure as well — and with `fitOneLine`'s default safety margin, because
+`measure` estimates at 0.55em where real text averages nearer 0.60 and a word
+fitted to the nominal width still breaks.
 
 **Never derive a text position from `heightOf`/`lineCount` arithmetic.** The
 fitter's `measure` estimates width as a fraction of the em (it multiplies the
