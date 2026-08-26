@@ -113,67 +113,101 @@ tokens:
       opacity: 0.08
   plate:
     enabled: true
-    # The mesh is the theme and it stays. What was missing is somewhere for the
-    # words to live.
+    # An aurora is a curtain, not a ball of light.
     #
-    # The content surface used to be a radial white wash sitting on top of six
-    # stacked gradients, which left body text on a blotchy, uneven ground — the
-    # reason it read as glow rather than design. The mesh now frames the slide
-    # and the content sits on an opaque panel, so the aurora is a border you
-    # notice and never something you read through.
+    # Stacked radial-gradients read as circles however carefully they are eased,
+    # because a circle is what they are — and a row of soft circles is the look
+    # every CSS mesh generator produces. Real aurora light is elongated and
+    # directional: ribbons at an angle, overlapping, brightest along a spine and
+    # falling away to the sides.
     #
-    # Opaque, deliberately: glassmorphism is the theme where you see through the
-    # panel. Here the mesh belongs to the edges and the page belongs to the
-    # reader, which is what makes the two look like different designs rather
-    # than two settings of one.
-    html: >
+    # So each light source here is a very wide, shallow ellipse rotated off the
+    # horizontal, drawn brightest along its long axis. Three of them at
+    # different angles overlap into a field with direction in it. Grain over the
+    # top breaks the banding a smooth gradient shows at slide scale, which is
+    # most of the difference between looking rendered and looking printed.
+    html: |
       <style>
-        .mesh{position:absolute;inset:0;background:
-          radial-gradient(58% 52% at 6% 4%, {{tokens.palette.accent}} 0%, transparent 58%),
-          radial-gradient(52% 46% at 96% 12%, {{tokens.palette.accent_alt}} 0%, transparent 58%),
-          radial-gradient(62% 55% at 88% 100%, {{tokens.palette.accent}}b3 0%, transparent 62%),
-          linear-gradient(135deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .ground{position:absolute;inset:0;
+          background:linear-gradient(135deg, {{tokens.palette.bg}} 0%, {{tokens.palette.rule}} 100%);}
+        .rib{position:absolute;}
+        .r1{left:-24%;top:-26%;width:120%;height:46%;transform:rotate(-13deg);
+          background:radial-gradient(closest-side ellipse,
+            {{tokens.palette.accent}}e6 0%, {{tokens.palette.accent}}96 38%,
+            {{tokens.palette.accent}}3d 62%, {{tokens.palette.accent}}00 82%);}
+        .r2{right:-30%;top:-16%;width:96%;height:40%;transform:rotate(9deg);
+          background:radial-gradient(closest-side ellipse,
+            {{tokens.palette.accent_alt}}d9 0%, {{tokens.palette.accent_alt}}8a 36%,
+            {{tokens.palette.accent_alt}}33 62%, {{tokens.palette.accent_alt}}00 84%);}
+        .r3{left:8%;bottom:-30%;width:118%;height:44%;transform:rotate(-7deg);
+          background:radial-gradient(closest-side ellipse,
+            {{tokens.palette.accent}}c4 0%, {{tokens.palette.accent}}75 40%,
+            {{tokens.palette.accent}}00 78%);}
+        .grain{position:absolute;inset:0;opacity:.30;mix-blend-mode:soft-light;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size:200px 200px;}
         .page{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
           border-radius:22px;background:{{tokens.palette.surface}};
           box-shadow:0 24px 60px {{tokens.palette.ink}}2b;}
       </style>
-
-      <div class="mesh"></div>
-
+      <div class="ground"></div>
+      <div class="rib r1"></div><div class="rib r2"></div><div class="rib r3"></div>
+      <div class="grain"></div>
       <div class="page"></div>
     surfaces:
-      title: >
+      title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(62% 54% at 8% 8%, {{tokens.palette.accent}} 0%, transparent 56%),
-            radial-gradient(54% 48% at 94% 16%, {{tokens.palette.accent_alt}} 0%, transparent 56%),
-            radial-gradient(70% 62% at 72% 104%, {{tokens.surfaces.title.accent}}cc 0%, transparent 60%),
-            linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
-          /* A single hairline rule under the title band, so the hero has one
-             hard edge to sit against and does not read as pure vapour. */
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(150deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.ink}} 100%);}
+          .rib{position:absolute;}
+          /* On a dark ground the ribbons carry the whole image, so they run
+             brighter and cross the frame rather than hugging a corner. */
+          .r1{left:-18%;top:-18%;width:118%;height:44%;transform:rotate(-12deg);
+            background:radial-gradient(closest-side ellipse,
+              {{tokens.palette.accent}} 0%, {{tokens.palette.accent}}a6 38%,
+              {{tokens.palette.accent}}3d 64%, {{tokens.palette.accent}}00 84%);}
+          .r2{right:-24%;top:6%;width:88%;height:34%;transform:rotate(11deg);
+            background:radial-gradient(closest-side ellipse,
+              {{tokens.palette.accent_alt}}f2 0%, {{tokens.palette.accent_alt}}9c 36%,
+              {{tokens.palette.accent_alt}}2e 64%, {{tokens.palette.accent_alt}}00 86%);}
+          .r3{left:-10%;bottom:-26%;width:104%;height:40%;transform:rotate(-6deg);
+            background:radial-gradient(closest-side ellipse,
+              {{tokens.surfaces.title.accent}}b3 0%, {{tokens.surfaces.title.accent}}5c 40%,
+              {{tokens.surfaces.title.accent}}00 78%);}
+          .grain{position:absolute;inset:0;opacity:.34;mix-blend-mode:soft-light;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size:200px 200px;}
           .rule{position:absolute;left:0;top:70%;width:46%;height:2px;
             background:{{tokens.palette.surface}}80;}
         </style>
-
-        <div class="hero"></div>
-
+        <div class="ground"></div>
+        <div class="rib r1"></div><div class="rib r2"></div><div class="rib r3"></div>
+        <div class="grain"></div>
         <div class="rule"></div>
-      section: >
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(62% 54% at 10% 10%, {{tokens.palette.accent_alt}}d9 0%, transparent 58%),
-            radial-gradient(66% 58% at 92% 96%, {{tokens.palette.accent}} 0%, transparent 62%),
-            linear-gradient(140deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.ink}} 120%);}
-          /* The section title rests on a solid slab, curved on the open end —
-             the same device the content page uses, at divider scale. */
+          .ground{position:absolute;inset:0;
+            background:linear-gradient(140deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.ink}} 120%);}
+          .rib{position:absolute;}
+          .r1{left:-20%;top:-24%;width:110%;height:46%;transform:rotate(-11deg);
+            background:radial-gradient(closest-side ellipse,
+              {{tokens.palette.accent_alt}}e6 0%, {{tokens.palette.accent_alt}}8f 38%,
+              {{tokens.palette.accent_alt}}00 80%);}
+          .r2{right:-22%;bottom:-24%;width:96%;height:42%;transform:rotate(8deg);
+            background:radial-gradient(closest-side ellipse,
+              {{tokens.palette.accent}}d9 0%, {{tokens.palette.accent}}80 40%,
+              {{tokens.palette.accent}}00 80%);}
+          .grain{position:absolute;inset:0;opacity:.30;mix-blend-mode:soft-light;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size:200px 200px;}
           .slab{position:absolute;left:0;top:26%;width:68%;height:44%;
             border-radius:0 999px 999px 0;
             background:{{tokens.palette.ink}}59;
             border:1px solid {{tokens.palette.surface}}2e;border-left:none;}
         </style>
-
-        <div class="sec"></div>
-
+        <div class="ground"></div>
+        <div class="rib r1"></div><div class="rib r2"></div>
+        <div class="grain"></div>
         <div class="slab"></div>
 
 voice:
