@@ -3,14 +3,16 @@ import cors from "cors";
 import { readFile, writeFile, readdir, mkdir, stat, access, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { ROOT, DECKS, THEMES, CONFIG, BRAND } from "../../src/paths.js";
+import { ROOT, DECKS, THEMES, CONFIG, BRAND, REFERENCE } from "../../src/paths.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport } from "../../src/report.js";
-import { loadIdentity } from "../../src/ai/identity.js";
+import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge } from "../../src/ai/identity.js";
+import { runAsAccount } from "../../src/account.js";
+import { userBrandDirs } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
@@ -21,7 +23,7 @@ import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie } from "../../src/auth.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, checkAutoLimits, recordAutoEvent, limitConfig } from "../../src/limits.js";
@@ -71,6 +73,23 @@ if (process.env.FORGE_TRUST_PROXY === "1") {
 
 app.use(express.json({ limit: "8mb" }));
 
+/**
+ * Make the caller ambient for the whole request. The model client resolves BYOK
+ * keys and the Auto/Cloud route per account, and it sits far below the route
+ * handlers — an async-local account is how it finds out who is asking without
+ * every intermediate signature growing a user parameter. Anonymous requests run
+ * with no account and see the install-wide configuration, as the CLI does.
+ */
+app.use(async (req, _res, next) => {
+  let account = null;
+  try {
+    const user = await resolveUser(req, { allowCookie: true });
+    if (user) account = { email: user.email, userId: getUserId(user.email) };
+  } catch { /* an unreadable token is simply an anonymous request */ }
+  if (!account) return next();
+  runAsAccount(account, () => next());
+});
+
 // Deliberately NOT `PORT` — dev harnesses inject that for the frontend, and the
 // API silently stealing Vite's port produces a very confusing "Cannot GET /".
 const PORT = process.env.FORGE_API_PORT || 5174;
@@ -79,13 +98,14 @@ const fail = (res, code, message) => res.status(code).json({ ok: false, error: m
 
 /** Auto-tier guard: only the shared TCET gateway is rate-limited;
  *  local fallback (Ollama) is unlimited. */
-async function isAutoRoute(model) {
+async function isAutoRoute(model, userEmail = null) {
   const ap = await autoProvider();
   const isTcet = ap?.kind === "tcet" && ap?.keySet;
-  if (model && String(model) === "qwen3.6" && isTcet) return true;
-  const route = await routingPreference();
-  if (route !== "auto" || !isTcet) return false;
-  return true;
+  if (!isTcet) return false;
+  if (model && ap.models?.includes(String(model))) return true;
+  if (model) return false;
+  const route = await routingPreference(userEmail ? getUserId(userEmail) : null);
+  return route === "auto";
 }
 async function enforceAuto(userEmail, upcomingSlides = 0) {
   const uid = getUserId(userEmail);
@@ -134,13 +154,24 @@ function renderSlot() {
   let release;
   renderTail = new Promise((r) => { release = r; });
   renderQueued += 1;
-  const timer = setTimeout(() => {
+  // Exactly one decrement per acquisition, whichever path gets there first.
+  // Decrementing in both the timeout and the continuation drove the counter
+  // negative, and a negative counter can never reach RENDER_MAX_QUEUE — the
+  // backpressure this mutex exists for silently stopped applying after the
+  // first render that waited out the timeout.
+  let settled = false;
+  const settle = () => {
+    if (settled) return;
+    settled = true;
     renderQueued -= 1;
+  };
+  const timer = setTimeout(() => {
+    settle();
     release();
   }, RENDER_MAX_WAIT);
   return prev.then(() => {
     clearTimeout(timer);
-    renderQueued -= 1;
+    settle();
     return release;
   });
 }
@@ -164,28 +195,42 @@ const wrap = (fn) => (req, res) =>
   Promise.resolve(fn(req, res)).catch((err) => fail(res, 500, err.message));
 
 /**
- * Auth-first workspace. Everything under /api/decks and /api/reports needs a
- * session, so an unauthenticated browser sees a login screen and can never
- * reach the deck store. Two deliberate exemptions keep <img> tags working:
- * the raster and download GET routes key off a slug that is only discoverable
- * through the gated deck list, and a bare <img> cannot send the Authorization
- * header — so those stay open and the UI is never told a URL it cannot load.
+ * Auth-first workspace. Everything under /api/decks, /api/reports, /api/presets
+ * and /api/briefing needs a session, so an unauthenticated browser sees a login
+ * screen and can never reach the deck store.
  *
- * The slug format guard runs before the exemption: whatever a route allows
- * through must still be a sane deck slug, so the exemption can never be used
- * to reach a path that was never meant to be open.
+ * There are no unauthenticated paths here. Rasters, downloads and uploaded
+ * assets authenticate by session cookie rather than bearer header, because that
+ * is the only credential an <img> tag can carry — not because they are public.
+ * The slug format guard runs first regardless, so nothing can use a media path
+ * to reach somewhere that was never meant to be reachable.
  */
 const SLUG_RE = /^[a-z0-9][a-z0-9_-]{0,99}$/;
+
+/**
+ * Resolve the caller. Media requests come from `<img src>` and `<a download>`,
+ * which cannot set an Authorization header, so those carry the session as an
+ * httpOnly cookie instead. Everything else reads the bearer header only — a
+ * cookie must never authorise a state-changing request, or widening the
+ * credential would widen CSRF exposure with it.
+ */
+async function resolveUser(req, { allowCookie = false } = {}) {
+  const token = bearerToken(req.headers.authorization)
+    ?? (allowCookie ? cookieToken(req.headers.cookie) : null);
+  return userForToken(token);
+}
+
+const MEDIA_PATH = /^\/([^/]+)\/(preview|download|assets)\//;
+
 const deckWorkspace = async (req, res, next) => {
-  // The exemption grants unauthenticated <img> access to previews/downloads/
-  // assets. Its path embeds the slug, so the slug must be validated here —
-  // this middleware runs before the :slug layer has extracted req.params.
-  const exempt = req.path.match(/^\/([^/]+)\/(preview|download|assets)\//);
-  if (exempt) {
-    if (!SLUG_RE.test(exempt[1])) return fail(res, 404, "no such deck");
-    return next();
-  }
-  const user = await userForToken(bearerToken(req.headers.authorization));
+  // Media paths authenticate by cookie as well as bearer, but they DO
+  // authenticate. They used to be exempt outright, on the theory that a slug is
+  // undiscoverable — but a slug is slugify(title), so "guess the title" was
+  // enough to download any account's deck. The ownership check still runs in
+  // the per-slug layer below.
+  const media = req.path.match(MEDIA_PATH);
+  if (media && !SLUG_RE.test(media[1])) return fail(res, 404, "no such deck");
+  const user = await resolveUser(req, { allowCookie: Boolean(media) });
   if (!user) return fail(res, 401, "log in to use the deck workspace");
   req.user = user;
   next();
@@ -213,12 +258,11 @@ async function assertDeckAccess(slug, user) {
   if (!canAccessDeck(user, meta.owner)) throw new Error("no such deck");
 }
 app.use("/api/decks/:slug", async (req, res, next) => {
-  // The rasters, downloads and uploaded images load in <img> tags that cannot
-  // carry a bearer token, so their GETs skip the ownership gate. The assets
-  // POST stays gated — an upload is a write and must be yours.
+  // Ownership applies to rasters and downloads exactly as it does to the deck
+  // itself: they are the deck's content in another format. The middleware above
+  // has already accepted the session cookie for those paths, so an <img> tag
+  // still loads — for the deck's own owner.
   if (!SLUG_RE.test(req.params.slug)) return fail(res, 404, "no such deck");
-  if (/^\/(preview|download)\//.test(req.path)) return next();
-  if (req.method === "GET" && /^\/assets\//.test(req.path)) return next();
   try {
     await assertDeckAccess(req.params.slug, req.user);
     next();
@@ -1417,7 +1461,7 @@ app.post("/api/decks", (req, res) => {
 
   const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density } = req.body ?? {};
   (async () => {
-    if (await isAutoRoute(model)) {
+    if (await isAutoRoute(model, req.user.email)) {
       const upcoming = Number(maxSlides) > 0 ? Number(maxSlides) : 12;
       await enforceAuto(req.user.email, upcoming);
       recordAutoFor(req.user.email, upcoming, 0);
@@ -1470,7 +1514,7 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
     sse.send("error", { error: "body must include an `instruction`" });
     return sse.close();
   }
-  if (await isAutoRoute(model)) {
+  if (await isAutoRoute(model, req.user.email)) {
     try { await enforceAuto(req.user.email, 0); recordAutoFor(req.user.email, 0, 0); } catch (e) {
       sse.send("error", { error: e.message }); return sse.close();
     }
@@ -1525,7 +1569,7 @@ app.post("/api/reports", (req, res) => {
   }
 
   (async () => {
-    if (await isAutoRoute(model)) {
+    if (await isAutoRoute(model, req.user.email)) {
       await enforceAuto(req.user.email, 0);
       recordAutoFor(req.user.email, 0, 0);
     }
@@ -1694,12 +1738,12 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
     return sse.close();
   }
   // Auto-tier gate: hourly / weekly caps before burning the shared gateway
-  if (await isAutoRoute(model) && plan?.slides?.length) {
+  if (await isAutoRoute(model, req.user.email) && plan?.slides?.length) {
     try { await enforceAuto(req.user.email, plan.slides.length); } catch (e) {
       const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
     }
     recordAutoFor(req.user.email, plan.slides.length, 0);
-  } else if (await isAutoRoute(model)) {
+  } else if (await isAutoRoute(model, req.user.email)) {
     try { await enforceAuto(req.user.email, 0); } catch (e) {
       const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
     }
@@ -1784,50 +1828,86 @@ app.delete("/api/presets/:id", wrap(async (req, res) => {
 
 /* ---------------------------------------------------------------- identity */
 
-app.get("/api/identity", wrap(async (_req, res) => {
-  // Falls back to the committed template: identity.yaml is gitignored because
-  // it holds real personal and institutional details.
-  let raw;
-  try {
-    raw = await readFile(path.join(CONFIG, "identity.yaml"), "utf8");
-  } catch {
-    raw = await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8");
-  }
-  ok(res, { identity: YAML.parse(raw) });
+/**
+ * The caller's own institution, guide and chrome defaults.
+ *
+ * This is per account. It used to read and write one install-wide
+ * config/identity.yaml, so a second user editing their college in Settings
+ * replaced the first user's — and every deck rendered afterwards carried the
+ * wrong institution. The install-wide file survives underneath as the
+ * operator's default for accounts that have set nothing.
+ *
+ * Reading it requires a session too: institution, department and guide name are
+ * exactly the personal details the file is gitignored to protect.
+ */
+app.get("/api/identity", wrap(async (req, res) => {
+  const user = await requireAuth(req, res);
+  if (!user) return;
+  const base = await loadBaseIdentity();
+  const own = await loadUserIdentity(user.email);
+  ok(res, { identity: deepMerge(base, own), overrides: own });
 }));
 
 app.put("/api/identity", wrap(async (req, res) => {
-  if (!(await requireAuth(req, res))) return;
+  const user = await requireAuth(req, res);
+  if (!user) return;
   const { identity } = req.body ?? {};
   if (!identity || typeof identity !== "object") return fail(res, 400, "body must include `identity`");
-  await writeFile(path.join(CONFIG, "identity.yaml"), YAML.stringify(identity), "utf8");
+  await saveUserIdentity(user.email, identity);
   ok(res, {});
 }));
 
 /* ------------------------------------------------------------------- brand */
 
 const BRAND_ASSETS = ["crest", "banner", "watermark"];
-const BRAND_SRC = path.join(BRAND, "logos");
 const BRAND_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "tiff"]);
 
-/** What the Brand panel renders: which marks exist, and whether placeholders
- *  are in use (a fresh clone generates neutral stand-ins). */
-async function brandStatus() {
+/**
+ * Brand marks are per account, for the same reason identity is: a hosted box
+ * serves students from more than one institution, and uploading a crest used to
+ * overwrite the single install-wide one for everybody. Each account normalises
+ * into its own directory and its identity points at those paths; an account
+ * that has uploaded nothing falls through to the operator's default marks.
+ */
+async function brandStatus(email) {
+  const dirs = userBrandDirs(email);
   let entries = [];
   try {
-    entries = await readdir(BRAND_SRC, { withFileTypes: true });
-  } catch { /* no logos dir yet */ }
+    entries = await readdir(dirs.logos, { withFileTypes: true });
+  } catch { /* no marks uploaded yet */ }
   const sources = {};
+  let any = false;
   for (const name of BRAND_ASSETS) {
     const hit = entries.find((e) => !e.isDirectory() && e.name.startsWith(`${name}.`));
     sources[name] = hit ? hit.name : null;
+    if (hit) any = true;
   }
-  const inv = await normalizeBrand();
-  return { sources, placeholder: inv.placeholder };
+  return { sources, placeholder: !any };
 }
 
-app.get("/api/brand", wrap(async (_req, res) => {
-  ok(res, { brand: await brandStatus() });
+/** Point the account's identity at its own marks — or back at the defaults. */
+async function syncBrandIdentity(email) {
+  const dirs = userBrandDirs(email);
+  const status = await brandStatus(email);
+  const own = await loadUserIdentity(email);
+  const next = { ...own };
+  if (status.placeholder) {
+    delete next.brand;
+  } else {
+    next.brand = {
+      ...(status.sources.banner ? { banner: dirs.rel.banner } : {}),
+      ...(status.sources.crest ? { crest: dirs.rel.crest, crest_light: dirs.rel.crest_light } : {}),
+      ...(status.sources.watermark ? { watermark: dirs.rel.watermark } : {}),
+    };
+  }
+  await saveUserIdentity(email, next);
+  return status;
+}
+
+app.get("/api/brand", wrap(async (req, res) => {
+  const user = await requireAuth(req, res, "log in to manage brand marks");
+  if (!user) return;
+  ok(res, { brand: await brandStatus(user.email) });
 }));
 
 /**
@@ -1849,23 +1929,28 @@ app.post("/api/brand/:name", (req, res) => {
     if (err) return fail(res, 413, "image too large — max 20 MB");
     (async () => {
       try {
-        if (!(await requireAuth(req, res))) return;
+        const user = await requireAuth(req, res, "log in to upload brand marks");
+        if (!user) return;
         if (!req.body?.length) return fail(res, 400, "empty upload");
         if (!sniffImage(req.body, ext)) {
           return fail(res, 400, `file does not look like a ${ext} image`);
         }
-        const file = path.join(BRAND_SRC, `${name}.${ext}`);
-        await mkdir(BRAND_SRC, { recursive: true });
+        const dirs = userBrandDirs(user.email);
+        const file = path.join(dirs.logos, `${name}.${ext}`);
+        await mkdir(dirs.logos, { recursive: true });
         // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
-        const entries = await readdir(BRAND_SRC).catch(() => []);
+        const entries = await readdir(dirs.logos).catch(() => []);
         for (const e of entries) {
           if (e.startsWith(`${name}.`) && e !== path.basename(file)) {
-            await rm(path.join(BRAND_SRC, e), { force: true });
+            await rm(path.join(dirs.logos, e), { force: true });
           }
         }
         await writeFile(file, req.body);
-        const inv = await normalizeBrand();
-        ok(res, { asset: name, file: path.basename(file), brand: { sources: inv.sources, placeholder: false } });
+        // No placeholders for an account: a user with no marks of their own
+        // should fall through to the operator's, not get generic stand-ins.
+        await normalizeBrand({ srcDir: dirs.logos, outDir: dirs.generated, placeholders: false });
+        const status = await syncBrandIdentity(user.email);
+        ok(res, { asset: name, file: path.basename(file), brand: status });
       } catch (err) {
         fail(res, 500, err.message);
       }
@@ -1875,20 +1960,76 @@ app.post("/api/brand/:name", (req, res) => {
 
 /** Remove a source mark and re-normalise — falls back to placeholders. */
 app.delete("/api/brand/:name", wrap(async (req, res) => {
-  if (!(await requireAuth(req, res))) return;
+  const user = await requireAuth(req, res, "log in to manage brand marks");
+  if (!user) return;
   const name = req.params.name;
   if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
-  const entries = await readdir(BRAND_SRC).catch(() => []);
+  const dirs = userBrandDirs(user.email);
+  const entries = await readdir(dirs.logos).catch(() => []);
   let removed = null;
   for (const e of entries) {
     if (e.startsWith(`${name}.`)) {
-      await rm(path.join(BRAND_SRC, e), { force: true });
+      await rm(path.join(dirs.logos, e), { force: true });
       removed = e;
     }
   }
-  const inv = await normalizeBrand();
-  ok(res, { asset: name, removed, brand: await brandStatus() });
+  await rm(path.join(dirs.generated, `${name}.png`), { force: true });
+  if (name === "crest") await rm(path.join(dirs.generated, "crest-light.png"), { force: true });
+  await normalizeBrand({ srcDir: dirs.logos, outDir: dirs.generated, placeholders: false });
+  const status = await syncBrandIdentity(user.email);
+  ok(res, { asset: name, removed, brand: status });
 }));
+
+/* ---------------------------------------------------------- report donor */
+
+/**
+ * The institutional .docx the report renderer injects generated content into.
+ *
+ * It is gitignored (it carries third-party names) and excluded from the Docker
+ * build context, so a hosted deployment starts with no donor at all and every
+ * report render fails. This is the operator's way to supply one without shell
+ * access to the volume. Admin-only: it is install-wide, and it is the document
+ * every account's report is graded against.
+ */
+const DONOR_MAGIC = Buffer.from([0x50, 0x4b, 0x03, 0x04]); // a .docx is a zip
+
+app.get("/api/admin/donor", wrap(async (req, res) => {
+  if (!(await requireAdminUser(req, res))) return;
+  let files = [];
+  try {
+    files = (await readdir(REFERENCE)).filter((f) => f.toLowerCase().endsWith(".docx"));
+  } catch { /* directory not created yet */ }
+  ok(res, { dir: REFERENCE, donors: files });
+}));
+
+app.post("/api/admin/donor", (req, res) => {
+  express.raw({ type: () => true, limit: "25mb" })(req, res, (err) => {
+    if (err) return fail(res, 413, "template too large — max 25 MB");
+    (async () => {
+      try {
+        if (!(await requireAdminUser(req, res))) return;
+        if (!req.body?.length) return fail(res, 400, "empty upload");
+        if (!req.body.subarray(0, 4).equals(DONOR_MAGIC)) {
+          return fail(res, 400, "that is not a .docx file");
+        }
+        let name = "";
+        try { name = decodeURIComponent(String(req.headers["x-file-name"] ?? "")); } catch { name = ""; }
+        name = path.basename(name).replace(/[^\w .()-]/g, "").slice(0, 120);
+        if (!name.toLowerCase().endsWith(".docx")) name = `${name || "template"}.docx`;
+        await mkdir(REFERENCE, { recursive: true });
+        // resolveDonor refuses to guess between several templates, so a new
+        // upload replaces the old rather than accumulating alternatives.
+        for (const f of (await readdir(REFERENCE).catch(() => []))) {
+          if (f.toLowerCase().endsWith(".docx")) await rm(path.join(REFERENCE, f), { force: true });
+        }
+        await writeFile(path.join(REFERENCE, name), req.body);
+        ok(res, { donor: name });
+      } catch (err) {
+        fail(res, 500, err.message);
+      }
+    })();
+  });
+});
 
 /* ------------------------------------------------------------------- auth */
 
@@ -1899,12 +2040,25 @@ app.delete("/api/brand/:name", wrap(async (req, res) => {
  * generous for humans and useless for a dictionary attack.
  */
 const AUTH_LIMIT = Number(process.env.FORGE_AUTH_RATE_LIMIT || 20);
+const AUTH_WINDOW_MS = 10 * 60 * 1000;
 const authHits = new Map();
+
+// Entries were filtered per request but never removed, so every IP that ever
+// touched the login endpoint stayed resident. Behind a trusted proxy the key is
+// a client-supplied header, which turns that into a cheap memory-growth vector.
+setInterval(() => {
+  const cutoff = Date.now() - AUTH_WINDOW_MS;
+  for (const [ip, hits] of authHits) {
+    const live = hits.filter((t) => t > cutoff);
+    if (live.length) authHits.set(ip, live);
+    else authHits.delete(ip);
+  }
+}, AUTH_WINDOW_MS).unref();
+
 function rateLimit(req, res, next) {
   const ip = req.ip ?? req.socket.remoteAddress ?? "unknown";
   const now = Date.now();
-  const windowMs = 10 * 60 * 1000;
-  const list = (authHits.get(ip) ?? []).filter((t) => now - t < windowMs);
+  const list = (authHits.get(ip) ?? []).filter((t) => now - t < AUTH_WINDOW_MS);
   if (list.length >= AUTH_LIMIT) {
     return fail(res, 429, "too many attempts — try again later");
   }
@@ -1941,11 +2095,17 @@ app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
   }
 }));
 
+/** True when the response will travel over TLS, so the cookie can demand it. */
+function secureRequest(req) {
+  return req.secure || String(req.headers["x-forwarded-proto"] ?? "").split(",")[0].trim() === "https";
+}
+
 app.post("/api/auth/login", rateLimit, wrap(async (req, res) => {
   const { email, password } = req.body ?? {};
   const user = await authenticate(email, password);
   if (!user) return fail(res, 401, "invalid email or password");
   const token = await startSession(user);
+  res.setHeader("Set-Cookie", sessionCookie(token, { secure: secureRequest(req) }));
   ok(res, { token, user });
 }));
 
@@ -1957,6 +2117,7 @@ app.post("/api/auth/google", rateLimit, wrap(async (req, res) => {
     const g = await verifyGoogleIdToken(token);
     const user = await findOrCreateGoogleUser(g);
     const bearer = await startSession(user);
+    res.setHeader("Set-Cookie", sessionCookie(bearer, { secure: secureRequest(req) }));
     ok(res, { token: bearer, user });
   } catch (err) {
     fail(res, 401, err.message);
@@ -1964,13 +2125,21 @@ app.post("/api/auth/google", rateLimit, wrap(async (req, res) => {
 }));
 
 app.post("/api/auth/logout", wrap(async (req, res) => {
-  await endSession(bearerToken(req.headers.authorization));
+  await endSession(bearerToken(req.headers.authorization) ?? cookieToken(req.headers.cookie));
+  res.setHeader("Set-Cookie", clearedSessionCookie({ secure: secureRequest(req) }));
   ok(res, {});
 }));
 
 app.get("/api/auth/me", wrap(async (req, res) => {
-  const user = await userForToken(bearerToken(req.headers.authorization));
+  const token = bearerToken(req.headers.authorization);
+  const user = await userForToken(token ?? cookieToken(req.headers.cookie));
   if (!user) return fail(res, 401, "not logged in");
+  // Re-issue the media cookie for a session that predates it. The UI calls this
+  // on boot, so a browser holding only the localStorage token from an older
+  // build gets its rasters back without having to log in again.
+  if (token && !cookieToken(req.headers.cookie)) {
+    res.setHeader("Set-Cookie", sessionCookie(token, { secure: secureRequest(req) }));
+  }
   ok(res, { user });
 }));
 
@@ -1982,11 +2151,25 @@ app.get("/api/auth/google/config", wrap(async (_req, res) => {
   ok(res, { clientId: process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null });
 }));
 
-/** The cloud-key gate — writes and tests require a logged-in session. */
-async function requireAuth(req, res) {
-  const user = await userForToken(bearerToken(req.headers.authorization));
+/** Session gate for the routes that sit outside the deck workspace. */
+async function requireAuth(req, res, message = "log in to continue") {
+  const user = await resolveUser(req);
   if (!user) {
-    res.status(401).json({ ok: false, error: "log in to manage the cloud key" });
+    res.status(401).json({ ok: false, error: message });
+    return null;
+  }
+  return user;
+}
+
+/** Admin gate for install-wide settings — one account must not reconfigure the box for everyone. */
+async function requireAdminUser(req, res, message = "admin only") {
+  const user = await resolveUser(req);
+  if (!user) {
+    res.status(401).json({ ok: false, error: "log in" });
+    return null;
+  }
+  if (!isAdmin(user)) {
+    res.status(403).json({ ok: false, error: message });
     return null;
   }
   return user;
@@ -1999,12 +2182,20 @@ async function requireAuth(req, res) {
  * booleans and labels, test gives a success/failure detail string. The write
  * path lands in gitignored config/local.yaml via src/cloud.js.
  */
-app.get("/api/cloud", wrap(async (_req, res) => {
-  ok(res, { cloud: await cloudStatus() });
+app.get("/api/cloud", wrap(async (req, res) => {
+  const user = await resolveUser(req);
+  ok(res, { cloud: await cloudStatus(user ? getUserId(user.email) : null) });
 }));
 
+/**
+ * The INSTALL-WIDE provider key, written to config/local.yaml. It is the
+ * operator's key and it bills the operator, so only an admin may set it — any
+ * logged-in account used to be able to, which meant one user could replace the
+ * key every other user's generations ran on. A user attaching their own key
+ * wants PUT /api/keys, which stores it encrypted against their account.
+ */
 app.put("/api/cloud/key", wrap(async (req, res) => {
-  if (!(await requireAuth(req, res))) return;
+  if (!(await requireAdminUser(req, res, "the shared provider key is an operator setting — add your own key under Settings → Cloud"))) return;
   const { key } = req.body ?? {};
   if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
     return fail(res, 400, "key must look like an API key (starts with sk-, at least 8 chars)");
@@ -2016,29 +2207,34 @@ app.put("/api/cloud/key", wrap(async (req, res) => {
 }));
 
 app.delete("/api/cloud/key", wrap(async (req, res) => {
-  if (!(await requireAuth(req, res))) return;
+  if (!(await requireAdminUser(req, res, "the shared provider key is an operator setting"))) return;
   const name = await cloudKeyName();
   if (name) await clearApiKey(name);
   ok(res, {});
 }));
 
-app.post("/api/cloud/test", wrap(async (_req, res) => {
+app.post("/api/cloud/test", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res, "log in to test a provider"))) return;
   ok(res, await testCloudConnection());
 }));
 
-/** The AUTO/CLOUD routing preference — auto is TCET campus gateway (free, rate-limited). */
+/** The AUTO/CLOUD routing preference — per account, not per install. */
 app.put("/api/cloud/routing", wrap(async (req, res) => {
-  if (!(await requireAuth(req, res))) return;
+  const user = await requireAuth(req, res, "log in to change routing");
+  if (!user) return;
   const route = req.body?.route;
-  await setRoutingPreference(route);
-  ok(res, { route: await routingPreference() });
+  const uid = getUserId(user.email);
+  await setRoutingPreference(route, uid);
+  ok(res, { route: await routingPreference(uid) });
 }));
 
 /* ------------------------------------------------------------------ auto (TCET) */
-app.get("/api/auto/status", wrap(async (_req, res) => {
-  ok(res, { auto: await autoStatus(), limits: limitConfig() });
+app.get("/api/auto/status", wrap(async (req, res) => {
+  const user = await resolveUser(req);
+  ok(res, { auto: await autoStatus(user ? getUserId(user.email) : null), limits: limitConfig() });
 }));
-app.post("/api/auto/test", wrap(async (_req, res) => {
+app.post("/api/auto/test", wrap(async (req, res) => {
+  if (!(await requireAuth(req, res, "log in to test the gateway"))) return;
   ok(res, await testAutoConnection());
 }));
 app.get("/api/auto/usage", wrap(async (req, res) => {
@@ -2085,25 +2281,38 @@ app.get("/api/docs", wrap(async (_req, res) => {
   res.type("text/plain").send(text);
 }));
 
-app.get("/api/health", (_req, res) => ok(res, { root: ROOT }));
+// Liveness only. It used to return the absolute install path, which tells an
+// unauthenticated caller how the box is laid out for no operational benefit.
+app.get("/api/health", (_req, res) => ok(res, {}));
 
 /**
- * Seed the operator's account on boot when registration is closed. The env
- * pair is the only way in on a locked box — document it loudly and never fall
- * back to a default password.
+ * Seed the operator's account on boot.
+ *
+ * This runs whether or not registration is open, and it is now the ONLY way an
+ * admin comes into existence besides promotion by an existing admin. Deriving
+ * admin from an email address at request time meant whoever registered that
+ * address first owned the box, because registration does not verify email.
+ * Boot is unreachable from the network, so the env pair is safe here.
+ *
+ * If the address already has an account (registered normally, or via Google
+ * where there is no password to set), it is promoted rather than recreated.
  */
-if (!OPEN_REGISTRATION) {
+{
   const adminEmail = process.env.FORGE_ADMIN_EMAIL;
   const adminPassword = process.env.FORGE_ADMIN_PASSWORD;
-  if (!adminEmail || !adminPassword) {
-    console.warn("  WARNING: FORGE_OPEN_REGISTRATION=0 but FORGE_ADMIN_EMAIL/FORGE_ADMIN_PASSWORD are not set — nobody can create an account.");
-  } else {
+  if (adminEmail) {
     try {
-      const created = await seedAdmin({ name: "Admin", email: adminEmail, password: adminPassword });
+      const created = adminPassword
+        ? await seedAdmin({ name: "Admin", email: adminEmail, password: adminPassword })
+        : false;
       if (created) console.log("  seeded operator account from FORGE_ADMIN_*");
+      else if (await promoteToAdmin(adminEmail)) console.log("  promoted FORGE_ADMIN_EMAIL to admin");
     } catch (err) {
       console.error(`  admin seed failed: ${err.message}`);
     }
+  }
+  if (!OPEN_REGISTRATION && !adminEmail) {
+    console.warn("  WARNING: FORGE_OPEN_REGISTRATION=0 but FORGE_ADMIN_EMAIL is not set — nobody can create an account.");
   }
 }
 
