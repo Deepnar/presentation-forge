@@ -15,9 +15,9 @@
 import { mkdir, access, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { ROOT } from "../src/paths.js";
+import { BRAND } from "../src/paths.js";
 
-const OUT = path.join(ROOT, "brand", "logos");
+const OUT = path.join(BRAND, "logos");
 
 const INK = "#2f3b52";
 const ACCENT = "#b4472f";

@@ -15,17 +15,17 @@ import { readdir, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import sharp from "sharp";
-import { ROOT } from "../src/paths.js";
+import { ROOT, BRAND } from "../src/paths.js";
 
-const SRC = path.join(ROOT, "brand", "logos");
-const OUT = path.join(ROOT, "brand", "generated");
+const SRC = path.join(BRAND, "logos");
+const OUT = path.join(BRAND, "generated");
 const EXT = /\.(png|jpe?g|webp|tiff?|gif)$/i;
 
 /** Find a source file by stem, whatever extension the user happened to save. */
-async function findSource(stem) {
-  const files = await readdir(SRC).catch(() => []);
+async function findSource(srcDir, stem) {
+  const files = await readdir(srcDir).catch(() => []);
   const hit = files.find((f) => EXT.test(f) && path.parse(f).name.toLowerCase() === stem);
-  return hit ? path.join(SRC, hit) : null;
+  return hit ? path.join(srcDir, hit) : null;
 }
 
 /**
@@ -84,8 +84,8 @@ async function monochrome(input, tint) {
   return sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } }).png();
 }
 
-async function emit(name, pipeline) {
-  const file = path.join(OUT, `${name}.png`);
+async function emit(outDir, name, pipeline) {
+  const file = path.join(outDir, `${name}.png`);
   const info = await pipeline.toFile(file);
   console.log(`  ${name.padEnd(10)} ${String(info.width).padStart(4)}x${String(info.height).padEnd(4)}  ${(info.size / 1024).toFixed(0)}kB`);
   return file;
@@ -102,15 +102,15 @@ async function main() {
  * API can re-run it after an upload — one implementation, two callers.
  * Returns what it produced so a caller can report on it.
  */
-export async function normalizeBrand() {
-  await mkdir(OUT, { recursive: true });
+export async function normalizeBrand({ srcDir = SRC, outDir = OUT, placeholders = true } = {}) {
+  await mkdir(outDir, { recursive: true });
 
   const [crestSrc, bannerSrc, watermarkSrc] = await Promise.all(
-    ["crest", "banner", "watermark"].map(findSource),
+    ["crest", "banner", "watermark"].map((stem) => findSource(srcDir, stem)),
   );
 
   let placeholder = false;
-  if (!crestSrc && !bannerSrc && !watermarkSrc) {
+  if (!crestSrc && !bannerSrc && !watermarkSrc && placeholders) {
     // A fresh clone has no marks — real ones are trademarks and stay out of the
     // repository. Generate neutral stand-ins so the renderer works immediately
     // rather than failing on a missing asset.
@@ -121,16 +121,16 @@ export async function normalizeBrand() {
   if (crestSrc) {
     const keyed = await keyWhite(crestSrc);
     const trimmed = await sharp(await keyed.toBuffer()).trim({ threshold: 1 }).png().toBuffer();
-    await emit("crest", sharp(trimmed).png({ compressionLevel: 9 }));
+    await emit(outDir, "crest", sharp(trimmed).png({ compressionLevel: 9 }));
     // Reversed mark for dark themes.
-    await emit("crest-light", await monochrome(trimmed, { r: 255, g: 255, b: 255 }));
+    await emit(outDir, "crest-light", await monochrome(trimmed, { r: 255, g: 255, b: 255 }));
   } else if (!placeholder) {
     console.log("  crest      — no source, skipped");
   }
 
   if (bannerSrc) {
     // The banner is a full-bleed strip with a rule; trim only flat margins.
-    await emit("banner", sharp(bannerSrc).trim({ threshold: 12 }).png({ compressionLevel: 9 }));
+    await emit(outDir, "banner", sharp(bannerSrc).trim({ threshold: 12 }).png({ compressionLevel: 9 }));
   } else if (!placeholder) {
     console.log("  banner     — no source, skipped");
   }
@@ -149,7 +149,7 @@ export async function normalizeBrand() {
         blend: "dest-out",
       }])
       .png({ compressionLevel: 9 });
-    await emit("watermark", faded);
+    await emit(outDir, "watermark", faded);
   } else if (!placeholder) {
     console.log("  watermark  — no source, skipped");
   }
@@ -162,7 +162,10 @@ export async function normalizeBrand() {
   };
 }
 
-// CLI entry; the API imports normalizeBrand directly instead.
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// CLI entry; the API imports normalizeBrand directly instead. argv[1] is
+// undefined when this module is pulled in by `node -e "import(...)"`, and
+// pathToFileURL throws on undefined — which crashed the container's first-boot
+// brand seeding before it could normalise anything.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main();
 }

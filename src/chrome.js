@@ -2,6 +2,7 @@ import { access } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { ROOT } from "./paths.js";
+import { resolveBrandPath } from "./tenant.js";
 import { hex } from "./theme.js";
 import { DIVIDER_TYPES } from "./ai/team.js";
 
@@ -23,7 +24,7 @@ const CREST = { h: 0.82, right: 0.55, y: 0.26 };
 const FOOT = { y: 6.92, h: 0.3 };
 
 async function probe(file) {
-  const abs = path.isAbsolute(file) ? file : path.join(ROOT, file);
+  const abs = resolveBrandPath(file, ROOT);
   try {
     await access(abs);
   } catch {
