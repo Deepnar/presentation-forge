@@ -140,7 +140,7 @@ test("a missing donor fails with a clear message, not a half-working render", as
   await assert.rejects(resolveDonor(path.join("/nonexistent", "donor.docx")), /donor not found/);
 
   const empty = await mkdtemp(path.join(tmpdir(), "forge-ref-"));
-  await assert.rejects(resolveDonor(null, empty), /reference\/ is gitignored/);
+  await assert.rejects(resolveDonor(null, empty), /report donor \.docx not found/);
 
   const multi = await mkdtemp(path.join(tmpdir(), "forge-ref-"));
   await writeFile(path.join(multi, "a.docx"), "x");

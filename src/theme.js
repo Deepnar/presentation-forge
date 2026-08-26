@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { ROOT } from "./paths.js";
+import { ROOT, THEMES } from "./paths.js";
 
 /** pptxgenjs wants bare hex — no leading '#', no alpha. */
 export function hex(c) {
@@ -18,7 +18,7 @@ export function alphaPct(c) {
 }
 
 export async function listThemes() {
-  const files = await readdir(path.join(ROOT, "themes"));
+  const files = await readdir(THEMES);
   return files.filter((f) => f.endsWith(".yaml") && !f.startsWith("_")).map((f) => f.replace(/\.yaml$/, ""));
 }
 
@@ -50,7 +50,7 @@ function deepMerge(a, b) {
 }
 
 export async function loadTheme(name, { mode = "light", style } = {}) {
-  const file = path.join(ROOT, "themes", `${name}.yaml`);
+  const file = path.join(THEMES, `${name}.yaml`);
   let raw;
   try {
     raw = await readFile(file, "utf8");

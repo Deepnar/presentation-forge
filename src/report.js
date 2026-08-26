@@ -23,7 +23,7 @@ import { promisify } from "node:util";
 import JSZip from "jszip";
 import Ajv from "ajv";
 import YAML from "yaml";
-import { ROOT } from "./paths.js";
+import { ROOT, REFERENCE } from "./paths.js";
 import { loadIdentity } from "./ai/identity.js";
 import { libreofficeToPdf } from "./preview.js";
 
@@ -46,14 +46,15 @@ export const REPORT_SECTIONS = [
 
 function donorMissing() {
   return new Error(
-    "report donor .docx not found — reference/ is gitignored. Drop the institutional " +
-    "template .docx into reference/ (or pass --donor <path>) before rendering a report.",
+    "report donor .docx not found. Drop the institutional template .docx into " +
+    `${REFERENCE} (or pass --donor <path>) before rendering a report. On a hosted ` +
+    "deployment an admin can upload it under Settings, or set FORGE_REFERENCE_DIR.",
   );
 }
 
 /** The donor lives in gitignored reference/. With several present, an explicit
  *  path is required rather than guessing which template to match. */
-export async function resolveDonor(explicit, refDir = path.join(ROOT, "reference")) {
+export async function resolveDonor(explicit, refDir = REFERENCE) {
   if (explicit) {
     await access(explicit).catch(() => {
       throw new Error(`report donor not found: ${explicit}`);
