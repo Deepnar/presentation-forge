@@ -155,7 +155,7 @@ export async function render({
     // stays free. Full-bleed slides (title, section, quote, image, freeform)
     // never take one — there is no standard content box to reserve.
     const noteBar = data.speaker_note && !isFull;
-    const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity });
+    const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity, type: data.type });
     const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
 
     try {

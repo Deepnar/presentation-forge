@@ -103,8 +103,9 @@ tokens:
       angle: 90
       color: 1A1A1A
       opacity: 0
-  bauhaus:
-    block: true
+  layout:
+    section:
+      composition: block
   plate:
     enabled: false
 voice:

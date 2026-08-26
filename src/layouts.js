@@ -2,6 +2,10 @@ import { hex, textStyle, applyTransform } from "./theme.js";
 import { fitScale, fitScaleAll, fitOneLine, lineCount, measure } from "./fit.js";
 import { CANVAS, reservedTopRight } from "./chrome.js";
 import { chartSeries, ensureContrast } from "./chartpalette.js";
+import {
+  frameBox, drawOpening, drawHeading, bulletOptions, listColumns, hasDropcap,
+  sectionField, sectionStyle, titlePlacement,
+} from "./composition.js";
 
 /**
  * One renderer per slide type. Each receives a fully resolved context and
@@ -32,13 +36,13 @@ function linesBox(theme, token, texts, width) {
   return Math.round((lines * lineH + 0.06) * 100) / 100;
 }
 
-function content(theme, brand, { full = false, note = 0, identity } = {}) {
+function content(theme, brand, { full = false, note = 0, identity, type = null } = {}) {
   const m = theme.grid.margin;
   const reserve = full ? 0 : reservedTopRight(brand, identity);
   // A speaker-note bar reserves height at the bottom of the content box; the
   // bar itself is drawn by render.js in the space this frees.
   const bottom = CANVAS.h - m.bottom - note;
-  return {
+  const base = {
     x: m.left,
     y: m.top,
     w: CANVAS.w - m.left - m.right,
@@ -46,6 +50,9 @@ function content(theme, brand, { full = false, note = 0, identity } = {}) {
     bottom,
     titleW: CANVAS.w - m.left - m.right - reserve,
   };
+  // The theme's frame decides where the mark, the heading and the body sit
+  // within those margins. Full-bleed surfaces keep the plain column.
+  return frameBox(theme, base, full ? "full" : null, type);
 }
 
 function card(slide, theme, { x, y, w, h }) {
@@ -79,91 +86,22 @@ function card(slide, theme, { x, y, w, h }) {
   slide.addShape("roundRect", opts);
 }
 
-/** Eyebrow (numbered section pill + label) shared by most content slides. */
+/**
+ * The mark that opens a content slide — a numbered section pill by default,
+ * or whatever else the theme's composition calls for. Shared by most content
+ * slides, which is why one theme token restyles all of them at once.
+ */
 function eyebrow(slide, ctx) {
-  const { theme, deck, data } = ctx;
-  if (data.section == null || !deck.sections?.[data.section]) return;
-
-  const label = deck.sections[data.section];
-  const num = String(data.section + 1).padStart(2, "0");
-  const y = theme.grid.band.eyebrow_y;
-  const pillW = 0.62, pillH = 0.32;
-
-  slide.addShape("roundRect", {
-    x: ctx.box.x, y, w: pillW, h: pillH,
-    fill: { color: hex(theme.palette.accent) },
-    line: { type: "none" },
-    rectRadius: theme.shape?.radius?.pill ?? 0.16,
-  });
-  slide.addText(num, {
-    x: ctx.box.x, y, w: pillW, h: pillH,
-    ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent }),
-    align: "center", valign: "middle",
-  });
-  slide.addText(applyTransform(theme, "eyebrow", label), {
-    x: ctx.box.x + pillW + 0.18, y, w: ctx.box.titleW - pillW - 0.18, h: pillH,
-    ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
-    valign: "middle",
-  });
-}
-
-/** Headline + optional standfirst. Returns the y where body content may start. */
-function heading(slide, ctx) {
-  const { theme, data, box } = ctx;
-  let y = theme.grid.band.title_y;
-
-  if (data.headline) {
-    const st = theme.type.heading;
-    const scale = fitScale(data.headline, box.titleW, 1.05, st);
-    const size = st.size * scale;
-    // The headline may wrap; the standfirst must start after however many lines
-    // are actually rendered. Counting at the fitted size (with a small width
-    // safety so an underestimated line can never collide) is what keeps a
-    // wrapped headline from running into the standfirst below it.
-    const fits = lineCount(data.headline, box.titleW, { ...st, size }) === 1 &&
-      measure(data.headline, { ...st, size }) <= box.titleW * 0.95;
-    const lines = fits ? 1 : 2;
-    const h = (size * (st.line ?? 1.2) / 72) * lines;
-    slide.addText(data.headline, {
-      x: box.x, y, w: box.titleW, h,
-      ...textStyle(theme, "heading", { scale }),
-      valign: "top",
-    });
-    y += h + 0.08;
-  }
-
-  if (data.standfirst) {
-    const st = theme.type.subhead;
-    const scale = fitScale(data.standfirst, box.w, 0.85, st);
-    slide.addText(data.standfirst, {
-      x: box.x, y, w: box.w, h: 0.75,
-      ...textStyle(theme, "subhead", { color: theme.palette.ink_muted, scale }),
-      valign: "top",
-    });
-    y += 0.72;
-  }
-
-  return Math.max(y, theme.grid.band.body_y);
+  drawOpening(slide, ctx);
 }
 
 /**
- * The bauhaus section treatment: a hard primary-colour geometric shape behind
- * the divider headline — a red circle over the yellow field, the constructivist
- * signature. Drawn before the text so the headline reads on top of it. Only
- * runs when the theme opts in via tokens.bauhaus.block.
+ * Headline + optional standfirst, in the column the theme's frame gives them.
+ * Returns the y where body content may start — which in a sidebar frame is the
+ * top of the body column rather than the bottom of the headline.
  */
-function bauhausBlock(slide, theme, s) {
-  if (theme.tokens?.bauhaus?.block !== true) return;
-  // The circle breaks out of the right edge; the triangle counters it at the
-  // top-left. Both are flat fills — no shadow, no outline.
-  slide.addShape("ellipse", {
-    x: 8.6, y: 3.4, w: 5.6, h: 5.6,
-    fill: { color: hex(s.accent ?? theme.palette.accent) }, line: { type: "none" },
-  });
-  slide.addShape("triangle", {
-    x: -0.6, y: -0.6, w: 3.2, h: 2.4,
-    fill: { color: hex(s.ink ?? theme.palette.ink) }, line: { type: "none" },
-  });
+function heading(slide, ctx) {
+  return drawHeading(slide, ctx);
 }
 
 /* ---------------------------------------------------------------- layouts */
@@ -175,22 +113,54 @@ export const layouts = {
     slide.background = { color: hex(s.bg) };
 
     const m = theme.grid.margin;
-    const w = CANVAS.w - m.left - m.right;
+    const comp = titlePlacement(theme);
     const st = theme.type.display;
+
+    // A split field or a band borrows the SECTION surface rather than mixing a
+    // new colour: bg-on-ink there is a pairing the theme contract already
+    // holds, and an invented one is how a title slide ends up at 1.2:1 with
+    // nobody noticing. Both also start below 1.5in, which is where the locked
+    // banner chrome stops.
+    let x = m.left;
+    let w = CANVAS.w - m.left - m.right;
+    let titleY = 1.95, titleH = 2.5, valign = "bottom", metaY = 4.65;
+    let ink = s.ink;
+    const align = comp === "centred" || comp === "band" ? { align: "center" } : {};
+
+    if (comp === "split") {
+      const fx = CANVAS.w * 0.63;
+      slide.addShape("rect", {
+        x: fx, y: 1.5, w: CANVAS.w - fx, h: CANVAS.h - 1.5,
+        fill: { color: hex(theme.surfaces.section.bg) }, line: { type: "none" },
+      });
+      w = fx - m.left - 0.55;
+    } else if (comp === "band") {
+      slide.addShape("rect", {
+        x: 0, y: 1.85, w: CANVAS.w, h: 2.5,
+        fill: { color: hex(theme.surfaces.section.bg) }, line: { type: "none" },
+      });
+      ink = theme.surfaces.section.ink;
+      titleY = 1.95; titleH = 2.3; valign = "middle"; metaY = 4.7;
+    } else if (comp === "centred") {
+      titleY = 1.9; titleH = 2.6; metaY = 4.75;
+    } else if (comp === "top") {
+      titleY = 1.85; titleH = 2.4; valign = "top"; metaY = 5.25;
+    }
+
     // Two lines of display type is the design intent; only shrink past that.
     const scale = fitScale(deck.title, w, (st.size / 72) * (st.line ?? 1.12) * 2, st);
-
     slide.addText(deck.title, {
-      x: m.left, y: 1.95, w, h: 2.5,
-      ...textStyle(theme, "display", { color: s.ink, scale }),
-      valign: "bottom",
+      x, y: titleY, w, h: titleH,
+      ...textStyle(theme, "display", { color: ink, scale }),
+      ...align, valign,
     });
 
-    let y = 4.65;
+    let y = metaY;
     if (deck.subtitle) {
       slide.addText(deck.subtitle, {
-        x: m.left, y, w, h: 0.5,
+        x, y, w, h: 0.5,
         ...textStyle(theme, "subhead", { color: s.muted, italic: true }),
+        ...align,
       });
       y += 0.5;
     }
@@ -202,8 +172,9 @@ export const layouts = {
     const line = [team.label, names].filter(Boolean).join(" — ");
     if (line) {
       slide.addText(line, {
-        x: m.left, y, w, h: 0.4,
+        x, y, w, h: 0.4,
         ...textStyle(theme, "caption", { color: s.muted }),
+        ...align,
       });
       y += 0.42;
     }
@@ -212,8 +183,9 @@ export const layouts = {
     if (guide) {
       const role = identity.guide?.designation;
       slide.addText(`Guide: ${guide}${role ? ` · ${role}` : ""}`, {
-        x: m.left, y, w, h: 0.35,
+        x, y, w, h: 0.35,
         ...textStyle(theme, "caption", { color: s.muted }),
+        ...align,
       });
     }
 
@@ -221,8 +193,9 @@ export const layouts = {
       .filter(Boolean).join("  ·  ");
     if (sub) {
       slide.addText(sub, {
-        x: m.left, y: CANVAS.h - m.bottom - 0.42, w, h: 0.35,
+        x, y: CANVAS.h - m.bottom - 0.42, w, h: 0.35,
         ...textStyle(theme, "caption", { color: s.accent ?? s.muted }),
+        ...align,
       });
     }
   },
@@ -231,40 +204,88 @@ export const layouts = {
     const { theme, data, deck } = ctx;
     const s = theme.surfaces.section;
     slide.background = { color: hex(s.bg) };
-    bauhausBlock(slide, theme, s);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
+    const { place, field } = sectionStyle(theme);
+    const num = data.section != null && deck.sections?.[data.section]
+      ? String(data.section + 1).padStart(2, "0")
+      : null;
 
-    let y = 2.85;
-    if (data.section != null && deck.sections?.[data.section]) {
-      slide.addText(String(data.section + 1).padStart(2, "0"), {
-        x: m.left, y, w, h: 0.34,
-        ...textStyle(theme, "eyebrow", { color: s.muted }),
+    // The number as the graphic: a display figure holding a column of its own,
+    // the headline set beside it. There is no stack to enclose, so no field.
+    if (place === "numeral") {
+      sectionField(slide, theme, s, null);
+      const colW = 2.9;
+      const tx = m.left + colW + 0.6;
+      const tw = CANVAS.w - m.right - tx;
+      if (num) {
+        slide.addText(num, {
+          x: m.left, y: 2.35, w: colW, h: 2.3,
+          ...textStyle(theme, "display", { color: s.muted, scale: 2.4 }),
+          valign: "middle",
+        });
+      }
+      const hs = fitScale(data.headline ?? "", tw, 1.9, theme.type.display, { min: 0.5 });
+      slide.addText(data.headline ?? "", {
+        x: tx, y: 2.35, w: tw, h: 1.9,
+        ...textStyle(theme, "display", { color: s.ink, scale: Math.min(hs, 0.8) }),
+        valign: "middle",
       });
-      y += 0.38;
+      if (data.standfirst) {
+        slide.addText(data.standfirst, {
+          x: tx, y: 4.4, w: tw, h: 0.9,
+          ...textStyle(theme, "subhead", { color: s.muted }),
+          valign: "top",
+        });
+      }
+      return;
     }
 
-    // The accent rule is the one decorative element every section surface
-    // draws — a short bar in the surface's light tint under the number, so a
-    // section break reads as designed rather than a bare text block.
-    slide.addShape("rect", {
-      x: m.left, y: y + 0.06, w: 1.0, h: 0.05,
-      fill: { color: hex(s.muted) }, line: { type: "none" },
-    });
-    y += 0.30;
+    const centred = place === "centred";
+    const align = centred ? { align: "center" } : {};
+    // The stack is measured before anything is painted, so a band or a pair of
+    // rules can enclose the headline rather than guess where it landed.
+    const top = centred ? 2.55 : 2.85;
+    const numY = top;
+    const ruleY = top + (num ? 0.38 : 0);
+    const headY = ruleY + 0.30;
+    const band = { y: headY - 0.2, h: 1.55 };
+    const ink = sectionField(slide, theme, s, band);
+
+    if (num) {
+      slide.addText(num, {
+        x: m.left, y: numY, w, h: 0.34,
+        ...textStyle(theme, "eyebrow", { color: s.muted }),
+        ...align,
+      });
+    }
+
+    // The accent rule is the decorative element a plain section surface draws —
+    // a short bar in the surface's light tint under the number, so a section
+    // break reads as designed rather than as a bare text block. A theme whose
+    // divider already carries a band or a pair of rules has its decoration,
+    // and the bar would land on the field's edge.
+    if (field !== "band" && field !== "rules") {
+      slide.addShape("rect", {
+        x: centred ? (CANVAS.w - 1.0) / 2 : m.left, y: ruleY + 0.06, w: 1.0, h: 0.05,
+        fill: { color: hex(s.muted) }, line: { type: "none" },
+      });
+    }
 
     slide.addText(data.headline ?? "", {
-      x: m.left, y, w, h: 1.15,
-      ...textStyle(theme, "display", { color: s.ink, scale: 0.8 }),
-      valign: "top",
+      x: m.left, y: headY, w, h: 1.15,
+      ...textStyle(theme, "display", { color: ink, scale: 0.8 }),
+      ...align, valign: "top",
     });
-    y += 1.1;
 
     if (data.standfirst) {
+      // A band ends 0.2in under the headline box; the standfirst clears it so
+      // it stays on the surface, in the surface's muted ink.
+      const sfY = field === "band" ? band.y + band.h + 0.18 : headY + 1.1;
       slide.addText(data.standfirst, {
-        x: m.left, y, w: w * 0.66, h: 0.9,
+        x: m.left, y: sfY, w: centred ? w : w * 0.66, h: 0.9,
         ...textStyle(theme, "subhead", { color: s.muted }),
-        valign: "top",
+        ...align, valign: "top",
       });
     }
   },
@@ -278,11 +299,10 @@ export const layouts = {
     const st = theme.type.body;
     const scale = fitScaleAll(data.bullets, box.w - 0.4, avail / data.bullets.length, st);
 
-    // The editorial-magazine treatment: a magazine-style column split. When the
-    // theme opts in (tokens.editorial.columns === 2) and there are enough
-    // bullets to justify it, the list runs in two columns instead of one long
-    // stack. Every other theme is untouched — the flag is absent there.
-    if (theme.tokens?.editorial?.columns === 2 && data.bullets.length >= 4) {
+    // A magazine-style column split: when the theme sets two columns and there
+    // are enough bullets to justify it, the list runs in two instead of one
+    // long stack. One-column themes never reach this.
+    if (listColumns(theme) === 2 && data.bullets.length >= 4) {
       const colGut = 0.45;
       const cw = (box.w - colGut) / 2;
       const half = Math.ceil(data.bullets.length / 2);
@@ -291,8 +311,9 @@ export const layouts = {
       const colScale = fitScaleAll(data.bullets, cw - 0.35, avail / Math.max(left.length, right.length), st);
       for (const [i, col] of [left, right].entries()) {
         const rx = box.x + i * (cw + colGut);
+        const from = i === 0 ? 0 : half;
         slide.addText(
-          col.map((b) => ({ text: b, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
+          col.map((b, j) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, from + j) } })),
           {
             x: rx, y, w: cw, h: avail,
             ...textStyle(theme, "body", { scale: colScale }),
@@ -305,7 +326,7 @@ export const layouts = {
     }
 
     slide.addText(
-      data.bullets.map((b) => ({ text: b, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
+      data.bullets.map((b, i) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, i) } })),
       {
         x: box.x, y, w: box.w, h: avail,
         ...textStyle(theme, "body", { scale }),
@@ -442,7 +463,7 @@ export const layouts = {
     header(box.x + cw + gut, "CONS", theme.palette.ink_muted, "−");
 
     const points = (list, x) => slide.addText(
-      list.map((p) => ({ text: p, options: { breakLine: true, bullet: { characterCode: "2022" } } })),
+      list.map((p, i) => ({ text: p, options: { breakLine: true, ...bulletOptions(theme, i) } })),
       {
         x: x + pad, y: y + 0.65, w: cw - pad * 2, h: ch - 0.7,
         ...textStyle(theme, "body", { scale }),
@@ -554,10 +575,10 @@ export const layouts = {
 
     const termScale = fitScale(data.term, box.w, 0.9, theme.type.heading, { min: 0.6 });
 
-    // The editorial-magazine drop cap: the definition's first letter renders
-    // as a large display initial and the body's first line indents past it.
-    // Other themes never see this — the flag is absent from their tokens.
-    const dropcap = theme.tokens?.editorial?.dropcap === true && data.definition?.length > 0;
+    // The drop cap: the definition's first letter renders as a large display
+    // initial and the body's first line indents past it. Themes that do not
+    // ask for one never see it.
+    const dropcap = hasDropcap(theme) && data.definition?.length > 0;
     const capW = dropcap ? 0.85 : 0;
 
     slide.addText(data.term, {
@@ -1211,13 +1232,16 @@ export const layouts = {
     const { theme, data } = ctx;
     const s = theme.surfaces.section;
     slide.background = { color: hex(s.bg) };
-    bauhausBlock(slide, theme, s);
+    // A chapter paints the same surface as a section, so it carries the same
+    // field — a theme whose dividers are banded must band both or the deck
+    // reads as two themes.
+    const ink = sectionField(slide, theme, s, { y: 2.2, h: 2.1 });
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
     const scale = fitScale(data.headline, w, 1.8, theme.type.display, { min: 0.55 });
     slide.addText(data.headline, {
       x: m.left, y: 2.35, w, h: 1.8,
-      ...textStyle(theme, "display", { color: s.ink, scale }),
+      ...textStyle(theme, "display", { color: ink, scale }),
       align: "center", valign: "middle",
     });
     if (data.standfirst) {
