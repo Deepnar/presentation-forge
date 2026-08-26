@@ -82,3 +82,6 @@ config/uploads/
 reference/
 !reference/.gitkeep
 test/fixtures/
+
+# Theme audit contact sheets — a look-at-it scratch dir, regenerated on demand.
+.themeaudit/
