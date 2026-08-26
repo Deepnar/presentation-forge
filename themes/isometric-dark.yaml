@@ -19,8 +19,10 @@ tokens:
       accent: "#3D9BFF"
     section:
       bg: "#1A3A6E"
-      ink: "#0D1117"
-      muted: "#7BA6FF"
+      # Was #0D1117 — near-black ink on a dark blue ground, 1.69:1. The section
+      # title was effectively unreadable on every deck this theme rendered.
+      ink: "#EAF0FA"
+      muted: "#A8C4F0"
   dark:
     bg: "#0D1017"
     surface: "#141820"
@@ -113,48 +115,80 @@ tokens:
       opacity: 0.45
   plate:
     enabled: true
-    html: >
+    # Three axes, and a ground under all of them.
+    #
+    # The grid was two sets of lines at 30 and 150 degrees, which draws a
+    # diamond lattice rather than an isometric one — an isometric projection has
+    # a third, vertical axis, and without it the surface reads flat. All three
+    # are here now, the verticals weaker than the diagonals so the plane still
+    # recedes.
+    #
+    # Every surface also paints its own ground. The grid draws lines onto
+    # transparency and the vignette only darkened the edges, so the middle of a
+    # plate was never painted at all. On content slides the panel happened to
+    # cover the hole; on the title nothing did, and the slide rasterised white
+    # with near-white title text on it at 1.2:1 — an unreadable title slide on
+    # every deck using this theme.
+    html: |
       <style>
+        .ground{position:absolute;inset:0;background:{{tokens.palette.bg}};}
         .grid{position:absolute;inset:0;background:
           linear-gradient(30deg, transparent 46%, {{tokens.palette.accent}}22 46% 47%, transparent 47%),
-          linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}22 46% 47%, transparent 47%);
-          background-size: 86px 74px;}
-        .grid:after{content:"";position:absolute;inset:0;background:
-          radial-gradient(120% 100% at 50% 0%, transparent 55%, {{tokens.palette.bg}} 100%);}
+          linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}22 46% 47%, transparent 47%),
+          linear-gradient(90deg, transparent 49.4%, {{tokens.palette.accent}}14 49.4% 50.2%, transparent 50.2%);
+          background-size: 86px 74px, 86px 74px, 86px 74px;}
+        .vignette{position:absolute;inset:0;background:
+          radial-gradient(120% 100% at 50% 0%, transparent 45%, {{tokens.palette.bg}} 100%);}
         .field{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
-          background:{{tokens.palette.surface}}cc;border:1px solid {{tokens.palette.accent}}30;border-radius:12px;}
+          background:{{tokens.palette.surface}}f0;border:1px solid {{tokens.palette.accent}}3d;border-radius:12px;
+          box-shadow:0 20px 52px #00000066;}
       </style>
-
+      <div class="ground"></div>
       <div class="grid"></div>
-
+      <div class="vignette"></div>
       <div class="field"></div>
     surfaces:
-      title: >
+      title: |
         <style>
+          .ground{position:absolute;inset:0;background:{{tokens.surfaces.title.bg}};}
           .grid{position:absolute;inset:0;background:
             linear-gradient(30deg, transparent 46%, {{tokens.palette.accent}}33 46% 47%, transparent 47%),
-            linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}33 46% 47%, transparent 47%);
-            background-size: 86px 74px;}
+            linear-gradient(150deg, transparent 46%, {{tokens.palette.accent}}33 46% 47%, transparent 47%),
+            linear-gradient(90deg, transparent 49.4%, {{tokens.palette.accent}}1f 49.4% 50.2%, transparent 50.2%);
+            background-size: 86px 74px, 86px 74px, 86px 74px;}
+          /* The grid resolves out of the dark rather than being cut off by it:
+             brightest along the upper band, gone by the lower third, so the
+             title has unlit slate to sit on. */
           .fade{position:absolute;inset:0;background:
-            radial-gradient(100% 90% at 50% 30%, transparent 40%, {{tokens.surfaces.title.bg}} 92%);}
+            linear-gradient(180deg, transparent 0%, {{tokens.surfaces.title.bg}}66 42%, {{tokens.surfaces.title.bg}} 78%);}
+          .edge{position:absolute;left:0;top:64%;width:38%;height:2px;
+            background:{{tokens.surfaces.title.accent}};}
         </style>
-
+        <div class="ground"></div>
         <div class="grid"></div>
-
         <div class="fade"></div>
-      section: >
+        <div class="edge"></div>
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
+          .ground{position:absolute;inset:0;background:
             linear-gradient(30deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
           .grid{position:absolute;inset:0;background:
             linear-gradient(30deg, transparent 46%, #FFFFFF2E 46% 47%, transparent 47%),
-            linear-gradient(150deg, transparent 46%, #FFFFFF2E 46% 47%, transparent 47%);
-            background-size: 86px 74px;}
+            linear-gradient(150deg, transparent 46%, #FFFFFF2E 46% 47%, transparent 47%),
+            linear-gradient(90deg, transparent 49.4%, #FFFFFF1A 49.4% 50.2%, transparent 50.2%);
+            background-size: 86px 74px, 86px 74px, 86px 74px;}
+          /* A plate of slate laid on the grid, squared off — this theme draws
+             right angles, so its divider does not get a rounded end. */
+          .slab{position:absolute;left:0;top:26%;width:64%;height:44%;
+            background:{{tokens.palette.bg}}b3;
+            border-top:1px solid {{tokens.palette.accent}}59;
+            border-right:1px solid {{tokens.palette.accent}}59;
+            border-bottom:1px solid {{tokens.palette.accent}}59;}
         </style>
-
-        <div class="sec"></div>
-
+        <div class="ground"></div>
         <div class="grid"></div>
+        <div class="slab"></div>
+
 voice:
   feel: precise, engineered, architectural, calm
   density: medium
