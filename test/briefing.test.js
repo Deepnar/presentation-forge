@@ -79,7 +79,7 @@ test("a picked preset skips its fixed questions in the briefing walk", () => {
   // 5 thesis, 6 audience, 7 emphasis, 8 evidence, 9 theme, 10 maxSlides,
   // 11 slidesPerMember, 12 density, 13 branding, 14 research. Preset-fixed
   // are team/maxSlides/slidesPerMember/density/theme/branding.
-  assert.equal(effectiveBriefStep(briefing, 2, BRIEFING_QUESTIONS), 5);  // skip team -> thesis
+  assert.equal(effectiveBriefStep(briefing, 2, BRIEFING_QUESTIONS), 3);  // skip team -> guide
   assert.equal(effectiveBriefStep(briefing, 9, BRIEFING_QUESTIONS), 14); // skip theme..branding -> research
   assert.equal(effectiveBriefStep(briefing, 10, BRIEFING_QUESTIONS), 14);
   assert.equal(effectiveBriefStep(briefing, 12, BRIEFING_QUESTIONS), 14);
