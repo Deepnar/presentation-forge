@@ -3,7 +3,6 @@ import path from "node:path";
 import sharp from "sharp";
 import { ROOT } from "./paths.js";
 import { resolveBrandPath } from "./tenant.js";
-import { contrast, parseHex } from "./chartpalette.js";
 import { hex } from "./theme.js";
 import { DIVIDER_TYPES } from "./ai/team.js";
 
@@ -68,49 +67,22 @@ function luminance(c) {
 }
 
 /**
- * Pick the crest variant that is actually most legible on the ground the layout
- * painted.
+ * The mark is the real, full-colour crest — on every surface.
  *
- * This used to be a luminance threshold: below 0.45, take the reversed mark.
- * That is right for a dark ground and demonstrably wrong for a light chromatic
- * one. A salmon section divider sits at 0.29 luminance, so the rule took the
- * white mark at 3.1:1 while the dark mark was available at 5.6:1; a terracotta
- * divider is 4.27 against 4.08, near enough a coin toss that a threshold has no
- * business deciding it. Measuring both and taking the better one removes the
- * guess.
+ * The renderer used to swap in a single-colour knockout whenever the ground was
+ * dark or strongly coloured, on the reasoning that the crest's dark navy
+ * wordmark loses contrast there. That is true, and it is not the trade the
+ * owner of the mark wants: a flattened silhouette reads as a stamp rather than
+ * an institution's crest, and a mark that changes colour slide to slide reads
+ * as an error. The instruction is explicit — the crest is never black or white
+ * anywhere.
  *
- * The full-colour mark stays preferred on a near-neutral page — it is the real
- * mark, and a knockout is a compromise made for legibility. It is only set
- * aside when the ground is saturated enough that a full-colour shield reads as
- * a sticker rather than a mark.
+ * The knockout variants are still generated, so an identity can point at one
+ * deliberately, and so the choice can be revisited if legibility on the darkest
+ * themes turns out to matter more than consistency.
  */
-export function crestFor(brand, bgColor) {
-  // A near-neutral page keeps the real mark. Chroma, not HSL saturation: HSL
-  // saturation approaches 1 near white, so a warm paper like #F7F3EA scored
-  // 0.45 and was treated as a coloured ground.
-  if (chroma(bgColor) < 0.10 && contrast("#FFFFFF", bgColor) < 2.2) return brand.crest;
-
-  const options = [
-    brand.crestLight ? { mark: brand.crestLight, ink: "#FFFFFF" } : null,
-    brand.crestDark ? { mark: brand.crestDark, ink: "#141414" } : null,
-  ].filter(Boolean);
-  if (!options.length) return brand.crest;
-
-  let best = options[0];
-  let bestRatio = contrast(best.ink, bgColor);
-  for (const o of options.slice(1)) {
-    const r = contrast(o.ink, bgColor);
-    if (r > bestRatio) { best = o; bestRatio = r; }
-  }
-  return best.mark;
-}
-
-/** Colourfulness, 0..1, stable at both ends of the lightness range. */
-function chroma(c) {
-  const rgb = parseHex(c);
-  if (!rgb) return 0;
-  const [r, g, b] = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
-  return Math.max(r, g, b) - Math.min(r, g, b);
+function crestFor(brand) {
+  return brand.crest ?? brand.crestLight ?? brand.crestDark ?? null;
 }
 
 /** How much of the institution's marks a deck carries: full | minimal | none.
@@ -147,7 +119,7 @@ export function applyTitleChrome(slide, { brand, identity }) {
 export function applyContentChrome(slide, { brand, theme, identity, data, index, total, bg }) {
   const cfg = identity.chrome ?? {};
   const branding = brandingMode(identity);
-  const mark = crestFor(brand, bg ?? theme.palette.bg);
+  const mark = crestFor(brand);
 
   if (branding !== "none" && cfg.crest_on_content_slides !== false && mark) {
     const h = CREST.h;
