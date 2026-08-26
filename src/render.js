@@ -5,7 +5,7 @@ import path from "node:path";
 import PptxGenJS from "pptxgenjs";
 import YAML from "yaml";
 import sharp from "sharp";
-import { ROOT, CONFIG } from "./paths.js";
+import { ROOT } from "./paths.js";
 import { loadTheme, hex, textStyle } from "./theme.js";
 import { loadDeck } from "./validate.js";
 import { layouts, content } from "./layouts.js";
@@ -13,35 +13,7 @@ import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrom
 import { renderSlidePlate } from "./plate.js";
 import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
-
-async function loadIdentity(deckDir) {
-  // Always start from the example so a minimal identity.yaml (just institution)
-  // doesn't erase brand/chrome defaults — then overlay user and deck.
-  let base = {};
-  try {
-    base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
-  } catch {}
-  try {
-    const over = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
-    base = deepMerge(base, over);
-  } catch { /* no user identity */ }
-  try {
-    const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
-    return deepMerge(base, over);
-  } catch {
-    return base;
-  }
-}
-
-function deepMerge(a, b) {
-  if (Array.isArray(b)) return b;               // arrays replace, never merge
-  if (b && typeof b === "object" && a && typeof a === "object") {
-    const out = { ...a };
-    for (const [k, v] of Object.entries(b)) out[k] = deepMerge(a[k], v);
-    return out;
-  }
-  return b === undefined ? a : b;
-}
+import { loadIdentity } from "./ai/identity.js";
 
 /**
  * Draw the theme's decorative background layer — a faint wash, panel or hairline

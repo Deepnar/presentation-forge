@@ -1,13 +1,24 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
+import { userIdentityFile } from "../tenant.js";
 
 /**
- * Per-deck identity: config/identity.yaml remembered defaults overridden by
- * decks/<slug>/meta.yaml — the same merge the renderer performs, so what the
- * model plans with matches what gets drawn. Shared by the pipeline (planning)
- * and the chat orchestrator (turn context).
+ * Identity resolution, in four layers, each overriding the one before it:
+ *
+ *   1. config/identity.example.yaml — the committed template. Always the base,
+ *      so a minimal override cannot erase the brand/chrome defaults.
+ *   2. config/identity.yaml — the operator's standing default for this install.
+ *   3. the deck OWNER's own identity — per account, so one user's institution
+ *      and guide never appear on another user's slides.
+ *   4. decks/<slug>/meta.yaml — the per-submission facts, frozen at briefing.
+ *
+ * Layer 3 needs no caller changes: the deck folder already records who owns it
+ * (`meta.owner`), so the same meta.yaml read that supplies layer 4 also tells
+ * us whose identity layer 3 is. An explicit `owner` option is for the paths
+ * that have no deck folder yet — creating one, or editing the account's own
+ * defaults in Settings.
  */
 
 export function deepMerge(a, b) {
@@ -20,25 +31,51 @@ export function deepMerge(a, b) {
   return b === undefined ? a : b;
 }
 
-export async function loadIdentity(deckDir) {
-  // identity.yaml is gitignored and may be minimal (just institution.name) —
-  // always start from the committed template so brand/chrome defaults survive.
-  let base = {};
+async function readYaml(file) {
   try {
-    base = YAML.parse(await readFile(path.join(CONFIG, "identity.example.yaml"), "utf8")) ?? {};
-  } catch {}
-  try {
-    const over = YAML.parse(await readFile(path.join(CONFIG, "identity.yaml"), "utf8")) ?? {};
-    base = deepMerge(base, over);
-  } catch { /* no user identity yet */ }
-  // Per-deck meta.yaml wins over the standing defaults, key by key — the same
-  // merge the renderer performs, so what the model planned with matches what
-  // gets drawn.
-  if (deckDir) {
-    try {
-      const over = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
-      return deepMerge(base, over);
-    } catch { /* no meta yet */ }
+    return YAML.parse(await readFile(file, "utf8")) ?? {};
+  } catch {
+    return null;
   }
-  return base;
+}
+
+/** Just this account's overrides — what the Settings panel edits. */
+export async function loadUserIdentity(email) {
+  const file = userIdentityFile(email);
+  if (!file) return {};
+  return (await readYaml(file)) ?? {};
+}
+
+export async function saveUserIdentity(email, identity) {
+  const file = userIdentityFile(email);
+  if (!file) throw new Error("no account to save an identity for");
+  await mkdir(path.dirname(file), { recursive: true });
+  await writeFile(file, YAML.stringify(identity), "utf8");
+}
+
+export async function clearUserIdentity(email) {
+  const file = userIdentityFile(email);
+  if (!file) return;
+  await rm(file, { force: true });
+}
+
+/** The install-wide default: template plus the operator's identity.yaml. */
+export async function loadBaseIdentity() {
+  const base = (await readYaml(path.join(CONFIG, "identity.example.yaml"))) ?? {};
+  const operator = await readYaml(path.join(CONFIG, "identity.yaml"));
+  return operator ? deepMerge(base, operator) : base;
+}
+
+export async function loadIdentity(deckDir, { owner } = {}) {
+  let base = await loadBaseIdentity();
+
+  // The deck folder names its own owner, so the per-account layer resolves
+  // without every caller having to thread a user through.
+  let meta = null;
+  if (deckDir) meta = await readYaml(path.join(deckDir, "meta.yaml"));
+
+  const account = owner ?? meta?.owner ?? null;
+  if (account) base = deepMerge(base, await loadUserIdentity(account));
+
+  return meta ? deepMerge(base, meta) : base;
 }
