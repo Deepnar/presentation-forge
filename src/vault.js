@@ -1,8 +1,31 @@
 import { randomBytes, createCipheriv, createDecipheriv, createHash } from "node:crypto";
 import { getDb } from "./db.js";
+import { isHosted } from "./cloud.js";
 
+const DEV_PEPPER = "dev-pepper-change-me-in-prod-32b-min-32chars!!";
+
+/**
+ * The key every stored API key is encrypted under.
+ *
+ * The development fallback is a constant in a public repository, so a hosted
+ * box that forgot FORGE_KEY_PEPPER would encrypt its users' BYOK keys under a
+ * value anyone can read — which is not encryption at all. Hosted mode therefore
+ * refuses to run without a real pepper rather than quietly pretending.
+ */
 function masterKey() {
-  const pepper = process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY || "dev-pepper-change-me-in-prod-32b-min-32chars!!";
+  const pepper = process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY || "";
+  if (!pepper) {
+    if (isHosted()) {
+      throw new Error(
+        "FORGE_KEY_PEPPER is not set. Hosted mode stores per-user API keys encrypted at rest, " +
+        "and the built-in development pepper is a public constant. Set FORGE_KEY_PEPPER to a long random string.",
+      );
+    }
+    return createHash("sha256").update(DEV_PEPPER).digest();
+  }
+  if (pepper === DEV_PEPPER && isHosted()) {
+    throw new Error("FORGE_KEY_PEPPER is still the published development value — set a real one before hosting.");
+  }
   // derive 32 bytes via sha256 (stable, no salt needed for master)
   return createHash("sha256").update(pepper).digest();
 }

@@ -88,16 +88,18 @@ export function publicUser(u) {
   return { name: u.name, email: u.email, createdAt: u.createdAt, ...(u.role ? { role: u.role } : {}) };
 }
 
-/** The operator's account. Admin is the only role today, minted by seedAdmin
- *  (or matched by FORGE_ADMIN_EMAIL for an account seeded before roles
- *  existed). Admin sees the whole deck store, including ownerless legacy
- *  decks that no account owns. */
+/**
+ * The operator's role. Admin is granted in exactly two places: `seedAdmin()` at
+ * boot from the FORGE_ADMIN_* env pair, and promotion by an existing admin.
+ *
+ * It is deliberately NOT derived from the email address. Registration does not
+ * verify email ownership, so treating any address as inherently privileged
+ * means whoever signs up with that address first owns the instance. The env
+ * var still designates the operator — but only at boot, where an attacker
+ * cannot reach it.
+ */
 export function isAdmin(user) {
-  if (!user) return false;
-  if (user.role === "admin") return true;
-  if (user.email && String(user.email).toLowerCase() === "18deepnar@gmail.com") return true;
-  const adminEmail = process.env.FORGE_ADMIN_EMAIL;
-  return typeof adminEmail === "string" && user.email === adminEmail.trim().toLowerCase();
+  return Boolean(user && user.role === "admin");
 }
 
 /** RBAC — list all users for the admin panel. */
@@ -112,7 +114,7 @@ export async function listUsers() {
         role: r.role ?? null,
         createdAt: r.created_at,
         google: Boolean(r.google_sub),
-        admin: r.role === "admin" || (process.env.FORGE_ADMIN_EMAIL && r.email === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase()),
+        admin: r.role === "admin",
       }));
     } catch {}
   }
@@ -123,14 +125,13 @@ export async function listUsers() {
     role: u.role ?? null,
     createdAt: u.createdAt,
     google: Boolean(u.google_sub),
-    admin: u.role === "admin" || (process.env.FORGE_ADMIN_EMAIL && u.email === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase()),
+    admin: u.role === "admin",
   }));
 }
 
 export async function setUserRole(email, role) {
   const normalized = String(email).trim().toLowerCase();
   const clean = role === "admin" ? "admin" : null;
-  // never demote the seed admin via API if it's the env admin and the only admin?
   const d = db();
   if (d) {
     const row = d.prepare("SELECT role FROM users WHERE email=?").get(normalized);
@@ -154,8 +155,7 @@ export async function deleteUserAccount(email) {
     if (!row) throw new Error("no such user");
     // forbid deleting the last admin
     const admins = d.prepare("SELECT COUNT(*) as c FROM users WHERE role='admin'").get()?.c ?? 0;
-    const targetIsAdmin = d.prepare("SELECT role FROM users WHERE email=?").get(normalized)?.role === "admin" ||
-      (process.env.FORGE_ADMIN_EMAIL && normalized === process.env.FORGE_ADMIN_EMAIL.trim().toLowerCase());
+    const targetIsAdmin = d.prepare("SELECT role FROM users WHERE email=?").get(normalized)?.role === "admin";
     if (targetIsAdmin && admins <= 1) throw new Error("cannot delete the last admin");
     d.prepare("DELETE FROM users WHERE email=?").run(normalized);
     d.prepare("DELETE FROM sessions WHERE email=?").run(normalized);
@@ -208,20 +208,16 @@ export async function register({ name, email, password }) {
   const error = validateRegistration({ name, email, password });
   if (error) throw new Error(error);
   const normalized = email.trim().toLowerCase();
-  const isSeedAdmin = normalized === "18deepnar@gmail.com";
   const d = db();
   if (d) {
     const exists = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
     if (exists) throw new Error("an account with that email already exists");
     const { salt, hash } = hashPassword(password);
     const now = new Date().toISOString();
-    if (isSeedAdmin) {
-      d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)")
-        .run(normalized, name.trim(), hash, salt, "admin", now);
-    } else {
-      d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
-        .run(normalized, name.trim(), hash, salt, now);
-    }
+    // Self-registration never carries a role. Admin comes from seedAdmin() or
+    // an existing admin's promotion, never from what someone typed in a form.
+    d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
+      .run(normalized, name.trim(), hash, salt, now);
     const row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -233,12 +229,37 @@ export async function register({ name, email, password }) {
     name: name.trim(),
     email: normalized,
     createdAt: new Date().toISOString(),
-    ...(isSeedAdmin ? { role: "admin" } : {}),
     ...hashPassword(password),
   };
   users.push(user);
   await writeJson(USERS_FILE, users);
   return publicUser(user);
+}
+
+/**
+ * Give an existing account the admin role. Called at boot for FORGE_ADMIN_EMAIL
+ * so the operator keeps admin even when the account was created by ordinary
+ * registration (which never grants a role) or by Google sign-in, where no
+ * password exists for seedAdmin to set. Boot is the only safe place for this:
+ * the env var is operator intent, and nothing reachable over HTTP can reach it.
+ */
+export async function promoteToAdmin(email) {
+  const normalized = String(email ?? "").trim().toLowerCase();
+  if (!normalized) return false;
+  const d = db();
+  if (d) {
+    const row = d.prepare("SELECT id, role FROM users WHERE email=?").get(normalized);
+    if (!row) return false;
+    if (row.role === "admin") return false;
+    d.prepare("UPDATE users SET role='admin' WHERE email=?").run(normalized);
+    return true;
+  }
+  const users = await loadUsers();
+  const u = users.find((x) => x.email === normalized);
+  if (!u || u.role === "admin") return false;
+  u.role = "admin";
+  await writeJson(USERS_FILE, users);
+  return true;
 }
 
 /** Mint the operator's account from env on first boot (registration locked).
@@ -322,14 +343,8 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
       return publicUser(rowToUser(row));
     }
     const now = new Date().toISOString();
-    const isSeedAdmin = normalized === "18deepnar@gmail.com";
-    if (isSeedAdmin) {
-      d.prepare("INSERT INTO users (email,name,google_sub,google_email,role,created_at) VALUES (?,?,?,?,?,?)")
-        .run(normalized, name.trim() || normalized, sub, normalized, "admin", now);
-    } else {
-      d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
-        .run(normalized, name.trim() || normalized, sub, normalized, now);
-    }
+    d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
+      .run(normalized, name.trim() || normalized, sub, normalized, now);
     row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -344,14 +359,12 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
     await writeJson(USERS_FILE, users);
     return publicUser(user);
   }
-  const isSeedAdminJson = normalized === "18deepnar@gmail.com";
   const newUser = {
     name: name.trim() || normalized,
     email: normalized,
     createdAt: new Date().toISOString(),
     google_sub: sub,
     google_email: normalized,
-    ...(isSeedAdminJson ? { role: "admin" } : {}),
   };
   users.push(newUser);
   await writeJson(USERS_FILE, users);
@@ -453,4 +466,50 @@ export function bearerToken(header) {
   if (typeof header !== "string") return null;
   const m = header.match(/^Bearer\s+(.+)$/i);
   return m ? m[1] : null;
+}
+
+/* ------------------------------------------------------------ session cookie */
+
+/**
+ * The browser cannot put an Authorization header on an `<img src>`, so the
+ * raster, download and asset routes used to be exempt from authentication
+ * entirely — with a slug derived from the deck title as their only protection.
+ * A title is not a secret, so that was an IDOR: anyone could fetch anyone's
+ * deck by guessing.
+ *
+ * The fix is a second carrier for the SAME session token: an httpOnly cookie
+ * scoped to /api/decks. Media requests carry it automatically; every
+ * state-changing route still reads the bearer header and ignores this cookie,
+ * so widening the credential cannot widen CSRF exposure.
+ */
+export const SESSION_COOKIE = "forge_session";
+
+/** Pull one cookie out of a raw Cookie header without a parser dependency. */
+export function cookieToken(header, name = SESSION_COOKIE) {
+  if (typeof header !== "string") return null;
+  for (const part of header.split(";")) {
+    const eq = part.indexOf("=");
+    if (eq === -1) continue;
+    if (part.slice(0, eq).trim() !== name) continue;
+    try { return decodeURIComponent(part.slice(eq + 1).trim()); } catch { return null; }
+  }
+  return null;
+}
+
+export function sessionCookie(token, { secure = false } = {}) {
+  const attrs = [
+    `${SESSION_COOKIE}=${encodeURIComponent(token)}`,
+    "Path=/api/decks",
+    "HttpOnly",
+    "SameSite=Lax",
+    `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
+  ];
+  if (secure) attrs.push("Secure");
+  return attrs.join("; ");
+}
+
+export function clearedSessionCookie({ secure = false } = {}) {
+  const attrs = [`${SESSION_COOKIE}=`, "Path=/api/decks", "HttpOnly", "SameSite=Lax", "Max-Age=0"];
+  if (secure) attrs.push("Secure");
+  return attrs.join("; ");
 }
