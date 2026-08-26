@@ -11,6 +11,19 @@ tokens:
     accent_alt: "#F2CC8F"
     rule: "#E7D6BE"
     on_accent: "#0A0A0A"
+  # The pebbles' clay, pre-blended toward the ground.
+  #
+  # At full accent strength they read as bright markers stuck onto the slide
+  # rather than as more of the same material. Lowering their opacity is the
+  # wrong lever — a pebble's whole shape comes from its shadows and inner rim,
+  # and opacity fades those with it, flattening the object into a stain. So the
+  # colour is mixed toward the background instead: still clay, still lit, just
+  # not shouting.
+  clay:
+    pebble_a: "#ECBCA9"   # accent, 42% into the ground
+    pebble_b: "#F3DCB6"   # accent_alt, 50% into the ground
+    pebble_on_section: "#EAA779"
+
   surfaces:
     # Clay is a light material. A dark brown title surface under two accent
     # glows read as mud, and contradicted every other slide in the deck.
@@ -124,10 +137,10 @@ tokens:
         .ground{position:absolute;inset:0;
           background:linear-gradient(168deg, {{tokens.palette.bg}} 0%, {{tokens.palette.surface}} 100%);}
         .pebble{position:absolute;border-radius:50%;
-          background:{{tokens.palette.accent_alt}};
+          background:{{tokens.clay.pebble_b}};
           box-shadow:0 18px 30px {{tokens.palette.ink}}24, inset 0 8px 14px #FFFFFF80, inset 0 -10px 18px {{tokens.palette.ink}}1f;}
         .p1{left:-6%;top:-14%;width:26%;height:38%;}
-        .p2{right:-4%;bottom:-16%;width:22%;height:34%;background:{{tokens.palette.accent}};opacity:.9;}
+        .p2{right:-4%;bottom:-16%;width:22%;height:34%;background:{{tokens.clay.pebble_a}};}
         .board{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;
           width:{{panel.w}}px;height:{{panel.h}}px;
           border-radius:56px;
@@ -158,8 +171,8 @@ tokens:
               inset 0 -18px 28px {{tokens.palette.ink}}24;}
           .pebble{position:absolute;border-radius:50%;
             box-shadow:0 16px 26px {{tokens.palette.ink}}26, inset 0 8px 12px #FFFFFF8c, inset 0 -9px 16px {{tokens.palette.ink}}1f;}
-          .a{right:9%;top:9%;width:15%;height:24%;background:{{tokens.palette.accent}};}
-          .b{left:10%;bottom:7%;width:10%;height:16%;background:{{tokens.palette.accent_alt}};}
+          .a{right:9%;top:9%;width:15%;height:24%;background:{{tokens.clay.pebble_a}};}
+          .b{left:10%;bottom:7%;width:10%;height:16%;background:{{tokens.clay.pebble_b}};}
         </style>
 
         <div class="ground"></div>
@@ -181,7 +194,7 @@ tokens:
               inset 0 14px 22px #FFFFFF5c,
               inset 0 -16px 26px {{tokens.palette.ink}}2b;}
           .pebble{position:absolute;right:8%;top:30%;width:14%;height:24%;border-radius:50%;
-            background:{{tokens.palette.accent_alt}};
+            background:{{tokens.clay.pebble_on_section}};
             box-shadow:0 18px 28px {{tokens.palette.ink}}26, inset 0 8px 12px #FFFFFF8c, inset 0 -9px 16px {{tokens.palette.ink}}1f;}
         </style>
 
