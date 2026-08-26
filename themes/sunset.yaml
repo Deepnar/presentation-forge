@@ -11,6 +11,18 @@ tokens:
     accent_alt: "#B23A6B"
     rule: "#E9D2BC"
     on_accent: "#0A0A0A"
+  # The sky, top to bottom. Golden hour is a vertical gradient — dusk overhead
+  # falling through rose and amber to a bright band at the horizon — so these
+  # are stops on one sky rather than separate light sources. The violet the
+  # summary promises lives here; the palette proper stays warm, because that is
+  # what the renderer draws text and shapes from.
+  sky:
+    dusk: "#5B3A6E"
+    rose: "#B23A6B"
+    amber: "#D2691E"
+    gold: "#F0A45C"
+    haze: "#FFD9A8"
+
   surfaces:
     title:
       bg: "#4A2B24"
@@ -75,11 +87,13 @@ tokens:
       line: 1.05
       tracking: -1
   grid:
+    # Room for the page the plate draws past the content box, as on every other
+    # plate theme.
     margin:
-      top: 0.62
-      right: 0.7
-      bottom: 0.55
-      left: 0.7
+      top: 0.7
+      right: 0.78
+      bottom: 0.62
+      left: 0.78
     gutter: 0.3
     columns: 12
     band:
@@ -105,60 +119,87 @@ tokens:
       opacity: 0.1
   plate:
     enabled: true
-    html: >
+    # A sky, not a mesh.
+    #
+    # This was blurred blobs over stacked radials, like every other soft theme,
+    # which is a strange way to draw the one thing everybody has actually seen.
+    # Golden hour is a vertical gradient: dusk overhead, falling through rose
+    # and amber to a bright band just above the horizon, with the sun sitting
+    # in that band. That is a horizontal composition, and it is what keeps this
+    # theme distinct from the aurora ones — their light runs diagonally across
+    # the frame, this one is layered top to bottom.
+    #
+    # The one soft glow here is the sun, which has earned it.
+    html: |
       <style>
-        .sky{position:absolute;inset:0;background:
-          radial-gradient(85% 70% at 18% 12%, {{tokens.palette.accent_alt}}44 0%, transparent 55%),
-          radial-gradient(70% 60% at 84% 20%, {{tokens.palette.accent}}55 0%, transparent 55%),
-          radial-gradient(100% 85% at 50% 118%, {{tokens.palette.accent_alt}}33 0%, transparent 70%),
-          linear-gradient(158deg, {{tokens.palette.surface}} 0%, {{tokens.palette.bg}} 45%, {{tokens.palette.rule}} 100%);}
-        .sun{position:absolute;left:26%;bottom:-6%;width:44%;height:40%;border-radius:50%;
-          background:radial-gradient(60% 60% at 50% 50%, {{tokens.palette.accent}}88 0%, {{tokens.palette.accent_alt}}55 100%);
-          filter:blur(28px);opacity:.6}
-        .b{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5}
-        .b1{left:6%;top:8%;width:30%;height:34%;background:{{tokens.palette.accent_alt}}55}
-        .b2{right:5%;top:4%;width:26%;height:30%;background:{{tokens.palette.accent}}66}
+        .sky{position:absolute;inset:0;background:linear-gradient(178deg,
+          {{tokens.sky.dusk}} 0%, {{tokens.sky.rose}} 26%, {{tokens.sky.amber}} 52%,
+          {{tokens.sky.gold}} 74%, {{tokens.sky.haze}} 100%);}
+        .sun{position:absolute;left:66%;bottom:6%;width:18%;height:32%;border-radius:50%;
+          background:radial-gradient(closest-side circle,
+            #FFF6E4 0%, {{tokens.sky.haze}} 42%, {{tokens.sky.gold}}00 100%);}
+        .grain{position:absolute;inset:0;opacity:.26;mix-blend-mode:soft-light;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size:200px 200px;}
+        .page{position:absolute;left:{{panel.x}}px;top:{{panel.y}}px;width:{{panel.w}}px;height:{{panel.h}}px;
+          border-radius:20px;background:{{tokens.palette.surface}}f2;
+          box-shadow:0 22px 56px {{tokens.palette.ink}}33;}
       </style>
-
       <div class="sky"></div>
-
       <div class="sun"></div>
-
-      <div class="b b1"></div><div class="b b2"></div>
+      <div class="grain"></div>
+      <div class="page"></div>
     surfaces:
-      title: >
+      title: |
         <style>
-          .hero{position:absolute;inset:0;background:
-            radial-gradient(80% 70% at 18% 12%, {{tokens.surfaces.title.accent}}88 0%, transparent 50%),
-            radial-gradient(70% 60% at 86% 22%, {{tokens.palette.accent_alt}}aa 0%, transparent 52%),
-            radial-gradient(100% 95% at 50% 125%, {{tokens.surfaces.title.bg}} 0%, transparent 75%),
-            linear-gradient(160deg, {{tokens.surfaces.title.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
-          .scrim{position:absolute;inset:0;background:
-            linear-gradient(125deg, {{tokens.surfaces.title.bg}}cc 0%, transparent 55%),
-            linear-gradient(0deg, {{tokens.surfaces.title.bg}}88 0%, transparent 42%);}
-          .sun{position:absolute;left:28%;bottom:-8%;width:44%;height:42%;border-radius:50%;
-            background:radial-gradient(60% 60% at 50% 50%, {{tokens.palette.accent}}99 0%, transparent 70%);
-            filter:blur(34px);opacity:.8}
+          /* The bright end of the sky is compressed into the bottom third,
+             where a horizon actually is. Spread evenly it put gold and haze
+             straight through the band the title occupies: white title text
+             measured 2.2:1 there and the subtitle 1.2:1, which is not a look,
+             it is unreadable. */
+          .sky{position:absolute;inset:0;background:linear-gradient(178deg,
+            {{tokens.surfaces.title.bg}} 0%, {{tokens.sky.dusk}} 30%,
+            {{tokens.sky.rose}} 62%, {{tokens.sky.amber}} 84%,
+            {{tokens.sky.gold}} 94%, {{tokens.sky.haze}} 100%);}
+          /* The sun sits low and right, clear of the text column. */
+          .sun{position:absolute;left:70%;bottom:-6%;width:19%;height:32%;border-radius:50%;
+            background:radial-gradient(closest-side circle,
+              #FFF6E4 0%, {{tokens.sky.haze}} 40%, {{tokens.sky.gold}}00 100%);}
+          /* The horizon. One hard line in a slide made entirely of gradient is
+             what stops it reading as vapour. */
+          .horizon{position:absolute;left:0;bottom:14%;width:100%;height:1.5px;
+            background:{{tokens.palette.surface}}59;}
+          .grain{position:absolute;inset:0;opacity:.3;mix-blend-mode:soft-light;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size:200px 200px;}
         </style>
-
-        <div class="hero"></div>
-
-        <div class="scrim"></div>
-
+        <div class="sky"></div>
         <div class="sun"></div>
-      section: >
+        <div class="horizon"></div>
+        <div class="grain"></div>
+      section: |
         <style>
-          .sec{position:absolute;inset:0;background:
-            radial-gradient(75% 65% at 16% 18%, {{tokens.surfaces.section.bg}} 0%, transparent 55%),
-            radial-gradient(70% 60% at 85% 28%, {{tokens.palette.accent}}88 0%, transparent 55%),
-            linear-gradient(150deg, {{tokens.surfaces.section.bg}} 0%, {{tokens.palette.accent_alt}} 100%);}
-          .s{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45}
-          .s1{left:10%;bottom:6%;width:32%;height:30%;background:{{tokens.surfaces.section.muted}}55}
+          .sky{position:absolute;inset:0;background:linear-gradient(178deg,
+            {{tokens.sky.dusk}} 0%, {{tokens.surfaces.section.bg}} 44%,
+            {{tokens.sky.amber}} 86%, {{tokens.sky.gold}} 100%);}
+          .sun{position:absolute;left:72%;bottom:-4%;width:18%;height:30%;border-radius:50%;
+            background:radial-gradient(closest-side circle,
+              #FFF6E4 0%, {{tokens.sky.haze}} 42%, {{tokens.sky.gold}}00 100%);}
+          /* A band of sky the section title sits in, edge to edge — layered,
+             like the rest of this theme, rather than a shape floating on it. */
+          .band{position:absolute;left:0;top:28%;width:100%;height:40%;
+            background:{{tokens.palette.ink}}47;
+            border-top:1px solid {{tokens.palette.surface}}3d;
+            border-bottom:1px solid {{tokens.palette.surface}}3d;}
+          .grain{position:absolute;inset:0;opacity:.28;mix-blend-mode:soft-light;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size:200px 200px;}
         </style>
+        <div class="sky"></div>
+        <div class="sun"></div>
+        <div class="band"></div>
+        <div class="grain"></div>
 
-        <div class="sec"></div>
-
-        <div class="s s1"></div>
 voice:
   feel: warm, golden, cinematic, expansive
   density: medium
