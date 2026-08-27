@@ -30,12 +30,15 @@ tokens:
     title:
       bg: "#F6E3D3"
       ink: "#463B30"
-      muted: "#8B7B68"
+      muted: "#746555"   # the team and guide lines are caption size; 3.3:1 was not enough
       accent: "#D6634A"
+    # White on the accent terracotta measured 2.95:1 — a divider headline just
+    # under the large-text floor, and its standfirst well under. Deepened until
+    # the mark carries; the hue is the same clay.
     section:
-      bg: "#E07A5F"
+      bg: "#B1604B"
       ink: "#FFFFFF"
-      muted: "#FBE0D4"
+      muted: "#F6DED6"
   dark:
     bg: "#2A2118"
     surface: "#3D3225"

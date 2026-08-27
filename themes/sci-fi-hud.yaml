@@ -19,7 +19,7 @@ tokens:
     on_accent: "#0A0F14"
 
   surfaces:
-    title:   { bg: "#070B0F", ink: "#DFF3F2", muted: "#5F7B85", accent: "#E85AD4" }
+    title:   { bg: "#070B0F", ink: "#DFF3F2", muted: "#627D87", accent: "#E85AD4" }
     section: { bg: "#12303A", ink: "#DFF3F2", muted: "#7FB6C0" }
 
   dark:

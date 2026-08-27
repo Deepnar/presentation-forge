@@ -17,10 +17,13 @@ tokens:
       ink: "#FFFFFF"
       muted: "#C2C5CC"
       accent: "#B7D3C0"
+    # Charcoal on the pastel sage measured 3.43:1, and its secondary 2.27:1.
+    # A pastel family can still have one saturated member: the divider is the
+    # deep sage, and the ink inverts to carry on it.
     section:
-      bg: "#6E9A84"
-      ink: "#3A3D44"
-      muted: "#A8C9B5"
+      bg: "#4F6F5F"
+      ink: "#FFFFFF"
+      muted: "#D6E3DA"
   dark:
     bg: "#26282E"
     surface: "#32353D"

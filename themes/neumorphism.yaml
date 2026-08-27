@@ -20,7 +20,7 @@ tokens:
     section:
       bg: "#5A7DF0"
       ink: "#FFFFFF"
-      muted: "#DAE2FB"
+      muted: "#F8F9FE"
   dark:
     bg: "#232830"
     surface: "#2B313B"

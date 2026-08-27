@@ -20,7 +20,7 @@ tokens:
 
   surfaces:
     title:   { bg: "#274031", ink: "#F5F1E1", muted: "#C2CCB4", accent: "#F2C14E" }
-    section: { bg: "#F2C14E", ink: "#274031", muted: "#F9E3A8" }
+    section: { bg: "#F2C14E", ink: "#274031", muted: "#516149" }
 
   dark:
     bg: "#243B2F"
