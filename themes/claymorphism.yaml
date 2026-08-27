@@ -126,6 +126,16 @@ tokens:
       angle: 90
       color: 463B30
       opacity: 0.16
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: centred
+    section:
+      composition: centred
+    heading:
+      align: centre
+
   plate:
     enabled: true
     # Clay's depth is geometry, not luminosity: a large soft drop shadow with a

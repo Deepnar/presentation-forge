@@ -69,6 +69,15 @@ tokens:
       - { shape: rect, x: 0, y: 4.2, w: 13.333, h: 0.02, fill: "#2E7D32", transparency: 92 }
       - { shape: rect, x: 0, y: 6.3, w: 13.333, h: 0.02, fill: "#2E7D32", transparency: 92 }
 
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    heading:
+      opening: rule
+      rule: under
+    list:
+      marker: arrow
+
   plate:
     enabled: false
 

@@ -57,6 +57,21 @@ tokens:
     # write an off-chart alpha value that PowerPoint clamps unpredictably.)
     card: { type: outer, blur: 0, offset: 5, angle: 90, color: "141414", opacity: 1 }
 
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: band
+    section:
+      composition: block
+    heading:
+      opening: bar
+      rule: under
+    content:
+      frame: offset
+    list:
+      marker: square
+
   plate:
     enabled: false
 

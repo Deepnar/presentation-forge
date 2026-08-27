@@ -103,6 +103,17 @@ tokens:
     card_fill:
       color: "#E3E7EE"
       transparency: 88
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: top
+    section:
+      composition: centred
+    heading:
+      align: centre
+      opening: none
+
   plate:
     enabled: true
     html: >

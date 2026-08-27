@@ -55,6 +55,14 @@ tokens:
   shadow:
     card: { type: outer, blur: 0, offset: 0, angle: 90, color: "11110E", opacity: 0 }
 
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    heading:
+      opening: none
+    list:
+      marker: none
+
   plate:
     enabled: false
 

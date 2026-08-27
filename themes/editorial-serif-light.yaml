@@ -103,6 +103,21 @@ tokens:
       angle: 90
       color: 1A1A1A
       opacity: 0
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: top
+    section:
+      composition: centred
+    heading:
+      opening: none
+      rule: under
+    content:
+      frame: inset
+    list:
+      marker: dash
+
   plate:
     enabled: false
 voice:

@@ -118,6 +118,19 @@ tokens:
       angle: 90
       color: 0F0B1C
       opacity: 0.35
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: centred
+    section:
+      composition: centred
+    heading:
+      align: centre
+      opening: none
+    content:
+      frame: inset
+
   plate:
     enabled: true
     # A dark keynote, so the content sits on a dark sheet rather than a white

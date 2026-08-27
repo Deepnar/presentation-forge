@@ -112,6 +112,20 @@ tokens:
         h: 4.4
         fill: "#C65D3B"
         transparency: 92
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: top
+    section:
+      composition: centred
+    heading:
+      opening: none
+    content:
+      frame: inset
+    list:
+      marker: none
+
   plate:
     enabled: false
 voice:

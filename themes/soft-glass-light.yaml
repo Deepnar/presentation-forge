@@ -111,6 +111,19 @@ tokens:
       angle: 90
       color: 3D3226
       opacity: 0.1
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: centred
+    section:
+      composition: band
+    heading:
+      align: centre
+      opening: none
+    content:
+      frame: inset
+
   plate:
     enabled: true
     # Glass, like glassmorphism — and deliberately not the same glass.

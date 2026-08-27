@@ -64,6 +64,16 @@ tokens:
   shadow:
     card: { type: outer, blur: 16, offset: 4, angle: 90, color: "1E2A3A", opacity: 0.12 }
 
+  # Composition — src/composition.js owns the vocabulary; every axis
+  # left out here is the shared default.
+  layout:
+    title:
+      composition: centred
+    section:
+      composition: centred
+    heading:
+      opening: bar
+
   plate:
     enabled: true
     # The blur belongs to the glass, not to the background.
