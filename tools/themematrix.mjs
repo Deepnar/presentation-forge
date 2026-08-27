@@ -6,6 +6,7 @@
  *   node tools/themematrix.mjs --themes flow-heavy,a,b
  *   node tools/themematrix.mjs --types flow,branching-flow
  *   node tools/themematrix.mjs --mode both              # light and dark
+ *   node tools/themematrix.mjs --deck decks/<slug>/deck.yaml
  *   node tools/themematrix.mjs --save .themeaudit/base.json
  *   node tools/themematrix.mjs --against .themeaudit/base.json
  *
@@ -20,6 +21,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { themeMatrix, byType, signature } from "../src/themematrix.js";
+import { loadDeck } from "../src/validate.js";
 
 const arg = (flag, fallback = null) => {
   const i = process.argv.indexOf(flag);
@@ -31,9 +33,11 @@ const modeFlag = arg("--mode", "light");
 const modes = modeFlag === "both" ? ["light", "dark"] : [modeFlag];
 const quiet = process.argv.includes("--quiet");
 
+const deckFile = arg("--deck");
 const result = await themeMatrix({
   themes: list(arg("--themes")),
   types: list(arg("--types")),
+  deck: deckFile ? await loadDeck(deckFile) : undefined,
   modes,
   onRun: quiet ? undefined : (r) => {
     const tag = `${r.theme}${modes.length > 1 ? `/${r.mode}` : ""}`;

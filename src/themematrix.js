@@ -51,10 +51,20 @@ async function matrixDeck() {
  * @param {string[]} [opts.types]   slide types, default every type in the specimen
  * @param {string[]} [opts.modes]   "light" and/or "dark", default light
  * @param {Function} [opts.onRun]   called with each run as it completes
+ * @param {object}   [opts.deck]    a real deck instead of the specimen
+ * @param {string}   [opts.deckDir] resolve identity and assets from here
  */
-export async function themeMatrix({ themes, types, modes = ["light"], onRun } = {}) {
+export async function themeMatrix({ themes, types, modes = ["light"], onRun, deck: given, deckDir } = {}) {
   const names = themes?.length ? themes : await listThemes();
-  const { deck, dir } = await matrixDeck();
+  const { deck: specimen, dir: scratch } = await matrixDeck();
+  // A caller with a real deck passes its directory so identity and branding
+  // are the deck's own — a long institution name reserves title-band width,
+  // and the pipeline has to budget against the width it will actually get.
+  const dir = deckDir ?? scratch;
+  // A real deck asks the question the specimen cannot: the specimen's payloads
+  // are hand-written to behave, and a model writes headlines of whatever
+  // length the topic wants.
+  const deck = given ?? specimen;
 
   const known = new Set(deck.slides.map((s) => s.type));
   const unknown = (types ?? []).filter((t) => !known.has(t));
