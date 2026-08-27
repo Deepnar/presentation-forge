@@ -30,9 +30,6 @@ const ALLOWED = [
   "high-contrast-mono branching-flow",
   "retro-crt branching-flow",
   "sci-fi-hud branching-flow",
-  // Two column headings on one row, in a monospace face.
-  "mono-terminal-light before-after",
-  "retro-crt before-after",
 ];
 
 test("every theme seats every slide type at a readable size", async () => {
