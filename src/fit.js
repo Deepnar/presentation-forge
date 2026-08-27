@@ -82,6 +82,17 @@ function floorPt(style, floor) {
 }
 
 /**
+ * The floor a style is bound by, for a layout that wants to ASK rather than
+ * fit. A layout with a fallback composition needs to know whether the content
+ * would go below the floor before it commits to the treatment that cannot
+ * hold it — calling a fitter to find out would report a failure the layout is
+ * about to avoid.
+ */
+export function floorOf(style) {
+  return floorPt(style, null);
+}
+
+/**
  * A per-slide sink for floor hits. The layouts call the fit functions directly
  * (~140 call sites) and have no idea a slide-level problems[] exists, so the
  * floor events are collected here and drained by the renderer after each layout

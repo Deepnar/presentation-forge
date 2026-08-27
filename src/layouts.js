@@ -1,5 +1,5 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
-import { fitScale, fitScaleAll, fitOneLine, lineCount, measure } from "./fit.js";
+import { fitScale, fitScaleAll, fitOneLine, lineCount, measure, floorOf } from "./fit.js";
 import { CANVAS, reservedTopRight } from "./chrome.js";
 import { chartSeries, ensureContrast } from "./chartpalette.js";
 import {
@@ -2002,7 +2002,31 @@ export const layouts = {
       return true;
     })();
 
-    if (ringClear) {
+    /**
+     * The ring is a treatment for short labels, and it had no way to say so.
+     * Its element bodies were drawn at a fixed 0.9 scale with no fit at all,
+     * so a real 55-character body ran out of its 0.33in card and under the
+     * ellipse — no floor was reported, because nothing asked the fitter.
+     *
+     * Asking here instead: if the concept title cannot sit on one line, or an
+     * element body cannot sit inside its card, the grid fallback takes it. The
+     * grid budgets every card to its content and is the honest composition for
+     * anything longer than a label.
+     */
+    const contentFits = (() => {
+      const cap = theme.type.caption, sub = theme.type.subhead;
+      const capLine = (cap.size * (cap.line ?? 1.35)) / 72;
+      const rows = Math.max(1, Math.floor((eh - 0.62) / capLine));
+      if (data.elements.some((e) => e.body && lineCount(e.body, ew - 0.24, cap) > rows)) return false;
+      if (data.concept.body && lineCount(data.concept.body, (exAxis - 0.15) * 2, cap) > 2) return false;
+      // The concept title has one line inside the ellipse. Would fitting it
+      // there push it under the readable floor?
+      const need = measure(data.concept.title, sub) / ((exAxis - 0.1) * 2 * 0.88);
+      const floor = floorOf(sub);
+      return need <= 1 || floor == null || sub.size / need >= floor;
+    })();
+
+    if (ringClear && contentFits) {
       const conceptScale = fitOneLine(data.concept.title, exAxis * 2 - 0.3, theme.type.subhead, { min: 0.6 });
       slide.addShape("ellipse", {
         x: cx - exAxis, y: cy - eyAxis, w: exAxis * 2, h: eyAxis * 2,
