@@ -6,7 +6,7 @@
  * one contact sheet per slide type, each cell labelled with its theme, so a
  * vision model can flag any cell with invisible or low-contrast text.
  *
- *   node tools/contrast-audit.mjs [--themes a,b] [--out dir]
+ *   node tools/contrast-audit.mjs [--themes a,b] [--types a,b] [--out dir]
  *
  * A cell must be big enough to actually read text — this is a contrast check,
  * not the distinctness check, so cells are ~4 per row at preview resolution
@@ -30,11 +30,14 @@ const outDir = pick("--out")?.[0] ?? path.join(ROOT, "decks", ".specimen-cache",
 const themes = pick("--themes") ?? (await listThemes());
 
 // The geometry-ish types from the user's report: these draw text on or near
-// painted surfaces, so a theme whose token pairs clash shows up here.
-const TYPES = [
+// painted surfaces, so a theme whose token pairs clash shows up here. Any
+// other type can be asked for by name — one sheet per type across every theme
+// is also how a composition change is judged, not only a colour one.
+const DEFAULT_TYPES = [
   "vs", "compare", "cards", "framework", "diagram", "flow",
   "checklist", "roadmap", "chart", "layered-architecture",
 ];
+const TYPES = pick("--types") ?? DEFAULT_TYPES;
 
 const specimen = await specimenDeck();
 const byType = new Map(specimen.slides.map((s) => [s.type, s]));
