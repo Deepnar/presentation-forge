@@ -99,11 +99,19 @@ const WIDE_TYPES = new Set([
   "equation", "before-after",
 ]);
 
-/** Where the frame puts the mark column, the heading column and the body. */
+/**
+ * Where the frame puts the mark column, the heading column and the body.
+ *
+ * The inset and offset figures were first set against the specimen deck, whose
+ * payloads are hand-written to behave. Real model-written content is longer —
+ * a 130-character card body where the specimen has 40 — and at 0.75in of inset
+ * that cost eight themes their card text. These are the widest values that a
+ * real deck clears, which is the budget that matters.
+ */
 const FRAMES = {
   full: { inset: 0, offset: 0, sidebar: 0 },
-  inset: { inset: 0.75, offset: 0, sidebar: 0 },
-  offset: { inset: 0, offset: 1.4, sidebar: 0 },
+  inset: { inset: 0.55, offset: 0, sidebar: 0 },
+  offset: { inset: 0, offset: 1.1, sidebar: 0 },
   sidebar: { inset: 0, offset: 0, sidebar: 3.4 },
 };
 
