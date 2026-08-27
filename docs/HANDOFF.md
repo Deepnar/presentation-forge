@@ -1,111 +1,114 @@
-# Handoff — 2026-08-26, hosting readiness + the glow family
+# Handoff — 2026-08-27, theme variation
 
-Two pieces of work, both finished, both on `origin/main` (`170f30f`, 39
-commits). `npm test` is 370 passing, the UI builds, the working tree is clean.
+One roadmap item, finished: **§10 "Theme variation — one composition, thirty-eight
+times"**. Everything is on `origin/main`. `npm test` is 379 passing, the UI
+builds, the working tree is clean.
 
 **Start here.** `AGENTS.md` is the working agreement — commit discipline, how
-the roadmap is worked, conventions. `CLAUDE.md` is the operational map: what
-runs where, the invariants, the multi-tenancy rules. Then `docs/ROADMAP.md` §10,
-which is the standing quality list and is current as of this session. This file
-is only what the last session learned that those three do not already say.
+the roadmap is worked, conventions. `CLAUDE.md` is the operational map.
+`docs/ROADMAP.md` §10 is the standing quality list and is current. This file is
+only what the last session learned that those three do not already say.
 
-## Part one: safe to put in front of strangers
+## What changed
 
-The project was audited for public hosting. `docs/DEPLOY.md` is the result: it
-needs a long-running container with roughly 2 GB of memory, a writable disk and
-the ability to run LibreOffice and Chromium, which rules out every serverless
-platform regardless of how the front end is written.
+A theme now owns its **composition**, not only its palette. `tokens.layout`
+(`src/composition.js`) is six axes — title composition, divider composition,
+heading alignment / opening mark / rule, content frame, list marker and
+columns, drop cap — each an enum whose first value is the behaviour that
+preceded it. Applied in the opening mark, the heading block and the content
+frame, which 67 of the 74 layouts already shared, so one flag restyles all 75
+slide types.
 
-The account system had been built to gate one operator's cloud key and was
-still single-tenant in several places. Now per account: identity, brand marks,
-BYOK keys and the Auto/Cloud route. Admin is a role, granted at boot from
-`FORGE_ADMIN_EMAIL` or by an existing admin — never derived from an address,
-because registration does not verify email. Media routes authenticate by
-session cookie rather than being exempt.
+Four themes were culled as duplicates of a survivor rather than designs of
+their own: `flat-2`, `minimal-warm`, `dark-neon`, `retro-terminal`. The
+remaining 34 carry 34 distinct compositions. `notion-clean` declares nothing —
+a vocabulary needs a plain member.
 
-Two faults were invisible rather than loud, and both had been in place a while:
+`retro-crt` was rebuilt: the plate drew a bloom at one centre and a blurred
+ellipse at another, so two smears crossed the screen and the lit area sat above
+the type rather than behind it. Every layer is now concentric on one centre.
 
-- **BYOK keys were stored encrypted and never read.** The model client resolved
-  `env:NAME` against the install-wide config, so every "bring your own key"
-  generation silently billed the operator.
-- **The container shipped without the theme typefaces.** A `.pptx` hides this
-  completely — OOXML stores font names, so the downloaded file is correct on a
-  machine that has them. Only the server's own renders were wrong, which is
-  everything the user actually looks at in the app.
+## Two instruments that outlast the item
 
-The account reaches the model client through `src/account.js`
-(`AsyncLocalStorage`), not through parameters — `chat()` sits five calls below
-the HTTP layer and the CLI must keep working with no account at all.
+```bash
+npm run themematrix                 # 34 themes x 75 types, fit failures, ~3s
+npm run themematrix -- --against .themeaudit/base.json   # gate a change
+```
 
-## Part two: the glow family
+`test/themematrix.test.js` and `test/contrast.test.js` each hold a **debt
+list** — eight fit failures, twenty-four contrast pairings — and fail in *both*
+directions, so an entry cannot be added silently and cannot be left in after it
+is paid. Those two lists are the to-do for §10's "Every theme against every
+slide type", which is now the visual half plus paying them down, not a
+from-scratch job.
 
-Eight themes rebuilt: `glassmorphism`, `soft-glass-light`, `aurora-mesh`,
-`gradient-mesh-dark`, `sunset`, `claymorphism`, `neumorphism`, `isometric-dark`.
-Plus the chart palette, the crest, and panel geometry across every plate theme.
+## Three defects that had nothing to do with composition
 
-Two bugs here broke real decks:
+All three had been shipping for a long time, all three are in `docs/TRAPS.md`,
+and none of them raises anything a test could read:
 
-- **`isometric-dark`'s title slide rasterised pure white** under near-white ink
-  — 1.2:1. Its plate drew grid lines onto transparency and the vignette only
-  darkened the edges, so the middle was never painted. Content slides happened
-  to have a panel covering the hole; the title did not.
-- **`high-contrast-mono` charts drew three identical black series and one white
-  one that vanished.** Series colours came from `ink_muted` and `rule`, which
-  are secondary text and a hairline.
-
-`src/chartpalette.js` is new and owns categorical chart colour; a contract test
-holds every theme in both modes. `{{panel.*}}` in `src/plate.js` owns where a
-plate's panel sits relative to the content box, so themes stop repeating
-`calc()` arithmetic.
+- **Every chart slide in every plate theme rasterised on white.** pptxgenjs
+  numbers a background image's relationship without counting chart
+  relationships, so a background assigned after `addChart` is written as a
+  second `rId1`; the reader resolves the background blip to the chart part and
+  paints nothing. On the dark themes that meant near-white ink on white.
+- **A numbered list rendered "1. 1. 1. 1."** — `startAt="1"` is written on
+  every paragraph, so the count restarts at each item.
+- **A word wider than its column hyphenates itself at the raster.** The fitter
+  budgets height, so every fragment fits and nothing is reported. Any layout
+  that narrows a column has to fit the longest word to the measure too, and
+  with `fitOneLine`'s default safety margin — `measure` estimates at 0.55em
+  where real text averages nearer 0.60.
 
 ## How to work on themes
 
-`npm run themeaudit -- --themes <a,b> --types title,section,bullets` renders
-contact sheets into `.themeaudit/`. Use it. Every defect above was found by
-rendering and looking; none was caught by a test.
+The method is unchanged and it is the only one that works: render and look.
 
-Measure contrast on the rendered pixels rather than judging it. `sunset` looked
-good and put its title at 2.2:1. Sample beside the text, not through it — glyphs
-are the brightest thing in the crop and will flatter the reading.
+```bash
+npm run themematrix                                   # what will not fit
+node tools/contrast-audit.mjs --types title,section   # one sheet per type, every theme
+node tools/slideqa.mjs --themes <a> --out .themeaudit/x   # per-slide PNGs
+npm run themeaudit -- --themes <a,b> --types title,section,bullets
+npm run gallery -- --themes <name>                    # thumbnails are committed
+```
 
-After changing a theme: render all 75 types (`render({ write: false })` and
-check `problems`), then `npm run gallery -- --themes <name>` — the
-gallery thumbnails are committed and go stale otherwise. Both scripts need the
-`--` separator or npm eats the flags.
+Prove a refactor rather than asserting it: rendering six themes before and
+after and diffing `ppt/slides/*.xml` is what caught pptxgenjs writing an
+explicit `algn="l"` whenever alignment is passed, so the default path must omit
+it rather than pass `"left"`.
 
-## Constraints that shaped the work
-
-**Generation is untested.** It must run against the shared gateway only, with
-the key in `.env` (loaded automatically now). The local Ollama install and its
-GPU are committed to other work and must not be touched. Everything in §10
-marked *needs a model* is blocked on that, by the owner's decision, to be done
-in one pass rather than piecemeal.
-
-**`config/models.yaml` names six models, none installed** on this machine. Role
-resolution falls through silently — §9 already identified that as the cause of
-a thin outline once.
+Measure contrast, never judge it. Sample beside the text, not through it —
+glyphs are the brightest thing in a crop.
 
 ## What is next
 
 `docs/ROADMAP.md` §10, in priority order:
 
-1. **Theme variation** — the largest remaining theme item. The eight plate
-   themes now differ in what their background *is*; the thirty native ones are
-   still one layout in thirty colourways, so a theme can only differ by palette
-   and typeface. Needs per-theme layout flags, not more styling.
-2. **The front end and landing page** — standing dissatisfaction, no model
-   needed.
-3. **Reports** — structure, and the two-LibreOffice-pass render, which can be
-   profiled today.
-4. **`flow`'s vertical spine** — fits its step bodies within about 0.02 in of
-   the readable floor. `chalkboard` is already over the line. Re-budget before
-   the type sweep, or the sweep reports it 38 times.
+1. **The front end and the landing page** — standing dissatisfaction with the
+   whole surface, no model needed. The largest remaining item.
+2. **Every theme against every slide type** — the visual half, plus the two
+   debt lists above. The instruments exist now.
+3. **Reports** — structure, and the two-LibreOffice-pass render, profilable
+   today against a committed `report.yaml`.
+4. **`flow`'s vertical spine** — four themes over the readable floor, named in
+   the matrix debt list. `before-after` and `team-grid` had the same defect and
+   were fixed by sizing the box to the real line count (`linesBox`); this is
+   likely the same fix.
+
+## Constraints that still hold
+
+**Generation is untested.** It must run against the shared gateway only, with
+the key in `.env`. The local Ollama install and its GPU are committed to other
+work and must not be touched. Everything in §10 marked *needs a model* is
+blocked on that, by the owner's decision, to be done in one pass.
+
+**`config/models.yaml` names six models, none installed** on this machine. Role
+resolution falls through silently.
 
 ## Known and deliberate
 
-- The callout bar inverts to light on dark themes. Checked across
-  `isometric-dark` and `chalkboard` — consistent, intentional, loud on
-  `gradient-mesh-dark`. Not changed without a decision.
+- The callout bar inverts to light on dark themes. Consistent and intentional,
+  loud on `gradient-mesh-dark`. Not changed without a decision.
 - `config/identity.yaml` on the dev machine reads `institution.name: HACKED`.
   Identity is per account now; set a real one in Settings.
 - The dev account store holds well over a hundred throwaway test accounts. That
