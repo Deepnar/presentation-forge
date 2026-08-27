@@ -2772,7 +2772,7 @@ knockout variants are still generated for an identity that asks for one.
 > away. Measuring correctly still produced the wrong *product* answer, because
 > which trade to make was never the renderer's call.
 
-### [ ] Theme variation — one composition, thirty-eight times
+### [x] Theme variation — one composition, thirty-eight times
 
 *Priority: high. Renderer only, no model.*
 
@@ -2811,29 +2811,96 @@ against neubrutalism, the two corporate blues, newsprint against editorial
 serif — keep their places and are separated by composition and typeface, which
 is the point of the item.
 
+`src/composition.js` and `tokens.layout` are the result: six axes (title
+composition, divider composition, heading alignment / opening mark / rule,
+content frame, list marker and columns, drop cap), each an enum whose first
+value is the behaviour that preceded it. Applied in the opening mark, the
+heading block and the content frame — the three things 67 of the 74 layouts
+share — so one flag restyles all 75 types. Thirty-four themes now carry
+thirty-four distinct compositions; `notion-clean` declares nothing, because a
+vocabulary needs a plain member.
+
+`tools/themematrix.mjs` and `test/themematrix.test.js` came out of it and
+outlast it: the whole 34 × 75 product renders in about three seconds with
+`write: false`, and the test holds the fit-failure set where it is, failing in
+both directions so the debt list cannot grow or rot.
+
+> **Learned.** The refactor's safety property was worth proving rather than
+> asserting: rendering six themes before and after and diffing the slide XML
+> showed byte-identical output, which caught the one real difference —
+> pptxgenjs writes an explicit `algn="l"` when alignment is passed, so the
+> default path must omit it rather than pass "left".
+>
+> Three defects surfaced that had nothing to do with composition and had been
+> shipping for a long time. Every chart slide in every plate theme rasterised
+> on white, because pptxgenjs numbers a background image's relationship
+> without counting chart relationships and a background assigned after
+> `addChart` is written as a second `rId1`. A numbered list rendered "1. 1. 1."
+> for the same class of reason — `startAt="1"` on every paragraph. And a word
+> wider than its column hyphenates itself at the raster while every fragment
+> fits the box, so the fitter never sees it. All three are in `docs/TRAPS.md`.
+>
+> A narrowing frame is not uniformly affordable. `sidebar` works for text-led
+> types and destroys any type whose body is a row of four or more peers, and
+> the failure is invisible to the fitter — the words break in the middle
+> instead of overflowing. The fix is a per-type opt-out, not a per-theme one:
+> the theme's opening mark and heading treatment still apply, so the deck
+> stays one design.
+>
+> Two layouts budgeted a card title at one flat line and shrank anything
+> longer to the readable floor. That was survivable at full width and fatal at
+> nine tenths of it — narrowing the measure took `before-after` from three
+> failing themes to eleven. `linesBox` already existed for exactly this.
+>
+> Contrast has to be measured on the tokens as well as the pixels.
+> `chalkboard` set its section number at 1.33:1 and `claymorphism` its divider
+> headline at 2.95:1; both had been there since the themes were written, and
+> neither is visible as a defect until a number is put on it.
+> `test/contrast.test.js` now holds the floors and names the twenty-four
+> surfaces that clear 3:1 but not 4.5:1 as debt for the audit below.
+>
+> Look-ahead: the matrix sweep and the contrast test are the deterministic
+> half of "Every theme against every slide type" further down this section,
+> built here because the composition work needed the gate anyway. That item is
+> now the visual half plus the named debt, not a from-scratch job.
+
 ### [ ] `flow`'s vertical spine is one line from failing
 
 *Priority: medium. Renderer only, no model.*
 
 Found while widening plate-theme margins: the six-step `ttb` flow fits its step
 bodies so tightly that roughly 0.02in of content width decides whether they
-clear the readable floor. `chalkboard` was already over the line before
-anything changed, and two more themes crossed it under a 0.08in margin
-increase. The layout drops a body rather than shrinking it below the floor,
-which is the right call — but a budget that fine means any future content or
-margin change silently costs a slide its text. Worth re-budgeting before the
-type sweep, since the sweep will otherwise report it 38 times.
+clear the readable floor. The layout drops a body rather than shrinking it
+below the floor, which is the right call — but a budget that fine means any
+future content or margin change silently costs a slide its text.
+
+`npm run themematrix` now names the themes exactly: `chalkboard`,
+`editorial-serif-light`, `high-contrast-mono` and `minimal-muji`, recorded in
+`test/themematrix.test.js`'s debt list, which is where the fix should be
+verified. `before-after` and `team-grid` had the same defect and were fixed by
+sizing the box to the real line count (`linesBox`); the flow spine is the same
+shape of problem and probably the same shape of fix.
 
 ### [ ] Every theme against every slide type
 
 *Priority: high. Renderer only, no model — `src/specimens.js` supplies content.*
 
-38 themes × 75 types has never been looked at as a whole. `tools/slideqa.mjs`
-and `tools/contrast-audit.mjs` exist but cover a handful of types on a handful
-of themes. The specimen deck already carries one valid payload per type, so
-this needs no generation at all: render the specimen deck in every theme,
-rasterise, and look. Expect the algorithmic diagram types and the dense data
-types to be where the failures are.
+34 themes × 75 types has never been looked at as a whole. The deterministic
+half now exists and runs in about three seconds:
+
+- `npm run themematrix` renders every theme against every type with
+  `write: false` and reports every fit-floor failure; `test/themematrix.test.js`
+  holds the set and names the eight that remain (`flow`, `branching-flow`).
+- `test/contrast.test.js` holds the title and divider surface pairings and
+  names the twenty-four that clear 3:1 but not 4.5:1.
+- `tools/contrast-audit.mjs --types a,b` sheets any type across every theme,
+  and `tools/slideqa.mjs` emits per-slide PNGs plus chunked contact sheets.
+
+What is left is the visual half — rasterise and look at all of it — plus
+paying down those two debt lists. Expect the algorithmic diagram types and the
+dense data types to be where the failures are; the composition pass already
+found that a narrowed measure breaks words inside cards, kpi tiles and team
+grids without the fitter noticing.
 
 ### [ ] The front end, and the landing page
 
@@ -2887,6 +2954,9 @@ what is actually available or fail loudly instead of degrading quietly.
 
 - `config/identity.yaml` contains `institution.name: HACKED`; the real values
   are gone. Identity is per account now, so the fix is to set it in Settings.
+- `tools/fonts.manifest.json` carries a `used_by` list per family that has
+  drifted: six families are listed that no theme uses, and the field is
+  documentation the install step does not read.
 - The account store holds well over a hundred throwaway test accounts. Harmless
   locally, but that database must not travel to production.
 - `uniqueSlug` appends `-2`, `-4` on collision against a global namespace, so

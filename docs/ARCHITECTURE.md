@@ -82,6 +82,28 @@ content, not layout — the chrome reads the string, it never decides it.
 The disjointness is load-bearing. If the model can see hex values it starts
 inventing them; if the renderer can see adjectives it starts guessing.
 
+A theme also owns its **composition**, not only its colour. `tokens.layout`
+(`src/composition.js`) is a small vocabulary of enums — where the content box
+sits, what mark opens a slide, how a divider is composed, whether type is
+flush or centred, which marker a list carries, whether a definition takes a
+drop cap. Every axis defaults to the behaviour that preceded it, so a theme
+declaring no `layout` block renders the file it always did; an unrecognised
+axis or value throws rather than falling through, because a theme silently
+losing its design is worse than a loud failure.
+
+The axes are applied in three shared places — the opening mark, the heading
+block and the content frame — which 67 of the 74 layouts already went through,
+so one flag restyles all 75 slide types rather than needing per-type work. The
+`sidebar` frame is the exception that proves the rule: it halves the measure,
+and slide types whose body is a row of four or more peers keep the full canvas
+under it, because four cards in two thirds of a slide break their words in the
+middle and the fitter cannot see that — every fragment fits.
+
+This replaced two ad-hoc flags (`tokens.editorial`, `tokens.bauhaus`) that had
+proved per-theme layout works and were never generalised. Before it, the
+themes were one composition in as many colourways, and the gallery contact
+sheet is the evidence either way.
+
 A theme is either **native** (pptxgenjs shapes and text only) or **plated**: it
 declares `tokens.plate.enabled: true` plus a `plate.html` template (and optional
 `plate.surfaces.title/section/content` variants) that interpolates its own
