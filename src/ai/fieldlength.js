@@ -3,7 +3,7 @@ import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { deckSchema, catalogForType } from "./catalog.js";
 import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
 import { validateDeck } from "../validate.js";
-import { render } from "../render.js";
+import { themeMatrix } from "../themematrix.js";
 
 /**
  * The FIELD-LENGTH pass — the "no mid-sentence ellipsis" rule.
@@ -172,17 +172,29 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
 }
 
 /**
- * Run the pass over a freshly-written deck. Renders (in-memory) to find slides
- * the fitter flags below the floor, walks each flagged slide's fields against
- * their schema caps, and rewrites the overlong fields via a scoped model call
- * (two attempts). Returns the repaired deck plus what changed. Slides the
- * rewrite cannot fix are left for the deterministic trim.
+ * Run the pass over a freshly-written deck. Renders it in EVERY theme
+ * (in-memory) to find slides the fitter flags below the floor, walks each
+ * flagged slide's fields against their schema caps, and rewrites the overlong
+ * fields via a scoped model call (two attempts). Returns the repaired deck
+ * plus what changed. Slides the rewrite cannot fix are left for the
+ * deterministic trim.
  */
 export async function fieldLengthPass({
-  deck, themeName, deckDir, research = "", model, signal, onProgress, chat = chatJSON,
+  deck, deckDir, research = "", model, signal, onProgress, chat = chatJSON,
 }) {
-  const audit = await render({ deck, themeName, deckDir, write: false, signal });
-  const flagged = parseFloorProblems(audit.problems);
+  // A deck is written once and rendered in whichever theme the reader picks.
+  // Fitting it to the one theme it currently names is why a deck can pass this
+  // pass with nothing flagged and still lose a card body under an inset frame
+  // or a sidebar: the same text that clears a full-width theme does not clear
+  // a narrower measure. Flag against every theme and rewrite once.
+  const audit = await themeMatrix({ deck, deckDir });
+  const flagged = new Map();
+  for (const run of audit.runs) {
+    for (const [index, roles] of parseFloorProblems(run.problems.map((p) => p.raw))) {
+      if (!flagged.has(index)) flagged.set(index, new Set());
+      for (const role of roles) flagged.get(index).add(role);
+    }
+  }
 
   const out = structuredClone(deck);
   const repaired = [];

@@ -567,7 +567,6 @@ export async function finalizeDeck({
     onProgress?.({ status: "field_length_checking" });
     const fix = await fieldLengthPass({
       deck: grounded.deck,
-      themeName,
       deckDir: dir,
       research: excerptResearch(researchText, await researchExcerptCap({ model })),
       model,
@@ -862,7 +861,6 @@ export async function sweepDensity({
     onProgress?.({ status: "field_length_checking" });
     const fix = await fieldLengthPass({
       deck: grounded.notes,
-      themeName,
       deckDir: dir,
       research: excerptResearch(researchText, await researchExcerptCap({ model })),
       model,

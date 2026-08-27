@@ -90,7 +90,7 @@ test("the catalog spells out the per-field caps, not just per-type", async () =>
 });
 
 test("fieldLengthPass rewrites mid-sentence ellipses into complete sentences", async () => {
-  const r = await fieldLengthPass({ deck: DECK, themeName: "warm-humanist", model: "mock", chat: fakeChat() });
+  const r = await fieldLengthPass({ deck: DECK, model: "mock", chat: fakeChat() });
   const s6 = r.deck.slides[0];
   assert.ok(!s6.concept.body.includes("…"), "no ellipsis left in the concept body");
   assert.ok(s6.concept.body.length <= 120, "within the cap");
@@ -109,7 +109,7 @@ test("fieldLengthPass leaves a deck with nothing overlong alone", async () => {
     theme: "warm-humanist",
     slides: [{ type: "bullets", headline: "Points", bullets: ["one", "two", "three", "four"] }],
   };
-  const r = await fieldLengthPass({ deck: clean, themeName: "warm-humanist", model: "mock", chat: () => { throw new Error("no model call expected"); } });
+  const r = await fieldLengthPass({ deck: clean, model: "mock", chat: () => { throw new Error("no model call expected"); } });
   assert.deepEqual(r.repaired, []);
   assert.deepEqual(r.deck, clean);
 });
