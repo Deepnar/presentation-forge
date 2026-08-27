@@ -2519,6 +2519,12 @@ export const layouts = {
     };
 
     const labelScale = fitScaleAll(data.stages.map((s) => s.label), box.w * 0.78 - 1.6, 0.4, theme.type.subhead, { min: 0.5 });
+    // A stage may carry a body — the schema allows one and the layout used to
+    // drop it, so a model could write a line per stage and watch it vanish.
+    const bodies = data.stages.map((s) => s.body).filter(Boolean);
+    const bodyScale = bodies.length
+      ? fitScaleAll(bodies, box.w * 0.78 - 1.6, 0.32, theme.type.caption)
+      : 1;
     data.stages.forEach((st, i) => {
       const w = width(i);
       const x = box.x + (box.w - w) / 2;
@@ -2531,11 +2537,29 @@ export const layouts = {
         rectRadius: theme.shape?.radius?.card ?? 0.12,
       });
       const ink = accent ? theme.palette.on_accent : theme.palette.ink;
-      slide.addText(st.label, {
-        x: x + 0.2, y: sy, w: w - 1.6, h: stageH,
-        ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
-        align: "center", valign: "middle",
-      });
+      if (st.body) {
+        // Label and body stack as one block centred in the bar. The body takes
+        // the bar's own ink rather than ink_muted, which is sized for the page
+        // and not for an accent fill.
+        const labH = 0.36, bodH = 0.3;
+        const by = sy + (stageH - (labH + bodH)) / 2;
+        slide.addText(st.label, {
+          x: x + 0.2, y: by, w: w - 1.6, h: labH,
+          ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
+          align: "center", valign: "bottom",
+        });
+        slide.addText(st.body, {
+          x: x + 0.2, y: by + labH, w: w - 1.6, h: bodH,
+          ...textStyle(theme, "caption", { color: ink, scale: bodyScale }),
+          align: "center", valign: "top",
+        });
+      } else {
+        slide.addText(st.label, {
+          x: x + 0.2, y: sy, w: w - 1.6, h: stageH,
+          ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
+          align: "center", valign: "middle",
+        });
+      }
       if (st.value) {
         slide.addText(st.value, {
           x: x + w - 1.4, y: sy, w: 1.2, h: stageH,
