@@ -5,7 +5,8 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import path from "node:path";
 import { ROOT } from "../src/paths.js";
-import { textCheck, wordsOf, slideStrings } from "../src/textcheck.js";
+import { textCheck, wordsOf, slideStrings, substitutedFaces } from "../src/textcheck.js";
+import { loadTheme } from "../src/theme.js";
 import { specimenDeck } from "../src/specimens.js";
 
 const run = promisify(execFile);
@@ -64,6 +65,18 @@ test("every declared word survives onto the page", async (t) => {
   if (!(await have("soffice", ["--version"])) || !(await have("pdftotext", ["-v"]))) {
     t.skip("needs LibreOffice and pdftotext");
     return;
+  }
+  // This reads the rasterised page, so it only means anything when the page
+  // was rasterised in the theme's own faces. On a machine with the fonts
+  // missing, LibreOffice substitutes a wider one and a word that fits breaks —
+  // a fact about that machine, not about the layout. The image job in CI is
+  // what asserts the fonts are installed; see docs/TRAPS.md.
+  for (const theme of BRACKET) {
+    const missing = await substitutedFaces(await loadTheme(theme));
+    if (missing.length) {
+      t.skip(`${theme} would rasterise in substituted faces (${missing.join(", ")}); run npm run fonts`);
+      return;
+    }
   }
 
   const base = await specimenDeck();

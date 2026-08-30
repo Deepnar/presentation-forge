@@ -50,6 +50,15 @@ and encodes a distinction that does not exist, while pulling low-contrast
 palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
 and doughnut should vary.
 
+**Any check that reads the rasterised page needs the real fonts.** LibreOffice
+substitutes a wider face when a theme's typeface is missing, so the fitter's
+metrics stop describing what was drawn: `npm run textcheck` reported
+"Acknowledgements" broken mid-word on `sci-fi-hud` in CI and nowhere else,
+because the CI test job installs LibreOffice and Poppler but not the 27 theme
+families. That is a fact about the machine, not the layout. `substitutedFaces()`
+asks fontconfig and the check skips rather than reporting a defect the product
+does not have — and the CI image job is what asserts the fonts really install.
+
 **The floor only guards text that was actually fitted.** `src/fit.js` reports a
 floor hit from inside `fitScale`/`fitOneLine`. Text drawn at a hardcoded scale
 never calls them, so it is not merely unfitted — it is *unreported*: the

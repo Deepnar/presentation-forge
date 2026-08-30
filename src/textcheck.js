@@ -87,6 +87,32 @@ function despaceTracked(page) {
 const normalise = (s) => s.normalize("NFKD").replace(/[‘’“”]/g, "'").toLowerCase();
 
 /**
+ * The typefaces a theme names that fontconfig cannot actually resolve.
+ *
+ * This check reads the RASTERISED page, so it is only meaningful when the page
+ * was rasterised in the fonts the theme asks for. A machine with only
+ * DejaVu/Liberation substitutes a wider face, the fitter's metrics no longer
+ * describe what was drawn, and a word that fits in Space Grotesk breaks in the
+ * fallback — a real failure of that machine, not of the layout. Callers skip
+ * rather than report a defect the product does not have.
+ */
+export async function substitutedFaces(theme) {
+  const families = [...new Set(Object.values(theme.type ?? {}).map((t) => t.family).filter(Boolean))];
+  const missing = [];
+  for (const family of families) {
+    try {
+      const { stdout } = await run("fc-match", [`${family}:style=Regular`, "family"], { timeout: 10_000 });
+      // fc-match answers with the family it resolved to; a substitution names
+      // something else entirely.
+      if (!stdout.toLowerCase().includes(family.toLowerCase())) missing.push(family);
+    } catch {
+      return families; // no fontconfig at all: treat every face as unresolved
+    }
+  }
+  return missing;
+}
+
+/**
  * Render a deck and report every declared word that did not survive to the
  * page. `skip` names slide types whose text is not extractable — a freeform
  * slide is a rasterised HTML image, so nothing it says is in the PDF.

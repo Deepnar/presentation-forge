@@ -19,9 +19,9 @@
 import { mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { ROOT } from "../src/paths.js";
-import { textCheck } from "../src/textcheck.js";
+import { textCheck, substitutedFaces } from "../src/textcheck.js";
 import { specimenDeck } from "../src/specimens.js";
-import { listThemes } from "../src/theme.js";
+import { listThemes, loadTheme } from "../src/theme.js";
 import { loadDeck } from "../src/validate.js";
 
 const arg = (flag, fallback = null) => {
@@ -50,6 +50,13 @@ for (const theme of themes) {
   // Branding is a per-install variable and reserves title-band width, so a
   // sweep that included it would report this machine's identity.
   await writeFile(path.join(dir, "meta.yaml"), "chrome:\n  branding: none\n", "utf8");
+  const substituted = await substitutedFaces(await loadTheme(theme));
+  if (substituted.length) {
+    // The page has to be rasterised in the theme's own faces or the result
+    // describes this machine's fallbacks, not the layout. See docs/TRAPS.md.
+    console.log(`  ${theme.padEnd(24)} SKIPPED — not installed: ${substituted.join(", ")} (npm run fonts)`);
+    continue;
+  }
   try {
     const r = await textCheck({
       deck: structuredClone(source), deckDir: dir, themeName: theme,
