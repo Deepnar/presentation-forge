@@ -3465,7 +3465,11 @@ export const layouts = {
     const y = heading(slide, ctx);
     const capH = data.left_caption || data.right_caption ? 0.34 : 0;
     const imgH = box.bottom - y - capH - 0.05;
-    const halfW = box.w / 2;
+    // The two halves were drawn edge to edge, so on a theme whose cards have
+    // square corners they fused into one block and "side by side" read as a
+    // single panel. Every other paired layout gutters; this one now does too.
+    const gut = theme.grid.gutter;
+    const halfW = (box.w - gut) / 2;
     const img = (src, x, caption) => {
       const abs = resolveAsset(src);
       if (abs) {
@@ -3474,9 +3478,12 @@ export const layouts = {
           sizing: { type: "cover", w: halfW, h: imgH },
         });
       } else {
+        // Outlined, like every other image placeholder: a bare fill in `rule`
+        // is invisible against a theme whose rule is close to its ground.
         slide.addShape("roundRect", {
           x, y, w: halfW, h: imgH,
-          fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+          fill: { color: hex(theme.palette.surface) },
+          line: { color: hex(theme.palette.rule), width: 1 },
           rectRadius: theme.shape?.radius?.card ?? 0.1,
         });
       }
@@ -3489,7 +3496,7 @@ export const layouts = {
       }
     };
     img(data.left, box.x, data.left_caption);
-    img(data.right, box.x + halfW, data.right_caption);
+    img(data.right, box.x + halfW + gut, data.right_caption);
   },
 
   /**
