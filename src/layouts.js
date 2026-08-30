@@ -1323,17 +1323,22 @@ export const layouts = {
       y += bodyH + 0.2;
     }
     if (data.cta) {
-      const ctaW = Math.min(3.4, measure(data.cta, theme.type.subhead) + 1.3);
+      // The pill was capped at 3.4in, so a call to action longer than a couple
+      // of words wrapped inside a fixed 0.6in shape and pushed its second line
+      // through the bottom edge. It grows to its label instead — the schema
+      // allows sixty characters and the surface has the width for them.
+      const ctaW = Math.min(w * 0.62, measure(data.cta, theme.type.subhead) + 1.3);
+      const ctaH = Math.max(0.6, linesBox(theme, "subhead", [data.cta], ctaW - 0.5) + 0.22);
       const cx = (CANVAS.w - ctaW) / 2;
-      const cy = Math.max(y + 0.35, 5.75);
+      const cy = Math.max(y + 0.2, Math.min(5.75, CANVAS.h - m.bottom - 0.45 - ctaH));
       slide.addShape("roundRect", {
-        x: cx, y: cy, w: ctaW, h: 0.6,
+        x: cx, y: cy, w: ctaW, h: ctaH,
         fill: { color: hex(s.accent ?? theme.palette.accent) },
         line: { type: "none" },
         rectRadius: theme.shape?.radius?.pill ?? 0.3,
       });
       slide.addText(data.cta, {
-        x: cx, y: cy, w: ctaW, h: 0.6,
+        x: cx + 0.25, y: cy, w: ctaW - 0.5, h: ctaH,
         ...textStyle(theme, "subhead", { color: theme.palette.on_accent }),
         align: "center", valign: "middle",
       });
