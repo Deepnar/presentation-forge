@@ -35,12 +35,19 @@ the type rather than behind it. Every layer is now concentric on one centre.
 npm run themematrix                 # 34 x 75 fit failures, ~3s, nothing rasterised
 npm run textcheck                   # every declared word survived to the page
 node tools/contrast-audit.mjs --types a,b   # one sheet per type, every theme
+node tools/slideqa.mjs --themes a   # all 75 types, one theme, full-size PNGs
+node tools/pixels.mjs <png> '#INK' 0.4 0.6 0.62 0.68   # contrast on real pixels
 ```
 
-All three take `--deck decks/<slug>/deck.yaml`. **Use it.** The specimen's
+All of them take `--deck decks/<slug>/deck.yaml`. **Use it.** The specimen's
 payloads are hand-written to behave; a model writes a 130-character card body
 where the specimen has 40, and the same sweep reports 8 failures on the
 specimen and 51 on a real seventeen-slide deck.
+
+`tools/pixels.mjs` is how "measure contrast on the rendered pixels" is actually
+done. A plate theme's ground is not its palette token — `retro-crt` lights the
+middle of its tube, and inks measuring 4.6:1 against the flat token measured
+2.8:1 against the band the text sits on.
 
 `test/themematrix.test.js` and `test/contrast.test.js` each hold a **debt
 list** — eight fit failures, twenty-four contrast pairings — and fail in *both*
@@ -79,20 +86,22 @@ and none of them raises anything a test could read:
 The method is unchanged and it is the only one that works: render and look.
 
 ```bash
-npm run themematrix                                   # what will not fit
-node tools/contrast-audit.mjs --types title,section   # one sheet per type, every theme
-node tools/slideqa.mjs --themes <a> --out .themeaudit/x   # per-slide PNGs
 npm run themeaudit -- --themes <a,b> --types title,section,bullets
 npm run gallery -- --themes <name>                    # thumbnails are committed
 ```
+
+Plus the five above. `npm run gallery` matters: the thumbnails are committed
+and go stale otherwise. Both scripts need the `--` separator or npm eats the
+flags.
 
 Prove a refactor rather than asserting it: rendering six themes before and
 after and diffing `ppt/slides/*.xml` is what caught pptxgenjs writing an
 explicit `algn="l"` whenever alignment is passed, so the default path must omit
 it rather than pass `"left"`.
 
-Measure contrast, never judge it. Sample beside the text, not through it —
-glyphs are the brightest thing in a crop.
+Measure contrast, never judge it — `tools/pixels.mjs`. Sample beside the text,
+not through it: glyphs are the brightest thing in a crop and flatter the
+reading.
 
 ## The nine defects the audit found
 
