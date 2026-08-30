@@ -123,8 +123,15 @@ function paint(slide, ctx, color) {
 
 export const layouts = {
   title(slide, ctx) {
-    const { theme, deck, identity } = ctx;
+    const { theme, deck, data, identity } = ctx;
     const s = theme.surfaces.title;
+    // The cover says what the content says. The layout used to draw deck.title
+    // and deck.subtitle unconditionally, so a title slide's own headline and
+    // standfirst — which the model writes on every real deck, and which the
+    // schema offers on every slide — were discarded in every theme without a
+    // word. The deck's own title is the fallback, not the override.
+    const coverTitle = data.headline?.trim() || deck.title;
+    const coverSub = data.standfirst?.trim() || deck.subtitle;
     paint(slide, ctx, s.bg);
 
     const m = theme.grid.margin;
@@ -163,16 +170,16 @@ export const layouts = {
     }
 
     // Two lines of display type is the design intent; only shrink past that.
-    const scale = fitScale(deck.title, w, (st.size / 72) * (st.line ?? 1.12) * 2, st);
-    slide.addText(deck.title, {
+    const scale = fitScale(coverTitle, w, (st.size / 72) * (st.line ?? 1.12) * 2, st);
+    slide.addText(coverTitle, {
       x, y: titleY, w, h: titleH,
       ...textStyle(theme, "display", { color: ink, scale }),
       ...align, valign,
     });
 
     let y = metaY;
-    if (deck.subtitle) {
-      slide.addText(deck.subtitle, {
+    if (coverSub) {
+      slide.addText(coverSub, {
         x, y, w, h: 0.5,
         ...textStyle(theme, "subhead", { color: s.muted, italic: true }),
         ...align,
@@ -1279,21 +1286,41 @@ export const layouts = {
     paint(slide, ctx, s.bg);
     const m = theme.grid.margin;
     const w = CANVAS.w - m.left - m.right;
-    const scale = fitScale(data.headline, w, 2.2, theme.type.display, { min: 0.55 });
+    // The headline had 2.2in of its own, which was generous for one line and
+    // left nothing for a standfirst above the body. It gives some back when
+    // there is a line to make room for.
+    const headH = data.standfirst ? 1.7 : 2.2;
+    const scale = fitScale(data.headline, w, headH, theme.type.display, { min: 0.55 });
     slide.addText(data.headline, {
-      x: m.left, y: 1.85, w, h: 2.2,
+      x: m.left, y: 1.85, w, h: headH,
       ...textStyle(theme, "display", { color: s.ink, scale }),
       align: "center", valign: "middle",
     });
-    let y = 4.35;
+    let y = 1.85 + headH + 0.15;
+    // The closing surface has a slot for a line under the headline and never
+    // drew one: `standfirst` is written on real decks and was discarded here
+    // exactly as it was on the cover. It sits above the body, which is the
+    // longer wrap-up.
+    if (data.standfirst) {
+      const sw = w * 0.72;
+      const sh = linesBox(theme, "subhead", [data.standfirst], sw);
+      const sScale = fitScale(data.standfirst, sw, sh, theme.type.subhead, { min: 0.75 });
+      slide.addText(data.standfirst, {
+        x: (CANVAS.w - sw) / 2, y, w: sw, h: sh,
+        ...textStyle(theme, "subhead", { color: s.muted, scale: sScale }),
+        align: "center", valign: "top",
+      });
+      y += sh + 0.12;
+    }
     if (data.body) {
-      const bScale = fitScale(data.body, w * 0.72, 1.2, theme.type.body, { min: 0.75 });
+      const bodyH = data.standfirst ? 1.3 : 1.2;
+      const bScale = fitScale(data.body, w * 0.72, bodyH, theme.type.body, { min: 0.75 });
       slide.addText(data.body, {
-        x: (CANVAS.w - w * 0.72) / 2, y, w: w * 0.72, h: 1.2,
+        x: (CANVAS.w - w * 0.72) / 2, y, w: w * 0.72, h: bodyH,
         ...textStyle(theme, "body", { color: s.muted, scale: bScale }),
         align: "center", valign: "top",
       });
-      y += 1.4;
+      y += bodyH + 0.2;
     }
     if (data.cta) {
       const ctaW = Math.min(3.4, measure(data.cta, theme.type.subhead) + 1.3);
