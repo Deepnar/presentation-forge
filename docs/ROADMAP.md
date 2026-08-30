@@ -2902,6 +2902,50 @@ dense data types to be where the failures are; the composition pass already
 found that a narrowed measure breaks words inside cards, kpi tiles and team
 grids without the fitter noticing.
 
+A third instrument now exists — `npm run textcheck` — which rasterises to PDF,
+reads the text back and reports every declared word that did not survive.
+`--deck` on all three runs them against a real generated deck rather than the
+specimen, which is where the interesting failures are: the specimen's payloads
+are hand-written to behave, and a model writes a 130-character card body where
+the specimen has 40. The same sweep reports eight failures on the specimen and
+fifty-one on a real seventeen-slide deck.
+
+Six defects came out of that first real-content pass, all of them shipping
+before it and none visible to any test: `funnel` dropped every stage body,
+`framework` drew element bodies unfitted so they ran out of their cards, the
+`title` and `closing` surfaces discarded their own headline and standfirst,
+the closing CTA pill overflowed its fixed shape, and the field-length pass
+budgeted the deck against the one theme it named.
+
+### [ ] The schema's caps are not the layouts' budgets
+
+*Priority: high. Renderer and schema, no model.*
+
+`cards[].body` accepts 320 characters and the type accepts four of them. No
+theme can seat that: four cards at 2.8in of measure need about thirteen lines
+each, and the card is three inches tall. The model writes to the cap it is
+given, so the cap is the instruction — a generous one guarantees a rewrite
+pass every time, and a deck that is only saved by the rewrite is a deck that
+breaks whenever the rewrite fails.
+
+The caps should come from the layouts: for each type and field, the largest
+text the tightest theme seats at the readable floor. `themeMatrix({ deck })`
+makes that measurable — bisect the length per field until it stops failing.
+Expect most caps to come down substantially; `cards[].body`, `takeaway.body`
+and `closing.body` are the ones real content actually hit.
+
+### [ ] Text drawn at a fixed scale is unreported, not just unfitted
+
+*Priority: medium. Renderer only, no model.*
+
+`src/fit.js` reports a floor hit from inside the fit functions. Nineteen sites
+in `src/layouts.js` pass a hardcoded `scale:` and never call one, so their text
+can overflow its box with a clean fit sweep — which is exactly how `framework`
+shipped element bodies running out of their cards and under the ellipse.
+
+`grep -n "scale: 0\." src/layouts.js` is the list. Each needs either a real
+fit against its box or a documented reason the box cannot overflow.
+
 ### [ ] The front end, and the landing page
 
 *Priority: high. No model.*
