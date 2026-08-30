@@ -1664,11 +1664,20 @@ export const layouts = {
       cw - pad * 2,
       theme.type.stat,
     );
+    // The value is fitted to one line, but a fitter works from an estimate and
+    // a fixed 0.85in box turned any miss into a collision: the second line of
+    // "99.9 / %" landed on the label. Reserving the lines the value really
+    // takes at the size it is really drawn makes a miss cost space, not text.
+    const stat = theme.type.stat;
+    const statLine = (stat.size * valueScale * (stat.line ?? 1.0)) / 72;
+    const valueLines = Math.max(...data.cards.map((c) =>
+      lineCount(c.value, cw - pad * 2, { ...stat, size: stat.size * valueScale })));
+    const valueH = Math.max(0.85, valueLines * statLine + 0.1);
     // The label box holds the real lines of the longest label, so a wrapped
     // label never collides with the body below it.
     const labelH = linesBox(theme, "subhead", data.cards.map((c) => c.label), cw - pad * 2);
     const labelScale = fitScaleAll(data.cards.map((c) => c.label), cw - pad * 2, labelH, theme.type.subhead);
-    const bodyTop = 0.9 + labelH + 0.04;
+    const bodyTop = valueH + 0.05 + labelH + 0.04;
     const bodyScale = fitScaleAll(
       data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, ch - pad - bodyTop, theme.type.body,
     );
@@ -1679,12 +1688,12 @@ export const layouts = {
       // ascenders/descenders), so the value reserves a full inch and the label
       // starts well clear of it — a tight 0.7in box let the % touch the label.
       slide.addText(c.value, {
-        x: x + pad, y: y + pad, w: cw - pad * 2, h: 0.85,
+        x: x + pad, y: y + pad, w: cw - pad * 2, h: valueH,
         ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
         valign: "top",
       });
       slide.addText(c.label, {
-        x: x + pad, y: y + pad + 0.9, w: cw - pad * 2, h: labelH,
+        x: x + pad, y: y + pad + valueH + 0.05, w: cw - pad * 2, h: labelH,
         ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         valign: "top",
       });
