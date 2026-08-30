@@ -10,6 +10,7 @@
  *      cell stays readable for a vision model (cells at ~360px, ~20 per sheet).
  *
  *   node tools/slideqa.mjs [--themes warm-humanist,swiss-international,sci-fi-hud] [--out /tmp/slideqa]
+ *   node tools/slideqa.mjs --deck decks/<slug>/deck.yaml --themes a,b
  *
  * The sheets are the deliverable the vision pass reads; the full-size PNGs let
  * it zoom a suspect type. problems.json is the deterministic half of the audit.
@@ -20,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { render } from "../src/render.js";
 import { preview } from "../src/preview.js";
 import { specimenDeck, specimenIndex } from "../src/specimens.js";
+import { loadDeck } from "../src/validate.js";
 import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -38,8 +40,11 @@ await mkdir(work, { recursive: true });
 await mkdir(perSlide, { recursive: true });
 await mkdir(sheetsDir, { recursive: true });
 
-const deck = await specimenDeck();
-const index = await specimenIndex();
+// A real deck asks what the specimen cannot: its payloads are hand-written to
+// behave, and a model writes whatever length the topic wants.
+const deckArg = pick("--deck")?.[0];
+const deck = deckArg ? await loadDeck(deckArg) : await specimenDeck();
+const index = deckArg ? {} : await specimenIndex();
 const byIndex = deck.slides.map((s) => s.type);
 const deckFile = path.join(work, "deck.yaml");
 
