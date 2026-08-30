@@ -68,6 +68,26 @@ succeeds for decks with text running off the canvas and invisible-on-invisible
 colour pairs. **Rasterise and look at the image** before claiming a render
 works. That is why `src/preview.js` exists.
 
+Three checks answer the mechanical half across the whole product, and they find
+disjoint sets:
+
+```bash
+npm run themematrix     # every theme x every slide type: what will not fit, ~3s
+npm run textcheck       # every declared word survived onto the rasterised page
+node --test test/contrast.test.js   # title and divider surfaces carry their ink
+```
+
+All of them take `--deck decks/<slug>/deck.yaml`, and that is the point: the
+specimen deck's payloads are hand-written to behave, so the same sweep reports
+8 failures on the specimen and 51 on a real generated deck. Audit against real
+content or the audit is measuring the specimen.
+
+None of the three replaces looking. A wrapped figure fits its box fragment by
+fragment; a five-character value is under the text check's word floor. Both
+shipped until someone looked. `tools/slideqa.mjs` renders every type full size
+and `tools/pixels.mjs` measures contrast on the pixels actually painted — a
+plate theme's ground is not its palette token.
+
 `docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
 headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
 Read it before touching the renderer or the fitter.
@@ -82,6 +102,9 @@ src/chrome.js      locked institutional marks pass, runs after the layout
 src/theme.js       theme + style load and deep-merge
 src/plate.js       headless-Chrome HTML -> PNG background, sha256-cached
 src/report.js      donor .docx surgery (jszip), two-pass TOC page numbers
+src/composition.js per-theme composition: frame, opening mark, divider, marker
+src/themematrix.js every theme x every type, as a fit verdict
+src/textcheck.js   rasterise, read the text back, report what did not survive
 src/validate.js    ajv errors resolved to "slide N, type T, do X"
 src/ai/pipeline.js the CLI and the orchestration both the CLI and API call
 src/ai/ollama.js   role-addressed model client (ollama | openai-compatible)
