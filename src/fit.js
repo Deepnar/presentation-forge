@@ -62,6 +62,9 @@ const classOf = (family) => FAMILY_CLASS[family] ?? "sans";
  */
 const FAMILY_ADVANCE = { "Archivo Black": 0.62, Syne: 0.60, Fraunces: 0.60 };
 
+/** Glyphs that are far wider than the family's letter average, in ems. */
+const WIDE_GLYPHS = { "%": 0.95, "‰": 1.2, "—": 1.0, "@": 0.95, "#": 0.7, "×": 0.72, "+": 0.6 };
+
 // Black/ExtraBold faces run far wider than the family's regular advance —
 // Merriweather Black stat digits ("53 kWh") wrap at a size a 0.495 em estimate
 // predicts fits one line; the real average is ~0.60 em. Weight widens the
@@ -128,15 +131,19 @@ export function measure(text, { family, size, weight, tracking = 0 }) {
   const adv = base * weightFactor(weight);
   const track = (tracking / 100) * em;
   const s = String(text);
-  // Lining figures are near-tabular in most faces — about 0.58 em — while the
-  // lowercase average ADVANCE describes sits well under that, and on a display
-  // serif it is under 0.5. A stat value is almost all digits, so measuring
-  // them at the letter average is what wrapped "48.2K" into "48.2 / K" on a
-  // third of the gallery: the fitter believed the value fitted one line.
-  const digits = (s.match(/\d/g) ?? []).length;
-  if (!digits) return s.length * (adv * em + track);
-  const figure = Math.max(adv, 0.58 * weightFactor(weight));
-  return (s.length - digits) * (adv * em + track) + digits * (figure * em + track);
+  // ADVANCE is a lowercase average, and a stat value is not lowercase. Lining
+  // figures sit near 0.58 em in most faces, and a percent sign is one of the
+  // widest glyphs there is — near a full em. Measuring either at the letter
+  // average is what wrapped "48.2K" into "48.2 / K" and "99.9%" into
+  // "99.9 / %" across a third of the gallery: the fitter believed the value
+  // fitted one line, and on a fixed-height box the second line landed on the
+  // label underneath it.
+  let excess = 0;
+  for (const ch of s) {
+    const wide = /\d/.test(ch) ? 0.58 : WIDE_GLYPHS[ch];
+    if (wide) excess += Math.max(0, wide * weightFactor(weight) - adv);
+  }
+  return s.length * (adv * em + track) + excess * em;
 }
 
 /** Estimated wrapped line count for `text` inside `width` inches. */
