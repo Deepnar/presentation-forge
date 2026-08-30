@@ -7,6 +7,7 @@
  * vision model can flag any cell with invisible or low-contrast text.
  *
  *   node tools/contrast-audit.mjs [--themes a,b] [--types a,b] [--out dir]
+ *   node tools/contrast-audit.mjs --deck decks/<slug>/deck.yaml [--out dir]
  *
  * A cell must be big enough to actually read text — this is a contrast check,
  * not the distinctness check, so cells are ~4 per row at preview resolution
@@ -19,6 +20,7 @@ import { render } from "../src/render.js";
 import { preview } from "../src/preview.js";
 import { listThemes } from "../src/theme.js";
 import { specimenDeck } from "../src/specimens.js";
+import { loadDeck } from "../src/validate.js";
 import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -39,31 +41,41 @@ const DEFAULT_TYPES = [
 ];
 const TYPES = pick("--types") ?? DEFAULT_TYPES;
 
-const specimen = await specimenDeck();
+// A real deck asks the question the specimen cannot: its payloads are
+// hand-written to behave, and a model writes whatever length the topic wants.
+const deckArg = pick("--deck")?.[0];
+const specimen = deckArg ? await loadDeck(deckArg) : await specimenDeck();
 const byType = new Map(specimen.slides.map((s) => [s.type, s]));
 const work = path.join(ROOT, "decks", ".specimen-cache", "__contrast__");
 await mkdir(work, { recursive: true });
 await mkdir(outDir, { recursive: true });
 
 // Render the chosen types once per theme.
-const cells = {}; // type -> [{theme, file}]
-for (const type of TYPES) cells[type] = [];
+// One sheet per slide. The specimen has one slide per type so the key is the
+// type; a real deck can repeat a type, so the key carries its position.
+const SHEETS = deckArg
+  ? specimen.slides.map((s, i) => `${String(i + 1).padStart(2, "0")}-${s.type}`)
+  : TYPES;
+const cells = {}; // sheet key -> [{theme, file}]
+for (const key of SHEETS) cells[key] = [];
 
 for (const theme of themes) {
-  const themed = {
-    title: "Contrast audit",
-    sections: ["Specimens"],
-    theme,
-    slides: TYPES.map((t) => byType.get(t)).filter(Boolean),
-  };
+  const themed = deckArg
+    ? { ...structuredClone(specimen), theme }
+    : {
+      title: "Contrast audit",
+      sections: ["Specimens"],
+      theme,
+      slides: TYPES.map((t) => byType.get(t)).filter(Boolean),
+    };
   const deckFile = path.join(work, `${theme}.yaml`);
   await writeFile(deckFile, JSON.stringify(themed));
   try {
     const outFile = path.join(work, `${theme}.pptx`);
     const r = await render({ deck: themed, deckDir: work, themeName: theme, out: outFile });
     const p = await preview(r.outFile, { dpi: 110, outDir: path.join(work, `${theme}`) });
-    TYPES.forEach((type, i) => {
-      if (p.pages[i]) cells[type].push({ theme, file: p.pages[i] });
+    SHEETS.forEach((key, i) => {
+      if (p.pages[i]) cells[key].push({ theme, file: p.pages[i] });
     });
     process.stderr.write(`  ${theme} ✓\n`);
   } catch (err) {
@@ -76,7 +88,7 @@ const cols = 4;
 const cellW = 700, cellH = Math.round(cellW * (9 / 16));
 const pad = 6, labelH = 24;
 
-for (const type of TYPES) {
+for (const type of SHEETS) {
   const list = cells[type];
   if (!list.length) continue;
   const rows = Math.ceil(list.length / cols);

@@ -50,6 +50,22 @@ and encodes a distinction that does not exist, while pulling low-contrast
 palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
 and doughnut should vary.
 
+**The floor only guards text that was actually fitted.** `src/fit.js` reports a
+floor hit from inside `fitScale`/`fitOneLine`. Text drawn at a hardcoded scale
+never calls them, so it is not merely unfitted — it is *unreported*: the
+`framework` ring drew its element bodies at `scale: 0.9` and a real 130-char
+body ran out of its card and under the central ellipse, with a clean fit sweep.
+A fixed scale in a fixed-height box is the signature; grep for `scale: 0.` in a
+layout before trusting its sweep.
+
+**A deck is budgeted against one theme and rendered in thirty-four.** The
+field-length pass rendered the deck in the theme it happened to name. On a real
+deck that flagged nothing, while six of seventeen slides lost text in some
+other theme — a narrower measure is a different budget, and the content only
+has to fail one of them to be broken for whoever picks it. Anything that asks
+"does this text fit" about a *deck* has to ask it across every theme;
+`themeMatrix({ deck })` is that question and costs milliseconds.
+
 **A word wider than its column breaks in the middle of itself, silently.**
 The fitter budgets *height*: it shrinks until the wrapped text fits the box, so
 a single word too wide to fit the measure passes the fit and then hyphenates
