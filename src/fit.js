@@ -50,6 +50,18 @@ const FAMILY_CLASS = {
 const WIDE_SANS = new Set(["Inter", "Manrope", "Poppins", "Outfit", "Space Grotesk", "DM Sans", "IBM Plex Sans"]);
 const classOf = (family) => FAMILY_CLASS[family] ?? "sans";
 
+/**
+ * Per-family advances for faces a class average gets badly wrong.
+ *
+ * `weightFactor` widens the estimate for heavy weights, but it reads the
+ * theme's weight token — and Archivo Black declares 400, because black is the
+ * only weight the family ships. So the widest display face in the gallery was
+ * being measured at the narrowest display advance, and its stat figures wrapped
+ * "48.2K" into "48.2 / K". Syne and Fraunces run wide at the weights the themes
+ * actually use.
+ */
+const FAMILY_ADVANCE = { "Archivo Black": 0.62, Syne: 0.60, Fraunces: 0.60 };
+
 // Black/ExtraBold faces run far wider than the family's regular advance —
 // Merriweather Black stat digits ("53 kWh") wrap at a size a 0.495 em estimate
 // predicts fits one line; the real average is ~0.60 em. Weight widens the
@@ -112,9 +124,19 @@ function reportFloor(style, neededPt, floor) {
 /** Estimated rendered width, in inches, of a single line. */
 export function measure(text, { family, size, weight, tracking = 0 }) {
   const em = size / 72;
-  const adv = ADVANCE[classOf(family)] * (WIDE_SANS.has(family) ? 1.08 : 1) * weightFactor(weight);
+  const base = FAMILY_ADVANCE[family] ?? ADVANCE[classOf(family)] * (WIDE_SANS.has(family) ? 1.08 : 1);
+  const adv = base * weightFactor(weight);
   const track = (tracking / 100) * em;
-  return String(text).length * (adv * em + track);
+  const s = String(text);
+  // Lining figures are near-tabular in most faces — about 0.58 em — while the
+  // lowercase average ADVANCE describes sits well under that, and on a display
+  // serif it is under 0.5. A stat value is almost all digits, so measuring
+  // them at the letter average is what wrapped "48.2K" into "48.2 / K" on a
+  // third of the gallery: the fitter believed the value fitted one line.
+  const digits = (s.match(/\d/g) ?? []).length;
+  if (!digits) return s.length * (adv * em + track);
+  const figure = Math.max(adv, 0.58 * weightFactor(weight));
+  return (s.length - digits) * (adv * em + track) + digits * (figure * em + track);
 }
 
 /** Estimated wrapped line count for `text` inside `width` inches. */
