@@ -2917,6 +2917,27 @@ before it and none visible to any test: `funnel` dropped every stage body,
 the closing CTA pill overflowed its fixed shape, and the field-length pass
 budgeted the deck against the one theme it named.
 
+The visual pass then found three more, all of them figures rather than prose:
+`kpi-dashboard` and `data-cards` wrapped their values mid-number ("48.2 / K",
+"2.3 / %") in about a third of the gallery, `data-cards` landed the wrapped
+line on the label beneath it, and `split-screen` fused its two halves into one
+block on every square-cornered theme. The first two shared a root cause in
+`measure()`, which estimated every character at the lowercase average: lining
+figures sit near 0.58 em and a percent sign near a full em, and Archivo Black
+declares weight 400 because black is the only weight it ships, so the widest
+display face in the gallery was measured at the narrowest display advance.
+
+> **Learned.** A contact sheet at four cells per row is reliable for structure
+> — overlap, clipping, fused panels, a wrapped value — and not for contrast.
+> Two types were called illegible from a cell and read perfectly at full size.
+> Contrast has a numeric test; use it, and keep the sheets for what only eyes
+> can see.
+>
+> The deterministic checks and the visual pass find disjoint sets. The fit
+> sweep never saw the wrapped figures, because each fragment fits its box; the
+> text check never saw them either, because a five-character value is below
+> its word-length floor. Neither is redundant with looking.
+
 ### [ ] The schema's caps are not the layouts' budgets
 
 *Priority: high. Renderer and schema, no model.*
