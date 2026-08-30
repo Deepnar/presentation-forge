@@ -29,7 +29,7 @@ a vocabulary needs a plain member.
 ellipse at another, so two smears crossed the screen and the lit area sat above
 the type rather than behind it. Every layer is now concentric on one centre.
 
-## Three instruments that outlast the item
+## Five instruments that outlast the item
 
 ```bash
 npm run themematrix                 # 34 x 75 fit failures, ~3s, nothing rasterised
@@ -54,16 +54,16 @@ list** — eight fit failures, twenty-four contrast pairings — and fail in *bo
 directions, so an entry cannot be added silently and cannot be left in after it
 is paid.
 
-The three checks find **disjoint** sets, and none of them replaces looking. The
-fit sweep never saw a wrapped figure, because each fragment fits its box; the
-text check never saw it either, because a five-character value is under its
+The checks find **disjoint** sets, and none of them replaces looking. The fit
+sweep never saw a wrapped figure, because each fragment fits its box; the text
+check never saw it either, because a five-character value is under its
 word-length floor. Both were found by eye.
 
 A contact sheet at four cells per row judges **structure** — overlap, clipping,
 fused panels, a wrapped value — and not contrast. Two types were called
 illegible from a cell and read perfectly at full size.
 
-## Three defects that had nothing to do with composition
+## Three defects the composition work surfaced
 
 All three had been shipping for a long time, all three are in `docs/TRAPS.md`,
 and none of them raises anything a test could read:
