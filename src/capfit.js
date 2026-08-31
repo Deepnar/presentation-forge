@@ -2,6 +2,7 @@ import { themeMatrix } from "./themematrix.js";
 import { specimenDeck } from "./specimens.js";
 import { slideFieldMeta } from "./ai/trim.js";
 import { fieldInventory } from "./ai/fieldlength.js";
+import { NON_TEXT } from "./textcheck.js";
 
 /**
  * What length can a field actually be?
@@ -56,18 +57,22 @@ export async function grow(slide, scale, inventory) {
       if (node == null) return;
     }
     const last = parts.at(-1).replace("[]", "");
+    // A cap on an array field caps its ITEMS, so replacing the array with a
+    // string throws in the layout at every scale — which the bisection then
+    // reads as "nothing fits at all". `bullets` and `sets[].items` are both
+    // arrays of strings, the second nested inside an array of objects.
+    const assign = (container, key) => {
+      if (!container || typeof container !== "object" || !(key in container)) return;
+      const current = container[key];
+      if (Array.isArray(current)) container[key] = current.map((v) => (typeof v === "string" ? value : v));
+      else if (typeof current === "string") container[key] = value;
+    };
     // `items[].title`: the parent resolved to the array, so every member gets it.
     if (Array.isArray(node)) {
-      for (const item of node) if (item && typeof item === "object" && last in item) item[last] = value;
+      for (const item of node) assign(item, last);
       return;
     }
-    if (!node || typeof node !== "object") return;
-    const current = node[last];
-    // `bullets` is an array of strings and its cap is per item — replacing the
-    // array with a string threw in the layout at every scale, which the
-    // bisection then read as "nothing fits".
-    if (Array.isArray(current)) node[last] = current.map((v) => (typeof v === "string" ? value : v));
-    else if (typeof current === "string") node[last] = value;
+    assign(node, last);
   };
   for (const f of inventory) {
     if (!f.cap) continue;
@@ -85,7 +90,10 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
   const slide = deck.slides.find((s) => s.type === type);
   if (!slide) return null;
 
-  const inventory = (await fieldInventory(slide)).filter((f) => f.cap);
+  // Identifiers, asset paths and icon glyphs carry a maxLength but are not
+  // prose the layout sets — growing a node's id breaks the edges that name it.
+  const inventory = (await fieldInventory(slide))
+    .filter((f) => f.cap && !NON_TEXT.has(f.path.split(".").at(-1).replace("[]", "")));
   if (!inventory.length) return { type, scale: 1, caps: [], fields: 0 };
 
   const fits = async (scale) => {

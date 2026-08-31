@@ -23,11 +23,14 @@ const run = promisify(execFile);
 
 // Fields that never reach the slide as text, or that the layout deliberately
 // rewrites. `notes` go to the speaker-notes pane, not the canvas.
-const NON_TEXT = new Set([
+export const NON_TEXT = new Set([
   "type", "section", "image", "images", "html", "icon", "fit", "notes",
   "url", "src", "href", "align", "colour", "color", "variant", "kind",
   // Enums that drive a mark rather than being set as text.
   "sentiment", "state", "status", "tone", "trend", "direction", "level",
+  // Identifiers the content refers to itself by — a diagram's edges name its
+  // nodes, so these are a graph, not prose.
+  "id", "from", "to",
   // A chart's own labels live inside the chart part, which pdftotext does not
   // read back; the headline and caption around it still do.
   "chart",
