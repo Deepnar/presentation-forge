@@ -11,7 +11,7 @@ This file is only what the last session learned that those do not say.
 
 ## What was done
 
-**§10 is 10 of 17 items closed.** Two closed, one opened for what is left.
+**§10 is 10 of 18 items closed.** Two closed, one opened for what is left.
 
 - **Text drawn at a fixed scale now reports.** Eighteen of nineteen sites fit;
   the nineteenth is a fixed glyph in a fixed box and says so.
@@ -29,9 +29,16 @@ This file is only what the last session learned that those do not say.
 | `npm run themematrix` | clean, 34 themes x 75 types |
 | `npm run themematrix -- --notes` | 2 — `feature-grid` on `minimal-muji` |
 | `npm run textcheck` | clean, specimen and the real deck |
-| `npm run themematrix --deck <real>` | 9 — `cards` x5, `takeaway` x4 |
+| `npm run themematrix --deck <real>` | 46 — `cards` x42, `takeaway` x4 (see below) |
 | `node tools/capfit.mjs` | 1 field over its measured length |
 | `test/contrast.test.js` | 24 recorded, passing both ways |
+
+**The real deck's 46 is the caps working, not a regression.** That deck was
+generated before the caps were corrected: its `cards` bodies run 122 to 209
+characters against a cap of 95, so every theme reports them. `loadDeck` warns on
+length rather than refusing, so it still renders and the fitter still says what
+does not fit. Check a deck's field lengths against the current schema before
+reading a rising count as a break — `loadDeck` prints them.
 
 ## The finding worth carrying forward
 

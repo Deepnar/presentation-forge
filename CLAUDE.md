@@ -82,9 +82,15 @@ npm run capstress -- --scale 0.01   # ...and at one character: the layout, not t
 ```
 
 All of them take `--deck decks/<slug>/deck.yaml`, and that is the point: the
-specimen deck's payloads are hand-written to behave, so the same sweep reports
-8 failures on the specimen and 51 on a real generated deck. Audit against real
-content or the audit is measuring the specimen.
+specimen deck's payloads are hand-written to behave, so the same sweep is clean
+on the specimen and reports 46 failures on the one real generated deck on disk.
+Audit against real content or the audit is measuring the specimen.
+
+Most of that 46 is a deck written before the caps were corrected — its card
+bodies run 122 to 209 characters against a cap of 95, and `loadDeck` warns on
+length rather than refusing, so it still renders and the fitter still says what
+does not fit. A rising count after a cap cut is the caps working, not the
+renderer breaking; check the deck's field lengths before assuming a regression.
 
 A speaker note reserves 0.7in off every content slide and the specimen carries
 none, so `--notes` is the half of the sweep that is easy to forget and found 29
