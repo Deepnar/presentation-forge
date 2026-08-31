@@ -393,6 +393,56 @@ luminance (a sharp sample of the raster), falling back to the surface's
 declared `bg` — for a freeform plate the theme's flat palette says nothing
 about what was actually painted.
 
+## Verification — four questions, not one
+
+A written `.pptx` proves the file parsed. `pres.writeFile()` succeeds for a deck
+whose text runs off the canvas, whose caption is drawn on top of its own title,
+and whose headline was never drawn at all. So the renderer carries its own
+instruments, and they exist because each was added after the ones before it were
+clean on something that shipped.
+
+They answer four different questions, and the order matters — a box that is not
+on the slide makes every later answer meaningless.
+
+| question | instrument | where |
+|---|---|---|
+| Is the box on the slide? | the geometry watcher | `src/geometry.js`, inside every render |
+| Was the field drawn at all? | the draw check | `src/drawcheck.js` |
+| Does the text fit its box? | the fitter and the cap prober | `src/fit.js`, `src/capfit.js` |
+| Did it survive the render? | the text check | `src/textcheck.js` |
+
+**The geometry watcher wraps the pptxgenjs slide** rather than living inside the
+layouts: 75 layouts cannot each be trusted to remember, and a rule enforced in
+one place is a rule. It proxies every `add*` call, records the geometry, and
+reports what cannot be right — a non-positive extent for any shape, and the
+canvas edges for text and images. A decorative shape may bleed off the canvas on
+purpose; a content shape that ran off the page takes its label with it, so the
+text box reports and nothing is lost by the exemption. Rotated boxes are judged
+on the footprint they render, not the one they declare. Because it runs inside
+`render()`, `npm run themematrix` answers this question for the whole gallery
+for free.
+
+**The draw check asks what no fit sweep can.** Text that is never drawn is never
+fitted, so it never appears in a fit verdict, and it never reaches the raster for
+the text check to miss — a layout can discard content the model wrote on all 34
+themes with every other instrument clean. It writes a marker into each field the
+schema declares, renders, and reads back the strings the layout emitted. Its
+second output is the more important one: the fields the specimen does not
+populate, which are the fields nothing has ever rendered.
+
+**The fixture is the limit on all of them.** Every instrument reads a specimen
+deck (`src/specimens.js`) of one slide per type. A field the specimen omits
+cannot be measured, grown, marked or read back — so the question to ask of the
+fixture is always what it does NOT carry. `standfirst` was absent on 71 of 75
+types and no cap, sweep or render had ever carried one.
+
+**A sweep looks at eight themes.** The layouts branch on composition axes — the
+frame, the opening mark, the heading alignment, the list columns, the plate —
+not on themes, so a set carrying every value of every axis renders every branch.
+`src/coverage.js` holds that set and `test/coverage.test.js` fails when a theme
+introduces a value none of them carries. The alternative is 2,550 slides, which
+means the visual sweep does not happen.
+
 ## Deck vs report asymmetry
 
 They are not two flavours of the same artefact.
