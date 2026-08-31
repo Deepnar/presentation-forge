@@ -127,6 +127,15 @@ writes rather than the one the specimen was written to behave at.
 contrast on the pixels actually painted — a plate theme's ground is not its
 palette token.
 
+**Look at eight themes, not 34.** 34 x 75 is 2,550 slides and nobody looks at
+that, so the sweep stops happening. They do not need to: the layouts branch on
+composition axes — the frame, the opening mark, the alignment, the list columns,
+the plate — not on themes, so a set carrying every value of every axis renders
+every branch and the other 26 are the same code in different colours. That set
+is `COVERING_THEMES` in `src/coverage.js`, it is what `npm run capstress`
+defaults to, and `test/coverage.test.js` fails when a theme introduces a value
+none of them carries. When it does, add a theme there — do not widen the sweep.
+
 `docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
 headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
 Read it before touching the renderer or the fitter.
@@ -146,6 +155,7 @@ src/themematrix.js every theme x every type, as a fit verdict
 src/textcheck.js   rasterise, read the text back, report what did not survive
 src/drawcheck.js   mark each field, render, report what the layout never drew
 src/geometry.js    the box watcher: non-positive extents, shapes off the canvas
+src/coverage.js    the eight themes a visual sweep has to look at, and why
 src/capfit.js      the length a field can actually be, measured per theme
 src/validate.js    ajv errors resolved to "slide N, type T, do X"
 src/ai/pipeline.js the CLI and the orchestration both the CLI and API call
