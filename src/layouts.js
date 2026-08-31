@@ -838,8 +838,60 @@ export const layouts = {
     const cw = (box.w - gut) / 2;
     const ch = box.bottom - y - verdictH - (hasVerdict ? 0.24 : 0) - 0.1;
     const pad = theme.shape?.card_pad ?? 0.28;
+    const bodyW = cw - pad * 2;
+    const ptW = bodyW - 0.24;
 
-    [data.left, data.right].forEach((side, i) => {
+    const sides = [data.left, data.right];
+    const pointsOf = (s) => (s.points ?? []).filter(Boolean);
+    const allPoints = sides.flatMap(pointsOf);
+    const maxPoints = Math.max(0, ...sides.map((s) => pointsOf(s).length));
+
+    // The title and the kicker are one line each, and they were given 0.48in
+    // and 0.36in of card whatever line height the theme sets — 1.16in of chrome
+    // on a 2.4in card, more than the body and the points got between them. Each
+    // takes the line it will really draw at, which is the design size: the
+    // fitter may shrink below it but never above.
+    const titleSt = designed(theme, "heading", 0.6);
+    const titleH = (titleSt.size * (titleSt.line ?? 1.2)) / 72 + 0.04;
+    const kickerH = (theme.type.caption.size * (theme.type.caption.line ?? 1.3)) / 72 + 0.04;
+    // The kicker is per side, but the two bodies must start on the same line or
+    // the cards read as misaligned, so the offset is the deeper of the two.
+    const tyOff = pad + titleH + 0.03 + (sides.some((s) => s.kicker) ? kickerH + 0.06 : 0);
+    const zone = ch - tyOff - pad;
+
+    // The schema allows four supporting points a side and the layout drew none
+    // of them — a model could write them and watch them vanish, which is the
+    // funnel stage body again in a second type. Body and points share the zone
+    // in proportion to what each needs, so neither starves the other and the
+    // fitters report if the pair genuinely does not fit.
+    const pointLine = allPoints.length ? linesBox(theme, "caption", allPoints, ptW) : 0;
+    const pointsNeed = maxPoints ? maxPoints * (pointLine + 0.06) + 0.08 : 0;
+    const bodyNeed = linesBox(theme, "body", sides.map((s) => s.body), bodyW);
+    // Splitting the zone in proportion to what each needs hands it to whichever
+    // is longer, and points at their cap are always longer than one body —
+    // which left the argument itself two lines. The body is the required field
+    // and keeps the majority of the card; the points take what they need out of
+    // the rest. Both fitters then report honestly when the pair does not fit,
+    // rather than one of them quietly winning the whole zone.
+    // A share of the zone is the wrong allocation when the share can come out
+    // below one readable line — four points into 45% of an inch gave each 0.17
+    // and no length of text fits that, so the type failed at one character. The
+    // points take what they need, floored at a legible row each and capped so
+    // the body keeps one line; whichever side then cannot fit says so, which is
+    // the signal that the card is carrying more than it can.
+    const pointRowMin = lineAtFloor(theme, "caption") + 0.06;
+    const wantPoints = maxPoints ? Math.max(pointsNeed, maxPoints * pointRowMin) : 0;
+    const pointsH = Math.min(wantPoints, Math.max(0, zone - lineAtFloor(theme, "body")));
+    const bodyH = zone - pointsH;
+    // The row is what the ALLOCATION divides into, not what a point would like:
+    // fitting against the natural line height and then stacking at it drew four
+    // points through two inches of a half-inch allocation, and no fitter said
+    // so because none had been asked about the box that was really used.
+    const pointRow = maxPoints ? pointsH / maxPoints : 0;
+    const bodyScale = fitScaleAll(sides.map((s) => s.body), bodyW, bodyH, theme.type.body);
+    const pointScale = fitAllAt(theme, "caption", 0.95, allPoints, ptW, pointRow - 0.06);
+
+    sides.forEach((side, i) => {
       const x = box.x + i * (cw + gut);
       card(slide, theme, { x, y, w: cw, h: ch });
 
@@ -849,28 +901,39 @@ export const layouts = {
       // the title is drawn at, so 0.6 is the size the fit is taken at — asking
       // whether it fits at the full heading token reported a failure for
       // titles that seat perfectly at the size they really get.
-      const titleScale = fitAt(theme, "heading", 0.6, side.title, cw - pad * 2, 0.45, { min: 0.55 });
+      const titleScale = fitAt(theme, "heading", 0.6, side.title, bodyW, titleH, { min: 0.55 });
       slide.addText(side.title, {
-        x: x + pad, y: ty, w: cw - pad * 2, h: 0.45,
+        x: x + pad, y: ty, w: bodyW, h: titleH,
         ...textStyle(theme, "heading", { scale: titleScale }),
         valign: "top",
       });
-      ty += 0.48;
+      ty += titleH + 0.03;
 
       if (side.kicker) {
         slide.addText(side.kicker, {
-          x: x + pad, y: ty, w: cw - pad * 2, h: 0.3,
+          x: x + pad, y: ty, w: bodyW, h: kickerH,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted }),
         });
-        ty += 0.36;
+        ty += kickerH + 0.06;
       }
 
       slide.addText(side.body, {
-        x: x + pad, y: ty + 0.06, w: cw - pad * 2, h: ch - (ty - y) - pad,
-        ...textStyle(theme, "body", {
-          scale: fitScaleAll([data.left.body, data.right.body], cw - pad * 2, ch - (ty - y) - pad, theme.type.body),
-        }),
+        x: x + pad, y: y + tyOff + 0.06, w: bodyW, h: bodyH,
+        ...textStyle(theme, "body", { scale: bodyScale }),
         valign: "top",
+      });
+
+      pointsOf(side).forEach((pt, j) => {
+        const py = y + tyOff + bodyH + j * pointRow;
+        slide.addShape("ellipse", {
+          x: x + pad + 0.03, y: py + pointRow / 2 - 0.045, w: 0.09, h: 0.09,
+          fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
+        });
+        slide.addText(pt, {
+          x: x + pad + 0.24, y: py, w: ptW, h: pointRow - 0.06,
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: pointScale }),
+          valign: "top",
+        });
       });
     });
 
@@ -1327,12 +1390,30 @@ export const layouts = {
     const ix = imgLeft ? box.x : box.x + tw + gut;
     const tx = imgLeft ? box.x + iw + gut : box.x;
 
+    // The schema offers a caption and the layout drew nothing for it, so a
+    // model could credit the picture and watch the credit vanish. It sits under
+    // the image, in the image column, and takes its height out of the image
+    // rather than out of the body.
+    const capH = data.caption ? linesBox(theme, "caption", [data.caption], iw) + 0.08 : 0;
+    const imgH = h - capH;
+
     const src = resolveAsset(data.image);
     if (src) {
       slide.addImage({
-        path: src, x: ix, y, w: iw, h,
-        sizing: { type: "cover", w: iw, h },
+        path: src, x: ix, y, w: iw, h: imgH,
+        sizing: { type: "cover", w: iw, h: imgH },
         rounding: false,
+      });
+    }
+    if (data.caption) {
+      slide.addText(data.caption, {
+        x: ix, y: y + imgH + 0.06, w: iw, h: capH - 0.06,
+        ...textStyle(theme, "caption", {
+          color: theme.palette.ink_muted,
+          italic: true,
+          scale: fitScale(data.caption, iw, capH - 0.06, theme.type.caption, { min: 0.7 }),
+        }),
+        valign: "top",
       });
     }
     slide.addText(
@@ -3068,7 +3149,10 @@ export const layouts = {
     // holds the text at the readable floor, up to a share of the slide.
     const capStyle = theme.type.caption;
     const capFloor = atFloor(theme, "caption");
-    const capLine = (capFloor.size * (capStyle.line ?? 1.35)) / 72;
+    // With headroom: a box exactly one floor-line tall makes the fitter's 4%
+    // search land just under the floor and report it, so every zone sized from
+    // this — the cards, the diamond, the label rows — needs the extra step.
+    const capLine = lineAtFloor(theme, "caption");
 
     const pre = data.steps ?? [];
     const branches = data.branches ?? [];
@@ -3083,10 +3167,15 @@ export const layouts = {
     // bottom, something has to give, and it should be the slack in the cards
     // rather than the last row falling off the slide.
     const preGap = 0.22;
-    const minCard = capLine + 0.24;
+    // 0.18 is the padding the card draw actually uses; reserving 0.24 asked
+    // every row for six hundredths of an inch the card never spends.
+    const minCard = capLine + 0.18;
     const cardRows = (pre.length ? 1 : 0) + rows;
     // Everything in the column that is not a card and not the diamond.
-    const fixed = 0.25 + 0.45 + (pre.length ? preGap : 0.5) + (rows ? (rows - 1) * stepGap : 0);
+    const pillDrop = 0.05, pillH = 0.3;
+    const labelZone = pillDrop + pillH + 0.05;
+    const stemGap = 0.2;
+    const fixed = stemGap + labelZone + (pre.length ? preGap : 0.5) + (rows ? (rows - 1) * stepGap : 0);
 
     // The diamond grows to hold its label — and used to grow with no reference
     // to what sits under it, so a five-line decision pushed the second row of
@@ -3101,15 +3190,34 @@ export const layouts = {
     // 2.55 centres the diagram under an ordinary heading. It is a preference,
     // not a requirement, and honouring it on a slide that cannot afford it is
     // how the stack lost the inches it needed.
-    const top = Math.max(y, Math.min(2.55, box.bottom - (fixed + 0.95 + cardRows * minCard)));
+    // The diamond's floor was 0.95in whatever it held. It is a FLOOR, and the
+    // shape grows from it — so it only has to be the smallest thing that still
+    // reads as a decision node and holds one line in its inscribed box, which
+    // for a rhombus is half the bounding height. Reserving two lines here
+    // charged the branch stack for growth that the loop below does on demand.
+    const minDiamond = Math.max(0.7, capLine * 2);
+    // The decision is what this type is, so it is served BEFORE the cards take
+    // the surplus: a card grows to 0.7in given the chance, and three of them
+    // doing that left the diamond at its floor with a label that needed two
+    // lines. This is the height the label wants at the diamond's full width.
+    const maxW = Math.min(3.4, box.w * 0.34);
+    const wantDiamond = (() => {
+      const lines = lineCount(decision, maxW / 2, capFloor);
+      let h = minDiamond;
+      while (lines * capLine > h / 2 && h < 2.2) h += 0.16;
+      return h;
+    })();
+    const top = Math.max(y, Math.min(2.55, box.bottom - (fixed + wantDiamond + cardRows * minCard)));
     const stepH = cardRows
-      ? Math.max(minCard, Math.min(0.7, (box.bottom - top - fixed - 0.95) / cardRows))
+      ? Math.max(minCard, Math.min(0.7, (box.bottom - top - fixed - wantDiamond) / cardRows))
       : 0.7;
     const preBand = pre.length ? stepH + preGap : 0.5;
     const dy = top + preBand;
-    const maxH = Math.max(0.95, box.bottom - dy - 0.25 - 0.45 - (rows ? rows * stepH + (rows - 1) * stepGap : 0));
-    let decisionW = 1.4, decisionH = 0.95;
-    const maxW = Math.min(3.4, box.w * 0.34);
+    const maxH = Math.max(minDiamond, box.bottom - dy - stemGap - labelZone - (rows ? rows * stepH + (rows - 1) * stepGap : 0));
+    // Start at the height the label was measured to need, not at the floor —
+    // the stack was budgeted for `wantDiamond` above, and growing back up to it
+    // in 0.16 steps stalls one step short whenever the ceiling lands between.
+    let decisionW = 1.4, decisionH = Math.min(wantDiamond, Math.max(minDiamond, maxH));
     const seats = () => lineCount(decision, decisionW / 2, capFloor) * capLine <= decisionH / 2;
     // Width and height used to grow together in fixed steps, which spends the
     // one dimension that is scarce to buy the one that is free: the branch
@@ -3132,11 +3240,11 @@ export const layouts = {
       align: "center", valign: "middle",
     });
 
-    const branchTop = dy + decisionH + 0.25;
+    const branchTop = dy + decisionH + stemGap;
     // Whatever the diamond leaves, the rows divide — a card never runs past the
     // content box, and the title is fitted to the card it actually gets.
     const rowH = rows
-      ? Math.min(stepH, (box.bottom - branchTop - 0.45 - (rows - 1) * stepGap) / rows)
+      ? Math.min(stepH, (box.bottom - branchTop - labelZone - (rows - 1) * stepGap) / rows)
       : stepH;
     // Pre-steps and branch steps are the same card, so they share one fit — a
     // row where half the titles are smaller reads as a bug — taken against the
@@ -3146,15 +3254,18 @@ export const layouts = {
       ...branches.flatMap((b) => (b.steps ?? []).map((s) => s.title)),
     ].filter(Boolean);
     const stepTitleScale = fitAllAt(theme, "caption", 0.95, stepTitles, stepW - 0.2, Math.min(stepH, rowH) - 0.2, { min: 0.6 });
-    pre.forEach((s, i) => {
-      const x = box.x + box.w / 2 + (i - (pre.length - 1) / 2) * (stepW + 0.3) - stepW / 2;
-      const sy = dy - stepH - preGap;
-      card(slide, theme, { x, y: sy, w: stepW, h: stepH });
+    const stepCard = (s, x, sy, h) => {
+      card(slide, theme, { x, y: sy, w: stepW, h });
       slide.addText(s.title, {
-        x: x + 0.1, y: sy + 0.1, w: stepW - 0.2, h: stepH - 0.2,
+        x: x + 0.1, y: sy + 0.1, w: stepW - 0.2, h: h - 0.2,
         ...textStyle(theme, "caption", { bold: true, scale: stepTitleScale }),
         align: "center", valign: "middle",
       });
+    };
+    pre.forEach((s, i) => {
+      const x = box.x + box.w / 2 + (i - (pre.length - 1) / 2) * (stepW + 0.3) - stepW / 2;
+      const sy = dy - stepH - preGap;
+      stepCard(s, x, sy, stepH);
       slide.addShape("line", {
         x: x + stepW / 2 - 0.015, y: sy + stepH, w: 0.03, h: dy - sy - stepH,
         line: { color: hex(theme.palette.rule), width: 1.1 },
@@ -3183,23 +3294,18 @@ export const layouts = {
       // Outlined surface, not a rule fill — `rule` can be a translucent white
       // (isometric-dark) that swallows the ink_muted branch label.
       slide.addShape("roundRect", {
-        x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
+        x: bx + (stepW - lW) / 2, y: branchTop + pillDrop, w: lW, h: pillH,
         fill: { color: hex(theme.palette.surface) }, line: { color: hex(theme.palette.rule), width: 1 },
         rectRadius: theme.shape?.radius?.pill ?? 0.15,
       });
       slide.addText(b.label, {
-        x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
+        x: bx + (stepW - lW) / 2, y: branchTop + pillDrop, w: lW, h: pillH,
         ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: branchLabelScale }),
         align: "center", valign: "middle",
       });
       (b.steps ?? []).forEach((s, si) => {
-        const sy2 = branchTop + 0.45 + si * (rowH + stepGap);
-        card(slide, theme, { x: bx, y: sy2, w: stepW, h: rowH });
-        slide.addText(s.title, {
-          x: bx + 0.1, y: sy2 + 0.1, w: stepW - 0.2, h: rowH - 0.2,
-          ...textStyle(theme, "caption", { bold: true, scale: stepTitleScale }),
-          align: "center", valign: "middle",
-        });
+        const sy2 = branchTop + labelZone + si * (rowH + stepGap);
+        stepCard(s, bx, sy2, rowH);
       });
     });
   },
@@ -4123,6 +4229,28 @@ export const layouts = {
       if (dy !== 0) t = Math.min(t, nodeH / 2 / Math.abs(dy));
       return { x: p.x + dx * t, y: p.y + dy * t };
     };
+    // An edge may be labelled and the layout drew nothing for it, so a model
+    // could name every relation in the graph and lose all of them. The label
+    // rides the middle of its connector on a chip in the slide's own ground, so
+    // the hairline reads as passing behind it rather than through it.
+    const labels = edges.map((e) => e.label).filter(Boolean);
+    const edgeLine = lineAtFloor(theme, "caption");
+    const edgeMax = Math.min(1.5, nodeW);
+    // One line, sized off the measured WIDTH: fitting to a one-line height and
+    // then sizing the chip from the raw measure left the estimate's error
+    // inside the chip, and the label wrapped and clipped in a box built to hold
+    // exactly one line of it.
+    const edgeScale = fitLineAt(theme, "caption", 0.8, labels, edgeMax, { min: 0.6 });
+    const edgeStyle = designed(theme, "caption", edgeScale);
+    // pptxgenjs leaves a 0.1in inset on each side of a text box by default, so
+    // a chip sized to the measured width has a fifth of an inch less room than
+    // it looks like it has — which is what wrapped "batched" into "batche / d"
+    // and clipped the second line under the node below. The chips set their own
+    // margin, so the box width IS the text width.
+    const edgeInset = 0.05;
+    const edgeChip = (t) => Math.min(edgeMax, measure(t, edgeStyle) / 0.88 + edgeInset * 2 + 0.1);
+    const marks = [];
+
     edges.forEach((e) => {
       const f = idIdx.get(e.from), t = idIdx.get(e.to);
       if (f == null || t == null || f === t) return;
@@ -4130,8 +4258,25 @@ export const layouts = {
       const s = clipToBox(a, b);
       const e2 = clipToBox(b, a);
       line(s.x, s.y, e2.x, e2.y);
+      if (e.label) marks.push({ label: e.label, x: (s.x + e2.x) / 2, y: (s.y + e2.y) / 2 });
     });
     centres.forEach((c, i) => node(i, c.x, c.y));
+
+    // Labels last. Between adjacent layers the midpoint of a connector is a gap
+    // barely taller than the chip itself, so a label emitted with its edge was
+    // painted over by the node card that followed it — one of two survived.
+    for (const m of marks) {
+      const lw = edgeChip(m.label);
+      slide.addShape("rect", {
+        x: m.x - lw / 2, y: m.y - edgeLine / 2, w: lw, h: edgeLine,
+        fill: { color: hex(theme.palette.bg) }, line: { type: "none" },
+      });
+      slide.addText(m.label, {
+        x: m.x - lw / 2, y: m.y - edgeLine / 2, w: lw, h: edgeLine,
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: edgeScale }),
+        align: "center", valign: "middle", margin: edgeInset,
+      });
+    }
   },
 
   /**
