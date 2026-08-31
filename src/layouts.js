@@ -2768,12 +2768,22 @@ export const layouts = {
     const cw = (box.w - gut) / 2;
     const ch = box.bottom - y - 0.1;
     const pad = theme.shape?.card_pad ?? 0.28;
-    const imgH = 2.0;
+    // The image took a flat 2.0in whatever the card was. A speaker note takes
+    // 0.7in off the box, which left the caption a NEGATIVE height — pptxgenjs
+    // takes that without a word, so the title and the body were drawn over each
+    // other at the card's bottom edge and ran on under the note bar. The
+    // caption is reserved first and the image gets what is left.
+    const titleH = 0.4;
+    const hasTitle = Boolean(data.left.title || data.right.title);
+    const capH = (hasTitle ? titleH + 0.04 : 0) + lineAtFloor(theme, "body") * 2;
+    const imgH = Math.max(0.8, Math.min(2.0, ch - pad * 2 - 0.18 - capH));
+    const capTop = pad + imgH + 0.18 + (hasTitle ? titleH + 0.04 : 0);
+    const bodyH = Math.max(0.24, ch - capTop - pad);
     const titleScale = fitScaleAll(
-      [data.left.title, data.right.title].filter(Boolean), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.65 },
+      [data.left.title, data.right.title].filter(Boolean), cw - pad * 2, titleH, theme.type.subhead, { min: 0.65 },
     );
     const bodyScale = fitScaleAll(
-      [data.left.body, data.right.body].filter(Boolean), cw - pad * 2, 1.1, theme.type.body,
+      [data.left.body, data.right.body].filter(Boolean), cw - pad * 2, bodyH, theme.type.body,
     );
     const col = (side, x) => {
       card(slide, theme, { x, y, w: cw, h: ch });
@@ -2793,15 +2803,15 @@ export const layouts = {
       let ty = y + pad + imgH + 0.18;
       if (side.title) {
         slide.addText(side.title, {
-          x: x + pad, y: ty, w: cw - pad * 2, h: 0.4,
+          x: x + pad, y: ty, w: cw - pad * 2, h: titleH,
           ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
           valign: "top",
         });
-        ty += 0.44;
+        ty += titleH + 0.04;
       }
       if (side.body) {
         slide.addText(side.body, {
-          x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
+          x: x + pad, y: ty, w: cw - pad * 2, h: bodyH,
           ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
           valign: "top",
         });
