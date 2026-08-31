@@ -266,7 +266,7 @@
                   "properties": {
                     "title": {
                       "type": "string",
-                      "maxLength": 40
+                      "maxLength": 27
                     },
                     "kicker": {
                       "type": "string",
@@ -274,7 +274,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 320
+                      "maxLength": 160
                     },
                     "image": {
                       "type": "string"
@@ -339,7 +339,7 @@
                   "properties": {
                     "value": {
                       "type": "string",
-                      "maxLength": 12
+                      "maxLength": 8
                     },
                     "label": {
                       "type": "string",
@@ -720,7 +720,7 @@
             "properties": {
               "standfirst": {
                 "type": "string",
-                "maxLength": 220
+                "maxLength": 135
               }
             }
           }
@@ -882,7 +882,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 120
+                      "maxLength": 95
                     }
                   }
                 }
@@ -990,11 +990,11 @@
                   "properties": {
                     "title": {
                       "type": "string",
-                      "maxLength": 30
+                      "maxLength": 15
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 120
+                      "maxLength": 80
                     },
                     "tag": {
                       "type": "string",
@@ -1020,11 +1020,11 @@
               "label"
             ],
             "properties": {
-                    "value": {
-                      "type": "string",
-                      "maxLength": 12,
-                      "description": "A number for this stage (e.g. \"30%\"). The funnel's taper is drawn from these only when EVERY stage carries one; a stage without a value makes the whole funnel render as equal-width steps, because a partial taper would fake the stages it cannot measure."
-                    },
+              "value": {
+                "type": "string",
+                "maxLength": 12,
+                "description": "A number for this stage (e.g. \"30%\"). The funnel's taper is drawn from these only when EVERY stage carries one; a stage without a value makes the whole funnel render as equal-width steps, because a partial taper would fake the stages it cannot measure."
+              },
               "label": {
                 "type": "string",
                 "maxLength": 60
@@ -1070,7 +1070,7 @@
                     },
                     "value": {
                       "type": "string",
-                      "maxLength": 12
+                      "maxLength": 6
                     },
                     "trend": {
                       "enum": [
@@ -1116,7 +1116,7 @@
                   "properties": {
                     "value": {
                       "type": "string",
-                      "maxLength": 16
+                      "maxLength": 6
                     },
                     "label": {
                       "type": "string",
@@ -1124,7 +1124,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 200
+                      "maxLength": 110
                     }
                   }
                 }
@@ -1158,7 +1158,7 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 24
+                      "maxLength": 19
                     },
                     "value": {
                       "type": "number",
@@ -1439,7 +1439,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 100
+                      "maxLength": 75
                     }
                   }
                 }
@@ -1583,7 +1583,7 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 19
                   }
                 }
               },
@@ -1595,7 +1595,7 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 19
                   }
                 }
               },
@@ -1658,11 +1658,11 @@
                   "properties": {
                     "title": {
                       "type": "string",
-                      "maxLength": 24
+                      "maxLength": 15
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 27
                     }
                   }
                 }
@@ -1707,7 +1707,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 55
                     }
                   }
                 }
@@ -1740,11 +1740,11 @@
                   "properties": {
                     "title": {
                       "type": "string",
-                      "maxLength": 24
+                      "maxLength": 14
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 39
                     },
                     "gate": {
                       "type": "string",
@@ -1884,7 +1884,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 50
                     },
                     "items": {
                       "type": "array",
@@ -1935,7 +1935,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 120
+                      "maxLength": 95
                     }
                   }
                 }
@@ -2030,11 +2030,11 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 20
+                      "maxLength": 15
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 60
                     },
                     "sentiment": {
                       "enum": [
@@ -2042,7 +2042,7 @@
                         "neutral",
                         "negative"
                       ],
-                      "description": "Qualitative stage colouring, optional. The layout draws no vertical position from it — without real values the journey renders on a flat rail."
+                      "description": "Qualitative stage colouring, optional. The layout draws no vertical position from it \u2014 without real values the journey renders on a flat rail."
                     },
                     "value": {
                       "type": "number",
@@ -2141,7 +2141,7 @@
             "properties": {
               "quote": {
                 "type": "string",
-                "maxLength": 180
+                "maxLength": 115
               },
               "attribution": {
                 "type": "string",
@@ -2273,7 +2273,7 @@
               },
               "body": {
                 "type": "string",
-                "maxLength": 200
+                "maxLength": 135
               },
               "points": {
                 "type": "array",
@@ -2281,7 +2281,7 @@
                 "maxItems": 4,
                 "items": {
                   "type": "string",
-                  "maxLength": 120
+                  "maxLength": 80
                 }
               }
             }
@@ -2316,7 +2316,7 @@
                     },
                     "caption": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 50
                     }
                   }
                 }
@@ -2589,11 +2589,11 @@
                     },
                     "label": {
                       "type": "string",
-                      "maxLength": 40
+                      "maxLength": 27
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 27
                     }
                   }
                 }
@@ -2703,7 +2703,7 @@
                       "maxItems": 6,
                       "items": {
                         "type": "string",
-                        "maxLength": 40
+                        "maxLength": 27
                       }
                     }
                   }
@@ -2836,7 +2836,7 @@
                       "maxItems": 4,
                       "items": {
                         "type": "string",
-                        "maxLength": 30
+                        "maxLength": 23
                       }
                     }
                   }
@@ -2913,7 +2913,7 @@
                     },
                     "answer": {
                       "type": "string",
-                      "maxLength": 200
+                      "maxLength": 105
                     }
                   }
                 }
@@ -3030,7 +3030,7 @@
                     },
                     "value": {
                       "type": "string",
-                      "maxLength": 60
+                      "maxLength": 33
                     }
                   }
                 }
@@ -3077,7 +3077,7 @@
                     },
                     "meaning": {
                       "type": "string",
-                      "maxLength": 60
+                      "maxLength": 40
                     }
                   }
                 }
@@ -3180,13 +3180,12 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 24000,
-                "description": "Freeform slide body: arbitrary HTML/CSS rendered full-bleed by headless Chrome. The slide rasterises — text is not editable in PowerPoint afterwards. Sandboxed: no scripts, no network, no external resources, inline styles only. The institutional chrome (crest, footer, slide number) overlays the render, so leave safe margins."
+                "description": "Freeform slide body: arbitrary HTML/CSS rendered full-bleed by headless Chrome. The slide rasterises \u2014 text is not editable in PowerPoint afterwards. Sandboxed: no scripts, no network, no external resources, inline styles only. The institutional chrome (crest, footer, slide number) overlays the render, so leave safe margins."
               }
             }
           }
         }
-      ]
-      ,
+      ],
       "if": {
         "properties": {
           "type": {

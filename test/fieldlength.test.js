@@ -78,7 +78,7 @@ test("fieldInventory states the schema cap per field — the writer's budget", a
   assert.ok(concept, "concept.body is inventoried");
   assert.equal(concept.cap, 120);
   const elem = inv.find((f) => f.path === "elements[].body");
-  assert.equal(elem.cap, 100, "nested element bodies carry their own cap");
+  assert.equal(elem.cap, 75, "nested element bodies carry their own cap");
 });
 
 test("the catalog spells out the per-field caps, not just per-type", async () => {
