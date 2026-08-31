@@ -117,9 +117,75 @@ function heading(slide, ctx) {
  * what lets it land on the floor instead.
  */
 function lineAtFloor(theme, role, fallbackRatio = 1.35) {
+  const st = atFloor(theme, role);
+  return ((st.size * (st.line ?? fallbackRatio)) / 72) * 1.05;
+}
+
+/**
+ * The role's style at the smallest size the fitter will ever render it.
+ *
+ * A layout that has to decide how much box its content needs must count lines
+ * at the size the content will end up at if it is squeezed — counting at the
+ * nominal size reserves room for a shrink that will happen anyway.
+ */
+function atFloor(theme, role) {
   const style = theme.type[role];
-  const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
-  return ((size * (style.line ?? fallbackRatio)) / 72) * 1.05;
+  return { ...style, size: Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size)) };
+}
+
+/**
+ * Fit text to a box at a size the layout has already decided.
+ *
+ * A layout that sets a role at a fraction of its token size — a chip at 0.85 of
+ * caption, a divider headline at 0.8 of display — is not asking whether the
+ * text fits at the TOKEN size, and asking that is how a clean site reports a
+ * failure for text that seats perfectly at the size it is really drawn: the
+ * fitter's floor is a point size, so measuring against a nominal the layout
+ * never uses puts the floor in the wrong place.
+ *
+ * `design` is the layout's own fraction. Everything below fits against
+ * `token x design` and returns a scale relative to the token, so the call site
+ * still passes one number to `textStyle`. Where the design size is already
+ * under the role's floor — a small caption token drawn at 0.85 — the fitter
+ * holds the design size and reports rather than shrinking, which is the
+ * existing rule that a theme's own nominal wins over the floor.
+ */
+function designed(theme, role, design) {
+  const st = theme.type[role];
+  return { ...st, size: st.size * design };
+}
+const atDesign = (design, s) => Math.round(design * s * 100) / 100;
+
+/** `fitScale` at a layout's design size. */
+function fitAt(theme, role, design, text, w, h, opts) {
+  return atDesign(design, fitScale(text, w, h, designed(theme, role, design), opts));
+}
+
+/** `fitScaleAll` at a layout's design size — empty sets keep the design size. */
+function fitAllAt(theme, role, design, texts, w, h, opts) {
+  const set = texts.filter(Boolean);
+  return set.length ? atDesign(design, fitScaleAll(set, w, h, designed(theme, role, design), opts)) : design;
+}
+
+/** `fitOneLine` at a layout's design size, on whichever member runs widest. */
+function fitLineAt(theme, role, design, texts, w, opts) {
+  const set = (Array.isArray(texts) ? texts : [texts]).filter(Boolean);
+  if (!set.length) return design;
+  const st = designed(theme, role, design);
+  return atDesign(design, fitOneLine(widest(set, st), w, st, opts));
+}
+
+/**
+ * The member of a set that will render widest.
+ *
+ * `fitOneLine` sizes one string, and a row of siblings has to share a size or
+ * the row reads as a mistake — so the fit is taken on whichever member costs
+ * the most width. Character count is the wrong proxy for that: "48.2%" is five
+ * characters of digits and a percent sign, near a full em each, and outruns
+ * eight lowercase letters.
+ */
+function widest(texts, style) {
+  return texts.reduce((a, b) => (measure(b, style) > measure(a, style) ? b : a));
 }
 
 /**
@@ -135,13 +201,12 @@ function lineAtFloor(theme, role, fallbackRatio = 1.35) {
  * a cap the caller sets from whatever else has to fit around it.
  */
 function hubDiameter(theme, label, { min = 1.5, max = 2.2, role = "subhead" } = {}) {
-  const style = theme.type[role];
-  const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
-  const line = (size * (style.line ?? 1.3)) / 72;
+  const style = atFloor(theme, role);
+  const line = (style.size * (style.line ?? 1.3)) / 72;
   let d = min;
   while (d < max) {
     const inner = d / Math.SQRT2;
-    if (lineCount(String(label), inner, { ...style, size }) * line <= inner) break;
+    if (lineCount(String(label), inner, style) * line <= inner) break;
     d += 0.15;
   }
   return Math.min(d, max);
@@ -337,9 +402,13 @@ export const layouts = {
       });
     }
 
+    // 0.8 is the composition's display size on a divider, not a verdict that
+    // the headline fits at it. Every section slide drew the constant and never
+    // asked, so a long headline left the band with a completely clean sweep.
+    const headScale = fitAt(theme, "display", 0.8, data.headline ?? "", w, 1.15, { min: 0.5 });
     slide.addText(data.headline ?? "", {
       x: m.left, y: headY, w, h: 1.15,
-      ...textStyle(theme, "display", { color: ink, scale: 0.8 }),
+      ...textStyle(theme, "display", { color: ink, scale: headScale }),
       ...align, valign: "top",
     });
 
@@ -1042,6 +1111,9 @@ export const layouts = {
     if (hasAside) {
       const ax = box.x + cw + theme.grid.gutter;
       const aw = box.w - cw - theme.grid.gutter;
+      // Each note gets a fixed 0.9in slot and the stack advances 1.0in whatever
+      // the note holds, so the size has to come from the longest one.
+      const noteScale = fitAllAt(theme, "body", 0.9, data.aside, aw - 0.18, 0.9);
       let ay = y + 0.1;
       for (const note of data.aside) {
         slide.addShape("rect", {
@@ -1050,7 +1122,7 @@ export const layouts = {
         });
         slide.addText(note, {
           x: ax + 0.18, y: ay, w: aw - 0.18, h: 0.9,
-          ...textStyle(theme, "body", { scale: 0.9 }),
+          ...textStyle(theme, "body", { scale: noteScale }),
           valign: "top",
         });
         ay += 1.0;
@@ -1274,12 +1346,12 @@ export const layouts = {
     // rail is now vertically centred so the "what" zone below balances the
     // "when" zone above. Body lines are counted at the fitted size so the
     // block height is the real rendered one, never a one-line guess.
-    const whenSt = theme.type.eyebrow;
     const bodyLines = Math.max(
       1,
-      ...data.events.map((e) => lineCount(e.what, step - 0.2, { ...theme.type.body, size: theme.type.body.size * 0.85 })),
+      ...data.events.map((e) => lineCount(e.what, step - 0.2, designed(theme, "body", 0.85))),
     );
-    const bodyH = bodyLines * ((theme.type.body.size * 0.85 * (theme.type.body.line ?? 1.3)) / 72);
+    const whatSt = designed(theme, "body", 0.85);
+    const bodyH = bodyLines * ((whatSt.size * (whatSt.line ?? 1.3)) / 72);
     const blockH = 0.42 + 0.03 + 0.24 + bodyH;
     const railY = y + Math.max(0, (box.bottom - y - blockH) / 2) + 0.42;
     slide.addShape("rect", {
@@ -1287,6 +1359,11 @@ export const layouts = {
       fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
     });
 
+    // The rail is placed from the 0.85 estimate above, which is the tallest the
+    // block can be; the bodies are then fitted into the zone that placement
+    // actually left them. Drawing at 0.85 regardless is what let a long "what"
+    // run off the bottom with nothing reported.
+    const whatScale = fitAllAt(theme, "body", 0.85, data.events.map((e) => e.what), step - 0.2, box.bottom - railY - 0.4);
     data.events.forEach((e, i) => {
       const cx = box.x + step * i + step / 2;
       slide.addShape("ellipse", {
@@ -1299,7 +1376,7 @@ export const layouts = {
       });
       slide.addText(e.what, {
         x: cx - step / 2 + 0.1, y: railY + 0.26, w: step - 0.2, h: box.bottom - railY - 0.4,
-        ...textStyle(theme, "body", { scale: 0.85 }), align: "center", valign: "top",
+        ...textStyle(theme, "body", { scale: whatScale }), align: "center", valign: "top",
       });
     });
   },
@@ -1479,6 +1556,8 @@ export const layouts = {
         rectRadius: 0.06,
       });
       if (it.checked) {
+        // The one constant scale in the file that is not a budget: a single
+        // fixed glyph inside a fixed 0.34in box, with no content in it to fit.
         slide.addText("✓", {
           x: box.x, y: cy - s / 2, w: s, h: s,
           ...textStyle(theme, "body", { color: theme.palette.on_accent, scale: 0.8 }),
@@ -1660,7 +1739,12 @@ export const layouts = {
         });
         slide.addText(it.tag, {
           x: x + pad, y: ty, w: tw2, h: 0.32,
-          ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.85 }),
+          ...textStyle(theme, "caption", {
+            color: theme.palette.on_accent,
+            // The pill is sized from the tag UNTIL it hits the card width, and
+            // past that the tag has to give — the pill cannot.
+            scale: fitLineAt(theme, "caption", 0.85, it.tag, tw2, { min: 0.6 }),
+          }),
           align: "center", valign: "middle",
         });
         ty += 0.42;
@@ -1862,6 +1946,9 @@ export const layouts = {
     const detailScale = fitScaleAll(
       data.items.map((i) => i.detail).filter(Boolean), tw, rowH * 0.4, theme.type.caption,
     );
+    // A ranked value is a figure on one line in a fixed 1.6in column. Wrapping
+    // it is the data-cards defect again, so it is fitted to the width.
+    const valueScale = fitLineAt(theme, "subhead", 0.95, data.items.map((i) => i.value), vw, { min: 0.6 });
     data.items.forEach((it, i) => {
       const ry = y + i * (rowH + 0.03);
       const cy = ry + rowH / 2;
@@ -1896,7 +1983,7 @@ export const layouts = {
       if (it.value) {
         slide.addText(it.value, {
           x: box.x + 0.55 + tw, y: ry, w: vw, h: rowH,
-          ...textStyle(theme, "subhead", { bold: true, scale: 0.95 }),
+          ...textStyle(theme, "subhead", { bold: true, scale: valueScale }),
           align: "right", valign: "middle",
         });
       }
@@ -2170,14 +2257,22 @@ export const layouts = {
         align: "center", valign: "middle",
       });
       if (data.concept.body) {
+        const bw = (exAxis - 0.15) * 2;
         slide.addText(data.concept.body, {
-          x: cx - (exAxis - 0.15), y: cy - 0.02, w: (exAxis - 0.15) * 2, h: 0.45,
-          ...textStyle(theme, "caption", { color: theme.palette.on_accent, scale: 0.9 }),
+          x: cx - (exAxis - 0.15), y: cy - 0.02, w: bw, h: 0.45,
+          ...textStyle(theme, "caption", {
+            color: theme.palette.on_accent,
+            scale: fitAt(theme, "caption", 0.9, data.concept.body, bw, 0.45, { min: 0.6 }),
+          }),
           align: "center", valign: "top",
         });
       }
 
       const titleScale = fitScaleAll(data.elements.map((e) => e.title), ew - 0.25, 0.35, theme.type.caption, { min: 0.6 });
+      // `contentFits` above decides whether the ring composition is viable at
+      // all; it does not size the text it admits. Element bodies drew at a flat
+      // 0.9 and ran out from under the ellipse — the defect that opened this.
+      const elemBodyScale = fitAllAt(theme, "caption", 0.9, data.elements.map((e) => e.body), ew - 0.24, eh - 0.62, { min: 0.6 });
       // The central ellipse's semi-axes — connectors must start at its EDGE, not
       // its centre, or a hairline runs straight through the concept title and
       // body (the real defect this fixes: the vertical line crossed "The ₹4.2/unit
@@ -2207,7 +2302,7 @@ export const layouts = {
         if (e.body) {
           slide.addText(e.body, {
             x: ex - ew / 2 + 0.12, y: ey - eh / 2 + 0.5, w: ew - 0.24, h: eh - 0.62,
-            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: elemBodyScale }),
             align: "center", valign: "top",
           });
         }
@@ -2226,11 +2321,24 @@ export const layouts = {
     const rows = Math.ceil(n / perRow);
     const availH = box.bottom - top - conceptH - gutter;
     const rowGap = 0.22;
-    const cardH = Math.min(1.15, (availH - rowGap * (rows - 1)) / rows);
     const cardW = (box.w - colGap * (perRow - 1)) / perRow;
+    // 1.15in was a ceiling with nothing behind it: on a slide with no speaker
+    // note the row has 1.45in, the card took 1.15, and a quarter inch of every
+    // row went unused while the body inside it was being cut to fit. The card
+    // takes what its longest body needs at the size the fitter would settle on,
+    // between the design height and what the row actually has.
+    const room = (availH - rowGap * (rows - 1)) / rows;
+    const bodyLines = Math.max(
+      1,
+      ...data.elements.map((e) => (e.body ? lineCount(e.body, cardW - 0.3, atFloor(theme, "caption")) : 0)),
+    );
+    const cardH = Math.min(room, Math.max(1.15, 0.58 + bodyLines * lineAtFloor(theme, "caption")));
     const conceptScale = fitOneLine(data.concept.title, box.w - 0.6, theme.type.subhead, { min: 0.7 });
     const titleScale = fitScaleAll(data.elements.map((e) => e.title), cardW - 0.3, 0.35, theme.type.caption, { min: 0.6 });
-    const bodyScale = fitScaleAll(data.elements.map((e) => e.body).filter(Boolean), cardW - 0.3, cardH - 0.45, theme.type.caption, { min: 0.65 });
+    // 0.58 is what the draw below reserves above the body; budgeting 0.45 here
+    // handed the fitter an eighth of an inch the card does not have, which is
+    // the feature-grid defect in a second place.
+    const bodyScale = fitScaleAll(data.elements.map((e) => e.body).filter(Boolean), cardW - 0.3, cardH - 0.58, theme.type.caption, { min: 0.65 });
 
     card(slide, theme, { x: box.x, y: top, w: box.w, h: conceptH });
     slide.addText(data.concept.title, {
@@ -2241,7 +2349,10 @@ export const layouts = {
     if (data.concept.body) {
       slide.addText(data.concept.body, {
         x: box.x + 0.3, y: top + 0.48, w: box.w - 0.6, h: conceptH - 0.6,
-        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+        ...textStyle(theme, "caption", {
+          color: theme.palette.ink_muted,
+          scale: fitAt(theme, "caption", 0.9, data.concept.body, box.w - 0.6, conceptH - 0.6, { min: 0.6 }),
+        }),
         align: "left", valign: "top",
       });
     }
@@ -2394,11 +2505,16 @@ export const layouts = {
     const rowH = (box.bottom - y - headH - totalH - 0.15 - gut * (nCrit + 1)) / nCrit;
     const colW = (box.w - labelW - gut * (options.length - 1)) / options.length;
 
+    // Four options put a 2.5in label column and three gutters against the
+    // canvas, and the head that is left is narrow enough to wrap a two-word
+    // option name into a 0.5in band that has no second line.
+    const headScale = fitAllAt(theme, "subhead", 0.85, options.map((o) => o.name), colW, headH, { min: 0.6 });
+    const critScale = fitAllAt(theme, "caption", 0.95, criteria.map((c) => c.label), labelW, rowH, { min: 0.6 });
     options.forEach((o, i) => {
       const x = box.x + labelW + i * (colW + gut);
       slide.addText(o.name, {
         x, y, w: colW, h: headH,
-        ...textStyle(theme, "subhead", { bold: true, scale: 0.85 }),
+        ...textStyle(theme, "subhead", { bold: true, scale: headScale }),
         align: "center", valign: "middle",
       });
     });
@@ -2409,7 +2525,7 @@ export const layouts = {
       const ry = y + headH + r * (rowH + gut);
       slide.addText(c.label, {
         x: box.x, y: ry, w: labelW, h: rowH,
-        ...textStyle(theme, "caption", { scale: 0.95 }),
+        ...textStyle(theme, "caption", { scale: critScale }),
         valign: "middle",
       });
       options.forEach((o, i) => {
@@ -2675,13 +2791,40 @@ export const layouts = {
       return box.w * (0.85 - 0.5 * ((maxN - nums[i]) / (maxN - minN)));
     };
 
-    const labelScale = fitScaleAll(data.stages.map((s) => s.label), box.w * 0.78 - 1.6, 0.4, theme.type.subhead, { min: 0.5 });
+    // The value gutter was a flat 1.2in, and the stat figure inside it a flat
+    // 0.45 of the stat size, with nothing measuring one against the other — so
+    // a long value wrapped inside a box that never grew for it. The gutter is
+    // now sized from the widest value at the size it will really be drawn,
+    // capped at a share of the narrowest bar so the label keeps a column.
+    const values = data.stages.map((s) => s.value).filter(Boolean);
+    const narrowest = Math.min(...data.stages.map((_, i) => width(i)));
+    const valueStyle = designed(theme, "stat", 0.45);
+    // fitOneLine keeps a 0.88 safety factor against its own width estimate;
+    // reserving the raw measure would put the value under the cap on every run.
+    const valueW = values.length
+      ? Math.min(Math.max(1.2, measure(widest(values, valueStyle), valueStyle) / 0.88 + 0.08), narrowest * 0.42)
+      : 0;
+    const valueScale = fitLineAt(theme, "stat", 0.45, values, valueW, { min: 0.3 });
+    // The stages share one text size and are not one width, so the fit is the
+    // tightest stage rather than a nominal bar: `box.w * 0.78` is the width of
+    // no bar in a real taper, and the last stage is the one that overflows.
+    // Measured per stage rather than every stage at the narrowest width — the
+    // widest bar usually carries the longest text, and pricing it at the
+    // narrowest bar's measure would shrink a whole funnel for nothing.
+    const stageTextW = (i) => width(i) - 0.4 - valueW;
+    // The two zones a bar with a body splits into. They are the boxes the draw
+    // below uses, so they are the boxes the fit has to be taken against — 0.4
+    // and 0.32 were a tenth of an inch of budget no stage ever had.
+    const labH = 0.36, bodH = 0.3;
+    const labelScale = Math.min(
+      ...data.stages.map((s, i) => fitScale(s.label, stageTextW(i), s.body ? labH : 0.4, theme.type.subhead, { min: 0.5 })),
+    );
     // A stage may carry a body — the schema allows one and the layout used to
     // drop it, so a model could write a line per stage and watch it vanish.
-    const bodies = data.stages.map((s) => s.body).filter(Boolean);
-    const bodyScale = bodies.length
-      ? fitScaleAll(bodies, box.w * 0.78 - 1.6, 0.32, theme.type.caption)
-      : 1;
+    const bodyScale = Math.min(
+      1,
+      ...data.stages.map((s, i) => (s.body ? fitScale(s.body, stageTextW(i), bodH, theme.type.caption) : 1)),
+    );
     data.stages.forEach((st, i) => {
       const w = width(i);
       const x = box.x + (box.w - w) / 2;
@@ -2698,29 +2841,28 @@ export const layouts = {
         // Label and body stack as one block centred in the bar. The body takes
         // the bar's own ink rather than ink_muted, which is sized for the page
         // and not for an accent fill.
-        const labH = 0.36, bodH = 0.3;
         const by = sy + (stageH - (labH + bodH)) / 2;
         slide.addText(st.label, {
-          x: x + 0.2, y: by, w: w - 1.6, h: labH,
+          x: x + 0.2, y: by, w: w - 0.4 - valueW, h: labH,
           ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
           align: "center", valign: "bottom",
         });
         slide.addText(st.body, {
-          x: x + 0.2, y: by + labH, w: w - 1.6, h: bodH,
+          x: x + 0.2, y: by + labH, w: w - 0.4 - valueW, h: bodH,
           ...textStyle(theme, "caption", { color: ink, scale: bodyScale }),
           align: "center", valign: "top",
         });
       } else {
         slide.addText(st.label, {
-          x: x + 0.2, y: sy, w: w - 1.6, h: stageH,
+          x: x + 0.2, y: sy, w: w - 0.4 - valueW, h: stageH,
           ...textStyle(theme, "subhead", { bold: true, color: ink, scale: labelScale }),
           align: "center", valign: "middle",
         });
       }
       if (st.value) {
         slide.addText(st.value, {
-          x: x + w - 1.4, y: sy, w: 1.2, h: stageH,
-          ...textStyle(theme, "stat", { color: hex(ink), scale: 0.45 }),
+          x: x + w - 0.2 - valueW, y: sy, w: valueW, h: stageH,
+          ...textStyle(theme, "stat", { color: hex(ink), scale: valueScale }),
           align: "right", valign: "middle",
         });
       }
@@ -2789,7 +2931,12 @@ export const layouts = {
         });
         slide.addText(st.gate, {
           x: x + (cw - gW) / 2, y: lineY + 0.18, w: gW, h: 0.32,
-          ...textStyle(theme, "caption", { color: theme.palette.surface, scale: 0.85 }),
+          ...textStyle(theme, "caption", {
+            color: theme.palette.surface,
+            // The pill grows with the gate until it reaches the card width; past
+            // that the text is what has to give.
+            scale: fitLineAt(theme, "caption", 0.85, st.gate, gW, { min: 0.6 }),
+          }),
           align: "center", valign: "middle",
         });
       }
@@ -2936,13 +3083,20 @@ export const layouts = {
 
     const pre = data.steps ?? [];
     const stepW = 1.5, stepH = 0.7;
+    // Pre-steps and branch steps are the same card at the same size, so they
+    // share one fit — a row where half the titles are smaller reads as a bug.
+    const stepTitles = [
+      ...pre.map((s) => s.title),
+      ...(data.branches ?? []).flatMap((b) => (b.steps ?? []).map((s) => s.title)),
+    ].filter(Boolean);
+    const stepTitleScale = fitAllAt(theme, "caption", 0.95, stepTitles, stepW - 0.2, stepH - 0.2, { min: 0.6 });
     pre.forEach((s, i) => {
       const x = box.x + box.w / 2 + (i - (pre.length - 1) / 2) * (stepW + 0.3) - stepW / 2;
       const sy = top - 0.15;
       card(slide, theme, { x, y: sy, w: stepW, h: stepH });
       slide.addText(s.title, {
         x: x + 0.1, y: sy + 0.1, w: stepW - 0.2, h: stepH - 0.2,
-        ...textStyle(theme, "caption", { bold: true, scale: 0.95 }),
+        ...textStyle(theme, "caption", { bold: true, scale: stepTitleScale }),
         align: "center", valign: "middle",
       });
       slide.addShape("line", {
@@ -2954,6 +3108,13 @@ export const layouts = {
     const branches = data.branches ?? [];
     const nb = branches.length;
     const branchTop = dy + decisionH + 0.25;
+    // The pill is sized from its own label up to 1.3in, so the fit only binds
+    // on the labels that reach the ceiling — but those are exactly the ones
+    // that used to spill through the ends of the chip.
+    const pillW = (t) => Math.min(1.3, measure(t, theme.type.caption) + 0.4);
+    const branchLabelScale = nb
+      ? Math.min(...branches.map((b) => fitLineAt(theme, "caption", 0.9, b.label, pillW(b.label), { min: 0.6 })))
+      : 0.9;
     branches.forEach((b, bi) => {
       const bx = box.x + box.w * (bi + 1) / (nb + 1) - stepW / 2;
       slide.addShape("line", {
@@ -2964,7 +3125,7 @@ export const layouts = {
         x: dx + decisionW / 2 - 0.015, y: branchTop, w: bx + stepW / 2 - dx - decisionW / 2, h: 0.03,
         line: { color: hex(theme.palette.rule), width: 1.1 },
       });
-      const lW = Math.min(1.3, measure(b.label, theme.type.caption) + 0.4);
+      const lW = pillW(b.label);
       // Outlined surface, not a rule fill — `rule` can be a translucent white
       // (isometric-dark) that swallows the ink_muted branch label.
       slide.addShape("roundRect", {
@@ -2974,7 +3135,7 @@ export const layouts = {
       });
       slide.addText(b.label, {
         x: bx + (stepW - lW) / 2, y: branchTop + 0.05, w: lW, h: 0.3,
-        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.9 }),
+        ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: branchLabelScale }),
         align: "center", valign: "middle",
       });
       (b.steps ?? []).forEach((s, si) => {
@@ -2982,7 +3143,7 @@ export const layouts = {
         card(slide, theme, { x: bx, y: sy2, w: stepW, h: stepH });
         slide.addText(s.title, {
           x: bx + 0.1, y: sy2 + 0.1, w: stepW - 0.2, h: stepH - 0.2,
-          ...textStyle(theme, "caption", { bold: true, scale: 0.95 }),
+          ...textStyle(theme, "caption", { bold: true, scale: stepTitleScale }),
           align: "center", valign: "middle",
         });
       });
@@ -3004,6 +3165,13 @@ export const layouts = {
     const bodyScale = fitScaleAll(
       data.layers.map((l) => l.body).filter(Boolean), 4.4, 0.35, theme.type.caption,
     );
+    // Chips grow with their text to a 2.3in ceiling and then stop, so anything
+    // past that ceiling was drawing through the ends of its own chip.
+    const chipW = (t) => Math.min(2.3, measure(t, theme.type.caption) + 0.4);
+    const chips = data.layers.flatMap((l) => l.items ?? []);
+    const chipScale = chips.length
+      ? Math.min(...chips.map((t) => fitLineAt(theme, "caption", 0.85, t, chipW(t), { min: 0.6 })))
+      : 0.85;
     data.layers.forEach((l, i) => {
       const ly = y + i * (layerH + gap);
       slide.addShape("roundRect", {
@@ -3031,7 +3199,7 @@ export const layouts = {
       let pillX = box.x + box.w - 0.18;
       for (let j = items.length - 1; j >= 0; j--) {
         const it = items[j];
-        const w2 = Math.min(2.3, measure(it, theme.type.caption) + 0.4);
+        const w2 = chipW(it);
         pillX -= w2;
         // An OUTLINED chip, not a rule-filled one: `rule` is a hairline colour
         // and in some themes a translucent white (isometric-dark's #FFFFFF1C),
@@ -3044,7 +3212,7 @@ export const layouts = {
         });
         slide.addText(it, {
           x: pillX, y: ly + (layerH - 0.3) / 2, w: w2, h: 0.3,
-          ...textStyle(theme, "caption", { color: theme.palette.ink, scale: 0.85 }),
+          ...textStyle(theme, "caption", { color: theme.palette.ink, scale: chipScale }),
           align: "center", valign: "middle",
         });
         pillX -= 0.12;
@@ -3078,8 +3246,19 @@ export const layouts = {
         });
       });
     }
+    // Card width is a function of how many items the busiest phase holds, and
+    // it was budgeted at a flat 3.2in — wider than a card ever gets once a
+    // phase carries more than three items. The narrowest card is the budget,
+    // because the titles share a size across the whole slide.
+    const cardW = (p) => Math.max(1.2, Math.min(3.4, areaW / (p.items ?? []).length - 0.18));
+    const textW = Math.min(...phases.filter((p) => (p.items ?? []).length).map((p) => cardW(p) - 0.2), 3.2);
     const titleScale = fitScaleAll(
-      phases.flatMap((p) => p.items ?? []).map((it) => it.title), 3.2, 0.3, theme.type.caption, { min: 0.6 },
+      phases.flatMap((p) => p.items ?? []).map((it) => it.title), textW, 0.3, theme.type.caption, { min: 0.6 },
+    );
+    const bodyScale = fitAllAt(
+      theme, "caption", 0.88,
+      phases.flatMap((p) => p.items ?? []).map((it) => it.body),
+      textW, rowH * 0.42, { min: 0.6 },
     );
     phases.forEach((p, pi) => {
       const ry = top + 0.05 + pi * rowH;
@@ -3090,7 +3269,7 @@ export const layouts = {
         valign: "middle",
       });
       const items = p.items ?? [];
-      const itemW = Math.max(1.2, Math.min(3.4, areaW / items.length - 0.18));
+      const itemW = cardW(p);
       items.forEach((it, ii) => {
         const x = areaX + (ii + 0.5) * (areaW / items.length) - itemW / 2;
         card(slide, theme, { x, y: ry, w: itemW, h: rowH - 0.1 });
@@ -3102,7 +3281,7 @@ export const layouts = {
         if (it.body) {
           slide.addText(it.body, {
             x: x + 0.1, y: ry + rowH * 0.5, w: itemW - 0.2, h: rowH * 0.42,
-            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.88 }),
+            ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
             align: "center", valign: "top",
           });
         }
@@ -4506,6 +4685,7 @@ export const layouts = {
     const descScale = fitScaleAll(
       data.sources.map((s) => s.description).filter(Boolean), box.w - 0.2, rowH * 0.28, theme.type.caption,
     );
+    const urlScale = fitAllAt(theme, "caption", 0.85, data.sources.map((s) => s.url), box.w - 0.2, rowH * 0.26);
     data.sources.forEach((s, i) => {
       const ry = y + i * (rowH + 0.12);
       slide.addText(s.name, {
@@ -4516,7 +4696,7 @@ export const layouts = {
       if (s.url) {
         slide.addText(s.url, {
           x: box.x, y: ry + rowH * 0.42, w: box.w, h: rowH * 0.26,
-          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: 0.85 }),
+          ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: urlScale }),
           valign: "top",
         });
       }
