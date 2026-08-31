@@ -2838,7 +2838,28 @@ export const layouts = {
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
     const top = Math.max(y, 2.55);
-    const decisionW = 1.4, decisionH = 0.95;
+    const decision = data.decision ?? "Decision";
+
+    // The diamond used to be a fixed 1.4 x 0.95in with its label given a
+    // 1.0 x 0.55in box. Two things were wrong with that. A rhombus's largest
+    // inscribed rectangle is HALF its bounding box, so a 1.0in-wide box on a
+    // 1.4in diamond let the label run out through the slanted edges. And a
+    // real decision — "Credit check passes?" — does not fit 0.55in of caption,
+    // so it was shrunk to 9.6pt against a 12pt floor on every mono theme.
+    //
+    // The shape is sized from its label instead: grow until the inscribed box
+    // holds the text at the readable floor, up to a share of the slide.
+    const capStyle = theme.type.caption;
+    const capFloor = Math.min(capStyle.size, Math.max(capStyle.size * 0.62, floorOf(capStyle) ?? capStyle.size));
+    const capLine = (capFloor * (capStyle.line ?? 1.35)) / 72;
+    let decisionW = 1.4, decisionH = 0.95;
+    const maxW = Math.min(3.4, box.w * 0.34);
+    while (decisionW < maxW) {
+      const lines = lineCount(decision, decisionW / 2, { ...capStyle, size: capFloor });
+      if (lines * capLine <= decisionH / 2) break;
+      decisionW += 0.3;
+      decisionH += 0.16;
+    }
     const dx = box.x + box.w / 2 - decisionW / 2;
     const dy = top + 0.5;
 
@@ -2846,9 +2867,9 @@ export const layouts = {
       x: dx, y: dy, w: decisionW, h: decisionH,
       fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
     });
-    const decisionScale = fitScale(data.decision ?? "Decision", decisionW - 0.4, decisionH - 0.4, theme.type.caption, { min: 0.5 });
-    slide.addText(data.decision ?? "Decision", {
-      x: dx, y: dy, w: decisionW, h: decisionH,
+    const decisionScale = fitScale(decision, decisionW / 2, decisionH / 2, capStyle, { min: 0.5 });
+    slide.addText(decision, {
+      x: dx + decisionW / 4, y: dy + decisionH / 4, w: decisionW / 2, h: decisionH / 2,
       ...textStyle(theme, "caption", { bold: true, color: theme.palette.on_accent, scale: decisionScale }),
       align: "center", valign: "middle",
     });
