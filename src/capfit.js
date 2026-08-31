@@ -103,19 +103,48 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
     return r.total === 0;
   };
 
-  if (await fits(1)) return { type, scale: 1, caps: inventory.map((f) => ({ path: f.path, cap: f.cap, fits: f.cap })), fields: inventory.length };
+  if (await fits(1)) {
+    const paths = [...new Set(inventory.map((f) => f.path))];
+    return {
+      type, scale: 1, fields: inventory.length,
+      caps: paths.map((path) => ({ path, cap: inventory.find((f) => f.path === path).cap, fits: inventory.find((f) => f.path === path).cap, binds: false })),
+    };
+  }
 
   let lo = 0, hi = 1;
   for (let i = 0; i < steps; i++) {
     const mid = (lo + hi) / 2;
     if (await fits(mid)) lo = mid; else hi = mid;
   }
-  return {
-    type,
-    scale: lo,
-    fields: inventory.length,
-    caps: inventory.map((f) => ({ path: f.path, cap: f.cap, fits: Math.max(1, Math.round(f.cap * lo)) })),
-  };
+
+  // The type scale says every field cannot be at its cap AT ONCE. It does not
+  // say which field binds — attributing it to all of them overstates the ones
+  // that would happily hold their full cap. So each field is then grown on its
+  // own, with the others held at the scale the type clears, which is the
+  // number a schema cap should actually be set from.
+  const paths = [...new Set(inventory.map((f) => f.path))];
+  const caps = [];
+  for (const path of paths) {
+    const others = inventory.filter((f) => f.path !== path);
+    const mine = inventory.filter((f) => f.path === path);
+    const fitsField = async (scale) => {
+      const one = structuredClone(deck);
+      let s2 = await grow(slide, lo, others);
+      s2 = await grow(s2, scale, mine);
+      one.slides = [s2];
+      return (await themeMatrix({ deck: one, themes })).total === 0;
+    };
+    const cap = mine[0].cap;
+    if (await fitsField(1)) { caps.push({ path, cap, fits: cap, binds: false }); continue; }
+    let flo = lo, fhi = 1;
+    for (let i = 0; i < steps; i++) {
+      const mid = (flo + fhi) / 2;
+      if (await fitsField(mid)) flo = mid; else fhi = mid;
+    }
+    caps.push({ path, cap, fits: Math.max(1, Math.round(cap * flo)), binds: true });
+  }
+
+  return { type, scale: lo, fields: inventory.length, caps };
 }
 
 /** Every type's field paths and caps, for reporting without a fit run. */

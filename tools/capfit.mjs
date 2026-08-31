@@ -34,18 +34,9 @@ const rows = [];
 for (const type of types) {
   const r = await capFit(type);
   if (!r || !r.caps.length) continue;
-  // The inventory lists one entry per array member; the cap is per field.
-  const byPath = new Map();
-  for (const c of r.caps) {
-    const seen = byPath.get(c.path);
-    // The tightest measurement for a path is the one that governs it.
-    if (!seen || c.fits < seen.fits) byPath.set(c.path, c);
-  }
-  for (const c of byPath.values()) {
-    rows.push({ type, path: c.path, cap: c.cap, fits: c.fits, ratio: c.fits / c.cap });
-  }
-  const worst = Math.min(...[...byPath.values()].map((c) => c.fits / c.cap));
-  console.log(`  ${type.padEnd(22)} ${(worst * 100).toFixed(0)}% of its caps`);
+  for (const c of r.caps) rows.push({ type, path: c.path, cap: c.cap, fits: c.fits, ratio: c.fits / c.cap });
+  const binding = r.caps.filter((c) => c.binds).length;
+  console.log(`  ${type.padEnd(22)} ${(r.scale * 100).toFixed(0)}% together · ${binding}/${r.caps.length} field(s) below their own cap`);
 }
 
 const over = rows.filter((r) => r.ratio < 0.9).sort((a, b) => a.ratio - b.ratio);
