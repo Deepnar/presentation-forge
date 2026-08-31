@@ -45,6 +45,15 @@ const _meta = new Map();
  * Per-type trim metadata, derived from the schema: which fields are arrays
  * (with their minItems floor — a drop may not go below it) and which are
  * strings. Item-field strings are encoded as `<array>[].<field>`.
+ *
+ * The walk covers the SHARED slide fields as well as the type's own. It used to
+ * read only the type rule's `then.properties`, and `headline` (≤80) and
+ * `standfirst` (≤220) are declared once on the base slide object — so on 75 of
+ * 75 types the headline was not a field anything downstream could see. The
+ * length pass never budgeted it, `trimSlide` could never shorten it (its own
+ * skip-headline-first branch was unreachable), and the cap prober never grew
+ * it, so no measured cap and no capstress render has ever carried a headline
+ * longer than the specimen's hand-written one.
  */
 export async function slideFieldMeta(type) {
   return metaFor(type);
@@ -77,6 +86,20 @@ async function metaFor(type) {
       }
     }
   };
+  // Shared fields the layout draws as prose. `notes` is documented as never
+  // rendered, `speaker_note` goes to the notes pane and reserves a fixed bar
+  // whatever its length, and `presenter` is chrome — drawn unfitted at a fixed
+  // size, so the fitter never flags it and shortening it cannot relieve an
+  // overfull slide. Trimming any of the three spends a round without moving the
+  // page. `cites` is held out for a different reason: it is the record, not the
+  // layout, and it sits above minItems 0 — offering it to the trim makes
+  // dropping a citation the CHEAPEST way to make a slide fit.
+  const NOT_TRIMMABLE = new Set(["notes", "speaker_note", "presenter", "cites"]);
+  const shared = Object.fromEntries(
+    Object.entries(schema.definitions.slide.properties ?? {})
+      .filter(([name]) => !NOT_TRIMMABLE.has(name) && !(rule?.then?.properties ?? {})[name]),
+  );
+  walk(shared, "");
   walk(rule?.then?.properties ?? {}, "");
   const meta = { arrays, strings };
   _meta.set(type, meta);
