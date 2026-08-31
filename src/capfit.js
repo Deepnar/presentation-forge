@@ -1,5 +1,6 @@
 import { themeMatrix } from "./themematrix.js";
 import { specimenDeck } from "./specimens.js";
+import { deckSchema } from "./ai/catalog.js";
 import { slideFieldMeta } from "./ai/trim.js";
 import { fieldInventory } from "./ai/fieldlength.js";
 import { NON_TEXT } from "./textcheck.js";
@@ -152,7 +153,35 @@ export async function capInventory(slide) {
  * beautifully from the specimen and breaks in the field breaks HERE first.
  */
 export async function atCaps(slide, scale = 1) {
-  return grow(slide, scale, await capInventory(slide));
+  const seeded = await seedShared(slide);
+  return grow(seeded, scale, await capInventory(seeded));
+}
+
+/**
+ * The shared prose fields, present so the grow can reach them.
+ *
+ * `grow` can only lengthen a field the slide already carries, and the specimen
+ * omits `standfirst` on 71 of 75 types and `headline` on four — so "at its
+ * schema caps" was rendering a slide with no standfirst at all, on almost every
+ * type in the gallery. A model writes both on a real slide; the shared fields
+ * are the two the schema offers unconditionally, so unlike a type's own fields
+ * there is no question of whether this type has them.
+ *
+ * The seed only fills what is absent — a specimen that hand-writes a headline
+ * keeps it, and the grow then takes it to the cap either way.
+ */
+async function seedShared(slide) {
+  const schema = await deckSchema();
+  const { strings } = await slideFieldMeta(slide.type);
+  const out = structuredClone(slide);
+  for (const path of strings) {
+    if (path.includes(".") || path.includes("[")) continue;
+    const spec = schema.definitions.slide.properties?.[path];
+    if (spec?.type !== "string" || !spec.maxLength) continue;
+    if (typeof out[path] === "string" && out[path].trim()) continue;
+    out[path] = path;
+  }
+  return out;
 }
 
 /**
