@@ -2670,7 +2670,12 @@ export const layouts = {
     // canvas, and the head that is left is narrow enough to wrap a two-word
     // option name into a 0.5in band that has no second line.
     const headScale = fitAllAt(theme, "subhead", 0.85, options.map((o) => o.name), colW, headH, { min: 0.6 });
-    const critScale = fitAllAt(theme, "caption", 0.95, criteria.map((c) => c.label), labelW, rowH, { min: 0.6 });
+    // The weight is multiplied into the Total and was never shown, so the
+    // reader saw a weighted score with no way to know what it was weighted by.
+    // It rides with the criterion the way the decision matrix already prints
+    // it, rather than taking a column the label column cannot spare.
+    const critLabel = (c) => (c.weight ? `${c.label} (${c.weight})` : c.label);
+    const critScale = fitAllAt(theme, "caption", 0.95, criteria.map(critLabel), labelW, rowH, { min: 0.6 });
     options.forEach((o, i) => {
       const x = box.x + labelW + i * (colW + gut);
       slide.addText(o.name, {
@@ -2684,7 +2689,7 @@ export const layouts = {
     const maxScore = Math.max(1, ...allScores);
     criteria.forEach((c, r) => {
       const ry = y + headH + r * (rowH + gut);
-      slide.addText(c.label, {
+      slide.addText(critLabel(c), {
         x: box.x, y: ry, w: labelW, h: rowH,
         ...textStyle(theme, "caption", { scale: critScale }),
         valign: "middle",
