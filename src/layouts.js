@@ -483,13 +483,29 @@ export const layouts = {
     const y = heading(slide, ctx);
 
     const n = data.items.length;
-    const gut = 0.28;
-    const rowH = (box.bottom - y - 0.1 - gut * (n - 1)) / n;
+    const avail = box.bottom - y - 0.1;
+    // The gutter separates items; it does not get to starve them. A flat 0.28in
+    // between rows left a four-item agenda 0.52in per row where a title line
+    // and a description line need 0.55in at the floor — so both were reported
+    // while a quarter-inch of white sat under every row. The rows take what
+    // they need first and the gutter is what remains, down to a floor of its
+    // own below which the items stop reading as separate.
+    const hasDesc = data.items.some((i) => i.desc);
+    const need = lineAtFloor(theme, "subhead") + (hasDesc ? 0.04 + lineAtFloor(theme, "caption") : 0);
+    const gut = Math.max(0.12, Math.min(0.28, (avail - need * n) / Math.max(1, n - 1)));
+    const rowH = (avail - gut * (n - 1)) / n;
     const numW = 0.62;
     const tw = box.w - numW - 0.25;
-    const titleScale = fitScaleAll(data.items.map((i) => i.title), tw, rowH * 0.5, theme.type.subhead);
+    // The row was split 50/45 of its own height, which gives the title less
+    // than the one line of subhead the floor needs. The title takes the line it
+    // needs and the description gets the rest of the row rather than a fixed
+    // fraction of it; the clamp keeps a long agenda from spending the whole row
+    // on titles.
+    const titleH = Math.min(rowH * 0.62, Math.max(rowH * 0.5, lineAtFloor(theme, "subhead")));
+    const descH = Math.max(0.18, rowH - titleH - 0.04);
+    const titleScale = fitScaleAll(data.items.map((i) => i.title), tw, titleH, theme.type.subhead);
     const descScale = fitScaleAll(
-      data.items.map((i) => i.desc).filter(Boolean), tw, rowH * 0.45, theme.type.caption,
+      data.items.map((i) => i.desc).filter(Boolean), tw, descH, theme.type.caption,
     );
 
     data.items.forEach((item, i) => {
@@ -500,13 +516,13 @@ export const layouts = {
         align: "left", valign: "top",
       });
       slide.addText(item.title, {
-        x: box.x + numW + 0.25, y: ry, w: tw, h: rowH * 0.5,
+        x: box.x + numW + 0.25, y: ry, w: tw, h: titleH,
         ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
         valign: "top",
       });
       if (item.desc) {
         slide.addText(item.desc, {
-          x: box.x + numW + 0.25, y: ry + rowH * 0.52, w: tw, h: rowH * 0.45,
+          x: box.x + numW + 0.25, y: ry + titleH + 0.04, w: tw, h: descH,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: descScale }),
           valign: "top",
         });
