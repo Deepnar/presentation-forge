@@ -2929,6 +2929,13 @@ half now exists and runs in about three seconds:
   which is the payload a model actually writes; `--scale 0.01` renders them at
   one character, which separates a layout that cannot hold anything from a cap
   that is merely generous.
+- `npm run drawcheck` marks every field the schema declares and reads back what
+  the layout emitted, because text that is never drawn is never fitted and so
+  no sweep above can see it. Its second list — the fields the specimen does not
+  populate — is the half nothing else can report.
+- `src/geometry.js` runs inside every render, so `themematrix` also answers "is
+  this box on the slide": non-positive extents for any shape, the canvas edges
+  for text and images. It found 105 problems the first time it ran.
 
 What is left is the visual half — rasterise and look at all of it — plus paying
 down the contrast list. **Render each type at its schema caps before looking**:
@@ -2940,11 +2947,11 @@ grids without the fitter noticing.
 
 A third instrument now exists — `npm run textcheck` — which rasterises to PDF,
 reads the text back and reports every declared word that did not survive.
-`--deck` on all three runs them against a real generated deck rather than the
+`--deck` on all of them runs against a real generated deck rather than the
 specimen, which is where the interesting failures are: the specimen's payloads
 are hand-written to behave, and a model writes a 130-character card body where
-the specimen has 40. The same sweep reports eight failures on the specimen and
-fifty-one on a real seventeen-slide deck.
+the specimen has 40. The specimen sweep is clean and the real deck reports 45,
+almost all of it a deck written before the caps were corrected.
 
 Six defects came out of that first real-content pass, all of them shipping
 before it and none visible to any test: `funnel` dropped every stage body,
@@ -3138,18 +3145,63 @@ unused (105 became its full 120). Seven more were cut to their measured values.
 
 `npm run capstress` renders any set of types at their schema caps and rasterises
 them; `--scale 0.01` renders them at one character, which separates a layout
-that cannot hold anything from a cap that is too generous. Every defect the two
-passes above found that `themematrix` and `textcheck` were both clean on came
-out of running it and looking at the page.
+that cannot hold anything from a cap that is too generous.
 
-What is left is the rest of the gallery. The remaining known items:
+**The gallery has now been swept once, on `warm-humanist`, every type at its
+caps with a speaker note.** Thirteen defects came out of it, none of which any
+sweep could report, and two instruments were built because of what the looking
+kept turning up. See the **Learned** block below.
 
-- `feature-grid` is two lines of speaker-note debt on `minimal-muji`, the one
-  theme that pairs an inset frame with generous margins. Its card is already
-  derived end to end — the shape test finds no slack — and the shortfall is
-  seven hundredths of an inch.
-- `cards.cards[].body` seats 82 against a cap of 95.
-- The types nobody has looked at full-size at their caps.
+What is left:
+
+- **The other three capstress themes, and the plate themes.** Only
+  `warm-humanist` has been looked at type by type. `minimal-muji` reports the
+  most at caps (21) and `sci-fi-hud` is the only sidebar frame in the set —
+  `layered-architecture` had two columns that did not fit its 8.0in row, found
+  by measuring rather than by looking, so the sidebar frame is where to look
+  next.
+- **`cycle` cannot hold its arrangement with a speaker note.** The ring's
+  `radiusY` is pinned at its 1.15in floor and the arrangement needs about
+  1.53in for a minimum hub plus a step's title and body, so the hub overlaps
+  the top and bottom steps' bodies. It always has, on every theme. The repair
+  is an arrangement that gives up the ring when the box is short — a design
+  decision, not a fix, so it was left rather than invented.
+- **`concept-map` at its caps is illegible.** The radial labels crowd each
+  other and the hub; `TYPE_BUDGETS` already tells the writer "one or two words
+  — long leaves cannot fit a radial layout", and the caps say 27. The guidance
+  and the cap disagree; the cap should be cut to the guidance.
+- **The cap residue is 26 fields** (`node tools/capfit.mjs`), up from 1 — the
+  prober now measures against a slide that carries a standfirst, which is the
+  slide a model actually writes. None of it is new debt.
+- `feature-grid` is still the two lines of speaker-note debt on `minimal-muji`.
+  Its card is derived end to end and the shortfall is seven hundredths of an
+  inch.
+- The contrast list is still unpaid: `test/contrast.test.js` names 24 pairings
+  that clear 3:1 but not 4.5:1.
+
+> **Learned.** Three things, and the third is the one that generalises.
+>
+> **The fixture's omissions are the audit.** `standfirst` is declared once on
+> the base slide object, so a walk of the type rule missed it on all 75 types —
+> the length pass never budgeted it, `trimSlide` could never shorten it (its own
+> skip-headline branch had been unreachable since it was written), and the cap
+> prober never grew it. The specimen omits it on 71 of 75 types. Seeding it took
+> the cap sweep from 9 problems to 287, of which 278 were one cause: a 220-char
+> cap the header cannot keep. The header seats 152.
+>
+> **Six defects were boxes, not text.** A caption computed to a NEGATIVE height
+> and pptxgenjs wrote it without a word; a rule drawn 0.12in above the content
+> start struck through the standfirst; connectors were drawn from the wrong end
+> for every branch left of its node, on all 34 themes. A fit sweep is clean on
+> all of them because every fragment fits the box it was handed — the box is
+> what is wrong. `src/geometry.js` now watches every draw and found 105 more.
+>
+> **A budget that is not the box is a bug in both directions, and it was
+> everywhere.** `before-after` fitted a body against 1.8in and drew it into
+> 0.94in; the standfirst was fitted against 0.85in, drawn into 0.75in and
+> advanced 0.72in; `cycle` fitted a step body against 0.45in and drew it into
+> 0.28in, which is why the hub was sized against the wrong number. Derive it
+> once and use the same value for the fit, the box and the advance.
 
 ### [ ] The front end, and the landing page
 
