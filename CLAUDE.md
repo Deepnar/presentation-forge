@@ -77,6 +77,8 @@ npm run themematrix -- --notes   # the same, with a speaker note on every slide
 npm run textcheck                # every declared word survived onto the page
 node --test test/contrast.test.js   # title and divider surfaces carry their ink
 node tools/capfit.mjs            # what length each field can actually be
+npm run capstress                # every type at its caps, rendered — then LOOK
+npm run capstress -- --scale 0.01   # ...and at one character: the layout, not the caps
 ```
 
 All of them take `--deck decks/<slug>/deck.yaml`, and that is the point: the
@@ -87,11 +89,17 @@ content or the audit is measuring the specimen.
 A speaker note reserves 0.7in off every content slide and the specimen carries
 none, so `--notes` is the half of the sweep that is easy to forget and found 29
 failures the first time it ran. The same blind spot applies to any optional
-field the specimen omits.
+field the specimen omits — and it applied to twelve of them, which is how four
+layouts came to drop content the schema offers without a single check noticing.
+A field the specimen does not carry is a field nothing has ever rendered.
 
-None of them replaces looking. A wrapped figure fits its box fragment by
-fragment; a five-character value is under the text check's word floor. Both
-shipped until someone looked. `tools/slideqa.mjs` renders every type full size
+None of them replaces looking, and none of them can see where a SHAPE lands —
+they answer "does this text fit this box", never "is this box on the slide".
+A wrapped figure fits its box fragment by fragment; a five-character value is
+under the text check's word floor; a branch of a flow diagram was drawn under
+the speaker-note bar and off the bottom edge with a completely clean sweep. All
+of them shipped until someone looked, and `npm run capstress` is what makes
+looking worth the time — the specimen's own payloads are written to behave. `tools/slideqa.mjs` renders every type full size
 and `tools/pixels.mjs` measures contrast on the pixels actually painted — a
 plate theme's ground is not its palette token.
 
