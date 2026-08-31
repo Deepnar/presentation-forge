@@ -160,6 +160,16 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
     return r.total === 0;
   };
 
+  // A type that still fails with every field at ONE character has a failure no
+  // cap can fix: a shape sized without reference to the box, a stack that does
+  // not fit under its heading. Growing a field against a constant measures the
+  // constant, and the bisection then reports "fits 1" for every field on the
+  // slide — which reads exactly like a savage cap and is nothing of the kind.
+  // `branching-flow` sat at 0% for that reason and `diagram` still does.
+  if (!(await fits(0))) {
+    return { type, scale: 0, fields: inventory.length, blocked: true, caps: [] };
+  }
+
   if (await fits(1)) {
     const paths = [...new Set(inventory.map((f) => f.path))];
     return {

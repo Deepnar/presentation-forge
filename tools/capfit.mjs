@@ -31,12 +31,26 @@ const deck = await specimenDeck();
 const types = list(arg("--types")) ?? [...new Set(deck.slides.map((s) => s.type))];
 
 const rows = [];
+const blocked = [];
 for (const type of types) {
   const r = await capFit(type);
-  if (!r || !r.caps.length) continue;
+  if (!r) continue;
+  if (r.blocked) {
+    blocked.push(type);
+    console.log(`  ${type.padEnd(22)} fails at ANY length — the layout, not the caps`);
+    continue;
+  }
+  if (!r.caps.length) continue;
   for (const c of r.caps) rows.push({ type, path: c.path, cap: c.cap, fits: c.fits, ratio: c.fits / c.cap });
   const binding = r.caps.filter((c) => c.binds).length;
   console.log(`  ${type.padEnd(22)} ${(r.scale * 100).toFixed(0)}% together · ${binding}/${r.caps.length} field(s) below their own cap`);
+}
+
+if (blocked.length) {
+  console.log(
+    `\n  ${blocked.length} type(s) fail with every field at one character — ` +
+    `no cap can fix these:\n\n  ${blocked.join(", ")}\n`,
+  );
 }
 
 const over = rows.filter((r) => r.ratio < 0.9).sort((a, b) => a.ratio - b.ratio);
