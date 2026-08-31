@@ -1395,13 +1395,35 @@ export const layouts = {
   image(slide, ctx) {
     const { theme, data, box, resolveAsset } = ctx;
     const src = resolveAsset(data.image);
-    if (!src) return;
+    // The headline and standfirst were never drawn — the specimen has set one
+    // ("A headline over the image") since the type existed and no theme has
+    // ever rendered it. The band is only taken when there is something to put
+    // in it, so an image slide with no headline still gets the whole box.
+    const titled = Boolean(data.headline?.trim() || data.standfirst?.trim());
+    let top = box.y;
+    if (titled) {
+      eyebrow(slide, ctx);
+      top = heading(slide, ctx);
+    }
     const capH = data.caption ? 0.5 : 0;
-    slide.addImage({
-      path: src,
-      x: box.x, y: box.y, w: box.w, h: box.bottom - box.y - capH,
-      sizing: { type: data.fit ?? "cover", w: box.w, h: box.bottom - box.y - capH },
-    });
+    const imgH = box.bottom - top - capH;
+    if (src) {
+      slide.addImage({
+        path: src,
+        x: box.x, y: top, w: box.w, h: imgH,
+        sizing: { type: data.fit ?? "cover", w: box.w, h: imgH },
+      });
+    } else {
+      // An unresolvable asset used to return before anything was drawn, so the
+      // slide rendered blank — headline, standfirst and caption lost with the
+      // picture. The panel says where the image goes, which is what every other
+      // image-bearing type does when the asset is missing.
+      slide.addShape("roundRect", {
+        x: box.x, y: top, w: box.w, h: imgH,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.12,
+      });
+    }
     if (data.caption) {
       slide.addText(data.caption, {
         x: box.x, y: box.bottom - capH + 0.06, w: box.w, h: 0.4,
@@ -3978,13 +4000,18 @@ export const layouts = {
       ...textStyle(theme, "display", { color: theme.palette.surface, scale }),
       valign: "top",
     });
-    if (data.subtitle) {
+    // `subtitle` is this type's name for the standfirst's job, and a model
+    // writes whichever it is shown — so the shared field was written and
+    // dropped. The type's own field wins where both are given, which is the
+    // rule the title surface already follows for the deck's title.
+    const sub = data.subtitle?.trim() || data.standfirst?.trim();
+    if (sub) {
       // The overlay is 2.6in and the stack above the subtitle ends at 1.62, so
       // a flat 0.5in box left almost half an inch of the band unused while the
       // subtitle was being cut to fit.
       const subH = ovH - 1.62 - 0.2;
-      const sScale = fitScale(data.subtitle, w, subH, theme.type.subhead, { min: 0.75 });
-      slide.addText(data.subtitle, {
+      const sScale = fitScale(sub, w, subH, theme.type.subhead, { min: 0.75 });
+      slide.addText(sub, {
         x: m.left, y: CANVAS.h - ovH + 1.62, w, h: subH,
         ...textStyle(theme, "subhead", { color: theme.palette.surface, scale: sScale }),
         valign: "top",
