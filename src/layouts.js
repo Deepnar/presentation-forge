@@ -3541,7 +3541,12 @@ export const layouts = {
     const y = heading(slide, ctx);
     const phases = data.phases;
     const timeLabels = data.time_labels ?? [];
-    const top = Math.max(y, 2.8);
+    // The time labels were drawn at top - 0.34, and `top` is where content
+    // starts — so with a standfirst, whose box ends exactly there, the whole
+    // header row landed on its last line. The band is reserved below the
+    // heading rather than borrowed from the block above it.
+    const labelH = timeLabels.length ? 0.34 : 0;
+    const top = Math.max(y, 2.8) + labelH;
     const labelW = 1.6;
     const rowH = (box.bottom - top - 0.05) / phases.length;
     const areaX = box.x + labelW + 0.35;
@@ -3551,7 +3556,7 @@ export const layouts = {
       const tw = areaW / timeLabels.length;
       timeLabels.forEach((tl, i) => {
         slide.addText(tl, {
-          x: areaX + i * tw, y: top - 0.34, w: tw, h: 0.3,
+          x: areaX + i * tw, y: top - labelH, w: tw, h: 0.3,
           ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
           align: "center", valign: "middle",
         });
