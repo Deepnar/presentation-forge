@@ -2917,14 +2917,18 @@ half now exists and runs in about three seconds:
 
 - `npm run themematrix` renders every theme against every type with
   `write: false` and reports every fit-floor failure; `test/themematrix.test.js`
-  holds the set, which is now **empty**. With `--notes` it holds four, on the
-  two tightest themes in the gallery (`diagram` and `feature-grid`).
+  holds the set, which is now **empty**. With `--notes` it holds two, both
+  `feature-grid` on `minimal-muji`, the tightest theme in the gallery.
 - `test/contrast.test.js` holds the title and divider surface pairings and
   names the twenty-four that clear 3:1 but not 4.5:1.
 - `npm run textcheck` rasterises and reads the text back; clean on the specimen
   and on the real generated deck.
 - `tools/contrast-audit.mjs --types a,b` sheets any type across every theme,
   and `tools/slideqa.mjs` emits per-slide PNGs plus chunked contact sheets.
+- `npm run capstress` renders types at their SCHEMA CAPS and rasterises them,
+  which is the payload a model actually writes; `--scale 0.01` renders them at
+  one character, which separates a layout that cannot hold anything from a cap
+  that is merely generous.
 
 What is left is the visual half — rasterise and look at all of it — plus paying
 down the contrast list. **Render each type at its schema caps before looking**:
@@ -3086,42 +3090,66 @@ reopen it.
 > width and height in lockstep and spent the column the branch stack needed to
 > buy margin it did not.
 
-### [ ] The caps the layouts still cannot seat
+### [x] The caps the layouts cannot seat, and the fields nothing ever rendered
 
 *Priority: low. Schema and renderer, no model.*
 
-`node tools/capfit.mjs` measures this list; it is the residue after two rounds
-of cutting, and it shrinks by fixing a layout or by cutting a cap, never by
-ignoring it. Ten fields, with the ratio the layouts actually seat:
+`node tools/capfit.mjs` measures the list. It held eleven fields; it holds one,
+`cards.cards[].body` at 86%, which is the fixed-point drift the entry above
+describes — cutting a cap moves the scale the other fields are measured at.
 
-| field | cap | seats |
-|---|---|---|
-| `bibliography.entries[].citation` | 220 | 105 |
-| `chronology.events[].text` | 160 | 87 |
-| `feature-grid.items[].body` | 95 | 53 |
-| `framework.elements[].body` | 75 | 42 |
-| `data-cards.cards[].body` | 110 | 63 |
-| `data-cards.cards[].label` | 40 | 27 |
-| `cards.cards[].body` | 160 | 110 |
-| `roadmap.phases[].items[].body` | 60 | 44 |
-| `hero-image.subtitle` | 120 | 105 |
+The rule that did the work: **ask whether the SHAPE is the constraint before
+cutting what the content may say.** Three fields came off the list by fixing a
+layout rather than cutting a cap — `chronology` was fitting against a box
+narrower and shorter than the one it draws into (87 of 160 became all 160),
+`bibliography` gave its citation a flat 55% of the row whether or not an
+annotation existed (105 became 203), and `hero-image` left half its overlay
+unused (105 became its full 120). Seven more were cut to their measured values.
 
-Before cutting any of these, apply the test that has paid off every time: **is
-the shape the constraint rather than the cap?** `roadmap`'s item title read 30
-of 30 the moment its box stopped being a flat 0.3in with a third of an inch
-empty above it; `compare`'s body went from 53 to 134 when its verdict bar
-stopped taking a fixed inch. Cutting first would have hidden both.
+> **Learned.** The larger finding was not about caps at all. The prober can only
+> measure a field the specimen POPULATES, and twelve string fields were absent
+> from every specimen slide — so twelve fields had never been rendered, in any
+> theme, by any check. Populating nine of them (the other three are asset paths
+> and a chart-internal unit) found **four layouts that silently drop content the
+> schema offers**: `compare` never drew either side's points, `image-text` never
+> drew its caption, `diagram` never drew an edge label, and `branching-flow`
+> never drew a step body. 408 words a side, identically on all 34 themes.
+>
+> No sweep could have reported them. A field that is never drawn is never
+> fitted, so the fit sweep sees nothing; only the text check, and only once the
+> fixture carried the field, said a word. Enumerate what a fixture does not
+> cover — do not read what it does.
+>
+> Three of the four are now drawn. The fourth is a decision the measurement
+> forced: a `branching-flow` step body needs two-line cards, two-line cards take
+> the column the decision diamond grows into, and the decision label drops from
+> 39 characters to 19 — below the twenty its own specimen uses. The type is
+> named for its decision, so `bs.body` stops being offered rather than being
+> drawn or silently dropped.
+>
+> `diagram`'s 4% was never a cap. It fitted a body into the 0.17in a dense
+> graph leaves, which no text fits, so it reported a floor hit at every label
+> length from one character upward — and the prober read that as a savage cap.
+> `capFit` now tests one character first and says "the layout, not the caps".
 
-`diagram` is on a separate footing: it fails with every field at one character,
-so no cap is involved at all. Its nodes are a fixed size — the `branching-flow`
-diamond and the `cycle` hub again, both of which were fixed by sizing the shape
-to its label.
+### [ ] The visual audit, at schema caps
 
-Two blind spots remain in the prober, both the same shape: it can only measure a
-field the specimen POPULATES. `compare.left.points` and `bs.body` are omitted
-from every specimen slide, so their caps are unverified. Enriching
-`src/specimens.js` to exercise every optional field closes it and makes every
-sweep stronger.
+*Priority: medium. Renderer only, no model.*
+
+`npm run capstress` renders any set of types at their schema caps and rasterises
+them; `--scale 0.01` renders them at one character, which separates a layout
+that cannot hold anything from a cap that is too generous. Every defect the two
+passes above found that `themematrix` and `textcheck` were both clean on came
+out of running it and looking at the page.
+
+What is left is the rest of the gallery. The remaining known items:
+
+- `feature-grid` is two lines of speaker-note debt on `minimal-muji`, the one
+  theme that pairs an inset frame with generous margins. Its card is already
+  derived end to end — the shape test finds no slack — and the shortfall is
+  seven hundredths of an inch.
+- `cards.cards[].body` seats 82 against a cap of 95.
+- The types nobody has looked at full-size at their caps.
 
 ### [ ] The front end, and the landing page
 
