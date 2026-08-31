@@ -784,7 +784,11 @@ export const layouts = {
     // now forbids. The body starts after the title, sized to the remainder.
     const titleH = linesBox(theme, "subhead", data.cards.map((c) => c.title), cw - pad * 2);
     const stackH = titleH + 0.04 + (data.cards.some((c) => c.kicker) ? 0.34 : 0);
-    const bodyBudget = Math.max(0.4, ch - pad - stackH);
+    // The draw below opens the body at `pad + stackH + 0.08` and closes it a
+    // further `pad` above the card's foot, so the budget is TWO pads and the
+    // offset — one of them was missing here and the body was sized against a
+    // third of an inch of card it never had.
+    const bodyBudget = Math.max(0.4, ch - stackH - pad * 2 - 0.08);
     const bodyScale = fitScaleAll(
       data.cards.map((c) => c.body), cw - pad * 2, bodyBudget, theme.type.body,
     );
@@ -813,7 +817,7 @@ export const layouts = {
       }
 
       slide.addText(c.body, {
-        x: x + pad, y: ty + 0.08, w: cw - pad * 2, h: ch - (ty - y) - pad,
+        x: x + pad, y: ty + 0.08, w: cw - pad * 2, h: bodyBudget,
         ...textStyle(theme, "body", { scale: bodyScale }),
         valign: "top",
       });
@@ -1185,21 +1189,25 @@ export const layouts = {
     if (hasAside) {
       const ax = box.x + cw + theme.grid.gutter;
       const aw = box.w - cw - theme.grid.gutter;
-      // Each note gets a fixed 0.9in slot and the stack advances 1.0in whatever
-      // the note holds, so the size has to come from the longest one.
-      const noteScale = fitAllAt(theme, "body", 0.9, data.aside, aw - 0.18, 0.9);
+      // Each note got a fixed 0.9in slot and the stack advanced 1.0in whatever
+      // the note held — three notes ran 3in down a column that may be shorter
+      // than that, straight off the content box. The column is divided among
+      // the notes instead, and the size comes from the longest.
+      const noteGap = 0.1;
+      const noteH = Math.min(0.9, (ch - 0.1 - noteGap * (data.aside.length - 1)) / data.aside.length);
+      const noteScale = fitAllAt(theme, "body", 0.9, data.aside, aw - 0.18, noteH);
       let ay = y + 0.1;
       for (const note of data.aside) {
         slide.addShape("rect", {
-          x: ax, y: ay + 0.06, w: 0.04, h: 0.42,
+          x: ax, y: ay + 0.06, w: 0.04, h: Math.min(0.42, noteH - 0.12),
           fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
         });
         slide.addText(note, {
-          x: ax + 0.18, y: ay, w: aw - 0.18, h: 0.9,
+          x: ax + 0.18, y: ay, w: aw - 0.18, h: noteH,
           ...textStyle(theme, "body", { scale: noteScale }),
           valign: "top",
         });
-        ay += 1.0;
+        ay += noteH + noteGap;
       }
     }
   },
@@ -1945,9 +1953,11 @@ export const layouts = {
     const labelH = linesBox(theme, "subhead", data.cards.map((c) => c.label), cw - pad * 2);
     const labelScale = fitScaleAll(data.cards.map((c) => c.label), cw - pad * 2, labelH, theme.type.subhead);
     const bodyTop = valueH + 0.05 + labelH + 0.04;
-    const bodyScale = fitScaleAll(
-      data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, ch - pad - bodyTop, theme.type.body,
-    );
+    // The body opened at `pad + bodyTop` and was given `ch - pad - bodyTop`,
+    // which ends exactly on the card's foot — the text sat against the edge
+    // and the budget was a pad too generous.
+    const bodyH = Math.max(lineAtFloor(theme, "body"), ch - pad * 2 - bodyTop);
+    const bodyScale = fitScaleAll(data.cards.map((c) => c.body).filter(Boolean), cw - pad * 2, bodyH, theme.type.body);
     data.cards.forEach((c, i) => {
       const x = box.x + i * (cw + gut);
       card(slide, theme, { x, y, w: cw, h: ch });
@@ -1966,7 +1976,7 @@ export const layouts = {
       });
       if (c.body) {
         slide.addText(c.body, {
-          x: x + pad, y: y + pad + bodyTop, w: cw - pad * 2, h: ch - pad - bodyTop,
+          x: x + pad, y: y + pad + bodyTop, w: cw - pad * 2, h: bodyH,
           ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
           valign: "top",
         });
@@ -3905,9 +3915,13 @@ export const layouts = {
       valign: "top",
     });
     if (data.subtitle) {
-      const sScale = fitScale(data.subtitle, w, 0.5, theme.type.subhead, { min: 0.75 });
+      // The overlay is 2.6in and the stack above the subtitle ends at 1.62, so
+      // a flat 0.5in box left almost half an inch of the band unused while the
+      // subtitle was being cut to fit.
+      const subH = ovH - 1.62 - 0.2;
+      const sScale = fitScale(data.subtitle, w, subH, theme.type.subhead, { min: 0.75 });
       slide.addText(data.subtitle, {
-        x: m.left, y: CANVAS.h - ovH + 1.62, w, h: 0.5,
+        x: m.left, y: CANVAS.h - ovH + 1.62, w, h: subH,
         ...textStyle(theme, "subhead", { color: theme.palette.surface, scale: sScale }),
         valign: "top",
       });
