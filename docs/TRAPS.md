@@ -59,6 +59,26 @@ families. That is a fact about the machine, not the layout. `substitutedFaces()`
 asks fontconfig and the check skips rather than reporting a defect the product
 does not have — and the CI image job is what asserts the fonts really install.
 
+**A shape is not its bounding box.** A rhombus's largest inscribed rectangle is
+HALF its bounding box; a circle's is its diameter over root two. The
+`branching-flow` diamond and both hub circles (`cycle`, `concept-map`) gave
+their labels a box as wide as the shape, so the text ran out through the
+slanted edge or the curve — and none of them grew for a label that did not fit.
+Size the shape from its label, and place the label in the inscribed box.
+
+**A budget nobody computed is a constant that decides whether text survives.**
+Every entry on the fit debt list turned out to be one: a 0.26in body budget
+three thousandths of an inch short of a line, a card title budgeted one line
+whatever it held, a figure reserving a flat 2.1in out of a box a speaker note
+had just shortened. Measure one line at the size it will really render at —
+the fitter never shrinks past its floor and never grows a theme already below
+it — then divide the box among its parts and spend the slack deliberately.
+
+**A layout that drops content to satisfy the fitter has not been fixed.** It has
+been made quieter. Tightening the `flow` spine's constants stopped its bodies
+shrinking below the floor and started them dropping instead: a reported failure
+became fifteen words of silent loss, which only the text check caught.
+
 **The floor only guards text that was actually fitted.** `src/fit.js` reports a
 floor hit from inside `fitScale`/`fitOneLine`. Text drawn at a hardcoded scale
 never calls them, so it is not merely unfitted — it is *unreported*: the

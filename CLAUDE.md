@@ -72,9 +72,11 @@ Three checks answer the mechanical half across the whole product, and they find
 disjoint sets:
 
 ```bash
-npm run themematrix     # every theme x every slide type: what will not fit, ~3s
-npm run textcheck       # every declared word survived onto the rasterised page
+npm run themematrix              # every theme x every type: what will not fit, ~3s
+npm run themematrix -- --notes   # the same, with a speaker note on every slide
+npm run textcheck                # every declared word survived onto the page
 node --test test/contrast.test.js   # title and divider surfaces carry their ink
+node tools/capfit.mjs            # what length each field can actually be
 ```
 
 All of them take `--deck decks/<slug>/deck.yaml`, and that is the point: the
@@ -82,7 +84,12 @@ specimen deck's payloads are hand-written to behave, so the same sweep reports
 8 failures on the specimen and 51 on a real generated deck. Audit against real
 content or the audit is measuring the specimen.
 
-None of the three replaces looking. A wrapped figure fits its box fragment by
+A speaker note reserves 0.7in off every content slide and the specimen carries
+none, so `--notes` is the half of the sweep that is easy to forget and found 29
+failures the first time it ran. The same blind spot applies to any optional
+field the specimen omits.
+
+None of them replaces looking. A wrapped figure fits its box fragment by
 fragment; a five-character value is under the text check's word floor. Both
 shipped until someone looked. `tools/slideqa.mjs` renders every type full size
 and `tools/pixels.mjs` measures contrast on the pixels actually painted — a
@@ -105,6 +112,7 @@ src/report.js      donor .docx surgery (jszip), two-pass TOC page numbers
 src/composition.js per-theme composition: frame, opening mark, divider, marker
 src/themematrix.js every theme x every type, as a fit verdict
 src/textcheck.js   rasterise, read the text back, report what did not survive
+src/capfit.js      the length a field can actually be, measured per theme
 src/validate.js    ajv errors resolved to "slide N, type T, do X"
 src/ai/pipeline.js the CLI and the orchestration both the CLI and API call
 src/ai/ollama.js   role-addressed model client (ollama | openai-compatible)

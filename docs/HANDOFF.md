@@ -1,116 +1,117 @@
-# Handoff — 2026-08-30, theme variation and the first real-content audit
+# Handoff — 2026-08-31, theme variation and the slide-quality audit
 
-Two pieces: **§10 "Theme variation"**, finished, and the first pass of **§10
-"Every theme against every slide type"** — deterministic half done, visual half
-sampled. Everything is on `origin/main`. `npm test` is 382 passing, CI is
-green, the UI builds, the working tree is clean.
+Everything is on `origin/main`. `npm test` is 383 passing, CI is green, the UI
+builds, the working tree is clean.
 
 **Start here.** `AGENTS.md` is the working agreement — commit discipline, how
-the roadmap is worked, conventions. `CLAUDE.md` is the operational map.
-`docs/ROADMAP.md` §10 is the standing quality list and is current. This file is
-only what the last session learned that those three do not already say.
+the roadmap is worked, conventions. `CLAUDE.md` is the operational map and now
+lists the checks. `docs/ROADMAP.md` §10 is the standing quality list and is
+current. This file is only what the last session learned that those do not say.
 
-## What changed
+## What was done
 
-A theme now owns its **composition**, not only its palette. `tokens.layout`
-(`src/composition.js`) is six axes — title composition, divider composition,
-heading alignment / opening mark / rule, content frame, list marker and
-columns, drop cap — each an enum whose first value is the behaviour that
-preceded it. Applied in the opening mark, the heading block and the content
-frame, which 67 of the 74 layouts already shared, so one flag restyles all 75
-slide types.
+**§10 is 9 of 16 items closed.** Three closed in this session:
 
-Four themes were culled as duplicates of a survivor rather than designs of
-their own: `flat-2`, `minimal-warm`, `dark-neon`, `retro-terminal`. The
-remaining 34 carry 34 distinct compositions. `notion-clean` declares nothing —
-a vocabulary needs a plain member.
+- **Theme variation.** A theme now owns its *composition*, not only its palette.
+  `tokens.layout` (`src/composition.js`) is six axes — title composition,
+  divider composition, heading alignment / opening mark / rule, content frame,
+  list marker and columns, drop cap. Applied in the opening mark, the heading
+  block and the content frame, which 67 of the 74 layouts already shared, so one
+  flag restyles all 75 types. Four themes were culled as duplicates of a
+  survivor; the remaining **34 carry 34 distinct compositions**. `notion-clean`
+  declares nothing, because a vocabulary needs a plain member.
+- **`flow`'s vertical spine**, and with it the whole fit debt list.
+- **The schema's caps.** 34 caps were promising the model more than any theme
+  could draw. Now measured rather than chosen.
 
-`retro-crt` was rebuilt: the plate drew a bloom at one centre and a blurred
-ellipse at another, so two smears crossed the screen and the lit area sat above
-the type rather than behind it. Every layer is now concentric on one centre.
+**All 34 themes seat all 75 slide types at a readable size, and every declared
+word survives in all 34.** The fit debt list is empty; it held twelve entries
+when the sweep was built.
 
-## Five instruments that outlast the item
+## The instruments
 
 ```bash
-npm run themematrix                 # 34 x 75 fit failures, ~3s, nothing rasterised
-npm run textcheck                   # every declared word survived to the page
-node tools/contrast-audit.mjs --types a,b   # one sheet per type, every theme
-node tools/slideqa.mjs --themes a   # all 75 types, one theme, full-size PNGs
+npm run themematrix           # 34 x 75 fit failures, ~3s, nothing rasterised
+npm run themematrix -- --notes  # the same with a speaker note on every slide
+npm run textcheck             # every declared word survived onto the page
+node tools/capfit.mjs         # what length each field can actually be
+node tools/slideqa.mjs --themes a          # all 75 types, one theme, full-size
+node tools/contrast-audit.mjs --types a,b  # one sheet per type, every theme
 node tools/pixels.mjs <png> '#INK' 0.4 0.6 0.62 0.68   # contrast on real pixels
+npm run themeaudit -- --themes a,b --types title,section
+npm run gallery -- --themes <name>   # thumbnails are committed; regenerate them
 ```
 
-All of them take `--deck decks/<slug>/deck.yaml`. **Use it.** The specimen's
-payloads are hand-written to behave; a model writes a 130-character card body
-where the specimen has 40, and the same sweep reports 8 failures on the
-specimen and 51 on a real seventeen-slide deck.
+**All of them take `--deck decks/<slug>/deck.yaml`. Use it.** The specimen's
+payloads are hand-written to behave. A model writes a 130-character card body
+where the specimen has 40, and the same sweep reports 8 failures on the specimen
+and 51 on a real seventeen-slide deck. Auditing against the specimen is
+auditing the specimen.
 
-`tools/pixels.mjs` is how "measure contrast on the rendered pixels" is actually
-done. A plate theme's ground is not its palette token — `retro-crt` lights the
-middle of its tube, and inks measuring 4.6:1 against the flat token measured
-2.8:1 against the band the text sits on.
+Three tests hold the line and fail in **both** directions, so a debt list can
+neither grow silently nor rot after it is paid:
 
-`test/themematrix.test.js` and `test/contrast.test.js` each hold a **debt
-list** — eight fit failures, twenty-four contrast pairings — and fail in *both*
-directions, so an entry cannot be added silently and cannot be left in after it
-is paid.
+| test | debt |
+|---|---|
+| `test/themematrix.test.js` (fit) | **empty** |
+| the same, with speaker notes | 5 |
+| `test/contrast.test.js` (surfaces) | 24 |
 
-The checks find **disjoint** sets, and none of them replaces looking. The fit
-sweep never saw a wrapped figure, because each fragment fits its box; the text
-check never saw it either, because a five-character value is under its
-word-length floor. Both were found by eye.
+## What is left
 
-A contact sheet at four cells per row judges **structure** — overlap, clipping,
-fused panels, a wrapped value — and not contrast. Two types were called
-illegible from a cell and read perfectly at full size.
+`docs/ROADMAP.md` §10, in priority order:
 
-## Three defects the composition work surfaced
+1. **Text drawn at a fixed scale is unreported.** 19 sites in `src/layouts.js`
+   pass a hardcoded `scale:` and never call a fit function, so their text can
+   overflow with a completely clean sweep — this is how `framework` shipped
+   element bodies running out from under its ellipse. `grep -n "scale: 0\." src/layouts.js`
+   is the list. **This was going to be next.**
+2. **The front end and the landing page.** The largest remaining item, and a
+   different kind of work — agree direction before writing code.
+3. **The rest of the visual audit.** All 34 themes were looked at for ten
+   high-risk types, and all 75 types for four themes spanning the four content
+   frames. 65 per-type sheets remain, at falling yield.
+4. **Reports** — structure, and the two-LibreOffice-pass render.
+5. **Research and content flow / the full functional sweep** — both unblocked
+   now the gateway works.
+6. **`config/models.yaml`** names six local models, none installed.
 
-All three had been shipping for a long time, all three are in `docs/TRAPS.md`,
-and none of them raises anything a test could read:
+Two smaller things found and not fixed:
 
-- **Every chart slide in every plate theme rasterised on white.** pptxgenjs
-  numbers a background image's relationship without counting chart
-  relationships, so a background assigned after `addChart` is written as a
-  second `rId1`; the reader resolves the background blip to the chart part and
-  paints nothing. On the dark themes that meant near-white ink on white.
-- **A numbered list rendered "1. 1. 1. 1."** — `startAt="1"` is written on
-  every paragraph, so the count restarts at each item.
-- **A word wider than its column hyphenates itself at the raster.** The fitter
-  budgets height, so every fragment fits and nothing is reported. Any layout
-  that narrows a column has to fit the longest word to the measure too, and
-  with `fitOneLine`'s default safety margin — `measure` estimates at 0.55em
-  where real text averages nearer 0.60.
+- The `cycle` connector arrows sit off the ring at inconsistent angles.
+- `capfit` can only measure fields the specimen populates. An optional field the
+  specimen omits — `compare.left.points` — is never grown, so its cap is
+  unverified. Enriching `src/specimens.js` to exercise every optional field
+  closes it, and would also make the sweeps stronger everywhere.
 
-## How to work on themes
+## Generation works now
 
-The method is unchanged and it is the only one that works: render and look.
+The TCET gateway (`config/models.yaml`, `providers.tcet-auto`, model `qwen3.6`)
+answers in under a second with `FORGE_TCET_API_KEY` in a gitignored `.env` at
+the repo root.
 
 ```bash
-npm run themeaudit -- --themes <a,b> --types title,section,bullets
-npm run gallery -- --themes <name>                    # thumbnails are committed
+FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
+FORGE_HOSTED=1 npm run forge -- generate <slug>
 ```
 
-Plus the five above. `npm run gallery` matters: the thumbnails are committed
-and go stale otherwise. Both scripts need the `--` separator or npm eats the
-flags.
+`FORGE_HOSTED=1` makes Auto resolve to the gateway and never fall back to the
+local Ollama, whose GPU is committed to other work. A 17-slide deck generates
+end to end without research in a couple of minutes.
 
-Prove a refactor rather than asserting it: rendering six themes before and
-after and diffing `ppt/slides/*.xml` is what caught pptxgenjs writing an
-explicit `algn="l"` whenever alignment is passed, so the default path must omit
-it rather than pass `"left"`.
+One caveat: the model client allows 300s per request with retries, so a single
+stubborn slide can burn ten minutes in the field-length pass. Budget for it or
+raise the timeout.
 
-Measure contrast, never judge it — `tools/pixels.mjs`. Sample beside the text,
-not through it: glyphs are the brightest thing in a crop and flatter the
-reading.
+## The twelve defects the audit found
 
-## The nine defects the audit found
-
-All were shipping, none was visible to any test. Six came from putting real
-model-written content through every theme, three from looking at the renders.
+All were shipping. None was visible to any test. Six came from putting real
+model-written content through every theme, three from looking at renders, three
+from turning on a speaker note.
 
 - `funnel` dropped every stage body the schema allows.
-- `framework` drew element bodies at a fixed scale with no fit, so they ran out
-  of their cards and under the central ellipse — with a clean fit sweep,
+- `framework` drew element bodies at a fixed scale with no fit at all, so they
+  ran out of their cards and under the central ellipse — with a clean sweep,
   because nothing called the fitter.
 - The `title` and `closing` surfaces discarded their own headline and
   standfirst, drawing the deck's title instead. Every real deck writes both.
@@ -120,57 +121,56 @@ model-written content through every theme, three from looking at the renders.
   real deck it flagged nothing while six of seventeen slides lost text
   elsewhere. It now sweeps every theme.
 - `kpi-dashboard` and `data-cards` wrapped values mid-number, and `data-cards`
-  landed the wrapped line on the label. Root cause was in `measure()` — see
-  below.
+  landed the wrapped line on the label.
 - `split-screen` fused its halves into one block on square-cornered themes.
+- Every chart slide in every plate theme rasterised on white.
+- `big-number` reserved a flat 2.1in for its figure whatever the box was.
+- `feature-grid` fitted its body to `ch - 1.25` and drew it into `ch - 1.48`.
 
-The measurement one is worth knowing about: `measure()` estimated every
-character at the lowercase average. Lining figures sit near 0.58 em, a percent
-sign near a full em, and **Archivo Black declares weight 400** because black is
-the only weight the family ships — so the widest display face in the gallery
-was being measured at the narrowest display advance.
+## What the session learned
 
-## What is next
+**Instrument, do not reconstruct.** Three wrong arithmetic guesses at the
+`feature-grid` budget before printing the layout's own numbers, which took one
+line and settled it immediately. Reach for that first.
 
-`docs/ROADMAP.md` §10, in priority order:
+**A contact sheet judges structure, not contrast.** Overlap, clipping, fused
+panels, a wrapped value — yes. Legibility — no: two types were called illegible
+from a 700px cell and read perfectly at full size. Contrast has a numeric test
+and `tools/pixels.mjs`; use those.
 
-1. **The front end and the landing page** — standing dissatisfaction with the
-   whole surface, no model needed. The largest remaining item.
-2. **The schema's caps are not the layouts' budgets** — `cards[].body` accepts
-   320 characters and the type accepts four of them, which no theme can seat.
-   The model writes to the cap it is given. Derive the caps from the layouts.
-3. **Every theme against every slide type** — the rest of the visual half. All
-   34 were looked at for ten high-risk types, and all 75 types for four themes
-   spanning the four content frames.
-4. **Reports** — structure, and the two-LibreOffice-pass render.
-5. **`flow`'s vertical spine** — four themes over the readable floor, named in
-   the matrix debt list. `before-after` and `team-grid` had the same defect and
-   were fixed by sizing the box to the real line count (`linesBox`).
+**The checks find disjoint sets and none replaces looking.** The fit sweep never
+saw a wrapped figure, because each fragment fits its box. The text check never
+saw it either, because a five-character value is under its word-length floor.
+Both were found by eye.
 
-## Constraints that still hold
+**A layout that drops content to satisfy the fitter has not been fixed.** The
+first `flow` attempt stopped the bodies shrinking below the floor and started
+them *dropping* — a reported failure became fifteen words of silent loss, and
+only the text check said so.
 
-**Generation now works.** The TCET gateway (`config/models.yaml`,
-`providers.tcet-auto`, model `qwen3.6`) answers in under a second with
-`FORGE_TCET_API_KEY` in a gitignored `.env` at the repo root. Run with
-`FORGE_HOSTED=1` so Auto resolves to the gateway and never falls back to the
-local Ollama, whose GPU is committed to other work. A 17-slide deck generated
-end to end without research in a couple of minutes.
+**Nearly every fit failure was a hardcoded constant, not a budget.** All twelve
+debt entries, plus `big-number`, `feature-grid`, `before-after`, `team-grid` and
+the `branching-flow` diamond. Measure one line at the size it will really render
+at and divide the box among its parts; a constant in that place is a constant
+that decides whether text survives.
 
-**`config/models.yaml` names six local models, none installed** on this
-machine. Role resolution falls through silently, so local runs are still not
-viable — the gateway is the route.
+**Shapes must be sized from their labels, and a shape is not its bounding box.**
+A rhombus's largest inscribed rectangle is half its bounding box; a circle's is
+its diameter over root two. The `branching-flow` diamond and both hub circles
+gave their labels a box wider than the shape, so text ran out through the edges.
 
-**Any check that reads a rasterised page needs the theme fonts.** CI's test job
-installs LibreOffice and Poppler but not the 27 families, so LibreOffice
-substitutes a wider face and a word that fits breaks. `npm run textcheck` asks
-fontconfig and skips rather than reporting a defect the product does not have;
-the CI image job is what asserts the fonts install.
+**Any check that reads a rasterised page needs the real fonts.** CI's test job
+installs LibreOffice and Poppler but not the 27 families, so a word that fits
+breaks in the substituted face. `substitutedFaces()` asks fontconfig and the
+check skips; the CI image job asserts the fonts install.
 
 ## Known and deliberate
 
-- The callout bar inverts to light on dark themes. Consistent and intentional,
-  loud on `gradient-mesh-dark`. Not changed without a decision.
+- The callout bar inverts to light on dark themes. Consistent and intentional.
 - `config/identity.yaml` on the dev machine reads `institution.name: HACKED`.
   Identity is per account now; set a real one in Settings.
 - The dev account store holds well over a hundred throwaway test accounts. That
   database must not travel to production.
+- `decks/` holds one real generated deck
+  (`electrochemical-impedance-spectroscopy-for-l`) kept deliberately: it is the
+  real-content fixture the sweeps should be run against.

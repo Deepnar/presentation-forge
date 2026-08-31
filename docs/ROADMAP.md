@@ -2964,8 +2964,19 @@ display face in the gallery was measured at the narrowest display advance.
 > sweep never saw the wrapped figures, because each fragment fits its box; the
 > text check never saw them either, because a five-character value is below
 > its word-length floor. Neither is redundant with looking.
+>
+> The specimen carries no speaker notes, so the 0.7in that a note reserves off
+> every content slide had never been exercised — by any check, on any theme.
+> Turning it on found 29 failures across four slide types at once, including
+> one (`feature-grid` fitting text to a box a quarter-inch taller than the one
+> it drew into) that was wrong with or without a note. `npm run themematrix --
+> --notes` is now the second half of the sweep, with its own debt list.
+>
+> The lesson generalises past notes: a fixture that never exercises an optional
+> field cannot audit it. `src/specimens.js` omits several, and every sweep
+> inherits the blind spot.
 
-### [ ] The schema's caps are not the layouts' budgets
+### [x] The schema's caps are not the layouts' budgets
 
 *Priority: high. Renderer and schema, no model.*
 
@@ -2992,6 +3003,35 @@ The answer is not one thing, which is why the tool reports rather than edits:
 - Diagram labels — `cycle`, `diagram`, `concept-map` — whose shapes are a fixed
   size. These are the `branching-flow` diamond again: size the shape to its
   label rather than cutting what the label may say.
+
+Done. Thirty-four caps were cut to the measured value; the `cycle` and
+`concept-map` hubs now grow to their labels; and `loadDeck` was split so a cap
+can be corrected at all — see the Learned block.
+
+> **Learned.** Tightening a cap made every deck already on disk refuse to open,
+> because `loadDeck` enforced length as hard as structure. They are not the same
+> kind of constraint: a slide missing its required field cannot be drawn, while
+> a body eighty characters over renders and the fitter says so. Reading a deck
+> now refuses on structure and warns on length; `validateDeck` still reports
+> both, so the model is held to the cap at the moment it writes, which is where
+> a cap belongs.
+>
+> Some of it was not a cap problem. `cycle` and `concept-map` measured at 34–47%
+> not because their caps were generous but because their hub circles were a
+> fixed 1.5in with a text box as wide as the whole circle. Check whether the
+> shape is the constraint before cutting what the content may say.
+>
+> The prober needed three corrections before its numbers meant anything: a cap
+> on an array field caps its ITEMS (replacing the array with a string threw at
+> every scale, which bisection read as "nothing fits"); identifiers and asset
+> paths carry a maxLength but are not prose (growing a node's id breaks the
+> edges that name it); and growing every field together answers a question about
+> the type, not about a field. It reported 70 fields before those fixes and 35
+> after — a measurement is not evidence until its own failure modes are known.
+>
+> It still cannot measure a field the specimen omits. `compare.left.points` is
+> never grown, so its cap is unverified — which is how a real deck's compare
+> slide overflowed after the caps were set.
 
 ### [ ] Text drawn at a fixed scale is unreported, not just unfitted
 
