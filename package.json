@@ -22,7 +22,8 @@
     "themeaudit": "node --env-file-if-exists=.env tools/themeaudit.mjs",
     "themematrix": "node --env-file-if-exists=.env tools/themematrix.mjs",
     "capstress": "node --env-file-if-exists=.env tools/capstress.mjs",
-    "textcheck": "node --env-file-if-exists=.env tools/textcheck.mjs"
+    "textcheck": "node --env-file-if-exists=.env tools/textcheck.mjs",
+    "drawcheck": "node --env-file-if-exists=.env tools/drawcheck.mjs"
   },
   "keywords": [],
   "author": "",
