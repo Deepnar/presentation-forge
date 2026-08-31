@@ -3582,9 +3582,12 @@ export const layouts = {
     const y = heading(slide, ctx);
     const yearW = 1.4;
     const rowH = (box.bottom - y - 0.1) / data.events.length;
-    const textScale = fitScaleAll(
-      data.events.map((e) => e.text), box.w - yearW - 0.55, rowH * 0.8, theme.type.body,
-    );
+    // Fitted to `box.w - yearW - 0.55` by `rowH * 0.8` and drawn into
+    // `box.w - yearW - 0.4` by the whole row: the budget was narrower AND
+    // shorter than the box, so the fitter reported failures for text that
+    // seats, and the measured cap read a third under what the row holds.
+    const textW = box.w - yearW - 0.4;
+    const textScale = fitScaleAll(data.events.map((e) => e.text), textW, rowH - 0.08, theme.type.body);
     slide.addShape("rect", {
       x: box.x + yearW + 0.18, y, w: 0.02, h: box.bottom - y,
       fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
@@ -3597,7 +3600,7 @@ export const layouts = {
         align: "left", valign: "middle",
       });
       slide.addText(e.text, {
-        x: box.x + yearW + 0.4, y: ry, w: box.w - yearW - 0.4, h: rowH,
+        x: box.x + yearW + 0.4, y: ry + 0.04, w: textW, h: rowH - 0.08,
         ...textStyle(theme, "body", { scale: textScale }),
         valign: "middle",
       });
@@ -4862,22 +4865,31 @@ export const layouts = {
     const y = heading(slide, ctx);
     const n = data.entries.length;
     const rowH = (box.bottom - y - 0.1 - 0.1 * (n - 1)) / n;
-    const citeScale = fitScaleAll(
-      data.entries.map((e) => e.citation), box.w - 0.3, rowH * 0.55, theme.type.body,
-    );
-    const annScale = fitScaleAll(
-      data.entries.map((e) => e.annotation).filter(Boolean), box.w - 0.3, rowH * 0.4, theme.type.caption,
-    );
+    // 55% of the row to the citation and 40% to the annotation, with 5% spent
+    // on nothing — and the same split whether or not an entry HAS an
+    // annotation. A citation runs two or three times an annotation's length,
+    // so the row is divided by what each needs, floored at a readable line
+    // apiece, and an unannotated bibliography gives the citation the lot.
+    const citations = data.entries.map((e) => e.citation);
+    const annotations = data.entries.map((e) => e.annotation).filter(Boolean);
+    const citeNeed = linesBox(theme, "body", citations, box.w - 0.3);
+    const annNeed = annotations.length ? linesBox(theme, "caption", annotations, box.w - 0.3) : 0;
+    const annH = annotations.length
+      ? Math.min(Math.max(annNeed, lineAtFloor(theme, "caption")), rowH - lineAtFloor(theme, "body"))
+      : 0;
+    const citeH = rowH - annH;
+    const citeScale = fitScaleAll(citations, box.w - 0.3, citeH, theme.type.body);
+    const annScale = fitScaleAll(annotations, box.w - 0.3, annH, theme.type.caption);
     data.entries.forEach((e, i) => {
       const ry = y + i * (rowH + 0.1);
       slide.addText(e.citation, {
-        x: box.x, y: ry, w: box.w, h: rowH * 0.55,
+        x: box.x, y: ry, w: box.w, h: citeH,
         ...textStyle(theme, "body", { scale: citeScale }),
         valign: "top",
       });
       if (e.annotation) {
         slide.addText(e.annotation, {
-          x: box.x, y: ry + rowH * 0.55, w: box.w, h: rowH * 0.4,
+          x: box.x, y: ry + citeH, w: box.w, h: annH,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, italic: true, scale: annScale }),
           valign: "top",
         });
