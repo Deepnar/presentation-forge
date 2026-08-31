@@ -79,11 +79,22 @@ export async function grow(slide, scale, inventory) {
   const out = structuredClone(slide);
   const setAt = (obj, path, make) => {
     const parts = path.split(".");
-    let node = obj;
+    // `branches[].steps[].title` walks through TWO arrays, and reading a key
+    // off an array yields undefined — so a doubly-nested path silently grew
+    // nothing and the field was reported at whatever the specimen happened to
+    // say. Each array level fans out instead of being indexed.
+    let nodes = [obj];
     for (let i = 0; i < parts.length - 1; i++) {
       const key = parts[i].replace("[]", "");
-      node = parts[i].endsWith("[]") ? node[key] : node[key];
-      if (node == null) return;
+      const next = [];
+      for (const n of nodes) {
+        for (const member of Array.isArray(n) ? n : [n]) {
+          const v = member?.[key];
+          if (v != null) next.push(v);
+        }
+      }
+      nodes = next;
+      if (!nodes.length) return;
     }
     const last = parts.at(-1).replace("[]", "");
     // A cap on an array field caps its ITEMS, so replacing the array with a
@@ -102,15 +113,17 @@ export async function grow(slide, scale, inventory) {
     // member that lacks it is routinely the one the layout cannot seat: the
     // funnel specimen puts a body on the second bar of four, so the narrowest
     // bar, which is where a funnel runs out of room, was never measured.
-    if (Array.isArray(node)) {
-      const like = node.map((it) => it?.[last]).find((v) => typeof v === "string");
-      for (const item of node) {
-        if (like != null && item && typeof item === "object" && !(last in item)) item[last] = like;
-        assign(item, last);
+    for (const node of nodes) {
+      if (Array.isArray(node)) {
+        const like = node.map((it) => it?.[last]).find((v) => typeof v === "string");
+        for (const item of node) {
+          if (like != null && item && typeof item === "object" && !(last in item)) item[last] = like;
+          assign(item, last);
+        }
+      } else {
+        assign(node, last);
       }
-      return;
     }
-    assign(node, last);
   };
   for (const f of inventory) {
     if (!f.cap) continue;
