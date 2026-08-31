@@ -2912,7 +2912,7 @@ themes now seat all 75 slide types at a readable size.**
 
 *Priority: high. Renderer only, no model — `src/specimens.js` supplies content.*
 
-34 themes × 75 types has never been looked at as a whole. The deterministic
+34 themes × 73 types has never been looked at as a whole. The deterministic
 half now exists and runs in about three seconds:
 
 - `npm run themematrix` renders every theme against every type with
@@ -3160,16 +3160,15 @@ What is left:
   `layered-architecture` had two columns that did not fit its 8.0in row, found
   by measuring rather than by looking, so the sidebar frame is where to look
   next.
-- **`cycle` cannot hold its arrangement with a speaker note.** The ring's
-  `radiusY` is pinned at its 1.15in floor and the arrangement needs about
-  1.53in for a minimum hub plus a step's title and body, so the hub overlaps
-  the top and bottom steps' bodies. It always has, on every theme. The repair
-  is an arrangement that gives up the ring when the box is short — a design
-  decision, not a fix, so it was left rather than invented.
-- **`concept-map` at its caps is illegible.** The radial labels crowd each
-  other and the hub; `TYPE_BUDGETS` already tells the writer "one or two words
-  — long leaves cannot fit a radial layout", and the caps say 27. The guidance
-  and the cap disagree; the cap should be cut to the guidance.
+- **`venn` needs its caps cut, not its layout changed.** It renders correctly
+  at 35% of its caps and scores 48% — the second-lowest in the gallery — so
+  `sets[].label` (30) and `sets[].items` (27) should come down to the measured
+  14 apiece. It was the third deletion candidate and stays for exactly that
+  reason: the arrangement holds, the caps are what do not.
+- **`cycle` and `concept-map` were deleted rather than repaired.** Both
+  overlapped their own content at 35% of their caps — ordinary content, not a
+  stress case — so neither was a cap problem. The vocabulary is 73 types. See
+  the deletion commit for the reasoning and what each was replaced by.
 - **The cap residue is 26 fields** (`node tools/capfit.mjs`), up from 1 — the
   prober now measures against a slide that carries a standfirst, which is the
   slide a model actually writes. None of it is new debt.
@@ -3179,7 +3178,24 @@ What is left:
 - The contrast list is still unpaid: `test/contrast.test.js` names 24 pairings
   that clear 3:1 but not 4.5:1.
 
-> **Learned.** Three things, and the third is the one that generalises.
+> **Learned.** Four things, and the last two are the ones that generalise.
+>
+> **A type whose own writer guidance works around its layout is a type to
+> delete.** `concept-map`'s budget read "one or two words — long leaves cannot
+> fit a radial layout": an instruction written to keep content away from a
+> layout that cannot hold it. `cycle` needed 3.06in of vertical run and a slide
+> with a standfirst and a note leaves 2.75in. Both were deleted rather than
+> redesigned, and the test for which is cheap — render at ~35% of caps, which
+> is ordinary content rather than a stress case. If it still overlaps there,
+> the arrangement is wrong and no cap will save it. If it is clean there, the
+> caps are what to cut. `venn` passed that test and stayed.
+>
+> **The vocabulary is large on purpose and deleting from it is a normal edit.**
+> 73 types is not a number to defend. What deletion costs is contained —
+> schema enum and rule, the layout, the specimen, three catalog maps, the
+> SlideEditor descriptor, the vocabulary-test fixtures — and `npm test`,
+> `themematrix`, `drawcheck` and `textcheck` between them catch anything left
+> dangling. Check no deck on disk uses the type first.
 >
 > **The fixture's omissions are the audit.** `standfirst` is declared once on
 > the base slide object, so a walk of the type rule missed it on all 75 types —

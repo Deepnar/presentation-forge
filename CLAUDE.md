@@ -115,7 +115,7 @@ speaker note reserves 0.7in off every content slide and the specimen carries
 none, so `--notes` found 29 failures the first time it ran. The same blind spot
 applied to twelve optional fields, which is how four layouts came to drop
 content the schema offers without a check noticing — and then to `standfirst`,
-which the specimen omits on 71 of 75 types and which no cap, sweep or render had
+which the specimen omits on 69 of 73 types and which no cap, sweep or render had
 ever carried. `drawcheck` reports what the specimen does not populate as well as
 what the layouts drop, because that half is the one nothing else can see.
 
@@ -140,7 +140,7 @@ are one of two (`editorial-magazine`/`newsprint` for two-column lists,
 If an axis really is unwanted, delete the branch from `src/composition.js` as
 well — a value no theme selects is dead code.
 
-**Look at eight themes, not 34.** 34 x 75 is 2,550 slides and nobody looks at
+**Look at eight themes, not 34.** 34 x 73 is 2,482 slides and nobody looks at
 that, so the sweep stops happening. They do not need to: the layouts branch on
 composition axes — the frame, the opening mark, the alignment, the list columns,
 the plate — not on themes, so a set carrying every value of every axis renders
@@ -157,7 +157,7 @@ Read it before touching the renderer or the fitter.
 
 ```
 src/render.js      deck -> pptx; owns the background/plate decision
-src/layouts.js     the 75 slide-type layouts (4k lines — the bulk of the renderer)
+src/layouts.js     the 73 slide-type layouts (4k lines — the bulk of the renderer)
 src/fit.js         text measurement and shrink-only fitting, per-role floors
 src/chrome.js      locked institutional marks pass, runs after the layout
 src/theme.js       theme + style load and deep-merge

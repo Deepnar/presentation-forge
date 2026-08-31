@@ -32,8 +32,8 @@ next item in this order — from the top, not whichever looks easiest:
 
 1. **Finish the visual audit on the covering set.** Below; it is the only item
    with a fully specified next step.
-2. **`concept-map`'s cap**, then **`cycle`'s arrangement** — §10, and `cycle`
-   needs the human before it is built.
+2. **Cut `venn`'s caps** — §10. It renders correctly at 35% of its caps and
+   scores 48%, so the caps are what is wrong, not the layout.
 3. **Reports** — structure, and the two-LibreOffice-pass render.
 
 ---
@@ -57,7 +57,7 @@ kept turning up the same classes and each was mechanisable:
 | check | result |
 |---|---|
 | `npm test` | 391 passing |
-| `npm run themematrix` | clean, 34 themes x 75 types |
+| `npm run themematrix` | clean, 34 themes x 73 types |
 | `npm run themematrix -- --notes` | 2 — `feature-grid` on `minimal-muji` |
 | `npm run themematrix --deck <real>` | 45 — `cards` x41, `takeaway` x4 |
 | `npm run textcheck` | clean, 34 themes |
@@ -94,7 +94,7 @@ Take the frames first. `layered-architecture` had two columns that did not fit
 
 The types worth opening full size, by how much the covering sweep flags them:
 `venn` and `layered-architecture` (15 each), then `pros-cons`, `dependencies`,
-`concept-map`, `cards`, `before-after` (8 each). Most of that is cap debt that is
+`cards` and `before-after` (8 each). Most of that is cap debt that is
 now honestly reported; look anyway, because the two classes below do not report.
 
 ## The three findings worth carrying forward
@@ -102,7 +102,7 @@ now honestly reported; look anyway, because the two classes below do not report.
 **1. A shared schema field is invisible to anything that reads the type rule
 alone.** `headline` (≤80) and `standfirst` (≤150) are declared once on
 `definitions.slide.properties`, and every consumer walked
-`allOf[].then.properties`. On 75 of 75 types the length pass never told the model
+`allOf[].then.properties`. On every type the length pass never told the model
 the headline had a cap, `trimSlide` could never shorten one — its own
 skip-headline branch had been unreachable since it was written — and the cap
 prober never grew one. **Ask what the fixture does not carry.** That is now the
@@ -113,9 +113,7 @@ budget that is not the box the text is drawn into is a bug in both directions �
 more generous hides an overflow, less generous invents a failure, and they look
 nothing alike from a sweep. The standfirst was fitted against 0.85in, drawn into
 0.75in and advanced 0.72in. `before-after` fitted a body against 1.8in and drew
-it into 0.94in. `cycle` fitted a step body against 0.45in and drew it into
-0.28in — and the hub, which has to clear the steps, was sized against the smaller
-number. `pros-cons` handed `fitScaleAll` the whole column, and it fits EACH
+it into 0.94in. `pros-cons` handed `fitScaleAll` the whole column, and it fits EACH
 member into the height given, so the stack was never measured at all.
 
 **3. Ask whether the SHAPE is the constraint before cutting what the content may
@@ -127,23 +125,22 @@ in every session it has been applied.
 ## What the checks still cannot see
 
 **Do two boxes overlap?** Both are on the slide, both fit their own text, and
-they are drawn on top of each other. `cycle` is the live case. An overlap check
-is not obviously tractable — a label over a filled shape is the normal case, so a
-naive one would report every card in the gallery — so **do not build one
-speculatively.** Looking is the instrument until someone has a specific idea.
+they are drawn on top of each other. It cost the gallery two types this session:
+`cycle` and `concept-map` overlapped their own content at ordinary length and
+every check was clean on both. An overlap check is not obviously tractable — a
+label over a filled shape is the normal case, so a naive one would report every
+card in the gallery — so **do not build one speculatively.** Until someone has a
+specific idea, the cheap substitute is `npm run capstress -- --scale 0.35`:
+ordinary content rather than a stress case, and what still overlaps there has an
+arrangement no cap will fix.
 
 ## Known and not fixed
 
-- **`concept-map` at its caps is illegible. Cut the cap.** `TYPE_BUDGETS`
-  already tells the writer "one or two words — long leaves cannot fit a radial
-  layout" and the cap says 27. The guidance is right and the cap contradicts it;
-  this needs no decision, only the cap round.
-- **`cycle` cannot hold its arrangement with a speaker note.** `radiusY` is
-  pinned at its 1.15in floor; the arrangement needs about 1.53in for a minimum
-  hub plus a step's title and body, so the hub overlaps the top and bottom
-  steps' bodies. It always has, on every theme. The repair is an arrangement
-  that gives up the ring when the box is short — **put that to the human before
-  building it**, because it changes what the type looks like.
+- **`venn`'s caps are too generous.** It scores 48%, second-lowest in the
+  gallery, and renders correctly at 35% — so `sets[].label` (30) and
+  `sets[].items` (27) come down to the measured 14 apiece. No decision needed.
+- **`feature-grid`** is two lines of speaker-note debt on `minimal-muji`. Its
+  card is derived end to end and the shortfall is seven hundredths of an inch.
 
 `quote`, `epigraph` and `freeform` draw neither headline nor standfirst. For the
 first two that is a question about what a full-bleed quotation surface is, not a
@@ -151,24 +148,31 @@ defect; `freeform` is the rasterised escape hatch by definition. All three sit i
 `drawcheck`'s ACCEPTED list with that reasoning, and a stale entry there fails
 the run.
 
-## Deleting a theme is fine — run one check first
+## Deleting a slide type is a normal edit
 
-The gallery is deliberately large and cutting a weak theme is a normal edit.
-Before deleting, run `npm run coverage -- --without <names>`. The layouts branch
-on composition axes, so a theme can be the last one selecting a frame, an
-opening or a list treatment; deleting that one does not fail anything, it just
-means the branch is never rendered by any sweep again.
+**73 types, and that is not a number to defend.** `cycle` and `concept-map` went
+this session: both overlapped their own content at 35% of caps — ordinary
+content, not a stress case — so neither was a cap problem, and both needed a new
+arrangement rather than a repair. `flow` and `pipeline` carry ordered steps;
+`hierarchy` carries branching relationships; both render cleanly.
 
-Today no theme is a sole carrier. Five are one of two: `editorial-magazine` and
-`newsprint` (two-column lists), `sci-fi-hud` and `isometric-dark` (the sidebar
-frame), `letterpress` (dropcap, with `editorial-magazine`). The other 29 cost
-nothing structurally.
+The test for "delete or cut the caps" is cheap and worth applying to any type
+that looks wrong:
 
-**Do not delete a theme to make a check green.** None of the thirteen defects
-found this session was a theme's fault — they were layout bugs shared across the
-gallery. Deleting `minimal-muji` would make `themematrix --notes` clean and leave
-`feature-grid` exactly as tight as it is. Delete on taste, which is the human's
-call; `node tools/themesheet.mjs` renders all 34 on one page for that decision.
+```bash
+npm run capstress -- --types <type> --scale 0.35
+```
+
+Overlaps there → the arrangement is wrong, delete it. Clean there → the caps are
+what to cut. `venn` passed and stayed. Note the cap prober cannot make this call:
+it scored `cycle` at 100% because an overlap is not a fit failure.
+
+Deletion touches, and nothing else: the schema enum and its `allOf` rule,
+`src/layouts.js`, `src/specimens.js`, three maps in `src/ai/catalog.js`, the
+`SlideEditor.jsx` descriptor, and the `test/vocabulary.test.js` fixtures plus its
+family-list assertions. Check no deck on disk uses the type first
+(`grep -rl "type: <name>" decks/*/deck.yaml`), then let `npm test`,
+`themematrix`, `drawcheck` and `textcheck` catch anything dangling.
 
 ## Cap rounds — one per session, and check the shape first
 

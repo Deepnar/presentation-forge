@@ -93,7 +93,7 @@ losing its design is worse than a loud failure.
 
 The axes are applied in three shared places — the opening mark, the heading
 block and the content frame — which 67 of the 74 layouts already went through,
-so one flag restyles all 75 slide types rather than needing per-type work. The
+so one flag restyles all 73 slide types rather than needing per-type work. The
 `sidebar` frame is the exception that proves the rule: it halves the measure,
 and slide types whose body is a row of four or more peers keep the full canvas
 under it, because four cards in two thirds of a slide break their words in the
@@ -186,7 +186,7 @@ The layout discipline for the new types follows the Tier-1 lessons: every
 stacked element is fit-scaled or reserves its rendered line count, stat values
 use `fitOneLine` (width-based, pessimistic) because the height-based fitter is
 optimistic for wide digits, and the algorithmic diagram types (framework,
-cycle, dependencies, diagram, hierarchy, concept-map, venn) place nodes purely
+dependencies, diagram, hierarchy, venn) place nodes purely
 from angles, radii and topological depth — never from content. A node's text
 zone never sits under another shape: the framework ring is checked for card-vs-
 ellipse and card-vs-card clearance at the largest size the box allows and falls
