@@ -2,6 +2,7 @@
 
 Everything is committed on local `main`, 27 commits ahead of `origin/main` and not
 yet pushed. `npm test` is 388 passing, the working tree is clean.
+
 **Start here.** `AGENTS.md` is the working agreement — commit discipline, how
 the roadmap is worked, conventions. `CLAUDE.md` is the operational map and now
 lists the checks as four different questions rather than one. `docs/ROADMAP.md`
