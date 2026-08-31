@@ -1,135 +1,164 @@
-# Handoff — 2026-08-31, the gallery swept, and the two checks it needed
+# Handoff — 2026-08-31, the gallery swept, and the checks that made it repeatable
 
-Everything is committed on local `main`, 27 commits ahead of `origin/main` and not
-yet pushed. `npm test` is 388 passing, the working tree is clean.
+Everything is on `origin/main`. `npm test` is 391 passing, the working tree is
+clean.
 
 **Start here.** `AGENTS.md` is the working agreement — commit discipline, how
-the roadmap is worked, conventions. `CLAUDE.md` is the operational map and now
-lists the checks as four different questions rather than one. `docs/ROADMAP.md`
+the roadmap is worked, when to stop and ask. `CLAUDE.md` is the operational map
+and lists the checks as four questions rather than one. `docs/ARCHITECTURE.md`
+has a new **Verification** section describing the instruments. `docs/ROADMAP.md`
 §10 is the standing quality list and is current. `docs/TRAPS.md` holds the
 cross-cutting failure modes and outlives this file. This file is only what the
 last session learned that those do not say.
 
+---
+
+## Do this first — and do not do anything else instead
+
+**The front end and the landing page is the top item and it is blocked on the
+human.** Your first action this session is to ask, using the five questions
+already written into its `docs/ROADMAP.md` entry: reference and feel, landing
+page or app first, restyle or rebuild, real decks or mockups, motion budget.
+
+Send those questions and **wait**. Do not open the item on a guess, and do not
+skip to a lower item because nobody has replied yet. That substitution is
+exactly why this has stayed at the top of the list while everything under it got
+polished, and `AGENTS.md` now forbids it.
+
+**If and only if the human has answered**, build to the answer.
+
+**If the human has answered "not now" or has already redirected you**, take the
+next item in this order — from the top, not whichever looks easiest:
+
+1. **Finish the visual audit on the covering set.** Below; it is the only item
+   with a fully specified next step.
+2. **`concept-map`'s cap**, then **`cycle`'s arrangement** — §10, and `cycle`
+   needs the human before it is built.
+3. **Reports** — structure, and the two-LibreOffice-pass render.
+
+---
+
 ## What was done
 
-**The gallery was swept once — `warm-humanist`, every type at its caps, with a
-speaker note — and thirteen defects came out of it.** Not one was reportable by
-any check that existed at the start. Two of them were reportable by the end,
-because looking kept turning up the same two classes and both were mechanisable.
+**The gallery was swept once — every type at its caps, with a speaker note — and
+thirteen defects came out of it.** Not one was reportable by any check that
+existed at the start. Three became reportable by the end, because the looking
+kept turning up the same classes and each was mechanisable:
 
-- **`npm run drawcheck`** marks every field the schema declares, renders, and
-  reads back what the layout actually emitted.
-- **`src/geometry.js`** watches every draw for a box that cannot be right and
-  runs inside every render, so `themematrix` answers it for free.
+- **`src/geometry.js`** — is the box on the slide? Runs inside every render, so
+  `themematrix` answers it for the whole gallery for free. Found 105 problems
+  the first time it ran.
+- **`npm run drawcheck`** — was the field drawn at all? Text that is never drawn
+  is never fitted, so no fit sweep can see it.
+- **`src/coverage.js`** — which themes a sweep has to look at. Eight, not 34.
 
 ## The state of the checks
 
 | check | result |
 |---|---|
-| `npm test` | 388 passing |
+| `npm test` | 391 passing |
 | `npm run themematrix` | clean, 34 themes x 75 types |
 | `npm run themematrix -- --notes` | 2 — `feature-grid` on `minimal-muji` |
 | `npm run themematrix --deck <real>` | 45 — `cards` x41, `takeaway` x4 |
 | `npm run textcheck` | clean, 34 themes |
 | `npm run drawcheck` | clean; 10 accepted, 3 unpopulated |
-| `npm run capstress` | 64 across 4 themes — cap debt, all reported |
+| `npm run capstress` | 122 across the 8 covering themes |
 | `node tools/capfit.mjs` | 26 fields over their measured length |
 | `test/contrast.test.js` | 24 recorded, passing both ways |
 
-**The two rising counts are the checks working.** `capfit` went from 1 field to
-26 and `capstress` from 9 problems to 64, both because the prober and the sweep
-now stress a slide that carries a standfirst — which is the slide a model
-actually writes. None of it is new debt; it is the debt the omission was hiding.
-Before assuming a regression, check whether the payload changed.
+**Three counts rose and all three are the checks working, not regressions.**
+`capfit` went 1 → 26 and `capstress` 9 → 64 because the prober and the sweep now
+stress a slide carrying a standfirst, which is the slide a model actually
+writes. `capstress` then went 64 → 122 because it runs eight themes instead of
+four. None of it is new debt. **Before treating a rising count as a break, check
+whether the payload or the theme set changed.**
 
-## The finding worth carrying forward
+## Finish the visual audit — the specified next step
 
-**A shared schema field is invisible to anything that reads the type rule
+`docs/ROADMAP.md` §10 "The visual audit, at schema caps". One theme of eight has
+been looked at type by type. Do the rest, in this order, and look at the page —
+the machine half is already clean on most of it.
+
+```bash
+npm run capstress -- --themes sci-fi-hud            # the only sidebar frame
+npm run capstress -- --themes corporate-clean-blue  # the only offset frame
+npm run capstress -- --themes editorial-magazine    # the only two-column list
+npm run capstress -- --themes high-contrast-mono    # the widest type in the gallery
+npm run capstress -- --themes gradient-mesh-dark    # a plate ground, centred heading
+npm run capstress -- --themes bauhaus,minimal-muji  # numeral opening; tightest margins
+```
+
+Take the frames first. `layered-architecture` had two columns that did not fit
+`sci-fi-hud`'s 8.0in row, and that was found by measuring rather than by looking
+— the frames are where constants that assume a full-width box break.
+
+The types worth opening full size, by how much the covering sweep flags them:
+`venn` and `layered-architecture` (15 each), then `pros-cons`, `dependencies`,
+`concept-map`, `cards`, `before-after` (8 each). Most of that is cap debt that is
+now honestly reported; look anyway, because the two classes below do not report.
+
+## The three findings worth carrying forward
+
+**1. A shared schema field is invisible to anything that reads the type rule
 alone.** `headline` (≤80) and `standfirst` (≤150) are declared once on
 `definitions.slide.properties`, and every consumer walked
-`allOf[].then.properties` instead. So on 75 of 75 types:
+`allOf[].then.properties`. On 75 of 75 types the length pass never told the model
+the headline had a cap, `trimSlide` could never shorten one — its own
+skip-headline branch had been unreachable since it was written — and the cap
+prober never grew one. **Ask what the fixture does not carry.** That is now the
+second half of `npm run drawcheck`'s output rather than something to remember.
 
-- the field-length pass never told the model the headline had a cap;
-- `trimSlide` could never shorten a headline — its own skip-headline-first
-  branch had been unreachable since it was written;
-- the cap prober never grew one, so no measured cap and no capstress render had
-  ever carried a headline longer than the specimen's own.
-
-The specimen then omits `standfirst` on 71 of 75 types. Seeding it took the cap
-sweep from 9 problems to 287, and 278 of those were one cause: a 220-char cap
-the header cannot keep. **Ask what the fixture does not carry.** That is now
-the second half of `npm run drawcheck`'s output rather than something to
-remember.
-
-## What the checks can see now, and what they still cannot
-
-Four questions, in this order — see `CLAUDE.md`:
-
-1. **Is the box on the slide?** `src/geometry.js`. Non-positive extents for any
-   shape, canvas edges for text and images. Rotated boxes are judged on the
-   footprint they render, and a decorative shape may bleed — the bold geometric
-   themes hang a slab past a divider's corner on purpose.
-2. **Was the field drawn at all?** `npm run drawcheck`.
-3. **Does the text fit the box?** `themematrix`, `capfit`.
-4. **Did it survive the render?** `textcheck`.
-
-**Still unanswerable: do two boxes overlap?** That is what is left of the class,
-and it is the one `cycle` needs. Both boxes are on the slide, both fit their own
-text, and they are drawn on top of each other. An overlap check is not obviously
-tractable — a label over a filled shape is the normal case — so looking is still
-the instrument.
-
-## The rule that decided every repair
-
-**Derive the number once and use it for the fit, the box and the advance.** A
+**2. Derive the number once and use it for the fit, the box and the advance.** A
 budget that is not the box the text is drawn into is a bug in both directions —
 more generous hides an overflow, less generous invents a failure, and they look
-nothing alike from a sweep. It was everywhere:
+nothing alike from a sweep. The standfirst was fitted against 0.85in, drawn into
+0.75in and advanced 0.72in. `before-after` fitted a body against 1.8in and drew
+it into 0.94in. `cycle` fitted a step body against 0.45in and drew it into
+0.28in — and the hub, which has to clear the steps, was sized against the smaller
+number. `pros-cons` handed `fitScaleAll` the whole column, and it fits EACH
+member into the height given, so the stack was never measured at all.
 
-- the standfirst was fitted against 0.85in, drawn into 0.75in and advanced
-  0.72in, so a three-line one landed on the body's first line;
-- `before-after` fitted a body against 1.8in and drew it into 0.94in;
-- `cycle` fitted a step body against 0.45in and drew it into 0.28in — and the
-  hub, which has to clear the steps, was sized against the smaller number;
-- `pros-cons` handed `fitScaleAll` the whole column, which fits EACH member into
-  the height given, so the stack was never measured at all.
+**3. Ask whether the SHAPE is the constraint before cutting what the content may
+say.** `metric-comparison`'s delta pill was a flat 1.3in for a 12-character
+field, and no fit could have saved it because the subhead floor stops a 15pt role
+shrinking below 0.93. The pill is sized from its content now. This rule has paid
+in every session it has been applied.
 
-And the older rule still paid every time: **ask whether the SHAPE is the
-constraint before cutting what the content may say.** `metric-comparison`'s
-delta pill was a flat 1.3in for a 12-character field; no fit could have saved it
-because the subhead floor stops a 15pt role shrinking below 0.93. The pill is
-sized from its content now.
+## What the checks still cannot see
 
-## What is left
+**Do two boxes overlap?** Both are on the slide, both fit their own text, and
+they are drawn on top of each other. `cycle` is the live case. An overlap check
+is not obviously tractable — a label over a filled shape is the normal case, so a
+naive one would report every card in the gallery — so **do not build one
+speculatively.** Looking is the instrument until someone has a specific idea.
 
-`docs/ROADMAP.md` §10, in priority order:
+## Known and not fixed
 
-1. **The front end and the landing page.** The largest remaining item, a
-   different kind of work — agree direction before writing code.
-2. **The visual audit** — one theme of four is swept. `sci-fi-hud` is the only
-   sidebar frame and is where to look next: `layered-architecture` had two
-   columns that did not fit its 8.0in row, and that was found by measuring, not
-   by looking.
-3. **Reports** — structure, and the two-LibreOffice-pass render.
-4. **Research and content flow / the full functional sweep.**
-5. **`config/models.yaml`** names six local models, none installed.
-
-Known and not fixed, both needing a decision rather than a repair:
-
+- **`concept-map` at its caps is illegible. Cut the cap.** `TYPE_BUDGETS`
+  already tells the writer "one or two words — long leaves cannot fit a radial
+  layout" and the cap says 27. The guidance is right and the cap contradicts it;
+  this needs no decision, only the cap round.
 - **`cycle` cannot hold its arrangement with a speaker note.** `radiusY` is
   pinned at its 1.15in floor; the arrangement needs about 1.53in for a minimum
-  hub plus a step's title and body. The hub overlaps the top and bottom steps'
-  bodies, on every theme, and always has. The repair is an arrangement that
-  gives up the ring when the box is short.
-- **`concept-map` at its caps is illegible.** `TYPE_BUDGETS` tells the writer
-  "one or two words — long leaves cannot fit a radial layout" and the cap says
-  27. Cut the cap to the guidance.
+  hub plus a step's title and body, so the hub overlaps the top and bottom
+  steps' bodies. It always has, on every theme. The repair is an arrangement
+  that gives up the ring when the box is short — **put that to the human before
+  building it**, because it changes what the type looks like.
 
 `quote`, `epigraph` and `freeform` draw neither headline nor standfirst. For the
 first two that is a question about what a full-bleed quotation surface is, not a
-defect; `freeform` is the rasterised escape hatch by definition. All three are in
+defect; `freeform` is the rasterised escape hatch by definition. All three sit in
 `drawcheck`'s ACCEPTED list with that reasoning, and a stale entry there fails
 the run.
+
+## Cap rounds — one per session, and check the shape first
+
+`node tools/capfit.mjs` reports 26 fields over their measured length. Do not cut
+them all: cutting a cap moves the scale every other field on that type is
+measured at, so the list never quite reaches zero, and one round per session is
+the right pace. For each candidate, ask whether the shape is the constraint
+before touching the cap — four of a previous session's five cap "failures" were
+layouts with slack, not caps that were too generous.
 
 ## Generation
 
@@ -143,9 +172,9 @@ FORGE_HOSTED=1 npm run forge -- generate <slug>
 ```
 
 `FORGE_HOSTED=1` makes Auto resolve to the gateway and never fall back to the
-local Ollama, whose GPU is committed to other work. A 17-slide deck generates
-end to end without research in a couple of minutes. The model client allows 300s
-per request with retries, so a single stubborn slide can burn ten minutes in the
+local Ollama, whose GPU is committed to other work. A 17-slide deck generates end
+to end without research in a couple of minutes. The model client allows 300s per
+request with retries, so a single stubborn slide can burn ten minutes in the
 field-length pass.
 
 ## Known and deliberate
