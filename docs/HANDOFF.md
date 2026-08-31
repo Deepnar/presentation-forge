@@ -151,6 +151,25 @@ defect; `freeform` is the rasterised escape hatch by definition. All three sit i
 `drawcheck`'s ACCEPTED list with that reasoning, and a stale entry there fails
 the run.
 
+## Deleting a theme is fine — run one check first
+
+The gallery is deliberately large and cutting a weak theme is a normal edit.
+Before deleting, run `npm run coverage -- --without <names>`. The layouts branch
+on composition axes, so a theme can be the last one selecting a frame, an
+opening or a list treatment; deleting that one does not fail anything, it just
+means the branch is never rendered by any sweep again.
+
+Today no theme is a sole carrier. Five are one of two: `editorial-magazine` and
+`newsprint` (two-column lists), `sci-fi-hud` and `isometric-dark` (the sidebar
+frame), `letterpress` (dropcap, with `editorial-magazine`). The other 29 cost
+nothing structurally.
+
+**Do not delete a theme to make a check green.** None of the thirteen defects
+found this session was a theme's fault — they were layout bugs shared across the
+gallery. Deleting `minimal-muji` would make `themematrix --notes` clean and leave
+`feature-grid` exactly as tight as it is. Delete on taste, which is the human's
+call; `node tools/themesheet.mjs` renders all 34 on one page for that decision.
+
 ## Cap rounds — one per session, and check the shape first
 
 `node tools/capfit.mjs` reports 26 fields over their measured length. Do not cut

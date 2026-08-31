@@ -77,6 +77,7 @@ npm run themematrix              # every theme x every type: what will not fit, 
 npm run themematrix -- --notes   # the same, with a speaker note on every slide
 npm run textcheck                # every declared word survived onto the page
 npm run drawcheck                # every field the schema offers reached the page
+npm run coverage                 # which themes a sweep must look at; --without <t> costs a deletion
 node --test test/contrast.test.js   # title and divider surfaces carry their ink
 node tools/capfit.mjs            # what length each field can actually be
 npm run capstress                # every type at its caps, rendered — then LOOK
@@ -126,6 +127,18 @@ writes rather than the one the specimen was written to behave at.
 `tools/slideqa.mjs` renders every type full size and `tools/pixels.mjs` measures
 contrast on the pixels actually painted — a plate theme's ground is not its
 palette token.
+
+**A theme that does not earn its place should be deleted, and one check runs
+first.** The gallery is deliberately large; cutting a weak theme is a normal
+edit, not a loss. The only thing deletion breaks that looking cannot see is
+COVERAGE — a theme may be the last one selecting a frame, an opening or a list
+treatment, and deleting it does not fail anything, it just means that branch is
+never rendered by any sweep again. `npm run coverage -- --without <names>` says
+whether that is what is about to happen. Today no theme is a sole carrier; five
+are one of two (`editorial-magazine`/`newsprint` for two-column lists,
+`sci-fi-hud`/`isometric-dark` for the sidebar frame, `letterpress` for dropcap).
+If an axis really is unwanted, delete the branch from `src/composition.js` as
+well — a value no theme selects is dead code.
 
 **Look at eight themes, not 34.** 34 x 75 is 2,550 slides and nobody looks at
 that, so the sweep stops happening. They do not need to: the layouts branch on
