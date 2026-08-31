@@ -2864,7 +2864,7 @@ both directions so the debt list cannot grow or rot.
 > built here because the composition work needed the gate anyway. That item is
 > now the visual half plus the named debt, not a from-scratch job.
 
-### [ ] `flow`'s vertical spine is one line from failing
+### [x] `flow`'s vertical spine is one line from failing
 
 *Priority: medium. Renderer only, no model.*
 
@@ -2880,6 +2880,33 @@ future content or margin change silently costs a slide its text.
 verified. `before-after` and `team-grid` had the same defect and were fixed by
 sizing the box to the real line count (`linesBox`); the flow spine is the same
 shape of problem and probably the same shape of fix.
+
+Fixed, along with `branching-flow`, which emptied the debt list: **all 34
+themes now seat all 75 slide types at a readable size.**
+
+> **Learned.** The first attempt made it worse, and only the text check said
+> so. Tightening the constants stopped the bodies shrinking below the floor and
+> started them *dropping* instead — a reported failure became fifteen words of
+> silent loss. A layout that drops content to satisfy the fitter has not been
+> fixed; it has been made quieter.
+>
+> The working fix stops using constants at all. One title line and one body
+> line are measured at the size each would really render at — the fitter never
+> shrinks past its floor and never grows a theme already below it — the slack
+> is spent on the gutter, and the title takes its nominal line when the row can
+> spare it. One step of headroom above the floor line, because `fitScale`
+> searches in 4% steps and a box exactly one floor-line tall makes the search
+> land just under it.
+>
+> `branching-flow` was two wrong numbers rather than one. A rhombus's largest
+> inscribed rectangle is HALF its bounding box, and the decision label was
+> given a box wider than that — so it ran out through the slanted edges as well
+> as shrinking below the floor. The shape now grows until its inscribed box
+> holds the label.
+>
+> Every one of the twelve debt entries turned out to be a hardcoded constant
+> deciding whether text survived, not a budget anyone had chosen. None was
+> visible as a number until the sweep printed it.
 
 ### [ ] Every theme against every slide type
 
@@ -2950,10 +2977,21 @@ pass every time, and a deck that is only saved by the rewrite is a deck that
 breaks whenever the rewrite fails.
 
 The caps should come from the layouts: for each type and field, the largest
-text the tightest theme seats at the readable floor. `themeMatrix({ deck })`
-makes that measurable — bisect the length per field until it stops failing.
-Expect most caps to come down substantially; `cards[].body`, `takeaway.body`
-and `closing.body` are the ones real content actually hit.
+text the tightest theme seats at the readable floor. `tools/capfit.mjs` now
+measures exactly that — it grows a type's own specimen payload until some theme
+can no longer seat it and bisects, per field, with the others held at the scale
+the type clears. **37 fields** carry a cap the layouts cannot seat.
+
+The answer is not one thing, which is why the tool reports rather than edits:
+
+- Caps that are simply generous. `cards[].body` accepts 320 and seats 161; four
+  cards of 320 characters is not a slide anyone wants. Cut these.
+- Caps no layout can seat at any readable size. A `data-cards` value of 16
+  characters needs 13pt in a four-up card — that field is for "99.9%", not
+  "1,234,567.89 kWh". Cut these too, harder.
+- Diagram labels — `cycle`, `diagram`, `concept-map` — whose shapes are a fixed
+  size. These are the `branching-flow` diamond again: size the shape to its
+  label rather than cutting what the label may say.
 
 ### [ ] Text drawn at a fixed scale is unreported, not just unfitted
 
