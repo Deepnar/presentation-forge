@@ -50,8 +50,7 @@ function capForPath(schema, type, path) {
   const rule = schema.definitions.slide.allOf?.find(
     (r) => r.if?.properties?.type?.const === type,
   );
-  const node = resolvePath(rule?.then?.properties ?? {}, path);
-  const resolved = node?.$ref ? resolveRef(node.$ref, schema) : node;
+  const resolved = resolvePath(rule?.then?.properties ?? {}, path, schema);
   if (resolved?.type === "string") return resolved.maxLength ?? null;
   // An array-of-strings field ("bullets") caps its items, not the array.
   if (resolved?.type === "array") {
@@ -61,21 +60,32 @@ function capForPath(schema, type, path) {
   return null;
 }
 
-function resolvePath(props, path) {
+/**
+ * A dot path to its schema node, through `$ref`s and nested arrays alike.
+ *
+ * Both of those used to end the walk at `undefined`, and the caller reads a
+ * missing node as "this field has no cap" — so `compare.left.title` (behind a
+ * `$ref`), `branching-flow.steps[].title` (same) and
+ * `roadmap.phases[].items[].title` (an array inside an array) all carried a
+ * maxLength the schema states and nothing downstream could see. The length
+ * pass told the model those fields were uncapped and the cap prober skipped
+ * them; only ajv, at validate time, still knew.
+ */
+function resolvePath(props, path, schema) {
   const segs = path.split(".");
   let node = props;
   for (const seg of segs) {
-    if (seg.endsWith("[]")) {
-      node = node?.[seg.slice(0, -2)]?.items;
-    } else if (node?.type === "object" && node.properties) {
-      // A nested object spec keeps its fields under `properties`.
-      node = node.properties?.[seg];
-    } else {
-      node = node?.[seg];
-    }
+    const name = seg.endsWith("[]") ? seg.slice(0, -2) : seg;
+    // An object spec keeps its fields under `properties`; the type rule's own
+    // `then.properties` is already that map.
+    node = deref(deref(node, schema)?.properties ?? node, schema)?.[name];
+    node = deref(node, schema);
+    if (seg.endsWith("[]")) node = deref(node?.items, schema);
   }
   return node;
 }
+
+const deref = (node, schema) => (node?.$ref ? resolveRef(node.$ref, schema) : node);
 
 /** A human label for a schema path: "steps[].body" → "step body". */
 function labelPath(path) {
