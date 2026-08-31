@@ -4419,29 +4419,57 @@ export const layouts = {
     const top = Math.max(y, 2.6);
     const cx = box.x + box.w / 2;
     const cy = (top + box.bottom) / 2;
-    const d = Math.min(3.2, box.w / 3.4, box.bottom - top - 1.1);
     const transparency = 62;
     const colours = [theme.palette.accent, theme.palette.accent_alt ?? theme.palette.ink, theme.palette.ink_muted, theme.palette.rule];
-    let centres;
-    if (n === 2) {
-      centres = [{ x: cx - d * 0.28, y: cy }, { x: cx + d * 0.28, y: cy }];
-    } else if (n === 3) {
-      const r = d * 0.34;
-      centres = [
-        { x: cx, y: cy - r * 0.75 },
-        { x: cx - r * 1.15, y: cy + r * 0.5 },
-        { x: cx + r * 1.15, y: cy + r * 0.5 },
-      ];
-    } else {
-      const o = d * 0.32;
-      centres = [
-        { x: cx - o, y: cy - o * 0.85 },
-        { x: cx + o, y: cy - o * 0.85 },
-        { x: cx - o, y: cy + o * 0.85 },
-        { x: cx + o, y: cy + o * 0.85 },
-      ];
-    }
-    const itemScale = fitScaleAll(sets.flatMap((s) => s.items ?? []), 2.2, 0.3, theme.type.caption);
+
+    // Centres as fractions of the diameter, so the diameter can be solved for
+    // afterwards. It used to be picked first and the arrangement laid out
+    // inside it, which left no way to ask whether the labels fit.
+    const UNIT = {
+      2: [{ x: -0.28, y: 0 }, { x: 0.28, y: 0 }],
+      3: [{ x: 0, y: -0.255 }, { x: -0.391, y: 0.17 }, { x: 0.391, y: 0.17 }],
+      4: [{ x: -0.32, y: -0.272 }, { x: 0.32, y: -0.272 }, { x: -0.32, y: 0.272 }, { x: 0.32, y: 0.272 }],
+    };
+    const unit = UNIT[Math.min(4, Math.max(2, n))];
+
+    // A label goes on the OUTSIDE of the arrangement — above the circles in the
+    // upper half, below the ones in the lower half. Every label used to sit
+    // above its own circle, which on three sets puts the two lower ones inside
+    // the top circle, printed over whatever it holds. The band is reserved at
+    // each end that actually carries labels, and the diameter is what is left.
+    const LABEL = 0.42;
+    const above = unit.map((u) => u.y <= 0);
+    const bands = (above.some(Boolean) ? LABEL : 0) + (above.some((a) => !a) ? LABEL : 0);
+    const spanUp = Math.max(...unit.map((u) => -u.y + 0.5));
+    const spanDown = Math.max(...unit.map((u) => u.y + 0.5));
+    const d = Math.max(
+      1.0,
+      Math.min(3.2, box.w / 3.4, (box.bottom - top - bands) / (spanUp + spanDown)),
+    );
+    const centres = unit.map((u) => ({ x: cx + u.x * d, y: cy + u.y * d }));
+    // Every label and item block was a flat 2.4in and 2.2in centred on its own
+    // circle. On three sets the lower two centres are 2.3r apart — 2.5in — so
+    // the two boxes overlapped by most of their width and printed on top of
+    // each other, and the label was never fitted at all, so a cap-length one
+    // simply ran through its neighbour. A set's block may be as wide as the
+    // gap to the nearest circle SHARING ITS ROW; a circle alone on its row
+    // keeps the full width, which is why the top set still reads.
+    const roomFor = (i, limit) => {
+      const me = centres[i];
+      const row = centres.filter((o, j) => j !== i && Math.abs(o.y - me.y) < 0.2);
+      if (!row.length) return limit;
+      return Math.max(0.9, Math.min(limit, Math.min(...row.map((o) => Math.abs(o.x - me.x))) - 0.12));
+    };
+    const labelW = sets.map((_, i) => roomFor(i, 2.4));
+    const itemW = sets.map((_, i) => roomFor(i, 2.2));
+    const labelScale = Math.min(
+      ...sets.map((s, i) => fitScale(s.label, labelW[i], 0.35, theme.type.caption, { min: 0.7 })),
+      1,
+    );
+    const itemScale = Math.min(
+      ...sets.flatMap((s, i) => (s.items ?? []).map((it) => fitScale(it, itemW[i], 0.3, theme.type.caption))),
+      1,
+    );
     sets.forEach((s, i) => {
       const c = centres[i];
       slide.addShape("ellipse", {
@@ -4450,13 +4478,20 @@ export const layouts = {
         line: { type: "none" },
       });
       slide.addText(s.label, {
-        x: c.x - 1.2, y: c.y - d / 2 - 0.42, w: 2.4, h: 0.35,
-        ...textStyle(theme, "caption", { bold: true }),
+        x: c.x - labelW[i] / 2, w: labelW[i], h: 0.35,
+        y: above[i] ? c.y - d / 2 - LABEL : c.y + d / 2 + 0.07,
+        ...textStyle(theme, "caption", { bold: true, scale: labelScale }),
         align: "center", valign: "middle",
       });
-      (s.items ?? []).forEach((it, j) => {
+      // The stack ran down from a fixed offset below the circle's top, so a
+      // long set walked out of its own circle. It is centred on the circle
+      // instead, which is the only anchor that holds for any count.
+      const items = s.items ?? [];
+      const step = 0.32;
+      const top0 = c.y - (items.length * step) / 2;
+      items.forEach((it, j) => {
         slide.addText(it, {
-          x: c.x - 1.1, y: c.y - d / 2 + 0.4 + j * 0.32, w: 2.2, h: 0.3,
+          x: c.x - itemW[i] / 2, y: top0 + j * step, w: itemW[i], h: 0.3,
           ...textStyle(theme, "caption", { scale: itemScale }),
           align: "center", valign: "middle",
         });
