@@ -355,10 +355,10 @@ export const layouts = {
           valign: "middle",
         });
       }
-      const hs = fitScale(data.headline ?? "", tw, 1.9, theme.type.display, { min: 0.5 });
+      const hs = fitAt(theme, "display", 0.8, data.headline ?? "", tw, 1.9, { min: 0.5 });
       slide.addText(data.headline ?? "", {
         x: tx, y: 2.35, w: tw, h: 1.9,
-        ...textStyle(theme, "display", { color: s.ink, scale: Math.min(hs, 0.8) }),
+        ...textStyle(theme, "display", { color: s.ink, scale: hs }),
         valign: "middle",
       });
       if (data.standfirst) {
@@ -826,8 +826,15 @@ export const layouts = {
     const y = heading(slide, ctx);
 
     const hasVerdict = Boolean(data.verdict);
-    const verdictH = hasVerdict ? 1.0 : 0;
     const gut = theme.grid.gutter;
+    // The bar took a flat 1.0in and the 0.24in above it whatever it held, so a
+    // one-line verdict cost the two cards 1.24in — around two and a half body
+    // lines each, on a type whose body is the whole point. It now takes the
+    // lines its own text needs, and stops before it can eat the cards.
+    const verdictLead = `${data.label ?? "The framework"}: `;
+    const verdictH = hasVerdict
+      ? Math.min(1.35, Math.max(0.62, linesBox(theme, "body", [verdictLead + data.verdict], box.w - 0.68) + 0.24))
+      : 0;
     const cw = (box.w - gut) / 2;
     const ch = box.bottom - y - verdictH - (hasVerdict ? 0.24 : 0) - 0.1;
     const pad = theme.shape?.card_pad ?? 0.28;
@@ -838,12 +845,11 @@ export const layouts = {
 
       let ty = y + pad;
       // Same one-line rule as cards: a wrapped side title would collide with
-      // the body beneath it, so shrink to fit a single line, never below the
-      // theme's intended 0.6 heading scale.
-      const titleScale = Math.min(
-        0.6,
-        fitScale(side.title, cw - pad * 2, 0.45, theme.type.heading, { min: 0.55 }),
-      );
+      // the body beneath it, so shrink to fit a single line. 0.6 is the size
+      // the title is drawn at, so 0.6 is the size the fit is taken at — asking
+      // whether it fits at the full heading token reported a failure for
+      // titles that seat perfectly at the size they really get.
+      const titleScale = fitAt(theme, "heading", 0.6, side.title, cw - pad * 2, 0.45, { min: 0.55 });
       slide.addText(side.title, {
         x: x + pad, y: ty, w: cw - pad * 2, h: 0.45,
         ...textStyle(theme, "heading", { scale: titleScale }),
@@ -878,12 +884,17 @@ export const layouts = {
       });
       slide.addText(
         [
-          { text: `${data.label ?? "The framework"}: `, options: { color: hex(theme.palette.accent_alt ?? theme.palette.accent), bold: true } },
+          { text: verdictLead, options: { color: hex(theme.palette.accent_alt ?? theme.palette.accent), bold: true } },
           { text: data.verdict, options: { color: hex(theme.palette.surface) } },
         ],
         {
           x: box.x + 0.34, y: vy, w: box.w - 0.68, h: verdictH,
-          ...textStyle(theme, "body"),
+          // The bar is sized from this text, but it stops growing at 1.35in —
+          // past that the verdict is what has to give, and saying so is the
+          // point of asking.
+          ...textStyle(theme, "body", {
+            scale: fitScale(verdictLead + data.verdict, box.w - 0.68, verdictH - 0.12, theme.type.body),
+          }),
           valign: "middle",
         },
       );

@@ -32,18 +32,18 @@ const ALLOWED = [
 /**
  * A speaker note reserves 0.7in off the bottom of every content slide, and the
  * specimen carries none — so that 0.7in had never been exercised by any sweep.
- * Turning it on found 29 failures across four types at once. These five are
+ * Turning it on found 29 failures across four types at once. These four are
  * what is left, on the two tightest themes in the gallery: `minimal-muji` pairs
  * an inset frame with generous margins, and `high-contrast-mono` sets the
  * largest body type. Same discipline as ALLOWED — this list shrinks, never
- * grows.
+ * grows. `high-contrast-mono compare` came off it when the verdict bar stopped
+ * taking a flat 1.24in from the two cards regardless of what it held.
  */
 const ALLOWED_WITH_NOTES = [
   "high-contrast-mono diagram",
   "minimal-muji diagram",
   "minimal-muji feature-grid",
   "minimal-muji feature-grid",
-  "high-contrast-mono compare",
 ];
 
 test("every theme seats every slide type at a readable size", async () => {
