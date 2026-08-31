@@ -200,6 +200,20 @@ function widest(texts, style) {
  * Grows until the inscribed square holds the label at the readable floor, up to
  * a cap the caller sets from whatever else has to fit around it.
  */
+/**
+ * A cycle step's footprint, as one set of numbers.
+ *
+ * The body was fitted against 0.45in and drawn into a 0.28in box, so two lines
+ * of caption ran 0.17in past what anything downstream believed — and the hub,
+ * which has to clear the top and bottom steps, was sized against the smaller
+ * number and swallowed their text. One constant per dimension, read by the fit,
+ * the draw and the hub alike.
+ */
+const STEP_W = 1.5;
+const STEP_BODY_H = 0.45;
+/** How far a step's content reaches below its ring point: title, then body. */
+const STEP_BELOW = 0.33 + STEP_BODY_H;
+
 function hubDiameter(theme, label, { min = 1.5, max = 2.2, role = "subhead" } = {}) {
   const style = atFloor(theme, role);
   const line = (style.size * (style.line ?? 1.3)) / 72;
@@ -2884,23 +2898,40 @@ export const layouts = {
     const radiusY = Math.max(1.15, Math.min((box.bottom - cy) - 0.62, cy - top + 0.5));
 
     const label = data.label ?? `${n} steps`;
-    const centreW = hubDiameter(theme, label);
+    // The hub grew to fit its label with no reference to the ring around it, so
+    // a cap-length label took the full 2.2in while a standfirst pushed the ring
+    // down and shrank radiusY — and the circle swallowed the top and bottom
+    // steps' text. A step's content spans ey-0.55 to ey+0.61 and is `ew` wide,
+    // so this is the largest hub that clears all of them.
+    // It caps the GROWTH, never below the base size: a speaker note takes 0.7in
+    // off the box and shrinks radiusY, and clamping under 1.5in there costs the
+    // hub its label on 32 themes for a defect that only appears at the caps.
+    const hubRoom = 2 * Math.min(radiusY - STEP_BELOW, radiusX - STEP_W / 2);
+    const centreW = hubDiameter(theme, label, { max: Math.min(2.2, Math.max(1.5, hubRoom)) });
     const centreInner = centreW / Math.SQRT2;
     slide.addShape("ellipse", {
       x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
       fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
     });
-    const labelScale = fitScale(label, centreInner, centreInner, theme.type.subhead, { min: 0.45 });
+    // Height alone lets a word wider than the hub break in the middle of
+    // itself, which a circle makes routine — the inner square is barely an inch
+    // across. Fitting the longest word to the measure as well turns that into a
+    // shrink, and into a reported floor hit when even that is not enough.
+    const longest = String(label).split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), "");
+    const labelScale = Math.min(
+      fitScale(label, centreInner, centreInner, theme.type.subhead, { min: 0.45 }),
+      fitOneLine(longest, centreInner, theme.type.subhead, { min: 0.45 }),
+    );
     slide.addText(label, {
       x: cx - centreInner / 2, y: cy - centreInner / 2, w: centreInner, h: centreInner,
       ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: labelScale }),
       align: "center", valign: "middle",
     });
 
-    const ew = 1.5, eh = 0.9;
+    const ew = STEP_W, eh = 0.9;
     const titleScale = fitScaleAll(data.steps.map((s) => s.title), ew - 0.2, 0.35, theme.type.caption, { min: 0.6 });
     const bodyScale = fitScaleAll(
-      data.steps.map((s) => s.body).filter(Boolean), ew - 0.2, 0.45, theme.type.caption,
+      data.steps.map((s) => s.body).filter(Boolean), ew - 0.2, STEP_BODY_H, theme.type.caption,
     );
     const centres = data.steps.map((s, i) => {
       const angle = (2 * Math.PI * i) / n - Math.PI / 2;
@@ -2923,7 +2954,7 @@ export const layouts = {
       });
       if (data.steps[i].body) {
         slide.addText(data.steps[i].body, {
-          x: c.ex - ew / 2, y: c.ey + 0.33, w: ew, h: 0.28,
+          x: c.ex - ew / 2, y: c.ey + 0.33, w: ew, h: STEP_BODY_H,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
           align: "center", valign: "top",
         });
