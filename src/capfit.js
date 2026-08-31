@@ -39,9 +39,32 @@ const WORDS = (
   "not survive the slide it was asked to repair when the layout has no room"
 ).split(" ");
 
-/** Prose of approximately `n` characters, cut at a word boundary. */
-export function filler(n) {
+/**
+ * A field the specimen fills with a figure, not prose.
+ *
+ * Length is not the only thing a filler has to preserve. `funnel` tapers its
+ * bars only when EVERY stage carries a number it can read — so growing "42%"
+ * into "the model writes" switched the type to its equal-width composition and
+ * measured a cap against a funnel that does not taper. The narrowest bar, which
+ * is where a funnel actually runs out of room, was never rendered. A figure
+ * also cannot wrap at a space and sets in lining digits, both of which measure
+ * differently from prose at the same character count.
+ */
+const FIGURE = /^[^\d]{0,3}\d[\d.,\s]*[^\d]{0,4}$/;
+
+/** Digits grouped in threes, `n` characters wide, keeping `like`'s affixes. */
+function figure(n, like) {
+  const prefix = /^[^\d]*/.exec(like)[0];
+  const suffix = /[^\d]*$/.exec(like)[0];
+  const room = Math.max(1, n - prefix.length - suffix.length);
+  const digits = "1234567890".repeat(Math.ceil(room / 10)).slice(0, room);
+  return prefix + digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice(-room).replace(/^,/, "") + suffix;
+}
+
+/** Filler of approximately `n` characters, in the kind `like` is written in. */
+export function filler(n, like = null) {
   if (n <= 0) return "";
+  if (like && FIGURE.test(like)) return figure(n, like);
   let out = "";
   for (let i = 0; out.length < n; i++) out += (out ? " " : "") + WORDS[i % WORDS.length];
   const cut = out.slice(0, n);
@@ -54,7 +77,7 @@ export function filler(n) {
 /** Set every string on a slide to `scale` of that field's schema cap. */
 export async function grow(slide, scale, inventory) {
   const out = structuredClone(slide);
-  const setAt = (obj, path, value) => {
+  const setAt = (obj, path, make) => {
     const parts = path.split(".");
     let node = obj;
     for (let i = 0; i < parts.length - 1; i++) {
@@ -70,19 +93,29 @@ export async function grow(slide, scale, inventory) {
     const assign = (container, key) => {
       if (!container || typeof container !== "object" || !(key in container)) return;
       const current = container[key];
-      if (Array.isArray(current)) container[key] = current.map((v) => (typeof v === "string" ? value : v));
-      else if (typeof current === "string") container[key] = value;
+      if (Array.isArray(current)) container[key] = current.map((v) => (typeof v === "string" ? make(v) : v));
+      else if (typeof current === "string") container[key] = make(current);
     };
-    // `items[].title`: the parent resolved to the array, so every member gets it.
+    // `items[].title`: the parent resolved to the array, so every member gets it
+    // — including the members that did not carry the field. A field only some
+    // members populate is still one the model may write on all of them, and the
+    // member that lacks it is routinely the one the layout cannot seat: the
+    // funnel specimen puts a body on the second bar of four, so the narrowest
+    // bar, which is where a funnel runs out of room, was never measured.
     if (Array.isArray(node)) {
-      for (const item of node) assign(item, last);
+      const like = node.map((it) => it?.[last]).find((v) => typeof v === "string");
+      for (const item of node) {
+        if (like != null && item && typeof item === "object" && !(last in item)) item[last] = like;
+        assign(item, last);
+      }
       return;
     }
     assign(node, last);
   };
   for (const f of inventory) {
     if (!f.cap) continue;
-    setAt(out, f.path, filler(Math.max(1, Math.round(f.cap * scale))));
+    const n = Math.max(1, Math.round(f.cap * scale));
+    setAt(out, f.path, (current) => filler(n, current));
   }
   return out;
 }
