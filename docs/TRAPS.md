@@ -170,6 +170,42 @@ passes?" needed one more step of width and no height at all. Same for a
 placement preference like `top = Math.max(y, 2.55)`: a constant that centres the
 diagram under an ordinary heading must yield when the stack cannot afford it.
 
+**Serve the element the type is NAMED for before the others take the surplus.**
+A `branching-flow` is its decision, and the step cards were growing to their
+0.7in preference first, leaving the diamond at its floor with a label needing
+two lines. Compute what the centrepiece needs, subtract it, and let the rest
+divide the remainder — and then actually START it at that height: growing back
+up to it in fixed steps stalls one step short whenever the ceiling lands
+between two of them.
+
+**An allocation nobody honours is not an allocation.** Splitting a card between
+a body and a list of points, then drawing each point at its natural line height
+and stacking at that pitch, put four points through two inches of a half-inch
+allocation with no fitter saying so. The row height has to be the allocation
+divided by the count, and the fit has to be taken against that row.
+
+**Do not fit text the layout will not draw.** `diagram` renders dense graphs
+label-only, and still fitted a body into the 0.17in the dense case leaves —
+which no text fits, so the type reported a floor hit at EVERY label length from
+one character to its cap. Reporting text that never reaches the page is
+indistinguishable from a savage cap until you check the length dependence.
+
+**pptxgenjs leaves a 0.1in inset on each side of a text box.** A chip or a pill
+sized to its measured text has a fifth of an inch less room than it looks like
+it has, so the text wraps and the second line is clipped. Set `margin:` on the
+shape when the box IS the text.
+
+**`rotate` turns anticlockwise against screen coordinates.** y grows downward in
+the layout, so a heading from `atan2(dy, dx)` has to be subtracted from due east
+(`90 - ang`), not added to it. `ang + 90` mirrors the vertical component, which
+looks correct for the half of the cases where dx and dy have opposite signs.
+
+**A chord midpoint is not on the ring, and a chord is not a tangent.** The
+`cycle` arrows sat inside the loop by cos(pi/n) — nearly a third of the radius
+at four steps — and pointed across it. Take the angular midpoint on the ring and
+the tangent there; for an ellipse the tangent at t is `(-rx sin t, ry cos t)`,
+which is not the chord direction once the radii differ.
+
 ---
 
 ## Brand assets
@@ -434,6 +470,29 @@ fields were uncapped; the prober skipped them; only ajv still knew, by which
 point the deck is written. `compare.left.body` was promising 320 characters that
 no theme in the gallery could seat. When a resolver can fail silently, assert on
 the count of what it found, not on one lookup.
+
+**A fixture that omits a field cannot audit it, and the omission is invisible.**
+Twelve string fields were absent from every specimen slide, so twelve fields had
+never been rendered in any theme by any check. Populating them found FOUR
+layouts that silently dropped content the schema offers — `compare` points,
+`image-text` caption, `diagram` edge labels, `branching-flow` step bodies — none
+of which any sweep could have reported, because a field that is never drawn is
+never fitted. Enumerate what the fixture does not cover; do not read what it
+does.
+
+**Before cutting a cap, ask whether the SHAPE is the constraint.** It paid off
+every single time it was applied. `chronology` measured 87 of 160 because it
+fitted against a box narrower and shorter than the one it draws into; fixed, it
+seats all 160. `bibliography` gave its citation a flat 55% of the row whether or
+not an annotation existed: 105 became 203. `hero-image` left half its overlay
+unused: 105 became its full 120. Three fields came off the "cannot seat" list by
+fixing a layout, and cutting first would have hidden all three.
+
+**A fit budget that is MORE generous than the drawn box hides an overflow; one
+that is LESS generous invents a failure.** Both happen, and they look nothing
+alike from the sweep. `cards` fitted to one pad more than it drew into, so the
+body overflowed the card silently; `chronology` fitted to less, so it reported
+text that seats. Check the pair in both directions.
 
 **A vision model saying "clean" proves nothing until you verify it can see.**
 `qwen3-vl:8b-thinking` reported every rendered slide "clean" on a deck the user
