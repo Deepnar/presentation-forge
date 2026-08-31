@@ -58,22 +58,39 @@ function describe(err, deck) {
 export async function validateDeck(deck) {
   const validate = await compiled();
   const ok = validate(deck);
-  if (ok) return { ok: true, errors: [] };
+  if (ok) return { ok: true, errors: [], structural: [], tooLong: [] };
 
   // anyOf/if-then noise: keep the specific errors, drop the umbrella ones.
   const useful = validate.errors.filter((e) => !["if", "anyOf", "oneOf"].includes(e.keyword));
-  const messages = [...new Set((useful.length ? useful : validate.errors).map((e) => describe(e, deck)))];
-  return { ok: false, errors: messages };
+  const kept = useful.length ? useful : validate.errors;
+  // A length is a QUALITY constraint and everything else is a correctness one.
+  // A slide missing `cards` cannot be drawn at all; a slide whose body runs
+  // eighty characters over renders, and the fitter says so. Separating them is
+  // what lets a cap be tightened without making decks already on disk
+  // unopenable — see loadDeck.
+  const tooLong = [...new Set(kept.filter((e) => e.keyword === "maxLength").map((e) => describe(e, deck)))];
+  const messages = [...new Set(kept.filter((e) => e.keyword !== "maxLength").map((e) => describe(e, deck)))];
+  return { ok: messages.length === 0 && tooLong.length === 0, errors: [...messages, ...tooLong], structural: messages, tooLong };
 }
 
 export async function loadDeck(file) {
   const raw = await readFile(file, "utf8");
   const deck = file.endsWith(".json") ? JSON.parse(raw) : YAML.parse(raw);
-  const { ok, errors } = await validateDeck(deck);
-  if (!ok) {
-    const err = new Error(`Deck failed validation (${errors.length}):\n  - ${errors.join("\n  - ")}`);
-    err.validation = errors;
+  const { structural, tooLong } = await validateDeck(deck);
+  // Reading a deck is not the moment to enforce a length. The caps are the
+  // instruction a model writes to, and tightening one to what the layouts can
+  // actually seat would otherwise make every deck already on disk refuse to
+  // open — for text that renders, and that the fit sweep and the trim pass
+  // already report. Structure still refuses: a slide missing its required
+  // field cannot be drawn at all.
+  if (structural.length) {
+    const err = new Error(`Deck failed validation (${structural.length}):\n  - ${structural.join("\n  - ")}`);
+    err.validation = structural;
     throw err;
+  }
+  if (tooLong.length) {
+    console.warn(`  ! ${tooLong.length} field(s) over their length cap; the fitter will report what does not fit:`);
+    for (const m of tooLong.slice(0, 5)) console.warn(`      ${m}`);
   }
   return deck;
 }
