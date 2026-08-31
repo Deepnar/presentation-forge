@@ -78,7 +78,7 @@ for (const theme of themes) {
   total += r.problems.length;
   console.log(`\n  ${theme.padEnd(22)} ${p.pages.length} page(s)  ${r.problems.length} problem(s)`);
   for (const prob of r.problems) {
-    const m = /^slide (\d+)[:)]/.exec(prob);
+    const m = /^slide (\d+)\b/.exec(prob);
     console.log(`     ${(m ? byType[Number(m[1]) - 1] : "deck").padEnd(22)} ${prob.replace(/^slide \d+ \([^)]*\): /, "")}`);
   }
 }
