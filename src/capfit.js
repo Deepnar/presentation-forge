@@ -134,6 +134,28 @@ export async function grow(slide, scale, inventory) {
 }
 
 /**
+ * The fields of a slide a cap sweep may grow: capped, and prose the layout
+ * sets. Identifiers, asset paths and icon glyphs carry a maxLength but are not
+ * text on the page — growing a node's id breaks the edges that name it.
+ */
+export async function capInventory(slide) {
+  return (await fieldInventory(slide)).filter(
+    (f) => f.cap && !NON_TEXT.has(f.path.split(".").at(-1).replace("[]", "")),
+  );
+}
+
+/**
+ * A slide with every capped field at `scale` of its cap.
+ *
+ * This is the payload worth looking at. A specimen's own text is hand-written
+ * to behave and a model writes to the cap it is given, so a type that renders
+ * beautifully from the specimen and breaks in the field breaks HERE first.
+ */
+export async function atCaps(slide, scale = 1) {
+  return grow(slide, scale, await capInventory(slide));
+}
+
+/**
  * The largest fraction of its schema caps that a type can carry in EVERY theme.
  * Returns { scale, caps } — caps is the measured length per field path.
  */
@@ -142,10 +164,7 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
   const slide = deck.slides.find((s) => s.type === type);
   if (!slide) return null;
 
-  // Identifiers, asset paths and icon glyphs carry a maxLength but are not
-  // prose the layout sets — growing a node's id breaks the edges that name it.
-  const inventory = (await fieldInventory(slide))
-    .filter((f) => f.cap && !NON_TEXT.has(f.path.split(".").at(-1).replace("[]", "")));
+  const inventory = await capInventory(slide);
   if (!inventory.length) return { type, scale: 1, caps: [], fields: 0 };
 
   // A speaker note reserves 0.7in of the content box, and a real deck carries
