@@ -28,6 +28,7 @@ const SPECIMEN_GAPS = {
     headline: "The point beside the image",
     image: "__placeholder__",
     body: ["Image on one side, the claim on the other.", "A supporting sentence that grounds the visual."],
+    caption: "Where the picture came from, and when it was taken.",
   },
   freeform: {
     html:
@@ -42,8 +43,18 @@ const SPECIMEN_GAPS = {
   compare: {
     headline: "Two options, one trade-off",
     standfirst: "Both sides solve the same problem differently — the choice is what each gives up.",
-    left: { title: "Option A", kicker: "The proven path", body: "Fast to adopt, established tooling, and a large pool of people who already know it." },
-    right: { title: "Option B", kicker: "The efficient path", body: "Cheaper to run and simpler at scale, at the price of more setup today." },
+    left: {
+      title: "Option A",
+      kicker: "The proven path",
+      body: "Fast to adopt, on tooling people know.",
+      points: ["Ships this quarter", "Hiring pool is deep"],
+    },
+    right: {
+      title: "Option B",
+      kicker: "The efficient path",
+      body: "Cheaper at scale, for more setup today.",
+      points: ["Lower unit cost", "Fewer moving parts"],
+    },
     verdict: "Pick the one whose trade-off fits this brief.",
   },
   table: {
@@ -102,10 +113,10 @@ const SPECIMEN_GAPS = {
   cards: {
     headline: "The four building blocks",
     cards: [
-      { title: "Component one", body: "The foundation everything else sits on." },
-      { title: "Component two", body: "Handles the core workload day to day." },
-      { title: "Component three", body: "Adds the capabilities that differentiate." },
-      { title: "Component four", body: "Pulls the parts together at the edge." },
+      { kicker: "Foundation", title: "Component one", body: "The foundation everything else sits on." },
+      { kicker: "Runtime", title: "Component two", body: "Handles the core workload day to day." },
+      { kicker: "Differentiator", title: "Component three", body: "Adds the capabilities that differentiate." },
+      { kicker: "Edge", title: "Component four", body: "Pulls the parts together at the edge." },
     ],
   },
 };
@@ -540,6 +551,10 @@ const DEMO_SPECIMENS = {
     "type": "chart",
     "headline": "Scatter of cost against scale",
     "section": 0,
+    "aside": [
+      "Cost per unit falls as the installed base grows.",
+      "The fourth point is a pilot, not a production site."
+    ],
     "chart": {
       "kind": "scatter",
       "categories": [
@@ -1237,11 +1252,13 @@ const DEMO_SPECIMENS = {
     "edges": [
       {
         "from": "a",
-        "to": "b"
+        "to": "b",
+        "label": "batched"
       },
       {
         "from": "b",
-        "to": "c"
+        "to": "c",
+        "label": "hourly"
       },
       {
         "from": "c",
@@ -1319,7 +1336,12 @@ const DEMO_SPECIMENS = {
         "label": "Research",
         "children": [
           {
-            "label": "Fieldwork"
+            "label": "Fieldwork",
+            "children": [
+              {
+                "label": "Interviews"
+              }
+            ]
           },
           {
             "label": "Analysis"
