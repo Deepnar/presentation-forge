@@ -137,6 +137,39 @@ fitter from going *below* it and flags when content cannot fit there. Growing
 text past the theme's design breaks the shrink-only contract and every layout
 budget that assumes it.
 
+**Fit at the size the layout draws, not at the token size.** A layout that sets
+a role at a fraction of its token — a chip at 0.85 of caption, a divider
+headline at 0.8 of display — must fit against `token x fraction`, because the
+readable floor is a POINT size and measuring against a nominal the layout never
+uses puts the floor in the wrong place. `Math.min(0.85, fitScale(text, w, h,
+theme.type.caption))` reports a floor hit for text that seats perfectly at the
+size it really gets: the fitter is answering "does this fit at 13pt?" when the
+answer needed is "does this fit at 11?". `fitAt`/`fitAllAt`/`fitLineAt` in
+`src/layouts.js` take the fraction and do this.
+
+**A fit budget and the box the text is drawn into must be the same number.**
+Three layouts fitted to one height and drew into another — `feature-grid` to
+`ch - 1.25` into `ch - 1.48`, `framework` to `cardH - 0.45` into `cardH - 0.58`,
+`funnel` to 0.4in and 0.32in into 0.36 and 0.30. The sweep is clean and the text
+runs out of its card, because the fitter was asked about a box that does not
+exist. When a draw reserves a lead-in above the text, the fit has to subtract
+the same lead-in.
+
+**No fitter is ever asked where a shape ENDS UP.** The fit functions answer
+"does this text fit this box"; nothing answers "is this box on the slide".
+`branching-flow` grew its decision diamond to hold its label, laid the branch
+rows out from wherever the diamond finished, and drew the second row under the
+speaker-note bar and off the bottom edge — with every label fitting its own
+shape and a completely clean sweep. A layout that stacks shapes has to budget
+the whole column against `box.bottom` itself.
+
+**When a shape must grow, grow the free dimension first.** The diamond grew
+width and height in lockstep, spending the scarce dimension (the column the
+branch stack needs) to buy the free one (the margins beside it). "Credit check
+passes?" needed one more step of width and no height at all. Same for a
+placement preference like `top = Math.max(y, 2.55)`: a constant that centres the
+diagram under an ordinary heading must yield when the stack cannot afford it.
+
 ---
 
 ## Brand assets
@@ -374,6 +407,33 @@ question about the type rather than about a field. The first table was mostly
 measuring the prober's bugs and looked exactly as authoritative as the last one.
 Before reporting a sweep, check its extremes — a 1%, a 0% or a 100% is usually
 the instrument, not the product.
+
+That rule kept paying. A 0% is usually one specific thing: **the type fails at
+every length, so growing a field measures a constant.** `branching-flow`
+reported "fits 1" for all four of its fields because its stack ran off the slide
+whatever the labels said, and `diagram` still does. `capFit` now tests one
+character first and reports that case as a layout failure rather than attributing
+it to every cap. A 100% is the mirror image — **the field was never actually
+exercised.** Four caps read 100% only because nothing in the renderer measured
+them, and the funnel's value read 100% because the prober's prose filler turned
+its numbers into words, which switched the funnel to its untapered composition
+and never rendered the narrowest bar.
+
+**A filler has to preserve the kind of what it replaces, not only its length.**
+A figure cannot wrap at a space and sets in lining digits, so it measures
+differently from prose at the same character count — and, worse, a layout may
+branch on whether a value parses as a number at all. Growing "42%" into "the
+model writes" measured a funnel that does not taper.
+
+**A path walker that returns undefined reads as "no constraint".** `resolvePath`
+followed a `$ref` only at the leaf and looked for `[]` under the node rather than
+under its `properties`, so `compare.left.title`, `branching-flow.steps[].title`
+and `roadmap.phases[].items[].title` all resolved to nothing — and every caller
+took that as "this field has no cap". The field-length pass told the model those
+fields were uncapped; the prober skipped them; only ajv still knew, by which
+point the deck is written. `compare.left.body` was promising 320 characters that
+no theme in the gallery could seat. When a resolver can fail silently, assert on
+the count of what it found, not on one lookup.
 
 **A vision model saying "clean" proves nothing until you verify it can see.**
 `qwen3-vl:8b-thinking` reported every rendered slide "clean" on a deck the user
