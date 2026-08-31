@@ -735,30 +735,6 @@ const DEMO_SPECIMENS = {
     },
     "section": 0
   },
-  "cycle": {
-    "type": "cycle",
-    "headline": "The continuous improvement loop",
-    "label": "Iterate",
-    "steps": [
-      {
-        "title": "Plan",
-        "body": "set the goal"
-      },
-      {
-        "title": "Build",
-        "body": "ship the change"
-      },
-      {
-        "title": "Measure",
-        "body": "gather data"
-      },
-      {
-        "title": "Learn",
-        "body": "adjust course"
-      }
-    ],
-    "section": 0
-  },
   "funnel": {
     "type": "funnel",
     "headline": "Conversion across the stages",
@@ -1368,44 +1344,6 @@ const DEMO_SPECIMENS = {
           {
             "label": "Support"
           }
-        ]
-      }
-    ],
-    "section": 0
-  },
-  "concept-map": {
-    "type": "concept-map",
-    "headline": "The knowledge graph",
-    "centre": {
-      "label": "Platform"
-    },
-    "branches": [
-      {
-        "label": "Identity",
-        "items": [
-          "SSO",
-          "MFA"
-        ]
-      },
-      {
-        "label": "Data",
-        "items": [
-          "Lake",
-          "Warehouse"
-        ]
-      },
-      {
-        "label": "Messaging",
-        "items": [
-          "Queues",
-          "Events"
-        ]
-      },
-      {
-        "label": "Serving",
-        "items": [
-          "APIs",
-          "Edge"
         ]
       }
     ],

@@ -144,7 +144,6 @@
             "decision-matrix",
             "chart",
             "flow",
-            "cycle",
             "funnel",
             "pipeline",
             "dependencies",
@@ -165,7 +164,6 @@
             "pyramid",
             "venn",
             "hierarchy",
-            "concept-map",
             "definition",
             "glossary",
             "faq",
@@ -189,7 +187,7 @@
         "standfirst": {
           "type": "string",
           "maxLength": 150,
-          "description": "One-line deck under the headline — two lines of subhead is all the header band has before the body"
+          "description": "One-line deck under the headline \u2014 two lines of subhead is all the header band has before the body"
         },
         "presenter": {
           "type": "string",
@@ -1637,47 +1635,6 @@
           "if": {
             "properties": {
               "type": {
-                "const": "cycle"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "steps"
-            ],
-            "properties": {
-              "steps": {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 6,
-                "items": {
-                  "type": "object",
-                  "required": [
-                    "title"
-                  ],
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "maxLength": 15
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 27
-                    }
-                  }
-                }
-              },
-              "label": {
-                "type": "string",
-                "maxLength": 20
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
                 "const": "funnel"
               }
             }
@@ -2782,61 +2739,6 @@
                             }
                           }
                         }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "const": "concept-map"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "centre",
-              "branches"
-            ],
-            "properties": {
-              "centre": {
-                "type": "object",
-                "required": [
-                  "label"
-                ],
-                "properties": {
-                  "label": {
-                    "type": "string",
-                    "maxLength": 30
-                  }
-                }
-              },
-              "branches": {
-                "type": "array",
-                "minItems": 2,
-                "maxItems": 8,
-                "items": {
-                  "type": "object",
-                  "required": [
-                    "label"
-                  ],
-                  "properties": {
-                    "label": {
-                      "type": "string",
-                      "maxLength": 24
-                    },
-                    "items": {
-                      "type": "array",
-                      "minItems": 1,
-                      "maxItems": 4,
-                      "items": {
-                        "type": "string",
-                        "maxLength": 23
                       }
                     }
                   }

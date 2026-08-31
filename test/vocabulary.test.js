@@ -77,7 +77,6 @@ const VALID = {
     left: { image: "l.png", title: "L", body: "b" },
     right: { image: "r.png", title: "R", body: "b" },
   },
-  cycle: { label: "Loop", steps: [{ title: "a" }, { title: "b" }, { title: "c" }] },
   funnel: {
     stages: [{ label: "All", value: "100%" }, { label: "Some", value: "40%" }, { label: "Few", value: "10%" }],
   },
@@ -134,10 +133,6 @@ const VALID = {
     root: { label: "R" },
     children: [{ label: "C1", children: [{ label: "C1a" }] }, { label: "C2" }],
   },
-  "concept-map": {
-    centre: { label: "Core" },
-    branches: [{ label: "B1", items: ["x"] }, { label: "B2", items: ["y"] }],
-  },
   glossary: { entries: [{ term: "T", definition: "D" }, { term: "U", definition: "E" }] },
   faq: { items: [{ question: "Q?", answer: "A" }, { question: "R?", answer: "B" }] },
   "team-grid": { members: [{ name: "N", role: "R" }, { name: "M", role: "S" }] },
@@ -175,7 +170,6 @@ const SPECIFIC_BAD = {
   scorecard: { criteria: [{ label: 5 }], options: [{ name: "A", scores: [1] }] },
   vs: { left: { title: 5 }, right: { title: "y" } },
   "side-by-side": { left: { image: "a.png", title: 5 }, right: { image: "b.png" } },
-  cycle: { steps: [{ title: 5 }] },
   funnel: { stages: [{ label: 5 }] },
   pipeline: { stages: [{ title: 5 }] },
   dependencies: { nodes: [{ title: 5 }] },
@@ -199,7 +193,6 @@ const SPECIFIC_BAD = {
   pyramid: { levels: [{ label: 5 }] },
   venn: { sets: [{ label: 5 }] },
   hierarchy: { root: { label: 5 }, children: [{ label: "C" }] },
-  "concept-map": { centre: { label: 5 }, branches: [{ label: "B" }] },
   glossary: { entries: [{ term: 5, definition: "d" }] },
   faq: { items: [{ question: 5, answer: "a" }] },
   "team-grid": { members: [{ name: 5, role: "r" }] },
@@ -238,8 +231,8 @@ test("the catalog derives every new type and family, and no grammar breaker leak
   for (const t of Object.keys(VALID)) assert.ok(enumTypes.includes(t), `${t} missing from enum`);
 
   const cat = await slideCatalog();
-  assert.ok(cat.includes("PROCESS & FLOW: flow, cycle, funnel, pipeline"));
-  assert.ok(cat.includes("DIAGRAM-ISH: diagram, pyramid, venn, hierarchy, concept-map"));
+  assert.ok(cat.includes("PROCESS & FLOW: flow, funnel, pipeline"));
+  assert.ok(cat.includes("DIAGRAM-ISH: diagram, pyramid, venn, hierarchy"));
   assert.ok(cat.includes("SPECIAL: equation, bibliography, data-source"));
   assert.ok(cat.includes("- hierarchy: root"));
 });

@@ -351,17 +351,6 @@ const TYPE_FIELDS = {
     { key: "left", label: "Left panel", kind: "panelled" },
     { key: "right", label: "Right panel", kind: "panelled" },
   ],
-  cycle: [
-    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
-    { key: "label", label: "Centre label", kind: "text", maxLength: 20 },
-    {
-      key: "steps", label: "Steps", kind: "items", maxItems: 6, itemLabel: "Step",
-      fields: [
-        { key: "title", maxLength: 24, placeholder: "Title" },
-        { key: "body", kind: "textarea", maxLength: 80, placeholder: "Body" },
-      ],
-    },
-  ],
   funnel: [
     { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
     {
@@ -601,17 +590,6 @@ const TYPE_FIELDS = {
             },
           ],
         },
-      ],
-    },
-  ],
-  "concept-map": [
-    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
-    { key: "centre", label: "Centre", kind: "l" },
-    {
-      key: "branches", label: "Branches", kind: "items", maxItems: 8, itemLabel: "Branch",
-      fields: [
-        { key: "label", maxLength: 24, placeholder: "Label" },
-        { key: "items", kind: "list", item: "Item", maxLength: 30, maxItems: 4 },
       ],
     },
   ],
