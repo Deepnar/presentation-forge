@@ -105,6 +105,31 @@ function heading(slide, ctx) {
 }
 
 /**
+ * The diameter a round hub needs to hold its label.
+ *
+ * A circle's largest inscribed square is its diameter over root two, so a text
+ * box as wide as the circle runs out through the curve — the same mistake the
+ * branching-flow diamond made with its rhombus. And a fixed diameter forces a
+ * real label ("The continuous improvement loop") onto one tiny line inside a
+ * shape that never grows for it.
+ *
+ * Grows until the inscribed square holds the label at the readable floor, up to
+ * a cap the caller sets from whatever else has to fit around it.
+ */
+function hubDiameter(theme, label, { min = 1.5, max = 2.2, role = "subhead" } = {}) {
+  const style = theme.type[role];
+  const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
+  const line = (size * (style.line ?? 1.3)) / 72;
+  let d = min;
+  while (d < max) {
+    const inner = d / Math.SQRT2;
+    if (lineCount(String(label), inner, { ...style, size }) * line <= inner) break;
+    d += 0.15;
+  }
+  return Math.min(d, max);
+}
+
+/**
  * Paint a full-bleed surface.
  *
  * The renderer places a plate as the slide background BEFORE the layout runs,
@@ -2521,15 +2546,16 @@ export const layouts = {
     // the vertical run is tight, so the ring sits as low as that allows.
     const radiusY = Math.max(1.15, Math.min((box.bottom - cy) - 0.62, cy - top + 0.5));
 
-    const centreW = 1.5;
+    const label = data.label ?? `${n} steps`;
+    const centreW = hubDiameter(theme, label);
+    const centreInner = centreW / Math.SQRT2;
     slide.addShape("ellipse", {
       x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
       fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
     });
-    const label = data.label ?? `${n} steps`;
-    const labelScale = fitOneLine(label, centreW - 0.25, theme.type.subhead, { min: 0.45 });
+    const labelScale = fitScale(label, centreInner, centreInner, theme.type.subhead, { min: 0.45 });
     slide.addText(label, {
-      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      x: cx - centreInner / 2, y: cy - centreInner / 2, w: centreInner, h: centreInner,
       ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: labelScale }),
       align: "center", valign: "middle",
     });
@@ -4011,14 +4037,15 @@ export const layouts = {
     const cy = (top + box.bottom) / 2;
     const branches = data.branches;
     const n = branches.length;
-    const centreW = 1.5;
-    const centreScale = fitOneLine(data.centre.label, centreW - 0.3, theme.type.subhead, { min: 0.5 });
+    const centreW = hubDiameter(theme, data.centre.label);
+    const centreInner = centreW / Math.SQRT2;
+    const centreScale = fitScale(data.centre.label, centreInner, centreInner, theme.type.subhead, { min: 0.5 });
     slide.addShape("ellipse", {
       x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
       fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
     });
     slide.addText(data.centre.label, {
-      x: cx - centreW / 2, y: cy - centreW / 2, w: centreW, h: centreW,
+      x: cx - centreInner / 2, y: cy - centreInner / 2, w: centreInner, h: centreInner,
       ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: centreScale }),
       align: "center", valign: "middle",
     });
