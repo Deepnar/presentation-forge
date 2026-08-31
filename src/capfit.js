@@ -190,8 +190,14 @@ async function seedShared(slide) {
  */
 export async function capFit(type, { themes, steps = 7 } = {}) {
   const deck = await specimenDeck();
-  const slide = deck.slides.find((s) => s.type === type);
-  if (!slide) return null;
+  const found = deck.slides.find((s) => s.type === type);
+  if (!found) return null;
+  // The same payload the cap sweep renders. A real slide carries a headline and
+  // a standfirst, and the standfirst pushes the body down by its full height —
+  // so measuring a type's caps on a specimen that omits it reports caps that
+  // only hold on a slide nobody writes, exactly as measuring without a speaker
+  // note would.
+  const slide = await seedShared(found);
 
   const inventory = await capInventory(slide);
   if (!inventory.length) return { type, scale: 1, caps: [], fields: 0 };
