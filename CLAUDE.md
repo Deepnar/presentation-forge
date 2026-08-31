@@ -68,46 +68,64 @@ succeeds for decks with text running off the canvas and invisible-on-invisible
 colour pairs. **Rasterise and look at the image** before claiming a render
 works. That is why `src/preview.js` exists.
 
-Three checks answer the mechanical half across the whole product, and they find
-disjoint sets:
+The checks answer the mechanical half across the whole product, and they find
+disjoint sets — each was added because the ones before it were clean on a defect
+that shipped:
 
 ```bash
 npm run themematrix              # every theme x every type: what will not fit, ~3s
 npm run themematrix -- --notes   # the same, with a speaker note on every slide
 npm run textcheck                # every declared word survived onto the page
+npm run drawcheck                # every field the schema offers reached the page
 node --test test/contrast.test.js   # title and divider surfaces carry their ink
 node tools/capfit.mjs            # what length each field can actually be
 npm run capstress                # every type at its caps, rendered — then LOOK
 npm run capstress -- --scale 0.01   # ...and at one character: the layout, not the caps
 ```
 
+They ask four different questions, in this order:
+
+1. **Is the box on the slide?** The geometry watcher (`src/geometry.js`) runs
+   inside every render, so `themematrix` answers it for free. A non-positive
+   extent for any shape, and the canvas edges for text and images. pptxgenjs
+   writes a negative width without a word and LibreOffice draws something that
+   is not the shape — a caption computed to a negative height came out with its
+   title and body printed on top of each other.
+2. **Was the field drawn at all?** `drawcheck` writes a marker into each field
+   and reads back what the layout emitted. Text that is never drawn is never
+   fitted, so the fit sweep sees nothing and the text check has nothing to miss.
+3. **Does the text fit the box?** `themematrix`, and `capfit` for the length a
+   field can actually be.
+4. **Did it survive the render?** `textcheck` rasterises and reads it back.
+
 All of them take `--deck decks/<slug>/deck.yaml`, and that is the point: the
 specimen deck's payloads are hand-written to behave, so the same sweep is clean
-on the specimen and reports 46 failures on the one real generated deck on disk.
+on the specimen and reports 45 failures on the one real generated deck on disk.
 Audit against real content or the audit is measuring the specimen.
 
-Most of that 46 is a deck written before the caps were corrected — its card
+Most of that 45 is a deck written before the caps were corrected — its card
 bodies run 122 to 209 characters against a cap of 95, and `loadDeck` warns on
 length rather than refusing, so it still renders and the fitter still says what
 does not fit. A rising count after a cap cut is the caps working, not the
 renderer breaking; check the deck's field lengths before assuming a regression.
 
-A speaker note reserves 0.7in off every content slide and the specimen carries
-none, so `--notes` is the half of the sweep that is easy to forget and found 29
-failures the first time it ran. The same blind spot applies to any optional
-field the specimen omits — and it applied to twelve of them, which is how four
-layouts came to drop content the schema offers without a single check noticing.
-A field the specimen does not carry is a field nothing has ever rendered.
+**A field the fixture does not carry is a field nothing has ever rendered.** A
+speaker note reserves 0.7in off every content slide and the specimen carries
+none, so `--notes` found 29 failures the first time it ran. The same blind spot
+applied to twelve optional fields, which is how four layouts came to drop
+content the schema offers without a check noticing — and then to `standfirst`,
+which the specimen omits on 71 of 75 types and which no cap, sweep or render had
+ever carried. `drawcheck` reports what the specimen does not populate as well as
+what the layouts drop, because that half is the one nothing else can see.
 
-None of them replaces looking, and none of them can see where a SHAPE lands —
-they answer "does this text fit this box", never "is this box on the slide".
-A wrapped figure fits its box fragment by fragment; a five-character value is
-under the text check's word floor; a branch of a flow diagram was drawn under
-the speaker-note bar and off the bottom edge with a completely clean sweep. All
-of them shipped until someone looked, and `npm run capstress` is what makes
-looking worth the time — the specimen's own payloads are written to behave. `tools/slideqa.mjs` renders every type full size
-and `tools/pixels.mjs` measures contrast on the pixels actually painted — a
-plate theme's ground is not its palette token.
+None of them replaces looking. A wrapped figure fits its box fragment by
+fragment; a five-character value is under the text check's word floor; three
+Venn labels printed on top of one another with every check clean. `npm run
+capstress` is what makes looking worth the time — it renders the payload a model
+writes rather than the one the specimen was written to behave at.
+`tools/slideqa.mjs` renders every type full size and `tools/pixels.mjs` measures
+contrast on the pixels actually painted — a plate theme's ground is not its
+palette token.
 
 `docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
 headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
@@ -126,6 +144,8 @@ src/report.js      donor .docx surgery (jszip), two-pass TOC page numbers
 src/composition.js per-theme composition: frame, opening mark, divider, marker
 src/themematrix.js every theme x every type, as a fit verdict
 src/textcheck.js   rasterise, read the text back, report what did not survive
+src/drawcheck.js   mark each field, render, report what the layout never drew
+src/geometry.js    the box watcher: non-positive extents, shapes off the canvas
 src/capfit.js      the length a field can actually be, measured per theme
 src/validate.js    ajv errors resolved to "slide N, type T, do X"
 src/ai/pipeline.js the CLI and the orchestration both the CLI and API call

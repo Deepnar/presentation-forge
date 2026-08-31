@@ -206,6 +206,43 @@ at four steps — and pointed across it. Take the angular midpoint on the ring a
 the tangent there; for an ellipse the tangent at t is `(-rx sin t, ry cos t)`,
 which is not the chord direction once the radii differ.
 
+**pptxgenjs writes a negative width or height without a word.** A box whose
+extent comes out of a subtraction — `mark.w - ornament - gap`, `ch - (ty - y) -
+pad` — goes negative the moment the thing it subtracts from is smaller than the
+constants. OOXML has no such extent, so what LibreOffice draws is not the shape:
+`side-by-side` computed a negative caption height and its title and body were
+printed on top of each other, and half of `branching-flow`'s connectors were
+drawn from the wrong end on all 34 themes. `src/geometry.js` watches every draw
+for this, so it is now reported rather than discovered. Span two points instead
+of assuming their order, and clamp anything derived by subtraction.
+
+**A fit budget that is not the box the text is drawn into is a bug in both
+directions.** More generous hides an overflow, less generous invents a failure,
+and they look nothing alike from a sweep. `before-after` fitted its body against
+a flat 1.8in and drew it into 0.94in; the standfirst was fitted against 0.85in,
+drawn into 0.75in and advanced 0.72in, so a three-line one landed on the body's
+first line. Derive the number once and use it for the fit, the box and the
+advance.
+
+**`fitScaleAll` fits EACH member into the height it is given, not the stack.**
+Passing a column's whole height means every item may claim all of it and the
+total is never measured — `pros-cons` ran a third of an inch under the
+speaker-note bar with a clean sweep. Divide by the number of items, and subtract
+what the fitter cannot see: `paraSpaceAfter` between paragraphs, and the indent
+a bullet marker takes.
+
+**A shared schema field is invisible to anything that reads the type rule
+alone.** `headline` and `standfirst` are declared once on the base slide object,
+so a walk of `allOf[].then.properties` misses them on all 75 types: the length
+pass never budgeted the headline, the trim could never shorten it, and the cap
+prober never grew it. Read the base properties as well as the type's own.
+
+**A layout that draws only the fields the fixture happens to carry passes every
+check.** Text that is never drawn is never fitted, so no fit sweep can report
+it, and it never reaches the raster for a text check to miss. `npm run
+drawcheck` marks each field and reads back what was emitted; its second list —
+fields the specimen does not populate — is the one nothing else can see.
+
 ---
 
 ## Brand assets
