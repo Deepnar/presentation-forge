@@ -1763,21 +1763,26 @@ export const layouts = {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
+    // The rule sat at y - 0.12, which is inside whatever the heading last drew:
+    // the standfirst's box ends exactly where content starts, so on every slide
+    // that carried one the rule was struck through the descenders of its last
+    // line. It gets its own band under the heading instead of borrowing one.
     slide.addShape("rect", {
-      x: box.x, y: y - 0.12, w: box.w, h: 0.03,
+      x: box.x, y, w: box.w, h: 0.03,
       fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
     });
+    const top = y + 0.18;
     const n = data.items.length;
     const cols = n >= 8 ? 4 : 3;
     const rows = Math.ceil(n / cols);
     const gut = theme.grid.gutter;
     const cw = (box.w - gut * (cols - 1)) / cols;
-    const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
+    const ch = (box.bottom - top - 0.1 - gut * (rows - 1)) / rows;
     const valueScale = fitScaleAll(data.items.map((i) => i.value), cw, ch * 0.5, theme.type.subhead, { min: 0.6 });
     data.items.forEach((it, i) => {
       const r = Math.floor(i / cols), c = i % cols;
       const x = box.x + c * (cw + gut);
-      const ry = y + r * (ch + gut);
+      const ry = top + r * (ch + gut);
       slide.addText(it.label, {
         x, y: ry, w: cw, h: ch * 0.42,
         ...textStyle(theme, "eyebrow", { color: theme.palette.accent }),
