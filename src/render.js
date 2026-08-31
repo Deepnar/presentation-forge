@@ -116,6 +116,10 @@ export async function render({
 
   const total = deck.slides.length;
   const problems = [];
+  // What each slide actually put on the page, for src/drawcheck.js: a field the
+  // layout never draws is content the model wrote and the deck lost, and no fit
+  // sweep can see it, because text that is never drawn is never fitted.
+  const drawn = [];
 
   for (const [i, data] of deck.slides.entries()) {
     const layout = layouts[data.type];
@@ -189,6 +193,7 @@ export async function render({
       const watch = watchGeometry(slide);
       if (!isFreeform) layout(watch.slide, ctx);
       for (const g of watch.problems()) problems.push(`slide ${i + 1} (${data.type}): ${g}`);
+      drawn.push(watch.drawn());
     } catch (err) {
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
@@ -245,7 +250,7 @@ export async function render({
   }
   if (write) await pres.writeFile({ fileName: outFile });
 
-  return { outFile, slides: total, theme: theme.label, problems };
+  return { outFile, slides: total, theme: theme.label, problems, drawn };
 }
 
 /* ------------------------------------------------------------------- CLI */

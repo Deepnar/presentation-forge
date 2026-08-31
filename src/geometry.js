@@ -25,6 +25,7 @@ const ORNAMENT = 0.02;
 /** A slide that judges what is drawn on it and forwards to the real one. */
 export function watchGeometry(slide) {
   const found = [];
+  const drawn = [];
 
   const check = (kind, o) => {
     if (!o || typeof o !== "object") return;
@@ -63,13 +64,42 @@ export function watchGeometry(slide) {
       return (...args) => {
         // addText(text, opts) and addShape(kind, opts) both carry the geometry
         // in their last argument; addImage(opts) carries it in its only one.
-        check(String(prop).replace(/^add/, "").toLowerCase(), args.at(-1));
+        const kind = String(prop).replace(/^add/, "").toLowerCase();
+        check(kind, args.at(-1));
+        // A table's cells and a chart's category and series names are text on
+        // the page that never passes through addText — reading only addText
+        // reports six types as dropping content they render perfectly well.
+        if (kind === "text") collect(drawn, args[0]);
+        else if (kind === "table") collect(drawn, args[0]);
+        else if (kind === "chart") collect(drawn, args[1]);
         return value.apply(target, args);
       };
     },
   });
 
-  return { slide: wrapped, problems: () => found };
+  return { slide: wrapped, problems: () => found, drawn: () => drawn };
+}
+
+/**
+ * The strings a layout actually put on the page.
+ *
+ * A field the schema promises and the layout never draws is content the model
+ * wrote and the deck lost, and no fit sweep can see it — text that is never
+ * drawn is never fitted. `src/drawcheck.js` reads this back to ask, per field,
+ * whether it reached the page at all. pptxgenjs takes either a string or an
+ * array of runs, and a run's text may itself be an array.
+ */
+function collect(into, node, depth = 0) {
+  if (depth > 6) return;
+  if (typeof node === "string") into.push(node);
+  else if (Array.isArray(node)) for (const it of node) collect(into, it, depth + 1);
+  else if (node && typeof node === "object") {
+    // A run is {text, options}; a table cell is {text}; a chart series is
+    // {name, labels, values}. Only the fields that carry words.
+    for (const key of ["text", "name", "labels"]) {
+      if (key in node) collect(into, node[key], depth + 1);
+    }
+  }
 }
 
 /**
