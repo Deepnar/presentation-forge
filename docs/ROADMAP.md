@@ -3205,11 +3205,33 @@ What is left:
 
 ### [ ] The front end, and the landing page
 
-*Priority: high. No model.*
+*Priority: HIGHEST. No model. **Blocked on the human — ask, then wait.***
 
 Standing dissatisfaction with the whole surface, landing page first, with
 motion and polish of the kind Framer produces. Distinct from the theme work:
 this is the product's own interface, not the decks it renders.
+
+**This item is not startable alone.** It is taste, and building it on a guess
+wastes the work — a landing page nobody asked for is worse than none. When it
+comes up: say so, put the questions below to the human, and WAIT for answers.
+Do not skip to a lower item because the human seems away. That is how this has
+stayed at the top of the list while everything under it got polished.
+
+What has to be answered before any code:
+
+- **Reference and feel.** Which two or three products' surfaces are the target?
+  "Framer-like" names a level of polish, not a direction.
+- **Landing page or the app first.** They are different jobs: one is marketing
+  copy and motion, the other is the generate flow the user actually lives in.
+- **Scope of the rework.** Restyle inside the current Vite/React structure, or
+  rebuild the shell? `docs/ARCHITECTURE.md` says the workload is not
+  serverless-compatible and porting to Next.js changes none of that, so a
+  rebuild buys structure, not hosting.
+- **What the landing page has to show.** Real rendered decks from the gallery,
+  or invented mockups? The 34 themes are the strongest asset the product has and
+  `npm run capstress` can rasterise any of them on demand.
+- **Motion budget.** How much, and does it have to survive prefers-reduced-motion
+  and a low-end laptop.
 
 ### [ ] Reports — structure, and the wait
 

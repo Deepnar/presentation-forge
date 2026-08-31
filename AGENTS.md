@@ -62,6 +62,15 @@ because the pipeline has to run headless.
 - **Entries are intent + rationale, not specs.** When an item's turn comes,
   discuss the concrete implementation before writing code. Never build straight
   from the entry text.
+- **Stop and ask when the item needs direction — do not substitute another.**
+  Some items are taste and product judgement rather than defects: the front end
+  and the landing page, anything that changes what a surface IS rather than
+  whether it works, and any item whose entry says to agree direction first. On
+  those, say what the options are and WAIT for an answer. Do not assume the
+  human is away and quietly pick a different item instead; that is how the
+  highest-priority work stays untouched for weeks while the list below it gets
+  polished. Silence is not consent to start, and it is not permission to
+  reorder the list either — ask, then wait.
 - **No first versions.** Build the robust, thought-through version — real
   algorithms, edge cases handled, end-state in mind. Not a throwaway MVP. If an
   item is too large for one pass, split it into robust sub-items rather than
