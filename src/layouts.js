@@ -3306,8 +3306,12 @@ export const layouts = {
     // because the titles share a size across the whole slide.
     const cardW = (p) => Math.max(1.2, Math.min(3.4, areaW / (p.items ?? []).length - 0.18));
     const textW = Math.min(...phases.filter((p) => (p.items ?? []).length).map((p) => cardW(p) - 0.2), 3.2);
+    // The title had a flat 0.3in and the body starts at half the row, so on a
+    // three-phase roadmap a third of an inch of card sat empty above a title
+    // that was being cut to fit. It takes the room up to the body instead.
+    const titleH = Math.max(0.3, rowH * 0.5 - 0.14);
     const titleScale = fitScaleAll(
-      phases.flatMap((p) => p.items ?? []).map((it) => it.title), textW, 0.3, theme.type.caption, { min: 0.6 },
+      phases.flatMap((p) => p.items ?? []).map((it) => it.title), textW, titleH, theme.type.caption, { min: 0.6 },
     );
     const bodyScale = fitAllAt(
       theme, "caption", 0.88,
@@ -3328,7 +3332,7 @@ export const layouts = {
         const x = areaX + (ii + 0.5) * (areaW / items.length) - itemW / 2;
         card(slide, theme, { x, y: ry, w: itemW, h: rowH - 0.1 });
         slide.addText(it.title, {
-          x: x + 0.1, y: ry + 0.07, w: itemW - 0.2, h: 0.3,
+          x: x + 0.1, y: ry + 0.07, w: itemW - 0.2, h: titleH,
           ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
           align: "center", valign: "top",
         });
