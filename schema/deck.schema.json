@@ -339,7 +339,7 @@
                   "properties": {
                     "value": {
                       "type": "string",
-                      "maxLength": 8
+                      "maxLength": 7
                     },
                     "label": {
                       "type": "string",
@@ -1419,7 +1419,7 @@
                   },
                   "body": {
                     "type": "string",
-                    "maxLength": 120
+                    "maxLength": 99
                   }
                 }
               },
@@ -1703,7 +1703,7 @@
                     },
                     "value": {
                       "type": "string",
-                      "maxLength": 12
+                      "maxLength": 9
                     },
                     "body": {
                       "type": "string",
@@ -1839,7 +1839,7 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 16
+                      "maxLength": 14
                     },
                     "steps": {
                       "type": "array",

@@ -2,6 +2,17 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fieldLengthPass, fieldInventory } from "../src/ai/fieldlength.js";
 import { slideCatalog, catalogForType } from "../src/ai/catalog.js";
+import { readFile } from "node:fs/promises";
+
+/** The schema's own cap for a field, so a corrected cap does not fail a test
+ *  that is about the inventory rather than about the number. */
+async function schemaCap(type, path) {
+  const schema = JSON.parse(await readFile(new URL("../schema/deck.schema.json", import.meta.url), "utf8"));
+  const rule = schema.definitions.slide.allOf.find((r) => r.if?.properties?.type?.const === type);
+  let node = rule.then.properties;
+  for (const seg of path) node = seg === "[]" ? node.items : (node.properties ?? node)[seg];
+  return node.maxLength;
+}
 
 const DECK = {
   title: "Field length",
@@ -76,9 +87,11 @@ test("fieldInventory states the schema cap per field — the writer's budget", a
   const inv = await fieldInventory(slide);
   const concept = inv.find((f) => f.path === "concept.body");
   assert.ok(concept, "concept.body is inventoried");
-  assert.equal(concept.cap, 120);
+  assert.equal(concept.cap, await schemaCap("framework", ["concept", "body"]));
   const elem = inv.find((f) => f.path === "elements[].body");
-  assert.equal(elem.cap, 75, "nested element bodies carry their own cap");
+  const elemCap = await schemaCap("framework", ["elements", "[]", "body"]);
+  assert.equal(elem.cap, elemCap, "nested element bodies carry their own cap");
+  assert.notEqual(elem.cap, concept.cap, "and not the parent's");
 });
 
 test("the catalog spells out the per-field caps, not just per-type", async () => {
