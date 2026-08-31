@@ -3055,7 +3055,6 @@ export const layouts = {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
-    const top = Math.max(y, 2.55);
     const decision = data.decision ?? "Decision";
 
     // The diamond used to be a fixed 1.4 x 0.95in with its label given a
@@ -3068,18 +3067,59 @@ export const layouts = {
     // The shape is sized from its label instead: grow until the inscribed box
     // holds the text at the readable floor, up to a share of the slide.
     const capStyle = theme.type.caption;
-    const capFloor = Math.min(capStyle.size, Math.max(capStyle.size * 0.62, floorOf(capStyle) ?? capStyle.size));
-    const capLine = (capFloor * (capStyle.line ?? 1.35)) / 72;
+    const capFloor = atFloor(theme, "caption");
+    const capLine = (capFloor.size * (capStyle.line ?? 1.35)) / 72;
+
+    const pre = data.steps ?? [];
+    const branches = data.branches ?? [];
+    const stepW = 1.5;
+    const stepGap = 0.2;
+    const rows = Math.max(0, ...branches.map((b) => (b.steps ?? []).length));
+
+    // Every card in the diagram — pre-step and branch step alike — is one line
+    // of caption, so they share one height, and 0.7in was a preference rather
+    // than a requirement. The column has to seat a pre-step band, the diamond,
+    // and a row per branch step; when a speaker note takes 0.7in off the
+    // bottom, something has to give, and it should be the slack in the cards
+    // rather than the last row falling off the slide.
+    const preGap = 0.22;
+    const minCard = capLine + 0.24;
+    const cardRows = (pre.length ? 1 : 0) + rows;
+    // Everything in the column that is not a card and not the diamond.
+    const fixed = 0.25 + 0.45 + (pre.length ? preGap : 0.5) + (rows ? (rows - 1) * stepGap : 0);
+
+    // The diamond grows to hold its label — and used to grow with no reference
+    // to what sits under it, so a five-line decision pushed the second row of
+    // branch cards off the bottom of the slide. Nothing reported it: every
+    // label fitted its own shape, and no fitter is ever asked where a shape
+    // ends up. It may now take only what the branch stack does not need.
+    // The two compete for the same column, so the reservation is what a branch
+    // card cannot go below — one line of caption at the floor plus its padding
+    // — rather than the height a card would like. Reserving the full card
+    // height starved the diamond instead, which is the same defect pointing
+    // the other way.
+    // 2.55 centres the diagram under an ordinary heading. It is a preference,
+    // not a requirement, and honouring it on a slide that cannot afford it is
+    // how the stack lost the inches it needed.
+    const top = Math.max(y, Math.min(2.55, box.bottom - (fixed + 0.95 + cardRows * minCard)));
+    const stepH = cardRows
+      ? Math.max(minCard, Math.min(0.7, (box.bottom - top - fixed - 0.95) / cardRows))
+      : 0.7;
+    const preBand = pre.length ? stepH + preGap : 0.5;
+    const dy = top + preBand;
+    const maxH = Math.max(0.95, box.bottom - dy - 0.25 - 0.45 - (rows ? rows * stepH + (rows - 1) * stepGap : 0));
     let decisionW = 1.4, decisionH = 0.95;
     const maxW = Math.min(3.4, box.w * 0.34);
-    while (decisionW < maxW) {
-      const lines = lineCount(decision, decisionW / 2, { ...capStyle, size: capFloor });
-      if (lines * capLine <= decisionH / 2) break;
-      decisionW += 0.3;
-      decisionH += 0.16;
-    }
+    const seats = () => lineCount(decision, decisionW / 2, capFloor) * capLine <= decisionH / 2;
+    // Width and height used to grow together in fixed steps, which spends the
+    // one dimension that is scarce to buy the one that is free: the branch
+    // stack needs the column under the diamond, the margins beside it need
+    // nothing. Widen to the cap first, and take height only if that was not
+    // enough. "Credit check passes?" needs one extra step of width and no
+    // height at all; growing both cost it a third of an inch it did not have.
+    while (!seats() && decisionW < maxW) decisionW = Math.min(maxW, decisionW + 0.3);
+    while (!seats() && decisionH + 0.16 <= maxH) decisionH += 0.16;
     const dx = box.x + box.w / 2 - decisionW / 2;
-    const dy = top + 0.5;
 
     slide.addShape("diamond", {
       x: dx, y: dy, w: decisionW, h: decisionH,
@@ -3092,18 +3132,23 @@ export const layouts = {
       align: "center", valign: "middle",
     });
 
-    const pre = data.steps ?? [];
-    const stepW = 1.5, stepH = 0.7;
-    // Pre-steps and branch steps are the same card at the same size, so they
-    // share one fit — a row where half the titles are smaller reads as a bug.
+    const branchTop = dy + decisionH + 0.25;
+    // Whatever the diamond leaves, the rows divide — a card never runs past the
+    // content box, and the title is fitted to the card it actually gets.
+    const rowH = rows
+      ? Math.min(stepH, (box.bottom - branchTop - 0.45 - (rows - 1) * stepGap) / rows)
+      : stepH;
+    // Pre-steps and branch steps are the same card, so they share one fit — a
+    // row where half the titles are smaller reads as a bug — taken against the
+    // shorter of the two heights.
     const stepTitles = [
       ...pre.map((s) => s.title),
-      ...(data.branches ?? []).flatMap((b) => (b.steps ?? []).map((s) => s.title)),
+      ...branches.flatMap((b) => (b.steps ?? []).map((s) => s.title)),
     ].filter(Boolean);
-    const stepTitleScale = fitAllAt(theme, "caption", 0.95, stepTitles, stepW - 0.2, stepH - 0.2, { min: 0.6 });
+    const stepTitleScale = fitAllAt(theme, "caption", 0.95, stepTitles, stepW - 0.2, Math.min(stepH, rowH) - 0.2, { min: 0.6 });
     pre.forEach((s, i) => {
       const x = box.x + box.w / 2 + (i - (pre.length - 1) / 2) * (stepW + 0.3) - stepW / 2;
-      const sy = top - 0.15;
+      const sy = dy - stepH - preGap;
       card(slide, theme, { x, y: sy, w: stepW, h: stepH });
       slide.addText(s.title, {
         x: x + 0.1, y: sy + 0.1, w: stepW - 0.2, h: stepH - 0.2,
@@ -3116,9 +3161,7 @@ export const layouts = {
       });
     });
 
-    const branches = data.branches ?? [];
     const nb = branches.length;
-    const branchTop = dy + decisionH + 0.25;
     // The pill is sized from its own label up to 1.3in, so the fit only binds
     // on the labels that reach the ceiling — but those are exactly the ones
     // that used to spill through the ends of the chip.
@@ -3150,10 +3193,10 @@ export const layouts = {
         align: "center", valign: "middle",
       });
       (b.steps ?? []).forEach((s, si) => {
-        const sy2 = branchTop + 0.45 + si * (stepH + 0.2);
-        card(slide, theme, { x: bx, y: sy2, w: stepW, h: stepH });
+        const sy2 = branchTop + 0.45 + si * (rowH + stepGap);
+        card(slide, theme, { x: bx, y: sy2, w: stepW, h: rowH });
         slide.addText(s.title, {
-          x: bx + 0.1, y: sy2 + 0.1, w: stepW - 0.2, h: stepH - 0.2,
+          x: bx + 0.1, y: sy2 + 0.1, w: stepW - 0.2, h: rowH - 0.2,
           ...textStyle(theme, "caption", { bold: true, scale: stepTitleScale }),
           align: "center", valign: "middle",
         });
