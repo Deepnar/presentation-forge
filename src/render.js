@@ -13,6 +13,7 @@ import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrom
 import { renderSlidePlate } from "./plate.js";
 import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
+import { watchGeometry } from "./geometry.js";
 import { loadIdentity } from "./ai/identity.js";
 
 /**
@@ -182,7 +183,12 @@ export async function render({
       // so a slide that would need text below the readable floor is flagged
       // rather than silently shipping a tiny font.
       resetFloorEvents();
-      if (!isFreeform) layout(slide, ctx);
+      // The layout draws through a watcher, so a box that cannot be right —
+      // a negative height, a shape off the canvas — is reported rather than
+      // written. The fitter can only speak for text inside a box it was given.
+      const watch = watchGeometry(slide);
+      if (!isFreeform) layout(watch.slide, ctx);
+      for (const g of watch.problems()) problems.push(`slide ${i + 1} (${data.type}): ${g}`);
     } catch (err) {
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
     }
