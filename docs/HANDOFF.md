@@ -11,7 +11,7 @@ This file is only what the last session learned that those do not say.
 
 ## What was done
 
-**§10 is 10 of 18 items closed.** One item closed, one new item opened for the
+**§10 is 9 of 17 items closed.** One item closed, one new item opened for the
 residue it exposed.
 
 - **Text drawn at a fixed scale now reports.** Eighteen of the nineteen sites

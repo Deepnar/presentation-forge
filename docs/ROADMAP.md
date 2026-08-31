@@ -2917,14 +2917,19 @@ half now exists and runs in about three seconds:
 
 - `npm run themematrix` renders every theme against every type with
   `write: false` and reports every fit-floor failure; `test/themematrix.test.js`
-  holds the set and names the eight that remain (`flow`, `branching-flow`).
+  holds the set, which is now **empty**. With `--notes` it holds four, on the
+  two tightest themes in the gallery (`diagram` and `feature-grid`).
 - `test/contrast.test.js` holds the title and divider surface pairings and
   names the twenty-four that clear 3:1 but not 4.5:1.
+- `npm run textcheck` rasterises and reads the text back; clean on the specimen
+  and on the real generated deck.
 - `tools/contrast-audit.mjs --types a,b` sheets any type across every theme,
   and `tools/slideqa.mjs` emits per-slide PNGs plus chunked contact sheets.
 
-What is left is the visual half — rasterise and look at all of it — plus
-paying down those two debt lists. Expect the algorithmic diagram types and the
+What is left is the visual half — rasterise and look at all of it — plus paying
+down the contrast list. **Render each type at its schema caps before looking**:
+every defect the fixed-scale pass found that the sweeps were clean on came out
+of doing that, and none of them was visible with the specimen's own payloads. Expect the algorithmic diagram types and the
 dense data types to be where the failures are; the composition pass already
 found that a narrowed measure breaks words inside cards, kpi tiles and team
 grids without the fitter noticing.
