@@ -29,6 +29,7 @@ import { preview } from "../src/preview.js";
 import { specimenDeck } from "../src/specimens.js";
 import { atCaps } from "../src/capfit.js";
 import { DECKS } from "../src/paths.js";
+import { COVERING_THEMES } from "../src/coverage.js";
 
 const arg = (flag, fallback = null) => {
   const i = process.argv.indexOf(flag);
@@ -37,10 +38,13 @@ const arg = (flag, fallback = null) => {
 const list = (v) => (v ? v.split(",").map((s) => s.trim()).filter(Boolean) : null);
 const has = (flag) => process.argv.includes(flag);
 
-// Four themes that span what actually breaks: the widest serif, the widest
-// mono, the tightest margins, and a plate theme whose ground is not a palette
-// token. A type that survives these four rarely fails elsewhere.
-const DEFAULT_THEMES = ["warm-humanist", "mono-terminal-light", "minimal-muji", "sci-fi-hud"];
+// The set that exercises every composition axis the layouts branch on, plus the
+// type-scale extremes. Four hand-picked themes used to stand here and they
+// missed the offset frame, the two-column list, the centred heading, the pill
+// and numeral openings, and the widest type in the gallery — so a sweep could
+// be clean on all four and broken on eleven themes it never rendered.
+// `src/coverage.js` explains the derivation; `test/coverage.test.js` holds it.
+const DEFAULT_THEMES = COVERING_THEMES;
 
 const deck = await specimenDeck();
 const types = list(arg("--types")) ?? [...new Set(deck.slides.map((s) => s.type))];
