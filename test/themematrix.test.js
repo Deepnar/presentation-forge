@@ -17,19 +17,16 @@ import { themeMatrix, signature } from "../src/themematrix.js";
  * stale entry is a claim about the product that is no longer true.
  */
 const ALLOWED = [
-  // The vertical spine budgets its six step bodies to within ~0.02in of the
-  // readable floor, so a theme with slightly larger body type loses one.
-  // docs/ROADMAP.md 10: "flow's vertical spine is one line from failing".
-  "chalkboard flow",
-  "editorial-serif-light flow",
-  "high-contrast-mono flow",
-  "minimal-muji flow",
-  // Branch captions sit in the narrowest cell any layout allocates; mono and
-  // condensed faces measure wider than the budget assumes.
-  "blueprint branching-flow",
-  "high-contrast-mono branching-flow",
-  "retro-crt branching-flow",
-  "sci-fi-hud branching-flow",
+  // Empty, and meant to stay that way. It held twelve entries when this sweep
+  // was written: the `flow` spine, the `branching-flow` decision label and the
+  // `before-after` headings. Every one of them was a constant that decided
+  // whether text survived — a 0.26in body budget three thousandths of an inch
+  // short of a line, a diamond sized without reference to its label, a card
+  // title budgeted one line whatever it held. None of them was visible as a
+  // number until this sweep printed it.
+  //
+  // Adding a line here is a decision to ship a slide that cannot seat its
+  // text. Do it only when the alternative is worse, and say why.
 ];
 
 test("every theme seats every slide type at a readable size", async () => {
