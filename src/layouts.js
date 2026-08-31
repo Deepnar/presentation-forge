@@ -2843,14 +2843,24 @@ export const layouts = {
           align: "center", valign: "top",
         });
       }
-      const next = centres[(i + 1) % n];
-      const mx = (c.ex + next.ex) / 2;
-      const my = (c.ey + next.ey) / 2;
-      const ang = Math.atan2(next.ey - c.ey, next.ex - c.ex) * 180 / Math.PI;
+      // The marker sat at the CHORD midpoint and pointed along the chord. A
+      // chord midpoint is inside the ring by cos(pi/n) — nearly a third of the
+      // radius at four steps — and a chord's direction is not the ellipse's
+      // tangent once the two radii differ, so the arrows floated inside the
+      // loop at angles that disagreed with it. Both now come from the ring:
+      // the angular midpoint between the two steps, and the tangent there.
+      const midAngle = c.angle + Math.PI / n;
+      const mx = cx + radiusX * Math.cos(midAngle);
+      const my = cy + radiusY * Math.sin(midAngle);
+      // `rotate` turns anticlockwise against screen coordinates, where y grows
+      // downward — so a heading measured with atan2 has to be subtracted from
+      // due east, not added to it. `ang + 90` mirrored every marker's vertical
+      // component, which is the other half of why they disagreed with the ring.
+      const ang = Math.atan2(radiusY * Math.cos(midAngle), -radiusX * Math.sin(midAngle)) * 180 / Math.PI;
       slide.addShape("triangle", {
         x: mx - 0.12, y: my - 0.12, w: 0.24, h: 0.24,
         fill: { color: hex(theme.palette.ink_muted) }, line: { type: "none" },
-        rotate: ang + 90,
+        rotate: 90 - ang,
       });
     });
   },
