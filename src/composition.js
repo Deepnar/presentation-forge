@@ -184,6 +184,21 @@ export function frameBox(theme, base, frame = null, type = null) {
 /* --------------------------------------------------------------- opening */
 
 /**
+ * The width an opening's label has, from `from` to the right edge of the head.
+ *
+ * Every opening sized its label as `mark.w` less its own ornament, and on an
+ * OFFSET frame the mark is the margin gutter a numeral or a bar sits out in —
+ * around 0.6in — so the label came out negative and pptxgenjs wrote it without
+ * a word. On every other frame the mark and the head share a right edge, so
+ * this is the number those openings always had.
+ */
+function labelRoom(ctx, from) {
+  const head = ctx.box.head;
+  return Math.max(0, head.x + head.w - from);
+}
+
+
+/**
  * The mark that opens a content slide.
  *
  * `pill` needs a section to number and draws nothing without one. The other
@@ -204,9 +219,15 @@ export function drawOpening(slide, ctx) {
     // A centred heading has to centre its pill with it, which means measuring
     // the label: the chip and its text are one group, not two placements.
     const gap = 0.18;
+    // The label runs to the right edge of the HEAD column, not of the mark. On
+    // an offset frame the mark is the margin gutter a numeral or a bar sits in
+    // — 0.63in wide — so `mark.w - pillW - gap` was -0.17in, and pptxgenjs
+    // takes a negative width without a word. On every other frame the mark and
+    // the head share an edge and this is the number it always was.
+    const room = labelRoom(ctx, mark.x + pillW + gap);
     const labelW = centred
-      ? Math.min(mark.w - pillW - gap, measure(applyTransform(theme, "eyebrow", label), theme.type.eyebrow) + 0.04)
-      : mark.w - pillW - gap;
+      ? Math.min(room, measure(applyTransform(theme, "eyebrow", label), theme.type.eyebrow) + 0.04)
+      : room;
     const x0 = centred ? mark.x + (mark.w - (pillW + gap + labelW)) / 2 : mark.x;
     slide.addShape("roundRect", {
       x: x0, y: mark.y, w: pillW, h: pillH,
@@ -263,7 +284,7 @@ export function drawOpening(slide, ctx) {
     if (label) {
       slide.addText(applyTransform(theme, "eyebrow", label), {
         x: centred ? mark.x : mark.x + barW + 0.22, y: mark.y,
-        w: centred ? mark.w : mark.w - barW - 0.22, h: 0.32,
+        w: centred ? mark.w : labelRoom(ctx, mark.x + barW + 0.22), h: 0.32,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: centred ? "center" : "left",
         valign: centred ? "bottom" : "middle",
@@ -283,7 +304,7 @@ export function drawOpening(slide, ctx) {
   });
   if (label && mark.w > numW + 0.6) {
     slide.addText(applyTransform(theme, "eyebrow", label), {
-      x: mark.x + numW + 0.12, y: mark.y, w: mark.w - numW - 0.12, h: 0.36,
+      x: mark.x + numW + 0.12, y: mark.y, w: labelRoom(ctx, mark.x + numW + 0.12), h: 0.36,
       ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
       valign: "middle",
     });
