@@ -602,7 +602,16 @@ export const layouts = {
     const pad = 0.28;
     const ch = box.bottom - y - 0.1;
     const all = [...data.pros, ...data.cons];
-    const scale = fitScaleAll(all, cw - pad * 2, ch - 1.1, theme.type.body);
+    // `fitScaleAll` fits each member into the height it is given, so passing
+    // the whole column let every item claim all of it and the stack was never
+    // measured: six items at their caps ran a third of an inch under the
+    // speaker-note bar with a clean sweep. The budget is the column divided by
+    // the longer list, less the paragraph spacing pptxgenjs adds between items
+    // and the indent the bullet takes — neither of which the fitter can see.
+    const rows = Math.max(data.pros.length, data.cons.length);
+    const listH = ch - 0.7;
+    const perItem = Math.max(0.2, (listH - (8 / 72) * (rows - 1)) / rows);
+    const scale = fitScaleAll(all, cw - pad * 2 - 0.5, perItem, theme.type.body);
 
     const header = (x, text, color, glyph) => {
       slide.addText(glyph, {
