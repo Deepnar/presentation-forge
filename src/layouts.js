@@ -1473,6 +1473,15 @@ export const layouts = {
         sizing: { type: "cover", w: iw, h: imgH },
         rounding: false,
       });
+    } else {
+      // Every other image-bearing type draws a panel when the asset does not
+      // resolve; this one drew nothing, so half the slide came out blank with
+      // a caption crediting a picture that is not there.
+      slide.addShape("roundRect", {
+        x: ix, y, w: iw, h: imgH,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.12,
+      });
     }
     if (data.caption) {
       slide.addText(data.caption, {
@@ -3472,13 +3481,30 @@ export const layouts = {
     const n = data.layers.length;
     const gap = 0.09;
     const layerH = (box.bottom - y - 0.1 - gap * (n - 1)) / n;
-    const labelScale = fitScaleAll(data.layers.map((l) => l.label), 3.2, 0.4, theme.type.subhead, { min: 0.65 });
-    const bodyScale = fitScaleAll(
-      data.layers.map((l) => l.body).filter(Boolean), 4.4, 0.35, theme.type.caption,
-    );
+    // The columns were 3.2in and 4.4in whatever the box was. A sidebar frame
+    // leaves 8.0in, so the two already came to more than the row before a
+    // single chip was placed. They are shares of the row instead.
+    const labelW = Math.min(3.2, box.w * 0.28);
+    const bodyX = labelW + 0.3;
+    const labelScale = fitScaleAll(data.layers.map((l) => l.label), labelW, 0.4, theme.type.subhead, { min: 0.65 });
     // Chips grow with their text to a 2.3in ceiling and then stop, so anything
     // past that ceiling was drawing through the ends of its own chip.
-    const chipW = (t) => Math.min(2.3, measure(t, theme.type.caption) + 0.4);
+    const wanted = (t) => Math.min(2.3, measure(t, theme.type.caption) + 0.4);
+    // The body was a constant 4.4in and the chips marched left from the row's
+    // right edge with no lower bound, so three chips at their ceiling ran
+    // straight over it. The two share what the label leaves: the chips ask for
+    // what they want, the body keeps a floor, and whatever the chips cannot have
+    // is taken off all of them evenly rather than off the last one drawn.
+    const BODY_MIN = 1.8;
+    const stripOf = (l) => (l.items ?? []).reduce((a, it) => a + wanted(it) + 0.1, 0);
+    const maxStrip = Math.max(0, ...data.layers.map(stripOf));
+    const strip = Math.min(maxStrip, Math.max(0, box.w - bodyX - BODY_MIN));
+    const squeeze = maxStrip > 0 ? Math.min(1, strip / maxStrip) : 1;
+    const chipW = (t) => wanted(t) * squeeze;
+    const bodyW = Math.max(BODY_MIN, box.w - bodyX - strip - 0.2);
+    const bodyScale = fitScaleAll(
+      data.layers.map((l) => l.body).filter(Boolean), bodyW, 0.35, theme.type.caption,
+    );
     const chips = data.layers.flatMap((l) => l.items ?? []);
     const chipScale = chips.length
       ? Math.min(...chips.map((t) => fitLineAt(theme, "caption", 0.85, t, chipW(t), { min: 0.6 })))
@@ -3495,13 +3521,13 @@ export const layouts = {
         fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
       });
       slide.addText(l.label, {
-        x: box.x + 0.24, y: ly, w: 3.2, h: layerH,
+        x: box.x + 0.24, y: ly, w: labelW - 0.24, h: layerH,
         ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
         valign: "middle",
       });
       if (l.body) {
         slide.addText(l.body, {
-          x: box.x + 3.5, y: ly, w: 4.4, h: layerH,
+          x: box.x + bodyX, y: ly, w: bodyW, h: layerH,
           ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
           valign: "middle",
         });
