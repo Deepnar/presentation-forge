@@ -2252,7 +2252,14 @@ export const layouts = {
     const titleW = cw - pad * 2;
     const titleH = linesBox(theme, "heading", [data.before.title, data.after.title], titleW);
     const titleScale = fitScaleAll([data.before.title, data.after.title], titleW, titleH, theme.type.heading, { min: 0.55 });
-    const bodyScale = fitScaleAll([data.before.body, data.after.body], cw - pad * 2, 1.8, theme.type.body);
+    // The body was fitted against a flat 1.8in and drawn into what the card had
+    // left under the pill and the title — about 0.94in once the title takes two
+    // lines. A budget nearly twice the box passes text the card cannot hold, so
+    // both sides ran under the speaker-note bar with a clean sweep. The budget
+    // is the box, derived from the same offsets the draw uses.
+    const bodyTop = pad + 0.5 + titleH + 0.1;
+    const bodyH = Math.max(0.3, ch - bodyTop - pad);
+    const bodyScale = fitScaleAll([data.before.body, data.after.body], cw - pad * 2, bodyH, theme.type.body);
     const pill = (x, text, filled) => {
       const pw2 = Math.min(cw - pad * 2, measure(text, theme.type.eyebrow) + 0.5);
       // The unfilled pill is an outlined surface, not a rule fill — `rule` can
@@ -2281,9 +2288,9 @@ export const layouts = {
         ...textStyle(theme, "heading", { scale: titleScale }),
         valign: "top",
       });
-      ty += titleH + 0.1;
+      ty = y + bodyTop;
       slide.addText(side.body, {
-        x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - y) - pad,
+        x: x + pad, y: ty, w: cw - pad * 2, h: bodyH,
         ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
         valign: "top",
       });
