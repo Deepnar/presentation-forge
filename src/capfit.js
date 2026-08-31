@@ -22,6 +22,12 @@ import { NON_TEXT } from "./textcheck.js";
  * It answers for the WHOLE type at once rather than one field at a time: the
  * fields of a card share the card, so measuring `title` with `body` held short
  * would report a cap that only holds while the body stays short.
+ *
+ * KNOWN LIMIT: it can only measure fields the specimen populates. An optional
+ * field the specimen omits — `compare.left.points`, say — is never grown, so
+ * its cap stays unverified and a real deck that uses it can still overflow.
+ * Enriching `src/specimens.js` to exercise every optional field is what would
+ * close that.
  */
 
 // Filler that measures like prose rather than like a block of one letter —
@@ -96,9 +102,14 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
     .filter((f) => f.cap && !NON_TEXT.has(f.path.split(".").at(-1).replace("[]", "")));
   if (!inventory.length) return { type, scale: 1, caps: [], fields: 0 };
 
+  // A speaker note reserves 0.7in of the content box, and a real deck carries
+  // them. Measuring without one reports a cap that only holds on slides that
+  // have no note — which is not the cap the schema should promise.
+  const withNote = (s) => ({ ...s, speaker_note: s.speaker_note ?? "A note the presenter reads." });
+
   const fits = async (scale) => {
     const one = structuredClone(deck);
-    one.slides = [await grow(slide, scale, inventory)];
+    one.slides = [withNote(await grow(slide, scale, inventory))];
     const r = await themeMatrix({ deck: one, themes });
     return r.total === 0;
   };
@@ -131,7 +142,7 @@ export async function capFit(type, { themes, steps = 7 } = {}) {
       const one = structuredClone(deck);
       let s2 = await grow(slide, lo, others);
       s2 = await grow(s2, scale, mine);
-      one.slides = [s2];
+      one.slides = [withNote(s2)];
       return (await themeMatrix({ deck: one, themes })).total === 0;
     };
     const cap = mine[0].cap;

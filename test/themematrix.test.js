@@ -29,6 +29,23 @@ const ALLOWED = [
   // text. Do it only when the alternative is worse, and say why.
 ];
 
+/**
+ * A speaker note reserves 0.7in off the bottom of every content slide, and the
+ * specimen carries none — so that 0.7in had never been exercised by any sweep.
+ * Turning it on found 29 failures across four types at once. These five are
+ * what is left, on the two tightest themes in the gallery: `minimal-muji` pairs
+ * an inset frame with generous margins, and `high-contrast-mono` sets the
+ * largest body type. Same discipline as ALLOWED — this list shrinks, never
+ * grows.
+ */
+const ALLOWED_WITH_NOTES = [
+  "high-contrast-mono diagram",
+  "minimal-muji diagram",
+  "minimal-muji feature-grid",
+  "minimal-muji feature-grid",
+  "high-contrast-mono compare",
+];
+
 test("every theme seats every slide type at a readable size", async () => {
   const result = await themeMatrix();
 
@@ -52,4 +69,16 @@ test("every theme seats every slide type at a readable size", async () => {
     `ALLOWED names failure(s) that no longer happen: ${stale.join(", ")}\n` +
     `Delete those lines — the list is debt, and this one is paid.`,
   );
+});
+
+test("a speaker note does not cost a slide its text", async () => {
+  const result = await themeMatrix({ notes: true });
+  const tally = (arr) => arr.reduce((m, k) => m.set(k, (m.get(k) ?? 0) + 1), new Map());
+  const have = tally(signature(result)), want = tally([...ALLOWED_WITH_NOTES].sort());
+
+  const unexpected = [...have].filter(([k, n]) => n > (want.get(k) ?? 0)).map(([k]) => k);
+  assert.deepEqual(unexpected, [], `a speaker note costs text on: ${unexpected.join(", ")}`);
+
+  const stale = [...want].filter(([k, n]) => n > (have.get(k) ?? 0)).map(([k]) => k);
+  assert.deepEqual(stale, [], `ALLOWED_WITH_NOTES names failure(s) that no longer happen: ${stale.join(", ")}`);
 });

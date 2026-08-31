@@ -105,6 +105,24 @@ function heading(slide, ctx) {
 }
 
 /**
+ * The height one line of a role really takes when squeezed as far as it may go.
+ *
+ * The fitter never shrinks past its floor and never grows a theme whose design
+ * size is already below it, so this is the space a line genuinely needs — the
+ * number to budget from when a layout has to decide what fits. A constant in
+ * its place is a constant that decides whether text survives.
+ *
+ * `fitScale` searches in 4% steps, so a box exactly one floor-line tall makes
+ * the search land just under the floor and report it; one step of headroom is
+ * what lets it land on the floor instead.
+ */
+function lineAtFloor(theme, role, fallbackRatio = 1.35) {
+  const style = theme.type[role];
+  const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
+  return ((size * (style.line ?? fallbackRatio)) / 72) * 1.05;
+}
+
+/**
  * The diameter a round hub needs to hold its label.
  *
  * A circle's largest inscribed square is its diameter over root two, so a text
@@ -439,16 +457,24 @@ export const layouts = {
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
 
-    const valueScale = fitScale(data.value, box.w, 2.1, theme.type.stat, { min: 0.7 });
+    // The figure took a flat 2.1in whatever the box was, so a speaker note —
+    // which reserves 0.7in off the bottom — came entirely out of the body, and
+    // fifteen themes dropped it below the readable floor. The figure keeps its
+    // full height when the slide can afford it and gives space back when it
+    // cannot; it is still by far the largest thing on the slide.
+    const subH = 0.4;
+    const reserve = 0.5 + 0.1 + lineAtFloor(theme, "body") * 2 + (data.sub ? subH + 0.12 : 0.15);
+    const valueH = Math.max(1.2, Math.min(2.1, box.bottom - y - reserve));
+    const valueScale = fitScale(data.value, box.w, valueH, theme.type.stat, { min: 0.7 });
     slide.addText(data.value, {
-      x: box.x, y, w: box.w, h: 2.1,
+      x: box.x, y, w: box.w, h: valueH,
       ...textStyle(theme, "stat", { color: theme.palette.accent, scale: valueScale }),
       valign: "top",
     });
 
     const labelScale = fitScale(data.label, box.w, 0.5, theme.type.subhead, { min: 0.7 });
     slide.addText(data.label, {
-      x: box.x, y: y + 2.15, w: box.w, h: 0.5,
+      x: box.x, y: y + valueH + 0.05, w: box.w, h: 0.5,
       ...textStyle(theme, "subhead", { bold: true, scale: labelScale }),
       valign: "top",
     });
@@ -458,8 +484,7 @@ export const layouts = {
     // onto the chrome footer. The body gets the fixed budget between the label
     // and the caption and is fit-scaled to it, so however long it is, it can
     // only get smaller, never collide.
-    const subH = 0.4;
-    const bodyTop = y + 2.6;
+    const bodyTop = y + valueH + 0.5;
     const subY = data.sub ? box.bottom - subH - 0.12 : box.bottom - 0.15;
     const bodyBudget = Math.max(0.5, subY - bodyTop);
     if (data.body) {
@@ -1072,18 +1097,9 @@ export const layouts = {
       // takes when squeezed as far as it may go — for the title as much as for
       // the body, because a constant for either is a constant that decides
       // whether text survives on some theme nobody tested.
-      // fitScale searches in 4% steps, so a box exactly one floor-line tall
-      // makes the search land just under the floor and report it. One step of
-      // headroom is what lets it land ON the floor instead.
-      const STEP = 1.05;
-      const lineAtFloor = (style, fallbackRatio) => {
-        const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
-        return ((size * (style.line ?? fallbackRatio)) / 72) * STEP;
-      };
       const lineAtNominal = (style, fallbackRatio) => (style.size * (style.line ?? fallbackRatio)) / 72;
-      const bodyStyle = theme.type.body;
-      const titleFloorH = lineAtFloor(theme.type.subhead, 1.3);
-      const bodyLine = lineAtFloor(bodyStyle, 1.35);
+      const titleFloorH = lineAtFloor(theme, "subhead", 1.3);
+      const bodyLine = lineAtFloor(theme, "body", 1.35);
       const oneLineBody = (s) => s.body && lineCount(s.body, textW, theme.type.body) <= 1;
       const renderedBodies = data.steps.filter(oneLineBody).map((s) => s.body);
 
@@ -1492,33 +1508,51 @@ export const layouts = {
     const cw = (box.w - gut * (cols - 1)) / cols;
     const ch = (box.bottom - y - 0.1 - gut * (rows - 1)) / rows;
     const pad = theme.shape?.card_pad ?? 0.28;
-    const titleScale = fitScaleAll(data.items.map((i) => i.title), cw - pad * 2, 0.4, theme.type.subhead, { min: 0.6 });
+    // The title reserved 0.44in against a line that needs about 0.30 — space
+    // the body then did not have. Derived like the rest.
+    const titleH = Math.max(0.32, lineAtFloor(theme, "subhead", 1.3));
+    const titleScale = fitScaleAll(data.items.map((i) => i.title), cw - pad * 2, titleH, theme.type.subhead, { min: 0.6 });
+    // The body was FITTED to `ch - 1.25` and DRAWN into `ch - 1.48`: an icon,
+    // a title and two pads come to more than the constant allowed for, so the
+    // text was always sized against a box a quarter-inch taller than the one it
+    // landed in. Deriving the top once fixes that and aligns the bodies across
+    // the grid, and a speaker note — which takes 0.7in off the box — no longer
+    // comes out of the body alone.
+    // No gap constant between the parts: the card's height is divided among
+    // pad, icon, title and body, and whatever is left is the body's. A spare
+    // sixth of an inch here was the difference between a two-line body fitting
+    // and eleven themes dropping below the floor.
+    // When the card cannot hold icon, title and body together, the icon goes.
+    // It is decoration and the body is content — the alternative is dropping
+    // text, which is the one thing a layout must not do quietly. The tightest
+    // themes (a narrow inset frame plus generous margins) are where this bites.
+    const bodyNeed = lineAtFloor(theme, "body") * 2;
+    const iconH = data.items.some((i) => i.icon) && (ch - pad * 2 - titleH - 0.44) >= bodyNeed ? 0.44 : 0;
+    const bodyTop = pad + iconH + titleH;
+    const bodyH = Math.max(lineAtFloor(theme, "body"), ch - bodyTop - pad);
     const bodyScale = fitScaleAll(
-      data.items.map((i) => i.body).filter(Boolean), cw - pad * 2, ch - 1.25, theme.type.body,
+      data.items.map((i) => i.body).filter(Boolean), cw - pad * 2, bodyH, theme.type.body,
     );
     data.items.forEach((it, i) => {
       const r = Math.floor(i / cols), c = i % cols;
       const x = box.x + c * (cw + gut);
       const ry = y + r * (ch + gut);
       card(slide, theme, { x, y: ry, w: cw, h: ch });
-      let ty = ry + pad;
-      if (it.icon) {
+      if (it.icon && iconH) {
         slide.addText(it.icon, {
-          x: x + pad, y: ty, w: cw - pad * 2, h: 0.42,
+          x: x + pad, y: ry + pad, w: cw - pad * 2, h: 0.42,
           fontSize: Math.round(theme.type.heading.size * 0.85),
           align: "left", valign: "top",
         });
-        ty += 0.48;
       }
       slide.addText(it.title, {
-        x: x + pad, y: ty, w: cw - pad * 2, h: 0.4,
+        x: x + pad, y: ry + pad + iconH, w: cw - pad * 2, h: titleH,
         ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
         valign: "top",
       });
-      ty += 0.44;
       if (it.body) {
         slide.addText(it.body, {
-          x: x + pad, y: ty, w: cw - pad * 2, h: ch - (ty - ry) - pad,
+          x: x + pad, y: ry + bodyTop, w: cw - pad * 2, h: bodyH,
           ...textStyle(theme, "body", { scale: bodyScale, color: theme.palette.ink_muted }),
           valign: "top",
         });

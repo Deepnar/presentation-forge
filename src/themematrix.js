@@ -53,8 +53,9 @@ async function matrixDeck() {
  * @param {Function} [opts.onRun]   called with each run as it completes
  * @param {object}   [opts.deck]    a real deck instead of the specimen
  * @param {string}   [opts.deckDir] resolve identity and assets from here
+ * @param {boolean}  [opts.notes]   give every slide a speaker note
  */
-export async function themeMatrix({ themes, types, modes = ["light"], onRun, deck: given, deckDir } = {}) {
+export async function themeMatrix({ themes, types, modes = ["light"], onRun, deck: given, deckDir, notes = false } = {}) {
   const names = themes?.length ? themes : await listThemes();
   const { deck: specimen, dir: scratch } = await matrixDeck();
   // A caller with a real deck passes its directory so identity and branding
@@ -65,6 +66,13 @@ export async function themeMatrix({ themes, types, modes = ["light"], onRun, dec
   // are hand-written to behave, and a model writes headlines of whatever
   // length the topic wants.
   const deck = given ?? specimen;
+
+  // A speaker note reserves 0.7in off the bottom of the content box, and the
+  // specimen carries none — so 0.7in of every content slide had never been
+  // exercised by any sweep. It is a normal field that real decks use.
+  if (notes) {
+    for (const s of deck.slides) s.speaker_note ??= "A note the presenter reads aloud while this slide is up.";
+  }
 
   const known = new Set(deck.slides.map((s) => s.type));
   const unknown = (types ?? []).filter((t) => !known.has(t));

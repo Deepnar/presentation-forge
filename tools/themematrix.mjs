@@ -7,6 +7,7 @@
  *   node tools/themematrix.mjs --types flow,branching-flow
  *   node tools/themematrix.mjs --mode both              # light and dark
  *   node tools/themematrix.mjs --deck decks/<slug>/deck.yaml
+ *   node tools/themematrix.mjs --notes                  # every slide with a note bar
  *   node tools/themematrix.mjs --save .themeaudit/base.json
  *   node tools/themematrix.mjs --against .themeaudit/base.json
  *
@@ -38,6 +39,7 @@ const result = await themeMatrix({
   themes: list(arg("--themes")),
   types: list(arg("--types")),
   deck: deckFile ? await loadDeck(deckFile) : undefined,
+  notes: process.argv.includes("--notes"),
   modes,
   onRun: quiet ? undefined : (r) => {
     const tag = `${r.theme}${modes.length > 1 ? `/${r.mode}` : ""}`;
