@@ -292,6 +292,21 @@ export function drawOpening(slide, ctx) {
 
 /* --------------------------------------------------------------- heading */
 
+/**
+ * Two lines of the theme's own subhead, plus the gap before the body.
+ *
+ * A standfirst is a subtitle — two lines is the design intent, and the header
+ * band between `title_y` and `body_y` has only 0.17in to 0.29in left once a
+ * cap-length headline has taken its two lines, so a third line is paid for by
+ * the body on every theme. Deriving it from the theme means a display-heavy
+ * theme with a 16pt subhead gets the room its own type needs rather than a
+ * constant measured on none of them.
+ */
+function standfirstH(theme) {
+  const st = theme.type.subhead;
+  return (st.size * (st.line ?? 1.4) * 2) / 72 + 0.12;
+}
+
 /** Headline + optional standfirst. Returns the y where body content starts. */
 export function drawHeading(slide, ctx) {
   const { theme, data, box } = ctx;
@@ -346,14 +361,20 @@ export function drawHeading(slide, ctx) {
 
   if (data.standfirst) {
     const st = theme.type.subhead;
-    const budget = box.frame === "sidebar" ? 1.6 : 0.85;
-    const scale = fitScale(data.standfirst, head.wide, budget, st);
+    // One number for the block, not three. It was fitted against 0.85in, drawn
+    // into 0.75in and advanced 0.72in, so a standfirst the fitter passed at
+    // three lines — which the 220-char cap permits — was drawn 0.19in ON TOP of
+    // the body's first line, on every standard-frame theme in the gallery. The
+    // advance is the honest number: it is the room the block actually takes
+    // before the body starts, so it is the room the text has to fit in.
+    const sfH = box.frame === "sidebar" ? 1.6 : standfirstH(theme);
+    const scale = fitScale(data.standfirst, head.wide, sfH, st);
     slide.addText(data.standfirst, {
-      x: head.x, y, w: head.wide, h: box.frame === "sidebar" ? 1.6 : 0.75,
+      x: head.x, y, w: head.wide, h: sfH,
       ...textStyle(theme, "subhead", { color: theme.palette.ink_muted, scale }),
       ...align, valign: "top",
     });
-    y += box.frame === "sidebar" ? 1.55 : 0.72;
+    y += sfH;
   }
 
   // A sidebar's heading lives beside the body, not above it, so the body

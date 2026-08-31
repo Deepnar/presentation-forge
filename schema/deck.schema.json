@@ -188,8 +188,8 @@
         },
         "standfirst": {
           "type": "string",
-          "maxLength": 220,
-          "description": "One-line deck under the headline"
+          "maxLength": 150,
+          "description": "One-line deck under the headline — two lines of subhead is all the header band has before the body"
         },
         "presenter": {
           "type": "string",
