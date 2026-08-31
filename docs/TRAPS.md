@@ -349,6 +349,25 @@ schema, and the fix must name the exact reframe or the rewrite drifts again.
 
 ## Session / tooling
 
+**Instrument the code; do not reconstruct its arithmetic on paper.** Three wrong
+guesses in a row at why `feature-grid` dropped below the floor — each one a
+plausible reconstruction of the card's geometry, each one wrong — before a
+single `console.error` printing the layout's own `cw`, `ch`, `bodyTop` and
+`bodyH` settled it immediately. If a budget is failing and the reason is not
+obvious in one read, print the numbers first. It is faster than being right on
+the second attempt and far faster than being wrong on the third.
+
+**A measurement is not evidence until its own failure modes are known.** The
+schema-cap prober reported 70 bad fields on its first run and 35 after three
+corrections: a cap on an array field caps its ITEMS, so replacing the array with
+a string threw at every scale and bisection read that as "nothing fits";
+identifiers and asset paths carry a `maxLength` but are not prose, and growing a
+node's id breaks the edges naming it; and growing every field together answers a
+question about the type rather than about a field. The first table was mostly
+measuring the prober's bugs and looked exactly as authoritative as the last one.
+Before reporting a sweep, check its extremes — a 1%, a 0% or a 100% is usually
+the instrument, not the product.
+
 **A vision model saying "clean" proves nothing until you verify it can see.**
 `qwen3-vl:8b-thinking` reported every rendered slide "clean" on a deck the user
 reported as overlapping — a false-clean verdict, not a check. It also returned

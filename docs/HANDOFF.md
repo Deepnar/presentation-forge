@@ -129,9 +129,18 @@ from turning on a speaker note.
 
 ## What the session learned
 
+All of these are in `docs/TRAPS.md`, which survives this file being overwritten.
+The two most expensive were methodological:
+
 **Instrument, do not reconstruct.** Three wrong arithmetic guesses at the
 `feature-grid` budget before printing the layout's own numbers, which took one
 line and settled it immediately. Reach for that first.
+
+**A measurement is not evidence until its own failure modes are known.** The
+cap prober reported 70 bad fields on its first run and 35 after three
+corrections — the first table was mostly measuring its own bugs and looked
+exactly as authoritative as the last one. Check a sweep's extremes before
+reporting it: a 0%, a 1% or a 100% is usually the instrument, not the product.
 
 **A contact sheet judges structure, not contrast.** Overlap, clipping, fused
 panels, a wrapped value — yes. Legibility — no: two types were called illegible
