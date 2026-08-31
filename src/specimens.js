@@ -399,22 +399,22 @@ const DEMO_SPECIMENS = {
       {
         "value": "10×",
         "label": "Peak speedup",
-        "body": "Distributed workers keep the bottleneck away from the single node."
+        "body": "Distributed workers keep the bottleneck moving."
       },
       {
         "value": "99.9%",
         "label": "Uptime",
-        "body": "Rolling deploys and automatic failover across three zones."
+        "body": "Rolling deploys, failover across three zones."
       },
       {
         "value": "12ms",
         "label": "Median latency",
-        "body": "Measured edge-to-core across the regional backbone."
+        "body": "Measured edge-to-core on the regional backbone."
       },
       {
         "value": "300+",
         "label": "Integrations",
-        "body": "First-party connectors plus an open SDK for the long tail."
+        "body": "First-party connectors and an open SDK."
       }
     ]
   },

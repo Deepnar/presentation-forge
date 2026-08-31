@@ -56,7 +56,7 @@ function fakeChat(round) {
             headline: "Stereotypes bias a first impression before you speak",
             standfirst: "A stereotype is a shortcut the mind applies in the first seconds of contact.",
             chart: { kind: "bar", categories: ["16-24", "45+"], series: [{ name: "Share", values: [4.9, 21.4] }], unit: "%" },
-            aside: ["The data: flight-attendant age skews older. The point: expectation, not evidence, shapes the first read."],
+            aside: ["Age skews older; expectation, not evidence, shapes the first read."],
           },
         }],
       },

@@ -78,7 +78,7 @@
         },
         "body": {
           "type": "string",
-          "maxLength": 95
+          "maxLength": 53
         },
         "points": {
           "type": "array",
@@ -274,7 +274,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 160
+                      "maxLength": 95
                     },
                     "image": {
                       "type": "string"
@@ -520,7 +520,7 @@
                 "maxItems": 3,
                 "items": {
                   "type": "string",
-                  "maxLength": 120
+                  "maxLength": 82
                 }
               }
             }
@@ -882,7 +882,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 95
+                      "maxLength": 53
                     }
                   }
                 }
@@ -1120,11 +1120,11 @@
                     },
                     "label": {
                       "type": "string",
-                      "maxLength": 40
+                      "maxLength": 27
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 110
+                      "maxLength": 53
                     }
                   }
                 }
@@ -1439,7 +1439,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 75
+                      "maxLength": 42
                     }
                   }
                 }
