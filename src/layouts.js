@@ -4033,14 +4033,25 @@ export const layouts = {
     // nodes render label-only — the same deal the flow layout strikes for a
     // 6-step run. A 0.04in body zone would flag the floor and clip text.
     const dense = nodeH < 0.72;
-    const titleScale = fitScaleAll(nodes.map((nd) => nd.label), nodeW - 0.2, 0.3, theme.type.caption, { min: 0.6 });
-    const bodyScale = fitScaleAll(
-      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, nodeH - 0.5, theme.type.caption,
-    );
+    // A dense graph renders label-only, so the label owns the whole card rather
+    // than a flat 0.3in strip of one — which is the strip it was given whatever
+    // the node's height turned out to be.
+    const titleH = dense ? nodeH - 0.12 : 0.3;
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.label), nodeW - 0.2, titleH, theme.type.caption, { min: 0.6 });
+    // Fitting a body the dense layout will NOT draw reported a floor hit for
+    // text that never reaches the page: a four-layer graph leaves 0.17in of
+    // body zone, no text fits that, and `diagram` therefore failed on two
+    // themes at every label length from one character to its cap. The cap
+    // prober read that as "this field seats 1 of 27 characters" and it was
+    // nothing of the kind. The budget is also the box the draw uses now, not
+    // four hundredths of an inch tighter.
+    const bodyScale = dense
+      ? 1
+      : fitScaleAll(nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, nodeH - 0.46, theme.type.caption);
     const node = (i, x, y2) => {
       card(slide, theme, { x: x - nodeW / 2, y: y2 - nodeH / 2, w: nodeW, h: nodeH });
       slide.addText(nodes[i].label, {
-        x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.06, w: nodeW - 0.2, h: 0.3,
+        x: x - nodeW / 2 + 0.1, y: y2 - nodeH / 2 + 0.06, w: nodeW - 0.2, h: titleH,
         ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
         align: "center", valign: "middle",
       });
