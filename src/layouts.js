@@ -3353,8 +3353,15 @@ export const layouts = {
         x: dx + decisionW / 2 - 0.015, y: dy + decisionH, w: 0.03, h: branchTop - dy - decisionH,
         line: { color: hex(theme.palette.rule), width: 1.1 },
       });
+      // The connector was drawn from the decision node's centre with a width of
+      // (branch - node), which is NEGATIVE for every branch to the left of the
+      // node — half of them, on all 34 themes. A shape cannot have a negative
+      // extent; it is written anyway and what LibreOffice draws is not the
+      // line. Span the two points instead of assuming their order.
+      const spineX = dx + decisionW / 2 - 0.015;
+      const armX = bx + stepW / 2;
       slide.addShape("line", {
-        x: dx + decisionW / 2 - 0.015, y: branchTop, w: bx + stepW / 2 - dx - decisionW / 2, h: 0.03,
+        x: Math.min(spineX, armX), y: branchTop, w: Math.abs(armX - spineX), h: 0.03,
         line: { color: hex(theme.palette.rule), width: 1.1 },
       });
       const lW = pillW(b.label);
