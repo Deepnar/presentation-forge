@@ -3030,20 +3030,93 @@ can be corrected at all — see the Learned block.
 > after — a measurement is not evidence until its own failure modes are known.
 >
 > It still cannot measure a field the specimen omits. `compare.left.points` is
-> never grown, so its cap is unverified — which is how a real deck's compare
-> slide overflowed after the caps were set.
+> never grown, so its cap is unverified.
+>
+> **Corrected later.** That was not the main cause, and the compare overflow was
+> not either. `resolvePath` could not follow a `$ref` or descend a nested array,
+> so `compare.left.body` — behind `#/definitions/side` — had never been measured
+> at all and was promising 320 characters that no theme in the gallery can seat.
+> Sixteen fields the specimen does exercise were invisible for the same reason,
+> and the `compare.verdict` row that read "fits 1 of 260" was the bisection
+> reading its own noise. The caps below are what the layouts seat now that the
+> walk reaches them.
 
-### [ ] Text drawn at a fixed scale is unreported, not just unfitted
+### [x] Text drawn at a fixed scale is unreported, not just unfitted
 
 *Priority: medium. Renderer only, no model.*
 
 `src/fit.js` reports a floor hit from inside the fit functions. Nineteen sites
-in `src/layouts.js` pass a hardcoded `scale:` and never call one, so their text
-can overflow its box with a clean fit sweep — which is exactly how `framework`
-shipped element bodies running out of their cards and under the ellipse.
+in `src/layouts.js` passed a hardcoded `scale:` and never called one, so their
+text could overflow its box with a clean fit sweep — which is exactly how
+`framework` shipped element bodies running out of their cards and under the
+ellipse.
 
-`grep -n "scale: 0\." src/layouts.js` is the list. Each needs either a real
-fit against its box or a documented reason the box cannot overflow.
+Eighteen now fit. The nineteenth is the checklist tick: a fixed glyph in a fixed
+box with no content in it, and it says so in a comment so the next grep does not
+reopen it.
+
+> **Learned.** Fitting them at the token size would have been wrong in a way
+> that looks right. The floor is a POINT size, so a chip drawn at 0.85 of a 13pt
+> caption was being asked "does this fit at 13pt?" when the question is "does it
+> fit at 11?" — and reported a failure for text that seats perfectly. The first
+> construction produced four newly-broken caps and two of them were the
+> instrument. `fitAt`/`fitAllAt`/`fitLineAt` fit at the size the layout has
+> already decided on.
+>
+> Asking the question was the cheap half; the constants behind it were the rest.
+> Every site that then failed was a number nobody had measured: a funnel value
+> gutter fixed at 1.2in with a stat figure fixed at 0.45 and nothing measuring
+> one against the other; a compare verdict bar taking a flat 1.24in off the two
+> cards whatever it held; a framework card clamped to 1.15in while its row held
+> 1.45; a roadmap title given 0.3in with a third of an inch sitting empty above
+> it. Three layouts fitted to one height and drew into another.
+>
+> The sweep cannot see a shape's POSITION, only its text. `branching-flow` grew
+> its diamond to hold its label, laid the branch rows out from wherever that
+> finished, and drew the last row under the speaker-note bar and off the slide —
+> with a clean sweep, because every label fitted its own shape. That was found
+> by looking at a render, and nothing else would have found it.
+>
+> When a shape must grow, grow the dimension that is free. The diamond grew
+> width and height in lockstep and spent the column the branch stack needed to
+> buy margin it did not.
+
+### [ ] The caps the layouts still cannot seat
+
+*Priority: low. Schema and renderer, no model.*
+
+`node tools/capfit.mjs` measures this list; it is the residue after two rounds
+of cutting, and it shrinks by fixing a layout or by cutting a cap, never by
+ignoring it. Ten fields, with the ratio the layouts actually seat:
+
+| field | cap | seats |
+|---|---|---|
+| `bibliography.entries[].citation` | 220 | 105 |
+| `chronology.events[].text` | 160 | 87 |
+| `feature-grid.items[].body` | 95 | 53 |
+| `framework.elements[].body` | 75 | 42 |
+| `data-cards.cards[].body` | 110 | 63 |
+| `data-cards.cards[].label` | 40 | 27 |
+| `cards.cards[].body` | 160 | 110 |
+| `roadmap.phases[].items[].body` | 60 | 44 |
+| `hero-image.subtitle` | 120 | 105 |
+
+Before cutting any of these, apply the test that has paid off every time: **is
+the shape the constraint rather than the cap?** `roadmap`'s item title read 30
+of 30 the moment its box stopped being a flat 0.3in with a third of an inch
+empty above it; `compare`'s body went from 53 to 134 when its verdict bar
+stopped taking a fixed inch. Cutting first would have hidden both.
+
+`diagram` is on a separate footing: it fails with every field at one character,
+so no cap is involved at all. Its nodes are a fixed size — the `branching-flow`
+diamond and the `cycle` hub again, both of which were fixed by sizing the shape
+to its label.
+
+Two blind spots remain in the prober, both the same shape: it can only measure a
+field the specimen POPULATES. `compare.left.points` and `bs.body` are omitted
+from every specimen slide, so their caps are unverified. Enriching
+`src/specimens.js` to exercise every optional field closes it and makes every
+sweep stronger.
 
 ### [ ] The front end, and the landing page
 
