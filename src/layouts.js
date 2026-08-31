@@ -2158,7 +2158,13 @@ export const layouts = {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);
     const y = heading(slide, ctx);
-    const dW = 1.3;
+    // The pill was a flat 1.3in and the delta may be 12 characters, which needs
+    // 1.52in of subhead — and a figure has no space to wrap at, so it broke
+    // mid-number. The subhead floor stops the fitter shrinking a 15pt role
+    // below 0.93, so no fit could have saved it: the SHAPE was the constraint.
+    // It is sized from its own content, up to a ceiling, the way the branching
+    // flow's branch chips already are.
+    const dW = Math.min(2.3, Math.max(1.3, measure(data.delta, theme.type.subhead) + 0.34));
     const halfW = (box.w - dW) / 2;
     const valScale = fitOneLine(
       [data.left.value, data.right.value].reduce((a, b) => (b.length > a.length ? b : a)),
@@ -2187,9 +2193,14 @@ export const layouts = {
       fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
       rectRadius: theme.shape?.radius?.pill ?? 0.3,
     });
+    // The delta went into a fixed pill unfitted, and a figure has no space to
+    // wrap at — so "+34,567,890%" broke across two lines mid-number, the same
+    // defect the kpi tiles and data cards were fixed for. One rendered line is
+    // a guarantee here, not a preference.
+    const deltaScale = fitOneLine(data.delta, dW - 0.2, theme.type.subhead, { min: 0.55 });
     slide.addText(data.delta, {
       x: dx, y: y + 0.35, w: dW, h: 0.62,
-      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent }),
+      ...textStyle(theme, "subhead", { bold: true, color: theme.palette.on_accent, scale: deltaScale }),
       align: "center", valign: "middle",
     });
     if (data.body) {
