@@ -70,7 +70,7 @@
       "properties": {
         "title": {
           "type": "string",
-          "maxLength": 40
+          "maxLength": 27
         },
         "kicker": {
           "type": "string",
@@ -78,7 +78,7 @@
         },
         "body": {
           "type": "string",
-          "maxLength": 320
+          "maxLength": 134
         },
         "points": {
           "type": "array",
@@ -308,7 +308,7 @@
               },
               "verdict": {
                 "type": "string",
-                "maxLength": 260
+                "maxLength": 87
               }
             }
           }
@@ -3250,11 +3250,11 @@
         },
         "title": {
           "type": "string",
-          "maxLength": 40
+          "maxLength": 30
         },
         "body": {
           "type": "string",
-          "maxLength": 120
+          "maxLength": 99
         }
       }
     },
