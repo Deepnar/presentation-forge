@@ -1824,7 +1824,7 @@
               },
               "decision": {
                 "type": "string",
-                "maxLength": 60
+                "maxLength": 39
               },
               "branches": {
                 "type": "array",
@@ -3266,7 +3266,7 @@
       "properties": {
         "title": {
           "type": "string",
-          "maxLength": 24
+          "maxLength": 19
         },
         "body": {
           "type": "string",
