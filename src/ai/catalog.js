@@ -442,7 +442,7 @@ export async function slideCatalog() {
   const schema = await deckSchema();
   const slide = schema.definitions.slide;
   const types = slide.properties.type.enum;
-  const shared = Object.keys(slide.properties).filter((k) => k !== "type");
+  const shared = sharedFieldList(slide, schema);
 
   const byType = await fieldsByType(schema);
 
@@ -506,7 +506,7 @@ async function fieldsByType(schema) {
 export async function catalogForType(type) {
   const schema = await deckSchema();
   const slide = schema.definitions.slide;
-  const shared = Object.keys(slide.properties).filter((k) => k !== "type");
+  const shared = sharedFieldList(slide, schema);
   const byType = await fieldsByType(schema);
   const e = byType.get(type) ?? { required: [], fields: [] };
   const req = new Set(e.required);
@@ -519,6 +519,16 @@ export async function catalogForType(type) {
     `Content it is built to hold: ${TYPE_BUDGETS[type] ?? "the family density budget (see the sweep guidance)"}.\n` +
     `Fields: ${fields || "(none)"}.`
   );
+}
+
+/** The shared fields WITH their caps. Naming them without the numbers told the
+ *  writer that `headline` exists and left it to discover ≤80 from an ajv
+ *  rejection — the one budget on every slide of every deck, and the only one
+ *  the catalog stated without it. */
+function sharedFieldList(slide, schema) {
+  return Object.entries(slide.properties)
+    .filter(([k]) => k !== "type")
+    .map(([k, spec]) => describeField(k, spec, schema).text);
 }
 
 function describeField(name, spec, schema) {

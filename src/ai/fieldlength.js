@@ -50,7 +50,11 @@ function capForPath(schema, type, path) {
   const rule = schema.definitions.slide.allOf?.find(
     (r) => r.if?.properties?.type?.const === type,
   );
-  const resolved = resolvePath(rule?.then?.properties ?? {}, path, schema);
+  // A shared field (`headline`, `standfirst`) is declared once on the base
+  // slide object, so the type rule alone resolves it to undefined — which reads
+  // downstream as "no cap" rather than "not found here".
+  const resolved = resolvePath(rule?.then?.properties ?? {}, path, schema)
+    ?? resolvePath(schema.definitions.slide.properties ?? {}, path, schema);
   if (resolved?.type === "string") return resolved.maxLength ?? null;
   // An array-of-strings field ("bullets") caps its items, not the array.
   if (resolved?.type === "array") {
