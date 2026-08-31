@@ -357,6 +357,13 @@ single `console.error` printing the layout's own `cw`, `ch`, `bodyTop` and
 obvious in one read, print the numbers first. It is faster than being right on
 the second attempt and far faster than being wrong on the third.
 
+**A contact sheet judges structure, not legibility.** At four cells per row a
+slide is ~700px, which is enough to see overlap, clipping, fused panels or a
+value wrapped mid-number, and not enough to judge contrast: two slide types were
+called illegible from a cell and read perfectly at full size. Use the sheets for
+structure, `test/contrast.test.js` and `tools/pixels.mjs` for ink, and render
+one slide full size before calling anything unreadable.
+
 **A measurement is not evidence until its own failure modes are known.** The
 schema-cap prober reported 70 bad fields on its first run and 35 after three
 corrections: a cap on an array field caps its ITEMS, so replacing the array with
