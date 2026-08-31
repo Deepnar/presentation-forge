@@ -1,4 +1,4 @@
-# Handoff — 2026-08-31, the fixed-scale sweep and what it uncovered
+# Handoff — 2026-08-31, the fixed-scale sweep and the fields nothing rendered
 
 Everything is on `origin/main`. `npm test` is 383 passing, the working tree is
 clean.
@@ -11,122 +11,121 @@ This file is only what the last session learned that those do not say.
 
 ## What was done
 
-**§10 is 9 of 17 items closed.** One item closed, one new item opened for the
-residue it exposed.
+**§10 is 10 of 17 items closed.** Two closed, one opened for what is left.
 
-- **Text drawn at a fixed scale now reports.** Eighteen of the nineteen sites
-  fit; the nineteenth is a fixed glyph in a fixed box and says so.
-- **Nine schema caps cut to what the layouts seat**, and four layouts made to
-  seat what they promise rather than having their caps cut.
-- **Two blind spots closed in the cap prober** and one in the field-length
-  pass's schema walk — the largest single finding of the session.
+- **Text drawn at a fixed scale now reports.** Eighteen of nineteen sites fit;
+  the nineteenth is a fixed glyph in a fixed box and says so.
+- **The cap residue went from eleven fields to one.** Three came off by fixing
+  a layout rather than cutting a cap.
+- **Four layouts were silently dropping content the schema offers.** That was
+  the session's real finding, and nothing in the repo could have reported it.
+- **`npm run capstress`** renders any type at its schema caps and rasterises it.
+  Every defect below that the sweeps were clean on came out of using it.
 
-## The state of the sweeps
+## The state of the checks
 
 | check | result |
 |---|---|
 | `npm run themematrix` | clean, 34 themes x 75 types |
-| `npm run themematrix -- --notes` | 4 — `diagram` x2, `feature-grid` x2 |
+| `npm run themematrix -- --notes` | 2 — `feature-grid` on `minimal-muji` |
 | `npm run textcheck` | clean, specimen and the real deck |
 | `npm run themematrix --deck <real>` | 9 — `cards` x5, `takeaway` x4 |
+| `node tools/capfit.mjs` | 1 field over its measured length |
 | `test/contrast.test.js` | 24 recorded, passing both ways |
 
-The speaker-note debt went 5 → 4 and the real deck 10 → 9; both losses were the
-`compare` slide, which is now the type that gained the most room.
+## The finding worth carrying forward
 
-## What the sweep could not see, and still cannot
+**A field the specimen does not carry is a field nothing has ever rendered.**
+Twelve string fields were absent from every specimen slide. Populating nine of
+them — the other three are asset paths and a chart-internal unit — found four
+layouts that drop content the schema promises: `compare` never drew either
+side's points, `image-text` never drew its caption, `diagram` never drew an
+edge label, `branching-flow` never drew a step body. 408 words a side,
+identically on all 34 themes.
 
-This is the part worth carrying forward. Every check in the repo answers "does
-this text fit this box". Three whole classes sit outside that:
+No sweep could have reported it. A field that is never drawn is never fitted, so
+the fit sweep sees nothing, and only the text check — and only once the fixture
+carried the field — said a word. **Enumerate what a fixture does not cover; do
+not read what it does.**
 
-1. **The size the text is actually drawn at.** A layout that sets a role at a
-   fraction of its token was being fitted against the token. The floor is a
-   point size, so the fitter answered the wrong question and reported failures
-   for text that seats. `fitAt`/`fitAllAt`/`fitLineAt` in `src/layouts.js` take
-   the fraction; use them for any new `scale:` that is not 1.
+Three of the four are now drawn. The fourth is a decision the measurement
+forced: a `branching-flow` step body needs two-line cards, two-line cards take
+the column the decision diamond grows into, and the decision label drops to 19
+characters — below the twenty its own specimen uses. The type is named for its
+decision, so `bs.body` stops being offered rather than being drawn badly or
+dropped quietly.
+
+## What the checks still cannot see
+
+Every check in the repo answers "does this text fit this box". Three classes sit
+outside that, and all three bit this session:
+
+1. **The size the text is actually drawn at.** A role set at a fraction of its
+   token was being fitted against the token, so the floor landed in the wrong
+   place and failures were reported for text that seats.
+   `fitAt`/`fitAllAt`/`fitLineAt` take the fraction — use them for any `scale:`
+   that is not 1.
 
 2. **Where a shape ends up.** Nothing asks whether a box is on the slide.
    `branching-flow` drew its last row of branch cards under the speaker-note bar
-   and off the bottom edge with every label fitting its own shape and a
-   completely clean sweep. Found by looking at a render; nothing else would
-   have. **Any layout that stacks shapes must budget the column against
+   and off the bottom edge with every label fitting its own shape and a clean
+   sweep. **A layout that stacks shapes must budget the whole column against
    `box.bottom` itself.**
 
-3. **A fit budget that is not the box the text is drawn into.** Three layouts
-   fitted to one height and drew into another. The sweep is clean and the text
-   runs out of the card.
-
-## The prober is now trustworthy in three more places
-
-`tools/capfit.mjs` measures what a field may actually say. It had three faults,
-all of which made a cap look safer than it is:
-
-- **`resolvePath` could not follow a `$ref` or descend a nested array**, so
-  `compare.left.*`, `branching-flow.steps[].*` and `roadmap.phases[].items[].*`
-  resolved to "no cap". The field-length pass told the model those fields were
-  uncapped and the prober skipped them. `compare.left.body` was promising 320
-  characters that no theme in the gallery could seat.
-- **`grow` fanned out through one array level, not two**, so
-  `branches[].steps[].title` kept whatever the specimen said at every scale.
-- **The filler was always prose.** `funnel` tapers only when every stage carries
-  a number it can read, so growing "42%" into "the model writes" measured a
-  funnel that does not taper — the narrowest bar, where a funnel runs out of
-  room, was never rendered.
-
-It also now separates **a layout that cannot hold anything** from **a cap that
-is too generous**: a type failing with every field at one character is reported
-as a layout failure instead of "fits 1" against every field on the slide.
+3. **A fit budget that is not the box the text is drawn into.** Six layouts had
+   it. More generous than the box hides an overflow; less generous invents a
+   failure. They look nothing alike from the sweep, so check both directions.
 
 ## The rule that decided every cap
 
-**Ask whether the shape is the constraint before cutting what the content may
-say.** It paid off every time it was applied:
+**Ask whether the SHAPE is the constraint before cutting what the content may
+say.** It paid off every time:
 
-- `roadmap`'s item title read 23 of 30, and 30 of 30 once its box stopped being
-  a flat 0.3in with a third of an inch sitting empty above it.
-- `compare`'s side body read 53, and 134 once the verdict bar stopped taking a
-  fixed 1.24in off the cards whatever it held.
-- `framework`'s card was clamped to 1.15in while its row held 1.45.
+- `chronology` measured 87 of 160 because it fitted against a box narrower and
+  shorter than the one it draws into. Fixed, it seats all 160.
+- `bibliography` gave its citation a flat 55% of the row whether or not an
+  annotation existed. 105 became 203.
+- `hero-image` left half its 2.6in overlay unused. 105 became its full 120.
+- `roadmap`'s item title read 23 of 30 with a third of an inch empty above it.
 
-Cutting first would have hidden all three. `docs/ROADMAP.md` §10 carries the ten
-fields still over their measured length, with this test written next to them.
+Cutting first would have hidden all four.
+
+## Using capstress
+
+```bash
+npm run capstress -- --types funnel,framework       # at their caps, then LOOK
+npm run capstress -- --scale 0.01                   # at one character
+```
+
+A type that still fails with every field at one character has a failure **no cap
+can fix**, and the render says which shape. `diagram` sat at 4% for exactly that
+reason: it fitted a body into the 0.17in a dense graph leaves, which no text
+fits, and the prober read it as a savage cap. `capFit` now tests that case first
+and reports "the layout, not the caps".
 
 ## What is left
 
 `docs/ROADMAP.md` §10, in priority order:
 
-1. **The front end and the landing page.** The largest remaining item, and a
+1. **The front end and the landing page.** The largest remaining item, a
    different kind of work — agree direction before writing code.
-2. **The rest of the visual audit.** Every defect this session found that the
-   sweeps could not was found by rendering a type at its schema caps and looking
-   at the page. `tools/slideqa.mjs` renders every type full size; growing a
-   slide to its caps first is what makes it worth looking at.
-3. **The caps the layouts still cannot seat** — ten fields, listed in §10.
-4. **Reports** — structure, and the two-LibreOffice-pass render.
-5. **Research and content flow / the full functional sweep.**
-6. **`config/models.yaml`** names six local models, none installed.
+2. **The visual audit at schema caps.** `capstress` exists for this; the
+   gallery has not been swept type by type at full size.
+3. **Reports** — structure, and the two-LibreOffice-pass render.
+4. **Research and content flow / the full functional sweep.**
+5. **`config/models.yaml`** names six local models, none installed.
 
-Smaller things found and not fixed:
+Known and not fixed:
 
-- The `cycle` connector arrows sit off the ring at inconsistent angles.
-- `diagram` fails on `high-contrast-mono` and `minimal-muji` at any label
-  length — its nodes are a fixed size. This is the `branching-flow` diamond and
-  the `cycle` hub a third time, and both of those were fixed by sizing the shape
-  to its label.
-- The prober can still only measure a field the specimen POPULATES.
-  `compare.left.points` and `bs.body` are omitted from every specimen slide, so
-  their caps are unverified. Enriching `src/specimens.js` to exercise every
-  optional field closes it and makes every sweep stronger.
-
-## Testing against real content
-
-**Every check takes `--deck decks/<slug>/deck.yaml`. Use it.** The specimen's
-payloads are hand-written to behave. Better still, grow a type to its schema
-caps before rendering it — that is what a model will write to, and it is how
-this session found the defects the sweeps were clean on.
-
-`decks/electrochemical-impedance-spectroscopy-for-l` is kept deliberately as the
-real-content fixture.
+- `feature-grid` is the two remaining lines of speaker-note debt, on
+  `minimal-muji`. Its card is derived end to end — the shape test finds no
+  slack — and the shortfall is seven hundredths of an inch.
+- `cards.cards[].body` seats 82 against a cap of 95. Cutting a cap moves the
+  scale the other fields are measured at, so this list never quite reaches
+  zero; one round per session is the right pace.
+- `cards.cards[].title` seats 14 of 27 when the body is near its own cap. The
+  two compete for one card; the field-length pass is what resolves it at
+  generation time.
 
 ## Generation
 
@@ -152,3 +151,5 @@ field-length pass.
   Identity is per account now; set a real one in Settings.
 - The dev account store holds well over a hundred throwaway test accounts. That
   database must not travel to production.
+- `decks/electrochemical-impedance-spectroscopy-for-l` is kept deliberately as
+  the real-content fixture. Every check takes `--deck`; use it.
