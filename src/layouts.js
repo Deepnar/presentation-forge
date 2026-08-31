@@ -1030,20 +1030,52 @@ export const layouts = {
       const railX = box.x + 0.34;
       const textX = railX + 0.85;
       const textW = box.right - textX - 0.15;
-      const gutT = 0.14;
-      const rowH = (box.bottom - y - gutT * (n - 1)) / n;
-      // Bodies render once the row is tall enough for a title plus ONE line at
-      // the body's floor — the spine layout spans the full width, so a line is
-      // cheap and a 6-step flow with short bodies fills the slide. The old
-      // full-width cards needed ~0.75in per row (a whole body across a narrow
-      // card), which is why they dropped bodies at five steps. A body that
-      // needs TWO lines at the floor cannot fit a six-step row — it drops
-      // (title-only step) rather than shrinking below the readable floor.
-      const canBody = rowH >= 0.55;
-      const bodyBudget = Math.max(0.26, rowH - 0.32);
+      // The spine is laid out from what the rows NEED, not from constants that
+      // happen to fit six of them. It used to reserve 0.32in for a title and
+      // whatever was left for a body, with a 0.55in threshold deciding whether
+      // a body rendered at all — on a six-step flow that left the body budget
+      // three THOUSANDTHS of an inch short of one line, so four themes shrank
+      // below the readable floor and reported it every single time. Tightening
+      // the constants only moved the knife-edge and started dropping bodies
+      // instead, which is worse: a reported failure became silent text loss.
+      //
+      // So: measure one title line and one body line at the size they would
+      // really render at, see whether every row can hold both, and spend the
+      // slack on the gutter.
+      // The fitter never shrinks past its floor, and never grows a theme whose
+      // design size is already below it. This is the height one line really
+      // takes when squeezed as far as it may go — for the title as much as for
+      // the body, because a constant for either is a constant that decides
+      // whether text survives on some theme nobody tested.
+      // fitScale searches in 4% steps, so a box exactly one floor-line tall
+      // makes the search land just under the floor and report it. One step of
+      // headroom is what lets it land ON the floor instead.
+      const STEP = 1.05;
+      const lineAtFloor = (style, fallbackRatio) => {
+        const size = Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size));
+        return ((size * (style.line ?? fallbackRatio)) / 72) * STEP;
+      };
+      const lineAtNominal = (style, fallbackRatio) => (style.size * (style.line ?? fallbackRatio)) / 72;
+      const bodyStyle = theme.type.body;
+      const titleFloorH = lineAtFloor(theme.type.subhead, 1.3);
+      const bodyLine = lineAtFloor(bodyStyle, 1.35);
       const oneLineBody = (s) => s.body && lineCount(s.body, textW, theme.type.body) <= 1;
       const renderedBodies = data.steps.filter(oneLineBody).map((s) => s.body);
-      const titleScale = fitScaleAll(data.steps.map((s) => s.title), textW, canBody ? 0.32 : rowH, theme.type.subhead, { min: 0.6 });
+
+      const avail = box.bottom - y;
+      const rowNeed = titleFloorH + bodyLine;
+      const canBody = renderedBodies.length > 0 && n * rowNeed <= avail;
+      // Slack goes into the gutter, capped so a three-step flow does not sprawl;
+      // whatever the cap leaves over goes back into the rows.
+      const gutT = Math.min(0.16, Math.max(0.06, (avail - n * (canBody ? rowNeed : titleFloorH)) / Math.max(1, n - 1)));
+      const rowH = (avail - gutT * (n - 1)) / n;
+      // The title takes the line it wants when the row can spare it, and never
+      // less than its own floor line; the body keeps the rest.
+      const titleH = canBody
+        ? Math.max(titleFloorH, Math.min(lineAtNominal(theme.type.subhead, 1.3), rowH - bodyLine))
+        : rowH;
+      const bodyBudget = Math.max(bodyLine, rowH - titleH);
+      const titleScale = fitScaleAll(data.steps.map((s) => s.title), textW, canBody ? titleH : rowH, theme.type.subhead, { min: 0.6 });
       const bodyScale = canBody
         ? fitScaleAll(renderedBodies, textW, bodyBudget, theme.type.body)
         : 1;
@@ -1070,7 +1102,7 @@ export const layouts = {
           align: "center", valign: "middle",
         });
         slide.addText(s.title, {
-          x: textX, y: ry, w: textW, h: canBody ? 0.32 : rowH,
+          x: textX, y: ry, w: textW, h: canBody ? titleH : rowH,
           ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
           valign: canBody ? "top" : "middle",
         });
