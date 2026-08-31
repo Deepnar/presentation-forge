@@ -3210,10 +3210,18 @@ export const layouts = {
     // left a narrow centred column with dead space on both sides for a small
     // graph. Wider, taller nodes make the diagram read as the slide's subject.
     const nodeW = Math.min(3.0, Math.max(2.4, (box.w - 0.35 * Math.max(0, ...layers.map((l) => l.length - 1))) / Math.max(...layers.map((l) => l.length))));
-    const nodeH = 0.95;
-    const titleScale = fitScaleAll(nodes.map((nd) => nd.title), nodeW - 0.2, 0.4, theme.type.caption, { min: 0.6 });
+    // The card was a flat 0.95in inside a layer band that a standfirst leaves
+    // 1.0in tall, so consecutive layers touched and a body at its cap ran
+    // straight through the card below. The band keeps a gutter and the card
+    // takes what is left, and title and body are fitted to the boxes they are
+    // actually drawn into rather than to two constants.
+    const LAYER_GAP = 0.22;
+    const nodeH = Math.max(0.62, Math.min(1.05, layerH - LAYER_GAP));
+    const titleH = Math.min(0.4, nodeH * 0.42);
+    const bodyH = Math.max(0.2, nodeH - titleH - 0.18);
+    const titleScale = fitScaleAll(nodes.map((nd) => nd.title), nodeW - 0.2, titleH, theme.type.caption, { min: 0.6 });
     const bodyScale = fitScaleAll(
-      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, 0.45, theme.type.caption,
+      nodes.map((nd) => nd.body).filter(Boolean), nodeW - 0.2, bodyH, theme.type.caption,
     );
     const centres = nodes.map(() => ({ x: 0, y: 0 }));
     layers.forEach((layer, li) => {
@@ -3249,13 +3257,13 @@ export const layouts = {
         const { x, y: nodeY } = { x: centres[nodeIdx].x - nodeW / 2, y: centres[nodeIdx].y - nodeH / 2 };
         card(slide, theme, { x, y: nodeY, w: nodeW, h: nodeH });
         slide.addText(nodes[nodeIdx].title, {
-          x: x + 0.1, y: nodeY + 0.1, w: nodeW - 0.2, h: 0.4,
+          x: x + 0.1, y: nodeY + 0.08, w: nodeW - 0.2, h: titleH,
           ...textStyle(theme, "caption", { bold: true, scale: titleScale }),
           align: "center", valign: "top",
         });
         if (nodes[nodeIdx].body) {
           slide.addText(nodes[nodeIdx].body, {
-            x: x + 0.1, y: nodeY + 0.5, w: nodeW - 0.2, h: 0.42,
+            x: x + 0.1, y: nodeY + titleH + 0.12, w: nodeW - 0.2, h: bodyH,
             ...textStyle(theme, "caption", { color: theme.palette.ink_muted, scale: bodyScale }),
             align: "center", valign: "top",
           });
