@@ -105,7 +105,11 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
 
   const body = (
     <>
-      <div className="relative aspect-[16/10] overflow-hidden" style={{ background: title.bg ?? p.ink }}>
+      {/* 32:9 is the thumbnail's real shape — tools/gallery.mjs composites a
+          title and a body slide side by side, each 480x270. Any other ratio
+          with object-cover crops both of them, which is how the specimen ended
+          up showing half a word from each. */}
+      <div className="relative aspect-[32/9] overflow-hidden" style={{ background: title.bg ?? p.ink }}>
         {showThumb && (
           <img
             src={theme.thumb}
