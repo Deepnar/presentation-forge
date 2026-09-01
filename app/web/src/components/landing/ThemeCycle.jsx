@@ -1,55 +1,64 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { useSceneProgress } from "../../lib/scene.js";
 import { SlideImage } from "./parts.jsx";
 
 /**
  * One slide, every theme, advanced by scrolling.
  *
- * Sticky rather than a pinned GSAP timeline. A pin rewrites the document with
- * spacer elements and takes ownership of the scroll; `position: sticky` is the
- * browser doing the same job natively, so it survives a resize, a zoom, a
- * touch fling and reduced motion without a second code path. All this listener
- * does is turn scroll position into an index.
+ * This is the product's central claim made checkable — the content was written
+ * once, and the theme decided every colour, typeface and coordinate. Saying
+ * that in a paragraph is a claim; watching the words stay put while everything
+ * around them changes is a demonstration.
  *
- * There is deliberately nothing to click. Reaching the end of the section
- * means having seen every theme, rather than having thought to interact.
+ * The heading is INSIDE the sticky frame. It used to sit in a block above,
+ * which meant the frame started below the fold: at the top of the section the
+ * slide was centred in a box that had barely entered the viewport, and the
+ * reader got most of a screen of nothing before it caught up.
+ *
+ * Nothing here is clickable on purpose. Reaching the end of the section means
+ * having seen every theme, not having thought to interact.
  */
 export default function ThemeCycle({ manifest }) {
   const themes = manifest?.themes ?? [];
-  const wrapRef = useRef(null);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap || !themes.length) return;
-    let frame = 0;
-    const measure = () => {
-      frame = 0;
-      const r = wrap.getBoundingClientRect();
-      const travel = r.height - window.innerHeight;
-      if (travel <= 0) return;
-      const p = Math.min(1, Math.max(0, -r.top / travel));
-      // The last theme gets the tail of the scroll rather than a single
-      // instant at p === 1, which is otherwise unreachable on a trackpad.
-      setActive(Math.min(themes.length - 1, Math.floor(p * themes.length * 0.999)));
-    };
-    const onScroll = () => { if (!frame) frame = requestAnimationFrame(measure); };
-    measure();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, [themes.length]);
-
+  const ref = useRef(null);
+  const p = useSceneProgress(ref, [themes.length]);
   if (!themes.length) return null;
+
+  const active = Math.min(themes.length - 1, Math.floor(p * themes.length * 0.999));
   const current = themes[active];
 
   return (
-    <div ref={wrapRef} data-section="themes" style={{ height: `${themes.length * 42 + 60}vh` }}>
-      <div className="sticky top-0 flex h-screen flex-col justify-center px-5 sm:px-8">
-        <div className="mx-auto w-full max-w-5xl">
+    <div ref={ref} data-section="themes" style={{ height: `${themes.length * 28 + 110}vh` }}>
+      <div className="sticky top-0 flex h-screen items-center px-5 sm:px-8">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-center">
+          <div className="reveal">
+            <div className="eyebrow">One deck, every theme</div>
+            <h2 className="display-3 mt-3 text-fg">The words are yours. The design is not your problem.</h2>
+            <p className="lede mt-4 text-[15px]">
+              A theme owns every colour, typeface and coordinate. The writing never touches them,
+              so swapping one for another re-lays nothing out.
+            </p>
+
+            <div className="mt-7 flex items-baseline justify-between gap-3">
+              <div className="min-w-0 text-[15px] font-medium text-fg">{current.label}</div>
+              <div className="shrink-0 font-mono text-[11.5px] text-fg-faint">
+                {String(active + 1).padStart(2, "0")} / {String(themes.length).padStart(2, "0")}
+              </div>
+            </div>
+            {/* A rail, not dots: twelve dots at this size is noise, and the rail
+                also says how much of the section is left. */}
+            <div className="mt-2 h-px w-full bg-line">
+              <div
+                className="h-px bg-accent"
+                style={{
+                  width: `${((active + 1) / themes.length) * 100}%`,
+                  transition: "width var(--dur-base) var(--ease-out-quint)",
+                }}
+              />
+            </div>
+            <div className="mt-2 text-[12px] text-fg-faint">Same words, same slide. Only the theme changed.</div>
+          </div>
+
           <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
             {themes.map((t, i) => {
               const s = t.slides.find((x) => x.type === "stats") ?? t.slides[0];
@@ -58,11 +67,11 @@ export default function ThemeCycle({ manifest }) {
                 <div
                   key={t.name}
                   aria-hidden={!on}
-                  className="absolute inset-0 transition-opacity"
+                  className="absolute inset-0"
                   style={{
                     opacity: on ? 1 : 0,
-                    transitionDuration: "var(--dur-base)",
-                    transitionTimingFunction: "var(--ease-out-quint)",
+                    transform: on ? "scale(1)" : "scale(0.985)",
+                    transition: "opacity var(--dur-base) var(--ease-out-quint), transform var(--dur-base) var(--ease-out-quint)",
                   }}
                 >
                   <SlideImage
@@ -76,31 +85,6 @@ export default function ThemeCycle({ manifest }) {
                 </div>
               );
             })}
-          </div>
-
-          <div className="mt-6 flex items-baseline justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-[15px] font-medium text-fg">{current.label}</div>
-              <div className="truncate text-[12.5px] text-fg-faint">
-                Same words, same slide. Only the theme changed.
-              </div>
-            </div>
-            <div className="shrink-0 font-mono text-[12px] text-fg-faint">
-              {String(active + 1).padStart(2, "0")} / {String(themes.length).padStart(2, "0")}
-            </div>
-          </div>
-
-          {/* A rail rather than dots: twelve dots at this size is noise, and the
-              rail also shows how far through the section the reader is. */}
-          <div className="mt-3 h-px w-full bg-line">
-            <div
-              className="h-px bg-accent transition-[width]"
-              style={{
-                width: `${((active + 1) / themes.length) * 100}%`,
-                transitionDuration: "var(--dur-base)",
-                transitionTimingFunction: "var(--ease-out-quint)",
-              }}
-            />
           </div>
         </div>
       </div>
