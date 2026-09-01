@@ -1391,28 +1391,39 @@ app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   const toc = req.body?.toc !== false;
   const r = await renderReport({ reportFile, toc });
 
-  // Rasterise the actual .docx so the report view shows the real Word output
-  // as pages, not a placeholder — the same LibreOffice → PDF → PNG pipeline
-  // the deck preview uses.
-  const base = `/api/decks/${req.params.slug}/preview`;
-  let pages = [];
-  let thumbs = [];
-  try {
-    const p = await reportPreview(r.outFile);
-    pages = p.pages.map((f) => `${base}/report/${path.basename(f)}`);
-    thumbs = p.thumbs.map((f) => `${base}/report/thumbs/${path.basename(f)}`);
-  } catch (err) {
-    r.problems.push(`report preview failed: ${err.message}`);
-  }
-
+  // Answers the moment the .docx exists. Rasterising it costs a SECOND
+  // LibreOffice start — measured at 8s on top of the 7s that produced the
+  // document — and the page images are for looking at, not for having. The
+  // UI downloads the file here and asks for the pictures separately, so the
+  // deliverable arrives in half the time it used to.
   ok(res, {
     sections: r.sections,
     pages: r.pages,
     problems: r.problems,
-    previewPages: pages,
-    previewThumbs: thumbs,
     docx: `/api/decks/${req.params.slug}/download/report.docx`,
   });
+}));
+
+/**
+ * The report as it opens in Word, one PNG per page. Split out of the render
+ * above: it is a second LibreOffice pass over the document the render just
+ * produced, and nobody should wait for a picture of a file they already have.
+ */
+app.post("/api/decks/:slug/report/preview", withRenderSlot(async (req, res) => {
+  const docx = path.join(DECKS, req.params.slug, "out", "report.docx");
+  try { await access(docx); } catch {
+    return fail(res, 404, "no rendered report — render it first");
+  }
+  const base = `/api/decks/${req.params.slug}/preview`;
+  try {
+    const p = await reportPreview(docx);
+    ok(res, {
+      previewPages: p.pages.map((f) => `${base}/report/${path.basename(f)}`),
+      previewThumbs: p.thumbs.map((f) => `${base}/report/thumbs/${path.basename(f)}`),
+    });
+  } catch (err) {
+    fail(res, 500, `report preview failed: ${err.message}`);
+  }
 }));
 
 /**

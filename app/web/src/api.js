@@ -178,6 +178,10 @@ export const api = {
     call(`/api/decks/${slug}/research`, { method: "PUT", body: JSON.stringify({ notes, sources }) }),
   renderReport: (slug, opts = {}) =>
     call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
+  // A second LibreOffice pass over the document the render just produced.
+  // Separate because nobody should wait for a picture of a file they have.
+  reportPreview: (slug) =>
+    call(`/api/decks/${slug}/report/preview`, { method: "POST", body: JSON.stringify({}) }),
   generateReport: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/report/generate`, payload, handlers),
   // Standalone report — brief → report.yaml → .docx with no deck. And the

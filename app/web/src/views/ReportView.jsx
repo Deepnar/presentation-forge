@@ -35,6 +35,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   // stays component state; the link is derived from this flag.
   const [rendered, setRendered] = useState(false);
   const [preview, setPreview] = useState(null); // { pages, thumbs } after render
+  const [previewing, setPreviewing] = useState(false); // the second pass, after the download
   const [notFound, setNotFound] = useState(false);
   // A report WRITE in flight for this slug — registered by whoever started the
   // generation (the deck's Report panel, or a standalone report chat), so the
@@ -79,14 +80,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     try {
       const r = await api.renderReport(slug);
       setRendered(true);
-      // The rasterised preview pages — the report AS IT OPENS in Word.
-      if (r.previewPages?.length) {
-        const stamp = Date.now();
-        setPreview({
-          pages: r.previewPages.map((s) => `${s}?t=${stamp}`),
-          thumbs: (r.previewThumbs ?? r.previewPages).map((s) => `${s}?t=${stamp}`),
-        });
-      }
       setStatus("");
       // The render wrote the .docx — grab it without a second click. Same
       // synthetic-anchor trick the deck export flow uses.
@@ -97,6 +90,23 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       document.body.appendChild(a);
       a.click();
       a.remove();
+
+      // The page images are a second LibreOffice pass over the file that just
+      // downloaded — roughly as long again as the render itself. Asked for
+      // after the document is in the user's hands, not before, and its failure
+      // is a missing preview rather than a failed render.
+      setPreviewing(true);
+      api.reportPreview(slug)
+        .then((p) => {
+          if (!p.previewPages?.length) return;
+          const stamp = Date.now();
+          setPreview({
+            pages: p.previewPages.map((s) => `${s}?t=${stamp}`),
+            thumbs: (p.previewThumbs ?? p.previewPages).map((s) => `${s}?t=${stamp}`),
+          });
+        })
+        .catch(() => { /* the document rendered; only its pictures did not */ })
+        .finally(() => setPreviewing(false));
     } catch (err) {
       setError(err.message);
       setStatus("");
@@ -361,6 +371,14 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
         <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-muted">
           <Spinner /> {writing?.status ?? status}
           {(busy || writing) && <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>}
+        </div>
+      )}
+
+      {/* Said, not hidden: the document has already downloaded, and this is a
+          second pass producing pictures of it. Nothing is blocked on it. */}
+      {previewing && !status && !writing && (
+        <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-muted">
+          <Spinner /> Drawing the pages — your .docx has already downloaded.
         </div>
       )}
 
