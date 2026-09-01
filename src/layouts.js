@@ -19,6 +19,29 @@ const path2 = (ctx) => ctx; // keep signature obvious at call sites
 /* ------------------------------------------------------------------ utils */
 
 /**
+ * The accent to use ON an ink-filled panel — the inverted surfaces that
+ * `callout`, `takeaway` and `compare`'s verdict bar paint.
+ *
+ * A theme's `accent_alt` is its secondary accent FOR THE CURRENT GROUND: every
+ * theme redefines it under `dark:` precisely because the ground changed. These
+ * panels invert the ground locally, in light mode, and the palette has no
+ * token for that — so the un-inverted value was drawn straight onto ink and
+ * seventeen of the thirty-four themes put the label below 3:1 against the
+ * panel it sits on. `swiss-international` drew a #1D3557 navy on #141414.
+ *
+ * Nudging lightness keeps the theme's hue, which is the point: the label
+ * stays recognisably the theme's second colour rather than defaulting to the
+ * surface and erasing the distinction the inversion exists to make.
+ *
+ * WCAG splits the floor and so does this: 4.5 for the label, which is text at
+ * eyebrow size, and 3.0 for a bullet marker, which is a graphical element.
+ */
+function onInk(theme, floor = 4.5) {
+  return ensureContrast(theme.palette.accent_alt ?? theme.palette.accent, theme.palette.ink, floor);
+}
+
+
+/**
  * The vertical box, in inches, that stacked titles/labels need for their real
  * rendered lines at the theme's nominal size. The stacked layouts used to
  * reserve a fixed one-line guess and shrink the text into it — the classic
@@ -952,7 +975,7 @@ export const layouts = {
       });
       slide.addText(
         [
-          { text: verdictLead, options: { color: hex(theme.palette.accent_alt ?? theme.palette.accent), bold: true } },
+          { text: verdictLead, options: { color: hex(onInk(theme)), bold: true } },
           { text: data.verdict, options: { color: hex(theme.palette.surface) } },
         ],
         {
@@ -1066,7 +1089,7 @@ export const layouts = {
     });
     slide.addText(
       [
-        { text: `${data.label ?? "The framework"}: `, options: { color: hex(theme.palette.accent_alt ?? theme.palette.accent), bold: true } },
+        { text: `${data.label ?? "The framework"}: `, options: { color: hex(onInk(theme)), bold: true } },
         { text: data.body, options: { color: hex(theme.palette.surface) } },
       ],
       {
@@ -3836,7 +3859,7 @@ export const layouts = {
     const pad = 0.5;
     slide.addText(data.label ?? "Key takeaway", {
       x: box.x + pad, y: py + 0.26, w: box.w - pad * 2, h: 0.4,
-      ...textStyle(theme, "eyebrow", { color: theme.palette.accent_alt ?? theme.palette.accent }),
+      ...textStyle(theme, "eyebrow", { color: onInk(theme) }),
       valign: "middle",
     });
     const bodyH = hasPoints ? 0.75 : ph - 0.85;
@@ -3854,7 +3877,7 @@ export const layouts = {
         const py2 = py + 1.5 + i * 0.36;
         slide.addText("•", {
           x: box.x + pad + 0.1, y: py2, w: 0.2, h: 0.32,
-          ...textStyle(theme, "caption", { color: theme.palette.accent_alt ?? theme.palette.accent }),
+          ...textStyle(theme, "caption", { color: onInk(theme, 3.0) }),
           valign: "middle",
         });
         slide.addText(p, {
