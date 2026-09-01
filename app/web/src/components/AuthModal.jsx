@@ -15,8 +15,14 @@ import ThemeMiniCard from "./ThemeMiniCard.jsx";
  * and future hosting.
  */
 export default function AuthModal({ mode: initialMode, onDone, onClose }) {
-  const [mode, setMode] = useState(initialMode ?? "login"); // login | register
+  const [mode, setMode] = useState(initialMode ?? "login"); // login | register | forgot
   const [regOpen, setRegOpen] = useState(true);
+  // What this install can actually offer. A box with no SMTP cannot deliver a
+  // reset, so offering one would be a link to a dead end; and it confirms
+  // accounts on creation, so the sign-up copy must not promise an email.
+  const [mailOk, setMailOk] = useState(false);
+  const [verifyRequired, setVerifyRequired] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
   const [googleId, setGoogleId] = useState(null);
   const [googleBusy, setGoogleBusy] = useState(false);
   const [name, setName] = useState("");
@@ -29,7 +35,11 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [themes, setThemes] = useState(null);
 
   useEffect(() => {
-    api.registrationOpen().then(setRegOpen).catch(() => setRegOpen(true));
+    api.authConfig().then((c) => {
+      setRegOpen(c.open === true);
+      setMailOk(c.mail === true);
+      setVerifyRequired(c.verifyRequired === true);
+    }).catch(() => setRegOpen(true));
     api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
     fetch("/api/auth/google/config").then((r) => r.json()).then((j) => setGoogleId(j.clientId ?? j.googleClientId ?? null)).catch(() => {});
   }, []);
@@ -81,7 +91,13 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     setFieldErrors({});
     setFormError("");
     try {
-      if (mode === "login") {
+      if (mode === "forgot") {
+        // The answer never varies, so neither does the message. Saying "no
+        // account with that address" here would hand a stranger the account
+        // list one guess at a time.
+        await api.forgotPassword(email.trim());
+        setForgotSent(true);
+      } else if (mode === "login") {
         const user = await api.login({ email: email.trim(), password });
         onDone?.(user);
       } else {
@@ -90,7 +106,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
         const user = await api.register({ name: name.trim(), email: email.trim(), password });
         setMode("login");
         setPassword("");
-        setSuccess(`Account created for ${user.name} — log in to start.`);
+        setSuccess(user.verifySent
+          ? `Account created for ${user.name}. Check ${email.trim()} for the confirmation link, then log in.`
+          : `Account created for ${user.name} — log in to start.`);
       }
     } catch (err) {
       routeError(err.message);
@@ -214,7 +232,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
         <div className="flex min-w-0 flex-1 flex-col overflow-y-auto p-6 sm:p-7">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[16px] font-semibold tracking-tight">
-              {mode === "login" ? "Log in" : "Sign up"}
+              {mode === "forgot" ? "Reset your password" : mode === "login" ? "Log in" : "Sign up"}
             </h2>
             <button
               onClick={onClose}
@@ -225,6 +243,15 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
             </button>
           </div>
 
+          {mode === "forgot" ? (
+            <button
+              onClick={() => { setMode("login"); setForgotSent(false); setFormError(""); setFieldErrors({}); }}
+              className="mb-4 flex items-center gap-1.5 self-start text-[12px] font-medium text-fg-faint transition hover:text-fg"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+              Back to log in
+            </button>
+          ) : (
           <div className="mb-4 flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
             <button
               onClick={() => { setMode("login"); setFieldErrors({}); setFormError(""); setSuccess(""); }}
@@ -241,6 +268,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               </button>
             )}
           </div>
+          )}
 
           {!regOpen && (
             <div className="mb-4 rounded-lg border border-line bg-sunken px-3 py-2.5 text-[12px] leading-relaxed text-fg-muted">
@@ -249,9 +277,29 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
             </div>
           )}
 
-          <GoogleButton />
-          {googleId && <div className="my-3 flex items-center gap-3"><div className="h-px flex-1 bg-line" /><span className="text-[11px] text-fg-faint">or</span><div className="h-px flex-1 bg-line" /></div>}
+          {mode !== "forgot" && <GoogleButton />}
+          {mode !== "forgot" && googleId && <div className="my-3 flex items-center gap-3"><div className="h-px flex-1 bg-line" /><span className="text-[11px] text-fg-faint">or</span><div className="h-px flex-1 bg-line" /></div>}
 
+          {mode === "forgot" && !forgotSent && (
+            <p className="mb-4 text-[12.5px] leading-relaxed text-fg-muted">
+              Give the address on the account and a link to set a new password
+              goes to it. The link works once and expires within the hour.
+            </p>
+          )}
+
+          {mode === "forgot" && forgotSent ? (
+            /* The same message whether or not that address has an account.
+               Confirming which addresses are registered would hand a stranger
+               the account list one guess at a time. */
+            <div className="rounded-lg border border-accent/30 bg-accent/10 px-3 py-3 text-[12.5px] leading-relaxed text-fg">
+              If <span className="font-medium">{email.trim()}</span> has an account with a
+              password, a reset link is on its way. Check the spam folder before asking again.
+              <div className="mt-1.5 text-fg-muted">
+                An account that signs in with Google has no password to reset — use the
+                Google button instead.
+              </div>
+            </div>
+          ) : (
           <form onSubmit={submit} className="space-y-3" noValidate>
             {mode === "register" && (
               <label className="block">
@@ -276,8 +324,22 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               />
               <ErrorLine field="email" />
             </label>
+            {mode !== "forgot" && (
             <label className="block">
-              <div className="mb-1.5 text-[12px] font-medium text-fg-faint">Password</div>
+              <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                <span className="text-[12px] font-medium text-fg-faint">Password</span>
+                {/* Only offered where a message can actually be delivered — a
+                    box with no SMTP would send the visitor to a dead end. */}
+                {mode === "login" && mailOk && (
+                  <button
+                    type="button"
+                    onClick={() => { setMode("forgot"); setFormError(""); setFieldErrors({}); setSuccess(""); }}
+                    className="text-[12px] font-medium text-fg-faint underline-offset-2 transition hover:text-fg hover:underline"
+                  >
+                    Forgot it?
+                  </button>
+                )}
+              </div>
               <input
                 type="password"
                 value={password}
@@ -291,6 +353,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               )}
               <ErrorLine field="password" />
             </label>
+            )}
 
             {formError && (
               <div className="flex items-start gap-1.5 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-[12px] leading-relaxed text-danger">
@@ -309,13 +372,20 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
 
             <Button type="submit" variant="primary" className="w-full" disabled={busy}>
               {busy && <Spinner />}
-              {mode === "login" ? "Log in" : "Sign up"}
+              {mode === "forgot" ? "Send the link" : mode === "login" ? "Log in" : "Sign up"}
             </Button>
           </form>
+          )}
 
-          <p className="mt-3 text-center text-[12px] leading-relaxed text-fg-faint">
-            Hosted accounts — your decks stay on the server, Cloud keys are per account.
-          </p>
+          {/* Nothing to say under a reset form — the panel above already says
+              what happens next, and a line about Cloud keys does not. */}
+          {mode !== "forgot" && (
+            <p className="mt-3 text-center text-[12px] leading-relaxed text-fg-faint">
+              {mode === "register" && verifyRequired
+                ? "You will confirm your email before you can generate — everything else opens straight away."
+                : "Hosted accounts — your decks stay on the server, Cloud keys are per account."}
+            </p>
+          )}
         </div>
       </div>
     </div>

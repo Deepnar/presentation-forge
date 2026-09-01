@@ -2323,7 +2323,14 @@ app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
   if (!mailConfigured()) return fail(res, 503, "this server cannot send email — ask the owner to confirm your account");
   if (user.verified) return ok(res, { sent: false, verified: true });
   if (mailThrottled("verify", user.email)) {
-    return fail(res, 429, "a confirmation was just sent — check your inbox, including spam");
+    // Not a failure the user caused, and not one they can fix by trying again:
+    // the message they want already exists. Coded so the banner can say so
+    // calmly instead of in red.
+    return res.status(429).json({
+      ok: false,
+      error: "a confirmation is already on its way — check your inbox, including spam",
+      code: "recently_sent",
+    });
   }
   const token = issueAuthToken(user.email, "verify");
   if (!token) return fail(res, 503, "the account store is unavailable");

@@ -67,7 +67,7 @@ function chatName(title, topic) {
  */
 export default function ChatView({
   chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
-  leftOpen, onToggleLeft, onOpenSettings,
+  leftOpen, onToggleLeft, onOpenSettings, unverified = false,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -885,8 +885,9 @@ export default function ChatView({
     answered.push({ ...questions[i], idx: i });
   }
 
-  const placeholder =
-    phase === "greeting"
+  const placeholder = unverified
+    ? "Confirm your email address to start — the link is in your inbox"
+    : phase === "greeting"
       ? chat.kind === "report"
         ? "What should the report be about?"
         : "Type a topic — everything else defaults…"
@@ -899,7 +900,12 @@ export default function ChatView({
             : busy
               ? "Working…"
               : "Review the card above…";
-  const inputDisabled = busy || phase === "summary" || phase === "outline" || phase === "record";
+  // An unconfirmed account is stopped at the composer rather than after the
+  // briefing. The whole briefing runs in the browser, so without this the
+  // person answers five questions about a deck the server will refuse to
+  // create — the same "fail at the end of the run" the report donor had, spent
+  // on their time instead of the server's.
+  const inputDisabled = unverified || busy || phase === "summary" || phase === "outline" || phase === "record";
   // The slide-selection panel shows beside the thread once the deck is ready
   // and its content is loaded. ~40% of the row; the chat shifts left. Collapsable.
   const showPanel = phase === "editing" && deckData && deckData.slides.length > 0;
