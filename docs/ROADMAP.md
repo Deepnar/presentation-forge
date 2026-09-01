@@ -3293,28 +3293,82 @@ unverified.
 > image no token describes. Both the landing manifest and the theme cards read
 > darkness off the painted pixels.
 
-### [ ] Hosting blockers — what strands a real user
+### [x] Hosting blockers — what strands a real user
 
 *Priority: HIGHEST once the front end is done. No model. Nothing here is taste.*
 
 Three gaps that a stranger hits on day one. None is visible in a demo, and all
 three are cheap to describe and not cheap to skip.
 
-- **No password reset.** There is no reset or recovery route in the auth
-  surface at all — `/api/auth/*` is register, login, google, logout, me,
-  registration, google/config. Someone who forgets their password and did not
-  use Google is locked out permanently, with no way back short of an admin
-  editing the database. Needs mail (`src/mail.js` already exists and is
-  dependency-free), a single-use token with an expiry, and a route pair.
-- **No email verification.** Addresses are unverified, so an account cannot be
-  contacted, cannot be recovered, and signup is open to junk. Admin is a role
-  rather than an address so privilege is not the risk — reachability is. The
-  registration open/closed endpoint is the only current mitigation.
-- **The report donor `.docx` is a runtime upload.** Reports cannot render
-  without one. `docs/DEPLOY.md` says so, but the failure mode when an admin
-  misses it is a healthy-looking box where half the product 500s. It should
-  refuse to start, or say so loudly on the admin page, rather than failing at
-  the point of use.
+- **[x] Password reset.** `POST /api/auth/forgot` and `/api/auth/reset`, a
+  single-use token stored as its SHA-256 with a 60-minute life, and a
+  `#/reset/<token>` screen that renders above the auth gate. Completing one
+  kills every session for the account and confirms the address.
+- **[x] Email verification.** `verified_at` on users, a 24-hour token sharing
+  the same store, `#/verify/<token>`, and a resend for the account's own
+  address. An unconfirmed account may sign in, browse, and hold its own BYOK
+  key; it may not create or generate anything.
+- **[x] The report donor is a state, not a surprise.** `donorStatus()` is read
+  at boot, on the admin System tab (which now offers the upload the API has
+  always had), and at the *top* of `createReport` — before the research pass
+  rather than at the render three steps later.
+
+**The verification gate, as decided.** Auto is blocked because it is the
+operator's money; BYOK key management stays open because it is the user's own
+credential and storing it costs the box nothing; generation is blocked
+regardless of provider. That last one is the part worth writing down. Routing
+resolves per request in `src/cloud.js` and falls back, so "your own key may
+generate, the shared one may not" leaks the moment a preference resolves to
+Auto — and a deck is 5–15 MB of rasters and two LibreOffice passes on the
+operator's machine whoever's key paid for the words. One gate at the workspace
+entrance cannot leak; a per-provider one cannot help but.
+
+**Look-ahead.** Two later items touch this. Housekeeping has "the report donor
+is install-wide; a hosted box serving more than one institution needs it per
+account" — so `donorStatus(refDir)` takes its directory as a parameter and
+answers per account without changing shape when that lands. "The full
+functional sweep" will exercise the reset and confirmation paths in the running
+app; they were built to be exercisable there (both were driven end to end
+through a real browser against a local SMTP sink, not only by unit test).
+
+> **Learned.** Five things, four of them about where a check belongs.
+>
+> **A gate stated as a default-deny survives the next route; a list does not.**
+> The alternative to `verifiedRequestOnly` — enumerating the fifteen routes that
+> currently spend something — is a list that goes stale the first time a
+> sixteenth is written, and the failure is silent. "Reading is free, changing
+> anything is not" is one sentence, and the test asserts it against routes that
+> do not exist yet.
+>
+> **The donor was checked three steps too late, and so was the briefing.**
+> `createReport` ran a web research pass and a full model write before reaching
+> the render that needed the template, so a missing `.docx` cost minutes and the
+> account's Auto budget to report something knowable before the first request
+> went out. The same shape appeared in the UI: the briefing runs entirely in the
+> browser, so an unconfirmed account answered five questions before the server
+> refused — the same defect spent on the person's time instead of the server's.
+> Both fixes are the same move: check at the entrance.
+>
+> **A "verify your email" gate must degrade to nothing where no email can be
+> sent.** `verificationRequired()` is `mailConfigured()`. Anything else means a
+> box with no SMTP creates accounts it can never unlock, and the failure is
+> invisible until the first stranger signs up. The same reasoning grandfathers
+> every account that predates the column: a migration that locks out the people
+> already on a running box is worse than the problem it solves.
+>
+> **"Forgot password" is an enumeration oracle unless every answer is
+> identical** — including the *timing*. An SMTP dialogue takes seconds, so
+> awaiting the send makes a real address measurably slower than an unknown one
+> and hands back exactly what the generic response was hiding. Dispatch, do not
+> await. It is also a harassment tool: the per-IP limiter does nothing about one
+> inbox being mailbombed from a botnet, so the throttle has to be per address.
+>
+> **Running it found what the tests could not.** The donor guard was inserted
+> into `createDeck` as well as `createReport` — both open with the same two
+> lines and a whole-file replace matched both — so generating a *deck* on a box
+> with no report template failed with "this server has no report template
+> installed". Every unit test passed. It surfaced in the first thirty seconds of
+> a real end-to-end run. Three traps from this session are in `docs/TRAPS.md`.
 
 ### [ ] The deck workspace — too many doors, no front one
 
@@ -3336,6 +3390,27 @@ different screens wearing the same chrome today.
 
 Related and not yet looked at: the same view on a phone, and `SlideEditor.jsx`,
 which is the least likely thing in the app to survive a 390px screen.
+
+### [ ] The admin panel, swept
+
+*Priority: medium. No model. Later, not now.*
+
+The System tab gained a report-template panel and an SMTP row while the hosting
+blockers were being closed, and that was the first time anything on this page
+had been looked at since it was built. The rest has not been.
+
+Five tabs of numbers that nobody has checked against what an operator actually
+needs to answer: is anything broken, who is using this, what is it costing, and
+what do I do about it. Specifically unexamined — whether the Overview cards are
+the four numbers that matter, whether Analytics says anything actionable,
+whether the Users tab supports the operations an operator performs (find,
+promote, delete is the whole vocabulary today, and there is no way to see or
+clear one account's usage), and whether the health rows cover what actually
+fails. `/api/admin/stats` walks every deck directory on every request, which is
+fine at ten decks and is not the shape to keep.
+
+Do it as one pass over the page, the way the landing was done — not as
+individual patches when something is noticed missing.
 
 ### [ ] Reports — structure, and the wait
 
@@ -3392,4 +3467,12 @@ what is actually available or fail loudly instead of degrading quietly.
 - A monochrome theme can only carry three or four distinguishable greys. OOXML
   pattern fills are the real answer for a mono chart with more series than that.
 - The report donor is install-wide. A hosted box serving more than one
-  institution needs it per account, like identity and brand.
+  institution needs it per account, like identity and brand. `donorStatus(refDir)`
+  and `resolveDonor(explicit, refDir)` both take the directory as a parameter,
+  so the change is a resolver that reads `meta.owner` rather than a reshape.
+- `POST /api/decks/search` is unreachable for non-admins. `app.use("/api/decks/:slug")`
+  is registered ~950 lines above the search route, so Express matches it first
+  with `slug = "search"`, the ownership check fails, and the request is refused
+  with "no such deck". Admins pass the ownership check, which is why the
+  operator's own box has never shown it. Register literal segments above the
+  parameterised middleware.
