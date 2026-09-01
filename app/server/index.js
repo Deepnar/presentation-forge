@@ -2320,8 +2320,11 @@ app.post("/api/auth/verify", rateLimit, wrap(async (req, res) => {
 app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
   const user = await requireAuth(req, res, "log in to resend the confirmation");
   if (!user) return;
-  if (!mailConfigured()) return fail(res, 503, "this server cannot send email — ask the owner to confirm your account");
+  // Already confirmed is the first thing to say. Asked in the other order, an
+  // account on a box with no SMTP — which confirms on creation — is told its
+  // address cannot be confirmed, which is both false and alarming.
   if (user.verified) return ok(res, { sent: false, verified: true });
+  if (!mailConfigured()) return fail(res, 503, "this server cannot send email — ask the owner to confirm your account");
   if (mailThrottled("verify", user.email)) {
     // Not a failure the user caused, and not one they can fix by trying again:
     // the message they want already exists. Coded so the banner can say so
