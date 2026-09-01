@@ -22,7 +22,7 @@ import { researchSummary } from "../../src/ai/research.js";
 import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
-import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
+import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, autoHealth, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
 import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
@@ -785,7 +785,10 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
     limits,
     system: {
       ollamaOk, searxngOk, diskFree, uptime: process.uptime(), node: process.version,
-      tcetOk: (await autoStatus()).keySet,
+      // The REAL question, not "is a key configured". A gateway that cannot
+      // generate used to show green here because a key was present, which is
+      // the same healthy-looking box the donor and SMTP rows were hiding.
+      auto: await autoHealth(),
       // Half the product 500s without these two, and neither is visible from
       // any screen that works. They belong where the operator already looks.
       donor: await donorStatus(),

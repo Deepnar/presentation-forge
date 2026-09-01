@@ -299,7 +299,11 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
         <Panel className="p-4">
           <div className="mb-2 text-[12px] font-semibold text-fg">Backends</div>
           <div className="space-y-1.5 text-[12px]">
-            <Row label="Forge Auto" ok={stats.system.tcetOk} detail={stats.system.tcetOk ? "keySet" : "no key"} />
+            <Row
+              label="Forge Auto"
+              ok={stats.system.auto?.ok}
+              detail={stats.system.auto?.ok ? "generating" : (stats.system.auto?.detail ?? "not reachable")}
+            />
             <Row label="Ollama" ok={stats.system.ollamaOk} detail={hosted ? "disabled in hosted" : (stats.system.ollamaOk ? "reachable" : "not reachable")} />
             <Row label="SearXNG" ok={stats.system.searxngOk} detail={stats.system.searxngOk ? "ok" : "down"} />
             {/* Not a backend, but it fails the same way: silently, and only
@@ -436,5 +440,13 @@ function RolePanel({ audit }) {
 }
 
 function Row({ label, ok, detail }) {
-  return <div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} /><span className="text-fg">{label}</span><span className="ml-auto text-fg-faint">{detail}</span></div>;
+  // A failure detail is a sentence from the service, not a word — it wraps
+  // rather than being clipped, because the sentence is the whole value.
+  return (
+    <div className="flex items-start gap-2">
+      <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} />
+      <span className="shrink-0 text-fg">{label}</span>
+      <span className="ml-auto min-w-0 text-right text-fg-faint">{detail}</span>
+    </div>
+  );
 }

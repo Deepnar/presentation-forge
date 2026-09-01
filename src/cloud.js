@@ -339,6 +339,51 @@ export async function cloudStatus(userId = null) {
 /**
  * A live authentication check. For tcet-auto it probes qwen3.6 with 1 token.
  */
+/**
+ * Is the Auto tier actually able to generate, cached briefly.
+ *
+ * `autoStatus().keySet` answers "is a key configured", which the admin page was
+ * showing as the backend's health light — so a gateway that was completely
+ * unable to generate still read green. A key is a fact about this box's
+ * configuration; it says nothing about the service at the other end.
+ *
+ * The real check costs one token, so it is cached: an operator refreshing the
+ * admin page should not each time make a request to a service that may already
+ * be struggling. Short enough that a recovery shows up quickly.
+ */
+const AUTO_HEALTH_TTL_MS = 60_000;
+let autoHealthCache = null;
+
+let autoHealthInFlight = null;
+
+async function probeAutoHealth() {
+  const at = Date.now();
+  let value;
+  try {
+    const r = await testAutoConnection();
+    value = { ok: r.ok === true, detail: r.detail ?? null, checkedAt: new Date(at).toISOString() };
+  } catch (err) {
+    value = { ok: false, detail: err.message, checkedAt: new Date(at).toISOString() };
+  }
+  autoHealthCache = { at, value };
+  return value;
+}
+
+export async function autoHealth({ force = false } = {}) {
+  const fresh = autoHealthCache && Date.now() - autoHealthCache.at < AUTO_HEALTH_TTL_MS;
+  if (!force && fresh) return autoHealthCache.value;
+
+  // Stale-while-revalidate. The probe takes twenty seconds precisely when the
+  // news is bad, so blocking on it makes the admin page slowest exactly when
+  // someone has opened it to find out why. One probe in flight at a time; a
+  // known-stale answer now beats a fresh one after the timeout.
+  if (!autoHealthInFlight) {
+    autoHealthInFlight = probeAutoHealth().finally(() => { autoHealthInFlight = null; });
+  }
+  if (!force && autoHealthCache) return { ...autoHealthCache.value, stale: true };
+  return autoHealthInFlight;
+}
+
 export async function testAutoConnection() {
   const p = await autoProvider();
   if (!p) {
@@ -381,6 +426,17 @@ export async function testAutoConnection() {
     }
     return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };
   } catch (err) {
+    // A timeout is the shape that matters here and the one a raw message
+    // describes worst: the gateway's API answers — its model list came back a
+    // line ago — while the model service behind it never replies. That is an
+    // upstream outage, not a misconfiguration on this box, and the message
+    // should not send an operator hunting through their own settings.
+    if (err.name === "TimeoutError" || /aborted due to timeout/i.test(err.message)) {
+      return {
+        ok: false,
+        detail: "gateway reachable but not generating — a one-token request timed out. The model service behind it is down or saturated; nothing on this box can fix it.",
+      };
+    }
     return { ok: false, detail: err.message };
   }
 }
