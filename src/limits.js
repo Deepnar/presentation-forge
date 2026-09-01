@@ -18,21 +18,29 @@ import { getDb } from "./db.js";
  * applies, and a local Ollama backend is unlimited.
  *
  * Defaults are env-overridable so hosting can tune without a code change.
- *  - hourly_requests: pipeline operations in 60m
+ * The short window is FIVE HOURS, not one. An hour is shorter than a sitting:
+ * someone who plans a deck, reads the outline, changes their mind and
+ * regenerates is doing one piece of work, and a sixty-minute window cuts them
+ * off in the middle of it. Five hours covers a session and still stops a
+ * script.
+ *
+ *  - window_hours: the length of the short window
+ *  - window_requests: pipeline operations within it
  *  - weekly_requests: overall throttle
- *  - hourly_slides: slides generated in 60m (covers one big deck)
+ *  - window_slides: slides generated within the window (covers one big deck)
  *  - weekly_slides: weekly slide budget
  *  - weekly_tokens: rough token budget (optional)
  */
 
 export function limitConfig() {
   return {
-    hourlyRequests: Number(process.env.FORGE_AUTO_HOURLY_REQUESTS ?? 8),
+    windowHours: Number(process.env.FORGE_AUTO_WINDOW_HOURS ?? 5),
+    windowRequests: Number(process.env.FORGE_AUTO_WINDOW_REQUESTS ?? 12),
     weeklyRequests: Number(process.env.FORGE_AUTO_WEEKLY_REQUESTS ?? 30),
-    hourlySlides: Number(process.env.FORGE_AUTO_HOURLY_SLIDES ?? 30),
+    windowSlides: Number(process.env.FORGE_AUTO_WINDOW_SLIDES ?? 45),
     weeklySlides: Number(process.env.FORGE_AUTO_WEEKLY_SLIDES ?? 90),
     weeklyTokens: Number(process.env.FORGE_AUTO_WEEKLY_TOKENS ?? 80000),
-    // One deck may still burst to a full-length deck within the hourly budget.
+    // One deck may still burst to full length inside the window budget.
     maxSlidesPerDeck: Number(process.env.FORGE_AUTO_MAX_SLIDES_PER_DECK ?? 24),
   };
 }
@@ -47,20 +55,21 @@ export function recordAutoEvent({ userId, eventType = "request", slides = 0, tok
 export function getUsage({ userId, provider = "tcet-auto" }) {
   const db = getDb();
   const now = Date.now();
-  const hourAgo = now - 60 * 60 * 1000;
+  const windowMs = limitConfig().windowHours * 60 * 60 * 1000;
+  const windowAgo = now - windowMs;
   const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
 
-  const hourRows = db.prepare(
+  const windowRows = db.prepare(
     `SELECT COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events WHERE user_id=? AND provider=? AND created_at>=?`
-  ).get(userId, provider, hourAgo);
+  ).get(userId, provider, windowAgo);
   const weekRows = db.prepare(
     `SELECT COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events WHERE user_id=? AND provider=? AND created_at>=?`
   ).get(userId, provider, weekAgo);
   return {
-    hour: { requests: hourRows.reqs, slides: hourRows.slides, tokens: hourRows.tokens },
+    window: { requests: windowRows.reqs, slides: windowRows.slides, tokens: windowRows.tokens },
     week: { requests: weekRows.reqs, slides: weekRows.slides, tokens: weekRows.tokens },
     resets: {
-      hourly: new Date(hourAgo + 60 * 60 * 1000 + 1000).toISOString(),
+      window: new Date(windowAgo + windowMs + 1000).toISOString(),
       weekly: new Date(weekAgo + 7 * 24 * 60 * 60 * 1000 + 1000).toISOString(),
     },
   };
@@ -71,14 +80,14 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
   const usage = getUsage({ userId, provider });
   const errors = [];
 
-  if (usage.hour.requests + 1 > cfg.hourlyRequests) {
-    errors.push(`Hourly request limit: ${usage.hour.requests}/${cfg.hourlyRequests} used — try again in an hour`);
+  if (usage.window.requests + 1 > cfg.windowRequests) {
+    errors.push(`Request limit: ${usage.window.requests}/${cfg.windowRequests} used in the last ${cfg.windowHours} hours`);
   }
   if (usage.week.requests + 1 > cfg.weeklyRequests) {
     errors.push(`Weekly request limit: ${usage.week.requests}/${cfg.weeklyRequests} used — resets soon`);
   }
-  if (usage.hour.slides + upcomingSlides > cfg.hourlySlides) {
-    errors.push(`Hourly slide limit: ${usage.hour.slides}/${cfg.hourlySlides} slides this hour, this action would add ${upcomingSlides}`);
+  if (usage.window.slides + upcomingSlides > cfg.windowSlides) {
+    errors.push(`Slide limit: ${usage.window.slides}/${cfg.windowSlides} slides in the last ${cfg.windowHours} hours, and this would add ${upcomingSlides}`);
   }
   if (usage.week.slides + upcomingSlides > cfg.weeklySlides) {
     errors.push(`Weekly slide limit: ${usage.week.slides}/${cfg.weeklySlides} slides this week`);
@@ -95,9 +104,9 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
     usage,
     cfg,
     remaining: {
-      hourlyRequests: Math.max(0, cfg.hourlyRequests - usage.hour.requests),
+      windowRequests: Math.max(0, cfg.windowRequests - usage.window.requests),
       weeklyRequests: Math.max(0, cfg.weeklyRequests - usage.week.requests),
-      hourlySlides: Math.max(0, cfg.hourlySlides - usage.hour.slides),
+      windowSlides: Math.max(0, cfg.windowSlides - usage.window.slides),
       weeklySlides: Math.max(0, cfg.weeklySlides - usage.week.slides),
     },
   };

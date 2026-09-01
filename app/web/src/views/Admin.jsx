@@ -253,7 +253,7 @@ function Analytics({ stats }) {
         <StatCard label="Requests (all time)" value={stats.usage.totalRequests} sub="auto_events" />
         <StatCard label="Slides generated" value={stats.usage.totalSlides} />
         <StatCard label="Tokens" value={`${(stats.usage.totalTokens/1000).toFixed(0)}k`} />
-        <StatCard label="Limits" value={`${stats.limits.hourlyRequests}/h`} sub={`${stats.limits.weeklyRequests}/w · ${stats.limits.maxSlidesPerDeck}/deck`} />
+        <StatCard label="Limits" value={`${stats.limits.windowRequests}/${stats.limits.windowHours}h`} sub={`${stats.limits.weeklyRequests}/week · ${stats.limits.maxSlidesPerDeck}/deck`} />
       </div>
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Top users by Auto requests</div>
