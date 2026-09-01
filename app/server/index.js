@@ -335,6 +335,34 @@ app.get("/api/themes/:name/thumb.png", wrap(async (req, res) => {
   }
 }));
 
+/* ----------------------------------------------------------------- landing */
+
+/**
+ * The landing page's imagery: real slide renders, produced by tools/landing.mjs
+ * and committed under app/gallery/landing.
+ *
+ * Deliberately unauthenticated — this is the front door, seen before anyone has
+ * an account, and the files are derived from committed themes and a committed
+ * deck with branding off, so they carry nothing local. The filename guard is
+ * what keeps the path from reaching anywhere else.
+ */
+const LANDING_DIR = path.join(ROOT, "app", "gallery", "landing");
+const LANDING_FILE = /^[a-z0-9][a-z0-9._-]{0,99}\.(webp|json)$/;
+
+app.get("/api/landing/:file", wrap(async (req, res) => {
+  if (!LANDING_FILE.test(req.params.file)) return res.status(404).end();
+  const file = path.join(LANDING_DIR, req.params.file);
+  try {
+    await stat(file);
+    // Immutable in practice: a regenerated cast changes the manifest, and the
+    // page asks for the manifest without a cache directive.
+    if (req.params.file.endsWith(".webp")) res.set("Cache-Control", "public, max-age=604800");
+    res.sendFile(file);
+  } catch {
+    res.status(404).end();
+  }
+}));
+
 app.get("/api/styles", wrap(async (_req, res) => {
   const styles = await Promise.all((await listStyles()).map(async (name) => {
     const s = await loadStyle(name);

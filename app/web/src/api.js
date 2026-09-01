@@ -84,6 +84,13 @@ function parseFrame(frame) {
 
 export const api = {
   themes: () => call("/api/themes"),
+  // The landing manifest is a plain file, not an { ok } envelope, and a missing
+  // one is a normal state — the page falls back to what it can draw itself
+  // rather than failing.
+  landing: () =>
+    fetch("/api/landing/manifest.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null),
   decks: () => call("/api/decks"),
   deck: (slug) => call(`/api/decks/${slug}`),
   saveDeck: (slug, deck, meta) =>
