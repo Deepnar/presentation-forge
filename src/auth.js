@@ -1,8 +1,9 @@
-import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
 import { getDb, setDbPathForTest } from "./db.js";
+import { mailConfigured } from "./mail.js";
 
 /**
  * Local single-install accounts. This is deliberately NOT a multi-user system:
@@ -85,7 +86,23 @@ export function validateRegistration({ name, email, password }) {
 
 /** Public shape only — never the hash or salt, never anything derivable. */
 export function publicUser(u) {
-  return { name: u.name, email: u.email, createdAt: u.createdAt, ...(u.role ? { role: u.role } : {}) };
+  return {
+    name: u.name,
+    email: u.email,
+    createdAt: u.createdAt,
+    verified: Boolean(u.verifiedAt),
+    ...(u.role ? { role: u.role } : {}),
+  };
+}
+
+/**
+ * Whether an address has to be confirmed before the account can spend anything.
+ * Only where a confirmation can actually be delivered: an install with no SMTP
+ * marks accounts verified at creation, because a gate whose only key is an
+ * email nobody can send is not a gate, it is a locked door with no handle.
+ */
+export function verificationRequired() {
+  return mailConfigured();
 }
 
 /**
@@ -107,13 +124,14 @@ export async function listUsers() {
   const d = db();
   if (d) {
     try {
-      const rows = d.prepare("SELECT email,name,role,created_at,google_sub FROM users ORDER BY created_at DESC").all();
+      const rows = d.prepare("SELECT email,name,role,created_at,google_sub,verified_at FROM users ORDER BY created_at DESC").all();
       return rows.map((r) => ({
         email: r.email,
         name: r.name,
         role: r.role ?? null,
         createdAt: r.created_at,
         google: Boolean(r.google_sub),
+        verified: Boolean(r.verified_at),
         admin: r.role === "admin",
       }));
     } catch {}
@@ -125,6 +143,7 @@ export async function listUsers() {
     role: u.role ?? null,
     createdAt: u.createdAt,
     google: Boolean(u.google_sub),
+    verified: Boolean(u.verifiedAt),
     admin: u.role === "admin",
   }));
 }
@@ -201,6 +220,7 @@ function rowToUser(row) {
     hash: row.password_hash,
     role: row.role,
     google_sub: row.google_sub,
+    verifiedAt: row.verified_at,
   };
 }
 
@@ -216,8 +236,8 @@ export async function register({ name, email, password }) {
     const now = new Date().toISOString();
     // Self-registration never carries a role. Admin comes from seedAdmin() or
     // an existing admin's promotion, never from what someone typed in a form.
-    d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at) VALUES (?,?,?,?,?)")
-      .run(normalized, name.trim(), hash, salt, now);
+    d.prepare("INSERT INTO users (email,name,password_hash,salt,created_at,verified_at) VALUES (?,?,?,?,?,?)")
+      .run(normalized, name.trim(), hash, salt, now, verificationRequired() ? null : now);
     const row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -225,10 +245,12 @@ export async function register({ name, email, password }) {
   if (users.some((u) => u.email === normalized)) {
     throw new Error("an account with that email already exists");
   }
+  const now = new Date().toISOString();
   const user = {
     name: name.trim(),
     email: normalized,
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    verifiedAt: verificationRequired() ? null : now,
     ...hashPassword(password),
   };
   users.push(user);
@@ -275,16 +297,18 @@ export async function seedAdmin({ name, email, password }) {
     if (exists) return false;
     const { salt, hash } = hashPassword(password);
     const now = new Date().toISOString();
-    d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)")
-      .run(normalized, name.trim(), hash, salt, "admin", now);
+    d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at,verified_at) VALUES (?,?,?,?,?,?,?)")
+      .run(normalized, name.trim(), hash, salt, "admin", now, now);
     return true;
   }
   const users = await loadUsers();
   if (users.some((u) => u.email === normalized)) return false;
+  const seededAt = new Date().toISOString();
   const user = {
     name: name.trim(),
     email: normalized,
-    createdAt: new Date().toISOString(),
+    createdAt: seededAt,
+    verifiedAt: seededAt,
     role: "admin",
     ...hashPassword(password),
   };
@@ -338,13 +362,18 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
     if (row) return publicUser(rowToUser(row));
     row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     if (row) {
-      d.prepare("UPDATE users SET google_sub=?, google_email=? WHERE id=?").run(sub, normalized, row.id);
+      // Signing in with Google against an existing unverified account proves
+      // the address as surely as clicking a link would.
+      d.prepare("UPDATE users SET google_sub=?, google_email=?, verified_at=COALESCE(verified_at,?) WHERE id=?")
+        .run(sub, normalized, new Date().toISOString(), row.id);
       row = d.prepare("SELECT * FROM users WHERE id=?").get(row.id);
       return publicUser(rowToUser(row));
     }
     const now = new Date().toISOString();
-    d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at) VALUES (?,?,?,?,?)")
-      .run(normalized, name.trim() || normalized, sub, normalized, now);
+    // verifyGoogleIdToken refuses a token whose email_verified is false, so
+    // arriving here IS the proof of ownership that the email flow exists to get.
+    d.prepare("INSERT INTO users (email,name,google_sub,google_email,created_at,verified_at) VALUES (?,?,?,?,?,?)")
+      .run(normalized, name.trim() || normalized, sub, normalized, now, now);
     row = d.prepare("SELECT * FROM users WHERE email=?").get(normalized);
     return publicUser(rowToUser(row));
   }
@@ -356,13 +385,16 @@ export async function findOrCreateGoogleUser({ sub, email, name }) {
   if (user) {
     user.google_sub = sub;
     user.google_email = normalized;
+    user.verifiedAt ??= new Date().toISOString();
     await writeJson(USERS_FILE, users);
     return publicUser(user);
   }
+  const linkedAt = new Date().toISOString();
   const newUser = {
     name: name.trim() || normalized,
     email: normalized,
-    createdAt: new Date().toISOString(),
+    createdAt: linkedAt,
+    verifiedAt: linkedAt,
     google_sub: sub,
     google_email: normalized,
   };
@@ -466,6 +498,137 @@ export function bearerToken(header) {
   if (typeof header !== "string") return null;
   const m = header.match(/^Bearer\s+(.+)$/i);
   return m ? m[1] : null;
+}
+
+/* --------------------------------------------------- reset / verify tokens */
+
+/**
+ * One store for both "prove you can read this address" jobs: password reset and
+ * address verification. They differ only in lifetime and in what consuming one
+ * does, so they share a table and a code path — two near-identical token
+ * implementations is how one of them ends up missing the single-use check.
+ *
+ * What is stored is the SHA-256 of the token, never the token. A reset token is
+ * a bearer credential for an account; a database that leaks must not be a list
+ * of live password resets. The plaintext exists only in the email.
+ *
+ * A reset is short (an hour — it is answered immediately or not at all); a
+ * verification is long (a day — it can sit in a spam folder overnight and still
+ * be worth clicking).
+ */
+export const RESET_TTL_MINUTES = Number(process.env.FORGE_RESET_TTL_MINUTES) || 60;
+export const VERIFY_TTL_HOURS = Number(process.env.FORGE_VERIFY_TTL_HOURS) || 24;
+
+const PURPOSES = new Set(["reset", "verify"]);
+const tokenHash = (token) => createHash("sha256").update(String(token)).digest("hex");
+
+/**
+ * Mint a token for an account. Any outstanding token of the same purpose is
+ * dropped first: two live reset links for one account doubles the window an
+ * intercepted email is useful in, and the newest request is the one the person
+ * is actually looking at.
+ *
+ * Returns the plaintext, which is written to exactly one place — the email.
+ */
+export function issueAuthToken(email, purpose) {
+  if (!PURPOSES.has(purpose)) throw new Error(`unknown token purpose: ${purpose}`);
+  const normalized = String(email ?? "").trim().toLowerCase();
+  const d = db();
+  if (!d) return null;
+  const row = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
+  if (!row) return null;
+  const token = randomBytes(32).toString("hex");
+  const now = Date.now();
+  const ttl = purpose === "reset"
+    ? RESET_TTL_MINUTES * 60 * 1000
+    : VERIFY_TTL_HOURS * 60 * 60 * 1000;
+  d.prepare("DELETE FROM auth_tokens WHERE user_id=? AND purpose=?").run(row.id, purpose);
+  d.prepare("INSERT INTO auth_tokens (token_hash,user_id,email,purpose,created_at,expires_at) VALUES (?,?,?,?,?,?)")
+    .run(tokenHash(token), row.id, normalized, purpose, now, now + ttl);
+  return token;
+}
+
+/**
+ * Spend a token, or explain why it cannot be spent.
+ *
+ * The consume is a conditional UPDATE rather than a read-then-write: two
+ * requests arriving together on one token would both pass a read check and both
+ * proceed, and "single use" that two callers can satisfy is not single use.
+ * SQLite reports the row count, so exactly one caller sees `changes === 1`.
+ */
+export function consumeAuthToken(token, purpose) {
+  const d = db();
+  if (!d) return { ok: false, reason: "unavailable" };
+  const hash = tokenHash(token ?? "");
+  const row = d.prepare("SELECT * FROM auth_tokens WHERE token_hash=? AND purpose=?").get(hash, purpose);
+  if (!row) return { ok: false, reason: "invalid" };
+  if (row.used_at) return { ok: false, reason: "used" };
+  if (Date.now() > row.expires_at) return { ok: false, reason: "expired" };
+  const spent = d.prepare("UPDATE auth_tokens SET used_at=? WHERE token_hash=? AND used_at IS NULL")
+    .run(Date.now(), hash);
+  if (!spent.changes) return { ok: false, reason: "used" };
+  const user = d.prepare("SELECT * FROM users WHERE id=?").get(row.user_id);
+  if (!user) return { ok: false, reason: "invalid" };
+  return { ok: true, email: row.email, userId: row.user_id, user: publicUser(rowToUser(user)) };
+}
+
+/** Drop spent and expired rows. Called from the reset path, so the table is
+ *  pruned by ordinary use rather than needing a scheduled job. */
+export function pruneAuthTokens() {
+  const d = db();
+  if (!d) return 0;
+  return d.prepare("DELETE FROM auth_tokens WHERE expires_at < ? OR used_at IS NOT NULL")
+    .run(Date.now() - 24 * 60 * 60 * 1000).changes ?? 0;
+}
+
+export function markVerified(email) {
+  const normalized = String(email ?? "").trim().toLowerCase();
+  const d = db();
+  if (!d) return false;
+  const res = d.prepare("UPDATE users SET verified_at=COALESCE(verified_at,?) WHERE email=?")
+    .run(new Date().toISOString(), normalized);
+  return Boolean(res.changes);
+}
+
+/**
+ * Set a new password after a reset.
+ *
+ * Every session for the account dies with it. A reset is what someone does when
+ * they believe they have lost control of the account, and leaving the sessions
+ * that prompted the reset alive would answer the wrong half of the problem.
+ * Outstanding reset tokens go too, and a completed reset proves the address, so
+ * an unverified account is verified by finishing one.
+ */
+export function resetPassword(email, password) {
+  const error = validateRegistration({ name: "x", email, password });
+  if (error) throw new Error(error);
+  const normalized = String(email).trim().toLowerCase();
+  const d = db();
+  if (!d) throw new Error("account store unavailable");
+  const row = d.prepare("SELECT id FROM users WHERE email=?").get(normalized);
+  if (!row) throw new Error("no such user");
+  const { salt, hash } = hashPassword(password);
+  const now = new Date().toISOString();
+  d.prepare("UPDATE users SET password_hash=?, salt=?, verified_at=COALESCE(verified_at,?) WHERE id=?")
+    .run(hash, salt, now, row.id);
+  d.prepare("DELETE FROM sessions WHERE user_id=?").run(row.id);
+  d.prepare("DELETE FROM auth_tokens WHERE user_id=? AND purpose='reset'").run(row.id);
+  return true;
+}
+
+/** Whether an account exists and still needs its address confirmed. Used to
+ *  decide if a verification mail is worth sending at all. */
+export function accountVerificationState(email) {
+  const normalized = String(email ?? "").trim().toLowerCase();
+  const d = db();
+  if (!d) return null;
+  const row = d.prepare("SELECT name, verified_at, password_hash FROM users WHERE email=?").get(normalized);
+  if (!row) return null;
+  return {
+    name: row.name,
+    verified: Boolean(row.verified_at),
+    hasPassword: Boolean(row.password_hash),
+  };
 }
 
 /* ------------------------------------------------------------ session cookie */

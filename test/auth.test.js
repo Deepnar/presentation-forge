@@ -25,8 +25,9 @@ test("scrypt hashes are salted and verify, but never equal the password", async 
   const user = await auth.register({ name, email, password: "correct horse" });
   assert.equal(user.name, name);
   assert.equal(user.email, email);
-  // The password is never on the public user.
-  assert.deepEqual(Object.keys(user).sort(), ["createdAt", "email", "name"]);
+  // The password is never on the public user. Asserted as the whole key set,
+  // not as a set of absences, so a new field that leaks something fails here.
+  assert.deepEqual(Object.keys(user).sort(), ["createdAt", "email", "name", "verified"]);
 
   const authed = await auth.authenticate(email, "correct horse");
   assert.ok(authed);
