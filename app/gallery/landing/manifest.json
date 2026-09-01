@@ -1,0 +1,263 @@
+{
+  "deck": "decks/_public/landing/deck.yaml",
+  "themes": [
+    {
+      "name": "swiss-international",
+      "label": "Swiss International",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "swiss-international--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6456
+        },
+        {
+          "type": "bullets",
+          "file": "swiss-international--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 19284
+        }
+      ]
+    },
+    {
+      "name": "editorial-serif-light",
+      "label": "Editorial Serif Light",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "editorial-serif-light--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6902
+        },
+        {
+          "type": "bullets",
+          "file": "editorial-serif-light--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 19752
+        }
+      ]
+    },
+    {
+      "name": "gradient-mesh-dark",
+      "label": "Gradient Mesh Dark",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "gradient-mesh-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 9440
+        },
+        {
+          "type": "bullets",
+          "file": "gradient-mesh-dark--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 20678
+        }
+      ]
+    },
+    {
+      "name": "linear-dark",
+      "label": "Linear Dark",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "linear-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6438
+        },
+        {
+          "type": "bullets",
+          "file": "linear-dark--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 18692
+        }
+      ]
+    },
+    {
+      "name": "sci-fi-hud",
+      "label": "Sci-Fi HUD",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "sci-fi-hud--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 5930
+        },
+        {
+          "type": "bullets",
+          "file": "sci-fi-hud--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 19626
+        }
+      ]
+    },
+    {
+      "name": "bauhaus",
+      "label": "Bauhaus",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "bauhaus--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6628
+        },
+        {
+          "type": "bullets",
+          "file": "bauhaus--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 19720
+        }
+      ]
+    },
+    {
+      "name": "minimal-muji",
+      "label": "Minimal Muji",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "minimal-muji--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 5774
+        },
+        {
+          "type": "bullets",
+          "file": "minimal-muji--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17574
+        }
+      ]
+    },
+    {
+      "name": "editorial-magazine",
+      "label": "Editorial Magazine",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "editorial-magazine--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 7770
+        },
+        {
+          "type": "bullets",
+          "file": "editorial-magazine--bullets.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 19714
+        }
+      ]
+    }
+  ],
+  "showcase": {
+    "theme": "swiss-international",
+    "label": "Swiss International",
+    "slides": [
+      {
+        "type": "title",
+        "file": "swiss-international--title.webp",
+        "w": 1200,
+        "h": 675,
+        "bytes": 6456
+      },
+      {
+        "type": "bullets",
+        "file": "swiss-international--bullets.webp",
+        "w": 1200,
+        "h": 675,
+        "bytes": 19284
+      },
+      {
+        "type": "stats",
+        "file": "swiss-international--stats.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 13886
+      },
+      {
+        "type": "compare",
+        "file": "swiss-international--compare.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 16514
+      },
+      {
+        "type": "metric-comparison",
+        "file": "swiss-international--metric-comparison.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 12638
+      },
+      {
+        "type": "chart",
+        "file": "swiss-international--chart.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 10232
+      },
+      {
+        "type": "flow",
+        "file": "swiss-international--flow.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 12622
+      },
+      {
+        "type": "timeline",
+        "file": "swiss-international--timeline.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 8674
+      },
+      {
+        "type": "feature-grid",
+        "file": "swiss-international--feature-grid.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 14308
+      },
+      {
+        "type": "pull-quote",
+        "file": "swiss-international--pull-quote.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 12120
+      },
+      {
+        "type": "takeaway",
+        "file": "swiss-international--takeaway.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 8858
+      },
+      {
+        "type": "closing",
+        "file": "swiss-international--closing.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 7908
+      }
+    ]
+  }
+}
