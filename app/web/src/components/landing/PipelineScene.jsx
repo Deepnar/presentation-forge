@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { useSceneProgress, useNarrow, span, entry } from "../../lib/scene.js";
+import { useSceneProgress, span, entry } from "../../lib/scene.js";
+import { useNarrow } from "../../lib/viewport.js";
 import { PIPELINE_MOCKS } from "./mockups.jsx";
 
 const STEPS = [
@@ -30,7 +31,7 @@ export default function PipelineScene() {
   // A phone cannot hold the two-column frame AND seven steps in one screen,
   // and the stacked version is different content rather than the same content
   // repositioned — so this is a query, not a measurement.
-  const narrow = useNarrow();
+  const narrow = useNarrow("(max-width: 1023px)");
   const i = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length * 0.999));
   const Mock = PIPELINE_MOCKS[i];
   const step = STEPS[i];
@@ -82,7 +83,7 @@ export default function PipelineScene() {
   }
 
   return (
-    <div ref={ref} data-section="pipeline" style={{ height: `${STEPS.length * 26 + 90}vh` }}>
+    <div ref={ref} data-section="pipeline" style={{ height: `${STEPS.length * 32 + 95}vh` }}>
       {/* Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
           Without it a panel entering from the left is pushed past the right
           edge and the whole document scrolls sideways. */}

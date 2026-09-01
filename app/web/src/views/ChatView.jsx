@@ -993,11 +993,18 @@ export default function ChatView({
               {hosted ? "Use Auto" : "Use Local"}
             </button>
           )}
-          <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send" className="ml-1 hidden sm:inline-flex">
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
-            </svg>
-          </Button>
+          {/* Wrapped rather than given `hidden` directly: Button's own base
+              class sets inline-flex, and two display utilities on one element
+              are resolved by Tailwind's ordering, not by the order they are
+              written — so this button stayed visible on a phone and the
+              composer showed two send controls at once. */}
+          <span className="ml-1 hidden sm:contents">
+            <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+              </svg>
+            </Button>
+          </span>
         </div>
       </div>
       <div className="flex justify-end border-t border-line/40 px-3 py-2 sm:hidden">
@@ -1019,6 +1026,16 @@ export default function ChatView({
     return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-4">
+        {/* The sidebar is an off-canvas drawer below 768px, so this is the only
+            way back to it. Hidden above that width, where it is a column and
+            has its own toggle. */}
+        <button
+          onClick={onToggleLeft}
+          aria-label={leftOpen ? "Close the menu" : "Open the menu"}
+          className="-ml-1 grid h-8 w-8 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg md:hidden"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold text-fg">{chat.title}</div>
           <div className="truncate text-[10.5px] text-fg-faint">

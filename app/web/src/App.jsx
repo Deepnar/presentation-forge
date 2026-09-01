@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
+import { useNarrow } from "./lib/viewport.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import ParticleField from "./components/ParticleField.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -42,6 +43,12 @@ export default function App() {
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
+  // On a phone the sidebar cannot be a column: 256px of a 390px screen leaves
+  // the app 134px. It becomes an overlay drawer instead, and starts closed —
+  // the remembered preference is about a desktop layout that does not exist
+  // here.
+  const narrow = useNarrow();
+  useEffect(() => { if (narrow) setLeftOpen(false); }, [narrow]);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login"); // login | register — the landing's auth modal
   const [focusSearch, setFocusSearch] = useState(0);
@@ -411,7 +418,7 @@ export default function App() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative min-h-screen bg-base">
-        <ParticleField boost={2.2} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-35" />
+        <ParticleField boost={2.6} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-50" />
         <div className="relative z-10 flex min-h-screen flex-col pt-14">
           <HeaderBar
             leftOpen={leftOpen}
@@ -449,7 +456,7 @@ export default function App() {
 
   return (
     <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden overflow-x-hidden"}`}>
-      <ParticleField boost={isTourView ? 2.2 : 1} className={`pointer-events-none fixed inset-0 z-0 h-full w-full ${isTourView ? "opacity-35" : "opacity-30"}`} />
+      <ParticleField boost={isTourView ? 2.6 : 1.4} className={`pointer-events-none fixed inset-0 z-0 h-full w-full ${isTourView ? "opacity-50" : "opacity-38"}`} />
 
       <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col overflow-x-hidden"}`}>
         {isTourView && (
@@ -467,14 +474,30 @@ export default function App() {
 
         <div className={`isolate flex ${isTourView ? "flex-1" : "min-h-0 flex-1"}`}>
           {view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view) && (
-            <div className="flex">
+            <>
+            {narrow && leftOpen && (
+              <div
+                className="fade-in fixed inset-0 z-30 bg-[var(--color-overlay)]"
+                onClick={() => setLeftOpen(false)}
+                aria-hidden
+              />
+            )}
+            <div
+              className={
+                narrow
+                  ? `fixed inset-y-0 left-0 z-40 flex transition-transform duration-[var(--dur-shell)] ease-[var(--ease-shell)] ${
+                      leftOpen ? "translate-x-0" : "-translate-x-full"
+                    }`
+                  : "flex"
+              }
+            >
               <Sidebar
                 chats={chats}
                 decks={decks}
                 activeChatId={activeChatId}
                 activeSlug={view === "deck" || view === "report" || view === "research" ? activeSlug : null}
                 view={view}
-                open={leftOpen}
+                open={narrow ? true : leftOpen}
                 focusSearch={focusSearch}
                 onOpenChat={openChat}
                 onOpenDeck={openDeck}
@@ -487,9 +510,11 @@ export default function App() {
                 onOpenSettings={() => setSettingsOpen(true)}
                 onOpenProfile={() => setProfileOpen(true)}
                 onToggleLeft={() => setLeftOpen((o) => !o)}
+                onNavigate={narrow ? () => setLeftOpen(false) : undefined}
                 isAdmin={isAdminUser}
               />
             </div>
+            </>
           )}
 
           {/* A tour view scrolls the DOCUMENT, and its landing scenes hold

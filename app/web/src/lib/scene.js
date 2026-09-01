@@ -106,27 +106,3 @@ export function useTooTall(ref, deps = []) {
   }, [ref, ...deps]);
   return tooTall;
 }
-
-/**
- * A viewport too narrow for a scene whose pinned and stacked layouts are
- * genuinely different content.
- *
- * `useTooTall` is the better test where both layouts render the same DOM, but
- * it oscillates when they do not: measuring the stacked layout (taller by
- * construction) would keep the scene stacked forever. A query is stable
- * because it does not depend on what is currently rendered.
- */
-export function useNarrow(query = "(max-width: 1023px)") {
-  const [narrow, setNarrow] = useState(
-    () => typeof window !== "undefined" && window.matchMedia?.(query).matches,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia?.(query);
-    if (!mq) return;
-    const on = () => setNarrow(mq.matches);
-    on();
-    mq.addEventListener?.("change", on);
-    return () => mq.removeEventListener?.("change", on);
-  }, [query]);
-  return narrow;
-}

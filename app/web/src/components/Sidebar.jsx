@@ -78,7 +78,7 @@ function SidebarToggle({ onOpenSettings }) {
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
-  user, identity, onOpenSettings, onOpenProfile, onToggleLeft, isAdmin,
+  user, identity, onOpenSettings, onOpenProfile, onToggleLeft, isAdmin, onNavigate,
 }) {
   const [tab, setTab] = useState("chats"); // chats | projects
   const [query, setQuery] = useState("");
@@ -194,7 +194,7 @@ export default function Sidebar({
             {tab === "chats" && (
               <>
                 <button
-                  onClick={() => onNewChat("deck")}
+                  onClick={() => { onNewChat("deck"); onNavigate?.(); }}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-[13px] font-semibold text-on-accent shadow-sm transition hover:bg-accent-hi"
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -211,7 +211,7 @@ export default function Sidebar({
                           <div key={c.id} className="group relative">
                             <a
                               href={`#/chat/${c.id}`}
-                              onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenChat(c.id); } }}
+                              onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenChat(c.id); onNavigate?.(); } }}
                               title={c.title}
                               className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
                                 activeChatId === c.id
@@ -261,7 +261,7 @@ export default function Sidebar({
                     <div key={d.slug} className="group relative">
                       <a
                         href={`#/deck/${d.slug}`}
-                        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenDeck(d.slug); } }}
+                        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenDeck(d.slug); onNavigate?.(); } }}
                         title={d.title}
                         className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
                           activeSlug === d.slug
@@ -282,7 +282,7 @@ export default function Sidebar({
                         open={openMenu === `d-${d.slug}`}
                         onToggle={(v) => setOpenMenu(v ? `d-${d.slug}` : null)}
                         items={[
-                          { label: "Open", onClick: () => onOpenDeck(d.slug) },
+                          { label: "Open", onClick: () => { onOpenDeck(d.slug); onNavigate?.(); } },
                           { label: "Delete project", danger: true, onClick: () => setConfirmDelete(d) },
                         ]}
                       />
@@ -321,7 +321,7 @@ export default function Sidebar({
       ) : (
         <div className="flex h-full flex-col items-center gap-1 py-3">
           <IconButton icon={PanelLeftOpen} title="Expand navigation" onClick={onToggleLeft} />
-          <IconButton icon={PlusIcon} title="New chat" onClick={() => onNewChat("deck")} />
+          <IconButton icon={PlusIcon} title="New chat" onClick={() => { onNewChat("deck"); onNavigate?.(); }} />
           <IconButton
             icon={LayersIcon}
             title="Projects"
