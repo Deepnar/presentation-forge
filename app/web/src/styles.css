@@ -48,9 +48,15 @@
      IS white, and a white-on-white button is invisible rather than ugly. */
   --color-on-accent: #FFFFFF;
 
-  --color-amber: #F59E0B;
-  --color-danger: #EF4444;
-  --color-success: #10B981;
+  /* Status colours are read as TEXT far more often than they are used as a
+     fill — text-amber, text-danger, and /10 washes with the same token on top.
+     The bright versions were decorative rather than legible: amber sat at
+     1.94:1 on a panel and success at 2.29:1, which is not a colour, it is a
+     suggestion. These clear 4.5:1 on every ground including their own 10%
+     wash, and still read as red, green and amber when used as a fill. */
+  --color-amber: #8D5A00;
+  --color-danger: #B91C1C;
+  --color-success: #0A7350;
   --color-on-danger: #FFFFFF;
   --color-overlay: rgba(15, 23, 42, 0.45);
 
