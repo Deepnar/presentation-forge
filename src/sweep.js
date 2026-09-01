@@ -2,7 +2,7 @@ import { readdir, stat, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { DECKS } from "./paths.js";
-import { sendMail, sweepMailBody, mailConfigured } from "./mail.js";
+import { sendMail, sweepMailBody, sweepMailConfigured } from "./mail.js";
 
 /**
  * The monthly sweep — the thing that keeps a friend's home server from becoming
@@ -68,7 +68,7 @@ export async function sweep({ olderThanDays = SWEEP_DEFAULT_DAYS, dryRun = false
 
   // Always mail, so the owner knows the sweep ran — listing what it will do on
   // a dry run, what it did otherwise.
-  if (mailConfigured()) {
+  if (sweepMailConfigured()) {
     const subject = dryRun ? "Forge sweep preview" : "Forge monthly sweep complete";
     await sendMail({
       subject,

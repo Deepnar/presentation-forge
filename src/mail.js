@@ -2,14 +2,20 @@ import { connect } from "node:net";
 import { connect as tlsConnect } from "node:tls";
 
 /**
- * A minimal SMTP client — the whole app needs is "send an email on sweep day",
- * and pulling nodemailer in for one message is the kind of dependency the
- * local-first project is built against. Node's net/tls only; no framework.
+ * A minimal SMTP client — pulling nodemailer in for a handful of messages is
+ * the kind of dependency the local-first project is built against. Node's
+ * net/tls only; no framework.
+ *
+ * It began as "send an email on sweep day", to one address the operator set in
+ * env. Password reset and address verification made the recipient a per-message
+ * argument: FORGE_SMTP_TO is now only the sweep's destination, and `to` is what
+ * every transactional message carries.
  *
  * Env config (all optional — with none set the helper is a silent no-op):
  *   FORGE_SMTP_HOST, FORGE_SMTP_PORT (default 587), FORGE_SMTP_USER,
  *   FORGE_SMTP_PASS, FORGE_SMTP_FROM, FORGE_SMTP_TO,
  *   FORGE_SMTP_SECURE=1  (implicit TLS on connect, port 465 style)
+ *   FORGE_PUBLIC_URL     where the app answers, for the links in the messages
  *
  * On a plain connection the client upgrades via STARTTLS when the server
  * advertises it (the standard submission-port handshake, 587); servers that do
@@ -27,9 +33,39 @@ const cfg = () => ({
   secure: process.env.FORGE_SMTP_SECURE === "1",
 });
 
+/**
+ * Whether outbound mail can be sent at all. Deliberately says nothing about
+ * FORGE_SMTP_TO: that address is the sweep's destination, and a box that can
+ * reach an SMTP server can send a reset to whoever asked for one.
+ *
+ * This predicate is load-bearing beyond mail. Address verification is only
+ * enforced where a verification message can actually be delivered — an install
+ * with no SMTP verifies accounts on creation, because the alternative is a box
+ * that locks out every account it creates and offers no way back.
+ */
 export function mailConfigured() {
   const c = cfg();
-  return Boolean(c.host && c.from && c.to && c.user && c.pass);
+  return Boolean(c.host && c.from && c.user && c.pass);
+}
+
+/** The sweep's fixed recipient, which is a separate question from whether mail
+ *  works at all. */
+export function sweepMailConfigured() {
+  return mailConfigured() && Boolean(cfg().to);
+}
+
+/**
+ * Where this install answers, for the links inside a message. A reset link that
+ * points at localhost is useless in an inbox, so the operator sets
+ * FORGE_PUBLIC_URL; the CORS allow-list is the next best guess, since it is
+ * already the browser origin the API expects to be called from.
+ */
+export function linkBase() {
+  const explicit = (process.env.FORGE_PUBLIC_URL ?? "").trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  const origin = (process.env.FORGE_UI_ORIGIN ?? "").split(",")[0].trim();
+  if (origin) return origin.replace(/\/+$/, "");
+  return "http://localhost:5173";
 }
 
 /** Whether a multiline EHLO reply advertises STARTTLS. */
@@ -56,9 +92,11 @@ function offersStartTls(reply) {
  *  10  BODY      250 -> QUIT
  *  11  QUIT      221 -> done
  */
-export function sendMail({ subject, body } = {}) {
+export function sendMail({ subject, body, to } = {}) {
   const c = cfg();
+  const rcpt = String(to ?? c.to ?? "").trim();
   if (!mailConfigured()) return Promise.resolve({ sent: false, reason: "SMTP not configured" });
+  if (!rcpt) return Promise.resolve({ sent: false, reason: "no recipient" });
 
   return new Promise((resolve, reject) => {
     let socket = c.secure
@@ -85,10 +123,12 @@ export function sendMail({ subject, body } = {}) {
       { code: 334, send: () => Buffer.from(c.user).toString("base64") },
       { code: 334, send: () => Buffer.from(c.pass).toString("base64") },
       { code: 235, send: () => `MAIL FROM:<${c.from}>` },
-      { code: 250, send: () => `RCPT TO:<${c.to}>` },
+      { code: 250, send: () => `RCPT TO:<${rcpt}>` },
       { code: 250, send: () => "DATA" },
       { code: 354, send: () => {
           const data =
+            `From: ${c.from}\r\n` +
+            `To: ${rcpt}\r\n` +
             `Subject: ${subject}\r\n` +
             `MIME-Version: 1.0\r\n` +
             `Content-Type: text/plain; charset=utf-8\r\n\r\n` +
@@ -180,4 +220,50 @@ export function sweepMailBody({ deleted = [], willDelete = [], olderThanDays }) 
   }
   lines.push(`\nDownloaded decks are kept locally; the server only holds recent work.`);
   return lines.join("\n");
+}
+
+/* ------------------------------------------------------- transactional mail */
+
+/**
+ * The two messages an account can be sent about itself. Both are plain text on
+ * purpose: this client sends one part, and a reset link that arrives as legible
+ * text in every mail reader is worth more than a styled one that arrives as a
+ * blob in some of them.
+ *
+ * The link carries the token in the URL fragment, not the query string. A
+ * fragment is never sent to the server, never lands in an access log, and is
+ * not forwarded in a Referer header when the page loads its own assets — the
+ * app reads it in the browser and POSTs it back over TLS. It is also already
+ * how this SPA routes.
+ */
+export function resetMail({ name, token, minutes }) {
+  const link = `${linkBase()}/#/reset/${token}`;
+  return {
+    subject: "Reset your Presentation Forge password",
+    body:
+      `Hello ${name},\n\n` +
+      `Someone asked to reset the password for this account. Open the link\n` +
+      `below within ${minutes} minutes to choose a new one:\n\n` +
+      `  ${link}\n\n` +
+      `The link works once. If you did not ask for this, ignore this message —\n` +
+      `your password has not changed and nobody was told the address exists.\n\n` +
+      `— Presentation Forge\n`,
+  };
+}
+
+export function verifyMail({ name, token, hours }) {
+  const link = `${linkBase()}/#/verify/${token}`;
+  return {
+    subject: "Confirm your email for Presentation Forge",
+    body:
+      `Hello ${name},\n\n` +
+      `Confirm this address to start generating. The link is good for\n` +
+      `${hours} hours:\n\n` +
+      `  ${link}\n\n` +
+      `Until it is confirmed the account can sign in and look around, but\n` +
+      `cannot create or generate anything.\n\n` +
+      `If you did not sign up, ignore this message — the account cannot be\n` +
+      `used without confirming this address.\n\n` +
+      `— Presentation Forge\n`,
+  };
 }
