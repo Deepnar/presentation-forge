@@ -3257,12 +3257,17 @@ light and dark, user-settable, light by default.
   the mode chip made the mode switch, labels that describe the product rather
   than the data model, the themes page actually showing themes.
 
-**What is left.** The app half has not been designed, only patched where it
-was outright confusing. It has its own entry now — "The deck workspace — too
-many doors, no front one" — plus the briefing flow end to end and the rest of
-the app's density and hierarchy. The landing and the chat view work on a
-phone; the deck view, the report view and `SlideEditor.jsx` at that width are
-unverified.
+**What is left.** The largest piece of the app half is now done — "The deck
+workspace — too many doors, no front one" is ticked, and with it the project
+navigation, the report-first entry flow, and the phone verification this entry
+was still waiting on: every project page and `SlideEditor.jsx` are checked at
+390px with no horizontal overflow.
+
+What remains under this entry is the briefing flow end to end, and the rest of
+the app's density and hierarchy — the chat view's own surfaces, Settings, and
+the screens nobody has sat with. The admin page has its own entry now ("The
+admin panel, swept"). This box stays unticked until those have had a pass, not
+because the design direction is unresolved.
 
 > **Learned.** Four things, all of which cost real time.
 >
@@ -3370,26 +3375,71 @@ through a real browser against a local SMTP sink, not only by unit test).
 > installed". Every unit test passed. It surfaced in the first thirty seconds of
 > a real end-to-end run. Three traps from this session are in `docs/TRAPS.md`.
 
-### [ ] The deck workspace — too many doors, no front one
+### [x] The deck workspace — too many doors, no front one
 
 *Priority: high. No model. This is the page users actually live in.*
 
-`views/DeckDetail.jsx` is the largest view in the app (~1.8k lines) and has
-never been through a design pass. Arriving at a deck presents, before any
-content: three visually identical selects (theme, style, density), Re-sweep,
-Render/"Up to date", `.pptx`, an Export menu, and an overflow hiding Clone,
-Versions and Dark mode — eight controls, none of them marked as the one you
-probably want. Below that a "never finalised" banner with its own CTA, then
-three panels (Report, Research, Speaker script) that are each an empty state
-with their own generate button, then the slide grid.
+`views/DeckDetail.jsx` was the largest view in the app (~1.8k lines) and had
+never been through a design pass. Arriving at a deck presented, before any
+content: theme, style and density, Re-sweep, Render/"Up to date", `.pptx`, an
+Export menu, and an overflow hiding Clone, Versions and Dark mode — eight
+controls, none marked as the one you probably want. Below that a "never
+finalised" banner with its own CTA, then three panels (Report, Research,
+Speaker script) each an empty state with its own generate button, then the
+slide grid. Roughly a dozen competing actions on arrival.
 
-That is roughly a dozen competing actions on arrival. The work is to decide
-what a deck page is FOR at each stage of a deck's life and show only that:
-a freshly generated deck, a finalised one, and one being revised are three
-different screens wearing the same chrome today.
+**What it is now: a project of four pages.** `Deck · Report · Research ·
+Script`, as plain links under the project title — weight and ink, no pill and
+no boxed strip, because a boxed control directly under a title reads as a
+second header rather than as a way through one page. All four are always
+shown, absent ones dimmer, so a project reads as what it could be and the
+navigation does not change shape as the project grows.
 
-Related and not yet looked at: the same view on a phone, and `SlideEditor.jsx`,
-which is the least likely thing in the app to survive a 390px screen.
+They are routes, not tabs (`#/script/<slug>` is new; the other three already
+existed), so a link into any of them survives a reload and back walks the
+pages you walked.
+
+- **The duplication is gone.** Report and Research were thinner copies of
+  views that were already routed, and the deck page linked out to those views
+  as well — each artefact had two surfaces. `DeckDetail` lost ~350 lines.
+- **One action, chosen by stage.** Render while the render is stale, Download
+  when it is not, and *nothing* while the run banner is up — that banner
+  already carries the stage's action next to the sentence explaining it.
+  Theme, style, density and Re-sweep moved below the navigation, where they
+  are the Deck page's controls rather than the project's.
+- **The report-first flow was broken, not merely undesigned.** See the Learned
+  block.
+- **The phone half is done.** All four pages verified at 390px with no
+  horizontal overflow, and `SlideEditor.jsx` survives it.
+
+> **Learned.** Three things, none of which were visible from the entry text.
+>
+> **The sidebar already called these Projects; the view never got the memo —
+> and that was a bug, not a naming quibble.** The server has always modelled a
+> report-first project (no `deck.yaml`, `report: true`, `slides: 0`), but
+> `GET /api/decks/:slug` opens `deck.yaml` unconditionally, so such a project
+> 500ed there and the page consumed the failure as a loading skeleton that
+> never resolved. A whole entry flow led to a screen that spun forever. The fix
+> needed a second, lighter endpoint (`/project`) that answers what a project
+> *holds* rather than assuming the deck is the thing that exists.
+>
+> **A hover-revealed control is not hidden on a phone, it is absent.** The
+> per-slide toolbar was `opacity-0 group-hover:opacity-100`, and
+> `matchMedia("(hover: hover)")` is false on a touch device — so Edit, Punch
+> and Swap were unreachable and the slide editor could not be opened at all.
+> The entry predicted `SlideEditor.jsx` would not survive 390px; it survives
+> fine, and the real defect was one layer up, in getting to it.
+>
+> **Two primaries is a shape, not a place.** The first pass moved Render and
+> Download into the header as one stage-chosen action — and then the header
+> offered "Download .pptx" while the banner below offered "Finalize this deck".
+> The same defect the item exists to fix, recreated three inches higher. The
+> rule that holds: the action belongs next to the sentence that explains it,
+> and whoever has that sentence wins.
+>
+> Also: four pages that do not share a container width are four screens. They
+> were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
+> on every switch.
 
 ### [ ] The admin panel, swept
 
