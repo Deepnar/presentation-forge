@@ -492,7 +492,19 @@ export default function App() {
             </div>
           )}
 
-          <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible overflow-x-hidden" : "overflow-y-auto"}`}>
+          {/* A tour view scrolls the DOCUMENT, and its landing scenes hold
+              themselves in place with position: sticky. That needs NO overflow
+              property here at all — not even the "visible" this used to try to
+              set alongside overflow-x-hidden, because one axis hidden and the
+              other visible is invalid CSS: the browser promotes the visible
+              axis to auto, which makes this a scroll container, which makes
+              the scenes stick to IT instead of the viewport. Signed out the
+              landing was fine and signed in it scrolled past every pinned
+              frame into blank page. */}
+          <main
+            key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view}
+            className={`view-in relative min-w-0 flex-1 ${isTourView ? "" : "overflow-x-hidden overflow-y-auto"}`}
+          >
             {view === "chat" && activeChat && (
               <ErrorBoundary key={`chat-err-${activeChat.id}`}>
                 <ChatView
