@@ -102,11 +102,31 @@ from `FORGE_ADMIN_PASSWORD`; if it already existed, it is promoted to admin.
 Then, in the app:
 
 - **Settings → Deployment mode** should read HOSTED.
-- **Admin → System** confirms the gateway and SearXNG are reachable.
-- Upload the institutional `.docx` template. Reports render by injecting content
-  into a donor document, and the repository ships none (it carries third-party
-  names). Until one is uploaded, deck generation works and report generation
-  fails with a message saying exactly this.
+- **Admin → System** confirms the gateway, SearXNG and outbound email are
+  reachable, and leads with the report template's state.
+- Upload the institutional `.docx` template, from that same panel. Reports
+  render by injecting content into a donor document, and the repository ships
+  none (it carries third-party names). Until one is uploaded, decks work
+  normally and anything that would produce a report refuses up front, before
+  spending a research pass and a model run on a document it cannot draw. The
+  server also says so on stdout at boot.
+
+**Configure SMTP before you invite anybody.** It is optional to the code and not
+optional to a real user:
+
+- Without it **there is no password reset**. Someone who forgets their password
+  and did not sign in with Google is locked out permanently — nothing in the app
+  can help them, and the only fix is an admin editing the database.
+- Without it **addresses are never confirmed**. New accounts are marked verified
+  the moment they are created, because a gate whose only key is an email nobody
+  can send is a locked door with no handle. With SMTP set, an unconfirmed
+  account can sign in, browse and hold its own Cloud key, but cannot create or
+  generate anything.
+- Set `FORGE_PUBLIC_URL` alongside it. The links inside those messages are built
+  from it, and a reset link pointing at `localhost` is useless in an inbox.
+
+Accounts that already exist when this ships are grandfathered as confirmed, so
+upgrading a running box does not lock out the people on it.
 
 ## Operating it
 
