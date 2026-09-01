@@ -161,6 +161,173 @@ slides:
       - Policy is what unlocks the financing
       - Grid build-out sets the pace
 
+
+  - type: section
+    headline: The economics
+
+  - type: big-number
+    headline: The number the sector is chasing
+    value: $2/kg
+    label: where green hydrogen undercuts the fossil route
+    body: Below this, the molecule competes on price alone rather than on policy support, and the offtake conversation changes entirely.
+    sub: Widely used industry threshold
+
+  - type: kpi-dashboard
+    headline: The sector at a glance
+    kpis:
+      - label: Operating capacity
+        value: 95 GW
+        trend: up
+        change: +38%
+      - label: Cost per kilogram
+        value: $4.50
+        trend: down
+        change: -22%
+      - label: Reaching approval
+        value: 4%
+        trend: flat
+        change: "0"
+      - label: Announced projects
+        value: "1,400"
+        trend: up
+        change: +11%
+
+  - type: ranking-list
+    headline: Where the capacity actually is
+    items:
+      - rank: 1
+        label: China
+        detail: Domestic manufacturing at scale
+        value: 62%
+      - rank: 2
+        label: Europe
+        detail: Policy-led, offtake-constrained
+        value: 18%
+      - rank: 3
+        label: North America
+        detail: Tax-credit driven build-out
+        value: 12%
+      - rank: 4
+        label: Rest of world
+        detail: Early pilots and export plans
+        value: 8%
+
+  - type: before-after
+    headline: What changing the input changes
+    before:
+      title: Steam methane reforming
+      body: Natural gas is split with steam, releasing nine kilograms of carbon dioxide for every kilogram of hydrogen.
+    after:
+      title: Electrolysis on renewables
+      body: Water is split with electricity, and the only direct output besides hydrogen is oxygen.
+
+  - type: pyramid
+    headline: Where it is worth using
+    levels:
+      - label: No alternative
+        body: fertiliser, refining
+      - label: Hard to electrify
+        body: steel, shipping
+      - label: Contested
+        body: aviation fuel
+      - label: Better done directly
+        body: cars, home heating
+
+  - type: table
+    headline: Three routes, one product
+    columns:
+      - Route
+      - Carbon
+      - Cost today
+    rows:
+      - - Grey — methane
+        - Highest
+        - Lowest
+      - - Blue — with capture
+        - Partial
+        - Middle
+      - - Green — electrolysis
+        - None direct
+        - Highest
+
+  - type: funnel
+    headline: From announcement to operation
+    stages:
+      - label: Announced
+        value: 100%
+      - label: Studied
+        value: 34%
+        body: past first study
+      - label: Approved
+        value: 9%
+      - label: Operating
+        value: 4%
+
+  - type: checklist
+    headline: What makes a project bankable
+    items:
+      - text: A power contract with a price and a shape
+        checked: true
+      - text: Water rights secured at the site
+        checked: true
+      - text: A grid connection date in writing
+        checked: false
+      - text: An offtaker signed before construction
+        checked: false
+
+  - type: roadmap
+    headline: How the build-out sequences
+    time_labels:
+      - Now
+      - Next
+      - Later
+    phases:
+      - label: Supply
+        items:
+          - title: Stack manufacturing
+            body: cost per kilowatt
+          - title: Renewables build
+      - label: Demand
+        items:
+          - title: Fertiliser switch
+          - title: Steel pilots
+            body: direct reduction
+      - label: Transport
+        items:
+          - title: Pipelines
+          - title: Shipping as ammonia
+
+  - type: callout
+    headline: The way to read the numbers
+    label: The framework
+    body: "Announced capacity is a statement of intent; operating capacity is a statement of fact. The gap between them is the whole story."
+
+  - type: scorecard
+    headline: Which end uses to back
+    criteria:
+      - label: No alternative
+        weight: 40%
+      - label: Cost tolerance
+        weight: 30%
+      - label: Volume
+        weight: 30%
+    options:
+      - name: Fertiliser
+        scores:
+          - 5
+          - 4
+          - 4
+      - name: Steel
+        scores:
+          - 4
+          - 3
+          - 5
+      - name: Cars
+        scores:
+          - 1
+          - 2
+          - 3
+
   - type: closing
     headline: Where the field is heading
     body: The direction of travel is settled. The pace depends on capital and connection queues.

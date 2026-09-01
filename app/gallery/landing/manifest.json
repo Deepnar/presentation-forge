@@ -1,150 +1,190 @@
 {
   "deck": "decks/_public/landing/deck.yaml",
+  "vocabulary": {
+    "types": 73
+  },
   "themes": [
-    {
-      "name": "swiss-international",
-      "label": "Swiss International",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "swiss-international--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 6456
-        },
-        {
-          "type": "bullets",
-          "file": "swiss-international--bullets.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 19284
-        }
-      ]
-    },
-    {
-      "name": "editorial-serif-light",
-      "label": "Editorial Serif Light",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "editorial-serif-light--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 6902
-        },
-        {
-          "type": "bullets",
-          "file": "editorial-serif-light--bullets.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 19752
-        }
-      ]
-    },
     {
       "name": "gradient-mesh-dark",
       "label": "Gradient Mesh Dark",
-      "dark": false,
+      "dark": true,
       "slides": [
         {
           "type": "title",
           "file": "gradient-mesh-dark--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 9440
+          "bytes": 9440,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "gradient-mesh-dark--bullets.webp",
+          "type": "stats",
+          "file": "gradient-mesh-dark--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 20678
+          "bytes": 18224,
+          "dark": true
         }
       ]
     },
     {
-      "name": "linear-dark",
-      "label": "Linear Dark",
+      "name": "aurora-mesh",
+      "label": "Aurora Mesh",
       "dark": false,
       "slides": [
         {
           "type": "title",
-          "file": "linear-dark--title.webp",
+          "file": "aurora-mesh--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 6438
+          "bytes": 13524,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "linear-dark--bullets.webp",
+          "type": "stats",
+          "file": "aurora-mesh--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 18692
+          "bytes": 19144,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "sunset",
+      "label": "Sunset Golden Hour",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "sunset--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 10368,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "sunset--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 18822,
+          "dark": false
         }
       ]
     },
     {
       "name": "sci-fi-hud",
       "label": "Sci-Fi HUD",
-      "dark": false,
+      "dark": true,
       "slides": [
         {
           "type": "title",
           "file": "sci-fi-hud--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 5930
+          "bytes": 5930,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "sci-fi-hud--bullets.webp",
+          "type": "stats",
+          "file": "sci-fi-hud--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 19626
+          "bytes": 16376,
+          "dark": true
         }
       ]
     },
     {
-      "name": "bauhaus",
-      "label": "Bauhaus",
+      "name": "risograph",
+      "label": "Risograph Print",
       "dark": false,
       "slides": [
         {
           "type": "title",
-          "file": "bauhaus--title.webp",
+          "file": "risograph--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 6628
+          "bytes": 6692,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "bauhaus--bullets.webp",
+          "type": "stats",
+          "file": "risograph--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 19720
+          "bytes": 17248,
+          "dark": false
         }
       ]
     },
     {
-      "name": "minimal-muji",
-      "label": "Minimal Muji",
+      "name": "linear-dark",
+      "label": "Linear Dark",
+      "dark": true,
+      "slides": [
+        {
+          "type": "title",
+          "file": "linear-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6438,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "linear-dark--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 15454,
+          "dark": true
+        }
+      ]
+    },
+    {
+      "name": "isometric-dark",
+      "label": "Isometric Dark",
+      "dark": true,
+      "slides": [
+        {
+          "type": "title",
+          "file": "isometric-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 11214,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "isometric-dark--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17508,
+          "dark": true
+        }
+      ]
+    },
+    {
+      "name": "neubrutalism",
+      "label": "Neubrutalism",
       "dark": false,
       "slides": [
         {
           "type": "title",
-          "file": "minimal-muji--title.webp",
+          "file": "neubrutalism--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 5774
+          "bytes": 7956,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "minimal-muji--bullets.webp",
+          "type": "stats",
+          "file": "neubrutalism--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 17574
+          "bytes": 17606,
+          "dark": false
         }
       ]
     },
@@ -158,14 +198,85 @@
           "file": "editorial-magazine--title.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 7770
+          "bytes": 7770,
+          "dark": true
         },
         {
-          "type": "bullets",
-          "file": "editorial-magazine--bullets.webp",
+          "type": "stats",
+          "file": "editorial-magazine--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 19714
+          "bytes": 16110,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "swiss-international",
+      "label": "Swiss International",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "swiss-international--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6456,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "swiss-international--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 16744,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "editorial-serif-light",
+      "label": "Editorial Serif Light",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "editorial-serif-light--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6902,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "editorial-serif-light--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17410,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "bauhaus",
+      "label": "Bauhaus",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "bauhaus--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6628,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "bauhaus--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 16428,
+          "dark": false
         }
       ]
     }
@@ -179,84 +290,192 @@
         "file": "swiss-international--title.webp",
         "w": 1200,
         "h": 675,
-        "bytes": 6456
+        "bytes": 6456,
+        "dark": true
       },
       {
         "type": "bullets",
         "file": "swiss-international--bullets.webp",
-        "w": 1200,
-        "h": 675,
-        "bytes": 19284
+        "w": 1000,
+        "h": 563,
+        "bytes": 15436,
+        "dark": false
       },
       {
         "type": "stats",
         "file": "swiss-international--stats.webp",
-        "w": 1000,
-        "h": 563,
-        "bytes": 13886
+        "w": 1200,
+        "h": 675,
+        "bytes": 16744,
+        "dark": false
       },
       {
         "type": "compare",
         "file": "swiss-international--compare.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 16514
+        "bytes": 16514,
+        "dark": false
       },
       {
         "type": "metric-comparison",
         "file": "swiss-international--metric-comparison.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 12638
+        "bytes": 12638,
+        "dark": false
       },
       {
         "type": "chart",
         "file": "swiss-international--chart.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 10232
+        "bytes": 10232,
+        "dark": false
       },
       {
         "type": "flow",
         "file": "swiss-international--flow.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 12622
+        "bytes": 12622,
+        "dark": false
       },
       {
         "type": "timeline",
         "file": "swiss-international--timeline.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 8674
+        "bytes": 8674,
+        "dark": false
       },
       {
         "type": "feature-grid",
         "file": "swiss-international--feature-grid.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 14308
+        "bytes": 14308,
+        "dark": false
       },
       {
         "type": "pull-quote",
         "file": "swiss-international--pull-quote.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 12120
+        "bytes": 12120,
+        "dark": false
       },
       {
         "type": "takeaway",
         "file": "swiss-international--takeaway.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 8858
+        "bytes": 8858,
+        "dark": false
+      },
+      {
+        "type": "section",
+        "file": "swiss-international--section.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 3152,
+        "dark": true
+      },
+      {
+        "type": "big-number",
+        "file": "swiss-international--big-number.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 12564,
+        "dark": false
+      },
+      {
+        "type": "kpi-dashboard",
+        "file": "swiss-international--kpi-dashboard.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 11860,
+        "dark": false
+      },
+      {
+        "type": "ranking-list",
+        "file": "swiss-international--ranking-list.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 10304,
+        "dark": false
+      },
+      {
+        "type": "before-after",
+        "file": "swiss-international--before-after.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 17430,
+        "dark": false
+      },
+      {
+        "type": "pyramid",
+        "file": "swiss-international--pyramid.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 9228,
+        "dark": false
+      },
+      {
+        "type": "table",
+        "file": "swiss-international--table.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 8274,
+        "dark": false
+      },
+      {
+        "type": "funnel",
+        "file": "swiss-international--funnel.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 9348,
+        "dark": false
+      },
+      {
+        "type": "checklist",
+        "file": "swiss-international--checklist.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 9632,
+        "dark": false
+      },
+      {
+        "type": "roadmap",
+        "file": "swiss-international--roadmap.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 10532,
+        "dark": false
+      },
+      {
+        "type": "callout",
+        "file": "swiss-international--callout.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 10520,
+        "dark": false
+      },
+      {
+        "type": "scorecard",
+        "file": "swiss-international--scorecard.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 7946,
+        "dark": false
       },
       {
         "type": "closing",
         "file": "swiss-international--closing.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 7908
+        "bytes": 7908,
+        "dark": true
       }
     ]
   }
