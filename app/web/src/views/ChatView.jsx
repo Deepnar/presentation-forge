@@ -67,7 +67,7 @@ function chatName(title, topic) {
  */
 export default function ChatView({
   chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
-  leftOpen, onToggleLeft,
+  leftOpen, onToggleLeft, onOpenSettings,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -81,6 +81,23 @@ export default function ChatView({
   const [draftPlan, setDraftPlan] = useState(null);
   const [presetSaveState, setPresetSaveState] = useState({ status: "idle" });
   const { models, auto, mode: modelMode, cloudOn, hosted, defaultModel } = useModels();
+  // Whichever mode is selected, is it actually able to run? Hosted has no
+  // Ollama to fall back to, so an unconfigured mode is a dead end rather than
+  // a slow path, and that is the only case worth interrupting anyone about.
+  const needsKey = modelMode === "auto" ? !auto?.keySet : !cloudOn;
+
+  /** Flip Auto <-> Cloud. Route first, then the client store, so a failed
+   *  write does not leave the picker claiming a mode the server never took. */
+  async function switchMode() {
+    const next = modelMode === "cloud" ? "auto" : "cloud";
+    const { setModelMode } = await import("../lib/modelMode.js");
+    try { await api.cloudRoute(next); } catch { return; }
+    setModelMode(next);
+    if (next === "auto") {
+      setModel("");
+      persist({ ...chat, model: undefined, updatedAt: new Date().toISOString() });
+    }
+  }
   const [model, setModel] = useState(chat.model ?? "");
   // The slide-selection panel: the deck's content + previews (fetched when the
   // deck is ready), which slides the user has picked, and the enlarged slide.
@@ -951,44 +968,29 @@ export default function ChatView({
               <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
             </div>
           ) : (
-            <div className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted" title={hosted ? "Hosted: Auto is Forge hosted gateway" : "Local: Auto is Ollama on this machine"}>
+            // The chip IS the switch. It used to be a label with a separate
+            // 10px underlined "Switch to Cloud" beside it — two controls for
+            // one setting, the weaker of which carried the action.
+            <button
+              onClick={switchMode}
+              disabled={inputDisabled}
+              title={`${hosted ? "Auto — the shared Forge gateway" : "Auto — Ollama on this machine"}. Click to use your own key instead.`}
+              className="flex items-center gap-1 rounded-full border border-line bg-sunken px-3 py-1 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg disabled:opacity-50"
+            >
               <SparkleIcon className="h-3 w-3 text-fg-faint" />
               {hosted ? "Auto" : (auto?.kind === "local" ? "Local" : "Auto")}
               {hosted && <span className="hidden sm:inline text-[10px] text-fg-faint">· Forge</span>}
               {!hosted && auto?.kind === "local" && <span className="hidden sm:inline text-[10px] text-fg-faint">· Ollama</span>}
-            </div>
-          )}
-          {modelMode === "cloud" ? (
-            <button
-              onClick={async () => {
-                const { setModelMode } = await import("../lib/modelMode.js");
-                const { api } = await import("../api.js");
-                await api.cloudRoute("auto").catch(() => {});
-                setModelMode("auto");
-                setModel("");
-                persist({ ...chat, model: undefined, updatedAt: new Date().toISOString() });
-              }}
-              className="hidden text-[10px] text-fg-faint underline sm:inline hover:text-fg"
-            >
-              {hosted ? "Switch to Auto" : "Switch to Local"}
             </button>
-          ) : (
+          )}
+          {modelMode === "cloud" && (
             <button
-              onClick={async () => {
-                if (!cloudOn) {
-                  // Need to set up cloud key first
-                  const { api } = await import("../api.js");
-                  // Open settings modal via dispatch? For now, just switch mode and let the UI handle missing key
-                  await api.cloudRoute("cloud").catch(() => {});
-                }
-                const { setModelMode } = await import("../lib/modelMode.js");
-                const { api } = await import("../api.js");
-                await api.cloudRoute("cloud").catch(() => {});
-                setModelMode("cloud");
-              }}
-              className="hidden text-[10px] text-fg-faint underline sm:inline hover:text-fg"
+              onClick={switchMode}
+              disabled={inputDisabled}
+              title={hosted ? "Back to the shared Forge gateway" : "Back to Ollama on this machine"}
+              className="hidden rounded-full px-2 py-1 text-[11px] text-fg-faint transition hover:bg-hover hover:text-fg sm:inline-flex"
             >
-              Switch to Cloud
+              {hosted ? "Use Auto" : "Use Local"}
             </button>
           )}
           <Button variant="primary" onClick={send} disabled={inputDisabled || !input.trim()} title="Send" className="ml-1 hidden sm:inline-flex">
@@ -1030,29 +1032,26 @@ export default function ChatView({
           {hosted ? "hosted" : "local"}
         </Badge>
       </header>
-      {hosted && modelMode === "auto" && !auto?.keySet && (
+      {/* ONE prompt for one decision. There were three: this banner, a
+          first-run toast in the shell, and an underlined link in the composer
+          — three visual languages for the same choice, all on an empty screen.
+          The old action was a dead end too: switching to Cloud when Cloud has
+          no key either just swapped this banner for the next one. It points at
+          the thing that actually fixes it. */}
+      {hosted && needsKey && (
         <div className="mx-auto w-full max-w-3xl px-6 pt-3">
-          <div className="rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
-            Hosted mode — Auto not configured.{" "}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
+            <span>
+              {modelMode === "auto"
+                ? "The shared Auto model has no key on this install."
+                : "Cloud runs on your own key, and none is attached yet."}
+            </span>
             <button
-              onClick={async () => {
-                const { setModelMode } = await import("../lib/modelMode.js");
-                const { api } = await import("../api.js");
-                await api.cloudRoute("cloud").catch(() => {});
-                setModelMode("cloud");
-              }}
-              className="font-medium underline hover:text-amber/80"
+              onClick={() => onOpenSettings?.()}
+              className="font-medium underline underline-offset-2 hover:opacity-80"
             >
-              Switch to Cloud
-            </button>{" "}
-            or add a hosted key in Settings.
-          </div>
-        </div>
-      )}
-      {hosted && modelMode === "cloud" && !cloudOn && (
-        <div className="mx-auto w-full max-w-3xl px-6 pt-3">
-          <div className="rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-amber">
-            Hosted mode — Cloud BYOK not configured. Add your OpenCode Go / OpenAI key in Settings → Cloud.
+              Add one in Settings
+            </button>
           </div>
         </div>
       )}

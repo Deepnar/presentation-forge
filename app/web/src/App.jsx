@@ -490,7 +490,6 @@ export default function App() {
           )}
 
           <main key={view === "chat" ? `chat-${activeChatId ?? "none"}` : view} className={`view-in relative min-w-0 flex-1 overflow-x-hidden ${isTourView ? "overflow-visible overflow-x-hidden" : "overflow-y-auto"}`}>
-            <FirstRunHint userEmail={user.email} />
             {view === "chat" && activeChat && (
               <ErrorBoundary key={`chat-err-${activeChat.id}`}>
                 <ChatView
@@ -502,6 +501,7 @@ export default function App() {
                   onOpenDeck={openDeck}
                   onOpenReport={openReport}
                   onDeckChanged={bumpDeck}
+                  onOpenSettings={() => setSettingsOpen(true)}
                 />
               </ErrorBoundary>
             )}
@@ -588,46 +588,3 @@ export default function App() {
   );
 }
 
-/**
- * A one-time, dismissible first-run toast explaining where models come from —
- * the only setup a fresh server needs. Shown once per account (localStorage),
- * never again, and never a wizard.
- */
-function FirstRunHint({ userEmail }) {
-  const [show, setShow] = useState(() => {
-    try {
-      return localStorage.getItem(`forge.hint.models.${userEmail ?? ""}`) !== "1";
-    } catch {
-      return true;
-    }
-  });
-  const dismiss = () => {
-    try { localStorage.setItem(`forge.hint.models.${userEmail ?? ""}`, "1"); } catch {}
-    setShow(false);
-  };
-  if (!show) return null;
-  return (
-    <div className="toast-in absolute right-4 top-3 z-30">
-      <div className="flex items-center gap-2.5 rounded-full border border-line-strong bg-panel py-1.5 pl-3.5 pr-1.5 shadow-[var(--shadow-float)]">
-        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent-tint text-accent">
-          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
-          </svg>
-        </span>
-        <span className="whitespace-nowrap text-[12px] text-fg-muted">
-          Auto or <span className="font-medium text-fg">Cloud</span> — switch in Settings.
-        </span>
-        <button
-          onClick={dismiss}
-          className="grid h-6 w-6 place-items-center rounded-full text-fg-faint transition hover:bg-hover hover:text-fg"
-          title="Dismiss"
-          aria-label="Dismiss first-run hint"
-        >
-          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M18 6 6 18M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-}
