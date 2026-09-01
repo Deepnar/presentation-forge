@@ -183,14 +183,6 @@ export async function createDeck({
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
-  // The donor is checked here rather than at the render call three steps down.
-  // This run is a web research pass, a full model write and then a render, and
-  // discovering at the end that the box has no template spends every minute of
-  // that plus the account's Auto budget to arrive at a failure that was knowable
-  // before the first request went out.
-  const donor = await donorStatus();
-  if (!donor.ok) throw new Error(reportUnavailable(donor));
-
   const slug = await uniqueSlug(brief);
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
