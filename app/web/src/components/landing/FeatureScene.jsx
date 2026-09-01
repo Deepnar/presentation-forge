@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useSceneProgress, span, entry } from "../../lib/scene.js";
+import { useSceneProgress, useTooTall, span, entry } from "../../lib/scene.js";
 
 const FEATURES = [
   { t: "It interviews you", d: "The briefing is a conversation, not a form. Say the topic and it works out the rest, asking only where your answer changes the deck.", from: "left" },
@@ -22,12 +22,24 @@ const FEATURES = [
  */
 export default function FeatureScene() {
   const ref = useRef(null);
+  const innerRef = useRef(null);
   const p = useSceneProgress(ref);
+  // A pinned frame is one viewport tall; taller content would simply be cut.
+  const flow = useTooTall(innerRef);
 
   return (
-    <div ref={ref} data-section="features" style={{ height: `${FEATURES.length * 20 + 110}vh` }}>
-      <div className="sticky top-0 flex h-screen items-center px-5 sm:px-8">
-        <div className="mx-auto w-full max-w-6xl">
+    <div ref={ref} data-section="features" style={flow ? undefined : { height: `${FEATURES.length * 20 + 110}vh` }}>
+      <div
+        className={
+          flow
+            ? "px-5 py-20 sm:px-8"
+            : // Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
+              // Without it a card entering from the left is pushed past the right
+              // edge and the whole document scrolls sideways.
+              "sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8"
+        }
+      >
+        <div ref={innerRef} className="mx-auto w-full max-w-6xl">
           <div className="reveal max-w-2xl">
             <div className="eyebrow">What you actually get</div>
             <h2 className="display-3 mt-3 text-fg">A deck is the output. It is not the whole product.</h2>
@@ -40,7 +52,7 @@ export default function FeatureScene() {
           <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, k) => {
               const start = 0.14 + (k / FEATURES.length) * 0.7;
-              const t = span(p, start, start + 0.16);
+              const t = flow ? 1 : span(p, start, start + 0.16);
               return (
                 <div
                   key={f.t}

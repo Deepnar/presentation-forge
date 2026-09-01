@@ -29,7 +29,7 @@ export default function ThemeCycle({ manifest }) {
 
   return (
     <div ref={ref} data-section="themes" style={{ height: `${themes.length * 28 + 110}vh` }}>
-      <div className="sticky top-0 flex h-screen items-center px-5 sm:px-8">
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8">
         <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-center">
           <div className="reveal">
             <div className="eyebrow">One deck, every theme</div>

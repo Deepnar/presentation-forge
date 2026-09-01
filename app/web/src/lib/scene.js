@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * How far through a pinned scene the reader has scrolled, 0 to 1.
@@ -75,4 +75,58 @@ export function entry(t, from = "up", distance = 44) {
     scale: `scale(${0.94 + 0.06 * t})`,
   }[from] ?? `translate3d(0, ${d}px, 0)`;
   return { opacity: t, transform: axis };
+}
+
+/**
+ * Whether a scene's content is taller than the screen it would be pinned to.
+ *
+ * A pinned frame is exactly one viewport tall, so anything taller than that is
+ * simply cut off — and on a phone every multi-column grid in here stacks and
+ * becomes taller than that. When it does, the scene stops pinning and renders
+ * as an ordinary section with everything visible: the pin is a way of spending
+ * scroll, not a thing worth losing content over.
+ *
+ * Measured rather than keyed to a breakpoint, because a short desktop window
+ * has the same problem as a tall phone and no media query catches both. The
+ * measurement is stable across the switch: it reads the content's own natural
+ * height, which pinning does not change.
+ */
+export function useTooTall(ref, deps = []) {
+  const [tooTall, setTooTall] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setTooTall(el.scrollHeight > window.innerHeight - 24);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    window.addEventListener("resize", check);
+    return () => { ro.disconnect(); window.removeEventListener("resize", check); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref, ...deps]);
+  return tooTall;
+}
+
+/**
+ * A viewport too narrow for a scene whose pinned and stacked layouts are
+ * genuinely different content.
+ *
+ * `useTooTall` is the better test where both layouts render the same DOM, but
+ * it oscillates when they do not: measuring the stacked layout (taller by
+ * construction) would keep the scene stacked forever. A query is stable
+ * because it does not depend on what is currently rendered.
+ */
+export function useNarrow(query = "(max-width: 1023px)") {
+  const [narrow, setNarrow] = useState(
+    () => typeof window !== "undefined" && window.matchMedia?.(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia?.(query);
+    if (!mq) return;
+    const on = () => setNarrow(mq.matches);
+    on();
+    mq.addEventListener?.("change", on);
+    return () => mq.removeEventListener?.("change", on);
+  }, [query]);
+  return narrow;
 }

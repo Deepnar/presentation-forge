@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useSceneProgress, span, entry } from "../../lib/scene.js";
+import { useSceneProgress, useTooTall, span, entry } from "../../lib/scene.js";
 
 const CHECKS = [
   {
@@ -63,12 +63,24 @@ const CHECKS = [
 /** The four questions the checks ask, in the order they ask them. */
 export default function CheckScene() {
   const ref = useRef(null);
+  const innerRef = useRef(null);
   const p = useSceneProgress(ref);
+  // A pinned frame is one viewport tall; taller content would simply be cut.
+  const flow = useTooTall(innerRef);
 
   return (
-    <div ref={ref} data-section="checks" style={{ height: `${CHECKS.length * 30 + 110}vh` }}>
-      <div className="sticky top-0 flex h-screen items-center px-5 sm:px-8">
-        <div className="mx-auto w-full max-w-6xl">
+    <div ref={ref} data-section="checks" style={flow ? undefined : { height: `${CHECKS.length * 30 + 110}vh` }}>
+      <div
+        className={
+          flow
+            ? "px-5 py-20 sm:px-8"
+            : // Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
+              // Without it a card entering from the left is pushed past the right
+              // edge and the whole document scrolls sideways.
+              "sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8"
+        }
+      >
+        <div ref={innerRef} className="mx-auto w-full max-w-6xl">
           <div className="reveal max-w-2xl">
             <div className="eyebrow">Why it holds up</div>
             <h2 className="display-3 mt-3 text-fg">A file that opens is not a slide that works.</h2>
@@ -82,7 +94,7 @@ export default function CheckScene() {
           <div className="mt-9 grid gap-3 sm:grid-cols-2">
             {CHECKS.map((c, k) => {
               const start = 0.16 + (k / CHECKS.length) * 0.66;
-              const t = span(p, start, start + 0.2);
+              const t = flow ? 1 : span(p, start, start + 0.2);
               return (
                 <div
                   key={c.q}
