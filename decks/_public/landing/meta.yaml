@@ -1,0 +1,6 @@
+# The landing imagery must show the THEME, never an institution. Branding off
+# means the rendered slides carry no crest, banner or presenter line — nothing
+# local to whoever generated them.
+chrome:
+  branding: none
+  slide_numbers: false

@@ -1,0 +1,167 @@
+# The deck the landing page is built from.
+#
+# Committed, unlike every other deck, because the marketing surface renders it
+# into the imagery it ships — see tools/landing.mjs. It is written to the same
+# caps as any generated deck and swept by `npm run themematrix --deck` across
+# the covering themes, so the pictures on the front page are produced by the
+# real renderer under the real constraints rather than drawn by hand.
+title: Green hydrogen
+subtitle: What the cost curve says, and what it does not
+theme: swiss-international
+sections:
+  - The case
+
+slides:
+  - type: title
+
+  - type: bullets
+    headline: Why the question changed
+    standfirst: Three shifts turned a laboratory process into an industrial one.
+    bullets:
+      - Electrolyser stacks fell in price faster than almost any forecast held.
+      - Renewable electricity is now the cheapest new generation in most markets.
+      - Heavy industry has no other credible route to deep decarbonisation.
+      - The remaining constraint moved from the technology to the balance sheet.
+
+  - type: stats
+    headline: Three figures that frame it
+    standfirst: Where the sector actually stands, not where it is announced.
+    stats:
+      - value: 60%
+        label: Fall in stack cost
+        sub: since 2020, per kilowatt
+      - value: 95 GW
+        label: Operating capacity
+        sub: against 180 GW pledged
+      - value: 4%
+        label: Reaching final approval
+        sub: of announced projects
+
+  - type: compare
+    headline: Two stacks, one trade-off
+    standfirst: Both split water. They fail and scale in different places.
+    left:
+      title: Alkaline
+      kicker: The proven path
+      body: Cheap per kilowatt, slow to follow a variable load.
+      points:
+        - Lowest capital cost today
+        - Decades of operating record
+    right:
+      title: PEM
+      kicker: The flexible path
+      body: Follows intermittent supply, at a higher cost.
+      points:
+        - Ramps in seconds, not minutes
+        - Pairs cleanly with wind and solar
+    verdict: Steady industrial load favours alkaline; renewable-matched output favours PEM.
+
+  - type: metric-comparison
+    headline: Pledged against built
+    left:
+      value: 180 GW
+      label: committed by 2030
+    right:
+      value: 95 GW
+      label: operating today
+    delta: +89%
+    body: The gap closes only if announced projects reach final investment decision at the historic rate.
+
+  - type: chart
+    headline: Cost falls with installed base
+    aside:
+      - Each doubling of capacity has taken roughly a fifth off the unit cost.
+      - The fourth point is a pilot site, not a production plant.
+    chart:
+      kind: bar
+      categories:
+        - "2018"
+        - "2021"
+        - "2024"
+        - "2030"
+      series:
+        - name: Levelised cost
+          values:
+            - 9
+            - 6
+            - 4
+            - 2
+
+  - type: flow
+    headline: From electricity to molecule
+    direction: ltr
+    steps:
+      - title: Generation
+        body: Wind or solar output, priced at the margin.
+      - title: Electrolysis
+        body: The stack splits water into hydrogen and oxygen.
+      - title: Compression
+        body: Gas is raised to pipeline or storage pressure.
+      - title: Offtake
+        body: Steel, ammonia and refining take the volume.
+
+  - type: timeline
+    headline: The road so far
+    events:
+      - when: "2018"
+        what: Electrolysers remained a demonstration technology at any scale.
+      - when: "2021"
+        what: National strategies committed public capital across three continents.
+      - when: "2024"
+        what: Costs fell, but final investment decisions did not follow.
+
+  - type: matrix
+    headline: Where the projects sit
+    axes:
+      x:
+        label: Capital intensity
+        low: Low capital
+        high: High capital
+      y:
+        label: Offtake certainty
+        low: Speculative
+        high: Contracted
+    quadrants:
+      - title: Bankable
+        body: Contracted offtake, modest capital — these reach approval.
+      - title: Flagships
+        body: Contracted but capital-heavy; they need public support.
+      - title: Pilots
+        body: Cheap and speculative — useful learning, little volume.
+      - title: Stranded
+        body: Expensive and uncontracted; most announcements die here.
+
+  - type: feature-grid
+    headline: What a project has to secure
+    items:
+      - icon: ⚡
+        title: Firm power
+        body: A price and profile the stack can run against.
+      - icon: 💧
+        title: Water rights
+        body: Nine litres per kilogram, often where it is scarce.
+      - icon: 🔌
+        title: Grid connection
+        body: A queue position measured in years, not months.
+      - icon: 📝
+        title: Offtake contract
+        body: A buyer willing to sign before the plant exists.
+
+  - type: pull-quote
+    headline: The point worth repeating
+    quote: The technology stopped being the hard part some years ago.
+    attribution: International Energy Agency, 2024
+
+  - type: takeaway
+    headline: What this means
+    label: Key takeaway
+    body: The constraint is project finance and grid access, not the electrolyser.
+    points:
+      - Costs fall in step with renewables
+      - Policy is what unlocks the financing
+      - Grid build-out sets the pace
+
+  - type: closing
+    headline: Where the field is heading
+    body: The direction of travel is settled. The pace depends on capital and connection queues.
+    cta: Questions
