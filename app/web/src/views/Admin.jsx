@@ -286,6 +286,7 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
   return (
     <div className="space-y-4">
       <DonorPanel donor={stats.system.donor} mailOk={stats.system.mailOk} onReload={onReload} />
+      <RolePanel audit={stats.system.roles} />
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Website mode — hosted ↔ local</div>
         <div className="flex items-center gap-3">
@@ -379,6 +380,57 @@ function DonorPanel({ donor, mailOk, onReload }) {
         )}
       </div>
       {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
+    </Panel>
+  );
+}
+
+/**
+ * Which model each role is actually running.
+ *
+ * A role whose configured model is missing falls back and keeps going, and the
+ * only symptom is output that is quietly worse than it should be — section 9
+ * traced a thin outline to exactly this once, and it took a while. The
+ * substitution has always been recorded; it had nowhere to be seen.
+ */
+function RolePanel({ audit }) {
+  if (!audit) return null;
+  const ok = audit.reachable && audit.ok;
+  return (
+    <Panel className={`p-4 ${audit.reachable && !audit.ok ? "border-amber/40" : ""}`}>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${!audit.reachable ? "bg-fg-faint" : ok ? "bg-emerald-500" : "bg-amber"}`} />
+        <span className="text-[12px] font-semibold text-fg">Model roles</span>
+        {audit.reachable && !audit.ok && <Badge>running substitutes</Badge>}
+      </div>
+      {!audit.reachable ? (
+        <div className="text-[12px] leading-relaxed text-fg-muted">{audit.reason}</div>
+      ) : (
+        <div className="space-y-1.5 text-[12px]">
+          {audit.roles.map((r) => (
+            <div key={r.role} className="flex flex-wrap items-baseline gap-x-2">
+              <span className="w-16 shrink-0 text-fg">{r.role}</span>
+              {r.status === "ok" || r.status === "provider" ? (
+                <span className="font-mono text-[11px] text-fg-muted">{r.resolved}</span>
+              ) : r.status === "fallback" ? (
+                <span className="text-fg-muted">
+                  <span className="font-mono text-[11px] line-through opacity-60">{r.configured}</span>
+                  {" → "}
+                  <span className="font-mono text-[11px] text-amber">{r.resolved}</span>
+                </span>
+              ) : (
+                <span className="text-danger">
+                  <span className="font-mono text-[11px]">{r.configured}</span> not installed, and no fallback is either
+                </span>
+              )}
+            </div>
+          ))}
+          {!audit.ok && (
+            <div className="pt-1 text-[11px] leading-relaxed text-fg-faint">
+              Fix <code className="font-mono">config/models.yaml</code>, or pull the model it names.
+            </div>
+          )}
+        </div>
+      )}
     </Panel>
   );
 }

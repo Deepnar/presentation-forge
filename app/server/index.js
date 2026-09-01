@@ -21,7 +21,7 @@ import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
 import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
-import { modelChoices } from "../../src/ai/ollama.js";
+import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
 import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
@@ -790,6 +790,10 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       // any screen that works. They belong where the operator already looks.
       donor: await donorStatus(),
       mailOk: mailConfigured(),
+      // Which roles are running what they were configured to run. A silent
+      // substitution has exactly one symptom — output that is worse than it
+      // should be — so it belongs where the operator already looks.
+      roles: isHosted() ? { reachable: false, reason: "hosted — no local models", roles: [] } : await roleAudit(),
     },
   });
 }));
@@ -2629,6 +2633,24 @@ async function reportBootGaps() {
     console.warn("           and new accounts are verified on creation because nothing can be sent to them.");
   } else if (!process.env.FORGE_PUBLIC_URL && !process.env.FORGE_UI_ORIGIN) {
     console.warn("  WARNING: FORGE_PUBLIC_URL is unset — reset and confirmation links will point at localhost.");
+  }
+
+  // A role quietly running a model models.yaml does not name is the failure
+  // that produced a thin outline nobody could explain. Hosted has no Ollama and
+  // nothing to check, and an unreachable Ollama on a local box is ordinary, so
+  // neither is worth a line — only an actual mismatch is.
+  if (!isHosted()) {
+    const audit = await roleAudit();
+    if (audit.reachable && !audit.ok) {
+      for (const r of audit.roles) {
+        if (r.status === "fallback") {
+          console.warn(`  WARNING: role "${r.role}" wants ${r.configured}, which is not installed — falling back to ${r.resolved}.`);
+        } else if (r.status === "missing") {
+          console.warn(`  WARNING: role "${r.role}" wants ${r.configured}, which is not installed, and no fallback is either.`);
+        }
+      }
+      console.warn("           Fix config/models.yaml, or: ollama pull <model>");
+    }
   }
 }
 
