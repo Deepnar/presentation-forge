@@ -235,6 +235,7 @@ export async function resolveRole(role) {
 
   for (const alt of cfg.fallbacks ?? []) {
     if (have.has(alt)) {
+      warnFallback(role, spec.model, alt);
       return { ...spec, role, backend, model: alt, fellBack: spec.model };
     }
   }
@@ -242,6 +243,76 @@ export async function resolveRole(role) {
     `Role "${role}" wants ${spec.model}, which is not installed, and no fallback is either.\n` +
     `  Install it:  ollama pull ${spec.model}\n` +
     `  Installed:   ${[...have].slice(0, 8).join(", ")}`,
+  );
+}
+
+/**
+ * Which roles are running what they were configured to run.
+ *
+ * `resolveRole` has always recorded a substitution on `fellBack`, and that flag
+ * has always been threaded through chat() into the turn's stats — where nothing
+ * read it. So a role quietly running a different model than models.yaml names
+ * was invisible everywhere, which section 9 already traced once to a thin
+ * outline nobody could explain.
+ *
+ * This never throws. A box with Ollama stopped is the ordinary hosted case and
+ * a perfectly normal local one; it answers `reachable: false` and says nothing
+ * about the roles, rather than turning a diagnostic into an outage.
+ */
+export async function roleAudit() {
+  let cfg;
+  try {
+    cfg = await config();
+  } catch (err) {
+    return { reachable: false, reason: `models.yaml unreadable: ${err.message}`, roles: [] };
+  }
+  const names = Object.keys(cfg.roles ?? {});
+  if (!names.length) return { reachable: false, reason: "models.yaml defines no roles", roles: [] };
+
+  let have;
+  try {
+    have = await installed(cfg.host);
+  } catch (err) {
+    return { reachable: false, reason: err.message, roles: [] };
+  }
+
+  const roles = names.map((role) => {
+    const spec = cfg.roles[role];
+    // A role pointed at a cloud provider is not this check's business — its
+    // model lives on someone else's machine and "installed" means nothing.
+    if (spec.provider) {
+      return { role, configured: spec.model, resolved: spec.model, status: "provider", provider: spec.provider };
+    }
+    if (have.has(spec.model)) {
+      return { role, configured: spec.model, resolved: spec.model, status: "ok" };
+    }
+    const alt = (cfg.fallbacks ?? []).find((a) => have.has(a));
+    return alt
+      ? { role, configured: spec.model, resolved: alt, status: "fallback" }
+      : { role, configured: spec.model, resolved: null, status: "missing" };
+  });
+
+  return {
+    reachable: true,
+    reason: null,
+    roles,
+    ok: roles.every((r) => r.status === "ok" || r.status === "provider"),
+  };
+}
+
+/**
+ * Say a substitution out loud, once per role per process.
+ *
+ * A run that quietly used a different model is the failure this exists to stop,
+ * and the CLI has no admin page to read. Once per role, because a generation
+ * makes many calls and a warning per call is noise nobody reads.
+ */
+const warnedFallbacks = new Set();
+export function warnFallback(role, configured, actual) {
+  if (!configured || warnedFallbacks.has(role)) return;
+  warnedFallbacks.add(role);
+  console.warn(
+    `  WARNING: role "${role}" is configured for ${configured}, which is not installed — using ${actual} instead.`,
   );
 }
 
