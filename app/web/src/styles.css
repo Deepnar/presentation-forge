@@ -17,7 +17,7 @@
   /* Surfaces: page → sunken → panel → raised. Light is the source of truth;
      [data-theme="dark"] below overrides the same names. */
   --color-base: #FBFBFD;
-  --color-sunken: #F2F3F7;
+  --color-sunken: #F4F5F9;
   --color-panel: #FFFFFF;
   --color-raised: #FFFFFF;
   --color-prompt: #FFFFFF;
@@ -28,10 +28,15 @@
   --color-line: #E7E8EF;
   --color-line-strong: #D1D5E0;
 
-  /* Text: slate, not warm paper. WCAG AA on the surface below it. */
+  /* Text: slate, not warm paper.
+     Three levels, and all three clear 4.5:1 against every ground they are
+     drawn on — including the sunken and hover surfaces, which are the worst
+     case and the ones a ramp picked against white alone always fails. The old
+     faint sat at 2.56:1 on a panel, which is not tertiary text, it is text
+     that has to be guessed at. */
   --color-fg: #0F172A;
   --color-fg-muted: #475569;
-  --color-fg-faint: #94A3B8;
+  --color-fg-faint: #616F86;
 
   /* Accent: slate ink. Inverts wholesale in dark. */
   --color-accent: #0B0F1A;
@@ -116,7 +121,7 @@
 
   --color-fg: #F5F6F8;
   --color-fg-muted: #A3A6B1;
-  --color-fg-faint: #6E717C;
+  --color-fg-faint: #858998;
 
   --color-accent: #F5F6F8;
   --color-accent-hi: #FFFFFF;
@@ -177,7 +182,7 @@ body {
    font-size alone gives a hero that looks loose at desktop and cramped at
    phone width. */
 .display-1 {
-  font-size: clamp(2.75rem, 1.6rem + 5.6vw, 6.5rem);
+  font-size: clamp(2.5rem, 1.5rem + 4.6vw, 5.25rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
   font-weight: 600;
@@ -448,7 +453,7 @@ textarea:focus {
 /* The landing's default entrance. An element starts displaced and lands when
    it is observed; the class is applied by JS so that a browser with scripting
    off shows the finished page rather than an invisible one. */
-.reveal {
+.js-reveal .reveal {
   opacity: 0;
   transform: translateY(var(--reveal-y, 18px));
   transition:
@@ -456,7 +461,7 @@ textarea:focus {
     transform var(--dur-slow) var(--ease-out-quint);
   transition-delay: var(--reveal-delay, 0ms);
 }
-.reveal.is-in {
+.js-reveal .reveal.is-in {
   opacity: 1;
   transform: none;
 }
@@ -471,7 +476,7 @@ textarea:focus {
   }
   /* The reveal is an entrance, not a layout. Without this the elements keep
      their displaced transform and the page renders visibly askew. */
-  .reveal {
+  .js-reveal .reveal {
     opacity: 1;
     transform: none;
   }

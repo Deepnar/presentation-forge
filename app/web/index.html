@@ -37,6 +37,11 @@
           r.dataset.theme = t;
           r.dataset.appearance = m;
           r.style.colorScheme = t;
+          // Scroll-reveal start state is opt-in from script: if this never
+          // runs, the page renders finished rather than invisible. Set here
+          // rather than in the effect, or everything already painted
+          // transitions from visible to hidden after mount.
+          r.classList.add("js-reveal");
           if (t === "dark") {
             var meta = document.querySelector('meta[name="theme-color"]');
             if (meta) meta.setAttribute("content", "#0A0A0C");
