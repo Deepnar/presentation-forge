@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import JSZip from "jszip";
@@ -11,6 +11,7 @@ import {
   presentSections,
   validateReport,
   resolveDonor,
+  donorStatus,
   renderReport,
   assembleDocx,
   tocTable,
@@ -222,4 +223,36 @@ test("reportPreview rasterises the rendered docx to one PNG per page", async (t)
   // deck's slide previews.
   assert.ok(p.pages[0].includes(path.join("out", "report-preview")));
   assert.ok(p.pdf.endsWith(".pdf"));
+});
+
+/* ------------------------------------------------------------ donor state */
+
+test("donorStatus names the three states a box can be in", async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), "forge-donor-"));
+  try {
+    // A directory that does not exist at all — the fresh-container case.
+    const absent = await donorStatus(path.join(dir, "nothing-here"));
+    assert.equal(absent.ok, false);
+    assert.equal(absent.reason, "missing");
+
+    await writeFile(path.join(dir, "notes.txt"), "not a template");
+    const empty = await donorStatus(dir);
+    assert.equal(empty.ok, false);
+    assert.equal(empty.reason, "missing", "a non-.docx file is not a donor");
+
+    await writeFile(path.join(dir, "Template.docx"), "PK");
+    const one = await donorStatus(dir);
+    assert.equal(one.ok, true);
+    assert.deepEqual(one.donors, ["Template.docx"]);
+
+    // resolveDonor refuses to guess between several, so the status has to say
+    // so rather than reporting a healthy box that fails only at render time.
+    await writeFile(path.join(dir, "Other.docx"), "PK");
+    const many = await donorStatus(dir);
+    assert.equal(many.ok, false);
+    assert.equal(many.reason, "ambiguous");
+    assert.equal(many.donors.length, 2);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });
