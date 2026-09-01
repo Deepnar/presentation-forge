@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Badge } from "../components/ui.jsx";
 
@@ -94,7 +94,7 @@ export default function Admin({ onBack }) {
       {tab === "users" && <UsersTab users={users} onRole={setRole} onDelete={delUser} />}
       {tab === "decks" && <DecksTab decks={decks} />}
       {tab === "analytics" && <Analytics stats={stats} />}
-      {tab === "system" && <SystemTab stats={stats} hosted={hosted} onToggle={toggleHosted} />}
+      {tab === "system" && <SystemTab stats={stats} hosted={hosted} onToggle={toggleHosted} onReload={load} />}
     </div>
   );
 }
@@ -281,10 +281,11 @@ function Analytics({ stats }) {
   );
 }
 
-function SystemTab({ stats, hosted, onToggle }) {
+function SystemTab({ stats, hosted, onToggle, onReload }) {
   if (!stats) return null;
   return (
     <div className="space-y-4">
+      <DonorPanel donor={stats.system.donor} mailOk={stats.system.mailOk} onReload={onReload} />
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Website mode — hosted ↔ local</div>
         <div className="flex items-center gap-3">
@@ -300,6 +301,9 @@ function SystemTab({ stats, hosted, onToggle }) {
             <Row label="Forge Auto" ok={stats.system.tcetOk} detail={stats.system.tcetOk ? "keySet" : "no key"} />
             <Row label="Ollama" ok={stats.system.ollamaOk} detail={hosted ? "disabled in hosted" : (stats.system.ollamaOk ? "reachable" : "not reachable")} />
             <Row label="SearXNG" ok={stats.system.searxngOk} detail={stats.system.searxngOk ? "ok" : "down"} />
+            {/* Not a backend, but it fails the same way: silently, and only
+                for the one person who cannot get back into their account. */}
+            <Row label="Email (SMTP)" ok={stats.system.mailOk} detail={stats.system.mailOk ? "can send" : "no password reset"} />
           </div>
         </Panel>
         <Panel className="p-4">
@@ -318,6 +322,67 @@ function SystemTab({ stats, hosted, onToggle }) {
     </div>
   );
 }
+/**
+ * The report template, and the fact that half the product does not work without
+ * it.
+ *
+ * The donor is gitignored and excluded from the build context, so a fresh
+ * hosted box has none — and every other screen looks perfectly healthy while
+ * every report route refuses. The upload endpoint has existed since hosting
+ * readiness landed; nothing in the app ever offered it, so the only way to
+ * install a template was curl.
+ */
+function DonorPanel({ donor, mailOk, onReload }) {
+  const file = useRef(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const ok = donor?.ok === true;
+
+  async function upload(e) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    setBusy(true); setErr("");
+    try {
+      await api.adminDonorUpload(f);
+      await onReload();
+    } catch (ex) {
+      setErr(ex.message);
+    } finally { setBusy(false); }
+  }
+
+  return (
+    <Panel className={`p-4 ${ok ? "" : "border-amber/40"}`}>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} />
+        <span className="text-[12px] font-semibold text-fg">Report template</span>
+        {!ok && <Badge>reports are unavailable</Badge>}
+      </div>
+      <div className="text-[12px] leading-relaxed text-fg-muted">
+        {ok ? (
+          <>Serving <code className="font-mono text-fg">{donor.detail}</code> from <code className="font-mono text-[11px]">{donor.dir}</code>. Every report is drawn on this document.</>
+        ) : donor?.reason === "ambiguous" ? (
+          <>There are {donor.donors.length} templates in <code className="font-mono text-[11px]">{donor.dir}</code> and the renderer will not guess between them. Upload the one you want — it replaces the rest.</>
+        ) : (
+          <>No template is installed, so every report on this server fails at render time while the rest of the app looks healthy. Upload the institutional <code className="font-mono">.docx</code>; its chrome, margins and headers become the report's.</>
+        )}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <input ref={file} type="file" accept=".docx" onChange={upload} className="hidden" />
+        <Button size="sm" variant={ok ? "outline" : "primary"} onClick={() => file.current?.click()} disabled={busy}>
+          {busy ? "Uploading…" : ok ? "Replace template" : "Upload template"}
+        </Button>
+        {!mailOk && (
+          <span className="text-[11px] text-fg-faint">
+            SMTP is also unset — password reset cannot be delivered on this box.
+          </span>
+        )}
+      </div>
+      {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
+    </Panel>
+  );
+}
+
 function Row({ label, ok, detail }) {
   return <div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} /><span className="text-fg">{label}</span><span className="ml-auto text-fg-faint">{detail}</span></div>;
 }
