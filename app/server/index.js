@@ -463,6 +463,13 @@ async function deckMeta(slug) {
   let report = false;
   let title = deck?.title;
   try { await access(path.join(dir, "report.yaml")); report = true; } catch { /* none */ }
+  // What else this project holds. The project navigation shows all four
+  // artefacts whether or not they exist, so it needs to know which are real
+  // in one call rather than probing four endpoints per page.
+  let research = false;
+  let script = false;
+  try { await access(path.join(dir, "research", "notes.md")); research = true; } catch { /* none */ }
+  try { await access(path.join(dir, "script.md")); script = true; } catch { /* none */ }
   if (!title) {
     try {
       const reportFile = YAML.parse(await readFile(path.join(dir, "report.yaml"), "utf8"));
@@ -487,6 +494,8 @@ async function deckMeta(slug) {
     slides: deck?.slides?.length ?? 0,
     updated,
     report,
+    research,
+    script,
     deck: Boolean(deck),
     meta,
     owner: meta.owner ?? null,
@@ -513,6 +522,22 @@ app.get("/api/decks", wrap(async (req, res) => {
   }
   decks.sort((a, b) => b.updated - a.updated);
   ok(res, { decks });
+}));
+
+/**
+ * What this project holds — title, theme, and which of the four artefacts
+ * exist. Deliberately separate from GET /api/decks/:slug, which opens deck.yaml
+ * unconditionally and therefore throws for a report-first project that has no
+ * deck yet. The project navigation is shown on every one of those pages, so it
+ * needs an answer that does not depend on the deck being the thing that exists.
+ */
+app.get("/api/decks/:slug/project", wrap(async (req, res) => {
+  try {
+    const m = await deckMeta(req.params.slug);
+    ok(res, { project: { slug: m.slug, title: m.title, theme: m.theme, slides: m.slides, updated: m.updated, deck: m.deck, report: m.report, research: m.research, script: m.script } });
+  } catch {
+    return fail(res, 404, "no such deck");
+  }
 }));
 
 app.get("/api/decks/:slug", wrap(async (req, res) => {
