@@ -9,12 +9,12 @@ import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
-import { renderReport, validateReport } from "../../src/report.js";
+import { renderReport, validateReport, donorStatus } from "../../src/report.js";
 import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
 import { userBrandDirs } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
@@ -739,7 +739,14 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
     decks: { total: totalDecks, reports: totalReports, slides: totalSlides, size: totalSize, byTheme, byOwner, recent: recent.slice(0, 10) },
     usage: usageAgg,
     limits,
-    system: { ollamaOk, searxngOk, diskFree, uptime: process.uptime(), node: process.version, tcetOk: (await autoStatus()).keySet },
+    system: {
+      ollamaOk, searxngOk, diskFree, uptime: process.uptime(), node: process.version,
+      tcetOk: (await autoStatus()).keySet,
+      // Half the product 500s without these two, and neither is visible from
+      // any screen that works. They belong where the operator already looks.
+      donor: await donorStatus(),
+      mailOk: mailConfigured(),
+    },
   });
 }));
 
@@ -1355,6 +1362,13 @@ app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   try { await access(reportFile); } catch { saved = false; }
   if (!saved) {
     return fail(res, 404, "no report.yaml saved for this deck — save report content first");
+  }
+  // A missing donor is a server that is not fully installed, not a broken
+  // request. It used to surface as a 500 from the renderer, which reads as "the
+  // app is broken" to the one person who could actually fix it.
+  const donor = await donorStatus();
+  if (!donor.ok) {
+    return res.status(503).json({ ok: false, error: reportUnavailable(donor), code: "no_donor" });
   }
   const toc = req.body?.toc !== false;
   const r = await renderReport({ reportFile, toc });
@@ -2060,11 +2074,8 @@ const DONOR_MAGIC = Buffer.from([0x50, 0x4b, 0x03, 0x04]); // a .docx is a zip
 
 app.get("/api/admin/donor", wrap(async (req, res) => {
   if (!(await requireAdminUser(req, res))) return;
-  let files = [];
-  try {
-    files = (await readdir(REFERENCE)).filter((f) => f.toLowerCase().endsWith(".docx"));
-  } catch { /* directory not created yet */ }
-  ok(res, { dir: REFERENCE, donors: files });
+  const donor = await donorStatus();
+  ok(res, { ...donor, message: donor.ok ? null : reportUnavailable(donor) });
 }));
 
 app.post("/api/admin/donor", (req, res) => {
@@ -2574,6 +2585,30 @@ try {
   app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(UI_DIST, "index.html")));
 } catch { /* dev — no built UI */ }
 
+/**
+ * What a healthy-looking box is quietly missing.
+ *
+ * Neither of these stops the server, and that is the point: a box that renders
+ * 34 themes of slides should not refuse to serve any of them over a missing
+ * .docx, and an install with no SMTP is the ordinary local case. But both fail
+ * silently at the point of use — half the product 500s, or an account can never
+ * be recovered — so they are said once, loudly, where the operator is looking.
+ */
+async function reportBootGaps() {
+  const donor = await donorStatus();
+  if (!donor.ok) {
+    console.warn(`  WARNING: ${reportUnavailable(donor)}`);
+    console.warn(`           drop one .docx into ${donor.dir}, set FORGE_REFERENCE_DIR, or upload it under Admin → System.`);
+  }
+  if (!mailConfigured()) {
+    console.warn("  WARNING: no SMTP configured (FORGE_SMTP_*) — password reset cannot be delivered,");
+    console.warn("           and new accounts are verified on creation because nothing can be sent to them.");
+  } else if (!process.env.FORGE_PUBLIC_URL && !process.env.FORGE_UI_ORIGIN) {
+    console.warn("  WARNING: FORGE_PUBLIC_URL is unset — reset and confirmation links will point at localhost.");
+  }
+}
+
 app.listen(PORT, () => {
   console.log(`  api   http://localhost:${PORT}`);
+  reportBootGaps().catch(() => { /* a warning that cannot be computed is not worth failing over */ });
 });

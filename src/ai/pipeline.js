@@ -20,7 +20,7 @@ import { researchProfile, researchExcerptCap } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
-import { renderReport, REPORT_SECTIONS } from "../report.js";
+import { renderReport, donorStatus, REPORT_SECTIONS } from "../report.js";
 import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
 
@@ -183,6 +183,14 @@ export async function createDeck({
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
+  // The donor is checked here rather than at the render call three steps down.
+  // This run is a web research pass, a full model write and then a render, and
+  // discovering at the end that the box has no template spends every minute of
+  // that plus the account's Auto budget to arrive at a failure that was knowable
+  // before the first request went out.
+  const donor = await donorStatus();
+  if (!donor.ok) throw new Error(reportUnavailable(donor));
+
   const slug = await uniqueSlug(brief);
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
@@ -269,12 +277,28 @@ export async function createDeck({
  * notes, so a companion deck can later be generated from the same material.
  * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
  */
+/** One sentence for a box that cannot render reports, so the CLI, the API and
+ *  the admin page do not each invent their own wording for it. */
+export function reportUnavailable(donor) {
+  return donor.reason === "ambiguous"
+    ? `this server has ${donor.donors.length} report templates and cannot choose between them — an admin should leave exactly one`
+    : "this server has no report template installed — reports cannot be produced until an admin uploads one";
+}
+
 export async function createReport({
   brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
   upload = null, depth = "full", density = "balanced",
   model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
+
+  // The donor is checked here rather than at the render call three steps down.
+  // This run is a web research pass, a full model write and then a render, and
+  // discovering at the end that the box has no template spends every minute of
+  // that plus the account's Auto budget to arrive at a failure that was knowable
+  // before the first request went out.
+  const donor = await donorStatus();
+  if (!donor.ok) throw new Error(reportUnavailable(donor));
 
   const slug = await uniqueSlug(brief);
   const dir = path.join(DECKS, slug);

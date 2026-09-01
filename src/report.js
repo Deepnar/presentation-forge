@@ -52,6 +52,34 @@ function donorMissing() {
   );
 }
 
+/**
+ * Whether this install can render a report at all, and why not when it cannot.
+ *
+ * The donor is gitignored and excluded from the build context, so a fresh
+ * hosted box starts with none and every report route 500s while the rest of the
+ * product looks healthy. This is what the admin page and the boot log read, so
+ * that failure is visible before a user finds it.
+ *
+ * `refDir` is a parameter rather than a constant because the donor is currently
+ * install-wide and the roadmap has it becoming per-account, like identity and
+ * brand. When that lands this answers per account without changing shape.
+ */
+export async function donorStatus(refDir = REFERENCE) {
+  let files = [];
+  try {
+    files = (await readdir(refDir)).filter((f) => f.toLowerCase().endsWith(".docx"));
+  } catch {
+    return { ok: false, dir: refDir, donors: [], reason: "missing", detail: "no reference directory on this box" };
+  }
+  if (!files.length) {
+    return { ok: false, dir: refDir, donors: [], reason: "missing", detail: "no template .docx has been uploaded" };
+  }
+  if (files.length > 1) {
+    return { ok: false, dir: refDir, donors: files, reason: "ambiguous", detail: `${files.length} templates present — exactly one is required` };
+  }
+  return { ok: true, dir: refDir, donors: files, reason: null, detail: files[0] };
+}
+
 /** The donor lives in gitignored reference/. With several present, an explicit
  *  path is required rather than guessing which template to match. */
 export async function resolveDonor(explicit, refDir = REFERENCE) {
