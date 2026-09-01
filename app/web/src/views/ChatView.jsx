@@ -1022,14 +1022,19 @@ export default function ChatView({
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold text-fg">{chat.title}</div>
           <div className="truncate text-[10.5px] text-fg-faint">
-            {chat.kind === "report" ? "standalone report" : "project — slides + report + script"}
+            {chat.kind === "report" ? "A report on its own" : "Slides, a written report and a speaker script"}
           </div>
         </div>
         {chat.produced && (
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
-        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-success/10 text-success"} title={hosted ? "Hosted: Forge + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
-          {hosted ? "hosted" : "local"}
+        {/* "hosted" and "local" are words about the deployment. What a reader
+            wants to know is where their topic is being sent. */}
+        <Badge
+          className={hosted ? "bg-amber/10 text-amber" : "bg-success/10 text-success"}
+          title={hosted ? "Runs on a shared model over the network" : "Runs on a model on this machine"}
+        >
+          {hosted ? "shared model" : "on this machine"}
         </Badge>
       </header>
       {/* ONE prompt for one decision. There were three: this banner, a

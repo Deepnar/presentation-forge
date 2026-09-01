@@ -166,7 +166,16 @@ export default function Sidebar({
                 </span>
               )}
             </TabButton>
-            <TabButton active={tab === "projects"} onClick={() => setTab("projects")}>Projects</TabButton>
+            {/* Both tabs carry a count. Only one did, which made them read as
+                two different kinds of thing rather than two lists. */}
+            <TabButton active={tab === "projects"} onClick={() => setTab("projects")}>
+              Projects
+              {decks.length > 0 && (
+                <span className={`rounded-full px-1.5 text-[10px] tabular-nums ${tab === "projects" ? "bg-hover" : "bg-prompt"}`}>
+                  {decks.length}
+                </span>
+              )}
+            </TabButton>
           </div>
 
           {tab === "projects" && (
@@ -233,12 +242,13 @@ export default function Sidebar({
                     </div>
                   );
                 })}
+                {/* One line, not a second empty state. The screen already
+                    carries a full one in the middle, and this card competed
+                    with it while pointing "below" at a New chat button that is
+                    directly above. */}
                 {chats.length === 0 && (
-                  <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
-                    <div className="empty-ring h-8 w-8">
-                      <PlusIcon className="h-3.5 w-3.5" />
-                    </div>
-                    <div>No chats yet — start one below. The machine drafts, you do the final touches.</div>
+                  <div className="px-2.5 py-3 text-[11.5px] leading-relaxed text-fg-faint">
+                    Your chats will appear here.
                   </div>
                 )}
               </>
@@ -428,7 +438,7 @@ function TabButton({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`pill px-2.5 py-1 text-[12px] font-medium transition ${
+      className={`pill gap-1.5 px-2.5 py-1 text-[12px] font-medium transition ${
         active ? "bg-prompt text-fg" : "text-fg-faint hover:bg-raised hover:text-fg-muted"
       }`}
     >
@@ -459,16 +469,22 @@ function NavRow({ active, icon: Icon, label, href }) {
   );
 }
 
-/** Settings is a modal, not a view — the row opens it rather than routing. */
+/**
+ * Settings is a modal, not a view — the row opens it rather than routing.
+ *
+ * So it carries no right-chevron. That mark is this sidebar's word for "this
+ * goes somewhere", and using it on a control that opens a dialog over the
+ * current page promises a journey the click does not make.
+ */
 function SettingsRow({ icon: Icon, label, onClick }) {
   return (
     <button
       onClick={onClick}
+      aria-haspopup="dialog"
       className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition hover:bg-hover"
     >
       <Icon className="h-4 w-4 shrink-0 text-fg-faint" />
       <span className="text-[13px] font-medium text-fg-muted">{label}</span>
-      <ChevronDown className="ml-auto h-3 w-3 -rotate-90 text-fg-faint" />
     </button>
   );
 }
