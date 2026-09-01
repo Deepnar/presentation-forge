@@ -94,7 +94,39 @@ function ensureSchema(d) {
       created_at INTEGER NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_auto_events_user_time ON auto_events(user_id, created_at);
+
+    CREATE TABLE IF NOT EXISTS auth_tokens (
+      token_hash TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      email TEXT NOT NULL,
+      purpose TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL,
+      used_at INTEGER
+    );
+    CREATE INDEX IF NOT EXISTS idx_auth_tokens_user ON auth_tokens(user_id, purpose);
+    CREATE INDEX IF NOT EXISTS idx_auth_tokens_expiry ON auth_tokens(expires_at);
   `);
+  addVerifiedColumn(d);
+}
+
+/**
+ * `users.verified_at` arrived after accounts existed, and the backfill decides
+ * whether a running install survives the upgrade. Every row already in the
+ * table is grandfathered as verified: those people registered when nothing was
+ * asked of them, and a migration that locks them all out of their own decks is
+ * a worse failure than the one verification exists to prevent.
+ *
+ * ALTER succeeding is the signal that this is the first boot on the new schema,
+ * so the backfill runs exactly once and later registrations are unaffected.
+ */
+function addVerifiedColumn(d) {
+  try {
+    d.exec("ALTER TABLE users ADD COLUMN verified_at TEXT");
+  } catch {
+    return; // column already present — nothing to migrate
+  }
+  d.exec("UPDATE users SET verified_at = created_at WHERE verified_at IS NULL");
 }
 
 function migrateJsonIfNeeded(d) {
