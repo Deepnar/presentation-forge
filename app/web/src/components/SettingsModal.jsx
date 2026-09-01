@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
+import { getAppearance, setAppearance, subscribeAppearance } from "../lib/appearance.js";
 import { Button, Badge, Field, Spinner, ConfirmModal, inputCls } from "./ui.jsx";
 import { GearIcon } from "./icons.jsx";
 import { presetsStore } from "../lib/presets.js";
@@ -54,6 +55,7 @@ export default function SettingsModal({ open, onClose, identity, user, isAdmin, 
         </header>
 
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-6">
+          <AppearanceSection />
           <PresetsSection />
           <IdentitySection identity={identity} onIdentityChanged={onIdentityChanged} />
           {isAdmin && <HostedSection />}
@@ -61,6 +63,76 @@ export default function SettingsModal({ open, onClose, identity, user, isAdmin, 
       </div>
     </div>
   );
+}
+
+/* ----------------------------------------------------------- appearance */
+
+/**
+ * Three choices, not a switch. "System" has to be reachable: a two-state
+ * toggle can only ever mean "the OS is wrong", and the preference then stops
+ * tracking a machine that changes at sunset.
+ */
+function AppearanceSection() {
+  const [mode, setMode] = useState(getAppearance());
+  useEffect(() => subscribeAppearance((m) => setMode(m)), []);
+
+  const options = [
+    { value: "light", label: "Light", hint: "The default." },
+    { value: "dark", label: "Dark", hint: "Same ink, inverted." },
+    { value: "system", label: "System", hint: "Follows your OS." },
+  ];
+
+  return (
+    <section className="rounded-card border border-line bg-panel p-5">
+      <div className="mb-3">
+        <h2 className="text-[13px] font-semibold tracking-tight text-fg">Appearance</h2>
+        <p className="mt-0.5 text-[11px] leading-relaxed text-fg-faint">
+          How the app looks. This is the interface only — a deck's own colours
+          come from its theme and are unaffected.
+        </p>
+      </div>
+      <div role="radiogroup" aria-label="Appearance" className="grid grid-cols-3 gap-2">
+        {options.map((o) => {
+          const on = mode === o.value;
+          return (
+            <button
+              key={o.value}
+              role="radio"
+              aria-checked={on}
+              onClick={() => setAppearance(o.value)}
+              className={`rounded-card border p-3 text-left transition ${
+                on
+                  ? "border-accent bg-accent-tint"
+                  : "border-line bg-panel hover:border-line-strong hover:bg-hover"
+              }`}
+            >
+              <ModeSwatch mode={o.value} />
+              <div className={`mt-2 text-[12px] font-medium ${on ? "text-accent" : "text-fg"}`}>{o.label}</div>
+              <div className="text-[10.5px] leading-snug text-fg-faint">{o.hint}</div>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * The swatches are painted from literal hexes rather than the tokens, because
+ * a preview drawn in tokens shows the theme that is already on — three
+ * identical chips. These are the two palettes as they are, side by side.
+ */
+function ModeSwatch({ mode }) {
+  const light = { page: "#FBFBFD", panel: "#FFFFFF", line: "#E7E8EF", ink: "#0B0F1A" };
+  const dark = { page: "#0A0A0C", panel: "#141519", line: "#26272E", ink: "#F5F6F8" };
+  const bar = (p, key) => (
+    <span key={key} className="flex-1 overflow-hidden rounded-[3px]" style={{ background: p.page, boxShadow: `inset 0 0 0 1px ${p.line}` }}>
+      <span className="block h-1/2 w-full" style={{ background: p.panel }} />
+      <span className="mx-auto mt-[3px] block h-[3px] w-2/3 rounded-full" style={{ background: p.ink }} />
+    </span>
+  );
+  const panes = mode === "system" ? [bar(light, "l"), bar(dark, "d")] : [bar(mode === "dark" ? dark : light, "s")];
+  return <span className="flex h-8 gap-1">{panes}</span>;
 }
 
 /* -------------------------------------------------------------- presets */
