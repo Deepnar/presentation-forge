@@ -737,3 +737,29 @@ its timeout — the backpressure was gone precisely when it was needed.
 **`pathToFileURL(process.argv[1])` throws when argv[1] is undefined.** A CLI
 guard written that way makes the module unimportable from `node -e`, which is
 how a container entrypoint calls it. Check argv first.
+
+**A module-level `const` that reads `process.env` defeats any seam that sets
+`process.env`.** `src/db.js` captured its database path at import, so
+`setDbPathForTest` set an environment variable nothing would ever look at again
+and a test asking for a scratch database opened the real one. Neither suite that
+redirects the store noticed, because both take the JSON escape hatch in
+`auth.js` and never opened SQLite at all. `src/paths.js` has the same shape by
+design — which is why a test that redirects a path must set the variable
+*before* importing anything that reads it, and why anything with a runtime seam
+should resolve per call instead.
+
+**`app.use("/api/x/:param")` shadows every literal route under `/api/x/`
+registered after it.** Express matches a path-carrying `app.use` before any
+later route, so `POST /api/decks/search` arrives at the per-slug ownership
+middleware with `slug = "search"`, finds no such deck, and is refused — for
+everyone except admins, who pass the ownership check and therefore never see it.
+An operator testing their own box cannot reproduce it. Register literal segments
+above the parameterised middleware, or the middleware has to know which segments
+are not slugs.
+
+**Identical function preambles make a whole-file replace land twice.**
+`createDeck` and `createReport` open with the same two lines, so a guard meant
+for the report path was inserted into both and generating a *deck* on a box with
+no report template failed with "this server has no report template installed".
+Nothing caught it: the guard is above every seam a unit test can reach, and both
+functions still parsed. Count the matches before replacing, and run the thing.
