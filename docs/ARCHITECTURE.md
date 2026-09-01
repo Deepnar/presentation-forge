@@ -1130,6 +1130,111 @@ styles); API JSON does not. With no `FORGE_UI_ORIGIN` configured, no CORS
 headers are emitted at all. `FORGE_TRUST_PROXY=1` opts a reverse proxy into
 `X-Forwarded-For` handling for the rate limiter.
 
+### Account recovery and address confirmation
+
+Two gaps that a stranger hits on day one and a demo never shows: a forgotten
+password with no way back, and an address nobody can reach. Both are answered by
+one token store, because they are the same job — prove you can read this inbox —
+differing only in lifetime and in what spending a token does.
+
+**One table, `auth_tokens`, holding hashes.** `token_hash` is the SHA-256 of the
+token; the plaintext exists only in the email. A reset token is a bearer
+credential for an account, so a database that leaks must not be a list of live
+password resets. Two near-identical token implementations is how one of them
+ends up missing the single-use check, so `issueAuthToken` / `consumeAuthToken`
+take a `purpose` (`reset` | `verify`) and everything else is shared. Issuing
+drops any outstanding token of the same purpose — two live reset links doubles
+the window an intercepted message is useful in. Consuming is a conditional
+`UPDATE … WHERE used_at IS NULL` and checks the row count, not a read followed
+by a write: two requests arriving together on one token would both pass a read
+check, and a single use that two callers can satisfy is not a single use.
+
+**A completed reset kills every session for the account** (`resetPassword` in
+`src/auth.js`). A reset is what someone does when they believe they have lost
+control of the account; leaving alive the sessions that prompted it answers the
+wrong half of the problem. It also proves the address, so it confirms an
+unconfirmed account.
+
+**`POST /api/auth/forgot` answers identically whatever the truth is.** Whether
+the address has an account, whether that account signs in with Google and has no
+password to reset, and whether the message was accepted are all invisible —
+otherwise the endpoint is an account-enumeration oracle for a box that never
+listed its users. The send is dispatched rather than awaited for the same
+reason: an SMTP dialogue takes seconds, and awaiting it makes a real address
+measurably slower than an unknown one. A per-address throttle sits beside the
+per-IP limiter: the IP limiter stops a dictionary attack and does nothing about
+one inbox being mailbombed from a botnet.
+
+**`POST /api/auth/verify` does not start a session.** A link sitting in an inbox
+should confirm an address, not be a way into the account.
+
+**Confirmation is enforced only where a message can be delivered.**
+`verificationRequired()` is `mailConfigured()`. An install with no SMTP marks
+accounts verified at creation, because a gate whose only key is an email nobody
+can send is a locked door with no handle. Google accounts arrive confirmed —
+`verifyGoogleIdToken` already refuses a token whose `email_verified` is false,
+so reaching `findOrCreateGoogleUser` *is* the proof the email flow exists to
+obtain. Rows that predate the `verified_at` column are backfilled as confirmed:
+those accounts registered when nothing was asked of them, and a migration that
+locks all of them out of their own decks is a worse failure than the one
+confirmation prevents.
+
+**The gate is default-deny by method, at the workspace entrance.**
+`verifiedRequestOnly({ method, path })` lives beside `canAccessDeck` in
+`src/auth.js` — reading is free, changing anything is not, `DELETE` stays open
+so someone who cannot generate can still clear up, and `POST /search` is a local
+filter that spends nothing. Stated that way, a route added later is covered
+without anybody remembering to cover it; a list of the routes that currently
+spend something goes stale on the sixteenth.
+
+It sits at the workspace rather than on the Auto tier even though Auto is what
+costs the operator money, for two reasons. Routing resolves per request in
+`src/cloud.js` and falls back, so "your own key may generate, the shared one may
+not" would leak the moment a preference resolved to Auto. And the key is not the
+only cost: a deck is 5–15 MB of rasters and two LibreOffice passes on the
+operator's machine whoever's key paid for the words. What an unconfirmed account
+keeps is everything that spends nothing — signing in, browsing, Settings, its
+own BYOK key, identity and brand.
+
+The refusal carries `code: "email_unverified"` so the UI can turn it into a
+resend prompt rather than the generic message it shows for everything else. The
+composer is disabled ahead of it: the briefing runs entirely in the browser, so
+without that the person answers five questions about a deck the server will
+refuse to create.
+
+**`src/mail.js` takes a recipient per message.** It began as "mail the operator
+on sweep day", so `FORGE_SMTP_TO` was the only address it could reach; that is
+now the sweep's destination alone. `mailConfigured()` asks whether outbound mail
+works at all, `sweepMailConfigured()` whether the sweep has somewhere to report.
+Links are built from `FORGE_PUBLIC_URL` and carry the token in the URL fragment,
+which is never sent to the server, never lands in an access log, and is not
+forwarded in a `Referer` when the page loads its own assets. `#/reset/<token>`
+and `#/verify/<token>` render above the auth gate in `App.jsx`, because someone
+resetting a password cannot log in by definition.
+
+### The report donor is a server state, not a runtime surprise
+
+The institutional `.docx` is gitignored and excluded from the build context, so
+a fresh hosted box has none and every report route fails while the rest of the
+product looks healthy. `donorStatus(refDir)` in `src/report.js` names the three
+states — missing, ambiguous (several present, and `resolveDonor` refuses to
+guess), or serving one — and is read in three places: the boot log, the admin
+System tab, and `createReport`.
+
+`createReport` checks it **before the research pass**. That run is a web
+research pass, a full model write and then a render, so reaching the donor only
+at the render meant the failure landed after every minute of that and after the
+account's Auto budget was gone — to report something knowable before the first
+request went out. The check is in the pipeline rather than the route, so the CLI
+is covered too. `POST /api/decks/:slug/report/render` answers 503 with
+`code: "no_donor"` instead of a 500 from the renderer: a server that is not
+fully installed is not a broken request.
+
+`donorStatus` takes its directory as a parameter rather than reading the
+constant, because the donor is currently install-wide and the roadmap has it
+becoming per-account like identity and brand. When that lands it answers per
+account without changing shape.
+
 ### The cloud surface — opt-in hosted models
 
 The app is local-first by default and stays that way: nothing calls a hosted
