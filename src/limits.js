@@ -4,9 +4,21 @@ import { getDb } from "./db.js";
  * Auto-tier limits for the shared TCET gateway.
  * Hourly / weekly sliding windows, counting both requests and slides.
  *
- * Defaults are env-overridable so hosting can tune without code change.
- * Pillars:
- *  - hourly_requests: how many model calls can be made in 60m
+ * A "request" here is ONE PIPELINE OPERATION — a plan, a generate, a chat turn
+ * — not one model call. `enforceAuto`/`recordAutoFor` are invoked per API
+ * route, and a single generate makes many model calls behind one recorded
+ * event. Reading these as model calls makes every number look ten times
+ * tighter than it is, which is how they came to be set this high.
+ *
+ * The Auto key bills the operator, so the budget is a real cost and the free
+ * tier is deliberately enough to produce a few decks a week and iterate on
+ * them, not to run a workload. A full deck cycle is roughly three to six
+ * requests and twenty-odd slides; the weekly numbers are about four of those.
+ * Anyone who needs more attaches their own key under Cloud, where none of this
+ * applies, and a local Ollama backend is unlimited.
+ *
+ * Defaults are env-overridable so hosting can tune without a code change.
+ *  - hourly_requests: pipeline operations in 60m
  *  - weekly_requests: overall throttle
  *  - hourly_slides: slides generated in 60m (covers one big deck)
  *  - weekly_slides: weekly slide budget
@@ -15,13 +27,13 @@ import { getDb } from "./db.js";
 
 export function limitConfig() {
   return {
-    hourlyRequests: Number(process.env.FORGE_AUTO_HOURLY_REQUESTS ?? 20),
-    weeklyRequests: Number(process.env.FORGE_AUTO_WEEKLY_REQUESTS ?? 100),
-    hourlySlides: Number(process.env.FORGE_AUTO_HOURLY_SLIDES ?? 60),
-    weeklySlides: Number(process.env.FORGE_AUTO_WEEKLY_SLIDES ?? 300),
-    weeklyTokens: Number(process.env.FORGE_AUTO_WEEKLY_TOKENS ?? 200000),
-    // allow burst for single deck (e.g., 24 slides in one generate)
-    maxSlidesPerDeck: Number(process.env.FORGE_AUTO_MAX_SLIDES_PER_DECK ?? 30),
+    hourlyRequests: Number(process.env.FORGE_AUTO_HOURLY_REQUESTS ?? 8),
+    weeklyRequests: Number(process.env.FORGE_AUTO_WEEKLY_REQUESTS ?? 30),
+    hourlySlides: Number(process.env.FORGE_AUTO_HOURLY_SLIDES ?? 30),
+    weeklySlides: Number(process.env.FORGE_AUTO_WEEKLY_SLIDES ?? 90),
+    weeklyTokens: Number(process.env.FORGE_AUTO_WEEKLY_TOKENS ?? 80000),
+    // One deck may still burst to a full-length deck within the hourly budget.
+    maxSlidesPerDeck: Number(process.env.FORGE_AUTO_MAX_SLIDES_PER_DECK ?? 24),
   };
 }
 
