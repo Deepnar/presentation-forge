@@ -6,6 +6,8 @@ import HeaderBar from "./components/HeaderBar.jsx";
 import ParticleField from "./components/ParticleField.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
+import RecoveryScreen from "./components/RecoveryScreen.jsx";
+import VerifyBanner from "./components/VerifyBanner.jsx";
 import Home from "./views/Home.jsx";
 import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
@@ -31,6 +33,14 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
  */
 export default function App() {
   const [user, setUser] = useState(undefined); // undefined = auth still checking
+  // Whether this install asks accounts to confirm their address at all. A box
+  // with no SMTP does not, so the banner must never appear there.
+  const [verifyRequired, setVerifyRequired] = useState(false);
+  // The reset and confirm screens are reached from an email, so they have to
+  // render before the auth gate — the person clicking a reset link is by
+  // definition unable to log in. Tracked separately from `view`, which only
+  // updates once the shell is already mounted.
+  const [hash, setHash] = useState(() => window.location.hash);
   const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
   const [view, setView] = useState("chat"); // chat | deck | report | research | themes | home
@@ -58,7 +68,9 @@ export default function App() {
   // undefined (still checking) so a reload never flashes the landing for an
   // authed visitor; it resolves to the session or null before anything renders.
   useEffect(() => {
-    api.me().then((r) => setUser(r.user)).catch(() => setUser(null));
+    api.me()
+      .then((r) => { setUser(r.user); setVerifyRequired(r.verifyRequired === true); })
+      .catch(() => setUser(null));
   }, []);
 
   // Identity is per account, and reading it needs a session — institution,
@@ -301,6 +313,15 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHash);
   });
 
+  // A second, standalone subscription. The token screens render above the auth
+  // gate, before applyHash has ever run for a signed-out visitor, so they read
+  // the address bar directly rather than the view state applyHash maintains.
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
   // Boot and login: the constant landing is New chat (the chats effect picks
   // the account's empty thread). An EXPLICITLY-opened view hash is honoured
   // instead — #/deck/<slug>, #/report/…, #/research/…, and also #/themes,
@@ -398,6 +419,25 @@ export default function App() {
     navigate("chat", { chatId: companion.id });
   }
 
+  const recovery = parseHash(hash);
+  if (recovery.view === "reset" || recovery.view === "verify") {
+    return (
+      <RecoveryScreen
+        kind={recovery.view}
+        token={recovery.token}
+        // Confirming while a session is open should not leave the shell
+        // insisting the address is unconfirmed behind the screen.
+        onDone={() => api.me().then((r) => setUser(r.user)).catch(() => {})}
+        onSignIn={() => {
+          window.location.hash = "#/home";
+          setHash("#/home");
+          setAuthMode("login");
+          setAuthOpen(true);
+        }}
+      />
+    );
+  }
+
   if (user === undefined) {
     // Auth is still resolving — show branded loading, not blank particles. Solid bg, not particle field (tour is solid per request).
     return (
@@ -459,6 +499,11 @@ export default function App() {
       <ParticleField boost={isTourView ? 2.6 : 1.4} className={`pointer-events-none fixed inset-0 z-0 h-full w-full ${isTourView ? "opacity-50" : "opacity-38"}`} />
 
       <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col overflow-x-hidden"}`}>
+        {/* An unconfirmed account can read everything and create nothing. The
+            state lasts the whole session, so it is a strip at the top of the
+            shell rather than a toast that disappears before the refusal it
+            explains. */}
+        {verifyRequired && user && !user.verified && <VerifyBanner email={user.email} />}
         {isTourView && (
           <HeaderBar
             leftOpen={leftOpen}
@@ -542,6 +587,7 @@ export default function App() {
                   onOpenReport={openReport}
                   onDeckChanged={bumpDeck}
                   onOpenSettings={() => setSettingsOpen(true)}
+                  unverified={verifyRequired && !user.verified}
                 />
               </ErrorBoundary>
             )}

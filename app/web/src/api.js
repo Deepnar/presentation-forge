@@ -9,6 +9,12 @@ async function call(url, options) {
     const err = new Error(body.error ?? `HTTP ${res.status}`);
     err.errors = body.errors;
     err.status = res.status;
+    // Some refusals are a state the UI can act on rather than a message to
+    // print — an unconfirmed address, a server with no report template.
+    err.code = body.code ?? null;
+    // A rejected reset hands back a fresh token so a mistyped password does
+    // not cost the user another email.
+    err.token = body.token ?? null;
     throw err;
   }
   return body;
@@ -219,11 +225,23 @@ export const api = {
   // the new account is created and the visitor signs in with it explicitly.
   register: (payload) =>
     call("/api/auth/register", { method: "POST", body: JSON.stringify(payload) })
-      .then((r) => r.user),
+      .then((r) => ({ ...r.user, verifySent: r.verifySent === true })),
   login: (payload) =>
     call("/api/auth/login", { method: "POST", body: JSON.stringify(payload) })
       .then((r) => { rememberToken(r.token); return r.user; }),
-  registrationOpen: () => call("/api/auth/registration").then((r) => r.open === true),
+  // What the sign-in surface is allowed to offer: whether anyone may register,
+  // whether "forgot password" can actually deliver anything, and whether a new
+  // account will have to confirm its address.
+  authConfig: () =>
+    call("/api/auth/registration").catch(() => ({ open: true, mail: false, verifyRequired: false })),
+  forgotPassword: (email) =>
+    call("/api/auth/forgot", { method: "POST", body: JSON.stringify({ email }) }),
+  resetPassword: (token, password) =>
+    call("/api/auth/reset", { method: "POST", body: JSON.stringify({ token, password }) }),
+  verifyEmail: (token) =>
+    call("/api/auth/verify", { method: "POST", body: JSON.stringify({ token }) }),
+  resendVerification: () =>
+    call("/api/auth/verify/resend", { method: "POST", body: JSON.stringify({}) }),
   logout: () =>
     call("/api/auth/logout", { method: "POST", body: JSON.stringify({}) })
       .finally(clearToken),
@@ -256,5 +274,20 @@ export const api = {
   adminDeleteUser: (email) => call(`/api/admin/users/${encodeURIComponent(email)}`, { method: "DELETE" }),
   adminDecks: () => call("/api/admin/decks"),
   adminHosted: () => call("/api/admin/hosted"),
+  adminDonor: () => call("/api/admin/donor"),
+  adminDonorUpload: (file) =>
+    fetch("/api/admin/donor", {
+      method: "POST",
+      headers: {
+        "X-File-Name": encodeURIComponent(file.name),
+        "Content-Type": file.type || "application/octet-stream",
+        ...authHeader(),
+      },
+      body: file,
+    }).then(async (res) => {
+      const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
+      if (!body.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+      return body;
+    }),
   adminSetHosted: (hosted) => call("/api/admin/hosted", { method: "POST", body: JSON.stringify({ hosted }) }),
 };

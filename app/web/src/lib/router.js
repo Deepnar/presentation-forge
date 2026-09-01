@@ -10,7 +10,13 @@
  *   #/deck/<slug>       deck detail       #/report/<slug>   report view
  *   #/research/<slug>   research view     #/themes          theme gallery
  *   #/home              the landing page
+ *   #/reset/<token>     set a new password  #/verify/<token>  confirm an address
  *   (empty)             home = chat
+ *
+ * The two token routes are the only ones a signed-OUT visitor is sent to by
+ * name — they arrive from an email, and the whole point is that the person
+ * cannot sign in. They carry the token in the fragment because a fragment is
+ * never sent to the server and never lands in an access log.
  *
  * Settings is not a route — it is a modal over whatever view is open, opened
  * from the profile chip or the sidebar row. An old #/identity hash resolves to
@@ -30,6 +36,11 @@ export function parseHash(hash) {
     case "report":
     case "research":
       return rest[0] ? { view: kind, slug: rest[0] } : { view: "chat" };
+    case "reset":
+    case "verify":
+      // A link with no token is a mangled email, not a view — say so on the
+      // screen that can do something about it rather than silently going home.
+      return { view: kind, token: rest[0] ?? null };
     case "themes":
       return { view: "themes" };
     case "tour-themes":
@@ -57,7 +68,7 @@ export function parseHash(hash) {
 
 /** The reverse: a view + optional target → the hash to push. A deck/report/
  *  research view without a slug is meaningless and resolves to home. */
-export function hashFor(view, { slug, chatId } = {}) {
+export function hashFor(view, { slug, chatId, token } = {}) {
   switch (view) {
     case "deck":
       return slug ? `#/deck/${slug}` : "#/chat";
@@ -65,6 +76,9 @@ export function hashFor(view, { slug, chatId } = {}) {
       return slug ? `#/report/${slug}` : "#/chat";
     case "research":
       return slug ? `#/research/${slug}` : "#/chat";
+    case "reset":
+    case "verify":
+      return token ? `#/${view}/${token}` : "#/chat";
     case "themes":
       return "#/themes";
     case "tour-themes":
