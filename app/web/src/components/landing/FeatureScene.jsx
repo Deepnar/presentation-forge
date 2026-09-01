@@ -8,7 +8,7 @@ const FEATURES = [
   { t: "Speaker notes", d: "A script per slide from the same material, so what you say and what is on the screen do not drift apart.", from: "down" },
   { t: "A report, not just slides", d: "The companion document comes out of the same content — structured, paginated, contents page numbered correctly.", from: "left" },
   { t: "Your marks, not ours", d: "Institution, department, guide and crest are per account and applied by locked code, never the model's idea.", from: "scale" },
-  { t: "Runs on your machine", d: "Local models are a first-class backend, not a fallback. Nothing has to leave the laptop if you would rather it did not.", from: "right" },
+  { t: "Chat with the deck", d: "Ask for a punchier slide, a different type, a tighter section. The change lands in the deck and the thumbnails refresh.", from: "right" },
   { t: "Real files out", d: "A .pptx and a .docx you can open, edit and hand in. No viewer, no lock-in, no export step that loses the formatting.", from: "up" },
 ];
 
@@ -28,7 +28,7 @@ export default function FeatureScene() {
   const flow = useTooTall(innerRef);
 
   return (
-    <div ref={ref} data-section="features" style={flow ? undefined : { height: `${FEATURES.length * 14 + 90}vh` }}>
+    <div ref={ref} data-section="features" style={flow ? undefined : { height: `${FEATURES.length * 17 + 95}vh` }}>
       <div
         className={
           flow

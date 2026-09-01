@@ -49,7 +49,7 @@ export default function TypeScroll({ manifest, typeCount }) {
   const x = span(p, 0.12, 1) * distance;
 
   return (
-    <div ref={ref} data-section="types" style={{ height: `${Math.max(200, slides.length * 14)}vh` }}>
+    <div ref={ref} data-section="types" style={{ height: `${Math.max(240, slides.length * 18)}vh` }}>
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
           <div className="reveal max-w-2xl">
