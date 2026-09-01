@@ -23,7 +23,7 @@ import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
@@ -223,32 +223,6 @@ async function resolveUser(req, { allowCookie = false } = {}) {
 
 const MEDIA_PATH = /^\/([^/]+)\/(preview|download|assets)\//;
 
-/**
- * Whether an unconfirmed address may make this request.
- *
- * The rule is one sentence — reading is free, changing anything is not — and it
- * is stated as a default-deny so a route added later is covered without anybody
- * remembering to cover it. That shape is the point: the alternative, a list of
- * the fifteen routes that currently spend something, is a list that goes stale
- * the first time a sixteenth is written.
- *
- * The gate sits at the workspace entrance rather than on the Auto tier, even
- * though Auto is what costs the operator money. Routing resolves per request in
- * cloud.js and falls back, so "your own key may generate, the shared one may
- * not" would leak the moment a preference resolved to Auto. And the cost is not
- * only the key: a deck is 5-15 MB of rasters and two LibreOffice passes on the
- * operator's machine whoever's key wrote the YAML.
- *
- * DELETE stays open on purpose. Someone who cannot generate should still be
- * able to clear up, and refusing that leaves junk nobody can remove.
- */
-function verifiedRequestOnly(req) {
-  if (req.method === "GET" || req.method === "HEAD" || req.method === "DELETE") return false;
-  // A local filter over decks the caller already owns — no model, no disk.
-  if (req.path === "/search") return false;
-  return true;
-}
-
 const deckWorkspace = async (req, res, next) => {
   // Media paths authenticate by cookie as well as bearer, but they DO
   // authenticate. They used to be exempt outright, on the theory that a slug is
@@ -259,7 +233,7 @@ const deckWorkspace = async (req, res, next) => {
   if (media && !SLUG_RE.test(media[1])) return fail(res, 404, "no such deck");
   const user = await resolveUser(req, { allowCookie: Boolean(media) });
   if (!user) return fail(res, 401, "log in to use the deck workspace");
-  if (!user.verified && verificationRequired() && verifiedRequestOnly(req)) {
+  if (!user.verified && verificationRequired() && verifiedRequestOnly({ method: req.method, path: req.path })) {
     // A distinct code, not a bare 403: the UI turns this one into "check your
     // inbox, resend" rather than the generic refusal it shows for everything
     // else, and a stranger's first blocked click has to explain itself.

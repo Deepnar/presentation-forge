@@ -205,6 +205,30 @@ export function canAccessDeck(user, owner) {
   return owner === user.email;
 }
 
+/**
+ * Whether a workspace request needs a confirmed address behind it.
+ *
+ * The rule is one sentence — reading is free, changing anything is not — and it
+ * is written as a default-deny so a route added later is covered without
+ * anybody remembering to cover it. That shape is the point: the alternative, a
+ * list of the routes that currently spend something, goes stale the first time
+ * another is written.
+ *
+ * It lives here beside canAccessDeck rather than in the Express layer because
+ * it is an access policy, and because a policy inside a module that calls
+ * listen() at import cannot be tested.
+ *
+ * DELETE stays open on purpose. Someone who cannot generate should still be
+ * able to clear up, and refusing that leaves junk nobody can remove.
+ */
+export function verifiedRequestOnly({ method, path: reqPath } = {}) {
+  const verb = String(method ?? "").toUpperCase();
+  if (verb === "GET" || verb === "HEAD" || verb === "DELETE" || verb === "OPTIONS") return false;
+  // A local filter over decks the caller already owns — no model, no disk.
+  if (reqPath === "/search") return false;
+  return true;
+}
+
 function db() {
   if (useJsonOnly) return null;
   try { return getDb(); } catch { return null; }
