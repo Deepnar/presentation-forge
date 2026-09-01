@@ -3489,16 +3489,41 @@ by unit test. Named specifically — every theme against every slide type,
 deck→report, report→deck, and the speaker scripts. Deferred by request until
 the gateway key is in place, and to be done in one pass rather than piecemeal.
 
-### [ ] Model configuration names models that are not installed
+### [x] Model configuration names models that are not installed
 
 *Priority: medium. Blocks any local run.*
 
-`config/models.yaml` addresses `qwen3-coder:30b-a3b-q4_K_M`,
-`gemma4:26b-a4b-it-q4_K_M` and `qwen3:4b-instruct`, and its `fallbacks:` list
-names three more. None of the six is installed on the development machine.
-Role resolution therefore falls through silently, which section 9 already
-identified as the cause of a thin outline once. The config should either name
-what is actually available or fail loudly instead of degrading quietly.
+**The first half of this entry was already stale when its turn came.** All six
+models it named — `qwen3-coder:30b-a3b-q4_K_M`, `gemma4:26b-a4b-it-q4_K_M`,
+`qwen3:4b-instruct` and the three fallbacks — are installed on the development
+machine now, and all four roles resolve to exactly what `models.yaml` names.
+The machine gained them at some point after the entry was written and nothing
+told the entry.
+
+The second half was not stale, and is the part that mattered: *fail loudly
+instead of degrading quietly*. `resolveRole` has always set `fellBack` when it
+substitutes, and that flag has always been threaded through `chat()` into the
+turn's stats — where **nothing read it**. Not one caller anywhere. A role
+running a model the config does not name was invisible at every layer.
+
+`roleAudit()` now answers it in one place (configured, resolved, and which of
+ok / fallback / missing / provider), boot warns on a mismatch, the admin System
+tab shows every role, and a substitution warns once per role per process so the
+CLI sees it too. Five tests in `test/roleaudit.test.js`, including that an
+unreachable Ollama gets an answer rather than an exception — a diagnostic that
+throws when the thing it diagnoses is down is not a diagnostic.
+
+> **Learned.** **A field nothing reads is not instrumentation, it is a comment
+> in a slightly more expensive form.** `fellBack` was correct, plumbed through
+> three layers, and load-bearing for nothing. The bug was never that the
+> substitution went unrecorded; it was that recording felt like handling it.
+> Worth grepping for the other end of any flag before trusting it: the
+> consumer, not the producer, is what makes it real.
+>
+> Also: an entry describing the state of a machine ages badly. This one
+> asserted six specific models were missing, and the machine changed
+> underneath it. Entries that name environment facts should say how to check
+> them, not what the answer was on the day.
 
 ### [ ] Housekeeping found during the audit
 
