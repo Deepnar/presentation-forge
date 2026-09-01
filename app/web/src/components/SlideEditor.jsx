@@ -742,7 +742,7 @@ export default function SlideEditor({ deck, index, members, onSave, onClose }) {
   const title = slide.headline ?? slide.quote ?? slide.title ?? "edit slide";
 
   return (
-    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm">
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-3 backdrop-blur-sm sm:p-6">
       <Panel className="flex max-h-full w-full max-w-2xl flex-col">
         <header className="flex items-center gap-3 border-b border-line px-5 py-3">
           <span className="font-mono text-sm tabular-nums text-fg">{String(index + 1).padStart(2, "0")}</span>

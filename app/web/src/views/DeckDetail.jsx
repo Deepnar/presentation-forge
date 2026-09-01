@@ -1124,9 +1124,13 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                 {/* The hover-reveal toolbar: three primary actions up front,
                     the rest behind a "⋯" menu. Visible on hover, settled and
                     quiet otherwise — seven grey icons under every slide was
-                    noise. Delete sits in the menu, crimson, behind a confirm. */}
+                    noise. Delete sits in the menu, crimson, behind a confirm.
+                    On a device that cannot hover they are simply always shown:
+                    hiding them behind a hover a touch screen never produces
+                    made the slide editor unreachable on a phone entirely, not
+                    merely hard to reach. */}
                 <div className="mt-1 flex items-center justify-between">
-                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100">
+                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100 [@media(hover:none)]:opacity-100">
                     <Tooltip label="Edit content">
                       <CardBtn onClick={() => setEditing(i)}><EditIcon /></CardBtn>
                     </Tooltip>
@@ -1143,7 +1147,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                       </CardBtn>
                     </Tooltip>
                   </div>
-                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100">
+                  <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100 [@media(hover:none)]:opacity-100">
                     <CardMenu
                       items={[
                         { label: "Move left", onClick: () => onMove(i, -1), disabled: i === 0 },

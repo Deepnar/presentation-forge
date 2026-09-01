@@ -110,18 +110,18 @@ export function ProjectHeader({ project, active, onNavigate, onBack, action, met
         All projects
       </button>
 
-      {/* The title takes the room it needs and the action keeps the right
-          edge. Without min-w-0/flex-1 a long title wins the whole row and the
-          action wraps onto a line of its own, where it reads as a stray
-          button rather than as this page's one thing to do. */}
-      <div className="flex items-start justify-between gap-x-6">
-        <div className="min-w-0 flex-1">
+      {/* Side by side from sm up: the title takes the room it needs and the
+          action keeps the right edge, which without min-w-0/flex-1 it loses to
+          a long title. On a phone they stack instead — sharing 390px squeezes
+          a real deck title into five lines to keep one button company. */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-6">
+        <div className="min-w-0 sm:flex-1">
           <h1 className="text-[1.6rem] font-semibold leading-tight tracking-[-0.015em]">
             {project?.title ?? "Loading…"}
           </h1>
           {meta && <div className="mt-1 text-[12.5px] text-fg-muted">{meta}</div>}
         </div>
-        {action && <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">{action}</div>}
+        {action && <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">{action}</div>}
       </div>
 
       <ProjectNav
