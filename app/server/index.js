@@ -23,7 +23,8 @@ import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
+import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, checkAutoLimits, recordAutoEvent, limitConfig } from "../../src/limits.js";
@@ -222,6 +223,32 @@ async function resolveUser(req, { allowCookie = false } = {}) {
 
 const MEDIA_PATH = /^\/([^/]+)\/(preview|download|assets)\//;
 
+/**
+ * Whether an unconfirmed address may make this request.
+ *
+ * The rule is one sentence — reading is free, changing anything is not — and it
+ * is stated as a default-deny so a route added later is covered without anybody
+ * remembering to cover it. That shape is the point: the alternative, a list of
+ * the fifteen routes that currently spend something, is a list that goes stale
+ * the first time a sixteenth is written.
+ *
+ * The gate sits at the workspace entrance rather than on the Auto tier, even
+ * though Auto is what costs the operator money. Routing resolves per request in
+ * cloud.js and falls back, so "your own key may generate, the shared one may
+ * not" would leak the moment a preference resolved to Auto. And the cost is not
+ * only the key: a deck is 5-15 MB of rasters and two LibreOffice passes on the
+ * operator's machine whoever's key wrote the YAML.
+ *
+ * DELETE stays open on purpose. Someone who cannot generate should still be
+ * able to clear up, and refusing that leaves junk nobody can remove.
+ */
+function verifiedRequestOnly(req) {
+  if (req.method === "GET" || req.method === "HEAD" || req.method === "DELETE") return false;
+  // A local filter over decks the caller already owns — no model, no disk.
+  if (req.path === "/search") return false;
+  return true;
+}
+
 const deckWorkspace = async (req, res, next) => {
   // Media paths authenticate by cookie as well as bearer, but they DO
   // authenticate. They used to be exempt outright, on the theory that a slug is
@@ -232,6 +259,16 @@ const deckWorkspace = async (req, res, next) => {
   if (media && !SLUG_RE.test(media[1])) return fail(res, 404, "no such deck");
   const user = await resolveUser(req, { allowCookie: Boolean(media) });
   if (!user) return fail(res, 401, "log in to use the deck workspace");
+  if (!user.verified && verificationRequired() && verifiedRequestOnly(req)) {
+    // A distinct code, not a bare 403: the UI turns this one into "check your
+    // inbox, resend" rather than the generic refusal it shows for everything
+    // else, and a stranger's first blocked click has to explain itself.
+    return res.status(403).json({
+      ok: false,
+      error: "confirm your email address to start creating — check your inbox for the link",
+      code: "email_unverified",
+    });
+  }
   req.user = user;
   next();
 };
@@ -2117,7 +2154,14 @@ app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
     // Registration deliberately does not start a session — the visitor logs in
     // with the new credentials explicitly, so creating an account never hands
     // out a token.
-    ok(res, { user });
+    if (!user.verified && mailConfigured()) {
+      const token = issueAuthToken(user.email, "verify");
+      if (token) {
+        mailThrottled("verify", user.email); // the signup counts against the resend budget
+        dispatchMail(verifyMail({ name: user.name, token, hours: VERIFY_TTL_HOURS }), user.email);
+      }
+    }
+    ok(res, { user, verifySent: !user.verified });
   } catch (err) {
     fail(res, 400, err.message);
   }
@@ -2168,12 +2212,145 @@ app.get("/api/auth/me", wrap(async (req, res) => {
   if (token && !cookieToken(req.headers.cookie)) {
     res.setHeader("Set-Cookie", sessionCookie(token, { secure: secureRequest(req) }));
   }
-  ok(res, { user });
+  ok(res, { user, verifyRequired: verificationRequired() });
+}));
+
+/* --------------------------------------------- reset and verify by email */
+
+/**
+ * Per-address throttle for the two endpoints that put a message in someone
+ * else's inbox. The IP limiter above stops a dictionary attack; it does nothing
+ * about one address being mailbombed from a botnet, and "forgot password"
+ * pointed at a stranger is a harassment tool as much as a security one.
+ *
+ * Two windows: a minimum gap so a double-click sends one message, and an hourly
+ * ceiling. Keyed by purpose and address, so a reset request does not eat the
+ * budget for a verification resend.
+ */
+const MAIL_MIN_GAP_MS = 2 * 60 * 1000;
+const MAIL_WINDOW_MS = 60 * 60 * 1000;
+const MAIL_WINDOW_MAX = 5;
+const mailHits = new Map();
+
+setInterval(() => {
+  const cutoff = Date.now() - MAIL_WINDOW_MS;
+  for (const [key, hits] of mailHits) {
+    const live = hits.filter((t) => t > cutoff);
+    if (live.length) mailHits.set(key, live);
+    else mailHits.delete(key);
+  }
+}, MAIL_WINDOW_MS).unref();
+
+function mailThrottled(purpose, email) {
+  const key = `${purpose}:${String(email).trim().toLowerCase()}`;
+  const now = Date.now();
+  const hits = (mailHits.get(key) ?? []).filter((t) => now - t < MAIL_WINDOW_MS);
+  if (hits.length >= MAIL_WINDOW_MAX) return true;
+  if (hits.length && now - hits[hits.length - 1] < MAIL_MIN_GAP_MS) return true;
+  hits.push(now);
+  mailHits.set(key, hits);
+  return false;
+}
+
+/**
+ * Send without making the caller wait for it.
+ *
+ * An SMTP dialogue takes seconds and can take twenty-five. Awaiting it would
+ * make "this address has an account" measurably slower than "it does not",
+ * which hands back exactly the enumeration the generic response is there to
+ * prevent. Failures are logged for the operator, not reported to the caller.
+ */
+function dispatchMail(message, to) {
+  sendMail({ ...message, to })
+    .then((r) => { if (!r.sent) console.warn(`  ! mail not sent to ${to}: ${r.reason}`); })
+    .catch((err) => console.warn(`  ! mail to ${to} failed: ${err.message}`));
+}
+
+/**
+ * Ask for a reset link. The answer never varies: whether the address has an
+ * account, whether that account signs in with Google and has no password to
+ * reset, and whether the message was actually accepted are all invisible to the
+ * caller. Anything else turns this endpoint into an account-enumeration oracle,
+ * which is how "who is registered here" leaks from a box that never listed its
+ * users.
+ */
+app.post("/api/auth/forgot", rateLimit, wrap(async (req, res) => {
+  const email = String(req.body?.email ?? "").trim().toLowerCase();
+  const generic = () => ok(res, { sent: true });
+  if (!email || !mailConfigured()) return generic();
+  if (mailThrottled("reset", email)) return generic();
+  try {
+    pruneAuthTokens();
+    const state = accountVerificationState(email);
+    // No account, or a Google account with no password: nothing to reset, and
+    // the caller is told the same thing either way.
+    if (!state?.hasPassword) return generic();
+    const token = issueAuthToken(email, "reset");
+    if (token) dispatchMail(resetMail({ name: state.name, token, minutes: RESET_TTL_MINUTES }), email);
+  } catch (err) {
+    console.warn(`  ! reset request failed: ${err.message}`);
+  }
+  return generic();
+}));
+
+/** Spend a reset token and set the new password. Every session for the account
+ *  dies with it — see resetPassword in auth.js. */
+app.post("/api/auth/reset", rateLimit, wrap(async (req, res) => {
+  const { token, password } = req.body ?? {};
+  if (!token) return fail(res, 400, "missing reset token");
+  const spent = consumeAuthToken(token, "reset");
+  if (!spent.ok) {
+    if (spent.reason === "unavailable") return fail(res, 503, "the account store is unavailable");
+    return fail(res, 400, "that reset link has expired or has already been used — ask for a new one");
+  }
+  try {
+    resetPassword(spent.email, password);
+  } catch (err) {
+    // A rejected password must not burn the token, or a typo costs the user a
+    // second email. Re-issue and hand the replacement back to the same session.
+    const replacement = issueAuthToken(spent.email, "reset");
+    return res.status(400).json({ ok: false, error: err.message, token: replacement });
+  }
+  ok(res, { email: spent.email });
+}));
+
+/** Spend a verification token. Deliberately does NOT start a session: a link
+ *  sitting in an inbox should confirm an address, not be a way into the
+ *  account. The visitor logs in as they normally would. */
+app.post("/api/auth/verify", rateLimit, wrap(async (req, res) => {
+  const { token } = req.body ?? {};
+  if (!token) return fail(res, 400, "missing verification token");
+  const spent = consumeAuthToken(token, "verify");
+  if (!spent.ok) {
+    if (spent.reason === "unavailable") return fail(res, 503, "the account store is unavailable");
+    return fail(res, 400, "that confirmation link has expired or has already been used — sign in and ask for a new one");
+  }
+  markVerified(spent.email);
+  ok(res, { email: spent.email });
+}));
+
+/** Send the confirmation again, to the logged-in account's own address. It can
+ *  only ever mail the caller's own address, so it is not a send-mail-to-anyone
+ *  endpoint wearing a session. */
+app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
+  const user = await requireAuth(req, res, "log in to resend the confirmation");
+  if (!user) return;
+  if (!mailConfigured()) return fail(res, 503, "this server cannot send email — ask the owner to confirm your account");
+  if (user.verified) return ok(res, { sent: false, verified: true });
+  if (mailThrottled("verify", user.email)) {
+    return fail(res, 429, "a confirmation was just sent — check your inbox, including spam");
+  }
+  const token = issueAuthToken(user.email, "verify");
+  if (!token) return fail(res, 503, "the account store is unavailable");
+  dispatchMail(verifyMail({ name: user.name, token, hours: VERIFY_TTL_HOURS }), user.email);
+  ok(res, { sent: true });
 }));
 
 /** Whether new accounts can self-register on this server. */
 app.get("/api/auth/registration", wrap(async (_req, res) => {
-  ok(res, { open: OPEN_REGISTRATION });
+  // `mail` decides whether the form can offer "forgot password" and whether it
+  // should promise a confirmation message that would never arrive.
+  ok(res, { open: OPEN_REGISTRATION, mail: mailConfigured(), verifyRequired: verificationRequired() });
 }));
 app.get("/api/auth/google/config", wrap(async (_req, res) => {
   ok(res, { clientId: process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null });
