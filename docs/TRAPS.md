@@ -750,12 +750,20 @@ should resolve per call instead.
 
 **`app.use("/api/x/:param")` shadows every literal route under `/api/x/`
 registered after it.** Express matches a path-carrying `app.use` before any
-later route, so `POST /api/decks/search` arrives at the per-slug ownership
-middleware with `slug = "search"`, finds no such deck, and is refused — for
+later route, so `POST /api/decks/search` arrived at the per-slug ownership
+middleware with `slug = "search"`, found no such deck, and was refused — for
 everyone except admins, who pass the ownership check and therefore never see it.
-An operator testing their own box cannot reproduce it. Register literal segments
-above the parameterised middleware, or the middleware has to know which segments
-are not slugs.
+An operator testing their own box cannot reproduce it, which is why it survived
+months. Register literal segments above the parameterised middleware; teaching
+the middleware which words are not slugs is worse, because a word added to that
+list without a matching route exempts a whole subtree from ownership.
+
+**Route order is not reachable from a unit test.** A shadowed route parses, its
+handler passes every test written against it, and it is dead in production. The
+only shape that catches it is a real request: `test/routing.test.js` binds port
+0, reads the port back off the exported server, and asks over HTTP — as a
+deliberately NON-admin account, because the account that would notice is the one
+that cannot.
 
 **Identical function preambles make a whole-file replace land twice.**
 `createDeck` and `createReport` open with the same two lines, so a guard meant

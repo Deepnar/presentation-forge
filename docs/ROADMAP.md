@@ -3470,9 +3470,8 @@ what is actually available or fail loudly instead of degrading quietly.
   institution needs it per account, like identity and brand. `donorStatus(refDir)`
   and `resolveDonor(explicit, refDir)` both take the directory as a parameter,
   so the change is a resolver that reads `meta.owner` rather than a reshape.
-- `POST /api/decks/search` is unreachable for non-admins. `app.use("/api/decks/:slug")`
-  is registered ~950 lines above the search route, so Express matches it first
-  with `slug = "search"`, the ownership check fails, and the request is refused
-  with "no such deck". Admins pass the ownership check, which is why the
-  operator's own box has never shown it. Register literal segments above the
-  parameterised middleware.
+- ~~`POST /api/decks/search` is unreachable for non-admins.~~ Fixed: the route
+  moves above `app.use("/api/decks/:slug")`, which was matching it first with
+  `slug = "search"`. `test/routing.test.js` boots the server and asks it over
+  HTTP as a non-admin — the first HTTP-level test in the suite, and the only
+  shape that can catch a route-ordering bug at all.
