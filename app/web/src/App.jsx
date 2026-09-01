@@ -13,6 +13,8 @@ import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
 import ReportView from "./views/ReportView.jsx";
 import ResearchView from "./views/ResearchView.jsx";
+import ScriptView from "./views/ScriptView.jsx";
+import { defaultProjectPage } from "./components/ProjectNav.jsx";
 import Themes from "./views/Themes.jsx";
 import TourThemes from "./views/TourThemes.jsx";
 import { Privacy, Terms, Contact, Docs, Usage } from "./views/Legal.jsx";
@@ -162,7 +164,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [user]);
 
-  const hasReportFor = (slug) => decks.find((d) => d.slug === slug)?.report ?? false;
   // Mirrors the server's isAdmin(): the role, and nothing derived from the
   // address. The Admin routes enforce this server-side regardless.
   const isAdminUser = Boolean(user && user.role === "admin");
@@ -274,6 +275,7 @@ export default function App() {
       case "deck":
       case "report":
       case "research":
+      case "script":
         if (r.slug) {
           setActiveSlug(r.slug);
           setView(r.view);
@@ -347,6 +349,9 @@ export default function App() {
   const rawActiveChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
   const activeChat = rawActiveChat ? normalizeChat(rawActiveChat) : null;
   const goHome = () => navigate("chat");
+  /** Move between a project's four pages. They are routes, not tabs, so a link
+   *  into any of them survives a reload and back walks the pages you walked. */
+  const openProjectPage = (page) => navigate(page, { slug: activeSlug });
 
   /** Logging out is consequential (it clears the session) — the confirm lives
    *  with the ProfileChip that triggers it. */
@@ -358,7 +363,21 @@ export default function App() {
     setUser(null);
   }
 
-  const openDeck = (slug) => navigate("deck", { slug });
+  /**
+   * Open a project on the page that has something on it.
+   *
+   * A project started from a report has no deck, so landing it on the Deck page
+   * meant an empty state every time — the deck-shaped assumption this
+   * navigation exists to undo. The deck list already carries which artefacts
+   * exist, so this costs no request and cannot flash the wrong page first.
+   *
+   * A deep link to #/deck/<slug> is still honoured exactly as typed; only
+   * opening a project from the sidebar or a chat chooses.
+   */
+  const openDeck = (slug) => {
+    const entry = decks.find((d) => d.slug === slug);
+    navigate(defaultProjectPage(entry), { slug });
+  };
   const openReport = (slug) => navigate("report", { slug });
   const openResearch = (slug) => navigate("research", { slug });
 
@@ -601,13 +620,11 @@ export default function App() {
             {view === "deck" && activeSlug && (
               <DeckDetail
                 slug={activeSlug}
-                hasReport={hasReportFor(activeSlug)}
                 refreshToken={deckVersion}
                 onBack={goHome}
                 onDeckChanged={bumpDeck}
                 onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
-                onOpenResearch={openResearch}
-                onOpenReport={openReport}
+                onNavigate={openProjectPage}
               />
             )}
             {view === "report" && activeSlug && (
@@ -617,6 +634,7 @@ export default function App() {
                 onBack={goHome}
                 onDeckChanged={bumpDeck}
                 onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
+                onNavigate={openProjectPage}
               />
             )}
             {view === "research" && activeSlug && (
@@ -624,6 +642,15 @@ export default function App() {
                 slug={activeSlug}
                 refreshToken={deckVersion}
                 onBack={goHome}
+                onNavigate={openProjectPage}
+              />
+            )}
+            {view === "script" && activeSlug && (
+              <ScriptView
+                slug={activeSlug}
+                refreshToken={deckVersion}
+                onBack={goHome}
+                onNavigate={openProjectPage}
               />
             )}
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}

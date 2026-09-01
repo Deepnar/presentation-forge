@@ -4,6 +4,7 @@ import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
 import { progressLabel } from "../lib/progress.js";
 import { reportWrites } from "../lib/reportWrites.js";
+import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 
 const REPORT_SECTIONS = [
   "Abstract", "Acknowledgement", "Introduction", "Theoretical Background",
@@ -19,7 +20,8 @@ const REPORT_SECTIONS = [
  * deck also gets the reverse-flow door: plan a companion deck from the same
  * research through the outline gate.
  */
-export default function ReportView({ slug, refreshToken, onBack, onPlanReady, onDeckChanged }) {
+export default function ReportView({ slug, refreshToken, onBack, onPlanReady, onDeckChanged, onNavigate }) {
+  const project = useProject(slug, refreshToken);
   const [data, setData] = useState(null);
   const [identity, setIdentity] = useState(null);
   const [depth, setDepth] = useState("full");
@@ -194,24 +196,25 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-10 py-10 pb-28">
-      <button
-        onClick={onBack}
-        className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg"
-      >
-        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 18 9 12l6-6" />
-        </svg>
-        Home
-      </button>
+    <div className="mx-auto max-w-6xl px-10 py-10 pb-28">
+      <ProjectHeader
+        project={project}
+        active="report"
+        onNavigate={onNavigate}
+        onBack={onBack}
+        meta="The written companion — the same argument at length, on the institutional template."
+      />
 
+      <div className="max-w-4xl">
       {notFound ? (
-        <Empty
-          title="No report here yet"
-          hint="Generate one from a deck's Report panel, or from the home prompt in Report mode. The machine drafts; the final words are yours."
-        />
+        <div className="mt-8">
+          <Empty
+            title="No report here yet"
+            hint="Write one below, or start a report from the home prompt in Report mode. The machine drafts; the final words are yours."
+          />
+        </div>
       ) : (
-        <>
+        <div className="mt-6">
           {/* Cover block — the report's title page as the reader first sees it. */}
           <div className="panel-surface rounded-[var(--radius-lg)] border border-line bg-panel p-8 text-center">
             <div className="flex justify-center">
@@ -285,7 +288,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
               );
             })}
           </div>
-        </>
+        </div>
       )}
 
       {preview && (
@@ -314,7 +317,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
 
       {!notFound && (
         <div className="sticky bottom-0 z-10 mt-8 border-t border-line bg-panel/95 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-2.5 px-10 py-3.5">
+        <div className="flex flex-wrap items-center gap-2.5 py-3.5">
           <Button variant="primary" onClick={renderDoc} disabled={busy || writing || !data}>
             {(busy || writing) && <Spinner />}
             Render .docx
@@ -366,6 +369,7 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
           {error}
         </div>
       )}
+      </div>
     </div>
   );
 }

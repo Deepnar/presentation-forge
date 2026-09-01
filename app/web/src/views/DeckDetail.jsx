@@ -6,10 +6,10 @@ import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { deckContext } from "../lib/deckContext.js";
 import { progressLabel } from "../lib/progress.js";
-import { reportWrites } from "../lib/reportWrites.js";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
+import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 
 /**
  * One deck: header with theme/style + render + download, a Report panel (the
@@ -17,7 +17,12 @@ import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
  * inline editing and presenter picks. Rendering happens through the real API;
  * "rendering…" and the problems list are sync feedback, not decoration.
  */
-export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDeckChanged, onOpenDeck, onOpenResearch, onOpenReport }) {
+export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, onOpenDeck, onNavigate }) {
+  const project = useProject(slug, refreshToken);
+  // GET /api/decks/:slug opens deck.yaml unconditionally, so a report-first
+  // project fails here. Without this the page sat on its loading skeleton
+  // forever — the deck-shaped assumption, as a symptom.
+  const [loadErr, setLoadErr] = useState(null);
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
   const [styles, setStyles] = useState([]);
@@ -29,7 +34,6 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const [zoom, setZoom] = useState(null);
   const [editing, setEditing] = useState(null); // slide index in the editor
   const [identity, setIdentity] = useState(null);
-  const [reportExists, setReportExists] = useState(hasReport);
   const [punch, setPunch] = useState(null); // slide index being punched up
   const [punchErr, setPunchErr] = useState("");
   const [actionErr, setActionErr] = useState("");
@@ -77,7 +81,6 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   const renderTimer = useRef(null);
   const exportRef = useRef(null);
 
-  useEffect(() => setReportExists(hasReport), [hasReport]);
 
   // The Export menu closes on outside click and Escape.
   useEffect(() => {
@@ -98,7 +101,8 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   useEffect(() => {
     // refreshToken bumps after a chat turn or report generate, so a deck
     // changed elsewhere shows its new slides here without a manual reload.
-    api.deck(slug).then((r) => {
+    api.deck(slug).catch((e) => { setLoadErr(e); return null; }).then((r) => {
+      if (!r) return;
       const stamp = Date.now();
       setData({
         ...r,
@@ -629,6 +633,44 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
       .catch((e) => setActionErr(e.message));
   }
 
+  // A project whose deck does not exist yet. Reached by starting from a report:
+  // the reverse flow plans a companion deck, and until it runs there is nothing
+  // here to render, edit or download.
+  if (!data && project && !project.deck) {
+    return (
+      <div className="mx-auto max-w-6xl px-10 py-10">
+        <ProjectHeader
+          project={project}
+          active="deck"
+          onNavigate={onNavigate}
+          onBack={onBack}
+        />
+        <div className="mt-8">
+          <Empty
+            title="No deck yet"
+            hint="This project started as a report. A companion deck is planned from the report's own sections — you approve the outline before anything is written."
+            action={
+              <Button variant="primary" onClick={() => onNavigate?.("report")}>
+                Go to the report
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data && loadErr) {
+    return (
+      <div className="mx-auto max-w-6xl px-10 py-10">
+        <ProjectHeader project={project} active="deck" onNavigate={onNavigate} onBack={onBack} />
+        <div className="mt-8">
+          <Empty title="This deck could not be opened" hint={loadErr.message} />
+        </div>
+      </div>
+    );
+  }
+
   if (!data) {
     return (
       <div className="mx-auto max-w-6xl px-10 py-10">
@@ -649,6 +691,8 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
   // content was last written at — the user's "we didn't change the setting,
   // yet we can still click it" complaint.
   const sweepDirty = density !== (data?.meta?.density ?? "balanced");
+  // Whether the deck's own stage is claiming the page's primary action.
+  const stageBanner = Boolean(deckRun && (deckRun.active || deckRun.resumable || deckRun.needsFinalize));
 
   function onMove(i, dir) {
     const next = moveSlide(slides, i, dir);
@@ -676,22 +720,43 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
         className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) handleImageFile(f); }}
       />
-      <button
-        onClick={onBack}
-        className="mb-5 inline-flex items-center gap-1.5 text-xs text-fg-faint transition hover:text-fg"
-      >
-        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 18 9 12l6-6" />
-        </svg>
-        Home
-      </button>
-
-      <header className="flex flex-wrap items-end justify-between gap-5">
-        <div className="min-w-0">
-          <h1 className="break-words text-[1.75rem] font-semibold leading-tight tracking-[-0.015em]">
-            {deck.title}
-          </h1>
-          <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] text-fg-muted">
+      <ProjectHeader
+        project={project}
+        active="deck"
+        onNavigate={onNavigate}
+        onBack={onBack}
+        // ONE action, chosen by where the deck actually is. Render and Download
+        // used to sit side by side permanently, so the page offered the same two
+        // buttons whether the deck had never been rendered or was up to date and
+        // waiting to be taken away.
+        //
+        // A deck mid-run, resumable, or written-but-never-finalised has its own
+        // banner below, and that banner carries the action next to the sentence
+        // explaining it. Offering a second primary up here — "Download" beside
+        // "Finalize this deck" — is the same two-primaries problem in a new
+        // place, so the header stands down while the banner is up.
+        action={stageBanner ? null : renderDirty || busy ? (
+          <Button
+            variant="primary"
+            onClick={rerender}
+            disabled={busy}
+            title="Render — the deck or its theme/style/mode changed since the last render. Turns deck.yaml into a fresh .pptx and refreshes the previews."
+          >
+            {busy && <Spinner />}
+            {busy ? "Rendering" : "Render"}
+          </Button>
+        ) : (
+          <a
+            href={`/api/decks/${slug}/download/deck.pptx`}
+            title="Download the rendered PowerPoint file — the deck as a .pptx, named after the deck title"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3.5 py-2 text-sm font-medium text-on-accent transition hover:opacity-90"
+          >
+            <DownloadIcon className="h-3.5 w-3.5" />
+            Download .pptx
+          </a>
+        )}
+        meta={(
+          <span className="flex flex-wrap items-center gap-1.5">
             <span className="tabular-nums">{slides.length} slides</span>
             {deck.sections?.length > 0 && (
               <>
@@ -710,13 +775,16 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                 <Spinner /> rendering…
               </span>
             )}
-          </p>
-        </div>
+          </span>
+        )}
+      />
 
-        <div className="flex flex-col items-end gap-2.5">
-          {/* Settings — what the deck renders with. The action that applies
-              them sits beside them so "why is this here" reads at a glance. */}
-          <div className="flex flex-wrap items-center justify-end gap-2">
+      {/* What the deck renders WITH, and the ways to take it away. Below the
+          navigation, not above the title: these are the Deck page's controls,
+          not the project's, and putting them in the header is what made
+          arriving at a deck mean reading eight buttons before any content. */}
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setThemePickerOpen(true)}
               title="Theme — visual picker, changing it marks render stale"
@@ -783,31 +851,10 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
             </Button>
           </div>
 
-          {/* Primary actions — Render when something changed, download the file,
-              Export the extras, ⋯ for the rare housekeeping. */}
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button
-              variant="primary"
-              onClick={rerender}
-              disabled={busy || !renderDirty}
-              title={renderDirty
-                ? "Render — the deck or its theme/style/mode changed since the last render. Turns deck.yaml into a fresh .pptx and refreshes the previews."
-                : "Up to date — the rendered slides already match the deck. The dot appears when a change needs a new render."}
-            >
-              {busy && <Spinner />}
-              {busy ? "Rendering" : renderDirty ? "Render" : "Up to date"}
-              {renderDirty && !busy && <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-label="needs render" />}
-            </Button>
-
-            <a
-              href={`/api/decks/${slug}/download/deck.pptx`}
-              title="Download the rendered PowerPoint file — the deck as a .pptx, named after the deck title"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-sm text-fg-muted transition hover:border-line-strong hover:text-fg"
-            >
-              <DownloadIcon className="h-3.5 w-3.5" />
-              .pptx
-            </a>
-
+          {/* Everything you can take the deck away as, and the housekeeping.
+              Render and .pptx are gone from here — they are the header's one
+              action, chosen by whether the render is stale. */}
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
             <div ref={exportRef} className="relative">
               <ActionBtn onClick={() => setExportOpen((o) => !o)} title="Everything else you can take away from the deck — PDF, Markdown, a zip bundle, or the speaker script">
                 Export <ChevronDown className="h-3 w-3" />
@@ -869,9 +916,8 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
               )}
             </div>
           </div>
-          {actionErr && <span className="text-[12px] text-amber">{actionErr}</span>}
-        </div>
-      </header>
+      </div>
+      {actionErr && <div className="mt-2 text-[12px] text-amber">{actionErr}</div>}
 
       {deckRun && (deckRun.active || deckRun.resumable || deckRun.needsFinalize) && (
         <Panel className="mt-5 p-4">
@@ -909,24 +955,6 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
           </div>
         </Panel>
       )}
-
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <ReportPanel
-          slug={slug}
-          hasReport={reportExists}
-          defaultDepth={data.meta?.reportDepth ?? "full"}
-          onGenerated={() => {
-            setReportExists(true);
-            onDeckChanged?.();
-          }}
-          onOpenReport={onOpenReport}
-        />
-        <ResearchCard slug={slug} onOpen={onOpenResearch} />
-      </div>
-
-      <div className="mt-6">
-        <ScriptPanel slug={slug} />
-      </div>
 
       {placeholders.length > 0 && (
         <Panel className="mt-5 border-danger/40 bg-danger/5 p-4">
@@ -1368,351 +1396,6 @@ function TypeSwapModal({ index, slide, specimens, busy, error, onPick, onClose }
         </div>
       )}
     </>
-  );
-}
-
-function ReportPanel({ slug, hasReport, defaultDepth, onGenerated, onOpenReport }) {
-  const { models, mode: modelMode, cloudOn, defaultModel } = useModels();
-  const [model, setModel] = useState("");
-  const [depth, setDepth] = useState(defaultDepth ?? "full");
-  const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
-  const [result, setResult] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [job, setJob] = useState(null);
-  // A write in flight for this slug (this panel, or a report chat). Re-adopted
-  // on mount so a remounted panel mid-write stays disabled — the same shared
-  // "generating/writing" state the ReportView subscribes to.
-  const [writing, setWriting] = useState(null);
-
-  useEffect(() => {
-    const run = reportWrites.get(slug);
-    if (run && !run.finished) { setWriting({ status: run.status }); setStatus(run.status); }
-    const onPatch = (patch) => {
-      if (patch.finished) { setWriting(null); setStatus(""); }
-      else if (patch.status != null) { setWriting({ status: patch.status }); setStatus(patch.status); }
-    };
-    reportWrites.subscribe(slug, onPatch);
-    return () => reportWrites.unsubscribe(slug, onPatch);
-  }, [slug]);
-
-  /** The one report action: write the content (SSE), then draw the .docx and
-   *  download it. "Generate report" for a fresh deck, "Generate / Update
-   *  report" once one exists — a single affordance, never a separate Render
-   *  .docx step to discover. */
-  async function generate() {
-    setBusy(true);
-    setError("");
-    setStatus("Queued…");
-    const j = api.generateReport(
-      slug,
-      { depth, model: model || undefined },
-      { status: (p) => { const label = progressLabel(p); setStatus(label); reportWrites.update(slug, { status: label }); } },
-    );
-    reportWrites.begin(slug, { abort: j.abort, status: "Queued…" });
-    setJob(j);
-    try {
-      await j.promise;
-      onGenerated();
-      setStatus("Rendering…");
-      const r = await api.renderReport(slug);
-      setResult(r);
-      // Rasterised pages of the actual .docx — the report as it opens in Word.
-      if (r.previewPages?.length) {
-        const stamp = Date.now();
-        setPreview({
-          pages: r.previewPages.map((s) => `${s}?t=${stamp}`),
-          thumbs: (r.previewThumbs ?? r.previewPages).map((s) => `${s}?t=${stamp}`),
-        });
-      }
-      // One click → rendered document on disk: the report is the graded
-      // artefact, so the flow ends in a download of the real .docx.
-      const a = document.createElement("a");
-      a.href = `/api/decks/${slug}/download/report.docx`;
-      a.download = "report.docx";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (err) {
-      setError(err.name === "AbortError" ? "Cancelled." : err.message);
-      setStatus("");
-    } finally {
-      setBusy(false);
-      reportWrites.end(slug);
-    }
-  }
-
-  function stop() {
-    reportWrites.get(slug)?.abort?.();
-    job?.abort();
-    setStatus("");
-  }
-
-  const selectCls =
-    "appearance-none rounded-lg border border-line bg-sunken py-1.5 pl-3 pr-8 text-[12.5px] text-fg outline-none transition hover:border-line-strong focus:border-accent";
-
-  return (
-    <Panel className="p-4">
-      <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-fg-faint">Report</div>
-
-      {!hasReport ? (
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-[13px] text-fg-muted">Generate a graded report from this deck's research and outline — it renders the .docx and downloads it in one step.</span>
-          <div className="relative">
-            <select value={depth} onChange={(e) => setDepth(e.target.value)} title="Report depth" className={selectCls}>
-              <option value="full">Full depth</option>
-              <option value="brief">Brief</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-          </div>
-          <div className="relative">
-            <select value={model} onChange={(e) => setModel(e.target.value)} title={modelMode === "cloud" ? "Cloud model — requires the attached key" : "Which model writes the report"} className={`${selectCls} max-w-[16rem]`}>
-              <option value="">auto · {defaultModel}</option>
-              {models.map((m) => <option key={m} value={m}>{anonymizeModel(m)}</option>)}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-          </div>
-          <Button variant="primary" size="sm" onClick={generate} disabled={busy || writing}>
-            {(busy || writing) && <Spinner />}
-            {busy || writing ? "Working…" : "Generate report"}
-          </Button>
-        </div>
-      ) : (
-        <div className="flex flex-wrap items-center gap-3">
-          {result ? (
-            <span className="text-[13px] tabular-nums text-fg-muted">
-              {result.sections.length} sections · {pageCount(result.pages)} pages
-            </span>
-          ) : (
-            <span className="text-[13px] text-fg-muted">A report already exists — Generate / Update rewrites it, then renders and downloads the .docx.</span>
-          )}
-          <div className="relative">
-            <select value={depth} onChange={(e) => setDepth(e.target.value)} title="Report depth for the update" className={selectCls}>
-              <option value="full">Full depth</option>
-              <option value="brief">Brief</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" />
-          </div>
-          <Button variant="primary" size="sm" onClick={generate} disabled={busy || writing}>
-            {(busy || writing) && <Spinner />}
-            {busy || writing ? "Working…" : "Generate / Update report"}
-          </Button>
-          {onOpenReport && (
-            <Button variant="ghost" size="sm" onClick={() => onOpenReport(slug)} title="Open the report's full document view — pages, download, companion deck">
-              Open report view
-            </Button>
-          )}
-        </div>
-      )}
-
-      {status && (
-        <div className="mt-2.5 flex items-center gap-2 text-[12px] text-fg-muted">
-          <Spinner /> {status}
-          {(busy || writing) && <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>}
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-2.5 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">
-          {error}
-        </div>
-      )}
-
-      {result?.problems?.length > 0 && (
-        <ul className="mt-2.5 space-y-1 text-[11.5px] leading-relaxed text-amber">
-          {result.problems.map((p, i) => <li key={i}>{p}</li>)}
-        </ul>
-      )}
-
-      {preview && (
-        <div className="mt-3 grid max-h-64 grid-cols-3 gap-1.5 overflow-y-auto">
-          {preview.pages.map((src, i) => (
-            <a
-              key={src}
-              href={`/api/decks/${slug}/download/report.docx`}
-              title={`Report page ${i + 1} — the rendered document as it opens in Word`}
-              className="group relative overflow-hidden rounded-md border border-line"
-            >
-              <img src={src} alt={`Report page ${i + 1}`} className="aspect-[3/4] w-full object-cover" loading={i < 3 ? undefined : "lazy"} />
-            </a>
-          ))}
-        </div>
-      )}
-    </Panel>
-  );
-}
-
-function pageCount(pages) {
-  if (!pages || typeof pages !== "object") return 0;
-  return Math.max(0, ...Object.values(pages).map((v) => Number(v) || 0));
-}
-
-/**
- * The research card on the deck page — a compact summary that links to the
- * full Research view. The full view (notes as prose, sources table, diversity
- * summary, edit) is where the researched content actually lives; this card is
- * just the doorway plus the one-line trust surface (how many sources, how many
- * domains).
- */
-function ResearchCard({ slug, onOpen }) {
-  const [summary, setSummary] = useState(null);
-  const [exists, setExists] = useState(false);
-  const [figureCount, setFigureCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.research(slug)
-      .then((r) => { setExists(r.exists); setSummary(r.summary ?? null); setFigureCount(r.figures?.length ?? 0); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  return (
-    <Panel className="flex flex-col p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Research</div>
-        {loading && <Spinner />}
-      </div>
-      {!loading && !exists ? (
-        <div className="text-[12px] leading-relaxed text-fg-muted">
-          No research pass yet — regenerate with research on and the notes the
-          writer draws from appear here.
-        </div>
-      ) : (
-        <div className="text-[12px] leading-relaxed text-fg-muted">
-          {summary && (
-            <span className="mb-2 block">
-              {summary.userProvided > 0
-                ? `Your uploaded file is the only source — the writer stays inside it.`
-                : `${summary.total ?? 0} sources · ${summary.distinctDomains ?? 0} domains`
-                  + (summary.paperCount ? ` · ${summary.paperCount} paper` : "")}
-            </span>
-          )}
-          {figureCount > 0 && (
-            <span className="block text-[11.5px] text-fg-faint">
-              {figureCount} figure{figureCount === 1 ? "" : "s"} the deck claims — cross-check them in the research view.
-            </span>
-          )}
-        </div>
-      )}
-      <div className="mt-auto pt-2">
-        <Button size="sm" variant="outline" onClick={() => onOpen(slug)} disabled={loading || !exists}>
-          Open full research
-        </Button>
-      </div>
-    </Panel>
-  );
-}
-
-/**
- * The speaker-script panel — the words each presenter says aloud, slide by
- * slide. A script is a button, never automatic: the user asked for it "at the
- * end if they want". Each slide renders as its own card so an edit can
- * regenerate just that slide's words (one scoped model call, the established
- * small-grammar pattern), and the whole thing downloads as markdown.
- */
-function ScriptPanel({ slug }) {
-  const [state, setState] = useState(null); // null = loading
-  const [busy, setBusy] = useState(false);
-  const [regenerating, setRegenerating] = useState(null); // slide index | "all"
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
-
-  const refresh = useCallback(() => {
-    api.script(slug).then(setState).catch(() => setState({ exists: false, slides: [] }));
-  }, [slug]);
-
-  useEffect(() => { refresh(); }, [refresh]);
-
-  function run(index) {
-    if (busy) return;
-    setBusy(true);
-    setError("");
-    setRegenerating(index ?? "all");
-    setMsg(index == null ? "Writing the speaker script…" : `Rewriting slide ${index + 1}'s words…`);
-    api.generateScript(slug, index == null ? {} : { index }, {
-      status: (p) => {
-        if (p?.index != null && p?.total != null) setMsg(`Writing slide ${p.index + 1} of ${p.total}…`);
-      },
-      result: () => refresh(),
-    }).promise
-      .catch((e) => setError(e.message))
-      .finally(() => { setBusy(false); setRegenerating(null); setMsg(""); });
-  }
-
-  return (
-    <Panel className="p-4">
-      <div className="mb-1 flex items-center justify-between">
-        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Speaker script</div>
-        {state?.exists && (
-          <div className="flex items-center gap-2">
-            <a
-              href={`/api/decks/${slug}/download/script.md`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-[11.5px] text-fg-muted transition hover:border-line-strong hover:text-fg"
-              title="Download script.md — the full speaker script"
-            >
-              <DownloadIcon className="h-3 w-3" />
-              Download .md
-            </a>
-            <Button size="sm" variant="outline" onClick={() => run(null)} disabled={busy}>
-              {regenerating === "all" ? <Spinner /> : null}
-              Regenerate all
-            </Button>
-          </div>
-        )}
-      </div>
-      <p className="text-[12px] leading-relaxed text-fg-muted">
-        The words each presenter says aloud — the full argument behind each slide's bullets, in the presenter's voice, grounded in the deck's research. Roughly 60–90 seconds per slide.
-      </p>
-
-      {!state ? (
-        <div className="mt-3 flex items-center gap-2 text-[12px] text-fg-faint"><Spinner /> Loading…</div>
-      ) : !state.exists ? (
-        <div className="mt-3 flex flex-wrap items-center gap-2.5">
-          <span className="text-[12.5px] text-fg-muted">
-            No script yet — generate one when you need it: what you say goes beyond what the slide says.
-          </span>
-          <Button size="sm" variant="primary" onClick={() => run(null)} disabled={busy}>
-            {regenerating === "all" ? <Spinner /> : null}
-            Generate speaker script
-          </Button>
-        </div>
-      ) : (
-        <div className="mt-3 space-y-2">
-          {state.slides.map((s) => (
-            <div key={s.index} className="rounded-card border border-line bg-panel p-3">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[10.5px] tabular-nums text-fg-faint">
-                  {String(s.index + 1).padStart(2, "0")}
-                </span>
-                <span className="rounded bg-raised px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-wider text-fg-faint">{s.type}</span>
-                <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-fg">{s.headline}</span>
-                <span className="shrink-0 text-[11px] text-fg-faint">{s.presenter ?? "—"}</span>
-                <button
-                  onClick={() => run(s.index)}
-                  disabled={busy}
-                  title="Regenerate this slide's words — keeps the other slides' scripts"
-                  className="shrink-0 rounded-md border border-line px-2 py-1 text-[11px] text-fg-muted transition hover:border-line-strong hover:text-fg disabled:opacity-40"
-                >
-                  {regenerating === s.index ? <Spinner className="h-3 w-3" /> : "Regenerate"}
-                </button>
-              </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">
-                {s.written ? s.body : "Not written yet — regenerate this slide to write its words."}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {msg && (
-        <div className="mt-2.5 flex items-center gap-2 text-[12px] text-fg-muted"><Spinner /> {msg}</div>
-      )}
-      {error && (
-        <div className="mt-2.5 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] leading-relaxed text-amber">{error}</div>
-      )}
-    </Panel>
   );
 }
 

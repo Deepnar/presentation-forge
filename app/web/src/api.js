@@ -262,6 +262,9 @@ export const api = {
   restoreVersion: (slug, file) =>
     call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
   searchDecks: (q) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }) }),
+  // What a project holds — survives a report-first folder with no deck.yaml,
+  // which api.deck() cannot.
+  project: (slug) => call(`/api/decks/${slug}/project`),
   // Saved briefing formats — the reusable half of a briefing, per user.
   presets: () => call("/api/presets"),
   savePreset: (preset) => call("/api/presets", { method: "POST", body: JSON.stringify(preset) }),
