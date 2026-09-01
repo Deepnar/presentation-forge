@@ -214,6 +214,24 @@ Every stateful directory is env-overridable so the app can run against a volume:
 A deck with previews runs 5–15 MB, dominated by the slide PNGs. That is the
 storage driver for any deployment.
 
+## Which model the product is judged by
+
+**The TCET CoE gateway ("Auto"), not a local model.** Hosted is what ships and
+Auto is what a hosted user gets, so Auto's output *is* the product's quality.
+Every content question — does the deck argue anything, does the report read
+well, is the research any good — is answered against Auto:
+
+```bash
+FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
+FORGE_HOSTED=1 npm run forge -- generate <slug>
+```
+
+A deck that reads well on a 30B local model and badly through the gateway is a
+deck that reads badly. Local Ollama support stays in the code and must not rot
+(`resolveRole`, the fallbacks, the model picker, `roleAudit`) — it is simply
+not where effort goes and not what "does this work?" means. Generating spends
+the operator's budget, so a few runs read closely beat a sweep nobody looks at.
+
 ## Hosted vs local
 
 `FORGE_HOSTED` is the only fork, checked by `isHosted()` in `src/cloud.js`:

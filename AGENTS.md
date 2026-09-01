@@ -1,7 +1,9 @@
 # Presentation Forge — working agreement
 
-Local-first generator for academic presentations and reports. Node + pptxgenjs +
-local Ollama models. No cloud LLM in the pipeline.
+Generator for academic presentations and reports. Node + pptxgenjs. The product
+is **hosted**, and the model behind it is the TCET CoE gateway (the "Auto"
+tier) — see *Which model to judge the product by*, below. Local Ollama still
+works and is still supported; it is no longer the thing being aimed at.
 
 ## The one rule that governs everything
 
@@ -119,10 +121,31 @@ the TUI: they state intent, Hermes launches, monitors, and rotates sessions.
   relevant `docs/ROADMAP.md` item, and restate the task concretely.
 - **Product vision — Gamma-like.** The end state is: the user drops in a topic
   or a pile of raw info, and a complete themed deck comes out — no follow-up
-  questions, no manual fixes. Local-first, free, no cloud LLM in the pipeline.
-  Every feature decision should move toward "topic in → deck out" with zero
-  hand-holding. The chat panel is the first real surface of this: it is where
-  the user talks to a deck the way they would talk to Gamma.
+  questions, no manual fixes. Every feature decision should move toward
+  "topic in → deck out" with zero hand-holding. The chat panel is the first
+  real surface of this: it is where the user talks to a deck the way they
+  would talk to Gamma.
+
+## Which model to judge the product by
+
+**The TCET CoE gateway — Auto — and nothing else.** Hosted is what ships, Auto
+is what a hosted user gets, so Auto's output IS the product's quality. Judge
+every content question against it:
+
+```bash
+FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
+FORGE_HOSTED=1 npm run forge -- generate <slug>
+```
+
+- **Do not evaluate content quality on a local Ollama model.** A deck that
+  reads well on a 30B local model and badly through the gateway is a deck that
+  reads badly, because nobody hosted is running the local one. Judging on
+  local answers a question nobody asked.
+- **Local support stays in the code** — `resolveRole`, the fallbacks, the model
+  picker. It is not being removed and it should not rot. It is simply not
+  where the effort goes, and not what "does this work?" means.
+- Generating spends the operator's gateway budget, so be economical: a few
+  real runs read closely beat a sweep nobody looks at.
 
 ## Ending a session
 
