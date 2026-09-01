@@ -7,10 +7,12 @@
  * schema validation can catch — a deck can be perfectly valid YAML and still
  * have a headline running off the slide.
  */
-import { mkdir, readdir, rm, access } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, rm, access } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { tmpdir } from "node:os";
 import path from "node:path";
+import { rmSync } from "node:fs";
 import sharp from "sharp";
 
 const run = promisify(execFile);
@@ -36,6 +38,45 @@ async function which(bin) {
  * Absolute throughout: soffice's -env:UserInstallation needs a real file://
  * URL, and --outdir is resolved against soffice's cwd, not ours.
  */
+/**
+ * One LibreOffice profile per process, built once and reused.
+ *
+ * A private profile is not optional: soffice silently no-ops when an instance
+ * is already running in the user's session, which is the trap this whole
+ * function exists around. But building one from scratch on every conversion
+ * pays that setup cost every time — measured at roughly 0.8s of a 7s
+ * conversion, on every slide sweep and every report render.
+ *
+ * Private and reused, not fresh and reused: a directory of our own under the
+ * OS temp dir, so two concurrent PROCESSES still get separate profiles and
+ * cannot lock each other out.
+ */
+let profileDir = null;
+async function loProfile() {
+  if (!profileDir) {
+    profileDir = await mkdtemp(path.join(tmpdir(), "forge-lo-"));
+    // Best effort: a leftover profile is harmless, but tidy is better.
+    process.once("exit", () => { try { rmSync(profileDir, { recursive: true, force: true }); } catch {} });
+  }
+  return profileDir;
+}
+
+/**
+ * Serialise conversions within this process.
+ *
+ * Two soffice invocations sharing one profile directory is exactly the
+ * lock-out the private profile prevents, so reusing the profile is only safe
+ * if nothing overlaps. Every caller today awaits sequentially; this makes that
+ * a property of the function rather than of its callers' good manners.
+ */
+let loQueue = Promise.resolve();
+function loSlot() {
+  const prev = loQueue;
+  let release;
+  loQueue = new Promise((r) => { release = r; });
+  return prev.then(() => release);
+}
+
 export async function libreofficeToPdf(file, { outDir, timeout = 180_000 } = {}) {
   file = path.resolve(file);
   await access(file);
@@ -48,23 +89,24 @@ export async function libreofficeToPdf(file, { outDir, timeout = 180_000 } = {})
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
 
-  // LibreOffice needs a private profile or it silently no-ops when an instance
-  // is already running in the user's session.
-  const profile = path.join(dir, ".lo-profile");
-  await run("soffice", [
-    `-env:UserInstallation=file://${profile}`,
-    "--headless", "--norestore", "--invisible",
-    "--convert-to", "pdf",
-    "--outdir", dir,
-    file,
-  ], { timeout });
+  const release = await loSlot();
+  try {
+    await run("soffice", [
+      `-env:UserInstallation=file://${await loProfile()}`,
+      "--headless", "--norestore", "--invisible",
+      "--convert-to", "pdf",
+      "--outdir", dir,
+      file,
+    ], { timeout });
+  } finally {
+    release();
+  }
 
   const pdf = path.join(dir, path.basename(file).replace(/\.(pptx|docx)$/i, ".pdf"));
   await access(pdf).catch(() => {
     throw new Error("LibreOffice produced no PDF — conversion failed");
   });
 
-  await rm(profile, { recursive: true, force: true });
   return pdf;
 }
 
