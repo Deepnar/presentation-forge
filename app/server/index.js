@@ -252,6 +252,51 @@ app.use("/api/presets", deckWorkspace);
 app.use("/api/briefing", deckWorkspace);
 
 /**
+ * Full-text content search across deck.yaml files — the deck list's client-side
+ * title filter stops being enough once the count grows past a screen.
+ *
+ * THIS ROUTE MUST STAY ABOVE the per-slug middleware below, which is why it is
+ * here rather than with the other deck routes. Express matches a path-carrying
+ * `app.use` before any route registered later, so registered further down this
+ * file it arrived at the ownership gate as a deck named "search", found no
+ * decks/search/meta.yaml, and was refused with "no such deck" — for everyone
+ * except admins, who pass the ownership check and so never saw it. Any future
+ * literal segment under /api/decks/ has the same collision and belongs here
+ * too. Fixing it the other way, by teaching the gate a list of words that are
+ * not slugs, is worse: a word added to that list without a matching route
+ * exempts a whole subtree from ownership, and this failure at least fails
+ * closed.
+ *
+ * It still sits below the workspace gate above, so it has a session and a
+ * req.user to scope results with.
+ */
+app.post("/api/decks/search", wrap(async (req, res) => {
+  const q = String(req.body?.q ?? "").trim().toLowerCase();
+  if (!q) return ok(res, { hits: [] });
+  let entries = [];
+  try {
+    entries = await readdir(DECKS, { withFileTypes: true });
+  } catch {
+    return ok(res, { hits: [] });
+  }
+  const hits = [];
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    try {
+      // Search is scoped to your workspace like the list is.
+      let owner = null;
+      try {
+        owner = YAML.parse(await readFile(path.join(DECKS, e.name, "meta.yaml"), "utf8"))?.owner ?? null;
+      } catch { /* legacy folder */ }
+      if (!canAccessDeck(req.user, owner)) continue;
+      const text = await readFile(path.join(DECKS, e.name, "deck.yaml"), "utf8");
+      if (text.toLowerCase().includes(q)) hits.push(e.name);
+    } catch { /* no deck.yaml */ }
+  }
+  ok(res, { hits });
+}));
+
+/**
  * Per-slug ownership. An owned deck belongs to exactly one account; a folder
  * whose meta.yaml has no owner is a legacy deck (or a headless CLI run) and is
  * the operator's — visible to every logged-in user would leak one account's
@@ -1210,36 +1255,6 @@ app.post("/api/decks/:slug/bundle", wrap(async (req, res) => {
   res.setHeader("Content-Type", "application/zip");
   res.setHeader("Content-Disposition", `attachment; filename="${req.params.slug}.zip"`);
   res.send(buf);
-}));
-
-/**
- * Full-text content search across deck.yaml files — the deck list's client-side
- * title filter stops being enough once the count grows past a screen.
- */
-app.post("/api/decks/search", wrap(async (req, res) => {
-  const q = String(req.body?.q ?? "").trim().toLowerCase();
-  if (!q) return ok(res, { hits: [] });
-  let entries = [];
-  try {
-    entries = await readdir(DECKS, { withFileTypes: true });
-  } catch {
-    return ok(res, { hits: [] });
-  }
-  const hits = [];
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    try {
-      // Search is scoped to your workspace like the list is.
-      let owner = null;
-      try {
-        owner = YAML.parse(await readFile(path.join(DECKS, e.name, "meta.yaml"), "utf8"))?.owner ?? null;
-      } catch { /* legacy folder */ }
-      if (!canAccessDeck(req.user, owner)) continue;
-      const text = await readFile(path.join(DECKS, e.name, "deck.yaml"), "utf8");
-      if (text.toLowerCase().includes(q)) hits.push(e.name);
-    } catch { /* no deck.yaml */ }
-  }
-  ok(res, { hits });
 }));
 
 /* ---------------------------------------------------------------- reports */
@@ -2592,7 +2607,13 @@ async function reportBootGaps() {
   }
 }
 
-app.listen(PORT, () => {
-  console.log(`  api   http://localhost:${PORT}`);
+/**
+ * Exported so a test can bind port 0, read the port it actually got, and make
+ * real requests against the real route table. Route ORDER is a property of this
+ * file that no unit test can reach — a literal path shadowed by a parameterised
+ * `app.use` parses fine, passes every test, and refuses in production.
+ */
+export const server = app.listen(PORT, () => {
+  console.log(`  api   http://localhost:${server.address().port}`);
   reportBootGaps().catch(() => { /* a warning that cannot be computed is not worth failing over */ });
 });
