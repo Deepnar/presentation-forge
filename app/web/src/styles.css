@@ -1,14 +1,23 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Gamma-grade design system: light, clean, trusted.
-   The shell is light and airy — white panels on a whisper-gray page,
-   indigo accent (Gamma's purple) for action, slate text. No ember,
-   no charcoal, no particle disco. */
+/* Tailwind's built-in dark: variant follows prefers-color-scheme, which is the
+   OS preference, not the one the user picked in Settings. Any dark: utility
+   must key off the same attribute the tokens do or the two disagree the moment
+   someone chooses light on a dark machine. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* The interface is achromatic; the decks are the colour.
+   Thirty-four themes carry every hue this product owns, so the shell stays
+   ink-on-paper and never competes with the thing it is rendering. The accent
+   is therefore near-black in light and near-white in dark — an inversion, not
+   a hue change — which is why every surface that paints ON the accent reads
+   --color-on-accent rather than hardcoding white. */
 @theme {
-  /* Surfaces: page → sunken → panel. All light, all neutral. */
-  --color-base: #F8F9FC;
-  --color-sunken: #F1F3F9;
+  /* Surfaces: page → sunken → panel → raised. Light is the source of truth;
+     [data-theme="dark"] below overrides the same names. */
+  --color-base: #FBFBFD;
+  --color-sunken: #F2F3F7;
   --color-panel: #FFFFFF;
   --color-raised: #FFFFFF;
   --color-prompt: #FFFFFF;
@@ -16,28 +25,35 @@
   --color-field: #FFFFFF;
 
   /* Hairlines: subtle, cool. */
-  --color-line: #E6E8F0;
+  --color-line: #E7E8EF;
   --color-line-strong: #D1D5E0;
 
-  /* Text: slate, not warm paper. WCAG AA 7:1 on white. */
+  /* Text: slate, not warm paper. WCAG AA on the surface below it. */
   --color-fg: #0F172A;
   --color-fg-muted: #475569;
   --color-fg-faint: #94A3B8;
 
-  /* Accent: near-black — no lavender slop, slate ink for light. */
+  /* Accent: slate ink. Inverts wholesale in dark. */
   --color-accent: #0B0F1A;
   --color-accent-hi: #1A2236;
   --color-accent-dim: #E2E8F0;
   --color-accent-tint: #F1F5F9;
   --color-accent-glow: rgba(11, 15, 26, 0.08);
+  /* The ink that sits ON the accent. Never assume white: in dark the accent
+     IS white, and a white-on-white button is invisible rather than ugly. */
+  --color-on-accent: #FFFFFF;
 
   --color-amber: #F59E0B;
   --color-danger: #EF4444;
   --color-success: #10B981;
+  --color-on-danger: #FFFFFF;
   --color-overlay: rgba(15, 23, 42, 0.45);
 
   --radius-card: 0.75rem;
   --radius-lg: 1rem;
+  --radius-panel: 1.25rem;
+  --radius-hero: 1.75rem;
+  --radius-pill: 9999px;
 
   --text-display: 2.5rem;
   --text-heading: 1.75rem;
@@ -53,6 +69,16 @@
   --ease-shell: cubic-bezier(0.2, 0.8, 0.2, 1);
   --dur-shell: 220ms;
 
+  /* Motion vocabulary. Landing scenes and shell transitions pull from the same
+     set so the product moves one way, not two. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --ease-overshoot: cubic-bezier(0.34, 1.42, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur-base: 260ms;
+  --dur-slow: 520ms;
+  --dur-scene: 900ms;
+
   --shadow-card:
     0 1px 2px rgba(15, 23, 42, 0.04),
     0 4px 12px rgba(15, 23, 42, 0.06);
@@ -62,42 +88,62 @@
   --shadow-float:
     0 8px 24px rgba(15, 23, 42, 0.10),
     0 16px 48px rgba(15, 23, 42, 0.12);
+  /* The lift under a rendered slide. Deep and soft — the slide should read as
+     an object resting on the page, which is the whole trick of the hero. */
+  --shadow-slide:
+    0 2px 4px rgba(15, 23, 42, 0.04),
+    0 12px 28px rgba(15, 23, 42, 0.10),
+    0 40px 80px -20px rgba(15, 23, 42, 0.18);
+
+  --header-h: 3.5rem;
 }
 
-/* Dark mode removed — single light system. [data-theme="dark"] now mirrors light so no flash. */
+/* Dark. Not an inversion of the light values — a separately chosen set, because
+   a mathematically inverted slate reads muddy and the shadows stop existing.
+   On a dark ground, elevation comes from a lighter surface and a hairline top
+   highlight; the drop shadow only deepens the separation. */
 [data-theme="dark"] {
-  --color-base: #F8F9FC;
-  --color-sunken: #F1F3F9;
-  --color-panel: #FFFFFF;
-  --color-raised: #FFFFFF;
-  --color-prompt: #FFFFFF;
-  --color-hover: #F1F3F9;
-  --color-field: #FFFFFF;
+  --color-base: #0A0A0C;
+  --color-sunken: #0F1013;
+  --color-panel: #141519;
+  --color-raised: #1A1B20;
+  --color-prompt: #141519;
+  --color-hover: #1D1E24;
+  --color-field: #101115;
 
-  --color-line: #E6E8F0;
-  --color-line-strong: #D1D5E0;
+  --color-line: #26272E;
+  --color-line-strong: #3A3C45;
 
-  --color-fg: #0F172A;
-  --color-fg-muted: #475569;
-  --color-fg-faint: #94A3B8;
+  --color-fg: #F5F6F8;
+  --color-fg-muted: #A3A6B1;
+  --color-fg-faint: #6E717C;
 
-  --color-accent: #0B0F1A;
-  --color-accent-hi: #1A2236;
-  --color-accent-dim: #E2E8F0;
-  --color-accent-tint: #F1F5F9;
-  --color-accent-glow: rgba(11, 15, 26, 0.08);
+  --color-accent: #F5F6F8;
+  --color-accent-hi: #FFFFFF;
+  --color-accent-dim: #2E3039;
+  --color-accent-tint: #1C1E25;
+  --color-accent-glow: rgba(245, 246, 248, 0.10);
+  --color-on-accent: #0A0A0C;
 
-  --color-overlay: rgba(15, 23, 42, 0.45);
+  --color-amber: #FBBF24;
+  --color-danger: #F87171;
+  --color-success: #34D399;
+  --color-on-danger: #0A0A0C;
+  --color-overlay: rgba(0, 0, 0, 0.65);
 
   --shadow-card:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 4px 12px rgba(15, 23, 42, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-card-hover:
-    0 4px 16px rgba(15, 23, 42, 0.08),
-    0 8px 24px rgba(15, 23, 42, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 8px 24px rgba(0, 0, 0, 0.55);
   --shadow-float:
-    0 8px 24px rgba(15, 23, 42, 0.10),
-    0 16px 48px rgba(15, 23, 42, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-slide:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.55),
+    0 40px 90px -20px rgba(0, 0, 0, 0.75);
 }
 
 html {
@@ -125,11 +171,49 @@ body {
   color: var(--color-accent);
 }
 
+/* ------------------------------------------------------ display typography */
+/* Fluid, and tuned per step rather than scaled from one ratio: a 6rem headline
+   needs tighter tracking and leading than a 2rem one, and a single clamp on
+   font-size alone gives a hero that looks loose at desktop and cramped at
+   phone width. */
+.display-1 {
+  font-size: clamp(2.75rem, 1.6rem + 5.6vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.display-2 {
+  font-size: clamp(2.1rem, 1.35rem + 3.4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.display-3 {
+  font-size: clamp(1.6rem, 1.2rem + 1.9vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.lede {
+  font-size: clamp(1rem, 0.94rem + 0.35vw, 1.1875rem);
+  line-height: 1.6;
+  color: var(--color-fg-muted);
+  text-wrap: pretty;
+}
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-fg-faint);
+}
+
 .slide-frame {
-  background: #fff;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.06),
-    0 8px 24px rgba(15, 23, 42, 0.08);
+  background: var(--color-panel);
+  box-shadow: var(--shadow-card);
 }
 
 :where(button, a, input, select, textarea):focus-visible {
@@ -166,8 +250,10 @@ body {
   transform: translateY(0);
 }
 
+/* color-mix keeps the bar translucent in both themes off one token, instead of
+   the hardcoded white that turned the header into a light slab on a dark page. */
 .shell-header {
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--color-panel) 88%, transparent);
   backdrop-filter: saturate(1.1) blur(10px);
   border-bottom: 1px solid var(--color-line);
 }
@@ -263,7 +349,7 @@ textarea:focus {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(15,23,42,0.04), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-accent-glow), transparent);
   animation: shimmer 1.4s infinite;
 }
 
@@ -358,6 +444,23 @@ textarea:focus {
   transform: scale(0.98);
 }
 
+/* --------------------------------------------------------- scroll reveal */
+/* The landing's default entrance. An element starts displaced and lands when
+   it is observed; the class is applied by JS so that a browser with scripting
+   off shows the finished page rather than an invisible one. */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 18px));
+  transition:
+    opacity var(--dur-slow) var(--ease-out-quint),
+    transform var(--dur-slow) var(--ease-out-quint);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -365,6 +468,12 @@ textarea:focus {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* The reveal is an entrance, not a layout. Without this the elements keep
+     their displaced transform and the page renders visibly askew. */
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -379,7 +488,7 @@ textarea:focus {
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B0B8C9;
+  background: var(--color-fg-faint);
   background-clip: content-box;
 }
 ::-webkit-scrollbar-track {

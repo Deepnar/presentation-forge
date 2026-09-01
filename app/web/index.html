@@ -3,11 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Presentation Forge</title>
+    <title>Presentation Forge — topic in, deck out</title>
+    <meta
+      name="description"
+      content="Presentation Forge researches your topic, plans the deck, writes grounded slides and renders them into a themed .pptx and a matching report. The bulk by machine; the polish by you."
+    />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#141110" />
+    <meta name="theme-color" content="#FBFBFD" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Presentation Forge — topic in, deck out" />
+    <meta
+      property="og:description"
+      content="Research, outline, grounded writing, a precise render and a vision critique. Thirty-four themes, drawn by the renderer, never by a model."
+    />
+    <meta property="og:image" content="/wordmark.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      Resolve the ground before first paint. A module that decides this after
+      hydration flashes white behind a dark page on every load. Kept in sync
+      with app/web/src/lib/appearance.js — same key, same fallback order.
+    -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("forge.theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "light";
+          var t = m === "system"
+            ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+            : m;
+          var r = document.documentElement;
+          r.dataset.theme = t;
+          r.dataset.appearance = m;
+          r.style.colorScheme = t;
+          if (t === "dark") {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute("content", "#0A0A0C");
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
