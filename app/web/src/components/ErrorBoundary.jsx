@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component {
             </button>
             <button
               onClick={() => { this.setState({ error: null }); window.location.hash = "#/chat"; }}
-              className="rounded-lg bg-accent px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-accent-hi"
+              className="rounded-lg bg-accent px-3 py-1.5 text-[12px] font-medium text-on-accent transition hover:bg-accent-hi"
             >
               Go to chats
             </button>

@@ -96,7 +96,7 @@ export default function SlideSelectPanel({
                   {i + 1}
                 </span>
                 {on && (
-                  <span className="absolute right-1 top-1 grid h-4 w-4 place-items-center rounded-full bg-accent text-[9px] text-white">
+                  <span className="absolute right-1 top-1 grid h-4 w-4 place-items-center rounded-full bg-accent text-[9px] text-on-accent">
                     ✓
                   </span>
                 )}

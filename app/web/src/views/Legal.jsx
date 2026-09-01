@@ -302,14 +302,14 @@ export function Usage() {
                 </div>
                 <div className="rounded-2xl border border-line bg-panel p-5">
                   <div className="text-[13px] font-semibold text-fg">Raw {usage ? "usage" : "limits"}</div>
-                  <pre className="mt-3 max-h-[50vh] overflow-auto rounded-xl bg-[#0B0F1A] p-4 font-mono text-[12px] leading-relaxed text-white">{JSON.stringify(usage ?? limits, null, 2)}</pre>
+                  <pre className="mt-3 max-h-[50vh] overflow-auto rounded-xl border border-line bg-sunken p-4 font-mono text-[12px] leading-relaxed text-fg">{JSON.stringify(usage ?? limits, null, 2)}</pre>
                 </div>
                 <p className="text-[12px] leading-relaxed text-fg-faint">Limits are sliding windows — oldest events fall out automatically. Switch to Cloud in the header toggle to bypass these.</p>
               </div>
             )}
             <div className="mt-10 flex gap-2">
               <a href="#/home" className="rounded-full border border-line bg-panel px-3.5 py-1.5 text-[13px] font-medium text-fg-muted hover:border-line-strong hover:text-fg">Back to tour</a>
-              <a href="#/docs" className="rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white hover:bg-accent-hi">Docs</a>
+              <a href="#/docs" className="rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-on-accent hover:bg-accent-hi">Docs</a>
             </div>
           </div>
         </div>

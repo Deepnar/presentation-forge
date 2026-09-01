@@ -70,7 +70,7 @@ export default function Admin({ onBack }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h1 className="text-[18px] font-semibold tracking-tight text-fg">Admin</h1>
-            <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"}>{hosted ? "hosted" : "local"}</Badge>
+            <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-success/10 text-success"}>{hosted ? "hosted" : "local"}</Badge>
             {stats?.users?.total != null && <Badge className="bg-raised text-fg-faint">{stats.users.total} users · {stats.decks.total} decks</Badge>}
           </div>
           <div className="text-[12px] text-fg-faint">RBAC for the seeded operator + any promoted admin · switch hosted/local here for testing · full PPT + system stats</div>
@@ -86,7 +86,7 @@ export default function Admin({ onBack }) {
 
       <div className="flex gap-1.5">
         {["overview","users","decks","analytics","system"].map((k) => (
-          <button key={k} onClick={() => setTab(k)} className={`pill px-3 py-1.5 text-[12px] font-medium capitalize transition ${tab===k ? "bg-accent text-white" : "bg-panel text-fg-muted hover:bg-hover hover:text-fg"}`}>{k}</button>
+          <button key={k} onClick={() => setTab(k)} className={`pill px-3 py-1.5 text-[12px] font-medium capitalize transition ${tab===k ? "bg-accent text-on-accent" : "bg-panel text-fg-muted hover:bg-hover hover:text-fg"}`}>{k}</button>
         ))}
       </div>
 

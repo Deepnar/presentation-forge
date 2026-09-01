@@ -93,7 +93,7 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${showAuto ? "bg-accent" : "bg-accent"} ${busy ? "opacity-50" : ""}`}
                 aria-label="Toggle Auto/Cloud"
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${showAuto ? "translate-x-1" : "translate-x-6"}`} />
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-on-accent shadow transition ${showAuto ? "translate-x-1" : "translate-x-6"}`} />
               </button>
               <span className={`text-[11px] font-medium ${showCloud ? "text-accent" : "text-fg-faint"}`}>Cloud</span>
               <span className="ml-auto text-[10.5px] text-fg-faint">{route === "auto" ? "Using Auto" : "Using Cloud"}</span>

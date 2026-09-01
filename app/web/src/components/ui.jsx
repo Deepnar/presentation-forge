@@ -12,7 +12,7 @@ export function Button({ variant = "ghost", size = "md", className = "", ...prop
   };
   const variants = {
     primary:
-      "bg-accent text-white hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)]",
+      "bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)]",
     ghost: "text-fg-muted hover:bg-hover hover:text-fg",
     outline: "border border-line text-fg-muted hover:border-line-strong hover:text-fg hover:shadow-[0_6px_14px_-10px_rgba(0,0,0,0.6)]",
   };
@@ -156,7 +156,7 @@ export function ConfirmModal({ title, body, confirmLabel = "Confirm", danger, on
           <button
             onClick={onConfirm}
             className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition hover:opacity-90 active:translate-y-px ${
-              danger ? "bg-danger text-white" : "bg-accent text-white"
+              danger ? "bg-danger text-on-danger" : "bg-accent text-on-accent"
             }`}
           >
             {confirmLabel}

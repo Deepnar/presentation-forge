@@ -60,8 +60,8 @@ function SidebarToggle({ onOpenSettings }) {
       title={isAuto ? "Auto — click for Cloud" : "Cloud — click for Auto"}
       className="flex items-center gap-1 rounded-full border border-line bg-sunken p-0.5"
     >
-      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${isAuto ? "bg-accent text-white shadow-sm" : "text-fg-faint"}`}>AUTO</span>
-      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${isCloud ? "bg-accent text-white shadow-sm" : "text-fg-faint"}`}>CLOUD</span>
+      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${isAuto ? "bg-accent text-on-accent shadow-sm" : "text-fg-faint"}`}>AUTO</span>
+      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${isCloud ? "bg-accent text-on-accent shadow-sm" : "text-fg-faint"}`}>CLOUD</span>
     </button>
   );
 }
@@ -186,7 +186,7 @@ export default function Sidebar({
               <>
                 <button
                   onClick={() => onNewChat("deck")}
-                  className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-accent-hi"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-[13px] font-semibold text-on-accent shadow-sm transition hover:bg-accent-hi"
                 >
                   <PlusIcon className="h-4 w-4" />
                   New chat
@@ -414,7 +414,7 @@ function ConfirmModal({ deck, onCancel, onConfirm }) {
           <Button variant="outline" size="sm" onClick={onCancel}>Cancel</Button>
           <button
             onClick={onConfirm}
-            className="rounded-lg bg-danger px-2.5 py-1.5 text-xs font-medium text-white transition hover:opacity-90 active:translate-y-px"
+            className="rounded-lg bg-danger px-2.5 py-1.5 text-xs font-medium text-on-danger transition hover:opacity-90 active:translate-y-px"
           >
             Delete
           </button>

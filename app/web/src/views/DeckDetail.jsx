@@ -950,7 +950,7 @@ export default function DeckDetail({ slug, hasReport, refreshToken, onBack, onDe
                 <button
                   onClick={() => regenerate(ph.index)}
                   disabled={punch !== null}
-                  className="shrink-0 rounded-md bg-danger px-2 py-1 text-[11px] font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                  className="shrink-0 rounded-md bg-danger px-2 py-1 text-[11px] font-medium text-on-danger transition hover:opacity-90 disabled:opacity-50"
                 >
                   {punch === ph.index ? <Spinner className="h-3 w-3" /> : "Regenerate"}
                 </button>

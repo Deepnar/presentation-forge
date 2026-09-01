@@ -15,11 +15,6 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const [route, setRoute] = useState("auto");
 
   useEffect(() => {
-    document.documentElement.dataset.theme = "light";
-    try { localStorage.setItem("forge.theme", "light"); } catch {}
-  }, []);
-
-  useEffect(() => {
     Promise.all([api.autoStatus().catch(() => ({ auto: null })), api.cloud().catch(() => ({ cloud: null }))])
       .then(([a, c]) => {
         const autoData = a.auto ?? a ?? null;
@@ -77,7 +72,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
             className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border p-0.5 transition ${routingAuto ? "border-accent/30 bg-accent" : "border-line-strong bg-panel"}`}
             aria-label="Toggle Auto/Cloud"
           >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition ${routingAuto ? "translate-x-0.5" : "translate-x-5"}`} />
+            <span className={`inline-block h-4 w-4 transform rounded-full shadow transition ${routingAuto ? "translate-x-0.5 bg-on-accent" : "translate-x-5 bg-fg-faint"}`} />
           </button>
           <span className={`text-[10px] font-medium ${routingCloud ? "text-fg" : "text-fg-faint"}`}>CLOUD</span>
         </div>
@@ -122,7 +117,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
             <button
               onClick={() => onAuthClick?.("register")}
               title="Sign up"
-              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white transition hover:bg-accent-hi"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-on-accent transition hover:bg-accent-hi"
             >
               Sign up
             </button>

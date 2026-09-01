@@ -1026,7 +1026,7 @@ export default function ChatView({
         {chat.produced && (
           <Badge className="bg-accent/10 text-accent">ready</Badge>
         )}
-        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-emerald-500/10 text-emerald-600"} title={hosted ? "Hosted: Forge + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
+        <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-success/10 text-success"} title={hosted ? "Hosted: Forge + BYOK only, no Ollama" : "Local: Ollama fallback enabled"}>
           {hosted ? "hosted" : "local"}
         </Badge>
       </header>
