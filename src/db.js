@@ -4,15 +4,23 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
 
-const DB_PATH = process.env.FORGE_DB_PATH || path.join(CONFIG, "forge.db");
+/**
+ * Resolved per open, not once at import. `setDbPathForTest` works by setting
+ * FORGE_DB_PATH, so a constant captured at module load meant the seam quietly
+ * did nothing and a test that asked for a scratch database got the real one.
+ * The two suites that redirect the store both took the JSON escape hatch, which
+ * is why nothing noticed.
+ */
+const dbPath = () => process.env.FORGE_DB_PATH || path.join(CONFIG, "forge.db");
 
 let db = null;
 let initDone = false;
 
 function getDb() {
   if (db) return db;
-  mkdirSync(path.dirname(DB_PATH), { recursive: true });
-  db = new DatabaseSync(DB_PATH);
+  const file = dbPath();
+  mkdirSync(path.dirname(file), { recursive: true });
+  db = new DatabaseSync(file);
   // WAL for concurrent reads
   db.exec("PRAGMA journal_mode=WAL;");
   db.exec("PRAGMA foreign_keys=ON;");
@@ -142,4 +150,4 @@ export function closeDb() {
   if (db) { try { db.close(); } catch {} db = null; }
 }
 
-export { getDb, DB_PATH };
+export { getDb, dbPath };
