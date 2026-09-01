@@ -5,213 +5,6 @@
   },
   "themes": [
     {
-      "name": "gradient-mesh-dark",
-      "label": "Gradient Mesh Dark",
-      "dark": true,
-      "slides": [
-        {
-          "type": "title",
-          "file": "gradient-mesh-dark--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 9440,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "gradient-mesh-dark--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 18224,
-          "dark": true
-        }
-      ]
-    },
-    {
-      "name": "aurora-mesh",
-      "label": "Aurora Mesh",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "aurora-mesh--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 13524,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "aurora-mesh--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 19144,
-          "dark": false
-        }
-      ]
-    },
-    {
-      "name": "sunset",
-      "label": "Sunset Golden Hour",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "sunset--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 10368,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "sunset--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 18822,
-          "dark": false
-        }
-      ]
-    },
-    {
-      "name": "sci-fi-hud",
-      "label": "Sci-Fi HUD",
-      "dark": true,
-      "slides": [
-        {
-          "type": "title",
-          "file": "sci-fi-hud--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 5930,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "sci-fi-hud--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 16376,
-          "dark": true
-        }
-      ]
-    },
-    {
-      "name": "risograph",
-      "label": "Risograph Print",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "risograph--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 6692,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "risograph--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 17248,
-          "dark": false
-        }
-      ]
-    },
-    {
-      "name": "linear-dark",
-      "label": "Linear Dark",
-      "dark": true,
-      "slides": [
-        {
-          "type": "title",
-          "file": "linear-dark--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 6438,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "linear-dark--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 15454,
-          "dark": true
-        }
-      ]
-    },
-    {
-      "name": "isometric-dark",
-      "label": "Isometric Dark",
-      "dark": true,
-      "slides": [
-        {
-          "type": "title",
-          "file": "isometric-dark--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 11214,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "isometric-dark--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 17508,
-          "dark": true
-        }
-      ]
-    },
-    {
-      "name": "neubrutalism",
-      "label": "Neubrutalism",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "neubrutalism--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 7956,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "neubrutalism--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 17606,
-          "dark": false
-        }
-      ]
-    },
-    {
-      "name": "editorial-magazine",
-      "label": "Editorial Magazine",
-      "dark": false,
-      "slides": [
-        {
-          "type": "title",
-          "file": "editorial-magazine--title.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 7770,
-          "dark": true
-        },
-        {
-          "type": "stats",
-          "file": "editorial-magazine--stats.webp",
-          "w": 1200,
-          "h": 675,
-          "bytes": 16110,
-          "dark": false
-        }
-      ]
-    },
-    {
       "name": "swiss-international",
       "label": "Swiss International",
       "dark": false,
@@ -258,6 +51,98 @@
       ]
     },
     {
+      "name": "editorial-magazine",
+      "label": "Editorial Magazine",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "editorial-magazine--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 7770,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "editorial-magazine--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 16110,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "linear-dark",
+      "label": "Linear Dark",
+      "dark": true,
+      "slides": [
+        {
+          "type": "title",
+          "file": "linear-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6438,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "linear-dark--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 15454,
+          "dark": true
+        }
+      ]
+    },
+    {
+      "name": "sci-fi-hud",
+      "label": "Sci-Fi HUD",
+      "dark": true,
+      "slides": [
+        {
+          "type": "title",
+          "file": "sci-fi-hud--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 5930,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "sci-fi-hud--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 16376,
+          "dark": true
+        }
+      ]
+    },
+    {
+      "name": "isometric-dark",
+      "label": "Isometric Dark",
+      "dark": true,
+      "slides": [
+        {
+          "type": "title",
+          "file": "isometric-dark--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 11214,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "isometric-dark--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17508,
+          "dark": true
+        }
+      ]
+    },
+    {
       "name": "bauhaus",
       "label": "Bauhaus",
       "dark": false,
@@ -276,6 +161,121 @@
           "w": 1200,
           "h": 675,
           "bytes": 16428,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "neubrutalism",
+      "label": "Neubrutalism",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "neubrutalism--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 7956,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "neubrutalism--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17606,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "risograph",
+      "label": "Risograph Print",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "risograph--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6692,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "risograph--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17248,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "art-deco",
+      "label": "Art Deco",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "art-deco--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 6438,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "art-deco--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 16060,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "memphis-postmodern",
+      "label": "Memphis Postmodern",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "memphis-postmodern--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 7254,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "memphis-postmodern--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 15972,
+          "dark": false
+        }
+      ]
+    },
+    {
+      "name": "glassmorphism",
+      "label": "Glassmorphism",
+      "dark": false,
+      "slides": [
+        {
+          "type": "title",
+          "file": "glassmorphism--title.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 7218,
+          "dark": true
+        },
+        {
+          "type": "stats",
+          "file": "glassmorphism--stats.webp",
+          "w": 1200,
+          "h": 675,
+          "bytes": 17716,
           "dark": false
         }
       ]

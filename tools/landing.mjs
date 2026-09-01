@@ -41,18 +41,18 @@ const DECK = path.join(ROOT, "decks", "_public", "landing", "deck.yaml");
  * is a different question from which eight look best side by side.
  */
 const THEMES = [
-  "gradient-mesh-dark",
-  "aurora-mesh",
-  "sunset",
-  "sci-fi-hud",
-  "risograph",
-  "linear-dark",
-  "isometric-dark",
-  "neubrutalism",
-  "editorial-magazine",
   "swiss-international",
   "editorial-serif-light",
+  "editorial-magazine",
+  "linear-dark",
+  "sci-fi-hud",
+  "isometric-dark",
   "bauhaus",
+  "neubrutalism",
+  "risograph",
+  "art-deco",
+  "memphis-postmodern",
+  "glassmorphism",
 ];
 
 /**
