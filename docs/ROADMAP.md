@@ -3462,14 +3462,46 @@ fine at ten decks and is not the shape to keep.
 Do it as one pass over the page, the way the landing was done — not as
 individual patches when something is noticed missing.
 
-### [ ] Reports — structure, and the wait
+### [~] Reports — structure, and the wait
 
-*Priority: medium. The speed half needs no model.*
+*Priority: medium. The speed half needs no model — **and is done**.*
 
 Two complaints. The output does not feel good, which is a content and structure
-question. And generation feels slow — the renderer alone is two LibreOffice
-passes for the table-of-contents page numbers, before any model time, and that
-half can be profiled and improved today against a committed `report.yaml`.
+question and **still open** — it needs a model and a real read of what the
+sections say. And generation feels slow, which was measurable today.
+
+**The wait — done.** Profiled against a real 8-section report rather than
+guessed at:
+
+| phase | before | after |
+|---|---|---|
+| `.docx` in the user's hands | **16.9s** | **6.7s** |
+| page images on screen | (same wait) | +7.7s, after the download |
+
+Two findings, neither of which the entry predicted. First, the "two LibreOffice
+passes" are not both in the renderer: `renderReport` starts LibreOffice once,
+for the TOC page numbers, and the *second* start is `reportPreview` rasterising
+the finished document — a picture of a file the user already had, which they
+waited for before getting it. Splitting `POST /report/render` from
+`POST /report/preview` is the whole 10s. Second, `libreofficeToPdf` built a
+fresh LibreOffice profile on every call and deleted it after, paying setup
+every time: ~0.8s of a ~7s conversion, which every rasterising sweep also pays
+per render.
+
+**What is left: the structure half.** Whether the report says anything worth
+reading. Needs a model and a genuine read of the output, not a profile.
+
+> **Learned.** **Profile before believing the entry.** This one named "two
+> LibreOffice passes for the table-of-contents page numbers" as the cost. The
+> TOC pass is one start, it is unavoidable without a layout engine, and it was
+> never the part worth attacking — the preview was, and the entry did not
+> mention it. Ten seconds of a sixteen-second wait was spent on something
+> nobody had asked to wait for.
+>
+> **"Ready" is a claim about the deliverable, not about the pipeline.** The
+> file existed at 7.6s and the route held it back for another 9.3s so it could
+> return everything at once. Returning what exists when it exists is not an
+> optimisation, it is the difference between a wait and a hang.
 
 ### [ ] Research and content flow, end to end
 
