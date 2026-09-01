@@ -18,7 +18,7 @@ import { SlideImage } from "./parts.jsx";
  * Nothing here is clickable on purpose. Reaching the end of the section means
  * having seen every theme, not having thought to interact.
  */
-export default function ThemeCycle({ manifest }) {
+export default function ThemeCycle({ manifest, themeCount, onBrowseThemes }) {
   const themes = manifest?.themes ?? [];
   const ref = useRef(null);
   const p = useSceneProgress(ref, [themes.length]);
@@ -28,7 +28,7 @@ export default function ThemeCycle({ manifest }) {
   const current = themes[active];
 
   return (
-    <div ref={ref} data-section="themes" style={{ height: `${themes.length * 28 + 110}vh` }}>
+    <div ref={ref} data-section="themes" style={{ height: `${themes.length * 18 + 90}vh` }}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8">
         <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-center">
           <div className="reveal">
@@ -57,6 +57,16 @@ export default function ThemeCycle({ manifest }) {
               />
             </div>
             <div className="mt-2 text-[12px] text-fg-faint">Same words, same slide. Only the theme changed.</div>
+            {/* The twelve here are the ones worth flaunting; the full gallery
+                is a page of its own rather than thirty-four more cards at the
+                bottom of this one. */}
+            <button
+              onClick={() => onBrowseThemes?.()}
+              className="press mt-5 inline-flex items-center gap-1.5 rounded-pill border border-line-strong bg-panel px-4 py-2 text-[13px] font-medium text-fg transition-colors hover:bg-hover"
+            >
+              {themeCount ? `See all ${themeCount} themes` : "See every theme"}
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m0 0-5-5m5 5-5 5" /></svg>
+            </button>
           </div>
 
           <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>

@@ -82,7 +82,7 @@ export default function PipelineScene() {
   }
 
   return (
-    <div ref={ref} data-section="pipeline" style={{ height: `${STEPS.length * 38 + 100}vh` }}>
+    <div ref={ref} data-section="pipeline" style={{ height: `${STEPS.length * 26 + 90}vh` }}>
       {/* Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
           Without it a panel entering from the left is pushed past the right
           edge and the whole document scrolls sideways. */}

@@ -28,7 +28,7 @@ export default function FeatureScene() {
   const flow = useTooTall(innerRef);
 
   return (
-    <div ref={ref} data-section="features" style={flow ? undefined : { height: `${FEATURES.length * 20 + 110}vh` }}>
+    <div ref={ref} data-section="features" style={flow ? undefined : { height: `${FEATURES.length * 14 + 90}vh` }}>
       <div
         className={
           flow

@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { useReveal } from "../lib/reveal.js";
 import Footer from "../components/Footer.jsx";
-import { CTA, Figure, Section, SectionHead } from "../components/landing/parts.jsx";
+import { CTA, Figure, Section } from "../components/landing/parts.jsx";
 import PipelineScene from "../components/landing/PipelineScene.jsx";
 import TypeScroll from "../components/landing/TypeScroll.jsx";
 import ThemeCycle from "../components/landing/ThemeCycle.jsx";
 import FeatureScene from "../components/landing/FeatureScene.jsx";
 import CheckScene from "../components/landing/CheckScene.jsx";
-import ThemeWall from "../components/landing/ThemeWall.jsx";
 
 /**
  * The landing page.
@@ -91,18 +90,9 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
 
       <PipelineScene />
       <TypeScroll manifest={manifest} typeCount={typeCount} />
-      <ThemeCycle manifest={manifest} />
+      <ThemeCycle manifest={manifest} themeCount={themeCount} onBrowseThemes={onBrowseThemes} />
       <FeatureScene />
       <CheckScene />
-
-      <Section>
-        <SectionHead
-          eyebrow="The gallery"
-          title={themeCount ? `All ${themeCount}, at a glance.` : "The gallery"}
-          lede="Every one is a hand-authored set of tokens — palette, type scale, spacing, shape. These are their real renders, not swatches."
-        />
-        <ThemeWall themes={themes} onBrowse={onBrowseThemes} />
-      </Section>
 
       <Section tight>
         <div className="reveal rounded-hero border border-line bg-panel px-6 py-14 text-center shadow-[var(--shadow-float)] sm:px-12">

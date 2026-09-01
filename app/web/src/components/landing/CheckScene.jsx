@@ -69,7 +69,7 @@ export default function CheckScene() {
   const flow = useTooTall(innerRef);
 
   return (
-    <div ref={ref} data-section="checks" style={flow ? undefined : { height: `${CHECKS.length * 30 + 110}vh` }}>
+    <div ref={ref} data-section="checks" style={flow ? undefined : { height: `${CHECKS.length * 22 + 90}vh` }}>
       <div
         className={
           flow
