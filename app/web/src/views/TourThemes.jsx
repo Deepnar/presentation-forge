@@ -29,7 +29,7 @@ export default function TourThemes({ onAuth, authed = false }) {
         <div className="mx-auto max-w-6xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-line bg-sunken px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            38 design languages
+            {themes?.length ?? "\u2014"} design languages
           </div>
           <h1 className="mt-4 max-w-2xl text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg sm:text-[3.2rem]">
             Every deck gets its own <span className="bg-gradient-to-r from-[#0B0F1A] to-black bg-clip-text text-transparent">design language.</span>
@@ -38,7 +38,7 @@ export default function TourThemes({ onAuth, authed = false }) {
             One YAML file per theme — <em className="text-fg">tokens</em> drive the renderer, <em className="text-fg">voice</em> steers the model. No overlap, no hex leaking into prompts. Each card below is drawn live from the theme’s own values.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <a href={authed ? "#/themes" : "#/home"} onClick={authed ? undefined : (e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-white hover:bg-accent-hi">
+            <a href={authed ? "#/themes" : "#/home"} onClick={authed ? undefined : (e) => { e.preventDefault(); onAuth?.("register"); }} className="rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-on-accent hover:bg-accent-hi">
               {authed ? "Open app gallery" : "Start a chat to use these"}
             </a>
             <a href="#/home" className="rounded-full border border-line bg-panel px-4 py-2 text-[13px] font-medium text-fg-muted hover:bg-hover hover:text-fg">Back to tour</a>
@@ -83,52 +83,63 @@ export default function TourThemes({ onAuth, authed = false }) {
   );
 }
 
+/**
+ * A theme card that shows the theme.
+ *
+ * The specimen used to be `useThumb = false` — a flat rectangle of the title
+ * background, which is the one thing every theme has in common and tells a
+ * reader nothing. The committed thumbnails are real renders of a specimen
+ * with branding off (see tools/gallery.mjs and the .gitignore note), so there
+ * is no institutional mark to keep out of them, and they are the only thing
+ * on this page that actually distinguishes one theme from another.
+ *
+ * Colours come from tokens rather than the literal slate the card was built
+ * in, so the surrounding page can be light or dark without the cards staying
+ * on one ground.
+ */
 function MarketingThemeCard({ theme, onAuth, authed }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const [thumbFailed, setThumbFailed] = useState(false);
-  const useThumb = false; // no college header on any thumbnail
-  const link = authed ? "#/themes" : "#/home";
-  const onClick = (e) => {
-    if (!authed) { e.preventDefault(); onAuth?.("register"); }
-  };
-  return (
-    <a
-      href={link}
-      onClick={onClick}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111827] text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition hover:border-accent/30 hover:shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
-    >
-      {/* specimen — solid color only, no header */}
-      <div className="relative flex aspect-[16/10] p-4" style={{ background: title.bg ?? p.ink }}>
-        {useThumb && (
-          <img src={theme.thumb} alt="" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" loading="lazy" onError={() => setThumbFailed(true)} />
+  const showThumb = Boolean(theme.thumb) && !thumbFailed;
+
+  const body = (
+    <>
+      <div className="relative aspect-[16/10] overflow-hidden" style={{ background: title.bg ?? p.ink }}>
+        {showThumb && (
+          <img
+            src={theme.thumb}
+            alt={`The ${theme.label} theme, rendered`}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+            onError={() => setThumbFailed(true)}
+          />
         )}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
       </div>
-      {false && (
-        <div className="flex h-[62px] items-center gap-2 px-4" style={{ background: p.bg }}>
-          <span className="rounded-full px-2 py-[3px] text-[8px] font-bold tracking-[0.08em]" style={{ background: p.accent, color: p.on_accent ?? "#fff" }}>01</span>
-          <div className="h-7 min-w-0 flex-1 rounded-[4px] px-2 py-1.5" style={{ background: p.surface, fontFamily: `"${theme.fonts.body}", sans-serif` }}>
-            <div className="h-[4px] w-3/4 rounded-full" style={{ background: p.ink_muted }} />
-            <div className="mt-1.5 h-[3px] w-1/2 rounded-full opacity-60" style={{ background: p.ink_muted }} />
-          </div>
-        </div>
-      )}
-      <div className="flex flex-1 flex-col bg-[#0F1629] p-5">
+      <div className="flex flex-1 flex-col border-t border-line p-5">
         <div className="flex items-baseline justify-between gap-2">
-          <div className="text-[16px] font-semibold text-white group-hover:text-white">{theme.label}</div>
-          <code className="font-mono text-[10px] text-white/30">{theme.name}</code>
+          <div className="text-[15px] font-semibold text-fg">{theme.label}</div>
+          <code className="font-mono text-[10px] text-fg-faint">{theme.name}</code>
         </div>
-        {theme.summary && <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-white/60">{theme.summary}</p>}
-        <div className="mt-3 flex items-center justify-between">
+        {theme.summary && <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-fg-muted">{theme.summary}</p>}
+        <div className="mt-3 flex items-center justify-between gap-3">
           <div className="flex gap-1">
             {[p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean).slice(0, 5).map((c, i) => (
-              <span key={`${c}-${i}`} className="h-4 w-4 rounded-[3px] ring-1 ring-white/10" style={{ background: c }} />
+              <span key={`${c}-${i}`} className="h-4 w-4 rounded-[3px] ring-1 ring-line" style={{ background: c }} />
             ))}
           </div>
-          <span className="font-mono text-[11px] text-white/35">{theme.fonts.heading} / {theme.fonts.body}</span>
+          <span className="truncate font-mono text-[11px] text-fg-faint">{theme.fonts.heading} / {theme.fonts.body}</span>
         </div>
       </div>
-    </a>
+    </>
   );
+
+  const shell =
+    "group flex flex-col overflow-hidden rounded-2xl border border-line bg-panel text-left shadow-[var(--shadow-card)] transition hover:border-line-strong hover:shadow-[var(--shadow-card-hover)]";
+
+  // A visitor is here to look. Making every card a door to the register modal
+  // asks them to sign up for the thing they are currently looking at.
+  if (!authed) return <div className={shell}>{body}</div>;
+  return <a href="#/themes" className={shell}>{body}</a>;
 }

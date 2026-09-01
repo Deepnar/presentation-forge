@@ -427,7 +427,10 @@ export default function App() {
               <Home
                 user={null}
                 onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
-                onBrowseThemes={() => { setAuthMode("register"); setAuthOpen(true); }}
+                // "See the themes" shows the themes. It used to open the
+                // register modal, which asks someone to sign up for the thing
+                // they were trying to look at.
+                onBrowseThemes={() => { window.location.hash = "#/tour-themes"; }}
                 onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
               />
             )}
