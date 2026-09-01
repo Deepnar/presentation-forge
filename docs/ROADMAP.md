@@ -3257,9 +3257,12 @@ light and dark, user-settable, light by default.
   the mode chip made the mode switch, labels that describe the product rather
   than the data model, the themes page actually showing themes.
 
-**What is left.** The deck/project workspace, the briefing flow end to end,
-and the rest of the app's density and hierarchy. That half has not been
-designed, only patched where it was outright confusing.
+**What is left.** The app half has not been designed, only patched where it
+was outright confusing. It has its own entry now — "The deck workspace — too
+many doors, no front one" — plus the briefing flow end to end and the rest of
+the app's density and hierarchy. The landing and the chat view work on a
+phone; the deck view, the report view and `SlideEditor.jsx` at that width are
+unverified.
 
 > **Learned.** Four things, all of which cost real time.
 >
@@ -3289,6 +3292,50 @@ designed, only patched where it was outright confusing.
 > white page and renders a near-black cover; a plate theme's ground is an
 > image no token describes. Both the landing manifest and the theme cards read
 > darkness off the painted pixels.
+
+### [ ] Hosting blockers — what strands a real user
+
+*Priority: HIGHEST once the front end is done. No model. Nothing here is taste.*
+
+Three gaps that a stranger hits on day one. None is visible in a demo, and all
+three are cheap to describe and not cheap to skip.
+
+- **No password reset.** There is no reset or recovery route in the auth
+  surface at all — `/api/auth/*` is register, login, google, logout, me,
+  registration, google/config. Someone who forgets their password and did not
+  use Google is locked out permanently, with no way back short of an admin
+  editing the database. Needs mail (`src/mail.js` already exists and is
+  dependency-free), a single-use token with an expiry, and a route pair.
+- **No email verification.** Addresses are unverified, so an account cannot be
+  contacted, cannot be recovered, and signup is open to junk. Admin is a role
+  rather than an address so privilege is not the risk — reachability is. The
+  registration open/closed endpoint is the only current mitigation.
+- **The report donor `.docx` is a runtime upload.** Reports cannot render
+  without one. `docs/DEPLOY.md` says so, but the failure mode when an admin
+  misses it is a healthy-looking box where half the product 500s. It should
+  refuse to start, or say so loudly on the admin page, rather than failing at
+  the point of use.
+
+### [ ] The deck workspace — too many doors, no front one
+
+*Priority: high. No model. This is the page users actually live in.*
+
+`views/DeckDetail.jsx` is the largest view in the app (~1.8k lines) and has
+never been through a design pass. Arriving at a deck presents, before any
+content: three visually identical selects (theme, style, density), Re-sweep,
+Render/"Up to date", `.pptx`, an Export menu, and an overflow hiding Clone,
+Versions and Dark mode — eight controls, none of them marked as the one you
+probably want. Below that a "never finalised" banner with its own CTA, then
+three panels (Report, Research, Speaker script) that are each an empty state
+with their own generate button, then the slide grid.
+
+That is roughly a dozen competing actions on arrival. The work is to decide
+what a deck page is FOR at each stage of a deck's life and show only that:
+a freshly generated deck, a finalised one, and one being revised are three
+different screens wearing the same chrome today.
+
+Related and not yet looked at: the same view on a phone, and `SlideEditor.jsx`,
+which is the least likely thing in the app to survive a 390px screen.
 
 ### [ ] Reports — structure, and the wait
 
