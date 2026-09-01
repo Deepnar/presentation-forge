@@ -3221,33 +3221,74 @@ What is left:
 
 ### [ ] The front end, and the landing page
 
-*Priority: HIGHEST. No model. **Blocked on the human — ask, then wait.***
+*Priority: HIGHEST. No model. **Landing rebuilt; the app sweep is the rest.***
 
-Standing dissatisfaction with the whole surface, landing page first, with
-motion and polish of the kind Framer produces. Distinct from the theme work:
-this is the product's own interface, not the decks it renders.
+Direction was agreed and the landing page was rebuilt against it. The app
+half — the surfaces you live in rather than the front door — is what is left,
+so the box stays unticked.
 
-**This item is not startable alone.** It is taste, and building it on a guess
-wastes the work — a landing page nobody asked for is worse than none. When it
-comes up: say so, put the questions below to the human, and WAIT for answers.
-Do not skip to a lower item because the human seems away. That is how this has
-stayed at the top of the list while everything under it got polished.
+**The answers.** Reference: all four of Linear/Vercel, Framer/Gamma,
+Stripe/Raycast and Apple, which resolve to one thesis — *the interface is
+achromatic; the decks are the colour*. Landing first, then a full app sweep.
+Structure: stay on Vite/React (the architecture doc is explicit that the
+workload is not serverless-compatible, so Next.js buys structure, not
+hosting), rebuild the landing on a new shared token layer rather than
+restyling. Imagery: real renders. Motion: rich, with fallbacks. Palette:
+light and dark, user-settable, light by default.
 
-What has to be answered before any code:
+**Done.**
 
-- **Reference and feel.** Which two or three products' surfaces are the target?
-  "Framer-like" names a level of polish, not a direction.
-- **Landing page or the app first.** They are different jobs: one is marketing
-  copy and motion, the other is the generate flow the user actually lives in.
-- **Scope of the rework.** Restyle inside the current Vite/React structure, or
-  rebuild the shell? `docs/ARCHITECTURE.md` says the workload is not
-  serverless-compatible and porting to Next.js changes none of that, so a
-  rebuild buys structure, not hosting.
-- **What the landing page has to show.** Real rendered decks from the gallery,
-  or invented mockups? The 34 themes are the strongest asset the product has and
-  `npm run capstress` can rasterise any of them on demand.
-- **Motion budget.** How much, and does it have to survive prefers-reduced-motion
-  and a low-end laptop.
+- **A real design system.** Full token set for both themes, resolved before
+  first paint, with a three-way appearance control in Settings and a quick
+  one in the profile popup. Every contrast pair is tokenised — `on-accent`,
+  `on-danger` — because the accent inverts wholesale in dark and a literal
+  white foreground becomes invisible rather than merely wrong.
+- **Landing rebuilt as pinned scenes.** Hero, pipeline, slide vocabulary,
+  theme cycle, feature grid, verification. Vertical scroll is the only input;
+  nothing has to be clicked or dragged to reveal its content.
+- **Real imagery.** `tools/landing.mjs` renders a committed deck across a
+  chosen cast and commits the frames — 46 WebP at 0.52 MB. The pipeline scene
+  uses hand-written markup of the actual interface instead, so it cannot go
+  stale against a product it is drawn from.
+- **Two renderer defects found by looking**, one fixed (inverted-panel
+  contrast, 17 of 34 themes) and one recorded in `docs/TRAPS.md` (tracked text
+  measured in the wrong unit).
+- **Some of the app sweep**: three prompts for one decision collapsed to one,
+  the mode chip made the mode switch, labels that describe the product rather
+  than the data model, the themes page actually showing themes.
+
+**What is left.** The deck/project workspace, the briefing flow end to end,
+and the rest of the app's density and hierarchy. That half has not been
+designed, only patched where it was outright confusing.
+
+> **Learned.** Four things, all of which cost real time.
+>
+> **`overflow-x: hidden` is a sticky-killer, and it does it silently.** One
+> axis hidden and the other visible is invalid CSS, so the browser promotes
+> the visible axis to `auto` — and an element with `overflow-y: auto` is a
+> scroll container, which is what `position: sticky` sticks to. Signed out the
+> landing was fine; signed in, every pinned scene stuck to a box that was not
+> the viewport and the reader scrolled through blank page. Eleven empty
+> viewports against none, on the same build. Trying to undo it with
+> `overflow-visible` on the same element does not work. A scene's ancestors
+> need NO overflow property at all.
+>
+> **A hook whose effect binds to an element that does not exist yet never
+> rebinds.** A scene that returns `null` until its data arrives has no element
+> on first render, and a ref's identity never changes — so `[ref]` alone left
+> the observer attached to nothing and the scene sat at progress 0 forever.
+> That looks exactly like a scene that works but never advances, which is the
+> hardest kind of broken to see.
+>
+> **A heading outside the pinned frame is a screenful of nothing.** The frame
+> only begins below the block above it, so at the top of the section the
+> content is centred in a box that has barely entered the viewport. Put the
+> heading inside the frame it belongs to.
+>
+> **Measure the ground, not the token.** `swiss-international` declares a
+> white page and renders a near-black cover; a plate theme's ground is an
+> image no token describes. Both the landing manifest and the theme cards read
+> darkness off the painted pixels.
 
 ### [ ] Reports — structure, and the wait
 

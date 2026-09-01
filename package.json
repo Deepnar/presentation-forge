@@ -24,7 +24,8 @@
     "capstress": "node --env-file-if-exists=.env tools/capstress.mjs",
     "textcheck": "node --env-file-if-exists=.env tools/textcheck.mjs",
     "drawcheck": "node --env-file-if-exists=.env tools/drawcheck.mjs",
-    "coverage": "node --env-file-if-exists=.env tools/coverage.mjs"
+    "coverage": "node --env-file-if-exists=.env tools/coverage.mjs",
+    "landing": "node --env-file-if-exists=.env tools/landing.mjs"
   },
   "keywords": [],
   "author": "",

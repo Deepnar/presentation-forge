@@ -1220,6 +1220,84 @@ public box: secure headers, a CORS allow-list (`FORGE_UI_ORIGIN`), rate-limited
 auth endpoints, and validated uploads (extension + size) for brand marks and
 deck images. `POST /api/sweep` and `npm run sweep` run the sweep manually.
 
+## The design system, and the landing page
+
+The web UI paints from one token set with a single thesis: **the interface is
+achromatic; the decks are the colour.** Thirty-four themes carry every hue this
+product owns, so the shell stays ink-on-paper and never competes with the thing
+it is rendering.
+
+`app/web/src/styles.css` defines light on `:root` and redefines the same names
+under `[data-theme="dark"]`. The accent is near-black in light and near-white
+in dark — an inversion, not a hue change — which is why every surface that
+paints ON a filled ground reads `--color-on-accent` or `--color-on-danger`
+rather than assuming white. A white foreground on an inverted accent is
+invisible, not merely wrong, and that is how the whole app looked the first
+time a dark mode existed.
+
+Three text levels and the three status colours are chosen against the WORST
+ground they appear on — the sunken and hover surfaces, and their own 10%
+washes — not against white. A ramp picked against white alone puts tertiary
+text at 2.56:1 and `amber` at 1.94:1, which is not a colour, it is a
+suggestion.
+
+`lib/appearance.js` is the only thing that decides which theme is in force.
+Three modes, not two: "system" has to be reachable, or the preference stops
+tracking a machine that changes at sunset. The resolved theme lands on
+`data-theme` and the mode on `data-appearance`, because "light" the preference
+and "light" the outcome are different facts. **The pre-paint script in
+index.html duplicates that read deliberately** — a module that resolves after
+first paint flashes the wrong ground on every load.
+
+### Landing scenes
+
+The landing is a run of pinned SCENES rather than a stack of blocks. A scene is
+a tall wrapper containing one `position: sticky` frame; the wrapper's height is
+a scroll budget, and `lib/scene.js` turns how much of it has been spent into a
+number every scene animates off. Vertical scroll is the only input, so a reader
+who does nothing but scroll still sees the whole product.
+
+`position: sticky`, not a pinned GSAP timeline. A pin rewrites the document
+with spacer elements and takes ownership of the scroll, which breaks on resize,
+on zoom and under a touch fling; sticky is the browser doing the same job
+natively, and it needs no second code path for reduced motion because the
+position IS the scroll — there is no animation to disable.
+
+**Two constraints govern anything added here.**
+
+Nothing up a scene's ancestor chain may set an overflow property. `overflow-x:
+hidden` with `overflow-y: visible` is invalid CSS, so the browser promotes the
+visible axis to `auto`, and an element with `overflow-y: auto` is a scroll
+container — which is what sticky sticks to. The scenes then hold still relative
+to a box that is not the viewport, and the reader scrolls through blank page.
+Clipping the sticky FRAME itself is fine and is how the entry transforms are
+kept from widening the document.
+
+A pinned frame is exactly one viewport tall, so content taller than that is
+cut off. Where a scene's pinned and flowing layouts render the same DOM, the
+content's own height decides whether to pin (`useTooTall`) — which also catches
+a short desktop window that no breakpoint would. Where they are genuinely
+different content, as with the pipeline stacking into seven steps, measuring
+would oscillate and a media query decides instead (`useNarrow`).
+
+### Landing imagery
+
+`tools/landing.mjs` renders `decks/_public/landing/deck.yaml` across a chosen
+cast and commits the frames to `app/gallery/landing`, with a manifest carrying
+each frame's dimensions, its measured darkness and the slide-type count. The
+same reasoning as `app/gallery`: regenerating needs LibreOffice, Poppler and
+the theme fonts, which a container's first boot should not be asked for.
+
+They are real renders because the page is a claim about what the renderer
+produces — a hand-drawn mockup of a slide is a claim about what someone hoped
+it produces, and the two drift the moment a layout changes. Darkness is
+measured off the painted pixels, never a palette token: `swiss-international`
+declares a white page and renders a near-black cover.
+
+The pipeline scene is the exception and goes the other way: its seven panels
+are hand-written markup of the actual interface, so they use the app's own
+tokens, stay selectable and sharp at any zoom, and cost kilobytes.
+
 ## Multi-tenancy — what one account can reach
 
 The account system began as a gate on the operator's cloud key, and for a while

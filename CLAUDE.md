@@ -50,6 +50,7 @@ npm run forge -- new "<topic>" --research   # headless: outline
 npm run forge -- generate <slug> --critic   # headless: deck
 npm run fonts                               # download + install the 27 families
 npm run brand                               # normalise brand/logos -> brand/generated
+npm run landing                             # re-render the landing page's imagery
 npm run searxng                             # local search backend (docker)
 ```
 

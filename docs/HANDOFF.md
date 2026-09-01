@@ -1,56 +1,72 @@
-# Handoff — 2026-08-31, the gallery swept, and the checks that made it repeatable
+# Handoff — 2026-09-01, the front end: landing rebuilt, app sweep begun
 
 Everything is on `origin/main`. `npm test` is 391 passing, the working tree is
 clean.
 
-**Start here.** `AGENTS.md` is the working agreement — commit discipline, how
-the roadmap is worked, when to stop and ask. `CLAUDE.md` is the operational map
-and lists the checks as four questions rather than one. `docs/ARCHITECTURE.md`
-has a new **Verification** section describing the instruments. `docs/ROADMAP.md`
-§10 is the standing quality list and is current. `docs/TRAPS.md` holds the
-cross-cutting failure modes and outlives this file. This file is only what the
-last session learned that those do not say.
+**Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
+operational map. `docs/ARCHITECTURE.md` has two new sections — **The design
+system, and the landing page** — describing the token layer, the scene
+mechanics and the imagery pipeline. `docs/ROADMAP.md`'s front-end entry now
+records the answers, what shipped and four Learned items. `docs/TRAPS.md` holds
+the cross-cutting failure modes. This file is only what those do not say.
 
 ---
 
-## Do this first — and do not do anything else instead
+## Do this first
 
-**The front end and the landing page is the top item and it is blocked on the
-human.** Your first action this session is to ask, using the five questions
-already written into its `docs/ROADMAP.md` entry: reference and feel, landing
-page or app first, restyle or rebuild, real decks or mockups, motion budget.
+**The app sweep is what is left of the top item, and it does NOT need to
+stop and ask.** Direction was agreed for the whole front end; the landing was
+built to it and the app half was only patched where it was outright confusing.
+Continue there.
 
-Send those questions and **wait**. Do not open the item on a guess, and do not
-skip to a lower item because nobody has replied yet. That substitution is
-exactly why this has stayed at the top of the list while everything under it got
-polished, and `AGENTS.md` now forbids it.
+Concretely, and in this order:
 
-**If and only if the human has answered**, build to the answer.
-
-**If the human has answered "not now" or has already redirected you**, take the
-next item in this order — from the top, not whichever looks easiest:
-
-1. **Finish the visual audit on the covering set.** Below; it is the only item
-   with a fully specified next step.
-2. **Cut `venn`'s caps** — §10. It renders correctly at 35% of its caps and
-   scores 48%, so the caps are what is wrong, not the layout.
-3. **Reports** — structure, and the two-LibreOffice-pass render.
+1. **The deck / project workspace** (`views/DeckDetail.jsx`, 1.8k lines). Never
+   examined this session — it needs a generated deck to look at, and generating
+   one spends the operator's gateway budget. Ask before spending it, or point a
+   local Ollama at it.
+2. **The briefing flow end to end** — `ChatView.jsx` is 2.3k lines and carries
+   the whole guided briefing. The empty state is fixed; the flow itself is
+   unreviewed.
+3. **Density and hierarchy across the app.** The landing has a type scale and a
+   spacing rhythm now; the app does not use them.
 
 ---
 
 ## What was done
 
-**The gallery was swept once — every type at its caps, with a speaker note — and
-thirteen defects came out of it.** Not one was reportable by any check that
-existed at the start. Three became reportable by the end, because the looking
-kept turning up the same classes and each was mechanisable:
+**A real design system.** Light and dark, resolved before first paint,
+persisted, three-way (system is reachable). A control in Settings and a quick
+one in the profile popup. Contrast pairs are tokenised — `on-accent`,
+`on-danger` — because the accent inverts wholesale and a literal white
+foreground becomes *invisible*, not merely wrong.
 
-- **`src/geometry.js`** — is the box on the slide? Runs inside every render, so
-  `themematrix` answers it for the whole gallery for free. Found 105 problems
-  the first time it ran.
-- **`npm run drawcheck`** — was the field drawn at all? Text that is never drawn
-  is never fitted, so no fit sweep can see it.
-- **`src/coverage.js`** — which themes a sweep has to look at. Eight, not 34.
+**Every text colour was re-picked against the worst ground it lands on**, not
+against white. `fg-faint` was 2.56:1 on a panel and `amber` 1.94:1. Both themes
+now audit clean: 0 failures across 230 text nodes, measured in the browser.
+
+**The landing page was rebuilt** as pinned scenes — hero, pipeline, slide
+vocabulary, theme cycle, feature grid, verification. Scroll is the only input.
+
+**Two renderer defects, found by looking.**
+
+- **Fixed:** `callout`, `takeaway` and `compare`'s verdict bar painted their
+  label in `accent_alt` on an ink-filled panel. **17 of 34 themes** were below
+  3:1 against the panel the text sits on. `test/contrast.test.js` now covers
+  that third surface.
+- **Recorded, not fixed:** the fitter reads a type token's `tracking` as a
+  percentage of the em; the renderer hands the same number to pptxgenjs as
+  `charSpacing`, which is points. They disagree by `100/size`, so the 10pt
+  uppercase eyebrow is measured at about a tenth of its real letter-spacing.
+  `matrix`'s rotated axis wraps `CONTRACT / ED` with every check clean. See
+  `docs/TRAPS.md`. **Fixing it moves the fit verdict for the whole gallery and
+  wants its own round against a fresh `themematrix --save` baseline.**
+
+**Auto tier tightened twice.** A recorded "request" is one pipeline operation,
+not a model call — read correctly, the old caps were 12–25 decks per account
+per week on the operator's key. Now 12 requests / 45 slides per **five-hour**
+window and 30 / 90 per week. Five hours, not one: an hour is shorter than a
+sitting.
 
 ## The state of the checks
 
@@ -58,157 +74,76 @@ kept turning up the same classes and each was mechanisable:
 |---|---|
 | `npm test` | 391 passing |
 | `npm run themematrix` | clean, 34 themes x 73 types |
-| `npm run themematrix -- --notes` | 2 — `feature-grid` on `minimal-muji` |
-| `npm run themematrix --deck <real>` | 45 — `cards` x41, `takeaway` x4 |
-| `npm run textcheck` | clean, 34 themes |
-| `npm run drawcheck` | clean; 10 accepted, 3 unpopulated |
-| `npm run capstress` | 122 across the 8 covering themes |
-| `node tools/capfit.mjs` | 26 fields over their measured length |
-| `test/contrast.test.js` | 24 recorded, passing both ways |
+| `npm run themematrix --deck decks/_public/landing/deck.yaml` | clean, 25 slides x 34 themes |
+| landing contrast audit, both themes | 0 failures / 230 nodes |
+| landing blank-viewport scan | 0 empty stops / 14.8 screens |
 
-**Three counts rose and all three are the checks working, not regressions.**
-`capfit` went 1 → 26 and `capstress` 9 → 64 because the prober and the sweep now
-stress a slide carrying a standfirst, which is the slide a model actually
-writes. `capstress` then went 64 → 122 because it runs eight themes instead of
-four. None of it is new debt. **Before treating a rising count as a break, check
-whether the payload or the theme set changed.**
+## New instruments
 
-## Finish the visual audit — the specified next step
+`tools/landing.mjs` (`npm run landing`) renders `decks/_public/landing/deck.yaml`
+across a chosen cast into committed WebP — 46 frames, 0.52 MB — plus a manifest
+carrying dimensions, measured darkness and the slide-type count so the page
+hardcodes no number.
 
-`docs/ROADMAP.md` §10 "The visual audit, at schema caps". One theme of eight has
-been looked at type by type. Do the rest, in this order, and look at the page —
-the machine half is already clean on most of it.
+**The deck is committed and swept.** It is written to the same caps as any
+generated deck and clears `themematrix` on all 34 themes, so the imagery is
+produced by the real renderer under the real constraints.
 
-```bash
-npm run capstress -- --themes sci-fi-hud            # the only sidebar frame
-npm run capstress -- --themes corporate-clean-blue  # the only offset frame
-npm run capstress -- --themes editorial-magazine    # the only two-column list
-npm run capstress -- --themes high-contrast-mono    # the widest type in the gallery
-npm run capstress -- --themes gradient-mesh-dark    # a plate ground, centred heading
-npm run capstress -- --themes bauhaus,minimal-muji  # numeral opening; tightest margins
-```
+## Traps this session paid for, that will bite again
 
-Take the frames first. `layered-architecture` had two columns that did not fit
-`sci-fi-hud`'s 8.0in row, and that was found by measuring rather than by looking
-— the frames are where constants that assume a full-width box break.
+**`overflow-x: hidden` silently kills `position: sticky`.** One axis hidden and
+the other visible is invalid CSS; the browser promotes the visible axis to
+`auto`, and an element with `overflow-y: auto` is a scroll container — which is
+what sticky sticks to. Trying to undo it with `overflow-visible` on the same
+element does not work. This cost two rounds: signed out the landing was
+perfect, signed in every scene stuck to the wrong box and the reader scrolled
+through blank page. **Eleven empty viewports against none, on the same build —
+so test the landing signed IN.**
 
-The types worth opening full size, by how much the covering sweep flags them:
-`venn` and `layered-architecture` (15 each), then `pros-cons`, `dependencies`,
-`cards` and `before-after` (8 each). Most of that is cap debt that is
-now honestly reported; look anyway, because the two classes below do not report.
+**An effect that binds to an element rendered later never rebinds.** A scene
+returning `null` until its data arrives has no element on first render, and a
+ref's identity never changes. `useSceneProgress` takes explicit deps for this
+reason. The failure looks like a scene that works but never advances.
 
-## The three findings worth carrying forward
+**IntersectionObserver does not fire in a hidden or prerendering tab** — the
+state a link-preview bot, a background tab and a headless capture are all in.
+Anything that hides content until observed must fail OPEN.
 
-**1. A shared schema field is invisible to anything that reads the type rule
-alone.** `headline` (≤80) and `standfirst` (≤150) are declared once on
-`definitions.slide.properties`, and every consumer walked
-`allOf[].then.properties`. On every type the length pass never told the model
-the headline had a cap, `trimSlide` could never shorten one — its own
-skip-headline branch had been unreachable since it was written — and the cap
-prober never grew one. **Ask what the fixture does not carry.** That is now the
-second half of `npm run drawcheck`'s output rather than something to remember.
-
-**2. Derive the number once and use it for the fit, the box and the advance.** A
-budget that is not the box the text is drawn into is a bug in both directions —
-more generous hides an overflow, less generous invents a failure, and they look
-nothing alike from a sweep. The standfirst was fitted against 0.85in, drawn into
-0.75in and advanced 0.72in. `before-after` fitted a body against 1.8in and drew
-it into 0.94in. `pros-cons` handed `fitScaleAll` the whole column, and it fits EACH
-member into the height given, so the stack was never measured at all.
-
-**3. Ask whether the SHAPE is the constraint before cutting what the content may
-say.** `metric-comparison`'s delta pill was a flat 1.3in for a 12-character
-field, and no fit could have saved it because the subhead floor stops a 15pt role
-shrinking below 0.93. The pill is sized from its content now. This rule has paid
-in every session it has been applied.
-
-## What the checks still cannot see
-
-**Do two boxes overlap?** Both are on the slide, both fit their own text, and
-they are drawn on top of each other. It cost the gallery two types this session:
-`cycle` and `concept-map` overlapped their own content at ordinary length and
-every check was clean on both. An overlap check is not obviously tractable — a
-label over a filled shape is the normal case, so a naive one would report every
-card in the gallery — so **do not build one speculatively.** Until someone has a
-specific idea, the cheap substitute is `npm run capstress -- --scale 0.35`:
-ordinary content rather than a stress case, and what still overlaps there has an
-arrangement no cap will fix.
+**Headless Chrome cannot be verified from the Browser pane if the pane is
+hidden**: no compositing, so no screenshots and no rAF. Drive Chrome over CDP
+instead (`--remote-debugging-port`, Node 24 has a global `WebSocket`). Scratch
+scripts for scene capture, blank-scanning and mobile emulation were written
+this session; they are throwaway but the technique is worth repeating.
 
 ## Known and not fixed
 
-- **`venn`'s caps are too generous.** It scores 48%, second-lowest in the
-  gallery, and renders correctly at 35% — so `sets[].label` (30) and
-  `sets[].items` (27) come down to the measured 14 apiece. No decision needed.
-- **`feature-grid`** is two lines of speaker-note debt on `minimal-muji`. Its
-  card is derived end to end and the shortfall is seven hundredths of an inch.
-
-`quote`, `epigraph` and `freeform` draw neither headline nor standfirst. For the
-first two that is a question about what a full-bleed quotation surface is, not a
-defect; `freeform` is the rasterised escape hatch by definition. All three sit in
-`drawcheck`'s ACCEPTED list with that reasoning, and a stale entry there fails
-the run.
-
-## Deleting a slide type is a normal edit
-
-**73 types, and that is not a number to defend.** `cycle` and `concept-map` went
-this session: both overlapped their own content at 35% of caps — ordinary
-content, not a stress case — so neither was a cap problem, and both needed a new
-arrangement rather than a repair. `flow` and `pipeline` carry ordered steps;
-`hierarchy` carries branching relationships; both render cleanly.
-
-The test for "delete or cut the caps" is cheap and worth applying to any type
-that looks wrong:
-
-```bash
-npm run capstress -- --types <type> --scale 0.35
-```
-
-Overlaps there → the arrangement is wrong, delete it. Clean there → the caps are
-what to cut. `venn` passed and stayed. Note the cap prober cannot make this call:
-it scored `cycle` at 100% because an overlap is not a fit failure.
-
-Deletion touches, and nothing else: the schema enum and its `allOf` rule,
-`src/layouts.js`, `src/specimens.js`, three maps in `src/ai/catalog.js`, the
-`SlideEditor.jsx` descriptor, and the `test/vocabulary.test.js` fixtures plus its
-family-list assertions. Check no deck on disk uses the type first
-(`grep -rl "type: <name>" decks/*/deck.yaml`), then let `npm test`,
-`themematrix`, `drawcheck` and `textcheck` catch anything dangling.
-
-## Cap rounds — one per session, and check the shape first
-
-`node tools/capfit.mjs` reports 26 fields over their measured length. Do not cut
-them all: cutting a cap moves the scale every other field on that type is
-measured at, so the list never quite reaches zero, and one round per session is
-the right pace. For each candidate, ask whether the shape is the constraint
-before touching the cap — four of a previous session's five cap "failures" were
-layouts with slack, not caps that were too generous.
+- **`venn`'s caps are too generous** — §10, unchanged.
+- **`feature-grid`** is two lines of speaker-note debt on `minimal-muji`.
+- **`matrix` is held out of the landing showcase** with its reason recorded in
+  `tools/landing.mjs`; it comes back when the tracking bug is fixed.
+- **`ParticleField` is dimmer than it was** — the page ground was lightened for
+  the new palette and the old dot opacity read hard against it.
+- The landing cast deliberately excludes `aurora-mesh`, `sunset` and
+  `gradient-mesh-dark`. They work and remain usable; they are just not what the
+  product should flaunt.
 
 ## Generation
 
-The TCET gateway (`config/models.yaml`, `providers.tcet-auto`, model `qwen3.6`)
-answers in under a second with `FORGE_TCET_API_KEY` in a gitignored `.env` at
-the repo root.
+Unchanged. The TCET gateway answers in under a second with
+`FORGE_TCET_API_KEY` in a gitignored `.env`.
 
 ```bash
 FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
 FORGE_HOSTED=1 npm run forge -- generate <slug>
 ```
 
-`FORGE_HOSTED=1` makes Auto resolve to the gateway and never fall back to the
-local Ollama, whose GPU is committed to other work. A 17-slide deck generates end
-to end without research in a couple of minutes. The model client allows 300s per
-request with retries, so a single stubborn slide can burn ten minutes in the
-field-length pass.
-
 ## Known and deliberate
 
 - The callout bar inverts to light on dark themes. Consistent and intentional.
 - `config/identity.yaml` on the dev machine reads `institution.name: HACKED`.
-  Identity is per account now; set a real one in Settings.
-- The dev account store holds well over a hundred throwaway test accounts. That
+- The dev account store holds well over a hundred throwaway test accounts, and
+  this session added `uxprobe@example.com` to reach the signed-in screens. That
   database must not travel to production.
-- `decks/electrochemical-impedance-spectroscopy-for-l` is kept deliberately as
-  the real-content fixture. Every check takes `--deck`; use it.
-- `FORGE_GEOM_TRACE=1` on any render prints the stack of the draw call behind a
-  geometry verdict. The message names the type and the theme; the layouts are
-  four thousand lines.
+- `decks/electrochemical-impedance-spectroscopy-for-l` is the real-content
+  fixture. Every check takes `--deck`; use it.
+- `FORGE_GEOM_TRACE=1` prints the stack behind a geometry verdict.
