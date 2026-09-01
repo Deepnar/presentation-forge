@@ -8,7 +8,8 @@
  *
  *   #/chat[/<chatId>]   the active conversation
  *   #/deck/<slug>       deck detail       #/report/<slug>   report view
- *   #/research/<slug>   research view     #/themes          theme gallery
+ *   #/research/<slug>   research view     #/script/<slug>   speaker script
+ *   #/themes            theme gallery
  *   #/home              the landing page
  *   #/reset/<token>     set a new password  #/verify/<token>  confirm an address
  *   (empty)             home = chat
@@ -35,6 +36,10 @@ export function parseHash(hash) {
     case "deck":
     case "report":
     case "research":
+    case "script":
+      // The four faces of one project. Each is a route rather than local
+      // state so a link into any of them survives a reload and the back
+      // button walks between them.
       return rest[0] ? { view: kind, slug: rest[0] } : { view: "chat" };
     case "reset":
     case "verify":
@@ -76,6 +81,8 @@ export function hashFor(view, { slug, chatId, token } = {}) {
       return slug ? `#/report/${slug}` : "#/chat";
     case "research":
       return slug ? `#/research/${slug}` : "#/chat";
+    case "script":
+      return slug ? `#/script/${slug}` : "#/chat";
     case "reset":
     case "verify":
       return token ? `#/${view}/${token}` : "#/chat";
