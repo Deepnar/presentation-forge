@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
 import HeaderBar from "./components/HeaderBar.jsx";
+import ParticleField from "./components/ParticleField.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
-import ParticleField from "./components/ParticleField.jsx";
 import Home from "./views/Home.jsx";
 import ChatView from "./views/ChatView.jsx";
 import DeckDetail from "./views/DeckDetail.jsx";
@@ -42,7 +42,6 @@ export default function App() {
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
-  const [railHover, setRailHover] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login"); // login | register — the landing's auth modal
   const [focusSearch, setFocusSearch] = useState(0);
@@ -412,7 +411,7 @@ export default function App() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
       <div className="relative min-h-screen bg-base">
-        <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" />
+        <ParticleField boost={2.2} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-35" />
         <div className="relative z-10 flex min-h-screen flex-col pt-14">
           <HeaderBar
             leftOpen={leftOpen}
@@ -446,10 +445,10 @@ export default function App() {
   }
 
   return (
-    <div className={`relative bg-base overflow-x-hidden ${isTourView ? "min-h-screen" : "h-screen overflow-hidden"}`}>
-      {isTourView ? <ParticleField boost={3.0} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-65" /> : <ParticleField paused={railHover} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-45" />}
+    <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden overflow-x-hidden"}`}>
+      <ParticleField boost={isTourView ? 2.2 : 1} className={`pointer-events-none fixed inset-0 z-0 h-full w-full ${isTourView ? "opacity-35" : "opacity-30"}`} />
 
-      <div className={`relative z-10 flex overflow-x-hidden ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col"}`}>
+      <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col overflow-x-hidden"}`}>
         {isTourView && (
           <HeaderBar
             leftOpen={leftOpen}
@@ -465,11 +464,7 @@ export default function App() {
 
         <div className={`isolate flex ${isTourView ? "flex-1" : "min-h-0 flex-1"}`}>
           {view !== "home" && !["privacy","terms","contact","docs","tour-themes","usage"].includes(view) && (
-            <div
-              onMouseEnter={() => setRailHover(true)}
-              onMouseLeave={() => setRailHover(false)}
-              className="flex"
-            >
+            <div className="flex">
               <Sidebar
                 chats={chats}
                 decks={decks}
