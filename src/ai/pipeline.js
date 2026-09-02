@@ -1099,7 +1099,8 @@ const USAGE = `Usage:
               (and its shared research) → decks/<slug>/plan.yaml for the outline gate
   script    generate decks/<slug>/script.md — the words each presenter says aloud
               for every slide, grounded in the deck's research (one model call
-              per slide). --slide <n> regenerates only that slide's words.
+              per slide). --slide <n> regenerates only that slide's words,
+              counting from 1.
 
 Examples:
   node src/ai/pipeline.js new "Ray tracing in 2026" --research --theme warm-humanist
@@ -1273,9 +1274,19 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.stdout.write(YAML.stringify(r.plan));
     } else if (cmd === "script") {
       if (!opts.slug) { console.error(USAGE); process.exit(2); }
+      // --slide is 1-BASED, like every slide number this product shows: the
+      // render reports "slide 5", the script writes "## Slide 5", a chat turn
+      // says "~ slide 5". It was passed through as a 0-based index, so asking
+      // for slide 12 rewrote slide 13 — the same off-by-one that let a chat
+      // turn edit the slide after the one that was named.
+      const slideArg = opts.slide != null ? Number(opts.slide) : null;
+      if (slideArg != null && (!Number.isInteger(slideArg) || slideArg < 1)) {
+        console.error("--slide takes a slide NUMBER, counting from 1.");
+        process.exit(2);
+      }
       const r = await generateScript({
         slug: opts.slug, model: opts.model, onProgress: progress,
-        index: opts.slide != null ? Number(opts.slide) : null,
+        index: slideArg != null ? slideArg - 1 : null,
       });
       process.stdout.write(`script decks/${opts.slug}/script.md — ${r.slides} slides, ${r.regenerated.length} written\n`);
       for (const p of r.problems) process.stdout.write(`  ! ${p}\n`);
