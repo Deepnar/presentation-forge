@@ -286,6 +286,7 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
   return (
     <div className="space-y-4">
       <DonorPanel donor={stats.system.donor} mailOk={stats.system.mailOk} onReload={onReload} />
+      <IdentityPanel identity={stats.system.identity} />
       <RolePanel audit={stats.system.roles} />
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Website mode — hosted ↔ local</div>
@@ -384,6 +385,45 @@ function DonorPanel({ donor, mailOk, onReload }) {
         )}
       </div>
       {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
+    </Panel>
+  );
+}
+
+/**
+ * The institution an unconfigured deck goes out under.
+ *
+ * Same class of fault as the missing donor, and harder to notice: nothing
+ * fails. The render succeeds, the .pptx opens, and the only symptom is the
+ * wrong college on a submitted deck. Per-account identity is set in Settings;
+ * this is the fallback underneath it, and on a fresh box it is the committed
+ * example.
+ */
+function IdentityPanel({ identity }) {
+  if (!identity) return null;
+  const ok = identity.ok;
+  return (
+    <Panel className={`p-4 ${ok ? "" : "border-amber/40"}`}>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} />
+        <span className="text-[12px] font-semibold text-fg">Default identity</span>
+        {!ok && <Badge>decks render under a placeholder</Badge>}
+      </div>
+      <div className="text-[12px] leading-relaxed text-fg-muted">
+        {ok ? (
+          <>Decks with no owner identity render as <code className="font-mono text-fg">{identity.name}</code>, from <code className="font-mono text-[11px]">{identity.file}</code>.</>
+        ) : identity.reason === "template" ? (
+          <>This server still carries the shipped example, so any deck whose owner never opened Settings goes out as <code className="font-mono text-fg">{identity.name}</code>. Nothing fails — the deck just names the wrong institution.</>
+        ) : identity.reason === "incomplete" ? (
+          <>The default names <code className="font-mono text-fg">{identity.name}</code> but has no {identity.missing.join(" or ")}, so the rest falls back to the shipped example. A half-written default is not a working one.</>
+        ) : (
+          <>No default identity is configured, so every deck whose owner has set none renders as <code className="font-mono text-fg">{identity.name}</code>.</>
+        )}
+      </div>
+      {!ok && (
+        <div className="mt-3 text-[11px] text-fg-faint">
+          Each account sets its own under Settings → Identity. This is only the fallback beneath that — edit <code className="font-mono">{identity.file}</code> on the box to change it.
+        </div>
+      )}
     </Panel>
   );
 }

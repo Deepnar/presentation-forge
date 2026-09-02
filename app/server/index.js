@@ -10,7 +10,7 @@ import { render } from "../../src/render.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport, donorStatus } from "../../src/report.js";
-import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge } from "../../src/ai/identity.js";
+import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge, identityStatus, identityUnconfigured } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
 import { userBrandDirs } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
@@ -793,6 +793,10 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       // Half the product 500s without these two, and neither is visible from
       // any screen that works. They belong where the operator already looks.
       donor: await donorStatus(),
+      // Same class as the donor: wrong rather than broken, and invisible from
+      // every screen that works. An unset operator default puts the shipped
+      // example's institution on any deck whose owner never opened Settings.
+      identity: await identityStatus(),
       mailOk: mailConfigured(),
       // Which roles are running what they were configured to run. A silent
       // substitution has exactly one symptom — output that is worse than it
@@ -2661,17 +2665,23 @@ try {
 /**
  * What a healthy-looking box is quietly missing.
  *
- * Neither of these stops the server, and that is the point: a box that renders
+ * None of these stops the server, and that is the point: a box that renders
  * 34 themes of slides should not refuse to serve any of them over a missing
- * .docx, and an install with no SMTP is the ordinary local case. But both fail
- * silently at the point of use — half the product 500s, or an account can never
- * be recovered — so they are said once, loudly, where the operator is looking.
+ * .docx, and an install with no SMTP is the ordinary local case. But each fails
+ * silently at the point of use — half the product 500s, an account can never be
+ * recovered, or a deck goes out under a stranger's institution — so they are
+ * said once, loudly, where the operator is looking.
  */
 async function reportBootGaps() {
   const donor = await donorStatus();
   if (!donor.ok) {
     console.warn(`  WARNING: ${reportUnavailable(donor)}`);
     console.warn(`           drop one .docx into ${donor.dir}, set FORGE_REFERENCE_DIR, or upload it under Admin → System.`);
+  }
+  const identity = await identityStatus();
+  if (!identity.ok) {
+    console.warn(`  WARNING: ${identityUnconfigured(identity)}`);
+    console.warn(`           fill in ${identity.file}, or set it per account under Settings → Identity.`);
   }
   if (!mailConfigured()) {
     console.warn("  WARNING: no SMTP configured (FORGE_SMTP_*) — password reset cannot be delivered,");

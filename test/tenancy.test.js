@@ -146,4 +146,48 @@ test("per-deck meta still wins over the account's standing identity", async () =
   assert.equal(merged.institution.name, "Frozen At Briefing");
 });
 
+/**
+ * The install-wide default is what a deck renders under when its owner has set
+ * nothing, and getting it wrong fails silently: the render succeeds and the
+ * deck simply names somebody else's institution. This box shipped
+ * `institution.name: HACKED` for weeks without a single check noticing.
+ */
+test("an unconfigured operator identity is a reported state, not a silent one", async () => {
+  const cfg = process.env.FORGE_CONFIG_DIR;
+  const example = path.join(cfg, "identity.example.yaml");
+  const operator = path.join(cfg, "identity.yaml");
+  await writeFile(example,
+    "institution:\n  name: Example Institute of Technology\n  short: EIT\n  department: Department of Computer Engineering\n");
+
+  // No operator file at all: a fresh box, falling back to the committed example.
+  await rm(operator, { force: true });
+  let status = await identity.identityStatus();
+  assert.equal(status.ok, false);
+  assert.equal(status.reason, "missing");
+  assert.match(identity.identityUnconfigured(status), /Example Institute of Technology/);
+
+  // Copied but never edited — the documented first step, and easy to stop at.
+  await writeFile(operator, "institution:\n  name: Example Institute of Technology\n  short: EIT\n  department: Department of Computer Engineering\n");
+  status = await identity.identityStatus();
+  assert.equal(status.reason, "template");
+
+  // Half-written. This is the shape the HACKED file had: a name and nothing
+  // else. Caught structurally, so it needs no list of suspect values.
+  await writeFile(operator, "institution:\n  name: HACKED\n");
+  status = await identity.identityStatus();
+  assert.equal(status.reason, "incomplete");
+  assert.deepEqual(status.missing, ["short", "department"]);
+
+  // A field left at the template's value is not a filled-in field.
+  await writeFile(operator, "institution:\n  name: Real College\n  short: EIT\n  department: Physics\n");
+  status = await identity.identityStatus();
+  assert.equal(status.reason, "incomplete");
+  assert.deepEqual(status.missing, ["short"]);
+
+  await writeFile(operator, "institution:\n  name: Real College\n  short: RC\n  department: Physics\n");
+  status = await identity.identityStatus();
+  assert.equal(status.ok, true);
+  assert.equal(status.name, "Real College");
+});
+
 test.after(() => rm(scratch, { recursive: true, force: true }));
