@@ -239,13 +239,25 @@ the pipeline — does research reach the page, does resume work, does the report
 render — and never for judging whether the output is good. Always record which
 backend a result came from; `roleAudit()` and Admin → System both report it.
 
+`FORGE_DEV_LOCAL_FALLBACK=1` automates exactly that and nothing more: an
+unreachable gateway drops to local Ollama mid-request, because the failure is
+at request time and there is nothing to probe beforehand. It is a development
+switch — env only, never `config/`, so it takes shell access to the process and
+cannot be flipped on a deployed box. Off everywhere by default. It fires only
+on a real unreachability (timeout, 502/503/504/52x); a 401 or 400 still fails,
+since falling back on those hides a bad key. Armed, it warns at boot, warns per
+role, sets `devLocalFallback` on the response and says so in `roleAudit()`.
+See `src/devfallback.js`. **A fallback run exercises the pipeline and still
+tells you nothing about quality.**
+
 ## Hosted vs local
 
 `FORGE_HOSTED` is the only fork, checked by `isHosted()` in `src/cloud.js`:
 `config/hosted.json` (admin runtime toggle) wins, then the env var.
 
 - **hosted** — Auto is the configured gateway only, Cloud is BYOK, no Ollama
-  fallback. Local models are hidden from every picker.
+  fallback. Local models are hidden from every picker. (The one exception is
+  the development switch above, which is off unless a shell sets it.)
 - **local (default)** — Auto falls back to Ollama; installed models are listed.
 
 `config/hosted.json` is read from the real config dir even under `npm test`, so a
