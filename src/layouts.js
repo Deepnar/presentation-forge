@@ -1014,11 +1014,37 @@ export const layouts = {
     // against a ~10% narrower width than the column actually gives it — the
     // fitter's wrap heuristic runs optimistic for long labels, and an
     // underestimated line count is what lets a 3-line label meet its sub.
+    // The value may shrink to its ROLE FLOOR, not to an arbitrary 0.6. On a
+    // narrow sidebar column 0.6 of a 54pt stat is 32pt, the fitter clamped
+    // there, and "<1000h" wrapped to "<1000 / h" — text broken in half while
+    // eight points of legal headroom went unused above the 24pt floor.
+    const statFloor = floorOf(theme.type.stat);
+    const minStat = statFloor ? Math.min(1, statFloor / theme.type.stat.size) : 0.6;
     const cols = data.stats.map((s) => {
-      const valueScale = fitOneLine(s.value, cw, theme.type.stat, { min: 0.6 });
+      // 0.94 of the column, not all of it: `measure` estimates advances from a
+      // proportional lowercase average and a MONO theme runs wider than that,
+      // so a value fitted to the full width still wrapped ("<1000 / h").
+      const valueScale = fitOneLine(s.value, cw * 0.94, theme.type.stat, { min: minStat });
       const labelW = cw * 0.9;
-      const labelScale = fitScale(s.label, labelW, 1.2, sub, { min: 0.7 });
-      const labelLines = lineCount(s.label, labelW, { ...sub, size: sub.size * labelScale });
+      // Fitting the label by HEIGHT alone lets a word wider than the column
+      // break inside itself — "commercializat / ion" — and the extra line is
+      // one the count below never budgeted, so the sub was drawn on top of it.
+      // The longest word has to fit the measure too, exactly as the heading
+      // does. This is the documented trap, in a layout that narrows a column.
+      const longestWord = String(s.label).split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), "");
+      const labelScale = Math.min(
+        fitScale(s.label, labelW, 1.2, sub, { min: 0.7 }),
+        fitOneLine(longestWord, labelW, sub, { min: 0.7 }),
+      );
+      // When even the floor cannot make the longest word fit the column — a
+      // theme whose subhead design size is already below its floor cannot
+      // shrink at all — the word WILL break, and the break costs a line the
+      // count below does not see. Reserve it, so the sub clears the overflow
+      // instead of being drawn on top of it. The break itself is reported by
+      // the fitter; a reported break is a judgement, an overlap is a defect.
+      const labelSized = { ...sub, size: sub.size * labelScale };
+      const wordBreaks = measure(longestWord, labelSized) > labelW;
+      const labelLines = lineCount(s.label, labelW, labelSized) + (wordBreaks ? 1 : 0);
       const labelH = labelLines * ((sub.size * labelScale * (sub.line ?? 1.4)) / 72) + 0.05;
       const subH = s.sub ? capH : 0;
       return { s, valueScale, labelScale, labelLines, labelH, height: valueH + 0.18 + labelH + (s.sub ? 0.08 + capH : 0) };
