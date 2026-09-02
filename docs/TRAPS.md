@@ -431,6 +431,22 @@ is why six of nine speaker notes on one deck shipped ending "…creates a 30",
 with "does not end on terminal punctuation", and fall back to the last complete
 sentence (`healCutField`).
 
+**A pass that only runs when a human presses a button will not run.**
+`generateFromPlan` and `resumeGeneration` both call `finalizeDeck` themselves,
+so "fully written but never finalised" is only ever reached by interruption — a
+closed tab, a dropped connection, a restarted server. It was offered as a
+banner with a button, which reads like a normal step in the flow rather than
+the accident it is, and the deck stays unusable until somebody notices. If the
+happy path already runs something automatically, the recovery path must too.
+
+**Wrapping a call in try/catch proves nothing about whether it could throw.**
+The two model passes inside finalize looked like the reason a deck could strand
+on a dead gateway. They are not: `fieldLengthPass` and `coherencePass` both
+catch per-slide and degrade, so the gateway was never the cause. Instrumenting
+the failure — a chat stub that counts calls and throws — showed three calls
+attempted, all thrown, and finalize completing anyway. Reach for the
+instrumented run before the fix.
+
 **A field the schema offers is a field the model will fill.** The report's
 table was offered on every section at full depth, so the writer put a five-row
 data table in the Abstract. The grammar is not a menu of what is *permitted*,

@@ -3633,6 +3633,20 @@ against the generated deck, not simulated:
   edit are still open: coherence is a model call per turn, which is a cost
   decision rather than an oversight.
 
+**Finalize was manual, and that was invisible.** The post-write pass —
+grounding, field-length rewrite, trim, coherence, then render — is the tail of
+generation and is called automatically by both `generateFromPlan` and
+`resumeGeneration`. Reaching "fully written but never finalised" therefore
+always means the run was interrupted. But recovery was a button in a banner, so
+a deck stayed unusable until a human noticed, and the state read as a normal
+step rather than as damage. It runs on arrival now.
+
+Which models it uses, since that was asked and was not written down anywhere:
+grounding and the trim are deterministic and use none; the field-length rewrite
+and the coherence review are both the **author** role; the optional vision
+critic is the **critic** role. So a finalize costs two author passes, or three
+with `--critic`.
+
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
 structure, placement, escaping, truncation — and is the product's behaviour
