@@ -24,6 +24,7 @@ import JSZip from "jszip";
 import Ajv from "ajv";
 import YAML from "yaml";
 import { ROOT, REFERENCE } from "./paths.js";
+import { userReferenceDir } from "./tenant.js";
 import { loadIdentity } from "./ai/identity.js";
 import { libreofficeToPdf } from "./preview.js";
 
@@ -44,12 +45,50 @@ export const REPORT_SECTIONS = [
 
 /* ------------------------------------------------------- donor discovery */
 
-function donorMissing() {
+function donorMissing(refDir = REFERENCE) {
   return new Error(
     "report donor .docx not found. Drop the institutional template .docx into " +
-    `${REFERENCE} (or pass --donor <path>) before rendering a report. On a hosted ` +
+    `${refDir} (or pass --donor <path>) before rendering a report. On a hosted ` +
     "deployment an admin can upload it under Settings, or set FORGE_REFERENCE_DIR.",
   );
+}
+
+/**
+ * Which reference directory a given account's report is drawn from.
+ *
+ * The donor supplies the headers, margins, watermark and footer a report is
+ * graded on, so it is institutional in the way identity and brand marks are —
+ * and it was the last of the three still install-wide. A box serving two
+ * colleges put one college's letterhead on the other's submission.
+ *
+ * An account is only moved off the operator's default by actually having a
+ * template of its own. Anything else — no directory, an empty one — falls
+ * through, so the single-institution install and the CLI are unchanged.
+ */
+export async function donorDirFor(owner) {
+  const dir = userReferenceDir(owner);
+  if (!dir) return REFERENCE;
+  try {
+    const files = (await readdir(dir)).filter((f) => f.toLowerCase().endsWith(".docx"));
+    if (files.length) return dir;
+  } catch { /* this account has uploaded none */ }
+  return REFERENCE;
+}
+
+/**
+ * The same answer for a deck folder, which records its own owner. This is the
+ * seam every render already passes through — `renderReport` takes a reportFile
+ * and nothing else — so no caller has to learn to thread a user, exactly as
+ * loadIdentity(deckDir) resolves the identity layer.
+ */
+export async function donorDirForDeck(deckDir) {
+  if (!deckDir) return REFERENCE;
+  try {
+    const meta = YAML.parse(await readFile(path.join(deckDir, "meta.yaml"), "utf8")) ?? {};
+    return await donorDirFor(meta.owner ?? null);
+  } catch {
+    return REFERENCE;                      // legacy folder, or a CLI run
+  }
 }
 
 /**
@@ -60,9 +99,10 @@ function donorMissing() {
  * product looks healthy. This is what the admin page and the boot log read, so
  * that failure is visible before a user finds it.
  *
- * `refDir` is a parameter rather than a constant because the donor is currently
- * install-wide and the roadmap has it becoming per-account, like identity and
- * brand. When that lands this answers per account without changing shape.
+ * `refDir` is a parameter because the donor is per account: pass
+ * `donorDirFor(owner)` or `donorDirForDeck(dir)` to ask about one user's
+ * template, and the bare call still answers for the operator's default — which
+ * is what the boot log and the admin panel want.
  */
 export async function donorStatus(refDir = REFERENCE) {
   let files = [];
@@ -93,9 +133,9 @@ export async function resolveDonor(explicit, refDir = REFERENCE) {
   try {
     files = (await readdir(refDir)).filter((f) => f.endsWith(".docx"));
   } catch {
-    throw donorMissing();
+    throw donorMissing(refDir);
   }
-  if (!files.length) throw donorMissing();
+  if (!files.length) throw donorMissing(refDir);
   if (files.length > 1) {
     throw new Error(
       `multiple donors in reference/ (${files.join(", ")}) — pass --donor <path> to choose`,
@@ -425,7 +465,7 @@ export async function renderReport({ reportFile, donor, out, toc = true, identit
   const report = await loadReport(reportFile);
   const deckDir = path.dirname(reportFile);
   const merged = identity ?? (await loadIdentity(deckDir));
-  const donorPath = await resolveDonor(donor);
+  const donorPath = await resolveDonor(donor, await donorDirForDeck(deckDir));
   const outFile = path.resolve(out ?? path.join(deckDir, "out", "report.docx"));
 
   const present = presentSections(report);

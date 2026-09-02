@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { CONFIG, BRAND } from "./paths.js";
+import { CONFIG, BRAND, REFERENCE } from "./paths.js";
 
 /**
  * Per-account storage for the things that used to be one global file.
@@ -49,6 +49,22 @@ export function userBrandDirs(email) {
       watermark: `brand/users/${id}/generated/watermark.png`,
     },
   };
+}
+
+/**
+ * Where one account's report template lives.
+ *
+ * The donor is the document a report is graded against — its headers, margins
+ * and watermark become the report's — so it is institutional in exactly the way
+ * identity and brand marks are. Install-wide, a box serving two colleges puts
+ * one college's letterhead on the other's submission.
+ *
+ * An account with nothing here falls through to the install-wide REFERENCE,
+ * which stays the operator's default and the only one the admin panel manages.
+ */
+export function userReferenceDir(email) {
+  const id = tenantId(email);
+  return id ? path.join(REFERENCE, "users", id) : null;
 }
 
 /**

@@ -21,7 +21,7 @@ import { researchProfile, researchExcerptCap } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
-import { renderReport, donorStatus, REPORT_SECTIONS } from "../report.js";
+import { renderReport, donorStatus, donorDirFor, REPORT_SECTIONS } from "../report.js";
 import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
 
@@ -336,7 +336,7 @@ export async function createReport({
   // discovering at the end that the box has no template spends every minute of
   // that plus the account's Auto budget to arrive at a failure that was knowable
   // before the first request went out.
-  const donor = await donorStatus();
+  const donor = await donorStatus(await donorDirFor(owner));
   if (!donor.ok) throw new Error(reportUnavailable(donor));
 
   const slug = await uniqueSlug(brief, owner);
