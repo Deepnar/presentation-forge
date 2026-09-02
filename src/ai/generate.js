@@ -65,7 +65,12 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
   type: "object",
   required: ["title", "sections", "slides"],
   properties: {
-    title: { type: "string", maxLength: 90 },
+    // 52, not 90: measured against every theme, a deck title fits the title
+    // slide's `display` role everywhere at 52 characters and fails on three
+    // themes by 56 — even an all-caps worst case. `trimDeckToFit` will not
+    // shorten a title (it is the deck's identity), so a cap the layouts cannot
+    // seat is a defect the pipeline has no later chance to fix.
+    title: { type: "string", maxLength: 52 },
     subtitle: { type: "string", maxLength: 140 },
     sections: {
       type: "array",
