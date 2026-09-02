@@ -223,7 +223,11 @@ export async function trimSlide(slide) {
  * fitter flags below its floor, and re-renders until the deck is clean or no
  * trim can help. Deterministic throughout — no model call.
  */
-export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal, everyTheme = true }) {
+export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal, everyTheme = true, onlySlides = null }) {
+  // A generation trims the whole deck it just wrote. An EDIT must not: trimming
+  // slides the user never touched is the same surprise as editing them, and a
+  // chat turn that shortened one slide was quietly cutting four.
+  const scope = Array.isArray(onlySlides) && onlySlides.length ? new Set(onlySlides) : null;
   let cur = structuredClone(deck);
   const trimmed = [];
   let audit = { problems: [] };
@@ -245,7 +249,8 @@ export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, 
     const sweepProblems = everyTheme
       ? (await themeMatrix({ deck: cur, deckDir })).runs.flatMap((r) => r.problems.map((p) => p.raw))
       : [];
-    const overfull = parseFloorProblems([...audit.problems, ...sweepProblems]);
+    let overfull = parseFloorProblems([...audit.problems, ...sweepProblems]);
+    if (scope) overfull = new Map([...overfull].filter(([idx]) => scope.has(idx)));
     if (!overfull.size) return { deck: cur, trimmed, converged: true, problems: audit.problems };
 
     let changed = false;

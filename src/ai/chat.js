@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { runTurn } from "./turn.js";
+import { trimDeckToFit } from "./trim.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
 import { loadTheme } from "../theme.js";
@@ -375,14 +376,38 @@ export async function runChatTurn({
     };
   }
 
+  // Generation runs grounding, a field-length pass, a trim and a coherence
+  // check after the writer. A chat edit ran NONE of them and went straight to
+  // the render — and editing is what a user does most once the deck exists, so
+  // the quality machinery guarded the path people use least. The trim is the
+  // one that is deterministic, needs no model call and cannot make the deck
+  // worse: it only shortens text the fitter says will not fit, and it fits
+  // every theme rather than only the current one. An edit that asks for "more
+  // detail" can push a body past the readable floor, and nothing shortened it.
+  let edited = turn.deck;
+  let trimmedSlides = [];
+  // Only the slides this turn actually changed. Trimming the rest would edit
+  // slides the user did not ask about, which is the very surprise the slide
+  // selection exists to prevent.
+  const touched = turn.deck.slides
+    .map((s, i) => (JSON.stringify(s) !== JSON.stringify(deck.slides?.[i]) ? i : -1))
+    .filter((i) => i >= 0);
+  try {
+    const tr = touched.length
+      ? await trimDeckToFit({ deck: edited, themeName: edited.theme, deckDir: dir, signal, onlySlides: touched })
+      : { deck: edited, trimmed: [] };
+    edited = tr.deck;
+    trimmedSlides = tr.trimmed ?? [];
+  } catch { /* a trim that cannot run must not lose the user's edit */ }
+
   // deck.yaml is memory — persist it before touching the thread.
-  await writeFile(deckFile, YAML.stringify(turn.deck), "utf8");
+  await writeFile(deckFile, YAML.stringify(edited), "utf8");
   const threadUpdate = await updateThread(dir, { instruction, turn, model, signal });
 
   let previewOut = {};
   if (doRender) {
     onProgress?.({ status: "rendering" });
-    const r = await render({ deckFile, themeName: turn.deck.theme });
+    const r = await render({ deckFile, themeName: edited.theme });
     const p = await preview(r.outFile, { dpi: 110 });
     previewOut = {
       slides: p.pages.map((f) => path.basename(f)),
@@ -393,8 +418,13 @@ export async function runChatTurn({
 
   return {
     ok: true,
-    deck: turn.deck,
-    changes: turn.changes,
+    deck: edited,
+    changes: [
+      ...turn.changes,
+      ...(trimmedSlides.length
+        ? [`trimmed ${trimmedSlides.length} slide(s) to fit — the edit ran past what the layout holds`]
+        : []),
+    ],
     diff: turn.diff,
     reasoning: turn.reasoning ?? "",
     stats: turn.stats,
