@@ -248,6 +248,51 @@ export async function resolveRole(role) {
 }
 
 /**
+ * Whether the model a role will actually run on can read images.
+ *
+ * `config/models.yaml` declares `vision: true` on the critic role and NOTHING
+ * read it — the same shape as `fellBack`, a field that looked like a constraint
+ * and was a comment. It matters most exactly where it was least true: in hosted
+ * mode `resolveRole` sends every non-author role to the gateway, so `--critic`
+ * would post base64 slide PNGs to a text model and then edit the deck from
+ * whatever came back. Findings invented from an image the model never saw are
+ * worse than no critic at all.
+ *
+ * A provider may declare which of its models can see, via `vision_models`.
+ * Absent that, a role that has been routed away from its configured local
+ * vision model is assumed unable to see — the safe direction, since the cost of
+ * a false negative is a skipped pass and the cost of a false positive is a deck
+ * edited against hallucinated defects.
+ */
+export async function roleCanSeeImages(role) {
+  const cfg = await config();
+  const spec = cfg.roles?.[role];
+  if (!spec?.vision) return { ok: false, reason: `role "${role}" is not declared as a vision role` };
+
+  const resolved = await resolveRole(role);
+  if (resolved.backend.type === "ollama") {
+    // Local: it is running the model the config named as the vision one.
+    if (resolved.model === spec.model) return { ok: true, model: resolved.model };
+    return {
+      ok: false,
+      model: resolved.model,
+      reason: `"${role}" fell back to ${resolved.model}, which is not the configured vision model (${spec.model})`,
+    };
+  }
+
+  const providerId = spec.provider ?? (isHosted() ? "tcet-auto" : null);
+  const declared = cfg.providers?.[providerId]?.vision_models;
+  if (Array.isArray(declared) && declared.includes(resolved.model)) {
+    return { ok: true, model: resolved.model };
+  }
+  return {
+    ok: false,
+    model: resolved.model,
+    reason: `"${role}" resolves to ${resolved.model} on ${providerId ?? "a remote provider"}, which does not declare it as a vision model`,
+  };
+}
+
+/**
  * Which roles are running what they were configured to run.
  *
  * `resolveRole` has always recorded a substitution on `fellBack`, and that flag

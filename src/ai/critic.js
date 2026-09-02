@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { chatJSON } from "./ollama.js";
 import { runTurn } from "./turn.js";
+import { roleCanSeeImages } from "./ollama.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
 import { loadTheme } from "../theme.js";
@@ -85,6 +86,19 @@ function buildInstruction(findings) {
 export async function critiqueDeck({ slug, deck, model, onProgress, signal }) {
   let current = deck;
   const report = { slug, rounds: [] };
+
+  // The critic READS IMAGES. `config/models.yaml` declared `vision: true` on
+  // the role and nothing enforced it, so in hosted mode — where resolveRole
+  // sends every non-author role to the gateway — this loop would post base64
+  // slide PNGs to a text model and then edit the deck from whatever came back.
+  // Findings invented about an image the model never saw are worse than no
+  // critic: the fix turn acts on them. Refuse instead, and say why.
+  const sight = await roleCanSeeImages("critic");
+  if (!sight.ok) {
+    report.skipped = sight.reason;
+    report.rounds.push({ round: 0, findings: [], skipped: sight.reason });
+    return report;
+  }
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
   const themeObj = current.theme ? await loadTheme(current.theme) : undefined;
