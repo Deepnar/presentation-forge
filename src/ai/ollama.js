@@ -347,11 +347,16 @@ export async function modelChoices() {
     // Hosted has no local Ollama
     models = [];
   }
-  // auto (tcet) status
+  // auto (tcet) status. `keySet` and `kind` are carried rather than implied by
+  // this object existing: the UI reads both off `auto` whichever endpoint it
+  // came from, and /api/auto/status sends them. A projection that dropped them
+  // made `!auto.keySet` true on a box with a working key — a permanent "no key
+  // on this install" banner on the empty chat screen — and left the composer
+  // chip reading "Auto" where a local Ollama should say "Local · Ollama".
   let auto = null;
   const ap = await autoProvider();
   if (ap?.keySet) {
-    auto = { provider: ap.id, label: ap.label, models: ap.models };
+    auto = { provider: ap.id, label: ap.label, models: ap.models, keySet: true, kind: ap.kind };
   }
   // cloud (BYOK) provider
   let cloud = null;
