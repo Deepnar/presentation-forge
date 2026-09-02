@@ -319,13 +319,47 @@ function proseWithin(node) {
   return null;
 }
 
+/**
+ * The link labels a scraped bibliography carries, and a citation never should.
+ *
+ * PubMed and PMC render every reference with "[DOI] [PubMed] [Google Scholar]"
+ * beside it. That text lands in the research notes as part of the citation, and
+ * the writer copies it into the reference list — where it is not part of the
+ * work being cited. Worse, a run of identical bracketed tokens is exactly the
+ * shape constrained decoding loops on: one generated reference ran to 600
+ * characters, the real citation followed by "[Google Scholar] [PubMed]" twenty
+ * times and a dangling bracket. Stripping the labels removes the artefact and
+ * the loop together, because the loop is built out of them.
+ */
+const LINK_LABELS =
+  /\s*\[(?:DOI|PubMed(?:\s+Central)?|PMC(?:\s+free\s+article)?|Google\s+Scholar|CrossRef|Free\s+full\s+text|Abstract|Article)\]/gi;
+
+export function cleanReference(raw) {
+  const text = String(raw ?? "")
+    .replace(LINK_LABELS, "")
+    // A trailing open bracket is where the grammar cut the next label.
+    .replace(/\s*\[[^\]]*$/, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return text || null;
+}
+
 /** Drop the non-prose paragraphs from one section, keeping its other fields. */
 function cleanSection(section) {
   if (!section || typeof section !== "object") return null;
-  if (!Array.isArray(section.paragraphs)) return section;
-  const paragraphs = section.paragraphs.map(salvageParagraph).filter(Boolean);
-  if (!paragraphs.length) return null;
-  return { ...section, paragraphs };
+  const out = { ...section };
+  if (Array.isArray(out.entries)) {
+    const entries = out.entries.map(cleanReference).filter(Boolean);
+    if (!entries.length) return null;
+    out.entries = entries;
+  }
+  if (Array.isArray(out.paragraphs)) {
+    const paragraphs = out.paragraphs.map(salvageParagraph).filter(Boolean);
+    if (!paragraphs.length && !out.entries?.length) return null;
+    if (paragraphs.length) out.paragraphs = paragraphs;
+    else delete out.paragraphs;
+  }
+  return out;
 }
 
 /** Assemble the schema-validated report object from the plan and the written

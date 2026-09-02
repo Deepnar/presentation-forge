@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { salvageParagraph, assembleReport } from "../src/ai/report.js";
+import { salvageParagraph, assembleReport, cleanReference } from "../src/ai/report.js";
 
 /**
  * Paragraphs the writer emitted as data rather than as prose.
@@ -66,4 +66,47 @@ test("assembleReport keeps a section's other fields while cleaning its prose", (
   });
   assert.deepEqual(report.content.Mixed.paragraphs, ["Real prose here."]);
   assert.deepEqual(report.content.Mixed.table, table);
+});
+
+/**
+ * Reference entries scraped from PubMed/PMC.
+ *
+ * Those pages render "[DOI] [PubMed] [Google Scholar]" beside every citation.
+ * The text lands in the research notes as part of the reference and the writer
+ * copies it through — and a run of identical bracketed tokens is exactly what
+ * constrained decoding loops on. One generated reference ran 600 characters:
+ * the real citation, then "[Google Scholar] [PubMed]" twenty times, then a
+ * dangling bracket where the grammar cut the next one.
+ */
+
+test("scraped database link labels are stripped from a citation", () => {
+  const raw =
+    "Bass K. K. Influence of moisture on organohalide perovskites. " +
+    "Chem. Commun. 2014;50:15819-15822. doi: 10.1039/c4cc05231e. [DOI] [PubMed] [Google Scholar]";
+  const out = cleanReference(raw);
+  assert.ok(out.endsWith("doi: 10.1039/c4cc05231e."), out);
+  for (const label of ["[DOI]", "[PubMed]", "[Google Scholar]"]) {
+    assert.ok(!out.includes(label), `${label} must not survive`);
+  }
+});
+
+test("a repetition loop collapses to the citation it started from", () => {
+  const real = "He S. How far are we from a 10-year lifetime? Mater. Sci. Eng., R. 2020;140:100545.";
+  const looped = real + " [Google Scholar] [PubMed]".repeat(20) + " [";
+  const out = cleanReference(looped);
+  assert.equal(out, real);
+  assert.ok(out.length < 200, `600 characters of loop must not survive: ${out.length}`);
+});
+
+test("a clean citation is returned unchanged", () => {
+  const clean = "Bryant D. Light and oxygen induced degradation. Energy Environ. Sci. 2016;9:1655-1660.";
+  assert.equal(cleanReference(clean), clean);
+});
+
+test("assembleReport cleans a References section's entries", () => {
+  const plan = { title: "T", sections: [{ name: "References" }] };
+  const report = assembleReport(plan, {
+    References: { entries: ["Smith J. A paper. Journal 2020;1:1. [DOI] [PubMed]", "   ", "[Google Scholar]"] },
+  });
+  assert.deepEqual(report.content.References.entries, ["Smith J. A paper. Journal 2020;1:1."]);
 });
