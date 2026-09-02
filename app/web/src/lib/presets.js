@@ -7,12 +7,19 @@ import { api } from "../api.js";
  * same pattern as modelMode — Settings writes through it, ChatView subscribes.
  */
 let cache = [];
+let loaded = false;
 const listeners = new Set();
 
 export const presetsStore = {
   get: () => cache,
+  /** Whether the server's list has actually been seen. An empty `cache` alone
+   *  cannot say: "still loading" and "this account has none" look identical,
+   *  and the briefing needs to tell them apart before it decides to skip the
+   *  "use a saved format?" question. */
+  isLoaded: () => loaded,
   set: (list) => {
     cache = Array.isArray(list) ? list : [];
+    loaded = true;
     listeners.forEach((fn) => fn(cache));
   },
   subscribe: (fn) => {

@@ -115,6 +115,21 @@ export function effectiveBriefStep(briefing, step, questions = BRIEFING_QUESTION
   return i;
 }
 
+/**
+ * The step to store once the question on screen has been answered.
+ *
+ * It has to advance from the question the user actually saw — the EFFECTIVE
+ * step — not from the stored one. A preset skips fixed questions, so the two
+ * drift apart, and incrementing the stored step re-resolved to a question that
+ * had just been answered: with a preset chosen the walk asked "who is your
+ * guide?" twice and the research question six times. The pure skip function was
+ * correct throughout; only its caller was wrong, which is why it lives here now
+ * rather than inline in the view.
+ */
+export function nextBriefStep(briefing, step, questions = BRIEFING_QUESTIONS) {
+  return Math.min(effectiveBriefStep(briefing, step, questions) + 1, questions.length);
+}
+
 /** The briefing fields a "save as preset" captures. */
 export function presetPayload(briefing) {
   const b = briefing ?? {};

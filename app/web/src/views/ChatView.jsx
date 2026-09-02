@@ -7,7 +7,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import { ChevronDown, DocIcon, LayersIcon, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
-import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
+import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, nextBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
 import { presetsStore } from "../lib/presets.js";
@@ -243,6 +243,19 @@ export default function ChatView({
     onChatChanged(updated);
   }
 
+  /**
+   * Where the briefing starts. "Use a saved format, or start fresh?" has
+   * exactly one answer until the account has saved one, so on a new account
+   * the first thing the product ever asks is a question that cannot be
+   * answered two ways. Skip it — but only once the list has actually been
+   * fetched, since an empty cache is also what "still loading" looks like,
+   * and hiding a real choice is the worse of the two mistakes.
+   */
+  function firstBriefStep() {
+    const skip = questions[0]?.key === "preset" && presetsStore.isLoaded() && presets.length === 0;
+    return skip ? 1 : chat.briefStep;
+  }
+
   /** Topic sent → the briefing begins. Title is pre-suggested, editable. */
   function sendTopic(text) {
     const title = suggestTitle(text);
@@ -252,6 +265,7 @@ export default function ChatView({
       topic: text,
       title: chatName(title, text),
       briefing: { ...briefing, title },
+      briefStep: firstBriefStep(),
       updatedAt: new Date().toISOString(),
     });
   }
@@ -264,7 +278,7 @@ export default function ChatView({
       ...chat,
       title: named,
       briefing,
-      briefStep: Math.min(chat.briefStep + 1, questions.length),
+      briefStep: nextBriefStep(briefing, chat.briefStep, questions),
       updatedAt: new Date().toISOString(),
     });
   }
@@ -464,6 +478,7 @@ export default function ChatView({
       topic: text,
       title: chatName(title, text),
       briefing: { ...briefing, title },
+      briefStep: firstBriefStep(),
       updatedAt: new Date().toISOString(),
     });
   }
