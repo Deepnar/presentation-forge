@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
+import { singleFlight } from "../lib/singleflight.js";
 import { Button, Spinner, inputCls } from "./ui.jsx";
 
 /**
@@ -162,6 +163,16 @@ function ResetPanel({ token, onSignIn }) {
   );
 }
 
+/**
+ * The confirmation token is spent on first use and this effect can run more
+ * than once — StrictMode mounts it, cleans it up and mounts it again. Sending
+ * it twice spent the token on the first call and reported the second call's
+ * "already used" to someone whose address had just been confirmed, offering
+ * "ask for a new one", which issues a fresh token and repeats the whole thing.
+ * Keyed by the token, so a genuinely different link is still exchanged.
+ */
+const verifyOnce = singleFlight((token) => api.verifyEmail(token));
+
 function VerifyPanel({ token, onDone, onSignIn }) {
   // idle → working → good | bad. The exchange starts on mount: the person
   // already clicked something, and asking them to click again to confirm the
@@ -172,7 +183,7 @@ function VerifyPanel({ token, onDone, onSignIn }) {
   useEffect(() => {
     if (!token) return;
     let live = true;
-    api.verifyEmail(token)
+    verifyOnce(token)
       .then(() => { if (!live) return; clearHash(); setState("good"); onDone?.(); })
       .catch((err) => { if (!live) return; clearHash(); setError(err.message); setState("bad"); });
     return () => { live = false; };
