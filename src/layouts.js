@@ -1351,38 +1351,62 @@ export const layouts = {
       const titleScale = fitScaleAll(data.steps.map((s) => s.title), colW - 0.3, titleZone, theme.type.subhead, { min: 0.72 });
       const bodyScale = fitScaleAll(data.steps.map((s) => s.body).filter(Boolean), colW - 0.3, bodyH, theme.type.body, { min: 0.72 });
 
+      // Both zones are budgeted for the LONGEST step in the deck, so a rail of
+      // short labels and one-line bodies left a band of air above the titles
+      // and a quarter of the slide below the bodies. Measure what the rows
+      // really occupy and slide the rail until the two gaps match — the rail
+      // keeps its shape and stops sitting high in an empty box.
+      const usedTitle = Math.max(1, ...data.steps.map((s) => lineCount(s.title, colW - 0.3, theme.type.subhead)))
+        * ((theme.type.subhead.size * titleScale * (theme.type.subhead.line ?? 1.3)) / 72);
+      const bodies = data.steps.map((s) => s.body).filter(Boolean);
+      const usedBody = bodies.length
+        ? Math.max(1, ...bodies.map((b) => lineCount(b, colW - 0.3, theme.type.body)))
+          * ((theme.type.body.size * bodyScale * (theme.type.body.line ?? 1.35)) / 72)
+        : 0;
+      const slack = (bodyH - usedBody) - (titleZone - usedTitle);
+      const railShift = Math.max(0, Math.min(slack / 2, bodyH - usedBody));
+      const railYS = railY + railShift;
+      const titleZoneS = titleZone + railShift;
+      const bodyTopS = bodyTop + railShift;
+      const bodyHS = bodyH - railShift;
+
       // The baseline the chips ride on.
       slide.addShape("rect", {
-        x: box.x, y: railY - 0.015, w: box.w, h: 0.03,
+        x: box.x, y: railYS - 0.015, w: box.w, h: 0.03,
         fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
       });
 
       data.steps.forEach((s, i) => {
         const cx = box.x + colW * i + colW / 2;
         slide.addShape("ellipse", {
-          x: cx - 0.24, y: railY - 0.24, w: 0.48, h: 0.48,
+          x: cx - 0.24, y: railYS - 0.24, w: 0.48, h: 0.48,
           fill: { color: hex(theme.palette.accent) }, line: { type: "none" },
         });
         slide.addText(String(i + 1), {
-          x: cx - 0.24, y: railY - 0.24, w: 0.48, h: 0.48,
+          x: cx - 0.24, y: railYS - 0.24, w: 0.48, h: 0.48,
           ...textStyle(theme, "eyebrow", { color: theme.palette.on_accent }),
           align: "center", valign: "middle",
         });
         // A small chevron on the rail to the next chip.
         if (i < n - 1) {
           slide.addShape("triangle", {
-            x: cx + 0.34, y: railY - 0.1, w: 0.2, h: 0.2,
+            x: cx + 0.34, y: railYS - 0.1, w: 0.2, h: 0.2,
             fill: { color: hex(theme.palette.accent) }, line: { type: "none" }, rotate: 90,
           });
         }
         slide.addText(s.title, {
-          x: cx - colW / 2 + 0.15, y, w: colW - 0.3, h: titleZone,
+          x: cx - colW / 2 + 0.15, y, w: colW - 0.3, h: titleZoneS,
           ...textStyle(theme, "subhead", { bold: true, scale: titleScale }),
-          align: "center", valign: "top",
+          // Sits ON the rail, not at the top of the zone above it. The zone is
+          // tall enough for the longest title in the deck, so a two-word label
+          // top-aligned floated an inch and a half clear of the chip it names
+          // and read as unrelated to it. Growing downward from the heading is
+          // the wrong direction: these are labels for the nodes below them.
+          align: "center", valign: "bottom",
         });
         if (s.body) {
           slide.addText(s.body, {
-            x: cx - colW / 2 + 0.15, y: bodyTop, w: colW - 0.3, h: bodyH,
+            x: cx - colW / 2 + 0.15, y: bodyTopS, w: colW - 0.3, h: bodyHS,
             ...textStyle(theme, "body", { color: theme.palette.ink_muted, scale: bodyScale }),
             align: "center", valign: "top",
           });
