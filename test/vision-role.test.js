@@ -29,6 +29,19 @@ async function fakeOllama(names) {
       res.end(JSON.stringify({ models: names.map((name) => ({ name })) }));
       return;
     }
+    if (req.url === "/api/show") {
+      // Ollama reports capabilities; a name containing "vision" stands in for
+      // a model that can see, which is what the real /api/show would say.
+      let body = "";
+      req.on("data", (c) => { body += c; });
+      req.on("end", () => {
+        const model = (() => { try { return JSON.parse(body).model ?? ""; } catch { return ""; } })();
+        const caps = ["completion", "tools", ...(/vision/.test(model) ? ["vision"] : [])];
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ capabilities: caps }));
+      });
+      return;
+    }
     res.writeHead(404).end();
   });
   const port = await new Promise((r) => server.listen(0, "127.0.0.1", () => r(server.address().port)));
@@ -94,7 +107,7 @@ test("a fallback off the vision model is not a vision model", async () => {
       { hosted: false },
     );
     assert.equal(r.ok, false);
-    assert.match(r.reason, /not the configured vision model/);
+    assert.match(r.reason, /cannot read images/);
   } finally {
     await new Promise((r) => server.close(r));
   }

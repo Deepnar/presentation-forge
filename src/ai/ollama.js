@@ -248,6 +248,34 @@ export async function resolveRole(role) {
 }
 
 /**
+ * What a local model can actually do, from Ollama rather than from its name.
+ *
+ * `/api/show` reports capabilities — "vision" among them — so a role that fell
+ * back onto a text model is caught by what the model IS. Comparing the resolved
+ * id against the configured one only catches the substitution, not the case
+ * where somebody points the role at a model that cannot see in the first place.
+ * Returns null when Ollama cannot be asked, which the caller treats as "do not
+ * send images", because guessing in the permissive direction costs a deck.
+ */
+const _caps = new Map();
+async function modelCapabilities(host, model) {
+  const key = `${host}::${model}`;
+  if (_caps.has(key)) return _caps.get(key);
+  let out = null;
+  try {
+    const res = await fetch(`${host}/api/show`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.ok) out = new Set((await res.json()).capabilities ?? []);
+  } catch { /* unreachable — the caller refuses rather than assumes */ }
+  _caps.set(key, out);
+  return out;
+}
+
+/**
  * Whether the model a role will actually run on can read images.
  *
  * `config/models.yaml` declares `vision: true` on the critic role and NOTHING
@@ -271,18 +299,29 @@ export async function roleCanSeeImages(role) {
 
   const resolved = await resolveRole(role);
   if (resolved.backend.type === "ollama") {
-    // Local: it is running the model the config named as the vision one.
-    if (resolved.model === spec.model) return { ok: true, model: resolved.model };
+    // Ask Ollama what the model can actually do rather than trusting the name.
+    // /api/show reports capabilities, so a fallback onto a text model is caught
+    // by what it IS, not by whether it matches the configured id.
+    const caps = await modelCapabilities(resolved.backend.baseURL, resolved.model);
+    if (caps === null) {
+      return { ok: false, model: resolved.model, reason: `could not ask Ollama what ${resolved.model} can do` };
+    }
+    if (caps.has("vision")) return { ok: true, model: resolved.model };
     return {
       ok: false,
       model: resolved.model,
-      reason: `"${role}" fell back to ${resolved.model}, which is not the configured vision model (${spec.model})`,
+      reason: `"${role}" is running ${resolved.model}, which Ollama reports cannot read images`,
     };
   }
 
-  const providerId = spec.provider ?? (isHosted() ? "tcet-auto" : null);
-  const declared = cfg.providers?.[providerId]?.vision_models;
-  if (Array.isArray(declared) && declared.includes(resolved.model)) {
+  // Find the provider that actually serves this model rather than assuming the
+  // role's own: a hosted role falls through to whichever provider holds a key,
+  // so the declaration to check is the one belonging to where it really landed.
+  const entries = Object.entries(cfg.providers ?? {});
+  const owner = entries.find(([id, p]) =>
+    id === spec.provider || (Array.isArray(p?.models) && p.models.includes(resolved.model)));
+  const [providerId, provider] = owner ?? [null, null];
+  if (Array.isArray(provider?.vision_models) && provider.vision_models.includes(resolved.model)) {
     return { ok: true, model: resolved.model };
   }
   return {

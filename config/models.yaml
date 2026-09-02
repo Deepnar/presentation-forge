@@ -35,6 +35,19 @@ providers:
     label: TCET CoE Gateway
     models:
       - qwen3.6
+    # Which of this provider's models can READ IMAGES. A remote model cannot be
+    # asked what it supports the way Ollama can (/api/show), so it has to be
+    # declared — and the vision critic refuses to send slide PNGs to anything
+    # not listed here rather than posting them blind and editing the deck from
+    # whatever comes back.
+    #
+    # UNVERIFIED: the gateway has been down for completions all session, so
+    # qwen3.6 is listed on the operator's report that it is multimodal and has
+    # not been confirmed by a real image request. Confirm before trusting a
+    # hosted --critic run; if it turns out to be text-only, remove it here and
+    # the critic will correctly skip instead of hallucinating findings.
+    vision_models:
+      - qwen3.6
   openai:
     type: openai-compatible
     baseURL: https://api.openai.com/v1
@@ -53,6 +66,10 @@ providers:
       - deepseek-v4-flash
       - qwen3.8-max
       - mimo-v2.5
+    # BYOK has to be explicit too: none of these is declared vision-capable, so
+    # the critic skips on a Cloud route rather than guessing. Add a model here
+    # when you know it reads images.
+    vision_models: []
   # openrouter:
   #   type: openai-compatible
   #   baseURL: https://openrouter.ai/api/v1
