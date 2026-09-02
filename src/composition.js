@@ -371,7 +371,11 @@ export function drawHeading(slide, ctx) {
     y += hgt + 0.08;
   }
 
-  if (h.rule === "under") {
+  // The rule underlines the heading, so with no heading there is nothing to
+  // underline: a headline-less slide drew a full-width hairline across an empty
+  // band and read as a broken slide. `headline` is optional on several types
+  // and a model omits it freely, so this is a real payload, not a stress case.
+  if (h.rule === "under" && data.headline) {
     slide.addShape("rect", {
       x: head.x, y: y - 0.02, w: head.wide, h: 0.015,
       fill: { color: hex(theme.palette.rule ?? theme.palette.ink_muted) },
