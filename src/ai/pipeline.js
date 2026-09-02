@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile, readdir, access, copyFile, cp, rm } from "node:fs/promises";
 import path from "node:path";
+import { randomInt } from "node:crypto";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
@@ -49,7 +50,40 @@ export function slugify(text, max = 44) {
   return slug || "deck";
 }
 
-export async function uniqueSlug(base) {
+// Lowercase alphanumerics only: the slug is a directory name, a URL segment
+// and something a person retypes from a terminal, and SLUG_RE in the server
+// accepts exactly this set.
+const TOKEN_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+/** randomInt rather than randomBytes % 36 — unbiased, and the same length. */
+function slugToken(length) {
+  let out = "";
+  for (let i = 0; i < length; i++) out += TOKEN_ALPHABET[randomInt(TOKEN_ALPHABET.length)];
+  return out;
+}
+
+/**
+ * A deck's directory name.
+ *
+ * `decks/` is one flat global namespace but the accounts on a hosted box are
+ * not, and the counter minted `-2`, `-4` against every folder on disk. That
+ * answers a question the caller was not entitled to ask: creating "Exploring
+ * First Impressions" and being handed `...-19` reports how many OTHER accounts
+ * already hold that title. The suffixes on this box really do run to -19.
+ *
+ * An owned deck therefore gets an opaque token, and gets one whether or not
+ * anything collided — a suffix that appears only on a collision still answers
+ * the question, just one bit at a time. Every hosted slug carrying one means
+ * its presence says nothing.
+ *
+ * Ownerless decks keep the readable counter. The CLI, the tests and a
+ * single-operator install have no second account to leak to, and
+ * `decks/<topic>` is the name every sweep, `--deck` flag and doc refers to;
+ * `npm run deckscore perovskite-solar-cells-stability-challenges-2` should not
+ * become a random string. The token is not a secret and does not gate
+ * anything — assertDeckAccess is what guards a deck.
+ */
+export async function uniqueSlug(base, owner = null) {
   const slug = slugify(base);
   const exists = new Set();
   try {
@@ -57,10 +91,23 @@ export async function uniqueSlug(base) {
       if (e.isDirectory()) exists.add(e.name);
     }
   } catch { /* no decks yet */ }
-  if (!exists.has(slug)) return slug;
-  let i = 2;
-  while (exists.has(`${slug}-${i}`)) i++;
-  return `${slug}-${i}`;
+
+  if (!owner) {
+    if (!exists.has(slug)) return slug;
+    let i = 2;
+    while (exists.has(`${slug}-${i}`)) i++;
+    return `${slug}-${i}`;
+  }
+
+  // Four characters is 1.7M and the check below is exact, so this is a
+  // formality — but a fixed width that silently gave up would reintroduce the
+  // counter by another route, so it widens instead of failing.
+  for (let width = 4; ; width++) {
+    for (let attempt = 0; attempt < 24; attempt++) {
+      const candidate = `${slug}-${slugToken(width)}`;
+      if (!exists.has(candidate)) return candidate;
+    }
+  }
 }
 
 /**
@@ -183,7 +230,7 @@ export async function createDeck({
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
-  const slug = await uniqueSlug(brief);
+  const slug = await uniqueSlug(brief, owner);
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
 
@@ -292,7 +339,7 @@ export async function createReport({
   const donor = await donorStatus();
   if (!donor.ok) throw new Error(reportUnavailable(donor));
 
-  const slug = await uniqueSlug(brief);
+  const slug = await uniqueSlug(brief, owner);
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
 
@@ -1031,7 +1078,15 @@ export async function convertSlideType({
  */
 export async function cloneDeck({ slug }) {
   const src = path.join(DECKS, slug);
-  const dest = await uniqueSlug(`${slug}-copy`);
+  // The clone inherits the source's owner with the rest of its meta, so its
+  // slug has to be minted in the same namespace. Cloning an owned deck through
+  // the ownerless counter would put the leak back on the one path that starts
+  // from a deck the caller already holds.
+  let source = {};
+  try {
+    source = YAML.parse(await readFile(path.join(src, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* folder predates meta */ }
+  const dest = await uniqueSlug(`${slug}-copy`, source.owner ?? null);
   const ddir = path.join(DECKS, dest);
   await mkdir(ddir, { recursive: true });
   for (const f of ["deck.yaml", "plan.yaml", "meta.yaml", "report.yaml"]) {
