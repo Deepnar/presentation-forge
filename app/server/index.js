@@ -2551,6 +2551,30 @@ app.get("/api/docs", wrap(async (_req, res) => {
 app.get("/api/health", (_req, res) => ok(res, {}));
 
 /**
+ * What this install actually does with a user's work.
+ *
+ * Reported rather than written into the page, because the privacy page said
+ * decks are swept after 90 days while the scheduler deletes at 30, and it
+ * described the sweep as unconditional when it only runs where FORGE_SWEEP_DAYS
+ * is set at all. A retention notice is only worth showing if it reads the same
+ * value the scheduler reads. Unauthenticated: it is a policy statement, and it
+ * carries no paths, keys or counts.
+ */
+app.get("/api/policy", (_req, res) => {
+  const days = Number(process.env.FORGE_SWEEP_DAYS || NaN);
+  const on = Number.isFinite(days) && days > 0;
+  ok(res, {
+    retention: {
+      sweeps: on,
+      days: on ? days : null,
+      // The sweep measures INACTIVITY, not age, and skips a deck marked keep.
+      basis: "inactivity",
+      keepable: true,
+    },
+  });
+});
+
+/**
  * Seed the operator's account on boot.
  *
  * This runs whether or not registration is open, and it is now the ONLY way an

@@ -316,6 +316,24 @@ export default function Sidebar({
                 onOpenSettings={onOpenProfile ?? onOpenSettings}
               />
             </div>
+            {/* Privacy, terms and the issue tracker existed only in the landing
+                page's footer, which never renders once you are signed in — so a
+                user working in the app had no route to the policy describing
+                what happens to their decks, nor anywhere to report a fault. */}
+            <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 px-1.5 text-[10.5px] text-fg-faint">
+              <a href="#/privacy" className="transition hover:text-fg">Privacy</a>
+              <span aria-hidden="true">·</span>
+              <a href="#/terms" className="transition hover:text-fg">Terms</a>
+              <span aria-hidden="true">·</span>
+              <a
+                href="https://github.com/Deepnar/presentation-forge/issues/new"
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-fg"
+              >
+                Report an issue
+              </a>
+            </div>
           </div>
         </>
       ) : (

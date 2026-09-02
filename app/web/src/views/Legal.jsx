@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { marked } from "marked";
 import { api } from "../api.js";
+import RetentionNotice from "../components/RetentionNotice.jsx";
 import Footer from "../components/Footer.jsx";
 
 function FullShell({ eyebrow, title, subtitle, children, aside }) {
@@ -75,7 +76,8 @@ export function Privacy() {
         </section>
         <section>
           <h2 className="text-[18px] font-semibold tracking-tight text-fg">Retention & deletion</h2>
-          <p className="mt-3">Delete any deck from the deck row menu — it removes the folder and its previews. Monthly sweep deletes decks older than <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">FORGE_SWEEP_DAYS</code> (default 90) unless <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">meta.keep:true</code>. You can clear your key in Profile → Keys and log out to drop the session.</p>
+          <p className="mt-3">Delete any deck from the deck row menu — it removes the folder and its previews. You can clear your key in Profile → Keys and log out to drop the session.</p>
+          <RetentionNotice className="mt-3" />
         </section>
         <div className="rounded-xl border border-accent/20 bg-accent-tint p-5">
           <div className="text-[13px] font-semibold text-accent">Questions?</div>

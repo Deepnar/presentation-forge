@@ -167,6 +167,9 @@ export const api = {
   chatDeck: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/chat`, payload, handlers),
   // README, served as plain text so the docs modal needs no markdown dependency.
+  // What this install does with a user's decks — read from the server so the
+  // retention notice cannot drift from the scheduler that enforces it.
+  policy: () => call("/api/policy"),
   docs: () =>
     fetch("/api/docs").then((r) =>
       r.ok ? r.text() : Promise.reject(new Error("docs unavailable"))),
