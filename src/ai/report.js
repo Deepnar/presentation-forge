@@ -266,13 +266,76 @@ export async function resolveReportInputs(dir, { requirePlan = true, model } = {
   return { meta, plan, research, identity };
 }
 
+/**
+ * A paragraph the writer emitted as DATA rather than as prose.
+ *
+ * The section schema asks for an array of strings and the model can satisfy it
+ * with strings that are themselves JSON — the grammar only constrains the type
+ * and the length, never whether the characters read as English. One generated
+ * report's Theoretical Background reached the .docx as three paragraphs:
+ * a serialised `{"text": ..., "source": ...}` object, the bare schema key
+ * `paragraph_number_indexed_text`, and `]}`. Every one is a valid string of
+ * legal length, so nothing upstream could reject them, and they were typeset
+ * into a document meant for submission.
+ *
+ * Salvage the prose where there is any — the object above carried a real
+ * sentence under `text` — and drop what is only syntax.
+ */
+export function salvageParagraph(raw) {
+  const text = String(raw ?? "").trim();
+  if (!text) return null;
+
+  if (/^[[{]/.test(text)) {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      // Truncated JSON: the grammar cut it, and half an object is not prose.
+      return null;
+    }
+    const prose = proseWithin(parsed);
+    return prose && prose.trim() ? prose.trim() : null;
+  }
+  // A loose fragment of JSON syntax: "]}", "},", "]".
+  if (/^[\][{}(),;:"'\s]+$/.test(text)) return null;
+  // A leaked schema key: one snake_case token, no sentence anywhere in it.
+  if (!/\s/.test(text) && /_/.test(text)) return null;
+  return text;
+}
+
+/** The human sentence inside a decoded object, if it carries one. */
+function proseWithin(node) {
+  if (typeof node === "string") return node;
+  if (Array.isArray(node)) {
+    const parts = node.map(proseWithin).filter(Boolean);
+    return parts.length ? parts.join(" ") : null;
+  }
+  if (node && typeof node === "object") {
+    // `text` is the key the writer keeps inventing when it wraps a paragraph.
+    for (const key of ["text", "paragraph", "content", "body"]) {
+      if (typeof node[key] === "string" && node[key].trim()) return node[key];
+    }
+  }
+  return null;
+}
+
+/** Drop the non-prose paragraphs from one section, keeping its other fields. */
+function cleanSection(section) {
+  if (!section || typeof section !== "object") return null;
+  if (!Array.isArray(section.paragraphs)) return section;
+  const paragraphs = section.paragraphs.map(salvageParagraph).filter(Boolean);
+  if (!paragraphs.length) return null;
+  return { ...section, paragraphs };
+}
+
 /** Assemble the schema-validated report object from the plan and the written
  *  sections. Sections that produced no valid content are simply absent — the
  *  renderer skips them gracefully, never a bare heading. */
 export function assembleReport(plan, sectionsData) {
   const content = {};
   for (const spec of plan.sections) {
-    if (sectionsData[spec.name]) content[spec.name] = sectionsData[spec.name];
+    const cleaned = cleanSection(sectionsData[spec.name]);
+    if (cleaned) content[spec.name] = cleaned;
   }
   return {
     title: plan.title,
