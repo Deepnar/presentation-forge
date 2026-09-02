@@ -3670,8 +3670,18 @@ with `--critic`.
   hole in a file that is downloadable, so the reader saw 11, 13 and no reason
   why. And `--slide` was 0-based while every number the product shows a user is
   1-based, so `--slide 12` rewrote slide 13.
-- **Critic.** Runs only under `--critic` and uses the `critic` role. Not
-  exercised this session; it is the one component still unswept.
+- **Critic.** Runs only under `--critic`. Its `vision: true` declaration was
+  read by nothing, so in hosted mode — where every non-author role goes to the
+  gateway — it would have posted base64 slide PNGs to a text model and handed
+  the reply to a fix turn that edits the deck. Now: locally the model is asked
+  what it can do (`/api/show` reports capabilities), remotely the provider
+  declares `vision_models`. **The loop itself is still unrun** — the gate was
+  built, the critique was never watched end to end.
+
+  On the two-model question: hosted runs ONE model, because critic and author
+  both resolve to the gateway. The split is local-only and forced — Ollama
+  reports `qwen3-coder:30b` as completion+tools and `gemma4:26b` as
+  completion+vision+tools, so the author physically cannot read a slide.
 
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
