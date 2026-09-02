@@ -159,3 +159,34 @@ test("placeholderFor keeps a failed DIVIDER spec a divider, never a content slid
     assert.ok(ok, `${type} placeholder must validate`);
   }
 });
+
+test("an agenda is front matter: the first divider follows it, never precedes it", () => {
+  // The plan a model actually produced: title, agenda, then content, with no
+  // section divider of its own. Counting the agenda as section 0's first
+  // content slide put the divider in front of it, so the deck announced a part
+  // before saying what the parts were.
+  const out = ensureStructuralSlides([
+    { type: "title", section: 0 },
+    { type: "agenda", section: 0 },
+    content(0),
+    content(1),
+  ], ["Intro", "Next"]);
+  const types = out.map((s) => s.type);
+  assert.equal(types[0], "title");
+  assert.equal(types[1], "agenda");
+  assert.equal(types[2], "section", `divider must follow the agenda, got ${types.join(" -> ")}`);
+  assert.ok(types.indexOf("agenda") < types.indexOf("section"));
+});
+
+test("a section carrying only front matter gets no divider of its own", () => {
+  // A divider for a part whose only slide is the agenda is a page announcing
+  // nothing — the same reason a named-but-empty section gets none.
+  const out = ensureStructuralSlides([
+    { type: "title", section: 0 },
+    { type: "agenda", section: 0 },
+    content(1),
+  ], ["Front", "Real"]);
+  const sec0Dividers = out.filter((s) => s.type === "section" && s.section === 0);
+  assert.equal(sec0Dividers.length, 0, out.map((s) => `${s.type}:${s.section}`).join(" -> "));
+  assert.ok(out.some((s) => s.type === "section" && s.section === 1));
+});

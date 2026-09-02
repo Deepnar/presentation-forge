@@ -2,7 +2,7 @@ import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
-import { DIVIDER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
+import { DIVIDER_TYPES, FRONT_MATTER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
 import { placeholderSlides } from "../placeholders.js";
 
 /**
@@ -295,15 +295,24 @@ export function ensureStructuralSlides(slides, sections) {
     out.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
   }
 
+  // An agenda is front matter, not the section's first content slide. Counting
+  // it as content put the divider for section 0 BEFORE it, so any plan whose
+  // model did not emit its own opener rendered title -> divider -> agenda: the
+  // deck announced a part before saying what the parts were. It escaped notice
+  // because a model that writes its own section slide takes the hasOpener path
+  // instead, so the defect appears or not depending on the plan.
+  const isFrontMatter = (s) => FRONT_MATTER_TYPES.has(s.type);
+  const isContent = (s) => !DIVIDER_TYPES.has(s.type) && !isFrontMatter(s);
+
   const used = new Set();
-  for (const s of out) if (!DIVIDER_TYPES.has(s.type)) used.add(s.section ?? 0);
+  for (const s of out) if (isContent(s)) used.add(s.section ?? 0);
 
   for (const sec of [...used].sort((a, b) => a - b)) {
     const hasOpener = out.some(
       (s) => s.section === sec && DIVIDER_TYPES.has(s.type) && s.type !== "closing" && s.type !== "title",
     );
     if (hasOpener) continue;
-    const first = out.findIndex((s) => s.section === sec && !DIVIDER_TYPES.has(s.type));
+    const first = out.findIndex((s) => s.section === sec && isContent(s));
     const divider = {
       type: "section",
       purpose: sections[sec] ? `Open the part on ${sections[sec]}.` : `Open part ${sec + 1}.`,
@@ -314,7 +323,7 @@ export function ensureStructuralSlides(slides, sections) {
   }
 
   if (!out.some((s) => s.type === "closing")) {
-    const lastContent = [...out].reverse().find((s) => !DIVIDER_TYPES.has(s.type));
+    const lastContent = [...out].reverse().find((s) => isContent(s));
     out.push({ type: "closing", purpose: "Close the deck and thank the audience.", section: lastContent?.section ?? 0 });
   }
   return out;

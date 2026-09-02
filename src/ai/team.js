@@ -41,6 +41,16 @@ export function targetSections(identity, { min = 3, max = 8 } = {}) {
 export const DIVIDER_TYPES = new Set(["title", "section", "chapter", "closing", "epigraph"]);
 
 /**
+ * Front matter: content a member really does present, but which belongs to the
+ * DECK rather than to any one part. An agenda says what the parts are, so the
+ * first part's divider has to come after it — treating it as ordinary content
+ * put the divider in front and the deck announced a part before listing them.
+ * Distinct from DIVIDER_TYPES because these slides are still presented and
+ * still take a presenter.
+ */
+export const FRONT_MATTER_TYPES = new Set(["agenda"]);
+
+/**
  * Distribute presenting members across a deck's CONTENT slides so every
  * member's slides form one contiguous block.
  *
