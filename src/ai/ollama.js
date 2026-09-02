@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { CONFIG } from "../paths.js";
 import { resolveSecret, resolveProviderKey, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
 import { currentUserId } from "../account.js";
+import { localFallbackArmed, isGatewayUnreachable, armedTimeout } from "../devfallback.js";
 
 /**
  * Per-transport capability split. A role's sampling/output/context settings are
@@ -266,7 +267,14 @@ export async function roleAudit() {
   // reporting nothing, because chat() will not use it — this audit exists to
   // stop a model substitution being invisible and must not become one.
   if (isHosted()) {
-    return { reachable: false, reason: "hosted — roles resolve through the gateway or BYOK, not local models", roles: [] };
+    // The one exception worth naming: armed, a hosted role CAN end up on a
+    // local model after the gateway times out, so an audit that flatly says
+    // "not local models" would be the invisible substitution this exists to
+    // prevent.
+    const reason = localFallbackArmed()
+      ? "hosted — roles resolve through the gateway or BYOK; DEV FALLBACK ARMED, so an unreachable gateway drops to a local model"
+      : "hosted — roles resolve through the gateway or BYOK, not local models";
+    return { reachable: false, reason, devLocalFallbackArmed: localFallbackArmed(), roles: [] };
   }
   let cfg;
   try {
@@ -304,6 +312,7 @@ export async function roleAudit() {
     reachable: true,
     reason: null,
     roles,
+    devLocalFallbackArmed: localFallbackArmed(),
     ok: roles.every((r) => r.status === "ok" || r.status === "provider"),
   };
 }
@@ -322,6 +331,44 @@ export function warnFallback(role, configured, actual) {
   console.warn(
     `  WARNING: role "${role}" is configured for ${configured}, which is not installed — using ${actual} instead.`,
   );
+}
+
+const warnedDevFallbacks = new Set();
+/**
+ * Say it every time a NEW role is rescued, and say the gateway error that
+ * caused it. A substitution nobody is told about is how a run comes to be
+ * judged against a model it never used.
+ */
+function warnDevFallback(role, wanted, actual, why) {
+  const key = `${role}`;
+  if (warnedDevFallbacks.has(key)) return;
+  warnedDevFallbacks.add(key);
+  console.warn(
+    `  DEV FALLBACK: role "${role}" could not reach the gateway (${String(why).slice(0, 120)})\n` +
+    `                ${wanted} -> local ${actual}. FORGE_DEV_LOCAL_FALLBACK=1 is set.\n` +
+    `                This exercises the pipeline. It does NOT produce output worth judging.`,
+  );
+}
+
+/**
+ * The local Ollama spec standing in for a role whose gateway is unreachable.
+ * Returns null when there is nothing to stand in with — no Ollama, or the
+ * role's model and every declared fallback missing — so the caller reports the
+ * gateway error rather than a second, more confusing one.
+ */
+async function localSpecFor(cfg, spec) {
+  const backend = { type: "ollama", baseURL: cfg.host };
+  let have;
+  try {
+    have = await installed(cfg.host);
+  } catch {
+    return null;
+  }
+  const wanted = cfg.roles?.[spec.role]?.model;
+  const candidates = [wanted, ...(cfg.fallbacks ?? [])].filter(Boolean);
+  const model = candidates.find((m) => have.has(m)) ?? [...have][0];
+  if (!model) return null;
+  return { ...cfg.roles?.[spec.role], role: spec.role, backend, model, fellBack: spec.model };
 }
 
 /**
@@ -459,10 +506,13 @@ export async function chat({
   // gets the larger num_predict / excerpt budget, never the local caps).
   spec = applyTransport(spec, spec.backend);
   const stream = typeof onToken === "function";
-  const timeout = cfg.defaults?.request_timeout_ms ?? 300_000;
+  const timeout = armedTimeout(cfg.defaults?.request_timeout_ms ?? 300_000);
   const maxRetries = cfg.defaults?.max_retries ?? 2;
   const bumpCeiling = cfg.defaults?.num_predict_bump_ceiling ?? 64_000;
 
+  // Set once the dev fallback has moved this request off the gateway, so the
+  // result can say so. A caller must never have to guess which model answered.
+  let devLocalFallback = false;
   let lastErr;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -499,7 +549,7 @@ export async function chat({
       // Carry the effective cap and transport on the result so callers can say
       // "cut at N tokens" precisely and decide whether a bump is warranted.
       const cap = spec.num_predict ?? null;
-      res = { ...res, cap, transport: spec.backend.type };
+      res = { ...res, cap, transport: spec.backend.type, devLocalFallback };
 
       // done_reason=length means the response hit the token cap mid-output, not
       // that the model stopped for a good reason. Retry the same request with
@@ -523,6 +573,29 @@ export async function chat({
       // A caller-initiated abort is intentional; never retry it.
       if (err.name === "AbortError" && signal?.aborted) throw err;
       lastErr = err;
+
+      // DEVELOPMENT ONLY, and off unless FORGE_DEV_LOCAL_FALLBACK=1. The
+      // gateway's failure is at request time — /v1/models keeps answering
+      // while completions hang — so there is nothing to probe beforehand and
+      // this is the only place that learns the truth. Swapping here keeps the
+      // pipeline exercisable while the gateway is out; it does not make the
+      // output judgeable, and `devLocalFallback` on the result says which.
+      if (
+        !devLocalFallback &&
+        localFallbackArmed() &&
+        spec.backend.type !== "ollama" &&
+        isGatewayUnreachable(err)
+      ) {
+        const local = await localSpecFor(cfg, spec);
+        if (local) {
+          warnDevFallback(spec.role, spec.model, local.model, err.message);
+          spec = applyTransport(local, local.backend);
+          devLocalFallback = true;
+          attempt--; // the swap is a different request, not another try at a dead one
+          continue;
+        }
+      }
+
       if (attempt < maxRetries) await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
     }
   }
