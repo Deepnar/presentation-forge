@@ -23,6 +23,7 @@ import { deckFigures } from "../../src/ai/grounding.js";
 import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, autoHealth, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
+import { localFallbackArmed } from "../../src/devfallback.js";
 import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
@@ -2647,6 +2648,15 @@ async function reportBootGaps() {
     console.warn("           and new accounts are verified on creation because nothing can be sent to them.");
   } else if (!process.env.FORGE_PUBLIC_URL && !process.env.FORGE_UI_ORIGIN) {
     console.warn("  WARNING: FORGE_PUBLIC_URL is unset — reset and confirmation links will point at localhost.");
+  }
+
+  // Armed only by an env var, and loud when it is: a box that will quietly
+  // answer from a local model when the gateway times out must never look like
+  // an ordinary hosted one, or a test result gets read as a product result.
+  if (localFallbackArmed()) {
+    console.warn("  DEV FALLBACK ARMED (FORGE_DEV_LOCAL_FALLBACK=1) — if the gateway is unreachable,");
+    console.warn("           requests fall back to the local Ollama. For exercising the pipeline only:");
+    console.warn("           output from a fallback run is NOT the product's quality. Unset it to ship.");
   }
 
   // A role quietly running a model models.yaml does not name is the failure
