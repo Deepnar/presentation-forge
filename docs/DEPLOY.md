@@ -111,6 +111,37 @@ Then, in the app:
   spending a research pass and a model run on a document it cannot draw. The
   server also says so on stdout at boot.
 
+  This one is the install's default. An account serving a different institution
+  uploads its own under **Settings → Identity → Report template**, and its
+  reports are drawn on that instead; everyone else falls through to the default
+  and never has to think about it. Set the default to whichever institution the
+  box mostly serves.
+- **Fill in the default identity.** `config/identity.yaml` is gitignored, so a
+  fresh box has none and any deck whose owner never opened Settings goes out
+  under the shipped example's institution. Nothing fails when this is wrong —
+  the deck renders, it just names the wrong college — so the boot log and
+  `Admin → System` both report it until it is set.
+
+**A fresh box has no accounts, and that is structural rather than remembered.**
+Two separate things keep the development machine's account store off a
+production one, because a note in this file would not have:
+
+- `config/` is excluded from the Docker build context by default, with only
+  `models.yaml` and `identity.example.yaml` re-included by name
+  (`.dockerignore`). The account database lives at `config/forge.db` and carries
+  password hashes, sessions, the encrypted BYOK vault and Auto usage; before
+  this was inverted it was named nowhere and `COPY config ./config` put all of
+  it in the image. `test/buildcontext.test.js` holds the property, so a
+  stateful file invented later is excluded without anyone editing the rule.
+- The runtime reads `/data/config` (`FORGE_CONFIG_DIR`), and `/data` is the
+  named volume `forge_data`. A fresh deploy starts empty; the entrypoint seeds
+  only the committed `*.yaml` templates into it.
+
+So there is no reset step, and there should not be one. The two ways a dev
+account store can still reach production are both deliberate acts: restoring a
+backup taken from a development box, or bind-mounting a local directory over
+`/data`. If you do either, `Admin → Users` is where you check who exists.
+
 **Configure SMTP before you invite anybody.** It is optional to the code and not
 optional to a real user:
 
