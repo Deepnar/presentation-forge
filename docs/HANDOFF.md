@@ -1,12 +1,14 @@
 # Handoff — 2026-09-02, the pipeline swept end to end; hosting blockers are next
 
-Everything is on `origin/main`. `npm test` is **481 passing**, `npm run
-themematrix` is clean across 34 themes, the working tree is clean. 39 commits
+Everything is on `origin/main`. `npm test` is **492 passing**, `npm run
+themematrix` is clean across 34 themes, the working tree is clean. 47 commits
 this session.
 
 **Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
-operational map. `docs/TRAPS.md` gained nine entries this session and outlives
-this file. This file is only what those do not say.
+operational map — it now carries the gateway's actual specification, from the
+CoE Student Developer Guide. `docs/TRAPS.md` gained nine entries this session
+and outlives this file. `docs/ROADMAP.md` carries every item below as a proper
+entry; this file is the order I would take them in.
 
 ---
 
@@ -55,29 +57,41 @@ These are the ones a stranger hits, and none needs the gateway.
   refDir)` already take the directory as a parameter, so this is a resolver that
   reads `meta.owner`, not a reshape.
 
-### 2. Verify the gateway's two unknowns the moment it is back
+### 2. Both gateway unknowns are now CLOSED — but one thing is newly worth a run
 
-- **Is `qwen3.6` accepted as an alias?** `config/models.yaml` declares it;
-  `/v1/models` reports the id as `/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast`.
-  If the short form is rejected, hosted generation fails against a *healthy*
-  server. Untestable while it is down.
-- **Is qwen3.6 actually multimodal?** `models.yaml` now lists it under
-  `tcet-auto.vision_models` and the entry is marked **UNVERIFIED** in the file —
-  it is on the operator's report, not on a real image request. If it is
-  text-only, delete that one line and the critic correctly skips instead of
-  inventing findings. See §4.
+The CoE AI Gateway Student Developer Guide v1.0 (Aug 2026) settled them, and
+`CLAUDE.md` now carries the specification:
 
-### 3. Content quality — the whole half that is still unmeasured
+- **The model id does not matter.** The field is required by the protocol and
+  its value is IGNORED (§3) — the gateway serves one model and takes any
+  string. The long served id `/v1/models` reports is not something callers must
+  match.
+- **It reads images** (§5), so the vision critic is viable hosted and
+  `tcet-auto.vision_models` is no longer a guess.
+
+What the guide opened instead: **thinking is off by default and taken per
+request** (§6). The author and critic roles now opt in at `medium`
+(`supports_thinking` in `config/models.yaml`), which means the passes that
+reason have been asking a model that was not reasoning for this entire project.
+**Nothing has yet been generated with it on** — the gateway has been down. The
+first hosted run after it returns is the one to read closely, and to score.
+
+### 3. Content quality — half of it is now measurable
 
 Everything fixed this session was mechanical: structure, placement, escaping,
-truncation, targeting. All of it is true whatever model writes the words. What
-has never been answered:
+truncation, targeting. All of it is true whatever model writes the words.
 
-- Does the deck **argue** anything?
-- Is the research any good? (It is *diverse* now; that is not the same thing.)
-- Does the report **read** well?
+**`npm run deckscore <slug>` now measures the deterministic half** — intact,
+fits, grounded, varied, whole — and returns one comparable number so runs can
+be set beside each other. The real generated deck scores **73**, and every point
+it drops is a defect this session found by hand.
 
-`AGENTS.md` is explicit that these are answered on Auto and nowhere else.
+**The other half still needs Auto and a person:** does the deck ARGUE anything,
+is the research any good, does the report READ well. `AGENTS.md` is explicit
+that those are answered on the gateway and nowhere else. What would make it
+accumulate rather than evaporate is in the roadmap under "Measuring content
+quality": a small fixed set of briefs kept as a baseline, and the score recorded
+per generation so a regression is a number before it is a complaint.
 
 ### 4. Run the critic loop end to end
 
