@@ -3569,6 +3569,24 @@ generated deck was clean in its own theme and lost thirteen text elements below
 the readable floor across six others. `trimDeckToFit` now fits the gallery, for
 2.7% of the deck's characters.
 
+**Post-generation actions, swept.** Every path a user takes after the deck
+exists was exercised on the real deck:
+
+- **Theme switch** — rendered across the gallery. sci-fi-hud broke `<1000h`
+  into "<1000 / h" and printed a caption on top of "commercializat / ion".
+  Both fixed; the deck is trimmed for every theme now.
+- **Slide-type change** — all 1008 slide x type pairs through
+  `compatibleRemap`. 10 have a deterministic map and the rest correctly fall
+  through to the model. One remap is structurally short of a field, and
+  `convertSlide` already validates and falls through for exactly that, so it
+  is handled rather than broken.
+- **Chat edit on a named slide** — wrote a `bullets` array onto a before-after
+  slide and reported success while the render was identical. Fixed.
+- **Report at full depth** — 10 pages, which is the shape expected; `full` is
+  already the default in both the CLI and the briefing, so the 4-page result
+  earlier was the explicit `--depth brief`. Its Abstract carried a data table.
+  Fixed.
+
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
 structure, placement, escaping, truncation — and is the product's behaviour

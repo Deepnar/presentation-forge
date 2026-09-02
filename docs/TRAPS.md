@@ -431,6 +431,26 @@ is why six of nine speaker notes on one deck shipped ending "…creates a 30",
 with "does not end on terminal punctuation", and fall back to the last complete
 sentence (`healCutField`).
 
+**A field the schema offers is a field the model will fill.** The report's
+table was offered on every section at full depth, so the writer put a five-row
+data table in the Abstract. The grammar is not a menu of what is *permitted*,
+it is a description of what the output looks like — if a section must not carry
+something, do not put it in that section's schema.
+
+**`additionalProperties: false` is unavailable on a schema composed through
+`allOf`.** Each per-type rule would reject every other type's fields, so the
+slide definition cannot use it — which means ANY extra field on a slide
+validates. A chat turn wrote a `bullets` array onto a `before-after` slide; the
+deck validated, the turn reported "applied 1 change", and the render was
+byte-identical. Strip against the type's own field set (`fieldsForType`)
+instead of hoping the schema will refuse.
+
+**A hardcoded `min` scale silently overrides the role floor.** `stats` fitted
+its value with `{ min: 0.6 }`, which on a 54pt stat clamps at 32pt while the
+role floor is 24 — so eight points of legal headroom went unused and the value
+wrapped instead of shrinking. Derive the minimum from `floorOf(style)`; a
+literal there is a second, invisible floor.
+
 **Repeated bracketed tokens in the source are loop fuel.** PubMed and PMC print
 "[DOI] [PubMed] [Google Scholar]" beside every citation; that text reaches the
 research notes, and a reference entry ran to 600 characters — the real citation
