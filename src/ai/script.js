@@ -5,6 +5,7 @@ import { DECKS } from "../paths.js";
 import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { excerptResearch } from "./research.js";
 import { DIVIDER_TYPES } from "./team.js";
+import { healCutField } from "./fieldlength.js";
 
 /**
  * The speaker-script generator — what the presenter SAYS for each slide.
@@ -23,9 +24,21 @@ import { DIVIDER_TYPES } from "./team.js";
  * invisible when rendered.
  */
 
-/** A spoken segment, bounded well under the grammar-breaking 2000 cap. 60–90
- *  seconds of speech is roughly 180–250 words, comfortably inside 1999 chars. */
-const slideScriptSchema = {
+/**
+ * A spoken segment, bounded well under the grammar-breaking 2000 cap. 60–90
+ * seconds of speech is roughly 180–250 words, comfortably inside 1999 chars.
+ *
+ * A DIVIDER gets a much tighter cap. The prompt has always asked for "a short
+ * spoken transition, about 15-30 seconds" on those slides and the writer
+ * ignored it: a section divider in a real script came back with a 200-word
+ * monologue, the same weight as the content slides around it. An instruction in
+ * prose is a hint; the grammar is the part that binds.
+ *
+ * 800 rather than the ~500 those word counts imply, because a cap the model
+ * runs into mid-sentence is its own defect — the segment is healed back to a
+ * whole sentence below, and the headroom keeps that from being the normal case.
+ */
+const slideScriptSchema = (isDivider = false) => ({
   type: "object",
   additionalProperties: false,
   required: ["words"],
@@ -33,11 +46,13 @@ const slideScriptSchema = {
     words: {
       type: "string",
       minLength: 1,
-      maxLength: 1999,
-      description: "The words the presenter says aloud for this slide, as spoken prose.",
+      maxLength: isDivider ? 800 : 1999,
+      description: isDivider
+        ? "A short spoken transition, 40-80 words, ending on a complete sentence."
+        : "The words the presenter says aloud for this slide, as spoken prose.",
     },
   },
-};
+});
 
 /** The slide as the script writer needs it: its headline, its content, and who
  *  presents it. Content is flattened so the model sees every field the layout
@@ -113,7 +128,7 @@ async function writeSlideScript({
     role: "author",
     model,
     signal,
-    schema: slideScriptSchema,
+    schema: slideScriptSchema(isDivider),
     messages: [
       { role: "system", content: writerSystem() },
       {
@@ -138,7 +153,13 @@ async function writeSlideScript({
     ],
   });
 
-  return String(res.data?.words ?? "").trim();
+  // A segment that stopped exactly at its cap was cut by the grammar, not
+  // finished by the writer — the same failure that left six of nine speaker
+  // notes ending mid-word on a real deck. A presenter reads this aloud, so a
+  // sentence that stops halfway is worse here than anywhere.
+  const words = String(res.data?.words ?? "").trim();
+  const cap = isDivider ? 800 : 1999;
+  return healCutField(words, cap) ?? words;
 }
 
 const BLOCK_RE = /<!-- slide:(\d+) -->[\s\S]*?<!-- \/slide:\1 -->/g;
