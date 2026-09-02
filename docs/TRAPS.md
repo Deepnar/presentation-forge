@@ -890,3 +890,39 @@ for the report path was inserted into both and generating a *deck* on a box with
 no report template failed with "this server has no report template installed".
 Nothing caught it: the guard is above every seam a unit test can reach, and both
 functions still parsed. Count the matches before replacing, and run the thing.
+
+**An ignore file that lists the state to exclude fails on the unsafe side every
+time a subsystem adds a file.** `.dockerignore` named `config/users.json` and
+`config/sessions.json` — the account store from before the SQLite migration —
+and said nothing about `config/forge.db`, which replaced them and also carries
+password hashes, the encrypted BYOK vault and Auto usage, or `config/uploads/`,
+which holds users' own research documents. `COPY config ./config` put both in
+the image. Nothing reads `/app/config` at runtime, because `FORGE_CONFIG_DIR`
+points at the volume, so there was no symptom at all — an image layer is
+readable by anyone who pulls it whether or not the process opens it. Exclude
+the directory and re-include the committed files by name: then a file invented
+later is out by default, and the only way to get it wrong is to forget a
+template, which fails loudly at boot.
+
+**A disclosure made only on collision is still a disclosure.** Replacing
+`uniqueSlug`'s `-2`, `-4` counter with a random token stops the caller counting
+other accounts' decks, but a caller who asks for a title and receives a clean
+slug has still learned that nobody holds it. Anything that reveals a fact by
+*changing shape* has to change shape unconditionally — the token is applied
+whether or not something collided, precisely so its presence carries no
+information. The same reasoning rules out "only suffix when needed" for any
+uniqueness scheme over a shared namespace.
+
+**A helper that can both answer the request and return a value must not
+`return fail(...)`.** `fail` is `res.status(code).json(...)`, which returns the
+response object — truthy, not `undefined`. Factoring two upload routes into one
+helper, the natural `return fail(res, 400, "empty upload")` makes the caller's
+`if (result === undefined) return;` guard miss, and the route replies a second
+time. Return `null` explicitly, and have the caller test for it.
+
+**A per-account boundary is invisible from inside one account.** Every check
+that mattered for per-account identity, brand marks and the report donor needed
+two sessions: one account writes, the *other* reads. A single account uploading
+a template looks exactly the same whether it wrote to its own directory or
+overwrote the install-wide one, and every screen it can see says the right
+thing either way. Drive two.

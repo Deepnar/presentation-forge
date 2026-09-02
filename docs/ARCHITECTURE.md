@@ -1231,9 +1231,14 @@ is covered too. `POST /api/decks/:slug/report/render` answers 503 with
 fully installed is not a broken request.
 
 `donorStatus` takes its directory as a parameter rather than reading the
-constant, because the donor is currently install-wide and the roadmap has it
-becoming per-account like identity and brand. When that lands it answers per
-account without changing shape.
+constant, which is what let the donor become per account without changing
+shape. `donorDirFor(owner)` picks an account's own directory when it holds a
+template and falls through to the install-wide one otherwise;
+`donorDirForDeck(deckDir)` reads `meta.owner` and is what every render passes
+through, so `renderReport(reportFile)` resolves the right template with no
+caller threading a user through — the same trick as `loadIdentity(deckDir)`.
+The bare `donorStatus()` still answers for the operator's default, which is
+what the boot log and the admin panel want.
 
 ### The cloud surface — opt-in hosted models
 
@@ -1410,7 +1415,7 @@ several surfaces stayed install-wide while looking per-user. On a hosted box
 that is not a hardening detail, it is a correctness bug: two students from
 different colleges get each other's institution on their slides.
 
-Four things are now per account, and one deliberately is not.
+Five things are now per account, and one deliberately is not.
 
 **Identity** (`src/ai/identity.js`) resolves in four layers: the committed
 template, the operator's `config/identity.yaml`, the account's own overrides,
@@ -1424,6 +1429,15 @@ whoever owns it, whatever anyone else has since changed in Settings.
 has uploaded nothing falls through to the operator's marks rather than getting
 placeholders. `normalizeBrand({ srcDir, outDir, placeholders })` is the one
 implementation, called with different directories.
+
+**The report donor** follows the same rule and was the last to get there. It
+supplies the headers, margins, footer and watermark a report is graded on, so
+an install-wide one puts one college's letterhead on another's submission —
+and nothing fails while it does: the `.docx` renders, it is simply the wrong
+document. An account uploads its own through `POST /api/donor` (Settings →
+Identity); `GET /api/donor` reports `own` and `effective` separately because
+they differ in the ordinary case, not a broken one. The admin route stays for
+the install-wide default.
 
 **BYOK keys** were the sharpest edge: they were stored encrypted per user and
 then never read, because the model client resolved `env:NAME` against the
@@ -1476,12 +1490,22 @@ broadening the credential cannot broaden CSRF exposure. Ownership is then
 checked exactly as it is for the deck itself. The cookie is marked `Secure` on
 an HTTPS request, which is why the deployment terminates TLS.
 
+An owned deck's slug now carries a random four-character token, which makes it
+harder to guess — and that is a side effect, not the reason. `uniqueSlug` mints
+it because the *collision counter* was the leak: appending `-2`, `-4` against
+the one flat `decks/` namespace reported how many other accounts held the same
+title. The token is unconditional so that its presence says nothing either, and
+it is still not a credential: `assertDeckAccess` is. Ownerless decks — the CLI,
+the tests, a single-operator install — keep the readable counter, because there
+is no second account to leak to and `decks/<topic>` is the name every sweep and
+`--deck` flag refers to.
+
 ## Data locations
 
 | Path | Committed | Notes |
 |---|---|---|
 | `themes/`, `schema/`, `src/`, `app/` | yes | source |
-| `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it |
+| `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it. `identityStatus()` reports it as missing / template / incomplete / ok at boot and in Admin, because an unset default is wrong silently — the deck renders, under the wrong institution |
 | `config/identities/<hash>.yaml` | no | one account's identity overrides — institution, guide, brand paths |
 | `config/local.yaml` | no | the install-wide provider key + the fallback `routing.default`; per-account keys live encrypted in the DB |
 | `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), per-user routing, auto-tier usage |
@@ -1502,4 +1526,4 @@ an HTTPS request, which is why the deployment terminates TLS.
 | `decks/<slug>/backups/` | no | timestamped deck.yaml snapshots — the version history (F14) |
 | `decks/<slug>/report.yaml` | yes | the report content (sibling of deck.yaml) |
 | `templates/` | yes | reusable partial slides the "+ Add slide" menu inserts |
-| `reference/` | no | the report donor `.docx`; gitignored because it carries third-party names, and `FORGE_REFERENCE_DIR` points it at the volume on a hosted box where an admin uploads it |
+| `reference/` | no | the report donor `.docx`; gitignored because it carries third-party names, and `FORGE_REFERENCE_DIR` points it at the volume on a hosted box where an admin uploads it. `reference/users/<hash>/` holds an account's own template, which overrides it |

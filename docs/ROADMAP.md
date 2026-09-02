@@ -3763,27 +3763,84 @@ throws when the thing it diagnoses is down is not a diagnostic.
 > underneath it. Entries that name environment facts should say how to check
 > them, not what the answer was on the day.
 
-### [ ] Hosting blockers — what a stranger hits
+### [x] Hosting blockers — what a stranger hits
 
 *Priority: HIGHEST. No model. Nothing here is taste.*
 
-Four things that make the box unsafe or wrong to hand to people who are not the
-operator. All are concrete and none needs the gateway.
+Four things that made the box unsafe or wrong to hand to people who are not the
+operator. All concrete, none needing the gateway — which is why they were done
+the session the gateway stayed down.
 
-- **The dev account store holds 100+ throwaway accounts** (`config/forge.db`).
-  Harmless locally, unacceptable in production. Decide between shipping an empty
-  database and a documented reset step in `docs/DEPLOY.md` — and whichever it
-  is, the deploy path has to enforce it rather than rely on remembering.
-- **`config/identity.yaml` reads `institution.name: HACKED`.** The real values
-  are gone. Identity is per account now, so a user's own is set in Settings, but
-  the install default is what an unconfigured deck renders with.
-- **`uniqueSlug` leaks across accounts.** It appends `-2`, `-4` against a global
-  namespace, so creating a deck reveals whether another account already has that
-  title. Per-account slug namespacing closes it.
-- **The report donor is install-wide.** A box serving more than one institution
-  serves the wrong letterhead. `donorStatus(refDir)` and `resolveDonor(explicit,
-  refDir)` already take the directory as a parameter, so this is a resolver that
-  reads `meta.owner`, not a reshape.
+- **[x] The dev account store cannot travel.** Not by an empty database and not
+  by a reset step: `config/` is now excluded from the Docker build context by
+  default with only the two committed templates re-included, and `/data` is a
+  named volume that starts empty. `test/buildcontext.test.js` holds the
+  property. `docs/DEPLOY.md` records what a fresh box starts with.
+- **[x] An unconfigured operator identity is reported, not rendered.**
+  `identityStatus()` in `src/ai/identity.js` answers missing / template /
+  incomplete / ok, on `donorStatus`'s model, and the boot log and Admin →
+  System both read it. `config/identity.yaml` is reset to the template; the
+  real values are the operator's to enter.
+- **[x] `uniqueSlug` no longer reads other accounts.** An owned deck gets an
+  opaque four-character token whether or not anything collided, so its presence
+  reports nothing. Ownerless decks — CLI, tests, single-operator installs —
+  keep the readable counter.
+- **[x] The report donor is per account.** `donorDirForDeck(deckDir)` resolves
+  it from the deck's own owner, so no caller threads a user through and an
+  admin rendering somebody else's report still draws it on theirs. An account
+  supplies its own under Settings → Identity → Report template; anyone who
+  uploads nothing falls through to the operator's default.
+
+**Look-ahead.** *Surfaces nothing has ever run* needs a test account driving the
+UI against a real deck, and that is now the way to check this work too — the
+donor panel was verified by driving it as two accounts. *Measuring content
+quality* is unaffected: none of this touches what a model writes. Nothing in
+the roadmap wants the flat `decks/<slug>` layout changed, so the opaque token
+was preferred to a `decks/<tenant>/<slug>` reshape that every path join, the
+preview and download routes, the scheduler and the `deckscore` CLI would have
+had to learn.
+
+> **Learned.** Three of the four were worse than their entries said, and the
+> reason was the same each time: each began as a single-operator design, grew a
+> per-account version, and left the original behind as the silent default.
+>
+> **The account database was already in the image.** The entry read as
+> housekeeping — a dev database that "must not travel". It was travelling.
+> `.dockerignore` excluded `config/users.json` and `config/sessions.json`, the
+> account store from *before* the SQLite migration, and named nothing about
+> `config/forge.db`, which holds the same accounts plus password hashes, the
+> encrypted BYOK vault and Auto usage. `config/uploads/` — users' own research
+> documents — was not covered either. Both reached the image through `COPY
+> config ./config`. Nothing at `/app/config` is read at runtime, because
+> `FORGE_CONFIG_DIR` points at the volume, and that is exactly why it stayed
+> invisible: an image layer is readable by anyone who pulls it whether or not
+> the process opens it.
+>
+> The shape is the lesson, not the file. An allow-list of state to exclude
+> fails on the unsafe side every time a subsystem adds something, and it had
+> already failed twice over. Deny-by-default moves the failure to the loud
+> side: forget to re-include a template and the image will not boot.
+>
+> **A suffix that appears only on a collision is still an answer.** The obvious
+> fix for `uniqueSlug` is to replace the counter with a random token, and it
+> does close the count — but a user who asks for a title and gets a clean slug
+> has learned nobody else holds it, and one who gets a suffix has learned
+> somebody does. Only an unconditional token says nothing. That is why the
+> ownerless path keeps the counter rather than sharing the new one: a
+> single-operator install has nobody to leak to, and `npm run deckscore
+> perovskite-solar-cells-stability-challenges-2` has to stay typable.
+>
+> **`fail()` returns the response, not undefined.** Factoring the two donor
+> uploads into one helper, the natural `return fail(res, 400, …)` inside it
+> gives the caller a truthy value, its `=== undefined` guard misses, and the
+> route answers twice. Any helper that can both reply and return has to say
+> null in as many words.
+>
+> **Verifying it needed two accounts, not one.** Every per-account boundary
+> here is invisible from inside a single session: one account uploading a
+> template looks identical whether or not it overwrote everybody else's. The
+> check that meant anything was A uploads, then B reads — and B still seeing
+> the operator's default is the whole feature.
 
 ### [ ] Surfaces nothing has ever run
 
@@ -3843,22 +3900,24 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
 
 *Priority: low.*
 
-- `config/identity.yaml` contains `institution.name: HACKED`; the real values
-  are gone. Identity is per account now, so the fix is to set it in Settings.
+- ~~`config/identity.yaml` contains `institution.name: HACKED`.~~ Fixed under
+  *Hosting blockers*: the file is reset to the template and `identityStatus()`
+  reports an unconfigured default at boot and in Admin. The real values are
+  still gone — they are the operator's to enter in Settings.
 - `tools/fonts.manifest.json` carries a `used_by` list per family that has
   drifted: six families are listed that no theme uses, and the field is
   documentation the install step does not read.
-- The account store holds well over a hundred throwaway test accounts. Harmless
-  locally, but that database must not travel to production.
-- `uniqueSlug` appends `-2`, `-4` on collision against a global namespace, so
-  creating a deck reveals whether a title already exists. Per-account slug
-  namespacing would close it.
+- ~~The account store holds well over a hundred throwaway test accounts.~~
+  Still true on the dev box and no longer able to travel: `config/` is
+  excluded from the build context by default. See *Hosting blockers*.
+- ~~`uniqueSlug` appends `-2`, `-4` on collision against a global namespace.~~
+  Fixed under *Hosting blockers*: an owned deck gets an opaque token
+  unconditionally; ownerless decks keep the counter.
 - A monochrome theme can only carry three or four distinguishable greys. OOXML
   pattern fills are the real answer for a mono chart with more series than that.
-- The report donor is install-wide. A hosted box serving more than one
-  institution needs it per account, like identity and brand. `donorStatus(refDir)`
-  and `resolveDonor(explicit, refDir)` both take the directory as a parameter,
-  so the change is a resolver that reads `meta.owner` rather than a reshape.
+- ~~The report donor is install-wide.~~ Fixed under *Hosting blockers*:
+  `donorDirForDeck(deckDir)` resolves it from the deck's own owner, and an
+  account uploads its own under Settings → Identity.
 - ~~`POST /api/decks/search` is unreachable for non-admins.~~ Fixed: the route
   moves above `app.use("/api/decks/:slug")`, which was matching it first with
   `slug = "search"`. `test/routing.test.js` boots the server and asks it over
