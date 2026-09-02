@@ -3587,6 +3587,30 @@ exists was exercised on the real deck:
   earlier was the explicit `--depth brief`. Its Abstract carried a data table.
   Fixed.
 
+**Answers to the three "does it actually work" questions.**
+
+- **Theme change, any to any.** Swept the real deck across all 34. Before the
+  cross-theme trim: 28 clean. After it: **31 of 34**, and all four remaining
+  failures were the same thing — the deck TITLE overflowing the title slide's
+  `display` role. Measured: a title fits every theme at 52 characters and fails
+  on three by 56, even all-caps. The outline grammar allowed 90 and the real
+  deck came back with 69. Cap cut to 52 in the GRAMMAR only, never in
+  deck.schema.json — tightening the validation cap makes every edit on an
+  existing deck fail, because a chat or coherence turn validates the whole deck
+  and would reject an unrelated fix over a title written under the old cap.
+- **Slide-type change, per slide.** All 1008 pairs through the deterministic
+  `compatibleRemap`: 10 map losslessly, the rest correctly return null and fall
+  to the model. Six representative model conversions run for real (bullets →
+  cards/timeline, stats → bullets, chart → bullets, framework → cards,
+  feature-grid → cards): all six valid, section and presenter preserved,
+  content genuinely rewritten for the target type. This path is sound.
+- **Chat with slides selected.** It worked only by persuasion. The selection
+  reached the model as prose and nothing enforced it, so a turn could and did
+  edit the wrong slide while reporting success. The selection now travels as
+  data and an op outside it is refused. Also fixed alongside: a turn could
+  write one type's fields onto another's slide, which validated and rendered
+  identically.
+
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
 structure, placement, escaping, truncation — and is the product's behaviour
