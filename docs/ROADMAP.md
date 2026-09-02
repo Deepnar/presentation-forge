@@ -3763,6 +3763,82 @@ throws when the thing it diagnoses is down is not a diagnostic.
 > underneath it. Entries that name environment facts should say how to check
 > them, not what the answer was on the day.
 
+### [ ] Hosting blockers — what a stranger hits
+
+*Priority: HIGHEST. No model. Nothing here is taste.*
+
+Four things that make the box unsafe or wrong to hand to people who are not the
+operator. All are concrete and none needs the gateway.
+
+- **The dev account store holds 100+ throwaway accounts** (`config/forge.db`).
+  Harmless locally, unacceptable in production. Decide between shipping an empty
+  database and a documented reset step in `docs/DEPLOY.md` — and whichever it
+  is, the deploy path has to enforce it rather than rely on remembering.
+- **`config/identity.yaml` reads `institution.name: HACKED`.** The real values
+  are gone. Identity is per account now, so a user's own is set in Settings, but
+  the install default is what an unconfigured deck renders with.
+- **`uniqueSlug` leaks across accounts.** It appends `-2`, `-4` against a global
+  namespace, so creating a deck reveals whether another account already has that
+  title. Per-account slug namespacing closes it.
+- **The report donor is install-wide.** A box serving more than one institution
+  serves the wrong letterhead. `donorStatus(refDir)` and `resolveDonor(explicit,
+  refDir)` already take the directory as a parameter, so this is a resolver that
+  reads `meta.owner`, not a reshape.
+
+### [ ] Surfaces nothing has ever run
+
+*Priority: high. Some need a model, none needs the gateway specifically.*
+
+Every path below is a real user journey with zero end-to-end runs behind it.
+They are listed together because the answer to "does the product work" is not
+knowable while they are unexercised.
+
+- **The browser UI for chat and convert.** Every turn in the pipeline sweep went
+  through the CLI and `runChatTurn`; the HTTP route was verified separately and
+  the UI was never driven. A CLI-generated deck has no `meta.owner`, so a test
+  account cannot open it — set one to drive the UI against real content.
+- **Auth flows** — register, login, password reset, email verification. Built,
+  tested at the unit level, never re-run since.
+- **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
+  entry points, no runs.
+- **Presenter assignment with a real team.** Every deck generated so far had no
+  team, so every slide rendered `Presenter: —`. The whole per-member split is
+  therefore unexercised.
+- **Rate limits and quotas** under real load.
+- **The vision critic loop.** The capability gate is built and tested; the loop
+  itself has never been watched critique a deck.
+
+### [ ] Measuring content quality
+
+*Priority: high. `npm run deckscore` is the deterministic half and exists.*
+
+The standing gap all through the sweep: everything fixed was mechanical, and
+"is the output any good" was answered by reading, on the gateway, by a person.
+That is the right answer and it does not scale — so it happened rarely and
+nothing accumulated between times.
+
+**Done — the deterministic half.** `npm run deckscore <slug>` scores a deck out
+of 100 across five components, each carrying its findings: intact, fits,
+grounded, varied, whole. It needs no model and no opinion, so two runs can be
+compared — Auto against local, before a prompt change and after. The real
+generated deck scores 73, and every point it loses is a defect this session
+found by hand.
+
+**What is left is the half a number cannot reach.** Whether the deck ARGUES
+anything, whether the research is any good, whether the report reads well. That
+needs Auto and a person. What would make it accumulate rather than evaporate:
+
+- A small fixed set of briefs, generated on Auto, kept as a baseline to read
+  against — so "the output got worse" is a comparison rather than a memory.
+- The score recorded per generation, so a regression shows up as a number
+  before anybody notices it by eye.
+
+> **Learned.** The scorer's own first run reported `whole` at 0% for every deck
+> because it counted the deck TITLE as a sentence cut off mid-way. A headline is
+> a noun phrase and ends without a full stop by design. A measure that is wrong
+> in the same direction for every subject looks like a finding and is a bug in
+> the ruler.
+
 ### [ ] Housekeeping found during the audit
 
 *Priority: low.*

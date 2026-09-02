@@ -232,6 +232,29 @@ deck that reads badly. Local Ollama support stays in the code and must not rot
 not where effort goes and not what "does this work?" means. Generating spends
 the operator's budget, so a few runs read closely beat a sweep nobody looks at.
 
+**What the gateway is**, per the CoE AI Gateway Student Developer Guide v1.0
+(Aug 2026) — the authoritative description, worth knowing before tuning
+anything against it:
+
+- **Qwen3.6-35B-A3B**, a Mixture-of-Experts model with 3B active parameters,
+  4-bit NVFP4 with multi-token prediction, on an NVIDIA DGX Spark on campus.
+- **The `model` field is required and its value IGNORED** (§3). The gateway
+  serves one model and accepts any string, so the long served id that
+  `/v1/models` reports is not something callers must match — `qwen3.6` is a
+  label for our own pickers and logs.
+- **It reads images** (§5): diagrams, screenshots, charts, handwritten notes.
+  Video is not supported. This is why `tcet-auto` declares `vision_models`.
+- **Thinking is OFF by default and taken per request** (§6), via
+  `chat_template_kwargs.enable_thinking` plus an optional `reasoning_effort`
+  of `low` / `medium` / `xhigh`. The author and critic roles opt in at medium;
+  research and utility stay off. See `supports_thinking` in `config/models.yaml`.
+- **Shared by roughly fifteen students at a time** (§12), and speed depends on
+  who else is on it. That is the reason not to default every role to `xhigh`,
+  and part of why a run can be slow without anything being wrong.
+- Errors: 401 bad key, 400 malformed, **502 model server unavailable**, plus
+  plain timeouts when it is busy. The 524s seen in practice are Cloudflare in
+  front of it, not the gateway's own code.
+
 **The gateway does go down**, and it fails in a shape that looks like health:
 `/v1/models` answers in under a second while `/v1/chat/completions` times out
 behind Cloudflare (HTTP 524). When that happens, local Ollama is for exercising
