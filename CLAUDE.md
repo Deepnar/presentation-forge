@@ -83,6 +83,7 @@ node --test test/contrast.test.js   # title and divider surfaces carry their ink
 node tools/capfit.mjs            # what length each field can actually be
 npm run capstress                # every type at its caps, rendered — then LOOK
 npm run capstress -- --scale 0.01   # ...and at one character: the layout, not the caps
+npm run deckscore <slug>         # a generated deck, scored /100 — comparable between runs
 ```
 
 They ask four different questions, in this order:
@@ -119,6 +120,14 @@ content the schema offers without a check noticing — and then to `standfirst`,
 which the specimen omits on 69 of 73 types and which no cap, sweep or render had
 ever carried. `drawcheck` reports what the specimen does not populate as well as
 what the layouts drop, because that half is the one nothing else can see.
+
+`npm run deckscore` is the one that answers a different question: not "is this
+broken" but "how does this run compare to the last one". Five components, each
+needing no model — intact, fits, grounded, varied, whole — so the same brief on
+Auto and on local, or a deck before and after a prompt change, produce numbers
+that can be set beside each other. It does not claim a high score is a good
+deck: every component is necessary and none is sufficient. It exists so that a
+deck broken in a way somebody already found once cannot quietly come back.
 
 None of them replaces looking. A wrapped figure fits its box fragment by
 fragment; a five-character value is under the text check's word floor; three
