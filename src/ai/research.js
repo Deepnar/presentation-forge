@@ -255,6 +255,48 @@ function missingFacts(facts, notes) {
 }
 
 /**
+ * Host diversity across the CORPUS, not just within one query.
+ *
+ * `search()` caps results per host at 2 and says why: "SearXNG happily returns
+ * eight pages from one domain and a model given those will write a report
+ * sourced entirely from one site." But that cap is PER QUERY, and a deep
+ * research run makes eight of them plus follow-ups, absorbing into a corpus
+ * deduped by URL alone — so the guard bought nothing at the level it was
+ * written to protect. A real run came back three-tenths Wikipedia, including
+ * the mineralogy article for a deck about solar cells.
+ *
+ * Overflow is kept rather than discarded. On a topic where one authority
+ * genuinely holds the material, starving the corpus to enforce variety is the
+ * worse failure, so the surplus goes back if too little else arrives.
+ */
+export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6 } = {}) {
+  const hostOf = (u) => {
+    try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return String(u); }
+  };
+  const hostCount = new Map();
+  const overflow = [];
+
+  const absorb = (batch) => {
+    for (const item of batch ?? []) {
+      if (!item?.ok || seenUrl.has(item.url)) continue;
+      seenUrl.add(item.url);
+      const host = hostOf(item.url);
+      const seen = hostCount.get(host) ?? 0;
+      if (seen >= maxPerHost) { overflow.push(item); continue; }
+      hostCount.set(host, seen + 1);
+      pages.push(item);
+    }
+  };
+
+  /** Put the surplus back when the diverse corpus is too thin to write from. */
+  const backfill = () => {
+    while (pages.length < minCorpus && overflow.length) pages.push(overflow.shift());
+  };
+
+  return { absorb, backfill };
+}
+
+/**
  * The deep research pass: expand the brief into angle queries, run each at a
  * higher read budget than the single-shot `researchQuery`, then follow up on
  * the top sources, then close the two gaps the diversity guard finds (missing
@@ -279,14 +321,10 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
   const pages = [];
   const seenUrl = new Set();
 
-  const absorb = (batch) => {
-    for (const item of batch) {
-      if (item.ok && !seenUrl.has(item.url)) {
-        seenUrl.add(item.url);
-        pages.push(item);
-      }
-    }
-  };
+  const { absorb, backfill } = hostDiversifier(pages, seenUrl, {
+    maxPerHost: p.max_per_host,
+    minCorpus: p.min_corpus,
+  });
 
   for (const q of queries) {
     onProgress?.({ query: q });
@@ -295,6 +333,8 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
 
   // Follow up the top sources: the richest extracted pages, queried for the
   // material around them. Capped so a degenerate brief cannot spin forever.
+  backfill();
+
   const top = [...pages]
     .sort((a, b) => (b.words ?? 0) - (a.words ?? 0))
     .slice(0, p.followup_sources);
@@ -328,6 +368,9 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
       absorb((await researchQuery(q, { limit: p.gap_limit, read: p.gap_read })).pages);
     }
   }
+
+  // Last chance to put the surplus back: the gap queries may have added little.
+  backfill();
 
   return { query: brief, pages };
 }
