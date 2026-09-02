@@ -3658,12 +3658,18 @@ with `--critic`.
   deck about solar cells. Now capped across the corpus, with the surplus put
   back if too little else arrives — on a topic where one authority holds the
   material, starving the corpus is the worse failure.
-- **Speaker script.** Works: 14 of 14 segments, anchored per slide, readable
-  spoken prose grounded in the research. One defect — the prompt asks a divider
-  for "a short spoken transition, 40-80 words" and the writer produced a
-  200-word monologue instead, the same weight as the content slides. The cap is
-  in the grammar now rather than the prose, with the sentence-heal behind it so
-  a tighter bound cannot cut a presenter off mid-sentence.
+- **Speaker script.** Works in shape — anchored per slide, readable spoken
+  prose grounded in the research — and four defects came out of reading it.
+  The prompt asks a divider for "a short spoken transition, 40-80 words" and
+  the writer produced a 200-word monologue; the cap is in the grammar now, with
+  the sentence-heal behind it so a tighter bound cannot cut a presenter off
+  mid-sentence. Slide 13 was written as the single character `}` — minLength 1
+  is satisfied by a brace — and then PRESERVED across regenerations by "keep
+  previous words", which is right for a transient failure and wrong when the
+  previous words are the failure. A slide whose segment failed left a silent
+  hole in a file that is downloadable, so the reader saw 11, 13 and no reason
+  why. And `--slide` was 0-based while every number the product shows a user is
+  1-based, so `--slide 12` rewrote slide 13.
 - **Critic.** Runs only under `--critic` and uses the `critic` role. Not
   exercised this session; it is the one component still unswept.
 
