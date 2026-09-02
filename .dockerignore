@@ -21,11 +21,19 @@ reference
 
 # Local secrets and real accounts.
 .env
-config/identity.yaml
-config/local.yaml
-config/users.json
-config/sessions.json
-config/presets
+
+# config/ is deny-by-default: everything is excluded and the two committed
+# templates are re-included by name. An allow-list of state files to exclude
+# was the previous shape and it went stale silently — it named users.json and
+# sessions.json, the account store from before the SQLite migration, so
+# forge.db (accounts, password hashes, the encrypted BYOK vault, Auto usage)
+# and config/uploads (users' own research documents) were both copied into the
+# image. Nothing at /app/config is read at runtime — FORGE_CONFIG_DIR points at
+# the volume — but an image layer is readable by anyone who pulls it. Adding a
+# stateful file under config/ must not require remembering this file.
+config/*
+!config/models.yaml
+!config/identity.example.yaml
 
 # Rendered documents.
 *.pptx
