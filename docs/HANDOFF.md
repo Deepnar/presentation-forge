@@ -1,168 +1,165 @@
-# Handoff — 2026-09-01, the landing rebuilt; the app and the hosting gaps next
+# Handoff — 2026-09-02, hosting blockers closed; the content half is next
 
-Everything is on `origin/main`. `npm test` is 391 passing, the working tree is
-clean.
+Everything is on `origin/main`. `npm test` is 422 passing, `npm run themematrix`
+is clean across 34 themes, the working tree is clean.
 
-**Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
-operational map. `docs/ARCHITECTURE.md` has a new section — **The design
-system, and the landing page** — describing the token layer, the scene
-mechanics and the imagery pipeline. `docs/TRAPS.md` holds the cross-cutting
-failure modes and outlives this file. This file is only what those do not say.
+**Start here.** `AGENTS.md` is the working agreement and has a **new section —
+*Which model to judge the product by***; read it before running anything.
+`CLAUDE.md` is the operational map. `docs/ARCHITECTURE.md` gained three
+sections this session. `docs/TRAPS.md` holds the cross-cutting failure modes
+and outlives this file. This file is only what those do not say.
 
 ---
 
-## Do this first
+## The one thing that will decide next session
 
-The front-end item is no longer blocked and no longer needs a question asked.
-Direction was agreed, the landing was built to it, and the remaining work has
-its own roadmap entries. Take them in this order:
+**The TCET gateway is down for generation, and it fails in a shape that looks
+like health.** Check it first, before planning anything:
 
-1. **`docs/ROADMAP.md` → "Hosting blockers — what strands a real user".**
-   Password reset, email verification, and the report donor failing quietly.
-   None is taste, none is visible in a demo, and the first one locks a real
-   person out of their account permanently. **This is the gate on inviting
-   anybody.**
-2. **`docs/ROADMAP.md` → "The deck workspace — too many doors, no front one".**
-   The page users live in, never designed. Eight controls before any content
-   and no primary action.
+```bash
+curl -s -o /dev/null -m 20 -w "models %{http_code} %{time_total}s\n" \
+  https://ai.tcetcercd.in/v1/models -H "Authorization: Bearer $FORGE_TCET_API_KEY"
+curl -s -m 90 -w "\nchat %{http_code} %{time_total}s\n" \
+  https://ai.tcetcercd.in/v1/chat/completions \
+  -H "Authorization: Bearer $FORGE_TCET_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"model":"qwen3.6","messages":[{"role":"user","content":"Say ok"}],"max_tokens":4}'
+```
+
+As of the last check: `/v1/models` answers **200 in 0.68s**, `/v1/chat/completions`
+returns **nothing in 90s** (HTTP 524 from Cloudflare at ~125s). Streaming does
+not help; both the configured id `qwen3.6` and the served id
+`/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast` hang identically. The API front
+is up and the vLLM box behind it is not. Nothing in this repo can fix it.
+
+- **Gateway up →** do the content items below on Auto, as `AGENTS.md` says.
+- **Gateway down →** local Ollama is for *exercising* the pipeline only, never
+  for judging output quality. Read the rule in `AGENTS.md`; it is written down
+  precisely so this does not get fudged.
+
+**Also verify once the gateway is back:** `config/models.yaml` declares
+`tcet-auto.models: [qwen3.6]`, but `/v1/models` reports the id as
+`/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast`. Both hang right now so it is
+untested whether the short alias is actually accepted. If it is not, hosted
+generation fails even against a healthy server.
+
+## Running anything locally — read this or waste an hour
+
+**This machine is flipped to hosted.** `config/hosted.json` has
+`"hosted": true` (set 2026-08-23). In hosted mode `resolveRole` never looks at
+installed models: every role goes to the gateway, and when the gateway has no
+key it **falls through to whatever BYOK provider holds one**. On this box that
+is `opencode-go` in `config/local.yaml` — the agent's subscription per
+`AGENTS.md`, not the product's budget.
+
+So a plain `chat()` here silently ran `deepseek-v4-flash`. To actually test on
+local, flip the box first (Admin → System → "Switch to local", or edit
+`config/hosted.json`) and confirm with:
+
+```bash
+node -e 'const {roleAudit}=await import("./src/ai/ollama.js");console.log(await roleAudit())'
+```
+
+It answers `hosted — roles resolve through the gateway or BYOK, not local
+models` while hosted, and lists the four roles once it is not. All four
+configured models **are** installed; the roadmap entry claiming otherwise was
+stale and is now closed.
+
+---
+
+## What to tackle next
+
+1. **`docs/ROADMAP.md` → "Reports — structure, and the wait"** — marked `[~]`.
+   The wait half is done and measured (16.9s → 6.7s). The structure half is
+   untouched: whether the report says anything worth reading. **Needs the
+   gateway.** This is the natural next item and the one the direction change
+   was about.
+2. **"Research and content flow, end to end"** — needs a model. Whether the
+   briefing actually steers the research and whether the research reaches the
+   page. The plumbing half can be exercised on local; the judgement half cannot.
 3. **"The full functional sweep"** — every function exercised in the running
-   app. Never done, and it is the item that finds what nobody predicted.
-
-**Do not treat the core as finished.** Reports still "do not feel good", the
-research→content flow is unverified end to end, and the fitter measures
-letter-spacing in the wrong unit. The renderer is the strongest part of this
-product; it is not a solved part.
-
----
+   app. Reset, confirmation, the four project pages and the report split all
+   landed this session and want a real pass over them.
+4. **"The admin panel, swept"** — new entry, no model needed. Three panels were
+   added to that page this session and nothing on it had ever been reviewed.
+   Good gateway-down work.
+5. **§10 "Every theme against every slide type"** and **"The visual audit, at
+   schema caps"** — no model, both still open, both are looking rather than
+   building.
 
 ## What was done this session
 
-**A real design system.** Light and dark, resolved before first paint,
-persisted, three-way (system is reachable). Controls in Settings and in the
-profile popup. Contrast pairs are tokenised — `on-accent`, `on-danger` —
-because the accent inverts wholesale and a literal white foreground becomes
-*invisible*, not merely wrong.
+**Hosting blockers — closed.** Password reset and address confirmation, single-
+use tokens stored as SHA-256, `#/reset/<token>` and `#/verify/<token>` screens
+above the auth gate. A completed reset kills every session for the account.
+`forgot` answers identically whatever the truth is, and dispatches rather than
+awaits the send so a real address is not measurably slower than an unknown one.
+The verification gate is default-deny by method at the workspace entrance
+(`verifiedRequestOnly` in `src/auth.js`) — reading free, changing gated, DELETE
+open. It sits there rather than on the Auto tier because routing resolves per
+request and falls back, so a per-provider gate leaks.
 
-**Every text colour re-picked against the worst ground it lands on**, not
-against white. `fg-faint` was 2.56:1 on a panel; `amber` was 1.94:1, which is
-not a colour, it is a suggestion. Both themes audit clean now: 0 failures over
-230 text nodes, measured in a real browser.
+**The deck workspace — closed.** It is a project of four pages now: `Deck ·
+Report · Research · Script`, plain links under the title, routes not tabs.
+Report and Research were thinner copies of views that were already routed, so
+`DeckDetail` lost ~350 lines. The header carries one action chosen by stage, and
+none while the run banner is up.
 
-**The landing page rebuilt** as pinned scenes — hero, pipeline, slide
-vocabulary, theme cycle, feature grid, verification. Vertical scroll is the
-only input; nothing has to be clicked or dragged to reveal content. The
-pipeline's seven panels are hand-written markup of the actual interface rather
-than screenshots, so they cannot go stale against the product they draw.
+**Model roles — closed.** `roleAudit()` surfaces substitutions that were
+recorded and never read.
 
-**The app is usable on a phone.** The sidebar was a 256px column on a 390px
-screen, leaving the app 134px; below 768px it is an off-canvas drawer over a
-scrim. The landing stacks the scenes it cannot pin.
+**Reports, the wait — halved.** See the roadmap entry for the measurements.
 
-**Two renderer defects, both found by looking.**
+**Four "healthy-looking box" defects, all the same shape.** A missing report
+donor, absent SMTP, a substituted model, and a dead gateway all used to show
+green or nothing. All four now report at boot and on Admin → System.
 
-- **Fixed:** `callout`, `takeaway` and `compare`'s verdict bar painted their
-  label in `accent_alt` on an ink-filled panel. **17 of 34 themes** were below
-  3:1 against the panel the text sits on. `test/contrast.test.js` now covers
-  that third surface.
-- **Recorded, not fixed:** the fitter reads a type token's `tracking` as a
-  percentage of the em; the renderer hands the same number to pptxgenjs as
-  `charSpacing`, which is points. They disagree by `100/size`, so the 10pt
-  uppercase eyebrow is measured at roughly a tenth of its real letter-spacing
-  and `matrix`'s rotated axis wraps `CONTRACT / ED` with every check clean.
-  See `docs/TRAPS.md`. **Fixing it moves the fit verdict for the whole gallery
-  and wants its own round against a fresh `themematrix --save` baseline.**
+## Traps this session paid for
 
-**Auto tier tightened twice.** A recorded "request" is one pipeline operation,
-not a model call — read correctly the old caps were 12–25 decks per account per
-week on the operator's key. Now 12 requests / 45 slides per **five-hour**
-window, 30 / 90 per week. Five hours rather than one because an hour is shorter
-than a sitting.
+All four are in `docs/TRAPS.md`. The two that will bite again soonest:
 
-## The state of the checks
+**`app.use("/api/x/:param")` shadows every literal route registered after it.**
+`POST /api/decks/search` was dead for every non-admin for months — admins pass
+the ownership check that shadows it, so the operator's own box worked. Fixed,
+with the first HTTP-level test in the suite (`test/routing.test.js`), because
+route order is not reachable from a unit test.
 
-| check | result |
-|---|---|
-| `npm test` | 391 passing |
-| `npm run themematrix` | clean, 34 themes x 73 types |
-| `npm run themematrix -- --deck decks/_public/landing/deck.yaml` | clean, 25 slides x 34 themes |
-| landing contrast audit, both themes | 0 failures / 230 nodes |
-| landing blank-viewport scan | 0 empty stops / 17.4 screens |
-| landing at 390px | no horizontal overflow; scenes that cannot pin, stack |
+**A hover-revealed control is absent on a phone, not hidden.**
+`matchMedia("(hover: hover)")` is false on touch, so the per-slide toolbar's
+Edit/Punch/Swap were unreachable and the slide editor could not be opened at
+all.
 
-## New instruments
+Also: a module-level `const` reading `process.env` defeats a seam that sets it
+(`src/db.js`'s test seam had never once worked), and identical function
+preambles make a whole-file replace land twice.
 
-`tools/landing.mjs` (`npm run landing`) renders `decks/_public/landing/deck.yaml`
-across a chosen cast into committed WebP — 46 frames, 0.52 MB — plus a manifest
-carrying dimensions, measured darkness and the slide-type count, so the page
-hardcodes no number. **The deck is committed and swept**: it clears
-`themematrix` on all 34 themes, so the imagery is produced by the real renderer
-under the real constraints.
+## Instruments worth reusing
 
-## Traps this session paid for, that will bite again
-
-**`overflow-x: hidden` silently kills `position: sticky`.** One axis hidden and
-the other visible is invalid CSS, so the browser promotes the visible axis to
-`auto`, and an element with `overflow-y: auto` is a scroll container — which is
-what sticky sticks to. Undoing it with `overflow-visible` on the same element
-does not work. This cost two rounds because **signed out the landing was
-perfect and signed in every scene stuck to the wrong box**: eleven empty
-viewports against none, same build. Test the landing signed IN.
-
-**Two display utilities on one element are resolved by Tailwind's ordering, not
-by the order you wrote them.** `hidden sm:inline-flex` on a `<Button>` lost to
-the component's own base `inline-flex`, and the composer showed two send
-buttons on every phone. Wrap the element instead of fighting the cascade.
-
-**An effect that binds to an element rendered later never rebinds.** A scene
-returning `null` until its data arrives has no element on first render, and a
-ref's identity never changes, so `[ref]` alone left the observer attached to
-nothing. `useSceneProgress` takes explicit deps for exactly this. The failure
-looks like a scene that works but never advances — the hardest kind to see.
-
-**IntersectionObserver does not fire in a hidden or prerendering tab** — the
-state a link-preview bot, a background tab and a headless capture are all in.
-Anything that hides content until observed must fail OPEN.
-
-**The Browser pane cannot verify anything while it is hidden**: no compositing,
-so no screenshots and no `requestAnimationFrame`. Drive Chrome over CDP instead
-(`--remote-debugging-port`; Node 24 has a global `WebSocket`). Scratch scripts
-for scene capture, blank-scanning, mobile emulation and contrast auditing were
-written this session — throwaway, but the technique is worth repeating, and the
-blank-viewport scan is what proved the scrolling complaint fixed rather than
-believed fixed.
+- **CDP screenshots.** The Browser pane cannot composite while hidden, so drive
+  Chrome with `--remote-debugging-port` (Node 24 has a global `WebSocket`).
+  Two gotchas: `/json/new` needs a **PUT**, and setting `localStorage` then
+  reloading kills the evaluation mid-flight — seed the token on the origin
+  *before* navigating.
+- **A local SMTP sink** (~40 lines, `node:net`) plus a launch config with
+  `FORGE_SMTP_*` and scratch `FORGE_CONFIG_DIR`/`FORGE_DECKS_DIR` is how the
+  reset and confirmation flows were driven end to end. Scratch dirs keep test
+  accounts out of the dev `config/forge.db`, which already holds 100+.
+- **The API serves `app/web/dist`**, so `npx vite build` once and the whole app
+  runs on ONE port with no Vite proxy — also how production runs, and it dodges
+  another chat's dev server on 5173/5174.
+- Admin tab labels are lowercase with CSS `capitalize`; clicking "System" from
+  a script finds nothing, the text is `system`.
 
 ## Known and not fixed
 
-- **`venn`'s caps are too generous** — §10, unchanged.
+- **The fitter's `tracking` unit bug** — unchanged, still wants its own round
+  against a fresh `themematrix --save` baseline.
+- **`venn`'s caps are too generous** — §10.
 - **`feature-grid`** is two lines of speaker-note debt on `minimal-muji`.
-- **`matrix` is held out of the landing showcase** with its reason recorded in
-  `tools/landing.mjs`; it returns when the tracking bug is fixed.
-- The landing cast excludes `aurora-mesh`, `sunset` and `gradient-mesh-dark`.
-  They work and stay usable — they are just not what the product should flaunt.
-  Dropping `gradient-mesh-dark` was an inference from "no gradient themes", not
-  an explicit instruction; check before adding it back.
-- **`SlideEditor.jsx` and the deck/report views on a phone are unverified.**
-
-## Generation
-
-Unchanged. The TCET gateway answers in under a second with
-`FORGE_TCET_API_KEY` in a gitignored `.env`.
-
-```bash
-FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
-FORGE_HOSTED=1 npm run forge -- generate <slug>
-```
-
-Generating a deck spends the operator's gateway budget — ask before doing it to
-look at a UI, or point a local Ollama at it.
-
-## Known and deliberate
-
-- The callout bar inverts to light on dark themes. Consistent and intentional.
-- `config/identity.yaml` on the dev machine reads `institution.name: HACKED`.
-- The dev account store holds well over a hundred throwaway test accounts, and
-  this session added `uxprobe@example.com` to reach the signed-in screens. That
-  database must not travel to production.
+- **`matrix` is held out of the landing showcase** until the tracking bug is fixed.
+- `config/identity.yaml` on this machine reads `institution.name: HACKED`.
+- The dev account store holds 100+ throwaway accounts and must not reach
+  production. Nothing was added to it this session — everything ran against
+  scratch config dirs.
 - `decks/electrochemical-impedance-spectroscopy-for-l` is the real-content
   fixture. Every check takes `--deck`; use it.
 - `FORGE_GEOM_TRACE=1` prints the stack behind a geometry verdict.
