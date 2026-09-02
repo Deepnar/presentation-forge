@@ -213,6 +213,8 @@ Presentation Forge has no external database requirement. Deck workspaces are ord
 
 Model calls remain on the machine when using Ollama. Research providers and an explicitly selected hosted model provider involve network requests; the saved deck, research files, and account data remain in the configured local storage.
 
+**Retention.** An installation deletes nothing on its own unless `FORGE_SWEEP_DAYS` is set. Where it is, a deck is removed after that many days *without activity* — the clock is inactivity, not age — and a deck marked `keep` is exempt. `GET /api/policy` reports what the running installation actually enforces, and the in-app notice renders that value rather than a number written into the page, so the policy shown cannot drift from the scheduler enforcing it.
+
 ## Docker deployment
 
 The Compose setup builds the application with Node, LibreOffice, Poppler, Chromium, the 27 theme font families, and a separate SearXNG service, behind an optional Caddy TLS terminator. Persistent state lives in the `forge_data` volume, so rebuilding the image does not remove decks, accounts, configuration, brand assets, the report donor, or the plate cache.

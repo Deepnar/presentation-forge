@@ -1,20 +1,19 @@
-# Handoff — 2026-09-02, hosting blockers closed; the content half is next
+# Handoff — 2026-09-02, the pipeline swept end to end; hosting blockers are next
 
-Everything is on `origin/main`. `npm test` is 422 passing, `npm run themematrix`
-is clean across 34 themes, the working tree is clean.
+Everything is on `origin/main`. `npm test` is **481 passing**, `npm run
+themematrix` is clean across 34 themes, the working tree is clean. 39 commits
+this session.
 
-**Start here.** `AGENTS.md` is the working agreement and has a **new section —
-*Which model to judge the product by***; read it before running anything.
-`CLAUDE.md` is the operational map. `docs/ARCHITECTURE.md` gained three
-sections this session. `docs/TRAPS.md` holds the cross-cutting failure modes
-and outlives this file. This file is only what those do not say.
+**Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
+operational map. `docs/TRAPS.md` gained nine entries this session and outlives
+this file. This file is only what those do not say.
 
 ---
 
 ## The one thing that will decide next session
 
-**The TCET gateway is down for generation, and it fails in a shape that looks
-like health.** Check it first, before planning anything:
+**The TCET gateway is still down for generation**, and it still fails in a shape
+that looks like health. Check it first:
 
 ```bash
 curl -s -o /dev/null -m 20 -w "models %{http_code} %{time_total}s\n" \
@@ -25,141 +24,182 @@ curl -s -m 90 -w "\nchat %{http_code} %{time_total}s\n" \
   -d '{"model":"qwen3.6","messages":[{"role":"user","content":"Say ok"}],"max_tokens":4}'
 ```
 
-As of the last check: `/v1/models` answers **200 in 0.68s**, `/v1/chat/completions`
-returns **nothing in 90s** (HTTP 524 from Cloudflare at ~125s). Streaming does
-not help; both the configured id `qwen3.6` and the served id
-`/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast` hang identically. The API front
-is up and the vLLM box behind it is not. Nothing in this repo can fix it.
+Unchanged all session: `/v1/models` answers 200 in ~0.6s, `/v1/chat/completions`
+returns nothing in 90s. Everything generated this session ran on **local
+Ollama**, which is why every content-quality question below is still open.
 
-- **Gateway up →** do the content items below on Auto, as `AGENTS.md` says.
-- **Gateway down →** local Ollama is for *exercising* the pipeline only, never
-  for judging output quality. Read the rule in `AGENTS.md`; it is written down
-  precisely so this does not get fudged.
-
-**Also verify once the gateway is back:** `config/models.yaml` declares
-`tcet-auto.models: [qwen3.6]`, but `/v1/models` reports the id as
-`/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast`. Both hang right now so it is
-untested whether the short alias is actually accepted. If it is not, hosted
-generation fails even against a healthy server.
-
-## Running anything locally — read this or waste an hour
-
-**This machine is flipped to hosted.** `config/hosted.json` has
-`"hosted": true` (set 2026-08-23). In hosted mode `resolveRole` never looks at
-installed models: every role goes to the gateway, and when the gateway has no
-key it **falls through to whatever BYOK provider holds one**. On this box that
-is `opencode-go` in `config/local.yaml` — the agent's subscription per
-`AGENTS.md`, not the product's budget.
-
-So a plain `chat()` here silently ran `deepseek-v4-flash`. To actually test on
-local, flip the box first (Admin → System → "Switch to local", or edit
-`config/hosted.json`) and confirm with:
-
-```bash
-node -e 'const {roleAudit}=await import("./src/ai/ollama.js");console.log(await roleAudit())'
-```
-
-It answers `hosted — roles resolve through the gateway or BYOK, not local
-models` while hosted, and lists the four roles once it is not. All four
-configured models **are** installed; the roadmap entry claiming otherwise was
-stale and is now closed.
+`FORGE_DEV_LOCAL_FALLBACK=1` now exists for exactly this — an unreachable
+gateway drops to local mid-request so the pipeline stays exercisable. Read the
+section in `CLAUDE.md`: it is off by default, env-only, and a fallback run
+tells you nothing about quality.
 
 ---
 
-## What to tackle next
+## What to do next, in the order I would do it
 
-1. **`docs/ROADMAP.md` → "Reports — structure, and the wait"** — marked `[~]`.
-   The wait half is done and measured (16.9s → 6.7s). The structure half is
-   untouched: whether the report says anything worth reading. **Needs the
-   gateway.** This is the natural next item and the one the direction change
-   was about.
-2. **"Research and content flow, end to end"** — needs a model. Whether the
-   briefing actually steers the research and whether the research reaches the
-   page. The plumbing half can be exercised on local; the judgement half cannot.
-3. **"The full functional sweep"** — every function exercised in the running
-   app. Reset, confirmation, the four project pages and the report split all
-   landed this session and want a real pass over them.
-4. **"The admin panel, swept"** — new entry, no model needed. Three panels were
-   added to that page this session and nothing on it had ever been reviewed.
-   Good gateway-down work.
-5. **§10 "Every theme against every slide type"** and **"The visual audit, at
-   schema caps"** — no model, both still open, both are looking rather than
-   building.
+### 1. The four hosting blockers (no model, all concrete)
 
-## What was done this session
+These are the ones a stranger hits, and none needs the gateway.
 
-**Hosting blockers — closed.** Password reset and address confirmation, single-
-use tokens stored as SHA-256, `#/reset/<token>` and `#/verify/<token>` screens
-above the auth gate. A completed reset kills every session for the account.
-`forgot` answers identically whatever the truth is, and dispatches rather than
-awaits the send so a real address is not measurably slower than an unknown one.
-The verification gate is default-deny by method at the workspace entrance
-(`verifiedRequestOnly` in `src/auth.js`) — reading free, changing gated, DELETE
-open. It sits there rather than on the Auto tier because routing resolves per
-request and falls back, so a per-provider gate leaks.
+- **The dev account store holds 100+ throwaway accounts** (`config/forge.db`)
+  and must not travel to production. Decide: ship an empty DB, or a documented
+  reset step in `docs/DEPLOY.md`.
+- **`config/identity.yaml` reads `institution.name: HACKED`.** Real values gone.
+  Identity is per account now, so the fix is Settings, but the file on this box
+  is still the operator default.
+- **`uniqueSlug` leaks across accounts.** It appends `-2`, `-4` against a global
+  namespace, so creating a deck reveals whether another user's title exists.
+  Per-account slug namespacing closes it.
+- **The report donor is install-wide.** A box serving more than one institution
+  serves the wrong letterhead. `donorStatus(refDir)` and `resolveDonor(explicit,
+  refDir)` already take the directory as a parameter, so this is a resolver that
+  reads `meta.owner`, not a reshape.
 
-**The deck workspace — closed.** It is a project of four pages now: `Deck ·
-Report · Research · Script`, plain links under the title, routes not tabs.
-Report and Research were thinner copies of views that were already routed, so
-`DeckDetail` lost ~350 lines. The header carries one action chosen by stage, and
-none while the run banner is up.
+### 2. Verify the gateway's two unknowns the moment it is back
 
-**Model roles — closed.** `roleAudit()` surfaces substitutions that were
-recorded and never read.
+- **Is `qwen3.6` accepted as an alias?** `config/models.yaml` declares it;
+  `/v1/models` reports the id as `/home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast`.
+  If the short form is rejected, hosted generation fails against a *healthy*
+  server. Untestable while it is down.
+- **Is qwen3.6 actually multimodal?** `models.yaml` now lists it under
+  `tcet-auto.vision_models` and the entry is marked **UNVERIFIED** in the file —
+  it is on the operator's report, not on a real image request. If it is
+  text-only, delete that one line and the critic correctly skips instead of
+  inventing findings. See §4.
 
-**Reports, the wait — halved.** See the roadmap entry for the measurements.
+### 3. Content quality — the whole half that is still unmeasured
 
-**Four "healthy-looking box" defects, all the same shape.** A missing report
-donor, absent SMTP, a substituted model, and a dead gateway all used to show
-green or nothing. All four now report at boot and on Admin → System.
+Everything fixed this session was mechanical: structure, placement, escaping,
+truncation, targeting. All of it is true whatever model writes the words. What
+has never been answered:
+
+- Does the deck **argue** anything?
+- Is the research any good? (It is *diverse* now; that is not the same thing.)
+- Does the report **read** well?
+
+`AGENTS.md` is explicit that these are answered on Auto and nowhere else.
+
+### 4. Run the critic loop end to end
+
+The vision gate was built and the loop was never watched. `--critic` renders
+every slide, sends the PNG to the `critic` role, and hands the findings to a
+fix turn that EDITS THE DECK — so a critic that cannot see is worse than none.
+
+On the two-model question, since it came up: **hosted runs one model.** Critic
+and author both resolve to the gateway. The split is local-only and forced —
+Ollama reports `qwen3-coder:30b` as `completion,tools` and `gemma4:26b` as
+`completion,vision,tools`, so the author physically cannot read a slide.
+Locally the model is now asked what it can do (`/api/show`); remotely the
+provider declares `vision_models`.
+
+### 5. Surfaces never exercised
+
+Each is a real user path that nothing has run:
+
+- **The browser UI for chat and convert.** All of this session's turns went
+  through the CLI and `runChatTurn`. The HTTP route was verified separately, the
+  UI was not driven. (A deck generated by the CLI has no `meta.owner`, so a test
+  account cannot open it — set one to drive the UI against a real deck.)
+- **Auth flows** — register, login, password reset, email verification. Built
+  the session before last, never re-verified.
+- **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
+  entry points, zero runs.
+- **Presenter assignment with a real team.** Every deck this session had no
+  team, so every slide rendered `Presenter: —`.
+- **Rate limits and quotas** under real load.
+
+### 6. Still-open roadmap items
+
+`docs/ROADMAP.md` has the detail. The ones with teeth:
+
+- **The admin panel, swept** — deferred deliberately; it is the operator's own
+  surface, not a user's.
+- **The front end** — priority HIGHEST in the file. The briefing is fifteen
+  cards and a user who answers nothing still clicks through all fifteen; the
+  completed transcript reads "0 members / no guide set / no subject set". That
+  is product judgement and `AGENTS.md` says to ask before changing it.
+- **The fitter's `tracking` unit bug** — unchanged, still wants its own round
+  against a fresh `themematrix --save` baseline. Keeps `matrix` out of the
+  landing showcase.
+- **24 contrast pairings** clearing 3:1 but not 4.5:1 (`test/contrast.test.js`).
+- **`venn`'s caps** — measured at 14, declared at 30/27.
+
+---
+
+## What this session actually did
+
+Generated a real deck AND its report end to end, then read every page and
+exercised every post-generation path. Twenty-two defects, none of which any
+existing check reported.
+
+**The deck.** A missing `section` on 4 of 14 slides left the chrome eyebrow with
+no label. Six of nine speaker notes were cut mid-word at their cap. A heading
+rule was drawn under an absent heading. `framework` stranded its slack as a dead
+bottom third and `flow`'s labels floated an inch and a half clear of the chips
+they name. A `takeaway` with no headline had no title at all. `stats` broke
+`<1000h` into two lines and printed a caption on top of "commercializat/ion"
+after a theme switch. The deck title overflowed on three themes because the
+grammar allowed 90 characters where 52 fits everywhere.
+
+**The report.** Raw JSON typeset as body prose. A reference that ran 600
+characters of `[Google Scholar] [PubMed]` repeated twenty times. A data table in
+the Abstract.
+
+**The edit paths.** A chat turn edited slide 6 when told slide 5, and reported
+success. A turn wrote one type's fields onto another's slide, validated, and
+rendered identically. The ops array was unbounded — the documented runaway shape.
+An edit ran *no* post-turn pass at all.
+
+**The rest.** Finalize was manual and silently so. Research diversified per query
+rather than per corpus. A script segment was written as the single character
+`}`. `--slide 12` rewrote slide 13.
+
+---
 
 ## Traps this session paid for
 
-All four are in `docs/TRAPS.md`. The two that will bite again soonest:
+All nine are in `docs/TRAPS.md`. The three that will bite again soonest:
 
-**`app.use("/api/x/:param")` shadows every literal route registered after it.**
-`POST /api/decks/search` was dead for every non-admin for months — admins pass
-the ownership check that shadows it, so the operator's own box worked. Fixed,
-with the first HTTP-level test in the suite (`test/routing.test.js`), because
-route order is not reachable from a unit test.
+**A rule stated in prose is a hint; the grammar is what binds.** Three separate
+components failed this way — the slide selection ("applies to EXACTLY these"),
+the divider length ("40-80 words"), the host diversity ("per host"). Each was
+correct as written and enforced nothing.
 
-**A hover-revealed control is absent on a phone, not hidden.**
-`matchMedia("(hover: hover)")` is false on touch, so the per-slide toolbar's
-Edit/Punch/Swap were unreachable and the slide editor could not be opened at
-all.
+**Constrained decoding constrains the type and the length, never whether the
+characters read as English.** A schema asking for strings is satisfied by
+strings that are JSON. And a field sitting exactly AT its cap was cut by the
+grammar, not finished by the writer — invisible to an over-cap check and to an
+ellipsis check alike.
 
-Also: a module-level `const` reading `process.env` defeats a seam that sets it
-(`src/db.js`'s test seam had never once worked), and identical function
-preambles make a whole-file replace land twice.
+**A field the schema offers is a field the model will fill.** The table reached
+the Abstract because the grammar offered it there.
+
+---
 
 ## Instruments worth reusing
 
-- **CDP screenshots.** The Browser pane cannot composite while hidden, so drive
-  Chrome with `--remote-debugging-port` (Node 24 has a global `WebSocket`).
-  Two gotchas: `/json/new` needs a **PUT**, and setting `localStorage` then
-  reloading kills the evaluation mid-flight — seed the token on the origin
-  *before* navigating.
-- **A local SMTP sink** (~40 lines, `node:net`) plus a launch config with
-  `FORGE_SMTP_*` and scratch `FORGE_CONFIG_DIR`/`FORGE_DECKS_DIR` is how the
-  reset and confirmation flows were driven end to end. Scratch dirs keep test
-  accounts out of the dev `config/forge.db`, which already holds 100+.
-- **The API serves `app/web/dist`**, so `npx vite build` once and the whole app
-  runs on ONE port with no Vite proxy — also how production runs, and it dodges
-  another chat's dev server on 5173/5174.
-- Admin tab labels are lowercase with CSS `capitalize`; clicking "System" from
-  a script finds nothing, the text is `system`.
+- **Generate, then LOOK.** Every one of the twenty-two came from payloads a
+  model actually wrote — an omitted optional field, a note stopped at its cap,
+  paragraphs that were JSON. The specimen carries none of those shapes, so every
+  sweep over it stays clean. `--deck` on a real generated deck is not a nicer
+  specimen sweep; it is the only version that asks the question.
+- **Instrument the failure before fixing it.** Finalize looked like it stranded
+  decks on a dead gateway. A chat stub that counted calls and threw showed three
+  calls attempted, all thrown, and finalize completing anyway — the model passes
+  catch their own errors. The real cause was that recovery was a button.
+- **At schema caps the layouts hold.** Six bullets at the 160-char ceiling are
+  clean across all 34 themes. A valid overfull fixture is not constructible
+  without contriving one, so use a real deck rather than writing a test that
+  passes because nothing was overfull.
+- `FORGE_GEOM_TRACE=1` prints the stack behind a geometry verdict.
 
 ## Known and not fixed
 
-- **The fitter's `tracking` unit bug** — unchanged, still wants its own round
-  against a fresh `themematrix --save` baseline.
-- **`venn`'s caps are too generous** — §10.
-- **`feature-grid`** is two lines of speaker-note debt on `minimal-muji`.
-- **`matrix` is held out of the landing showcase** until the tracking bug is fixed.
-- `config/identity.yaml` on this machine reads `institution.name: HACKED`.
-- The dev account store holds 100+ throwaway accounts and must not reach
-  production. Nothing was added to it this session — everything ran against
-  scratch config dirs.
-- `decks/electrochemical-impedance-spectroscopy-for-l` is the real-content
-  fixture. Every check takes `--deck`; use it.
-- `FORGE_GEOM_TRACE=1` prints the stack behind a geometry verdict.
+- `decks/perovskite-solar-cells-stability-challenges-2` is the deck everything
+  above was found in — real generated content, kept as a fixture. Every check
+  takes `--deck`; use it.
+- The older `decks/electrochemical-impedance-spectroscopy-for-l` predates the
+  cap corrections and still reports over-length fields. That is the caps
+  working, not a regression.
+- `matrix` is held out of the landing showcase until the tracking bug is fixed.
+- `feature-grid` is two lines of speaker-note debt on `minimal-muji`.
