@@ -110,3 +110,51 @@ test("assembleReport cleans a References section's entries", () => {
   });
   assert.deepEqual(report.content.References.entries, ["Smith J. A paper. Journal 2020;1:1."]);
 });
+
+/**
+ * A field the schema offers is a field the model will fill.
+ *
+ * The table was offered on every section at full depth, so the writer put a
+ * five-row data table in the Abstract of a real generated report. An abstract
+ * is a prose summary of the whole document and a conclusion is its closing
+ * argument; neither carries a table in any academic format.
+ */
+
+test("prose-only sections are never offered a table", async () => {
+  const { sectionSchema } = await import("../src/ai/report.js");
+  for (const name of ["Abstract", "Conclusion", "Conclusions", "Summary", "Acknowledgement"]) {
+    const schema = sectionSchema(name, "full");
+    assert.ok(!schema.properties?.table, `${name} must not be offered a table`);
+  }
+});
+
+test("body sections still get a table at full depth, and never at brief", async () => {
+  const { sectionSchema } = await import("../src/ai/report.js");
+  for (const name of ["Introduction", "Theoretical Background", "Methodology"]) {
+    assert.ok(sectionSchema(name, "full").properties.table, `${name} should offer a table at full depth`);
+    assert.ok(!sectionSchema(name, "brief").properties.table, `${name} must not at brief depth`);
+  }
+});
+
+test("the prose-only check ignores case and surrounding space", async () => {
+  const { sectionSchema } = await import("../src/ai/report.js");
+  assert.ok(!sectionSchema("  ABSTRACT  ", "full").properties?.table);
+});
+
+test("a table on a prose-only section is stripped, and the section survives", async () => {
+  const { assembleReport } = await import("../src/ai/report.js");
+  const table = { header: ["a", "b"], rows: [["1", "2"]] };
+  const report = assembleReport(
+    { title: "T", sections: [{ name: "Abstract" }, { name: "Introduction" }] },
+    {
+      Abstract: { paragraphs: ["The abstract's prose."], table },
+      Introduction: { paragraphs: ["The introduction's prose."], table },
+    },
+  );
+  // Losing the Abstract would be far worse than losing its table, so the
+  // unwanted field goes and the section stays.
+  assert.ok(report.content.Abstract, "the section must survive");
+  assert.equal(report.content.Abstract.table, undefined);
+  assert.deepEqual(report.content.Abstract.paragraphs, ["The abstract's prose."]);
+  assert.deepEqual(report.content.Introduction.table, table, "a body section keeps its table");
+});

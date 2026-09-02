@@ -97,6 +97,17 @@ export function sanitizeReportPlan(plan) {
  * plus a table only at full depth. Brief depth caps paragraphs at a headline
  * plus three short sentences — short strings mean a visibly shorter report.
  */
+/** Sections that are prose by definition and never carry a table. */
+export const PROSE_ONLY_SECTIONS = new Set([
+  "abstract",
+  "conclusion",
+  "conclusions",
+  "acknowledgement",
+  "acknowledgements",
+  "summary",
+  "executive summary",
+]);
+
 export function sectionSchema(name, depth) {
   const brief = depth !== "full";
 
@@ -167,7 +178,12 @@ export function sectionSchema(name, depth) {
     },
   };
 
-  if (!brief) {
+  // An abstract is a prose summary of the whole report and a conclusion is its
+  // closing argument; neither carries a data table in any academic format. The
+  // grammar offered one on every section at full depth, so the writer put a
+  // five-row table in the Abstract of a real generated report. A field the
+  // schema offers is a field the model will fill.
+  if (!brief && !PROSE_ONLY_SECTIONS.has(name.trim().toLowerCase())) {
     out.properties.table = {
       type: "object",
       additionalProperties: false,
@@ -211,6 +227,16 @@ function validatorFor(name, depth) {
  *  is dropped from the report rather than poisoning it — the report analogue
  *  of generate.js's incremental deck validation. */
 export function validateSection(name, depth, data) {
+  // Strip before validating, never reject because of it. A prose-only section
+  // is not offered a table by the grammar, but any path that bypasses the
+  // grammar (a repaired turn, a differently-served model) can still attach
+  // one — and with additionalProperties:false that would drop the ABSTRACT
+  // rather than the table. Losing the section is much worse than losing the
+  // field, so the unwanted field is removed and the section kept.
+  if (data && typeof data === "object" && data.table && PROSE_ONLY_SECTIONS.has(String(name).trim().toLowerCase())) {
+    data = { ...data };
+    delete data.table;
+  }
   const v = validatorFor(name, depth);
   const ok = v(data);
   if (ok) return { ok: true, errors: [] };
@@ -345,9 +371,12 @@ export function cleanReference(raw) {
 }
 
 /** Drop the non-prose paragraphs from one section, keeping its other fields. */
-function cleanSection(section) {
+function cleanSection(section, name = "") {
   if (!section || typeof section !== "object") return null;
   const out = { ...section };
+  // The same rule on the write path: validateSection only returns a verdict,
+  // so the strip has to happen where the stored object is built as well.
+  if (out.table && PROSE_ONLY_SECTIONS.has(String(name).trim().toLowerCase())) delete out.table;
   if (Array.isArray(out.entries)) {
     const entries = out.entries.map(cleanReference).filter(Boolean);
     if (!entries.length) return null;
@@ -368,7 +397,7 @@ function cleanSection(section) {
 export function assembleReport(plan, sectionsData) {
   const content = {};
   for (const spec of plan.sections) {
-    const cleaned = cleanSection(sectionsData[spec.name]);
+    const cleaned = cleanSection(sectionsData[spec.name], spec.name);
     if (cleaned) content[spec.name] = cleaned;
   }
   return {
