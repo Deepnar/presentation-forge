@@ -13,8 +13,13 @@ export default function ProfileChip({ user, identity, onOpenSettings, collapsed 
     return (
       <button
         onClick={onOpenSettings}
-        title="Settings"
-        aria-label="Settings"
+        // Named for the account, not for Settings: the shell hands this chip
+        // `onOpenProfile`, so it opens the profile modal while the gear two
+        // rows up opens Settings. Both claiming "Settings" left the collapsed
+        // rail with two identically-named controls going to different places
+        // — indistinguishable to a screen reader, and wrong in the tooltip.
+        title={name}
+        aria-label={`Account — ${name}`}
         className="grid h-8 w-8 place-items-center rounded-full bg-accent/15 text-[11px] font-semibold uppercase text-accent transition hover:bg-accent/25"
       >
         {name[0] ?? "?"}

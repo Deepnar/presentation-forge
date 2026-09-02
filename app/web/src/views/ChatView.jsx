@@ -1228,9 +1228,11 @@ export default function ChatView({
                   state={presetSaveState}
                 />
                 <span className="text-[11px] text-fg-faint">
+                  {/* A plain "&" — these are JS strings, not JSX text, so an
+                      HTML entity here is printed rather than decoded. */}
                   {chat.kind === "report"
-                    ? "The only thing that starts research &amp; writing."
-                    : "The only thing that starts research &amp; planning."}
+                    ? "The only thing that starts research & writing."
+                    : "The only thing that starts research & planning."}
                 </span>
               </div>
             </Panel>
@@ -1328,7 +1330,12 @@ export default function ChatView({
                 : "A report is researched and written from your topic — depth defaults to brief."
               : phase === "briefing" ? "Answer in the card above, or type the answer here and send."
                 : phase === "editing" ? "Select slides on the right, then type — the AI knows exactly which you mean."
-                  : "The app does the bulk; you do the final touches — every model call stays on this machine."}
+                  // Never claim local execution on a hosted box: this line ran
+                  // unconditionally, so a deployment sending every prompt to the
+                  // shared gateway told the user it stayed on their machine. The
+                  // header badge two rows up already draws this distinction.
+                  : hosted ? "The app does the bulk; you do the final touches — every model call goes to the shared model over the network."
+                    : "The app does the bulk; you do the final touches — every model call stays on this machine."}
           </div>
         </div>
       </footer>
