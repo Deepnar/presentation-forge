@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps, diffDecks } from "./ops.js";
+import { buildOpsSchema, applyOps, diffDecks, stripForeignFields } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 
@@ -222,7 +222,24 @@ export async function runTurn({
       };
     }
 
-    const applied = applyOps(base, ops);
+    let applied = applyOps(base, ops);
+    // A conversational turn's ops grammar is not narrowed to the slide being
+    // edited, so the model can write one type's fields onto another's slide —
+    // a request for shorter bullets put a `bullets` array on a before-after
+    // slide, which has nowhere to draw them. The deck validated, the turn
+    // reported a change, and the rendered slide was identical.
+    if (applied.ok) {
+      const stripped = stripForeignFields(applied.deck, await deckSchema());
+      if (stripped.dropped.length) {
+        applied = { ...applied, deck: stripped.deck };
+        for (const d of stripped.dropped) {
+          applied.changes = [
+            ...(applied.changes ?? []),
+            `slide ${d.index + 1} (${d.type}): dropped "${d.field}" — that type has no such field`,
+          ];
+        }
+      }
+    }
     const problems = malformed
       ? ["all proposed operations were malformed (missing the `op` field)"]
       : [...applied.errors];

@@ -276,6 +276,51 @@ export function applyOp(deck, op) {
 }
 
 /**
+ * Every field a slide of this type may legitimately carry: the shared ones on
+ * `definitions.slide.properties`, plus whatever its own conditional block adds.
+ *
+ * The ops grammar for a conversational turn is not narrowed to the slide being
+ * edited — the user may name any slide — so the model can write one type's
+ * fields onto another's slide. It did: a chat turn asking for shorter bullets
+ * put a `bullets` array on a `before-after` slide, which owns `before`/`after`
+ * and has nowhere to draw them. `additionalProperties` is unset on the slide
+ * definition (it cannot be set, because the type rules compose through allOf),
+ * so the deck validated and the turn reported "applied 1 change" while the
+ * rendered slide was byte-identical. A field nothing draws is silent loss.
+ */
+export function fieldsForType(schema, type) {
+  const slide = schema.definitions?.slide ?? {};
+  const fields = new Set(Object.keys(slide.properties ?? {}));
+  for (const rule of slide.allOf ?? []) {
+    const want = rule.if?.properties?.type;
+    const matches = want?.const === type || (Array.isArray(want?.enum) && want.enum.includes(type));
+    if (matches) for (const k of Object.keys(rule.then?.properties ?? {})) fields.add(k);
+  }
+  return fields;
+}
+
+/**
+ * Drop fields a slide's type does not own. Returns the deck plus the list of
+ * what was removed, so a caller can say so rather than silently differing from
+ * what the model proposed.
+ */
+export function stripForeignFields(deck, schema) {
+  const dropped = [];
+  const slides = deck.slides.map((slide, i) => {
+    const allowed = fieldsForType(schema, slide.type);
+    const foreign = Object.keys(slide).filter((k) => !allowed.has(k));
+    if (!foreign.length) return slide;
+    const out = { ...slide };
+    for (const k of foreign) {
+      delete out[k];
+      dropped.push({ index: i, type: slide.type, field: k });
+    }
+    return out;
+  });
+  return { deck: { ...deck, slides }, dropped };
+}
+
+/**
  * Apply a list of ops transactionally.
  *
  * Ops are indexed against the deck as it evolves, so an insert shifts the
