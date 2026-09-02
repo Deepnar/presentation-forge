@@ -387,6 +387,16 @@ footer read "The only thing that starts research &amp; planning." on screen.
 Grep for `&amp;` and check whether each hit is JSX text or a string literal;
 they look identical in the diff and behave oppositely.
 
+**Sizing a box to its content and placing the box are the same decision, and
+only the first half tends to get made.** `framework`'s grid takes the SMALLER
+of the room a row has and what the card needs — correctly, so a two-element
+framework does not become two half-slide-tall cards — and then left all the
+leftover at the bottom, rendering a band of content above a third of a slide of
+nothing. `flow` did it twice over: titles top-aligned in a zone budgeted for the
+deck's longest, bodies top-aligned under a rail in a zone budgeted the same way.
+Nothing reports it — every box is on the slide, every field is drawn, every
+string fits — so only rendering a real deck and looking at it finds it.
+
 **When the displayed index is computed, advancing the stored one repeats
 work.** The briefing shows the question at `effectiveBriefStep(...)`, which
 skips whatever a chosen preset already answers, but the answer handler stored
@@ -400,6 +410,33 @@ the *walk* rather than the step function.
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)
+
+**The grammar constrains the type and the length. It never constrains whether
+the characters read as English.** A schema asking for an array of strings is
+satisfied completely by strings that are themselves JSON. One generated
+report's Theoretical Background reached the `.docx` as three paragraphs: a
+serialised `{"text": …, "source": …}` object, the bare schema key
+`paragraph_number_indexed_text`, and `]}`. All three are valid strings of legal
+length, so nothing upstream could reject them, and they were typeset into a
+document meant for submission. Anything a model writes into a *document* needs
+a prose check that ajv cannot express — see `salvageParagraph`.
+
+**A field sitting exactly AT its cap was cut by the grammar, not finished by the
+writer.** Decoding masks any token that would exceed a `maxLength`, so a model
+still mid-sentence when it reaches the cap simply stops: no ellipsis, no error,
+and the field is at its limit rather than over it. That is invisible to a check
+looking for over-cap fields and to one looking for a trailing ellipsis — which
+is why six of nine speaker notes on one deck shipped ending "…creates a 30",
+"…and insufficient 1", "…i cells maintain 8". Test `length >= cap` together
+with "does not end on terminal punctuation", and fall back to the last complete
+sentence (`healCutField`).
+
+**Repeated bracketed tokens in the source are loop fuel.** PubMed and PMC print
+"[DOI] [PubMed] [Google Scholar]" beside every citation; that text reaches the
+research notes, and a reference entry ran to 600 characters — the real citation
+followed by "[Google Scholar] [PubMed]" twenty times and a dangling bracket.
+Stripping the labels removes the artefact and the loop together, because the
+loop is made of them.
 
 Passing a JSON Schema as `format` compiles it to a grammar and masks any token
 that would violate it. Output is guaranteed to *parse*. Everything below follows

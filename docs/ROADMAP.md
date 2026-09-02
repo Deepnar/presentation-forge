@@ -3545,6 +3545,56 @@ reading. Needs a model and a genuine read of the output, not a profile.
 > return everything at once. Returning what exists when it exists is not an
 > optimisation, it is the difference between a wait and a hang.
 
+### [~] The generated deck and report, judged by looking
+
+*Priority: high. Generation exercised on local Ollama; the gateway was down.*
+
+The first pass where a deck AND its report were generated end to end and then
+read page by page. Seven defects, none of which any check reported, and none
+visible without rendering real generated content:
+
+| what | where |
+|---|---|
+| Raw JSON typeset into the report body | `assembleReport` |
+| Reference ran 600 chars of `[Google Scholar] [PubMed]` loop | `cleanReference` |
+| 6 of 9 speaker notes cut mid-word at their cap | `healCutField` |
+| 4 of 14 slides lost `section`, so the eyebrow drew no label | `generateDeck` |
+| A heading rule drawn under an absent heading | `drawHeading` |
+| `framework` stranded its slack as a dead bottom third | `layouts.framework` |
+| `flow` labels floated 1.5in clear of the chips they name | `layouts.flow` |
+
+Plus one that only a fresh deck could show: a deck is trimmed to fit the theme
+it was generated with and rendered in whichever of the 34 a user picks. The
+generated deck was clean in its own theme and lost thirteen text elements below
+the readable floor across six others. `trimDeckToFit` now fits the gallery, for
+2.7% of the deck's characters.
+
+**What this pass could NOT answer.** The gateway was down for the whole
+session, so generation ran on local Ollama. Everything above is mechanical —
+structure, placement, escaping, truncation — and is the product's behaviour
+whatever wrote the words. Whether the deck ARGUES anything, whether the
+research is any good, and whether the report reads well are still open and
+still need Auto, per `AGENTS.md`.
+
+> **Learned.** **The specimen cannot find these.** Every one of the seven came
+> from payloads a model actually wrote: an omitted optional `headline`, a
+> missing `section`, a note stopped at its cap, paragraphs that were JSON. The
+> specimen is hand-written to behave, so it carries none of those shapes and
+> every sweep over it stays clean. `--deck` on a real generated deck is not a
+> nicer version of the specimen sweep; it is the only version that asks the
+> question.
+>
+> **Two of the seven were the same mistake in different files.** Sizing a box
+> to its content and then placing it are one decision, and only the first half
+> had been made — in `framework`'s grid and twice in `flow`. Grep for a layout
+> that computes a height with `Math.min(room, needed)` and then draws from the
+> top of `room`.
+>
+> **A field that is optional in the schema is a field the model will omit.**
+> `headline` and `section` are both optional, both omitted on a real deck, and
+> both produced a visible defect that validation passed and no sweep could
+> measure — a rule underlining nothing, and an eyebrow with no label.
+
 ### [ ] Research and content flow, end to end
 
 *Priority: medium. Needs a model.*
