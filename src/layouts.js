@@ -3882,26 +3882,46 @@ export const layouts = {
   takeaway(slide, ctx) {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);
-    const y = heading(slide, ctx);
+    // `headline` is optional and the writer omits it freely — which left the
+    // deck's PAYOFF slide with no title at all: an empty eyebrow, then a dark
+    // panel starting out of nowhere. The label is the slide's subject, so it
+    // becomes the heading when nothing else will, and is then not repeated
+    // inside the panel.
+    const promoted = !data.headline && data.label ? data.label : null;
+    const y = heading(slide, promoted ? { ...ctx, data: { ...data, headline: promoted } } : ctx);
     const hasPoints = Array.isArray(data.points) && data.points.length > 0;
+    // Room the label row would have taken, reclaimed when it has been promoted.
+    const labelH = promoted ? 0.44 : 0;
     // The panel must fit the body AND every point; the point rows are 0.36in
-    // apart, so the panel grows with the count rather than overflowing.
-    const ph = hasPoints ? 1.5 + 0.36 * data.points.length : 1.6;
-    const py = Math.max(y, 2.7);
+    // apart, so the panel grows with the count rather than overflowing. The
+    // height is derived from where the last row actually ends plus a bottom
+    // pad: the old constant left 0.04in under the final bullet against 0.26in
+    // above the first line, so the slab read as bottom-heavy and cramped.
+    const pointsTop = 1.5 - labelH;
+    const ph = hasPoints
+      ? pointsTop + 0.36 * data.points.length + 0.16
+      : 1.6 - labelH;
+    // Centred under the heading rather than pinned to a 2.7in constant. The
+    // constant put the panel in the same place whether or not there was a
+    // heading above it, so a short takeaway sat in a band of its own with a
+    // third of the slide empty below it.
+    const py = y + Math.max(0, (box.bottom - y - ph) / 3);
     slide.addShape("roundRect", {
       x: box.x, y: py, w: box.w, h: ph,
       fill: { color: hex(theme.palette.ink) }, line: { type: "none" },
       rectRadius: theme.shape?.radius?.card ?? 0.12,
     });
     const pad = 0.5;
-    slide.addText(data.label ?? "Key takeaway", {
-      x: box.x + pad, y: py + 0.26, w: box.w - pad * 2, h: 0.4,
-      ...textStyle(theme, "eyebrow", { color: onInk(theme) }),
-      valign: "middle",
-    });
-    const bodyH = hasPoints ? 0.75 : ph - 0.85;
+    if (!promoted) {
+      slide.addText(data.label ?? "Key takeaway", {
+        x: box.x + pad, y: py + 0.26, w: box.w - pad * 2, h: 0.4,
+        ...textStyle(theme, "eyebrow", { color: onInk(theme) }),
+        valign: "middle",
+      });
+    }
+    const bodyH = hasPoints ? 0.75 : ph - 0.85 + labelH;
     slide.addText(data.body, {
-      x: box.x + pad, y: py + 0.7, w: box.w - pad * 2, h: bodyH,
+      x: box.x + pad, y: py + 0.7 - labelH, w: box.w - pad * 2, h: bodyH,
       ...textStyle(theme, "body", {
         color: theme.palette.surface,
         scale: fitScale(data.body, box.w - pad * 2, bodyH, theme.type.body),
@@ -3911,7 +3931,7 @@ export const layouts = {
     if (hasPoints) {
       const pointScale = fitScaleAll(data.points, box.w - pad * 2 - 0.32, 0.32, theme.type.caption);
       data.points.forEach((p, i) => {
-        const py2 = py + 1.5 + i * 0.36;
+        const py2 = py + pointsTop + i * 0.36;
         slide.addText("•", {
           x: box.x + pad + 0.1, y: py2, w: 0.2, h: 0.32,
           ...textStyle(theme, "caption", { color: onInk(theme, 3.0) }),

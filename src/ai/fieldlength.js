@@ -208,12 +208,16 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
  * null when the field did not end mid-sentence, when nothing can be salvaged,
  * or when salvaging would gut the field — those are left for the rewrite.
  */
-export function healCutField(text, cap) {
-  if (typeof text !== "string" || cap == null) return null;
+export function looksCutAtCap(text, cap) {
+  if (typeof text !== "string" || cap == null) return false;
   // Only a field AT its cap is a grammar cut. A short field ending without a
   // full stop is a label, a heading, or a fragment the writer meant.
-  if (text.length < cap) return null;
-  if (/[.!?…:;)"'\u2019\u201d]$/.test(text.trim())) return null;
+  if (text.length < cap) return false;
+  return !/[.!?…:;)"'\u2019\u201d]$/.test(text.trim());
+}
+
+export function healCutField(text, cap) {
+  if (!looksCutAtCap(text, cap)) return null;
 
   const m = text.match(/^[\s\S]*[.!?](?=\s|$)/);
   if (!m) return null;
@@ -282,6 +286,13 @@ export async function fieldLengthPass({
     // long enough to be a plausible cause.
     let over = inventory.filter((f) => f.cap != null && f.length > f.cap);
     over = [...over, ...inventory.filter((f) => /…$/.test(f.text) || /\.\.\.$/.test(f.text)).filter((f) => !over.includes(f))];
+    // A field still sitting at its cap with no terminator was cut by the
+    // grammar and had no sentence to fall back to — "…improves stability and
+    // P", "…than spiro-OM" on a real feature-grid. Deterministic repair cannot
+    // invent the missing words, so hand it to the rewrite, which can.
+    over = [...over, ...inventory
+      .filter((f) => looksCutAtCap(f.text, f.cap))
+      .filter((f) => !over.includes(f))];
     if (flagged.get(i)) {
       const long = inventory.filter((f) => f.length > 90);
       over = [...over, ...long.filter((f) => !over.includes(f))];
