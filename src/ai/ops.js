@@ -122,6 +122,14 @@ export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, e
       },
       ops: {
         type: "array",
+        // Bounded, for the reason the outline schema is bounded: an unbounded
+        // array in a constrained-decoding grammar never REQUIRES a closing
+        // bracket, so the model may keep appending until it hits the token
+        // ceiling — the failure that produced an 8192-token outline for a
+        // six-slide deck. The fix was applied there and not here, and a chat
+        // turn is the same shape. A turn never needs more operations than the
+        // deck has slides plus room to add a few.
+        maxItems: Math.max(12, slideCount + 8),
         items: {
           type: "object",
           required: ["op"],
