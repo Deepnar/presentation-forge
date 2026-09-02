@@ -47,6 +47,8 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   // "Working…" fix. Polled while a run is active so the banner flips by itself.
   const [deckRun, setDeckRun] = useState(null);
   const [runBusy, setRunBusy] = useState(false);
+  // One automatic finalize per mount — a failure must not retry on every render.
+  const autoFinalizedRef = useRef(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [overflowOpen, setOverflowOpen] = useState(false);
   const overflowRef = useRef(null);
@@ -330,6 +332,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
    *  ready. The "stuck on Working…" fix. */
   function finalizeRun() {
     if (runBusy || !deckRun?.needsFinalize) return;
+    autoFinalizedRef.current = true;
     setRunBusy(true);
     setActionErr("");
     api.finalizeDeck(slug, { theme: theme || undefined, model: undefined }, {
@@ -339,6 +342,30 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .catch((err) => setActionErr(err.message))
       .finally(() => setRunBusy(false));
   }
+
+  /**
+   * Finalize is the tail of generation, not a separate thing to remember.
+   *
+   * `needsFinalize` means every slide is written and no run is live — which is
+   * what an interrupted run leaves behind: a closed tab, a dropped connection,
+   * a restarted server. Generation already calls finalize itself, so reaching
+   * this state is always an accident, and the deck is unusable until it clears.
+   * It was only ever offered as a button, so a deck sat unfinished until
+   * somebody noticed the banner and pressed it.
+   *
+   * Run it once per deck per mount. The ref guard matters: a failed attempt
+   * must not retry on every render, and the button stays as the way to try
+   * again deliberately.
+   */
+  useEffect(() => {
+    if (!deckRun?.needsFinalize || deckRun.active || runBusy) return;
+    if (autoFinalizedRef.current) return;
+    autoFinalizedRef.current = true;
+    finalizeRun();
+    // finalizeRun reads the current deckRun; re-running on its identity alone
+    // would fire the moment the poll returns the same state again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deckRun?.needsFinalize, deckRun?.active]);
 
   function stopRun() {
     api.stopGenerate(slug).catch(() => {});
@@ -928,14 +955,16 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                 {deckRun.active
                   ? `Generation in progress — ${deckRun.written}/${deckRun.total} slides written`
                   : deckRun.needsFinalize
-                    ? "This deck is fully written but was never finalised"
+                    ? (runBusy ? "Finishing this deck…" : "This deck is fully written but was never finalised")
                     : `This deck has ${deckRun.written}/${deckRun.total} slides written`}
               </div>
               <div className="mt-0.5 text-[11.5px] leading-relaxed text-fg-muted">
                 {deckRun.active
                   ? "The run keeps going in the background; it lands here when done."
                   : deckRun.needsFinalize
-                    ? "The post-write pass (grounding, text fitting, review, render) never ran. Finalize completes it and makes the deck ready."
+                    ? (runBusy
+                        ? "Running the post-write pass — grounding, text fitting, review and render."
+                        : "The post-write pass never ran, and finishing it did not succeed automatically. Try again, or check Admin → System if it keeps failing.")
                     : "A previous run stopped part-way. Resume continues writing the remaining slides."}
               </div>
             </div>
@@ -944,7 +973,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                 <Button size="sm" variant="outline" onClick={stopRun}>Stop</Button>
               ) : deckRun.needsFinalize ? (
                 <Button size="sm" variant="primary" onClick={finalizeRun} disabled={runBusy}>
-                  {runBusy ? <Spinner className="h-3 w-3" /> : null} Finalize this deck
+                  {runBusy ? <Spinner className="h-3 w-3" /> : null} {runBusy ? "Finishing…" : "Finish this deck"}
                 </Button>
               ) : (
                 <Button size="sm" variant="primary" onClick={resumeRun} disabled={runBusy}>

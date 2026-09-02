@@ -579,9 +579,27 @@ export async function finalizeDeck({
   // deterministic trim never has to cut prose mid-sentence ("the…"). Only what
   // the rewrite cannot fix reaches the trim.
   let repaired = grounded;
+  // A pass that needs a model must not be able to strand a deck that is already
+  // fully written. These two are IMPROVEMENTS to finished content, and when one
+  // throws — a gateway timing out, a model unreachable — an unhandled throw
+  // left meta.status at "writing" forever, which is the "fully written but
+  // never finalised" state a user then has to clear by hand. Losing an
+  // improvement must not cost someone their finished deck. An abort still
+  // propagates: a stop is a stop, not a pass to skip.
+  const passSkips = [];
+  const optionalPass = async (label, run) => {
+    try {
+      return await run();
+    } catch (err) {
+      if (err.name === "AbortError") throw err;
+      passSkips.push(`${label} skipped: ${String(err.message).slice(0, 140)}`);
+      return null;
+    }
+  };
+
   if (!signal?.aborted) {
     onProgress?.({ status: "field_length_checking" });
-    const fix = await fieldLengthPass({
+    const fix = await optionalPass("field-length pass", async () => fieldLengthPass({
       deck: grounded.deck,
       deckDir: dir,
       research: excerptResearch(researchText, await researchExcerptCap({ model })),
@@ -589,8 +607,8 @@ export async function finalizeDeck({
       signal,
       chat,
       onProgress: (p) => onProgress?.({ status: "field_length", ...p }),
-    });
-    if (fix.repaired.length) {
+    }));
+    if (fix?.repaired?.length) {
       repaired = { deck: fix.deck, problems: groundOnce(fix.deck).problems };
       await writeFile(deckFile, YAML.stringify(repaired.deck), "utf8");
     }
@@ -624,16 +642,16 @@ export async function finalizeDeck({
   let coherence = null;
   {
     onProgress?.({ status: "coherence_checking" });
-    const pass = await coherencePass({
+    const pass = await optionalPass("coherence pass", async () => coherencePass({
       deck: tr.grounded.deck,
       sections: plan.sections ?? [],
       model,
       signal,
       chat,
       onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
-    });
+    }));
     coherence = pass;
-    if (pass.findings.length) {
+    if (pass?.findings?.length) {
       const g = groundOnce(pass.deck);
       tr = await trimOnce(g.deck);
     }
@@ -693,7 +711,7 @@ export async function finalizeDeck({
         plan,
         slides: [],
         thumbs: [],
-        problems: [...(tr.grounded.problems ?? []), ...qualityProbs, err.message],
+        problems: [...(tr.grounded.problems ?? []), ...qualityProbs, ...passSkips, err.message],
         skipped: [],
         stats: {},
         trimmed: tr.trimmed,
@@ -742,6 +760,10 @@ export async function finalizeDeck({
       ...(write?.problems ?? []),
       ...(coherence?.problems ?? []),
       ...qualityProbs,
+      // A pass that could not run is reported, never swallowed: the deck is
+      // finished and rendered, and the user is told which improvement it did
+      // not get rather than being handed a silently weaker deck.
+      ...passSkips,
     ],
     skipped: write?.skipped ?? [],
     stats: write?.stats ?? {},
