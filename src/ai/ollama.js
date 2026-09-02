@@ -158,7 +158,12 @@ async function backendFor(cfg, spec) {
   if (p.type !== "openai-compatible") {
     throw new Error(`models.yaml: unknown provider type "${p.type}" for "${spec.provider}".`);
   }
-  return { type: "openai-compatible", baseURL: p.baseURL, apiKey: await providerKey(spec.provider, p.apiKey) };
+  return {
+    type: "openai-compatible",
+    baseURL: p.baseURL,
+    apiKey: await providerKey(spec.provider, p.apiKey),
+    supportsThinking: Boolean(p.supports_thinking),
+  };
 }
 
 let _installed;
@@ -205,7 +210,12 @@ export async function resolveRole(role) {
         return {
           ...spec,
           role,
-          backend: { type: "openai-compatible", baseURL: ap.baseURL, apiKey: await providerKey(ap.id, ap.apiKey) },
+          backend: {
+            type: "openai-compatible",
+            baseURL: ap.baseURL,
+            apiKey: await providerKey(ap.id, ap.apiKey),
+            supportsThinking: Boolean(cfg.providers?.[ap.id]?.supports_thinking),
+          },
           model: ap.models[0],
           fellBack: spec.model,
         };
@@ -217,7 +227,12 @@ export async function resolveRole(role) {
           return {
             ...spec,
             role,
-            backend: { type: "openai-compatible", baseURL: cp.baseURL, apiKey: key },
+            backend: {
+              type: "openai-compatible",
+              baseURL: cp.baseURL,
+              apiKey: key,
+              supportsThinking: Boolean(cfg.providers?.[cp.id]?.supports_thinking),
+            },
             model: cp.models[0],
             fellBack: spec.model,
           };
@@ -522,7 +537,19 @@ async function cloudSpec(cfg, model, role) {
       // Carried so the per-transport override can raise the cap for the cloud
       // backend the model override just selected.
       transports: author.transports,
-      backend: { type: "openai-compatible", baseURL: p.baseURL, apiKey: await providerKey(name, p.apiKey) },
+      // Reasoning depth travels with the role, and the provider flag with the
+      // provider. cloudSpec builds its own spec rather than going through
+      // resolveRole, so both have to be carried explicitly — without this the
+      // author's `thinking: true` was silently dropped on exactly the path a
+      // hosted deck actually takes.
+      thinking: author.thinking,
+      reasoning_effort: author.reasoning_effort,
+      backend: {
+        type: "openai-compatible",
+        baseURL: p.baseURL,
+        apiKey: await providerKey(name, p.apiKey),
+        supportsThinking: Boolean(p.supports_thinking),
+      },
       model,
       fellBack: false,
     };
@@ -707,6 +734,21 @@ async function cloudChat(spec, {
     // closest universal guarantee, and chatJSON's salvage covers the rest.
     ...(format ? { response_format: { type: "json_object" } } : {}),
     ...(tools?.length ? { tools } : {}),
+    // Reasoning depth, where the provider serves it. The CoE gateway runs with
+    // thinking OFF by default and takes it per request
+    // (Student Developer Guide v1.0 §6), so the hard passes — planning a deck,
+    // reviewing whether it coheres, reading a rendered slide — have to ask.
+    // Gated on the PROVIDER declaring support: an unknown top-level field is
+    // usually ignored by an OpenAI-compatible server and "usually" is not a
+    // contract to send someone else's BYOK endpoint.
+    ...(spec.thinking && spec.backend.supportsThinking
+      ? {
+          chat_template_kwargs: {
+            enable_thinking: true,
+            ...(spec.reasoning_effort ? { reasoning_effort: spec.reasoning_effort } : {}),
+          },
+        }
+      : {}),
   };
   const headers = {
     "Content-Type": "application/json",

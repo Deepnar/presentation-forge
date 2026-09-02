@@ -41,13 +41,22 @@ providers:
     # not listed here rather than posting them blind and editing the deck from
     # whatever comes back.
     #
-    # UNVERIFIED: the gateway has been down for completions all session, so
-    # qwen3.6 is listed on the operator's report that it is multimodal and has
-    # not been confirmed by a real image request. Confirm before trusting a
-    # hosted --critic run; if it turns out to be text-only, remove it here and
-    # the critic will correctly skip instead of hallucinating findings.
+    # Confirmed by the CoE AI Gateway Student Developer Guide v1.0 (Aug 2026),
+    # §5 "Image Input (Vision)": the model reads diagrams, screenshots, charts
+    # and handwritten notes, sent as an image_url data URI. Video is not.
     vision_models:
       - qwen3.6
+    # The gateway serves reasoning per request and runs with thinking OFF by
+    # default (guide §6). Declaring it here is what lets a role opt in; without
+    # the flag the extra field is never sent, because an unknown top-level key
+    # being ignored is a convention, not a contract someone's BYOK endpoint owes
+    # us.
+    supports_thinking: true
+    # The `model` field is REQUIRED by the OpenAI protocol and its value is
+    # IGNORED — the guide (§3) states the gateway always routes to the single
+    # campus model and any string is accepted. So the long served id
+    # (/home/user1/models/Qwen3.6-...) that /v1/models reports is not something
+    # callers must match; "qwen3.6" is a label for our own pickers and logs.
   openai:
     type: openai-compatible
     baseURL: https://api.openai.com/v1
@@ -144,6 +153,13 @@ roles:
     top_p: 0.8
     repeat_penalty: 1.05
     num_ctx: 32768
+    # The author both PLANS the deck and reviews whether it coheres, which is
+    # the "logic and multi-step" case the guide (§6) says to enable thinking
+    # for. Left at medium rather than xhigh: the gateway is shared by ~15
+    # students at a time (§12), so a deck is many requests and the deepest
+    # setting on all of them is not a neighbourly default.
+    thinking: true
+    reasoning_effort: medium
     # A response that hits this cap is truncated mid-JSON and fails as
     # "malformed output". done_reason=length in the error distinguishes the two.
     # 12K rather than 8K: a large-team outline (8 sections, ~12 slides) on the
@@ -168,6 +184,11 @@ roles:
     temperature: 0.2
     num_ctx: 16384
     vision: true
+    # Reading a rendered slide for defects is exactly what the guide (§6) names
+    # thinking for. Only sent where the provider declares support, so the local
+    # backend is unaffected.
+    thinking: true
+    reasoning_effort: medium
 
   # Classification, title-casing, dedupe, summarisation of old chat turns.
   utility:
