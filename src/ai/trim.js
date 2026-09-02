@@ -19,6 +19,7 @@
 import { deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { render } from "../render.js";
+import { themeMatrix } from "../themematrix.js";
 
 /** A slide that renders cleanly at its floor needs no trim and reports no flag. */
 export function parseFloorProblems(problems) {
@@ -222,14 +223,29 @@ export async function trimSlide(slide) {
  * fitter flags below its floor, and re-renders until the deck is clean or no
  * trim can help. Deterministic throughout — no model call.
  */
-export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal }) {
+export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal, everyTheme = true }) {
   let cur = structuredClone(deck);
   const trimmed = [];
   let audit = { problems: [] };
 
   for (let round = 0; round < maxRounds; round++) {
     audit = await render({ deck: cur, themeName, deckDir, write: false, signal });
-    const overfull = parseFloorProblems(audit.problems);
+    // Trim for every theme the deck could be rendered in, not just the one it
+    // was generated with. The theme switcher re-renders the SAME deck.yaml, so
+    // a deck fitted only to its own theme breaks the moment a user picks
+    // another: a freshly generated 14-slide deck was clean in its own theme
+    // and lost thirteen text elements below the readable floor across six
+    // others. Trimming against the whole gallery cost 2.7% of the deck's
+    // characters and removed nine of the thirteen; the rest are headings the
+    // trim will not shorten.
+    //
+    // The covering set is the wrong instrument here — it covers layout AXES,
+    // and fit is decided by typeface metrics that it deliberately ignores.
+    // Hence every theme. It costs ~0.6s per round on a 14-slide deck.
+    const sweepProblems = everyTheme
+      ? (await themeMatrix({ deck: cur, deckDir })).runs.flatMap((r) => r.problems.map((p) => p.raw))
+      : [];
+    const overfull = parseFloorProblems([...audit.problems, ...sweepProblems]);
     if (!overfull.size) return { deck: cur, trimmed, converged: true, problems: audit.problems };
 
     let changed = false;
