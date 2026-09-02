@@ -147,6 +147,21 @@ FORGE_HOSTED=1 npm run forge -- generate <slug>
 - Generating spends the operator's gateway budget, so be economical: a few
   real runs read closely beat a sweep nobody looks at.
 
+**When the gateway is down, local is for exercising, not for judging.** The
+TCET box goes out — `/v1/models` keeps answering while `/v1/chat/completions`
+times out behind Cloudflare, so it looks up and is not. Two different jobs, and
+only one of them can move to Ollama:
+
+- *Does the pipeline run end to end — does research reach the page, does resume
+  work, does the report render?* Yes, run it on local. The plumbing is the same
+  code either way.
+- *Is the output any good?* No. That question only has an answer on Auto, and
+  a local answer to it is worse than no answer because it reads like one.
+
+Say which of the two a result came from. `roleAudit()` and the admin System tab
+both report the model actually used, so there is no excuse for a note that does
+not say.
+
 ## Ending a session
 
 Overwrite `docs/HANDOFF.md` with the current state and commit it. Git history

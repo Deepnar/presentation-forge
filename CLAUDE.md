@@ -232,6 +232,13 @@ deck that reads badly. Local Ollama support stays in the code and must not rot
 not where effort goes and not what "does this work?" means. Generating spends
 the operator's budget, so a few runs read closely beat a sweep nobody looks at.
 
+**The gateway does go down**, and it fails in a shape that looks like health:
+`/v1/models` answers in under a second while `/v1/chat/completions` times out
+behind Cloudflare (HTTP 524). When that happens, local Ollama is for exercising
+the pipeline — does research reach the page, does resume work, does the report
+render — and never for judging whether the output is good. Always record which
+backend a result came from; `roleAudit()` and Admin → System both report it.
+
 ## Hosted vs local
 
 `FORGE_HOSTED` is the only fork, checked by `isHosted()` in `src/cloud.js`:
