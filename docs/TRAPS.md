@@ -447,6 +447,15 @@ the failure — a chat stub that counts calls and throws — showed three calls
 attempted, all thrown, and finalize completing anyway. Reach for the
 instrumented run before the fix.
 
+**`cloudSpec` builds its own spec and silently drops per-role options.** It
+does not go through `resolveRole`, so anything added to a role — `thinking`,
+`reasoning_effort`, a provider capability flag — has to be carried there
+explicitly or it vanishes on exactly the path a HOSTED deck takes, which is the
+path least likely to be exercised locally. The reasoning-depth work was
+structurally correct everywhere and reached the gateway nowhere until this was
+found. When adding a per-role model option, grep `cloudSpec` before believing it
+works.
+
 **A guard written for the corpus but applied per request protects nothing.**
 `search()` caps hosts at 2 per query to stop a model writing from a single
 site — but the research corpus is built from eight queries plus follow-ups and
