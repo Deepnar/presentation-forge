@@ -447,6 +447,12 @@ the failure — a chat stub that counts calls and throws — showed three calls
 attempted, all thrown, and finalize completing anyway. Reach for the
 instrumented run before the fix.
 
+**A guard written for the corpus but applied per request protects nothing.**
+`search()` caps hosts at 2 per query to stop a model writing from a single
+site — but the research corpus is built from eight queries plus follow-ups and
+deduped by URL only, so one domain still supplied three of ten sources. When a
+limit exists to shape an aggregate, enforce it where the aggregate is built.
+
 **A field the schema offers is a field the model will fill.** The report's
 table was offered on every section at full depth, so the writer put a five-row
 data table in the Abstract. The grammar is not a menu of what is *permitted*,

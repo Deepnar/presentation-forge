@@ -3647,6 +3647,26 @@ and the coherence review are both the **author** role; the optional vision
 critic is the **critic** role. So a finalize costs two author passes, or three
 with `--critic`.
 
+**The remaining components, swept.**
+
+- **Research.** `search()` caps results at 2 per host and says why — a model
+  handed eight pages from one domain writes a report sourced from one site. The
+  cap is PER QUERY, and a deep run makes eight queries plus follow-ups and gap
+  queries, absorbing them into a corpus deduped by URL alone. So the guard
+  bought nothing at the level it was written for: a real run came back
+  three-tenths Wikipedia, including the mineralogy article in the research for a
+  deck about solar cells. Now capped across the corpus, with the surplus put
+  back if too little else arrives — on a topic where one authority holds the
+  material, starving the corpus is the worse failure.
+- **Speaker script.** Works: 14 of 14 segments, anchored per slide, readable
+  spoken prose grounded in the research. One defect — the prompt asks a divider
+  for "a short spoken transition, 40-80 words" and the writer produced a
+  200-word monologue instead, the same weight as the content slides. The cap is
+  in the grammar now rather than the prose, with the sentence-heal behind it so
+  a tighter bound cannot cut a presenter off mid-sentence.
+- **Critic.** Runs only under `--critic` and uses the `critic` role. Not
+  exercised this session; it is the one component still unswept.
+
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
 structure, placement, escaping, truncation — and is the product's behaviour
