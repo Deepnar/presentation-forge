@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps, diffDecks, stripForeignFields } from "./ops.js";
+import { buildOpsSchema, applyOps, diffDecks, stripForeignFields, scopeOpsToSelection } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 
@@ -161,6 +161,7 @@ export async function runTurn({
   model,
   onToken,
   signal,
+  onlySlides = null,
   chat = chatJSON,
 }) {
   const catalog = await slideCatalog();
@@ -206,7 +207,7 @@ export async function runTurn({
     // response whose ops were ALL malformed goes through the repair loop so the
     // model gets the feedback instead of the caller.
     const rawOps = res.data?.ops ?? [];
-    const ops = rawOps.filter((o) => o && typeof o === "object" && typeof o.op === "string");
+    let ops = rawOps.filter((o) => o && typeof o === "object" && typeof o.op === "string");
     attempts.push(
       rawOps.length !== ops.length
         ? { ops: ops.length, dropped: rawOps.length - ops.length, model: res.model }
@@ -222,7 +223,25 @@ export async function runTurn({
       };
     }
 
+    // Hold the turn to the slides the user selected. The selection reaches the
+    // model only as prose, and prose is a hint: a real turn asking to shorten
+    // slide 5's bullets edited slide 6 and reported success. An edit to a slide
+    // the user did not mean produces a perfectly valid deck, so nothing further
+    // down can catch it.
+    const scoped = scopeOpsToSelection(ops, onlySlides);
+    ops = scoped.ops;
     let applied = applyOps(base, ops);
+    if (scoped.refused.length) {
+      applied = {
+        ...applied,
+        changes: [
+          ...(applied.changes ?? []),
+          ...scoped.refused.map((r) => (r.index == null
+            ? `ignored an ${r.op} that named no slide — the request was scoped to a selection`
+            : `ignored ${r.op} on slide ${r.index + 1} — outside the selected slides`)),
+        ],
+      };
+    }
     // A conversational turn's ops grammar is not narrowed to the slide being
     // edited, so the model can write one type's fields onto another's slide —
     // a request for shorter bullets put a `bullets` array on a before-after

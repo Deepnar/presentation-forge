@@ -276,6 +276,54 @@ export function applyOp(deck, op) {
 }
 
 /**
+ * Which ops name an EXISTING slide, and the field that names it.
+ *
+ * `append_slide` and `insert_slide` add rather than target, and `set_meta` is
+ * about the deck, so none of them is scoped by a slide selection.
+ */
+const OP_TARGET_FIELD = {
+  update_slide: "index",
+  replace_slide: "index",
+  delete_slide: "index",
+  duplicate_slide: "index",
+  move_slide: "from",
+};
+
+/**
+ * Hold a turn to the slides the user actually selected.
+ *
+ * The selection reaches the model as PROSE ("the request below applies to
+ * EXACTLY these"), and prose is a hint. A real turn asking to shorten slide 5's
+ * bullets edited slide 6 instead and reported success — the change list said
+ * one slide changed, and it was the wrong one. Nothing downstream can catch
+ * that: editing a slide the user did not mean produces a perfectly valid deck.
+ *
+ * With one slide selected an op that names no index is pointed AT it rather
+ * than refused, since "no index" is the same drift with a different shape.
+ */
+export function scopeOpsToSelection(ops, allowed) {
+  const list = Array.isArray(allowed) ? allowed.filter((n) => Number.isInteger(n)) : [];
+  if (!list.length) return { ops, refused: [] };
+  const set = new Set(list);
+  const only = list.length === 1 ? list[0] : null;
+  const kept = [];
+  const refused = [];
+  for (const o of ops ?? []) {
+    const field = OP_TARGET_FIELD[o?.op];
+    if (!field) { kept.push(o); continue; }
+    const idx = o[field];
+    if (idx == null) {
+      if (only != null) kept.push({ ...o, [field]: only });
+      else refused.push({ op: o.op, index: null });
+      continue;
+    }
+    if (set.has(idx)) kept.push(o);
+    else refused.push({ op: o.op, index: idx });
+  }
+  return { ops: kept, refused };
+}
+
+/**
  * Every field a slide of this type may legitimately carry: the shared ones on
  * `definitions.slide.properties`, plus whatever its own conditional block adds.
  *

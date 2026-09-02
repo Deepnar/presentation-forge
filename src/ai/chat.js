@@ -312,6 +312,10 @@ async function updateThread(dir, { instruction, turn, model, signal }) {
  */
 export async function runChatTurn({
   slug, instruction, model, render: doRender = true, onToken, onProgress, signal,
+  // The slide indices the user selected in the panel. The selection also goes
+  // to the model as prose, but prose is a hint — this is what holds the turn
+  // to it. Null or empty means the whole deck, which is the CLI's case.
+  onlySlides = null,
 }) {
   if (!instruction?.trim()) throw new Error("instruction is required");
   const dir = path.join(DECKS, slug);
@@ -359,6 +363,7 @@ export async function runChatTurn({
     model,
     onToken,
     signal,
+    onlySlides,
   });
 
   if (!turn.ok) {

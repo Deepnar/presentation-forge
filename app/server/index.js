@@ -1621,11 +1621,16 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { instruction, model } = req.body ?? {};
+  const { instruction, model, slides } = req.body ?? {};
   if (!instruction?.trim()) {
     sse.send("error", { error: "body must include an `instruction`" });
     return sse.close();
   }
+  // The panel's selection, as indices. Anything that is not a slide index is
+  // dropped rather than trusted — this decides which slides a turn may edit.
+  const onlySlides = Array.isArray(slides)
+    ? slides.filter((n) => Number.isInteger(n) && n >= 0)
+    : null;
   if (await isAutoRoute(model, req.user.email)) {
     try { await enforceAuto(req.user.email, 0); recordAutoFor(req.user.email, 0, 0); } catch (e) {
       sse.send("error", { error: e.message }); return sse.close();
@@ -1637,6 +1642,7 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
       slug: req.params.slug,
       instruction,
       model,
+      onlySlides,
       signal: ctrl.signal,
       onToken: (text) => sse.send("token", { text }),
       onProgress: (p) => sse.send("status", p),

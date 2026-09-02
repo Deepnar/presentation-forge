@@ -681,6 +681,9 @@ export default function ChatView({
       {
         instruction,
         model: model || undefined,
+        // The same selection the context prose names, as data. The prose tells
+        // the model which slides are meant; this is what holds it to them.
+        slides: [...selected].sort((a, b) => a - b),
       },
       {
         status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
