@@ -2520,15 +2520,28 @@ export const layouts = {
     // the feature-grid defect in a second place.
     const bodyScale = fitScaleAll(data.elements.map((e) => e.body).filter(Boolean), cardW - 0.3, cardH - 0.58, theme.type.caption, { min: 0.65 });
 
-    card(slide, theme, { x: box.x, y: top, w: box.w, h: conceptH });
+    // Centre the block in the content box. `cardH` is deliberately the SMALLER
+    // of the room and what the content needs — a two-element framework must not
+    // get two half-slide-tall cards — but that slack was then all left at the
+    // bottom, so a short framework rendered as a band of content above a third
+    // of a slide of nothing. Sizing to content and centring the result are the
+    // same decision; only the first half had been made.
+    // Optically centred, not geometrically: a third of the slack above and two
+    // thirds below. True centring cut the block loose from the heading it
+    // belongs to, which reads as floating; this keeps it attached while still
+    // absorbing most of the void.
+    const blockH = conceptH + gutter + rows * cardH + rowGap * (rows - 1);
+    const blockTop = top + Math.max(0, (box.bottom - top - blockH) / 3);
+
+    card(slide, theme, { x: box.x, y: blockTop, w: box.w, h: conceptH });
     slide.addText(data.concept.title, {
-      x: box.x + 0.3, y: top + 0.12, w: box.w - 0.6, h: 0.45,
+      x: box.x + 0.3, y: blockTop + 0.12, w: box.w - 0.6, h: 0.45,
       ...textStyle(theme, "subhead", { bold: true, scale: conceptScale }),
       align: "left", valign: "middle",
     });
     if (data.concept.body) {
       slide.addText(data.concept.body, {
-        x: box.x + 0.3, y: top + 0.48, w: box.w - 0.6, h: conceptH - 0.6,
+        x: box.x + 0.3, y: blockTop + 0.48, w: box.w - 0.6, h: conceptH - 0.6,
         ...textStyle(theme, "caption", {
           color: theme.palette.ink_muted,
           scale: fitAt(theme, "caption", 0.9, data.concept.body, box.w - 0.6, conceptH - 0.6, { min: 0.6 }),
@@ -2540,7 +2553,7 @@ export const layouts = {
       const col = i % perRow;
       const row = Math.floor(i / perRow);
       const x = box.x + col * (cardW + colGap);
-      const yTop = top + conceptH + gutter + row * (cardH + rowGap);
+      const yTop = blockTop + conceptH + gutter + row * (cardH + rowGap);
       card(slide, theme, { x, y: yTop, w: cardW, h: cardH });
       slide.addText(e.title, {
         x: x + 0.15, y: yTop + 0.1, w: cardW - 0.3, h: 0.35,
