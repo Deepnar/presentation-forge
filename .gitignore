@@ -77,6 +77,13 @@ config/presets/
 # after the TTL), never part of the repo.
 config/uploads/
 
+# Per-account state. Identity overrides and brand marks are stored under a hash
+# of the account's address, and the root-level entries above do not reach them:
+# `brand/logos/` does not match `brand/users/<id>/logos/`. Same stale-allow-list
+# shape that put config/forge.db into the Docker image — see .dockerignore.
+config/identities/
+brand/users/
+
 # Source institutional templates: these carry third-party names and roll
 # numbers, and are reference material rather than source.
 reference/

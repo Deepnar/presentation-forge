@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -127,6 +127,33 @@ test("config/ is deny-by-default, so a new stateful file is excluded without an 
   ];
   for (const file of invented) {
     assert.equal(inBuildContext(patterns, file), false, `${file} reached the image — config/ is no longer deny-by-default`);
+  }
+});
+
+/**
+ * The same question asked of git, because it is the same mistake twice.
+ *
+ * `.gitignore` listed `config/identity.yaml`, `brand/logos/` and
+ * `brand/generated/` — the single-operator paths — and per-account storage
+ * added `config/identities/` and `brand/users/<hash>/` underneath them, which
+ * those entries do not reach: `brand/logos/` does not match
+ * `brand/users/abc/logos/`. Both directories hold a real account's institution
+ * and its crest, and both showed up as untracked the first time an account
+ * saved anything.
+ */
+test("per-account state is ignored by git, not merely untracked so far", () => {
+  const mustBeIgnored = [
+    "config/identities/0123456789abcdef.yaml",
+    "config/forge.db",
+    "config/uploads/a-users-paper.pdf",
+    "brand/users/0123456789abcdef/logos/crest.png",
+    "brand/users/0123456789abcdef/generated/crest.png",
+    "reference/users/0123456789abcdef/their-template.docx",
+    "decks/some-slug/deck.yaml",
+  ];
+  for (const file of mustBeIgnored) {
+    const res = spawnSync("git", ["check-ignore", "-q", file], { cwd: ROOT });
+    assert.equal(res.status, 0, `${file} is not ignored by .gitignore — it would be committable`);
   }
 });
 
