@@ -620,6 +620,15 @@ export async function generateDeck({
       continue;
     }
     deck = res.a.deck;
+    // The PLAN owns the section index, not the writer. The prompt states it and
+    // the model is free to omit it from its append_slide op — and when it does,
+    // nothing downstream can recover it: the chrome eyebrow reads slide.section
+    // to print the part's name, so the slide renders its rule with no label.
+    // Four of fourteen slides on a real generated deck lost it that way. The
+    // coherence sweep already re-asserts type/presenter/section for the same
+    // reason; the first write had no such guard.
+    const written = deck.slides[deck.slides.length - 1];
+    if (written && spec.section != null) written.section = spec.section;
     // Checkpoint hook: the caller persists deck.yaml as each slide lands, so a
     // dropped connection leaves a resumable deck instead of a lost run.
     onSlide?.(deck, i + 1, plan.slides.length);
@@ -647,6 +656,9 @@ export async function generateDeck({
       if (!rep) continue;
       const candidate = structuredClone(deck);
       candidate.slides[ph.index] = rep;
+      // Same contract on the recovery path: a replacement inherits the plan's
+      // section rather than whatever the model chose to repeat.
+      if (spec.section != null) candidate.slides[ph.index].section = spec.section;
       if ((await validateDeck(candidate)).ok) {
         deck = candidate;
         recovered.push(ph.index);
