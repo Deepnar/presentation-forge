@@ -227,6 +227,25 @@ export const api = {
     });
   },
   brandRemove: (name) => call(`/api/brand/${name}`, { method: "DELETE" }),
+  // This account's own report template. `own` is what it uploaded, `effective`
+  // is what its reports are actually drawn on — they differ while the account
+  // falls through to the operator's default, which is the ordinary case.
+  donor: () => call("/api/donor"),
+  donorUpload: (file) =>
+    fetch("/api/donor", {
+      method: "POST",
+      headers: {
+        "X-File-Name": encodeURIComponent(file.name),
+        "Content-Type": file.type || "application/octet-stream",
+        ...authHeader(),
+      },
+      body: file,
+    }).then(async (res) => {
+      const body = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status}` }));
+      if (!body.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+      return body;
+    }),
+  donorRemove: () => call("/api/donor", { method: "DELETE" }),
   // Local single-install accounts. The token is the only credential the browser
   // holds; the password is never stored or returned. Registering never logs in:
   // the new account is created and the visitor signs in with it explicitly.

@@ -9,10 +9,10 @@ import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
-import { renderReport, validateReport, donorStatus } from "../../src/report.js";
+import { renderReport, validateReport, donorStatus, donorDirFor, donorDirForDeck } from "../../src/report.js";
 import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge, identityStatus, identityUnconfigured } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
-import { userBrandDirs } from "../../src/tenant.js";
+import { userBrandDirs, userReferenceDir } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
@@ -1392,7 +1392,11 @@ app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   // A missing donor is a server that is not fully installed, not a broken
   // request. It used to surface as a 500 from the renderer, which reads as "the
   // app is broken" to the one person who could actually fix it.
-  const donor = await donorStatus();
+  //
+  // Asked of the DECK's donor directory, not the install's: the deck records
+  // its owner, an admin may be rendering somebody else's report, and the answer
+  // has to match the template renderReport will actually draw on.
+  const donor = await donorStatus(await donorDirForDeck(path.join(DECKS, req.params.slug)));
   if (!donor.ok) {
     return res.status(503).json({ ok: false, error: reportUnavailable(donor), code: "no_donor" });
   }
@@ -2109,11 +2113,95 @@ app.delete("/api/brand/:name", wrap(async (req, res) => {
  *
  * It is gitignored (it carries third-party names) and excluded from the Docker
  * build context, so a hosted deployment starts with no donor at all and every
- * report render fails. This is the operator's way to supply one without shell
- * access to the volume. Admin-only: it is install-wide, and it is the document
- * every account's report is graded against.
+ * report render fails.
+ *
+ * There are two of these, in the same relationship identity and brand marks
+ * have: the install-wide default an admin uploads, and an account's own,
+ * which overrides it. The donor decides the headers, margins and watermark a
+ * report is graded on, so a box serving two colleges cannot have one.
  */
 const DONOR_MAGIC = Buffer.from([0x50, 0x4b, 0x03, 0x04]); // a .docx is a zip
+
+/**
+ * Shared by both upload routes — the only difference is where it writes.
+ * Returns the stored filename, or null after answering the request itself.
+ * fail() returns the response object rather than undefined, so the rejection
+ * paths have to say null in as many words or the caller replies twice.
+ */
+async function acceptDonorUpload(req, res, dir) {
+  if (!req.body?.length) { fail(res, 400, "empty upload"); return null; }
+  if (!req.body.subarray(0, 4).equals(DONOR_MAGIC)) {
+    fail(res, 400, "that is not a .docx file");
+    return null;
+  }
+  let name = "";
+  try { name = decodeURIComponent(String(req.headers["x-file-name"] ?? "")); } catch { name = ""; }
+  name = path.basename(name).replace(/[^\w .()-]/g, "").slice(0, 120);
+  if (!name.toLowerCase().endsWith(".docx")) name = `${name || "template"}.docx`;
+  await mkdir(dir, { recursive: true });
+  // resolveDonor refuses to guess between several templates, so a new upload
+  // replaces the old rather than accumulating alternatives.
+  for (const f of (await readdir(dir).catch(() => []))) {
+    if (f.toLowerCase().endsWith(".docx")) await rm(path.join(dir, f), { force: true });
+  }
+  await writeFile(path.join(dir, name), req.body);
+  return name;
+}
+
+/**
+ * This account's own report template.
+ *
+ * `own` is what this account has uploaded and `effective` is what its reports
+ * will actually be drawn on — they differ exactly when the account is falling
+ * through to the operator's default, which is the ordinary case and not a
+ * fault. A student at the operator's own institution should never have to
+ * upload anything.
+ */
+app.get("/api/donor", wrap(async (req, res) => {
+  const user = await requireAuth(req, res, "log in to manage your report template");
+  if (!user) return;
+  const mine = userReferenceDir(user.email);
+  const own = await donorStatus(mine);
+  const effective = await donorStatus(await donorDirFor(user.email));
+  ok(res, {
+    own,
+    effective,
+    fallback: !own.ok,
+    message: effective.ok ? null : reportUnavailable(effective),
+  });
+}));
+
+app.post("/api/donor", (req, res) => {
+  express.raw({ type: () => true, limit: "25mb" })(req, res, (err) => {
+    if (err) return fail(res, 413, "template too large — max 25 MB");
+    (async () => {
+      try {
+        const user = await requireAuth(req, res, "log in to upload a report template");
+        if (!user) return;
+        const name = await acceptDonorUpload(req, res, userReferenceDir(user.email));
+        if (name === null) return;                   // acceptDonorUpload already replied
+        ok(res, { donor: name });
+      } catch (err) {
+        fail(res, 500, err.message);
+      }
+    })();
+  });
+});
+
+/** Drop this account's template and fall back to the operator's default. */
+app.delete("/api/donor", wrap(async (req, res) => {
+  const user = await requireAuth(req, res, "log in to manage your report template");
+  if (!user) return;
+  const dir = userReferenceDir(user.email);
+  let removed = null;
+  for (const f of (await readdir(dir).catch(() => []))) {
+    if (f.toLowerCase().endsWith(".docx")) {
+      await rm(path.join(dir, f), { force: true });
+      removed = f;
+    }
+  }
+  ok(res, { removed, effective: await donorStatus(await donorDirFor(user.email)) });
+}));
 
 app.get("/api/admin/donor", wrap(async (req, res) => {
   if (!(await requireAdminUser(req, res))) return;
@@ -2127,21 +2215,8 @@ app.post("/api/admin/donor", (req, res) => {
     (async () => {
       try {
         if (!(await requireAdminUser(req, res))) return;
-        if (!req.body?.length) return fail(res, 400, "empty upload");
-        if (!req.body.subarray(0, 4).equals(DONOR_MAGIC)) {
-          return fail(res, 400, "that is not a .docx file");
-        }
-        let name = "";
-        try { name = decodeURIComponent(String(req.headers["x-file-name"] ?? "")); } catch { name = ""; }
-        name = path.basename(name).replace(/[^\w .()-]/g, "").slice(0, 120);
-        if (!name.toLowerCase().endsWith(".docx")) name = `${name || "template"}.docx`;
-        await mkdir(REFERENCE, { recursive: true });
-        // resolveDonor refuses to guess between several templates, so a new
-        // upload replaces the old rather than accumulating alternatives.
-        for (const f of (await readdir(REFERENCE).catch(() => []))) {
-          if (f.toLowerCase().endsWith(".docx")) await rm(path.join(REFERENCE, f), { force: true });
-        }
-        await writeFile(path.join(REFERENCE, name), req.body);
+        const name = await acceptDonorUpload(req, res, REFERENCE);
+        if (name === null) return;                   // acceptDonorUpload already replied
         ok(res, { donor: name });
       } catch (err) {
         fail(res, 500, err.message);

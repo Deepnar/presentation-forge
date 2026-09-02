@@ -434,6 +434,10 @@ function IdentitySection({ identity, onIdentityChanged }) {
   const [brand, setBrand] = useState(null);
   const [brandBusy, setBrandBusy] = useState(false);
   const [brandState, setBrandState] = useState({ status: "idle", message: "" });
+  const [donor, setDonor] = useState(null);
+  const [donorBusy, setDonorBusy] = useState(false);
+  const [donorState, setDonorState] = useState({ status: "idle", message: "" });
+  const donorRef = useRef(null);
   const fileRefs = { crest: useRef(null), banner: useRef(null), watermark: useRef(null) };
 
   // The identity prop is the whole config file; the draft edits institution
@@ -444,6 +448,7 @@ function IdentitySection({ identity, onIdentityChanged }) {
 
   useEffect(() => {
     api.brand().then((r) => setBrand(r.brand)).catch(() => {});
+    api.donor().then(setDonor).catch(() => {});
   }, []);
 
   const set = (pathStr, value) => {
@@ -490,6 +495,36 @@ function IdentitySection({ identity, onIdentityChanged }) {
     } finally {
       setBrandBusy(false);
       if (fileRefs[name]) fileRefs[name].value = "";
+    }
+  }
+
+  async function uploadDonor(file) {
+    if (!file) return;
+    setDonorBusy(true);
+    setDonorState({ status: "busy", message: `Uploading ${file.name}…` });
+    try {
+      await api.donorUpload(file);
+      setDonor(await api.donor());
+      setDonorState({ status: "saved", message: "Template stored — your reports are drawn on it from now on." });
+    } catch (err) {
+      setDonorState({ status: "error", message: err.message });
+    } finally {
+      setDonorBusy(false);
+    }
+  }
+
+  async function removeDonor() {
+    if (!window.confirm("Remove your report template? Reports fall back to this server's default.")) return;
+    setDonorBusy(true);
+    setDonorState({ status: "busy", message: "Removing…" });
+    try {
+      await api.donorRemove();
+      setDonor(await api.donor());
+      setDonorState({ status: "saved", message: "Removed — back to the server default." });
+    } catch (err) {
+      setDonorState({ status: "error", message: err.message });
+    } finally {
+      setDonorBusy(false);
     }
   }
 
@@ -580,6 +615,49 @@ function IdentitySection({ identity, onIdentityChanged }) {
         )}
         {brandState.status === "saved" && <div className="mt-2 text-[11.5px] text-accent">{brandState.message}</div>}
         {brandState.status === "error" && <div className="mt-2 text-[11.5px] text-danger">{brandState.message}</div>}
+      </div>
+
+      <div className="mt-4 border-t border-line pt-3">
+        <div className="mb-2 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Report template</div>
+        <p className="mb-2 text-[11px] leading-relaxed text-fg-faint">
+          The .docx your reports are drawn on — its headers, margins and
+          watermark become theirs. Upload your own only if this server's default
+          is not your institution's.
+        </p>
+        <div className="rounded-lg border border-line bg-sunken/40 p-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0 text-[12px] font-medium text-fg">
+              {donor?.own?.ok
+                ? <span className="font-mono text-[11.5px]">{donor.own.detail}</span>
+                : donor?.effective?.ok
+                  ? "This server's default"
+                  : "None installed"}
+            </div>
+            {donor?.own?.ok
+              ? <Badge className="bg-accent/10 text-accent">yours</Badge>
+              : donor?.effective?.ok
+                ? <Badge className="bg-transparent text-fg-faint">server default</Badge>
+                : <Badge className="bg-transparent text-amber">missing</Badge>}
+          </div>
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Button size="sm" variant="outline" disabled={donorBusy} onClick={() => donorRef.current?.click()}>
+              {donor?.own?.ok ? "Replace" : "Upload yours"}
+            </Button>
+            {donor?.own?.ok && (
+              <Button size="sm" variant="outline" disabled={donorBusy} onClick={removeDonor}>Remove</Button>
+            )}
+            <input ref={donorRef} type="file" accept=".docx" className="hidden"
+              onChange={(e) => uploadDonor(e.target.files?.[0])} />
+          </div>
+        </div>
+        {donor && !donor.effective?.ok && (
+          <div className="mt-2 text-[11px] text-amber">{donor.message}</div>
+        )}
+        {donorState.status === "busy" && (
+          <div className="mt-2 flex items-center gap-2 text-[11.5px] text-fg-faint"><Spinner /> {donorState.message}</div>
+        )}
+        {donorState.status === "saved" && <div className="mt-2 text-[11.5px] text-accent">{donorState.message}</div>}
+        {donorState.status === "error" && <div className="mt-2 text-[11.5px] text-danger">{donorState.message}</div>}
       </div>
 
       <div className="mt-4 flex items-center gap-2 border-t border-line pt-3">
