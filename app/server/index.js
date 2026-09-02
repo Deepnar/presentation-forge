@@ -796,7 +796,7 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       // Which roles are running what they were configured to run. A silent
       // substitution has exactly one symptom — output that is worse than it
       // should be — so it belongs where the operator already looks.
-      roles: isHosted() ? { reachable: false, reason: "hosted — no local models", roles: [] } : await roleAudit(),
+      roles: await roleAudit(),
     },
   });
 }));

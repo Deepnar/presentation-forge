@@ -130,6 +130,24 @@ test("a role pointed at a cloud provider is not judged on what is installed loca
   }
 });
 
+test("hosted mode reports that local models are not what runs", async () => {
+  // resolveRole does not look at installed models in hosted mode — every role
+  // goes to the gateway or a BYOK provider. Reporting a local model as "ok"
+  // there would make this audit the invisible substitution it exists to stop.
+  const { setHostedForTest } = await import("../src/cloud.js");
+  const { server, url } = await fakeOllama(["author-model:1b"]);
+  setHostedForTest(true);
+  try {
+    const audit = await auditWith({ host: url, roles: { author: { model: "author-model:1b" } } });
+    assert.equal(audit.reachable, false);
+    assert.match(audit.reason, /hosted/i);
+    assert.deepEqual(audit.roles, []);
+  } finally {
+    setHostedForTest(false);
+    await new Promise((r) => server.close(r));
+  }
+});
+
 test("an unreachable Ollama answers, it does not throw", async () => {
   // A diagnostic that fails when the thing it diagnoses is down is not a
   // diagnostic. Boot calls this, and boot must not depend on Ollama running.

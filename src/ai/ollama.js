@@ -260,6 +260,14 @@ export async function resolveRole(role) {
  * about the roles, rather than turning a diagnostic into an outage.
  */
 export async function roleAudit() {
+  // In hosted mode resolveRole does not consult installed models at all: every
+  // role goes to the gateway, or falls through to whatever BYOK provider has a
+  // key. Reporting "utility = qwen3:4b-instruct, ok" there is worse than
+  // reporting nothing, because chat() will not use it — this audit exists to
+  // stop a model substitution being invisible and must not become one.
+  if (isHosted()) {
+    return { reachable: false, reason: "hosted — roles resolve through the gateway or BYOK, not local models", roles: [] };
+  }
   let cfg;
   try {
     cfg = await config();
