@@ -366,6 +366,37 @@ during the animation — and check `getComputedStyle(el).transform` after an
 animation if fixed children misbehave; it returns `matrix(1,0,0,1,0,0)` for a
 retained (broken) state and `none` for a clean one.
 
+**Two endpoints returning an object of the same name must return the same
+shape.** `/api/auto/status` and `/api/models` both hand the UI an `auto`, and
+components read the same field names off whichever one they were given.
+`modelChoices()` built its `auto` only when the key was set and then projected
+away the `keySet` that proved it — so `!auto.keySet` was true on a box with a
+working gateway key, and every hosted user was told "the shared Auto model has
+no key on this install" on the empty chat screen, with a button offering to fix
+nothing. The same projection dropped `kind`, so a local Ollama printed as
+"Auto" instead of "Local · Ollama". Nothing failed: three of the four consumers
+read the *other* endpoint and were correct, which is what kept it alive. When a
+field is only meaningful because the object exists, send it anyway — the
+consumer cannot see the invariant, only the field.
+
+**An HTML entity inside a JS string literal is printed, not decoded.** JSX
+decodes entities in *text children*, so `<span>Approve &amp; generate</span>`
+renders an ampersand — but the same characters inside a quoted string in a `{}`
+expression are just characters, and React escapes them on the way out. The
+footer read "The only thing that starts research &amp; planning." on screen.
+Grep for `&amp;` and check whether each hit is JSX text or a string literal;
+they look identical in the diff and behave oppositely.
+
+**When the displayed index is computed, advancing the stored one repeats
+work.** The briefing shows the question at `effectiveBriefStep(...)`, which
+skips whatever a chosen preset already answers, but the answer handler stored
+`step + 1`. The two drift the moment anything is skipped, so the next render
+re-resolved to a question just answered: with a preset the walk asked "who is
+your guide?" twice and the research question six times. The pure skip function
+was correct and unit-tested throughout — only its caller was wrong, so no test
+of the function could see it. Advance from the index actually shown, and test
+the *walk* rather than the step function.
+
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)

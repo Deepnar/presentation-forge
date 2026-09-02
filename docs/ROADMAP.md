@@ -3269,6 +3269,48 @@ the screens nobody has sat with. The admin page has its own entry now ("The
 admin panel, swept"). This box stays unticked until those have had a pass, not
 because the design direction is unresolved.
 
+**Briefing flow, first pass — five defects, all found by running it.** None was
+visible from the source and none had a failing test; the app was walked from
+sign-in to the summary card in hosted mode.
+
+- **Every hosted user was told the install had no gateway key.** `/api/models`
+  builds its `auto` only when the key is set and then dropped the `keySet` that
+  proved it, so ChatView's `!auto.keySet` was permanently true — a warning
+  banner on the empty chat screen offering to fix nothing. The same projection
+  dropped `kind`, so a local Ollama printed as "Auto" rather than
+  "Local · Ollama". Three of the four consumers read `/api/auto/status`
+  instead and were correct, which is what kept it alive. `test/modelchoices.test.js`
+  pins both fields and the genuine no-key case.
+- **A preset made the briefing ask the same question twice.** The walk shows
+  the question at the *effective* step and the answer handler stored `step + 1`,
+  so the two drifted the moment anything was skipped: "who is your guide?" was
+  asked twice and the research question six times. The skip function was right
+  all along — `nextBriefStep()` now owns the advance, and the tests walk the
+  whole briefing rather than probing the step function.
+- **The first question had one answer.** "Use a saved format, or start fresh?"
+  offers only "Start fresh" until the account has saved one, so a new account's
+  first interaction with the product was a question that could not be answered
+  two ways. Skipped once the list is known to be empty — `presetsStore.isLoaded()`
+  exists because an empty cache and an unfetched one look identical, and hiding
+  a real choice is the worse mistake.
+- **The composer claimed local execution on a hosted box.** "every model call
+  stays on this machine" rendered unconditionally, two rows under a header
+  badge correctly reading SHARED MODEL. A privacy claim is the one piece of
+  copy that must not be approximate.
+- **`&amp;` reached the screen.** Entities decode in JSX text and not in a
+  quoted string inside `{}`; the two are indistinguishable in a diff.
+
+The collapsed sidebar also had two adjacent controls both named "Settings" —
+the gear, and the profile chip that opens a different modal.
+
+**What this pass did NOT touch, because it is taste and wants direction:** the
+briefing is fifteen questions, and a user who answers none still clicks through
+fifteen cards — the completed transcript reads "0 members / no guide set / no
+subject set / no thesis set / no audience set", three lines each, above the
+summary. Whether that should collapse to a short form with an "answer more"
+affordance, stay a walk, or split into required-and-optional is a product
+decision, not a defect.
+
 > **Learned.** Four things, all of which cost real time.
 >
 > **`overflow-x: hidden` is a sticky-killer, and it does it silently.** One
