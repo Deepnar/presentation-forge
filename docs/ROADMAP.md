@@ -3611,6 +3611,28 @@ exists was exercised on the real deck:
   write one type's fields onto another's slide, which validated and rendered
   identically.
 
+**The chat, exercised for real.** Single-slide and multi-slide selections run
+against the generated deck, not simulated:
+
+- **Targeting is right.** A two-slide selection changed exactly those two;
+  headlines and sections preserved on both.
+- **Extent.** The turn's vocabulary is `set_meta` (deck title, subtitle, theme,
+  section names) plus append / insert / replace / update / delete / move /
+  duplicate slide. So chat can restructure the deck completely and switch the
+  theme, and can change no coordinate, colour or typeface — the layout rule
+  holds through the edit path as it does through generation.
+- **Its op array was unbounded**, which is the runaway shape this repo already
+  documented and fixed in the outline schema. Bounded now.
+- **Quality is where it is weak, and not only because of the model.** Asked to
+  hold bullets under 55 characters, the turn obeyed and destroyed the point of
+  a comparison slide: "PSCs reach 25.8% vs. 22-26% for Si" became "Efficiency
+  reaches 25.8%", on a slide headlined "PSC vs. Si: Efficiency & Stability
+  Gap". Nothing noticed, because a chat edit ran NO post-turn pass at all —
+  generation grounds, length-checks, trims and coherence-checks; an edit went
+  straight to the render. The trim runs now. Grounding and coherence after an
+  edit are still open: coherence is a model call per turn, which is a cost
+  decision rather than an oversight.
+
 **What this pass could NOT answer.** The gateway was down for the whole
 session, so generation ran on local Ollama. Everything above is mechanical —
 structure, placement, escaping, truncation — and is the product's behaviour
