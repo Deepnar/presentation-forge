@@ -193,6 +193,55 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
  * plus what changed. Slides the rewrite cannot fix are left for the
  * deterministic trim.
  */
+/**
+ * A field the decoding grammar cut at its cap.
+ *
+ * Constrained decoding masks any token that would exceed a string's maxLength,
+ * so a model still mid-sentence at the cap simply stops — there is no signal,
+ * no ellipsis, and the field is exactly at its limit rather than over it, which
+ * is why neither the length check nor the trim ever saw it. On one freshly
+ * generated deck SIX of nine speaker notes ended that way: "…creates a 30",
+ * "…and insufficient 1", "…i cells maintain 8". A presenter reads those aloud.
+ *
+ * The repair is deterministic and needs no model: fall back to the last
+ * complete sentence. A shorter whole note beats a longer broken one. Returns
+ * null when the field did not end mid-sentence, when nothing can be salvaged,
+ * or when salvaging would gut the field — those are left for the rewrite.
+ */
+export function healCutField(text, cap) {
+  if (typeof text !== "string" || cap == null) return null;
+  // Only a field AT its cap is a grammar cut. A short field ending without a
+  // full stop is a label, a heading, or a fragment the writer meant.
+  if (text.length < cap) return null;
+  if (/[.!?…:;)"'\u2019\u201d]$/.test(text.trim())) return null;
+
+  const m = text.match(/^[\s\S]*[.!?](?=\s|$)/);
+  if (!m) return null;
+  const healed = m[0].trim();
+  // Never trade a truncated field for a stub: a 200-char note cut back to five
+  // words has lost more than the broken tail cost it.
+  if (healed.length < Math.min(40, cap * 0.35)) return null;
+  return healed === text ? null : healed;
+}
+
+/** Replace one exact string value in a slide, wherever it sits. */
+function replaceStringValue(node, from, to) {
+  if (Array.isArray(node)) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i] === from) { node[i] = to; return true; }
+      if (node[i] && typeof node[i] === "object" && replaceStringValue(node[i], from, to)) return true;
+    }
+    return false;
+  }
+  if (node && typeof node === "object") {
+    for (const k of Object.keys(node)) {
+      if (node[k] === from) { node[k] = to; return true; }
+      if (node[k] && typeof node[k] === "object" && replaceStringValue(node[k], from, to)) return true;
+    }
+  }
+  return false;
+}
+
 export async function fieldLengthPass({
   deck, deckDir, research = "", model, signal, onProgress, chat = chatJSON,
 }) {
@@ -216,6 +265,15 @@ export async function fieldLengthPass({
 
   for (let i = 0; i < out.slides.length; i++) {
     const slide = out.slides[i];
+    // Heal grammar-cut fields first, deterministically — a field sitting
+    // exactly at its cap mid-sentence is neither over the cap nor
+    // ellipsis-marked, so nothing below would ever have looked at it.
+    for (const f of await fieldInventory(slide)) {
+      const healed = healCutField(f.text, f.cap);
+      if (healed && replaceStringValue(slide, f.text, healed)) {
+        repaired.push({ index: i, path: f.path, label: f.label, before: f.text, after: healed });
+      }
+    }
     const inventory = await fieldInventory(slide);
     // A field is a candidate when it exceeds its schema cap outright, when it
     // already carries a mid-sentence ellipsis (a previous trim's cut — exactly
