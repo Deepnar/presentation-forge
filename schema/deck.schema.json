@@ -272,7 +272,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 95
+                      "maxLength": 53
                     },
                     "image": {
                       "type": "string"
@@ -307,6 +307,10 @@
               "verdict": {
                 "type": "string",
                 "maxLength": 87
+              },
+              "headline": {
+                "type": "string",
+                "maxLength": 42
               }
             }
           }
@@ -804,7 +808,7 @@
                 "maxItems": 8,
                 "items": {
                   "type": "string",
-                  "maxLength": 160
+                  "maxLength": 115
                 }
               }
             }
@@ -835,7 +839,7 @@
                   "properties": {
                     "text": {
                       "type": "string",
-                      "maxLength": 160
+                      "maxLength": 99
                     },
                     "checked": {
                       "type": "boolean",
@@ -918,10 +922,14 @@
                     },
                     "value": {
                       "type": "string",
-                      "maxLength": 60
+                      "maxLength": 39
                     }
                   }
                 }
+              },
+              "headline": {
+                "type": "string",
+                "maxLength": 53
               }
             }
           }
@@ -955,7 +963,7 @@
                     },
                     "text": {
                       "type": "string",
-                      "maxLength": 160
+                      "maxLength": 115
                     }
                   }
                 }
@@ -992,7 +1000,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 80
+                      "maxLength": 63
                     },
                     "tag": {
                       "type": "string",
@@ -1118,11 +1126,11 @@
                     },
                     "label": {
                       "type": "string",
-                      "maxLength": 27
+                      "maxLength": 19
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 53
+                      "maxLength": 39
                     }
                   }
                 }
@@ -1270,7 +1278,7 @@
               },
               "delta": {
                 "type": "string",
-                "maxLength": 12
+                "maxLength": 8
               },
               "body": {
                 "type": "string",
@@ -1345,7 +1353,7 @@
                 "maxItems": 8,
                 "items": {
                   "type": "string",
-                  "maxLength": 120
+                  "maxLength": 82
                 }
               },
               "cons": {
@@ -1354,7 +1362,7 @@
                 "maxItems": 8,
                 "items": {
                   "type": "string",
-                  "maxLength": 120
+                  "maxLength": 82
                 }
               }
             }
@@ -1387,6 +1395,10 @@
               "after_image": {
                 "type": "string",
                 "maxLength": 200
+              },
+              "headline": {
+                "type": "string",
+                "maxLength": 42
               }
             }
           }
@@ -1524,11 +1536,11 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 30
+                      "maxLength": 23
                     },
                     "weight": {
                       "type": "string",
-                      "maxLength": 10
+                      "maxLength": 7
                     }
                   }
                 }
@@ -1742,7 +1754,7 @@
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 60
+                      "maxLength": 33
                     },
                     "depends_on": {
                       "type": "array",
@@ -1781,7 +1793,7 @@
               },
               "decision": {
                 "type": "string",
-                "maxLength": 39
+                "maxLength": 23
               },
               "branches": {
                 "type": "array",
@@ -1808,6 +1820,10 @@
                     }
                   }
                 }
+              },
+              "headline": {
+                "type": "string",
+                "maxLength": 57
               }
             }
           }
@@ -1837,11 +1853,11 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 30
+                      "maxLength": 23
                     },
                     "body": {
                       "type": "string",
-                      "maxLength": 50
+                      "maxLength": 23
                     },
                     "items": {
                       "type": "array",
@@ -1849,7 +1865,7 @@
                       "maxItems": 4,
                       "items": {
                         "type": "string",
-                        "maxLength": 24
+                        "maxLength": 14
                       }
                     }
                   }
@@ -1939,11 +1955,11 @@
                         "properties": {
                           "title": {
                             "type": "string",
-                            "maxLength": 30
+                            "maxLength": 23
                           },
                           "body": {
                             "type": "string",
-                            "maxLength": 44
+                            "maxLength": 39
                           }
                         }
                       }
@@ -2041,10 +2057,14 @@
                     },
                     "text": {
                       "type": "string",
-                      "maxLength": 160
+                      "maxLength": 95
                     }
                   }
                 }
+              },
+              "headline": {
+                "type": "string",
+                "maxLength": 44
               }
             }
           }
@@ -2653,14 +2673,14 @@
                   "properties": {
                     "label": {
                       "type": "string",
-                      "maxLength": 30
+                      "maxLength": 14
                     },
                     "items": {
                       "type": "array",
                       "maxItems": 6,
                       "items": {
                         "type": "string",
-                        "maxLength": 27
+                        "maxLength": 14
                       }
                     }
                   }
@@ -2777,7 +2797,7 @@
                     },
                     "definition": {
                       "type": "string",
-                      "maxLength": 120
+                      "maxLength": 75
                     }
                   }
                 }
@@ -3016,7 +3036,7 @@
                     },
                     "annotation": {
                       "type": "string",
-                      "maxLength": 160
+                      "maxLength": 135
                     }
                   }
                 }
@@ -3086,6 +3106,23 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "title"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "headline": {
+                "type": "string",
+                "maxLength": 63
+              }
+            }
+          }
         }
       ],
       "if": {
@@ -3116,7 +3153,7 @@
         },
         "body": {
           "type": "string",
-          "maxLength": 200
+          "maxLength": 119
         }
       }
     },

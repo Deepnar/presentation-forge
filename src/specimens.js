@@ -399,17 +399,17 @@ const DEMO_SPECIMENS = {
       {
         "value": "10×",
         "label": "Peak speedup",
-        "body": "Distributed workers keep the bottleneck moving."
+        "body": "Workers keep the bottleneck moving."
       },
       {
         "value": "99.9%",
         "label": "Uptime",
-        "body": "Rolling deploys, failover across three zones."
+        "body": "Rolling deploys, three-zone failover."
       },
       {
         "value": "12ms",
         "label": "Median latency",
-        "body": "Measured edge-to-core on the regional backbone."
+        "body": "Measured edge-to-core on the backbone."
       },
       {
         "value": "300+",
