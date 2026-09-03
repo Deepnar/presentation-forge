@@ -109,11 +109,24 @@ export function SlidersIcon(props) {
     </svg>
   );
 }
+/**
+ * A gear, which is what it is called and was not what it drew.
+ *
+ * The old path was a circle with eight straight rays around it — a sun, or a
+ * brightness control. It sat beside the word "Settings" in the sidebar and
+ * inside the Settings modal's own header, so the one place the app names the
+ * concept in words also drew the wrong picture of it.
+ *
+ * Eight teeth, generated rather than eyeballed: tips at r=9.2 tapering to a
+ * root circle at r=6.8, tooth half-widths 11 degrees at the tip and 17 at the
+ * root, valleys carried by an arc along the root circle so the outline stays
+ * smooth at 16px.
+ */
 export function GearIcon(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <path d="M10.01 5.5 L 10.24 2.97 L 13.76 2.97 L 13.99 5.5 A 6.8 6.8 0 0 1 15.19 6 L 17.14 4.37 L 19.63 6.86 L 18 8.81 A 6.8 6.8 0 0 1 18.5 10.01 L 21.03 10.24 L 21.03 13.76 L 18.5 13.99 A 6.8 6.8 0 0 1 18 15.19 L 19.63 17.14 L 17.14 19.63 L 15.19 18 A 6.8 6.8 0 0 1 13.99 18.5 L 13.76 21.03 L 10.24 21.03 L 10.01 18.5 A 6.8 6.8 0 0 1 8.81 18 L 6.86 19.63 L 4.37 17.14 L 6 15.19 A 6.8 6.8 0 0 1 5.5 13.99 L 2.97 13.76 L 2.97 10.24 L 5.5 10.01 A 6.8 6.8 0 0 1 6 8.81 L 4.37 6.86 L 6.86 4.37 L 8.81 6 A 6.8 6.8 0 0 1 10.01 5.5 Z" />
       <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-      <path d="M12 3v2M12 19v2M4.5 12H3m17 0h1.5M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" />
     </svg>
   );
 }
