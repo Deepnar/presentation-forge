@@ -271,6 +271,90 @@ it, and it never reaches the raster for a text check to miss. `npm run
 drawcheck` marks each field and reads back what was emitted; its second list —
 fields the specimen does not populate — is the one nothing else can see.
 
+**A schema cap is not a fit budget, and a type change moves the box.**
+`image-text` lets `body` run to 180 characters and draws it in HALF the width a
+full-bleed list gets. Converting a `bullets` slide whose four bullets were
+comfortable produced overflow on 13 themes with every cap check green. Any pass
+that changes a slide's *type* has to re-ask the fit question, because the box
+changed even though the text did not.
+
+**Compare fit verdicts by "does it fit", not by "did it get worse".** A type
+change also changes which FIELD the fitter names. A slide that failed on
+`bullets` and now fails on `body` has an identical problem count and is no less
+broken, so a count comparison scores the regression as neutral. It also costs a
+baseline sweep that the direct test does not need.
+
+**A whole-deck validity gate refuses everything on real decks.** Real generated
+decks arrive slightly invalid — `loadDeck` warns on an over-long field rather
+than refusing, so a deck ships with schema errors and renders fine. Any pass
+that gates its own edit on `validateDeck(deck).ok` therefore reads somebody
+else's pre-existing errors as its own fault and refuses to act, on every real
+deck and on no fixture. Compare the errors on the slide you touched.
+
+**A fixture without a `speaker_note` fits things a real slide cannot.** The note
+reserves 0.7in off the content box and every generated slide has one. A
+fit-gate test written without it PASSED against a completely broken gate. Same
+blind spot `themematrix --notes` exists for, met from the other direction: the
+question to ask a fixture is what it does NOT carry.
+
+---
+
+## Third-party APIs and outside data
+
+**A wired call site is not a working feature, and it reads as one.**
+`src/ai/images.js` existed for weeks, was imported by `src/ai/pipeline.js`, was
+called in `finalizeDeck`, and returned an empty array on every run — its only
+live source produced results whose licence it could not read, and its fallback
+host had been retired. Two sessions of planning recorded the feature as
+"unstarted", which is the *cheaper* state: an absent module gets built, whereas
+a present one gets trusted. Before planning any integration, grep for the seam
+it plugs into and run the existing thing once.
+
+**Verify a documented API by calling it. Docs describe the past.**
+Two upstream facts sank a design that had been written from documentation, and
+neither is discoverable by reading code: `source.unsplash.com` (the Unsplash
+Source API) is **retired and answers 503 to everything**, and **SearXNG
+normalises the licence out of every image result row** — including its own
+`openverse` engine, whose upstream states it. One `curl` each, at design time,
+is the whole cost.
+
+**Aggregators drop the fields you are aggregating for.** SearXNG image rows
+carry `img_src` and `title` and nothing about rights. If a field is the *reason*
+for the integration, confirm it survives the layer you are reading it through,
+not just that the upstream has it.
+
+**Search APIs AND their terms, so a descriptive phrase returns nothing.**
+Openverse: `"electrolysis"` → 240 results, `"electrolysis cell"` → **0**,
+`"a diagram of the electrolysis cell"` → **0**. A model writes phrases, so
+passing one through verbatim is a silent no-op that looks like "no results
+exist". Widen in defined steps and stop at the first rung that lands — and the
+word that most often breaks the query is the one naming the KIND of picture
+(`diagram`, `photo`, `schematic`), not the subject.
+
+**Read the rate limit off the response, not off the docs.** Openverse
+anonymously allows 20/min and 200/day and reports the remainder in
+`x-ratelimit-available-anon_sustained`. A local counter cannot know what other
+runs on the same box already spent; the header can.
+
+**Wikimedia sheds load with a 503 under its own name.** `{"httpCode":503,
+"httpReason":"upstream connect error or disconnect/reset before headers. reset
+reason: overflow"}` on a request that succeeded a minute earlier. Retry with
+backoff, and honour `retry-after` — a single attempt reads as "this API does not
+work".
+
+**Name the file after its bytes, never after its URL or its `content-type`.**
+pptxgenjs derives the OOXML relationship type from the file *extension*, so PNG
+bytes written to `.jpg` produce a deck that writes without complaint, passes
+every check, and shows a broken picture when a human opens it. Sniff the magic
+bytes. The same check catches an HTML error page served as `image/png`, which is
+the ordinary failure shape for a hotlinked asset.
+
+**A cache that stores bytes but not provenance loses the provenance.** The
+supply's cache hit returned the file and `credit: null`, which would leave a
+CC BY image in a deck with its attribution nowhere. Resume, re-render and the
+critic pass all re-run the supply, so the cache hit is the NORMAL path, not an
+edge case — whatever the first run learned has to be readable by the second.
+
 ---
 
 ## Brand assets
