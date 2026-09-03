@@ -2908,7 +2908,7 @@ themes now seat all 75 slide types at a readable size.**
 > deciding whether text survived, not a budget anyone had chosen. None was
 > visible as a number until the sweep printed it.
 
-### [ ] Every theme against every slide type
+### [x] Every theme against every slide type
 
 *Priority: high. Renderer only, no model — `src/specimens.js` supplies content.*
 
@@ -2990,7 +2990,15 @@ sheets of the 26 diagram and dense-data types across `minimal-muji` and
   `data-table`, `decision-matrix`, `chart`, `kpi-dashboard`, `data-cards`,
   `metric-comparison`, `glossary`, `bibliography` — reads correctly at caps.
 
-What is left is the other six covering themes. **Render each type at its schema caps before looking**:
+**All eight covering themes swept (2026-09-03).** Contact sheets of the 26
+diagram and dense-data types per theme, full-size on anything suspicious. Both
+`venn` and `matrix` were fixed in this pass and re-checked across the set;
+everything else reads correctly at the caps. `matrix` is out of the landing
+showcase's HELD_BACK list, which is empty again.
+
+This box is ticked. What a later pass would add is the other 26 themes, and the
+entry's own answer to that stands: they are the same code in different colours,
+which is what `COVERING_THEMES` is for. **Render each type at its schema caps before looking**:
 every defect the fixed-scale pass found that the sweeps were clean on came out
 of doing that, and none of them was visible with the specimen's own payloads. Expect the algorithmic diagram types and the
 dense data types to be where the failures are; the composition pass already

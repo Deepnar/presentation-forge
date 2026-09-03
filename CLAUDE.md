@@ -88,6 +88,8 @@ npm run drawcheck                # every field the schema offers reached the pag
 npm run coverage                 # which themes a sweep must look at; --without <t> costs a deletion
 node --test test/contrast.test.js   # title and divider surfaces carry their ink
 node tools/capfit.mjs            # what length each field can actually be
+node tools/capfit-apply.mjs <caps.json> --apply   # move the caps to what fits
+node tools/contrast-debt.mjs     # which divider contrast debts are payable at all
 npm run capstress                # every type at its caps, rendered — then LOOK
 npm run capstress -- --scale 0.01   # ...and at one character: the layout, not the caps
 npm run deckscore <slug>         # a generated deck, scored /100 — comparable between runs

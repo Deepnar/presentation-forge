@@ -678,6 +678,22 @@ unknown command gets a helpful reply instead of being forwarded as a prompt.
 The composer is an auto-growing textarea (44px up to a ~152px cap, then
 scrolls).
 
+**The briefing is two forms, not fifteen cards.** Every question in
+`app/web/src/lib/briefing.js` carries a `tier`. `required` — theme, length,
+density and the research choice for a deck; depth, density, research for a
+report — renders as one card with a single action. `optional` is everything
+else behind one collapsed panel that skips in a click or opens to all ten
+fields at once. It was a walk of fifteen questions, and a user who wanted none
+of them still clicked through all fifteen; the count was never the defect, the
+walk was. `tierQuestions()` also drops the preset field when the account has no
+presets, and whatever a chosen preset already fixes.
+
+Each field is the same card the walk used, in `embedded` mode: it patches the
+briefing as it is touched and renders no footer, because the form owns the
+action for the tier. Text commits on blur rather than per keystroke — the
+briefing persists to localStorage on change. `briefTier(kind, step)` maps the
+stored `briefStep` onto a tier, so threads written before the tiers still open.
+
 **The briefing reaches the planner verbatim.** The full briefing record — team,
 guide, academic, audience, emphasis, theme, density, branding, slide count — is
 sent as an explicit "The user answered: …" block alongside the research brief,

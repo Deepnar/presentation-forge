@@ -1113,14 +1113,23 @@ closer together than any specimen render shows. Types whose geometry is
 computed from the room left over need looking at *at the caps*, not at the
 specimen's own comfortable payloads.
 
-**A rotated text box's WIDTH is its vertical footprint.** `matrix` places three
-y-axis labels down one gutter at `rotate: 270`, and their `y` values were
-constants — so widening the boxes to stop a label wrapping pushed the bottom
-one 0.04in off the slide. The box is centred on `y + h/2` and spans `w/2`
-either side of that once turned, so any position for a rotated box has to be
-derived from its width, never fixed alongside it. The geometry watcher caught
-it inside one run, which is the argument for it running inside every render
-rather than as a separate sweep.
+**A rotated text box's WIDTH is its vertical footprint, and elements sharing a
+gutter compete for it.** `matrix` places three y-axis labels down one gutter at
+`rotate: 270`. Their `y` values were constants, so widening the boxes to stop a
+label wrapping pushed the bottom one 0.04in off the slide — a box is centred on
+`y + h/2` and spans `w/2` either side once turned, so a rotated box's position
+has to be derived from its width, never fixed alongside it. The geometry
+watcher caught that inside one run, which is the argument for it running inside
+every render rather than as a separate sweep.
+
+Sizing each label to its own text then let all three ask for ~1.9in of a 2.85in
+gutter, and at the caps — where every label is long at once — they printed
+through each other. **Divide the shared axis before sizing anything on it.**
+Not into exact equal parts, though: these boxes are padded and their text is
+aligned to one end, so adjacent boxes overlap by some margin before the glyphs
+do, and a strict third capped every label below what it could safely take and
+reintroduced the wrap. The two failures pull in opposite directions and only a
+render of both extremes tells you where the line is.
 
 **An eyebrow cannot be shrunk to fit, because its nominal size is its floor.**
 Reaching for `fitOneLine` on one returns a scale of 1 and reports a floor event
