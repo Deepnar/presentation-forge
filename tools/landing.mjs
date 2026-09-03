@@ -74,12 +74,15 @@ const SHOWCASE_THEME = "swiss-international";
  * type belongs here only while it renders a defect, and comes out when the
  * defect is fixed.
  *
- * `matrix` draws its y-axis labels rotated at eyebrow size, and the fitter
- * measures tracked uppercase at roughly a tenth of the letter-spacing it
- * actually renders with, so "CONTRACTED" wraps to "CONTRACT / ED" with every
- * check clean. See docs/TRAPS.md.
+ * Empty, and that is the intended resting state. `matrix` sat here because it
+ * draws its y-axis labels rotated at eyebrow size and the fitter measured
+ * tracked uppercase at roughly a tenth of the letter-spacing it renders with,
+ * so the labels wrapped mid-word with every check clean. That was the
+ * `tracking` unit bug in `measure()`, fixed 2026-09-03 — the rotated axis on
+ * this showcase's own theme was rendered before and after to confirm it. See
+ * docs/TRAPS.md.
  */
-const HELD_BACK = new Set(["matrix"]);
+const HELD_BACK = new Set();
 
 
 const arg = (flag, fallback = null) => {

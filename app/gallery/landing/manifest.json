@@ -114,7 +114,7 @@
           "file": "sci-fi-hud--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 16376,
+          "bytes": 16164,
           "dark": true
         }
       ]
@@ -137,7 +137,7 @@
           "file": "isometric-dark--stats.webp",
           "w": 1200,
           "h": 675,
-          "bytes": 17508,
+          "bytes": 17466,
           "dark": true
         }
       ]
@@ -338,7 +338,7 @@
         "file": "swiss-international--flow.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 12622,
+        "bytes": 12604,
         "dark": false
       },
       {
@@ -347,6 +347,14 @@
         "w": 1000,
         "h": 563,
         "bytes": 8674,
+        "dark": false
+      },
+      {
+        "type": "matrix",
+        "file": "swiss-international--matrix.webp",
+        "w": 1000,
+        "h": 563,
+        "bytes": 11758,
         "dark": false
       },
       {
@@ -370,7 +378,7 @@
         "file": "swiss-international--takeaway.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 8858,
+        "bytes": 8856,
         "dark": false
       },
       {
@@ -394,7 +402,7 @@
         "file": "swiss-international--kpi-dashboard.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 11860,
+        "bytes": 11970,
         "dark": false
       },
       {
@@ -410,7 +418,7 @@
         "file": "swiss-international--before-after.webp",
         "w": 1000,
         "h": 563,
-        "bytes": 17430,
+        "bytes": 17462,
         "dark": false
       },
       {
