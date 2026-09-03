@@ -2963,7 +2963,29 @@ reachable only by making muted the same colour as ink. Five were genuinely
 payable and are paid. **The nineteen that remain are a question about nineteen
 divider backgrounds — the theme's identity — and want a decision, not a nudge.**
 
-What is left is the visual half — rasterise and look at all of it. **Render each type at its schema caps before looking**:
+**The visual half, first pass at the corrected caps (2026-09-03).** Contact
+sheets of the 26 diagram and dense-data types across `minimal-muji` and
+`gradient-mesh-dark`, then full-size on anything suspicious.
+
+- **`venn` printed its three item stacks through each other** and every check
+  was clean on it — see the TRAPS entry. Fixed: the layout had a horizontal
+  room constraint and no vertical one, on the axis a three-circle Venn overlaps
+  by construction.
+- **`scorecard` and `matrix` looked broken in a cell and were not**, at least
+  not in the way the cell suggested — `scorecard` reads perfectly at full size.
+  That is the contact-sheet lesson below, paid again.
+- **`matrix` is genuinely crowded**: the rotated y-axis label renders as two
+  overlapping columns and the axis end-labels sit inside the quadrant boxes.
+  Left alone deliberately — it is the known `tracking` unit bug, which wants
+  its own round against a fresh `themematrix --save` baseline rather than a
+  patch here.
+- Everything else on those sheets — `funnel`, `dependencies`, `branching-flow`,
+  `layered-architecture`, `roadmap`, `chronology`, `pyramid`, `hierarchy`,
+  `data-table`, `decision-matrix`, `chart`, `kpi-dashboard`, `data-cards`,
+  `metric-comparison`, `glossary`, `bibliography` — reads correctly at caps.
+
+What is left is the other six covering themes, and `matrix` once tracking is
+fixed. **Render each type at its schema caps before looking**:
 every defect the fixed-scale pass found that the sweeps were clean on came out
 of doing that, and none of them was visible with the specimen's own payloads. Expect the algorithmic diagram types and the
 dense data types to be where the failures are; the composition pass already

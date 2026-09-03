@@ -1081,3 +1081,30 @@ question about ink; it says nothing about whether a shape has a boundary, and
 the two failures look identical in a screenshot until you know which you are
 looking at.
 
+**Two boxes that both fit can still be the same box.** Every mechanical check
+passed on a `venn` whose three item stacks printed through each other: the
+.pptx wrote, `textcheck` read every declared word back, the geometry watcher
+saw every shape on the slide, and the fitter was content because each box fits
+its own text. None of them asks whether two boxes occupy the same space. The
+`roomFor` helper in that layout already solved the horizontal case — two
+circles sharing a row — and nothing did the vertical one, which is the axis a
+three-circle Venn overlaps on by construction.
+
+Wherever a layout positions blocks by a shape's centre and the shapes are
+meant to overlap, the collision is between the CONTENTS and no sweep can see
+it. Only rendering and looking does.
+
+**`capfit` measures how long a field may be, never how many.** It grows each
+capped string toward its cap and reports the length every theme can seat, so a
+type whose failure is the *number* of items — or the arrangement of them —
+looks perfectly calibrated. `venn` reported clean after its caps were corrected
+from 30/27 to 14 and was still overprinting itself, because the specimen
+carries three items per set at any cap and three was always enough to collide.
+
+**A tall heading is a layout input.** At the schema caps a two-line title and a
+two-line standfirst take enough of the canvas that the diagram below solves for
+a much smaller diameter, and elements sized as fractions of that diameter come
+closer together than any specimen render shows. Types whose geometry is
+computed from the room left over need looking at *at the caps*, not at the
+specimen's own comfortable payloads.
+
