@@ -438,3 +438,103 @@ test("a deck with no [image] note spends nothing and returns itself", async () =
     assert.deepEqual(r.credits, []);
   });
 });
+
+/* ------------------------------------------------- the fit gate and the cache */
+
+test("a promotion the page cannot hold is given back", async () => {
+  // The schema lets image-text `body` run to 180 characters, but it draws that
+  // body in HALF the width a full-bleed list gets. These four bullets are all
+  // inside the cap and still cannot fit the narrower column, which is the case
+  // no cap check can see — measured on the real generated deck, where a
+  // schema-clean promotion took the fit sweep from 5 problems to 20.
+  await inTmpDeck(async (dir) => {
+    const long = [
+      "Moisture breaks down organic components in perovskite materials, causing structural degradation that reduces device performance and lifespan",
+      "Water molecules penetrate through encapsulation layers and react with the perovskite lattice, triggering irreversible phase transitions",
+      "Heat degrades structure by accelerating ion migration within the crystal lattice, which disrupts charge transport pathways across the film",
+      "Elevated temperatures increase defect density in perovskite films, causing rapid degradation of charge carrier mobility and device output",
+    ];
+    for (const b of long) assert.ok(b.length <= 180, "the fixture must stay inside the schema cap");
+
+    const deck = deckWithNote({
+      type: "bullets", headline: "Key challenges", bullets: long,
+      standfirst: "Current perovskite solar cells lag behind commercial silicon technology in stability despite matching efficiency",
+      // A speaker note reserves 0.7in off the content box, and every real
+      // generated slide has one. Without it these same four bullets fit, which
+      // is why the first version of this test passed against a broken gate.
+      speaker_note: "While PSCs have achieved 25.8% efficiency comparable to commercial Si cells, their stability is orders of magnitude worse.",
+      notes: "[image] a photo of a perovskite solar cell",
+    });
+    const { deck: out, supplied, skipped, credits } = await withStubbedFetch(
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
+    );
+
+    assert.equal(supplied.length, 0, "the promotion is reverted, not shipped overfull");
+    assert.equal(out.slides[1].type, "bullets", "the slide goes back to what the writer wrote");
+    assert.deepEqual(out.slides[1].bullets, long, "every word is returned");
+    assert.match(out.slides[1].notes, /\[image\]/, "the note comes back with it");
+    assert.equal(skipped.length, 1);
+    assert.match(skipped[0].reason, /would not leave room/);
+    assert.deepEqual(credits, [], "no credit is recorded for a picture no slide carries");
+  });
+});
+
+test("the fit gate can be stood down, and then the same deck is supplied", async () => {
+  // Proves the previous test measured the gate rather than something else.
+  await inTmpDeck(async (dir) => {
+    const deck = deckWithNote({
+      type: "bullets", headline: "Key challenges",
+      bullets: [
+        "Moisture breaks down organic components in perovskite materials, causing structural degradation that reduces device performance and lifespan",
+        "Water molecules penetrate through encapsulation layers and react with the perovskite lattice, triggering irreversible phase transitions",
+        "Heat degrades structure by accelerating ion migration within the crystal lattice, which disrupts charge transport pathways across the film",
+        "Elevated temperatures increase defect density in perovskite films, causing rapid degradation of charge carrier mobility and device output",
+      ],
+      standfirst: "Current perovskite solar cells lag behind commercial silicon technology in stability despite matching efficiency",
+      speaker_note: "While PSCs have achieved 25.8% efficiency comparable to commercial Si cells, their stability is orders of magnitude worse.",
+      notes: "[image] a photo of a perovskite solar cell",
+    });
+    const { supplied } = await withStubbedFetch(
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      () => supplyDeckImages(deck, dir, { budget: makeBudget(), fitGate: false }),
+    );
+    assert.equal(supplied.length, 1, "without the gate the same promotion goes through");
+  });
+});
+
+test("a cached image keeps its licence — the credit is never lost to the cache", async () => {
+  // A resumed finalize, a re-render and a critic pass all re-run the supply, so
+  // the cache hit is the NORMAL path. A cached file whose credit came back null
+  // would leave an attributed image in the deck with its attribution nowhere,
+  // which is the breach the licence tiers exist to prevent.
+  await inTmpDeck(async (dir) => {
+    const slide = {
+      type: "bullets", headline: "Rooftop solar",
+      bullets: ["Cheaper", "Faster", "Cleaner", "Local"],
+      notes: "[image] a rooftop solar array",
+    };
+    const body = commonsBody({ licence: "cc-by-4.0", short: "CC BY 4.0" });
+
+    const first = await withStubbedFetch(
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(body) : imgRes()),
+      () => supplyDeckImages(deckWithNote({ ...slide }), dir, { budget: makeBudget() }),
+    );
+    assert.equal(first.supplied.length, 1);
+    assert.equal(first.credits[0].licence_code, "cc-by-4.0");
+
+    // Second run: the network refuses, so only the cache can answer.
+    const second = await withStubbedFetch(
+      () => { throw new Error("the cache should have answered"); },
+      () => supplyDeckImages(deckWithNote({ ...slide }), dir, { budget: makeBudget() }),
+    );
+    assert.equal(second.supplied.length, 1, "the cached file is still seated");
+    assert.equal(second.credits.length, 1, "and it still carries its credit");
+    assert.equal(second.credits[0].licence_code, "cc-by-4.0");
+    assert.equal(second.credits[0].attribution_required, true);
+
+    const md = await readFile(path.join(dir, "CREDITS.md"), "utf8");
+    assert.match(md, /REQUIRE attribution/);
+    assert.match(md, /CC BY 4\.0/);
+  });
+});
