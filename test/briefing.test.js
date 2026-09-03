@@ -222,3 +222,20 @@ test("optionalAnswered counts only answers actually given", () => {
   assert.equal(optionalAnswered("deck", { guide: { name: "" } }), 0);
   assert.equal(optionalAnswered("deck", { academic: { subject: "", year: "" } }), 0);
 });
+
+test("image supply is asked in the required tier, beside research", () => {
+  // A tier is one FORM, so this costs no extra turn — which is the whole reason
+  // it belongs next to research rather than behind "add detail".
+  const required = tierQuestions("deck", "required", {}, null).map((q) => q.key);
+  assert.ok(required.includes("images"), `expected images in the required tier, got ${required.join(", ")}`);
+  assert.equal(
+    required.indexOf("images"), required.indexOf("research") + 1,
+    "it is the same question as research — where the content comes from — so it sits next to it",
+  );
+});
+
+test("a report briefing does not ask about slide images", () => {
+  // Reports have no image slides; asking would be a question with no effect.
+  const keys = REPORT_QUESTIONS.map((q) => q.key);
+  assert.ok(!keys.includes("images"));
+});

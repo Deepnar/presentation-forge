@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { findEmptyChat, chatsKey, createChat } from "../app/web/src/lib/chats.js";
+import { findEmptyChat, chatsKey, createChat, normalizeChat } from "../app/web/src/lib/chats.js";
 
 const empty = () => createChat({ kind: "deck" });
 
@@ -28,4 +28,15 @@ test("findEmptyChat handles an empty or malformed list", () => {
 test("chatsKey is per-account and case-insensitive", () => {
   assert.equal(chatsKey("A@B.com"), chatsKey("a@b.com"));
   assert.match(chatsKey("a@b.com"), /forge\.chats\.a@b\.com/);
+});
+
+test("image supply defaults to off, and a chat written before it existed reads as off", () => {
+  assert.equal(createChat({ kind: "deck" }).briefing.imageSupply, "none");
+  // The question is newer than the stored chats, and the behaviour those chats
+  // already had is "no images" — so an absent value must not become "auto".
+  assert.equal(normalizeChat({ briefing: {} }).briefing.imageSupply, "none");
+  assert.equal(normalizeChat({ briefing: { imageSupply: "auto" } }).briefing.imageSupply, "auto");
+  for (const junk of ["yes", true, 1, "AUTO", null]) {
+    assert.equal(normalizeChat({ briefing: { imageSupply: junk } }).briefing.imageSupply, "none", `${junk} is not opt-in`);
+  }
 });
