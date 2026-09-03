@@ -3303,13 +3303,35 @@ sign-in to the summary card in hosted mode.
 The collapsed sidebar also had two adjacent controls both named "Settings" —
 the gear, and the profile chip that opens a different modal.
 
-**What this pass did NOT touch, because it is taste and wants direction:** the
-briefing is fifteen questions, and a user who answers none still clicks through
-fifteen cards — the completed transcript reads "0 members / no guide set / no
-subject set / no thesis set / no audience set", three lines each, above the
-summary. Whether that should collapse to a short form with an "answer more"
-affordance, stay a walk, or split into required-and-optional is a product
-decision, not a defect.
+**The briefing's shape — direction now agreed (2026-09-03).** Fifteen questions,
+and a user who answers none still clicks through fifteen cards; the completed
+transcript then reads "0 members / no guide set / no subject set / no thesis
+set / no audience set", three lines each, above the summary. Three options were
+put up — a short form with an "answer more" affordance, a required/optional
+split, or leaving the walk and fixing only the summary. **The answer is the
+first two combined**, and the reasoning is worth keeping because it is what
+makes the combination more than a compromise:
+
+The problem is not the number of questions, it is that every one of them is a
+*walk*. A short form alone fixes the entry and risks "answer more" becoming the
+same twelve-card walk one step later. A required/optional split alone still
+walks the user through the required set for answers that fit on one screen
+together. Applying *form rather than walk* to *both* tiers is the actual fix:
+
+- **Required — one compact card**, not a sequence. The answers that genuinely
+  change the artefact.
+- **Optional — one grouped panel** behind an "add detail" affordance, fillable
+  in any order and skippable in a single action rather than card by card.
+
+`BRIEFING_QUESTIONS` is a flat `{ key, ask }` array and `nextBriefStep()`
+already owns the advance, so the tier is an additive field rather than a
+rewrite. Which questions sit in which tier is the thing to settle when this is
+built — `research` in particular changes output quality materially and may not
+belong with `guide` and `team`.
+
+Worth stating plainly: this moves the briefing from a conversation toward a
+form inside a conversation. That is a change in what the surface *is*, and it
+is the intended direction rather than a side effect.
 
 > **Learned.** Four things, all of which cost real time.
 >
