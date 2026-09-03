@@ -225,7 +225,7 @@ async function groundNotesLabel(dir) {
  */
 export async function createDeck({
   brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
-  upload = null, theme = null, maxSlides = 24,
+  upload = null, theme = null, maxSlides = 24, imageSupply = "none",
   slidesPerMember = null, density = "balanced", model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
@@ -252,6 +252,9 @@ export async function createDeck({
   const meta = {
     slug, brief, sources, research, papers, theme, maxSlides, density,
     ...(researchSource ? { researchSource } : {}),
+    // Auto image supply is opt-in per deck and frozen here, so a resumed or
+    // re-finalised deck supplies on the same terms the briefing agreed to.
+    ...(imageSupply && imageSupply !== "none" ? { imageSupply } : {}),
     ...(slidesPerMember != null ? { slidesPerMember } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
@@ -705,17 +708,32 @@ export async function finalizeDeck({
   }
 
   // Image supply — auto, not just upload: when the writer wants an image it
-  // emitted `[image] description` (sanitized, never a URL). Try to find a CC
-  // image via SearXNG images / Unsplash Source, cache to assets/auto/, set
-  // slide.image. No model writes a URL, every file is local. Opt-in today is
-  // any deck with an [image] note — manual upload still wins (assets/ over auto/).
-  try {
-    const supplied = await supplyDeckImages(tr.grounded.deck, dir);
-    if (supplied.length) {
-      onProgress?.({ status: "images", count: supplied.length });
-      await writeFile(deckFile, YAML.stringify(tr.grounded.deck), "utf8");
+  // emitted `[image] description` (sanitised, never a URL). This finds a freely
+  // licenced one, caches it under assets/auto/, seats it, and writes the credits
+  // the licence obliges. Opt-in per deck via meta.imageSupply, because it spends
+  // network on someone else's rate limit and puts a picture on a slide a person
+  // may not want one on. A manual upload still wins: it targets the slide
+  // directly and never leaves an [image] note for this pass to find.
+  let imageSupply = null;
+  if (meta.imageSupply === "auto") {
+    try {
+      const r = await supplyDeckImages(tr.grounded.deck, dir, {
+        signal,
+        onProgress: (e) => onProgress?.({ status: "images", ...e }),
+      });
+      imageSupply = r;
+      if (r.supplied.length) {
+        // The supply returns a NEW deck (a promotion rewrites the slide's type),
+        // so the result has to be adopted, not assumed to have been mutated in.
+        tr = { ...tr, grounded: { ...tr.grounded, deck: r.deck } };
+        await writeFile(deckFile, YAML.stringify(r.deck), "utf8");
+      }
+      onProgress?.({ status: "images_done", supplied: r.supplied.length, skipped: r.skipped.length });
+    } catch (err) {
+      // A picture is never worth failing a deck for.
+      imageSupply = { supplied: [], skipped: [], credits: [], notes: [String(err?.message ?? err)] };
     }
-  } catch {}
+  }
 
   // PPTs themselves — better by default: deterministic quality gate.
   // Flags monotony (8 bullets in a row, one family dominating) and data-blind
@@ -724,6 +742,13 @@ export async function finalizeDeck({
   // same findings. No model, no second-guessing — the flag is the feature.
   const qualityFindings = analyzeQuality(tr.grounded.deck, researchText);
   const qualityProbs = qualityProblems(qualityFindings);
+
+  // A slide that asked for a picture and did not get one is reported, not
+  // silently left bare: its [image] note survives, so the deck page still shows
+  // the "add image" door, and the problem says which door and why.
+  const imageProbs = (imageSupply?.skipped ?? []).map(
+    (s) => `slide ${s.index + 1}: no image supplied for "${s.description}" — ${s.reason}`,
+  );
 
   // Presenter distribution runs on finalize too, not just in the write half.
   // The write half checkpoints deck.yaml per slide DURING the write loop and
@@ -758,7 +783,7 @@ export async function finalizeDeck({
         plan,
         slides: [],
         thumbs: [],
-        problems: [...(tr.grounded.problems ?? []), ...qualityProbs, ...passSkips, err.message],
+        problems: [...(tr.grounded.problems ?? []), ...qualityProbs, ...imageProbs, ...passSkips, err.message],
         skipped: [],
         stats: {},
         trimmed: tr.trimmed,
@@ -807,6 +832,7 @@ export async function finalizeDeck({
       ...(write?.problems ?? []),
       ...(coherence?.problems ?? []),
       ...qualityProbs,
+      ...imageProbs,
       // A pass that could not run is reported, never swallowed: the deck is
       // finished and rendered, and the user is told which improvement it did
       // not get rather than being handed a silently weaker deck.
@@ -814,6 +840,9 @@ export async function finalizeDeck({
     ],
     skipped: write?.skipped ?? [],
     stats: write?.stats ?? {},
+    images: imageSupply
+      ? { supplied: imageSupply.supplied, skipped: imageSupply.skipped, credits: imageSupply.credits }
+      : null,
     critic: criticReport,
     trimmed: tr.trimmed,
     coherence: coherence ? { findings: coherence.findings.length, fixed: coherence.findings.length > 0 } : { findings: 0, fixed: false },
