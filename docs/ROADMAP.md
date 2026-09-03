@@ -3850,10 +3850,11 @@ Every path below is a real user journey with zero end-to-end runs behind it.
 They are listed together because the answer to "does the product work" is not
 knowable while they are unexercised.
 
-- **The browser UI for chat and convert.** Every turn in the pipeline sweep went
-  through the CLI and `runChatTurn`; the HTTP route was verified separately and
-  the UI was never driven. A CLI-generated deck has no `meta.owner`, so a test
-  account cannot open it — set one to drive the UI against real content.
+- **[x] The browser UI against a real deck.** Driven for the first time, on an
+  owned copy of the real generated deck: all four project pages, the slide
+  grid, downloads and the export menu. **It found two defects that no test
+  could see, one of them total.** Chat and convert *turns* remain unexercised
+  through the UI — they need a model.
 - **[x] Auth flows** — register, login, password reset, email verification.
   Run end to end for the first time via `npm run dev:mail`, which starts
   `tools/mailsink.mjs` alongside the app: register → confirmation mail →
@@ -3869,6 +3870,38 @@ knowable while they are unexercised.
 - **Rate limits and quotas** under real load.
 - **The vision critic loop.** The capability gate is built and tested; the loop
   itself has never been watched critique a deck.
+
+> **Learned (the browser UI).** Two defects, and the shape of both is the
+> reason this item exists.
+>
+> **In-app navigation did nothing at all.** Every route transition changed the
+> URL and left the view where it was — the project tabs, the sidebar's Themes
+> link and the back button alike — and only a reload showed the page asked
+> for. The `applyHash` subscription was written without a dependency array,
+> the ordinary way to keep a handler's closure fresh, so it re-subscribed on
+> every render. A hashchange then dispatches, the sibling `setHash` listener
+> runs first, React flushes that render *synchronously* because hashchange is
+> a discrete event, the flush runs the effect's cleanup, and the cleanup
+> removes the listener while the same event is still dispatching. The DOM spec
+> says a listener removed mid-dispatch is not invoked. Re-dispatching the same
+> hash worked, because `setHash` was then a no-op and nothing re-rendered —
+> which is exactly what makes it look like the router is fine.
+>
+> It was introduced by `c1dab18`, the commit that added the reset and verify
+> screens, one day before it was found. `router.js` is pure and unit-tested and
+> its tests still pass, because nothing was wrong with the helpers.
+>
+> **Export → Bundle (.zip) answered 401 for everyone.** `downloadBundle` was a
+> raw `fetch` with no headers. The bundle is a POST under the deck workspace,
+> and state-changing routes ignore the session cookie on purpose, so it carried
+> no credential at all. Every other helper goes through `call()` or spreads
+> `authHeader()`; bypassing the wrapper is what loses the header.
+>
+> **Both are browser-only by construction**, which is worth stating plainly:
+> this repo has no component-test infrastructure, so neither defect was
+> reachable from `npm test` and neither would be reachable by a test written
+> today. That is a real gap and a decision to make, not an oversight to fix in
+> passing — see the unchecked item below.
 
 > **Learned (auth flows).** The reason these were never run is not that nobody
 > got round to it. `mailConfigured()` is load-bearing beyond sending: with no
@@ -3901,6 +3934,33 @@ knowable while they are unexercised.
 > in, browse and hold its own Cloud key"), but the default-deny is per route
 > *within* a mount, not per route. A new top-level prefix is not covered by
 > anything. Worth knowing before adding one.
+
+### [ ] Nothing can test the browser
+
+*Priority: high. No model. Needs a direction agreed before any code.*
+
+Three defects this session existed only in a running browser and none was
+reachable from `npm test`: the confirmation screen spending its token twice,
+in-app navigation doing nothing, and the bundle button answering 401. Two of
+the three were total — a whole surface inert — and all three survived a suite
+that grew to 516 passing tests.
+
+The pattern is consistent. `router.js` is pure and unit-tested and its tests
+passed throughout, because the helpers were correct; what broke was how a
+component subscribed to an event. `api.js` helpers are one line each; what
+broke was one of them skipping the wrapper. Neither is a logic error a unit
+test could reach, and both are the first thing a person notices.
+
+This repo has no component-test infrastructure and adding one is a real
+decision, not a chore — jsdom plus a React test renderer is a dependency, a
+second test command and a body of test code with its own upkeep. The
+alternatives are worth weighing against it: a scripted browser pass over the
+surfaces that matter, run before a release rather than per commit, would have
+caught all three and needs no new dependency, since the tooling is already
+used to find them. **Agree the direction before building either.**
+
+What is NOT in doubt is the trigger: a surface nobody drives is a surface
+nobody has tested, whatever the suite says.
 
 ### [ ] Measuring content quality
 

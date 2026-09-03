@@ -962,3 +962,29 @@ sit outside it. "Written so a route added later is covered" means later
 *within* a mount; check which mounts a policy actually has before trusting the
 sentence.
 
+**An effect with no dependency array re-subscribes on every render, and a
+listener removed while an event is dispatching is never called.** Those two
+facts together silently disabled every in-app route change. The `applyHash`
+hashchange subscription was written without a dep array — the ordinary way to
+keep a handler's closure fresh — so each render removed and re-added it. On a
+real hashchange the sibling `setHash` listener ran first, React flushed that
+render synchronously because hashchange is a discrete event, the flush ran the
+cleanup, and the DOM spec then skipped the listener that had just been removed.
+The URL changed, the view did not, and only a reload showed the right page.
+
+The tell is that re-dispatching the *same* hash worked: `setHash` was then a
+no-op, nothing re-rendered, nothing was unsubscribed. Anything that looks
+intermittent between "first time" and "again" is worth testing that way. The
+fix is a stable subscription — `[]` deps plus a ref to the latest handler — so
+nothing is ever unsubscribed mid-event. Two listeners on one event where either
+can trigger a render is the shape to look for.
+
+**A raw `fetch` next to a wrapper that adds credentials will forget them.**
+`api.js` sends every authenticated request through `call()`, which attaches the
+bearer token, and a handful of binary endpoints spread `authHeader()` by hand
+instead. `downloadBundle` did neither, so Export → Bundle answered 401 for
+every user. There is no fallback credential either: state-changing routes read
+the bearer and ignore the session cookie on purpose, since the cookie exists
+only so `<img>` and `<a download>` can load media. When a wrapper exists,
+bypassing it is the bug; grep the raw calls whenever one is added.
+
