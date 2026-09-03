@@ -20,7 +20,7 @@ tokens:
     section:
       bg: "#F1F1EF"
       ink: "#37352F"
-      muted: "#787774"
+      muted: "#6F6D6A"
       accent: "#2383E2"
   dark:
     bg: "#191919"

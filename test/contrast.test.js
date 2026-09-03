@@ -17,7 +17,24 @@ import { contrast, ensureContrast } from "../src/chartpalette.js";
  * is a section number at eyebrow size or a standfirst at subhead size, neither
  * of which is large text, so 4.5:1 is the floor there.
  *
- * The debt list is the surfaces that clear 3:1 but not 4.5:1. It is a to-do
+ * The debt list is the surfaces that clear 3:1 but not 4.5:1. It reads as a
+ * to-do list and mostly is not one: `tools/contrast-debt.mjs` splits it three
+ * ways, and only five of the original twenty-four were payable.
+ *
+ * `muted` is a dimmed `ink`. It may move toward ink; it may not cross the
+ * ground and come out dark on a saturated divider under white headline type,
+ * because that is a different design rather than a repaired one. Under that
+ * one constraint, twelve of these surfaces cannot be fixed by any token edit —
+ * their `ink` is already pure white and pure white does not clear 4.5:1 against
+ * the ground, so nothing dimmer can. Another seven are reachable only by moving
+ * muted so far into ink that the two are the same colour, which pays the debt
+ * by deleting the distinction it exists to express.
+ *
+ * So the nineteen that remain are a question about those backgrounds, not about
+ * these tokens, and changing a divider ground is the theme's identity. Run the
+ * tool before assuming an entry here is simply outstanding work.
+ *
+ * The list is still a to-do
  * list for docs/ROADMAP.md 10 "Every theme against every slide type", not a
  * configuration: the test fails if an entry is left in after it is paid, so
  * the list cannot rot.
@@ -26,13 +43,10 @@ const INK_FLOOR = 3.0;    // display type on its own surface
 const MUTED_FLOOR = 4.5;  // eyebrow and subhead are not large text
 
 const OWED = new Set([
-  "bauhaus section",                  // 4.35:1
   "blueprint section",                // 3.91:1
   "brutalist-paper section",          // 3.70:1
-  "chalkboard section",               // 3.97:1
   "claymorphism section",             // 3.52:1
   "corporate-alegria section",        // 3.41:1
-  "corporate-clean-blue section",     // 4.42:1
   "glassmorphism section",            // 3.49:1
   "gradient-mesh-dark section",       // 3.03:1
   "material-you section",             // 3.69:1
@@ -42,8 +56,6 @@ const OWED = new Set([
   "nature-organic section",           // 3.52:1
   "neubrutalism section",             // 3.06:1
   "neumorphism section",              // 3.55:1
-  "newsprint section",                // 4.48:1
-  "notion-clean section",             // 3.96:1
   "paper-pastel section",             // 4.21:1
   "risograph section",                // 3.07:1
   "soft-glass-light section",         // 3.55:1
