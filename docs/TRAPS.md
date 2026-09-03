@@ -988,3 +988,34 @@ the bearer and ignore the session cookie on purpose, since the cookie exists
 only so `<img>` and `<a download>` can load media. When a wrapper exists,
 bypassing it is the bug; grep the raw calls whenever one is added.
 
+**A scene with a pinned branch and a flow branch needs the clip on both.** The
+landing's scroll scenes render pinned (`position: sticky`, one viewport tall)
+or, when the content is too tall for that, as ordinary flow — and the flow
+branch is the phone path. The pinned branch clipped, with a comment explaining
+that a card animating in `from: "left"` is translated outside the frame; the
+flow branch carried the same cards with the same entry vectors and clipped
+nothing, so the landing scrolled sideways by 47px at 375px and no wider
+viewport showed it. Whenever a component has two layout modes, ask what the
+second one inherits — a fix written for one branch is not a fix for the
+component.
+
+Use `overflow-x: clip`, not `hidden`. Hidden on one axis promotes the other to
+`auto`, which creates a scroll container, and a scroll container is what
+`position: sticky` sticks to — the trap already recorded above. `clip` clips
+without creating one and is Baseline widely available.
+
+**A grid or flex item defaults to `min-width: auto` and will not shrink below
+its content's intrinsic minimum.** The API usage column renders `JSON.stringify`
+output — long unbreakable strings — and burst its 327px track to 371px, taking
+the document with it. `min-w-0` on the item is the fix, and the sibling docs
+view already carried it on its `<article>`, which is the tell: when one column
+in a family has it and another does not, the one without is the bug. Long code
+spans, URLs, file paths and JSON are the usual triggers.
+
+**Markdown rendered to HTML brings tables nobody sized.** The docs page injects
+README markdown, `prose-pre:overflow-x-auto` gave code blocks a scroll
+container, and tables got nothing — so a 437px reference table widened the
+whole page on a phone. Wrap tables in their own `overflow-x-auto` container at
+parse time rather than setting `display: block` on the table, which also stops
+it filling its column on a wide screen.
+
