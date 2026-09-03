@@ -308,12 +308,34 @@ export default function App() {
     }
   }
 
-  // Back/forward and manual hash edits restore the view they name.
+  /**
+   * Back/forward and manual hash edits restore the view they name.
+   *
+   * Subscribed ONCE, through a ref, and that is load-bearing rather than tidy.
+   * Written without a dependency array — the obvious way to keep the handler's
+   * closure fresh — this effect re-subscribed on every render, and every
+   * in-app navigation silently did nothing.
+   *
+   * The sequence: a hashchange dispatches, the second listener below runs
+   * first and calls setHash, React flushes that render synchronously because
+   * hashchange is a discrete event, the flush runs this effect's cleanup, and
+   * the cleanup removes this listener while the same event is still
+   * dispatching. The DOM spec says a listener removed mid-dispatch is not
+   * invoked, so applyHash never ran — the URL changed, the view did not, and
+   * only a reload showed the page you asked for. Re-dispatching the same hash
+   * worked, because setHash was then a no-op and nothing re-rendered: exactly
+   * the shape that makes this look intermittent.
+   *
+   * A ref keeps one listener for the lifetime of the component and still calls
+   * the freshest applyHash, so nothing is ever unsubscribed mid-event.
+   */
+  const applyHashRef = useRef(applyHash);
+  applyHashRef.current = applyHash;
   useEffect(() => {
-    const onHash = () => applyHash();
+    const onHash = () => applyHashRef.current();
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
-  });
+  }, []);
 
   // A second, standalone subscription. The token screens render above the auth
   // gate, before applyHash has ever run for a signed-out visitor, so they read
