@@ -4533,6 +4533,29 @@ export const layouts = {
       if (!row.length) return limit;
       return Math.max(0.9, Math.min(limit, Math.min(...row.map((o) => Math.abs(o.x - me.x))) - 0.12));
     };
+    // roomFor solves the HORIZONTAL collision — two circles sharing a row. The
+    // vertical one had no equivalent, and a Venn's rows overlap by definition:
+    // each stack was centred on its own circle, so with three sets the top
+    // circle's items and the two lower ones' met in the middle and printed
+    // through each other. At the caps it is worse, because a two-line heading
+    // collapses the diameter and the rows come closer still.
+    //
+    // A stack may not reach the nearest circle on another row. The step falls
+    // out of that, and the text scales with the step so the line boxes cannot
+    // overlap either — if that drives the caption under its floor, the fitter
+    // reports it, which is the honest outcome for a slide that cannot hold
+    // what it was given.
+    const vRoom = (i) => {
+      const me = centres[i];
+      const others = centres.filter((o, j) => j !== i && Math.abs(o.y - me.y) >= 0.2);
+      if (!others.length) return d;
+      return Math.max(0.3, Math.min(...others.map((o) => Math.abs(o.y - me.y))) - 0.1);
+    };
+    const STEP = 0.32;
+    const steps = sets.map((s, i) => {
+      const rows = (s.items ?? []).length;
+      return rows ? Math.min(STEP, vRoom(i) / rows) : STEP;
+    });
     const labelW = sets.map((_, i) => roomFor(i, 2.4));
     const itemW = sets.map((_, i) => roomFor(i, 2.2));
     const labelScale = Math.min(
@@ -4541,6 +4564,8 @@ export const layouts = {
     );
     const itemScale = Math.min(
       ...sets.flatMap((s, i) => (s.items ?? []).map((it) => fitScale(it, itemW[i], 0.3, theme.type.caption))),
+      // A line box cannot be taller than the step that separates it.
+      ...steps.map((st) => st / STEP),
       1,
     );
     sets.forEach((s, i) => {
@@ -4560,11 +4585,11 @@ export const layouts = {
       // long set walked out of its own circle. It is centred on the circle
       // instead, which is the only anchor that holds for any count.
       const items = s.items ?? [];
-      const step = 0.32;
+      const step = steps[i];
       const top0 = c.y - (items.length * step) / 2;
       items.forEach((it, j) => {
         slide.addText(it, {
-          x: c.x - itemW[i] / 2, y: top0 + j * step, w: itemW[i], h: 0.3,
+          x: c.x - itemW[i] / 2, y: top0 + j * step, w: itemW[i], h: Math.min(0.3, step),
           ...textStyle(theme, "caption", { scale: itemScale }),
           align: "center", valign: "middle",
         });
