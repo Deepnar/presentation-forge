@@ -27,6 +27,7 @@ import { ROOT, REFERENCE } from "./paths.js";
 import { userReferenceDir } from "./tenant.js";
 import { loadIdentity } from "./ai/identity.js";
 import { libreofficeToPdf } from "./preview.js";
+import { readCredits, isCitable, creditText } from "./credits.js";
 
 const run = promisify(execFile);
 
@@ -42,6 +43,17 @@ export const REPORT_SECTIONS = [
   "Conclusion",
   "References",
 ];
+
+/**
+ * The image-credits appendix, deliberately NOT in REPORT_SECTIONS.
+ *
+ * That list is the graded structure the model writes prose into, and a credit
+ * is a record rather than prose — putting the name there would ask a model to
+ * invent the provenance of files it never saw. It is appended to `present`
+ * instead, which is all the TOC and the page-locator key off, so it numbers
+ * and paginates like any other section without being writable.
+ */
+export const IMAGE_CREDITS = "Image Credits";
 
 /* ------------------------------------------------------- donor discovery */
 
@@ -371,7 +383,7 @@ function contentTable({ header, rows }) {
  *  produced when a cover or TOC ended near a page boundary; the first section
  *  follows the TOC's break directly, so it needs no pageBreakBefore of its
  *  own. Pure, so tests can assert on the XML directly. */
-export function buildBody(report, identity, present, tocPages = {}, { includeToc = true } = {}) {
+export function buildBody(report, identity, present, tocPages = {}, { includeToc = true, imageCredits = [] } = {}) {
   const out = [cover(report, identity)];
   if (includeToc) {
     out.push(pageBreak);
@@ -382,8 +394,18 @@ export function buildBody(report, identity, present, tocPages = {}, { includeToc
   }
   out.push(pageBreak);
   present.forEach((name, i) => {
-    const sec = report.content[name] ?? {};
     out.push(sectionHeading(`${i + 1}. ${name}`));
+    // The credits appendix has no authored content: its paragraphs are built
+    // from what the supply recorded, one numbered entry per picture.
+    if (name === IMAGE_CREDITS) {
+      out.push(caption("Images reproduced under the licences named below. Slide numbers refer to the presentation."));
+      imageCredits.forEach((c, n) => {
+        const where = c.slide ? `Slide ${c.slide}. ` : "";
+        out.push(bodyPara(`${n + 1}. ${where}${creditText(c)}`));
+      });
+      return;
+    }
+    const sec = report.content[name] ?? {};
     for (const para of [...(sec.paragraphs ?? []), ...(sec.entries ?? [])]) {
       if (String(para).trim()) out.push(bodyPara(para));
     }
@@ -398,7 +420,7 @@ export function buildBody(report, identity, present, tocPages = {}, { includeToc
 /** Load the donor, swap its body for the generated one, keep every other part
  *  untouched. The sectPr is lifted verbatim, so the header/footer/watermark
  *  references and the page geometry survive exactly as the template has them. */
-export async function assembleDocx(donorPath, report, identity, present, tocPages = {}, { includeToc = true } = {}) {
+export async function assembleDocx(donorPath, report, identity, present, tocPages = {}, { includeToc = true, imageCredits = [] } = {}) {
   const zip = await JSZip.loadAsync(await readFile(donorPath));
   const doc = await zip.file("word/document.xml").async("string");
 
@@ -414,7 +436,7 @@ export async function assembleDocx(donorPath, report, identity, present, tocPage
   const sectPr = doc.slice(sectStart, sectEnd + "</w:sectPr>".length);
   const docEnd = doc.slice(sectEnd + "</w:sectPr>".length);
 
-  zip.file("word/document.xml", docStart + buildBody(report, identity, present, tocPages, { includeToc }) + sectPr + docEnd);
+  zip.file("word/document.xml", docStart + buildBody(report, identity, present, tocPages, { includeToc, imageCredits }) + sectPr + docEnd);
   return zip;
 }
 
@@ -427,14 +449,14 @@ async function which(bin) {
 /** Render once, ask LibreOffice where each heading actually lands, and return
  *  section → page. A heading the PDF pass cannot find yields null — the TOC
  *  shows an em dash for it rather than a wrong number. */
-export async function locateSectionPages(donorPath, report, identity, present, { signal } = {}) {
+export async function locateSectionPages(donorPath, report, identity, present, { signal, imageCredits = [] } = {}) {
   if (!(await which("pdftotext"))) {
     throw new Error("pdftotext not found (install poppler) — needed to number the report's table of contents; pass --no-toc to skip");
   }
   const dir = await mkdtemp(path.join(tmpdir(), "forge-report-"));
   try {
     const pass = path.join(dir, "report.docx");
-    const zip = await assembleDocx(donorPath, report, identity, present, {}, { includeToc: true });
+    const zip = await assembleDocx(donorPath, report, identity, present, {}, { includeToc: true, imageCredits });
     await writeFile(pass, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
     // libreofficeToPdf clears its outDir, so the PDF pass gets a nested dir
     // and the pass document survives it.
@@ -471,11 +493,17 @@ export async function renderReport({ reportFile, donor, out, toc = true, identit
   const present = presentSections(report);
   if (!present.length) throw new Error("report has no section content — nothing to render");
 
+  // Auto-supplied pictures are credited in the report only when their source is
+  // one it can name. A stock photograph is a real credit and shows on the app's
+  // surfaces; listing it beside the References misrepresents what it is.
+  const imageCredits = (await readCredits(deckDir)).filter(isCitable);
+  if (imageCredits.length) present.push(IMAGE_CREDITS);
+
   const tocPages = toc
-    ? await locateSectionPages(donorPath, report, merged, present, { signal })
+    ? await locateSectionPages(donorPath, report, merged, present, { signal, imageCredits })
     : {};
 
-  const zip = await assembleDocx(donorPath, report, merged, present, tocPages, { includeToc: toc });
+  const zip = await assembleDocx(donorPath, report, merged, present, tocPages, { includeToc: toc, imageCredits });
   await mkdir(path.dirname(outFile), { recursive: true });
   await writeFile(outFile, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
 
