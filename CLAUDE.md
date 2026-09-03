@@ -271,6 +271,15 @@ anything against it:
   plain timeouts when it is busy. The 524s seen in practice are Cloudflare in
   front of it, not the gateway's own code.
 
+**The gateway's own model can be run here.** `docs/LOCAL-MODEL.md` is the
+setup: the same weights (`nvidia/Qwen3.6-35B-A3B-NVFP4`) at the same
+quantisation, served by vLLM on localhost and wired in as an ordinary
+`openai-compatible` provider. NVFP4 is a Blackwell format and this box is
+Blackwell, so it is the same model rather than an approximation of it — which
+is what makes it usable for the content-quality questions the gateway being
+down otherwise blocks. It is a provider, deliberately not the dev fallback
+below.
+
 **The gateway does go down**, and it fails in a shape that looks like health:
 `/v1/models` answers in under a second while `/v1/chat/completions` times out
 behind Cloudflare (HTTP 524). When that happens, local Ollama is for exercising

@@ -158,7 +158,11 @@ its own spec rather than going through `resolveRole`, and silently dropped
 `thinking`, `reasoning_effort` and the provider capability flag on exactly the
 path a hosted deck takes.
 
-#### Running the gateway's own model locally — the way out of this deadlock
+#### Running the gateway's own model locally — see `docs/LOCAL-MODEL.md`
+
+**`docs/LOCAL-MODEL.md` is the full writeup — setup, serving flags, the
+provider block, and what a result from it is and is not. Start there.** The
+venv is built and the weights were pulled on 2026-09-03; what follows is why.
 
 `/v1/models` answers even while generation does not, and it names what the CoE
 serves:
