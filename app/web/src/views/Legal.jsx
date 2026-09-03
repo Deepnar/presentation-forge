@@ -169,7 +169,16 @@ export function Docs() {
           htmlWithIds = htmlWithIds.replace(`>${title}<`, ` id="${id}">${title}<`);
         });
         setToc(headings.filter((h) => h.level <= 2).slice(0, 12));
-        setHtml(htmlWithIds);
+        // Give every table its own scroll container. The docs carry wide
+        // reference tables and nothing wrapped them, so at 375px a 437px table
+        // widened the document and the whole page scrolled sideways. A wrapper
+        // rather than `display: block` on the table itself, which would also
+        // stop it filling the column on a wide screen. GFM tables cannot nest,
+        // so matching the outermost pair is safe.
+        setHtml(htmlWithIds.replace(
+          /<table[^>]*>[\s\S]*?<\/table>/g,
+          (t) => `<div class="my-6 overflow-x-auto">${t}</div>`,
+        ));
       })
       .catch((e) => setErr(String(e.message || e)));
   }, []);
@@ -274,7 +283,12 @@ export function Usage() {
               </div>
             </div>
           </aside>
-          <div>
+          {/* min-w-0: a grid item's default `min-width: auto` refuses to shrink
+              below its content's intrinsic minimum, and the JSON dumps below are
+              long unbreakable strings — so the column burst its 327px track and
+              the page scrolled sideways at 375px. The docs view's <article>
+              already carries this; this column did not. */}
+          <div className="min-w-0">
             <div className="max-w-2xl">
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Resources · API</div>
               <h1 className="mt-3 text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg">API usage & limits</h1>

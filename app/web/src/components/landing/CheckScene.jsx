@@ -73,7 +73,13 @@ export default function CheckScene() {
       <div
         className={
           flow
-            ? "px-5 py-20 sm:px-8"
+            // Same hazard as the pinned branch below, and the flow branch is the
+            // phone path: the cards keep their entry vectors, so one arriving
+            // from the left is translated outside the container and the document
+            // scrolls sideways. `clip` not `hidden` — hidden on one axis
+            // promotes the other to `auto`, and that scroll container is what
+            // `position: sticky` would then stick to.
+            ? "overflow-x-clip px-5 py-20 sm:px-8"
             : // Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
               // Without it a card entering from the left is pushed past the right
               // edge and the whole document scrolls sideways.
