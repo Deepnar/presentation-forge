@@ -3205,7 +3205,7 @@
       "properties": {
         "title": {
           "type": "string",
-          "maxLength": 19
+          "maxLength": 15
         }
       },
       "description": "A branching-flow step. Title only: the type's centre is its decision, and a body under every step takes the column the decision needs to grow into \u2014 measured, the two cannot coexist above the readable floor."

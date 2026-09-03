@@ -124,12 +124,29 @@ function reportFloor(style, neededPt, floor) {
   if (!floorEvents.includes(msg)) floorEvents.push(msg);
 }
 
+/**
+ * The uppercase penalty.
+ *
+ * ADVANCE is a lowercase average and `eyebrow` sets `transform: upper`, so
+ * every letter of a tracked all-caps label was counted at the width of a
+ * lowercase one. Caps run roughly a fifth wider than the mixed-case average in
+ * the faces this gallery uses.
+ */
+const UPPER_FACTOR = 1.18;
+
 /** Estimated rendered width, in inches, of a single line. */
-export function measure(text, { family, size, weight, tracking = 0 }) {
+export function measure(text, { family, size, weight, tracking = 0, transform } = {}) {
   const em = size / 72;
   const base = FAMILY_ADVANCE[family] ?? ADVANCE[classOf(family)] * (WIDE_SANS.has(family) ? 1.08 : 1);
-  const adv = base * weightFactor(weight);
-  const track = (tracking / 100) * em;
+  const adv = base * weightFactor(weight) * (transform === "upper" ? UPPER_FACTOR : 1);
+  // `tracking` is POINTS. It reaches the renderer as pptxgenjs `charSpacing`,
+  // which OOXML specifies in points, and this read it as a percentage of the em
+  // — wrong by a factor of 100/size, so the error was worst exactly where
+  // tracking is heaviest. A 10pt eyebrow at tracking 1.6 was measured with a
+  // tenth of the letter-spacing it renders with, which is how `matrix`'s
+  // rotated axis label came out as "CONTRACT / ED" with themematrix clean:
+  // the sweep asks the same measure the layout did.
+  const track = tracking / 72;
   const s = String(text);
   // ADVANCE is a lowercase average, and a stat value is not lowercase. Lining
   // figures sit near 0.58 em in most faces, and a percent sign is one of the

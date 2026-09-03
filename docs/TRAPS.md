@@ -14,28 +14,33 @@ time. A deck can look perfect in LibreOffice and overflow on the projector.
 Sizing must be baked in at generation time — that is why `src/fit.js` exists and
 why it only ever shrinks. Never "fix" overflow by trusting an autofit flag.
 
-**`measure()` reads `tracking` as a percentage of the em; pptxgenjs applies it
-as points.** `textStyle` passes the token's `tracking` straight through as
-`charSpacing`, which OOXML specifies in points, while `src/fit.js` computes
-`track = (tracking / 100) * em`. The two disagree by a factor of `100 / size`,
-so the error is worst exactly where tracking is heaviest — the `eyebrow` role,
-10pt with `tracking: 1.6` in most themes, is measured at roughly a tenth of the
-letter-spacing it actually renders with. Compounding it, `measure` builds on a
-*lowercase* average advance (`ADVANCE`) and compensates only for digits and a
-short `WIDE_GLYPHS` table, while `eyebrow` sets `transform: upper` — so every
-letter in a tracked all-caps label is under-counted twice.
+**A measurement in the wrong unit is invisible to every check built on it.**
+`measure()` read the type token's `tracking` as a percentage of the em while
+`textStyle` passed the same number to pptxgenjs as `charSpacing`, which OOXML
+specifies in POINTS. The two disagreed by a factor of `100 / size`, so the
+error was worst exactly where tracking is heaviest: a 10pt `eyebrow` at
+`tracking: 1.6` was measured with a tenth of the letter-spacing it renders
+with. Compounding it, `ADVANCE` is a *lowercase* average and `eyebrow` sets
+`transform: upper`, so every letter of a tracked all-caps label was
+under-counted twice. (Fixed 2026-09-03: `track = tracking / 72`, plus an
+`UPPER_FACTOR` applied when the token transforms to caps.)
 
-The visible result is a label that the fitter believes fits one line and that
-LibreOffice wraps mid-word: `matrix`'s rotated y-axis read `CONTRACT / ED` and
-`SPECULATI / VE` on `swiss-international` with `themematrix` completely clean,
-because the sweep asks the same wrong `measure` the layout did. Any check built
-on the fitter is blind to this by construction — only rasterising and looking
-finds it.
+The visible result was a label the fitter believed fitted one line and that
+LibreOffice then wrapped: `matrix`'s rotated y-axis read `HIGH / IMPACT` and
+`LOW / IMPACT` on `swiss-international` with `themematrix` completely clean.
+That is the part worth keeping — **the sweep asked the same wrong `measure` the
+layout did**, so every check built on the fitter agreed with it. Under-measuring
+does not report as a failure; it reports as success and hands the wrap to the
+renderer. Only rasterising and looking finds it, and the before/after render of
+one slide is what proves the fix rather than a passing suite.
 
-Correcting it widens every tracked measurement, so it is not a local fix: it
-moves the fit verdict for every eyebrow in the gallery and will grow the
-`capfit` over-length list. It wants its own round with a fresh
-`themematrix --save` baseline, not a drive-by.
+Correcting it widened every tracked measurement, and the effects were the ones
+predicted: `capfit` surfaced two caps it had been hiding
+(`branching-flow.steps[].title`, 19 declared against 15 seatable) and
+`capstress` rose from 12 joint-at-caps reports to 17. Those extra reports are
+truthful rather than new breakage — each was rendered and read correctly, the
+fitter simply now knows the real width and clamps at the floor instead of
+overflowing past it.
 
 **A written `.pptx` proves nothing.** `pres.writeFile()` succeeds for decks with
 text running off the canvas, invisible-on-invisible colour pairs, and empty
