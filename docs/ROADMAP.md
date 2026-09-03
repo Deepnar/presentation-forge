@@ -2920,7 +2920,16 @@ half now exists and runs in about three seconds:
   holds the set, which is now **empty**. With `--notes` it holds two, both
   `feature-grid` on `minimal-muji`, the tightest theme in the gallery.
 - `test/contrast.test.js` holds the title and divider surface pairings and
-  names the twenty-four that clear 3:1 but not 4.5:1.
+  names those that clear 3:1 but not 4.5:1 — nineteen now, and
+  `tools/contrast-debt.mjs` says which of those are reachable at all.
+- `npm run capstress` at caps reports the types whose declared caps the layout
+  cannot hold above the font floor. It is consistent across themes: `venn`,
+  `bibliography`, `chronology`, `before-after`, `data-cards`, `cards`,
+  `pros-cons`, `dependencies`, `layered-architecture` and `scorecard` all ask
+  for 6-13pt where the floor is 12-14. That is a cap-calibration job
+  (`tools/capfit.mjs` measures what each field can actually be), not a renderer
+  fault, and `venn`'s declared 30/27 against a measured 14 is the known head of
+  it.
 - `npm run textcheck` rasterises and reads the text back; clean on the specimen
   and on the real generated deck.
 - `tools/contrast-audit.mjs --types a,b` sheets any type across every theme,
@@ -2937,8 +2946,17 @@ half now exists and runs in about three seconds:
   this box on the slide": non-positive extents for any shape, the canvas edges
   for text and images. It found 105 problems the first time it ran.
 
-What is left is the visual half — rasterise and look at all of it — plus paying
-down the contrast list. **Render each type at its schema caps before looking**:
+**The contrast list is mostly not payable, and that is now measured.**
+`tools/contrast-debt.mjs` splits the twenty-four three ways under one
+constraint — `muted` is a dimmed `ink`, so it may move toward ink but may not
+cross the ground and come out dark on a saturated divider beneath white
+headline type. Twelve cannot be fixed by any token edit: their ink is already
+pure white and pure white does not clear 4.5:1 against those grounds. Seven are
+reachable only by making muted the same colour as ink. Five were genuinely
+payable and are paid. **The nineteen that remain are a question about nineteen
+divider backgrounds — the theme's identity — and want a decision, not a nudge.**
+
+What is left is the visual half — rasterise and look at all of it. **Render each type at its schema caps before looking**:
 every defect the fixed-scale pass found that the sweeps were clean on came out
 of doing that, and none of them was visible with the specimen's own payloads. Expect the algorithmic diagram types and the
 dense data types to be where the failures are; the composition pass already
