@@ -52,10 +52,17 @@ npm run fonts                               # download + install the 27 families
 npm run brand                               # normalise brand/logos -> brand/generated
 npm run landing                             # re-render the landing page's imagery
 npm run searxng                             # local search backend (docker)
+npm run dev:mail                            # dev + a local SMTP sink on :2525
 ```
 
 Note `npm run dev` starts the UI on 5173 and the API on 5174 (`FORGE_API_PORT`,
 deliberately not `PORT`). Vite proxies `/api` so the browser stays same-origin.
+
+`npm run dev:mail` is the same pair plus `tools/mailsink.mjs`, and it is the
+only way to exercise address verification or password reset. `mailConfigured()`
+decides both whether mail is sent and whether confirmation is *enforced* — with
+no SMTP, accounts are verified on creation, so those flows do not run at all on
+an ordinary dev box. The sink prints every message with the link it carries.
 
 The API and every CLI entry point load a gitignored `.env` from the repo root
 (`--env-file-if-exists`), so a gateway or provider key lives there rather than

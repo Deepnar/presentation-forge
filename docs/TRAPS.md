@@ -926,3 +926,39 @@ two sessions: one account writes, the *other* reads. A single account uploading
 a template looks exactly the same whether it wrote to its own directory or
 overwrote the install-wide one, and every screen it can see says the right
 thing either way. Drive two.
+
+**A React effect is not promised to run once, and a single-use token cannot
+survive a second run.** StrictMode mounts an effect, cleans it up and mounts it
+again; any remount does the same. The address-confirmation screen POSTed its
+token from an effect, so the first call spent it and the second was told it was
+already used — and the screen reported a dead link for an address it had just
+confirmed, offering only "ask for a new one", which issues a fresh token and
+repeats the loop. The account was verified the whole time.
+
+The near-miss is the guard such effects usually carry. `let live = true` with a
+cleanup that clears it stops the *stale render* and does nothing about the
+request, which has already gone. For an exchange that cannot be repeated the
+guard belongs in front of the call, not in front of the response —
+`app/web/src/lib/singleflight.js`. Share the promise rather than setting a
+done-flag, so a caller arriving mid-flight reads the same outcome, and keep the
+settled entry: re-asking would spend a token that no longer exists.
+
+**A flow that only runs when a service is configured is not merely untested
+without it — it does not execute.** `mailConfigured()` decides whether the app
+sends confirmation mail *and* whether it enforces confirmation at all: with no
+SMTP, accounts are marked verified on creation, because a gate whose only key
+is an email nobody can send is a locked door with no handle. So a dev box does
+not exercise a weaker version of the verification flow, it exercises none of
+it, and the flow can sit broken indefinitely while every local run looks fine.
+`tools/mailsink.mjs` is committed for this reason: the missing piece was a
+server, not a test.
+
+**A default-deny is only default inside the prefix it is mounted on.**
+`verifiedRequestOnly` reads as one rule for the whole workspace — reading is
+free, changing anything is not — and is genuinely default-deny for a route
+added under `/api/decks`, `/api/reports`, `/api/presets` or `/api/briefing`.
+It says nothing about a route added at a new top-level prefix, and four already
+sit outside it. "Written so a route added later is covered" means later
+*within* a mount; check which mounts a policy actually has before trusting the
+sentence.
+

@@ -1212,6 +1212,23 @@ forwarded in a `Referer` when the page loads its own assets. `#/reset/<token>`
 and `#/verify/<token>` render above the auth gate in `App.jsx`, because someone
 resetting a password cannot log in by definition.
 
+`#/verify` spends its token on mount, which makes it the one screen where React
+running an effect twice is a correctness bug rather than a wasted request: the
+first call spent the token, the second was told it was already used, and the
+panel reported a dead link for an address it had just confirmed. It now goes
+through `singleFlight` (`app/web/src/lib/singleflight.js`) — one call per
+token, the promise shared so every run reads the same outcome. `#/reset` is
+submit-driven and never had the problem.
+
+**`mailConfigured()` is load-bearing beyond sending.** It also decides whether
+address confirmation is enforced: with no SMTP, accounts are verified on
+creation, since a gate whose only key is an email nobody can send is a locked
+door with no handle. The consequence for development is that these flows do not
+run at all on a box without SMTP — not a weaker version of them, none of them.
+`npm run dev:mail` starts `tools/mailsink.mjs` beside the app so they can be
+exercised; it speaks the dialogue `src/mail.js` sends and prints each message
+with its link.
+
 ### The report donor is a server state, not a runtime surprise
 
 The institutional `.docx` is gitignored and excluded from the build context, so

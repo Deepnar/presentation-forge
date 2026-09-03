@@ -3854,8 +3854,13 @@ knowable while they are unexercised.
   through the CLI and `runChatTurn`; the HTTP route was verified separately and
   the UI was never driven. A CLI-generated deck has no `meta.owner`, so a test
   account cannot open it — set one to drive the UI against real content.
-- **Auth flows** — register, login, password reset, email verification. Built,
-  tested at the unit level, never re-run since.
+- **[x] Auth flows** — register, login, password reset, email verification.
+  Run end to end for the first time via `npm run dev:mail`, which starts
+  `tools/mailsink.mjs` alongside the app: register → confirmation mail →
+  unverified login (allowed) → workspace write refused 403 `email_unverified`
+  → confirm → forgot password → reset mail → new password → old credential
+  dead, new one live, verified state preserved, reset token single-use.
+  **It found one defect**, below.
 - **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
   entry points, no runs.
 - **Presenter assignment with a real team.** Every deck generated so far had no
@@ -3864,6 +3869,38 @@ knowable while they are unexercised.
 - **Rate limits and quotas** under real load.
 - **The vision critic loop.** The capability gate is built and tested; the loop
   itself has never been watched critique a deck.
+
+> **Learned (auth flows).** The reason these were never run is not that nobody
+> got round to it. `mailConfigured()` is load-bearing beyond sending: with no
+> SMTP the app marks new accounts verified on creation, so the verification
+> path does not merely go untested on a dev box — it never executes. The
+> missing piece was a mail server, not a test, which is why
+> `tools/mailsink.mjs` is committed rather than improvised.
+>
+> **The defect it found was a screen lying about a success.** Confirming an
+> address reported "that confirmation link has expired or has already been
+> used" for a link that had never been used — and the address was confirmed all
+> the same. The effect ran twice, the first call spent the single-use token and
+> had its result thrown away by its own cleanup, and the second reported the
+> token as spent. The only offer on that screen is "ask for a new one", which
+> issues a fresh token and does it again: a loop with no exit that leaves the
+> account already verified.
+>
+> The near-miss is the guard the code already had. A `let live = true` cleanup
+> flag stops a stale render and does nothing about a request that has already
+> gone — for an exchange that cannot be repeated, the guard has to sit in front
+> of the call. `app/web/src/lib/singleflight.js` is that, and it is a shared
+> promise rather than a done-flag so a second caller reads the same outcome.
+>
+> **The verification gate is narrower than its own docstring suggests.**
+> `verifiedRequestOnly` reads as "reading is free, changing anything is not",
+> but it only applies under the four prefixes `deckWorkspace` is mounted on
+> (`/api/decks|reports|presets|briefing`). `/api/identity`, `/api/brand`,
+> `/api/donor` and `/api/keys` are outside it, so an unverified account can
+> write its settings — which matches what `docs/DEPLOY.md` promises ("can sign
+> in, browse and hold its own Cloud key"), but the default-deny is per route
+> *within* a mount, not per route. A new top-level prefix is not covered by
+> anything. Worth knowing before adding one.
 
 ### [ ] Measuring content quality
 
