@@ -1,11 +1,11 @@
-# Handoff — 2026-09-02b, the hosting blockers are closed; the gateway is still down
+# Handoff — 2026-09-02b, hosting blockers and auth closed; the gateway is still down
 
-Everything is on `main`. `npm test` is **509 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **516 passing**, `npm run themematrix` is
 clean across 34 themes, the working tree is clean.
 
 **Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
 operational map and carries the gateway's specification. `docs/TRAPS.md` gained
-four entries this session and outlives this file. `docs/ROADMAP.md` carries
+seven entries this session and outlives this file. `docs/ROADMAP.md` carries
 every item below as a proper entry; this file is the order I would take them in.
 
 ---
@@ -108,6 +108,14 @@ destroying the stored one. The accounts and `reference/users/` were removed
 afterwards. **A per-account boundary is invisible from inside one account** —
 that is now a TRAPS entry.
 
+**Then the auth flows** (section 2 below), which found the confirm-screen
+defect and a third instance of the same stale-ignore-list mistake:
+`.gitignore` covered `config/identity.yaml` and `brand/logos/` but not
+`config/identities/` or `brand/users/<hash>/`, the per-account directories
+underneath them — a real account's institution and its crest, both
+committable. `test/buildcontext.test.js` now asks git the same question it
+asks docker.
+
 ---
 
 ## What to do next, in the order I would do it
@@ -141,37 +149,53 @@ its own spec rather than going through `resolveRole`, and silently dropped
 `thinking`, `reasoning_effort` and the provider capability flag on exactly the
 path a hosted deck takes.
 
-### 2. Surfaces never exercised — two down, the rest untouched
+### 2. Surfaces never exercised — auth and Settings are done, the rest are not
 
-This session drove **the Settings identity/brand/donor panel** and **session
-auth** (by minting a token directly rather than through the signup form). Still
-zero runs behind:
+**The auth flows ran end to end for the first time**, and the reason they never
+had is worth knowing before touching anything near them: `mailConfigured()`
+decides both whether mail is sent and whether confirmation is *enforced*. With
+no SMTP an account is verified on creation, so on an ordinary dev box the
+verification path does not run weakly — it does not run. `tools/mailsink.mjs`
+is committed for exactly this:
+
+```bash
+npm run dev:mail     # api + web + an SMTP sink on :2525 that prints every link
+```
+
+Covered: register → confirmation mail → unverified login (allowed) → workspace
+write refused 403 `email_unverified` → confirm → forgot password → reset mail →
+new password → old credential dead, new live, verified preserved, reset token
+single-use. **It found one defect** — the confirm screen reported a dead link
+for an address it had just confirmed, because the effect ran twice and the
+token is single-use. Fixed via `singleFlight`; see the roadmap's Learned block.
+
+Still zero runs behind:
 
 - **The browser UI for chat and convert.** Every generation turn still goes
   through the CLI and `runChatTurn`. A CLI-generated deck has no `meta.owner`,
   so a test account cannot open it — set one to drive the UI against real
-  content. Note the fixture recipe below.
-- **Auth flows** — register, login, password reset, email verification. The
-  signup *form* was never submitted; this session bypassed it deliberately.
-  There is no SMTP on this box, so new accounts are verified on creation.
+  content. That is the next one I would do: it needs no model to *view* a deck,
+  only to make one, and there are real generated decks on disk already.
 - **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
-  entry points, zero runs.
+  entry points, zero runs. These need a model.
 - **Presenter assignment with a real team.** Every deck so far had none, so
-  every slide rendered `Presenter: —`.
+  every slide rendered `Presenter: —`. The split is deterministic, so it can be
+  exercised on an existing deck without generating one.
 - **Rate limits and quotas** under real load.
 
-The fixture that made this session's UI work possible, worth keeping:
+The fixture that makes UI work possible, worth keeping:
 
 ```js
-// mint a session without touching the signup form; tear down with deleteUserAccount
+// mint a session without the signup form; tear down with deleteUserAccount
 import { register, startSession } from "./src/auth.js";
 await register({ name: "T", email: "t@example.test", password: "..." });
-const token = await startSession({ email: "t@example.test" });  // returns the token itself
+const token = await startSession({ email: "t@example.test" });  // the token itself
 // in the browser: localStorage.setItem("forge.token", token); location.reload()
 ```
 
-The dev box holds **114 accounts**. Harmless now that they cannot reach an
-image, but `Admin → Users` is where to look.
+**Every test account created this session was deleted afterwards.** The dev box
+holds **114 accounts**, all pre-existing. Harmless now that they cannot reach
+an image, but `Admin → Users` is where to look.
 
 ### 3. Content quality — half of it is measurable, the half that matters is not
 
