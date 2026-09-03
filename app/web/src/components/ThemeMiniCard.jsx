@@ -84,7 +84,7 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
           {sub}
         </span>
         <span className="hidden shrink-0 truncate font-mono text-[10.5px] text-fg-faint sm:inline">
-          {theme.fonts?.heading} <span className="text-line-strong">/</span> {theme.fonts?.body}
+          {theme.fonts?.heading} <span className="text-fg-faint">/</span> {theme.fonts?.body}
         </span>
         {selected && (
           <svg viewBox="0 0 24 24" className="h-3 w-3 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

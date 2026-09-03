@@ -787,13 +787,13 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
             <span className="tabular-nums">{slides.length} slides</span>
             {deck.sections?.length > 0 && (
               <>
-                <span className="text-line-strong">·</span>
+                <span className="text-fg-faint">·</span>
                 <span className="tabular-nums">{deck.sections.length} sections</span>
               </>
             )}
             {themeLabel && (
               <>
-                <span className="text-line-strong">·</span>
+                <span className="text-fg-faint">·</span>
                 <span>{themeLabel}</span>
               </>
             )}

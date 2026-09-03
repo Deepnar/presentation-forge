@@ -195,7 +195,7 @@ function ThemeCard({ theme, isDefault, onClick }) {
             ))}
           </div>
           <div className="truncate text-[10.5px] text-fg-faint">
-            {theme.fonts.heading} <span className="text-line-strong">/</span> {theme.fonts.body}
+            {theme.fonts.heading} <span className="text-fg-faint">/</span> {theme.fonts.body}
           </div>
         </div>
       </div>
