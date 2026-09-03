@@ -599,7 +599,8 @@ review:
 > Raising the cap to 12000 plus demanding one-sentence purposes fixed it; the
 > cap only ever bites a cloud run, since the local grammar keeps output bounded.
 >
-> A model will invent images. With no image-supply mechanism (F13 unbuilt), a
+> A model will invent images. With no image-supply mechanism (F13 was unbuilt
+> at the time; auto supply now exists and is opt-in per deck), a
 > cloud writer put `https://example.com/x.jpg` in an image field, and the
 > renderer crashed at write time reading the joined bogus path. `resolveAsset`
 > now returns null for URLs and missing files, and every image layout already
@@ -971,10 +972,17 @@ behave; every lightbox action works from the enlarged view (a real punch turn
 changed the deck). `mimo-v2.5` confirmed the lightbox toolbar, the gallery
 dock/preview and the chat-editor surface render correctly.
 
-### [ ] (stretch) F13 image search — CC image lookup for model-emitted descriptions
+### [x] (stretch) F13 image search — CC image lookup for model-emitted descriptions
 The `[image]` notes the writer now emits (and the sanitizer preserves) are the
 designated seam for supply: a slide that WANTS an image has a description the
-app could search for (Unsplash source API or a SearXNG image category), opt-in.
+app could search for, opt-in.
+
+**Built as `Image supply — auto, not just upload` in section 9** — that entry
+carries the record. Two things this entry predicted turned out wrong and are
+worth keeping: the Unsplash Source API named here is **retired** (503 to
+everything), and a SearXNG image category **cannot** be the source because
+SearXNG drops the licence from every result row, including its own Openverse
+engine. The sources are Wikimedia Commons and the Openverse API direct.
 
 ### [x] Per-user deck isolation — ownerless decks are operator-only
 A fresh account saw two dozen stranger decks because legacy CLI and test decks
@@ -1954,9 +1962,9 @@ directories (`decks`, `themes`, `brand`, `config`) and the plate cache are now
 env-overridable (`FORGE_*`), the plate cache and Chrome binary were already
 env-driven, and there are no secrets or machine paths in source.
 
-Not built: **F13 image grounding** (search/download of CC images for
-model-emitted filenames — design noted in Handoff) and **F16 i18n** (locale
-number formatting + RTL — design noted in Handoff).
+Not built: **F16 i18n** (locale number formatting + RTL — design noted in
+Handoff). **F13 image grounding** is now built — see `Image supply — auto, not
+just upload` in section 9.
 
 > **Learned.** The deck's PUT endpoint is the natural version-history seam:
 > snapshot the current deck.yaml before every overwrite, so undo-per-turn (chat)
@@ -2644,12 +2652,141 @@ steps.
 
 These were named explicitly and are deliberately **not** part of the next tour redo, but they must not be lost. They live here so a future session can pull the right one without re-asking.
 
-### [ ] Image supply — auto, not just upload
+### [x] Image supply — auto, not just upload
 
-*Priority: high while the gateway is down. **No model, no decision, unstarted** —
-the largest piece of buildable work that needs neither.*
+*The entry said **unstarted**. It was not: `src/ai/images.js` had existed since
+`f63ff07` and was wired into `finalizeDeck`. It could not do what it claimed,
+which is a more expensive state than unstarted, because the call site read as
+working.*
 
 Today: upload an image → `assets/` → the slide is set to an image type with the real asset; invented URLs are stripped to `[image]` notes. What’s missing is **Gamma-like auto images**: when the writer wants an image, the system should find one, not just flag it. Design in `docs/HANDOFF.md` next-session notes: Unsplash Source / SearXNG image category, opt-in per deck, CC licence, cached in `decks/<slug>/assets/auto/`, `resolveAsset` prefers it, never invented. No model writes a URL.
+
+**Four defects in the shipped version, each verified against the live upstreams
+rather than reasoned about.** Its Unsplash fallback answers **503** to
+everything — `source.unsplash.com` is retired, so the module listed two sources
+and had one. Its primary source went through SearXNG, which **drops the licence
+from every result row** including its own `openverse` engine, so nothing
+recorded a licence and the images were ordinary copyrighted stock. It passed the
+writer's descriptive phrase through verbatim, and both upstreams AND their
+terms: `"electrolysis cell diagram"` returns **0** where `"electrolysis"`
+returns 240. And it set `slide.image` on whatever type carried the note, but
+`image` / `image-text` / `hero-image` / `image-grid` all **require** that field
+— a validated deck can never contain one that is missing it — so every seat it
+filled was on a type whose layout never draws one.
+
+**Now.** `src/ai/images.js:1` is rewritten around the two upstreams that state
+a licence themselves. **Wikimedia Commons first** (`commonsSearch`): it carries
+`AttributionRequired` per file, has no punitive rate limit, and is deep in the
+technical figures an academic deck asks for where the photo aggregators are
+empty; `iiurlwidth` also rasterises SVG server-side, so a vector diagram
+arrives placeable. **Openverse second** (`openverseSearch`) for photographic
+breadth, budgeted by `makeBudget` because its anonymous allowance is 20/min and
+200/day and it reports the remainder in
+`x-ratelimit-available-anon_sustained`; `OPENVERSE_API_TOKEN` raises the
+ceiling and is optional.
+
+`licenceTier` ranks rather than filters — public domain and CC0 (nothing owed),
+then CC BY, then CC BY-SA — with NC, ND and unreadable licences refused
+outright. Ranking is what "widest pool, no legal issues" means in practice: the
+live run picked a public-domain US Department of Energy photograph over the CC
+BY-SA candidates without being told to. `queryLadder` widens in defined steps
+(full phrase → drop the picture-kind words → the two most distinctive → the
+single most distinctive) and stops at the first rung that lands.
+
+`seatImage` is lossless or it does not act. An optional seat (`testimonial`,
+`compare`, `before-after`) is filled in place; anything else is promoted to
+`image-text` only when its list fits that type's four-line body. `imageSeat`
+derives the seats from the schema, so a new image-carrying type is seated the
+day it is added.
+
+Every supplied file is recorded in `assets/auto/credits.json` and rendered into
+the deck's `CREDITS.md`, split into what must be credited and what is listed
+for provenance only. Opt-in per deck: `meta.imageSupply`, asked in the
+briefing's required tier directly beneath research, `--images` on the CLI,
+`imageSupply` on `POST /api/decks`. Guarded by `test/images.test.js` (27
+tests), and what could not be supplied lands in `problems[]` with its reason,
+so the slide keeps its `[image]` note and the manual upload door.
+
+> **Learned.** Five things, and the first two are the reason this took a
+> rewrite rather than a patch.
+>
+> **A wired call site is not a working feature, and it is worse than an empty
+> one.** The handoff had this item as "unstarted, no decision" — the cheapest
+> possible read. The module existed, was imported, was called in `finalizeDeck`,
+> and returned an empty array every time, because its only live source returned
+> results whose licence it could not read and its fallback host was gone. Two
+> sessions of planning treated it as greenfield. Checking whether the named seam
+> already exists costs one grep.
+>
+> **Verify a documented API by calling it, not by trusting the doc.** Two of the
+> four defects were upstream facts no amount of code reading finds:
+> `source.unsplash.com` is retired, and SearXNG normalises the licence away. The
+> roadmap entry, written from the docs, named both as the design. One `curl`
+> each would have caught them at design time.
+>
+> **The schema cap is not the fit constraint.** `image-text` lets `body` run to
+> 180 characters and draws it in HALF the width a full-bleed list gets. Four
+> bullets comfortable as `bullets` overflow as `image-text` with every cap check
+> green — measured, the promotion took the fit sweep from 5 problems to 20
+> across 13 themes. The supply now sweeps its own result over
+> `COVERING_THEMES` and gives the picture back on any slide that does not fit.
+> The test has to be "does it fit cleanly", not "did it get worse": a promotion
+> changes the slide's type and so changes which FIELD the fitter names, and a
+> slide that failed on `bullets` and now fails on `body` has an unchanged
+> problem count while being no less broken.
+>
+> **Audit against a real deck or the gate is measuring the fixture.** Two bugs
+> only appeared on `decks/perovskite-solar-cells-stability-challenges-2`. The
+> whole-deck validation gate refused every supply on every real deck, because a
+> real generated deck arrives already carrying schema errors (`loadDeck` warns
+> on an over-long field rather than refusing) and the gate read those as the
+> touched slide's fault. And the first fit-gate test PASSED against a broken
+> gate, because the synthetic fixture had no `speaker_note` — the note reserves
+> 0.7in and is what tips this slide over. Same blind spot `themematrix --notes`
+> was built for, met again from the other direction.
+>
+> **The cache is a licence store, not just a byte store.** A cache hit returned
+> `credit: null`, which would leave a CC BY image in a deck with its attribution
+> nowhere — the exact breach the tier ladder exists to prevent. The resumed
+> finalize, the re-render and the critic pass all re-run the supply, so the hit
+> is the NORMAL path, not a repair. `credits.json` is now what the cache reads
+> back from, and it merges rather than overwrites so a part-cached run keeps the
+> credits it did not re-fetch.
+
+> **Look-ahead.** `(stretch) F13 image search` in section 2 is the same feature
+> under its older name and is closed by this; its predicted design (Unsplash
+> Source, SearXNG image category) is exactly what the live checks disproved.
+> `(stretch) Canvas slide-builder` is unaffected. The open follow-up this
+> creates: **nothing surfaces `CREDITS.md` in the UI or the report.** The file
+> is written and the deck page does not link it, so a CC BY image's attribution
+> depends on the user finding the file. That is the next honest step, and it is
+> why the licence ladder prefers public domain rather than treating all tiers as
+> equal.
+
+### [ ] Image credits, surfaced — the file exists and nothing points at it
+
+*Priority: high, and it is the honest completion of `Image supply — auto`. No
+model, no decision.*
+
+Auto supply writes `decks/<slug>/CREDITS.md` and
+`assets/auto/credits.json`, and **no surface mentions either**. A public-domain
+image owes nothing, so the licence ladder prefers those and the gap is
+survivable — but a CC BY or BY-SA image is only compliant if its attribution
+reaches a reader, and today that depends on the user finding a file nobody told
+them about.
+
+Three seats, and they are not alternatives:
+- **The deck page.** `DeckDetail` already lists `problems[]`; the supply's
+  `images.credits` comes back on the finalize result, so a "picture credits"
+  block beside it is the cheapest visible fix.
+- **The report.** `src/report.js` is donor surgery with real sections; an image
+  credits section is where an academic submission would actually look.
+- **The deck itself.** There is an `attribution` slide type. Appending one when
+  any supplied image requires attribution would make the deck self-contained,
+  which is the only version that survives the file being lost.
+
+Worth deciding together, since the third changes the deck's slide count and
+that is a product call, not a defect fix.
 
 ### [x] Research — truly better, not just deeper caps
 
@@ -2687,7 +2824,7 @@ Now a **thesis-driven 9/10-question walk**: Deck `preset→title→thesis→audi
 >
 > Studying the TCET smoke test (`qwen3.6` auth now `ok`, `src/ai/ollama.js:558` `cloudMessages` had to merge the `Respond in JSON` system note into the existing system message or `TCET 400: System message must be at the beginning` on every `format` call) showed the real gap is research, not briefing: a brief starting with `Adoption of Solar…` returned `adoption.com` pages and a `SOLAR university` page set, and a plan with `thesis:"Solar microgrids can cut diesel costs by 40% …"` + no research still minted only `title+3×section+closing` (5 slides) before the trim/mint — the thin-outline bug is a research-coverage problem, which is why `Research — truly better` is the immediate next session.
 
-These were **not** the next super-fancy tour; the tour stays separate. Briefing + Research + PPTs themselves + PPT themes are now done — the remaining backlog item (`Image supply — auto`) runs next. No rendering in this session per user — verification is user-side.
+These were **not** the next super-fancy tour; the tour stays separate. Briefing + Research + PPTs themselves + PPT themes are now done, and `Image supply — auto` has since run too. No rendering in this session per user — verification is user-side.
 
 353 tests.
 
