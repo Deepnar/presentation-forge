@@ -3202,7 +3202,7 @@ unused (105 became its full 120). Seven more were cut to their measured values.
 > length from one character upward — and the prober read that as a savage cap.
 > `capFit` now tests one character first and says "the layout, not the caps".
 
-### [ ] The visual audit, at schema caps
+### [x] The visual audit, at schema caps
 
 *Priority: medium. Renderer only, no model.*
 
@@ -3215,19 +3215,23 @@ caps with a speaker note.** Thirteen defects came out of it, none of which any
 sweep could report, and two instruments were built because of what the looking
 kept turning up. See the **Learned** block below.
 
-What is left:
+**Closed 2026-09-03.** What was left is done, and one of the claims below was
+wrong in a way worth keeping:
 
-- **The other three capstress themes, and the plate themes.** Only
-  `warm-humanist` has been looked at type by type. `minimal-muji` reports the
-  most at caps (21) and `sci-fi-hud` is the only sidebar frame in the set —
-  `layered-architecture` had two columns that did not fit its 8.0in row, found
-  by measuring rather than by looking, so the sidebar frame is where to look
-  next.
-- **`venn` needs its caps cut, not its layout changed.** It renders correctly
-  at 35% of its caps and scores 48% — the second-lowest in the gallery — so
-  `sets[].label` (30) and `sets[].items` (27) should come down to the measured
-  14 apiece. It was the third deletion candidate and stays for exactly that
-  reason: the arrangement holds, the caps are what do not.
+- **The other capstress themes** — all eight of `COVERING_THEMES` are now swept
+  at the corrected caps, contact sheets per theme with full-size on anything
+  suspicious.
+- **`venn` needed its caps cut AND its layout changed**, against the
+  expectation recorded here. The caps did come down from 30/27 to the measured
+  14, and it went on overprinting itself: the three item stacks were each
+  centred on their own circle and a Venn's circles overlap by construction, so
+  they met in the middle. `roomFor` had solved the horizontal case and nothing
+  did the vertical one. **"The arrangement holds, the caps are what do not" was
+  the wrong diagnosis, and only a render at the caps says so** — the caps had
+  to be corrected first for the layout fault to be visible at all.
+- **The cap residue is 0 fields**, from 26. Two passes of
+  `tools/capfit-apply.mjs`, the second after the `tracking` unit fix surfaced
+  two more the old measurement was hiding.
 - **`cycle` and `concept-map` were deleted rather than repaired.** Both
   overlapped their own content at 35% of their caps — ordinary content, not a
   stress case — so neither was a cap problem. The vocabulary is 73 types. See
