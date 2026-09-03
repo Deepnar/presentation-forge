@@ -2703,17 +2703,38 @@ export const layouts = {
       const highT = applyTransform(theme, "eyebrow", ax.y.high ?? "");
       const lowT = applyTransform(theme, "eyebrow", ax.y.low ?? "");
       const axisName = applyTransform(theme, "eyebrow", ax.y.label ?? "");
-      const highW = Math.min(1.8, Math.max(1.2, measure(highT, theme.type.eyebrow) * 1.1));
-      const lowW = Math.min(1.8, Math.max(1.2, measure(lowT, theme.type.eyebrow) * 1.1));
-      const nameW = Math.min(1.8, Math.max(0.9, measure(axisName, theme.type.eyebrow) * 1.1));
+      // A text box's own insets are about a tenth of an inch, and a bare 10%
+      // margin on a 1.2in label is 0.12in — so the usable width was the text's
+      // width give or take a rounding error, and a single long word with
+      // nowhere to break wrapped mid-word: "CONTRACTED" came out
+      // "CONTRACTE / D" on the landing showcase, which is why `matrix` was
+      // held out of it.
+      //
+      // The inset is a constant, so it is added as one rather than hidden in a
+      // percentage that shrinks with the label. Shrinking the text instead is
+      // not available here: the eyebrow's nominal size IS its floor, so
+      // fitOneLine clamps to 1 and changes nothing.
+      const INSET = 0.2;
+      const axisW = (t) => measure(t, theme.type.eyebrow) * 1.12 + INSET;
+      const highW = Math.min(1.9, Math.max(1.2, axisW(highT)));
+      const lowW = Math.min(1.9, Math.max(1.2, axisW(lowT)));
+      const nameW = Math.min(1.9, Math.max(0.9, axisW(axisName)));
       const right = box.x + 0.45;
+      // A rotated box's WIDTH is its vertical footprint, so `y` has to be
+      // derived from the width rather than fixed: the box is centred on
+      // (y + h/2) and spans w/2 either side of that once turned. Placing them
+      // at a constant offset was already close to the edge and went over it as
+      // soon as the boxes widened — 0.04in past the bottom on retro-crt, which
+      // is exactly the kind of thing the geometry watcher exists to catch.
+      const highY = top + highW / 2 - 0.15;
+      const lowY = box.bottom - lowW / 2 - 0.15;
       slide.addText(highT, {
-        x: right - highW, y: top + 0.05, w: highW, h: 0.3,
+        x: right - highW, y: highY, w: highW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "right", valign: "middle", rotate: 270,
       });
       slide.addText(lowT, {
-        x: right - lowW, y: box.bottom - 0.38, w: lowW, h: 0.3,
+        x: right - lowW, y: lowY, w: lowW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "right", valign: "middle", rotate: 270,
       });
