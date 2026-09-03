@@ -7,7 +7,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import { ChevronDown, DocIcon, LayersIcon, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
-import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyFreeText, applyPresetToBriefing, effectiveBriefStep, nextBriefStep, presetPayload, briefingAnsweredText } from "../lib/briefing.js";
+import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText, tierQuestions, optionalAnswered, briefTier, stepForTier, isAnswered } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
 import { presetsStore } from "../lib/presets.js";
@@ -27,17 +27,16 @@ const DECK_SUGGESTIONS = [
 ];
 
 function phaseOf(chat, effStep, questions) {
+  const briefingOpen = briefTier(chat.kind, chat.briefStep) !== "done";
   if (chat.kind === "report") {
     if (chat.produced) return "record";
     if (!chat.topic) return "greeting";
-    if (effStep < questions.length) return "briefing";
-    return "summary";
+    return briefingOpen ? "briefing" : "summary";
   }
   if (chat.produced) return "editing"; // the deck exists — the thread edits it
   if (chat.plan) return "outline";
   if (!chat.topic) return "greeting";
-  if (effStep >= questions.length) return "summary";
-  return "briefing";
+  return briefingOpen ? "briefing" : "summary";
 }
 
 /**
@@ -228,8 +227,6 @@ export default function ChatView({
 
   const questions = questionsFor(chat.kind);
   const phase = phaseOf(chat, effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions), questions);
-  const qIndex = Math.min(effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions), questions.length - 1);
-  const currentQuestion = phase === "briefing" ? questions[qIndex] : null;
 
   const themeLabel = (name) => {
     if (!name) return "Default (warm-humanist)";
@@ -252,8 +249,12 @@ export default function ChatView({
    * and hiding a real choice is the worse of the two mistakes.
    */
   function firstBriefStep() {
-    const skip = questions[0]?.key === "preset" && presetsStore.isLoaded() && presets.length === 0;
-    return skip ? 1 : chat.briefStep;
+    // Always the required tier. This used to return 1 to step over the preset
+    // question on an account with none, and 1 is now the OPTIONAL tier — the
+    // briefing opened on "anything else?" having asked nothing. tierQuestions()
+    // drops the preset field itself when there is nothing to choose from, so
+    // the skip has no work left to do here.
+    return stepForTier(chat.kind, "required");
   }
 
   /** Topic sent → the briefing begins. Title is pre-suggested, editable. */
@@ -270,17 +271,21 @@ export default function ChatView({
     });
   }
 
-  /** One question answered (via the card's controls or free text). */
-  function onNext(patch) {
+  /** A briefing field touched inside a tier form: store it, stay put. The
+   *  form owns when to move on, not the field. */
+  function patchBriefing(patch) {
     const briefing = { ...(chat.briefing ?? {}), ...patch };
-    const named = patch.title ? chatName(patch.title, chat.topic) : chat.title;
     persist({
       ...chat,
-      title: named,
+      title: patch.title ? chatName(patch.title, chat.topic) : chat.title,
       briefing,
-      briefStep: nextBriefStep(briefing, chat.briefStep, questions),
       updatedAt: new Date().toISOString(),
     });
+  }
+
+  /** Leave a tier. `required` hands over to `optional`; `optional` to the summary. */
+  function finishTier(tier) {
+    persist({ ...chat, briefStep: stepForTier(chat.kind, tier === "required" ? "optional" : "done"), updatedAt: new Date().toISOString() });
   }
 
   /** Jump back to an earlier question — later answers are re-asked. */
@@ -873,35 +878,28 @@ export default function ChatView({
       chat.kind === "report" ? sendReportTopic(text) : sendTopic(text);
       return;
     }
-    if (phase === "briefing" && currentQuestion) {
-      if (currentQuestion.key === "preset") {
-        // Free text on the preset question names a saved format, or "none" to
-        // start fresh. Picking via the card is the full path; typing a name is
-        // the keyboard-only path.
-        const named = presets.find((p) => p.name.toLowerCase() === text.trim().toLowerCase());
-        if (named) { setInput(""); setFreeHint(""); pickPreset(named); return; }
-        if (/^(none|fresh|new|no)/i.test(text.trim())) { setInput(""); setFreeHint(""); pickPreset(null); return; }
-        setFreeHint("No preset by that name — pick one from the card, or type 'none' to start fresh.");
-        return;
-      }
-      const r = applyFreeText(chat.briefing ?? {}, currentQuestion.key, text);
-      if (!r) {
-        setFreeHint(currentQuestion.key === "theme"
-          ? "Pick a theme from the gallery above — typing a name here can't see the previews."
-          : "That didn't answer this question — try the card above.");
-        return;
-      }
+    if (phase === "briefing") {
+      // The form holds every field, so there is no single question the composer
+      // could be answering. Free prose lands on the thesis, which is the field
+      // it was always most useful for and the one that most changes the plan —
+      // appended rather than replacing, so a second thought is not a deletion.
+      const said = text.trim();
+      if (!said) return;
+      const prev = String(chat.briefing?.thesis ?? "").trim();
+      patchBriefing({ thesis: prev ? `${prev} ${said}` : said });
       setInput("");
-      setFreeHint("");
-      onNext(r.briefing);
+      setFreeHint("Noted as part of your thesis — the form above has the rest.");
     }
   }
 
-  const answered = [];
+  // Every question that actually carries an answer, not "every question before
+  // the cursor". The walk made those the same thing and the tier forms do not:
+  // a user can fill the last optional field and leave the first empty. The
+  // deck's own briefing record wants what was answered, never a step count.
   const effStep = effectiveBriefStep(chat.briefing ?? {}, chat.briefStep, questions);
-  for (let i = 0; i < effStep && i < questions.length; i++) {
-    answered.push({ ...questions[i], idx: i });
-  }
+  const answered = questions
+    .map((q, idx) => ({ ...q, idx }))
+    .filter((q) => isAnswered(chat.briefing ?? {}, q.key));
 
   const placeholder = unverified
     ? "Confirm your email address to start — the link is in your inbox"
@@ -910,7 +908,7 @@ export default function ChatView({
         ? "What should the report be about?"
         : "Type a topic — everything else defaults…"
       : phase === "briefing"
-        ? `Answer: ${currentQuestion?.ask}`
+        ? "Anything else worth saying about the topic?"
         : phase === "editing"
           ? "Edit the deck — try \u201cmake slide 2 punchier\u201d…"
           : phase === "record"
@@ -1132,7 +1130,7 @@ export default function ChatView({
             </Bubble>
           )}
 
-          {!chat.plan && answered.map((q, i) => (
+          {!chat.plan && phase !== "briefing" && answered.map((q, i) => (
             <div key={q.key}>
               <Bubble role="assistant">
                 <div className="mb-0.5 text-[12px] font-medium uppercase tracking-wider text-fg-faint">{q.ask}</div>
@@ -1181,27 +1179,32 @@ export default function ChatView({
             )
           )}
 
-          {currentQuestion && (
-            <QuestionCard
-              key={`${chat.id}-${currentQuestion.key}-${chat.briefStep}`}
-              q={currentQuestion}
+          {phase === "briefing" && briefTier(chat.kind, chat.briefStep) === "required" && (
+            <RequiredForm
+              key={`${chat.id}-required`}
               chat={chat}
               themes={themes}
               themeLabel={themeLabel}
               presets={presets}
               onPickPreset={pickPreset}
               onDeletePreset={deletePreset}
-              onNext={onNext}
-              onPatchBriefing={(patch) => {
-                // A non-advancing briefing update — the upload card stages a
-                // file without leaving the question.
-                persist({ ...chat, briefing: { ...(chat.briefing ?? {}), ...patch }, updatedAt: new Date().toISOString() });
-              }}
-              onFreeText={(text) => {
-                const r = applyFreeText(chat.briefing ?? {}, currentQuestion.key, text);
-                if (r) { onNext(r.briefing); return true; }
-                return false;
-              }}
+              onPatch={patchBriefing}
+              onDone={() => finishTier("required")}
+            />
+          )}
+
+          {phase === "briefing" && briefTier(chat.kind, chat.briefStep) === "optional" && (
+            <OptionalForm
+              key={`${chat.id}-optional`}
+              chat={chat}
+              themes={themes}
+              themeLabel={themeLabel}
+              presets={presets}
+              onPickPreset={pickPreset}
+              onDeletePreset={deletePreset}
+              onPatch={patchBriefing}
+              onDone={() => finishTier("optional")}
+              baseline={{ ...initialBriefing(identity), title: suggestTitle(chat.topic ?? "") }}
             />
           )}
 
@@ -1331,7 +1334,7 @@ export default function ChatView({
               ? phase === "record"
                 ? "The report is ready — this thread is its record. Open it to read the document."
                 : "A report is researched and written from your topic — depth defaults to brief."
-              : phase === "briefing" ? "Answer in the card above, or type the answer here and send."
+              : phase === "briefing" ? "Set what matters in the form above — everything else has a default."
                 : phase === "editing" ? "Select slides on the right, then type — the AI knows exactly which you mean."
                   // Never claim local execution on a hosted box: this line ran
                   // unconditionally, so a deployment sending every prompt to the
@@ -1542,70 +1545,137 @@ function PresetCard({ presets, value, themeLabel, onPick, onDelete }) {
   );
 }
 
-function QuestionCard({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onNext, onPatchBriefing, onFreeText }) {
+
+/**
+ * One briefing field, as a control rather than a card.
+ *
+ * `QuestionCard` below renders the same set one at a time with a footer each;
+ * this renders one with no footer, patching the briefing as it is touched. The
+ * two share every underlying card — the difference is `embedded`.
+ */
+function BriefingControl({ q, chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onPatch }) {
   const b = chat.briefing ?? {};
+  const patch = (p) => onPatch(p);
+  const common = { onNext: patch, embedded: true };
+  switch (q.key) {
+    case "preset": return <PresetCard presets={presets} value={b.presetId} themeLabel={themeLabel} onPick={onPickPreset} onDelete={onDeletePreset} />;
+    case "title": return <TitleCard value={b.title} {...common} />;
+    case "thesis": return <FreeTextCard field="thesis" value={b.thesis} placeholder="e.g. Green hydrogen can decarbonise steel but only if storage scales" {...common} />;
+    case "audience": return <FreeTextCard field="audience" value={b.audience} placeholder="e.g. final-year classmates and the guide — sceptical on costs" {...common} />;
+    case "emphasis": return <FreeTextCard field="emphasis" value={b.emphasis} placeholder="e.g. the cost comparison and the environmental case" {...common} />;
+    case "evidence": return <FreeTextCard field="evidence" value={b.evidence} placeholder="e.g. 53 kWh/kg, 180 GW by 2030 — and don't invent capex" {...common} />;
+    case "team": return <TeamCard team={b.team} {...common} />;
+    case "guide": return <GuideCard guide={b.guide} {...common} />;
+    case "academic": return <AcademicCard academic={b.academic} {...common} />;
+    case "theme": return <ThemeCard themes={themes} value={b.theme} themeLabel={themeLabel} {...common} />;
+    case "depth": return <DepthCard value={b.depth} {...common} />;
+    case "maxSlides": return <MaxSlidesCard value={b.maxSlides} {...common} />;
+    case "slidesPerMember": return <SlidesPerMemberCard value={b.slidesPerMember} {...common} />;
+    case "density": return <DensityCard value={b.density} {...common} />;
+    case "branding": return <BrandingCard value={b.branding} {...common} />;
+    case "research": return (
+      <ResearchCard
+        value={b.researchSource ?? (b.research ? "web" : "none")}
+        kind={chat.kind}
+        uploaded={b.uploadedSource}
+        papersValue={b.papers ?? false}
+        onPapers={(x) => patch({ papers: x })}
+        onSource={(x) => patch({ researchSource: x, research: x === "web" })}
+        onUpload={async (file) => {
+          const staged = await api.stageBriefingUpload(file);
+          patch({ uploadedSource: staged });
+          return staged;
+        }}
+        {...common}
+      />
+    );
+    default: return null;
+  }
+}
+
+/** A labelled field inside a tier form. */
+function FormField({ q, children, first }) {
+  return (
+    <section className={first ? "" : "mt-3.5 border-t border-line pt-3.5"}>
+      <div className="mb-1.5 text-[12px] font-medium text-fg">{q.ask}</div>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * The required tier: everything that most changes the artefact, answered
+ * together, then one action.
+ *
+ * This is the screen that replaced fifteen cards. Every field here has a
+ * default and says so, because the product's promise is that a topic alone is
+ * enough — the form exists to make the few worth changing reachable at once,
+ * not to ask for anything.
+ */
+function RequiredForm({ chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onPatch, onDone }) {
+  const fields = tierQuestions(chat.kind, "required", chat.briefing ?? {}, presets);
   return (
     <Bubble role="assistant">
-      <div className="mb-1 text-[12px] font-medium text-fg">{q.ask}</div>
-      {q.key === "preset" && <PresetCard presets={presets} value={b.presetId} themeLabel={themeLabel} onPick={onPickPreset} onDelete={onDeletePreset} />}
-      {q.key === "title" && <TitleCard value={b.title} onNext={onNext} />}
-      {q.key === "thesis" && (
-        <FreeTextCard
-          field="thesis"
-          value={b.thesis}
-          placeholder="e.g. Green hydrogen can decarbonise steel but only if storage scales — and the numbers prove it"
-          onNext={onNext}
-        />
+      <div className="text-[13px] font-medium text-fg">A few choices, then I draft it.</div>
+      <div className="mt-0.5 mb-3 text-[11.5px] leading-relaxed text-fg-faint">
+        Everything here already has a default — change what matters and continue.
+      </div>
+      {fields.map((q, i) => (
+        <FormField key={q.key} q={q} first={i === 0}>
+          <BriefingControl
+            q={q} chat={chat} themes={themes} themeLabel={themeLabel} presets={presets}
+            onPickPreset={onPickPreset} onDeletePreset={onDeletePreset} onPatch={onPatch}
+          />
+        </FormField>
+      ))}
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-3.5">
+        <Button variant="primary" onClick={onDone}>Continue</Button>
+        <span className="text-[11px] text-fg-faint">Details like the team, guide and thesis come next — and are optional.</span>
+      </div>
+    </Bubble>
+  );
+}
+
+/**
+ * The optional tier: one panel, collapsed, skippable in a single action.
+ *
+ * Collapsed is the point. Answering none of these is the ordinary case and it
+ * should cost one click, not ten — the old walk charged ten and then printed
+ * "no guide set / no subject set" three lines each into the summary for the
+ * trouble.
+ */
+function OptionalForm({ chat, themes, themeLabel, presets, onPickPreset, onDeletePreset, onPatch, onDone, baseline }) {
+  const [open, setOpen] = useState(false);
+  const fields = tierQuestions(chat.kind, "optional", chat.briefing ?? {}, presets);
+  const answered = optionalAnswered(chat.kind, chat.briefing ?? {}, baseline);
+  return (
+    <Bubble role="assistant">
+      <div className="text-[13px] font-medium text-fg">Anything else I should know?</div>
+      <div className="mt-0.5 text-[11.5px] leading-relaxed text-fg-faint">
+        {answered > 0
+          ? `${answered} of ${fields.length} set. The rest stay at their defaults.`
+          : `${fields.length} optional details — a thesis or an audience sharpens the argument, but none of them is needed.`}
+      </div>
+
+      {open && (
+        <div className="mt-3">
+          {fields.map((q, i) => (
+            <FormField key={q.key} q={q} first={i === 0}>
+              <BriefingControl
+                q={q} chat={chat} themes={themes} themeLabel={themeLabel} presets={presets}
+                onPickPreset={onPickPreset} onDeletePreset={onDeletePreset} onPatch={onPatch}
+              />
+            </FormField>
+          ))}
+        </div>
       )}
-      {q.key === "team" && <TeamCard team={b.team} onNext={onNext} />}
-      {q.key === "guide" && <GuideCard guide={b.guide} onNext={onNext} />}
-      {q.key === "academic" && <AcademicCard academic={b.academic} onNext={onNext} />}
-      {q.key === "audience" && (
-        <FreeTextCard
-          field="audience"
-          value={b.audience}
-          placeholder="e.g. final-year classmates and the guide — familiar with basics, sceptical on costs"
-          onNext={onNext}
-        />
-      )}
-      {q.key === "emphasis" && (
-        <FreeTextCard
-          field="emphasis"
-          value={b.emphasis}
-          placeholder="e.g. the cost comparison and the environmental case — why they change the decision"
-          onNext={onNext}
-        />
-      )}
-      {q.key === "evidence" && (
-        <FreeTextCard
-          field="evidence"
-          value={b.evidence}
-          placeholder="e.g. 53 kWh/kg, 1.23 V, 180 GW by 2030 — and don't invent steel-plant capex"
-          onNext={onNext}
-        />
-      )}
-      {q.key === "theme" && <ThemeCard themes={themes} value={b.theme} themeLabel={themeLabel} onNext={onNext} />}
-      {q.key === "depth" && <DepthCard value={b.depth} onNext={onNext} />}
-      {q.key === "maxSlides" && <MaxSlidesCard value={b.maxSlides} onNext={onNext} />}
-      {q.key === "slidesPerMember" && <SlidesPerMemberCard value={b.slidesPerMember} onNext={onNext} />}
-      {q.key === "density" && <DensityCard value={b.density} onNext={onNext} />}
-      {q.key === "branding" && <BrandingCard value={b.branding} onNext={onNext} />}
-      {q.key === "research" && (
-        <ResearchCard
-          value={b.researchSource ?? (b.research ? "web" : "none")}
-          onNext={onNext}
-          kind={chat.kind}
-          uploaded={b.uploadedSource}
-          papersValue={b.papers ?? false}
-          onPapers={(p) => onPatchBriefing({ papers: p })}
-          onSource={(s) => onPatchBriefing({ researchSource: s, research: s === "web" })}
-          onUpload={async (file) => {
-            const staged = await api.stageBriefingUpload(file);
-            onPatchBriefing({ uploadedSource: staged });
-            return staged;
-          }}
-        />
-      )}
+
+      <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-line pt-3">
+        <Button variant="primary" onClick={onDone}>{answered > 0 ? "Done — build it" : "Skip, use the defaults"}</Button>
+        <Button size="sm" variant="outline" onClick={() => setOpen((o) => !o)}>
+          {open ? "Hide details" : "Add detail"}
+        </Button>
+      </div>
     </Bubble>
   );
 }
@@ -1618,45 +1688,48 @@ function CardFooter({ onNext, nextLabel = "Next", disabled = false }) {
   );
 }
 
-function TitleCard({ value, onNext }) {
+function TitleCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "");
+  const commit = () => onNext({ title: v.trim() || value });
   return (
     <div>
       <div className="mb-1.5 text-[11px] text-fg-faint">Suggested from your topic — edit freely.</div>
       <input
         value={v}
         onChange={(e) => setV(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Enter") onNext({ title: v.trim() || value }); }}
-        autoFocus
+        onKeyDown={(e) => { if (e.key === "Enter") commit(); }}
+        onBlur={embedded ? commit : undefined}
+        autoFocus={!embedded}
         className={inputCls}
       />
-      <CardFooter onNext={() => onNext({ title: v.trim() || value })} />
+      {!embedded && <CardFooter onNext={commit} />}
     </div>
   );
 }
 
 /** A free-text briefing answer — type it or leave blank to move on. */
-function FreeTextCard({ field, value, onNext, placeholder = "" }) {
+function FreeTextCard({ field, value, onNext, placeholder = "", embedded = false }) {
   const [v, setV] = useState(value ?? "");
   const submit = () => onNext({ [field]: v.trim() });
   return (
     <div>
-      <div className="mb-1.5 text-[11px] text-fg-faint">Skip to move on — an empty answer just uses the default.</div>
+      {!embedded && <div className="mb-1.5 text-[11px] text-fg-faint">Skip to move on — an empty answer just uses the default.</div>}
       <textarea
         value={v}
         onChange={(e) => setV(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !embedded) { e.preventDefault(); submit(); } }}
+        onBlur={embedded ? submit : undefined}
         rows={2}
         placeholder={placeholder}
-        autoFocus
+        autoFocus={!embedded}
         className={`${inputCls} resize-none`}
       />
-      <CardFooter onNext={submit} nextLabel="Continue" />
+      {!embedded && <CardFooter onNext={submit} nextLabel="Continue" />}
     </div>
   );
 }
 
-function TeamCard({ team, onNext }) {
+function TeamCard({ team, onNext, embedded = false }) {
   const [label, setLabel] = useState(team?.label ?? "");
   const [members, setMembers] = useState(((team?.members ?? []).map((m) => ({ ...m }))));
   const edit = (i, patch) => setMembers((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)));
@@ -1732,68 +1805,89 @@ function TeamCard({ team, onNext }) {
         )}
       </div>
 
-      <CardFooter
-        onNext={() => onNext({ team: { label, members: members.filter((m) => m.name?.trim()) } })}
-        nextLabel={named.length ? `Next — ${named.length} on the team` : "Next"}
-      />
+      {!embedded && (
+        <CardFooter
+          onNext={() => onNext({ team: { label, members: members.filter((m) => m.name?.trim()) } })}
+          nextLabel={named.length ? `Next — ${named.length} on the team` : "Next"}
+        />
+      )}
     </div>
   );
 }
 
-function GuideCard({ guide, onNext }) {
+function GuideCard({ guide, onNext, embedded = false }) {
   const [name, setName] = useState(guide?.name ?? "");
   const [designation, setDesignation] = useState(guide?.designation ?? "");
+  const commit = () => onNext({ guide: { name, designation } });
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
       <label className="block">
         <div className="mb-1 text-[11px] text-fg-faint">Name</div>
-        <input value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") onNext({ guide: { name, designation } }); }} className={inputCls} />
+        <input value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") commit(); }} onBlur={embedded ? commit : undefined} className={inputCls} />
       </label>
       <label className="block">
         <div className="mb-1 text-[11px] text-fg-faint">Designation</div>
-        <input value={designation} onChange={(e) => setDesignation(e.target.value)} className={inputCls} />
+        <input value={designation} onChange={(e) => setDesignation(e.target.value)} onBlur={embedded ? commit : undefined} className={inputCls} />
       </label>
-      <div className="sm:col-span-2">
-        <CardFooter onNext={() => onNext({ guide: { name, designation } })} />
-      </div>
+      {!embedded && (
+        <div className="sm:col-span-2">
+          <CardFooter onNext={commit} />
+        </div>
+      )}
     </div>
   );
 }
 
-function AcademicCard({ academic, onNext }) {
+function AcademicCard({ academic, onNext, embedded = false }) {
   const [v, setV] = useState({ ...(academic ?? {}) });
   const set = (patch) => setV((x) => ({ ...x, ...patch }));
+  const commit = embedded ? () => onNext({ academic: v }) : undefined;
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
       <label className="block sm:col-span-2">
         <div className="mb-1 text-[11px] text-fg-faint">Subject</div>
-        <input value={v.subject ?? ""} onChange={(e) => set({ subject: e.target.value })} className={inputCls} />
+        <input value={v.subject ?? ""} onChange={(e) => set({ subject: e.target.value })} onBlur={commit} className={inputCls} />
       </label>
       <label className="block">
         <div className="mb-1 text-[11px] text-fg-faint">Academic year</div>
-        <input value={v.year ?? ""} onChange={(e) => set({ year: e.target.value })} className={inputCls} />
+        <input value={v.year ?? ""} onChange={(e) => set({ year: e.target.value })} onBlur={commit} className={inputCls} />
       </label>
       <label className="block">
         <div className="mb-1 text-[11px] text-fg-faint">Semester</div>
-        <input value={v.semester ?? ""} onChange={(e) => set({ semester: e.target.value })} className={inputCls} />
+        <input value={v.semester ?? ""} onChange={(e) => set({ semester: e.target.value })} onBlur={commit} className={inputCls} />
       </label>
       <label className="block sm:col-span-2">
         <div className="mb-1 text-[11px] text-fg-faint">Exam type</div>
-        <input value={v.exam_type ?? ""} onChange={(e) => set({ exam_type: e.target.value })} className={inputCls} />
+        <input value={v.exam_type ?? ""} onChange={(e) => set({ exam_type: e.target.value })} onBlur={commit} className={inputCls} />
       </label>
-      <div className="sm:col-span-2">
-        <CardFooter onNext={() => onNext({ academic: v })} />
-      </div>
+      {!embedded && (
+        <div className="sm:col-span-2">
+          <CardFooter onNext={() => onNext({ academic: v })} />
+        </div>
+      )}
     </div>
   );
 }
 
 /** The theme gallery — visual previews, searchable, Gamma-like. */
-function ThemeCard({ themes, value, onNext }) {
+/**
+ * `embedded` is the briefing form's mode: the control patches the briefing as
+ * soon as it is touched and renders no footer of its own, because the form has
+ * one action for the whole tier. Without it every field would carry its own
+ * "Continue" and the form would be the walk again with worse spacing.
+ */
+function ThemeCard({ themes, value, onNext, embedded = false }) {
   const [sel, setSel] = useState(value ?? "");
+  const pick = (name) => { setSel(name); if (embedded) onNext({ theme: name }); };
   const [q, setQ] = useState("");
   const selectedRef = useRef(null);
-  useEffect(() => { selectedRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" }); }, [sel]);
+  // Only chase the selection when this is a card of its own. Inside the tier
+  // form the gallery is one field among several, and scrolling its inner
+  // scroller on mount opened the form half-way down the theme list.
+  useEffect(() => {
+    if (embedded) return;
+    selectedRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [sel, embedded]);
   const filtered = themes.filter((t) => {
     if (!q.trim()) return true;
     const s = q.toLowerCase();
@@ -1809,12 +1903,12 @@ function ThemeCard({ themes, value, onNext }) {
       <div className="grid max-h-[420px] grid-cols-2 gap-3 overflow-y-auto pr-1 sm:grid-cols-3">
         {filtered.map((t) => (
           <div key={t.name} ref={sel === t.name || (!sel && t.name === "warm-humanist") ? selectedRef : null} className="min-w-0">
-            <ThemeMiniCard theme={t} selected={sel === t.name || (!sel && t.name === "warm-humanist")} defaultTheme={t.name === "warm-humanist"} onClick={() => setSel(t.name)} />
+            <ThemeMiniCard theme={t} selected={sel === t.name || (!sel && t.name === "warm-humanist")} defaultTheme={t.name === "warm-humanist"} onClick={() => pick(t.name)} />
           </div>
         ))}
         {filtered.length === 0 && <div className="col-span-full py-8 text-center text-[12px] text-fg-faint">No themes match “{q}”</div>}
       </div>
-      <CardFooter onNext={() => onNext({ theme: sel })} nextLabel="Use this theme" />
+      {!embedded && <CardFooter onNext={() => onNext({ theme: sel })} nextLabel="Use this theme" />}
     </div>
   );
 }
@@ -1838,14 +1932,16 @@ function ChoicePills({ options, value, onPick }) {
   );
 }
 
-function MaxSlidesCard({ value, onNext }) {  const [v, setV] = useState(value ?? 0);
+function MaxSlidesCard({ value, onNext, embedded = false }) {
+  const [v, setV] = useState(value ?? 0);
   const [custom, setCustom] = useState("");
+  const pick = (n) => { setV(n); if (embedded) onNext({ maxSlides: n }); };
   return (
     <div>
       <ChoicePills
         options={SLIDE_COUNTS.map((n) => ({ value: n, label: n === 0 ? "Auto" : `${n}` }))}
         value={v}
-        onPick={(n) => setV(n)}
+        onPick={pick}
       />
       <div className="mt-2 flex items-center gap-2">
         <input
@@ -1858,23 +1954,24 @@ function MaxSlidesCard({ value, onNext }) {  const [v, setV] = useState(value ??
           className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
         />
         {custom && (
-          <Button size="sm" onClick={() => setV(Number(custom) || 0)}>Set</Button>
+          <Button size="sm" onClick={() => pick(Number(custom) || 0)}>Set</Button>
         )}
       </div>
-      <CardFooter onNext={() => onNext({ maxSlides: v })} nextLabel={v === 0 ? "Auto it is" : `Use ${v}`} />
+      {!embedded && <CardFooter onNext={() => onNext({ maxSlides: v })} nextLabel={v === 0 ? "Auto it is" : `Use ${v}`} />}
     </div>
   );
 }
 
-function SlidesPerMemberCard({ value, onNext }) {
+function SlidesPerMemberCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? null);
   const [custom, setCustom] = useState("");
+  const pick = (n) => { setV(n); if (embedded) onNext({ slidesPerMember: n }); };
   return (
     <div>
       <ChoicePills
         options={PER_MEMBER.map((n) => ({ value: n, label: n === null ? "Auto" : `${n} each` }))}
         value={v}
-        onPick={(n) => setV(n)}
+        onPick={pick}
       />
       <div className="mt-2 flex items-center gap-2">
         <input
@@ -1885,23 +1982,24 @@ function SlidesPerMemberCard({ value, onNext }) {
           placeholder="…or a custom count"
           className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
         />
-        {custom && <Button size="sm" onClick={() => setV(Number(custom) || null)}>Set</Button>}
+        {custom && <Button size="sm" onClick={() => pick(Number(custom) || null)}>Set</Button>}
       </div>
-      <CardFooter onNext={() => onNext({ slidesPerMember: v })} nextLabel="Continue" />
+      {!embedded && <CardFooter onNext={() => onNext({ slidesPerMember: v })} nextLabel="Continue" />}
     </div>
   );
 }
 
-function DensityCard({ value, onNext }) {
+function DensityCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "balanced");
+  const pick = (x) => { setV(x); if (embedded) onNext({ density: x }); };
   return (
     <div>
       <ChoicePills
         options={DENSITIES.map((d) => ({ value: d.id, label: d.id[0].toUpperCase() + d.id.slice(1), note: d.note }))}
         value={v}
-        onPick={setV}
+        onPick={pick}
       />
-      <CardFooter onNext={() => onNext({ density: v })} nextLabel="Continue" />
+      {!embedded && <CardFooter onNext={() => onNext({ density: v })} nextLabel="Continue" />}
     </div>
   );
 }
@@ -1911,12 +2009,13 @@ const DEPTHS = [
   { value: "brief", label: "Brief", note: "a headline statement + 3 supporting sentences, no tables" },
 ];
 
-function DepthCard({ value, onNext }) {
+function DepthCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "full");
+  const pick = (x) => { setV(x); if (embedded) onNext({ depth: x }); };
   return (
     <div>
-      <ChoicePills options={DEPTHS} value={v} onPick={setV} />
-      <CardFooter onNext={() => onNext({ depth: v })} nextLabel="Continue" />
+      <ChoicePills options={DEPTHS} value={v} onPick={pick} />
+      {!embedded && <CardFooter onNext={() => onNext({ depth: v })} nextLabel="Continue" />}
     </div>
   );
 }
@@ -1927,8 +2026,9 @@ const BRANDINGS = [
   { value: "none", label: "No branding", note: "just slide numbers — no institution marks" },
 ];
 
-function BrandingCard({ value, onNext }) {
+function BrandingCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "full");
+  const pick = (x) => { setV(x); if (embedded) onNext({ branding: x }); };
   return (
     <div>
       <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
@@ -1939,14 +2039,14 @@ function BrandingCard({ value, onNext }) {
       <ChoicePills
         options={BRANDINGS}
         value={v}
-        onPick={setV}
+        onPick={pick}
       />
-      <CardFooter onNext={() => onNext({ branding: v })} nextLabel="Continue" />
+      {!embedded && <CardFooter onNext={() => onNext({ branding: v })} nextLabel="Continue" />}
     </div>
   );
 }
 
-function ResearchCard({ value, onNext, kind, uploaded, onUpload, papersValue, onPapers, onSource }) {
+function ResearchCard({ value, onNext, kind, uploaded, onUpload, papersValue, onPapers, onSource, embedded = false }) {
   // Controlled from the briefing (researchSource / papers), NOT local state:
   // the card remounts on every briefing update (QuestionCard keys on
   // chat.briefStep), and local state would reset — the "Papers too" pick
@@ -2049,7 +2149,9 @@ function ResearchCard({ value, onNext, kind, uploaded, onUpload, papersValue, on
           )}
         </div>
       )}
-      <CardFooter onNext={finish} nextLabel="Finish briefing" disabled={v === "upload" && !file} />
+      {/* Already controlled from the briefing through onSource/onPapers, so
+          embedded needs nothing but the footer gone. */}
+      {!embedded && <CardFooter onNext={finish} nextLabel="Finish briefing" disabled={v === "upload" && !file} />}
     </div>
   );
 }

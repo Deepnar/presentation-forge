@@ -87,19 +87,62 @@ export function tierQuestions(kind, tier, briefing = {}, presets = null) {
   });
 }
 
-/** How many optional answers the user has actually given — the "add detail"
- *  affordance says so, because "12 more" and "3 of 12 set" read differently. */
-export function optionalAnswered(kind, briefing = {}) {
-  const b = briefing ?? {};
-  return questionsFor(kind).filter((q) => q.tier === OPTIONAL).filter((q) => {
-    const v = b[q.key];
-    if (v == null) return false;
-    if (typeof v === "string") return v.trim().length > 0;
-    if (q.key === "team") return (v.members ?? []).some((m) => m.name?.trim());
-    if (q.key === "guide") return Boolean(v.name?.trim());
-    if (q.key === "academic") return Object.values(v).some((x) => String(x ?? "").trim());
-    return true;
-  }).length;
+/**
+ * Which tier the thread is on, from the stored step.
+ *
+ * `briefStep` used to be an index into fifteen questions. It stays a number so
+ * threads written before the tiers still open: step 0 is the required form,
+ * anything short of the end is the optional one, and the end is the summary. A
+ * thread abandoned halfway through the old walk therefore resumes in the
+ * optional tier with its answers intact, which is where those answers now live.
+ */
+export function briefTier(kind, step) {
+  const len = questionsFor(kind).length;
+  if (!(step > 0)) return "required";
+  if (step >= len) return "done";
+  return "optional";
+}
+
+/** The step to store for a tier — the inverse, so the view never does the maths. */
+export function stepForTier(kind, tier) {
+  if (tier === "required") return 0;
+  if (tier === "optional") return 1;
+  return questionsFor(kind).length;
+}
+
+/**
+ * Whether one briefing field actually carries an answer.
+ *
+ * "Answered" used to mean "the walk has gone past it", which the walk made
+ * equivalent — and the tier forms do not. It is also what stopped the summary
+ * printing "0 members" and "no guide set" as though they were answers: an empty
+ * shape is not a filled one.
+ */
+export function isAnswered(briefing, key) {
+  const v = (briefing ?? {})[key];
+  if (v == null) return false;
+  if (typeof v === "string") return v.trim().length > 0;
+  if (key === "team") return (v.members ?? []).some((m) => m.name?.trim());
+  if (key === "guide") return Boolean(v.name?.trim());
+  if (key === "academic") return Object.values(v).some((x) => String(x ?? "").trim());
+  return true;
+}
+
+/**
+ * How many optional fields the USER has set — not how many carry a value.
+ *
+ * Almost all of them carry one: the title is suggested from the topic and
+ * branding defaults to full, so a briefing nobody has touched reported "2 of 10
+ * set" directly above the sentence "the rest stay at their defaults". Comparing
+ * against the baseline the thread started from is what makes the number mean
+ * what the label says. Without a baseline it falls back to counting values,
+ * which is the old behaviour and still right for a caller that has none.
+ */
+export function optionalAnswered(kind, briefing = {}, baseline = null) {
+  return questionsFor(kind)
+    .filter((q) => q.tier === OPTIONAL && isAnswered(briefing, q.key))
+    .filter((q) => !baseline || JSON.stringify(briefing?.[q.key]) !== JSON.stringify(baseline?.[q.key]))
+    .length;
 }
 
 /**
