@@ -1,8 +1,11 @@
 import { createHash } from "node:crypto";
-import { mkdir, writeFile, readdir } from "node:fs/promises";
+import { mkdir, writeFile, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
+import { themeMatrix } from "../themematrix.js";
+import { parseFloorProblems } from "./trim.js";
+import { COVERING_THEMES } from "../coverage.js";
 
 /**
  * Image supply — auto, not just upload.
@@ -371,9 +374,28 @@ const key = (s) => createHash("sha256").update(s).digest("hex").slice(0, 12);
 async function cached(dir, k) {
   try {
     const files = await readdir(dir);
-    return files.find((f) => f.startsWith(`${k}.`)) ?? null;
+    return files.find((f) => f.startsWith(`${k}.`) && f !== `${k}.json`) ?? null;
   } catch {
     return null;
+  }
+}
+
+/**
+ * The credits already recorded for this deck.
+ *
+ * `credits.json` is the durable half of the cache, and it has to be, because a
+ * cached file with no credit is an image sitting in a deck whose attribution
+ * has been lost — the precise failure the licence tiers exist to prevent. The
+ * second run of a supply is the common case (a resumed finalize, a re-render,
+ * a critic pass), so this is the normal path rather than a repair.
+ */
+async function readCredits(deckDir) {
+  try {
+    const raw = await readFile(path.join(deckDir, "assets", "auto", "credits.json"), "utf8");
+    const list = JSON.parse(raw);
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
   }
 }
 
@@ -391,7 +413,11 @@ export async function supplyImage(description, deckDir, { signal, budget = makeB
   const k = key(`${path.basename(deckDir)}:${ladder[0]}`);
 
   const hit = await cached(autoDir, k);
-  if (hit) return { rel: `assets/auto/${hit}`, credit: null, cachedFile: true };
+  if (hit) {
+    const rel = `assets/auto/${hit}`;
+    const known = (await readCredits(deckDir)).find((c) => c.file === rel) ?? null;
+    return { rel, credit: known, cachedFile: true };
+  }
 
   for (const query of ladder) {
     let candidates = await commonsSearch(query, { signal, budget });
@@ -514,10 +540,16 @@ async function writeCredits(deckDir, credits) {
   if (!credits.length) return;
   const autoDir = path.join(deckDir, "assets", "auto");
   await mkdir(autoDir, { recursive: true });
-  await writeFile(path.join(autoDir, "credits.json"), `${JSON.stringify(credits, null, 2)}\n`, "utf8");
 
-  const owed = credits.filter((c) => c.attribution_required);
-  const free = credits.filter((c) => !c.attribution_required);
+  // Merge on `file`: a run where some images came from the cache and others
+  // were fetched must not drop the credits it did not re-fetch.
+  const byFile = new Map((await readCredits(deckDir)).map((c) => [c.file, c]));
+  for (const c of credits) byFile.set(c.file, c);
+  const all = [...byFile.values()];
+  await writeFile(path.join(autoDir, "credits.json"), `${JSON.stringify(all, null, 2)}\n`, "utf8");
+
+  const owed = all.filter((c) => c.attribution_required);
+  const free = all.filter((c) => !c.attribution_required);
   const lines = ["# Image credits", ""];
   if (owed.length) {
     lines.push(
@@ -556,6 +588,35 @@ function withoutNote(notes) {
 }
 
 /**
+ * Which slides do not fit, by index.
+ *
+ * The schema cap is not the operative constraint on a promotion. `image-text`
+ * lets `body` run to 180 characters, but it draws that body in HALF the width
+ * a full-bleed list gets, so four bullets that were comfortable as `bullets`
+ * overflow as `image-text` while every cap check stays green. Measured on the
+ * real generated deck: a promotion that passed the schema took the fit sweep
+ * from 5 problems to 20.
+ *
+ * The covering eight rather than the deck's own theme, and rather than all 34,
+ * for the reason `trimDeckToFit` already sweeps every theme: fit is decided by
+ * typeface metrics, the theme is switchable from the deck page afterwards, and
+ * a picture that fits today must not break the slide when the theme changes.
+ */
+async function floorProblems(deck, deckDir) {
+  const { runs } = await themeMatrix({ deck: structuredClone(deck), deckDir, themes: COVERING_THEMES });
+  return parseFloorProblems(runs.flatMap((r) => r.problems.map((p) => p.raw)));
+}
+
+/** The validation errors attributable to one slide, by its JSON pointer. */
+async function slideErrors(deck, index) {
+  const { ok, errors } = await validateDeck(deck);
+  if (ok) return [];
+  // `/slides/1` is a prefix of `/slides/12`, so the boundary has to be explicit.
+  const at = new RegExp(`/slides/${index}(?![0-9])`);
+  return (errors ?? []).filter((e) => at.test(String(e)));
+}
+
+/**
  * Supply every `[image]` note in a deck that can be supplied.
  *
  * Opt-in: the caller decides, from `meta.imageSupply`. Never mutates the deck
@@ -566,7 +627,7 @@ function withoutNote(notes) {
  * honest half: a slide whose note could not be seated keeps its note, so the
  * UI's "add image" badge still offers the manual door.
  */
-export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBudget(), onProgress } = {}) {
+export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBudget(), onProgress, fitGate = true } = {}) {
   const wanted = [];
   for (const [index, slide] of deck.slides.entries()) {
     const description = imageNote(slide);
@@ -604,18 +665,67 @@ export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBud
     if (seated.notes === undefined) delete seated.notes;
 
     const next = { ...out, slides: out.slides.map((s, i) => (i === index ? seated : s)) };
-    // The promotion rewrites the slide's type and fields. A deck that would not
-    // validate is not worth a picture, so it is discarded and the note kept.
-    const { ok } = await validateDeck(next);
-    if (!ok) {
+    // The promotion rewrites the slide's type and fields, so it has to be
+    // checked — but only against the damage IT does. A real generated deck
+    // arrives carrying schema errors of its own (`loadDeck` warns on an
+    // over-long field rather than refusing, so decks ship slightly invalid and
+    // still render), and a whole-deck ok/not-ok gate reads those pre-existing
+    // errors as this slide's fault and refuses every supply on every real deck.
+    // Compare the errors on THIS slide before and after instead.
+    const beforeErrs = await slideErrors(out, index);
+    const afterErrs = await slideErrors(next, index);
+    if (afterErrs.length > beforeErrs.length) {
       skipped.push({ index, description, reason: `promotion to ${seated.type} did not validate` });
       continue;
     }
     out = next;
-    supplied.push({ index, rel: found.rel, description, type: seated.type, from: slide.type });
-    if (found.credit) credits.push({ ...found.credit, slide: index + 1 });
+    supplied.push({
+      index, rel: found.rel, description, type: seated.type, from: slide.type,
+      credit: found.credit ?? null, was: slide,
+    });
   }
 
+  // The fit gate. Seating is only lossless if the page still holds the words:
+  // a promotion halves the text column, and the schema cap cannot see that.
+  //
+  // The test is "does the slide now fit cleanly", NOT "does it fit worse than
+  // before". A promotion changes the slide's type, so it changes which FIELD
+  // the fitter names — a slide that failed on `bullets` and now fails on `body`
+  // has the same number of problems and is no less broken, and a count
+  // comparison reads that as an improvement. It also makes the gate cheap:
+  // one sweep of the result, no baseline.
+  //
+  // A slide that was ALREADY overfull is refused too. Reverting does not repair
+  // it, but a slide with more words than it can hold is the last place to spend
+  // half the width on a decorative picture.
+  if (fitGate && supplied.length) {
+    const after = await floorProblems(out, deckDir);
+    const worse = supplied.filter(({ index }) => (after.get(index)?.size ?? 0) > 0);
+    if (worse.length) {
+      const revert = new Map(worse.map((w) => [w.index, w.was]));
+      out = { ...out, slides: out.slides.map((sl, i) => revert.get(i) ?? sl) };
+      for (const w of worse) {
+        skipped.push({
+          index: w.index, description: w.description,
+          reason: "the picture would not leave room for the slide's own words",
+        });
+      }
+      const dropped = new Set(worse.map((w) => w.index));
+      for (let i = supplied.length - 1; i >= 0; i--) {
+        if (dropped.has(supplied[i].index)) supplied.splice(i, 1);
+      }
+    }
+  }
+
+  for (const { index, credit } of supplied) {
+    if (credit) credits.push({ ...credit, slide: index + 1 });
+  }
+  // The record is written only for pictures that survived the gate — a credit
+  // for an image no slide carries is worse than no credit at all.
   await writeCredits(deckDir, credits);
-  return { deck: out, supplied, skipped, credits, notes: budget.notes };
+  return {
+    deck: out,
+    supplied: supplied.map(({ was: _was, credit: _credit, ...rest }) => rest),
+    skipped, credits, notes: budget.notes,
+  };
 }
