@@ -2646,6 +2646,9 @@ These were named explicitly and are deliberately **not** part of the next tour r
 
 ### [ ] Image supply — auto, not just upload
 
+*Priority: high while the gateway is down. **No model, no decision, unstarted** —
+the largest piece of buildable work that needs neither.*
+
 Today: upload an image → `assets/` → the slide is set to an image type with the real asset; invented URLs are stripped to `[image]` notes. What’s missing is **Gamma-like auto images**: when the writer wants an image, the system should find one, not just flag it. Design in `docs/HANDOFF.md` next-session notes: Unsplash Source / SearXNG image category, opt-in per deck, CC licence, cached in `decks/<slug>/assets/auto/`, `resolveAsset` prefers it, never invented. No model writes a URL.
 
 ### [x] Research — truly better, not just deeper caps
