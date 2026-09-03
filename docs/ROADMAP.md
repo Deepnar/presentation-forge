@@ -3328,7 +3328,32 @@ sign-in to the summary card in hosted mode.
 The collapsed sidebar also had two adjacent controls both named "Settings" —
 the gear, and the profile chip that opens a different modal.
 
-**The briefing's shape — direction now agreed (2026-09-03).** Fifteen questions,
+**[x] The briefing's shape — built (2026-09-03).** Two forms: a required card
+carrying theme, length, density and the research choice with one action, and a
+single collapsed optional panel that skips in one click or opens to all ten
+fields at once. Two clicks to a deck, against fifteen.
+
+> **Learned.** Two defects fell out of the rework that were not the thing being
+> reworked, and both were the same mistake — a value the walk made equivalent
+> to another, which stopped being equivalent once the walk went.
+>
+> `answered` meant "the questions before the cursor". With a walk that is also
+> "the questions with an answer"; with a form it is not, because a user can
+> fill the last field and leave the first. That equivalence is where the "0
+> members / no guide set / no subject set" filler in the summary came from —
+> those were never answers, they were positions.
+>
+> `firstBriefStep()` returned 1 to step over the preset question on an account
+> with no presets, and 1 became the *optional tier* — so the briefing opened on
+> "anything else?" having asked nothing. A magic number that meant "one
+> question in" silently came to mean "one tier in".
+>
+> And the panel first reported "2 of 10 set" immediately above "the rest stay
+> at their defaults", because a suggested title and a branding default both
+> carry values. "Has a value" and "the user chose it" are not the same
+> question, and the label was asking the second.
+
+**The direction, as agreed before building it.** Fifteen questions,
 and a user who answers none still clicks through fifteen cards; the completed
 transcript then reads "0 members / no guide set / no subject set / no thesis
 set / no audience set", three lines each, above the summary. Three options were
