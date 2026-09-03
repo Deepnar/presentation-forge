@@ -34,21 +34,27 @@ vLLM**.
 |---|---|
 | Gateway | NVIDIA DGX Spark (GB10 Grace Blackwell) |
 | This box | RTX 5090 **Laptop** GPU, `sm_120`, 23.5 GiB usable, 62 GB system RAM |
-| Weights | `nvidia/Qwen3.6-35B-A3B-NVFP4` on Hugging Face — the official NVFP4 quantisation |
+| Weights | `nvidia/Qwen3.6-35B-A3B-NVFP4` on Hugging Face — the official NVFP4 quantisation, **22 GiB on disk** |
 
-Three facts make it work. NVFP4 is a Blackwell format and this GPU is
-Blackwell, so the *same quantisation* runs rather than a GGUF approximation.
-35B total with only 3B active means a 4-bit checkpoint is ~17.5 GB of weights
-and MoE keeps inference cheap. And vLLM speaks OpenAI-compatible, which is a
-provider type `config/models.yaml` already has.
+Two facts make it work. NVFP4 is a Blackwell format and this GPU is Blackwell,
+so the *same quantisation* runs rather than a GGUF approximation of it. And
+vLLM speaks OpenAI-compatible, which is a provider type `config/models.yaml`
+already has, so wiring it in costs no code.
+
+What does *not* make it work is the arithmetic everyone reaches for first.
+
+**The weights are 22 GiB, not the 17.5 GiB a naive 4-bit count gives.** The
+modelopt checkpoint keeps embeddings, router and lm_head above 4 bits and
+stores the NVFP4 scales, so 35B at "4-bit" lands well above 35B/2. Against
+23.5 GiB of usable VRAM that does not fit with any KV cache, which is why
+`--cpu-offload-gb` is not optional here. Measured: with `--cpu-offload-gb 6`
+the load reported 14.2 GiB on device and the card sat at ~18 GiB.
 
 **The constraint is the card, and it is not the one the write-ups assume.**
 Published NVFP4-on-5090 reports are the 32 GB desktop part. This is the 24 GB
-laptop part: the weights fit, and what is left for the KV cache is roughly
-5 GB. Deck generation sends large prompts — research notes, the type catalog,
-the schema — so context length is the thing that will bite first, not the
-weights. Expect to cap `--max-model-len` and use an FP8 KV cache, and expect
-to tune that rather than the model.
+laptop part. Deck generation sends large prompts — research notes, the type
+catalog, the schema — so context length is what will bite, and it is bought
+out of a budget that offload has already spent.
 
 ## Setup
 
@@ -79,6 +85,32 @@ Serving (starting point, expect to tune the last three flags):
 
 `--served-model-name qwen3.6` matters: it makes the local endpoint answer to
 the same label `config/models.yaml` and our own pickers and logs already use.
+
+### Read this before the first start — it will take the machine down
+
+**FlashInfer JIT-compiles its SM120 kernels from source on first use, and
+unconstrained it will exhaust this machine.** There are no prebuilt
+`sm_120f` mxfp4 group-GEMM kernels in the wheel, so the first `vllm serve`
+spawns a matrix of `nvcc`/`cicc` compilations — e4m3 and e5m2 against f16 and
+bf16 — many in parallel, each a CUTLASS template instantiation holding 2-3 GB.
+
+Observed on this box: load average 28 on 24 cores and **memory down to 1 GiB
+available from 62**, within three minutes of starting the server. The model
+had already loaded fine; none of this was inference. Killing the server and
+its compiler children returned the machine to 54 GiB available and the GPU to
+71 MiB immediately.
+
+So cap the build before starting, and start it when the machine is not needed:
+
+```bash
+MAX_JOBS=2 NVCC_THREADS=1 \
+  ~/.venvs/vllm-forge/bin/vllm serve nvidia/Qwen3.6-35B-A3B-NVFP4 ...
+```
+
+The kernels cache under `~/.cache/flashinfer/`, so this is a one-time cost —
+but it is a long one-time cost, and it is not what a "cold start takes ~5
+minutes" note prepares you for. Watch `free -g` rather than CPU: the CPU is
+the symptom, memory exhaustion is the failure.
 
 ## Wiring it into the app
 
