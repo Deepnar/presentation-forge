@@ -1,11 +1,11 @@
-# Handoff — 2026-09-02b, hosting blockers and auth closed; the gateway is still down
+# Handoff — 2026-09-03, blockers, auth and the UI; the gateway is still down
 
 Everything is on `main`. `npm test` is **516 passing**, `npm run themematrix` is
 clean across 34 themes, the working tree is clean.
 
 **Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
 operational map and carries the gateway's specification. `docs/TRAPS.md` gained
-seven entries this session and outlives this file. `docs/ROADMAP.md` carries
+nine entries this session and outlives this file. `docs/ROADMAP.md` carries
 every item below as a proper entry; this file is the order I would take them in.
 
 ---
@@ -108,6 +108,15 @@ destroying the stored one. The accounts and `reference/users/` were removed
 afterwards. **A per-account boundary is invisible from inside one account** —
 that is now a TRAPS entry.
 
+**Then the browser UI**, driven against a real deck for the first time. It
+found that **in-app navigation had been completely broken since `c1dab18` the
+day before** — the commit that added the reset/verify screens added a second
+hashchange listener, and the interaction between it and a no-dep-array effect
+meant the `applyHash` listener was removed mid-dispatch and never ran. Every
+tab, every sidebar link and the back button changed the URL and nothing else.
+`router.js` is pure, unit-tested, and passed the whole time. Also: Export →
+Bundle answered 401 for every user.
+
 **Then the auth flows** (section 2 below), which found the confirm-screen
 defect and a third instance of the same stale-ignore-list mistake:
 `.gitignore` covered `config/identity.yaml` and `brand/logos/` but not
@@ -149,6 +158,61 @@ its own spec rather than going through `resolveRole`, and silently dropped
 `thinking`, `reasoning_effort` and the provider capability flag on exactly the
 path a hosted deck takes.
 
+#### Running the gateway's own model locally — the way out of this deadlock
+
+`/v1/models` answers even while generation does not, and it names what the CoE
+serves:
+
+    /home/user1/models/Qwen3.6-35B-A3B-NVFP4-Fast
+
+That is reproducible here, and it is the difference between "exercise the
+pipeline" and "answer the quality question". The checks that matter:
+
+- **`nvidia/Qwen3.6-35B-A3B-NVFP4` is published on Hugging Face**, so the exact
+  weights and the exact quantisation format are available.
+- **NVFP4 needs Blackwell, and this box is Blackwell.** The gateway runs a DGX
+  Spark (GB10); this machine is an RTX 5090 Laptop (GB20x, SM120). vLLM +
+  FlashInfer + CUTLASS support SM120.
+- **35B total, 3B active.** At 4 bits the weights are ~17.5 GB, so it fits in
+  this card's 24 GB — the same range as the `qwen3.8:27b` already installed.
+
+**The real constraint is that this is the 24 GB laptop part, not the 32 GB
+desktop 5090 every published write-up assumes.** Weights fit; the KV cache gets
+the remaining ~5 GB, and deck generation sends large prompts (research notes
+plus the type catalog plus the schema). Expect to cap context and use an FP8 KV
+cache, and expect that to be the thing that bites, not the weights.
+
+Setup notes: vLLM is not installed, the system Python is 3.14 (too new for its
+wheels — make a 3.12 venv with `uv`), CUDA is 13.3, and there is 957 GB free.
+
+**Wire it in as a provider, not through the dev fallback.** This is the part
+worth getting right. `FORGE_DEV_LOCAL_FALLBACK` exists for a gateway that has
+become unreachable mid-request: it warns at boot, warns per role, marks the
+response `devLocalFallback` and is documented as telling you nothing about
+quality — all correct, because it swaps in a *different, weaker* model. Running
+the *same* weights is a different claim, and it deserves a different mechanism.
+`config/models.yaml` already takes it with no code change:
+
+```yaml
+  tcet-local:
+    type: openai-compatible
+    baseURL: http://localhost:8000/v1
+    label: Qwen3.6-35B-A3B, local vLLM
+    models: [qwen3.6]
+    vision_models: [qwen3.6]     # same model, so the vision critic is viable
+    supports_thinking: true      # the whole point — enable_thinking per request
+```
+
+That buys the two things the gateway is blocking: **thinking mode can finally
+be run rather than verified structurally**, and `medium` vs `xhigh` becomes an
+experiment instead of a guess. It also exercises `cloudSpec`, the hosted path,
+which is where per-role options have been lost before.
+
+Be honest about what it is when recording results: same weights and same
+quantisation format, different serving stack and a much smaller card. Close
+enough to answer "does the deck argue anything"; not a substitute for a timing
+or throughput claim about the gateway.
+
 ### 2. Surfaces never exercised — auth and Settings are done, the rest are not
 
 **The auth flows ran end to end for the first time**, and the reason they never
@@ -171,11 +235,13 @@ token is single-use. Fixed via `singleFlight`; see the roadmap's Learned block.
 
 Still zero runs behind:
 
-- **The browser UI for chat and convert.** Every generation turn still goes
-  through the CLI and `runChatTurn`. A CLI-generated deck has no `meta.owner`,
-  so a test account cannot open it — set one to drive the UI against real
-  content. That is the next one I would do: it needs no model to *view* a deck,
-  only to make one, and there are real generated decks on disk already.
+- **[x] The browser UI against a real deck** — done, on an owned copy of
+  `perovskite-solar-cells-stability-challenges-2`. All four project pages, the
+  slide grid, the downloads and the export menu. **Two defects, one total:**
+  in-app navigation did nothing at all (every route change moved the URL and
+  left the view behind, fixed in 54363f3), and Export → Bundle answered 401 for
+  everyone (a raw fetch with no credential, fixed in a40d180). Chat and convert
+  *turns* through the UI are still unexercised — those need a model.
 - **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
   entry points, zero runs. These need a model.
 - **Presenter assignment with a real team.** Every deck so far had none, so
@@ -197,7 +263,17 @@ const token = await startSession({ email: "t@example.test" });  // the token its
 holds **114 accounts**, all pre-existing. Harmless now that they cannot reach
 an image, but `Admin → Users` is where to look.
 
-### 3. Content quality — half of it is measurable, the half that matters is not
+### 3. Two decisions waiting on you
+
+- **Nothing can test the browser.** Three defects this session existed only in
+  a running browser and none was reachable from 516 passing tests; two were
+  total. Component-test infrastructure (jsdom + a React renderer) versus a
+  scripted browser pass run before a release — both would have caught all
+  three, and they cost very different things. New roadmap entry; agree the
+  direction before building either.
+- **Running the gateway's model locally.** See below.
+
+### 4. Content quality — half of it is measurable, the half that matters is not
 
 `npm run deckscore <slug>` measures the deterministic half — intact, fits,
 grounded, varied, whole. The real generated deck scores **73**. The other half
@@ -206,7 +282,7 @@ well — is answered on the gateway and nowhere else. The roadmap's "Measuring
 content quality" wants a small fixed set of briefs kept as a baseline and the
 score recorded per generation.
 
-### 4. Run the critic loop end to end
+### 5. Run the critic loop end to end
 
 Built, never watched. `--critic` renders every slide, sends the PNG to the
 `critic` role, and hands the findings to a fix turn that EDITS THE DECK — so a
@@ -214,7 +290,7 @@ critic that cannot see is worse than none. Hosted runs one model, so critic and
 author both resolve to the gateway; the split is local-only and forced by what
 Ollama reports each model can do.
 
-### 5. Still-open roadmap items
+### 6. Still-open roadmap items
 
 - **The front end** — priority HIGHEST in the file. The briefing is fifteen
   cards and a user who answers nothing still clicks through all fifteen; the
