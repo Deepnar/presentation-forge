@@ -3,6 +3,7 @@ import { mkdir, writeFile, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
+import { readCredits, writeCredits } from "../credits.js";
 import { themeMatrix } from "../themematrix.js";
 import { parseFloorProblems } from "./trim.js";
 import { COVERING_THEMES } from "../coverage.js";
@@ -389,16 +390,6 @@ async function cached(dir, k) {
  * second run of a supply is the common case (a resumed finalize, a re-render,
  * a critic pass), so this is the normal path rather than a repair.
  */
-async function readCredits(deckDir) {
-  try {
-    const raw = await readFile(path.join(deckDir, "assets", "auto", "credits.json"), "utf8");
-    const list = JSON.parse(raw);
-    return Array.isArray(list) ? list : [];
-  } catch {
-    return [];
-  }
-}
-
 /**
  * Find, download and cache one image for a description.
  *
@@ -516,59 +507,6 @@ export async function seatImage(slide, rel) {
 
   const { [field]: _dropped, ...rest } = slide;
   return { ...rest, type: "image-text", image: rel, body };
-}
-
-/* ------------------------------------------------------------------ credits */
-
-function creditLine(c) {
-  const who = c.creator ? ` by ${c.creator}` : "";
-  const what = c.title || c.query;
-  const lic = c.licence_url ? `[${c.licence}](${c.licence_url})` : c.licence;
-  const where = c.landing ? ` — [source](${c.landing})` : "";
-  return `- **${what}**${who}. ${lic}${where}`;
-}
-
-/**
- * The credits the licences oblige, in a file a person can actually use.
- *
- * `credits.json` is the machine record beside the files; `CREDITS.md` is the
- * page a student pastes into an appendix slide. Public-domain entries are
- * listed too — not because anything is owed, but because "where did this
- * picture come from" is asked of an academic submission regardless of licence.
- */
-async function writeCredits(deckDir, credits) {
-  if (!credits.length) return;
-  const autoDir = path.join(deckDir, "assets", "auto");
-  await mkdir(autoDir, { recursive: true });
-
-  // Merge on `file`: a run where some images came from the cache and others
-  // were fetched must not drop the credits it did not re-fetch.
-  const byFile = new Map((await readCredits(deckDir)).map((c) => [c.file, c]));
-  for (const c of credits) byFile.set(c.file, c);
-  const all = [...byFile.values()];
-  await writeFile(path.join(autoDir, "credits.json"), `${JSON.stringify(all, null, 2)}\n`, "utf8");
-
-  const owed = all.filter((c) => c.attribution_required);
-  const free = all.filter((c) => !c.attribution_required);
-  const lines = ["# Image credits", ""];
-  if (owed.length) {
-    lines.push(
-      "These images are used under licences that REQUIRE attribution. Keep this",
-      "list with the deck — on a credits slide, or in the report's appendix.",
-      "",
-      ...owed.map(creditLine),
-      "",
-    );
-  }
-  if (free.length) {
-    lines.push(
-      "Public domain / CC0 — no attribution required, listed for provenance.",
-      "",
-      ...free.map(creditLine),
-      "",
-    );
-  }
-  await writeFile(path.join(deckDir, "CREDITS.md"), lines.join("\n"), "utf8");
 }
 
 /* ------------------------------------------------------------------- supply */
