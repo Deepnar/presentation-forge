@@ -2716,9 +2716,29 @@ export const layouts = {
       // fitOneLine clamps to 1 and changes nothing.
       const INSET = 0.2;
       const axisW = (t) => measure(t, theme.type.eyebrow) * 1.12 + INSET;
-      const highW = Math.min(1.9, Math.max(1.2, axisW(highT)));
-      const lowW = Math.min(1.9, Math.max(1.2, axisW(lowT)));
-      const nameW = Math.min(1.9, Math.max(0.9, axisW(axisName)));
+      // Three labels share one vertical gutter, and a rotated box's width is
+      // its footprint down it — so the gutter has to be divided before any of
+      // them is sized. Left to ask for what its text wanted, each took ~1.9in
+      // of a 2.85in gutter and all three printed through each other:
+      // "THEHEMODOEHE MODEL" on editorial-magazine at the caps, where every
+      // label is long at once.
+      //
+      // A label that cannot have the width it wants wraps to two rotated lines
+      // side by side, which reads. Three overlapping ones do not, and there is
+      // no third option here: the eyebrow cannot shrink, because its nominal
+      // size is its floor.
+      // Not a strict third. These boxes are padded and the text inside is
+      // aligned to one end, so adjacent boxes can overlap by some margin before
+      // the GLYPHS meet — dividing the gutter into exact thirds capped the
+      // labels well below what they can safely take and wrapped "SPECULATIVE"
+      // on the showcase, which is the very thing this is here to stop. The
+      // divisor is what leaves the longest label on one line where the gutter
+      // allows it and still separates three long ones where it does not.
+      const share = Math.max(0.9, (box.bottom - top - 0.2) / 2.4);
+      const fit = (t, min) => Math.min(1.9, share, Math.max(min, axisW(t)));
+      const highW = fit(highT, 0.9);
+      const lowW = fit(lowT, 0.9);
+      const nameW = fit(axisName, 0.9);
       const right = box.x + 0.45;
       // A rotated box's WIDTH is its vertical footprint, so `y` has to be
       // derived from the width rather than fixed: the box is centred on
@@ -2728,6 +2748,7 @@ export const layouts = {
       // is exactly the kind of thing the geometry watcher exists to catch.
       const highY = top + highW / 2 - 0.15;
       const lowY = box.bottom - lowW / 2 - 0.15;
+      const nameY = (top + box.bottom) / 2 - 0.15;
       slide.addText(highT, {
         x: right - highW, y: highY, w: highW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
@@ -2743,7 +2764,7 @@ export const layouts = {
       // centre is pinned left of the quadrant column so the rotated footprint
       // (which equals the box's long dimension) stays clear of it.
       slide.addText(axisName, {
-        x: right - nameW, y: cy - 0.15, w: nameW, h: 0.3,
+        x: right - nameW, y: nameY, w: nameW, h: 0.3,
         ...textStyle(theme, "eyebrow", { color: theme.palette.ink_muted }),
         align: "center", valign: "middle", rotate: 270,
       });
