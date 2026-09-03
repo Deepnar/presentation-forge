@@ -2922,14 +2922,21 @@ half now exists and runs in about three seconds:
 - `test/contrast.test.js` holds the title and divider surface pairings and
   names those that clear 3:1 but not 4.5:1 — nineteen now, and
   `tools/contrast-debt.mjs` says which of those are reachable at all.
-- `npm run capstress` at caps reports the types whose declared caps the layout
-  cannot hold above the font floor. It is consistent across themes: `venn`,
-  `bibliography`, `chronology`, `before-after`, `data-cards`, `cards`,
-  `pros-cons`, `dependencies`, `layered-architecture` and `scorecard` all ask
-  for 6-13pt where the floor is 12-14. That is a cap-calibration job
-  (`tools/capfit.mjs` measures what each field can actually be), not a renderer
-  fault, and `venn`'s declared 30/27 against a measured 14 is the known head of
-  it.
+- **[x] The caps now match what the layouts can seat.** `capstress` reported
+  114 fit failures across the covering themes — fields asking for 6-13pt where
+  the floor is 12-14. `tools/capfit-apply.mjs` moved 27 type-specific caps to
+  their measured values and narrowed 6 shared `headline` declarations per type,
+  and the failures fell to 12. A second `capfit` pass over the corrected schema
+  reports **zero** fields whose cap the layouts cannot seat, so the measurement
+  has converged.
+- **The 12 that remain are a different question, and worth not confusing with
+  the first.** `capfit` measures one field at a time with the others at their
+  own measured scale; `capstress` puts *every* field at its cap at once. The
+  residual — `side-by-side` and `bibliography` on four themes each, plus
+  `framework`, `tip`, `funnel` and `before-after` — is that joint condition.
+  Chasing it to zero would cut fields that are fine in isolation to pay for a
+  slide where every field is simultaneously maximal, which is not the slide a
+  model writes. Left deliberately.
 - `npm run textcheck` rasterises and reads the text back; clean on the specimen
   and on the real generated deck.
 - `tools/contrast-audit.mjs --types a,b` sheets any type across every theme,

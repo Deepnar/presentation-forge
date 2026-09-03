@@ -1019,3 +1019,27 @@ whole page on a phone. Wrap tables in their own `overflow-x-auto` container at
 parse time rather than setting `display: block` on the table, which also stops
 it filling its column on a wide screen.
 
+**A cap the renderer cannot honour is not a cap.** The schema's `maxLength` is
+the instruction a model writes to, and it was never derived from what the
+layouts can seat — `cards[].body` accepted 95 characters in a card four of
+which share a row, where 53 fits. The model then writes to the number it is
+given, the fitter cannot shrink below the readable floor, and every generation
+pays for a rewrite pass. Measure with `capfit`, correct with `capfit-apply`,
+and expect the correction to be large: 27 of the caps were over by a third or
+more, and `venn` declared 30 where 14 fits.
+
+Two measurements, and they answer different questions. `capfit` grows one field
+at a time with the others at their own measured scale; `capstress` puts every
+field at its cap simultaneously. The first converges to zero and the second
+does not, because a slide with every field maximal is not a slide a model
+writes. Tightening until the second is clean over-constrains fields that were
+never the problem.
+
+**A fixture that does not satisfy the schema is a fixture nothing can trust.**
+The specimen deck is what `themematrix`, `textcheck`, `drawcheck`, `capfit` and
+`capstress` all render, and nothing validated it. Cutting the caps left three
+`data-cards` bodies eight characters over, the whole suite stayed green, and
+every sweep was measuring a deck no generation would have been allowed to
+produce. A cap cut is exactly when this breaks, and cap cuts are a thing this
+project expects to keep doing — `test/specimen-valid.test.js` is the guard.
+
