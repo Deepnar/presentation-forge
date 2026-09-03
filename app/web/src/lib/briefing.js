@@ -18,7 +18,10 @@
  * Tiering by "does this change the output" rather than "is this needed" is
  * deliberate: nothing here is needed — every field has a default, which is the
  * product's promise. `research` sits in required against that instinct because
- * it changes the deck more than any other single answer.
+ * it changes the deck more than any other single answer, and `images` sits
+ * beside it because it is the same kind of answer — where content comes from —
+ * and because a tier is one FORM, so a sixth field costs no extra turn. The
+ * count is not what made fifteen questions painful; the walk was.
  */
 
 const REQUIRED = "required";
@@ -30,6 +33,7 @@ export const BRIEFING_QUESTIONS = [
   { key: "maxSlides", tier: REQUIRED, ask: "How many slides?" },
   { key: "density", tier: REQUIRED, ask: "How much text per slide?" },
   { key: "research", tier: REQUIRED, ask: "Run a research pass over the topic?" },
+  { key: "images", tier: REQUIRED, ask: "Find images for slides that ask for one?" },
 
   { key: "title", tier: OPTIONAL, ask: "What should the deck be called?" },
   { key: "thesis", tier: OPTIONAL, ask: "What is the ONE thing the audience must remember or do after your last slide? (your thesis in one sentence)" },

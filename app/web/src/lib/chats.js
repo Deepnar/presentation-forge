@@ -71,6 +71,9 @@ export function normalizeChat(raw) {
     // Migrate old `research` boolean — default remains web
     b.researchSource = "web";
   }
+  // Auto image supply is opt-in: a chat written before the question existed
+  // reads as "none", which is the behaviour it already had.
+  b.imageSupply = b.imageSupply === "auto" ? "auto" : "none";
   b.uploadedSource = b.uploadedSource && typeof b.uploadedSource === "object" ? b.uploadedSource : null;
   b.research = Boolean(b.research);
   b.papers = Boolean(b.papers);
@@ -160,6 +163,7 @@ export function createChat({ kind = "deck" } = {}) {
       slidesPerMember: null,
       density: "balanced",
       researchSource: "web",
+      imageSupply: "none",
       uploadedSource: null,
       research: false,
     },

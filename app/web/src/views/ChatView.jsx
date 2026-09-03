@@ -380,6 +380,7 @@ export default function ChatView({
         theme: b.theme || undefined,
         research: b.research,
         researchSource: b.researchSource,
+        imageSupply: b.imageSupply ?? "none",
         upload: b.uploadedSource,
         papers: b.papers,
         slidesPerMember: b.slidesPerMember || undefined,
@@ -1589,6 +1590,13 @@ function BriefingControl({ q, chat, themes, themeLabel, presets, onPickPreset, o
         {...common}
       />
     );
+    case "images": return (
+      <ImagesCard
+        value={b.imageSupply ?? "none"}
+        onPick={(x) => patch({ imageSupply: x })}
+        {...common}
+      />
+    );
     default: return null;
   }
 }
@@ -2156,6 +2164,41 @@ function ResearchCard({ value, onNext, kind, uploaded, onUpload, papersValue, on
   );
 }
 
+/**
+ * Auto image supply, asked beside research because it is the same question:
+ * where does the content come from.
+ *
+ * It is off by default and says why it is a choice rather than a given. The
+ * supply spends someone else's rate limit, and it puts a picture on a slide the
+ * writer only described — a deck for a viva may want neither.
+ */
+function ImagesCard({ value, onNext, onPick, embedded = false }) {
+  const v = value ?? "none";
+  const options = [
+    { value: "none", label: "No images", note: "slides that want one show an 'add image' prompt" },
+    { value: "auto", label: "Find images", note: "freely-licenced only, with credits" },
+  ];
+  return (
+    <div>
+      <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
+        When the writer says a slide needs a picture, look one up. Wikimedia
+        Commons and Openverse only, public domain first — never a stock photo and
+        never a link the model made up. Anything that needs crediting is listed
+        in the deck's <span className="font-medium text-fg-muted">CREDITS.md</span>.
+      </div>
+      <ChoicePills options={options} value={v} onPick={onPick} />
+      {v === "auto" && (
+        <div className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2 text-[11px] leading-relaxed text-fg-faint">
+          A picture is only added where the slide still reads properly with one.
+          Where it would crowd out the words, the slide keeps its 'add image'
+          prompt instead.
+        </div>
+      )}
+      {!embedded && <CardFooter onNext={() => onNext({ imageSupply: v })} nextLabel="Continue" />}
+    </div>
+  );
+}
+
 function PresetSave({ onSave, state }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -2211,6 +2254,7 @@ function SummaryLine({ chat, themeLabel }) {
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
         researchLabel(b),
+        ...(b.imageSupply === "auto" ? ["auto images"] : []),
       ];
   if (presenting.length) bits.push(`${presenting.length} presenting`);
   return (
