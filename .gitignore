@@ -23,6 +23,11 @@ decks/*
 decks/*/out/
 decks/*/assets/
 decks/_public/*/out/
+# A PUBLIC deck's assets are deliberately NOT ignored, and auto-supplied images
+# (decks/_public/<slug>/assets/auto/) are the reason. They are a network cache,
+# so by the usual rule they would be excluded — but a committed showcase deck
+# has to render from a clean checkout, and an image credit that is not in the
+# repo is a credit that is lost. Do not "fix" this by widening the rule above.
 decks/.specimen-cache/
 .plate-cache/
 
