@@ -1113,3 +1113,25 @@ closer together than any specimen render shows. Types whose geometry is
 computed from the room left over need looking at *at the caps*, not at the
 specimen's own comfortable payloads.
 
+**A rotated text box's WIDTH is its vertical footprint.** `matrix` places three
+y-axis labels down one gutter at `rotate: 270`, and their `y` values were
+constants — so widening the boxes to stop a label wrapping pushed the bottom
+one 0.04in off the slide. The box is centred on `y + h/2` and spans `w/2`
+either side of that once turned, so any position for a rotated box has to be
+derived from its width, never fixed alongside it. The geometry watcher caught
+it inside one run, which is the argument for it running inside every render
+rather than as a separate sweep.
+
+**An eyebrow cannot be shrunk to fit, because its nominal size is its floor.**
+Reaching for `fitOneLine` on one returns a scale of 1 and reports a floor event
+that changes nothing — `floorPt` falls back to the ROLE floor when no explicit
+floor is passed, and for `eyebrow` that equals the token's own size. When a
+tracked all-caps label does not fit, the lever is the box, not the type.
+
+**A percentage margin on a text box does not cover a constant inset.** A box
+carries roughly 0.1in of internal padding. Sizing one at `measure(text) * 1.1`
+gives a 1.2in label about 0.12in of margin and a 3in label 0.3in — so the
+short labels, which is to say the ones most likely to be a single unbreakable
+word, get almost nothing. Add the inset as a constant and keep the percentage
+for the measurement error it is actually there for.
+

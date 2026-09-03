@@ -2974,18 +2974,23 @@ sheets of the 26 diagram and dense-data types across `minimal-muji` and
 - **`scorecard` and `matrix` looked broken in a cell and were not**, at least
   not in the way the cell suggested — `scorecard` reads perfectly at full size.
   That is the contact-sheet lesson below, paid again.
-- **`matrix` is genuinely crowded**: the rotated y-axis label renders as two
-  overlapping columns and the axis end-labels sit inside the quadrant boxes.
-  Left alone deliberately — it is the known `tracking` unit bug, which wants
-  its own round against a fresh `themematrix --save` baseline rather than a
-  patch here.
+- **[x] `matrix`'s rotated axis labels** — the `tracking` unit bug, done in its
+  own round with a baseline as this entry asked. `measure()` read the token's
+  tracking as a percentage of the em where the renderer applies it as points,
+  and `ADVANCE` is a lowercase average while `eyebrow` transforms to caps — a
+  tracked all-caps label measured 52% short. Correcting it surfaced two caps
+  `capfit` had been hiding and moved `capstress`'s joint count from 12 to 17,
+  both predicted here.
+  The label sizing needed its own fix on top: the box was `measure * 1.1` and a
+  box's insets are a constant ~0.1in, so a single unbreakable word still
+  wrapped. `matrix` is out of the landing showcase's HELD_BACK list, which is
+  now empty.
 - Everything else on those sheets — `funnel`, `dependencies`, `branching-flow`,
   `layered-architecture`, `roadmap`, `chronology`, `pyramid`, `hierarchy`,
   `data-table`, `decision-matrix`, `chart`, `kpi-dashboard`, `data-cards`,
   `metric-comparison`, `glossary`, `bibliography` — reads correctly at caps.
 
-What is left is the other six covering themes, and `matrix` once tracking is
-fixed. **Render each type at its schema caps before looking**:
+What is left is the other six covering themes. **Render each type at its schema caps before looking**:
 every defect the fixed-scale pass found that the sweeps were clean on came out
 of doing that, and none of them was visible with the specimen's own payloads. Expect the algorithmic diagram types and the
 dense data types to be where the failures are; the composition pass already
