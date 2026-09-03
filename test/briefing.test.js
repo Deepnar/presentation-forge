@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   PRESET_KEYS, initialBriefing, briefingFromPreset, applyPresetToBriefing,
   presetPayload, effectiveBriefStep, nextBriefStep, BRIEFING_QUESTIONS, REPORT_QUESTIONS,
+  questionsFor, tierQuestions, optionalAnswered,
 } from "../app/web/src/lib/briefing.js";
 
 test("PRESET_KEYS fixes team, slide counts, density, theme and branding — never guide or academic", () => {
@@ -75,22 +76,29 @@ test("a picked preset skips its fixed questions in the briefing walk", () => {
     theme: "x",
     branding: "none",
   };
-  // Question order: 0 preset, 1 title, 2 team, 3 guide, 4 academic,
-  // 5 thesis, 6 audience, 7 emphasis, 8 evidence, 9 theme, 10 maxSlides,
-  // 11 slidesPerMember, 12 density, 13 branding, 14 research. Preset-fixed
-  // are team/maxSlides/slidesPerMember/density/theme/branding.
-  assert.equal(effectiveBriefStep(briefing, 2, BRIEFING_QUESTIONS), 3);  // skip team -> guide
-  assert.equal(effectiveBriefStep(briefing, 9, BRIEFING_QUESTIONS), 14); // skip theme..branding -> research
-  assert.equal(effectiveBriefStep(briefing, 10, BRIEFING_QUESTIONS), 14);
-  assert.equal(effectiveBriefStep(briefing, 12, BRIEFING_QUESTIONS), 14);
-  // Title/guide/academic/thesis/audience/emphasis/evidence are never preset-fixed.
-  assert.equal(effectiveBriefStep(briefing, 1, BRIEFING_QUESTIONS), 1);
-  assert.equal(effectiveBriefStep(briefing, 3, BRIEFING_QUESTIONS), 3);
-  assert.equal(effectiveBriefStep(briefing, 5, BRIEFING_QUESTIONS), 5);
-  assert.equal(effectiveBriefStep(briefing, 6, BRIEFING_QUESTIONS), 6);
+  // Derived from the list, never from hardcoded positions: this test named
+  // "0 preset, 1 title, 2 team…" and broke the moment the questions were
+  // retiered, which tested the ordering rather than the skipping.
+  const at = (key) => BRIEFING_QUESTIONS.findIndex((q) => q.key === key);
+  const keyAt = (i) => BRIEFING_QUESTIONS[i]?.key ?? "(end)";
+
+  // From a preset-fixed question, the walk lands on the next question that is
+  // not preset-fixed — whatever that happens to be after a reorder.
+  for (const fixed of PRESET_KEYS) {
+    const landed = effectiveBriefStep(briefing, at(fixed), BRIEFING_QUESTIONS);
+    assert.ok(landed > at(fixed), `${fixed} is preset-fixed and must be stepped over`);
+    const key = keyAt(landed);
+    assert.ok(key === "(end)" || !PRESET_KEYS.includes(key), `landed on ${key}, which is also preset-fixed`);
+  }
+
+  // A question a preset never fixes is not moved at all.
+  for (const open of BRIEFING_QUESTIONS.map((q) => q.key).filter((k) => !PRESET_KEYS.includes(k))) {
+    assert.equal(effectiveBriefStep(briefing, at(open), BRIEFING_QUESTIONS), at(open), `${open} must not be skipped`);
+  }
+
   // An un-skipped preset question is editable without abandoning the preset.
   const rewound = { ...briefing, unskip: ["theme"] };
-  assert.equal(effectiveBriefStep(rewound, 9, BRIEFING_QUESTIONS), 9);
+  assert.equal(effectiveBriefStep(rewound, at("theme"), BRIEFING_QUESTIONS), at("theme"));
 });
 
 test("applyPresetToBriefing refills fixed fields without touching the user's answers", () => {
@@ -134,11 +142,10 @@ test("a briefing with no preset asks every question exactly once, in order", () 
 });
 
 test("a preset skips the fixed questions and repeats none of the rest", () => {
-  // pickPreset stores briefStep 1, so the walk resumes at the title.
+  // pickPreset stores briefStep 1, so the walk resumes after the preset card.
   const asked = walk({ presetId: "p1" }, BRIEFING_QUESTIONS, 1);
-  assert.deepEqual(asked, [
-    "title", "guide", "academic", "thesis", "audience", "emphasis", "evidence", "research",
-  ]);
+  const expected = BRIEFING_QUESTIONS.slice(1).map((q) => q.key).filter((k) => !PRESET_KEYS.includes(k));
+  assert.deepEqual(asked, expected);
   // The regression, stated as itself: "guide" was asked twice and "research"
   // six times, because the walk kept re-resolving to an answered question.
   assert.equal(new Set(asked).size, asked.length, `a question was asked twice: ${asked.join(" -> ")}`);
@@ -156,4 +163,62 @@ test("an un-skipped question is asked once, not twice, on the way past", () => {
   const asked = walk({ presetId: "p1", unskip: ["theme"] }, BRIEFING_QUESTIONS, 1);
   assert.ok(asked.includes("theme"), "a rewound preset field must be asked again");
   assert.equal(new Set(asked).size, asked.length, `a question was asked twice: ${asked.join(" -> ")}`);
+});
+
+/**
+ * The two tiers.
+ *
+ * The briefing was fifteen questions walked one card at a time, and a user who
+ * answered none of them still clicked through all fifteen. The tier is what
+ * lets the surface render each group as one form instead of a sequence, so
+ * these assert the split itself rather than any particular ordering.
+ */
+
+test("every question declares a tier, and required stays small enough to be one card", () => {
+  for (const list of [BRIEFING_QUESTIONS, REPORT_QUESTIONS]) {
+    for (const q of list) {
+      assert.ok(q.tier === "required" || q.tier === "optional", `${q.key} has no tier`);
+    }
+  }
+  // The point of the split is that the first screen is answerable at a glance.
+  assert.ok(tierQuestions("deck", "required", {}, []).length <= 5);
+  assert.ok(tierQuestions("report", "required", {}, []).length <= 5);
+});
+
+test("the preset question disappears when the account has no presets", () => {
+  // "Use a saved format, or start fresh?" offered exactly one answer on a new
+  // account — a question that cannot be answered two ways is not a question.
+  assert.ok(!tierQuestions("deck", "required", {}, []).some((q) => q.key === "preset"));
+  assert.ok(tierQuestions("deck", "required", {}, [{ id: "p1" }]).some((q) => q.key === "preset"));
+});
+
+test("a chosen preset drops the fields it fixes out of the required tier", () => {
+  const withPreset = tierQuestions("deck", "required", { presetId: "p1" }, [{ id: "p1" }]).map((q) => q.key);
+  for (const key of PRESET_KEYS) assert.ok(!withPreset.includes(key), `${key} is preset-fixed`);
+  // ...and rewinding one brings it back, so a preset is a starting point rather
+  // than a lock.
+  const rewound = tierQuestions("deck", "required", { presetId: "p1", unskip: ["theme"] }, [{ id: "p1" }]).map((q) => q.key);
+  assert.ok(rewound.includes("theme"));
+});
+
+test("no question is in both tiers, and every question is in one", () => {
+  for (const kind of ["deck", "report"]) {
+    const all = questionsFor(kind).map((q) => q.key);
+    const req = tierQuestions(kind, "required", {}, [{ id: "p1" }]).map((q) => q.key);
+    const opt = tierQuestions(kind, "optional", {}, [{ id: "p1" }]).map((q) => q.key);
+    assert.deepEqual([...req, ...opt].sort(), [...all].sort(), `${kind}: the tiers must partition the questions`);
+    assert.deepEqual(req.filter((k) => opt.includes(k)), [], `${kind}: a question is in both tiers`);
+  }
+});
+
+test("optionalAnswered counts only answers actually given", () => {
+  assert.equal(optionalAnswered("deck", {}), 0);
+  assert.equal(optionalAnswered("deck", { title: "   ", thesis: "" }), 0, "whitespace is not an answer");
+  assert.equal(optionalAnswered("deck", { title: "Solar", thesis: "It scales" }), 2);
+  // The shaped fields count only when they carry something real — an empty
+  // team is what made the summary read "0 members" as though it were an answer.
+  assert.equal(optionalAnswered("deck", { team: { members: [] } }), 0);
+  assert.equal(optionalAnswered("deck", { team: { members: [{ name: "A" }] } }), 1);
+  assert.equal(optionalAnswered("deck", { guide: { name: "" } }), 0);
+  assert.equal(optionalAnswered("deck", { academic: { subject: "", year: "" } }), 0);
 });

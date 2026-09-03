@@ -1,26 +1,46 @@
 /**
- * The guided deck-briefing: 15 questions — the original 13 plus thesis + evidence.
+ * The guided briefing, in two tiers.
+ *
  * Every answer maps to plan/research — thesis → planner purpose/coherence,
  * audience+emphasis+evidence → research angles + dataAffinityNote + TYPE_USE_WHEN.
- * This is the data model the old NewDeck wizard had, re-expressed as a conversation.
+ *
+ * It was fifteen questions walked one card at a time, and a user who answered
+ * none of them still clicked through all fifteen before reaching a deck. The
+ * defect was never the count: it was that every question was a *walk*. So the
+ * questions carry a `tier`, and the surface renders each tier as ONE form
+ * rather than a sequence —
+ *
+ *   required   the handful that change the artefact most and that people
+ *              actually set. One card, answered together, then generate.
+ *   optional   everything else, behind one "add detail" affordance, fillable
+ *              in any order and skippable in a single action.
+ *
+ * Tiering by "does this change the output" rather than "is this needed" is
+ * deliberate: nothing here is needed — every field has a default, which is the
+ * product's promise. `research` sits in required against that instinct because
+ * it changes the deck more than any other single answer.
  */
 
+const REQUIRED = "required";
+const OPTIONAL = "optional";
+
 export const BRIEFING_QUESTIONS = [
-  { key: "preset", ask: "Use a saved format, or start fresh?" },
-  { key: "title", ask: "What should the deck be called?" },
-  { key: "team", ask: "Who is on the team — and who presents?" },
-  { key: "guide", ask: "Who is your guide?" },
-  { key: "academic", ask: "Which subject and academic year is this for?" },
-  { key: "thesis", ask: "What is the ONE thing the audience must remember or do after your last slide? (your thesis in one sentence)" },
-  { key: "audience", ask: "Who will be in the room, what do they already know, and what must they remember or do after your last slide?" },
-  { key: "emphasis", ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
-  { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
-  { key: "theme", ask: "Which visual style should it use?" },
-  { key: "maxSlides", ask: "How many slides?" },
-  { key: "slidesPerMember", ask: "Slides per presenting member?" },
-  { key: "density", ask: "How much text per slide?" },
-  { key: "branding", ask: "How much institutional branding should the slides carry?" },
-  { key: "research", ask: "Run a research pass over the topic?" },
+  { key: "preset", tier: REQUIRED, ask: "Use a saved format, or start fresh?" },
+  { key: "theme", tier: REQUIRED, ask: "Which visual style should it use?" },
+  { key: "maxSlides", tier: REQUIRED, ask: "How many slides?" },
+  { key: "density", tier: REQUIRED, ask: "How much text per slide?" },
+  { key: "research", tier: REQUIRED, ask: "Run a research pass over the topic?" },
+
+  { key: "title", tier: OPTIONAL, ask: "What should the deck be called?" },
+  { key: "thesis", tier: OPTIONAL, ask: "What is the ONE thing the audience must remember or do after your last slide? (your thesis in one sentence)" },
+  { key: "audience", tier: OPTIONAL, ask: "Who will be in the room, what do they already know, and what must they remember or do after your last slide?" },
+  { key: "emphasis", tier: OPTIONAL, ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
+  { key: "evidence", tier: OPTIONAL, ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
+  { key: "team", tier: OPTIONAL, ask: "Who is on the team — and who presents?" },
+  { key: "guide", tier: OPTIONAL, ask: "Who is your guide?" },
+  { key: "academic", tier: OPTIONAL, ask: "Which subject and academic year is this for?" },
+  { key: "slidesPerMember", tier: OPTIONAL, ask: "Slides per presenting member?" },
+  { key: "branding", tier: OPTIONAL, ask: "How much institutional branding should the slides carry?" },
 ];
 
 /**
@@ -28,24 +48,58 @@ export const BRIEFING_QUESTIONS = [
  * Sections scale with the team already, so they are not asked.
  */
 export const REPORT_QUESTIONS = [
-  { key: "preset", ask: "Use a saved format, or start fresh?" },
-  { key: "title", ask: "What should the report be called?" },
-  { key: "team", ask: "Who is on the team?" },
-  { key: "guide", ask: "Who is your guide?" },
-  { key: "academic", ask: "Which subject and academic year is this for?" },
-  { key: "thesis", ask: "What is the ONE thing the reader must remember or do after reading? (your thesis in one sentence)" },
-  { key: "audience", ask: "Who is this for — and what should they take away?" },
-  { key: "emphasis", ask: "Which parts matter most — and why?" },
-  { key: "evidence", ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
-  { key: "depth", ask: "How deep should the report be?" },
-  { key: "density", ask: "How much text per section?" },
-  { key: "branding", ask: "How much institutional branding should it carry?" },
-  { key: "research", ask: "Run a research pass over the topic?" },
+  { key: "preset", tier: REQUIRED, ask: "Use a saved format, or start fresh?" },
+  { key: "depth", tier: REQUIRED, ask: "How deep should the report be?" },
+  { key: "density", tier: REQUIRED, ask: "How much text per section?" },
+  { key: "research", tier: REQUIRED, ask: "Run a research pass over the topic?" },
+
+  { key: "title", tier: OPTIONAL, ask: "What should the report be called?" },
+  { key: "thesis", tier: OPTIONAL, ask: "What is the ONE thing the reader must remember or do after reading? (your thesis in one sentence)" },
+  { key: "audience", tier: OPTIONAL, ask: "Who is this for — and what should they take away?" },
+  { key: "emphasis", tier: OPTIONAL, ask: "Which parts matter most — and why?" },
+  { key: "evidence", tier: OPTIONAL, ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
+  { key: "team", tier: OPTIONAL, ask: "Who is on the team?" },
+  { key: "guide", tier: OPTIONAL, ask: "Who is your guide?" },
+  { key: "academic", tier: OPTIONAL, ask: "Which subject and academic year is this for?" },
+  { key: "branding", tier: OPTIONAL, ask: "How much institutional branding should it carry?" },
 ];
 
-/** The question list for a product kind — reports walk a different briefing. */
+/** The question list for a product kind — reports ask a different briefing. */
 export function questionsFor(kind) {
   return kind === "report" ? REPORT_QUESTIONS : BRIEFING_QUESTIONS;
+}
+
+/**
+ * One tier's questions, minus the ones a chosen preset already fixes.
+ *
+ * The preset question itself is dropped once there is nothing to choose from:
+ * "use a saved format, or start fresh?" offers exactly one answer on an account
+ * that has never saved one, and a question with a single possible answer is not
+ * a question. `presets` is the account's list; pass it as loaded.
+ */
+export function tierQuestions(kind, tier, briefing = {}, presets = null) {
+  const unskip = new Set(briefing.unskip ?? []);
+  return questionsFor(kind).filter((q) => {
+    if (q.tier !== tier) return false;
+    if (q.key === "preset") return Array.isArray(presets) ? presets.length > 0 : true;
+    if (briefing.presetId && PRESET_KEYS.includes(q.key) && !unskip.has(q.key)) return false;
+    return true;
+  });
+}
+
+/** How many optional answers the user has actually given — the "add detail"
+ *  affordance says so, because "12 more" and "3 of 12 set" read differently. */
+export function optionalAnswered(kind, briefing = {}) {
+  const b = briefing ?? {};
+  return questionsFor(kind).filter((q) => q.tier === OPTIONAL).filter((q) => {
+    const v = b[q.key];
+    if (v == null) return false;
+    if (typeof v === "string") return v.trim().length > 0;
+    if (q.key === "team") return (v.members ?? []).some((m) => m.name?.trim());
+    if (q.key === "guide") return Boolean(v.name?.trim());
+    if (q.key === "academic") return Object.values(v).some((x) => String(x ?? "").trim());
+    return true;
+  }).length;
 }
 
 /**
