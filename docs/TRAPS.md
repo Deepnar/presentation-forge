@@ -1043,3 +1043,20 @@ every sweep was measuring a deck no generation would have been allowed to
 produce. A cap cut is exactly when this breaks, and cap cuts are a thing this
 project expects to keep doing — `test/specimen-valid.test.js` is the guard.
 
+**An icon's name is not checked against what it draws.** `GearIcon` drew a
+circle with eight straight rays — a sun — and sat beside the word "Settings" in
+three places, so every surface that named the concept in words drew a different
+one in pictures. `PanelLeftClose` and `PanelLeftOpen` differed by a single
+x-coordinate and both pointed right, so a collapse button and an expand button
+rendered the same arrow. Nothing fails: an icon is a path, every path is valid,
+and no test in any suite looks at one.
+
+Render the set and look at it. A contact sheet of every export at 44px and
+16px, with the name under each, took minutes and found both — and the small
+size is the one that decides, because teeth stop reading as teeth long before
+a shape stops being a shape.
+
+For a directional control the direction IS the content: point the chevron the
+way the thing moves, and check the pair together, since the failure is that two
+opposites became the same picture rather than that either was wrong alone.
+
