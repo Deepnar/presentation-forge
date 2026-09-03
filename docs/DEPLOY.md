@@ -90,7 +90,7 @@ Point your domain's A record at the instance's public IP, then:
 docker compose -f docker-compose.app.yml --profile tls up -d --build
 ```
 
-The first build takes a while — it downloads 27 font families and installs
+The first build takes a while — it downloads 21 font families and installs
 LibreOffice and Chromium. Caddy gets a Let's Encrypt certificate on first
 request.
 

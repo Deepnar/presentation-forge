@@ -11,7 +11,10 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 ## 1. Foundation
 
 ### [x] Font pipeline
-27 Google families / 76 weights, manifest-driven, idempotent.
+21 Google families / 59 weights, manifest-driven, idempotent. The manifest is
+derived from the themes and machine-checked (`test/fonts-manifest.test.js`); it
+carried six families no theme used and a `used_by` field that had drifted on
+eighteen of twenty-seven until 2026-09-03.
 `tools/install-fonts.mjs` · `tools/fonts.manifest.json`
 
 > **Learned.** The Google Fonts CSS2 API content-negotiates on User-Agent.
@@ -4131,9 +4134,13 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
   *Hosting blockers*: the file is reset to the template and `identityStatus()`
   reports an unconfigured default at boot and in Admin. The real values are
   still gone — they are the operator's to enter in Settings.
-- `tools/fonts.manifest.json` carries a `used_by` list per family that has
-  drifted: six families are listed that no theme uses, and the field is
-  documentation the install step does not read.
+- ~~`tools/fonts.manifest.json` carries a drifted `used_by` list.~~ Fixed: the
+  field is derived from the themes and `test/fonts-manifest.test.js` holds it
+  in both directions — no family a theme names is missing, and no family no
+  theme uses is carried. Six were, which is six typefaces fetched and installed
+  on every machine and in every container for nothing; the manifest is 21
+  families now. It drifted because it was maintained by hand and read by
+  nobody, which is the argument for deriving it.
 - ~~The account store holds well over a hundred throwaway test accounts.~~
   Still true on the dev box and no longer able to travel: `config/` is
   excluded from the build context by default. See *Hosting blockers*.

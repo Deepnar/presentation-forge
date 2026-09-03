@@ -48,7 +48,7 @@ npm run render decks/<slug>/deck.yaml       # content -> .pptx
 npm run preview decks/<slug>/out/deck.pptx  # .pptx -> PNGs + thumbs
 npm run forge -- new "<topic>" --research   # headless: outline
 npm run forge -- generate <slug> --critic   # headless: deck
-npm run fonts                               # download + install the 27 families
+npm run fonts                               # download + install the 21 families
 npm run brand                               # normalise brand/logos -> brand/generated
 npm run landing                             # re-render the landing page's imagery
 npm run searxng                             # local search backend (docker)
@@ -206,7 +206,7 @@ because the pipeline has to run headless.
 - **Poppler** (`pdftoppm`) — splits the PDF into slide PNGs.
 - **Headless Chrome** — plate themes and `type: freeform`. Resolved from
   `FORGE_CHROME`, defaulting to `/usr/bin/google-chrome-stable`.
-- **Installed fonts** — `npm run fonts` puts 27 families in the *user* font dir.
+- **Installed fonts** — `npm run fonts` puts 21 families in the *user* font dir.
   A machine with only DejaVu/Liberation rasterises every theme wrong. This bites
   containers specifically (see Deployment).
 - **Ollama** — the local default backend, `localhost:11434`.
