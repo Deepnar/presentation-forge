@@ -191,6 +191,7 @@ src/coverage.js    the eight themes a visual sweep has to look at, and why
 src/capfit.js      the length a field can actually be, measured per theme
 src/validate.js    ajv errors resolved to "slide N, type T, do X"
 src/ai/pipeline.js the CLI and the orchestration both the CLI and API call
+src/ai/images.js   [image] notes -> licence-bearing image supply, opt-in per deck
 src/ai/ollama.js   role-addressed model client (ollama | openai-compatible)
 src/auth.js        accounts and sessions (SQLite via node:sqlite, JSON fallback)
 src/cloud.js       provider resolution, hosted/local switch, key resolution

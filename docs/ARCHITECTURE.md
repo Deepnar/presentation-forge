@@ -923,6 +923,82 @@ impossible to miss:
   slide with a per-slide Regenerate button (a scoped chat turn that rewrites
   the slide from research), plus a badge on each affected slide card.
 
+## Image supply — the model describes, the app fetches
+
+The three-layer rule says the model never writes layout. It also never writes a
+URL, and images are where that is hardest to hold: a writer asked for a picture
+will happily produce `https://example.com/x.jpg`. The seam that resolves this is
+a **description, not an address**. When a slide wants a picture the writer emits
+`[image] <description>` into `notes`, and the sanitisers in `src/ai/generate.js`
+rewrite any URL it invents into that same shape. Everything downstream works
+from the description.
+
+`src/ai/images.js` closes the loop, opt-in per deck via `meta.imageSupply`
+(asked in the briefing beside research, `--images` on the CLI). It runs in
+`finalizeDeck` after the coherence pass.
+
+**Sources are chosen by one property: they state the licence themselves.** An
+image whose rights cannot be established is unusable in an academic submission,
+which rules out the obvious candidates — SearXNG normalises the licence out of
+every image row (including its own `openverse` engine), and the Unsplash Source
+API is retired. So:
+
+- **Wikimedia Commons**, primary. Reports `License` and `AttributionRequired`
+  per file, has no punitive rate limit, and is deep in technical figures where
+  photo aggregators are empty. `iiurlwidth` rasterises SVG server-side, so a
+  vector diagram arrives as a PNG the renderer can place.
+- **Openverse**, secondary, for photographic breadth. Anonymous budget is
+  20/min and 200/day, enforced by `makeBudget` and re-read from the response's
+  `x-ratelimit-available-anon_sustained`. `OPENVERSE_API_TOKEN` raises it.
+
+**Licences rank, they do not filter.** `licenceTier` maps both upstreams'
+vocabularies onto: 0 public domain and CC0 (nothing owed), 1 CC BY, 2 CC BY-SA.
+NonCommercial, NoDerivatives and unreadable licences are refused outright.
+Ranking rather than restricting is what gives the widest pool without silent
+legal debt — a public-domain image is taken when one exists, and a CC BY one is
+taken rather than leaving the slide bare, with the credit written down either
+way. `assets/auto/credits.json` is the machine record the cache reads back from;
+`CREDITS.md` is the page a person can paste into an appendix.
+
+**Queries widen; they are never passed through.** Both upstreams AND their
+terms, so a written description returns nothing (`"electrolysis cell diagram"`
+→ 0, `"electrolysis"` → 240). `queryLadder` steps from the full phrase, to the
+phrase minus the picture-kind words (`diagram`, `photo`, `schematic` — generic
+vocabulary, never topic knowledge), to the two most distinctive terms, to one.
+It stops at the first rung that lands.
+
+**Seating is lossless or it does not happen**, and this is the part the schema
+alone cannot decide. `image`, `image-text`, `hero-image` and `image-grid` all
+*require* their image field, so a validated deck never contains one waiting to
+be filled — meaning `[image]` notes land almost entirely on types that cannot
+carry a picture at all. Two ways in:
+
+- **An optional seat** (`testimonial`, `compare`, `before-after`) is filled in
+  place. `imageSeat` derives these from the schema, so a new image-carrying
+  type is seated the day it is added.
+- **Otherwise the slide is promoted to `image-text`** — the same conversion
+  `DeckDetail` performs on a manual upload — but only when its list fits that
+  type's four-line body. This one runs without a human watching, so it may not
+  drop a point the writer meant to make.
+
+Then two gates, because "lossless" means the words survive *on the page*:
+
+- **Schema.** The errors on the touched slide before and after. Not whole-deck
+  validity: real generated decks arrive slightly invalid (`loadDeck` warns on
+  an over-long field rather than refusing), and a global gate reads those as
+  this slide's fault.
+- **Fit.** `image-text` draws `body` in half the width a full-bleed list gets,
+  so four comfortable bullets can overflow with every cap check green. The
+  supply sweeps its own result over `COVERING_THEMES` and gives the picture back
+  on any slide that does not fit cleanly — the covering set rather than the
+  deck's own theme for the reason `trimDeckToFit` sweeps every theme: the theme
+  is switchable afterwards.
+
+A slide that fails any of this **keeps its `[image]` note**, so the deck page's
+"add image" prompt still offers the manual door, and the reason lands in
+`problems[]`. Manual upload always wins: it targets the slide directly and
+leaves no note for this pass to find.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
