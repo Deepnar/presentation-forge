@@ -556,19 +556,25 @@ function IdentitySection({ identity, onIdentityChanged }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="sm:col-span-2">
+      {/* Three columns rather than two, because the fields are not the same
+          size: "EIT" and "Department of Computer Engineering" were given
+          identical halves, and the department clipped mid-word while the short
+          form sat in a field five times wider than its content. The long fields
+          take two thirds; Name keeps Short beside it, since one is the other's
+          abbreviation. */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="sm:col-span-3">
           <div className="mb-1 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Institution</div>
         </div>
-        <Field label="Name" value={draft.institution?.name ?? ""} onChange={(v) => set("institution.name", v)} />
+        <Field className="sm:col-span-2" label="Name" value={draft.institution?.name ?? ""} onChange={(v) => set("institution.name", v)} />
         <Field label="Short" value={draft.institution?.short ?? ""} onChange={(v) => set("institution.short", v)} />
-        <Field label="Department" value={draft.institution?.department ?? ""} onChange={(v) => set("institution.department", v)} />
+        <Field className="sm:col-span-2" label="Department" value={draft.institution?.department ?? ""} onChange={(v) => set("institution.department", v)} />
         <Field label="University" value={draft.institution?.university ?? ""} onChange={(v) => set("institution.university", v)} />
 
-        <div className="mt-2 sm:col-span-2">
+        <div className="mt-2 sm:col-span-3">
           <div className="mb-1 text-[10.5px] font-medium uppercase tracking-wider text-fg-faint">Guide</div>
         </div>
-        <Field label="Name" value={draft.guide?.name ?? ""} onChange={(v) => set("guide.name", v)} />
+        <Field className="sm:col-span-2" label="Name" value={draft.guide?.name ?? ""} onChange={(v) => set("guide.name", v)} />
         <Field label="Designation" value={draft.guide?.designation ?? ""} onChange={(v) => set("guide.designation", v)} />
       </div>
 
