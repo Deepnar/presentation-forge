@@ -283,7 +283,14 @@ export const api = {
     call(`/api/decks/${slug}/export`, { method: "POST", body: JSON.stringify({ format, theme }) }),
   cloneDeck: (slug) => call(`/api/decks/${slug}/clone`, { method: "POST", body: JSON.stringify({}) }),
   bundleUrl: (slug) => `/api/decks/${slug}/bundle`,
-  downloadBundle: (slug) => fetch(`/api/decks/${slug}/bundle`, { method: "POST" }),
+  // The bundle is a POST under the deck workspace, and state-changing routes
+  // read the bearer header and ignore the session cookie on purpose — that is
+  // what stops the cookie media routes need from becoming a CSRF vector. So a
+  // raw fetch here has no credential at all and the button answered "bundle
+  // failed: HTTP 401" for everyone. Every other helper either goes through
+  // call() or spreads authHeader(); this one did neither.
+  downloadBundle: (slug) =>
+    fetch(`/api/decks/${slug}/bundle`, { method: "POST", headers: { ...authHeader() } }),
   versions: (slug) => call(`/api/decks/${slug}/versions`),
   restoreVersion: (slug, file) =>
     call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
