@@ -4,7 +4,7 @@ import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
-import { ChevronDown, DocIcon, LayersIcon, PanelLeftOpen, SparkleIcon } from "../components/icons.jsx";
+import { ChevronDown, DocIcon, LayersIcon, PanelRightOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText, tierQuestions, optionalAnswered, briefTier, stepForTier, isAnswered } from "../lib/briefing.js";
@@ -1374,7 +1374,7 @@ export default function ChatView({
                 aria-label="Expand slides"
                 className="grid h-8 w-8 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
               >
-                <PanelLeftOpen className="h-4 w-4" />
+                <PanelRightOpen className="h-4 w-4" />
               </button>
               <div className="mt-2 text-[10px] font-medium uppercase tracking-wider text-fg-faint" style={{ writingMode: "vertical-rl" }}>
                 {deckData.slides.length}

@@ -30,12 +30,43 @@ export function ChevronDown(props) {
     </svg>
   );
 }
+/**
+ * The four panel toggles, and the direction is the whole content of them.
+ *
+ * `PanelLeftClose` and `PanelLeftOpen` differed by a single x-coordinate — 13
+ * against 14 — and both drew the chevron pointing RIGHT. A collapse control and
+ * an expand control rendered the same arrow, so the one thing the icon is for,
+ * saying which way the panel is about to move, it did not say.
+ *
+ * The rule: the chevron points the way the panel edge travels. Closing a left
+ * panel sends it left; opening one brings it right. The Right pair mirrors
+ * both the divider and the arrow, because the slide panel lives on the right
+ * and a left-panel glyph there is the same mistake one step quieter.
+ */
 export function PanelLeftClose(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>
       <rect x="3" y="4" width="18" height="16" rx="2" />
       <path d="M9 4v16" />
-      <path d="m13 8 3 4-3 4" />
+      <path d="m16 8-3 4 3 4" />
+    </svg>
+  );
+}
+export function PanelRightClose(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M15 4v16" />
+      <path d="m8 8 3 4-3 4" />
+    </svg>
+  );
+}
+export function PanelRightOpen(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...props} {...stroke}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M15 4v16" />
+      <path d="m11 8-3 4 3 4" />
     </svg>
   );
 }

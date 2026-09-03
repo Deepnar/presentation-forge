@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Spinner, Tooltip } from "./ui.jsx";
-import { ChevronDown, PanelLeftClose } from "./icons.jsx";
+import { ChevronDown, PanelRightClose } from "./icons.jsx";
 
 /**
  * The chat's slide-selection panel — how the user tells the AI WHICH slides
@@ -49,7 +49,7 @@ export default function SlideSelectPanel({
           aria-label="Collapse slides"
           className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
         >
-          <PanelLeftClose className="h-4 w-4" />
+          <PanelRightClose className="h-4 w-4" />
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[11.5px] font-semibold text-fg">Slides</div>
