@@ -1579,7 +1579,7 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density } = req.body ?? {};
+  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply } = req.body ?? {};
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
       const upcoming = Number(maxSlides) > 0 ? Number(maxSlides) : 12;
@@ -1587,7 +1587,7 @@ app.post("/api/decks", (req, res) => {
       recordAutoFor(req.user.email, upcoming, 0);
     }
     const r = await createDeck({
-      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density,
+      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),

@@ -589,6 +589,7 @@ export async function writeDeckContent({
  */
 export async function finalizeDeck({
   slug, theme = null, model, identity, onProgress, signal, critic = false, write = null, chat = null,
+  imageSupply = null,
 }) {
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
@@ -714,14 +715,14 @@ export async function finalizeDeck({
   // network on someone else's rate limit and puts a picture on a slide a person
   // may not want one on. A manual upload still wins: it targets the slide
   // directly and never leaves an [image] note for this pass to find.
-  let imageSupply = null;
-  if (meta.imageSupply === "auto") {
+  let imageResult = null;
+  if ((imageSupply ?? meta.imageSupply) === "auto") {
     try {
       const r = await supplyDeckImages(tr.grounded.deck, dir, {
         signal,
         onProgress: (e) => onProgress?.({ status: "images", ...e }),
       });
-      imageSupply = r;
+      imageResult = r;
       if (r.supplied.length) {
         // The supply returns a NEW deck (a promotion rewrites the slide's type),
         // so the result has to be adopted, not assumed to have been mutated in.
@@ -731,7 +732,7 @@ export async function finalizeDeck({
       onProgress?.({ status: "images_done", supplied: r.supplied.length, skipped: r.skipped.length });
     } catch (err) {
       // A picture is never worth failing a deck for.
-      imageSupply = { supplied: [], skipped: [], credits: [], notes: [String(err?.message ?? err)] };
+      imageResult = { supplied: [], skipped: [], credits: [], notes: [String(err?.message ?? err)] };
     }
   }
 
@@ -746,7 +747,7 @@ export async function finalizeDeck({
   // A slide that asked for a picture and did not get one is reported, not
   // silently left bare: its [image] note survives, so the deck page still shows
   // the "add image" door, and the problem says which door and why.
-  const imageProbs = (imageSupply?.skipped ?? []).map(
+  const imageProbs = (imageResult?.skipped ?? []).map(
     (s) => `slide ${s.index + 1}: no image supplied for "${s.description}" — ${s.reason}`,
   );
 
@@ -840,8 +841,8 @@ export async function finalizeDeck({
     ],
     skipped: write?.skipped ?? [],
     stats: write?.stats ?? {},
-    images: imageSupply
-      ? { supplied: imageSupply.supplied, skipped: imageSupply.skipped, credits: imageSupply.credits }
+    images: imageResult
+      ? { supplied: imageResult.supplied, skipped: imageResult.skipped, credits: imageResult.credits }
       : null,
     critic: criticReport,
     trimmed: tr.trimmed,
@@ -1143,9 +1144,10 @@ const USAGE = `Usage:
                         [--research] [--papers] [--upload <file.md|docx|pdf|txt>]
                         [--max-slides <n>] [--slides-per-member <n>]
                         [--density sparse|balanced|dense] [--model <id>]
+                        [--images]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
                         [--plan <plan.yaml>] [--no-render] [--critic] [--resume]
-  node src/ai/pipeline.js finalize <slug> [--theme <name>] [--model <id>]
+  node src/ai/pipeline.js finalize <slug> [--theme <name>] [--model <id>] [--images]
   node src/ai/pipeline.js chat <slug> "<instruction>" [--model <id>] [--no-render]
   node src/ai/pipeline.js report <slug> [--generate [--depth full|brief]]
                         [--donor <path>] [--no-toc] [--no-render]
@@ -1212,6 +1214,7 @@ function parseArgs(argv) {
     }
     else if (a === "--upload") opts.upload = argv[++i];
     else if (a === "--research") opts.research = true;
+    else if (a === "--images") opts.imageSupply = "auto";
     else if (a === "--papers") opts.papers = true;
     else if (a === "--upload") opts.upload = argv[++i];
     else if (a === "--generate") opts.generate = true;
@@ -1291,9 +1294,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (!opts.slug) { console.error(USAGE); process.exit(2); }
       const r = await finalizeDeck({
         slug: opts.slug, theme: opts.theme, model: opts.model,
-        onProgress: progress, critic: opts.critic,
+        onProgress: progress, critic: opts.critic, imageSupply: opts.imageSupply ?? null,
       });
       process.stdout.write(`finalised decks/${opts.slug}/deck.yaml — ${r.deck.slides.length} slides\n`);
+      if (r.images?.supplied.length) {
+        process.stdout.write(`  ${r.images.supplied.length} image(s) supplied — see decks/${opts.slug}/CREDITS.md\n`);
+        for (const im of r.images.supplied) {
+          process.stdout.write(`    slide ${im.index + 1} ${im.from} -> ${im.type}: ${im.rel}\n`);
+        }
+      }
       for (const p of r.problems ?? []) process.stdout.write(`  ! ${p}\n`);
     } else if (cmd === "chat") {
       if (!opts.slug || !opts.instruction) { console.error(USAGE); process.exit(2); }
