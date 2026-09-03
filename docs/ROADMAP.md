@@ -3288,9 +3288,32 @@ navigation, the report-first entry flow, and the phone verification this entry
 was still waiting on: every project page and `SlideEditor.jsx` are checked at
 390px with no horizontal overflow.
 
-What remains under this entry is the briefing flow end to end, and the rest of
-the app's density and hierarchy — the chat view's own surfaces, Settings, and
-the screens nobody has sat with. The admin page has its own entry now ("The
+The briefing flow is done (above). What remains under this entry is the rest of
+the app's density and hierarchy.
+
+**The density sweep, first pass (2026-09-03).** Every route walked in BOTH
+appearance modes, with an in-page audit that computes each text node's colour
+against its nearest opaque background and applies the WCAG floor for its size
+and weight. Dark mode had never been looked at at all.
+
+- **Contrast is clean**: zero text below its floor across eight routes and the
+  four project pages, in light and dark. The token system does its job.
+- **One real contrast bug**, and it was a token-layer mistake rather than a
+  colour choice: four separator glyphs used `line-strong`, a *border* token, as
+  ink — 1.47:1 in light, 1.66:1 in dark, so a theme card's two font names ran
+  together with nothing legible between them.
+- **One structural bug the contrast audit could not see**: `.slide-frame`
+  separated a thumbnail from its card by shadow alone, which dark mode does not
+  have, so a dark-ground deck had no edge at 1.34:1. No text, so no contrast
+  failure — see `docs/TRAPS.md`.
+- **Settings** was sized for the wrong content: Name/Short and
+  Department/University shared equal columns, so "EIT" sat in a field five
+  times wider than its content while the department name clipped mid-word.
+- **The icons were never checked against their own names** — a gear that drew a
+  sun, and a collapse/expand pair that drew the same arrow. Both in TRAPS.
+
+What is left: the chat view's outline and editing phases, which need a model to
+reach, and the admin page, which has its own entry. The admin page has its own entry now ("The
 admin panel, swept"). This box stays unticked until those have had a pass, not
 because the design direction is unresolved.
 

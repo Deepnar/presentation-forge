@@ -1060,3 +1060,24 @@ For a directional control the direction IS the content: point the chevron the
 way the thing moves, and check the pair together, since the failure is that two
 opposites became the same picture rather than that either was wrong alone.
 
+**Separation by shadow works in light and disappears in dark.** `.slide-frame`
+gave a deck thumbnail its edge with `box-shadow` alone. In dark mode that token
+is a 4% inset highlight over a black drop shadow, and the page behind it is
+near black, so a deck whose own title surface is dark sat on the dark card at
+1.34:1 with no boundary. The same hole is there in light for a cream-ground
+theme on a white card — dark is only where it shows first, because that is
+where the shadow has nothing to fall on.
+
+Anything whose content supplies its own colour — a thumbnail, a preview, an
+embedded artefact — needs an edge that does not depend on the content or the
+mode. An outline with `outline-offset: -1px` is the one to reach for: a border
+changes the content box, and an inset box-shadow paints *below* content, so an
+image sitting in the frame hides it completely.
+
+**A missing edge is not a contrast failure.** The automated sweep over every
+route in both modes reported zero text below its floor, before and after this
+was fixed, because there is no text involved. Measuring contrast answers a
+question about ink; it says nothing about whether a shape has a boundary, and
+the two failures look identical in a screenshot until you know which you are
+looking at.
+
