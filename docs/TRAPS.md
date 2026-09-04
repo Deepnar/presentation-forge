@@ -297,6 +297,22 @@ fit-gate test written without it PASSED against a completely broken gate. Same
 blind spot `themematrix --notes` exists for, met from the other direction: the
 question to ask a fixture is what it does NOT carry.
 
+**A chart whose series and categories disagree in length makes the WHOLE
+`.pptx` unopenable.** Not the chart — LibreOffice returns "source file could not
+be loaded" for the file, and twenty good slides go with it. OOXML has no opinion,
+pptxgenjs writes what it is handed, `pres.writeFile()` succeeds, and the schema
+cannot express a cross-field length relation, so every check upstream is clean.
+The renderer has to hold the invariant. Reconcile towards the DATA: a category
+is a label and a blank label costs a tick mark, while a dropped value changes
+what the chart says.
+
+**A field a model may omit is a field a model will omit.** `headline` was
+required on 15 slide types and optional on 57; the first real generated deck
+left it blank on three, and those slides render as a tall empty band above
+content stretched to fill the space. The layout cannot fix it — the heading band
+belongs to the layout, not to the headline — so the schema has to require it,
+and the ops grammar then inherits the requirement.
+
 **A schema cap will quietly decide content that has to be exact.**
 `attribution.name` caps at 30; "National Renewable Energy Laboratory" is 35, so
 the credits slide rendered "National Renewable Energy Lab…" — which is not an
@@ -370,6 +386,14 @@ either, so every CC BY image was, in practice, uncredited. Writing the file felt
 like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
+
+**Search results are not filtered for being about the topic, and long
+documents pass any presence test.** A research corpus for a battery deck
+absorbed Wikipedia's "India" (31k words) because one query said "India". The
+article contains 5 of the topic's 7 terms, so a "mentions the topic" rule passes
+it — at 0.44 hits per 1000 words against a real battery article's 35.55. Use
+DENSITY, not presence, whenever the candidates vary in length by orders of
+magnitude.
 
 **WCAG contrast is the wrong metric for telling categories apart.** It is a
 luminance ratio, so red and blue at the same lightness score 1.0 — identical by
