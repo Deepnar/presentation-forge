@@ -393,7 +393,16 @@ absorbed Wikipedia's "India" (31k words) because one query said "India". The
 article contains 5 of the topic's 7 terms, so a "mentions the topic" rule passes
 it — at 0.44 hits per 1000 words against a real battery article's 35.55. Use
 DENSITY, not presence, whenever the candidates vary in length by orders of
-magnitude.
+magnitude. Fixing it turned 16 junk sources of 21 into 2 of 8, and the corpus
+gained an authoritative source the junk had been crowding out.
+
+**Do not split a hyphenated compound when building a relevance yardstick.**
+"solid-state" split into "solid" and "state" puts an ordinary word in the
+measure: an article about India — a country of states — then scored seven times
+higher, and the margin between on- and off-topic pages fell from 5.8x to 3.9x,
+enough that the first floor let every junk page through. The compound is the
+distinctive term; its halves are not. Tune the threshold against real documents,
+because both the split and the floor were wrong on the first attempt.
 
 **WCAG contrast is the wrong metric for telling categories apart.** It is a
 luminance ratio, so red and blue at the same lightness score 1.0 — identical by
