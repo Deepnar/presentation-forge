@@ -57,6 +57,10 @@ export default function Admin({ onBack }) {
     if (!window.confirm(`Delete user ${email}? This cannot be undone.`)) return;
     try { await api.adminDeleteUser(email); await load(); } catch (e) { window.alert(e.message); }
   };
+  const clearUsage = async (email) => {
+    if (!window.confirm(`Clear ${email}'s Auto usage? Their window and weekly counters go back to zero.`)) return;
+    try { await api.adminClearUsage(email); await load(); } catch (e) { window.alert(e.message); }
+  };
 
   if (busy) return <div className="mx-auto max-w-6xl p-8 text-[13px] text-fg-muted">Loading admin…</div>;
   if (err) {
@@ -96,7 +100,7 @@ export default function Admin({ onBack }) {
       </div>
 
       {tab === "overview" && <Overview stats={stats} hosted={hosted} />}
-      {tab === "users" && <UsersTab users={users} onRole={setRole} onDelete={delUser} />}
+      {tab === "users" && <UsersTab users={users} limits={stats?.limits} onRole={setRole} onDelete={delUser} onClearUsage={clearUsage} />}
       {tab === "decks" && <DecksTab decks={decks} />}
       {tab === "analytics" && <Analytics stats={stats} />}
       {tab === "system" && <SystemTab stats={stats} hosted={hosted} onToggle={toggleHosted} onReload={load} />}
@@ -173,9 +177,30 @@ function BarChart({ data }) {
   );
 }
 
+/**
+ * What one account has spent, against what it is allowed.
+ *
+ * The window is the number that actually blocks somebody — the weekly cap is
+ * the slower one — so it leads, and it turns amber as it approaches rather
+ * than only once refused, which is when the operator hears about it.
+ */
+function UsageCell({ usage, limits }) {
+  const w = usage?.windowRequests ?? 0;
+  const wk = usage?.weekRequests ?? 0;
+  if (!wk) return <span className="text-fg-faint">—</span>;
+  const cap = limits?.windowRequests;
+  const near = cap ? w >= cap : false;
+  return (
+    <span className={near ? "text-amber" : "text-fg-muted"}>
+      {cap ? `${w}/${cap}` : w}
+      <span className="text-fg-faint"> now · {wk} this week</span>
+    </span>
+  );
+}
+
 const USERS_PAGE = 50;
 
-function UsersTab({ users, onRole, onDelete }) {
+function UsersTab({ users, limits, onRole, onDelete, onClearUsage }) {
   const [q, setQ] = useState("");
   const [shown, setShown] = useState(USERS_PAGE);
   const filtered = users.filter((u) => !q || u.email.toLowerCase().includes(q.toLowerCase()) || u.name.toLowerCase().includes(q.toLowerCase()));
@@ -192,7 +217,7 @@ function UsersTab({ users, onRole, onDelete }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[12px]">
           <thead className="text-[11px] uppercase tracking-wider text-fg-faint">
-            <tr><th className="px-2 py-1.5">Email</th><th className="px-2 py-1.5">Name</th><th className="px-2 py-1.5">Role</th><th className="px-2 py-1.5">Created</th><th className="px-2 py-1.5">Actions</th></tr>
+            <tr><th className="px-2 py-1.5">Email</th><th className="px-2 py-1.5">Name</th><th className="px-2 py-1.5">Role</th><th className="px-2 py-1.5">Auto usage</th><th className="px-2 py-1.5">Created</th><th className="px-2 py-1.5">Actions</th></tr>
           </thead>
           <tbody>
             {page.map((u) => (
@@ -200,6 +225,7 @@ function UsersTab({ users, onRole, onDelete }) {
                 <td className="px-2 py-2 font-mono text-[11.5px] text-fg">{u.email}</td>
                 <td className="px-2 py-2 text-fg-muted">{u.name}</td>
                 <td className="px-2 py-2">{u.admin ? <Badge className="bg-accent/10 text-accent">admin</Badge> : <span className="text-fg-faint">user</span>}</td>
+                <td className="px-2 py-2 tabular-nums"><UsageCell usage={u.usage} limits={limits} /></td>
                 <td className="px-2 py-2 text-fg-faint">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}{u.google ? " · google" : ""}</td>
                 <td className="px-2 py-2">
                   <span className="flex gap-1">
@@ -207,6 +233,9 @@ function UsersTab({ users, onRole, onDelete }) {
                       <Button size="sm" variant="outline" onClick={() => onRole(u.email, "user")}>Remove admin</Button>
                     ) : (
                       <Button size="sm" variant="outline" onClick={() => onRole(u.email, "admin")}>Make admin</Button>
+                    )}
+                    {(u.usage?.weekRequests ?? 0) > 0 && (
+                      <Button size="sm" variant="outline" onClick={() => onClearUsage(u.email)} title="Zero this account's Auto counters">Clear usage</Button>
                     )}
                     <Button size="sm" variant="outline" onClick={() => onDelete(u.email)} className="text-danger hover:bg-danger/10">Delete</Button>
                   </span>

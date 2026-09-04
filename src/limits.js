@@ -147,6 +147,49 @@ export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0
   }
 }
 
+/**
+ * Every account's spend in both windows, in one query per window.
+ *
+ * The admin users list needs this for every row, and the per-row alternative
+ * is a query per account — which is how the stats page came to run 116 queries
+ * to label ten bars. Returns a Map keyed by user id.
+ */
+export function usageByUser({ provider = "tcet-auto" } = {}) {
+  const db = getDb();
+  const now = Date.now();
+  const windowAgo = now - limitConfig().windowHours * 60 * 60 * 1000;
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const out = new Map();
+  const add = (rows, key) => {
+    for (const r of rows) {
+      const e = out.get(r.user_id) ?? { windowRequests: 0, windowSlides: 0, weekRequests: 0, weekSlides: 0 };
+      e[`${key}Requests`] = r.reqs;
+      e[`${key}Slides`] = r.slides;
+      out.set(r.user_id, e);
+    }
+  };
+  const q = `SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides
+             FROM auto_events WHERE provider=? AND created_at>=? GROUP BY user_id`;
+  add(db.prepare(q).all(provider, windowAgo), "window");
+  add(db.prepare(q).all(provider, weekAgo), "week");
+  return out;
+}
+
+/**
+ * Forget one account's Auto spend.
+ *
+ * The operator vocabulary was find, promote, delete — so the only remedy for
+ * someone wrongly capped (a failed run that still counted, a shared machine,
+ * a demo) was to delete their account or wait out the week. Returns how many
+ * events were dropped.
+ */
+export function clearAutoEvents({ userId, provider = "tcet-auto" }) {
+  const db = getDb();
+  const before = db.prepare("SELECT COUNT(*) as n FROM auto_events WHERE user_id=? AND provider=?").get(userId, provider);
+  db.prepare("DELETE FROM auto_events WHERE user_id=? AND provider=?").run(userId, provider);
+  return before?.n ?? 0;
+}
+
 // cleanup old events (>30 days) to keep DB small
 export function pruneAutoEvents() {
   const db = getDb();

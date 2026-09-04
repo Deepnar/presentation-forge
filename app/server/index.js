@@ -29,7 +29,7 @@ import { register, authenticate, startSession, endSession, userForToken, bearerT
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, reserveAuto, limitConfig, pruneAutoEvents } from "../../src/limits.js";
+import { getUsage, reserveAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents } from "../../src/limits.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -710,7 +710,35 @@ app.get("/api/admin/users", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
   const users = await listUsers();
-  ok(res, { users });
+  // What an account has actually spent. Without it the operator's whole
+  // vocabulary was find / promote / delete, and the only answer to "why is
+  // this person capped" was to look in the database.
+  let spend = new Map();
+  try { spend = usageByUser(); } catch { /* no db, or no events table yet */ }
+  ok(res, {
+    users: users.map((u) => {
+      const id = getUserId(u.email);
+      return { ...u, usage: (id && spend.get(id)) || { windowRequests: 0, windowSlides: 0, weekRequests: 0, weekSlides: 0 } };
+    }),
+    limits: limitConfig(),
+  });
+}));
+
+/**
+ * Forget one account's Auto spend.
+ *
+ * A quota is a cost control, not a punishment, and it had no remedy: a run
+ * that failed after the budget was taken, a shared demo machine, or a person
+ * who simply needs to finish today all reached the same dead end. Deleting the
+ * account was the only lever, which is a worse answer than the problem.
+ */
+app.delete("/api/admin/users/:email/usage", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const id = getUserId(req.params.email);
+  if (!id) return fail(res, 404, "no such account");
+  const cleared = clearAutoEvents({ userId: id });
+  ok(res, { cleared });
 }));
 app.post("/api/admin/users/:email/role", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));

@@ -37,7 +37,7 @@ process.env.FORGE_AUTO_WINDOW_SLIDES = "30";
 process.env.FORGE_AUTO_WEEKLY_SLIDES = "1000";
 process.env.FORGE_AUTO_WEEKLY_TOKENS = "10000000";
 
-const { checkAutoLimits, recordAutoEvent, getUsage, reserveAuto } = await import("../src/limits.js");
+const { checkAutoLimits, recordAutoEvent, getUsage, reserveAuto, usageByUser, clearAutoEvents } = await import("../src/limits.js");
 const auth = await import("../src/auth.js");
 
 const email = "quota@example.test";
@@ -124,3 +124,50 @@ test("the slide budget is reserved atomically too, not just the request count", 
 });
 
 test.after(() => rm(scratch, { recursive: true, force: true }));
+
+/* ------------------------------------------------------ the operator's view */
+
+test("usage is readable for every account in one pass, not one query each", async () => {
+  await auth.register({ name: "V", email: "seen@example.test", password: "test-password-123" });
+  await auth.register({ name: "W", email: "unseen@example.test", password: "test-password-123" });
+  const seen = auth.getUserId("seen@example.test");
+  const unseen = auth.getUserId("unseen@example.test");
+  recordAutoEvent({ userId: seen, slides: 8 });
+  recordAutoEvent({ userId: seen, slides: 4 });
+
+  const all = usageByUser();
+  assert.equal(all.get(seen).windowRequests, 2);
+  assert.equal(all.get(seen).windowSlides, 12);
+  assert.equal(all.get(seen).weekRequests, 2);
+  // An account that has spent nothing is absent rather than zero-filled — the
+  // caller defaults it, and carrying a row per registered account is the shape
+  // this replaced.
+  assert.equal(all.has(unseen), false);
+});
+
+test("clearing an account's usage gives it its budget back", async () => {
+  // A quota is a cost control, not a punishment: a run that failed after the
+  // budget was taken had no remedy short of deleting the account.
+  await auth.register({ name: "X", email: "capped@example.test", password: "test-password-123" });
+  const id = auth.getUserId("capped@example.test");
+  for (let i = 0; i < 3; i++) assert.equal(reserveAuto({ userId: id }).allowed, true);
+  assert.equal(reserveAuto({ userId: id }).allowed, false, "at the cap");
+
+  const cleared = clearAutoEvents({ userId: id });
+  assert.equal(cleared, 3, "it reports what it dropped");
+  assert.equal(getUsage({ userId: id }).window.requests, 0);
+  assert.equal(reserveAuto({ userId: id }).allowed, true, "and the account can spend again");
+});
+
+test("clearing one account leaves every other account alone", async () => {
+  await auth.register({ name: "Y", email: "keep@example.test", password: "test-password-123" });
+  await auth.register({ name: "Z", email: "drop@example.test", password: "test-password-123" });
+  const keep = auth.getUserId("keep@example.test");
+  const drop = auth.getUserId("drop@example.test");
+  recordAutoEvent({ userId: keep, slides: 5 });
+  recordAutoEvent({ userId: drop, slides: 5 });
+
+  clearAutoEvents({ userId: drop });
+  assert.equal(getUsage({ userId: keep }).window.requests, 1, "the neighbour is untouched");
+  assert.equal(getUsage({ userId: drop }).window.requests, 0);
+});
