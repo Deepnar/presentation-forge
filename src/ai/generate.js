@@ -1,5 +1,6 @@
 import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
+import { imageSeat } from "./images.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, FRONT_MATTER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
@@ -193,6 +194,14 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     "- Avoid image-requiring types (`image`, `image-text`, `image-grid`, `hero-image`,",
     "  `split-screen`, `side-by-side`) unless the brief actually names image files —",
     "  the writer has no image to draw from and must not invent one.",
+    "- A beat that genuinely wants a picture is `illustrated-points`. Its image is",
+    "  OPTIONAL: the writer fills in the points, the slide is complete without a",
+    "  picture, and one can be supplied later into the space the layout keeps for",
+    "  it. Choose it HERE, in the plan — deciding at writing time that a slide",
+    "  wants an image is too late, because by then the slide has a type that",
+    "  cannot hold one. Use it for a beat a photograph or diagram genuinely",
+    "  helps: a physical thing, a place, a piece of equipment, a process worth",
+    "  seeing. Two or three in a deck is plenty; a deck of them is a slideshow.",
     `- Structure the talk as about ${sectionCap} major parts, each member taking one.`,
     dataAffinityNote(research),
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
@@ -513,6 +522,13 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
   // else stays declarative content over the theme.
   const isFreeform = spec.type === "freeform";
 
+  // Whether an `[image]` note written here could ever be honoured. Derived from
+  // the schema by the same rule the supply uses to seat one, so a type added
+  // later is answered correctly without touching this. The check exists because
+  // the alternative was measured: on a real deck the only `[image]` note the
+  // writer produced sat on the TITLE slide, where nothing can put a picture.
+  const imageSeatable = Boolean(await imageSeat(spec.type));
+
   const system = [
     "You write the content of ONE presentation slide for a live talk — the",
     "audience just heard the previous slide and will remember only the claim",
@@ -546,10 +562,19 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
     "RESEARCH NOTES below — quote figures verbatim, never approximate or invent one.",
     "If the notes carry no figure for this slide's point, state it qualitatively.",
     "NEVER invent an image path or URL — if this slide's type has an image field",
-    "and no real image file exists for it, leave the field out entirely. If the slide",
-    "REALLY needs an image, describe what it should show in the slide's `notes` field",
-    "prefixed with `[image]` (e.g. \"[image] a diagram of the electrolysis cell\") — the",
-    "app then shows an 'add image' prompt on that slide.",
+    "and no real image file exists for it, leave the field out entirely.",
+    ...(imageSeatable
+      ? [
+          "This slide's type CAN carry a picture. Leave the image field out — there is",
+          "no file yet — and describe what it should show in `notes`, prefixed with",
+          "`[image]` (e.g. \"[image] a diagram of the electrolysis cell\"). The picture",
+          "is then supplied into the space this layout already keeps for it.",
+        ]
+      : [
+          "This slide's type CANNOT carry a picture, so do not ask for one: an",
+          "`[image]` note here can never be filled and the slide ships with a request",
+          "nobody can honour. Write the point in words instead.",
+        ]),
     "No filler, no invented statistics, no rhetorical hedging.",
     "Do not repeat wording already used on an earlier slide.",
     "",
