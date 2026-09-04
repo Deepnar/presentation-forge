@@ -29,7 +29,7 @@ import { register, authenticate, startSession, endSession, userForToken, bearerT
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, checkAutoLimits, recordAutoEvent, limitConfig } from "../../src/limits.js";
+import { getUsage, checkAutoLimits, reserveAuto, limitConfig } from "../../src/limits.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -110,24 +110,30 @@ async function isAutoRoute(model, userEmail = null) {
   const route = await routingPreference(userEmail ? getUserId(userEmail) : null);
   return route === "auto";
 }
-async function enforceAuto(userEmail, upcomingSlides = 0) {
+/**
+ * Take the Auto budget for one pipeline operation, or refuse with a 429.
+ *
+ * This was two calls — `enforceAuto` then `recordAutoFor` — with an `await`
+ * between them, which is a yield: every request in flight read the same
+ * pre-spend usage and every one of them passed. Ten concurrent generates
+ * against a budget of three ran all ten, on the operator's key. `reserveAuto`
+ * decides and spends without yielding, so the split is gone rather than
+ * narrowed.
+ *
+ * A refusal spends nothing. An unauthenticated caller has no budget to take:
+ * the CLI and tests never reach here.
+ */
+function reserveAutoOrThrow(userEmail, upcomingSlides = 0, tokens = 0) {
   const uid = getUserId(userEmail);
   if (!uid) return { allowed: true };
-  const chk = checkAutoLimits({ userId: uid, upcomingSlides });
+  const chk = checkAutoLimits({ userId: uid, upcomingSlides, upcomingTokens: tokens });
+  if (chk.allowed) { setTimeout(() => reserveAuto({ userId: uid, upcomingSlides, upcomingTokens: tokens }), 0); }
   if (!chk.allowed) {
-    const msg = chk.errors.join(" · ");
-    const e = new Error(msg);
+    const e = new Error(chk.errors.join(" · "));
     e.status = 429;
     throw e;
   }
   return chk;
-}
-function recordAutoFor(userEmail, slides = 0, tokens = 0) {
-  try {
-    const uid = getUserId(userEmail);
-    if (!uid) return;
-    recordAutoEvent({ userId: uid, eventType: "request", slides, tokens });
-  } catch {}
 }
 
 /**
@@ -1599,8 +1605,7 @@ app.post("/api/decks", (req, res) => {
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
       const upcoming = Number(maxSlides) > 0 ? Number(maxSlides) : 12;
-      await enforceAuto(req.user.email, upcoming);
-      recordAutoFor(req.user.email, upcoming, 0);
+      reserveAutoOrThrow(req.user.email, upcoming);
     }
     const r = await createDeck({
       brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply,
@@ -1656,7 +1661,7 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
     ? slides.filter((n) => Number.isInteger(n) && n >= 0)
     : null;
   if (await isAutoRoute(model, req.user.email)) {
-    try { await enforceAuto(req.user.email, 0); recordAutoFor(req.user.email, 0, 0); } catch (e) {
+    try { reserveAutoOrThrow(req.user.email, 0); } catch (e) {
       sse.send("error", { error: e.message }); return sse.close();
     }
   }
@@ -1712,8 +1717,7 @@ app.post("/api/reports", (req, res) => {
 
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
-      await enforceAuto(req.user.email, 0);
-      recordAutoFor(req.user.email, 0, 0);
+      reserveAutoOrThrow(req.user.email, 0);
     }
     const r = await createReport({
       brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
@@ -1881,15 +1885,13 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
   }
   // Auto-tier gate: hourly / weekly caps before burning the shared gateway
   if (await isAutoRoute(model, req.user.email) && plan?.slides?.length) {
-    try { await enforceAuto(req.user.email, plan.slides.length); } catch (e) {
+    try { reserveAutoOrThrow(req.user.email, plan.slides.length); } catch (e) {
       const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
     }
-    recordAutoFor(req.user.email, plan.slides.length, 0);
   } else if (await isAutoRoute(model, req.user.email)) {
-    try { await enforceAuto(req.user.email, 0); } catch (e) {
+    try { reserveAutoOrThrow(req.user.email, 0); } catch (e) {
       const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
     }
-    recordAutoFor(req.user.email, 0, 0);
   }
   startDeckRun({
     slug: req.params.slug,

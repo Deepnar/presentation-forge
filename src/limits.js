@@ -112,6 +112,41 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
   };
 }
 
+/**
+ * Check the limits and spend the budget in one indivisible step.
+ *
+ * The routes used to `await enforceAuto(...)` and then `recordAutoFor(...)`.
+ * Node being single-threaded is not the protection it looks like: an `await`
+ * is a yield, so every request in flight reads the same pre-spend usage,
+ * every one of them passes, and only then does any of them record. Ten
+ * concurrent requests against a budget of three admitted ten, and the gateway
+ * key bills the operator for all of them.
+ *
+ * The fix is that there is no yield. This function is synchronous from the
+ * count to the insert, so no other request can observe the unspent budget in
+ * between. The IMMEDIATE transaction is for the case JS cannot cover — two
+ * processes on the same database file — and takes the write lock up front, so
+ * the count and the insert cannot straddle another writer's commit.
+ *
+ * A refusal writes nothing: a request that was denied cost the operator
+ * nothing and must not consume the budget it was refused for.
+ */
+export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0 }) {
+  const db = getDb();
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const chk = checkAutoLimits({ userId, provider, upcomingSlides, upcomingTokens });
+    if (chk.allowed) {
+      recordAutoEvent({ userId, slides: upcomingSlides, tokens: upcomingTokens, provider });
+    }
+    db.exec("COMMIT");
+    return chk;
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
+}
+
 // cleanup old events (>30 days) to keep DB small
 export function pruneAutoEvents() {
   const db = getDb();
