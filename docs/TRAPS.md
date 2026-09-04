@@ -371,6 +371,21 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**Deleting a user does not delete what they own, and nothing else will
+either.** `deleteUserAccount` removes the user row and everything with an
+`ON DELETE CASCADE` — sessions, BYOK keys, prefs, usage — and stops there. Their
+decks keep a `meta.owner` naming an account that no longer exists, `canAccessDeck`
+shows them to nobody but an admin, and the folders sit on the volume forever. Any
+bulk removal has to exclude accounts that own something, or it silently converts
+user data into orphaned disk.
+
+**Bind a destructive confirmation to the SET, not to the filter.** A dry run is
+only worth something if the confirmation authorises the list the operator
+actually read. Tokenising the criteria re-authorises whatever those criteria
+match at confirm time, which is a different list the moment anyone signs up —
+precisely the failure the dry run exists to prevent. Hash the selection,
+re-derive it on confirm, and refuse on any mismatch.
+
 **Decide which way configuration and credentials each resolve, and write it
 down.** This codebase had both directions already — `config/hosted.json`
 overriding `FORGE_HOSTED`, and API keys resolving env-first — with nothing

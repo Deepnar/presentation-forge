@@ -3863,6 +3863,49 @@ pages you walked.
 > were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
 > on every switch.
 
+### [x] Bulk account cleanup, behind a dry run and a typed phrase
+
+*No model. Held back from the admin sweep until its shape was agreed, because
+the safe version and the dangerous version look identical from the outside.*
+
+116 accounts on the dev box, almost all throwaway, deletable only one
+`window.confirm` at a time. The obvious fix — delete everything matching the
+search box — is also the one that wipes real accounts when the filter is wrong.
+
+**The danger is not the wrong number, it is a filter matching more than the
+operator read.** So `POST /api/admin/users/cleanup/preview` returns the whole
+list, not a count, groups every spared account by why it was spared, and hands
+back a token bound to **that exact set** rather than to the filter that produced
+it. The confirm re-derives the selection server-side and refuses unless it still
+hashes to the same token, so a signup, a new deck or a promotion between the two
+steps sends the operator back to read the list again. The typed phrase carries
+the count (`delete 110 accounts`), so a stale one cannot approve a larger set.
+
+**Four vetoes the caller cannot switch off**: admins, whoever is signed in,
+anyone who owns a deck, anyone who has generated — plus a seven-day age floor
+that may be raised and never lowered.
+
+The deck rule is the one worth naming. `deleteUserAccount` removes the user row
+and everything that cascades from it (sessions, BYOK keys, prefs, usage) and
+**nothing removes their decks**: `meta.owner` would go on naming an account that
+no longer exists, `canAccessDeck` would show the folder to nobody but an admin,
+and it would sit on the volume forever. So an account that owns a deck is dealt
+with deliberately, one at a time, and this pass will not touch it. On this box
+that costs nothing — 110 of 116 accounts own nothing at all.
+
+> **Learned.** **A dry run that reports a number is not a dry run.** The whole
+> value is in the operator reading the actual list, so the count is the least
+> useful thing the preview returns — and binding the confirmation to the *set*
+> rather than the *filter* is what makes the reading mean something. A token
+> over the filter would have re-authorised a different list every time the
+> world moved underneath it, which is exactly the failure the dry run exists to
+> prevent.
+>
+> Also: **the interesting half of a destructive selection is what it excluded.**
+> Grouping the spared accounts by reason turned an unreadable 112-line list into
+> two chips, and it is where the deck-orphaning rule became visible as a rule
+> rather than a footnote.
+
 ### [x] Operating settings and the gateway key, changeable from the panel
 
 *No model. The natural follow-on from the sweep: the sweep made the controls
