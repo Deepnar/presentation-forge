@@ -1,6 +1,6 @@
-# Handoff — 2026-09-04, the credits reach a reader; the slide budget is the open question
+# Handoff — 2026-09-04, credits reach a reader, two quiet defects closed
 
-Everything is on `main`. `npm test` is **573 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **585 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -70,6 +70,22 @@ an attribution, on a slide whose only job is to attribute. The slide validated,
 the tests passed, the object looked right. A long creator now moves to
 `contribution` (60 chars) and the source takes the name.
 
+### Two defects closed on the way
+
+**`needsFinalize` was true for every finished deck.** `generationStatus` read
+`complete` — every plan slide written — as evidence of an interrupted run, which
+is true of every deck that ever succeeded. `DeckDetail` AUTO-RUNS finalize on
+that flag, so opening a finished deck re-ran grounding, a coherence model call,
+image supply, the render and the preview, and its banner returned before every
+panel below it. `meta.status` already carried the answer and was not consulted.
+
+**The Auto quota reserves in one step.** `src/limits.js` had never been driven
+concurrently. Driven now, on an isolated instance, and **the expected race did
+not reproduce**: 30 simultaneous requests against a budget of 2 admitted exactly
+2 on the pre-fix code, because nothing between the check and the record yields to
+the event loop. That safety was undocumented and one `await` from gone — ten
+same-tick callers were all admitted. `reserveAuto` makes it structural.
+
 ---
 
 ## Plan for next session
@@ -86,32 +102,14 @@ seated and then reverted by the fit gate. **If real notes mostly land on 5- and
 6-bullet slides, the answer is a new slide type, not a looser rule.** This is
 the first thing to look at when the gateway returns.
 
-### 2. `needsFinalize` is true for every finished deck  *(no model, small, real)*
-
-Found while verifying the credits panel and it cost an hour. `generationStatus`
-(`src/ai/pipeline.js:908`) derives `total` from `plan.yaml` when no `.run.json`
-exists, so `written >= total` for any completed deck, and `DeckDetail` renders
-"Finishing this deck… Running the post-write" and **returns before every panel
-below it**. `meta.status === "ready"` already records that finalize ran and is
-not consulted. Reproduce on
-`decks/perovskite-solar-cells-stability-challenges-2`.
-
-### 3. Rate limits and quotas under real load  *(no model)*
-
-Unchanged for three sessions and still the largest untouched thing.
-`src/limits.js` caps what one account may spend on the shared gateway and has
-**never been driven** — needs concurrent requests, not a model.
-`test/tenancy.test.js` is the executable contract for the boundaries; this is
-behaviour under contention.
-
-### 4. The admin panel, swept  *(no model, deliberately deferred)*
+### 2. The admin panel, swept  *(no model, deliberately deferred)*
 
 Still "later, not now" in the roadmap because it is the operator's surface. Now
 cheap: browser-use works (see below), and the density sweep's method — walk
 every route in both appearance modes with the in-page contrast audit —
-transfers directly.
+transfers directly. **This is the next no-model item.**
 
-### 5. Monochrome charts need pattern fills  *(no model, renderer)*
+### 3. Monochrome charts need pattern fills  *(no model, renderer)*
 
 A mono theme carries three or four distinguishable greys; a five-series chart is
 unreadable in one. OOXML pattern fills are the real answer. Design scope rather
@@ -121,8 +119,8 @@ than a defect.
 
 - **Browser-level regression coverage.** More pointed each session: this
   session's four credit surfaces were verified by driving a real browser, and
-  nothing in 573 tests would have caught a panel that renders but is never
-  reached — which is exactly the `needsFinalize` defect above. Component-test
+  nothing in 585 tests would have caught a panel that renders but is never
+  reached — which is exactly what the `needsFinalize` defect did. Component-test
   infrastructure (jsdom + a React renderer) versus a scripted browser pass
   before a release. Both would work; they cost very differently.
 - **The 19 divider contrast debts.** `tools/contrast-debt.mjs` proves these are
@@ -208,7 +206,6 @@ single session.
 
 ## Known and not fixed
 
-- `needsFinalize` on every finished deck (item 2).
 - `feature-grid` is two lines of speaker-note debt on `minimal-muji`.
 - `capstress` reports 17 joint-at-caps fit events. **Not a defect count**:
   `capfit` measures one field with the others at their own scale and converges
