@@ -52,6 +52,11 @@ function fakeChat() {
             op: "update_slide",
             slide: {
               type: "framework",
+              // A whole-slide replacement must carry the headline too: it is
+              // required on every content type, so an update that drops it is
+              // rejected and the repair discarded — which is the behaviour, not
+              // a fixture detail.
+              headline: "One Node, Four Parallel Levels",
               concept: { title: "Hybrid Node Layout", body: "MPI ranks own NUMA domains, OpenMP threads share rank memory." },
               elements: [
                 { title: "MPI Ranks", body: "One rank per NUMA domain, not per core." },

@@ -203,14 +203,25 @@ const SPECIFIC_BAD = {
   "data-source": { sources: [{ name: 5 }] },
 };
 
+/**
+ * Types where a headline legitimately does not apply — the deck's own title
+ * card, the dividers, and the quote forms whose text IS the slide. Every other
+ * content type requires one: a slide that reserves a heading band and gets no
+ * headline renders as an empty band above stretched content, and a model omits
+ * the field freely wherever the schema lets it.
+ */
+const NO_HEADLINE = new Set(["title", "section", "chapter", "epigraph", "quote", "freeform", "image", "contact", "closing"]);
+const withHeadline = (type, payload) =>
+  NO_HEADLINE.has(type) || "headline" in payload ? { type, ...payload } : { type, headline: "H", ...payload };
+
 for (const [type, payload] of Object.entries(VALID)) {
   test(`${type}: valid payload passes, wrong field shapes are rejected`, async () => {
-    const ok = await validateDeck({ ...base, slides: [...base.slides, { type, ...payload }] });
+    const ok = await validateDeck({ ...base, slides: [...base.slides, withHeadline(type, payload)] });
     assert.equal(ok.ok, true, JSON.stringify(ok.errors));
 
     const wrong = await validateDeck({
       ...base,
-      slides: [...base.slides, { type, ...payload, ...SPECIFIC_BAD[type] }],
+      slides: [...base.slides, { ...withHeadline(type, payload), ...SPECIFIC_BAD[type] }],
     });
     assert.equal(wrong.ok, false, `expected ${type} bad payload to fail`);
     assert.ok(wrong.errors.some((e) => /must be|too short|needs at least|one of/.test(e)), wrong.errors.join("; "));
@@ -242,7 +253,10 @@ test("per-slide ops schemas stay small for nested-object types", async () => {
   // The hierarchy schema recurses three levels deep by explicit nesting (no
   // $refs), so the ops grammar for it must still be well-formed and bounded.
   const ops = buildOpsSchema(schema, { slideCount: 1, onlyTypes: ["hierarchy"] });
-  assert.deepEqual(ops.properties.ops.items.properties.slide.required.sort(), ["children", "root", "type"]);
+  // `headline` is required on every content type, so the ops grammar demands
+  // one as well — which is the point: a model writing through this grammar
+  // cannot omit the field the way it could when the schema left it optional.
+  assert.deepEqual(ops.properties.ops.items.properties.slide.required.sort(), ["children", "headline", "root", "type"]);
   const children = ops.properties.ops.items.properties.slide.properties.children;
   assert.ok(children.maxItems === 4);
 });

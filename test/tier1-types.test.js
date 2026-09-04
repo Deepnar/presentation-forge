@@ -6,13 +6,16 @@ import { buildOpsSchema } from "../src/ai/ops.js";
 
 const base = { title: "T", slides: [{ type: "title" }] };
 
+// Every one of these is a content type, so the schema now requires a headline:
+// a slide that reserves a heading band and gets none renders as an empty band
+// above stretched content.
 const VALID = {
-  "big-number": { value: "180 GW", label: "capacity by 2030", body: "A long claim about capacity.", sub: "source line" },
-  agenda: { items: [{ title: "Intro" }, { title: "Method", desc: "how" }, { title: "Results" }] },
-  milestone: { milestones: [{ when: "2021", title: "First plant", body: "opened" }, { when: "2026", title: "Scale-up" }] },
-  "pros-cons": { pros: ["Cheap to run", "Clean output"], cons: ["Costly build", "Needs grid"] },
-  emphasis: { body: "The one point that matters.", label: "Key point" },
-  definition: { term: "Overpotential", definition: "Extra voltage beyond the ideal.", example: "e.g. 1.23 V ideal, ~1.8 V real" },
+  "big-number": { headline: "H", value: "180 GW", label: "capacity by 2030", body: "A long claim about capacity.", sub: "source line" },
+  agenda: { headline: "H", items: [{ title: "Intro" }, { title: "Method", desc: "how" }, { title: "Results" }] },
+  milestone: { headline: "H", milestones: [{ when: "2021", title: "First plant", body: "opened" }, { when: "2026", title: "Scale-up" }] },
+  "pros-cons": { headline: "H", pros: ["Cheap to run", "Clean output"], cons: ["Costly build", "Needs grid"] },
+  emphasis: { headline: "H", body: "The one point that matters.", label: "Key point" },
+  definition: { headline: "H", term: "Overpotential", definition: "Extra voltage beyond the ideal.", example: "e.g. 1.23 V ideal, ~1.8 V real" },
 };
 
 for (const [type, payload] of Object.entries(VALID)) {
@@ -69,6 +72,8 @@ test("the per-slide ops schema constrains to one new type's fields", async () =>
   const schema = await deckSchema();
   const ops = buildOpsSchema(schema, { slideCount: 2, onlyTypes: ["pros-cons"] });
   const slide = ops.properties.ops.items.properties.slide;
-  assert.deepEqual(slide.required.sort(), ["cons", "pros", "type"]);
+  // `headline` joins every content type's required set, so the grammar a model
+  // writes through demands one rather than leaving it optional.
+  assert.deepEqual(slide.required.sort(), ["cons", "headline", "pros", "type"]);
   assert.ok(slide.properties.pros.maxItems === 8);
 });

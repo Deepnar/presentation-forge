@@ -325,6 +325,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "stats"
             ],
             "properties": {
@@ -391,6 +392,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "body"
             ],
             "properties": {
@@ -694,6 +696,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -761,6 +764,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -824,6 +828,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -861,6 +866,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -902,6 +908,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -944,6 +951,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -981,6 +989,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -1022,6 +1031,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "value",
               "label"
             ],
@@ -1056,6 +1066,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "kpis"
             ],
             "properties": {
@@ -1106,6 +1117,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "cards"
             ],
             "properties": {
@@ -1148,6 +1160,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "bars"
             ],
             "properties": {
@@ -1192,6 +1205,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -1237,6 +1251,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "left",
               "right",
               "delta"
@@ -1297,6 +1312,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -1343,6 +1359,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "pros",
               "cons"
             ],
@@ -1378,6 +1395,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "before",
               "after"
             ],
@@ -1413,6 +1431,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "concept",
               "elements"
             ],
@@ -1467,6 +1486,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "axes",
               "quadrants"
             ],
@@ -1520,6 +1540,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "criteria",
               "options"
             ],
@@ -1581,6 +1602,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "left",
               "right"
             ],
@@ -1630,6 +1652,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "left",
               "right"
             ],
@@ -1653,6 +1676,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "stages"
             ],
             "properties": {
@@ -1694,6 +1718,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "stages"
             ],
             "properties": {
@@ -1735,6 +1760,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "nodes"
             ],
             "properties": {
@@ -1780,6 +1806,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "branches"
             ],
             "properties": {
@@ -1838,6 +1865,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "layers"
             ],
             "properties": {
@@ -1884,6 +1912,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "milestones"
             ],
             "properties": {
@@ -1926,6 +1955,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "phases"
             ],
             "properties": {
@@ -1988,6 +2018,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "stages"
             ],
             "properties": {
@@ -2037,6 +2068,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "events"
             ],
             "properties": {
@@ -2079,6 +2111,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "quote",
               "name"
             ],
@@ -2165,6 +2198,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "body"
             ],
             "properties": {
@@ -2190,6 +2224,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "body"
             ],
             "properties": {
@@ -2215,6 +2250,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "body"
             ],
             "properties": {
@@ -2240,6 +2276,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "body"
             ],
             "properties": {
@@ -2274,6 +2311,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "images"
             ],
             "properties": {
@@ -2336,6 +2374,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "left",
               "right"
             ],
@@ -2517,6 +2556,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "term",
               "definition"
             ],
@@ -2546,6 +2586,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "nodes"
             ],
             "properties": {
@@ -2621,6 +2662,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "levels"
             ],
             "properties": {
@@ -2658,6 +2700,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "sets"
             ],
             "properties": {
@@ -2699,6 +2742,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "root",
               "children"
             ],
@@ -2777,6 +2821,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "entries"
             ],
             "properties": {
@@ -2815,6 +2860,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -2853,6 +2899,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "members"
             ],
             "properties": {
@@ -2895,6 +2942,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "items"
             ],
             "properties": {
@@ -2970,6 +3018,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "formula",
               "body"
             ],
@@ -3017,6 +3066,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "entries"
             ],
             "properties": {
@@ -3054,6 +3104,7 @@
           },
           "then": {
             "required": [
+              "headline",
               "sources"
             ],
             "properties": {
