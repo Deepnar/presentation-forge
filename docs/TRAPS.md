@@ -668,6 +668,14 @@ length, so nothing upstream could reject them, and they were typeset into a
 document meant for submission. Anything a model writes into a *document* needs
 a prose check that ajv cannot express — see `salvageParagraph`.
 
+**A "everything else" bucket describes what falls into it, and something always
+falls in by accident.** The slide catalogue groups types into families and
+announces whatever has no family as "ESCAPE HATCH (rasterised, text not
+editable)" — a description meant for `freeform` alone. `cards` had simply never
+been added to a family, so every planner has been told that an ordinary list
+type rasterises and cannot be edited. A default branch that ASSERTS something
+about its members is a different thing from one that merely collects them.
+
 **A grammar merged from every variant fits none of them.** `buildOpsSchema`
 assigns each type's properties into one flat object, so the last type to
 declare a name wins it. Thirteen slide types declare `items` with eight
@@ -677,6 +685,26 @@ right: constrained decoding makes the correct answer unrepresentable and the
 incorrect one mandatory. When a schema is assembled by merging alternatives,
 check what happens to a name two alternatives share, and read a
 "model produced invalid output" failure as a question about the grammar first.
+
+**A `maxLength` on a string field can make one of its legal VALUES unspellable.**
+The outline schema types a slide as a free string capped at 16 characters — free
+on purpose, because a tight enum made the model abandon planning. But three type
+names are longer than 16 (`metric-comparison`, `layered-architecture`,
+`illustrated-points`), and constrained decoding masks the token that would
+exceed the cap: decoding stops mid-name, the truncated string matches no type,
+and the coercion turns it into `bullets`. Two of those types had never once been
+plannable and nothing said so — **a planner that never chooses a type looks like
+taste, not a defect.** Derive a cap that has to hold known values from those
+values, and test that it does.
+
+**An absent config flag means the model's default, not "off".** `roles.author.thinking`
+was implemented locally and looked right — the author reasoned. Probing the
+`research` role, which declares no thinking anywhere, returned 16,948 characters
+of reasoning: qwen3.6 thinks by default, so omitting `think` never meant off. A
+config consulted only when it says yes is not a config, and the cost was every
+research and utility call in every local run reasoning at length for nothing
+(27s against 3s once `think: false` was sent). Where a provider has a default,
+send both directions explicitly.
 
 **A lower bound is as load-bearing as the upper one, and it is the one nobody
 sets.** An unbounded array runs away, so every array here has a `maxItems`; the
