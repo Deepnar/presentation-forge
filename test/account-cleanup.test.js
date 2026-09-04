@@ -122,3 +122,53 @@ test("the confirmation phrase carries the count, so a stale one cannot approve m
   assert.equal(confirmPhrase(1), "delete 1 account");
   assert.notEqual(confirmPhrase(110), confirmPhrase(111));
 });
+
+/* --------------------------------------------------- what deletion removes */
+
+test("deleting an account removes its files, not just its rows", async () => {
+  const { mkdtemp, mkdir, writeFile, rm, access } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const pathMod = await import("node:path");
+  const scratch = await mkdtemp(pathMod.join(tmpdir(), "forge-tenantfiles-"));
+  const prevConfig = process.env.FORGE_CONFIG_DIR;
+  const prevBrand = process.env.FORGE_BRAND_DIR;
+  const prevRef = process.env.FORGE_REFERENCE_DIR;
+  process.env.FORGE_CONFIG_DIR = pathMod.join(scratch, "config");
+  process.env.FORGE_BRAND_DIR = pathMod.join(scratch, "brand");
+  process.env.FORGE_REFERENCE_DIR = pathMod.join(scratch, "reference");
+
+  try {
+    const auth = await import("../src/auth.js");
+    const { userIdentityFile, userBrandDirs, userReferenceDir } = await import("../src/tenant.js");
+    const store = pathMod.join(scratch, "forge-auth-store");
+    await mkdir(store, { recursive: true });
+    await writeFile(pathMod.join(store, "users.json"), "[]");
+    await writeFile(pathMod.join(store, "sessions.json"), "{}");
+    auth.setStoreDir(store);
+
+    const email = "filed@example.test";
+    await auth.register({ name: "Filed", email, password: "test-password-123" });
+
+    // The three things that do NOT cascade, because they are files.
+    const idFile = userIdentityFile(email);
+    const brand = userBrandDirs(email);
+    const refDir = userReferenceDir(email);
+    await mkdir(pathMod.dirname(idFile), { recursive: true });
+    await writeFile(idFile, "institution:\n  short: X\n");
+    await mkdir(brand.generated, { recursive: true });
+    await writeFile(pathMod.join(brand.generated, "crest.png"), "not really a png");
+    await mkdir(refDir, { recursive: true });
+    await writeFile(pathMod.join(refDir, "donor.docx"), "not really a docx");
+
+    await auth.deleteUserAccount(email);
+
+    for (const [what, p] of [["identity", idFile], ["brand", brand.generated], ["donor", refDir]]) {
+      await assert.rejects(() => access(p), `${what} should have been removed with the account`);
+    }
+  } finally {
+    if (prevConfig === undefined) delete process.env.FORGE_CONFIG_DIR; else process.env.FORGE_CONFIG_DIR = prevConfig;
+    if (prevBrand === undefined) delete process.env.FORGE_BRAND_DIR; else process.env.FORGE_BRAND_DIR = prevBrand;
+    if (prevRef === undefined) delete process.env.FORGE_REFERENCE_DIR; else process.env.FORGE_REFERENCE_DIR = prevRef;
+    await rm(scratch, { recursive: true, force: true });
+  }
+});

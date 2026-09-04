@@ -1,9 +1,10 @@
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
 import { getDb, setDbPathForTest } from "./db.js";
 import { mailConfigured } from "./mail.js";
+import { userIdentityFile, userBrandDirs, userReferenceDir } from "./tenant.js";
 
 /**
  * Local single-install accounts. This is deliberately NOT a multi-user system:
@@ -166,6 +167,31 @@ export async function setUserRole(email, role) {
   await writeJson(USERS_FILE, users);
 }
 
+/**
+ * Everything an account owns OUTSIDE the database.
+ *
+ * The per-user tables cascade on `users.id`, so deleting the row takes
+ * sessions, BYOK keys, prefs and usage with it. These do not cascade because
+ * they are files: an identity override, the account's own brand marks (PNGs,
+ * the largest of the three) and its report donor. Left behind they are
+ * addressed by a hash of an email that no longer resolves to anyone — dead
+ * bytes on the volume that nothing will ever read or clean up.
+ *
+ * Best effort by design: a file that cannot be removed must not leave the
+ * account half-deleted, which is a worse state than a leaked file.
+ */
+async function removeTenantFiles(email) {
+  const targets = [
+    userIdentityFile(email),
+    userBrandDirs(email)?.logos,
+    userBrandDirs(email)?.generated,
+    userReferenceDir(email),
+  ].filter(Boolean);
+  for (const t of targets) {
+    try { await rm(t, { recursive: true, force: true }); } catch { /* leave it rather than fail the delete */ }
+  }
+}
+
 export async function deleteUserAccount(email) {
   const normalized = String(email).trim().toLowerCase();
   const d = db();
@@ -179,6 +205,7 @@ export async function deleteUserAccount(email) {
     d.prepare("DELETE FROM users WHERE email=?").run(normalized);
     d.prepare("DELETE FROM sessions WHERE email=?").run(normalized);
     if (row?.id) d.prepare("DELETE FROM auto_events WHERE user_id=?").run(row.id);
+    await removeTenantFiles(normalized);
     return;
   }
   const users = await loadUsers();
@@ -191,6 +218,7 @@ export async function deleteUserAccount(email) {
     if (sess.email === normalized) delete sessions[tok];
   }
   await writeJson(SESSIONS_FILE, sessions);
+  await removeTenantFiles(normalized);
 }
 
 /**
