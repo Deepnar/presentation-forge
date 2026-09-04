@@ -315,15 +315,22 @@ export function topicTerms(brief) {
  */
 export function topicalDensity(text, terms) {
   if (!terms.length) return Infinity; // nothing to judge against: judge nothing
+  const { hits, words } = topicalHits(text, terms);
+  if (!words) return 0;
+  return (hits / words) * 1000;
+}
+
+/** The raw evidence behind the density: how many times the brief's vocabulary
+ *  appears, and in how many words. */
+export function topicalHits(text, terms) {
   const lower = String(text ?? "").toLowerCase();
   const words = lower.split(/\s+/).filter(Boolean).length;
-  if (!words) return 0;
   let hits = 0;
   for (const t of terms) {
     const re = new RegExp(`\\b${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "g");
     hits += (lower.match(re) ?? []).length;
   }
-  return (hits / words) * 1000;
+  return { hits, words };
 }
 
 /**
@@ -342,6 +349,26 @@ export function topicalDensity(text, terms) {
  * is towards keeping.
  */
 export const RELEVANCE_FLOOR = 4.0;
+
+/**
+ * The evidence a page must carry as well as the ratio, and the reason the ratio
+ * alone is not a gate.
+ *
+ * Density has a floor it cannot see below: the smallest non-zero density a page
+ * of N words can score is 1000/N, so every page under 250 words clears a floor
+ * of 4.0 on a SINGLE occurrence of a single term. The gate was therefore
+ * inoperative on exactly the pages least likely to be about anything.
+ *
+ * Measured, again on a real run: a 211-word page of algebra help entered a
+ * vehicle-to-grid corpus at 4.74, one point above the floor, on one appearance
+ * of "integration" — in "definite and indefinite integration". A homonym, once,
+ * on a short page, and the writer was handed a page about calculus.
+ *
+ * Two occurrences is the least that can distinguish a topic from a coincidence,
+ * and it costs nothing on a real source: a page genuinely about the brief says
+ * so repeatedly, and the on-topic pages in that same run carried 12 to 89 hits.
+ */
+export const RELEVANCE_MIN_HITS = 2;
 
 export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6, terms = [] } = {}) {
   const hostOf = (u) => {
@@ -365,8 +392,12 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6,
       // Off-topic pages are never backfilled. A thin corpus is a worse deck; a
       // corpus about the wrong subject is a deck about the wrong subject.
       if (terms.length) {
-        const density = topicalDensity(item.text, terms);
-        if (density < RELEVANCE_FLOOR) { offtopic.push({ url: item.url, density }); continue; }
+        const { hits, words } = topicalHits(item.text, terms);
+        const density = words ? (hits / words) * 1000 : 0;
+        if (density < RELEVANCE_FLOOR || hits < RELEVANCE_MIN_HITS) {
+          offtopic.push({ url: item.url, density, hits });
+          continue;
+        }
       }
       const host = hostOf(item.url);
       const seen = hostCount.get(host) ?? 0;

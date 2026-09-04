@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { topicTerms, topicalDensity, hostDiversifier, RELEVANCE_FLOOR } from "../src/ai/research.js";
+import { topicTerms, topicalDensity, topicalHits, hostDiversifier, RELEVANCE_FLOOR, RELEVANCE_MIN_HITS } from "../src/ai/research.js";
 
 /**
  * Whether a fetched page is about the topic at all.
@@ -48,6 +48,34 @@ test("density separates on- from off-topic where presence cannot", () => {
 
   assert.ok(topicalDensity(passing, terms) < RELEVANCE_FLOOR, "and density refuses it");
   assert.ok(topicalDensity(onTopic, terms) > RELEVANCE_FLOOR * 2, "while a real page clears it comfortably");
+});
+
+test("a short page cannot enter on one incidental hit — density alone cannot see below 1000/N", () => {
+  // Measured on a real vehicle-to-grid run: 211 words of algebra help, entering
+  // the corpus at 4.74 against a floor of 4.0, on one appearance of
+  // "integration" — in "definite and indefinite integration".
+  const terms = topicTerms("Vehicle-to-grid integration for electric bus fleets");
+  const algebra = "QuickMath will automatically answer the most common problems in algebra, "
+    + "equations and calculus faced by high-school and college students. The algebra section "
+    + "allows you to expand, factor or simplify virtually any expression you choose. The "
+    + "calculus section will carry out differentiation as well as definite and indefinite "
+    + "integration. The matrices section contains commands for arithmetic manipulation.";
+
+  const { hits, words } = topicalHits(algebra, terms);
+  assert.equal(hits, 1, "one homonym, and nothing else of the topic");
+  assert.ok(words < 250, "on a page short enough for one hit to carry it");
+  assert.ok(topicalDensity(algebra, terms) > RELEVANCE_FLOOR, "density alone keeps it");
+  assert.ok(hits < RELEVANCE_MIN_HITS, "the evidence rule is what refuses it");
+});
+
+test("the evidence rule costs a real source nothing", () => {
+  // The six on-topic pages of that same run carried 8 to 89 hits.
+  const terms = topicTerms("Vehicle-to-grid integration for electric bus fleets");
+  const real = "Electric school buses can function as giant rolling batteries. "
+    + "Vehicle-to-grid integration lets an electric fleet discharge to the grid. ".repeat(6);
+  const { hits } = topicalHits(real, terms);
+  assert.ok(hits >= RELEVANCE_MIN_HITS * 4, `a page about the brief says so repeatedly: ${hits} hits`);
+  assert.ok(topicalDensity(real, terms) > RELEVANCE_FLOOR * 2);
 });
 
 test("an empty or unreadable page scores zero rather than passing", () => {
