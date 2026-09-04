@@ -100,7 +100,7 @@ export default function Admin({ onBack }) {
       </div>
 
       {tab === "overview" && <Overview stats={stats} hosted={hosted} />}
-      {tab === "users" && <UsersTab users={users} limits={stats?.limits} onRole={setRole} onDelete={delUser} onClearUsage={clearUsage} />}
+      {tab === "users" && <UsersTab users={users} limits={stats?.limits} onRole={setRole} onDelete={delUser} onClearUsage={clearUsage} onReload={load} />}
       {tab === "decks" && <DecksTab decks={decks} />}
       {tab === "analytics" && <Analytics stats={stats} />}
       {tab === "system" && <SystemTab stats={stats} hosted={hosted} onToggle={toggleHosted} onReload={load} />}
@@ -200,7 +200,7 @@ function UsageCell({ usage, limits }) {
 
 const USERS_PAGE = 50;
 
-function UsersTab({ users, limits, onRole, onDelete, onClearUsage }) {
+function UsersTab({ users, limits, onRole, onDelete, onClearUsage, onReload }) {
   const [q, setQ] = useState("");
   const [shown, setShown] = useState(USERS_PAGE);
   const filtered = users.filter((u) => !q || u.email.toLowerCase().includes(q.toLowerCase()) || u.name.toLowerCase().includes(q.toLowerCase()));
@@ -254,7 +254,152 @@ function UsersTab({ users, limits, onRole, onDelete, onClearUsage }) {
         </div>
       )}
       <div className="mt-2 text-[11px] text-fg-faint">Admin is a role, never an address — registration does not verify email. See System for how the gate works.</div>
+      <CleanupPanel onReload={onReload} />
     </Panel>
+  );
+}
+
+/**
+ * Bulk removal of stale accounts, in two deliberate steps.
+ *
+ * The danger here is not deleting the wrong number — it is a filter matching
+ * more than the operator read. So the preview shows the whole list rather than
+ * a count, says why each spared account was spared, and hands back a token
+ * bound to that exact set: anything that changes the set before the confirm
+ * invalidates it and the list has to be read again.
+ *
+ * The rules the server will not relax, restated here because an operator
+ * should not have to discover them by being refused: admins, whoever is signed
+ * in, anyone who owns a deck, and anyone who has generated are never included,
+ * and nothing under seven days old is either.
+ */
+function CleanupPanel({ onReload }) {
+  const [open, setOpen] = useState(false);
+  const [days, setDays] = useState(30);
+  const [pattern, setPattern] = useState("");
+  const [preview, setPreview] = useState(null);
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [done, setDone] = useState("");
+
+  const reset = () => { setPreview(null); setConfirm(""); setErr(""); setDone(""); };
+
+  const runPreview = async () => {
+    setBusy(true); setErr(""); setDone("");
+    try {
+      setPreview(await api.adminCleanupPreview({ olderThanDays: Number(days) || 30, emailPattern: pattern.trim() }));
+      setConfirm("");
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+
+  const runDelete = async () => {
+    setBusy(true); setErr("");
+    try {
+      const r = await api.adminCleanupRun({
+        olderThanDays: Number(days) || 30, emailPattern: pattern.trim(),
+        token: preview.token, confirm,
+      });
+      setDone(`${r.deleted} account${r.deleted === 1 ? "" : "s"} deleted${r.failed?.length ? `, ${r.failed.length} failed` : ""}.`);
+      reset();
+      await onReload();
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+
+  if (!open) {
+    return (
+      <div className="mt-3 border-t border-line pt-3">
+        <Button size="sm" variant="outline" onClick={() => setOpen(true)}>Clean up stale accounts…</Button>
+        {done && <span className="ml-2 text-[12px] text-fg-muted">{done}</span>}
+      </div>
+    );
+  }
+
+  const armed = preview && preview.count > 0 && confirm.trim().toLowerCase() === preview.phrase;
+
+  return (
+    <div className="mt-3 rounded-card border border-line bg-sunken p-3.5">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-[12px] font-semibold text-fg">Clean up stale accounts</span>
+        <Button size="sm" variant="outline" className="ml-auto" onClick={() => { setOpen(false); reset(); }}>Close</Button>
+      </div>
+
+      <p className="mb-3 text-[11px] leading-relaxed text-fg-faint">
+        Never included: admins, you, anyone who owns a deck, anyone who has generated, and anything
+        under {7} days old. An account that owns decks has to go one at a time — deleting it here would
+        leave its decks on disk owned by nobody.
+      </p>
+
+      <div className="flex flex-wrap items-end gap-2">
+        <label className="text-[11px] text-fg-faint">
+          Older than
+          <input type="number" min="7" value={days} onChange={(e) => { setDays(e.target.value); reset(); }}
+            className="ml-1.5 w-16 rounded-lg border border-line bg-panel px-2 py-1 text-[12px] text-fg outline-none focus:border-accent" /> days
+        </label>
+        <label className="text-[11px] text-fg-faint">
+          Email contains
+          <input value={pattern} onChange={(e) => { setPattern(e.target.value); reset(); }} placeholder="optional"
+            className="ml-1.5 w-40 rounded-lg border border-line bg-panel px-2 py-1 text-[12px] text-fg outline-none placeholder:text-fg-faint focus:border-accent" />
+        </label>
+        <Button size="sm" variant="outline" disabled={busy} onClick={runPreview}>{busy ? "Checking…" : "Preview"}</Button>
+      </div>
+
+      {preview && (
+        <div className="mt-3">
+          <div className="text-[12px] text-fg">
+            <strong>{preview.count}</strong> account{preview.count === 1 ? "" : "s"} would be deleted.
+            {preview.skipped.length > 0 && <span className="text-fg-faint"> {preview.skipped.length} spared.</span>}
+          </div>
+
+          {preview.count > 0 && (
+            <div className="mt-2 max-h-44 overflow-y-auto rounded-lg border border-line bg-panel p-2">
+              {preview.selected.map((u) => (
+                <div key={u.email} className="flex gap-2 py-0.5 text-[11.5px]">
+                  <span className="min-w-0 flex-1 truncate font-mono text-fg-muted">{u.email}</span>
+                  <span className="shrink-0 text-fg-faint">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <SparedSummary skipped={preview.skipped} />
+
+          {preview.count > 0 && (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-[11.5px] text-fg-muted">
+                Type <code className="rounded bg-panel px-1 font-mono text-fg">{preview.phrase}</code>
+              </span>
+              <input value={confirm} onChange={(e) => setConfirm(e.target.value)}
+                className="w-52 rounded-lg border border-line bg-panel px-2 py-1 font-mono text-[12px] text-fg outline-none focus:border-accent" />
+              <Button size="sm" variant={armed ? "primary" : "outline"} disabled={!armed || busy}
+                onClick={runDelete} className={armed ? "bg-danger text-white hover:bg-danger/90" : ""}>
+                {busy ? "Deleting…" : "Delete permanently"}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
+      {done && <div className="mt-2 text-[12px] text-fg-muted">{done}</div>}
+    </div>
+  );
+}
+
+/** Why each spared account was spared — grouped, because 112 lines of "newer
+ *  than 7 days" is not information. */
+function SparedSummary({ skipped }) {
+  if (!skipped?.length) return null;
+  const byReason = skipped.reduce((m, s) => { (m[s.reason] ??= []).push(s.email); return m; }, {});
+  return (
+    <div className="mt-2 flex flex-wrap gap-1.5">
+      {Object.entries(byReason).sort((a, b) => b[1].length - a[1].length).map(([reason, emails]) => (
+        <span key={reason} className="rounded border border-line bg-panel px-1.5 py-0.5 text-[10.5px] text-fg-faint"
+          title={emails.slice(0, 20).join("\n")}>
+          {emails.length} {reason}
+        </span>
+      ))}
+    </div>
   );
 }
 

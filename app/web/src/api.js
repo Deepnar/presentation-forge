@@ -107,6 +107,8 @@ export const api = {
   adminAutoKey: () => call("/api/admin/auto/key"),
   adminSetAutoKey: (key) => call("/api/admin/auto/key", { method: "PUT", body: JSON.stringify({ key }) }),
   adminClearAutoKey: () => call("/api/admin/auto/key", { method: "DELETE" }),
+  adminCleanupPreview: (criteria) => call("/api/admin/users/cleanup/preview", { method: "POST", body: JSON.stringify(criteria ?? {}) }),
+  adminCleanupRun: (body) => call("/api/admin/users/cleanup", { method: "POST", body: JSON.stringify(body) }),
   validateDeck: (deck) =>
     call("/api/validate", { method: "POST", body: JSON.stringify({ deck }) }),
   renderDeck: (slug, opts = {}) =>
