@@ -120,10 +120,25 @@ export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
     components.grounded = null;
   }
 
-  // 4. Varied — the existing monotony and data-blindness checks.
+  // 4. Varied — the monotony and data-blindness checks, and ONLY those.
+  //
+  // `analyzeQuality` is the deck's deterministic content gate and has grown
+  // past variety: a chart whose series and categories disagree is a finding it
+  // reports, and counting it here dropped a perfectly varied deck from 100% to
+  // 50% for a defect that has nothing to do with variety. Score each finding
+  // against the thing it is evidence of.
   const quality = analyzeQuality(deck, research);
-  components.varied = Math.max(0, 1 - quality.length * 0.25);
+  const VARIETY_KINDS = new Set(["monotony", "data_unused"]);
+  const variety = quality.filter((q) => VARIETY_KINDS.has(q.kind));
+  components.varied = Math.max(0, 1 - variety.length * 0.25);
   for (const q of quality) findings.push(`${q.kind}: ${q.detail}`);
+
+  // A chart the renderer had to reconcile is an INTACTNESS failure: left alone
+  // it produces a file LibreOffice will not open at all.
+  const shapeBroken = quality.filter((q) => q.kind === "chart_shape").length;
+  if (shapeBroken) {
+    components.intact = Math.max(0, components.intact - shapeBroken / Math.max(1, slides.length));
+  }
 
   // 5. Whole — no field stopped mid-sentence.
   let truncated = 0;

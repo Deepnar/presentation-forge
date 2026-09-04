@@ -134,7 +134,38 @@ export function analyzeQuality(deck, research = "") {
     }
   }
 
+  findings.push(...chartLengthFindings(slides));
+
   return findings;
+}
+
+/**
+ * A chart whose categories and series disagree in length.
+ *
+ * Not a styling nit: pptxgenjs writes it, `writeFile()` succeeds, and
+ * LibreOffice then refuses to open the WHOLE DECK — the first real deck
+ * generated after this check was written had two such charts and twenty
+ * unopenable good slides. The renderer reconciles so a file always opens, and
+ * this is what says the content was wrong, once per deck rather than once per
+ * theme.
+ */
+function chartLengthFindings(slides) {
+  const out = [];
+  for (const [i, s] of slides.entries()) {
+    const c = s?.chart;
+    if (!c || !Array.isArray(c.series) || !c.series.length || !Array.isArray(c.categories)) continue;
+    const lengths = c.series.map((x) => (Array.isArray(x?.values) ? x.values.length : 0));
+    const shortest = Math.min(...lengths);
+    if (lengths.some((n) => n !== c.categories.length)) {
+      out.push({
+        kind: "chart_shape",
+        detail:
+          `slide ${i + 1} (${s.type}): ${c.categories.length} categor${c.categories.length === 1 ? "y" : "ies"} ` +
+          `against series of ${lengths.join(", ")} — drawn at ${shortest}, so give every series one value per category`,
+      });
+    }
+  }
+  return out;
 }
 
 export function qualityProblems(findings) {

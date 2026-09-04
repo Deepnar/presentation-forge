@@ -161,7 +161,10 @@ async function renderChart(chart) {
     const zip = await JSZip.loadAsync(await readFile(r.outFile));
     const chartXml = Object.keys(zip.files).find((f) => /ppt\/charts\/chart\d+\.xml$/.test(f));
     const xml = chartXml ? await zip.file(chartXml).async("string") : "";
-    return { problems: r.problems ?? [], xml };
+    // Reported once per deck by the quality gate, not once per theme by the
+    // renderer — the disagreement is theme-invariant.
+    const { analyzeQuality, qualityProblems } = await import("../src/ai/quality.js");
+    return { problems: qualityProblems(analyzeQuality(deck)), xml };
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -177,7 +180,7 @@ test("a chart with more values than categories keeps every value", async () => {
   });
   const points = (xml.match(/<c:pt idx="\d+"><c:v>/g) ?? []).length;
   assert.ok(points >= 5, `expected all five values in the chart XML, saw ${points} points`);
-  assert.ok(problems.some((p) => /categories \(2\).*disagree/.test(p)), problems.join(" | "));
+  assert.ok(problems.some((p) => /2 categories against series of 5/.test(p)), problems.join(" | "));
 });
 
 test("a chart with fewer values than categories is drawn at the shortest series", async () => {
@@ -188,7 +191,7 @@ test("a chart with fewer values than categories is drawn at the shortest series"
     categories: ["A", "B", "C", "D"],
     series: [{ name: "One", values: [1, 2] }],
   });
-  assert.ok(problems.some((p) => /disagree — drawn at 2/.test(p)), problems.join(" | "));
+  assert.ok(problems.some((p) => /drawn at 2/.test(p)), problems.join(" | "));
 });
 
 test("series that disagree with each other are cut to the shortest", async () => {
@@ -206,6 +209,6 @@ test("a well-formed chart reports nothing and is left alone", async () => {
     categories: ["A", "B", "C"],
     series: [{ name: "One", values: [1, 2, 3] }, { name: "Two", values: [4, 5, 6] }],
   });
-  assert.equal(problems.filter((p) => /disagree/.test(p)).length, 0, problems.join(" | "));
+  assert.equal(problems.filter((p) => /chart_shape/.test(p)).length, 0, problems.join(" | "));
   assert.ok(xml.includes("<c:v>A</c:v>"), "the real categories survive");
 });

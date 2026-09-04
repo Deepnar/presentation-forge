@@ -1201,14 +1201,12 @@ export const layouts = {
     // changes what the chart says. So the length is the shortest series — the
     // only figure every series can actually supply — and categories are padded
     // or trimmed to match it.
+    // Reported by `analyzeQuality`, not from here: the disagreement is a
+    // property of the DECK and identical on every theme, so pushing it into a
+    // render's problems said the same thing 34 times in a theme sweep and
+    // counted each as a fit failure.
     const seriesLen = Math.min(...c.series.map((s) => (s.values ?? []).length));
     const labels = Array.from({ length: seriesLen }, (_, i) => c.categories[i] ?? "");
-    if (labels.length !== c.categories.length || c.series.some((s) => (s.values ?? []).length !== seriesLen)) {
-      ctx.problems?.push(
-        `slide ${ctx.index}: chart categories (${c.categories.length}) and series lengths ` +
-        `(${c.series.map((s) => (s.values ?? []).length).join(", ")}) disagree — drawn at ${seriesLen}`,
-      );
-    }
 
     const raw = c.series.map((s) => ({ name: s.name, labels, values: (s.values ?? []).slice(0, seriesLen) }));
     const series = c.kind === "scatter"
