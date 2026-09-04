@@ -4814,17 +4814,23 @@ knowable while they are unexercised.
   **It found one defect**, below.
 - **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
   entry points, no runs.
-- **Presenter assignment with a real team.** Every deck generated so far had no
-  team, so every slide rendered `Presenter: —`. The whole per-member split is
-  therefore unexercised.
+- **[x] Presenter assignment with a real team.** Run for the first time, with
+  a four-member team and `--slides-per-member 4`, and verified by rendering
+  rather than by reading the deck object: team roster on the title slide, the
+  one assigned member in every content slide's footer, dividers carrying only
+  the slide number. **No defect** — the one thing in this session's list that
+  was already right.
 - **[x] Rate limits and quotas** under real load. Driven through the real HTTP
   routes on an isolated instance: 10 and then 30 simultaneous `POST /api/decks`
   against a budget of 2 admitted exactly 2. The expected TOCTOU **did not
   reproduce** — nothing between the check and the record yields to the event
   loop — but that safety was undocumented and one `await` from gone, and ten
   same-tick callers were all admitted. `reserveAuto` makes it structural.
-- **The vision critic loop.** The capability gate is built and tested; the loop
-  itself has never been watched critique a deck.
+- **[x] The vision critic loop.** Watched for the first time, on a real
+  22-slide deck. It found one defect and the defect was real — a card body cut
+  mid-word, read off the rendered PNG with every mechanical check clean. Its
+  fix then failed, and could not have succeeded: the turn grammar is built from
+  every slide type at once. **Two defects out of one round**, both above.
 
 > **Learned (the browser UI).** Two defects, and the shape of both is the
 > reason this item exists.

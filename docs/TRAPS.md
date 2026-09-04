@@ -668,6 +668,16 @@ length, so nothing upstream could reject them, and they were typeset into a
 document meant for submission. Anything a model writes into a *document* needs
 a prose check that ajv cannot express — see `salvageParagraph`.
 
+**A grammar merged from every variant fits none of them.** `buildOpsSchema`
+assigns each type's properties into one flat object, so the last type to
+declare a name wins it. Thirteen slide types declare `items` with eight
+different element shapes — a turn patching a `feature-grid` was handed
+`contact`'s `{label, value}`. The model cannot be wrong here and cannot be
+right: constrained decoding makes the correct answer unrepresentable and the
+incorrect one mandatory. When a schema is assembled by merging alternatives,
+check what happens to a name two alternatives share, and read a
+"model produced invalid output" failure as a question about the grammar first.
+
 **A lower bound is as load-bearing as the upper one, and it is the one nobody
 sets.** An unbounded array runs away, so every array here has a `maxItems`; the
 mirror failure has the same cause and no symptom. The grammar never *requires*
