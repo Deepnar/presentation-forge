@@ -71,10 +71,38 @@ function buildInstruction(findings) {
   );
   return (
     "The vision critic found these defects in the rendered deck. Edit the " +
-    "CONTENT so they disappear (shorten text, split the slide, reword, or " +
-    "change the slide type). Do not touch layout:\n" +
+    "CONTENT so they disappear — shorten text, reword, drop a point, or split " +
+    "a slide into two of the SAME type. Keep every slide's type as it is, and " +
+    "do not touch layout:\n" +
     lines.join("\n")
   );
+}
+
+/**
+ * The slide types the fix turn is allowed to write: exactly those the findings
+ * name.
+ *
+ * Without this the turn built its grammar from all 73 types at once, and
+ * `buildOpsSchema` assigns each type's properties into one flat object — so a
+ * name two types share belongs to whichever was walked last. Thirteen types
+ * declare `items`; `contact` wins. A model asked to repair a clipped
+ * `feature-grid` card was therefore REQUIRED by the grammar to emit
+ * `{label, value}` items, and the fix failed validation with "missing required
+ * field \"title\"". It could not have succeeded: the correct answer was
+ * unrepresentable and the incorrect one mandatory.
+ *
+ * Scoping also narrows what the turn may do — it cannot change a slide's type
+ * or add one of a different type — which is why the instruction above no longer
+ * offers those. A prompt that promises what the grammar forbids is the same
+ * defect one level up.
+ */
+function typesInPlay(deck, findings) {
+  const types = new Set();
+  for (const f of findings) {
+    const s = deck.slides[f.slide - 1];
+    if (s?.type) types.add(s.type);
+  }
+  return [...types];
 }
 
 /**
@@ -153,6 +181,7 @@ export async function critiqueDeck({ slug, deck, model, onProgress, signal }) {
       theme: themeObj,
       model,
       signal,
+      onlyTypes: typesInPlay(current, findings),
     });
     if (!turn.ok) {
       roundRec.fixFailed = (turn.errors ?? []).slice(0, 3);

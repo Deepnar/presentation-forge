@@ -162,12 +162,22 @@ export async function runTurn({
   onToken,
   signal,
   onlySlides = null,
+  // The slide types this turn is allowed to write. Left null a turn may write
+  // any of them — which is what a chat instruction needs, and which costs the
+  // grammar its precision: buildOpsSchema assigns every type's properties into
+  // one flat object, so a name two types share is won by whichever is walked
+  // last. Thirteen types declare `items`; a caller that knows it is editing a
+  // `feature-grid` should say so and get `feature-grid`'s shape.
+  onlyTypes = null,
   chat = chatJSON,
 }) {
   const catalog = await slideCatalog();
   const base = deck ?? { title: "", slides: [] };
   // Schema is rebuilt per turn so the op set matches what this deck can accept.
-  const schema = buildOpsSchema(await deckSchema(), { slideCount: base.slides?.length ?? 0 });
+  const schema = buildOpsSchema(await deckSchema(), {
+    slideCount: base.slides?.length ?? 0,
+    onlyTypes: onlyTypes?.length ? [...new Set(onlyTypes)] : null,
+  });
   const synthesis = (await authorTransport({ model })) === "cloud" ? "full" : "local";
   const MAX_REPAIR = synthesis === "full" ? MAX_REPAIR_CLOUD : MAX_REPAIR_LOCAL;
 
