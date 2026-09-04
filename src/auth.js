@@ -473,6 +473,21 @@ export function getUserId(email) {
   return row?.id ?? null;
 }
 
+/**
+ * The address behind an internal id.
+ *
+ * The inverse of `getUserId`, for the places that hold ids from another table
+ * (usage rows) and need to label them. Without it the only route from id to
+ * email was to walk every account calling `getUserId` — one query per
+ * registered user to name a handful of rows.
+ */
+export function getUserEmailById(id) {
+  const d = db();
+  if (!d || !Number.isInteger(id)) return null;
+  const row = d.prepare("SELECT email FROM users WHERE id=?").get(id);
+  return row?.email ?? null;
+}
+
 /** Resolve a bearer token to a public user, or null. Expired sessions are
  *  pruned (and the store rewritten) so a dead token cannot accumulate, and a
  *  live session's clock is refreshed so an active owner never logs in again

@@ -25,11 +25,11 @@ import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, autoHealth, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
 import { localFallbackArmed } from "../../src/devfallback.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
+import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, getUserEmailById, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, reserveAuto, limitConfig } from "../../src/limits.js";
+import { getUsage, reserveAuto, limitConfig, pruneAutoEvents } from "../../src/limits.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -451,6 +451,24 @@ app.get("/api/templates", wrap(async (_req, res) => {
 
 /* ------------------------------------------------------------------- decks */
 
+/**
+ * Bytes under a directory, recursively.
+ *
+ * Walks rather than shelling out to `du`: the server must not fork per request,
+ * and this is called once per deck on the admin stats path.
+ */
+async function dirSize(dir) {
+  let total = 0;
+  let entries = [];
+  try { entries = await readdir(dir, { withFileTypes: true }); } catch { return 0; }
+  for (const e of entries) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) total += await dirSize(full);
+    else if (e.isFile()) { try { total += (await stat(full)).size; } catch { /* raced a delete */ } }
+  }
+  return total;
+}
+
 async function deckMeta(slug) {
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
@@ -760,7 +778,11 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       byTheme[m.theme ?? "none"] = (byTheme[m.theme ?? "none"] ?? 0) + 1;
       byOwner[m.owner ?? "legacy"] = (byOwner[m.owner ?? "legacy"] ?? 0) + 1;
       recent.push(m);
-      try { const s = await stat(path.join(DECKS, e.name, "out", "deck.pptx")); totalSize += s.size; } catch {}
+      // The WHOLE deck folder, not just the .pptx. A deck runs 5-15 MB and the
+      // slide PNGs under out/preview are nearly all of it, so summing the
+      // presentation alone reported a box holding 683 MB as holding 23.8 —
+      // and storage is the constraint DEPLOY.md says bites first.
+      totalSize += await dirSize(path.join(DECKS, e.name));
     } catch {}
   }
   recent.sort((a, b) => b.updated - a.updated);
@@ -771,11 +793,13 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
     const { getDb } = await import("../../src/db.js");
     const db = getDb();
     const rows = db.prepare("SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events GROUP BY user_id ORDER BY reqs DESC LIMIT 10").all();
-    // map user_id -> email
+    // Only the rows actually shown need an email. This used to call getUserId
+    // once per registered account on every stats load — 116 queries to label
+    // ten bars.
     const userById = new Map();
-    for (const u of users) {
-      const id = getUserId(u.email);
-      if (id) userById.set(id, u.email);
+    for (const r of rows) {
+      const email = getUserEmailById(r.user_id);
+      if (email) userById.set(r.user_id, email);
     }
     usageAgg.byUser = rows.map((r) => ({ email: userById.get(r.user_id) ?? `id:${r.user_id}`, requests: r.reqs, slides: r.slides, tokens: r.tokens }));
     const tot = db.prepare("SELECT COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens FROM auto_events").get();
@@ -788,12 +812,16 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
   try { const r = await fetch("http://localhost:11434/api/tags", { signal: AbortSignal.timeout(2000) }); ollamaOk = r.ok; } catch {}
   try { const searx = process.env.SEARXNG_URL || "http://localhost:8888"; const r = await fetch(`${searx}/healthz`, { signal: AbortSignal.timeout(2000) }); searxngOk = r.ok; } catch {}
   // disk
+  // `df` used to run through execSync, which stalls every other request on the
+  // box for as long as the filesystem takes to answer — on the one page an
+  // operator opens when the box is already unhealthy.
   let diskFree = null;
   try {
-    const { execSync } = await import("node:child_process");
-    const out = execSync("df -h / 2>/dev/null | tail -1 || df -h . 2>/dev/null | tail -1", { encoding: "utf8" });
-    diskFree = out.trim();
-  } catch {}
+    const { execFile } = await import("node:child_process");
+    const { promisify } = await import("node:util");
+    const { stdout } = await promisify(execFile)("df", ["-h", DECKS], { timeout: 4000 });
+    diskFree = stdout.trim().split("\n").at(-1) ?? null;
+  } catch { /* not POSIX, or df is slow — the row renders as unknown */ }
   ok(res, {
     hosted: isHosted(),
     users: { total: users.length, admins: users.filter((u) => u.admin).length, week: usersWeek, list: users.slice(0, 5) },
@@ -814,6 +842,16 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       // example's institution on any deck whose owner never opened Settings.
       identity: await identityStatus(),
       mailOk: mailConfigured(),
+      // The three controls DEPLOY.md calls the operating levers. They are env
+      // only, so the panel cannot change them — but an operator who cannot SEE
+      // whether retention is on has no way to know the disk is unmanaged, and
+      // "storage is the constraint that will bite first" is the deployment
+      // doc's own warning.
+      controls: {
+        openRegistration: OPEN_REGISTRATION,
+        sweepDays: Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0 ? SWEEP_DAYS : null,
+        sweepHour: Number.isFinite(SWEEP_HOUR) ? SWEEP_HOUR : null,
+      },
       // Which roles are running what they were configured to run. A silent
       // substitution has exactly one symptom — output that is worse than it
       // should be — so it belongs where the operator already looks.
@@ -2726,6 +2764,28 @@ if (Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0) {
     console.log(`  sweep scheduled daily at ${SWEEP_HOUR}:00 (deleting decks older than ${SWEEP_DAYS} days)`);
   };
   schedule();
+}
+
+/**
+ * Usage-event retention.
+ *
+ * `pruneAutoEvents` drops events older than 30 days and was written when the
+ * table was added — and never called from anywhere, so every quota event this
+ * install has ever recorded is still in the database. The rows are small, but
+ * the limit windows are five hours and a week: nothing reads an event older
+ * than seven days, and an unbounded append-only table on the same SQLite file
+ * as accounts and sessions is a slow leak in the one file that must not get
+ * slow.
+ *
+ * Deliberately not tied to the deck sweep. That one only runs when
+ * FORGE_SWEEP_DAYS is set, and this has to happen on every install.
+ */
+{
+  const runPrune = () => {
+    try { pruneAutoEvents(); } catch (err) { console.error(`  usage prune failed: ${err.message}`); }
+  };
+  runPrune();
+  setInterval(runPrune, 24 * 60 * 60 * 1000).unref();
 }
 
 /**
