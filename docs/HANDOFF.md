@@ -233,50 +233,62 @@ to 50%.
 
 ## Plan for next session
 
-### 1. The image-seating question  *(a model is available)*
+**The theme is: a model is available, so spend the session on the questions
+only a model can answer.** Four sessions of no-model work are done; the list
+below is ordered so the expensive-to-discover things come first.
 
-`--images` ran and supplied **nothing**: every `[image]` note landed on a type
-that cannot carry one without losing content. One deck is not an answer, but the
-question three handoffs could not ask is now one generation away. If real notes
-keep landing on 5- and 6-bullet slides, the answer is a new slide type, not a
-looser rule.
+Set up once, at the top of the session:
 
-### 2. The thinking experiment and the critic loop  *(a model is available)*
+```bash
+SC=/tmp/forge-local && mkdir -p $SC && cp config/models.yaml $SC/
+cp config/identity.example.yaml $SC/identity.yaml
+printf '{"hosted": false}\n' > $SC/hosted.json && echo '{"settings":{}}' > $SC/runtime.json
+```
 
-Both were model-blocked and are not any more. `qwen3.6:35b-a3b` declares
-thinking AND vision, so `roles.author.thinking` can be toggled and compared, and
-`--critic` can finally be watched sending slide PNGs to a model that can read
-them. **Grep `cloudSpec` before trusting any per-role option** — it builds its
-own spec instead of going through `resolveRole` and has silently dropped these.
+Every command below wants `FORGE_TCET_API_KEY= FORGE_HOSTED=0 FORGE_CONFIG_DIR=$SC`.
 
-### 3. Surfaces still never run  *(mostly needs a model)*
+### 1. Generate a deck WITH A TEAM, and watch the critic  *(half the session)*
 
-`--upload` research, `report-new`, `deck-from-report`, and **presenter
-assignment with a real team** — every deck so far rendered `Presenter: —`, so
-the whole per-member split is unexercised. Rate limits were the last no-model
-item on that list and are now driven.
+Two never-run things in one generation, which is why they go together.
 
-### Two decisions that are yours, both still open
+- **Presenter assignment has never run.** Every deck ever generated had no
+  team, so every slide rendered `Presenter: —` and the whole per-member split
+  is unexercised. Put 3-4 members in the identity, set `slidesPerMember`, and
+  check the split lands and the chrome draws names.
+- **The critic loop has never been watched.** `--critic` renders every slide,
+  sends the PNG to the `critic` role and hands findings to a fix turn that
+  EDITS THE DECK. `qwen3.6:35b-a3b` declares vision, so this can finally run.
+  Watch what it says before trusting what it changes.
 
-- **Browser-level regression coverage.** More pointed each session: this
-  session's four credit surfaces were verified by driving a real browser, and
-  nothing in 585 tests would have caught a panel that renders but is never
-  reached — which is exactly what the `needsFinalize` defect did. Component-test
-  infrastructure (jsdom + a React renderer) versus a scripted browser pass
-  before a release. Both would work; they cost very differently.
-- **The 19 divider contrast debts.** `tools/contrast-debt.mjs` proves these are
-  not a to-do list: twelve cannot be fixed by any token edit (their ink is
-  already pure white), and seven more only by making `muted` equal `ink`. They
-  are a question about nineteen divider **backgrounds** — the themes' identity.
-  The five genuinely payable ones are paid.
+**Grep `cloudSpec` first** — it builds its own spec instead of going through
+`resolveRole` and has silently dropped per-role options before.
 
-### Parked on purpose
+### 2. The image-seating question  *(needs one generation, then a decision)*
 
-`(stretch) Canvas slide-builder` is scope, not a defect. The **front end**
-entry's remaining half (the chat view's outline and editing phases) stays
-model-blocked: reaching it means generating something.
+`--images` supplied **nothing** last time: every `[image]` note landed on a type
+that cannot carry one without losing content. Generate two or three decks with
+`--images` and count where the notes actually land. **If they keep landing on
+5- and 6-bullet slides, the answer is a new slide type, not a looser rule** —
+and that is a design decision to bring back, not to take alone.
 
----
+### 3. The thinking experiment  *(cheap, and never once run)*
+
+`roles.author.thinking` is `true` at `medium` and has been verified structurally
+against a recording server, never behaviourally. Same brief with thinking on and
+off, compare with `npm run deckscore` plus a read. The model supports it.
+
+### 4. Read a report, not just a deck
+
+`report-new` and `deck-from-report` are two entry points with zero runs, and the
+report is the graded artefact. The image-credits appendix built two sessions ago
+has been verified on a hand-made report and never on a generated one.
+
+### If there is time, or if generation is blocked
+
+- **Browser regression coverage** — the standing decision below. Three total
+  outages have shipped and nothing prevents a fourth.
+- **Token metering** (`recordAutoEvent` accepts a count; every call site passes
+  0). It is the first prerequisite for charging anyone, and it needs no model.
 
 ## What is left to put this in front of real users
 
