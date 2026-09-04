@@ -1,6 +1,6 @@
-# Handoff — 2026-09-04, credits reach a reader; the admin panel swept
+# Handoff — 2026-09-04, credits surfaced, admin swept, settings made live
 
-Everything is on `main`. `npm test` is **588 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **598 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -107,6 +107,31 @@ case but a cold one, so the first load after a restart awaited the full probe:
 **And the missing verb**: the operator's vocabulary was find, promote, delete.
 Each account's spend against its cap is now visible, and an account can be
 zeroed — a quota is a cost control, not a punishment.
+
+### Operating settings, changeable from the panel
+
+The sweep made the controls visible, which invites the question of why they
+cannot be changed. `src/runtime.js` now owns retention, signup and the spend
+caps; they apply on the next request with no restart, and the sweep tick is
+scheduled unconditionally and reads its setting when it fires (it used to be
+armed only if the env var was set AT BOOT, so turning retention on at runtime
+would have scheduled nothing).
+
+**The precedence runs opposite ways on purpose, and this is the thing to know:**
+
+| | Wins | Why |
+|---|---|---|
+| Operating settings | **stored** over env | a setting that cannot change at runtime is the problem being solved |
+| Secrets (gateway key) | **env** over stored | a key rotated in the deployment must beat one typed in months ago |
+
+Every value names its source and flags one shadowing an env var, because a
+stored override means editing your compose file and redeploying will not change
+it. **Reset** hands it back.
+
+The gateway key can now be stored from the panel, **write-only** — nothing
+returns a key to the browser, the status carries only the last four characters,
+and it refuses when `FORGE_KEY_PEPPER` is unset (which it is on this box) rather
+than encrypting under a constant published in this repository.
 
 ---
 
