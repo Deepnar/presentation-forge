@@ -3966,6 +3966,99 @@ which is the right order of error.
 > **Tune a threshold against the real documents.** Both the split and the floor
 > were wrong on the first attempt and right after measuring seven real pages.
 
+### [x] The relevance gate is inoperative on a short page
+
+*No model needed to fix. Found in the research of the second generated deck.*
+
+A follow-on to the entry above, and the same shape of error one level down.
+The corpus for a vehicle-to-grid deck came back 6 good sources and one page of
+**algebra help** — QuickMath's "Step-by-Step Math Problem Solver", 211 words,
+which entered at a density of **4.74** against a floor of 4.0.
+
+It got in on **one** appearance of "integration", in the phrase *"definite and
+indefinite integration"*. A homonym, once.
+
+**The floor could not have refused it.** The smallest non-zero density a page of
+N words can score is 1000/N, so any page under 250 words clears a floor of 4.0
+on a single hit of a single term. The gate was measured against Wikipedia-scale
+junk — 31,000 words — and is inoperative on exactly the pages least likely to
+be about anything.
+
+Fixed by requiring the evidence as well as the ratio: `RELEVANCE_MIN_HITS = 2`,
+the least that can separate a topic from a coincidence. Re-scored against that
+run's real corpus, all six on-topic pages keep (8 to 89 hits) and only the
+algebra page is refused.
+
+> **Learned.** **A ratio cannot judge a sample too small to have one.** The
+> quantisation of a rate is invisible when you calibrate on large documents:
+> every measurement behind `RELEVANCE_FLOOR` was taken on pages of 17,000 to
+> 31,000 words, where one hit moves the score by 0.03. On a 211-word page one
+> hit moves it by 4.74 — past the floor by itself. When a threshold is a rate,
+> ask what its smallest possible non-zero value is at the smallest input you
+> will ever hand it.
+
+### [x] A plan the model did not write, padded until it looked like one
+
+*Found by generating with a local model. `src/ai/generate.js`.*
+
+Three defects in the outline stage, all invisible downstream, all found by
+running the planner repeatedly on one brief rather than once.
+
+**The grammar offered a stub and the model took it.** `slides` was bounded
+`minItems: 3`, and a constrained decoder takes the earliest exit a grammar
+allows: two outlines in nine came back **exactly three slides** — the minimum,
+not a coincidence. Every array in that schema has a documented `maxItems`
+because an unbounded array runs away; the mirror failure had no symptom, so
+nothing set the other bound to anything meaningful.
+
+**And `mintContentSlides` hid it.** A stub reached the human gate looking whole
+— 19 slides, four named parts — because the mint filled the promised sixteen
+content slides with **fifteen identically-worded specs**, all in section 0. The
+rescue was written for a small deficit (11 members, 10 slides) and has no
+ceiling, so it will fabricate an entire deck. Nothing reported the difference.
+
+The floor is now what the deck already promises: the content count the mint
+would otherwise fabricate, plus a title and a closing. A thin answer is
+re-asked once and the better attempt kept. `stats` carries `plannedByModel` and
+`minted` so a caller can say when a plan is mostly ours.
+
+**A slide could name a part that was never declared.** `sections` is capped at
+the deck's section count; a slide's `section` index was bounded by a constant 7.
+The model used indices 4 and 5 in a four-part plan and the structure pass
+opened them as "Open part 6." — a divider for a part with no label, no place in
+the arc and no member presenting it. Now bounded by the same cap.
+
+**An opener without an index stopped being an opener.** `section` is optional,
+and a model that named what a part argues while omitting the index cost the
+deck the divider it wrote: `ensureStructuralSlides` matches openers by index,
+matched nothing, and inserted a second generic divider. Eight dividers on a
+four-part plan — "Announce Part One: idle buses as an untapped grid resource"
+followed immediately by "Open the part on Grid Opportunity". Sections are now
+filled in before the structure pass: a divider takes the section of the content
+it opens, everything else carries the previous slide's forward.
+
+| Six samples, same brief | Before | After |
+|---|---|---|
+| Stub outlines (exactly 3 slides) | 2 of 9 | 0 of 6 |
+| Content slides planned by the model | 1-19 | 13-17 |
+| Content slides minted | 0-15 | 0-3 |
+| Sections used / declared | 5-6 / 4 | 4 / 4 |
+
+> **Learned.** **A result sitting exactly ON a bound is the grammar's choice,
+> not the model's.** Both stubs were three slides long and `minItems` was 3.
+> That equality is the whole diagnosis, and it is only visible if you record
+> the bound next to the result — the plan on disk looked like a 19-slide deck.
+>
+> **Sample a model stage before believing one run of it.** The first outline
+> was a stub and the second was excellent; either alone would have been the
+> wrong conclusion. Nine samples cost twenty minutes and turned "the model is
+> bad at planning" into a rate — 2 in 9 — with a mechanical cause.
+>
+> **A padding routine must report how much it padded.** The mint is right to
+> exist and was right about the deficit it was written for. What made this a
+> silent failure rather than a visible one is that nothing downstream could
+> tell a plan the model wrote from a plan it did not.
+
 ### [x] Chart colours — the monochrome premise was stale, the pie was not
 
 *No model, renderer. Opened as "monochrome charts need pattern fills"; that
