@@ -61,7 +61,7 @@ export function synthesisNote(mode) {
  * tokens (done_reason=length) for a six-slide deck. Bounds give the grammar a
  * legal way to stop.
  */
-const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
+const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3 } = {}) => ({
   type: "object",
   required: ["title", "sections", "slides"],
   properties: {
@@ -80,7 +80,14 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8 } = {}) => ({
     },
     slides: {
       type: "array",
-      minItems: 3,
+      // A LOWER bound is as load-bearing as the upper one, and for the mirror
+      // reason: the grammar never *requires* another element, so a constrained
+      // decoder may take the earliest legal exit. At the old constant 3 it did
+      // — measured on one brief, two outlines in five came back exactly three
+      // slides long, and the plan still looked whole because mintContentSlides
+      // padded it to the promised count. The floor is what the deck already
+      // promises, so the earliest legal stop is a real outline.
+      minItems: Math.min(minSlides, maxSlides + sectionCap + 2),
       // The budget counts CONTENT slides; title, the section dividers and the
       // closing slide are structural and sit on top. Without this headroom a
       // tight cap (11 members × 1-per-person, 11 max) squeezes the structure
@@ -188,32 +195,55 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     sizingNote,
   ].filter(Boolean).join("\n");
 
-  const res = await chat({
-    role: "author",
-    model,
-    signal,
-    schema: outlineSchema({ maxSlides: contentCap, sectionCap }),
-    messages: [
-      { role: "system", content: system },
-      {
-        role: "user",
-        content: [
-          research ? `RESEARCH NOTES\n${research}\n` : "",
-          `BRIEF\n${brief}`,
-          briefing ? `\n${briefing}` : "",
-          identity?.academic?.subject ? `\nSubject: ${identity.academic.subject}` : "",
-          `\n${teamNote}`,
-        ].filter(Boolean).join("\n"),
-      },
-    ],
-  });
+  // The content the plan already promises, and the grammar floor derived from
+  // it: the model must at least outline what mintContentSlides would otherwise
+  // fabricate, plus a title and a closing.
+  const contentFloor = slidesPerMember && presenters.length
+    ? Math.min(contentCap, presenters.length * slidesPerMember)
+    : Math.min(contentCap, Math.max(presenters.length, sectionCap));
 
-  const plan = res.data ?? {};
-  // The type field is free-form in the outline schema on purpose — a tight enum
-  // here made the model abandon planning to satisfy the grammar. Coerce after.
-  let slides = (plan.slides ?? [])
-    .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
-    .filter((s) => s.purpose);
+  const askOutline = async () => {
+    const res = await chat({
+      role: "author",
+      model,
+      signal,
+      schema: outlineSchema({ maxSlides: contentCap, sectionCap, minSlides: contentFloor + 2 }),
+      messages: [
+        { role: "system", content: system },
+        {
+          role: "user",
+          content: [
+            research ? `RESEARCH NOTES\n${research}\n` : "",
+            `BRIEF\n${brief}`,
+            briefing ? `\n${briefing}` : "",
+            identity?.academic?.subject ? `\nSubject: ${identity.academic.subject}` : "",
+            `\n${teamNote}`,
+          ].filter(Boolean).join("\n"),
+        },
+      ],
+    });
+    const plan = res.data ?? {};
+    // The type field is free-form in the outline schema on purpose — a tight
+    // enum here made the model abandon planning to satisfy the grammar. Coerce
+    // after.
+    const slides = (plan.slides ?? [])
+      .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
+      .filter((s) => s.purpose);
+    return { res, plan, slides };
+  };
+
+  let { res, plan, slides } = await askOutline();
+  // The floor makes a stub illegal; it does not make a thin answer impossible,
+  // and a plan the model mostly did not write is the one thing the mint hides.
+  // So re-ask once when the model outlined less than half of what it was asked
+  // for, and keep whichever attempt planned more — a retry must never make the
+  // plan worse. One extra call, on the bad path only.
+  const planned = (list) => list.filter((s) => !DIVIDER_TYPES.has(s.type)).length;
+  if (planned(slides) * 2 < contentFloor) {
+    const retry = await askOutline();
+    if (planned(retry.slides) > planned(slides)) ({ res, plan, slides } = retry);
+  }
+  const plannedByModel = planned(slides);
 
   // E1 — an empty chart must be impossible: when the research carries no real
   // numbers, any `chart` the planner proposed is coerced to a qualitative type
@@ -240,7 +270,19 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
   slides = ensureStructuralSlides(slides, plan.sections ?? []);
   plan.slides = slides;
 
-  return { plan, stats: { model: res.model, outputTokens: res.evalCount } };
+  // How much of this plan is the model's and how much is ours. A minted slide
+  // carries a generic purpose, so a plan that is mostly minted reads as a deck
+  // and argues nothing — the count is what lets a caller say so instead of
+  // shipping the padding silently.
+  return {
+    plan,
+    stats: {
+      model: res.model,
+      outputTokens: res.evalCount,
+      plannedByModel,
+      minted: Math.max(0, planned(slides) - plannedByModel),
+    },
+  };
 }
 
 /** A headline short enough to render: the purpose's first clause, ≤48 chars,
