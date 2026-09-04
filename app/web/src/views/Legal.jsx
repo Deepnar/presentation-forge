@@ -81,7 +81,7 @@ export function Privacy() {
         </section>
         <div className="rounded-xl border border-accent/20 bg-accent-tint p-5">
           <div className="text-[13px] font-semibold text-accent">Questions?</div>
-          <p className="mt-1 text-[13px] leading-relaxed">Open an issue on <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="text-accent underline">GitHub</a> or contact your admin. Campus Auto quota → CoE coordinator.</p>
+          <p className="mt-1 text-[13px] leading-relaxed">Open an issue on <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="text-accent underline">GitHub</a>, or contact whoever runs this instance. Auto quota is set by this install, not by the model's provider.</p>
         </div>
       </div>
     </FullShell>
@@ -120,7 +120,7 @@ export function Contact() {
   return (
     <FullShell eyebrow="Get in touch" title="Contact" subtitle="Fastest route is GitHub.">
       <div className="space-y-8">
-        <p className="max-w-2xl">Open an issue — bug, idea, or quota request — and we’ll triage. For campus Auto access, ping your CoE coordinator.</p>
+        <p className="max-w-2xl">Open an issue — bug, idea, or quota request — and we’ll triage. Auto access and its limits are set by whoever runs this instance; the model behind Auto is a third-party service and its provider does not support this app.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           <a href="https://github.com/Deepnar/presentation-forge/issues/new" target="_blank" rel="noreferrer" className="group rounded-2xl border border-line bg-panel p-6 hover:border-accent/30">
             <div className="text-[14px] font-semibold text-fg group-hover:text-accent">Open an issue</div>

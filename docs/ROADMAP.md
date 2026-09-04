@@ -4646,6 +4646,37 @@ knowable while they are unexercised.
 > *within* a mount, not per route. A new top-level prefix is not covered by
 > anything. Worth knowing before adding one.
 
+### [ ] "Auto" is bound to one institution's name, not to a role
+
+*Priority: medium, and it rises the moment this is hosted for anyone outside
+the college. No model.*
+
+TCET's CoE provides **a model endpoint and nothing else** — no support, no
+quota administration, no relationship with this product's users. Two places in
+the product implied otherwise and are fixed: the Legal and Contact pages routed
+users to a "CoE coordinator" for Auto quota and access, which named a third
+party as this app's support and access authority.
+
+What remains is naming. The free tier is not a role in the code, it is the
+literal id `tcet-auto` and the literal env var `FORGE_TCET_API_KEY`:
+
+- `autoProvider()` (`src/cloud.js:224`) looks up `providers["tcet-auto"]`
+- the encrypted operator key is stored under `provider = "tcet-auto"`
+- every function in `src/limits.js` defaults `provider = "tcet-auto"`
+- `kind: "tcet"` reaches a UI label
+
+**This does not block replacing the upstream.** Point
+`providers["tcet-auto"].baseURL` at OpenRouter, DeepInfra or any other
+OpenAI-compatible endpoint and put its key in `FORGE_TCET_API_KEY`, and Auto
+works with no code change — which is the honest answer to "what if TCET goes
+away". The cost is that `config/models.yaml` then names one institution while
+serving another, and the admin panel says so to the operator.
+
+The fix is a rename to a role — `auto` / `FORGE_AUTO_API_KEY` — reading the old
+names as fallbacks so no deployment breaks, and a migration for the
+`global_keys` and `auto_events` rows keyed by the old id. Worth doing before
+anyone outside the college is invited, not before.
+
 ### [ ] Nothing can test the browser
 
 *Priority: high. No model. Needs a direction agreed before any code.*
