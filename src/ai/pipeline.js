@@ -24,6 +24,7 @@ import { preview } from "../preview.js";
 import { renderReport, donorStatus, donorDirFor, REPORT_SECTIONS } from "../report.js";
 import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
+import { creditsSlide } from "../credits.js";
 
 /**
  * Orchestration shared by the CLI and the API: creating a deck from a brief and
@@ -765,6 +766,19 @@ export async function finalizeDeck({
   };
 
   tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
+
+  // The deck's own copy of the credits, appended AFTER presenters are assigned:
+  // it is back matter nobody presents, and assignPresenters would hand it a
+  // member. It sits outside maxSlides on purpose — a credit the licence
+  // requires is not content competing for a slot, and dropping a slide the
+  // writer meant to make in order to fit it would be the worse surprise. Only
+  // images that actually owe attribution reach it, so a deck of public-domain
+  // pictures gets no extra slide at all.
+  const creditSlide = creditsSlide(imageResult?.credits ?? []);
+  if (creditSlide) {
+    tr.grounded.deck.slides.push(creditSlide);
+    await writeFile(deckFile, YAML.stringify(tr.grounded.deck), "utf8");
+  }
 
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();

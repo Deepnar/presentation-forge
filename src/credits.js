@@ -166,3 +166,69 @@ export async function writeCredits(deckDir, credits) {
   }
   await writeFile(path.join(deckDir, CREDITS_MD), lines.join("\n"), "utf8");
 }
+
+/* ------------------------------------------------------- the deck's own copy */
+
+/** The `attribution` type's caps, so a credit is shortened rather than refused. */
+const NAME_MAX = 30;
+const CONTRIBUTION_MAX = 60;
+const ITEMS_MAX = 12;
+
+const clip = (s, n) => {
+  const t = String(s ?? "").trim();
+  return t.length <= n ? t : `${t.slice(0, n - 1).trimEnd()}…`;
+};
+
+/**
+ * A credits slide for the deck, or null when nothing is owed.
+ *
+ * Every other surface lives outside the .pptx — the app's pages, CREDITS.md,
+ * the report. A deck that is exported, emailed or presented from someone else's
+ * machine carries none of them, and that is the moment a CC BY image is
+ * actually shown to an audience uncredited. This is the only copy that travels
+ * with the file.
+ *
+ * It is built ONLY from images whose licence requires attribution. Public
+ * domain and CC0 owe nothing, so a deck whose pictures are all PD gets no extra
+ * slide — the common case, because the supply's licence ladder prefers exactly
+ * those.
+ *
+ * `attribution` is an existing slide type and its shape is a person and what
+ * they contributed, which is what a credit is: who made the picture, and where
+ * it appears. Names and lines are clipped to the type's caps rather than
+ * dropped, because a shortened credit still credits and a missing one does not.
+ */
+export function creditsSlide(credits) {
+  const owed = (credits ?? []).filter((c) => c?.attribution_required);
+  if (!owed.length) return null;
+
+  const items = owed.slice(0, ITEMS_MAX).map((c) => {
+    const where = c.slide ? `Slide ${c.slide}` : null;
+    const source = sourceLabel(c.source);
+    const creator = String(c.creator ?? "").trim();
+    // `name` caps at 30 and `contribution` at 60, and an institution's name
+    // routinely exceeds the shorter one. Clipping the attributee is the one
+    // thing a credit cannot afford, so a long creator moves into the roomier
+    // field and the source takes the label instead — the credit still names
+    // whom it belongs to, in full.
+    const nameFits = creator && creator.length <= NAME_MAX;
+    return nameFits || !creator
+      ? {
+          name: clip(creator || source || "Unknown", NAME_MAX),
+          contribution: clip([where, c.licence, creator ? source : null].filter(Boolean).join(" · "), CONTRIBUTION_MAX),
+        }
+      : {
+          name: clip(source || "Unknown", NAME_MAX),
+          contribution: clip([where, c.licence, creator].filter(Boolean).join(" · "), CONTRIBUTION_MAX),
+        };
+  });
+
+  // Over the cap the slide would silently stop crediting, so it says where the
+  // rest are instead of implying the list is complete.
+  const overflow = owed.length - items.length;
+  const standfirst = overflow > 0
+    ? `Images used under licence. ${overflow} further credit${overflow > 1 ? "s" : ""} in CREDITS.md.`
+    : "Images used under the licences shown.";
+
+  return { type: "attribution", headline: "Image credits", standfirst, items };
+}
