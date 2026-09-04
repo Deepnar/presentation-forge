@@ -1,6 +1,6 @@
-# Handoff — 2026-09-04, credits reach a reader, two quiet defects closed
+# Handoff — 2026-09-04, credits reach a reader; the admin panel swept
 
-Everything is on `main`. `npm test` is **585 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **588 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -86,6 +86,28 @@ not reproduce**: 30 simultaneous requests against a budget of 2 admitted exactly
 the event loop. That safety was undocumented and one `await` from gone — ten
 same-tick callers were all admitted. `reserveAuto` makes it structural.
 
+### The admin panel, swept
+
+Driven in a real browser, both modes, every tab. **Three things it stated were
+untrue**: Storage counted `out/deck.pptx` alone and read 23.8 MB on a box
+holding 79; "Model calls" was the exact misreading `src/limits.js` warns about
+in its own header, and Analytics called the same number "requests"; and
+`weeklyTokens` is a cap nothing can reach, because no call site records a token
+count.
+
+**Two deployment blind spots**: `FORGE_SWEEP_DAYS` and `FORGE_OPEN_REGISTRATION`
+appeared on no screen, so a box keeps every deck forever and nothing said so;
+and `pruneAutoEvents()` was written when the table was added and **never called
+from anywhere**.
+
+**The page was slowest when it mattered** — `autoHealth`'s cache covered every
+case but a cold one, so the first load after a restart awaited the full probe:
+20.6s, on the page an operator opens when the gateway is down. Now 0.10s.
+
+**And the missing verb**: the operator's vocabulary was find, promote, delete.
+Each account's spend against its cap is now visible, and an account can be
+zeroed — a quota is a cost control, not a punishment.
+
 ---
 
 ## Plan for next session
@@ -102,12 +124,13 @@ seated and then reverted by the fit gate. **If real notes mostly land on 5- and
 6-bullet slides, the answer is a new slide type, not a looser rule.** This is
 the first thing to look at when the gateway returns.
 
-### 2. The admin panel, swept  *(no model, deliberately deferred)*
+### 2. Bulk account cleanup  *(no model, needs a design first)*
 
-Still "later, not now" in the roadmap because it is the operator's surface. Now
-cheap: browser-use works (see below), and the density sweep's method — walk
-every route in both appearance modes with the in-page contrast audit —
-transfers directly. **This is the next no-model item.**
+Left undone by the admin sweep on purpose. This box carries **116 accounts**,
+almost all throwaway test ones, and deleting them is one `window.confirm` at a
+time. A filter-scoped bulk delete is the obvious fix and also the one that wipes
+real accounts when the filter is wrong, so it wants a dry-run count and a typed
+confirmation rather than a button. Agree the shape before building.
 
 ### 3. Monochrome charts need pattern fills  *(no model, renderer)*
 
@@ -164,6 +187,9 @@ last handoff did not say is that the `browser-use` daemon fails with
 google-chrome-stable --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-prof about:blank &
 ```
 
+Start it with `setsid` from a detached subshell, or the tool call that launches
+it takes the shell down with it.
+
 Then `new_tab(...)`, and note it marks the tab it drives with a 🐴 in the title —
 that is the harness, not the app.
 
@@ -213,7 +239,8 @@ single session.
   a model writes.
 - `flickr` is excluded from the report's citable set, which also excludes the
   genuine government photostreams it hosts. Named in `src/credits.js`.
-- The dev box holds **115 throwaway accounts**. `Admin → Users` is where to look.
+- The dev box holds **116 throwaway accounts**. `Admin → Users` now shows each one's
+  Auto spend; bulk removal is item 2 above.
 - `decks/perovskite-solar-cells-stability-challenges-2` is the real generated
   deck kept as a fixture. Every check takes `--deck` — use it, because the
   specimen's payloads are hand-written to behave.
