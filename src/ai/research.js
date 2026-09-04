@@ -269,17 +269,105 @@ function missingFacts(facts, notes) {
  * genuinely holds the material, starving the corpus to enforce variety is the
  * worse failure, so the surplus goes back if too little else arrives.
  */
-export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6 } = {}) {
+/**
+ * Words too common to say anything about what a page is about.
+ *
+ * Deliberately short and generic. This list may never learn a topic — the
+ * three-layer rule applies to research too: the code stays topic-agnostic and
+ * the brief supplies the subject.
+ */
+const TOPIC_STOP = new Set([
+  "the", "and", "for", "with", "from", "into", "that", "this", "their", "there",
+  "what", "when", "which", "while", "about", "after", "before", "between",
+  "road", "scale", "case", "study", "using", "used", "based", "toward", "towards",
+  "new", "more", "most", "than", "then", "such", "also", "over", "under", "your",
+]);
+
+/**
+ * The distinctive words of a brief, as a relevance yardstick.
+ *
+ * Short words carry almost no topical signal, so the floor is four characters.
+ *
+ * A hyphenated compound is kept WHOLE and never also split, which was measured
+ * rather than assumed: splitting "solid-state" into "solid" and "state" put
+ * "state" in the yardstick, and an article about India — a country of states —
+ * scored seven times higher on it. Splitting cut the margin between on- and
+ * off-topic pages from 5.8x to 3.9x. The compound is the distinctive term; its
+ * halves are not.
+ */
+export function topicTerms(brief) {
+  const out = new Set();
+  for (const w of String(brief).toLowerCase().replace(/[^\p{L}\p{N}\s-]+/gu, " ").split(/\s+/)) {
+    if (w.length >= 4 && !TOPIC_STOP.has(w)) out.add(w);
+  }
+  return [...out];
+}
+
+/**
+ * How densely a page speaks the brief's vocabulary — hits per 1000 words.
+ *
+ * DENSITY, not presence, and the difference is the whole point. Wikipedia's
+ * "India" article contains five of the seven terms of a solid-state battery
+ * brief, so any "does it mention the topic" rule passes it; at 31,000 words
+ * that is 0.44 hits per 1000, against 35.55 for an article actually about the
+ * subject. Presence cannot separate them and density separates them by eighty
+ * times.
+ */
+export function topicalDensity(text, terms) {
+  if (!terms.length) return Infinity; // nothing to judge against: judge nothing
+  const lower = String(text ?? "").toLowerCase();
+  const words = lower.split(/\s+/).filter(Boolean).length;
+  if (!words) return 0;
+  let hits = 0;
+  for (const t of terms) {
+    const re = new RegExp(`\\b${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "g");
+    hits += (lower.match(re) ?? []).length;
+  }
+  return (hits / words) * 1000;
+}
+
+/**
+ * The floor a page must clear to enter the corpus.
+ *
+ * Measured, not guessed. Against the pages that prompted this, per 1000 words:
+ *
+ *   Solid-state battery  35.6   |   Lithium (element)   3.1
+ *   Electric vehicle     42.9   |   India               0.4
+ *   Lithium-ion battery  17.6   |   History of India    0.2
+ *                               |   Microsoft Windows   0.4
+ *
+ * The floor sits in that gap, nearer the junk than the middle: a dropped source
+ * is one fewer voice, and an absorbed one puts 60,000 words about the wrong
+ * subject in front of the writer, so the errors are not symmetric and the bias
+ * is towards keeping.
+ */
+export const RELEVANCE_FLOOR = 4.0;
+
+export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6, terms = [] } = {}) {
   const hostOf = (u) => {
     try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return String(u); }
   };
   const hostCount = new Map();
   const overflow = [];
 
+  const offtopic = [];
+
   const absorb = (batch) => {
     for (const item of batch ?? []) {
       if (!item?.ok || seenUrl.has(item.url)) continue;
       seenUrl.add(item.url);
+      // Is this page about the topic at all? Nothing used to ask. A real run
+      // for a solid-state battery deck absorbed Wikipedia's "India" and
+      // "History of India" — 60,000 words — because one angle query said
+      // "India", plus four Microsoft support pages and drugs.com on lithium
+      // the medication. Five of twenty-one sources were about batteries.
+      //
+      // Off-topic pages are never backfilled. A thin corpus is a worse deck; a
+      // corpus about the wrong subject is a deck about the wrong subject.
+      if (terms.length) {
+        const density = topicalDensity(item.text, terms);
+        if (density < RELEVANCE_FLOOR) { offtopic.push({ url: item.url, density }); continue; }
+      }
       const host = hostOf(item.url);
       const seen = hostCount.get(host) ?? 0;
       if (seen >= maxPerHost) { overflow.push(item); continue; }
@@ -293,7 +381,7 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6 
     while (pages.length < minCorpus && overflow.length) pages.push(overflow.shift());
   };
 
-  return { absorb, backfill };
+  return { absorb, backfill, offtopic };
 }
 
 /**
@@ -321,9 +409,10 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
   const pages = [];
   const seenUrl = new Set();
 
-  const { absorb, backfill } = hostDiversifier(pages, seenUrl, {
+  const { absorb, backfill, offtopic } = hostDiversifier(pages, seenUrl, {
     maxPerHost: p.max_per_host,
     minCorpus: p.min_corpus,
+    terms: topicTerms(brief),
   });
 
   for (const q of queries) {
@@ -372,5 +461,7 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
   // Last chance to put the surplus back: the gap queries may have added little.
   backfill();
 
-  return { query: brief, pages };
+  // What the gate refused, so a thin corpus is explicable rather than mysterious.
+  if (offtopic.length) onProgress?.({ offtopic: offtopic.length });
+  return { query: brief, pages, offtopic };
 }
