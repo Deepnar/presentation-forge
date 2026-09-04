@@ -807,6 +807,24 @@ top papers' full text (arXiv HTML) into the notes. Jina Reader
 (`https://r.jina.ai/<url>`) is the second extraction path for JS-heavy pages,
 gated behind `RESEARCH_JINA=1` so the local-first default is untouched.
 
+**A source has to be about the topic, and nothing used to check.** `absorb`
+filtered on fetch success, URL dedupe and a per-host cap, so a real run for a
+solid-state battery deck took in Wikipedia's "India" (31,107 words) because one
+angle query said "India", four Microsoft support pages, a Minecraft mod and
+drugs.com on lithium the medication — five of twenty-one sources were about
+batteries. `topicalDensity` now scores each page against terms derived from the
+brief (`topicTerms`, so the code stays topic-agnostic) and `RELEVANCE_FLOOR`
+refuses the rest.
+
+It measures **density, not presence**, because presence cannot see the failure:
+the India article contains five of the brief's seven terms — every
+"mentions the topic" rule keeps it — at 0.4 hits per 1000 words against 35.6 for
+a real battery article. A hyphenated compound is kept whole and never also
+split, since "solid-state" split into "solid" and "state" puts an ordinary word
+in the yardstick and collapses the margin. Off-topic pages are recorded but
+never backfilled: a thin corpus is a worse deck, and a corpus about the wrong
+subject is a deck about the wrong subject.
+
 **Invented images degrade, never crash.** The renderer's `resolveAsset` returns
 null for URLs and for files that do not exist, and every image layout already
 draws a placeholder for a null source — so a model that puts
