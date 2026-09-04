@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ensureStructuralSlides, normalisePlanSections, trimContentToBudget, mintContentSlides, placeholderFor } from "../src/ai/generate.js";
+import { ensureStructuralSlides, normalisePlanSections, trimContentToBudget, mintContentSlides, placeholderFor, planTypeMaxLength } from "../src/ai/generate.js";
+import { deckSchema } from "../src/ai/catalog.js";
 import { distributePresenters, DIVIDER_TYPES } from "../src/ai/team.js";
 import { validateDeck } from "../src/validate.js";
 
@@ -99,6 +100,24 @@ test("normalisePlanSections defaults to section 0 when nothing states one", () =
     { type: "closing", purpose: "close" },
   ]);
   assert.deepEqual(out.map((s) => s.section), [0, 0]);
+});
+
+test("every slide type is spellable in a plan — the grammar caps `type` by length", async () => {
+  // Constrained decoding masks the token that would exceed a maxLength, so a
+  // type name longer than the cap cannot be emitted at all: decoding stops
+  // mid-name, the truncated string matches no known type, and planDeck's
+  // coercion turns it into `bullets`. Silently, and for the life of the type.
+  //
+  // At a flat 16 that was true of THREE: `metric-comparison` (17),
+  // `layered-architecture` (20) and `illustrated-points` (18). The first two
+  // had never once been plannable and nothing said so — a planner that never
+  // chooses a type looks like taste.
+  const types = (await deckSchema()).definitions.slide.properties.type.enum;
+  const longest = types.reduce((a, b) => (b.length > a.length ? b : a));
+  assert.ok(
+    planTypeMaxLength(types) >= longest.length,
+    `the cap must fit "${longest}" (${longest.length} chars)`,
+  );
 });
 
 test("trimContentToBudget drops trailing content slides, never dividers", () => {
@@ -238,3 +257,4 @@ test("a section carrying only front matter gets no divider of its own", () => {
   assert.equal(sec0Dividers.length, 0, out.map((s) => `${s.type}:${s.section}`).join(" -> "));
   assert.ok(out.some((s) => s.type === "section" && s.section === 1));
 });
+

@@ -62,7 +62,7 @@ export function synthesisNote(mode) {
  * tokens (done_reason=length) for a six-slide deck. Bounds give the grammar a
  * legal way to stop.
  */
-const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3 } = {}) => ({
+const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3, typeMax = 24 } = {}) => ({
   type: "object",
   required: ["title", "sections", "slides"],
   properties: {
@@ -99,7 +99,14 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3 } = {}) =
         type: "object",
         required: ["type", "purpose"],
         properties: {
-          type: { type: "string", maxLength: 16 },
+          // Long enough for the longest type name there IS, measured from the
+          // enum rather than guessed. At a flat 16 the grammar could not spell
+          // `metric-comparison` (17), `layered-architecture` (20) or
+          // `illustrated-points` (18): decoding stops at the cap, the truncated
+          // string is not a known type, and the coercion below turns it into
+          // `bullets`. Three types that no plan could ever contain, and the only
+          // symptom was a planner that never chose them.
+          type: { type: "string", maxLength: typeMax },
           // Bounded by the same cap as `sections`, or a slide can point at a
           // part that was never declared: at the old constant 7 the model put
           // content in sections 4 and 5 of a four-part deck, and the structure
@@ -116,6 +123,17 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3 } = {}) =
     },
   },
 });
+
+/**
+ * The `type` cap the outline grammar must carry: the longest type name there is.
+ *
+ * Exported so a test can assert it, because the failure is silent and permanent
+ * — a name the grammar cannot spell becomes `bullets` and the type is simply
+ * never planned.
+ */
+export function planTypeMaxLength(types) {
+  return types.reduce((n, t) => Math.max(n, t.length), 0);
+}
 
 /** Stage 1 — the plan. Cheap, reviewable, and the human gate's input. */
 export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal, chat = chatJSON }) {
@@ -191,17 +209,13 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     "  type, a key moment → callout family, a stage in time → timeline family.",
     "- `freeform` renders the whole slide from the writer's HTML — use it sparingly",
     "  for a hero moment, never for a whole deck of text.",
-    "- Avoid image-requiring types (`image`, `image-text`, `image-grid`, `hero-image`,",
+    "- Avoid image-REQUIRING types (`image`, `image-text`, `image-grid`, `hero-image`,",
     "  `split-screen`, `side-by-side`) unless the brief actually names image files —",
     "  the writer has no image to draw from and must not invent one.",
-    "- A beat that genuinely wants a picture is `illustrated-points`. Its image is",
-    "  OPTIONAL: the writer fills in the points, the slide is complete without a",
-    "  picture, and one can be supplied later into the space the layout keeps for",
-    "  it. Choose it HERE, in the plan — deciding at writing time that a slide",
-    "  wants an image is too late, because by then the slide has a type that",
-    "  cannot hold one. Use it for a beat a photograph or diagram genuinely",
-    "  helps: a physical thing, a place, a piece of equipment, a process worth",
-    "  seeing. Two or three in a deck is plenty; a deck of them is a slideshow.",
+    "- `illustrated-points` is NOT one of those and the rule above does not apply",
+    "  to it: it is a LIST type whose image field is OPTIONAL, so choosing it",
+    "  commits you to nothing. Use it for a beat where a photograph or diagram",
+    "  would genuinely help — a physical thing, a place, a piece of equipment.",
     `- Structure the talk as about ${sectionCap} major parts, each member taking one.`,
     dataAffinityNote(research),
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
@@ -221,7 +235,12 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
       role: "author",
       model,
       signal,
-      schema: outlineSchema({ maxSlides: contentCap, sectionCap, minSlides: contentFloor + 2 }),
+      schema: outlineSchema({
+        maxSlides: contentCap,
+        sectionCap,
+        minSlides: contentFloor + 2,
+        typeMax: planTypeMaxLength(types),
+      }),
       messages: [
         { role: "system", content: system },
         {
