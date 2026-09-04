@@ -129,3 +129,74 @@ test("reading credits from a deck with none is empty, never a throw", async () =
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+/* ----------------------------------------------------------- the deck slide */
+
+test("a deck whose pictures owe nothing gets no extra slide", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  assert.equal(creditsSlide([]), null);
+  assert.equal(creditsSlide(null), null);
+  // Public domain and CC0 owe nothing, and the licence ladder prefers them, so
+  // this is the common case rather than the edge one.
+  assert.equal(creditsSlide([credit({ attribution_required: false, licence: "CC0 1.0" })]), null);
+});
+
+test("only the images that owe attribution reach the slide", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  const slide = creditsSlide([
+    credit({ title: "A", attribution_required: true }),
+    credit({ title: "B", attribution_required: false, licence: "CC0 1.0" }),
+    credit({ title: "C", attribution_required: true, slide: 7, creator: "B. Maker" }),
+  ]);
+  assert.equal(slide.type, "attribution");
+  assert.equal(slide.headline, "Image credits");
+  assert.equal(slide.items.length, 2, "the CC0 image is not credited — nothing is owed");
+  assert.equal(slide.items[1].name, "B. Maker");
+  assert.match(slide.items[1].contribution, /Slide 7/);
+  assert.match(slide.items[1].contribution, /CC BY 4\.0/);
+});
+
+test("a credit with no creator is credited to its source", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  const slide = creditsSlide([credit({ creator: null, source: "openverse/nasa" })]);
+  assert.equal(slide.items[0].name, "NASA");
+});
+
+test("the slide stays inside the attribution type's caps", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  const { validateDeck } = await import("../src/validate.js");
+  const long = credit({
+    creator: "A Laboratory With An Extremely Long Institutional Name Indeed",
+    title: "x".repeat(200),
+    licence: "CC BY-NC-SA-Something-Very-Long 4.0",
+    slide: 12,
+  });
+  const slide = creditsSlide([long]);
+  assert.ok(slide.items[0].name.length <= 30, slide.items[0].name);
+  assert.ok(slide.items[0].contribution.length <= 60, slide.items[0].contribution);
+  // A shortened credit still credits; a slide the schema refuses does not.
+  const { ok, errors } = await validateDeck({
+    title: "T", slides: [{ type: "title", headline: "T" }, slide],
+  });
+  assert.ok(ok, JSON.stringify(errors));
+});
+
+test("past twelve credits the slide says where the rest are", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  const many = Array.from({ length: 15 }, (_, i) => credit({ title: `Image ${i}`, slide: i + 1 }));
+  const slide = creditsSlide(many);
+  assert.equal(slide.items.length, 12, "the type caps at 12");
+  assert.match(slide.standfirst, /3 further credits in CREDITS\.md/);
+});
+
+test("a creator too long for the name field is credited in full, not clipped", async () => {
+  const { creditsSlide } = await import("../src/credits.js");
+  // `name` caps at 30 and `contribution` at 60. Clipping the attributee is the
+  // one thing a credit cannot afford, so a long creator takes the roomier field.
+  const slide = creditsSlide([credit({
+    creator: "National Renewable Energy Laboratory", source: "wikimedia-commons", slide: 5,
+  })]);
+  assert.equal(slide.items[0].name, "Wikimedia Commons");
+  assert.match(slide.items[0].contribution, /National Renewable Energy Laboratory/);
+  assert.ok(!slide.items[0].contribution.includes("…"), "the creator is not truncated");
+});
