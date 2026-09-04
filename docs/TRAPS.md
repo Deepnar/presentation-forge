@@ -656,6 +656,33 @@ length, so nothing upstream could reject them, and they were typeset into a
 document meant for submission. Anything a model writes into a *document* needs
 a prose check that ajv cannot express — see `salvageParagraph`.
 
+**A lower bound is as load-bearing as the upper one, and it is the one nobody
+sets.** An unbounded array runs away, so every array here has a `maxItems`; the
+mirror failure has the same cause and no symptom. The grammar never *requires*
+another element, so a model may take the earliest exit it allows — and at
+`minItems: 3` the outline schema allowed one after three slides. Measured on
+one brief against qwen3.6:35b-a3b, two plans in nine came back exactly three
+slides long. Not approximately three: exactly the minimum, which is the
+signature to look for. Set the floor to what the caller actually requires, and
+read a result that sits *on* a bound as the grammar's choice rather than the
+model's.
+
+**Padding a thin model answer hides the fact that the model did not answer.**
+The stub above reached the outline gate looking whole — 19 slides, four named
+parts — because `mintContentSlides` filled the promised count with fifteen
+identically-worded specs. A rescue written for a small deficit will happily
+fabricate most of the artefact, and the only place the difference is visible is
+the moment it is applied. Report how much of an output the model produced and
+how much was minted, or a silent failure ships as a deck.
+
+**An optional field a model omits is a field your matching logic will not
+match.** The plan's `section` index is optional; a model that named what a part
+argues and left the index out cost the deck its own opener, because the
+structure pass matched openers by index and inserted a second, generic divider
+for the same part. Eight dividers on a four-part plan, and every one of them
+valid. Normalise what the schema lets a model leave out, before anything joins
+on it.
+
 **A field sitting exactly AT its cap was cut by the grammar, not finished by the
 writer.** Decoding masks any token that would exceed a `maxLength`, so a model
 still mid-sentence when it reaches the cap simply stops: no ellipsis, no error,
