@@ -30,6 +30,15 @@ export default function Admin({ onBack }) {
   };
   useEffect(() => { load(); }, []);
 
+  // The Auto probe is answered out of band so the page never blocks on it (see
+  // autoHealth in src/cloud.js). Collect the result when it lands instead of
+  // leaving "checking…" on screen until someone presses Refresh.
+  useEffect(() => {
+    if (!stats?.system?.auto?.pending) return;
+    const t = setTimeout(() => { api.adminStats().then(setStats).catch(() => {}); }, 4000);
+    return () => clearTimeout(t);
+  }, [stats?.system?.auto?.pending]);
+
   const toggleHosted = async () => {
     try {
       const r = await api.adminSetHosted(!hosted);
@@ -71,16 +80,12 @@ export default function Admin({ onBack }) {
           <div className="flex items-center gap-2">
             <h1 className="text-[18px] font-semibold tracking-tight text-fg">Admin</h1>
             <Badge className={hosted ? "bg-amber/10 text-amber" : "bg-success/10 text-success"}>{hosted ? "hosted" : "local"}</Badge>
-            {stats?.users?.total != null && <Badge className="bg-raised text-fg-faint">{stats.users.total} users · {stats.decks.total} decks</Badge>}
           </div>
-          <div className="text-[12px] text-fg-faint">RBAC for the seeded operator + any promoted admin · switch hosted/local here for testing · full PPT + system stats</div>
+          <div className="text-[12px] text-fg-faint">Is anything broken, who is using this, and what is it costing. Start at System when something is wrong.</div>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" onClick={load}>Refresh</Button>
           {onBack && <Button size="sm" variant="outline" onClick={onBack}>Back to chats</Button>}
-          <Button size="sm" variant={hosted ? "outline" : "primary"} onClick={toggleHosted} title="Flip hosted/local for testing">
-            {hosted ? "Switch to local" : "Switch to hosted"}
-          </Button>
         </div>
       </header>
 
@@ -117,8 +122,12 @@ function Overview({ stats, hosted }) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Users" value={s.users.total} sub={`${s.users.admins} admins · +${s.users.week} this week`} />
         <StatCard label="Decks" value={s.decks.total} sub={`${s.decks.slides} slides · ${s.decks.reports} reports`} />
-        <StatCard label="Storage" value={`${(s.decks.size/1024/1024).toFixed(1)} MB`} sub={`${s.decks.total} decks on disk`} />
-        <StatCard label="Model calls" value={s.usage.totalRequests} sub={`${s.usage.totalSlides} slides · ${(s.usage.totalTokens/1000).toFixed(0)}k tokens`} />
+        <StatCard label="Storage" value={`${(s.decks.size/1024/1024).toFixed(1)} MB`} sub={`${s.decks.total} decks, previews included`} />
+        {/* NOT "model calls". src/limits.js is explicit that one recorded event
+            is one pipeline operation, which makes many model calls behind it —
+            and that reading the events as calls makes every number look an
+            order of magnitude tighter than it is. */}
+        <StatCard label="Auto runs" value={s.usage.totalRequests} sub={`${s.usage.totalSlides} slides · plans, generates, chat turns`} />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Panel className="p-4">
@@ -142,10 +151,6 @@ function Overview({ stats, hosted }) {
           ))}
         </div>
       </Panel>
-      <Panel className="p-4">
-        <div className="mb-2 text-[12px] font-semibold text-fg">Hosted vs local</div>
-        <div className="text-[12px] leading-relaxed text-fg-muted">Hosted = <code className="font-mono">FORGE_HOSTED=1</code> — Auto is Forge only + BYOK. Local = Auto falls back to Ollama at <code className="font-mono">localhost:11434</code>. Toggle above flips <code className="font-mono">config/hosted.json</code> at runtime for testing (env wins on next deploy).</div>
-      </Panel>
     </div>
   );
 }
@@ -168,14 +173,21 @@ function BarChart({ data }) {
   );
 }
 
+const USERS_PAGE = 50;
+
 function UsersTab({ users, onRole, onDelete }) {
   const [q, setQ] = useState("");
+  const [shown, setShown] = useState(USERS_PAGE);
   const filtered = users.filter((u) => !q || u.email.toLowerCase().includes(q.toLowerCase()) || u.name.toLowerCase().includes(q.toLowerCase()));
+  // The table rendered every account at once. That is fine at ten and is not
+  // the shape to keep: this box already carries 116, most of them throwaway
+  // test accounts, and search is the way anyone finds one.
+  const page = filtered.slice(0, shown);
   return (
     <Panel className="p-4">
       <div className="mb-3 flex items-center gap-2">
         <div className="text-[12px] font-semibold text-fg">Users · {users.length}</div>
-        <input value={q} onChange={(e)=>setQ(e.target.value)} placeholder="Search email/name…" className="ml-auto w-52 rounded-lg border border-line bg-sunken px-2.5 py-1.5 text-[12px] outline-none placeholder:text-fg-faint focus:border-accent" />
+        <input value={q} onChange={(e)=>{setQ(e.target.value); setShown(USERS_PAGE);}} placeholder="Search email/name…" className="ml-auto w-52 rounded-lg border border-line bg-sunken px-2.5 py-1.5 text-[12px] outline-none placeholder:text-fg-faint focus:border-accent" />
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[12px]">
@@ -183,7 +195,7 @@ function UsersTab({ users, onRole, onDelete }) {
             <tr><th className="px-2 py-1.5">Email</th><th className="px-2 py-1.5">Name</th><th className="px-2 py-1.5">Role</th><th className="px-2 py-1.5">Created</th><th className="px-2 py-1.5">Actions</th></tr>
           </thead>
           <tbody>
-            {filtered.map((u) => (
+            {page.map((u) => (
               <tr key={u.email} className="border-t border-line/60 hover:bg-hover/50">
                 <td className="px-2 py-2 font-mono text-[11.5px] text-fg">{u.email}</td>
                 <td className="px-2 py-2 text-fg-muted">{u.name}</td>
@@ -204,7 +216,15 @@ function UsersTab({ users, onRole, onDelete }) {
           </tbody>
         </table>
       </div>
-      <div className="mt-2 text-[11px] text-fg-faint">RBAC: role is <code className="font-mono">admin</code> or none (user). <code className="font-mono">FORGE_ADMIN_EMAIL</code> is seeded or promoted at boot, never granted by the address itself — registration does not verify email. Promote any account here.</div>
+      {filtered.length > page.length && (
+        <div className="mt-3 flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={() => setShown((n) => n + USERS_PAGE)}>
+            Show {Math.min(USERS_PAGE, filtered.length - page.length)} more
+          </Button>
+          <span className="text-[11px] text-fg-faint">{page.length} of {filtered.length}{q ? " matching" : ""}</span>
+        </div>
+      )}
+      <div className="mt-2 text-[11px] text-fg-faint">Admin is a role, never an address — registration does not verify email. See System for how the gate works.</div>
     </Panel>
   );
 }
@@ -249,11 +269,10 @@ function Analytics({ stats }) {
   const maxReq = Math.max(...byUser.map((u)=>u.requests), 1);
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Requests (all time)" value={stats.usage.totalRequests} sub="auto_events" />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <StatCard label="Auto runs (all time)" value={stats.usage.totalRequests} sub="plans, generates, chat turns" />
         <StatCard label="Slides generated" value={stats.usage.totalSlides} />
-        <StatCard label="Tokens" value={`${(stats.usage.totalTokens/1000).toFixed(0)}k`} />
-        <StatCard label="Limits" value={`${stats.limits.windowRequests}/${stats.limits.windowHours}h`} sub={`${stats.limits.weeklyRequests}/week · ${stats.limits.maxSlidesPerDeck}/deck`} />
+        <StatCard label="Accounts with usage" value={byUser.length} sub={byUser.length ? `top: ${byUser[0].requests} runs` : "none yet"} />
       </div>
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">Top users by Auto requests</div>
@@ -270,11 +289,20 @@ function Analytics({ stats }) {
         ) : <div className="text-[12px] text-fg-faint">No usage yet</div>}
       </Panel>
       <Panel className="p-4">
-        <div className="mb-2 text-[12px] font-semibold text-fg">Limits (env-overridable)</div>
+        <div className="mb-2 text-[12px] font-semibold text-fg">Limits per account (env-overridable)</div>
         <div className="grid grid-cols-2 gap-2 text-[12px] sm:grid-cols-3">
           {Object.entries(stats.limits ?? {}).map(([k,v]) => (
-            <div key={k} className="rounded-lg bg-sunken px-2.5 py-1.5"><span className="font-mono text-[11px] text-fg-faint">{k}</span><span className="float-right font-medium text-fg">{String(v)}</span></div>
+            <div key={k} className={`rounded-lg px-2.5 py-1.5 ${k === "weeklyTokens" ? "bg-sunken opacity-50" : "bg-sunken"}`}>
+              <span className="font-mono text-[11px] text-fg-faint">{k}</span>
+              <span className="float-right font-medium text-fg">{String(v)}</span>
+            </div>
           ))}
+        </div>
+        {/* A cap nothing can reach reads as protection that is not there. No
+            call site records a token count — every one passes 0 — so this one
+            can never fire, and saying so beats printing it like the others. */}
+        <div className="mt-2 text-[11px] text-fg-faint">
+          <code className="font-mono">weeklyTokens</code> is inert: nothing records token counts yet, so it can never be reached.
         </div>
       </Panel>
     </div>
@@ -302,8 +330,10 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
           <div className="space-y-1.5 text-[12px]">
             <Row
               label="Forge Auto"
-              ok={stats.system.auto?.ok}
-              detail={stats.system.auto?.ok ? "generating" : (stats.system.auto?.detail ?? "not reachable")}
+              ok={stats.system.auto?.pending ? null : stats.system.auto?.ok}
+              detail={stats.system.auto?.pending
+                ? "checking — the probe takes up to 20s when the gateway is down"
+                : stats.system.auto?.ok ? "generating" : (stats.system.auto?.detail ?? "not reachable")}
             />
             <Row label="Ollama" ok={stats.system.ollamaOk} detail={hosted ? "disabled in hosted" : (stats.system.ollamaOk ? "reachable" : "not reachable")} />
             <Row label="SearXNG" ok={stats.system.searxngOk} detail={stats.system.searxngOk ? "ok" : "down"} />
@@ -321,6 +351,7 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
           </div>
         </Panel>
       </div>
+      <ControlsPanel controls={stats.system.controls} storageMb={stats.decks.size / 1024 / 1024} />
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">How this admin page is gated</div>
         <div className="text-[12px] leading-relaxed text-fg-muted">RBAC: <code className="font-mono">role=admin</code> in the users table — the only thing that grants admin. <code className="font-mono">FORGE_ADMIN_EMAIL</code> sets that role at boot; it is not a credential at request time. Use the Users tab to promote anyone — search email → Make admin. That account then sees Admin in the sidebar and can reach all <code className="font-mono">/api/admin/*</code>. Demote via Remove admin. The last admin cannot be deleted.</div>
@@ -479,12 +510,60 @@ function RolePanel({ audit }) {
   );
 }
 
+/**
+ * The three levers DEPLOY.md calls the operating controls, and the number they
+ * govern.
+ *
+ * All three are env-only and this panel deliberately cannot change them — a
+ * setting written from here would be install-wide config that outlives the
+ * container. The gap it closes is visibility: retention in particular is off
+ * unless someone set it, "at 5-15 MB per deck, without it the disk fills" is
+ * the deployment doc's own warning, and until now nothing on any screen said
+ * which way it was set.
+ */
+function ControlsPanel({ controls, storageMb }) {
+  if (!controls) return null;
+  const retentionOff = !controls.sweepDays;
+  return (
+    <Panel className={`p-4 ${retentionOff ? "border-amber/40" : ""}`}>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${retentionOff ? "bg-amber" : "bg-emerald-500"}`} />
+        <span className="text-[12px] font-semibold text-fg">Operating controls</span>
+        {retentionOff && <Badge>deck storage is unmanaged</Badge>}
+      </div>
+      <div className="space-y-1.5 text-[12px]">
+        <Row
+          label="Deck retention"
+          ok={!retentionOff}
+          detail={controls.sweepDays
+            ? `deleting after ${controls.sweepDays} days idle, daily at ${String(controls.sweepHour).padStart(2, "0")}:00`
+            : "off — decks are kept forever (FORGE_SWEEP_DAYS)"}
+        />
+        <Row
+          label="Registration"
+          ok={true}
+          detail={controls.openRegistration ? "open — anyone may sign up (FORGE_OPEN_REGISTRATION)" : "closed"}
+        />
+        <Row label="Deck storage" ok={true} detail={`${storageMb.toFixed(1)} MB across all accounts`} />
+      </div>
+      {retentionOff && (
+        <div className="mt-2 text-[11px] leading-relaxed text-fg-faint">
+          Set <code className="font-mono">FORGE_SWEEP_DAYS</code> to delete decks after that many days of
+          inactivity. Storage is the constraint that runs out first on this workload.
+        </div>
+      )}
+    </Panel>
+  );
+}
+
 function Row({ label, ok, detail }) {
   // A failure detail is a sentence from the service, not a word — it wraps
   // rather than being clipped, because the sentence is the whole value.
+  // `ok === null` is "no answer yet", which is neither green nor a fault.
+  const dot = ok === null ? "bg-fg-faint animate-pulse" : ok ? "bg-emerald-500" : "bg-amber";
   return (
     <div className="flex items-start gap-2">
-      <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${ok ? "bg-emerald-500" : "bg-amber"}`} />
+      <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dot}`} />
       <span className="shrink-0 text-fg">{label}</span>
       <span className="ml-auto min-w-0 text-right text-fg-faint">{detail}</span>
     </div>
