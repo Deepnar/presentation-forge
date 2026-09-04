@@ -88,7 +88,7 @@ roles:
   # Tool-calling and query formulation. Strong instruction-following matters
   # more than prose quality.
   research:
-    model: qwen3-coder:30b-a3b-q4_K_M
+    model: qwen3.6:35b-a3b
     temperature: 0.3
     num_ctx: 32768
     # How deeply one research pass searches and reads. These are the budgets
@@ -147,7 +147,12 @@ roles:
   # Cloud providers get `response_format: json_object` rather than Ollama's
   # grammar, so prefer a strong model and keep schemas small.
   author:
-    model: qwen3-coder:30b-a3b-q4_K_M
+    # The gateway's own model, run locally: same family, same 35B/A3B MoE shape,
+    # 4-bit like the gateway's NVFP4 (Q4_K_M here). That closeness is the point
+    # — a local stand-in from a DIFFERENT model answers a question nobody asked,
+    # and this one does not. It also carries vision and thinking, so the critic
+    # and the thinking experiment run on it too.
+    model: qwen3.6:35b-a3b
     temperature: 0.7
     top_k: 20
     top_p: 0.8
@@ -180,7 +185,9 @@ roles:
 
   # Reads rendered slide PNGs. Must be a vision model.
   critic:
-    model: gemma4:26b-a4b-it-q4_K_M
+    # Declares vision (a clip projector) as well as thinking, so the same
+    # weights read the slide PNGs the critic sends.
+    model: qwen3.6:35b-a3b
     temperature: 0.2
     num_ctx: 16384
     vision: true
