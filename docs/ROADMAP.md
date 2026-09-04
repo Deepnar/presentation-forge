@@ -2763,30 +2763,69 @@ so the slide keeps its `[image]` note and the manual upload door.
 > why the licence ladder prefers public domain rather than treating all tiers as
 > equal.
 
-### [ ] Image credits, surfaced — the file exists and nothing points at it
+### [x] Image credits, surfaced — the file exists and nothing points at it
 
-*Priority: high, and it is the honest completion of `Image supply — auto`. No
-model, no decision.*
+Auto supply wrote `decks/<slug>/CREDITS.md` and `assets/auto/credits.json` and
+**no surface mentioned either**, so a CC BY image's attribution reached nobody.
+Four seats now, not the three the entry named — the fourth was found by asking
+where a credit actually has to survive.
 
-Auto supply writes `decks/<slug>/CREDITS.md` and
-`assets/auto/credits.json`, and **no surface mentions either**. A public-domain
-image owes nothing, so the licence ladder prefers those and the gap is
-survivable — but a CC BY or BY-SA image is only compliant if its attribution
-reaches a reader, and today that depends on the user finding a file nobody told
-them about.
+`src/credits.js` is the shared record: `readCredits`, `writeCredits`,
+`creditText`/`creditMarkdown`, `sourceLabel`, `isCitable`, `creditsSlide`. It
+sits in `src/` rather than beside the supply because `src/ai/report.js` already
+imports `src/report.js`, and a renderer reaching back into the model layer would
+close that loop.
 
-Three seats, and they are not alternatives:
-- **The deck page.** `DeckDetail` already lists `problems[]`; the supply's
-  `images.credits` comes back on the finalize result, so a "picture credits"
-  block beside it is the cheapest visible fix.
-- **The report.** `src/report.js` is donor surgery with real sections; an image
-  credits section is where an academic submission would actually look.
-- **The deck itself.** There is an `attribution` slide type. Appending one when
-  any supplied image requires attribution would make the deck self-contained,
-  which is the only version that survives the file being lost.
+- **The deck page** (`DeckDetail`) — the short form beside `problems[]`, read
+  from disk on the deck payload rather than only off a finalize result, because
+  a reloaded page never saw that result.
+- **The research view** (`ResearchView`) — the full table beside the sources
+  table, which is the same question: provenance. Every credit, with the ones the
+  report omits marked "not cited in the report", so an absence is explained.
+- **The report** (`src/report.js`) — an `Image Credits` appendix, **citable
+  sources only**. It rides `present` rather than joining `REPORT_SECTIONS`:
+  that list is the structure the planner writes prose into, and asking a model
+  to author the provenance of files it never saw is how invented citations get
+  in. Riding `present` is enough for the TOC row and the two-pass page locator.
+- **The deck itself** — an `attribution` slide, built only from images that owe
+  attribution, appended after presenter assignment (back matter takes no
+  presenter) and outside `maxSlides` (a required credit is not content competing
+  for a slot). This is the seat the entry listed third and the only one that
+  survives the `.pptx` leaving the app.
 
-Worth deciding together, since the third changes the deck's slide count and
-that is a product call, not a defect fix.
+`isCitable` splits provenance a report can name from a stock photograph.
+Openverse aggregates 52 providers and 42 are museums, national libraries,
+archives, government agencies and scientific registers; the consumer upload
+platforms are the short, stable half, so they are the list.
+
+Verified end to end, not asserted: a real `.docx` rendered through the donor and
+read back with `pdftotext` (TOC row numbered and paginated, both citable credits
+present, the Flickr one correctly absent); both web surfaces driven in a real
+browser in light and dark; the credits slide rendered and rasterised.
+
+> **Learned.** Three things.
+>
+> **A denylist was right where an allowlist looked safer.** Naming the 42
+> institutions would have read as the careful choice and would silently drop a
+> legitimate museum the day Openverse adds one. A missing credit is worse than a
+> generous one, so the list is the ten consumer platforms and it fails open. The
+> cost is named rather than hidden: `flickr` carries real government photostreams
+> and the provider name cannot tell them from everything else, so those are
+> excluded from the report and still shown in the app.
+>
+> **The schema cap decided who got credited.** `attribution.name` caps at 30 and
+> "National Renewable Energy Laboratory" is 35, so the first render credited
+> "National Renewable Energy Lab…" — which is not an attribution. `contribution`
+> had 60 characters and 25 of them spare. A long creator now takes the roomier
+> field and the source takes the label. **Only the render showed this**; the
+> slide validated, the tests passed, and the object looked right.
+>
+> **A finished deck reports `needsFinalize`.** `generationStatus` derives `total`
+> from plan.yaml when no `.run.json` exists, so `written >= total` for every
+> completed deck and `DeckDetail` renders "Finishing this deck…" and returns
+> before any panel below it. It cost an hour of thinking the credits panel was
+> broken. Pre-existing and out of scope here; `meta.status === "ready"` is the
+> signal that already exists and is not consulted.
 
 ### [x] Research — truly better, not just deeper caps
 

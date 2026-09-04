@@ -297,6 +297,15 @@ fit-gate test written without it PASSED against a completely broken gate. Same
 blind spot `themematrix --notes` exists for, met from the other direction: the
 question to ask a fixture is what it does NOT carry.
 
+**A schema cap will quietly decide content that has to be exact.**
+`attribution.name` caps at 30; "National Renewable Energy Laboratory" is 35, so
+the credits slide rendered "National Renewable Energy Lab…" — which is not an
+attribution, on a slide whose only job is to attribute. The slide validated, the
+tests passed, and the object read correctly; only the rasterised page showed it.
+When a field carries something that must survive intact — a name, a licence, an
+identifier — check it against the cap it will actually be written into, and move
+it to a roomier field rather than letting the clip decide.
+
 ---
 
 ## Third-party APIs and outside data
@@ -354,6 +363,21 @@ supply's cache hit returned the file and `credit: null`, which would leave a
 CC BY image in a deck with its attribution nowhere. Resume, re-render and the
 critic pass all re-run the supply, so the cache hit is the NORMAL path, not an
 edge case — whatever the first run learned has to be readable by the second.
+
+**A record nothing reads is a record that does not exist.** The supply wrote
+`CREDITS.md` and `credits.json` correctly for weeks and no surface mentioned
+either, so every CC BY image was, in practice, uncredited. Writing the file felt
+like discharging the obligation and did not. Ask where the obligation is
+actually met — for a deck that is exported and emailed, only a slide inside the
+`.pptx` meets it, because every other surface stays behind in the app.
+
+**Prefer a denylist when the allowlist is the long half.** Classifying image
+sources as citable looked like a job for a list of the institutions to trust.
+Openverse carries 52 providers and 42 are museums, archives, government agencies
+and scientific registers — so the allowlist is 42 entries that silently drop a
+legitimate source the day one is added, and the denylist is ten consumer
+platforms. Pick the half that is short AND stable, and name the direction it
+fails in.
 
 ---
 

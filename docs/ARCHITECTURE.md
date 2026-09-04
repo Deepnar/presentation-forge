@@ -960,6 +960,36 @@ taken rather than leaving the slide bare, with the credit written down either
 way. `assets/auto/credits.json` is the machine record the cache reads back from;
 `CREDITS.md` is the page a person can paste into an appendix.
 
+**The credit has to reach a reader, or the licence ladder bought nothing.**
+`src/credits.js` is the shared vocabulary — it lives in `src/` rather than beside
+the supply because `src/ai/report.js` already imports `src/report.js`, and a
+renderer reaching back into the model layer would close that loop. It is read by
+four surfaces, and they are not alternatives:
+
+| Seat | What it carries | Why it is not enough alone |
+|---|---|---|
+| Deck page (`DeckDetail`) | every credit, short form | lives in the app |
+| Research view (`ResearchView`) | every credit, full table, with the report's omissions marked | lives in the app |
+| Report (`src/report.js`) | an `Image Credits` appendix, citable sources only | nothing if the deck is presented without its report |
+| The deck (`attribution` slide) | only what owes attribution | — the only copy that survives the `.pptx` leaving the app |
+
+`isCitable` splits provenance a report can name from a stock photograph.
+Openverse aggregates 52 providers and 42 are museums, national libraries,
+archives, government agencies and scientific registers, so the *denylist* of
+consumer upload platforms is the short and stable half. It fails open on
+purpose: an allowlist would drop a legitimate museum the day one is added, and a
+missing credit is worse than a generous one. The named cost is `flickr`, which
+carries real government photostreams the provider name cannot distinguish — those
+are excluded from the report and still shown in the app.
+
+The report's appendix rides `present` rather than joining `REPORT_SECTIONS`:
+that list is the structure the planner writes prose into, and asking a model to
+author the provenance of files it never saw is how invented citations get in.
+Riding `present` is all the TOC row and the two-pass page locator need. The deck
+slide is appended after presenter assignment — back matter takes no presenter —
+and outside `maxSlides`, because a credit the licence requires is not content
+competing for a slot.
+
 **Queries widen; they are never passed through.** Both upstreams AND their
 terms, so a written description returns nothing (`"electrolysis cell diagram"`
 → 0, `"electrolysis"` → 240). `queryLadder` steps from the full phrase, to the
