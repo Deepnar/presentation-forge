@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { listThemes, loadTheme } from "../src/theme.js";
-import { chartSeries, contrast, ensureContrast, isMonochrome, rgbToHsl, hslToHex } from "../src/chartpalette.js";
+import { chartSeries, contrast, ensureContrast, isMonochrome, rgbToHsl, hslToHex, deltaE } from "../src/chartpalette.js";
 
 /**
  * The chart palette contract.
@@ -47,8 +47,56 @@ test("a theme's declared series palette is used verbatim when it is legible", as
   const out = chartSeries(withTokens, 4);
   assert.equal(out[0], declared[0]);
   assert.equal(out[1], declared[1]);
-  // It cycles rather than running out.
-  assert.equal(out[2], declared[0]);
+});
+
+test("a declared palette that runs out is extended, never repeated", async () => {
+  // It used to cycle — `declared[i % len]` — which is harmless for series (the
+  // schema caps those at four) and wrong for a pie, whose colours come from its
+  // uncapped CATEGORIES. high-contrast-mono declares six, so an eight-slice pie
+  // drew slices 7 and 8 in exactly the colours of slices 1 and 2.
+  const theme = await loadTheme("warm-humanist");
+  const declared = ["#123456", "#AA3311"];
+  const withTokens = { ...theme, tokens: { ...theme.tokens, chart: { series: declared } } };
+  const out = chartSeries(withTokens, 6);
+  assert.equal(new Set(out).size, 6, `two slices would be drawn the same colour: ${out.join(" ")}`);
+  // The wrapped entries stay recognisably the author's colour — same hue,
+  // different value — rather than becoming something they did not pick.
+  assert.equal(rgbToHsl(out[2]).h, rgbToHsl(declared[0]).h);
+  assert.notEqual(out[2], out[0]);
+});
+
+test("no theme ever draws two series the same colour, at any slice count", async () => {
+  // A pie's colours come from its categories and the schema does not cap them.
+  const names = await listThemes();
+  for (const name of names) {
+    const theme = await loadTheme(name);
+    for (const count of [4, 8, 12]) {
+      const out = chartSeries(theme, count).map((c) => c.toUpperCase());
+      assert.equal(new Set(out).size, count, `${name} at ${count}: ${out.join(" ")}`);
+    }
+  }
+});
+
+test("series stay perceptually apart, not merely different hex", async () => {
+  // Hue gap alone was the old objective and it is the wrong one: two colours
+  // 20 degrees apart at the same lightness read as one. dE below 2.3 is the
+  // just-noticeable difference; below 10 is "similar".
+  const names = await listThemes();
+  let worst = { dE: Infinity };
+  for (const name of names) {
+    const theme = await loadTheme(name);
+    for (const count of [4, 8, 12]) {
+      const out = chartSeries(theme, count);
+      for (let i = 0; i < out.length; i++) {
+        for (let j = i + 1; j < out.length; j++) {
+          const d = deltaE(out[i], out[j]);
+          if (d < worst.dE) worst = { dE: d, name, count, pair: [out[i], out[j]] };
+        }
+      }
+    }
+  }
+  assert.ok(worst.dE >= 10,
+    `${worst.name} at ${worst.count} draws ${worst.pair?.join(" and ")} at dE ${worst.dE?.toFixed(1)}`);
 });
 
 test("every theme yields visible, distinguishable series in both modes", async () => {
