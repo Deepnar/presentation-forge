@@ -29,7 +29,7 @@ import { register, authenticate, startSession, endSession, userForToken, bearerT
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, checkAutoLimits, reserveAuto, limitConfig } from "../../src/limits.js";
+import { getUsage, reserveAuto, limitConfig } from "../../src/limits.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -126,8 +126,7 @@ async function isAutoRoute(model, userEmail = null) {
 function reserveAutoOrThrow(userEmail, upcomingSlides = 0, tokens = 0) {
   const uid = getUserId(userEmail);
   if (!uid) return { allowed: true };
-  const chk = checkAutoLimits({ userId: uid, upcomingSlides, upcomingTokens: tokens });
-  if (chk.allowed) { setTimeout(() => reserveAuto({ userId: uid, upcomingSlides, upcomingTokens: tokens }), 0); }
+  const chk = reserveAuto({ userId: uid, upcomingSlides, upcomingTokens: tokens });
   if (!chk.allowed) {
     const e = new Error(chk.errors.join(" · "));
     e.status = 429;
