@@ -170,6 +170,33 @@ function greyLimit(bg, bgLight, floor = CONTRAST_FLOOR) {
   return bgLight ? lo : hi;
 }
 
+/**
+ * CIE L*a*b*, and the CIE76 distance between two colours.
+ *
+ * Hue gap alone is the wrong objective for a categorical palette: two colours
+ * can sit 20 degrees apart and be told apart instantly, or 20 degrees apart at
+ * the same lightness and read as one colour. Roughly, dE below 2.3 is the
+ * just-noticeable difference and below 10 is "similar" — so this is the number
+ * the picker should be maximising, not hue.
+ */
+export function lab(color) {
+  const c = parseHex(color);
+  if (!c) return [0, 0, 0];
+  const lin = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+  const [r, g, b] = [lin(c.r), lin(c.g), lin(c.b)];
+  const f = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+  const X = f((0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047);
+  const Y = f(0.2126 * r + 0.7152 * g + 0.0722 * b);
+  const Z = f((0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883);
+  return [116 * Y - 16, 500 * (X - Y), 200 * (Y - Z)];
+}
+
+export function deltaE(a, b) {
+  const [l1, a1, b1] = lab(a);
+  const [l2, a2, b2] = lab(b);
+  return Math.hypot(l1 - l2, a1 - a2, b1 - b2);
+}
+
 /** Shortest distance between two hues on the wheel, 0..180. */
 function hueGap(a, b) {
   const d = Math.abs(((a - b) % 360 + 360) % 360);
@@ -207,27 +234,64 @@ function hueRamp(palette, count) {
     hues.push(alt.h);
   }
 
+  // Each further slot is the candidate furthest from everything already on the
+  // chart, measured perceptually. Searching lightness as well as hue is what
+  // fixes a crowded pie: past about eight slices the hue circle is full, and
+  // the only room left is in value — which is also the axis that survives
+  // greyscale printing and the common colour-vision deficiencies.
+  //
+  // It used to maximise hue gap alone and alternate lightness by index parity,
+  // so two entries an even number apart could land in the same hue region at
+  // identical lightness: a twelve-slice pie drew two greens at dE 6.
+  const lights = [l, l - 0.10, l + 0.10, l - 0.19];
   while (chosen.length < count) {
-    let bestHue = 0;
+    let best = null;
     let bestScore = -1;
-    for (let h = 0; h < 360; h += 2) {
-      const score = Math.min(...hues.map((x) => hueGap(h, x)));
-      if (score > bestScore) { bestScore = score; bestHue = h; }
+    for (let h = 0; h < 360; h += 4) {
+      for (const li of lights) {
+        const cand = ensureContrast(hslToHex({ h, s, l: Math.max(0.12, Math.min(0.88, li)) }), palette.bg);
+        const score = Math.min(...chosen.map((c) => deltaE(cand, c)));
+        if (score > bestScore) { bestScore = score; best = { cand, h }; }
+      }
     }
-    // Alternate lightness a little so neighbours differ in value as well as
-    // hue — which is what keeps them apart in greyscale print and for the
-    // most common colour-vision deficiencies.
-    const step = chosen.length % 2 === 0 ? 0 : -0.08;
-    chosen.push(ensureContrast(hslToHex({ h: bestHue, s, l: l + step }), palette.bg));
-    hues.push(bestHue);
+    chosen.push(best.cand);
+    hues.push(best.h);
   }
   return chosen;
 }
 
 /**
+ * One more turn round a palette that has run out, without repeating it.
+ *
+ * A declared palette used to be cycled with `declared[i % len]`, which is fine
+ * for series — the schema caps those at four — and wrong for a pie, whose
+ * colours come from its CATEGORIES and which the schema does not cap at all.
+ * `high-contrast-mono` declares six, so an eight-slice pie drew slices 7 and 8
+ * in exactly the colours of slices 1 and 2. Two slices the same colour is the
+ * same class of defect as a series that vanishes: the reader is told two
+ * different things are one thing.
+ *
+ * Each wrap moves the base colour a step in lightness, away from the
+ * background first so the variant stays legible. The hue is untouched, because
+ * the hue is the part the theme's author chose.
+ */
+function shade(base, wrap, bg) {
+  const hsl = rgbToHsl(base);
+  if (!hsl) return base;
+  const bgLight = luminance(bg) > 0.4;
+  // Alternate the direction so a long run does not walk off either end, and
+  // grow the step so the third wrap is not a hair from the first.
+  const dir = wrap % 2 === 1 ? (bgLight ? 1 : -1) : (bgLight ? -1 : 1);
+  const step = 0.13 * Math.ceil(wrap / 2);
+  const l = Math.max(0.06, Math.min(0.94, hsl.l + dir * step));
+  return hslToHex({ ...hsl, l });
+}
+
+/**
  * The series colours for a theme, in order. `tokens.chart.series` wins when the
  * theme declares one — that is the human-authored path, and the renderer never
- * second-guesses it beyond the contrast floor that keeps a series visible.
+ * second-guesses it beyond the contrast floor that keeps a series visible and
+ * the rule that no two entries may come out identical.
  */
 export function chartSeries(theme, count = 6) {
   const palette = theme.palette ?? theme.tokens?.palette ?? {};
@@ -235,7 +299,9 @@ export function chartSeries(theme, count = 6) {
   if (Array.isArray(declared) && declared.length) {
     const out = [];
     for (let i = 0; i < count; i++) {
-      out.push(ensureContrast(declared[i % declared.length], palette.bg));
+      const wrap = Math.floor(i / declared.length);
+      const base = declared[i % declared.length];
+      out.push(ensureContrast(wrap === 0 ? base : shade(base, wrap, palette.bg), palette.bg));
     }
     return out;
   }
