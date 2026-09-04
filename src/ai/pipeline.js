@@ -591,6 +591,10 @@ export async function writeDeckContent({
 export async function finalizeDeck({
   slug, theme = null, model, identity, onProgress, signal, critic = false, write = null, chat = null,
   imageSupply = null,
+  // Injectable for the same reason `chat` is: the critic loop reaches a vision
+  // model and a renderer, so nothing about what finalize does WITH its findings
+  // was reachable from a test until this seam existed.
+  critique = critiqueDeck,
 }) {
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
@@ -811,8 +815,11 @@ export async function finalizeDeck({
   const p = await preview(rendered.outFile, { dpi: 110 });
 
   let criticReport = null;
+  // The render that matches what finally lands on disk, when the passes after
+  // the critic move the deck past the last render the critic itself did.
+  let recut = null;
   if (critic) {
-    criticReport = await critiqueDeck({
+    criticReport = await critique({
       slug,
       deck: tr.grounded.deck,
       model,
@@ -820,6 +827,7 @@ export async function finalizeDeck({
       onProgress: (e) => onProgress?.({ status: "critiquing", ...e }),
     });
     if (criticReport.deck) {
+      const critiqued = YAML.stringify(criticReport.deck);
       // The critic rewrites content; run the trim on its output too so a fix
       // never trades a visual defect for an overfull slide.
       tr = await trimOnce(criticReport.deck);
@@ -830,6 +838,24 @@ export async function finalizeDeck({
       tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
       meta.status = "ready";
       await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
+      // …and then nothing drew it. critiqueDeck renders inside its own loop, so
+      // the .pptx was the deck the critic FINISHED with — before this trim, this
+      // grounding and this presenter re-assignment. Whenever a fix landed, the
+      // only artefact anyone opens was a different deck from deck.yaml, missing
+      // exactly the presenters the ops layer had just dropped. Draw it again.
+      if (YAML.stringify(tr.grounded.deck) !== critiqued) {
+        const drawn = await optionalPass("post-critic render", async () => {
+          const r = await render({ deckFile, themeName });
+          return preview(r.outFile, { dpi: 110 });
+        });
+        if (drawn) {
+          recut = {
+            slides: drawn.pages.map((f) => path.basename(f)),
+            thumbs: drawn.thumbs.map((f) => path.basename(f)),
+          };
+        }
+      }
     }
   }
 
@@ -840,8 +866,8 @@ export async function finalizeDeck({
     slug,
     deck: tr.grounded.deck,
     plan,
-    slides: criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
-    thumbs: criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
+    slides: recut?.slides ?? criticReport?.slides ?? p.pages.map((f) => path.basename(f)),
+    thumbs: recut?.thumbs ?? criticReport?.thumbs ?? p.thumbs.map((f) => path.basename(f)),
     problems: [
       ...tr.grounded.problems,
       ...(write?.problems ?? []),
