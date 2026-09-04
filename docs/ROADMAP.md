@@ -3901,6 +3901,14 @@ that costs nothing — 110 of 116 accounts own nothing at all.
 > world moved underneath it, which is exactly the failure the dry run exists to
 > prevent.
 >
+> **Run the delete, then go looking for what it left.** The cleanup ran cleanly
+> — 110 accounts, zero orphaned decks, because that rule was enforced — and left
+> exactly one thing behind: a per-account identity file, keyed by a hash of an
+> email that no longer resolves to anyone. The cascade list tells you what the
+> *database* cleans up, not what the *feature* owns; brand marks and the report
+> donor were in the same position and were the larger leak. `deleteUserAccount`
+> now removes all three.
+>
 > Also: **the interesting half of a destructive selection is what it excluded.**
 > Grouping the spared accounts by reason turned an unreadable 112-line list into
 > two chips, and it is where the deck-orphaning rule became visible as a rule

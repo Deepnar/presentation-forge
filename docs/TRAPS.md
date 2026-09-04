@@ -371,13 +371,24 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
-**Deleting a user does not delete what they own, and nothing else will
-either.** `deleteUserAccount` removes the user row and everything with an
-`ON DELETE CASCADE` — sessions, BYOK keys, prefs, usage — and stops there. Their
-decks keep a `meta.owner` naming an account that no longer exists, `canAccessDeck`
-shows them to nobody but an admin, and the folders sit on the volume forever. Any
-bulk removal has to exclude accounts that own something, or it silently converts
-user data into orphaned disk.
+**Cascades cover the rows and none of the files.** `deleteUserAccount` removes
+the user row and everything with an `ON DELETE CASCADE` — sessions, BYOK keys,
+prefs, usage — which looks like the whole job and is not. Two kinds of thing
+survive it:
+
+- **Files keyed by a tenant hash**: the account's identity override, its brand
+  marks, its report donor. Addressed by a hash of an email that no longer
+  resolves to anyone, so nothing will ever read or reclaim them. Now removed
+  with the account; found by running a 110-account cleanup and then looking for
+  what it left.
+- **Decks**, which are not the account's to delete unilaterally — `meta.owner`
+  would name a missing account and `canAccessDeck` would show the folder to
+  nobody but an admin. So bulk removal must EXCLUDE accounts that own decks
+  rather than delete them, or it silently converts user data into orphaned disk.
+
+The general shape: after building a delete, run it and then go looking for what
+it left behind. The cascade list tells you what the database cleans up, not
+what the feature owns.
 
 **Bind a destructive confirmation to the SET, not to the filter.** A dry run is
 only worth something if the confirmation authorises the list the operator

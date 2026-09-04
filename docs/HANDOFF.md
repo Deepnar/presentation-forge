@@ -1,6 +1,6 @@
 # Handoff — 2026-09-04, credits surfaced, admin swept, settings made live
 
-Everything is on `main`. `npm test` is **610 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **611 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -147,8 +147,14 @@ be raised. The deck rule matters because `deleteUserAccount` does **not** remove
 decks — they would keep an owner that no longer exists and sit on the volume
 invisible to everyone.
 
-**Not run on this box.** The preview reports 110 of 116 eligible; pressing the
-button is the operator's to do, which is the point of the design.
+**Run on this box**: 116 accounts to 6 (4 admins, 2 under a week old), all 16
+deck folders intact, **zero orphaned decks**, foreign keys clean.
+
+It left exactly one thing behind, which is how the next fix was found: a
+per-account identity file keyed by a hash of a deleted email. Brand marks and
+the report donor were in the same position and are the larger leak.
+`deleteUserAccount` now removes all three — the cascade list says what the
+*database* reclaims, not what the *feature* owns.
 
 ---
 
@@ -273,8 +279,8 @@ single session.
   a model writes.
 - `flickr` is excluded from the report's citable set, which also excludes the
   genuine government photostreams it hosts. Named in `src/credits.js`.
-- The dev box still holds **116 accounts**, 110 of them throwaway. `Admin → Users →
-  Clean up stale accounts` previews and removes them; it was deliberately not run.
+- The dev box now holds **6 accounts** (4 admins). The 110 throwaway ones were
+  removed through `Admin → Users → Clean up stale accounts`.
 - `decks/perovskite-solar-cells-stability-challenges-2` is the real generated
   deck kept as a fixture. Every check takes `--deck` — use it, because the
   specimen's payloads are hand-written to behave.
