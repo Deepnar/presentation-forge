@@ -231,9 +231,11 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     // The type field is free-form in the outline schema on purpose — a tight
     // enum here made the model abandon planning to satisfy the grammar. Coerce
     // after.
-    const slides = (plan.slides ?? [])
-      .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
-      .filter((s) => s.purpose);
+    const slides = normalisePlanSections(
+      (plan.slides ?? [])
+        .map((s) => ({ ...s, type: types.includes(s.type) ? s.type : "bullets" }))
+        .filter((s) => s.purpose),
+    );
     return { res, plan, slides };
   };
 
@@ -327,6 +329,38 @@ export function placeholderFor(spec) {
       "Regenerate this slide to replace the placeholders above.",
     ],
   };
+}
+
+/**
+ * Fill in the `section` a slide did not state.
+ *
+ * `section` is optional in the outline grammar, and a model that omits it on a
+ * DIVIDER costs the deck a whole part: ensureStructuralSlides matches openers
+ * by section index, so an unindexed divider matches nothing and a second
+ * divider is inserted for the same part. Observed as eight dividers on a
+ * four-part plan — the model's own opener, naming what the part argues,
+ * followed immediately by a generic "Open the part on X."
+ *
+ * A divider takes the section of the content it opens, which is the only
+ * reading of an opener that means anything; every other slide carries the
+ * previous slide's section forward.
+ */
+export function normalisePlanSections(slides) {
+  const out = slides.map((s) => ({ ...s }));
+  const previous = (i) => {
+    for (let j = i - 1; j >= 0; j--) if (Number.isInteger(out[j].section)) return out[j].section;
+    return 0;
+  };
+  for (let i = 0; i < out.length; i++) {
+    if (Number.isInteger(out[i].section)) continue;
+    if (DIVIDER_TYPES.has(out[i].type)) {
+      const opens = out.slice(i + 1).find((s) => !DIVIDER_TYPES.has(s.type) && Number.isInteger(s.section));
+      out[i].section = opens?.section ?? previous(i);
+    } else {
+      out[i].section = previous(i);
+    }
+  }
+  return out;
 }
 
 /**

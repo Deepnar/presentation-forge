@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ensureStructuralSlides, trimContentToBudget, mintContentSlides, placeholderFor } from "../src/ai/generate.js";
+import { ensureStructuralSlides, normalisePlanSections, trimContentToBudget, mintContentSlides, placeholderFor } from "../src/ai/generate.js";
 import { distributePresenters, DIVIDER_TYPES } from "../src/ai/team.js";
 import { validateDeck } from "../src/validate.js";
 
@@ -8,7 +8,7 @@ const content = (section) => ({ type: "bullets", section, purpose: "a point" });
 
 /** planDeck's post-processing, replayed here without a model. */
 function finalize(slides, sections, contentCap, mint = {}) {
-  let out = [...slides];
+  let out = normalisePlanSections(slides);
   if (out.length && out[0].type !== "title") out.unshift({ type: "title", purpose: "Open the deck.", section: 0 });
   out = trimContentToBudget(out, contentCap);
   out = mintContentSlides(out, sections, contentCap, mint);
@@ -51,6 +51,54 @@ test("ensureStructuralSlides skips a named-but-empty section — no blank page",
   const out = ensureStructuralSlides([content(0), content(1)], ["A", "B", "C"]);
   const secTypes = out.filter((s) => s.type === "section").length;
   assert.equal(secTypes, 2, "dividers only for sections 0 and 1, never the empty section 2");
+});
+
+test("normalisePlanSections gives an unindexed divider the section it opens", () => {
+  const out = normalisePlanSections([
+    { type: "title", section: 0, purpose: "open" },
+    { type: "section", purpose: "Announce Part One." },
+    content(0),
+    { type: "section", purpose: "Announce Part Two." },
+    content(1),
+  ]);
+  assert.deepEqual(out.map((s) => s.section), [0, 0, 0, 1, 1]);
+});
+
+test("an unindexed divider does not earn the part a second, generic opener", () => {
+  // The model states what the part argues and omits the index; the structure
+  // pass matches openers BY index, so without normalisation it saw no opener
+  // for section 0 and inserted its own — two dividers, back to back.
+  const given = [
+    { type: "title", section: 0, purpose: "open" },
+    { type: "section", purpose: "Announce Part One: buses as grid assets." },
+    content(0), content(0),
+    { type: "section", purpose: "Announce Part Two: equity first." },
+    content(1), content(1),
+  ];
+  const out = finalize(given, ["Grid Opportunity", "Equity"], 8);
+  assert.equal(out.filter((s) => s.type === "section").length, 2, "one opener per part");
+  assert.deepEqual(
+    out.filter((s) => s.type === "section").map((s) => s.purpose),
+    ["Announce Part One: buses as grid assets.", "Announce Part Two: equity first."],
+    "the model's own opener survives, not a generic replacement",
+  );
+});
+
+test("normalisePlanSections carries the previous section onto unindexed content", () => {
+  const out = normalisePlanSections([
+    { type: "title", section: 0, purpose: "open" },
+    content(1),
+    { type: "bullets", purpose: "a point with no index" },
+  ]);
+  assert.deepEqual(out.map((s) => s.section), [0, 1, 1]);
+});
+
+test("normalisePlanSections defaults to section 0 when nothing states one", () => {
+  const out = normalisePlanSections([
+    { type: "bullets", purpose: "a point" },
+    { type: "closing", purpose: "close" },
+  ]);
+  assert.deepEqual(out.map((s) => s.section), [0, 0]);
 });
 
 test("trimContentToBudget drops trailing content slides, never dividers", () => {
