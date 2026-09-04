@@ -298,13 +298,13 @@ test("a role whose model cannot think sends nothing — an unsupported `think` i
   };
   try {
     await chat({ role: "author", model: PLAIN, messages: [{ role: "user", content: "hi" }] });
-    assert.ok(!("think" in sent), `no think key, got ${JSON.stringify(sent.think)}`);
+    assert.ok(!("think" in sent), `no think key at all, got ${JSON.stringify(sent.think)}`);
   } finally {
     globalThis.fetch = orig;
   }
 });
 
-test("a role that does not declare thinking never sends it, however capable the model", async () => {
+test("a role that does not declare thinking turns it OFF explicitly", async () => {
   // The `research` role, which shares the author's model and declares no
   // thinking — so the only difference under test is the role's own config.
   const orig = globalThis.fetch;
@@ -323,7 +323,11 @@ test("a role that does not declare thinking never sends it, however capable the 
   };
   try {
     await chat({ role: "research", model: M, messages: [{ role: "user", content: "hi" }] });
-    assert.ok(!("think" in sent), "the role's declaration is the gate, not the model's ability");
+    // Not "absent" — FALSE. The model's own default is to think, so omitting
+    // the flag meant "whatever the template does", and the research role was
+    // measured returning 16,948 characters of reasoning it never asked for.
+    // Sending false took that call from 27 seconds to 3.
+    assert.equal(sent.think, false, "the role's declaration is the gate, and it has to be sent");
   } finally {
     globalThis.fetch = orig;
   }
@@ -341,7 +345,11 @@ test("xhigh is the gateway's vocabulary and maps to Ollama's top level", async (
     assert.equal(await at("xhigh", "m-xhigh"), "high", "Ollama has no xhigh; passing it through is a 400");
     assert.equal(await at("low", "m-low"), "low");
     assert.equal(await at(undefined, "m-none"), true, "declared without a level is still on");
-    assert.equal(await ollamaThink({ thinking: false, model: "m-off", backend: { baseURL: "http://t.example" } }), null);
+    assert.equal(
+      await ollamaThink({ thinking: false, model: "m-off", backend: { baseURL: "http://t.example" } }),
+      false,
+      "a capable model is told NOT to think, rather than left to its default",
+    );
   } finally {
     globalThis.fetch = orig;
   }

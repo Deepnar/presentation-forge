@@ -316,9 +316,14 @@ async function modelCapabilities(host, model) {
 const THINK_LEVELS = { low: "low", medium: "medium", high: "high", xhigh: "high" };
 
 export async function ollamaThink(spec) {
-  if (!spec.thinking) return null;
   const caps = await modelCapabilities(spec.backend.baseURL, spec.model);
   if (!caps?.has("thinking")) return null;
+  // Explicit in BOTH directions, because the model's default is to think.
+  // Measured: the `research` role, which declares no thinking, returned 16,948
+  // characters of reasoning — so omitting the flag did not mean "off", it meant
+  // "whatever the template does". A config that is only consulted when it says
+  // yes is not a config; `false` has to be sent as deliberately as a level.
+  if (!spec.thinking) return false;
   return THINK_LEVELS[spec.reasoning_effort] ?? true;
 }
 
@@ -824,6 +829,7 @@ async function cloudChat(spec, {
     const decoder = new TextDecoder();
     let buffer = "";
     let content = "";
+    let thinking = "";
     let toolCalls = [];
     let evalCount = 0;
     let promptCount = 0;
@@ -856,7 +862,7 @@ async function cloudChat(spec, {
     }
 
     return {
-      content, toolCalls,
+      content, toolCalls, thinking: thinking || null,
       model: spec.model, role: spec.role, fellBack: spec.fellBack,
       evalCount, promptCount, doneReason,
     };
@@ -924,6 +930,11 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
       const body = await res.json();
       return {
         content: body.message?.content ?? "",
+        // Ollama returns reasoning separately from the answer. Carried so a
+        // caller can SAY whether a result was thought about — the same reason
+        // `fellBack` and `transport` are carried. A run that cannot report
+        // whether reasoning was used cannot be compared with one that did.
+        thinking: body.message?.thinking || null,
         toolCalls: body.message?.tool_calls ?? [],
         model: spec.model,
         role: spec.role,
@@ -964,6 +975,11 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
           content += piece;
           onToken(piece);
         }
+        // Reasoning streams in its own field and is NOT streamed onward: a
+        // caller's onToken is writing the answer to a user, and a model's
+        // deliberation is not part of it. Accumulated only so the result can
+        // report that thinking happened.
+        if (obj.message?.thinking) thinking += obj.message.thinking;
         if (obj.message?.tool_calls?.length) toolCalls = obj.message.tool_calls;
         if (obj.eval_count) evalCount = obj.eval_count;
         if (obj.prompt_eval_count) promptCount = obj.prompt_eval_count;
