@@ -916,14 +916,29 @@ export async function resumeGeneration({
 
 /**
  * The on-disk state of a (possibly interrupted) generation: how many plan
- * slides are written versus total, and whether the deck is complete but
- * unfinalised. The server folds the in-memory registry on top for `active`.
+ * slides are written versus total, whether finalize has run, and whether the
+ * deck is complete but unfinalised. The server folds the in-memory registry on
+ * top for `active`.
+ *
+ * `finalized` is the one that is not arithmetic. `complete` only says every
+ * plan slide reached deck.yaml, which is true of every FINISHED deck too — so
+ * "complete and no run is live" describes a normal deck, not an interrupted
+ * one, and reading it as the latter made the finalize watchdog fire on every
+ * deck that had ever succeeded. `meta.status` already carries the answer:
+ * `writeDeckContent` sets "writing" for the duration and `finalizeDeck` flips
+ * it to "ready", so a deck stranded between the two is exactly the state the
+ * watchdog is for.
+ *
+ * Absent or unreadable meta is reported as NOT finalized, which is the old
+ * behaviour: offering a finalize that was not needed costs a run, and
+ * withholding one that was leaves a deck the user cannot use.
  */
 export async function generationStatus(slug) {
   const dir = path.join(DECKS, slug);
   let deck = null;
   let plan = null;
   let run = null;
+  let meta = null;
   try {
     deck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
   } catch { /* no deck yet */ }
@@ -933,12 +948,21 @@ export async function generationStatus(slug) {
   try {
     run = JSON.parse(await readFile(path.join(dir, RUN_FILE), "utf8"));
   } catch { /* no checkpoint */ }
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8"));
+  } catch { /* no meta — treated as unfinalised below */ }
   const written = deck?.slides?.length ?? 0;
   const total = run?.total ?? plan?.slides?.length ?? 0;
+  const complete = total > 0 && written >= total;
+  const finalized = meta?.status === "ready";
   return {
     written,
     total,
-    complete: total > 0 && written >= total,
+    complete,
+    finalized,
+    // What the watchdog is actually for: written through, and finalize did not
+    // finish. `active` is not knowable from disk; the server folds it in.
+    unfinalised: complete && !finalized,
     partial: written > 0 && total > 0 && written < total,
     status: run?.status ?? null,
   };

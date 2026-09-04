@@ -591,10 +591,15 @@ app.get("/api/decks/:slug", wrap(async (req, res) => {
     run: {
       ...onDisk,
       ...live,
-      // "complete" means every plan slide is written (finalize is all that is
-      // left); "resumable" means a partial deck sits on disk to continue.
+      // "complete" means every plan slide is written; "resumable" means a
+      // partial deck sits on disk to continue. `needsFinalize` needs more than
+      // completeness — every finished deck is complete — so it reads
+      // `unfinalised`, which is completeness AND meta.status never reaching
+      // "ready". The UI auto-runs finalize on this flag, so a deck that had
+      // already succeeded was re-grounded, re-swept and re-rendered on every
+      // visit to its page.
       resumable: onDisk.partial,
-      needsFinalize: onDisk.complete && live.active === false,
+      needsFinalize: onDisk.unfinalised && live.active === false,
     },
   });
 }));
