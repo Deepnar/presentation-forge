@@ -2,7 +2,7 @@ import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { deckSchema, catalogForType } from "./catalog.js";
 import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
-import { validateDeck } from "../validate.js";
+import { validateDeck, errorsForSlide } from "../validate.js";
 import { themeMatrix } from "../themematrix.js";
 
 /**
@@ -313,18 +313,38 @@ export async function fieldLengthPass({
       problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite failed — leaving to the trim`);
       continue;
     }
+    // Judge the rewrite by what IT did to THIS slide, never by whether the
+    // whole deck is clean. This pass runs BECAUSE a deck has fields over their
+    // caps, and it deliberately leaves the hard ones to the deterministic trim
+    // — so a whole-deck ok/not-ok gate is false on very nearly every deck it is
+    // asked to repair. It used to return the input deck in that case, throwing
+    // away every repair it had just made, while still reporting them in
+    // `repaired` so the caller believed they had been applied. Observed on a
+    // real generated deck: four feature-grid card bodies cut mid-word by the
+    // grammar, rewritten correctly here, and shipped cut anyway.
+    const before = errorsForSlide((await validateDeck(out)).errors, i);
+    const next = structuredClone(out);
+    next.slides[i] = candidate;
+    const after = errorsForSlide((await validateDeck(next)).errors, i);
+    if (after.length > before.length) {
+      problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite rejected — ${after[0]}`);
+      continue;
+    }
+
     for (const f of over) {
-      const before = f.text;
-      const after = findFieldText(candidate, f.path, f.text);
-      if (after && after !== before) repaired.push({ index: i, path: f.path, label: f.label, before, after });
+      const was = f.text;
+      const now = findFieldText(candidate, f.path, f.text);
+      if (now && now !== was) repaired.push({ index: i, path: f.path, label: f.label, before: was, after: now });
     }
     out.slides[i] = candidate;
   }
 
-  const { ok, errors } = await validateDeck(out);
-  if (!ok) problems.push(...errors);
+  // Reported, never acted on: `out` is now never worse than the deck handed in,
+  // slide by slide, so what is left is the trim's work and the caller's to know.
+  const { errors } = await validateDeck(out);
+  if (errors?.length) problems.push(...errors);
 
-  return { deck: ok ? out : deck, repaired, problems };
+  return { deck: out, repaired, problems };
 }
 
 /** After a rewrite, the new text of a specific field (by value match fallback). */

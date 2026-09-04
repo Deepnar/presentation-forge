@@ -55,6 +55,27 @@ function describe(err, deck) {
   }
 }
 
+/**
+ * The errors belonging to one slide.
+ *
+ * `describe` puts the slide number in prose and the JSON pointer in the message
+ * only for the keywords that have a sub-path. A `required` or
+ * `additionalProperties` error carries neither the item nor the pointer — just
+ * "slide N (type: T)" — so matching on the pointer alone silently drops the one
+ * error class that means the slide cannot be drawn at all. Match both forms.
+ *
+ * This exists so a pass can ask "did MY edit make this slide worse" instead of
+ * "is the whole deck clean". The second question is false on almost every real
+ * deck — `loadDeck` warns on an over-long field rather than refusing, so decks
+ * ship slightly invalid and still render — and a pass that gates on it discards
+ * its own good work.
+ */
+export function errorsForSlide(errors, index) {
+  const pointer = new RegExp(`/slides/${index}(?![0-9])`);
+  const prose = new RegExp(`^slide ${index + 1} \\(`);
+  return (errors ?? []).filter((e) => pointer.test(String(e)) || prose.test(String(e)));
+}
+
 export async function validateDeck(deck) {
   const validate = await compiled();
   const ok = validate(deck);

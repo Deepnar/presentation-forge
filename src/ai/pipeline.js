@@ -668,6 +668,10 @@ export async function finalizeDeck({
       repaired = { deck: fix.deck, problems: groundOnce(fix.deck).problems };
       await writeFile(deckFile, YAML.stringify(repaired.deck), "utf8");
     }
+    // A rewrite this pass could not make — or had to reject — is the reader's
+    // to know: what is left is a field the deterministic trim will cut, and the
+    // cut is what shows up on the slide. These were computed and dropped.
+    for (const p of (fix?.problems ?? []).slice(0, 6)) passSkips.push(p);
   }
 
   // Content-trim pass: slides the fitter flags below the readable floor get
