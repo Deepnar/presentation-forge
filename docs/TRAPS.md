@@ -371,6 +371,16 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**A state that is true of every healthy object cannot detect a broken one.**
+The finalize watchdog fired on `complete` — every plan slide written — and read
+it as "an interrupted run left this behind". Every deck that ever succeeded is
+complete, so the flag was true for six of seven decks on the box, and the UI
+auto-ran a full post-write pass (grounding, a model call, image supply, render,
+preview) every time one of their pages was opened. The signal that actually
+separates the two cases already existed one file away, in `meta.status`. Before
+trusting a derived boolean as a fault detector, ask what it reads on a
+completely healthy object.
+
 **Prefer a denylist when the allowlist is the long half.** Classifying image
 sources as citable looked like a job for a list of the institutions to trust.
 Openverse carries 52 providers and 42 are museums, archives, government agencies

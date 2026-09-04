@@ -2763,6 +2763,35 @@ so the slide keeps its `[image]` note and the manual upload door.
 > why the licence ladder prefers public domain rather than treating all tiers as
 > equal.
 
+### [x] `needsFinalize` was true for every finished deck
+
+*No model. Found while verifying the credits panel, which it was hiding.*
+
+`generationStatus` derived `total` from plan.yaml when no `.run.json` exists and
+`written` from deck.yaml, so `written >= total` — `complete` — for every deck
+that had ever finished. `app/server/index.js` read that as
+`needsFinalize: complete && !active`, which is a description of a normal deck.
+
+**Not cosmetic.** `DeckDetail` auto-runs finalize on the flag (a deliberate
+watchdog: "reaching this state is always an accident"), so opening a finished
+deck re-ran grounding, the coherence model call, image supply, the render and
+the preview — and its banner returned before every panel below it, which is why
+the credits block looked broken.
+
+`meta.status` already carried the answer: `writeDeckContent` sets `"writing"`
+and `finalizeDeck` flips it to `"ready"`, so a deck stranded between the two is
+exactly the watchdog's case. `generationStatus` now reports `finalized` and
+`unfinalised`; the server gates on `unfinalised`. Absent meta stays unfinalised
+(the old behaviour) — an unneeded finalize costs a run, a withheld one leaves a
+deck nobody can use. `test/generation-status.test.js` was run against the
+pre-fix code first and failed on exactly the two finished-deck cases.
+
+> **Learned.** A derived boolean that is true of every healthy object cannot
+> detect a broken one. `complete` was arithmetic about slide counts and was
+> being asked a question about intent. The check worth running on any fault flag
+> is what it reads on something that is completely fine — six of the seven decks
+> on the box answered that immediately.
+
 ### [x] Image credits, surfaced — the file exists and nothing points at it
 
 Auto supply wrote `decks/<slug>/CREDITS.md` and `assets/auto/credits.json` and
