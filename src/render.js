@@ -154,7 +154,10 @@ export async function render({
     // never take one — there is no standard content box to reserve.
     const noteBar = data.speaker_note && !isFull;
     const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity, type: data.type });
-    const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total };
+    // `problems` is passed in so a layout can report content it had to
+    // reconcile — a chart whose series and categories disagree is drawn rather
+    // than dropped, and the deck says so instead of the reader finding out.
+    const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total, problems };
 
     // A plate replaces the flat background: headless Chrome rasterises the
     // theme's (or the slide's) HTML and the PNG becomes the true slide

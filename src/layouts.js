@@ -1187,10 +1187,33 @@ export const layouts = {
       card(slide, theme, { x: box.x, y, w: hasAside ? box.w : cw, h: ch });
     }
 
-    const raw = c.series.map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
+    // Every series and the category list must be the SAME length. OOXML has no
+    // opinion about it, pptxgenjs writes whatever it is handed, and
+    // `pres.writeFile()` succeeds — and then LibreOffice refuses to open the
+    // file AT ALL. Not the chart: the whole deck. A real generated deck had a
+    // line chart with two categories and five values and a bar chart with one
+    // category and four, and neither the schema (which cannot express a
+    // cross-field length relation) nor the render caught it. Twenty good slides
+    // were unopenable because of two bad ones.
+    //
+    // Reconciled towards the DATA. A category is a label and a blank label
+    // costs a tick mark; a value is a measurement and dropping one silently
+    // changes what the chart says. So the length is the shortest series — the
+    // only figure every series can actually supply — and categories are padded
+    // or trimmed to match it.
+    const seriesLen = Math.min(...c.series.map((s) => (s.values ?? []).length));
+    const labels = Array.from({ length: seriesLen }, (_, i) => c.categories[i] ?? "");
+    if (labels.length !== c.categories.length || c.series.some((s) => (s.values ?? []).length !== seriesLen)) {
+      ctx.problems?.push(
+        `slide ${ctx.index}: chart categories (${c.categories.length}) and series lengths ` +
+        `(${c.series.map((s) => (s.values ?? []).length).join(", ")}) disagree — drawn at ${seriesLen}`,
+      );
+    }
+
+    const raw = c.series.map((s) => ({ name: s.name, labels, values: (s.values ?? []).slice(0, seriesLen) }));
     const series = c.kind === "scatter"
       ? [
-          { name: "X-Axis", values: c.categories.map((cat, i) => Number(cat) || i + 1) },
+          { name: "X-Axis", values: labels.map((cat, i) => Number(cat) || i + 1) },
           ...raw.map(({ name, values }) => ({ name, values })),
         ]
       : raw;
