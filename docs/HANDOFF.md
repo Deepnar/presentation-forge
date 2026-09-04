@@ -1,6 +1,6 @@
 # Handoff — 2026-09-04, a model at last: the first deck generated and read
 
-Everything is on `main`. `npm test` is **618 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **626 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -216,7 +216,12 @@ prose is good.** Three defects came out of reading it:
 - **Three of twenty slides had no headline**, rendering as a tall empty band
   above stretched content. `headline` was required on 15 types and optional on
   57; it is now required on every content type, and the ops grammar inherits it.
-- **Research returned 16 junk sources out of 21.** Not fixed — item 1 below.
+- **Research returned 16 junk sources out of 21** — Wikipedia's "India" (31,107
+  words), four Microsoft support pages, a Minecraft mod, drugs.com on lithium
+  the medication. **Now fixed**: `absorb` scores each page's topical density
+  against terms derived from the brief. Re-run on the same brief: **16 junk of
+  21 became 2 of 8**, and the corpus gained `energy.gov` — an authoritative
+  source the junk had been crowding out.
 
 Fixing the first one also exposed two scoring bugs: the render reported the
 disagreement per theme, so a 34-theme sweep counted 68 fit failures and
@@ -228,42 +233,28 @@ to 50%.
 
 ## Plan for next session
 
-### 1. Research relevance — 16 of 21 sources were not about the topic
-
-*No model needed. The largest quality defect the first real deck exposed.*
-
-The corpus for a solid-state battery deck held Wikipedia's **"India"** (31,107
-words) and **"History of India"** (28,946), four Microsoft *"How to get help in
-Windows"* pages, a **Minecraft "Lithium" mod**, and **drugs.com** and **Mayo
-Clinic** on lithium the medication. Five of twenty-one were about batteries.
-
-The queries are fine — one reasonable angle query, *"India solid state battery
-policy framework"*, matched the country article on "India" alone. **The problem
-is that nothing between the search results and `notes.md` asks whether a page is
-about the topic**: `absorb` in `src/ai/research.js` filters on `item.ok`, URL
-dedupe and a per-host cap, full stop.
-
-Already measured on the real pages, so the design is settled — **use density,
-not presence**. Wikipedia "India" contains 5 of the 7 topic terms (a presence
-rule passes it) at **0.44 hits per 1000 words**, against Wikipedia "Solid-state
-battery" at **35.55**. An 80x margin; a floor near 1.0/1000 drops the junk with
-room to spare. Derive the terms from the brief so the code stays topic-agnostic.
-
-### 2. The image-seating question, now answerable  *(a model is available)*
+### 1. The image-seating question  *(a model is available)*
 
 `--images` ran and supplied **nothing**: every `[image]` note landed on a type
-that cannot carry one without losing content. That is one deck and not yet an
-answer — but the question the last three handoffs could not ask is now one
-generation away. If real notes keep landing on 5- and 6-bullet slides, the
-answer is a new slide type, not a looser rule.
+that cannot carry one without losing content. One deck is not an answer, but the
+question three handoffs could not ask is now one generation away. If real notes
+keep landing on 5- and 6-bullet slides, the answer is a new slide type, not a
+looser rule.
 
-### 3. The thinking experiment and the critic loop  *(a model is available)*
+### 2. The thinking experiment and the critic loop  *(a model is available)*
 
 Both were model-blocked and are not any more. `qwen3.6:35b-a3b` declares
 thinking AND vision, so `roles.author.thinking` can be toggled and compared, and
 `--critic` can finally be watched sending slide PNGs to a model that can read
 them. **Grep `cloudSpec` before trusting any per-role option** — it builds its
 own spec instead of going through `resolveRole` and has silently dropped these.
+
+### 3. Surfaces still never run  *(mostly needs a model)*
+
+`--upload` research, `report-new`, `deck-from-report`, and **presenter
+assignment with a real team** — every deck so far rendered `Presenter: —`, so
+the whole per-member split is unexercised. Rate limits were the last no-model
+item on that list and are now driven.
 
 ### Two decisions that are yours, both still open
 
@@ -286,6 +277,88 @@ entry's remaining half (the chat view's outline and editing phases) stays
 model-blocked: reaching it means generating something.
 
 ---
+
+## What is left to put this in front of real users
+
+Written down because it was asked, and because the answer is smaller than it
+looks: the hard infrastructure is done and the blockers are mostly external.
+
+**Done and not the problem.** Accounts, sessions, email verification and
+password reset; per-account decks, identity, brand marks, report donor and BYOK
+keys, with `test/tenancy.test.js` as the executable contract; an admin panel
+that reports what is broken and can change the operating settings; atomic spend
+limits; a Docker deploy with a TLS profile and documented backups; legal pages.
+
+**The four things that actually block a public launch.**
+
+1. **A model you can serve.** The only real blocker. The CoE gateway is wedged
+   (below), and a 22 GB model on the developer's laptop is not a hosting story.
+   Three honest options, and the middle one is the cheapest by a distance:
+   - the gateway comes back — outside our control;
+   - **BYOK only**: every user brings their own OpenAI/OpenRouter key. The
+     plumbing already exists (`resolveProviderKey`, Settings → Cloud), it costs
+     the operator nothing per deck, and it removes billing entirely;
+   - pay a hosted API and charge for it — see the section below.
+2. **SMTP.** Without it there is no password reset, and `DEPLOY.md` is explicit:
+   configure it before inviting anybody. An hour of work, not a project.
+3. **A domain and TLS.** The Caddy profile exists and wants a domain pointed at
+   it.
+4. **Browser regression coverage.** Three total outages this project has had —
+   in-app navigation dead, an export button 401 for everyone, a confirm screen
+   spending its token twice — existed only in a running browser and none was
+   reachable from the test suite. Nothing prevents a fourth. This is the
+   standing decision below, and it is the one worth taking before launch rather
+   than after.
+
+**Not blocking, but needed the day money is involved:** payments, plans, and
+metering the unit you are billed in. Next section.
+
+**The honest estimate.** BYOK-only is roughly a week of evenings: SMTP, a
+domain, and a pass over the unexercised journeys. The paid path is four to six
+weeks on top of that, and most of it is not code.
+
+## If the gateway never comes back: payments, and making limits bind
+
+Asked directly, so recorded properly. Three separate difficulties, and **the
+technical one is the smallest**.
+
+**1. The integration is easy.** Razorpay (or Stripe) is a day or two: create an
+order server-side, run their checkout, verify the webhook signature, mark the
+account. The app already has accounts, an admin-gated settings layer and a
+per-account key store, so there is a clean place to hang all of it.
+
+**2. The legal side is the real cost, and it is not code.** In India: a
+registered entity or an individual with PAN, bank account and KYC; GST
+registration and remittance once turnover crosses the threshold; a published
+refund policy, terms and privacy policy (Razorpay checks these during
+activation — `Legal.jsx` is a start). Days to weeks of paperwork. **Settle the
+entity question first**: taking money in a personal account for something
+carrying a college's name is a problem to solve before writing any code.
+
+**3. Making the limits bind is where the engineering is**, and `src/limits.js`
+is a good foundation built for the wrong purpose — fair use on the operator's
+key, not billing. The gaps, in the order they bite:
+
+- **Tokens are never recorded.** `recordAutoEvent` accepts a token count and
+  every call site passes 0, so `weeklyTokens` is inert. **You are billed in
+  tokens and metering in "requests"** — a 24-slide dense deck with deep research
+  costs many times a 10-slide sparse one and both count as 1. Nothing can be
+  priced honestly until this is fixed, and it is the first thing to do.
+- **No plan or tier.** Every account gets identical caps; `users` has no plan
+  column. Per-plan limits are a small change once the settings layer is used.
+- **Spend is taken up front and never reconciled.** `reserveAuto` holds the
+  budget before the run, which is right — but a failed generation still consumes
+  it. For fair use that is fine; for money it is a refund request. Reserve an
+  estimate, then adjust to actual on completion, which is how metered APIs work.
+- **A refusal is a dead end, not a product surface.** A 429 saying "12 of 12
+  used" with a Buy button converts; a bare error does not.
+- **Keep BYOK as the pressure valve.** A user on their own key costs nothing and
+  should not be metered at all — `resolveProviderKey` already works this way.
+
+**What actually makes people pay** is not enforcement, it is a free tier that is
+genuinely useful and bounded exactly where a real user needs more. The current
+defaults — 12 runs per 5 hours, 30 a week, 45 slides — are already about "a few
+decks a week", which is close to right for a student product.
 
 ## Running anything — read this or lose an hour
 
@@ -369,8 +442,13 @@ single session.
 - The dev box now holds **6 accounts** (4 admins). The 110 throwaway ones were
   removed through `Admin → Users → Clean up stale accounts`.
 - `decks/solid-state-batteries-for-electric-vehicles` is the first deck this
-  project generated end to end. Keep it: its research corpus is the evidence for
-  item 1 and its charts are the fixture for the length bug.
+  project generated end to end. **Keep it**: its charts are the fixture for the
+  length bug and its `research/sources.json` is the before-picture for the
+  relevance gate.
+- The research corpus is now **smaller and better** — 8 sources rather than 21.
+  If a deck ever reads thin, check `offtopic` in the research progress before
+  assuming the gate is too tight; `RELEVANCE_FLOOR` in `src/ai/research.js` is
+  one number and it was tuned against seven real pages.
 - `decks/.specimen-cache` is **608 MB** of dev artefact. Harmless, and not what
   the admin Storage card counts, but it dominates any `du` of `decks/`.
 - `decks/perovskite-solar-cells-stability-challenges-2` is the real generated
