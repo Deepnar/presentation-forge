@@ -8,6 +8,19 @@ import { applyTransport, authorTransport, researchExcerptCap, researchProfile, c
 import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
 import { providerModels, setHostedForTest } from "../src/cloud.js";
 
+/**
+ * Whichever model config/models.yaml currently gives the author role.
+ *
+ * These tests fake `/api/tags` so `resolveRole` believes the configured model
+ * is installed; hardcoding its name made them fail the day the config named a
+ * different one, which is a fact about the config and not about the transport
+ * they exist to exercise.
+ */
+async function configuredAuthorModel() {
+  const cfg = YAML.parse(await readFile(path.join(ROOT, "config", "models.yaml"), "utf8"));
+  return cfg.roles.author.model;
+}
+
 // These exercise the LOCAL Ollama transport, so they must run in local mode.
 // Without this the result depends on whether this machine's admin toggle
 // (config/hosted.json) happens to be flipped — green in CI, red on a box that
@@ -164,7 +177,7 @@ test("providerModels returns empty on a failed fetch, never throwing", async () 
 test("chat() auto-bumps the cap when a non-streamed response is cut at length", async () => {
   const orig = globalThis.fetch;
   const caps = [];
-  const AUTHOR = "qwen3-coder:30b-a3b-q4_K_M";
+  const AUTHOR = await configuredAuthorModel();
   globalThis.fetch = async (url, opts = {}) => {
     const u = String(url);
     if (u.endsWith("/api/tags")) {
@@ -201,7 +214,7 @@ test("chat() auto-bumps the cap when a non-streamed response is cut at length", 
 test("chat() leaves a streamed length-truncated response alone (tokens cannot be unsaid)", async () => {
   const orig = globalThis.fetch;
   const caps = [];
-  const AUTHOR = "qwen3-coder:30b-a3b-q4_K_M";
+  const AUTHOR = await configuredAuthorModel();
   globalThis.fetch = async (url, opts = {}) => {
     const u = String(url);
     if (u.endsWith("/api/tags")) {
