@@ -4,7 +4,7 @@ import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import {
-  licenceTier, queryTerms, queryLadder, rankCandidates,
+  licenceTier, queryTerms, queryLadder, rankCandidates, subjectMatches, rankBySubject,
   imageSeat, seatImage, supplyDeckImages, makeBudget,
 } from "../src/ai/images.js";
 
@@ -37,6 +37,58 @@ test("an unreadable licence is refused — 'unknown' is not a licence", () => {
 
 /* ------------------------------------------------------------------ query */
 
+/* ----------------------------------------------------- subject relevance */
+
+/**
+ * Nothing asked whether the picture was OF the thing. `rankCandidates` orders
+ * by licence tier and pixel width, and the ladder degrades the query, so a
+ * correctly-licensed high-resolution picture of the wrong subject won.
+ *
+ * Every title below was returned by the live upstreams for the query beside it,
+ * in one afternoon, for one slide.
+ */
+const WRONG = [
+  ["V2G bus depot",                     "Jupiter 2012/11/17 (IR filter)"],
+  ["The Physical Anatomy of a V2G Bus Depot", "Korpers Des Menschen (1898), an antique lithograph of an anatomy chart of a human body"],
+  ["school buses charging at a depot",  "Summit Middle School charging heat and shelter in Hurricane Sandy aftermath"],
+  ["Fermata FE-20 charger at school bus depot", "Fermata (Inverted)"],
+];
+
+test("a picture of the wrong thing is refused, however well licensed", () => {
+  for (const [description, title] of WRONG) {
+    const terms = queryTerms(description);
+    assert.equal(
+      rankBySubject([{ title, tier: 0, width: 4000 }], terms).length,
+      0,
+      `should refuse "${title.slice(0, 40)}…" for "${description}"`,
+    );
+  }
+});
+
+test("a picture of the right thing is kept, and the best match leads", () => {
+  const terms = queryTerms("school buses charging at a depot");
+  const ranked = rankBySubject([
+    { title: "A bus", tier: 0, width: 4000 },
+    { title: "Electric school buses charging at a depot", tier: 2, width: 800 },
+    { title: "School bus depot", tier: 0, width: 2000 },
+  ], terms);
+  assert.equal(ranked[0].title, "Electric school buses charging at a depot",
+    "relevance outranks licence tier and pixel width — a big clean picture of the wrong thing is still wrong");
+  assert.equal(ranked.length, 2, "and the one-word match is refused");
+});
+
+test("an untitled candidate cannot be judged, so it is refused", () => {
+  assert.equal(subjectMatches({ title: null }, ["bus", "depot"]), 0);
+  assert.equal(rankBySubject([{ title: "" }], ["bus", "depot"]).length, 0);
+});
+
+test("with no subject to judge against, nothing is judged", () => {
+  // A caller that supplied no usable description must not have every candidate
+  // refused — the gate is off, not inverted. Same rule as the research gate.
+  assert.equal(subjectMatches({ title: "anything" }, []), 1);
+  assert.equal(rankBySubject([{ title: "anything" }], []).length, 1);
+});
+
 test("the ladder drops the picture-kind word that makes the query fail", () => {
   // Measured against the live upstream: "electrolysis cell diagram" returns 0
   // results and "electrolysis" returns hundreds. The word costing the match is
@@ -44,7 +96,12 @@ test("the ladder drops the picture-kind word that makes the query fail", () => {
   const rungs = queryLadder("a diagram of the electrolysis cell");
   assert.equal(rungs[0], "diagram electrolysis cell");
   assert.ok(rungs.includes("electrolysis cell"), `expected a subject-only rung, got ${JSON.stringify(rungs)}`);
-  assert.equal(rungs.at(-1), "electrolysis", "the last rung is the single most distinctive word");
+  // NOT down to one word any more. A single-term query has lost the subject:
+  // measured, it fetched the planet Jupiter for a V2G bus depot, an 1898 human
+  // anatomy lithograph for "anatomy", and a musical notation mark for the
+  // product name "fermata". Two terms is the last rung.
+  assert.equal(rungs.at(-1), "electrolysis cell", "the ladder stops at two terms");
+  assert.ok(!rungs.includes("electrolysis"), "and never degrades to a single word");
 });
 
 test("stopwords go and the writer's word order is kept", () => {
@@ -152,12 +209,22 @@ function fakePng() {
   return buf;
 }
 
-function commonsBody({ licence = "cc0", short = "CC0", artist = "<a href='/x'>A. Photographer</a>" } = {}) {
+/** A Commons answer about the thing that was actually searched for. The supply
+ *  refuses a candidate whose title is not about the subject, so a stub that
+ *  answers every query with the same unrelated picture gets refused exactly as
+ *  a real wrong result would — correct, and not what most of these tests are
+ *  about. Pass an explicit title to test the refusal itself. */
+function commonsForQuery(url, opts = {}) {
+  const q = new URL(url).searchParams.get("gsrsearch") ?? "solar";
+  return commonsBody({ title: `File:${q}.png`, ...opts });
+}
+
+function commonsBody({ licence = "cc0", short = "CC0", artist = "<a href='/x'>A. Photographer</a>", title = "File:Rooftop solar array.png" } = {}) {
   return {
     query: {
       pages: {
         "1": {
-          title: "File:Rooftop solar array.png",
+          title,
           imageinfo: [{
             url: "https://upload.wikimedia.org/full.png",
             thumburl: "https://upload.wikimedia.org/thumb.png",
@@ -228,7 +295,7 @@ test("a note becomes a real local image, a promotion, and a credit", async () =>
     });
 
     const { deck: out, supplied, skipped, credits } = await withStubbedFetch(
-      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsForQuery(url)) : imgRes()),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
 
@@ -261,7 +328,7 @@ test("the input deck is never mutated — a failed supply must be undoable", asy
     });
     const before = JSON.stringify(deck);
     await withStubbedFetch(
-      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsForQuery(url)) : imgRes()),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
     assert.equal(JSON.stringify(deck), before, "the caller's deck is untouched");
@@ -277,7 +344,7 @@ test("an attribution-owing licence writes a credits file that says so", async ()
     });
     const { credits } = await withStubbedFetch(
       (url) => (url.includes("commons.wikimedia.org")
-        ? jsonRes(commonsBody({ licence: "cc-by-sa-4.0", short: "CC BY-SA 4.0" }))
+        ? jsonRes(commonsForQuery(url, { licence: "cc-by-sa-4.0", short: "CC BY-SA 4.0" }))
         : imgRes()),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
@@ -303,7 +370,7 @@ test("an NC-only result supplies nothing and keeps the note for the manual door"
     });
     const { deck: out, supplied, skipped } = await withStubbedFetch(
       (url) => (url.includes("commons.wikimedia.org")
-        ? jsonRes(commonsBody({ licence: "cc-by-nc-4.0", short: "CC BY-NC 4.0" }))
+        ? jsonRes(commonsForQuery(url, { licence: "cc-by-nc-4.0", short: "CC BY-NC 4.0" }))
         : jsonRes({ results: [] })),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
@@ -343,7 +410,7 @@ test("the ladder stops at the first rung that lands", async () => {
       (url) => {
         if (url.includes("commons.wikimedia.org")) {
           searches.push(new URL(url).searchParams.get("gsrsearch"));
-          return jsonRes(commonsBody());
+          return jsonRes(commonsForQuery(url));
         }
         return imgRes();
       },
@@ -368,7 +435,7 @@ test("Openverse is only asked when Commons has nothing usable", async () => {
         if (url.includes("api.openverse.org")) {
           return jsonRes({
             results: [{
-              url: "https://live.staticflickr.com/x.png", title: "Array", creator: "P. Hotographer",
+              url: "https://live.staticflickr.com/x.png", title: "Rooftop solar array", creator: "P. Hotographer",
               license: "by", license_version: "4.0", license_url: "https://creativecommons.org/licenses/by/4.0/",
               foreign_landing_url: "https://flickr.com/x", source: "flickr", width: 1600, height: 900,
             }],
@@ -415,7 +482,7 @@ test("a download whose bytes are not an image is refused", async () => {
     });
     const { supplied, skipped } = await withStubbedFetch(
       (url) => (url.includes("commons.wikimedia.org")
-        ? jsonRes(commonsBody())
+        ? jsonRes(commonsForQuery(url))
         : new Response(Buffer.alloc(20_000, 0x3c), { status: 200, headers: { "content-type": "image/png" } })),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
@@ -466,7 +533,7 @@ test("a promotion the page cannot hold is given back", async () => {
       notes: "[image] a photo of a perovskite solar cell",
     });
     const { deck: out, supplied, skipped, credits } = await withStubbedFetch(
-      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsForQuery(url)) : imgRes()),
       () => supplyDeckImages(deck, dir, { budget: makeBudget() }),
     );
 
@@ -496,7 +563,7 @@ test("the fit gate can be stood down, and then the same deck is supplied", async
       notes: "[image] a photo of a perovskite solar cell",
     });
     const { supplied } = await withStubbedFetch(
-      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsBody()) : imgRes()),
+      (url) => (url.includes("commons.wikimedia.org") ? jsonRes(commonsForQuery(url)) : imgRes()),
       () => supplyDeckImages(deck, dir, { budget: makeBudget(), fitGate: false }),
     );
     assert.equal(supplied.length, 1, "without the gate the same promotion goes through");

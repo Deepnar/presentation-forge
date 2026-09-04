@@ -153,11 +153,16 @@ export function queryLadder(description) {
     return (subject.length ? subject : terms).filter((w) => want.has(w));
   };
 
+  // Two terms is the last rung, never one. A single-word query has lost the
+  // subject: measured, it fetched the planet Jupiter for "V2G bus depot", an
+  // 1898 human-anatomy lithograph for "anatomy", an abandoned bus in a desert
+  // for "bus", and a musical notation mark for "fermata" — four for four. A
+  // rung that returns nothing costs an empty seat, which renders as the
+  // ordinary list the slide already is.
   const rungs = [
     terms,
     subject,
     inOrder(ranked.slice(0, 2)),
-    inOrder(ranked.slice(0, 1)),
   ];
 
   const seen = new Set();
@@ -397,6 +402,82 @@ async function cached(dir, k) {
  * `resolveAsset` in `src/render.js` resolves and what keeps every path in a
  * deck portable between machines.
  */
+/**
+ * Whether a candidate is plausibly a picture OF what was asked for.
+ *
+ * Nothing asked. `rankCandidates` orders by licence tier and pixel width, and
+ * `queryLadder` deliberately degrades — full phrase, then subject words, then
+ * the two longest, then the ONE longest — so by the last rung the query has
+ * lost the subject entirely. Measured end to end: a slide headed "The Physical
+ * Anatomy of a V2G Bus Depot" was given a photograph of the planet Jupiter,
+ * which is a correctly-licensed, high-resolution, completely wrong picture.
+ *
+ * The test is presence, not density — an image's title is a handful of words,
+ * so the ratio that judges a page of prose says nothing here. One distinctive
+ * term from the ORIGINAL description, matched as a prefix so "bus" finds
+ * "buses". Scored against the original rather than the rung that found it, or a
+ * degraded query would authorise whatever it happened to return.
+ *
+ * A candidate carrying no title at all cannot be judged, and is refused: an
+ * unjudgeable picture on a slide is the failure this exists to prevent, and the
+ * cost of refusing is a slide that renders as an ordinary list.
+ */
+/**
+ * The prefix a term should be matched on, so number agreement cannot decide it.
+ *
+ * The description says "buses" and the picture is titled "School bus depot" —
+ * matching the term as written finds nothing, because the term is the LONGER
+ * string. Trim a plural suffix and match the stem as a prefix, which catches
+ * bus/buses, panel/panels, turbine/turbines in both directions.
+ */
+function stem(term) {
+  const t = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (t.length > 4 && /(?:es)$/.test(t)) return t.slice(0, -2);
+  if (t.length > 3 && /s$/.test(t)) return t.slice(0, -1);
+  return t;
+}
+
+export function subjectMatches(candidate, terms) {
+  if (!terms.length) return 1;                 // nothing to judge against
+  const text = [candidate?.title, candidate?.attribution, candidate?.creator]
+    .filter(Boolean).join(" ").toLowerCase();
+  if (!text.trim()) return 0;
+  return terms.filter((t) => new RegExp(`\\b${stem(t)}`).test(text)).length;
+}
+
+/** Candidates that are about the subject at all, best match first. Relevance
+ *  outranks licence tier and pixel width: a perfectly-licensed 4000px picture
+ *  of the wrong thing is not a better answer than a smaller right one. */
+export function rankBySubject(list, terms) {
+  // No yardstick, no judgement — the gate is off, not inverted. The research
+  // relevance gate takes the same care for the same reason: a caller with no
+  // usable description must not have its whole candidate list refused.
+  if (!terms.length) return [...list];
+  // A MAJORITY of the subject, not two words of it. Two was still circular: the
+  // ladder degrades the query, the search returns things matching the degraded
+  // pair, and those same two words then satisfy the gate. "school buses
+  // charging at a depot" was answered with "Summit Middle School charging heat
+  // and shelter in Hurricane Sandy aftermath" — school and charging, twice
+  // over, and not a bus in sight.
+  //
+  // The errors are not symmetric. A wrong picture ships on a submitted deck; a
+  // refused one leaves a seat that renders as the ordinary list the slide
+  // already is. So the bar is set where a picture has to be about most of what
+  // was asked for, and a low fill rate is the intended outcome rather than a
+  // failure.
+  // Bounded above as well: the majority of a SIX-term subject is four, and a
+  // description carrying a product name and a model number ("Fermata FE-20
+  // charger at school bus depot") can never be matched four ways by a stock
+  // photograph — the rule then refuses the correct depot picture too. At least
+  // two, a majority where that is more, never more than three.
+  const floor = Math.min(3, Math.max(2, Math.ceil(terms.length * 0.6)));
+  return list
+    .map((c) => ({ c, n: subjectMatches(c, terms) }))
+    .filter((x) => x.n >= floor)
+    .sort((a, b) => b.n - a.n)
+    .map((x) => x.c);
+}
+
 export async function supplyImage(description, deckDir, { signal, budget = makeBudget() } = {}) {
   const ladder = queryLadder(description);
   if (!ladder.length) return null;
@@ -410,12 +491,16 @@ export async function supplyImage(description, deckDir, { signal, budget = makeB
     return { rel, credit: known, cachedFile: true };
   }
 
+  // The subject the picture has to be OF, taken from what the caller asked for
+  // and not from whichever rung of the ladder happens to return something.
+  const subject = queryTerms(description).filter((w) => !PICTURE_KIND.has(w));
+
   for (const query of ladder) {
     let candidates = await commonsSearch(query, { signal, budget });
     if (!rankCandidates(candidates).length) {
       candidates = candidates.concat(await openverseSearch(query, { signal, budget }));
     }
-    for (const c of rankCandidates(candidates).slice(0, 4)) {
+    for (const c of rankBySubject(rankCandidates(candidates), subject).slice(0, 4)) {
       const got = await download(c.src, path.join(autoDir, k), { signal });
       if (!got) continue;
       return {
@@ -565,11 +650,32 @@ async function slideErrors(deck, index) {
  * honest half: a slide whose note could not be seated keeps its note, so the
  * UI's "add image" badge still offers the manual door.
  */
-export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBudget(), onProgress, fitGate = true } = {}) {
+export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBudget(), onProgress, fitGate = true, describeSeat = null } = {}) {
   const wanted = [];
   for (const [index, slide] of deck.slides.entries()) {
     const description = imageNote(slide);
-    if (description) wanted.push({ index, description });
+    if (description) { wanted.push({ index, description }); continue; }
+    // An EMPTY SEAT is a request, and waiting for the writer to say so out loud
+    // does not work. Measured end to end: the planner seated a beat, the writer
+    // produced a good `illustrated-points` slide — and never wrote the `[image]`
+    // note the prompt asks for, so the supply had nothing to look for and the
+    // seat stayed empty. The slide already says what it is about; its headline
+    // is a better query than most notes ("The Physical Anatomy of a V2G Bus
+    // Depot"). Opt-in still gates the whole pass, and the seat only exists
+    // because the plan put it there for a showable beat.
+    //
+    // The description has to be LITERAL, and a headline is not. Written to be
+    // read, "The Physical Anatomy of a V2G Bus Depot" searched as a picture
+    // returned first the planet Jupiter and then, once relevance was enforced,
+    // an 1898 lithograph of human anatomy — the metaphor matched, which is
+    // exactly what a headline is for. So a seat is only a request when
+    // something can say what to photograph; without `describeSeat` the seat
+    // stays empty and the slide renders as the ordinary list it already is.
+    const seat = await imageSeat(slide.type);
+    if (seat && !slide[seat] && describeSeat) {
+      const description = (await describeSeat(slide, index))?.trim();
+      if (description) wanted.push({ index, description, fromSeat: true });
+    }
   }
   if (!wanted.length) return { deck, supplied: [], skipped: [], credits: [], notes: [] };
 
@@ -578,25 +684,25 @@ export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBud
   const skipped = [];
   const credits = [];
 
-  for (const [n, { index, description }] of wanted.entries()) {
+  for (const [n, { index, description, fromSeat }] of wanted.entries()) {
     onProgress?.({ index, description, done: n, total: wanted.length });
     const slide = out.slides[index];
     // Ask whether it can be seated BEFORE spending a request on finding it.
     const probe = await seatImage(slide, "assets/auto/probe.png");
     if (!probe) {
-      skipped.push({ index, description, reason: `type "${slide.type}" cannot carry an image without losing content` });
+      skipped.push({ index, description, optional: fromSeat, reason: `type "${slide.type}" cannot carry an image without losing content` });
       continue;
     }
 
     const found = await supplyImage(description, deckDir, { signal, budget });
     if (!found) {
-      skipped.push({ index, description, reason: "no freely-licenced image found" });
+      skipped.push({ index, description, optional: fromSeat, reason: "no freely-licenced image found" });
       continue;
     }
 
     const seated = await seatImage(slide, found.rel);
     if (!seated) {
-      skipped.push({ index, description, reason: "could not be seated" });
+      skipped.push({ index, description, optional: fromSeat, reason: "could not be seated" });
       continue;
     }
     seated.notes = withoutNote(seated.notes);
@@ -613,7 +719,7 @@ export async function supplyDeckImages(deck, deckDir, { signal, budget = makeBud
     const beforeErrs = await slideErrors(out, index);
     const afterErrs = await slideErrors(next, index);
     if (afterErrs.length > beforeErrs.length) {
-      skipped.push({ index, description, reason: `promotion to ${seated.type} did not validate` });
+      skipped.push({ index, description, optional: fromSeat, reason: `promotion to ${seated.type} did not validate` });
       continue;
     }
     out = next;

@@ -17,7 +17,7 @@ import { runChatTurn } from "./chat.js";
 import { assignPresenters } from "./team.js";
 import { generateReport } from "./report.js";
 import { loadIdentity, deepMerge } from "./identity.js";
-import { researchProfile, researchExcerptCap } from "./ollama.js";
+import { chatJSON, researchProfile, researchExcerptCap } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -730,6 +730,49 @@ export async function finalizeDeck({
       const r = await supplyDeckImages(tr.grounded.deck, dir, {
         signal,
         onProgress: (e) => onProgress?.({ status: "images", ...e }),
+        // What to photograph for a slide the PLAN opened a seat on. A small,
+        // literal job, so it goes to the utility role rather than the author —
+        // and it is asked directly rather than hoped for as an [image] note the
+        // writer never volunteers. The slide's own headline cannot serve: it is
+        // written to be read, and searched as a picture "The Physical Anatomy
+        // of a V2G Bus Depot" returns human anatomy.
+        describeSeat: async (slide) => {
+          const said = [slide.headline, ...(slide.points ?? [])].filter(Boolean).join(" — ").slice(0, 400);
+          const res = await optionalPass("image description", async () => (chat ?? chatJSON)({
+            role: "utility",
+            model,
+            signal,
+            schema: {
+              type: "object",
+              required: ["subject"],
+              // A floor as well as a ceiling. Asked for "six words at most" the
+              // utility model answered "bus", the search obliged, and the slide
+              // got an abandoned bus in a desert. One word is a category, not a
+              // photograph; the grammar has to make it unrepresentable.
+              properties: { subject: { type: "string", minLength: 18, maxLength: 60 } },
+            },
+            messages: [
+              {
+                role: "system",
+                content: [
+                  "Name the PHOTOGRAPH that would illustrate this slide.",
+                  "Three to six words, every one literal and concrete. Name the physical",
+                  "OBJECT and the SETTING it is in — a bare category is not a photograph.",
+                  "No metaphors and no abstractions: \"the anatomy of a depot\" is a figure",
+                  "of speech, \"bus\" is a category, and neither is a picture.",
+                  "Good: \"electric buses charging at a depot\".",
+                  "Good: \"rooftop solar panels on a warehouse\".",
+                  "Bad: \"bus\". Bad: \"energy\". Bad: \"infrastructure transformation\".",
+                  "Never name a brand, a product or a model number — no photograph in a",
+                  "public archive is labelled with one, so it can only narrow the search to",
+                  "nothing. Say what the thing IS.",
+                ].join("\n"),
+              },
+              { role: "user", content: said },
+            ],
+          }));
+          return res?.data?.subject ?? null;
+        },
       });
       imageResult = r;
       if (r.supplied.length) {
@@ -756,9 +799,13 @@ export async function finalizeDeck({
   // A slide that asked for a picture and did not get one is reported, not
   // silently left bare: its [image] note survives, so the deck page still shows
   // the "add image" door, and the problem says which door and why.
-  const imageProbs = (imageResult?.skipped ?? []).map(
-    (s) => `slide ${s.index + 1}: no image supplied for "${s.description}" — ${s.reason}`,
-  );
+  // A slide that ASKED for a picture and did not get one is a problem worth
+  // reporting. A seat the plan opened speculatively is not: it renders as an
+  // ordinary list, which is the correct slide, so an unfilled one is silence
+  // rather than a failure.
+  const imageProbs = (imageResult?.skipped ?? [])
+    .filter((s) => !s.optional)
+    .map((s) => `slide ${s.index + 1}: no image supplied for "${s.description}" — ${s.reason}`);
 
   // Presenter distribution runs on finalize too, not just in the write half.
   // The write half checkpoints deck.yaml per slide DURING the write loop and
