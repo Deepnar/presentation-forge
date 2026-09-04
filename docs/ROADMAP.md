@@ -4120,6 +4120,83 @@ from `bullets` / `numbered-list` / `takeaway` with at most 4 items of at most
 > instruction. The finding was correct and the fix was impossible, and only one
 > of those is visible from the report line.
 
+### [x] Image seating, part two: the chain from plan to picture
+
+*The follow-on session. Everything below was found by running the chain end to
+end for the first time, and every link in it was broken.*
+
+The type built the day before worked. Nothing that had to reach it did.
+
+**The planner could not spell it.** `type` in the outline grammar was capped at
+16 characters, and `illustrated-points` is 18 — decoding stops mid-name, the
+truncated string matches no type, and the coercion turns it into `bullets`. Two
+existing types were in the same position and always had been:
+`metric-comparison` (17) and `layered-architecture` (20). **Neither had ever
+been plannable**, and both appeared in samples within minutes of the fix.
+
+**The catalogue told the model it was an escape hatch.** Types with no family
+are announced as "ESCAPE HATCH (rasterised, text not editable)", a line meant
+for `freeform` alone. `cards` was in there too, and had been all along.
+
+**Filed under the wrong family, it inherited a prohibition.** Grouped with
+"Image & Visual" it was caught by "avoid image-requiring types, you have no file
+to name" — it is a list type whose picture is optional, and it is filed under
+List & Grid now.
+
+**And with all three fixed the model still would not choose it.** Zero across
+seven samples and three promptings. Told to "include two or three" it complied
+and the deck's variety collapsed from 17 distinct types to 10, with up to seven
+charts. So the seat is assigned after the outline returns, the way presenters
+and the structure contract already are — one per section, three per deck, only
+on list-shaped beats that look showable, and none at all for an abstract topic.
+
+**The writer never asked for a picture.** It produced a good slide and no
+`[image]` note, so the supply had nothing to look for. An empty seat is the
+request.
+
+**A headline is not an image query**, and this is the part worth remembering.
+Searched as a picture, "The Physical Anatomy of a V2G Bus Depot" returned:
+
+| Query it degraded to | What came back |
+|---|---|
+| (headline, unguarded) | the planet Jupiter |
+| `anatomy` | an 1898 lithograph of human anatomy |
+| `bus` | an abandoned bus in the Atacama desert |
+| `fermata` | a musical notation mark |
+| `school charging` | a school building in Hurricane Sandy |
+
+Five wrong pictures, every one correctly licensed and high resolution, because
+`rankCandidates` sorted by licence tier and pixel width and **nothing asked
+whether the picture was of the thing**. What to photograph is now asked of the
+utility role as a literal six-word subject (with a minimum length, because told
+"six words at most" it answered "bus"), relevance is the primary sort key with a
+majority-of-subject floor, and the ladder no longer degrades to a single word.
+
+Live after: "electric bus charging station" resolves to a charging station for
+city electric buses, solar panels to rooftop solar panels, wind turbines to wind
+turbines — and the V2G depot slide keeps its empty seat, which renders as the
+ordinary list it already is.
+
+> **Learned.** **Three separate gates all made the right answer unrepresentable,
+> and each one looked like taste.** A planner that never picks a type, a model
+> that never asks for a picture, a search that returns something odd — all three
+> read as judgement until you check whether the thing was possible. Ask "could
+> it have done this?" before "why didn't it?".
+>
+> **A default branch that ASSERTS something is different from one that
+> collects.** "Everything with no family" was fine as a bucket; describing its
+> contents as rasterised and uneditable made it a lie about `cards` for however
+> long that has been true.
+>
+> **The asymmetry decides the threshold.** A wrong picture ships on a submitted
+> deck. A refused one leaves a seat that renders as an ordinary list. Once that
+> is stated the tuning stops being a judgement call: bias hard towards refusing,
+> and treat a low fill rate as the intended outcome rather than a failure.
+>
+> **Five wrong pictures in a row is a design signal, not five bugs.** Each one
+> could have been patched with a narrower threshold. What they had in common was
+> that no stage ever compared the result with the request.
+
 ### [x] Image seating — there was nowhere to put a picture
 
 *Decided with the numbers in hand, then built. Schema, layout, planner.*
