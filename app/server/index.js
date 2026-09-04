@@ -4,6 +4,7 @@ import { readFile, writeFile, readdir, mkdir, stat, access, rm } from "node:fs/p
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT, DECKS, THEMES, CONFIG, BRAND, REFERENCE } from "../../src/paths.js";
+import { readCredits, isCitable } from "../../src/credits.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
@@ -580,8 +581,13 @@ app.get("/api/decks/:slug", wrap(async (req, res) => {
   // apart, instead of offering only a fresh run.
   const onDisk = await generationStatus(req.params.slug);
   const live = generationRunInfo(req.params.slug);
+  // Auto-supplied pictures carry licences, and the deck page is where a user
+  // looks at the deck. Read from disk rather than only off a finalize result:
+  // a reloaded page never saw that result, and the attribution is owed anyway.
+  const imageCredits = (await readCredits(dir)).map((c) => ({ ...c, citable: isCitable(c) }));
+
   ok(res, {
-    deck, meta, slides, thumbs, placeholders: placeholderSlides(deck), dirty,
+    deck, meta, slides, thumbs, placeholders: placeholderSlides(deck), dirty, imageCredits,
     run: {
       ...onDisk,
       ...live,
@@ -1320,7 +1326,12 @@ app.get("/api/decks/:slug/research", wrap(async (req, res) => {
     figures = deckFigures(deck);
   } catch { /* no deck — a report-only folder has nothing to verify yet */ }
 
-  ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes), figures });
+  // Image provenance belongs beside source provenance: this view is where a
+  // user checks where the content came from, and a picture is content.
+  const imageCredits = (await readCredits(path.join(DECKS, req.params.slug)))
+    .map((c) => ({ ...c, citable: isCitable(c) }));
+
+  ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes), figures, imageCredits });
 }));
 
 /** Save research back to disk — the edit half of the panel. Either or both of
