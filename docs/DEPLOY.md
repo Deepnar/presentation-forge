@@ -169,6 +169,27 @@ but it means anyone can consume CPU and disk. The controls:
   tier this is not optional — at 5–15 MB per deck, without it the disk fills.
 - `FORGE_OPEN_REGISTRATION=0` closes signup entirely if it gets abused.
 
+**All three are also settable from Admin → System → Operating controls**, and
+take effect on the next request with no restart. Read the precedence before you
+rely on either:
+
+- A value set in the panel is written to `config/runtime.json` on the volume and
+  **overrides the environment variable** until you reset it. That is what makes
+  it changeable on a running box, and it is also the trap: editing your compose
+  file and redeploying will not change a setting the panel has ever set. The
+  panel marks any value that is shadowing an env var, and **Reset** hands the
+  setting back to the environment.
+- **Secrets are the other way round.** `FORGE_TCET_API_KEY` in the environment
+  always beats a key stored through the panel, so rotating the key in your
+  deployment works without anyone remembering to clear a stored row.
+
+**The gateway key can be stored from Admin → System** instead of being baked
+into the environment — useful when the key is not yours to put in a compose
+file. It is encrypted at rest, the panel never reads it back (only the last four
+characters, to tell two keys apart), and **this requires `FORGE_KEY_PEPPER`**:
+without it the encryption key is a constant published in this repository, and
+hosted mode refuses to store anything rather than pretend.
+
 **Storage is the constraint that will bite first**, not CPU. Watch it:
 
 ```bash

@@ -196,6 +196,7 @@ src/credits.js     the image credit record: read, classify, format, slide
 src/ai/ollama.js   role-addressed model client (ollama | openai-compatible)
 src/auth.js        accounts and sessions (SQLite via node:sqlite, JSON fallback)
 src/cloud.js       provider resolution, hosted/local switch, key resolution
+src/runtime.js     admin-settable operating settings, and which source wins
 app/server/        Express transport — must hold NO pipeline logic
 ```
 
@@ -230,6 +231,7 @@ Every stateful directory is env-overridable so the app can run against a volume:
 | Per-account identity | `config/identities/<hash>.yaml` |
 | Provider keys, routing preference | `config/local.yaml` (gitignored, global) |
 | Hosted/local runtime switch | `config/hosted.json` (gitignored) |
+| Admin-set operating settings | `config/runtime.json` (gitignored) |
 
 A deck with previews runs 5–15 MB, dominated by the slide PNGs. That is the
 storage driver for any deployment.

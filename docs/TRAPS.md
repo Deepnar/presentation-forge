@@ -371,6 +371,16 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**Decide which way configuration and credentials each resolve, and write it
+down.** This codebase had both directions already — `config/hosted.json`
+overriding `FORGE_HOSTED`, and API keys resolving env-first — with nothing
+naming the distinction and an admin caption asserting the opposite of what the
+code did. The rule that holds: *configuration* should be changeable at runtime,
+so stored wins; *credentials* should be owned by the deployment, so env wins,
+because rotation must not depend on remembering to clear a database row. Either
+choice is defensible; an unstated one produces a deploy that silently does
+nothing.
+
 **A cache can be at its worst exactly when it is needed most.** The Auto health
 probe was cached stale-while-revalidate with the right reasoning written above
 it — "the probe takes twenty seconds precisely when the news is bad" — and the

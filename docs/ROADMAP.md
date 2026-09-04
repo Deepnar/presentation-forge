@@ -3863,6 +3863,52 @@ pages you walked.
 > were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
 > on every switch.
 
+### [x] Operating settings and the gateway key, changeable from the panel
+
+*No model. The natural follow-on from the sweep: the sweep made the controls
+visible, and visible read-only settings invite the question of why they cannot
+be changed.*
+
+Retention, signup and the spend caps were env-only, so changing one number on a
+box somebody is using meant a container restart. Worse, the sweep scheduler was
+armed only when `FORGE_SWEEP_DAYS` was set **at boot**, so turning retention on
+at runtime would have scheduled nothing at all. The tick is now unconditional
+and reads the setting when it fires; with retention off it does nothing.
+
+`src/runtime.js` owns the settings and the precedence, and the precedence is the
+whole design — **it runs opposite ways for settings and for secrets, on
+purpose**:
+
+| | Wins | Why |
+|---|---|---|
+| Operating settings | **stored** over env | a setting that cannot change at runtime is the problem being solved |
+| Secrets (gateway key) | **env** over stored | a key rotated in the deployment must beat one typed into a browser months ago; rotation cannot depend on clearing a row |
+
+The cost of the first direction is that a stored value shadows a deploy-time
+change, so nothing is silent: every value reports whether it came from the
+panel, the environment or the default, names the env var it is suppressing, and
+can be reset back to it.
+
+**The gateway key is write-only.** Nothing returns a key to the browser, so an
+XSS on the admin page cannot take one. The status carries whether a key is set,
+which source is live, and the last four characters — enough to tell two keys
+apart, not enough to be one. It refuses to pretend when `FORGE_KEY_PEPPER` is
+unset: the encryption key would be a constant published in this repository, and
+hosted mode already throws rather than store under it.
+
+Also corrected: the hosted caption claimed *"env still wins on deploy"* while
+`isHosted()` gives `config/hosted.json` precedence over `FORGE_HOSTED` —
+backwards, on exactly the sentence an operator would rely on during a deploy.
+
+> **Learned.** **Ask which direction each kind of value should resolve, and say
+> so out loud.** Both directions are defensible and the codebase already had one
+> of each — `hosted.json` overriding env, keys resolving env-first — with
+> nothing naming the distinction, and a UI caption asserting the opposite of
+> what the code did. The rule that survives is: *configuration* wants to be
+> changeable at runtime, *credentials* want to be owned by the deployment.
+> Making a setting editable is the easy half; deciding what beats what, and
+> showing it, is the part that stops a deploy from silently doing nothing.
+
 ### [x] The admin panel, swept
 
 *No model. Driven in a real browser, both appearance modes, every tab, against
