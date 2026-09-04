@@ -3906,7 +3906,7 @@ good. Three defects came out of reading it, and two are now fixed:
 > specimen's payloads are hand-written to behave; only a model's payload has the
 > shapes a model actually produces.
 
-### [ ] Research relevance — 16 of 21 sources were not about the topic
+### [x] Research relevance — 16 of 21 sources were not about the topic
 
 *No model needed to fix. Found by reading the first generated deck's research.*
 
@@ -3932,6 +3932,39 @@ passes it — but at 0.44 hits per 1000 words against Wikipedia "Solid-state
 battery" at 35.55. An 80x margin. A conservative floor (~1.0/1000) drops the
 junk with room to spare, and it is topic-agnostic, which the three-layer rule
 requires: the code derives the terms from the brief, it does not know the topic.
+
+**Fixed and re-run on the same brief.** `absorb` now scores each fetched page's
+topical density against terms derived from the brief and refuses anything below
+the floor; off-topic pages are never backfilled, because a thin corpus is a
+worse deck and a corpus about the wrong subject is a deck about the wrong
+subject.
+
+| | Before | After |
+|---|---|---|
+| Sources | 21 | 8 |
+| Clearly off-topic | **16** | 2 |
+| Notable arrivals | — | `energy.gov` "Next-Generation Batteries" |
+
+The corpus is smaller and better: the junk had been occupying the per-query and
+per-host budgets that an authoritative source then could not enter. Two mildly
+off-topic pages still get through ("Electronics", a project-proposal system) —
+the gate turns 31,000 words about India into a page that is merely adjacent,
+which is the right order of error.
+
+> **Learned.** **Density, not presence, and the difference is not a detail.**
+> Wikipedia's "India" contains five of the brief's seven terms — every
+> "mentions the topic" rule keeps it — at 0.4 hits per 1000 words against 35.6
+> for a real battery article. An 80x margin invisible to the obvious check.
+>
+> **A hyphenated compound must be kept whole and never also split.** Splitting
+> "solid-state" put "state" in the yardstick, an article about a country of
+> states scored seven times higher on it, and the margin between on- and
+> off-topic collapsed from 5.8x to 3.9x — enough that the first floor I set let
+> every junk page through. The compound is the distinctive term; its halves are
+> ordinary words.
+>
+> **Tune a threshold against the real documents.** Both the split and the floor
+> were wrong on the first attempt and right after measuring seven real pages.
 
 ### [x] Chart colours — the monochrome premise was stale, the pie was not
 
@@ -4540,7 +4573,12 @@ knowable while they are unexercised.
 - **Presenter assignment with a real team.** Every deck generated so far had no
   team, so every slide rendered `Presenter: —`. The whole per-member split is
   therefore unexercised.
-- **Rate limits and quotas** under real load.
+- **[x] Rate limits and quotas** under real load. Driven through the real HTTP
+  routes on an isolated instance: 10 and then 30 simultaneous `POST /api/decks`
+  against a budget of 2 admitted exactly 2. The expected TOCTOU **did not
+  reproduce** — nothing between the check and the record yields to the event
+  loop — but that safety was undocumented and one `await` from gone, and ten
+  same-tick callers were all admitted. `reserveAuto` makes it structural.
 - **The vision critic loop.** The capability gate is built and tested; the loop
   itself has never been watched critique a deck.
 
