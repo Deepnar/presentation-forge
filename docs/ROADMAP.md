@@ -3863,26 +3863,97 @@ pages you walked.
 > were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
 > on every switch.
 
-### [ ] The admin panel, swept
+### [x] The admin panel, swept
 
-*Priority: medium. No model. Later, not now.*
+*No model. Driven in a real browser, both appearance modes, every tab, against
+the questions the entry named: is anything broken, who is using this, what is it
+costing, and what do I do about it.*
 
-The System tab gained a report-template panel and an SMTP row while the hosting
-blockers were being closed, and that was the first time anything on this page
-had been looked at since it was built. The rest has not been.
+**Three things the panel stated that were not true.**
 
-Five tabs of numbers that nobody has checked against what an operator actually
-needs to answer: is anything broken, who is using this, what is it costing, and
-what do I do about it. Specifically unexamined — whether the Overview cards are
-the four numbers that matter, whether Analytics says anything actionable,
-whether the Users tab supports the operations an operator performs (find,
-promote, delete is the whole vocabulary today, and there is no way to see or
-clear one account's usage), and whether the health rows cover what actually
-fails. `/api/admin/stats` walks every deck directory on every request, which is
-fine at ten decks and is not the shape to keep.
+- **Storage counted `out/deck.pptx` alone.** A deck runs 5-15 MB and the preview
+  PNGs are nearly all of it, so the card read 23.8 MB on a box holding 79 — and
+  `DEPLOY.md` names storage as the constraint that runs out first. It sums the
+  deck folder now. (`decks/.specimen-cache` is a 608 MB dev artefact and is
+  correctly outside the count; an early reading of this bug that included it
+  was wrong by an order of magnitude.)
+- **"Model calls" was the exact misreading `src/limits.js` warns about** in its
+  own header: one recorded event is one pipeline operation and makes many model
+  calls behind it. Analytics already called the same number "requests", so the
+  panel contradicted itself across two tabs. Both say **Auto runs**.
+- **`weeklyTokens` is a cap nothing can reach.** No call site records a token
+  count — every one passes 0 — so the limit can never fire and the Tokens
+  metric was permanently `0k`. Marked inert rather than printed like a live cap,
+  because a limit that cannot fire reads as protection that is not there.
 
-Do it as one pass over the page, the way the landing was done — not as
-individual patches when something is noticed missing.
+**Two blind spots that only matter on a deployment.**
+
+- **`FORGE_SWEEP_DAYS` and `FORGE_OPEN_REGISTRATION`** are two of the three
+  operating controls `DEPLOY.md` names, and neither appeared on any screen.
+  Retention is off unless somebody set it, so a box keeps every deck forever and
+  nothing said so. A **System → Operating controls** panel now reports all three
+  and warns when retention is off.
+- **`pruneAutoEvents()` was written when the table was added and never called
+  from anywhere.** Every quota event this install has recorded is still in the
+  database, in the same SQLite file as accounts and sessions. Now runs at boot
+  and daily, deliberately not tied to the deck sweep, which only runs when
+  `FORGE_SWEEP_DAYS` is set.
+
+**The page was slowest exactly when it mattered.** `autoHealth` already had a
+stale-while-revalidate with the right reasoning written above it, and it covered
+every case but a cold cache — where there is nothing stale to serve, so the
+request awaited the full probe. That is 20.6s on the first load after a restart,
+on the first page an operator opens when the gateway is down. Cold reads report
+"checking" and the probe lands for the next one: **20.6s to 0.10s**. Also
+`df` ran through `execSync`, stalling every other request on the box, and
+labelling ten usage bars cost one `getUserId` per registered account — 116
+queries for ten rows.
+
+**Repetition removed.** The header badge repeated the two cards beneath it; the
+Overview explained hosted/local without carrying the control while System
+explains it beside the switch; the header carried a third copy of that switch;
+Analytics printed the limits as a summary card immediately above the same limits
+as a grid; the RBAC paragraph appeared on two tabs. The header subtitle was
+implementation notes and now says what the page is for.
+
+**The missing verb.** The operator's vocabulary was find, promote, delete —
+the entry called this out and it was the real gap. A quota is a cost control
+rather than a punishment and it had no remedy: a run that failed after the
+budget was taken, a shared demo machine, or somebody who has to finish today all
+reached the same dead end, and deleting the account was the only lever. The
+users list now carries each account's window and weekly spend against the cap
+(two queries, not one per account) and an account that has spent something can
+be zeroed.
+
+**Not done, deliberately.** Bulk user cleanup — this box carries 116 accounts,
+almost all throwaway, and deleting them is one `window.confirm` at a time. A
+filter-scoped bulk delete is the obvious fix and also the one that wipes real
+accounts when the filter is wrong, so it wants a design (dry-run count, typed
+confirmation) rather than a button. `/api/admin/stats` still walks every deck
+directory per request; that is now a cheap walk (0.04s across 683 MB) but it is
+still the wrong shape at a thousand decks. `window.alert`/`window.confirm` are
+still the error and confirm surface, and the hosted toggle still hard-reloads
+after a magic 500ms.
+
+> **Learned.** Three.
+>
+> **The panel's own source warned about its worst label.** `src/limits.js`
+> opens by saying these events are pipeline operations, not model calls, and
+> that reading them as calls makes every number look an order of magnitude
+> tighter — and the card above them said "Model calls". A doc comment one file
+> away is not a defence; the two tabs disagreeing with each other is what makes
+> it findable.
+>
+> **A cache that covers the common case can still be worst at the worst
+> moment.** The health probe was cached with exactly the right reasoning
+> written above it, and the reasoning had a hole precisely where the cache was
+> empty — the first load after a restart, which is what an operator does when
+> something is wrong.
+>
+> **Measure the thing you are about to claim.** The storage bug was real at
+> 3.3x, and the first measurement said 28.8x because it swept in a 608 MB
+> specimen cache that is not deck storage at all. The fix did not change; the
+> number reported to a human would have been wrong.
 
 ### [~] Reports — structure, and the wait
 

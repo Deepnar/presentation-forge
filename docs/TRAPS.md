@@ -371,6 +371,24 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**A cache can be at its worst exactly when it is needed most.** The Auto health
+probe was cached stale-while-revalidate with the right reasoning written above
+it — "the probe takes twenty seconds precisely when the news is bad" — and the
+reasoning had a hole where the cache was empty. On the first load after a
+restart there is nothing stale to serve, so the request awaited the full 20.6s,
+on the first page an operator opens when the gateway is down. When adding
+stale-while-revalidate, write the cold path first: it is the one that runs when
+the system is unhealthy.
+
+**A dashboard number is a claim, and a wrong one survives because nothing
+contradicts it.** The admin Storage card summed `out/deck.pptx` and reported a
+box holding 79 MB as holding 23.8. Nothing failed, no test covered it, and the
+deployment doc told the operator to check storage with `du` instead — routing
+around the panel rather than fixing it. When a surface states a fact, verify it
+against the thing it describes at least once; and measure before quoting a
+multiple, because the first measurement of this one swept in a 608 MB specimen
+cache and was wrong by 9x in the direction that sounded worse.
+
 **Single-threaded is not the same as atomic, and the difference is one
 `await`.** The Auto quota checked, awaited, then recorded — and held the cap
 exactly under 30 simultaneous HTTP requests, because everything between the two
