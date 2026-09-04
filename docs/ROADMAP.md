@@ -2763,6 +2763,41 @@ so the slide keeps its `[image]` note and the manual upload door.
 > why the licence ladder prefers public domain rather than treating all tiers as
 > equal.
 
+### [x] Rate limits and quotas under real load
+
+*No model. Named as untouched for three sessions — `src/limits.js` had never
+been driven by more than one request at a time.*
+
+Driven two ways: the real HTTP routes on an isolated instance (own DB, own decks
+dir, `FORGE_AUTO_WINDOW_REQUESTS=2`), and the primitives directly.
+
+**The result was not the expected one, and the honest version matters.** The
+enforcement was CHECK → `await` → RECORD, which reads as a textbook TOCTOU. Over
+HTTP it is not: 10 and then 30 simultaneous `POST /api/decks` admitted exactly 2
+against a budget of 2, on the *pre-fix* code. Everything between the check and
+the record is synchronous (`node:sqlite` is), so the pair spans one microtask and
+each request's handler completes it before the next request's I/O event is
+dispatched. The cap was safe **by accident, not by construction**.
+
+The accident ends when two callers reach the check in the same tick: ten
+same-tick callers against a budget of two were all admitted and all billed. Any
+batch, retry loop or in-process fan-out is that shape, and so is the code the
+first time somebody puts an `await` between the two calls — a harmless-looking
+edit that silently removes the only thing holding the cap.
+
+`reserveAuto` decides and spends in one synchronous step, inside an IMMEDIATE
+transaction for the case JS cannot cover (two processes, one database file). The
+four routes call it once instead of `enforceAuto` + `recordAutoFor`. A refusal
+writes nothing. Re-driven after the change: 2 of 10 and 2 of 30, unchanged.
+
+> **Learned.** The interesting finding was that the bug did not reproduce.
+> Single-threaded JS made a check-then-act pair atomic *with respect to HTTP
+> requests* because nothing between them yielded to the event loop — which is
+> true, load-bearing, undocumented, and one `await` away from being false. A
+> hazard that is currently harmless is still worth removing when the thing
+> guarding it is that a future edit will not do the obvious. Also: "it does not
+> reproduce" is a result to report, not a reason to quietly claim the fix.
+
 ### [x] `needsFinalize` was true for every finished deck
 
 *No model. Found while verifying the credits panel, which it was hiding.*

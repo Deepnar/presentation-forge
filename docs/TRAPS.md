@@ -371,6 +371,17 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**Single-threaded is not the same as atomic, and the difference is one
+`await`.** The Auto quota checked, awaited, then recorded — and held the cap
+exactly under 30 simultaneous HTTP requests, because everything between the two
+calls is synchronous, so the pair spans one microtask and finishes before the
+next request's I/O event is dispatched. That safety is real and entirely
+undocumented, and it evaporates if two callers reach the check in the same tick
+(ten did, and all ten were admitted against a budget of two) or if anyone adds an
+`await` between the calls. When a check and the write that acts on it must agree,
+put them in one synchronous step rather than relying on the scheduler to keep
+them adjacent.
+
 **A state that is true of every healthy object cannot detect a broken one.**
 The finalize watchdog fired on `complete` — every plan slide written — and read
 it as "an interrupted run left this behind". Every deck that ever succeeded is
