@@ -258,3 +258,64 @@ test("a section carrying only front matter gets no divider of its own", () => {
   assert.ok(out.some((s) => s.type === "section" && s.section === 1));
 });
 
+/* --------------------------------------------------- illustrated seating */
+
+import { seatIllustratedBeats } from "../src/ai/generate.js";
+
+/**
+ * Asked rather than assigned, this does not happen. Across seven planning
+ * samples and three promptings, a local qwen3.6 chose `illustrated-points`
+ * ZERO times when the type was merely described — it reaches for chart,
+ * compare and stats because that is what the research supports. Told to
+ * "include two or three" it complied and the deck's variety collapsed from 17
+ * distinct types to 10, with up to seven charts.
+ */
+
+const beat = (type, section, purpose) => ({ type, section, purpose });
+
+test("a showable list beat gets a seat for a picture", () => {
+  const out = seatIllustratedBeats([
+    beat("title", 0, "open"),
+    beat("bullets", 0, "Show how the charging depot handles a fleet overnight."),
+  ]);
+  assert.equal(out[1].type, "illustrated-points");
+});
+
+test("an abstract beat is left alone — a narrower column for nothing is a loss", () => {
+  const out = seatIllustratedBeats([
+    beat("bullets", 0, "Explain why the tariff structure decides financial viability."),
+  ]);
+  assert.equal(out[0].type, "bullets", "no showable subject, no seat");
+});
+
+test("types that are not list-shaped are never converted", () => {
+  const given = [
+    beat("chart", 0, "Plot charger deployment across the depot fleet."),
+    beat("compare", 1, "Contrast two vehicle charging strategies."),
+    beat("section", 2, "Open the part on equipment."),
+  ];
+  assert.deepEqual(seatIllustratedBeats(given).map((s) => s.type), ["chart", "compare", "section"]);
+});
+
+test("seats spread across sections and stay bounded", () => {
+  const given = [
+    beat("bullets", 0, "The bus depot at night."),
+    beat("bullets", 0, "Another vehicle in the same depot."),
+    beat("bullets", 1, "The charger hardware on site."),
+    beat("bullets", 2, "The battery module itself."),
+    beat("bullets", 3, "The grid substation equipment."),
+  ];
+  const out = seatIllustratedBeats(given, { max: 3 });
+  const seated = out.filter((s) => s.type === "illustrated-points");
+  assert.equal(seated.length, 3, "capped");
+  assert.equal(new Set(seated.map((s) => s.section)).size, 3, "one per section");
+  assert.equal(out[1].type, "bullets", "the second beat in section 0 is left alone");
+});
+
+test("a deck with nothing showable gets no seats at all", () => {
+  const given = [
+    beat("bullets", 0, "Define the policy framework and its scope."),
+    beat("numbered-list", 1, "Sequence the tariff reforms required."),
+  ];
+  assert.deepEqual(seatIllustratedBeats(given).map((s) => s.type), ["bullets", "numbered-list"]);
+});

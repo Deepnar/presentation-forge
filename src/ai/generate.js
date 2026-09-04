@@ -125,6 +125,63 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3, typeMax 
 });
 
 /**
+ * The list-shaped beats a picture can be seated on without changing what the
+ * slide is. Converting a `chart` or a `compare` would destroy the beat; these
+ * four are all "a headline and some points", which is exactly what
+ * `illustrated-points` is.
+ */
+const SEATABLE_TYPES = new Set(["bullets", "numbered-list", "stacked-list", "icon-list"]);
+
+/**
+ * Words that mean a reader could be SHOWN this, rather than told it.
+ *
+ * A deliberately concrete, deliberately small list. It is a heuristic and it is
+ * meant to under-fire: a beat it misses renders as an ordinary list, which is
+ * the correct slide anyway, while a beat it wrongly picks spends a narrower text
+ * column on an abstract argument. The errors are not symmetric, so the bias is
+ * towards leaving the beat alone.
+ */
+const SHOWABLE = /\b(?:bus(?:es)?|vehicle|fleet|charger|charging|depot|station|plant|site|facility|equipment|hardware|device|panel|battery|batteries|cell|module|grid|installation|prototype|machine|sensor|robot|building|campus|laboratory|lab|field|factory|assembly|component|architecture|layout|diagram|map|network|infrastructure)\b/i;
+
+/**
+ * Give a bounded number of showable beats a seat for a picture.
+ *
+ * Asked rather than assigned, this does not happen. Measured on one brief across
+ * seven planning samples and three promptings: with the type merely described,
+ * the model chose it ZERO times — it reaches for chart, compare and stats
+ * because that is what the research supports. Told to "include two or three",
+ * it complied and the deck's variety collapsed from 17 distinct types to 10,
+ * with up to seven charts, because an explicit quota competes with "vary the
+ * types" and the quota is the one it can count.
+ *
+ * So the seat is assigned here, the way presenters and the structure contract
+ * already are. This costs the model nothing to agree to and cannot make a deck
+ * worse: an `illustrated-points` slide whose picture never arrives renders as an
+ * ordinary list. The only real cost is the narrower text budget (points cap at
+ * 120 characters against a bullet's 160), which is why the beat has to look
+ * showable before it is converted, and why converting none is a valid outcome.
+ *
+ * One per section at most, so the seats spread across the talk rather than
+ * bunching in whichever part happens to be listy.
+ */
+export function seatIllustratedBeats(slides, { max = 3 } = {}) {
+  const out = [...slides];
+  const seatedSections = new Set();
+  let seated = 0;
+  for (let i = 0; i < out.length && seated < max; i++) {
+    const s = out[i];
+    if (!SEATABLE_TYPES.has(s.type)) continue;
+    if (!SHOWABLE.test(String(s.purpose ?? ""))) continue;
+    const sec = s.section ?? 0;
+    if (seatedSections.has(sec)) continue;
+    out[i] = { ...s, type: "illustrated-points" };
+    seatedSections.add(sec);
+    seated++;
+  }
+  return out;
+}
+
+/**
  * The `type` cap the outline grammar must carry: the longest type name there is.
  *
  * Exported so a test can assert it, because the failure is silent and permanent
@@ -303,6 +360,9 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     slidesPerMember,
   });
   slides = ensureStructuralSlides(slides, plan.sections ?? []);
+  // Seats for pictures, decided here rather than asked for. A deck with no
+  // showable beat gets none, which is the right answer for an abstract topic.
+  slides = seatIllustratedBeats(slides);
   plan.slides = slides;
 
   // How much of this plan is the model's and how much is ours. A minted slide
