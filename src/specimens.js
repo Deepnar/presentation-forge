@@ -30,6 +30,22 @@ const SPECIMEN_GAPS = {
     body: ["Image on one side, the claim on the other.", "A supporting sentence that grounds the visual."],
     caption: "Where the picture came from, and when it was taken.",
   },
+  // The FILLED state, deliberately: this type renders two ways, and the sweeps
+  // can only see one of them. The filled one is where the risk is — a narrowed
+  // text column is where points overflow, and `caption` only exists in that
+  // branch, so an empty-seat specimen would leave it a field nothing has ever
+  // rendered. The empty state is the bullets layout at full width and is
+  // covered by test/illustrated-points.test.js, which renders both.
+  "illustrated-points": {
+    headline: "Points that can take a picture",
+    image: "__placeholder__",
+    points: [
+      "The image field is optional, so this slide is finished without one.",
+      "A supply can fill it in place later without touching the points.",
+      "With a picture the points move to a column; nothing is dropped.",
+    ],
+    caption: "Where the picture came from, and when it was taken.",
+  },
   freeform: {
     html:
       "<style>body{font-family:Inter,sans-serif;background:#F4F0E6;display:flex;" +

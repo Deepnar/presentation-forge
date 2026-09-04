@@ -1560,6 +1560,100 @@ export const layouts = {
     );
   },
 
+  /**
+   * Points that can carry a picture — and read correctly without one.
+   *
+   * Every other image-bearing type REQUIRES its image, which is why auto image
+   * supply reached almost nothing: of 73 types exactly one had an optional
+   * `image` field for `imageSeat` to fill in place, and the writer is told to
+   * avoid the required ones because it has no file to name. So a model that
+   * wanted a picture wrote an `[image]` note onto whatever type it had already
+   * chosen — on one real deck, onto the title slide — and nothing could seat it.
+   *
+   * This type is the seat. The writer picks it for a beat that wants an image
+   * and writes the points; the field stays empty and the slide renders as a
+   * full-width list, indistinguishable from `bullets`. When a picture arrives
+   * the same slide gives it a column and the points move over. Neither state is
+   * a degraded version of the other.
+   */
+  "illustrated-points"(slide, ctx) {
+    const { theme, data, box, resolveAsset } = ctx;
+    eyebrow(slide, ctx);
+    const y = heading(slide, ctx);
+
+    const avail = box.bottom - y - 0.2;
+    const st = theme.type.body;
+    // Branch on whether an image was ASKED FOR, not on whether it resolved.
+    // Those are different states: a slide with no `image` wants no picture, and
+    // a slide naming one whose file is missing still wants it. Collapsing them
+    // dropped `caption` silently whenever the asset failed to resolve — a
+    // credit vanishing with the picture it credits, which is exactly the defect
+    // image-text carries a placeholder panel to avoid.
+    if (!data.image) {
+      slide.addText(
+        data.points.map((b, i) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, i) } })),
+        {
+          x: box.x, y, w: box.w, h: avail,
+          ...textStyle(theme, "body", {
+            scale: fitScaleAll(data.points, box.w - 0.4, avail / data.points.length, st),
+          }),
+          paraSpaceAfter: 10,
+          valign: "top",
+        },
+      );
+      return;
+    }
+
+    const gut = theme.grid.gutter;
+    const iw = box.w * 0.42;
+    const tw = box.w - iw - gut;
+    const imgLeft = data.side === "left";
+    const ix = imgLeft ? box.x : box.x + tw + gut;
+    const tx = imgLeft ? box.x + iw + gut : box.x;
+
+    // The caption takes its height out of the IMAGE, never out of the points —
+    // a credit is not worth a bullet, and image-text learned the same thing.
+    const capH = data.caption ? linesBox(theme, "caption", [data.caption], iw) + 0.08 : 0;
+    const imgH = avail - capH;
+
+    const src = resolveAsset(data.image);
+    if (src) {
+      slide.addImage({
+        path: src, x: ix, y, w: iw, h: imgH,
+        sizing: { type: "cover", w: iw, h: imgH },
+        rounding: false,
+      });
+    } else {
+      slide.addShape("roundRect", {
+        x: ix, y, w: iw, h: imgH,
+        fill: { color: hex(theme.palette.rule) }, line: { type: "none" },
+        rectRadius: theme.shape?.radius?.card ?? 0.12,
+      });
+    }
+    if (data.caption) {
+      slide.addText(data.caption, {
+        x: ix, y: y + imgH + 0.06, w: iw, h: capH - 0.06,
+        ...textStyle(theme, "caption", {
+          color: theme.palette.ink_muted,
+          italic: true,
+          scale: fitScale(data.caption, iw, capH - 0.06, theme.type.caption, { min: 0.7 }),
+        }),
+        valign: "top",
+      });
+    }
+    slide.addText(
+      data.points.map((b, i) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, i) } })),
+      {
+        x: tx, y, w: tw, h: avail,
+        ...textStyle(theme, "body", {
+          scale: fitScaleAll(data.points, tw - 0.4, avail / data.points.length, st),
+        }),
+        paraSpaceAfter: 10,
+        valign: "top",
+      },
+    );
+  },
+
   timeline(slide, ctx) {
     const { theme, data, box } = ctx;
     eyebrow(slide, ctx);

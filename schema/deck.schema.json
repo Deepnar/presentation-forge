@@ -151,6 +151,7 @@
             "layered-architecture",
             "image",
             "image-text",
+            "illustrated-points",
             "image-grid",
             "hero-image",
             "split-screen",
@@ -677,6 +678,46 @@
                 "items": {
                   "type": "string",
                   "maxLength": 180
+                }
+              },
+              "caption": {
+                "type": "string",
+                "maxLength": 120
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "illustrated-points"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "headline",
+              "points"
+            ],
+            "properties": {
+              "image": {
+                "type": "string"
+              },
+              "side": {
+                "enum": [
+                  "left",
+                  "right"
+                ],
+                "default": "right"
+              },
+              "points": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
                 }
               },
               "caption": {
