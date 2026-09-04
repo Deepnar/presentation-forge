@@ -14,6 +14,18 @@ time. A deck can look perfect in LibreOffice and overflow on the projector.
 Sizing must be baked in at generation time — that is why `src/fit.js` exists and
 why it only ever shrinks. Never "fix" overflow by trusting an autofit flag.
 
+**A fallback makes a missing value look like a decision.** A content slide with
+no `presenter` does not draw a blank footer — chrome falls back to every
+presenting member joined by "·". So a deck that lost its per-slide assignment
+does not read as broken; it reads as a deck where the whole team presents every
+slide. The same shape recurs wherever a default is legible: the failure state
+has to be distinguishable from a deliberate one, or nobody looking at output
+will ever report it.
+
+Its corollary bites the test. Asserting the right presenter is *present* on the
+slide passes against the broken render, because the fallback prints every name
+— containment against a superset can never fail. Assert what must be ABSENT.
+
 **A measurement in the wrong unit is invisible to every check built on it.**
 `measure()` read the type token's `tracking` as a percentage of the em while
 `textStyle` passed the same number to pptxgenjs as `charSpacing`, which OOXML
