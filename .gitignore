@@ -64,6 +64,9 @@ config/identity.yaml
 # models.yaml only references them as env:NAME.
 config/local.yaml
 config/hosted.json
+# Admin-set operating settings (retention, signup, spend caps). Per-install
+# state like hosted.json, never a repository value.
+config/runtime.json
 
 # Local single-install accounts and their sessions — the Cloud-key gate. Never
 # committed: users.json holds scrypt hashes, sessions.json holds bearer tokens.

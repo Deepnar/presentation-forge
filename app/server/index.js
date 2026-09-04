@@ -30,6 +30,7 @@ import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, reserveAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents } from "../../src/limits.js";
+import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -705,6 +706,95 @@ app.post("/api/admin/hosted", wrap(async (req, res) => {
   ok(res, { hosted: isHosted() });
 }));
 
+/**
+ * Change one operating setting without a redeploy.
+ *
+ * A stored value wins over the environment, which is the point — but that
+ * direction can shadow a deploy-time change, so the response says so and the
+ * panel shows it. Passing null clears the override and hands the setting back
+ * to the environment.
+ */
+app.put("/api/admin/settings/:name", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const { name } = req.params;
+  if (!SETTING_KEYS.includes(name)) return fail(res, 400, `unknown setting "${name}"`);
+  try {
+    const result = await setSetting(name, req.body?.value ?? null);
+    ok(res, { setting: name, ...result });
+  } catch (err) {
+    return fail(res, 400, err.message);
+  }
+}));
+
+/**
+ * The shared gateway key, stored encrypted.
+ *
+ * WRITE ONLY. There is no route that returns it and there must not be: the
+ * panel needs to know whether a key is set and which one, not what it is, and
+ * a key that a browser can read back is a key that an XSS can take. The status
+ * carries the last four characters and nothing else.
+ *
+ * The environment still wins at resolve time (`resolveSecret` checks
+ * `process.env` first), so a key rotated in the deployment always beats one
+ * typed into a browser months earlier. Rotation must not depend on somebody
+ * remembering to clear a database row — which is why keys resolve env-first
+ * while the operating settings above resolve stored-first.
+ */
+app.get("/api/admin/auto/key", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const { loadGlobalKey } = await import("../../src/vault.js");
+  const envKey = process.env.FORGE_TCET_API_KEY ?? "";
+  let storedKey = "";
+  try { storedKey = loadGlobalKey("tcet-auto") ?? ""; } catch { /* unreadable under the current pepper */ }
+  const live = envKey || storedKey;
+  ok(res, {
+    set: Boolean(live),
+    source: envKey ? "env" : storedKey ? "stored" : null,
+    // Enough to tell two keys apart, not enough to be one.
+    hint: live ? `…${live.slice(-4)}` : null,
+    storedShadowedByEnv: Boolean(envKey && storedKey),
+    pepperSet: Boolean(process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY),
+  });
+}));
+
+app.put("/api/admin/auto/key", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const key = String(req.body?.key ?? "").trim();
+  // Deliberately loose: the gateway's keys are not sk-prefixed and the format
+  // is not ours to police. Reject only what cannot be a key at all.
+  if (key.length < 12 || /\s/.test(key)) {
+    return fail(res, 400, "that does not look like an API key");
+  }
+  try {
+    const { saveGlobalKey } = await import("../../src/vault.js");
+    saveGlobalKey("tcet-auto", key);
+  } catch (err) {
+    // The pepper guard throws here in hosted mode. Say which fault it is.
+    return fail(res, 400, err.message);
+  }
+  const { autoHealth } = await import("../../src/cloud.js");
+  ok(res, {
+    stored: true,
+    shadowedByEnv: Boolean(process.env.FORGE_TCET_API_KEY),
+    health: await autoHealth({ force: true }).catch(() => null),
+  });
+}));
+
+app.delete("/api/admin/auto/key", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  try {
+    const { getDb } = await import("../../src/db.js");
+    getDb().prepare("DELETE FROM global_keys WHERE provider=?").run("tcet-auto");
+  } catch (err) {
+    return fail(res, 500, err.message);
+  }
+  ok(res, { cleared: true });
+}));
+
 // Users — RBAC management
 app.get("/api/admin/users", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
@@ -876,10 +966,18 @@ app.get("/api/admin/stats", wrap(async (req, res) => {
       // "storage is the constraint that will bite first" is the deployment
       // doc's own warning.
       controls: {
-        openRegistration: OPEN_REGISTRATION,
-        sweepDays: Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0 ? SWEEP_DAYS : null,
+        openRegistration: settingValue("openRegistration"),
+        sweepDays: settingValue("sweepDays"),
         sweepHour: Number.isFinite(SWEEP_HOUR) ? SWEEP_HOUR : null,
       },
+      // Every runtime-changeable setting, its value, and where that value came
+      // from — so a stored override shadowing an env var is visible rather
+      // than being discovered during a deploy.
+      settings: settingsReport(),
+      // Whether a key can be stored at all. Hosted mode refuses to encrypt
+      // under the published development pepper, so the panel must not offer a
+      // field that will throw.
+      vault: { pepperSet: Boolean(process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY) },
       // Which roles are running what they were configured to run. A silent
       // substitution has exactly one symptom — output that is worse than it
       // should be — so it belongs where the operator already looks.
@@ -2355,9 +2453,11 @@ function rateLimit(req, res, next) {
  * CPU. FORGE_OPEN_REGISTRATION=0 closes it and the owner's account is seeded
  * from FORGE_ADMIN_EMAIL + FORGE_ADMIN_PASSWORD at boot.
  */
-const OPEN_REGISTRATION = process.env.FORGE_OPEN_REGISTRATION !== "0";
+// Read per request, not once at boot: an operator closing signup because it is
+// being abused should not have to restart the box to do it.
+const openRegistration = () => settingValue("openRegistration");
 app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
-  if (!OPEN_REGISTRATION) {
+  if (!openRegistration()) {
     return fail(res, 403, "registration is closed on this server — ask the owner for an account");
   }
   const { name, email, password } = req.body ?? {};
@@ -2572,7 +2672,7 @@ app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
 app.get("/api/auth/registration", wrap(async (_req, res) => {
   // `mail` decides whether the form can offer "forgot password" and whether it
   // should promise a confirmation message that would never arrive.
-  ok(res, { open: OPEN_REGISTRATION, mail: mailConfigured(), verifyRequired: verificationRequired() });
+  ok(res, { open: openRegistration(), mail: mailConfigured(), verifyRequired: verificationRequired() });
 }));
 app.get("/api/auth/google/config", wrap(async (_req, res) => {
   ok(res, { clientId: process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null });
@@ -2762,7 +2862,7 @@ app.get("/api/policy", (_req, res) => {
       console.error(`  admin seed failed: ${err.message}`);
     }
   }
-  if (!OPEN_REGISTRATION && !adminEmail) {
+  if (!openRegistration() && !adminEmail) {
     console.warn("  WARNING: FORGE_OPEN_REGISTRATION=0 but FORGE_ADMIN_EMAIL is not set — nobody can create an account.");
   }
 }
@@ -2774,24 +2874,38 @@ app.get("/api/policy", (_req, res) => {
  * emailing the owner, per the deployment plan for the home server. Without the
  * env var the server never touches deck data on its own.
  */
-const SWEEP_DAYS = Number(process.env.FORGE_SWEEP_DAYS || NaN);
 const SWEEP_HOUR = Number(process.env.FORGE_SWEEP_HOUR || 3);
-if (Number.isFinite(SWEEP_DAYS) && SWEEP_DAYS > 0) {
-  const { sweep } = await import("../../src/sweep.js");
-  const runSweep = () => sweep({ olderThanDays: SWEEP_DAYS })
-    .then((r) => console.log(`  sweep: ${r.deleted.length} deleted, ${r.willDelete.length} old, ${r.skipped.length} kept`))
-    .catch((err) => console.error(`  sweep failed: ${err.message}`));
+{
+  // The tick is scheduled unconditionally and reads the retention setting when
+  // it FIRES. It used to be scheduled only when the env var was set at boot,
+  // which meant an admin turning retention on at runtime scheduled nothing and
+  // the disk kept filling silently. A tick with retention off does nothing at
+  // all — the server must never start deleting somebody's decks because a
+  // setting was mistyped.
+  const runSweep = async () => {
+    const days = settingValue("sweepDays");
+    if (!days) return;
+    try {
+      const { sweep } = await import("../../src/sweep.js");
+      const r = await sweep({ olderThanDays: days });
+      console.log(`  sweep: ${r.deleted.length} deleted, ${r.willDelete.length} old, ${r.skipped.length} kept`);
+    } catch (err) {
+      console.error(`  sweep failed: ${err.message}`);
+    }
+  };
 
   const schedule = () => {
     const now = new Date();
     const next = new Date(now);
     next.setHours(SWEEP_HOUR, 0, 0, 0);
     if (next <= now) next.setDate(next.getDate() + 1);
-    const delay = next - now;
-    setTimeout(() => { runSweep(); schedule(); }, delay);
-    console.log(`  sweep scheduled daily at ${SWEEP_HOUR}:00 (deleting decks older than ${SWEEP_DAYS} days)`);
+    setTimeout(() => { runSweep(); schedule(); }, next - now).unref();
   };
   schedule();
+  const days = settingValue("sweepDays");
+  console.log(days
+    ? `  sweep scheduled daily at ${SWEEP_HOUR}:00 (deleting decks idle over ${days} days)`
+    : `  sweep armed but OFF — set retention in Admin -> System, or FORGE_SWEEP_DAYS`);
 }
 
 /**

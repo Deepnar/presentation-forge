@@ -1,4 +1,5 @@
 import { getDb } from "./db.js";
+import { settingValue } from "./runtime.js";
 
 /**
  * Auto-tier limits for the shared TCET gateway.
@@ -33,15 +34,17 @@ import { getDb } from "./db.js";
  */
 
 export function limitConfig() {
+  // Read per call, never cached: an admin changing a cap in the panel must
+  // apply to the next request, not the next restart.
   return {
-    windowHours: Number(process.env.FORGE_AUTO_WINDOW_HOURS ?? 5),
-    windowRequests: Number(process.env.FORGE_AUTO_WINDOW_REQUESTS ?? 12),
-    weeklyRequests: Number(process.env.FORGE_AUTO_WEEKLY_REQUESTS ?? 30),
-    windowSlides: Number(process.env.FORGE_AUTO_WINDOW_SLIDES ?? 45),
-    weeklySlides: Number(process.env.FORGE_AUTO_WEEKLY_SLIDES ?? 90),
+    windowHours: settingValue("autoWindowHours"),
+    windowRequests: settingValue("autoWindowRequests"),
+    weeklyRequests: settingValue("autoWeeklyRequests"),
+    windowSlides: settingValue("autoWindowSlides"),
+    weeklySlides: settingValue("autoWeeklySlides"),
     weeklyTokens: Number(process.env.FORGE_AUTO_WEEKLY_TOKENS ?? 80000),
     // One deck may still burst to full length inside the window budget.
-    maxSlidesPerDeck: Number(process.env.FORGE_AUTO_MAX_SLIDES_PER_DECK ?? 24),
+    maxSlidesPerDeck: settingValue("autoMaxSlidesPerDeck"),
   };
 }
 
