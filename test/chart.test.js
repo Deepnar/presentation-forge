@@ -135,3 +135,77 @@ test("a plain bar chart keeps the default clustered grouping", async () => {
   const xml = await chartXml({ kind: "bar" });
   assert.match(xml, /<c:grouping val="clustered"\/>/, "bar stays clustered by default");
 });
+
+/**
+ * A chart whose categories and series disagree in length used to produce a
+ * .pptx that LibreOffice refused to open AT ALL — not the chart, the whole
+ * deck. OOXML has no opinion, pptxgenjs writes what it is handed, and
+ * `pres.writeFile()` succeeds, so nothing upstream noticed. A real generated
+ * deck had a line chart with two categories and five values and a bar chart
+ * with one category and four; twenty good slides were unopenable because of
+ * those two.
+ */
+async function renderChart(chart) {
+  const dir = await mkdtemp(path.join(tmpdir(), "forge-chartlen-"));
+  try {
+    const deck = {
+      title: "Chart length",
+      slides: [
+        { type: "title", headline: "Chart length" },
+        { type: "chart", headline: "A chart", chart },
+      ],
+    };
+    const file = path.join(dir, "deck.yaml");
+    await writeFile(file, YAML.stringify(deck), "utf8");
+    const r = await render({ deckFile: file, themeName: "warm-humanist" });
+    const zip = await JSZip.loadAsync(await readFile(r.outFile));
+    const chartXml = Object.keys(zip.files).find((f) => /ppt\/charts\/chart\d+\.xml$/.test(f));
+    const xml = chartXml ? await zip.file(chartXml).async("string") : "";
+    return { problems: r.problems ?? [], xml };
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+test("a chart with more values than categories keeps every value", async () => {
+  // Reconciled towards the DATA: a category is a label and a blank label costs
+  // a tick mark, while a dropped value changes what the chart says.
+  const { problems, xml } = await renderChart({
+    kind: "line",
+    categories: ["0", "500"],
+    series: [{ name: "Contact loss", values: [0, 12, 45, 78, 96] }],
+  });
+  const points = (xml.match(/<c:pt idx="\d+"><c:v>/g) ?? []).length;
+  assert.ok(points >= 5, `expected all five values in the chart XML, saw ${points} points`);
+  assert.ok(problems.some((p) => /categories \(2\).*disagree/.test(p)), problems.join(" | "));
+});
+
+test("a chart with fewer values than categories is drawn at the shortest series", async () => {
+  // The other direction: a series cannot supply a figure it does not have, so
+  // the extra categories go rather than being paired with invented numbers.
+  const { problems } = await renderChart({
+    kind: "bar",
+    categories: ["A", "B", "C", "D"],
+    series: [{ name: "One", values: [1, 2] }],
+  });
+  assert.ok(problems.some((p) => /disagree — drawn at 2/.test(p)), problems.join(" | "));
+});
+
+test("series that disagree with each other are cut to the shortest", async () => {
+  const { problems } = await renderChart({
+    kind: "bar",
+    categories: ["A", "B", "C"],
+    series: [{ name: "Long", values: [1, 2, 3] }, { name: "Short", values: [4, 5] }],
+  });
+  assert.ok(problems.some((p) => /drawn at 2/.test(p)), problems.join(" | "));
+});
+
+test("a well-formed chart reports nothing and is left alone", async () => {
+  const { problems, xml } = await renderChart({
+    kind: "bar",
+    categories: ["A", "B", "C"],
+    series: [{ name: "One", values: [1, 2, 3] }, { name: "Two", values: [4, 5, 6] }],
+  });
+  assert.equal(problems.filter((p) => /disagree/.test(p)).length, 0, problems.join(" | "));
+  assert.ok(xml.includes("<c:v>A</c:v>"), "the real categories survive");
+});
