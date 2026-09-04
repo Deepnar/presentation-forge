@@ -380,8 +380,15 @@ export async function autoHealth({ force = false } = {}) {
   if (!autoHealthInFlight) {
     autoHealthInFlight = probeAutoHealth().finally(() => { autoHealthInFlight = null; });
   }
-  if (!force && autoHealthCache) return { ...autoHealthCache.value, stale: true };
-  return autoHealthInFlight;
+  if (force) return autoHealthInFlight;
+  if (autoHealthCache) return { ...autoHealthCache.value, stale: true };
+
+  // Cold cache — the case the revalidate above could not cover, and the one
+  // that actually bit: on the first load after a restart there is nothing
+  // stale to serve, so the admin page blocked for the full probe. That is the
+  // first page an operator opens after restarting a box whose gateway is down.
+  // Report "checking" and let the probe land in the cache for the next load.
+  return { ok: null, pending: true, detail: "checking…", checkedAt: null };
 }
 
 export async function testAutoConnection() {
