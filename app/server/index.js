@@ -31,6 +31,7 @@ import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/p
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, reserveAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents } from "../../src/limits.js";
 import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
+import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -830,6 +831,89 @@ app.delete("/api/admin/users/:email/usage", wrap(async (req, res) => {
   const cleared = clearAutoEvents({ userId: id });
   ok(res, { cleared });
 }));
+/**
+ * The accounts a bulk cleanup would remove, and every one it would not.
+ *
+ * A dry run that only reports a number is not a dry run: the failure mode here
+ * is a filter matching more than the operator read, so this returns the whole
+ * list and the reason each excluded account was excluded. The token binds to
+ * the exact set — see `selectionToken` — so a confirmation cannot be replayed
+ * against a set the operator never saw.
+ */
+async function cleanupSelection(req, criteria) {
+  const users = await listUsers();
+
+  // Deck ownership is the rule that cannot be relaxed, so it is read fresh
+  // rather than taken from any cached stat.
+  const deckOwners = new Set();
+  try {
+    for (const e of await readdir(DECKS, { withFileTypes: true })) {
+      if (!e.isDirectory()) continue;
+      try {
+        const m = YAML.parse(await readFile(path.join(DECKS, e.name, "meta.yaml"), "utf8")) ?? {};
+        if (m.owner) deckOwners.add(String(m.owner).trim().toLowerCase());
+      } catch { /* a folder with no readable meta owns nothing */ }
+    }
+  } catch { /* no decks dir */ }
+
+  let usedUserIds = new Set();
+  try { usedUserIds = new Set(usageByUser().keys()); } catch { /* no events table */ }
+
+  return selectDeletableAccounts({
+    users,
+    deckOwners,
+    usedUserIds,
+    idFor: (email) => getUserId(email),
+    protect: [req.user?.email].filter(Boolean),
+    olderThanDays: criteria?.olderThanDays,
+    emailPattern: criteria?.emailPattern,
+  });
+}
+
+app.post("/api/admin/users/cleanup/preview", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  req.user = user;
+  const { selected, skipped, criteria } = await cleanupSelection(req, req.body ?? {});
+  ok(res, {
+    selected, skipped, criteria,
+    count: selected.length,
+    token: selectionToken(selected),
+    phrase: confirmPhrase(selected.length),
+  });
+}));
+
+app.post("/api/admin/users/cleanup", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  req.user = user;
+  const { token, confirm } = req.body ?? {};
+
+  // Recomputed, never trusted from the request: the selection is re-derived and
+  // must still hash to the token the operator was shown. Anything that changed
+  // the set in between — a signup, a new deck, a promotion — invalidates it.
+  const { selected } = await cleanupSelection(req, req.body ?? {});
+  const fresh = selectionToken(selected);
+  if (!token || token !== fresh) {
+    return fail(res, 409, "the accounts matching these criteria changed since the preview — review the list again");
+  }
+  if (!selected.length) return fail(res, 400, "nothing matches these criteria");
+
+  const phrase = confirmPhrase(selected.length);
+  if (String(confirm ?? "").trim().toLowerCase() !== phrase) {
+    return fail(res, 400, `type "${phrase}" to confirm`);
+  }
+
+  const deleted = [];
+  const failed = [];
+  for (const { email } of selected) {
+    try { await deleteUserAccount(email); deleted.push(email); }
+    catch (err) { failed.push({ email, error: err.message }); }
+  }
+  console.log(`  admin cleanup by ${user.email}: ${deleted.length} accounts deleted, ${failed.length} failed`);
+  ok(res, { deleted: deleted.length, failed });
+}));
+
 app.post("/api/admin/users/:email/role", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
