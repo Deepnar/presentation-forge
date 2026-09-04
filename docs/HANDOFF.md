@@ -1,6 +1,6 @@
-# Handoff — 2026-09-04, credits surfaced, admin swept, settings made live
+# Handoff — 2026-09-04, a model at last: the first deck generated and read
 
-Everything is on `main`. `npm test` is **614 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **618 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -11,21 +11,43 @@ three entries; it outlives this file. `docs/ROADMAP.md` carries every item below
 
 ---
 
-## The gateway, checked once
+## The gateway is wedged, and the model runs here instead
 
-Still down, still in the shape that looks like health. `chat 000` after the full
-90s — no response at all. Four sessions now.
+**Do not spend time on the gateway.** Probed every way it can be probed:
+
+| Probe | Result |
+|---|---|
+| `/v1/models` | 200 in 0.47s |
+| Bad API key | **401 in 0.43s** — the auth layer is alive |
+| `/v1/completions`, `/v1/responses` | **404** — they do not exist on this deployment |
+| Exact served model id, streaming, thinking flags | hang |
+| **Malformed body** `{"nonsense":true}` | **hangs 20s** |
+
+That last row is the diagnosis. A merely BUSY server rejects garbage instantly
+with a 400 — it never reaches the model. Hanging on garbage means requests are
+forwarded to a backend that is **wedged, not queued**. No request shape gets
+through; only the CoE operators can fix it. (The served id has changed to
+`…-NVFP4-Fast`, so somebody is redeploying it.)
+
+**It does not matter any more.** `ollama pull qwen3.6:35b-a3b` gives the same
+family and shape the gateway serves — 35.5B, 3B-active MoE, 4-bit — and
+`config/models.yaml` now points author, research and critic at it. It declares
+vision and thinking, so it covers all three roles.
 
 ```bash
-curl -s -m 90 -w "\nchat %{http_code} %{time_total}s\n" \
-  https://ai.tcetcercd.in/v1/chat/completions \
-  -H "Authorization: Bearer $FORGE_TCET_API_KEY" -H 'Content-Type: application/json' \
-  -d '{"model":"qwen3.6","messages":[{"role":"user","content":"Say ok"}],"max_tokens":4}'
+SC=/tmp/forge-local && mkdir -p $SC && cp config/models.yaml $SC/
+cp config/identity.example.yaml $SC/identity.yaml
+printf '{"hosted": false}\n' > $SC/hosted.json && echo '{"settings":{}}' > $SC/runtime.json
+FORGE_TCET_API_KEY= FORGE_HOSTED=0 FORGE_CONFIG_DIR=$SC npm run forge -- new "<topic>" --research --images
 ```
 
-Check it once, note the result, move on.
-
----
+**`docs/LOCAL-MODEL.md`'s vLLM route is abandoned, and should stay abandoned.**
+22 GiB of weights against a *laptop* 5090 already holding 4 GiB means mandatory
+`--cpu-offload-gb`, and FlashInfer's SM120 JIT compiles with `nproc` (24)
+parallel `nvcc` jobs at 2-4 GB each — ~72 GB against 62 GB of RAM whose **only
+swap is zram**, which is compressed RAM with no disk to spill to. That is a hard
+freeze, and it is what happened. Ollama needs none of it: **184 tok/s, 100% GPU,
+68°C at 146 W of a 150 W cap.**
 
 ## What this session did
 
@@ -179,34 +201,69 @@ means post-processing chart XML inside the `.pptx` — real work for a premise
 that no longer exists. It is a genuine *accessibility* idea (greyscale print,
 colour-vision deficiency) and wants its own entry if desired.
 
+### The first deck in four sessions, and what reading it found
+
+**83/100.** A real thesis ("A Technical Audit, Not a Hype Cycle"), a coherent
+three-part arc, 100% varied, 90% grounded, a takeaway that makes a claim. **The
+prose is good.** Three defects came out of reading it:
+
+- **A chart whose categories and series disagree in length makes the entire
+  `.pptx` unopenable.** Not the chart — LibreOffice refuses the file and the
+  only symptom is "source file could not be loaded". `writeFile()` succeeds, so
+  every check was clean. Two bad charts cost twenty good slides. Fixed: the
+  renderer reconciles towards the data (a blank label costs a tick mark, a
+  dropped value changes what the chart says) and `analyzeQuality` reports it.
+- **Three of twenty slides had no headline**, rendering as a tall empty band
+  above stretched content. `headline` was required on 15 types and optional on
+  57; it is now required on every content type, and the ops grammar inherits it.
+- **Research returned 16 junk sources out of 21.** Not fixed — item 1 below.
+
+Fixing the first one also exposed two scoring bugs: the render reported the
+disagreement per theme, so a 34-theme sweep counted 68 fit failures and
+`deckscore` read the deck's fit at 0% when four elements actually missed; and
+`deckscore` scored the finding under `varied`, dropping a perfectly varied deck
+to 50%.
+
 ---
 
 ## Plan for next session
 
-### 1. Does a real writer ever emit `[image]` notes it can seat?  *(needs a model)*
+### 1. Research relevance — 16 of 21 sources were not about the topic
 
-The whole image path — supply, seating, credits, all four surfaces — has been
-exercised by **injecting `[image]` notes into existing decks by hand**. What has
-never been observed is how often a real writer emits them and on which types.
-The lossless rule refuses a promotion when the list is longer than
-`image-text`'s four-line body, and on the one real generated deck on disk the
-two bullets slides carried 4 and 5 bullets — one refused outright, the other
-seated and then reverted by the fit gate. **If real notes mostly land on 5- and
-6-bullet slides, the answer is a new slide type, not a looser rule.** This is
-the first thing to look at when the gateway returns.
+*No model needed. The largest quality defect the first real deck exposed.*
 
-### 2. Nothing else is unblocked without a model
+The corpus for a solid-state battery deck held Wikipedia's **"India"** (31,107
+words) and **"History of India"** (28,946), four Microsoft *"How to get help in
+Windows"* pages, a **Minecraft "Lithium" mod**, and **drugs.com** and **Mayo
+Clinic** on lithium the medication. Five of twenty-one were about batteries.
 
-Every no-model item on the list is closed. What is left needs the gateway:
-generating a deck and reading it, the thinking-mode experiment, watching the
-critic loop, and the image-seating question above.
+The queries are fine — one reasonable angle query, *"India solid state battery
+policy framework"*, matched the country article on "India" alone. **The problem
+is that nothing between the search results and `notes.md` asks whether a page is
+about the topic**: `absorb` in `src/ai/research.js` filters on `item.ok`, URL
+dedupe and a per-host cap, full stop.
 
-If the gateway stays down, the honest options are the two standing decisions
-below, or `docs/LOCAL-MODEL.md` — the gateway's own weights (`Qwen3.6-35B-A3B-NVFP4`)
-are downloaded and vLLM is installed, so the model that answers content
-questions can be run here. Standing it up is its own afternoon; the two measured
-warnings in that doc (cap the kernel build, `--cpu-offload-gb` is required) are
-the part that bites.
+Already measured on the real pages, so the design is settled — **use density,
+not presence**. Wikipedia "India" contains 5 of the 7 topic terms (a presence
+rule passes it) at **0.44 hits per 1000 words**, against Wikipedia "Solid-state
+battery" at **35.55**. An 80x margin; a floor near 1.0/1000 drops the junk with
+room to spare. Derive the terms from the brief so the code stays topic-agnostic.
+
+### 2. The image-seating question, now answerable  *(a model is available)*
+
+`--images` ran and supplied **nothing**: every `[image]` note landed on a type
+that cannot carry one without losing content. That is one deck and not yet an
+answer — but the question the last three handoffs could not ask is now one
+generation away. If real notes keep landing on 5- and 6-bullet slides, the
+answer is a new slide type, not a looser rule.
+
+### 3. The thinking experiment and the critic loop  *(a model is available)*
+
+Both were model-blocked and are not any more. `qwen3.6:35b-a3b` declares
+thinking AND vision, so `roles.author.thinking` can be toggled and compared, and
+`--critic` can finally be watched sending slide PNGs to a model that can read
+them. **Grep `cloudSpec` before trusting any per-role option** — it builds its
+own spec instead of going through `resolveRole` and has silently dropped these.
 
 ### Two decisions that are yours, both still open
 
@@ -311,6 +368,11 @@ single session.
   genuine government photostreams it hosts. Named in `src/credits.js`.
 - The dev box now holds **6 accounts** (4 admins). The 110 throwaway ones were
   removed through `Admin → Users → Clean up stale accounts`.
+- `decks/solid-state-batteries-for-electric-vehicles` is the first deck this
+  project generated end to end. Keep it: its research corpus is the evidence for
+  item 1 and its charts are the fixture for the length bug.
+- `decks/.specimen-cache` is **608 MB** of dev artefact. Harmless, and not what
+  the admin Storage card counts, but it dominates any `du` of `decks/`.
 - `decks/perovskite-solar-cells-stability-challenges-2` is the real generated
   deck kept as a fixture. Every check takes `--deck` — use it, because the
   specimen's payloads are hand-written to behave.
