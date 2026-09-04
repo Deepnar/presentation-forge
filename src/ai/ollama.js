@@ -286,8 +286,40 @@ async function modelCapabilities(host, model) {
     });
     if (res.ok) out = new Set((await res.json()).capabilities ?? []);
   } catch { /* unreachable — the caller refuses rather than assumes */ }
-  _caps.set(key, out);
+  // Only an ANSWER is cached. A failed probe means "could not ask", and
+  // remembering that for the life of the process turns one unreachable moment
+  // into a model that can never see or think again — on a long-running server,
+  // for every request after the blip.
+  if (out) _caps.set(key, out);
   return out;
+}
+
+/**
+ * The `think` value to send Ollama for a role, or null to send nothing.
+ *
+ * `roles.author.thinking` was declared for two roles and read on exactly one
+ * path: the openai-compatible one, which sends the gateway's
+ * `chat_template_kwargs.enable_thinking`. The Ollama payload never carried it,
+ * so on the local backend the flag was a comment — the same shape as `vision`
+ * before `roleCanSeeImages`, and as `fellBack` before that.
+ *
+ * Asked rather than assumed, for the same reason vision is: Ollama reports
+ * "thinking" in `/api/show` capabilities, and sending `think` to a model that
+ * has none is an error rather than a no-op. Unknown capabilities mean no
+ * thinking — the conservative direction, since the cost is a shallower answer
+ * and the alternative is a failed request.
+ *
+ * Ollama takes a level as well as a boolean. `reasoning_effort` is written for
+ * the gateway's vocabulary (low / medium / xhigh), so `xhigh` maps to Ollama's
+ * top level rather than being passed through and rejected.
+ */
+const THINK_LEVELS = { low: "low", medium: "medium", high: "high", xhigh: "high" };
+
+export async function ollamaThink(spec) {
+  if (!spec.thinking) return null;
+  const caps = await modelCapabilities(spec.backend.baseURL, spec.model);
+  if (!caps?.has("thinking")) return null;
+  return THINK_LEVELS[spec.reasoning_effort] ?? true;
 }
 
 /**
@@ -649,6 +681,11 @@ export async function chat({
         };
         if (format) payload.format = format;
         if (tools?.length) payload.tools = tools;
+        // Ollama returns reasoning on `message.thinking`, separate from
+        // `message.content`, so a role that thinks still answers under the
+        // grammar and nothing downstream has to strip anything.
+        const think = await ollamaThink(spec);
+        if (think != null) payload.think = think;
         res = await once(spec, payload, { stream, onToken, timeout, signal });
       } else {
         res = await cloudChat(spec, {

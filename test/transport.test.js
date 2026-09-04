@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT } from "../src/paths.js";
-import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
+import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, ollamaThink, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
 import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
 import { providerModels, setHostedForTest } from "../src/cloud.js";
 
@@ -244,6 +244,104 @@ test("chat() leaves a streamed length-truncated response alone (tokens cannot be
     });
     assert.equal(caps.length, 1); // no bump for a streamed call
     assert.equal(res.doneReason, "length");
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+/* ------------------------------------------------------------- thinking */
+
+/**
+ * `roles.author.thinking` was declared and read on exactly one path: the
+ * openai-compatible one. The Ollama payload never carried it, so on the local
+ * backend the flag was a comment — the same shape as `vision` before
+ * `roleCanSeeImages`.
+ */
+
+test("a thinking role sends `think` at its level to a model that reports the capability", async () => {
+  const orig = globalThis.fetch;
+  const AUTHOR = await configuredAuthorModel();
+  let sent;
+  globalThis.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    if (u.endsWith("/api/tags")) return fakeResponse({ models: [{ name: AUTHOR }] });
+    if (u.endsWith("/api/show")) return fakeResponse({ capabilities: ["completion", "vision", "thinking"] });
+    if (u.endsWith("/api/chat")) {
+      sent = JSON.parse(opts.body ?? "{}");
+      return fakeResponse({ model: AUTHOR, message: { content: "{}" }, done_reason: "stop" });
+    }
+    throw new Error(`unexpected URL ${u}`);
+  };
+  try {
+    await chat({ role: "author", model: AUTHOR, messages: [{ role: "user", content: "hi" }] });
+    // config/models.yaml puts the author at reasoning_effort: medium.
+    console.log("SENT1:", JSON.stringify({think: sent?.think, model: sent?.model}));
+    assert.equal(sent.think, "medium");
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+test("a role whose model cannot think sends nothing — an unsupported `think` is an error, not a no-op", async () => {
+  const orig = globalThis.fetch;
+  const PLAIN = "no-thoughts:1b";
+  let sent;
+  globalThis.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    if (u.endsWith("/api/tags")) return fakeResponse({ models: [{ name: PLAIN }] });
+    if (u.endsWith("/api/show")) return fakeResponse({ capabilities: ["completion"] });
+    if (u.endsWith("/api/chat")) {
+      sent = JSON.parse(opts.body ?? "{}");
+      return fakeResponse({ model: PLAIN, message: { content: "{}" }, done_reason: "stop" });
+    }
+    throw new Error(`unexpected URL ${u}`);
+  };
+  try {
+    await chat({ role: "author", model: PLAIN, messages: [{ role: "user", content: "hi" }] });
+    assert.ok(!("think" in sent), `no think key, got ${JSON.stringify(sent.think)}`);
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+test("a role that does not declare thinking never sends it, however capable the model", async () => {
+  // The `research` role, which shares the author's model and declares no
+  // thinking — so the only difference under test is the role's own config.
+  const orig = globalThis.fetch;
+  const M = "research-capable:35b";
+  const UTILITY = await configuredAuthorModel();
+  let sent;
+  globalThis.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    if (u.endsWith("/api/tags")) return fakeResponse({ models: [{ name: M }, { name: UTILITY }] });
+    if (u.endsWith("/api/show")) return fakeResponse({ capabilities: ["completion", "thinking"] });
+    if (u.endsWith("/api/chat")) {
+      sent = JSON.parse(opts.body ?? "{}");
+      return fakeResponse({ model: M, message: { content: "{}" }, done_reason: "stop" });
+    }
+    throw new Error(`unexpected URL ${u}`);
+  };
+  try {
+    await chat({ role: "research", model: M, messages: [{ role: "user", content: "hi" }] });
+    assert.ok(!("think" in sent), "the role's declaration is the gate, not the model's ability");
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+test("xhigh is the gateway's vocabulary and maps to Ollama's top level", async () => {
+  const orig = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).endsWith("/api/show")) return fakeResponse({ capabilities: ["thinking"] });
+    throw new Error("unexpected");
+  };
+  try {
+    const at = (effort, model) =>
+      ollamaThink({ thinking: true, reasoning_effort: effort, model, backend: { baseURL: "http://t.example" } });
+    assert.equal(await at("xhigh", "m-xhigh"), "high", "Ollama has no xhigh; passing it through is a 400");
+    assert.equal(await at("low", "m-low"), "low");
+    assert.equal(await at(undefined, "m-none"), true, "declared without a level is still on");
+    assert.equal(await ollamaThink({ thinking: false, model: "m-off", backend: { baseURL: "http://t.example" } }), null);
   } finally {
     globalThis.fetch = orig;
   }
