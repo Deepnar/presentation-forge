@@ -103,6 +103,10 @@ export const api = {
     call(`/api/decks/${slug}`, { method: "PUT", body: JSON.stringify({ deck, meta }) }),
   deleteDeck: (slug) => call(`/api/decks/${slug}`, { method: "DELETE" }),
   adminClearUsage: (email) => call(`/api/admin/users/${encodeURIComponent(email)}/usage`, { method: "DELETE" }),
+  adminSetSetting: (name, value) => call(`/api/admin/settings/${name}`, { method: "PUT", body: JSON.stringify({ value }) }),
+  adminAutoKey: () => call("/api/admin/auto/key"),
+  adminSetAutoKey: (key) => call("/api/admin/auto/key", { method: "PUT", body: JSON.stringify({ key }) }),
+  adminClearAutoKey: () => call("/api/admin/auto/key", { method: "DELETE" }),
   validateDeck: (deck) =>
     call("/api/validate", { method: "POST", body: JSON.stringify({ deck }) }),
   renderDeck: (slug, opts = {}) =>

@@ -350,7 +350,7 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
         <div className="flex items-center gap-3">
           <span className={`rounded-full px-2.5 py-1 text-[12px] font-medium ${hosted ? "bg-amber/15 text-amber" : "bg-emerald-500/10 text-emerald-600"}`}>{hosted ? "HOSTED — Forge + BYOK only" : "LOCAL — Ollama fallback on"}</span>
           <Button size="sm" variant="outline" onClick={onToggle}>{hosted ? "Switch to local (test)" : "Switch to hosted"}</Button>
-          <span className="text-[11px] text-fg-faint">Writes <code className="font-mono">config/hosted.json</code> — no restart, env still wins on deploy.</span>
+          <span className="text-[11px] text-fg-faint">Writes <code className="font-mono">config/hosted.json</code>, which <strong className="text-fg-muted">overrides</strong> <code className="font-mono">FORGE_HOSTED</code> until it is removed.</span>
         </div>
       </Panel>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -380,7 +380,8 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
           </div>
         </Panel>
       </div>
-      <ControlsPanel controls={stats.system.controls} storageMb={stats.decks.size / 1024 / 1024} />
+      <AutoKeyPanel onReload={onReload} />
+      <ControlsPanel settings={stats.system.settings} storageMb={stats.decks.size / 1024 / 1024} onReload={onReload} />
       <Panel className="p-4">
         <div className="mb-2 text-[12px] font-semibold text-fg">How this admin page is gated</div>
         <div className="text-[12px] leading-relaxed text-fg-muted">RBAC: <code className="font-mono">role=admin</code> in the users table — the only thing that grants admin. <code className="font-mono">FORGE_ADMIN_EMAIL</code> sets that role at boot; it is not a credential at request time. Use the Users tab to promote anyone — search email → Make admin. That account then sees Admin in the sidebar and can reach all <code className="font-mono">/api/admin/*</code>. Demote via Remove admin. The last admin cannot be deleted.</div>
@@ -540,47 +541,213 @@ function RolePanel({ audit }) {
 }
 
 /**
- * The three levers DEPLOY.md calls the operating controls, and the number they
- * govern.
+ * One setting, editable, with where its value came from.
  *
- * All three are env-only and this panel deliberately cannot change them — a
- * setting written from here would be install-wide config that outlives the
- * container. The gap it closes is visibility: retention in particular is off
- * unless someone set it, "at 5-15 MB per deck, without it the disk fills" is
- * the deployment doc's own warning, and until now nothing on any screen said
- * which way it was set.
+ * The source matters as much as the value. A stored override wins over the
+ * environment — that is the point of being able to change it here — and the
+ * cost is that an operator who edits their compose file and redeploys will not
+ * see the change. So a value that is shadowing an env var says so, and can be
+ * handed back to the environment in one click.
  */
-function ControlsPanel({ controls, storageMb }) {
-  if (!controls) return null;
-  const retentionOff = !controls.sweepDays;
+function SettingRow({ name, s, onSave, busy }) {
+  const [draft, setDraft] = useState("");
+  const [editing, setEditing] = useState(false);
+  const isBool = typeof s.value === "boolean";
+
+  const shown = s.value === null || s.value === undefined
+    ? "off"
+    : isBool ? (s.value ? "on" : "off") : String(s.value);
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-t border-line/60 py-2 first:border-0">
+      <span className="min-w-0 flex-1 text-[12px] text-fg">{s.label}</span>
+
+      {editing && !isBool ? (
+        <>
+          <input
+            autoFocus
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { onSave(name, draft); setEditing(false); } if (e.key === "Escape") setEditing(false); }}
+            placeholder="blank to clear"
+            className="w-28 rounded-lg border border-line bg-sunken px-2 py-1 text-[12px] outline-none focus:border-accent"
+          />
+          <Button size="sm" variant="primary" disabled={busy} onClick={() => { onSave(name, draft); setEditing(false); }}>Save</Button>
+          <Button size="sm" variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+        </>
+      ) : (
+        <>
+          <span className={`font-mono text-[12px] ${s.value ? "text-fg" : "text-fg-faint"}`}>{shown}</span>
+          <SourceTag s={s} />
+          {isBool ? (
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => onSave(name, !s.value)}>
+              {s.value ? "Turn off" : "Turn on"}
+            </Button>
+          ) : (
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => { setDraft(s.value == null ? "" : String(s.value)); setEditing(true); }}>
+              Change
+            </Button>
+          )}
+          {s.source === "stored" && (
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => onSave(name, null)} title={`Hand this setting back to ${s.env}`}>
+              Reset
+            </Button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function SourceTag({ s }) {
+  if (s.source === "stored") {
+    return s.shadowsEnv
+      ? <Badge className="bg-amber/10 text-amber" title={`${s.env}=${s.envValue} is set but this override wins`}>overriding {s.env}</Badge>
+      : <Badge className="bg-raised text-fg-faint">set here</Badge>;
+  }
+  if (s.source === "env") return <Badge className="bg-raised text-fg-faint">{s.env}</Badge>;
+  return <Badge className="bg-raised text-fg-faint">default</Badge>;
+}
+
+/**
+ * The operating controls, changeable without a redeploy.
+ *
+ * They were env-only, which on a box somebody is using means a container
+ * restart to change one number — so retention in particular stayed at whatever
+ * it was at deploy time, and two of the three were on no screen at all.
+ */
+function ControlsPanel({ settings, storageMb, onReload }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  if (!settings) return null;
+  const retentionOff = !settings.sweepDays?.value;
+
+  const save = async (name, value) => {
+    setBusy(true); setErr("");
+    try {
+      await api.adminSetSetting(name, value === "" ? null : value);
+      await onReload();
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+
+  const order = ["sweepDays", "openRegistration", "autoWindowHours", "autoWindowRequests",
+                 "autoWeeklyRequests", "autoWindowSlides", "autoWeeklySlides", "autoMaxSlidesPerDeck"];
+
   return (
     <Panel className={`p-4 ${retentionOff ? "border-amber/40" : ""}`}>
-      <div className="mb-2 flex items-center gap-2">
+      <div className="mb-1 flex items-center gap-2">
         <span className={`h-2 w-2 rounded-full ${retentionOff ? "bg-amber" : "bg-emerald-500"}`} />
         <span className="text-[12px] font-semibold text-fg">Operating controls</span>
         {retentionOff && <Badge>deck storage is unmanaged</Badge>}
+        <span className="ml-auto text-[11px] text-fg-faint">{storageMb.toFixed(1)} MB of decks</span>
       </div>
-      <div className="space-y-1.5 text-[12px]">
-        <Row
-          label="Deck retention"
-          ok={!retentionOff}
-          detail={controls.sweepDays
-            ? `deleting after ${controls.sweepDays} days idle, daily at ${String(controls.sweepHour).padStart(2, "0")}:00`
-            : "off — decks are kept forever (FORGE_SWEEP_DAYS)"}
-        />
-        <Row
-          label="Registration"
-          ok={true}
-          detail={controls.openRegistration ? "open — anyone may sign up (FORGE_OPEN_REGISTRATION)" : "closed"}
-        />
-        <Row label="Deck storage" ok={true} detail={`${storageMb.toFixed(1)} MB across all accounts`} />
+      <div className="mb-2 text-[11px] leading-relaxed text-fg-faint">
+        Saved to <code className="font-mono">config/runtime.json</code> and applied to the next request — no restart.
+        A value set here <strong className="text-fg-muted">overrides</strong> the environment variable until you reset it.
       </div>
+      {order.filter((k) => settings[k]).map((k) => (
+        <SettingRow key={k} name={k} s={settings[k]} onSave={save} busy={busy} />
+      ))}
       {retentionOff && (
         <div className="mt-2 text-[11px] leading-relaxed text-fg-faint">
-          Set <code className="font-mono">FORGE_SWEEP_DAYS</code> to delete decks after that many days of
-          inactivity. Storage is the constraint that runs out first on this workload.
+          With retention off every deck is kept forever. Storage is the constraint that runs out first on this workload.
         </div>
       )}
+      {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
+    </Panel>
+  );
+}
+
+/**
+ * The shared gateway key.
+ *
+ * Write only, and that is deliberate: nothing here can read a key back, so an
+ * XSS on this page cannot take one. The status carries the last four characters
+ * — enough to tell two keys apart, not enough to be one.
+ *
+ * The environment still wins at resolve time, so a key rotated in the
+ * deployment beats one typed in here months earlier. That is the opposite
+ * precedence to the settings above, and it is deliberate too: rotation must not
+ * depend on somebody remembering to clear a stored row.
+ */
+function AutoKeyPanel({ onReload }) {
+  const [st, setSt] = useState(null);
+  const [draft, setDraft] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [msg, setMsg] = useState("");
+
+  const load = () => api.adminAutoKey().then(setSt).catch((e) => setErr(e.message));
+  useEffect(() => { load(); }, []);
+  if (!st) return null;
+
+  const save = async () => {
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      const r = await api.adminSetAutoKey(draft.trim());
+      setDraft(""); setEditing(false);
+      setMsg(r.health?.ok ? "Stored — the gateway answered." : `Stored. ${r.health?.detail ?? "Not verified."}`);
+      await load(); await onReload();
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+
+  const clear = async () => {
+    if (!window.confirm("Remove the stored gateway key? Auto stops working unless FORGE_TCET_API_KEY is set.")) return;
+    setBusy(true); setErr(""); setMsg("");
+    try { await api.adminClearAutoKey(); await load(); await onReload(); }
+    catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+
+  return (
+    <Panel className={`p-4 ${st.set ? "" : "border-amber/40"}`}>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${st.set ? "bg-emerald-500" : "bg-amber"}`} />
+        <span className="text-[12px] font-semibold text-fg">Gateway key (Auto)</span>
+        {!st.set && <Badge>Auto cannot generate</Badge>}
+      </div>
+      <div className="text-[12px] leading-relaxed text-fg-muted">
+        {st.set ? (
+          <>Using the key ending <code className="font-mono text-fg">{st.hint}</code>, from{" "}
+            {st.source === "env" ? <><code className="font-mono">FORGE_TCET_API_KEY</code> in the environment</> : "this panel, stored encrypted"}.
+            {st.storedShadowedByEnv && " A key is also stored here; the environment wins, so the stored one is unused."}
+          </>
+        ) : (
+          <>No key is set, so the Auto tier cannot generate for anyone. Paste the operator key — it is encrypted at rest and never read back to this page.</>
+        )}
+      </div>
+
+      {!st.pepperSet && (
+        <div className="mt-2 rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[11px] leading-relaxed text-amber">
+          <code className="font-mono">FORGE_KEY_PEPPER</code> is not set. Stored keys would be encrypted under the
+          published development constant, which is not encryption — hosted mode refuses it outright. Set a real one
+          before storing a key on a server.
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {editing ? (
+          <>
+            <input
+              autoFocus type="password" value={draft} onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && draft.trim()) save(); if (e.key === "Escape") setEditing(false); }}
+              placeholder="paste the gateway key"
+              className="w-72 rounded-lg border border-line bg-sunken px-2.5 py-1.5 font-mono text-[12px] outline-none focus:border-accent"
+            />
+            <Button size="sm" variant="primary" disabled={busy || !draft.trim()} onClick={save}>{busy ? "Storing…" : "Store"}</Button>
+            <Button size="sm" variant="outline" onClick={() => { setEditing(false); setDraft(""); }}>Cancel</Button>
+          </>
+        ) : (
+          <>
+            <Button size="sm" variant={st.set ? "outline" : "primary"} onClick={() => setEditing(true)}>
+              {st.source === "stored" ? "Replace stored key" : "Store a key"}
+            </Button>
+            {st.source === "stored" && <Button size="sm" variant="outline" disabled={busy} onClick={clear} className="text-danger hover:bg-danger/10">Remove</Button>}
+          </>
+        )}
+      </div>
+      {msg && <div className="mt-2 text-[12px] text-fg-muted">{msg}</div>}
+      {err && <div className="mt-2 text-[12px] text-danger">{err}</div>}
     </Panel>
   );
 }
