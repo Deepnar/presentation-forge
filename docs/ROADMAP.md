@@ -3863,6 +3863,76 @@ pages you walked.
 > were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
 > on every switch.
 
+### [x] Generate a deck and read it — the gateway's own model, run locally
+
+*The item that had been blocked for four sessions. Unblocked not by the gateway
+coming back but by `ollama pull qwen3.6:35b-a3b` — the same family and shape the
+gateway serves (35.5B, 3B-active MoE, 4-bit), which is what makes it a stand-in
+rather than a substitute.*
+
+**Why this is not the local-model shortcut the working agreement warns about.**
+That rule is about swapping in a DIFFERENT model, whose output answers a
+question nobody asked. This is the same weights at the same bit-width (Q4_K_M
+against the gateway's NVFP4). It also declares vision and thinking, so it plays
+author, research AND critic — retiring three separate model choices.
+
+Measured on the box it runs on: **100% GPU at 22 GB, 184 tok/s sustained, GPU
+68°C at 146 W of a 150 W cap, CPU 79°C against a 105°C ceiling.** No CPU
+offload, no kernel compilation. The vLLM route in `docs/LOCAL-MODEL.md` is
+therefore **abandoned**: 22 GiB of weights against a laptop GPU already holding
+4 GiB means mandatory `--cpu-offload-gb`, and FlashInfer's SM120 JIT compiles
+with `nproc` (24) parallel `nvcc` jobs at 2-4 GB each — ~72 GB against 62 GB of
+RAM whose only swap is zram, i.e. compressed RAM with no disk to spill to. That
+is a hard freeze, and it is what the user reported.
+
+**The deck: 83/100.** A real thesis ("A Technical Audit, Not a Hype Cycle"), a
+coherent three-part arc, 100% varied, 90% grounded, and a takeaway that makes a
+claim ("Stop Betting on Chemistry. Fund Yield Validation First."). The prose is
+good. Three defects came out of reading it, and two are now fixed:
+
+- **A chart whose categories and series disagree in length makes the entire
+  `.pptx` unopenable.** Not the chart — LibreOffice refuses the file, and the
+  only symptom is "source file could not be loaded". `writeFile()` succeeds, so
+  every check upstream was clean. See the entry below.
+- **Three of twenty slides had no headline** and rendered as a tall empty band
+  above stretched content. `headline` was required on 15 types and optional on
+  57. Now required on every content type.
+- **The research pass returned majority-junk sources — 16 of 21.** Open; see
+  *Research relevance* below.
+
+> **Learned.** **"Generate one deck and read it" was worth four sessions of
+> waiting.** Three defects, one of which made the deliverable unopenable, none
+> reachable from 618 tests, and all of them found in the first deck. The
+> specimen's payloads are hand-written to behave; only a model's payload has the
+> shapes a model actually produces.
+
+### [ ] Research relevance — 16 of 21 sources were not about the topic
+
+*No model needed to fix. Found by reading the first generated deck's research.*
+
+The corpus for a solid-state battery deck contained Wikipedia's **"India"**
+(31,107 words) and **"History of India"** (28,946), four Microsoft *"How to get
+help in Windows"* pages, a **Minecraft "Lithium" mod**, **drugs.com** and
+**Mayo Clinic** on lithium the psychiatric medication, and DBeaver's download
+page. Five of twenty-one sources were about batteries.
+
+The queries are not the problem — `expandQueries` produced good ones
+("solid electrolyte ion transport mechanism", "dry electrode coating
+manufacturing methods"). One reasonable query, *"India solid state battery
+policy framework"*, matched the country article on the word "India" alone.
+
+**The problem is that nothing between the search results and `notes.md` asks
+whether a page is about the topic.** `absorb` (`src/ai/research.js`) filters on
+`item.ok`, URL dedupe and a per-host cap, and nothing else, so 60,000 words
+about India went into the corpus the author reads.
+
+Measured on the real pages, **term DENSITY separates them and term presence does
+not**: Wikipedia "India" contains 5 of the 7 topic terms — a presence rule
+passes it — but at 0.44 hits per 1000 words against Wikipedia "Solid-state
+battery" at 35.55. An 80x margin. A conservative floor (~1.0/1000) drops the
+junk with room to spare, and it is topic-agnostic, which the three-layer rule
+requires: the code derives the terms from the brief, it does not know the topic.
+
 ### [x] Chart colours — the monochrome premise was stale, the pie was not
 
 *No model, renderer. Opened as "monochrome charts need pattern fills"; that
