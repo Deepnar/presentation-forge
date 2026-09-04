@@ -13,7 +13,7 @@ import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
  */
 export default function ResearchView({ slug, refreshToken, onBack, onNavigate }) {
   const project = useProject(slug, refreshToken);
-  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [], summary: null, figures: [] });
+  const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [], summary: null, figures: [], imageCredits: [] });
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
@@ -25,7 +25,7 @@ export default function ResearchView({ slug, refreshToken, onBack, onNavigate })
     api.research(slug)
       .then((r) => setState({
         loading: false, exists: r.exists, notes: r.notes ?? "", sources: r.sources ?? [],
-        summary: r.summary ?? null, figures: r.figures ?? [],
+        summary: r.summary ?? null, figures: r.figures ?? [], imageCredits: r.imageCredits ?? [],
       }))
       .catch((err) => { setState((s) => ({ ...s, loading: false })); setError(err.message); });
   };
@@ -197,10 +197,88 @@ export default function ResearchView({ slug, refreshToken, onBack, onNavigate })
               </table>
             </Panel>
           )}
+
+          <ImageCredits credits={state.imageCredits} />
         </div>
       )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Where the pictures came from.
+ *
+ * It sits with the sources because it answers the same question — provenance —
+ * and because a licence that requires attribution is only satisfied if someone
+ * can find it. The report prints the citable ones; this lists all of them, and
+ * says which is which, so a stock photograph missing from the report is an
+ * explained absence rather than a silent one.
+ */
+function ImageCredits({ credits }) {
+  if (!credits?.length) return null;
+  const owed = credits.filter((c) => c.attribution_required).length;
+  return (
+    <Panel className="p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Image credits</div>
+        <Badge className="bg-raised text-fg-faint">CREDITS.md</Badge>
+      </div>
+      <p className="mb-3 text-[12px] leading-relaxed text-fg-muted">
+        Pictures the app found for slides that asked for one. Every source states its
+        licence — nothing is used whose licence could not be read.{" "}
+        {owed > 0
+          ? `${owed} of ${credits.length} require attribution; keep the credit with the deck.`
+          : "None of these require attribution."}
+      </p>
+      <table className="w-full text-left">
+        <thead>
+          <tr className="border-b border-line text-[10.5px] uppercase tracking-wider text-fg-faint">
+            <th className="py-2 pr-3 font-medium">Image</th>
+            <th className="py-2 pr-3 font-medium">Slide</th>
+            <th className="py-2 pr-3 font-medium">Licence</th>
+            <th className="py-2 font-medium">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {credits.map((c, i) => (
+            <tr key={i} className="border-b border-line/60 last:border-0">
+              <td className="max-w-md py-2 pr-3">
+                {c.landing ? (
+                  <a href={c.landing} target="_blank" rel="noreferrer" className="text-[12.5px] text-fg underline-offset-2 hover:underline">
+                    {c.title || c.query}
+                  </a>
+                ) : (
+                  <span className="text-[12.5px] text-fg-muted">{c.title || c.query}</span>
+                )}
+                {c.creator && <div className="text-[11px] text-fg-faint">by {c.creator}</div>}
+              </td>
+              <td className="py-2 pr-3 font-mono text-[11px] tabular-nums text-fg-faint">{c.slide ?? "—"}</td>
+              <td className="py-2 pr-3 text-[11.5px]">
+                {c.licence_url ? (
+                  <a href={c.licence_url} target="_blank" rel="noreferrer" className="text-fg-muted underline-offset-2 hover:underline">
+                    {c.licence}
+                  </a>
+                ) : (
+                  <span className="text-fg-muted">{c.licence}</span>
+                )}
+                {c.attribution_required
+                  ? <span className="text-[10.5px] text-amber"> · credit required</span>
+                  : <span className="text-[10.5px] text-fg-faint"> · no credit needed</span>}
+              </td>
+              <td className="py-2 text-[11.5px] text-fg-muted">
+                {c.source}
+                {!c.citable && (
+                  <div className="text-[10.5px] text-fg-faint" title="Stock and user-upload platforms are credited here but not printed in the report">
+                    not cited in the report
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Panel>
   );
 }
 

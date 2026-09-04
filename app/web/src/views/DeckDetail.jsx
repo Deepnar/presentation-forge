@@ -1028,6 +1028,40 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
         </Panel>
       )}
 
+      {data?.imageCredits?.length > 0 && (
+        <Panel className="mt-5 p-3.5">
+          <div className="mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">
+              Picture credits
+            </div>
+            <span className="text-[10.5px] text-fg-faint">CREDITS.md in the deck folder</span>
+          </div>
+          <ul className="space-y-1.5 text-xs leading-relaxed text-fg-muted">
+            {data.imageCredits.map((c, i) => (
+              <li key={i}>
+                <span className="tabular-nums text-fg-faint">{c.slide ? `Slide ${c.slide}` : "—"}</span>
+                {" · "}
+                {c.landing ? (
+                  <a href={c.landing} target="_blank" rel="noreferrer" className="text-fg underline-offset-2 hover:underline">
+                    {c.title || c.query}
+                  </a>
+                ) : (
+                  <span className="text-fg">{c.title || c.query}</span>
+                )}
+                {c.creator ? ` by ${c.creator}` : ""}
+                {" — "}
+                {c.licence_url ? (
+                  <a href={c.licence_url} target="_blank" rel="noreferrer" className="underline-offset-2 hover:underline">
+                    {c.licence}
+                  </a>
+                ) : c.licence}
+                {c.attribution_required && <span className="text-amber"> · credit required</span>}
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
+
       {punchErr && (
         <Panel className="mt-5 border-amber/30 bg-amber/5 p-3.5">
           <div className="text-xs leading-relaxed text-amber">{punchErr}</div>
