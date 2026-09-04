@@ -31,7 +31,7 @@ export async function deckSchema() {
  */
 const FAMILIES = {
   Foundation: ["title", "section", "chapter", "closing", "agenda", "references"],
-  "List & Grid": ["bullets", "numbered-list", "checklist", "feature-grid", "grid-items", "icon-list", "stacked-list"],
+  "List & Grid": ["bullets", "numbered-list", "checklist", "cards", "illustrated-points", "feature-grid", "grid-items", "icon-list", "stacked-list"],
   "Data & Stats": ["stats", "big-number", "kpi-dashboard", "data-cards", "progress-bars", "ranking-list", "metric-comparison", "sparklines"],
   Comparison: ["compare", "pros-cons", "before-after", "framework", "matrix", "scorecard", "vs", "side-by-side"],
   "Process & Flow": ["flow", "funnel", "pipeline", "dependencies", "branching-flow", "layered-architecture"],
@@ -162,6 +162,7 @@ export const TYPE_BUDGETS = {
   testimonial: "the words, the speaker, and the context that gives them weight",
   "team-grid": "one tile per member: name, role and one line of what they did",
   "image-text": "a caption and 1-2 body lines that argue the image's point",
+  "illustrated-points": "3-6 points that stand on their own — the picture supports them, it does not replace them",
   "split-screen": "a real heading AND 1-2 body lines per side — an empty panel reads as broken",
   "side-by-side": "a heading and a body line on each side — the comparison needs both sides filled",
 };
@@ -233,6 +234,7 @@ export const TYPE_DESCRIPTIONS = {
   "layered-architecture": "stacked tiers of a system",
   image: "a full-width image with a caption",
   "image-text": "an image beside supporting text",
+  "illustrated-points": "points that can take a picture beside them",
   "image-grid": "several images in a grid",
   "hero-image": "one large image as the slide",
   "split-screen": "two halves, an image and text",
@@ -316,6 +318,7 @@ export const TYPE_USE_WHEN = {
   "layered-architecture": "use for stacked tiers of a system — layers, abstractions, responsibilities",
   image: "use for a full-width image with a caption — the visual IS the slide (needs a real image)",
   "image-text": "use for an image beside supporting text — the claim next to its visual proof",
+  "illustrated-points": "use when the points are the argument and a photograph or diagram would help — a physical thing, a place, a piece of equipment. The image is OPTIONAL and there is no file yet: choose this type to RESERVE the space, write the points, and one is supplied later. This is the only list type that can take a picture, so it is the one to pick when a beat wants one",
   "image-grid": "use for several images in a grid — a gallery, a set of examples",
   "hero-image": "use for one large image as the slide — a dramatic opening or closer",
   "split-screen": "use for two halves, one image and one text — a contrast anchored by a visual",
