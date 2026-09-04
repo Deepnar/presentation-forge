@@ -92,6 +92,38 @@ test("a repair survives an unrelated slide being over its cap", async () => {
   );
 });
 
+/** The model returns the flagged half blank — every cap satisfied, all meaning
+ *  gone. Observed on a real `compare` slide. */
+const guttingChat = async () => ({
+  data: {
+    ops: [
+      {
+        op: "update_slide",
+        index: 0,
+        patch: {
+          items: [
+            { title: "Student Poverty Rate", body: "" },
+            { title: "Household Median Income", body: "" },
+          ],
+        },
+      },
+    ],
+  },
+});
+
+test("a rewrite that empties a field is refused, not accepted as short enough", async () => {
+  const deck = deckWith();
+  const res = await fieldLengthPass({ deck, deckDir: scratch, chat: guttingChat });
+
+  const bodies = res.deck.slides[0].items.map((i) => i.body);
+  assert.ok(bodies.every((b) => b && b.trim()), `no body was emptied, got ${JSON.stringify(bodies)}`);
+  assert.equal(res.repaired.length, 0, "and nothing is reported as repaired");
+  assert.ok(
+    res.problems.some((p) => /emptied/.test(String(p))),
+    `the refusal is reported, got ${JSON.stringify(res.problems)}`,
+  );
+});
+
 test("errorsForSlide attributes a missing required field, which has no pointer", () => {
   // `describe` writes the pointer only for keywords with a sub-path; `required`
   // renders as "slide N (type: T): missing required field …" and nothing else.

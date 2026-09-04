@@ -105,6 +105,35 @@ function resolveRef(ref, schema) {
 
 /** A targeted rewrite of ONE slide's overlong fields, via its own type grammar.
  *  Returns the repaired slide (validated) or null. */
+/**
+ * The field a rewrite emptied, if it emptied one.
+ *
+ * A patch that comes back `{title: "", body: ""}` satisfies every cap, every
+ * required key and every schema rule, so neither ajv nor a per-slide error
+ * count can refuse it — and it is strictly worse than the truncation it
+ * replaced. Observed on a real `compare` slide whose `right` half came back
+ * blank in place of a body cut four characters short.
+ *
+ * `fieldInventory` skips blank strings, so a field that was emptied or dropped
+ * simply stops appearing under its path. Compare the two inventories by path
+ * and position — the same guard `healCutField` applies to itself, which will
+ * not trade a truncated field for a stub.
+ */
+function emptiedField(before, after) {
+  const byPath = (inv) => {
+    const m = new Map();
+    for (const f of inv) m.set(f.path, [...(m.get(f.path) ?? []), f.text]);
+    return m;
+  };
+  const was = byPath(before);
+  const now = byPath(after);
+  for (const [path, texts] of was) {
+    const left = now.get(path) ?? [];
+    if (left.length < texts.length) return path;
+  }
+  return null;
+}
+
 async function rewriteSlide({ slide, index, inventory, research, model, signal, chat = chatJSON }) {
   const schema = await deckSchema();
   const typeCatalog = await catalogForType(slide.type);
@@ -328,6 +357,11 @@ export async function fieldLengthPass({
     const after = errorsForSlide((await validateDeck(next)).errors, i);
     if (after.length > before.length) {
       problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite rejected — ${after[0]}`);
+      continue;
+    }
+    const lost = emptiedField(inventory, await fieldInventory(candidate));
+    if (lost) {
+      problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite rejected — it emptied ${lost}`);
       continue;
     }
 
