@@ -4120,10 +4120,57 @@ from `bullets` / `numbered-list` / `takeaway` with at most 4 items of at most
 > instruction. The finding was correct and the fix was impossible, and only one
 > of those is visible from the report line.
 
+### [x] Image seating — there was nowhere to put a picture
+
+*Decided with the numbers in hand, then built. Schema, layout, planner.*
+
+The last handoff predicted "if they keep landing on 5- and 6-bullet slides, the
+answer is a new slide type, not a looser rule". The measurement came back worse
+than that: the whole 22-slide deck carried **one** `[image]` note and it was on
+the **title** slide. Structurally, of 73 types exactly **one** (`testimonial`)
+declared an optional `image` field — the only shape `imageSeat` can fill in
+place. Everything else requires its picture, and the writer is explicitly told
+to avoid those because it has no file to name.
+
+So the rule was not too tight. **There was nowhere to put a picture**, and the
+`[image]` note was the writer's only way of saying it wanted one, arriving after
+the type had already been chosen for other reasons.
+
+Both halves are now built:
+
+- **`illustrated-points`** — headline plus three to six points, image OPTIONAL.
+  The writer produces it empty and the slide is complete, rendering as a
+  full-width list; a supply fills the same slide later and the points move to a
+  column. Five points survive where `image-text` caps its body at four.
+- **The planner chooses it**, in the outline, for a beat a picture genuinely
+  helps — with a ceiling, since a deck of them is a slideshow. The writer's
+  `[image]` instruction is now conditional on whether the slide's type can
+  actually carry one, derived from the schema by the same rule the supply uses.
+
+Clean across 34 themes x 74 types, `drawcheck`, `textcheck`, and `capfit` at
+100% together. **Not yet seen end to end with a model** — the planner half needs
+one generation to confirm the type is chosen at a sensible rate.
+
+> **Learned.** **"The rule is too tight" and "there is nowhere to put it" look
+> identical from the skip list.** Every skipped note said `type "X" cannot carry
+> an image without losing content`, which reads as a promotion rule being fussy.
+> The question that separated them was not about the rule at all: how many types
+> have a seat? One. Count the capacity before tuning the gate.
+>
+> **A type that renders two ways gives the sweeps a choice, and they can only
+> see one.** The specimen carries the filled state because that is where the
+> risk is — a narrowed column is where points overflow, and `caption` exists
+> only in that branch. Choosing the other state left `caption` a field nothing
+> had ever rendered, which `drawcheck` said out loud.
+>
+> **Branch on what was asked for, not on what resolved.** Treating an
+> unresolvable image as "no image" dropped the caption silently — a credit
+> vanishing with the picture it credits.
+
 ### [ ] A turn's grammar is built from every type at once, so it fits almost none
 
-*Priority: high. Found by watching the critic fail to apply a correct finding.
-`buildOpsSchema` in `src/ai/ops.js`. **Needs a direction agreed before code.***
+*Priority: medium — the critic path is fixed, chat is not. Found by watching the
+critic fail to apply a correct finding. `buildOpsSchema` in `src/ai/ops.js`.*
 
 `runTurn` — the primitive under chat, the critic's fix pass and generation —
 builds its ops schema with no `onlyTypes`, so `buildOpsSchema` walks every
@@ -4154,10 +4201,11 @@ is fighting the same grammar.
 
 Three shapes for the fix, and they are materially different work:
 
-1. **Scope the turn to the types it touches.** The critic knows which slides
-   its findings name, so it can pass `onlyTypes: [that slide's type]` and get
-   the exact right grammar. Smallest change, no effect on chat, and a turn
-   spanning several types still merges wrongly.
+1. **[x] Scope the turn to the types it touches.** *Done — `runTurn` takes
+   `onlyTypes` and the critic passes the types of the slides its findings name.
+   Unscoped turns are unchanged, so chat may still write any type.* This was the
+   agreed direction. It fixes the critic and leaves the general merge wrong for
+   any turn spanning several types, which is what the two options below are for.
 2. **Merge permissively instead of by overwrite.** Union the properties of
    same-named fields and reduce `required` to the intersection, so every type's
    shape is representable and `validateDeck` plus the repair loop enforce which
