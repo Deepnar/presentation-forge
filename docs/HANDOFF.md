@@ -1,6 +1,6 @@
 # Handoff — 2026-09-04, credits surfaced, admin swept, settings made live
 
-Everything is on `main`. `npm test` is **598 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **610 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -133,6 +133,23 @@ returns a key to the browser, the status carries only the last four characters,
 and it refuses when `FORGE_KEY_PEPPER` is unset (which it is on this box) rather
 than encrypting under a constant published in this repository.
 
+### Bulk account cleanup
+
+Built with the shape agreed: a dry run that returns the **whole list** rather
+than a count, groups every spared account by why, and hands back a token bound
+to that exact **set** — so a signup or a new deck between preview and confirm
+invalidates it and the list must be read again. The typed phrase carries the
+count.
+
+Four vetoes the caller cannot switch off: admins, whoever is signed in, anyone
+who owns a deck, anyone who has generated; plus a seven-day floor that may only
+be raised. The deck rule matters because `deleteUserAccount` does **not** remove
+decks — they would keep an owner that no longer exists and sit on the volume
+invisible to everyone.
+
+**Not run on this box.** The preview reports 110 of 116 eligible; pressing the
+button is the operator's to do, which is the point of the design.
+
 ---
 
 ## Plan for next session
@@ -149,19 +166,11 @@ seated and then reverted by the fit gate. **If real notes mostly land on 5- and
 6-bullet slides, the answer is a new slide type, not a looser rule.** This is
 the first thing to look at when the gateway returns.
 
-### 2. Bulk account cleanup  *(no model, needs a design first)*
-
-Left undone by the admin sweep on purpose. This box carries **116 accounts**,
-almost all throwaway test ones, and deleting them is one `window.confirm` at a
-time. A filter-scoped bulk delete is the obvious fix and also the one that wipes
-real accounts when the filter is wrong, so it wants a dry-run count and a typed
-confirmation rather than a button. Agree the shape before building.
-
-### 3. Monochrome charts need pattern fills  *(no model, renderer)*
+### 2. Monochrome charts need pattern fills  *(no model, renderer)*
 
 A mono theme carries three or four distinguishable greys; a five-series chart is
 unreadable in one. OOXML pattern fills are the real answer. Design scope rather
-than a defect.
+than a defect, and now the largest no-model item left.
 
 ### Two decisions that are yours, both still open
 
@@ -264,8 +273,8 @@ single session.
   a model writes.
 - `flickr` is excluded from the report's citable set, which also excludes the
   genuine government photostreams it hosts. Named in `src/credits.js`.
-- The dev box holds **116 throwaway accounts**. `Admin → Users` now shows each one's
-  Auto spend; bulk removal is item 2 above.
+- The dev box still holds **116 accounts**, 110 of them throwaway. `Admin → Users →
+  Clean up stale accounts` previews and removes them; it was deliberately not run.
 - `decks/perovskite-solar-cells-stability-challenges-2` is the real generated
   deck kept as a fixture. Every check takes `--deck` — use it, because the
   specimen's payloads are hand-written to behave.
