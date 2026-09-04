@@ -1,6 +1,6 @@
 # Handoff — 2026-09-04, credits surfaced, admin swept, settings made live
 
-Everything is on `main`. `npm test` is **611 passing**, `npm run themematrix` is
+Everything is on `main`. `npm test` is **614 passing**, `npm run themematrix` is
 clean across 34 themes, and the working tree is clean. `textcheck`, `drawcheck`
 and `capfit` were not re-run: nothing this session touched a theme, a layout, a
 cap or the fitter, and the clean matrix is the evidence for that.
@@ -156,6 +156,29 @@ the report donor were in the same position and are the larger leak.
 `deleteUserAccount` now removes all three — the cascade list says what the
 *database* reclaims, not what the *feature* owns.
 
+### Chart colours
+
+Opened as "monochrome charts need pattern fills". **The premise was stale** —
+that entry was written when charts borrowed the UI palette; `src/chartpalette.js`
+fixed it, and the one monochrome theme in 34 now authors its own chromatic chart
+colours. There was no monochrome chart to fix.
+
+Measuring found the real defect, and it is only reachable through a **pie**,
+whose colours come from its uncapped `categories` while `series` is capped at
+four. A declared palette was cycled, so an eight-slice pie on
+`high-contrast-mono` drew slices 7 and 8 in the colours of 1 and 2 — **8
+identical pairs across the gallery**. The derived ramp maximised hue gap and
+alternated lightness by parity, drawing two greens at ΔE 6.
+
+Now: wrapped entries shift value and keep the author's hue, and the picker
+searches hue and lightness scored on CIE76 distance. Worst distance anywhere
+**0.0 → 13.1**, zero identical pairs, rendered and looked at.
+
+**Pattern fills were not built.** pptxgenjs 4.0.1 has no `pattFill` at all, so it
+means post-processing chart XML inside the `.pptx` — real work for a premise
+that no longer exists. It is a genuine *accessibility* idea (greyscale print,
+colour-vision deficiency) and wants its own entry if desired.
+
 ---
 
 ## Plan for next session
@@ -172,11 +195,18 @@ seated and then reverted by the fit gate. **If real notes mostly land on 5- and
 6-bullet slides, the answer is a new slide type, not a looser rule.** This is
 the first thing to look at when the gateway returns.
 
-### 2. Monochrome charts need pattern fills  *(no model, renderer)*
+### 2. Nothing else is unblocked without a model
 
-A mono theme carries three or four distinguishable greys; a five-series chart is
-unreadable in one. OOXML pattern fills are the real answer. Design scope rather
-than a defect, and now the largest no-model item left.
+Every no-model item on the list is closed. What is left needs the gateway:
+generating a deck and reading it, the thinking-mode experiment, watching the
+critic loop, and the image-seating question above.
+
+If the gateway stays down, the honest options are the two standing decisions
+below, or `docs/LOCAL-MODEL.md` — the gateway's own weights (`Qwen3.6-35B-A3B-NVFP4`)
+are downloaded and vLLM is installed, so the model that answers content
+questions can be run here. Standing it up is its own afternoon; the two measured
+warnings in that doc (cap the kernel build, `--cpu-offload-gb` is required) are
+the part that bites.
 
 ### Two decisions that are yours, both still open
 
