@@ -289,6 +289,12 @@ has been verified on a hand-made report and never on a generated one.
   outages have shipped and nothing prevents a fourth.
 - **Token metering** (`recordAutoEvent` accepts a count; every call site passes
   0). It is the first prerequisite for charging anyone, and it needs no model.
+- **Rename `tcet-auto` to a role** — `auto` / `FORGE_AUTO_API_KEY`, reading the
+  old names as fallbacks, plus a migration for the `global_keys` and
+  `auto_events` rows keyed by the old id. No model. TCET provides a model
+  endpoint and nothing else, and repointing that provider's `baseURL` at any
+  OpenAI-compatible endpoint already works — this is so the config stops naming
+  one institution while serving another. See the roadmap entry.
 
 ## What is left to put this in front of real users
 
