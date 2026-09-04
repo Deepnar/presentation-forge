@@ -3863,6 +3863,61 @@ pages you walked.
 > were `max-w-6xl` and `max-w-4xl`, so the title and the links jumped sideways
 > on every switch.
 
+### [x] Chart colours — the monochrome premise was stale, the pie was not
+
+*No model, renderer. Opened as "monochrome charts need pattern fills"; that
+turned out to be the wrong problem, and measuring first found the right one.*
+
+**What the entry assumed, and why it no longer held.** It was written when
+charts borrowed the UI palette and `high-contrast-mono` drew three identical
+black series. `src/chartpalette.js` fixed that, and the theme now declares a
+six-colour *chromatic* chart palette of its own. Today there is exactly one
+monochrome theme in 34, it authors its own series colours, and the derived grey
+ramp is therefore never used by anything shipped. There was no monochrome chart
+to fix.
+
+**What was actually broken** — and both defects are reachable only through a
+pie, because a pie's colours come from its **categories**, which the schema does
+not cap, while `series` is capped at four:
+
+- **A declared palette was cycled**, `declared[i % len]`. `high-contrast-mono`
+  declares six, so an eight-slice pie drew slices 7 and 8 in exactly the colours
+  of 1 and 2. Measured across all 34 themes at 4, 8 and 12 slices: **8 identical
+  colour pairs**. A wrapped entry now shifts value and keeps the author's hue.
+- **The derived ramp maximised hue gap** and alternated lightness by index
+  parity, so two entries an even number apart could land in the same hue region
+  at identical lightness — a twelve-slice pie drew two greens at ΔE 6. It now
+  searches hue and lightness together, scored on CIE76 distance.
+
+Worst perceptual distance across every theme and slice count: **0.0 → 13.1**,
+zero identical pairs. Rendered and looked at: a ten-slice pie and a four-series
+bar on `bauhaus`. `themematrix` clean across 34.
+
+**Pattern fills were not built, and should not be for this.** pptxgenjs 4.0.1
+has no pattern-fill support at all (zero occurrences of `pattFill`), so it means
+post-processing the chart XML inside the `.pptx`. That is real work for a
+premise that no longer exists. It remains a genuine *accessibility* idea —
+greyscale printing and colour-vision deficiency — and belongs in its own entry
+if it is wanted, not as the fix for a colour-crowding problem that colour
+solved.
+
+> **Learned.** **Measure the premise before building the fix.** The entry named
+> a mechanism (pattern fills) for a condition (too few greys) that had been
+> resolved by other work months earlier, and building it would have been effort
+> spent on nothing while the actual defect — identical pie slices — sat
+> unnoticed in the same file.
+>
+> **WCAG contrast is the wrong metric for a categorical palette.** It is a
+> luminance ratio, so red and blue at equal lightness score 1.0 while being
+> instantly distinguishable. The first measurement here used it and reported 132
+> "near-identical" combinations that were nothing of the sort. ΔE is the right
+> tool, and switching the picker's objective to it fixed the crowding as a side
+> effect of measuring it honestly.
+>
+> **The test asserted the bug.** `// It cycles rather than running out` was
+> written as intended behaviour, which is why nothing ever caught the repeated
+> slices.
+
 ### [x] Bulk account cleanup, behind a dry run and a typed phrase
 
 *No model. Held back from the admin sweep until its shape was agreed, because
@@ -4562,8 +4617,9 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
 - ~~`uniqueSlug` appends `-2`, `-4` on collision against a global namespace.~~
   Fixed under *Hosting blockers*: an owned deck gets an opaque token
   unconditionally; ownerless decks keep the counter.
-- A monochrome theme can only carry three or four distinguishable greys. OOXML
-  pattern fills are the real answer for a mono chart with more series than that.
+- ~~A monochrome theme can only carry three or four distinguishable greys.
+  OOXML pattern fills are the real answer.~~ **The premise was out of date and
+  the real defect was elsewhere.** See *Chart colours* below.
 - ~~The report donor is install-wide.~~ Fixed under *Hosting blockers*:
   `donorDirForDeck(deckDir)` resolves it from the deck's own owner, and an
   account uploads its own under Settings → Identity.

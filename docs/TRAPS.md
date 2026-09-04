@@ -371,6 +371,20 @@ like discharging the obligation and did not. Ask where the obligation is
 actually met — for a deck that is exported and emailed, only a slide inside the
 `.pptx` meets it, because every other surface stays behind in the app.
 
+**WCAG contrast is the wrong metric for telling categories apart.** It is a
+luminance ratio, so red and blue at the same lightness score 1.0 — identical by
+that measure, instantly distinguishable by eye. Using it to audit a chart
+palette reported 132 "near-identical" pairs that were fine. Perceptual distance
+(CIE76 ΔE) is the tool: under 2.3 is the just-noticeable difference, under 10 is
+"similar". Contrast is still right for ink on a ground, where luminance IS the
+question.
+
+**A pie's colours come from its categories, which nothing caps.** The chart
+schema caps `series` at four, so every code path that colours a chart was
+checked at four — and pie and doughnut colour by category instead, where
+`minItems: 1` has no maximum. Two slices came out identical. When a limit
+protects a code path, check which inputs actually flow through it.
+
 **Cascades cover the rows and none of the files.** `deleteUserAccount` removes
 the user row and everything with an `ON DELETE CASCADE` — sessions, BYOK keys,
 prefs, usage — which looks like the whole job and is not. Two kinds of thing
