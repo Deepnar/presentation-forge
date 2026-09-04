@@ -4059,6 +4059,120 @@ it opens, everything else carries the previous slide's forward.
 > silent failure rather than a visible one is that nothing downstream could
 > tell a plan the model wrote from a plan it did not.
 
+### [x] The first deck generated for a team, and the first critic loop watched
+
+*The session item. Local `qwen3.6:35b-a3b`, 22 slides, 4-member team,
+`--slides-per-member 4 --images --critic`. Roughly two hours end to end on this
+box, ~3 minutes per slide-write call.*
+
+**Presenter assignment works.** Verified by rendering, not by reading code: the
+title slide carries "Group 7 — Aarti Deshmukh (TCE21-014) · Rahul Mehta …", every
+content slide's footer carries the one member who presents it, and section
+dividers carry only the slide number. Four members over sixteen content slides,
+contiguous blocks, dividers unassigned. This had never rendered before — every
+deck the project had generated showed `Presenter: —`.
+
+**The critic works, and it earns its place.** One finding in round 1, and it was
+true: slide 10, a feature-grid, *"the text 'Centers marginalized groups in site
+selection criteri' is cut off at the end of the line"*. Read off the rendered
+PNG by a vision model, on a deck where every mechanical check was clean.
+
+Both of the defects behind that finding are in their own entries above and
+below. The short version:
+
+- The text was cut **by the decoding grammar**, at exactly the 53-character cap
+  — three of that slide's four card bodies sat on the cap mid-word. The
+  field-length pass had already found and correctly rewritten all of them, and
+  then discarded its own work on a whole-deck validation gate.
+- **The critic's fix could not have succeeded.** `runTurn` builds its ops
+  grammar with no type restriction, and `buildOpsSchema` merges every type's
+  properties by overwrite. Thirteen types declare `items`; the last one wins.
+  So the model was asked to repair a `feature-grid` while the grammar required
+  `contact`'s `{label, value}` items — and the failure surfaced as "slide 10
+  (type: feature-grid): missing required field \"title\"". Twelve property
+  names collide this way (`cards`, `body`, `rows`, `steps`, `events`, `nodes`,
+  `entries`, `stages`, `columns`, `left`, `right`, `items`), and `items` alone
+  has eight distinct element shapes. **Open — the fix shape is a decision, see
+  the entry below.**
+
+**The image supply had one note to work with, on the title slide.** The whole
+22-slide deck carried a single `[image]` note and it was on `title`, which
+cannot hold one. Structural finding alongside it: of 73 slide types, exactly
+**one** (`testimonial`) has an optional `image` field a supply can fill in
+place. Everything else must be promoted to `image-text`, which is only lossless
+from `bullets` / `numbered-list` / `takeaway` with at most 4 items of at most
+180 characters. See the image-seating entry.
+
+> **Learned.** **The critic is worth its cost, and not for the reason the entry
+> assumed.** It was built to catch what the fitter's measurements cannot see.
+> What it actually caught was a defect three separate mechanical passes had
+> already found or should have: the grammar cut the text, the field-length pass
+> repaired it, and the repair was thrown away. The critic was the only thing in
+> the pipeline reading the *output* rather than the intermediate — which is the
+> argument for it, restated in a way no test could have.
+>
+> **A vision model reporting a specific quoted string is a defect you can
+> trust.** The finding named the card, quoted the truncated text, and said what
+> was missing. That is checkable against the deck in seconds, which is what
+> makes a critic finding actionable rather than an opinion to be argued with.
+>
+> **Watch what it says before trusting what it changes** was the right
+> instruction. The finding was correct and the fix was impossible, and only one
+> of those is visible from the report line.
+
+### [ ] A turn's grammar is built from every type at once, so it fits almost none
+
+*Priority: high. Found by watching the critic fail to apply a correct finding.
+`buildOpsSchema` in `src/ai/ops.js`. **Needs a direction agreed before code.***
+
+`runTurn` — the primitive under chat, the critic's fix pass and generation —
+builds its ops schema with no `onlyTypes`, so `buildOpsSchema` walks every
+type's `then.properties` and assigns them into one flat object:
+
+```js
+for (const [name, spec] of Object.entries(rule.then?.properties ?? {})) {
+  props[name] = deref(spec);      // last type to declare `items` wins
+}
+```
+
+Thirteen types declare `items`. The last one to be walked is `contact`, so
+every multi-type turn carries `items: array<{label, value}>` — and a model
+asked to patch a `feature-grid` is *forced* by the grammar to emit the wrong
+shape. Observed exactly this way: the critic found a real clipped card body on
+slide 10 and its fix failed validation with `missing required field "title"`.
+The model did not get it wrong. The right answer was unrepresentable.
+
+Twelve property names collide: `items` (8 distinct element shapes), `cards`,
+`body` (string vs array), `rows`, `steps`, `events`, `nodes`, `entries`,
+`stages`, `columns`, `left`, `right`. Only a turn that happens to touch the
+winning type gets a correct grammar.
+
+**This is not only the critic.** Chat is the same primitive, and the product
+vision puts the chat panel at the centre — "edit the deck the way you would
+talk to Gamma". Every chat instruction that patches one of those thirteen types
+is fighting the same grammar.
+
+Three shapes for the fix, and they are materially different work:
+
+1. **Scope the turn to the types it touches.** The critic knows which slides
+   its findings name, so it can pass `onlyTypes: [that slide's type]` and get
+   the exact right grammar. Smallest change, no effect on chat, and a turn
+   spanning several types still merges wrongly.
+2. **Merge permissively instead of by overwrite.** Union the properties of
+   same-named fields and reduce `required` to the intersection, so every type's
+   shape is representable and `validateDeck` plus the repair loop enforce which
+   one was correct. Fixes chat and the critic together; loosens the grammar,
+   which is the thing that keeps constrained decoding on-distribution.
+3. **Make `patch` type-conditional.** Closest to correct and hardest: a patch
+   carries no `type`, and the target's type is only known from `index`, so the
+   grammar cannot condition on it without restructuring the op.
+
+> **Note for whoever takes this.** The measurement is already done — the
+> collision table above is generated from the schema, and
+> `buildOpsSchema(ds, {slideCount: 22})` versus
+> `buildOpsSchema(ds, {slideCount: 22, onlyTypes: ["feature-grid"]})` shows the
+> two grammars side by side in one call.
+
 ### [x] The critic's fixes never reached the file anyone opens
 
 *Found while running the critic loop for the first time. `src/ai/pipeline.js`.*
