@@ -12,8 +12,8 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-242424?style=flat-square" alt="MIT license" /></a>
   <img src="https://img.shields.io/badge/node-24%2B-242424?style=flat-square" alt="Node.js 24 or newer" />
-  <img src="https://img.shields.io/badge/themes-38-242424?style=flat-square" alt="38 themes" />
-  <img src="https://img.shields.io/badge/slide%20types-75-242424?style=flat-square" alt="75 slide types" />
+  <img src="https://img.shields.io/badge/themes-34-242424?style=flat-square" alt="34 themes" />
+  <img src="https://img.shields.io/badge/slide%20types-74-242424?style=flat-square" alt="74 slide types" />
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
@@ -28,10 +28,10 @@ brief → research → outline → approval → content → render → preview �
 ```
 
 - Chat-first creation with thesis-driven briefing (thesis, audience, emphasis, evidence steer research and plan), editable outlines, persistent deck conversations, and per-user workspaces.
-- A deterministic renderer with 75 slide types, 38 themes, text fitting, speaker notes, presenter distribution, and editable PowerPoint text for native slides.
+- A deterministic renderer with 74 slide types, 34 themes, text fitting, speaker notes, presenter distribution, and editable PowerPoint text for native slides.
 - Research from SearXNG, uploaded source material, arXiv, and Crossref; briefing-aware query expansion and evidence-coverage re-query, and claims are checked against saved research notes before a deck is finalised.
 - Standalone reports, companion reports, and deck-from-report generation, all based on the same research record.
-- Auto image supply for `[image]` notes via SearXNG images / Unsplash Source, cached under `assets/auto/` (no model writes a URL), plus manual upload.
+- Auto image supply from Wikimedia Commons and Openverse — sources chosen because they state their own licence — cached under `assets/auto/` with the credit recorded (no model ever writes a URL), plus manual upload. Pictures are refused unless they are demonstrably of the subject that was asked for.
 - Deterministic quality gate (monotony, data-blind) and coherence review after generation.
 - A local default using Ollama for clones; the hosted site runs on a shared gateway plus per-account BYOK keys, encrypted at rest.
 - A browser application, a headless CLI, and a Docker deployment that all use the same Node core.
@@ -110,9 +110,9 @@ The same rule decides where colour comes from. A chart's series palette is a the
 
 The deck pipeline combines research, an approval gate, schema validation, deterministic layout, and visual review.
 
-- 75 slide types across title and section surfaces, lists, statistics, charts, comparisons, processes, timelines, quotations, media, tables, diagrams, definitions, teams, and special-purpose slides.
+- 74 slide types across title and section surfaces, lists, statistics, charts, comparisons, processes, timelines, quotations, media, tables, diagrams, definitions, teams, and special-purpose slides.
 - Nine chart variants, including bar, line, area, pie, doughnut, scatter, radar, and stacked bar, each drawn from the theme's own categorical palette so no series is ever invisible against the page.
-- 38 bundled themes, with native PowerPoint shapes where possible and an optional Chrome-rendered background plate for effects that Office cannot represent cleanly — frosted glass over hard-edged shapes, a masked aurora curtain whose colour travels along its length, a layered golden-hour sky, extruded clay, soft-UI light falling across a surface, an isometric wireframe.
+- 34 bundled themes, with native PowerPoint shapes where possible and an optional Chrome-rendered background plate for effects that Office cannot represent cleanly — frosted glass over hard-edged shapes, a masked aurora curtain whose colour travels along its length, a layered golden-hour sky, extruded clay, soft-UI light falling across a surface, an isometric wireframe.
 - Readability controls: measured text fitting, per-role font floors, density sweeping, field-length rewrites, and a final trim pass that avoids mid-sentence truncation.
 - Presentation workflow controls: balanced contiguous presenter assignments, speaker-script generation, content grounding, coherence review, slide-type conversion, version backups, export, and editable deck YAML.
 
@@ -255,6 +255,7 @@ The test suite covers the renderer’s supporting contracts, generation stages, 
 - [Architecture](docs/ARCHITECTURE.md) — design boundaries, the rendering paths, research, reports, chat, and deployment rationale.
 - [Traps](docs/TRAPS.md) — hard-won implementation constraints and failure modes.
 - [Roadmap](docs/ROADMAP.md) — completed work, future work, and feature-specific lessons.
+- [Production readiness](docs/PRODUCTION.md) — everything still outstanding between here and real users: launch blockers, the payments track, journeys nobody has run, and the open defect list.
 
 ## License
 

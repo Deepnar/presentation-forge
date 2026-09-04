@@ -168,6 +168,11 @@ is `COVERING_THEMES` in `src/coverage.js`, it is what `npm run capstress`
 defaults to, and `test/coverage.test.js` fails when a theme introduces a value
 none of them carries. When it does, add a theme there — do not widen the sweep.
 
+`docs/PRODUCTION.md` is the standing answer to "what is left before real users?"
+— launch blockers, the payments track, the journeys nobody has run, and the open
+defect list. Read it before planning a session; update it when one of its items
+moves.
+
 `docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
 headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
 Read it before touching the renderer or the fitter.

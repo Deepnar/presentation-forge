@@ -8,6 +8,11 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 
 ---
 
+> **Everything still outstanding between here and real users lives in
+> [`PRODUCTION.md`](PRODUCTION.md)** — launch blockers, the payments track, the
+> journeys nobody has ever run, and the open defect list. This file is the
+> per-feature plan and history behind it.
+
 ## 1. Foundation
 
 ### [x] Font pipeline
@@ -5113,6 +5118,23 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
 ### [ ] Housekeeping found during the audit
 
 *Priority: low.*
+
+Found in the plan-to-picture session, and each has a named symptom:
+
+- **Image progress prints a slide index where a counter belongs.** The supply
+  emits `{ index }` (the slide) and the CLI's generic progress printer renders
+  `index + 1 / total`, so a one-image deck logs `images 3/1`.
+- **`looksCutAtCap` false-positives on headlines and labels.** It flags any
+  field at its cap without terminal punctuation, but a headline is a noun
+  phrase and ends without a full stop by design — `"$10.9M"` and `"Weighing V2G
+  Economics Against Grid Impact"` are handed to the model rewrite for nothing.
+- **The coherence pass missed three near-identical headlines.** Slides 18, 21
+  and 22 of the V2G deck each said a version of "Scaling V2G Requires
+  Cross-Sector Collaboration".
+- **`illustrated-points` with an empty seat leaves the lower half of the slide
+  empty**, and the vision critic reports it as `blank`. Equally true of a
+  four-item `bullets` slide, so the question is whether the layout should
+  breathe differently when no picture is coming — a decision, not a defect.
 
 - ~~`config/identity.yaml` contains `institution.name: HACKED`.~~ Fixed under
   *Hosting blockers*: the file is reset to the template and `identityStatus()`

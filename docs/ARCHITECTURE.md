@@ -252,6 +252,35 @@ synthesis note (claim-first prose, real hooks, figures from the notes) while
 the local writer keeps the conservative instructions that small models survive
 on.
 
+### Reasoning depth is per role, and sent in both directions
+
+`thinking` and `reasoning_effort` are role settings, and they reach two very
+different backends. The `openai-compatible` path sends the gateway's
+`chat_template_kwargs.enable_thinking` alongside a `reasoning_effort`, and only
+where the provider declares `supports_thinking` — an unknown top-level key being
+ignored is a convention, not a contract someone's BYOK endpoint owes us.
+
+The Ollama path sends `think`, and asks the model what it can do rather than
+trusting the name: `/api/show` reports `thinking` among its capabilities, the
+same probe `roleCanSeeImages` uses for vision, and sending `think` to a model
+without it is an error rather than a no-op. `reasoning_effort` is written in the
+gateway's vocabulary, so `xhigh` maps to Ollama's top level instead of being
+passed through and rejected.
+
+**The flag is sent in BOTH directions, and that is the part worth knowing.** A
+thinking-capable model reasons by DEFAULT, so omitting the flag never meant
+"off" — it meant "whatever the template does". Measured: the `research` role,
+which declares no thinking anywhere, was returning ~17,000 characters of
+reasoning on every call. A config consulted only when it says yes is not a
+config. Sending `think: false` explicitly took that same call from 27 seconds to
+3, on a role that runs many times per deck.
+
+The result carries `thinking` back, on both the streamed and non-streamed paths,
+for the same reason it carries `fellBack` and `transport`: a run that cannot say
+whether it reasoned cannot be compared with one that did. It is never streamed
+onward to a caller's `onToken` — the user is being shown an answer, not a
+deliberation.
+
 ### Hosted vs local — single repo, one switch
 
 `FORGE_HOSTED` is the only fork. `isHosted()` (`src/cloud.js:15`) checks `config/hosted.json` (admin runtime toggle, file wins) then `process.env.FORGE_HOSTED`/`FORGE_DISABLE_LOCAL`, so the same image runs both ways:
@@ -1012,22 +1041,70 @@ competing for a slot.
 terms, so a written description returns nothing (`"electrolysis cell diagram"`
 → 0, `"electrolysis"` → 240). `queryLadder` steps from the full phrase, to the
 phrase minus the picture-kind words (`diagram`, `photo`, `schematic` — generic
-vocabulary, never topic knowledge), to the two most distinctive terms, to one.
-It stops at the first rung that lands.
+vocabulary, never topic knowledge), to the two most distinctive terms. It stops
+at the first rung that lands, and it **stops at two terms, never one**: a
+single-word query has lost the subject, and measured against the live upstreams
+it fetched the planet Jupiter for a V2G bus depot, an 1898 lithograph of human
+anatomy for `anatomy`, an abandoned bus in the Atacama for `bus`, and a musical
+notation mark for the product name `fermata`.
+
+**And the result is checked against the request, which nothing used to do.**
+`rankCandidates` orders by licence tier and pixel width, so before this a
+correctly-licensed 4000px picture of the wrong thing won every time.
+`rankBySubject` makes topical relevance the primary sort key with a floor: a
+candidate must match a majority of the description's terms — at least two,
+never more than three, because a description carrying a product name and a
+model number can never be matched four ways by an archive photograph. Terms are
+matched on a trimmed stem so `buses` finds `bus`. An untitled candidate cannot
+be judged and is refused.
+
+The errors here are not symmetric, and that is what sets the threshold. A wrong
+picture ships on a submitted deck; a refused one leaves a seat that renders as
+the ordinary list the slide already is. **A low fill rate is the intended
+outcome**, not a failure.
 
 **Seating is lossless or it does not happen**, and this is the part the schema
 alone cannot decide. `image`, `image-text`, `hero-image` and `image-grid` all
 *require* their image field, so a validated deck never contains one waiting to
-be filled — meaning `[image]` notes land almost entirely on types that cannot
-carry a picture at all. Two ways in:
+be filled. That was once the whole problem: measured across 73 types, exactly
+**one** (`testimonial`) declared an optional `image`, so `[image]` notes landed
+almost entirely on types that could not carry a picture at all — on one real
+deck, the single note in 22 slides was on the TITLE slide.
 
-- **An optional seat** (`testimonial`, `compare`, `before-after`) is filled in
+`illustrated-points` exists to be the seat. Three to six points and an OPTIONAL
+image: the writer produces it empty and the slide is finished, rendering as an
+ordinary full-width list; a supply fills the same slide later and the points
+move to a column. Neither state is a degraded version of the other, and the
+layout branches on whether an image was *asked for* rather than whether one
+resolved — collapsing those dropped `caption` silently whenever an asset was
+missing, a credit vanishing with the picture it credits.
+
+Three ways in:
+
+- **An optional seat** (`illustrated-points`, `testimonial`) is filled in
   place. `imageSeat` derives these from the schema, so a new image-carrying
   type is seated the day it is added.
 - **Otherwise the slide is promoted to `image-text`** — the same conversion
   `DeckDetail` performs on a manual upload — but only when its list fits that
   type's four-line body. This one runs without a human watching, so it may not
   drop a point the writer meant to make.
+- **An EMPTY SEAT is itself a request.** Waiting for the writer to say
+  `[image]` does not work: run end to end, the planner seated a beat, the
+  writer produced a good slide, and never wrote the note — so the supply had
+  nothing to look for. What to photograph is asked directly instead, of the
+  `utility` role, as a literal short subject with a *minimum* length as well as
+  a maximum (told "six words at most" the model answered "bus", and the search
+  obliged with an abandoned bus in a desert). A headline cannot serve: it is
+  written to be read, and "The Physical Anatomy of a V2G Bus Depot" searched as
+  a picture returns human anatomy.
+
+**Which beats get a seat is decided in the plan, not asked for.** Across seven
+planning samples and three promptings a local qwen3.6 chose `illustrated-points`
+zero times; told to "include two or three" it complied and the deck's variety
+collapsed from 17 distinct types to 10. So `seatIllustratedBeats` assigns them
+after the outline returns, the way presenters and the structure contract already
+are: list-shaped beats only, one per section, three per deck, and none at all
+when nothing in the deck looks showable.
 
 Then two gates, because "lossless" means the words survive *on the page*:
 
