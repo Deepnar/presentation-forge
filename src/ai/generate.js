@@ -99,7 +99,12 @@ const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3 } = {}) =
         required: ["type", "purpose"],
         properties: {
           type: { type: "string", maxLength: 16 },
-          section: { type: "integer", minimum: 0, maximum: 7 },
+          // Bounded by the same cap as `sections`, or a slide can point at a
+          // part that was never declared: at the old constant 7 the model put
+          // content in sections 4 and 5 of a four-part deck, and the structure
+          // pass opened them as "Open part 6." — a part with no label and no
+          // place in the talk.
+          section: { type: "integer", minimum: 0, maximum: Math.max(0, sectionCap - 1) },
           purpose: {
             type: "string",
             maxLength: 180,
