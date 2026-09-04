@@ -4059,6 +4059,43 @@ it opens, everything else carries the previous slide's forward.
 > silent failure rather than a visible one is that nothing downstream could
 > tell a plan the model wrote from a plan it did not.
 
+### [x] The critic's fixes never reached the file anyone opens
+
+*Found while running the critic loop for the first time. `src/ai/pipeline.js`.*
+
+`critiqueDeck` renders inside its own loop, so the `.pptx` was the deck the
+critic finished with. Finalize then kept editing that deck — the fit trim, the
+grounding pass and the presenter re-assignment all run on its output — and
+nothing drew it again. Whenever a fix landed, the artefact on disk was a
+different deck from the `deck.yaml` beside it.
+
+**The presenter half is the one that would have shipped.** The critic's fix
+goes through the ops layer, which does not carry `presenter`, so the rewrite
+drops it; finalize re-assigns and persists, and the code says so in its own
+comment. What the comment does not say is that nothing renders afterwards. And
+a slide with no presenter does not draw an empty footer — `applyContentChrome`
+falls back to every presenting member joined by "·" — so a deck with the defect
+does not look broken. It looks like a deck where all four people present every
+slide.
+
+Now redrawn, but only when those passes actually moved the deck, so a clean
+critic round costs nothing. `critique` is injectable into `finalizeDeck` for
+the same reason `chat` is.
+
+> **Learned.** **A fallback can make a defect look like a design.** The failing
+> render was legible, plausible and wrong: "Ada Lovelace · Alan Turing" on every
+> slide reads as a deliberate choice, not as a slide that lost its presenter.
+> The first version of the test asserted the right name was *present* on the
+> slide and passed against the broken code — the roster contains every name, so
+> containment can never fail. The assertion that works is that the OTHER names
+> are absent.
+>
+> **A stub that skips what the real collaborator does tests the stub.** The
+> first critic stub returned an edited deck without rendering it, so it failed
+> against the fixed code for a reason production never has. Making it render —
+> and drop `presenter`, as the ops layer really does — is what turned it into a
+> test of the defect.
+
 ### [x] Chart colours — the monochrome premise was stale, the pie was not
 
 *No model, renderer. Opened as "monochrome charts need pattern fills"; that
