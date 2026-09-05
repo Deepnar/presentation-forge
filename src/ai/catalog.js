@@ -47,6 +47,10 @@ const FAMILIES = {
   Special: ["equation", "bibliography", "data-source"],
 };
 
+/** The families, as a map, for callers that need to pick a type rather than
+ *  classify one — inserting a slide chooses by family to keep variety. */
+export const FAMILY_TYPES = new Map(Object.entries(FAMILIES));
+
 export function familyFor(type) {
   for (const [name, list] of Object.entries(FAMILIES)) {
     if (list.includes(type)) return name;

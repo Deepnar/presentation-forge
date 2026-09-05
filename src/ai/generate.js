@@ -2,7 +2,7 @@ import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
 import { selectResearch, slideQuery, CALL_RESEARCH_CHARS } from "./retrieve.js";
 import { imageSeat } from "./images.js";
-import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
+import { slideCatalog, catalogForType, deckSchema, familyFor, FAMILY_TYPES, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { DIVIDER_TYPES, FRONT_MATTER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
 import { placeholderSlides } from "../placeholders.js";
@@ -1094,6 +1094,139 @@ export function compatibleRemap(slide, targetType) {
  * type, grounded in the deck's research like the density sweep. Returns the
  * converted slide (validated) or null.
  */
+
+/* ------------------------------------------------------ inserting a slide */
+
+/** Types that are structure rather than content: a slide inserted into the
+ *  middle of a part is never one of these. */
+const STRUCTURAL = new Set([...DIVIDER_TYPES, ...FRONT_MATTER_TYPES, "references", "contact", "attribution", "team-grid"]);
+
+/**
+ * The type a new slide should be, chosen rather than asked for.
+ *
+ * The user wants one more slide, not a `feature-grid`. Deterministic rather
+ * than a model call, because the writer's grammar has to be scoped to ONE type
+ * before it can be built (`onlyTypes`), so the type must be known first — and
+ * asking would mean an extra round trip to answer a question the deck can
+ * answer itself.
+ *
+ * The rule is variety, which is what a reader notices: prefer a family neither
+ * neighbour is using, break the tie by whichever family the deck leans on
+ * least, and fall back to `bullets`, which fits anywhere and is the type the
+ * padding path already mints.
+ */
+export function chooseInsertType(deck, after, { exclude = [] } = {}) {
+  const slides = deck?.slides ?? [];
+  const neighbours = [slides[after]?.type, slides[after + 1]?.type].filter(Boolean);
+  const neighbourFamilies = new Set(neighbours.map(familyFor).filter(Boolean));
+
+  const used = new Map();
+  for (const s of slides) {
+    const f = familyFor(s.type);
+    if (f) used.set(f, (used.get(f) ?? 0) + 1);
+  }
+
+  const candidates = [...FAMILY_TYPES.entries()]
+    .filter(([family]) => family !== "Foundation")
+    .map(([family, types]) => ({
+      family,
+      types: types.filter((t) => !STRUCTURAL.has(t) && !exclude.includes(t) && !neighbours.includes(t)),
+    }))
+    .filter((c) => c.types.length)
+    .sort((a, b) => {
+      const aNew = neighbourFamilies.has(a.family) ? 1 : 0;
+      const bNew = neighbourFamilies.has(b.family) ? 1 : 0;
+      if (aNew !== bNew) return aNew - bNew;
+      return (used.get(a.family) ?? 0) - (used.get(b.family) ?? 0);
+    });
+
+  return candidates[0]?.types[0] ?? "bullets";
+}
+
+/**
+ * What a slide inserted at this point is FOR.
+ *
+ * `mintedSpec` already derives a purpose for a padded slide from its section
+ * label alone. An insertion knows more than that: it knows which two slides it
+ * lands between, so it can be told to develop the argument from one toward the
+ * other rather than to repeat either.
+ */
+export function insertPurpose(deck, plan, after) {
+  const slides = deck?.slides ?? [];
+  const before = slides[after];
+  const next = slides[after + 1];
+  const sec = before?.section ?? next?.section ?? 0;
+  const label = plan?.sections?.[sec];
+  const said = (s) => s?.headline ?? s?.quote ?? s?.title ?? null;
+
+  const between = [said(before), said(next)].filter(Boolean);
+  const context = between.length === 2
+    ? `It follows "${between[0]}" and is followed by "${between[1]}" — carry the argument from the first toward the second without restating either.`
+    : between.length === 1
+      ? `It follows "${between[0]}" — take that point further rather than restating it.`
+      : "";
+
+  return {
+    section: sec,
+    purpose: [
+      label
+        ? `Develop the "${label}" part with one more concrete point drawn from the research.`
+        : "Add one more concrete point drawn from the research.",
+      context,
+    ].filter(Boolean).join(" "),
+  };
+}
+
+/**
+ * Write one new slide and place it after `after`.
+ *
+ * Deliberately built on `writeSlide` rather than on `runTurn`. A chat turn can
+ * already emit `insert_slide`, which is why this looked like it existed — but
+ * what comes back is written by the CHAT path: the merged ops grammar of every
+ * type at once, whatever research the turn happened to carry, and none of the
+ * post-passes. The slide that arrives is visibly not a sibling of the ones
+ * around it. Going through the writer gives it the grammar scoped to its own
+ * type, research retrieved for its own purpose, and the same field-length and
+ * coherence passes as every other slide.
+ */
+export async function insertSlide({
+  deck, plan, after, theme, research = "", type = null, purpose = null, model, signal, chat = chatJSON,
+}) {
+  const slides = deck?.slides ?? [];
+  const at = Number(after);
+  if (!Number.isInteger(at) || at < -1 || at >= slides.length) {
+    throw new Error(`cannot insert after slide ${at + 1} — the deck has ${slides.length}`);
+  }
+
+  const derived = insertPurpose(deck, plan, at);
+  const spec = {
+    type: type ?? chooseInsertType(deck, at),
+    section: derived.section,
+    purpose: purpose?.trim() || derived.purpose,
+  };
+
+  // The writer is shown the deck as it will be, so "SLIDES SO FAR" reads as
+  // the slides BEFORE this one rather than the whole deck including the ones
+  // that come after it.
+  const upTo = { ...deck, slides: slides.slice(0, at + 1) };
+  const ops = await writeSlide({ spec, plan: plan ?? { title: deck.title, sections: [] }, deck: upTo, theme, research, model, signal, chat });
+  // The writer emits `append_slide` — its grammar is "write the next slide",
+  // and the deck it was handed ends at the insertion point. Read the same op
+  // generateDeck reads, then place the result rather than appending it.
+  const slide = ops.find((o) => o.op === "append_slide")?.slide
+    ?? ops.find((o) => o.op === "replace_slide" || o.op === "insert_slide")?.slide
+    ?? null;
+  if (!slide) throw new Error("The model produced no slide to insert.");
+
+  slide.type = slide.type ?? spec.type;
+  if (slide.section == null && spec.section != null) slide.section = spec.section;
+  // Presenters are assigned centrally after the fact, like every other slide.
+  delete slide.presenter;
+
+  const nextSlides = [...slides.slice(0, at + 1), slide, ...slides.slice(at + 1)];
+  return { slide, index: at + 1, deck: { ...deck, slides: nextSlides }, spec };
+}
+
 export async function convertSlide({
   deck, index, targetType, theme, research = "", model, signal, chat = chatJSON,
 }) {

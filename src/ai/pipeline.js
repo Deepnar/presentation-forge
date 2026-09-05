@@ -6,7 +6,7 @@ import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
 import { excerptResearch, deepResearch } from "./research.js";
 import { ingestUpload, readStagedUpload } from "./upload.js";
-import { planDeck, generateDeck, sweepDeck, convertSlide } from "./generate.js";
+import { planDeck, generateDeck, sweepDeck, convertSlide, insertSlide } from "./generate.js";
 import { generateScript } from "./script.js";
 import { trimDeckToFit } from "./trim.js";
 import { fieldLengthPass } from "./fieldlength.js";
@@ -1198,6 +1198,77 @@ export async function sweepDensity({
  * Persists deck.yaml, grounds, renders. Returns the converted slide and the
  * new previews so the UI can show the result immediately.
  */
+/**
+ * Add one slide to a finished deck, after `index`.
+ *
+ * The motivating case is a deck that stopped short: a run that hit a quota or
+ * dropped, or simply a deck the author now wants three more slides in the
+ * middle of. `resume` is not that — it continues the APPROVED PLAN, so a deck
+ * whose plan is complete has no way to grow.
+ *
+ * The plan is updated alongside the deck, and that is not bookkeeping: a slide
+ * present in deck.yaml but absent from plan.yaml is lost the next time
+ * anything replans, and `assignPresenters` walks the plan's sections, so it
+ * would never be given an owner either.
+ */
+export async function insertDeckSlide({
+  slug, index, type = null, purpose = null, model, onProgress, signal,
+}) {
+  const dir = path.join(DECKS, slug);
+  const deckFile = path.join(dir, "deck.yaml");
+  const planFile = path.join(dir, "plan.yaml");
+  const deck = YAML.parse(await readFile(deckFile, "utf8"));
+  const themeName = deck.theme ?? "warm-humanist";
+  const themeObj = await loadTheme(themeName);
+
+  let plan = null;
+  try { plan = YAML.parse(await readFile(planFile, "utf8")); } catch { /* deck without a stored plan */ }
+
+  let researchText = "";
+  try {
+    researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
+  } catch { /* no research pass */ }
+
+  onProgress?.({ status: "writing", index: Number(index) + 1, total: (deck.slides?.length ?? 0) + 1 });
+  const r = await insertSlide({
+    deck,
+    plan,
+    after: Number(index),
+    theme: themeObj,
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
+    type,
+    purpose,
+    model,
+    signal,
+  });
+
+  const grounded = groundDeck(r.deck, researchText, { label: await groundNotesLabel(dir) });
+  await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
+
+  // The plan gains the same slide in the same position, so the two artefacts
+  // still describe one deck.
+  if (plan?.slides?.length) {
+    const entry = { type: r.slide.type, purpose: r.spec.purpose };
+    if (r.spec.section != null) entry.section = r.spec.section;
+    plan.slides = [...plan.slides.slice(0, r.index), entry, ...plan.slides.slice(r.index)];
+    await writeFile(planFile, YAML.stringify(plan), "utf8");
+  }
+
+  onProgress?.({ status: "rendering" });
+  const rendered = await render({ deckFile, themeName });
+  const p = await preview(rendered.outFile, { dpi: 110 });
+  const base = `/api/decks/${slug}/preview`;
+
+  return {
+    slug,
+    index: r.index,
+    slide: r.slide,
+    slides: p.pages.map((f) => `${base}/${path.basename(f)}`),
+    thumbs: p.thumbs.map((f) => `${base}/thumbs/${path.basename(f)}`),
+    problems: [...(rendered.problems ?? []), ...grounded.problems],
+  };
+}
+
 export async function convertSlideType({
   slug, index, type, model, onProgress, signal,
 }) {

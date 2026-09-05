@@ -17,7 +17,7 @@ import { AUTO_PROVIDER, AUTO_PROVIDER_IDS, isAutoProviderId } from "../../src/au
 import { newMeter, withMeter, meterTotal, meterSummary, estimateTokens } from "../../src/usage.js";
 import { userBrandDirs, userReferenceDir } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
+import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, insertDeckSlide, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
@@ -1500,6 +1500,44 @@ app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
  * Compatible types remap locally; the rest get a scoped model rewrite. Same
  * SSE transport as generation so a slow cloud rewrite streams progress.
  */
+/**
+ * Add a slide after this one, written like the rest of the deck.
+ *
+ * A first-class action rather than a sentence the user has to compose in chat.
+ * Chat can already emit insert_slide, but what it produces goes through the
+ * chat path — the merged ops grammar, whatever research the turn carried, and
+ * none of the post-passes — so the slide arrives visibly unlike its
+ * neighbours. This runs the slide WRITER.
+ */
+app.post("/api/decks/:slug/slides/:index/insert", (req, res) => {
+  const sse = startSSE(res);
+  const ctrl = new AbortController();
+  sse.done.catch(() => ctrl.abort());
+
+  const { type, purpose, model } = req.body ?? {};
+  let reservation = null;
+  (async () => {
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(req.user.email, 1, estimateTokens({ slides: 1 }));
+    }
+    const r = await insertDeckSlide({
+      slug: req.params.slug,
+      index: Number(req.params.index),
+      type: type ?? null,
+      purpose: purpose ?? null,
+      model,
+      signal: ctrl.signal,
+      onProgress: (p) => sse.send("status", p),
+    });
+    sse.send("result", r);
+    sse.close();
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
+    if (ctrl.signal.aborted) return;
+    sse.send("error", { error: err.message, limits: err.limits });
+    sse.close();
+  });
+});
+
 app.post("/api/decks/:slug/slides/:index/convert", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
