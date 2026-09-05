@@ -187,6 +187,9 @@ Every other doc has a different job and none of them holds work:
   subsystem changes shape.
 - `docs/TRAPS.md` — the cross-cutting failure list. Read before touching the
   renderer or the fitter.
+- `docs/BLOCKED.md` — everything that cannot be worked on and what is
+  blocking it, split into external / operator / decision. Read it before
+  concluding an item is stuck.
 - `docs/HANDOFF.md` — the current state for the next session; overwritten each
   time, and git keeps the old ones.
 

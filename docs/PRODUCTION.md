@@ -9,6 +9,9 @@ Every claim below was checked against the code on the day it was written, not
 carried forward from memory. Where something is asserted as broken, the file and
 the symptom are named so it can be confirmed in a minute.
 
+**Blocked on something?** `docs/BLOCKED.md` is the single list of blockers and
+who can clear each one.
+
 **How this file relates to the others.** `docs/ROADMAP.md` is the single list
 of work items and the only place a new one should be written. This file is the
 standing answer to *what stops real users*, `docs/ECONOMICS.md` to *what it

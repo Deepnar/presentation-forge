@@ -80,6 +80,7 @@ own jobs and none of them is holding work:
 | `docs/ECONOMICS.md` | what it costs and what it can be sold for |
 | `docs/ARCHITECTURE.md` | how the system is built, as built |
 | `docs/TRAPS.md` | what has bitten before, cross-cutting |
+| `docs/BLOCKED.md` | what cannot be worked on, and who unblocks it |
 | `docs/HANDOFF.md` | the current state, for the next session; overwritten |
 
 When one of those files needs to mention future work, it LINKS to the roadmap
