@@ -32,7 +32,7 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
   const cloudOn = Boolean(cloud?.configured && cloud.keySet);
   const routingCloud = route === "cloud";
   const routingAuto = route === "auto";
-  const autoKind = auto?.kind ?? (auto?.provider === "tcet-auto" ? "tcet" : "local");
+  const autoKind = auto?.kind ?? (auto?.provider === "auto" || auto?.provider === "tcet-auto" ? "auto" : "local");
   const autoLabel = "AUTO";
   const autoTitle = "Auto — free shared model, rate-limited";
 

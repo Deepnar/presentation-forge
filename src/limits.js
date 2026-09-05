@@ -1,5 +1,6 @@
 import { getDb } from "./db.js";
 import { settingValue } from "./runtime.js";
+import { AUTO_PROVIDER } from "./autoid.js";
 
 /**
  * Auto-tier limits for the shared TCET gateway.
@@ -121,7 +122,7 @@ export function setPlan(userId, plan) {
   return plan;
 }
 
-export function recordAutoEvent({ userId, eventType = "request", slides = 0, tokens = 0, provider = "tcet-auto" }) {
+export function recordAutoEvent({ userId, eventType = "request", slides = 0, tokens = 0, provider = AUTO_PROVIDER }) {
   const db = getDb();
   const now = Date.now();
   const r = db.prepare(`INSERT INTO auto_events (user_id, event_type, slides, tokens, provider, created_at) VALUES (?,?,?,?,?,?)`)
@@ -181,7 +182,7 @@ export function lifetimeTokens(userId) {
   return Number(getDb().prepare("SELECT lifetime_tokens FROM users WHERE id=?").get(userId)?.lifetime_tokens) || 0;
 }
 
-export function getUsage({ userId, provider = "tcet-auto" }) {
+export function getUsage({ userId, provider = AUTO_PROVIDER }) {
   const db = getDb();
   const now = Date.now();
   const windowMs = limitConfig().windowHours * 60 * 60 * 1000;
@@ -204,7 +205,7 @@ export function getUsage({ userId, provider = "tcet-auto" }) {
   };
 }
 
-export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
+export function checkAutoLimits({ userId, provider = AUTO_PROVIDER, upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
   const cfg = limitConfig(plan ?? planFor(userId));
   const usage = getUsage({ userId, provider });
   const errors = [];
@@ -284,7 +285,7 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
  * A refusal writes nothing: a request that was denied cost the operator
  * nothing and must not consume the budget it was refused for.
  */
-export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
+export function reserveAuto({ userId, provider = AUTO_PROVIDER, upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
   const db = getDb();
   db.exec("BEGIN IMMEDIATE");
   try {
@@ -308,7 +309,7 @@ export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0
  * is a query per account — which is how the stats page came to run 116 queries
  * to label ten bars. Returns a Map keyed by user id.
  */
-export function usageByUser({ provider = "tcet-auto" } = {}) {
+export function usageByUser({ provider = AUTO_PROVIDER } = {}) {
   const db = getDb();
   const now = Date.now();
   const windowAgo = now - limitConfig().windowHours * 60 * 60 * 1000;
@@ -343,7 +344,7 @@ export function usageByUser({ provider = "tcet-auto" } = {}) {
  * a demo) was to delete their account or wait out the week. Returns how many
  * events were dropped.
  */
-export function clearAutoEvents({ userId, provider = "tcet-auto" }) {
+export function clearAutoEvents({ userId, provider = AUTO_PROVIDER }) {
   const db = getDb();
   const before = db.prepare("SELECT COUNT(*) as n FROM auto_events WHERE user_id=? AND provider=?").get(userId, provider);
   db.prepare("DELETE FROM auto_events WHERE user_id=? AND provider=?").run(userId, provider);

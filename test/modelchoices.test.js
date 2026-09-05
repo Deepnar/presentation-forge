@@ -87,8 +87,34 @@ test("hosted with a gateway key: auto carries the keySet the UI tests", async ()
   // The bug was not a wrong value, it was an absent field: `undefined` is
   // falsy, so every consumer read it as "no key".
   assert.equal(auto.keySet, true);
-  assert.equal(auto.kind, "tcet");
+  // The tier is named for its ROLE now, not for the institution that happened
+  // to supply the gateway. Note the fixture above still writes the old
+  // provider block and the old env var, which makes this a backward
+  // compatibility test as much as a naming one: an install that has not been
+  // touched must keep resolving.
+  assert.equal(auto.kind, "auto");
   assert.deepEqual(auto.models, ["qwen3.6"]);
+});
+
+test("the same config under the new provider name resolves identically", async () => {
+  const { writeFile } = await import("node:fs/promises");
+  const path = (await import("node:path")).default;
+  const file = path.join(process.env.FORGE_CONFIG_DIR, "models.yaml");
+  const legacy = await (await import("node:fs/promises")).readFile(file, "utf8");
+  await writeFile(file, legacy.replace("  tcet-auto:", "  auto:").replace("FORGE_TCET_API_KEY", "FORGE_AUTO_API_KEY"));
+
+  delete process.env.FORGE_TCET_API_KEY;
+  process.env.FORGE_AUTO_API_KEY = "a-real-looking-key";
+  const { setHostedForTest } = await import("../src/cloud.js");
+  setHostedForTest(true);
+  const mod = await import(`../src/ai/ollama.js?case=${Math.random()}`);
+  const { auto } = await mod.modelChoices();
+
+  assert.ok(auto, "the role-named provider must resolve");
+  assert.equal(auto.keySet, true);
+  assert.equal(auto.kind, "auto");
+  delete process.env.FORGE_AUTO_API_KEY;
+  await writeFile(file, legacy);
 });
 
 test("hosted with no gateway key: auto is absent, so the banner still fires", async () => {

@@ -1,6 +1,7 @@
 import { randomBytes, createCipheriv, createDecipheriv, createHash } from "node:crypto";
 import { getDb } from "./db.js";
 import { isHosted } from "./cloud.js";
+import { AUTO_KEY_ENV, LEGACY_AUTO_KEY_ENV, isAutoProviderId } from "./autoid.js";
 
 const DEV_PEPPER = "dev-pepper-change-me-in-prod-32b-min-32chars!!";
 
@@ -78,7 +79,7 @@ export function clearUserKey(userId) {
   db.prepare("DELETE FROM user_keys WHERE user_id=?").run(userId);
 }
 
-// Global tcet-auto key (single)
+// The single install-wide Auto key.
 export function saveGlobalKey(provider, apiKey) {
   const db = getDb();
   const { iv, ciphertext, tag } = encryptSecret(apiKey);
@@ -97,10 +98,13 @@ export function loadGlobalKey(provider) {
   try { return decryptSecret(row); } catch { return null; }
 }
 
-// fallback: env var always wins for tcet-auto if set
+// The environment always wins for the shared key: a key rotated in the
+// deployment must beat one typed into a browser months earlier.
 export function resolveGlobalKey(provider) {
-  if (process.env.FORGE_TCET_API_KEY && provider === "tcet-auto") return process.env.FORGE_TCET_API_KEY;
-  if (process.env.FORGE_TCET_API_KEY && provider === "tcet") return process.env.FORGE_TCET_API_KEY;
+  if (isAutoProviderId(provider) || provider === "tcet" || provider === "auto") {
+    const env = process.env[AUTO_KEY_ENV] || process.env[LEGACY_AUTO_KEY_ENV];
+    if (env) return env;
+  }
   const fromDb = loadGlobalKey(provider);
   if (fromDb) return fromDb;
   // legacy: config/local.yaml plaintext fallback

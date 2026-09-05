@@ -5,6 +5,7 @@ import { CONFIG } from "../paths.js";
 import { resolveSecret, resolveProviderKey, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
 import { currentUserId } from "../account.js";
 import { recordModelUsage } from "../usage.js";
+import { AUTO_PROVIDER_IDS, isAutoProviderId } from "../autoid.js";
 import { localFallbackArmed, isGatewayUnreachable, armedTimeout } from "../devfallback.js";
 
 /**
@@ -28,7 +29,7 @@ export const DEFAULT_EXCERPT_CHARS = 80_000;
  * alternative, not a patch.
  */
 export function applyTransport(spec, backend) {
-  // tcet-auto is an openai-compatible backend but uses the cloud overrides (larger caps)
+  // The Auto gateway is openai-compatible but takes the cloud overrides (larger caps)
   const isCloud = backend?.type === "openai-compatible";
   const block = isCloud ? spec?.transports?.cloud : spec?.transports?.local;
   if (!block || typeof block !== "object") return spec;
@@ -47,10 +48,10 @@ export async function authorTransport({ model } = {}) {
   const spec = cfg.roles?.author ?? {};
   if (spec.provider) return "cloud";
   if (model) {
-    // tcet-auto's single model is qwen3.6 — treat as cloud-equivalent for caps
+    // Auto's single model is qwen3.6 — treat as cloud-equivalent for caps
     for (const p of Object.values(cfg.providers ?? {})) {
       if (p?.type === "openai-compatible" && Array.isArray(p.models) && p.models.includes(model)) {
-        if (p === cfg.providers?.["tcet-auto"]) return "auto";
+        if (AUTO_PROVIDER_IDS.some((id) => p === cfg.providers?.[id])) return "auto";
         return "cloud";
       }
     }
@@ -60,7 +61,7 @@ export async function authorTransport({ model } = {}) {
   if (route === "auto") {
     const ap = await autoProvider();
     if (ap?.keySet) {
-      if (ap.kind === "tcet") return "auto";
+      if (isAutoProviderId(ap.kind)) return "auto";
       return "ollama"; // local fallback is just Ollama
     }
   }
@@ -207,7 +208,7 @@ export async function resolveRole(role) {
   if (isHosted()) {
     if (role !== "author") {
       const ap = await autoProvider();
-      if (ap?.kind === "tcet" && ap?.keySet) {
+      if (isAutoProviderId(ap?.kind) && ap?.keySet) {
         return {
           ...spec,
           role,
@@ -517,7 +518,7 @@ async function localSpecFor(cfg, spec) {
  * requests fail loudly on their own.
  *
  * The routing preference (gitignored config/local.yaml) chooses what "auto"
- * means: tcet-auto's qwen3.6, or the attached cloud's first model.
+ * means: Auto's qwen3.6, or the attached cloud's first model.
  */
 export async function modelChoices() {
   const cfg = await config();
@@ -531,7 +532,7 @@ export async function modelChoices() {
     // Hosted has no local Ollama
     models = [];
   }
-  // auto (tcet) status. `keySet` and `kind` are carried rather than implied by
+  // Auto status. `keySet` and `kind` are carried rather than implied by
   // this object existing: the UI reads both off `auto` whichever endpoint it
   // came from, and /api/auto/status sends them. A projection that dropped them
   // made `!auto.keySet` true on a box with a working key — a permanent "no key
@@ -643,7 +644,7 @@ async function chatOnce({
     const route = await routingPreference(currentUserId());
     if (route === "auto") {
       const ap = await autoProvider();
-      if (ap?.kind === "tcet" && ap?.keySet && ap?.models?.length) model = ap.models[0];
+      if (isAutoProviderId(ap?.kind) && ap?.keySet && ap?.models?.length) model = ap.models[0];
       else if (isHosted()) {
         // Hosted has no local fallback — surface a clear error instead of
         // "Ollama unreachable". If BYOK is present, hint to switch to Cloud.

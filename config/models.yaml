@@ -28,10 +28,10 @@ host: http://localhost:11434
 # OpenAI, OpenRouter, Together, vLLM, LM Studio and most hosted APIs.
 # `apiKey` reads from an environment variable (env:NAME) — never commit a key.
 providers:
-  tcet-auto:
+  auto:
     type: openai-compatible
     baseURL: https://ai.tcetcercd.in/v1
-    apiKey: env:FORGE_TCET_API_KEY
+    apiKey: env:FORGE_AUTO_API_KEY
     label: TCET CoE Gateway
     models:
       - qwen3.6

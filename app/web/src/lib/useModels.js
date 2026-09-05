@@ -5,7 +5,7 @@ import { getModelMode, subscribeModelMode } from "./modelMode.js";
 export function anonymizeModel(name) {
   if (!name) return name;
   const n = String(name).toLowerCase();
-  if (n.includes("qwen") || n.includes("tcet") || n === "auto") return "Forge";
+  if (n.includes("qwen") || n.includes("tcet") || n === "auto") return "Forge";  // "tcet" for decks made before the rename
   return name;
 }
 

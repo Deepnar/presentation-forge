@@ -5,6 +5,7 @@ import YAML from "yaml";
 import { CONFIG } from "./paths.js";
 import { getDb } from "./db.js";
 import { currentUserId } from "./account.js";
+import { AUTO_PROVIDER, AUTO_PROVIDER_IDS, AUTO_KEY_ENV, LEGACY_AUTO_KEY_ENV, isAutoProviderId, pickAutoProvider } from "./autoid.js";
 
 function getVault() {
   try { return import("./vault.js"); } catch { return null; }
@@ -12,7 +13,7 @@ function getVault() {
 
 /**
  * Opt-in cloud backends — now with TCET auto tier.
- * - `auto`  = campus gateway (tcet-auto) shared key, rate-limited per user
+ * - `auto`  = the operator's shared gateway key, rate-limited per user
  * - `cloud` = user's own BYOK (openai, opencode-go, etc.)
  * The key never lives in the repo: env first, then DB vault, then local.yaml legacy.
  */
@@ -31,19 +32,28 @@ async function readYaml(file) {
 /** env first, then global_keys DB, then config/local.yaml — the file the Settings panel writes. */
 export async function resolveSecret(name) {
   if (process.env[name]) return process.env[name];
-  // DB global keys fallback for tcet
-  if (name === "FORGE_TCET_API_KEY") {
+  // The shared key was named for one institution and is now named for its
+  // role. Both spellings resolve, in both directions, so an upgrade needs no
+  // edit to a compose file and a fresh install needs no knowledge of the old
+  // name. See src/autoid.js.
+  if (name === AUTO_KEY_ENV && process.env[LEGACY_AUTO_KEY_ENV]) return process.env[LEGACY_AUTO_KEY_ENV];
+  if (name === LEGACY_AUTO_KEY_ENV && process.env[AUTO_KEY_ENV]) return process.env[AUTO_KEY_ENV];
+
+  if (name === AUTO_KEY_ENV || name === LEGACY_AUTO_KEY_ENV) {
     try {
       const db = getDb();
-      const row = db.prepare("SELECT iv,ciphertext,tag FROM global_keys WHERE provider=?").get("tcet-auto");
-      if (row) {
-        const { decryptSecret } = await import("./vault.js");
-        return decryptSecret(row);
+      const { decryptSecret } = await import("./vault.js");
+      for (const provider of AUTO_PROVIDER_IDS) {
+        const row = db.prepare("SELECT iv,ciphertext,tag FROM global_keys WHERE provider=?").get(provider);
+        if (row) return decryptSecret(row);
       }
     } catch {}
   }
   // per-user BYOK is resolved separately via vault per userId
-  return (await readYaml(LOCAL_FILE)).api_keys?.[name] ?? "";
+  const stored = (await readYaml(LOCAL_FILE)).api_keys ?? {};
+  if (stored[name]) return stored[name];
+  if (name === AUTO_KEY_ENV && stored[LEGACY_AUTO_KEY_ENV]) return stored[LEGACY_AUTO_KEY_ENV];
+  return "";
 }
 
 /**
@@ -56,7 +66,7 @@ export async function resolveSecret(name) {
  */
 export async function resolveProviderKey(providerId, apiKeyRef) {
   const userId = currentUserId();
-  if (userId && providerId && providerId !== "tcet-auto") {
+  if (userId && providerId && !isAutoProviderId(providerId)) {
     const own = await resolveUserSecret(userId, providerId);
     if (own) return own;
   }
@@ -108,11 +118,11 @@ export async function setApiKey(name, key) {
   const cfg = await readYaml(LOCAL_FILE);
   const next = { ...cfg, api_keys: { ...(cfg.api_keys ?? {}), [name]: key } };
   await writeFile(LOCAL_FILE, YAML.stringify(next), "utf8");
-  // also write to global vault for tcet so it persists encrypted?
+  // also write to the global vault so the shared key persists encrypted
   if (name === "FORGE_TCET_API_KEY") {
     try {
       const { saveGlobalKey } = await import("./vault.js");
-      saveGlobalKey("tcet-auto", key);
+      saveGlobalKey(AUTO_PROVIDER, key);
     } catch {}
   }
 }
@@ -125,7 +135,7 @@ export async function clearApiKey(name) {
   if (name === "FORGE_TCET_API_KEY") {
     try {
       const db = getDb();
-      db.prepare("DELETE FROM global_keys WHERE provider=?").run("tcet-auto");
+      for (const p of AUTO_PROVIDER_IDS) db.prepare("DELETE FROM global_keys WHERE provider=?").run(p);
     } catch {}
   }
 }
@@ -223,18 +233,24 @@ export async function setHosted(flag) {
 // local fallback is disabled — hosted has only Auto (TCET) + BYOK.
 export async function autoProvider() {
   const models = await readYaml(MODELS_FILE);
-  const tcet = models.providers?.["tcet-auto"];
-  const key = await resolveSecret("FORGE_TCET_API_KEY");
-  if (tcet && key.length > 0) {
-    const list = Array.isArray(tcet.models) && tcet.models.length ? [...tcet.models] : await providerModels(tcet, "tcet-auto");
+  // Either spelling of the provider block, new name preferred.
+  const found = pickAutoProvider(models.providers);
+  const key = await resolveSecret(AUTO_KEY_ENV);
+  if (found && key.length > 0) {
+    const { spec } = found;
+    const list = Array.isArray(spec.models) && spec.models.length
+      ? [...spec.models]
+      : await providerModels(spec, AUTO_PROVIDER);
     return {
-      id: "tcet-auto",
+      // Always the canonical id, whichever block it was read from: everything
+      // downstream (usage rows, key storage, the UI) then agrees on one name.
+      id: AUTO_PROVIDER,
       label: "Auto",
-      baseURL: String(tcet.baseURL).replace(/\/+$/, ""),
+      baseURL: String(spec.baseURL).replace(/\/+$/, ""),
       models: list.length ? list : ["qwen3.6"],
-      apiKey: tcet.apiKey ?? "env:FORGE_TCET_API_KEY",
+      apiKey: spec.apiKey ?? `env:${AUTO_KEY_ENV}`,
       keySet: true,
-      kind: "tcet",
+      kind: AUTO_PROVIDER,
     };
   }
   // Fallback: local Ollama as the free tier (download-and-run case)
@@ -270,21 +286,21 @@ export async function autoStatus(userId = null) {
     label: p.label,
     baseURL: p.baseURL,
     models: p.models,
-    keyName: p.id === "tcet-auto" ? "FORGE_TCET_API_KEY" : null,
+    keyName: isAutoProviderId(p.id) ? AUTO_KEY_ENV : null,
     keySet: p.keySet,
-    kind: p.kind ?? (p.id === "tcet-auto" ? "tcet" : "local"),
+    kind: p.kind ?? (isAutoProviderId(p.id) ? AUTO_PROVIDER : "local"),
     hosted: isHosted(),
     route: await routingPreference(userId),
   };
 }
 
 /**
- * The BYOK cloud provider (first opt-in provider with a key, excluding tcet-auto).
+ * The BYOK cloud provider (first opt-in provider with a key, excluding the shared Auto tier).
  */
 export async function cloudProvider() {
   const models = await readYaml(MODELS_FILE);
   for (const [id, p] of Object.entries(models.providers ?? {})) {
-    if (id === "tcet-auto") continue;
+    if (isAutoProviderId(id)) continue;
     if (p?.type !== "openai-compatible") continue;
     const list = await providerModels(p, id);
     if (!list.length) continue;
@@ -337,7 +353,7 @@ export async function cloudStatus(userId = null) {
 }
 
 /**
- * A live authentication check. For tcet-auto it probes qwen3.6 with 1 token.
+ * A live authentication check. For the shared tier it probes with 1 token.
  */
 /**
  * Is the Auto tier actually able to generate, cached briefly.

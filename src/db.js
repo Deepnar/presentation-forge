@@ -90,7 +90,7 @@ function ensureSchema(d) {
       event_type TEXT NOT NULL,
       slides INTEGER NOT NULL DEFAULT 0,
       tokens INTEGER NOT NULL DEFAULT 0,
-      provider TEXT NOT NULL DEFAULT 'tcet-auto',
+      provider TEXT NOT NULL DEFAULT 'auto',
       created_at INTEGER NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_auto_events_user_time ON auto_events(user_id, created_at);
@@ -110,6 +110,7 @@ function ensureSchema(d) {
   addVerifiedColumn(d);
   addPlanColumn(d);
   addLifetimeTokensColumn(d);
+  renameAutoProviderRows(d);
 }
 
 /**
@@ -158,6 +159,24 @@ function addLifetimeTokensColumn(d) {
   }
   d.exec(`UPDATE users SET lifetime_tokens =
             (SELECT COALESCE(SUM(tokens), 0) FROM auto_events WHERE auto_events.user_id = users.id)`);
+}
+
+/**
+ * The shared tier stopped being named for one institution.
+ *
+ * `auto_events.provider` and `global_keys.provider` both held the literal
+ * `tcet-auto`. Left alone, an upgraded install would keep its usage history
+ * and its stored key under the old name while everything new wrote the new
+ * one — so a user's spend would appear to reset and the key would appear to
+ * vanish. Renaming the rows is the migration; `src/autoid.js` still reads both
+ * spellings for anything this cannot reach, such as a compose file.
+ */
+function renameAutoProviderRows(d) {
+  for (const table of ["auto_events", "global_keys"]) {
+    try {
+      d.exec(`UPDATE ${table} SET provider='auto' WHERE provider='tcet-auto'`);
+    } catch { /* table not present on a fresh database */ }
+  }
 }
 
 function addVerifiedColumn(d) {

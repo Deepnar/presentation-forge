@@ -13,6 +13,7 @@ import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport, donorStatus, donorDirFor, donorDirForDeck } from "../../src/report.js";
 import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge, identityStatus, identityUnconfigured } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
+import { AUTO_PROVIDER, AUTO_PROVIDER_IDS, isAutoProviderId } from "../../src/autoid.js";
 import { newMeter, withMeter, meterTotal, meterSummary, estimateTokens } from "../../src/usage.js";
 import { userBrandDirs, userReferenceDir } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
@@ -113,7 +114,7 @@ const fail = (res, code, message) => res.status(code).json({ ok: false, error: m
  *  local fallback (Ollama) is unlimited. */
 async function isAutoRoute(model, userEmail = null) {
   const ap = await autoProvider();
-  const isTcet = ap?.kind === "tcet" && ap?.keySet;
+  const isTcet = isAutoProviderId(ap?.kind) && ap?.keySet;
   if (!isTcet) return false;
   if (model && ap.models?.includes(String(model))) return true;
   if (model) return false;
@@ -777,7 +778,7 @@ app.get("/api/admin/auto/key", wrap(async (req, res) => {
   const { loadGlobalKey } = await import("../../src/vault.js");
   const envKey = process.env.FORGE_TCET_API_KEY ?? "";
   let storedKey = "";
-  try { storedKey = loadGlobalKey("tcet-auto") ?? ""; } catch { /* unreadable under the current pepper */ }
+  try { storedKey = loadGlobalKey(AUTO_PROVIDER) ?? ""; } catch { /* unreadable under the current pepper */ }
   const live = envKey || storedKey;
   ok(res, {
     set: Boolean(live),
@@ -800,7 +801,7 @@ app.put("/api/admin/auto/key", wrap(async (req, res) => {
   }
   try {
     const { saveGlobalKey } = await import("../../src/vault.js");
-    saveGlobalKey("tcet-auto", key);
+    saveGlobalKey(AUTO_PROVIDER, key);
   } catch (err) {
     // The pepper guard throws here in hosted mode. Say which fault it is.
     return fail(res, 400, err.message);
@@ -818,7 +819,7 @@ app.delete("/api/admin/auto/key", wrap(async (req, res) => {
   if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
   try {
     const { getDb } = await import("../../src/db.js");
-    getDb().prepare("DELETE FROM global_keys WHERE provider=?").run("tcet-auto");
+    for (const p of AUTO_PROVIDER_IDS) getDb().prepare("DELETE FROM global_keys WHERE provider=?").run(p);
   } catch (err) {
     return fail(res, 500, err.message);
   }

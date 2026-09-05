@@ -35,7 +35,8 @@ services:
       SEARXNG_URL: "http://searxng:8080"
       # Hosted: Auto is the shared gateway, Cloud is per-user BYOK, no Ollama.
       FORGE_HOSTED: "${FORGE_HOSTED:-1}"
-      FORGE_TCET_API_KEY: "${FORGE_TCET_API_KEY:-}"
+      # The old name is still read by the app, so an existing .env keeps working.
+      FORGE_AUTO_API_KEY: "${FORGE_AUTO_API_KEY:-${FORGE_TCET_API_KEY:-}}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       OPENCODE_GO_API_KEY: "${OPENCODE_GO_API_KEY:-}"
       # Required in hosted mode — per-user API keys are encrypted under it, and
