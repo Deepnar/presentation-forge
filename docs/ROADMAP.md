@@ -4922,6 +4922,93 @@ had to learn.
 > check that meant anything was A uploads, then B reads — and B still seeing
 > the operator's default is the whole feature.
 
+### [x] The report's structure — read from the template, not hardcoded
+
+*Priority: high. The report is the graded artefact, and this was found on the
+way to running it end to end. No model was available for the content half —
+the TCET gateway is still wedged and local Ollama was in use for other work —
+so everything below was verified by grammar analysis, by an obedient stub, and
+by rendering real `.docx` files and reading them back with `pdftotext -layout`.*
+
+Four defects, all on the report path, all of the same family as the five
+"the right answer was unrepresentable" findings from the previous session.
+
+**1. A team of four or fewer got a report with no body.** The section budget
+was `targetSections(identity, {min: 4})` — the deck planner's "one part per
+presenting member" rule, borrowed. The cap counted the TOTAL sections with a
+floor of four, while the planning prompt separately requires the four-section
+graded core, so every team of four or fewer spent its entire budget on the
+frame and Theoretical Background, Application and Future Scope could not be
+planned at all. `report-new` is solo by construction and could therefore only
+ever emit Abstract/Introduction/Conclusion/References. It had already shipped:
+`decks/topic-exploring-first-impressions-and-networ/report.yaml` has no body
+section. The report's structure is now the institution's, not the team's.
+
+**2. The section list was ours, not the template's.** The renderer never cared
+what a section was called — `buildBody` emits `content[name]` for any name,
+which is how the Image Credits appendix has always numbered and paginated
+without being in the graded eight. What was fixed was the LIST.
+`parseDonorSections` now reads the donor's own numbered heading run and
+`reportStructureForDeck` hands it to the planner, so a college whose report has
+a Methodology gets one by uploading its template. Bold is the discriminator,
+not numbering: a reference list is the other consecutively numbered thing in
+the document and starts at 1 too. Tables are skipped so the template's own TOC
+is not read as a second copy of the structure.
+
+**3. A section the topic earned was dropped.** `sanitizeReportPlan` matched
+every planned name against the fixed eight and discarded the rest. The planner
+may now add up to three sections of its own. Their POSITION is decided during
+coercion because it cannot be recovered later — sorting by structure index says
+nothing about where a section that has no index belongs — anchored to the last
+structural section listed before it and clamped away from the final position so
+an appendix cannot be planted after the References. The plan grammar's `name`
+went 30 → 60 characters: 30 spells the eight fixed names and nothing else.
+
+**4. The writer was told not to repeat sections it was never shown.** The
+system prompt said "do not repeat wording already used in another section"
+while `report.content` was built empty and never filled, so only the title ever
+reached the message. Each call now carries the plan outline and the opening
+line of every section already written — and only prose that passed its own
+grammar, so a dropped section is not fed forward as something to avoid.
+
+Alongside: `deck-from-report` read `meta.yaml` *after* planning, so a companion
+deck was planned at the 24-slide default whatever the user set, and built its
+brief by walking the graded eight, which would have silently omitted exactly
+the topic-specific material the deck most needs.
+
+> **Learned.**
+>
+> - **A rule that is right for one artefact can be wrong for its neighbour, and
+>   sharing the helper is how it travels.** Sizing structure to the team is
+>   correct for a deck — a talk is divided between the people giving it — and
+>   wrong for a report, whose structure is set by whoever grades it. Nothing
+>   flagged the reuse; `targetSections` simply took a different `min`.
+> - **A test can encode a defect as an intention.** `planReport sizes the
+>   section cap to the team — small team, small report` asserted the result was
+>   exactly `[Abstract, Introduction, Conclusion, References]`. Someone read
+>   that list as "a small report" rather than as "a report with no body". The
+>   assertion was the reason nobody looked again.
+> - **A stub that ignores the bound it is handed makes the whole suite blind to
+>   bounds.** `fakeChat` returned six sections whatever `maxItems` said, so no
+>   assertion in the file could reach a cap the real grammar-constrained model
+>   is held to. Obedience has to extend to the section grammars too — the first
+>   obedient stub still returned four paragraphs into an Acknowledgement that
+>   allows two, and the dropped section read as a planning bug.
+> - **Ask what the renderer actually requires before assuming a constant is
+>   load-bearing.** `REPORT_SECTIONS` looked like the report's foundation. It
+>   was one `filter` in `presentSections`; `IMAGE_CREDITS` had been proving the
+>   renderer was general for as long as it had existed. The expensive-looking
+>   half of this work was already done.
+> - **When the section list stops being fixed, everything that walked it is
+>   suspect.** `presentSections` was the obvious one. `reportBrief` in
+>   pipeline.js walked it too, and would have dropped a custom section's prose
+>   from the companion deck's brief without any error.
+> - **A rendered artefact answers questions an intermediate cannot.** Rendering
+>   `report.yaml` through the real donor and reading it back with
+>   `pdftotext -layout` confirmed the two-pass TOC page numbers are exact on
+>   every section including a custom one, and that the tail renumbers. Nothing
+>   asserted on `report.yaml` could have shown that.
+
 ### [ ] Surfaces nothing has ever run
 
 *Priority: high. Some need a model, none needs the gateway specifically.*
@@ -4943,7 +5030,12 @@ knowable while they are unexercised.
   dead, new one live, verified state preserved, reset token single-use.
   **It found one defect**, below.
 - **`--upload` research**, **`report-new`**, **`deck-from-report`** — three
-  entry points, no runs.
+  entry points, no runs *with a model*. The report machinery below them has now
+  been driven end to end without one: `generateReport` against the real donor
+  with an obedient stub, through `renderReport`, to a `.docx` read back with
+  `pdftotext -layout`. That found four defects (see *The report's structure*)
+  and leaves exactly one question open — whether what the model WRITES into
+  those sections is any good, which only Auto can answer.
 - **[x] Presenter assignment with a real team.** Run for the first time, with
   a four-member team and `--slides-per-member 4`, and verified by rendering
   rather than by reading the deck object: team roster on the title slide, the

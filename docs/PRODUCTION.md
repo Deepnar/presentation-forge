@@ -29,7 +29,9 @@ money is involved, a set of journeys nobody has ever run, and a defect list.
 
 The TCET CoE gateway is wedged (`/v1/models` answers in under a second while
 `/v1/chat/completions` hangs, including on a malformed body, which is how you
-know it is forwarding to a dead backend rather than queueing). A 22 GB model on
+know it is forwarding to a dead backend rather than queueing). Re-probed
+2026-09-05: `/v1/models` in 0.7s, a two-token completion still timing out at
+90s. Unchanged. A 22 GB model on
 the developer's laptop is not a hosting story.
 
 Three honest options, and the middle one is cheapest by a distance:
@@ -145,8 +147,8 @@ without exception.
 
 | Journey | Status |
 |---|---|
-| **`report-new`** — standalone report from a brief | **zero runs** |
-| **`deck-from-report`** — companion deck from a report | **zero runs** |
+| **`report-new`** — standalone report from a brief | machinery driven; **no model run** |
+| **`deck-from-report`** — companion deck from a report | machinery driven; **no model run** |
 | **`--upload` research** — a user's file as the only source | **zero runs** |
 | Chat turns through the UI | zero runs (needs a model) |
 | Convert / slide-type swap through the UI | zero runs (needs a model) |
@@ -156,14 +158,27 @@ without exception.
 | Rate limits under real load | done — the expected race did not reproduce |
 | The vision critic loop | done — found 2 defects |
 
-**The report is the highest-stakes item on this list** and should be next. It is
-the *graded* artefact — the thing a student is actually marked on — and it runs
-through the same model and grammar machinery that produced five separate
-"the right answer was unrepresentable" defects in one session. A run was started
-and abandoned; nothing has ever completed.
+**The report is the highest-stakes item on this list.** It is the *graded*
+artefact — the thing a student is actually marked on — and it runs through the
+same model and grammar machinery that produced five separate "the right answer
+was unrepresentable" defects in one session.
 
-Read the artefact back, do not assert on the intermediate: render the real
-`.docx` through the donor and run `pdftotext -layout` over it.
+Its machinery has now been driven end to end with no model available:
+`generateReport` against the real donor with a stub that obeys every bound it
+is handed, through `renderReport`, to a `.docx` read back with
+`pdftotext -layout`. That found **four more defects of the same family** — see
+*The report's structure* in `ROADMAP.md` — including one that had already
+shipped: a team of four or fewer got a report with no body section at all, and
+`report-new`, solo by construction, could produce nothing else.
+
+What is verified: the section list is read from the donor template, a
+topic-specific section survives planning and renders in the right position, the
+two-pass TOC page numbers are exact on every section, and the whole chain
+brief → plan → write → assemble → validate → render holds together.
+
+**What remains is the only part a stub cannot answer: whether what the model
+writes into those sections is any good.** That needs Auto. Read the artefact
+back — do not assert on `report.yaml`.
 
 ---
 
@@ -247,7 +262,10 @@ Each is small, real, and has a named symptom.
   unnecessarily. Harmless, imprecise, wastes a model call.
 - **The coherence pass missed three near-identical headlines.** On the V2G deck,
   slides 18, 21 and 22 all said a version of "Scaling V2G Requires Cross-Sector
-  Collaboration". Nothing caught it.
+  Collaboration". Nothing caught it. *The report half of this had a mechanical
+  cause and is fixed — its writer was told not to repeat other sections while
+  being shown none of them. The deck half is unexamined and may be the same
+  shape of problem.*
 - **`feature-grid` carries two lines of speaker-note debt on `minimal-muji`** —
   the only failure in the `--notes` sweep.
 
