@@ -14,6 +14,10 @@ Three kinds of blocker, and they are not equally bad:
 | **Operator** | one person, one account, usually under an hour | 4 |
 | **Decision** | needs a judgement nobody should make unilaterally | 3 |
 
+Every open item in `docs/ROADMAP.md` now states which of these it waits on, in
+its own header — so the two files cannot drift into disagreeing about what is
+stuck.
+
 ---
 
 ## 1. External

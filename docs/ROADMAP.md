@@ -628,6 +628,10 @@ review:
 > contract; the count is a target the model reconciles with `maxSlides`.
 
 ### [ ] (stretch) Canvas slide-builder
+
+*Priority: stretch, and not on the path to launch. Blocked on the same
+front-end direction as the app sweep — it is a new surface, not a fix.*
+
 Live slides appearing as they stream (status → plan → slides) as a
 filmstrip/storyboard the user can point the model at. Not built this session —
 the chat rail already streams a rendered thumbstrip after each turn, and the
@@ -3536,11 +3540,21 @@ wrong in a way worth keeping:
 
 ### [ ] The front end, and the landing page
 
-*Priority: HIGHEST. No model. **Landing rebuilt; the app sweep is the rest.***
+*Priority: HIGHEST. No model needed — **but a direction has to be agreed for
+the app half before any of it is written**, which is why it is not moving.
+`docs/BLOCKED.md` §3.3.*
 
-Direction was agreed and the landing page was rebuilt against it. The app
-half — the surfaces you live in rather than the front door — is what is left,
-so the box stays unticked.
+Direction was agreed for the LANDING page and it was rebuilt against it. The
+app half — the surfaces you live in rather than the front door — has no agreed
+direction, and it changes what a surface IS rather than whether it works, so
+the working agreement says to ask and wait rather than start.
+
+One piece of it did not need the decision and is done: the usage panel shows
+the free trial and how much of it is spent, because a refusal arriving with no
+warning reads as the product breaking, and the panel already fetched that data
+and discarded it. What is left of the refusal surface — where a 429 becomes an
+offer, and what it says — waits on the subscription-vs-credits decision and on
+there being a checkout to point at.
 
 **The answers.** Reference: all four of Linear/Vercel, Framer/Gamma,
 Stripe/Raycast and Apple, which resolve to one thesis — *the interface is
