@@ -18,12 +18,14 @@
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
-| Isometric Dark — a title slide | Swiss International — a chart slide |
+| Glassmorphism — a frosted plate, rendered in Chrome | Swiss International — a dense KPI slide |
 |:---:|:---:|
-| <img src="app/gallery/landing/isometric-dark--title.webp" width="420" alt="Title slide in the Isometric Dark theme" /> | <img src="app/gallery/landing/swiss-international--chart.webp" width="420" alt="Chart slide in the Swiss International theme" /> |
+| <img src="app/gallery/landing/glassmorphism--stats.webp" width="420" alt="Stats slide in the Glassmorphism theme, on a frosted glass plate" /> | <img src="app/gallery/landing/swiss-international--kpi-dashboard.webp" width="420" alt="KPI dashboard slide in the Swiss International theme" /> |
 
 Every image in this README is a real render from the repository, produced by the
-same code path a generated deck goes through — not a mockup.
+same code path a generated deck goes through — not a mockup. The left one is a
+*plate*: a background Chrome renders as an image because PowerPoint cannot draw
+frosted glass, with the text still native and editable on top of it.
 
 ---
 
@@ -82,16 +84,19 @@ approved it. Everything after it is deterministic or checked.
 74 slide types. The model chooses among them by what the content *is* — a
 comparison becomes a comparison layout, not a bulleted list about comparing.
 
-| `timeline` | `compare` | `kpi-dashboard` |
+| `timeline` | `compare` | `chart` |
 |:---:|:---:|:---:|
-| <img src="app/gallery/landing/swiss-international--timeline.webp" width="280" alt="Timeline slide" /> | <img src="app/gallery/landing/swiss-international--compare.webp" width="280" alt="Compare slide" /> | <img src="app/gallery/landing/swiss-international--kpi-dashboard.webp" width="280" alt="KPI dashboard slide" /> |
+| <img src="app/gallery/landing/swiss-international--timeline.webp" width="280" alt="Timeline slide" /> | <img src="app/gallery/landing/swiss-international--compare.webp" width="280" alt="Compare slide" /> | <img src="app/gallery/landing/swiss-international--chart.webp" width="280" alt="Chart slide" /> |
 | **`pyramid`** | **`matrix`** | **`flow`** |
 | <img src="app/gallery/landing/swiss-international--pyramid.webp" width="280" alt="Pyramid slide" /> | <img src="app/gallery/landing/swiss-international--matrix.webp" width="280" alt="Matrix slide" /> | <img src="app/gallery/landing/swiss-international--flow.webp" width="280" alt="Flow slide" /> |
 | **`table`** | **`funnel`** | **`big-number`** |
 | <img src="app/gallery/landing/swiss-international--table.webp" width="280" alt="Table slide" /> | <img src="app/gallery/landing/swiss-international--funnel.webp" width="280" alt="Funnel slide" /> | <img src="app/gallery/landing/swiss-international--big-number.webp" width="280" alt="Big number slide" /> |
 
-Native slides keep **editable PowerPoint text**. Only `freeform` and
-plate-backed visual treatments are rasterised, and that is a deliberate trade.
+**Text stays editable.** `freeform` is the one type rasterised whole — it is the
+deliberate exception, where the model writes the slide as HTML. A *plate* theme
+is not the same thing: Chrome renders only the decorative background to a PNG,
+and every word on top of it is still native PowerPoint text you can select and
+retype.
 
 ---
 
