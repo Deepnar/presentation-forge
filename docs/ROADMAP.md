@@ -5455,8 +5455,15 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
 
 - A small fixed set of briefs, generated on Auto, kept as a baseline to read
   against — so "the output got worse" is a comparison rather than a memory.
-- The score recorded per generation, so a regression shows up as a number
-  before anybody notices it by eye.
+  **Still open; needs a key.**
+- ~~The score recorded per generation, so a regression shows up as a number
+  before anybody notices it by eye.~~ **Done.** `finalizeDeck` scores the
+  finished deck and appends to an install-wide `config/scores.jsonl` with the
+  backend that produced it; `npm run deckscore -- --history [slug]` reads it
+  back. A regression is measured against the MEDIAN of recent runs rather than
+  the previous one, because scores move several points between decks on subject
+  matter alone and "worse than last time" would fire constantly. Too little
+  history reports nothing rather than a verdict from one data point.
 
 > **Learned.** The scorer's own first run reported `whole` at 0% for every deck
 > because it counted the deck TITLE as a sentence cut off mid-way. A headline is
@@ -5507,7 +5514,7 @@ running in parallel with this one.
   four-item `bullets` slide, so the question is whether the layout should
   breathe differently when no picture is coming. *A decision, not a bug.*
 
-### [ ] Housekeeping found during the audit
+### [x] Housekeeping found during the audit
 
 *Priority: low.*
 
