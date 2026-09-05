@@ -18,10 +18,9 @@
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
-<p align="center">
-  <img src="app/gallery/landing/isometric-dark--title.webp" width="49%" alt="A title slide in the Isometric Dark theme" />
-  <img src="app/gallery/landing/swiss-international--chart.webp" width="49%" alt="A chart slide in the Swiss International theme" />
-</p>
+| Isometric Dark — a title slide | Swiss International — a chart slide |
+|:---:|:---:|
+| <img src="app/gallery/landing/isometric-dark--title.webp" width="420" alt="Title slide in the Isometric Dark theme" /> | <img src="app/gallery/landing/swiss-international--chart.webp" width="420" alt="Chart slide in the Swiss International theme" /> |
 
 Every image in this README is a real render from the repository, produced by the
 same code path a generated deck goes through — not a mockup.
@@ -45,14 +44,11 @@ schema it is decoding against.
 
 Which is what makes this possible. **The same slide, same words, four themes:**
 
-<p align="center">
-  <img src="app/gallery/landing/swiss-international--stats.webp" width="49%" alt="Stats slide, Swiss International" />
-  <img src="app/gallery/landing/neubrutalism--stats.webp" width="49%" alt="Stats slide, Neubrutalism" />
-</p>
-<p align="center">
-  <img src="app/gallery/landing/editorial-magazine--stats.webp" width="49%" alt="Stats slide, Editorial Magazine" />
-  <img src="app/gallery/landing/sci-fi-hud--stats.webp" width="49%" alt="Stats slide, Sci-Fi HUD" />
-</p>
+| Swiss International | Neubrutalism |
+|:---:|:---:|
+| <img src="app/gallery/landing/swiss-international--stats.webp" width="420" alt="Stats slide, Swiss International" /> | <img src="app/gallery/landing/neubrutalism--stats.webp" width="420" alt="Stats slide, Neubrutalism" /> |
+| **Editorial Magazine** | **Sci-Fi HUD** |
+| <img src="app/gallery/landing/editorial-magazine--stats.webp" width="420" alt="Stats slide, Editorial Magazine" /> | <img src="app/gallery/landing/sci-fi-hud--stats.webp" width="420" alt="Stats slide, Sci-Fi HUD" /> |
 
 Nothing in the content changed between those four. Switching theme is one field
 in `deck.yaml`, and 34 of them ship.
@@ -86,21 +82,13 @@ approved it. Everything after it is deterministic or checked.
 74 slide types. The model chooses among them by what the content *is* — a
 comparison becomes a comparison layout, not a bulleted list about comparing.
 
-<p align="center">
-  <img src="app/gallery/landing/swiss-international--timeline.webp" width="32%" alt="Timeline" />
-  <img src="app/gallery/landing/swiss-international--compare.webp" width="32%" alt="Compare" />
-  <img src="app/gallery/landing/swiss-international--kpi-dashboard.webp" width="32%" alt="KPI dashboard" />
-</p>
-<p align="center">
-  <img src="app/gallery/landing/swiss-international--pyramid.webp" width="32%" alt="Pyramid" />
-  <img src="app/gallery/landing/swiss-international--matrix.webp" width="32%" alt="Matrix" />
-  <img src="app/gallery/landing/swiss-international--flow.webp" width="32%" alt="Flow" />
-</p>
-<p align="center">
-  <img src="app/gallery/landing/swiss-international--table.webp" width="32%" alt="Table" />
-  <img src="app/gallery/landing/swiss-international--funnel.webp" width="32%" alt="Funnel" />
-  <img src="app/gallery/landing/swiss-international--big-number.webp" width="32%" alt="Big number" />
-</p>
+| `timeline` | `compare` | `kpi-dashboard` |
+|:---:|:---:|:---:|
+| <img src="app/gallery/landing/swiss-international--timeline.webp" width="280" alt="Timeline slide" /> | <img src="app/gallery/landing/swiss-international--compare.webp" width="280" alt="Compare slide" /> | <img src="app/gallery/landing/swiss-international--kpi-dashboard.webp" width="280" alt="KPI dashboard slide" /> |
+| **`pyramid`** | **`matrix`** | **`flow`** |
+| <img src="app/gallery/landing/swiss-international--pyramid.webp" width="280" alt="Pyramid slide" /> | <img src="app/gallery/landing/swiss-international--matrix.webp" width="280" alt="Matrix slide" /> | <img src="app/gallery/landing/swiss-international--flow.webp" width="280" alt="Flow slide" /> |
+| **`table`** | **`funnel`** | **`big-number`** |
+| <img src="app/gallery/landing/swiss-international--table.webp" width="280" alt="Table slide" /> | <img src="app/gallery/landing/swiss-international--funnel.webp" width="280" alt="Funnel slide" /> | <img src="app/gallery/landing/swiss-international--big-number.webp" width="280" alt="Big number slide" /> |
 
 Native slides keep **editable PowerPoint text**. Only `freeform` and
 plate-backed visual treatments are rasterised, and that is a deliberate trade.
@@ -112,11 +100,11 @@ plate-backed visual treatments are rasterised, and that is a deliberate trade.
 Decks and reports made with this app, committed so you can open them without
 running anything:
 
-| Presentation | Files |
-|---|---|
-| **Recent Trends in Mixed-Mode Programming** — 12 slides + report | [PPTX](./published/recent-trends-mixed-mode-presentation.pptx) · [Report DOCX](./published/recent-trends-mixed-mode-report.docx) |
-| **First Impressions & Networking** — variant 1 | [PDF](./published/first-impressions-networking-presentation.pdf) · [PPTX](./published/first-impressions-networking-presentation.pptx) · [Report DOCX](./published/first-impressions-networking-report.docx) |
-| **First Impressions & Networking** — variant 2 | [PPTX](./published/first-impressions-topic2-presentation.pptx) |
+| Presentation | Size | Files |
+|---|---|---|
+| **Recent Trends in Mixed-Mode Programming** | 21 slides + report | [PPTX](./published/recent-trends-mixed-mode-presentation.pptx) · [DOCX](./published/recent-trends-mixed-mode-report.docx) |
+| **First Impressions & Networking** | 20 slides + report | [PDF](./published/first-impressions-networking-presentation.pdf) · [PPTX](./published/first-impressions-networking-presentation.pptx) · [DOCX](./published/first-impressions-networking-report.docx) |
+| **First Impressions & Networking**, a second run | 20 slides | [PPTX](./published/first-impressions-topic2-presentation.pptx) |
 
 Browse [`published/`](./published/). Private decks live in `decks/<slug>/` and
 are gitignored.
@@ -221,7 +209,9 @@ app/server/       Express transport over the shared core — no logic of its own
 app/web/          Vite + React browser application
 src/              renderer, pipeline, research, validation, previews, metering
 themes/           34 design languages
+styles/           reusable token overrides layered over a theme
 schema/           the content contracts for decks and reports
+templates/        starting content templates
 config/           models, identity, accounts, keys
 brand/            institutional marks, per operator and per account
 app/gallery/      committed theme specimens — the images above
