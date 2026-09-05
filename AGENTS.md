@@ -36,7 +36,7 @@ app/server/     Express; a transport over src/, holds no logic
 app/web/        Vite + React UI
 decks/<slug>/   deck.yaml, meta.yaml, out/
 reference/      the institutional templates output is checked against
-docs/           ROADMAP.md, ARCHITECTURE.md
+docs/           ROADMAP.md (all work), PRODUCTION, ECONOMICS, ARCHITECTURE, TRAPS
 ```
 
 `app/server` must stay a thin wrapper. Anything it can do, the CLI must also do,
@@ -60,6 +60,36 @@ because the pipeline has to run headless.
 ## Working the roadmap
 
 `docs/ROADMAP.md` is both the plan and the progress tracker. It is not a spec.
+
+**It is also the ONLY place future work is written down.** The moment a piece
+of work is discussed — a defect noticed in passing, a feature the user asks
+about, a direction agreed in conversation, an idea that came out of building
+something else — it gets an entry in `docs/ROADMAP.md` in that same session,
+before the session ends. Not in a handoff, not in a section of another doc, not
+only in the conversation.
+
+This is a rule because it has already gone wrong: work items accumulated in
+`PRODUCTION.md` §4 and §5 in parallel with the roadmap, so there were two
+lists, and whichever was not being edited went stale. The other docs have their
+own jobs and none of them is holding work:
+
+| file | answers |
+|---|---|
+| `docs/ROADMAP.md` | **what is to be done, what was done, and why** |
+| `docs/PRODUCTION.md` | what stops real users — launch readiness only |
+| `docs/ECONOMICS.md` | what it costs and what it can be sold for |
+| `docs/ARCHITECTURE.md` | how the system is built, as built |
+| `docs/TRAPS.md` | what has bitten before, cross-cutting |
+| `docs/HANDOFF.md` | the current state, for the next session; overwritten |
+
+When one of those files needs to mention future work, it LINKS to the roadmap
+entry rather than restating it. A pointer that goes stale is visible; a second
+copy that goes stale is not.
+
+**Keep it current, not just appended to.** An entry whose reality has changed
+is edited when it changes — including entries nobody is working on, when a
+neighbouring change makes them wrong. A roadmap that is only ever added to
+becomes an archive, and an archive is not a plan.
 
 - **Entries are intent + rationale, not specs.** When an item's turn comes,
   discuss the concrete implementation before writing code. Never build straight

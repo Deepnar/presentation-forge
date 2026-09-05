@@ -5383,6 +5383,40 @@ needs Auto and a person. What would make it accumulate rather than evaporate:
 > in the same direction for every subject looks like a finding and is a bug in
 > the ruler.
 
+### [ ] Small defects and papercuts
+
+*Priority: low individually, and collected here so they stop being rediscovered
+one at a time. Each has a named symptom and none needs a model to fix, though
+two need one to CONFIRM.*
+
+Moved out of `docs/PRODUCTION.md` §5, which was a second list of work items
+running in parallel with this one.
+
+- **[x] Image progress printed a slide index where a counter belonged.** The
+  supply emits `{ index }` (the slide) and `{ done }` (the counter), and both
+  the CLI printer and the UI read `index`, so a one-image deck reported
+  `images 3/1`. Fixed, along with six status frames the UI could not label at
+  all — the whole post-write half of a generation read as "Working…".
+- **`looksCutAtCap` false-positives on headlines and labels.** It flags any
+  field sitting at its cap without terminal punctuation, but a headline is a
+  noun phrase and ends without a full stop by design, so `"$10.9M"` and
+  `"Weighing V2G Economics Against Grid Impact"` go to the rewrite
+  unnecessarily. Harmless, imprecise, and it spends a model call each time —
+  which is no longer free (see `docs/ECONOMICS.md`).
+- **The coherence pass missed three near-identical headlines.** On the V2G
+  deck, slides 18, 21 and 22 all said a version of "Scaling V2G Requires
+  Cross-Sector Collaboration". The REPORT half of this had a mechanical cause
+  and is fixed — its writer was told not to repeat other sections while being
+  shown none of them. The deck half is unexamined and may be the same shape of
+  problem: check what the coherence pass is actually given before assuming the
+  comparison is at fault.
+- **`feature-grid` carries two lines of speaker-note debt on `minimal-muji`** —
+  the only failure in the `--notes` sweep.
+- **`illustrated-points` with an empty seat leaves the lower half of the slide
+  empty**, and the vision critic flags it as `blank`. Equally true of a
+  four-item `bullets` slide, so the question is whether the layout should
+  breathe differently when no picture is coming. *A decision, not a bug.*
+
 ### [ ] Housekeeping found during the audit
 
 *Priority: low.*

@@ -9,6 +9,13 @@ Every claim below was checked against the code on the day it was written, not
 carried forward from memory. Where something is asserted as broken, the file and
 the symptom are named so it can be confirmed in a minute.
 
+**How this file relates to the others.** `docs/ROADMAP.md` is the single list
+of work items and the only place a new one should be written. This file is the
+standing answer to *what stops real users*, `docs/ECONOMICS.md` to *what it
+costs and what it can be sold for*, `docs/ARCHITECTURE.md` to *how it is built*
+and `docs/TRAPS.md` to *what has bitten before*. Anything forward-looking that
+turns up while reading them belongs in the roadmap.
+
 **Where this actually stands.** The hard infrastructure is done and is not the
 problem. Accounts, sessions, email verification and password reset; per-account
 decks, identity, brand marks, report donor and BYOK keys with
@@ -201,96 +208,33 @@ back — do not assert on `report.yaml`.
 
 ---
 
-## 4. Open engineering, in priority order
+## 4. Open engineering, and every other work item
 
-### 4.1 The turn grammar is built from every slide type at once
+**They live in `docs/ROADMAP.md`, not here.** That file is the single list of
+work — planned, in progress and done, with the reasoning and the `Learned.`
+blocks — and this section used to be a second copy of part of it, which meant
+two places to update and one of them always stale.
 
-*High. Chat is affected; the critic path is fixed.*
+What sits there now, roughly in the order it matters:
 
-`buildOpsSchema` assigns every type's properties into one flat object, so a name
-two types share belongs to whichever was walked last. Thirteen types declare
-`items`; `contact` wins. Twelve property names collide this way (`items`, with
-eight distinct element shapes, plus `cards`, `body`, `rows`, `steps`, `events`,
-`nodes`, `entries`, `stages`, `columns`, `left`, `right`).
+| item | needs a model? | needs a decision? |
+|---|---|---|
+| The front end, and the landing page | no | **yes** |
+| Add a slide to a finished deck, written like the others | no | no |
+| A turn's grammar is built from every type at once | no | partly |
+| "Auto" is bound to one institution's name, not a role | no | no |
+| Nothing can test the browser | no | **yes** — see §1.4 |
+| Research and content flow, end to end | **yes** | no |
+| The full functional sweep | **yes** | no |
+| Measuring content quality | **yes** | no |
+| Housekeeping found during the audit | no | no |
+| (stretch) Canvas slide-builder | no | **yes** |
 
-The critic now passes `onlyTypes` and is fixed. **Chat runs through the same
-primitive and is not**, and the product vision puts the chat panel at the centre.
-Two candidate directions remain (permissive merge, or a type-conditional patch);
-the measurement is already in the roadmap entry.
+The launch-blocking items keep their own section above, because "what stops a
+stranger using this" is a different question from "what is worth building next"
+and this file exists to answer the first one.
 
-### 4.2 The front-end app sweep
-
-*Highest priority in the roadmap, no model needed.* The landing page was rebuilt
-against an agreed direction; the app half — the surfaces you live in rather than
-the front door — is what remains.
-
-### 4.3 Measuring content quality so it accumulates
-
-`npm run deckscore` is the deterministic half and exists. What is missing is the
-half a number cannot reach: whether the deck ARGUES anything. What would make it
-accumulate rather than evaporate —
-
-- a small fixed set of briefs, generated on Auto, kept as a baseline to read
-  against, so "the output got worse" is a comparison rather than a memory;
-- the score recorded per generation, so a regression shows up as a number before
-  anybody notices by eye.
-
-### 4.4 Research and content flow, end to end
-
-*Medium, needs a model.* Standing distrust of both the research pass and the
-argument a deck makes. The briefing now steers queries; whether that reaches the
-page is unverified.
-
-### 4.5 The full functional sweep
-
-*Medium.* Every function exercised in the running app rather than by unit test —
-every theme against every slide type, deck→report, report→deck, speaker scripts.
-To be done in one pass rather than piecemeal.
-
-### 4.6 "Auto" is bound to one institution's name, not to a role
-
-*Medium, and it rises the moment this is hosted for anyone outside the college.
-No model.* The free tier is the literal id `tcet-auto` and the literal env var
-`FORGE_TCET_API_KEY` — `autoProvider()`, the encrypted key row, every default in
-`src/limits.js`, and a `kind: "tcet"` that reaches a UI label. Rename to a role
-(`auto` / `FORGE_AUTO_API_KEY`), read the old names as fallbacks so no deployment
-breaks, and migrate the `global_keys` and `auto_events` rows. Worth doing before
-anyone outside the college is invited.
-
-### 4.7 (Stretch) Canvas slide-builder
-
-Long-standing stretch item. Not on the path to launch.
-
----
-
-## 5. Smaller defects and papercuts
-
-Each is small, real, and has a named symptom.
-
-- **Image progress prints a slide index where a counter belongs** — the supply
-  emits `{ index }` (the slide) and the CLI's generic printer renders
-  `index + 1 / total`, so a one-image deck logs `images 3/1`.
-- **`illustrated-points` with an empty seat leaves the lower half of the slide
-  empty**, and the vision critic flags it as `blank`. It is equally true of a
-  four-item `bullets` slide, so the question is whether the layout should
-  breathe differently when no picture is coming — a decision, not a bug.
-- **`looksCutAtCap` false-positives on headlines and labels.** It flags any
-  field sitting at its cap without terminal punctuation, but a headline is a
-  noun phrase and ends without a full stop by design, so `"$10.9M"` and
-  `"Weighing V2G Economics Against Grid Impact"` are sent to the rewrite
-  unnecessarily. Harmless, imprecise, wastes a model call.
-- **The coherence pass missed three near-identical headlines.** On the V2G deck,
-  slides 18, 21 and 22 all said a version of "Scaling V2G Requires Cross-Sector
-  Collaboration". Nothing caught it. *The report half of this had a mechanical
-  cause and is fixed — its writer was told not to repeat other sections while
-  being shown none of them. The deck half is unexamined and may be the same
-  shape of problem.*
-- **`feature-grid` carries two lines of speaker-note debt on `minimal-muji`** —
-  the only failure in the `--notes` sweep.
-
----
-
-## 6. Known and accepted — not defects
+## 5. Known and accepted — not defects
 
 Recorded so nobody spends an afternoon rediscovering them.
 
@@ -317,7 +261,7 @@ Recorded so nobody spends an afternoon rediscovering them.
 
 ---
 
-## 7. Operational notes for whoever deploys this
+## 6. Operational notes for whoever deploys this
 
 - **The workload is not serverless-compatible.** Generation is a multi-minute
   SSE stream, rendering shells out to LibreOffice and Chrome, and state is a

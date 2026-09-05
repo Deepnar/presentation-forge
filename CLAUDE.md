@@ -168,10 +168,30 @@ is `COVERING_THEMES` in `src/coverage.js`, it is what `npm run capstress`
 defaults to, and `test/coverage.test.js` fails when a theme introduces a value
 none of them carries. When it does, add a theme there — do not widen the sweep.
 
-`docs/PRODUCTION.md` is the standing answer to "what is left before real users?"
-— launch blockers, the payments track, the journeys nobody has run, and the open
-defect list. Read it before planning a session; update it when one of its items
-moves.
+## Where work is written down
+
+**`docs/ROADMAP.md` is the only place future work goes**, and it goes there as
+soon as it is discussed — a defect noticed in passing, a feature the user asks
+about, a direction agreed mid-conversation, an idea that fell out of building
+something else. In the same session, before it ends. `AGENTS.md` has the rule
+in full; the short version is that work items once accumulated in two files and
+whichever was not being edited went stale.
+
+Every other doc has a different job and none of them holds work:
+
+- `docs/PRODUCTION.md` — what stops real users: launch blockers, the payments
+  track, the journeys nobody has run. Read it before planning a session.
+- `docs/ECONOMICS.md` — what a deck costs to produce and what it can be sold
+  for. Read it before changing anything that sends tokens.
+- `docs/ARCHITECTURE.md` — how the system is built. Keep in sync when a
+  subsystem changes shape.
+- `docs/TRAPS.md` — the cross-cutting failure list. Read before touching the
+  renderer or the fitter.
+- `docs/HANDOFF.md` — the current state for the next session; overwritten each
+  time, and git keeps the old ones.
+
+When one of those needs to mention future work it links to the roadmap entry
+rather than restating it.
 
 `docs/TRAPS.md` is the cross-cutting failure list (PowerPoint autofit, LibreOffice
 headless no-ops, pptxgenjs silently dropping unknown options, font measurement).
