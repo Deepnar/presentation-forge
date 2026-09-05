@@ -1,6 +1,6 @@
 # Handoff — 2026-09-05, metering, retrieval, and the price that made both necessary
 
-Everything is on `main`. `npm test` is **776 passing** (was 660 at the start of
+Everything is on `main`. `npm test` is **785 passing** (was 660 at the start of
 the day). `themematrix` is clean across 34 themes; `--notes` has its one known
 `feature-grid` failure, now correctly stated. The working tree is clean.
 
@@ -27,6 +27,20 @@ by grammar analysis, by stubs that obey the bounds they are handed, and by
 rendering artefacts and looking at them.
 
 ---
+
+## Where this stopped
+
+**Nothing is unblocked.** Everything that could be done without a key, a model
+or a decision has been done — `docs/BLOCKED.md` §4 lists what was closed and
+states plainly that every remaining roadmap item now waits on §1, §2 or §3 of
+that file. That is unusual and it is the most important line in this handoff:
+the next move is not an engineering one.
+
+Two remaining items look like engineering and are not. The turn grammar's
+unscoped case changes the SHAPE of a decoding grammar and needs a model to run
+against; `feature-grid`'s note debt means either cutting the body cap for all
+34 themes or changing card geometry for one, which is a trade-off rather than
+a fix.
 
 ## What to do next
 
@@ -83,13 +97,28 @@ anything better**: there was no student price point that worked.
 Per-slide BM25 retrieval took it to ~135K, a measured **12×**. ₹99 now buys 40
 decks at the budget band, 10 on a good model, at ~80% margin.
 
+### The score, kept
+
+`scoreDeck` existed and was run by hand, which answers "is this deck any good"
+once and loses the answer. `finalizeDeck` now scores the finished deck and
+appends to `config/scores.jsonl` with the backend that produced it;
+`npm run deckscore -- --history [slug]` reads it back. A regression is measured
+against the MEDIAN of recent runs rather than the previous one, because scores
+move several points between decks on subject matter alone.
+
+Three tests ran `finalizeDeck` without pinning `FORGE_CONFIG_DIR`, so the first
+run of this wrote a fixture's score into the real config — the same trap as
+`hosted.json` being read from the real config dir under `npm test`. Pinned.
+
 ### Also
 
 Selection-scoped chat grammar (10 of 22 slides were getting the wrong field
 shapes; now 0). Six status frames the UI could not label. The `Auto` rename off
 one institution's name, with both spellings resolving. Inserting a slide into a
 finished deck, written by the writer rather than by chat. `looksCutAtCap`. The
-coherence pass's repetition blindness.
+coherence pass's repetition blindness — it was never looking for it. The trial
+meter on the usage panel, which is the half of the refusal surface that is not
+a taste question.
 
 ---
 
