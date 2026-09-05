@@ -8,7 +8,7 @@ function FullShell({ eyebrow, title, subtitle, children, aside }) {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-base">
       <div className="mx-auto w-full max-w-[1440px] flex-1 px-6 py-8 sm:px-10 sm:py-12">
-        <div className="flex items-center gap-2 text-[12px] text-fg-faint">
+        <div className="flex items-center gap-2 text-[12px] text-fg-faint [&>a]:py-1">
           <a href="#/home" className="hover:text-fg">Tour</a>
           <span>›</span>
           <span className="text-fg">{title}</span>
@@ -18,7 +18,7 @@ function FullShell({ eyebrow, title, subtitle, children, aside }) {
             <div className="sticky top-20 space-y-6">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-faint">On this page</div>
-                <div className="mt-3 flex flex-col gap-1.5 text-[13px]">
+                <div className="mt-3 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-[13px]">
                   <a href="#/privacy" className={`hover:text-fg ${title === "Privacy Policy" ? "text-accent font-medium" : "text-fg-muted"}`}>Privacy</a>
                   <a href="#/terms" className={`hover:text-fg ${title === "Terms of Service" ? "text-accent font-medium" : "text-fg-muted"}`}>Terms</a>
                   <a href="#/contact" className={`hover:text-fg ${title === "Contact" ? "text-accent font-medium" : "text-fg-muted"}`}>Contact</a>
@@ -185,7 +185,7 @@ export function Docs() {
   return (
     <div className="w-full bg-base">
       <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 sm:py-8">
-        <div className="flex items-center gap-2 text-[12px] text-fg-faint">
+        <div className="flex items-center gap-2 text-[12px] text-fg-faint [&>a]:py-1">
           <a href="#/home" className="hover:text-fg">Tour</a>
           <span>›</span>
           <span className="text-fg">Documentation</span>
@@ -197,7 +197,7 @@ export function Docs() {
           <aside className="hidden lg:block">
             <div className="sticky top-20">
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-faint">On this page</div>
-              <div className="mt-3 flex flex-col gap-1.5 text-[13px]">
+              <div className="mt-3 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-[13px]">
                 {toc.map((h) => (
                   <button key={h.id} onClick={(e) => { e.preventDefault(); document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className={`text-left hover:text-fg ${h.level === 1 ? "font-medium text-fg" : "pl-3 text-fg-muted"}`}>{h.title}</button>
                 ))}
@@ -226,7 +226,7 @@ export function Docs() {
           <aside className="hidden lg:block">
             <div className="sticky top-20 rounded-xl border border-line bg-panel p-4">
               <div className="text-[12px] font-semibold text-fg">Quick links</div>
-              <div className="mt-2 flex flex-col gap-1.5 text-[13px]">
+              <div className="mt-2 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-[13px]">
                 <a href="#/usage" className="text-fg-muted hover:text-accent">API usage</a>
                 <a href="#/tour-themes" className="text-fg-muted hover:text-accent">Themes showcase</a>
                 <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="text-fg-muted hover:text-accent">GitHub →</a>
@@ -268,7 +268,7 @@ export function Usage() {
   return (
     <div className="w-full bg-base">
       <div className="mx-auto max-w-[1440px] px-6 py-8 sm:px-10 sm:py-12">
-        <div className="flex items-center gap-2 text-[12px] text-fg-faint">
+        <div className="flex items-center gap-2 text-[12px] text-fg-faint [&>a]:py-1">
           <a href="#/home" className="hover:text-fg">Tour</a>
           <span>›</span>
           <span className="text-fg">API usage</span>
@@ -277,7 +277,7 @@ export function Usage() {
           <aside className="hidden lg:block">
             <div className="sticky top-20">
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-faint">On this page</div>
-              <div className="mt-3 flex flex-col gap-1.5 text-[13px]">
+              <div className="mt-3 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-[13px]">
                 <a href="#/privacy" className="text-fg-muted hover:text-fg">Privacy</a>
                 <a href="#/terms" className="text-fg-muted hover:text-fg">Terms</a>
                 <a href="#/docs" className="text-fg-muted hover:text-fg">Docs</a>

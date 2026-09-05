@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-4">
           <div>
             <div className="text-[12px] font-semibold tracking-tight">Product</div>
-            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <div className="mt-2 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-fg-muted">
               <a href="#/home" className="hover:text-fg">Tour</a>
               <a href="#/tour-themes" className="hover:text-fg">Themes</a>
               <a href="https://github.com/Deepnar/presentation-forge" target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a>
@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
           <div>
             <div className="text-[12px] font-semibold tracking-tight">Resources</div>
-            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <div className="mt-2 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-fg-muted">
               <a href="#/docs" className="hover:text-fg">Docs</a>
               <a href="#/home" className="hover:text-fg">How it works</a>
               <a href="#/usage" className="hover:text-fg">Usage & limits</a>
@@ -22,7 +22,7 @@ export default function Footer() {
           </div>
           <div>
             <div className="text-[12px] font-semibold tracking-tight">Legal</div>
-            <div className="mt-2 flex flex-col gap-1.5 text-fg-muted">
+            <div className="mt-2 flex flex-col gap-0 [&>a]:py-1 [&>button]:py-1 text-fg-muted">
               <a href="#/privacy" className="hover:text-fg">Privacy</a>
               <a href="#/terms" className="hover:text-fg">Terms</a>
               <a href="#/contact" className="hover:text-fg">Contact</a>
