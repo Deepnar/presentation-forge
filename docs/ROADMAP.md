@@ -4249,7 +4249,7 @@ one generation to confirm the type is chosen at a sensible rate.
 > unresolvable image as "no image" dropped the caption silently — a credit
 > vanishing with the picture it credits.
 
-### [ ] A turn's grammar is built from every type at once, so it fits almost none
+### [~] A turn's grammar is built from every type at once, so it fits almost none
 
 *Priority: medium — the critic path is fixed, chat is not. Found by watching the
 critic fail to apply a correct finding. `buildOpsSchema` in `src/ai/ops.js`.*
@@ -4276,6 +4276,13 @@ Twelve property names collide: `items` (8 distinct element shapes), `cards`,
 `stages`, `columns`, `left`, `right`. Only a turn that happens to touch the
 winning type gets a correct grammar.
 
+**Re-measured, and it is worse than that.** Generated from the schema rather
+than counted by hand: **22** property names are declared by more than one type,
+and `items` by **thirteen** types with **thirteen distinct** element shapes.
+`body` has 4 shapes across 10 types, `headline` 5 across 6, `label` 6 across 6.
+Against the one real generated deck on disk, an unscoped turn is handed the
+wrong shapes for **10 of its 22 slides**.
+
 **This is not only the critic.** Chat is the same primitive, and the product
 vision puts the chat panel at the centre — "edit the deck the way you would
 talk to Gamma". Every chat instruction that patches one of those thirteen types
@@ -4288,6 +4295,22 @@ Three shapes for the fix, and they are materially different work:
    Unscoped turns are unchanged, so chat may still write any type.* This was the
    agreed direction. It fixes the critic and leaves the general merge wrong for
    any turn spanning several types, which is what the two options below are for.
+
+1b. **[x] Derive the scope from the selection chat already has.** *Done.* The
+   panel's selection reached `runTurn` as `onlySlides` and was used only to
+   filter ops AFTER the model answered — while the grammar it answered against
+   was still the flat merge. A selection names slides and a slide names its
+   type, so the types a turn may PATCH were known all along. New `patchTypes`
+   narrows only the patch key space: a full `slide` carries its own `type` and
+   must stay unrestricted, because `scopeOpsToSelection` lets append and insert
+   through and a turn scoped to slide 10 may still be asked to add a chart.
+   **10 of 22 wrong → 0 of 22**, and a single-slide selection cuts the patch key
+   space from 82 keys to 9. This is the majority of real chat usage — select a
+   slide, ask for a change — and it needed no grammar-shape change, only a
+   narrower one, which is the direction the module's own notes call safe.
+
+   What it does NOT fix: a chat turn with no selection ("make the whole deck
+   punchier"), which still gets the flat merge. That is what 2 and 3 remain for.
 2. **Merge permissively instead of by overwrite.** Union the properties of
    same-named fields and reduce `required` to the intersection, so every type's
    shape is representable and `validateDeck` plus the repair loop enforce which
@@ -4301,7 +4324,17 @@ Three shapes for the fix, and they are materially different work:
 > collision table above is generated from the schema, and
 > `buildOpsSchema(ds, {slideCount: 22})` versus
 > `buildOpsSchema(ds, {slideCount: 22, onlyTypes: ["feature-grid"]})` shows the
-> two grammars side by side in one call.
+> two grammars side by side in one call. `test/ops.test.js` now derives the
+> collision set rather than hard-coding it, so the numbers above cannot go
+> stale without a test noticing.
+>
+> **Options 2 and 3 change the SHAPE of the grammar** — an `anyOf` union per
+> colliding name, or a discriminated `oneOf` per type — and this module's
+> history is a list of grammars that die silently rather than loudly
+> ("Ollama's decoding grammar silently dies at maxLength 2000"; "a surviving
+> `$ref` fails the whole request"). Neither should land without a model to run
+> it against. Option 1b was taken instead precisely because narrowing an
+> existing shape is the one move that cannot introduce a new one.
 
 ### [x] The critic's fixes never reached the file anyone opens
 
