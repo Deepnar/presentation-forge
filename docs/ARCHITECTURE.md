@@ -479,19 +479,29 @@ They are not two flavours of the same artefact.
 | | Deck | Report |
 |---|---|---|
 | Design freedom | total, only chrome is fixed | none, template is graded |
-| Structure | model proposes, human approves | fixed section order |
+| Structure | model proposes, human approves | the donor template's section list |
 | Renderer | pptxgenjs from theme tokens | donor .docx, body injected |
 | Themes | 20 | not applicable |
 
 Both are generated from the same research pass, so one brief produces both —
 which is the actual submission workflow.
 
-**Structure is sized to the team.** Both planners derive their section count
-from the merged identity's team (`src/ai/team.js`): a deck gets `clamp(members,
-3, 8)` major parts (one per presenting member, capped at the renderer's
-8-section ceiling) and the outline grammar's sections cap is tightened to the
-same number; the report planner floors the same calculation at the four-section
-graded core. The count is the deck's own data, never a separate input.
+**A DECK's structure is sized to the team; a report's is not.** The deck
+planner derives its section count from the merged identity's team
+(`src/ai/team.js`): `clamp(members, 3, 8)` major parts, one per presenting
+member, capped at the renderer's 8-section ceiling, with the outline grammar's
+sections cap tightened to the same number. The count is the deck's own data,
+never a separate input.
+
+The report planner deliberately does NOT do this, and the deck's rule does not
+transfer: a talk is divided between the people giving it, while a report's
+structure is set by the institution grading it, and one author writing up a
+large project owes the same sections as six. It used to share the calculation,
+floored at the four-section graded core — which made the substance unreachable,
+because the floor counted the TOTAL sections while the prompt separately
+requires that same four-section core. Every team of four or fewer therefore
+spent its whole budget on the frame, and `report-new`, solo by construction,
+could only ever emit Abstract/Introduction/Conclusion/References.
 
 **Presenters are assigned centrally, not by the model.** `distributePresenters`
 in `src/ai/team.js` is the one place the split is computed: content slides
@@ -512,7 +522,7 @@ keeps the field.
 
 `src/ai/report.js` is the report's half of the generation pipeline, mirroring
 the deck writer's decomposition (`generate.js`): a plan call fixes the title
-and which of the eight fixed sections carry content, then one call per section
+and which of the template's sections carry content, then one call per section
 constrained to that section's own grammar. Depth is a parameter, not a second
 generator — the same function with different schema bounds and a different
 prompt:
@@ -525,6 +535,26 @@ prompt:
 Both densities write the same `decks/<slug>/report.yaml` shape and draw
 unchanged through the renderer. The depth used is remembered in `meta.yaml`
 (`reportDepth`) so a later `--generate` keeps the same budget.
+
+**Sections the topic earns.** `sanitizeReportPlan` used to match every planned
+name against the fixed eight and drop whatever did not match, so a section a
+particular topic genuinely earned was unrepresentable however well the plan
+argued for it. The planner is handed the structure the donor declares, may add
+up to `MAX_CUSTOM_SECTIONS` (3) of its own, and those survive coercion.
+Position is decided there because it cannot be recovered afterwards — sorting
+by structure index says nothing about where a section that HAS no index
+belongs. A custom section is anchored to the last structural section listed
+before it, and the anchor is clamped away from the final structural position,
+so a plan that puts an appendix after the References cannot produce a report
+that fails on its own format.
+
+**Every section knows what the others are for.** Each write call carries the
+plan outline (the other sections and their focus) and the opening line of each
+section already written — only prose that passed its own grammar, so a dropped
+section is not fed forward as something to avoid repeating. The system prompt
+had said "do not repeat wording already used in another section" while showing
+the model no other section: the running report's `content` was built empty and
+never filled, so only the title ever reached the message.
 
 **Shared research orchestration.** The report generator reads the same
 `research/notes.md`, the same approved `plan.yaml` and the same merged identity
@@ -539,12 +569,16 @@ and an unbounded prompt collapses generation. Reachable as
 **Two extra doors on the same generator.** A report does not have to come from
 a deck. `forge report-new <brief>` / `POST /api/reports` runs the standalone
 flow — brief → research → `report.yaml` → `.docx`, no `deck.yaml` at all. The
-fixed section order is the structure, so no outline gate applies; the generator
-is told `requirePlan: false` and derives its plan from the brief and research.
-And the flow reverses cleanly: `forge deck-from-report <slug>` /
+template's section order is the structure, so no outline gate applies; the
+generator is told `requirePlan: false` and derives its plan from the brief and
+research. And the flow reverses cleanly: `forge deck-from-report <slug>` /
 `POST /api/decks/:slug/report/deck` plans a *companion deck* from an existing
 `report.yaml` and its shared research, routing the plan through the ordinary
-outline gate and `/generate` path. Both directions share `decks/<slug>/research/`,
+outline gate and `/generate` path. That direction reads `meta.yaml` BEFORE
+planning — its `maxSlides`, `slidesPerMember` and briefing reach `planDeck`,
+because deck length is the one setting nothing downstream can repair — and
+builds its brief from `presentSections`, so a topic-specific section's prose
+is not the material silently missing from the companion deck. Both directions share `decks/<slug>/research/`,
 so the deck and report agree by construction whichever way they were built.
 A report-only deck (`meta.yaml` + `report.yaml`, no `deck.yaml`) appears in the
 deck list with `deck: false` and opens the Report view.
@@ -564,10 +598,12 @@ because that is what is graded. The template's own `.docx` (gitignored
    geometry, so it is the whole chrome in one element.
 3. Build a fresh body from schema-validated `decks/<slug>/report.yaml` plus the
    merged identity (meta.yaml over config, the same merge the deck uses): a
-   cover page, a table of contents, and the fixed section order — Abstract →
+   cover page, a table of contents, and the report's sections in the order its
+   own `order` field gives — falling back to the graded eight (Abstract →
    Acknowledgement → Introduction → Theoretical Background → Application →
-   Future Scope → Conclusion → References. Sections with no content are skipped
-   gracefully; present sections are numbered 1..N.
+   Future Scope → Conclusion → References) for a report that predates the
+   field. Sections with no content are skipped gracefully; present sections are
+   numbered 1..N.
 4. Rezip. Every part other than the body survives byte-for-byte, which is what
    preserves the VML watermark and banner inside the headers, the footer's page
    field, the styles the generated tables reference, and all media.
@@ -582,11 +618,30 @@ own — the doubled breaks the renderer used to emit produced blank pages 2-3
 whenever a cover or TOC ended near a page boundary, and the single-break layout
 is verified blank-page-free by rasterising a real report.
 
-Content shape (`schema/report.schema.json`): each of the eight sections is
-`paragraphs` plus an optional borderless `table` (bold header, like the
-donor's own content table); `References` additionally accepts `entries`.
-The renderer is depth-agnostic, so both report densities — full and brief —
-draw through it without knowing which they are.
+Content shape (`schema/report.schema.json`): a section is `paragraphs` plus an
+optional borderless `table` (bold header, like the donor's own content table);
+`References` additionally accepts `entries`. The renderer is depth-agnostic, so
+both report densities — full and brief — draw through it without knowing which
+they are.
+
+**The section LIST is data, not a constant.** `buildBody` emits `content[name]`
+for any name and always has — which is how the Image Credits appendix numbers
+and paginates without being in the graded eight. What was fixed was the list,
+and that belongs to whichever institution's template is installed.
+`parseDonorSections` reads the donor's own numbered heading run (bold,
+top-level, consecutive from 1) and `reportStructureForDeck` hands it to the
+planner, cached per file mtime+size so a re-uploaded template is re-read. Bold
+is the discriminator rather than numbering: a report's reference list is the
+other consecutively numbered thing in the document and also starts at 1. Tables
+are skipped so the template's own TOC is not read as a second copy of the
+structure. A donor that declares nothing recognisable yields null and the
+graded eight stand.
+
+Because a report may now carry a section the graded list has never heard of,
+its order stops being recoverable from the section names and is recorded in the
+artefact as `order`. A section carrying content but absent from `order` is
+still emitted — losing model-written prose to a bookkeeping slip produces a
+`.docx` that renders and looks perfectly fine.
 
 Reachable like the deck path: `forge report <slug>` (CLI), and on the API
 `GET/PUT /api/decks/:slug/report` plus `POST /api/decks/:slug/report/render`
