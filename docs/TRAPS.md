@@ -668,6 +668,44 @@ length, so nothing upstream could reject them, and they were typeset into a
 document meant for submission. Anything a model writes into a *document* needs
 a prose check that ajv cannot express — see `salvageParagraph`.
 
+**Two bounds that are each defensible can be jointly unsatisfiable, and neither
+one looks wrong.** The report's plan grammar capped sections at four while the
+planning prompt separately required a four-section graded core. Read alone, the
+cap is "keep small teams' reports short" and the core is "these sections are
+always graded". Together they meant the body of the report — Theoretical
+Background, Application, Future Scope — could not be planned at all. Whenever a
+schema bound and a prompt instruction constrain the same axis, write down an
+instance that satisfies both and check it is the answer you wanted.
+
+**A test can freeze a defect as an intention.** The above was covered by a test
+named "small team, small report" asserting the plan came out as exactly
+`[Abstract, Introduction, Conclusion, References]`. That list IS the defect —
+a report with no body — but written as an expectation it reads as a decision
+somebody made. A test that asserts an exact degenerate result is worth
+re-reading as though it were the output of a bug report.
+
+**A stub that ignores the bound it is handed makes the whole file blind to
+bounds.** A report-generator fake returned six sections regardless of
+`maxItems`, so no assertion in that file could ever reach a cap a real
+grammar-constrained model is held to. The obedience has to be total, too: the
+first corrected stub honoured the plan bound but still returned four paragraphs
+into an Acknowledgement whose schema allows two, so the section was dropped and
+the failure read as a planning bug rather than a stub bug.
+
+**Before assuming a constant is load-bearing, look for the thing already
+violating it.** `REPORT_SECTIONS` read like the report's foundation — eight
+fixed names, "the graded constant". It was one `filter` call. The renderer had
+been emitting `content[name]` for arbitrary names since the Image Credits
+appendix was added, and that appendix is not in the list. The exception that
+already ships is the cheapest possible proof of what the code can really do.
+
+**When a fixed list stops being fixed, every walk of it is a silent dropper.**
+Making the report's sections data meant `presentSections` had to change, which
+was obvious. `reportBrief` in `pipeline.js` also walked `REPORT_SECTIONS`, to
+build the brief a companion deck is planned from — so a topic-specific section
+would have been dropped from exactly the artefact that most needed it, with no
+error anywhere. Grep for the constant, not for the function you were editing.
+
 **A "everything else" bucket describes what falls into it, and something always
 falls in by accident.** The slide catalogue groups types into families and
 announces whatever has no family as "ESCAPE HATCH (rasterised, text not
