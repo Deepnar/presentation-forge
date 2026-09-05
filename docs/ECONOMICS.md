@@ -16,20 +16,27 @@ it can be corrected by measurement rather than re-argued. Nothing in this file
 has been measured against a live paid provider yet; §6 says what would settle
 it.
 
+**This file is analysis, not a work list.** The work it implies lives in
+`docs/ROADMAP.md` — *Selling it: tiers, checkout, and what a refusal offers*,
+*Prompt caching, if the numbers still need it*, and *A provider key, so the
+money figures stop being derived*.
+
 ---
 
 ## 1. The finding
 
-**The research excerpt is re-sent on every author call.**
+**The research excerpt was re-sent on every author call.** *(Fixed in §4 — this
+section is the diagnosis, in the past tense, because the numbers it produces
+are the argument for the fix.)*
 
-`writeSlide` in `src/ai/generate.js` puts `RESEARCH NOTES\n${research}` into the
+`writeSlide` in `src/ai/generate.js` put `RESEARCH NOTES\n${research}` into the
 user message of every single slide call. The cloud excerpt cap
 (`config/models.yaml`, `roles.author.transports.cloud.excerpt_chars`) is
 **240,000 characters** — about 60,000 tokens. Real `research/notes.md` files on
 disk run 126,000 to 594,000 characters, so that cap binds for most decks rather
 than being a ceiling nothing reaches.
 
-A 22-slide deck sends that excerpt **26 times**: once per slide, plus the plan,
+A 22-slide deck sent that excerpt **26 times**: once per slide, plus the plan,
 the field-length pass, the coherence pass and the critic's fix turn.
 
 ```

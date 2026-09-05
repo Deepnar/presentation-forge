@@ -16,7 +16,7 @@ before reaching for that instead.
 
 ```bash
 curl -s https://ai.tcetcercd.in/v1/models \
-  -H "Authorization: Bearer $FORGE_TCET_API_KEY" | python3 -m json.tool
+  -H "Authorization: Bearer $FORGE_AUTO_API_KEY" | python3 -m json.tool
 ```
 
 ```

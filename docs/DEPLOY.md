@@ -179,7 +179,7 @@ rely on either:
   file and redeploying will not change a setting the panel has ever set. The
   panel marks any value that is shadowing an env var, and **Reset** hands the
   setting back to the environment.
-- **Secrets are the other way round.** `FORGE_TCET_API_KEY` in the environment
+- **Secrets are the other way round.** `FORGE_AUTO_API_KEY` in the environment
   always beats a key stored through the panel, so rotating the key in your
   deployment works without anyone remembering to clear a stored row.
 

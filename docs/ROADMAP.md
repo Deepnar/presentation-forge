@@ -5243,6 +5243,88 @@ Email confirmation already exists and is enforced whenever SMTP is configured
 >   rolling caps needed separate fixtures; a test where the wrong one refuses
 >   is a test about nothing.
 
+### [ ] Prompt caching, if the numbers still need it
+
+*Priority: low, and deliberately so. Blocked on a provider being chosen.*
+
+The third of the three cost levers in `docs/ECONOMICS.md` §4, and the only one
+not taken. Cached input typically prices near 10% of list, so a stable prefix
+is worth roughly ten times.
+
+**Retrieval has already taken most of what this would have.** A deck went from
+~1.6M tokens to ~135K, and the remaining per-call payload is small enough that
+another 10x on part of it is a smaller prize than it sounds. There is also a
+real tension: caching wants a large IDENTICAL prefix and retrieval wants a
+small variable one, so they partly cancel. The sensible combination is a cached
+stable prefix — system prompt, slide catalogue, theme voice, and a small shared
+research core — plus the short retrieved tail per call.
+
+**Do not build it blind.** The wire format differs per provider (Anthropic,
+OpenAI and Google all offer some form and none of them the same one), so this
+waits until a provider is actually chosen, and then only if a measured run says
+the cost still needs it. Guessing at three formats to save money that may
+already be saved is the wrong order.
+
+### [ ] Selling it: tiers, checkout, and what a refusal offers
+
+*Priority: high once money is involved, and blocked on two decisions plus the
+legal work. No model needed for the code.*
+
+`docs/ECONOMICS.md` §5 has the tier model and the numbers behind it; this is
+the entry for building it. The metering underneath is done — tokens are
+counted, reservations settle at actual spend, accounts carry a plan, and the
+free tier is a lifetime trial that does not reset.
+
+What is left, in order:
+
+- **Settle subscription vs non-expiring credits** (`docs/BLOCKED.md` §3.2).
+  Everything below depends on it: credits need a balance and a top-up, a
+  subscription needs a renewal date and a cancel path. Building either before
+  the answer means building both.
+- **The checkout.** Razorpay or Stripe: an order created server-side, their
+  hosted checkout, a webhook whose signature is verified, the account marked.
+  A day or two — `docs/PRODUCTION.md` §2.1. The account system, the
+  admin-gated settings layer and the per-account key store already give it
+  somewhere to hang.
+- **The refusal as a surface.** Half done: the usage panel shows the trial and
+  how much is gone, and a 429 carries the tier and every remaining budget. What
+  is missing is the moment of refusal becoming an offer, and that cannot be
+  designed until there is something to buy.
+- **Confirm the tier numbers against a measured run.** The margins in
+  ECONOMICS §5 rest on a derived per-deck cost. Publishing a price against a
+  derived figure is the one thing not to do.
+
+> **Look-ahead.** The legal and entity work (`PRODUCTION.md` §2.2) is the long
+> pole and is unaffected by any of the above — registration, KYC, GST, a
+> published refund policy. It can start before a line of checkout code and
+> should, because it is measured in weeks and the code is measured in days.
+
+### [ ] Who this is sold to, beyond one college
+
+*Priority: medium, and not an engineering item — recorded here because it was
+discussed and would otherwise live only in a conversation.*
+
+The structural read: **the college is the beachhead, not the market.** Every
+engineering college in India runs some version of the same assignment against a
+fixed template, and the product now reads the template rather than assuming
+one — a different college's format is a donor upload, not a code change. That
+is what makes the market bigger than one campus, and it is already built.
+
+Which suggests expansion college by college — one student who likes it per
+campus — rather than anything needing a marketing budget that does not exist.
+The free trial is the advertisement: three decks is enough to finish one real
+assignment and show somebody.
+
+Two things follow from that and are engineering:
+
+- **`Auto` must not name one institution.** Done — the tier is named for its
+  role now, and the gateway's identity lives in its label and baseURL where it
+  is true.
+- **A second donor template is the cheapest possible test.** `parseDonorSections`
+  reads a template's own heading run, and nothing has ever been run against a
+  template that is not TCET's. One borrowed `.docx` from another college would
+  tell us whether "it just works" is true or hopeful.
+
 ### [ ] Surfaces nothing has ever run
 
 *Priority: high. Some need a model, none needs the gateway specifically.*

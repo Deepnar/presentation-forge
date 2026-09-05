@@ -53,8 +53,8 @@ Three honest options, and the middle one is cheapest by a distance:
 | Pay a hosted API and charge | see §2 | Four to six weeks, and most of it is not code. |
 
 **Nothing in the code binds you to TCET.** Point
-`providers["tcet-auto"].baseURL` at any OpenAI-compatible endpoint and put its
-key in `FORGE_TCET_API_KEY` and Auto works unchanged. The cost is that the
+`providers.auto.baseURL` at any OpenAI-compatible endpoint and put its key in
+`FORGE_AUTO_API_KEY` and Auto works unchanged. The cost is that the
 config then names one institution while serving another — see §5.5.
 
 ### 1.2 SMTP
