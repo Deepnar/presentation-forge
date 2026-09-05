@@ -153,3 +153,15 @@ test("an account can read its own usage, and is told which tier and what is left
   assert.ok(Number.isFinite(json.remaining.weeklyTokens), "the token budget must be legible before it runs out");
   assert.ok(json.limits.weeklyTokens > 0);
 });
+
+test("the usage route says how much of the free trial is left", async () => {
+  // A trial that never resets is the one budget a user most needs to see
+  // coming, and the only place it can be shown from is here.
+  const json = await (await fetch(`${base}/api/auto/usage`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })).json();
+  assert.ok(json.trial, "a free account must be told it is on a trial");
+  assert.equal(json.trial.spent, 0);
+  assert.ok(json.trial.cap > 0);
+  assert.equal(json.trial.remaining, json.trial.cap);
+});

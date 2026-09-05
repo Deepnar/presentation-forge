@@ -51,7 +51,13 @@ import { settingValue } from "./runtime.js";
  * this is consulted.
  */
 export const PLANS = {
-  free: { label: "Free", multiplier: 1 },
+  // `trial: true` is the whole difference between a free tier and a free
+  // allowance. Every other cap here is a rolling window, and a rolling window
+  // RESETS — a user who waits gets unlimited decks forever, so exposure per
+  // account is unbounded and cannot be budgeted. The trial does not reset.
+  // See docs/ECONOMICS.md: ~₹5-21 per signup once, against ₹110-439 per user
+  // per semester and climbing.
+  free: { label: "Free", multiplier: 1, trial: true },
   plus: { label: "Plus", multiplier: 4 },
   pro: { label: "Pro", multiplier: 12 },
   unlimited: { label: "Unlimited", multiplier: null },
@@ -83,10 +89,20 @@ export function limitConfig(plan = DEFAULT_PLAN) {
   };
   const spec = PLANS[plan] ?? PLANS[DEFAULT_PLAN];
   const name = PLANS[plan] ? plan : DEFAULT_PLAN;
+  // A paid tier buys a recurring allowance, so it has no lifetime ceiling; the
+  // trial has nothing else.
+  const lifetimeTokens = spec.trial ? settingValue("autoTrialTokens") : Infinity;
   if (spec.multiplier == null) {
-    return { ...base, ...Object.fromEntries(SCALED.map((k) => [k, Infinity])), plan: name, unlimited: true };
+    return {
+      ...base,
+      ...Object.fromEntries(SCALED.map((k) => [k, Infinity])),
+      lifetimeTokens: Infinity,
+      plan: name,
+      unlimited: true,
+      trial: false,
+    };
   }
-  const out = { ...base, plan: name, unlimited: false };
+  const out = { ...base, lifetimeTokens, plan: name, unlimited: false, trial: Boolean(spec.trial) };
   for (const k of SCALED) out[k] = Math.round(base[k] * spec.multiplier);
   return out;
 }
@@ -110,6 +126,10 @@ export function recordAutoEvent({ userId, eventType = "request", slides = 0, tok
   const now = Date.now();
   const r = db.prepare(`INSERT INTO auto_events (user_id, event_type, slides, tokens, provider, created_at) VALUES (?,?,?,?,?,?)`)
     .run(userId, eventType, slides, tokens, provider, now);
+  // The trial counter is a running total on the account, not a sum over these
+  // rows: pruneAutoEvents deletes them past 30 days, and a lifetime cap that
+  // refills monthly is not a lifetime cap.
+  db.prepare("UPDATE users SET lifetime_tokens = lifetime_tokens + ? WHERE id=?").run(Math.max(0, Math.round(tokens)), userId);
   // The row id is the reservation handle: settleAuto replaces the estimate on
   // this row with what the run actually spent.
   return Number(r.lastInsertRowid);
@@ -132,14 +152,33 @@ export function recordAutoEvent({ userId, eventType = "request", slides = 0, tok
 export function settleAuto({ eventId, tokens = null, slides = null }) {
   if (!eventId) return false;
   const db = getDb();
+  const before = db.prepare("SELECT user_id, tokens FROM auto_events WHERE id=?").get(eventId);
+  if (!before) return false;
   const sets = [];
   const args = [];
-  if (tokens != null) { sets.push("tokens=?"); args.push(Math.max(0, Math.round(tokens))); }
+  const settled = tokens != null ? Math.max(0, Math.round(tokens)) : null;
+  if (settled != null) { sets.push("tokens=?"); args.push(settled); }
   if (slides != null) { sets.push("slides=?"); args.push(Math.max(0, Math.round(slides))); }
   if (!sets.length) return false;
   args.push(eventId);
   db.prepare(`UPDATE auto_events SET ${sets.join(", ")} WHERE id=?`).run(...args);
+  // The trial counter moves by the DIFFERENCE, since the reservation's
+  // estimate was already added to it. A run cheaper than estimated gives the
+  // difference back; one that overran takes it.
+  if (settled != null) {
+    const delta = settled - (Number(before.tokens) || 0);
+    if (delta !== 0) {
+      db.prepare("UPDATE users SET lifetime_tokens = MAX(0, lifetime_tokens + ?) WHERE id=?")
+        .run(delta, before.user_id);
+    }
+  }
   return true;
+}
+
+/** How much of the trial this account has spent, ever. */
+export function lifetimeTokens(userId) {
+  if (!userId) return 0;
+  return Number(getDb().prepare("SELECT lifetime_tokens FROM users WHERE id=?").get(userId)?.lifetime_tokens) || 0;
 }
 
 export function getUsage({ userId, provider = "tcet-auto" }) {
@@ -185,6 +224,19 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
   if (upcomingSlides > cfg.maxSlidesPerDeck) {
     errors.push(`This deck needs ${upcomingSlides} slides but auto allows ${cfg.maxSlidesPerDeck} per deck — split it or use your own key`);
   }
+  // The trial is checked FIRST because its message is the one that should be
+  // read: a rolling limit says "come back later" and is true; the trial says
+  // "this is the end of the free tier" and is a different conversation.
+  if (cfg.lifetimeTokens !== Infinity) {
+    const spent = lifetimeTokens(userId);
+    if (spent + upcomingTokens > cfg.lifetimeTokens) {
+      errors.push(
+        `Free trial used: ${spent.toLocaleString()} of ${cfg.lifetimeTokens.toLocaleString()} tokens. ` +
+        "The free tier is a fixed amount rather than a weekly allowance, so this does not reset — " +
+        "upgrade to keep generating, or add your own API key under Cloud, which is unmetered.",
+      );
+    }
+  }
   if (usage.week.tokens + upcomingTokens > cfg.weeklyTokens) {
     errors.push(
       `Weekly token budget: ${usage.week.tokens.toLocaleString()}/${cfg.weeklyTokens.toLocaleString()} ` +
@@ -197,12 +249,18 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
     usage,
     cfg,
     plan: cfg.plan,
+    trial: cfg.lifetimeTokens !== Infinity
+      ? { spent: lifetimeTokens(userId), cap: cfg.lifetimeTokens }
+      : null,
     remaining: {
       windowRequests: Math.max(0, cfg.windowRequests - usage.window.requests),
       weeklyRequests: Math.max(0, cfg.weeklyRequests - usage.week.requests),
       windowSlides: Math.max(0, cfg.windowSlides - usage.window.slides),
       weeklySlides: Math.max(0, cfg.weeklySlides - usage.week.slides),
       weeklyTokens: Math.max(0, cfg.weeklyTokens - usage.week.tokens),
+      lifetimeTokens: cfg.lifetimeTokens === Infinity
+        ? Infinity
+        : Math.max(0, cfg.lifetimeTokens - lifetimeTokens(userId)),
     },
   };
 }
@@ -289,6 +347,9 @@ export function clearAutoEvents({ userId, provider = "tcet-auto" }) {
   const db = getDb();
   const before = db.prepare("SELECT COUNT(*) as n FROM auto_events WHERE user_id=? AND provider=?").get(userId, provider);
   db.prepare("DELETE FROM auto_events WHERE user_id=? AND provider=?").run(userId, provider);
+  // Forgetting an account's spend has to forget the trial too, or the one
+  // remedy an operator has stops working for the one limit that never resets.
+  db.prepare("UPDATE users SET lifetime_tokens = 0 WHERE id=?").run(userId);
   return before?.n ?? 0;
 }
 

@@ -30,7 +30,7 @@ import { register, authenticate, startSession, endSession, userForToken, bearerT
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, reserveAuto, settleAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents, planFor, setPlan, PLANS, isPlan } from "../../src/limits.js";
+import { getUsage, reserveAuto, settleAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents, planFor, setPlan, lifetimeTokens, PLANS, isPlan } from "../../src/limits.js";
 import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
 import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
 
@@ -3014,11 +3014,17 @@ app.get("/api/auto/usage", wrap(async (req, res) => {
   const plan = planFor(uid);
   const cfg = limitConfig(plan);
   const usage = getUsage({ userId: uid });
+  const spentEver = lifetimeTokens(uid);
   ok(res, {
     usage,
     limits: cfg,
     plan,
     planLabel: PLANS[plan]?.label ?? plan,
+    // The free tier is a fixed amount that never resets, so "how much is left"
+    // is a different and more urgent question than the rolling windows answer.
+    trial: cfg.lifetimeTokens === Infinity
+      ? null
+      : { spent: spentEver, cap: cfg.lifetimeTokens, remaining: Math.max(0, cfg.lifetimeTokens - spentEver) },
     // A refusal is a dead end unless the surface can say how close you are
     // BEFORE it happens, so the remaining budget ships with the usage.
     remaining: {
@@ -3027,6 +3033,7 @@ app.get("/api/auto/usage", wrap(async (req, res) => {
       windowSlides: Math.max(0, cfg.windowSlides - usage.window.slides),
       weeklySlides: Math.max(0, cfg.weeklySlides - usage.week.slides),
       weeklyTokens: Math.max(0, cfg.weeklyTokens - usage.week.tokens),
+      lifetimeTokens: cfg.lifetimeTokens === Infinity ? null : Math.max(0, cfg.lifetimeTokens - spentEver),
     },
   });
 }));

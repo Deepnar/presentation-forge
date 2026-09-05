@@ -109,6 +109,7 @@ function ensureSchema(d) {
   `);
   addVerifiedColumn(d);
   addPlanColumn(d);
+  addLifetimeTokensColumn(d);
 }
 
 /**
@@ -136,6 +137,27 @@ function addPlanColumn(d) {
     return; // column already present
   }
   d.exec("UPDATE users SET plan = 'free' WHERE plan IS NULL");
+}
+
+/**
+ * `lifetime_tokens` on users — the trial counter.
+ *
+ * A running total rather than a query over `auto_events`, because
+ * `pruneAutoEvents` deletes rows past 30 days: a trial derived from the rows
+ * would quietly refill itself every month, which is the exact property a
+ * lifetime cap exists to remove.
+ *
+ * Backfilled from whatever events survive, so an existing account is not
+ * handed a fresh trial by the migration.
+ */
+function addLifetimeTokensColumn(d) {
+  try {
+    d.exec("ALTER TABLE users ADD COLUMN lifetime_tokens INTEGER NOT NULL DEFAULT 0");
+  } catch {
+    return; // column already present
+  }
+  d.exec(`UPDATE users SET lifetime_tokens =
+            (SELECT COALESCE(SUM(tokens), 0) FROM auto_events WHERE auto_events.user_id = users.id)`);
 }
 
 function addVerifiedColumn(d) {

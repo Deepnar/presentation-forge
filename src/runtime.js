@@ -54,24 +54,32 @@ const SETTINGS = {
   autoWindowSlides: { env: "FORGE_AUTO_WINDOW_SLIDES", label: "Slides per window", parse: posInt, fallback: 45 },
   autoWeeklySlides: { env: "FORGE_AUTO_WEEKLY_SLIDES", label: "Slides per week", parse: posInt, fallback: 90 },
   autoMaxSlidesPerDeck: { env: "FORGE_AUTO_MAX_SLIDES_PER_DECK", label: "Slides per deck", parse: posInt, fallback: 24 },
-  // The free tier's weekly token budget, and the first cap here that reflects
-  // what the operator is actually billed for.
+  // The weekly token budget — the first cap here that reflects what the
+  // operator is actually billed for.
   //
-  // DERIVED from the slide budget, not chosen: 90 slides a week is about four
-  // 22-slide decks, and `estimateTokens` puts one of those at ~135K tokens
-  // now that each call retrieves only the research it needs, so four is
-  // ~550K. Before retrieval the same four decks were ~6.5M. Stating the SAME allowance in both units is the point — the
-  // two caps have already contradicted each other twice. It shipped at 80,000,
-  // which is a twentieth of one deck, and was briefly 1,000,000, which is
-  // still only two thirds of one. Both were survivable only because nothing
-  // counted a token; `test/metering.test.js` now fails if the two budgets
+  // DERIVED from the slide budget rather than chosen: 90 slides a week is
+  // about four 22-slide decks, and `estimateTokens` puts one of those at ~135K
+  // tokens now that each call retrieves only the research it needs, so four is
+  // ~550K. Stating the same allowance in both units is the point — the two
+  // caps have already contradicted each other twice, at 80,000 (a twentieth of
+  // one deck) and 1,000,000 (two thirds of one). Both were survivable only
+  // because nothing counted a token. `test/metering.test.js` fails if they
   // disagree about how many decks a week is.
   //
-  // Nearly all of that is INPUT, because the research excerpt is re-sent on
-  // every author call. If this ever runs against a key somebody pays for, the
-  // lever is that re-send — prompt caching, or a smaller per-slide excerpt —
-  // and NOT this number, which merely says how many decks a week is free.
-autoWeeklyTokens: { env: "FORGE_AUTO_WEEKLY_TOKENS", label: "Tokens per week", parse: posInt, fallback: 550000 },
+  // This is the ABUSE ceiling, not the product limit — what decides what is
+  // free is the lifetime trial below.
+  autoWeeklyTokens: { env: "FORGE_AUTO_WEEKLY_TOKENS", label: "Tokens per week", parse: posInt, fallback: 550000 },
+  // The FREE TRIAL — a fixed amount that never resets, unlike every other cap
+  // here. ~3 decks at the shipped per-deck cost, which is enough to finish one
+  // real assignment and discover the tool is good; a free tier that cannot
+  // complete one task converts nobody.
+  //
+  // A lifetime cap rather than a weekly one because a rolling window resets:
+  // a user who waits gets unlimited decks forever, so free exposure per
+  // account is unbounded. This makes it ~₹5-21 per signup, once — a number
+  // that can be budgeted, which is what a one-person operation needs.
+  // docs/ECONOMICS.md has the comparison.
+  autoTrialTokens: { env: "FORGE_AUTO_TRIAL_TOKENS", label: "Free trial (tokens, lifetime)", parse: posInt, fallback: 420000 },
 };
 
 function posInt(v) {

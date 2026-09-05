@@ -23,6 +23,9 @@ process.env.FORGE_AUTO_WEEKLY_REQUESTS = "100";
 process.env.FORGE_AUTO_WINDOW_SLIDES = "1000";
 process.env.FORGE_AUTO_WEEKLY_SLIDES = "1000";
 process.env.FORGE_AUTO_WEEKLY_TOKENS = "100000";
+// This file is about the meter and the rolling caps. The lifetime trial would
+// bind first at any realistic size, so it is lifted here and has its own file.
+process.env.FORGE_AUTO_TRIAL_TOKENS = String(10 ** 9);
 
 const {
   reserveAuto, settleAuto, getUsage, checkAutoLimits, clearAutoEvents,
