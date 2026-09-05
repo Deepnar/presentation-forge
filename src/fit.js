@@ -83,7 +83,8 @@ function weightFactor(weight) {
  * readable floor for body-ish text and scale up for display roles; the theme's
  * own nominal size always wins over the floor when it is lower (a compact mono
  * theme is deliberately small, and the floor must never grow text past the
- * theme's design).
+ * theme's design). `reportFloor` states the EFFECTIVE floor for that reason —
+ * the number here is the role's, not necessarily the one applied.
  */
 const FLOOR_PT = {
   display: 28, heading: 22, subhead: 14, body: 14, caption: 12,
@@ -117,9 +118,22 @@ let floorEvents = [];
 export function resetFloorEvents() { floorEvents = []; }
 export function drainFloorEvents() { const e = floorEvents; floorEvents = []; return e; }
 
+/**
+ * `floor` here is the EFFECTIVE floor — the size the text was actually clamped
+ * at — not the role's nominal floor from FLOOR_PT.
+ *
+ * They differ whenever a theme's own size is already below the role floor, and
+ * the fitter has always handled that correctly (`minScale` caps at 1, so a
+ * compact theme keeps its design size and is never grown). Only the MESSAGE
+ * was wrong: `minimal-muji` sets body at 13pt and every one of its floor
+ * reports read "floor 14pt", which describes a rule that was not the one
+ * applied and makes the gap look a point wider than it is. A verdict that
+ * misstates its own threshold sends whoever reads it looking in the wrong
+ * place.
+ */
 function reportFloor(style, neededPt, floor) {
   const role = style?._role ?? "text";
-  const msg = `${role} would need ${Math.round(neededPt * 10) / 10}pt — floor ${floor}pt (cut text, don't shrink)`;
+  const msg = `${role} would need ${Math.round(neededPt * 10) / 10}pt — floor ${Math.round(floor * 10) / 10}pt (cut text, don't shrink)`;
   // fitScaleAll re-fits every member; only the first identical miss matters.
   if (!floorEvents.includes(msg)) floorEvents.push(msg);
 }
@@ -214,7 +228,7 @@ export function fitScale(text, width, height, style, { min = 0.62, step = 0.04, 
 
   if (need != null) {
     if (minScale > need) {
-      if (floor_ != null) reportFloor(style, need * nominal, floor_);
+      if (floor_ != null) reportFloor(style, need * nominal, minScale * nominal);
       return Math.round(minScale * 100) / 100;
     }
     return Math.round(need * 100) / 100;
@@ -222,7 +236,7 @@ export function fitScale(text, width, height, style, { min = 0.62, step = 0.04, 
 
   // Nothing fits even at `min` — overflow at any size. The floor cannot fix
   // that; report it and clamp rather than pretending a smaller font would.
-  if (floor_ != null) reportFloor(style, min * nominal, floor_);
+  if (floor_ != null) reportFloor(style, min * nominal, minScale * nominal);
   return Math.round(minScale * 100) / 100;
 }
 
@@ -250,7 +264,7 @@ export function fitOneLine(text, width, style, { min = 0.5, safety = 0.88, floor
   if (floor_ != null) {
     const minScale = Math.min(1, Math.max(min, floor_ / nominal));
     if (minScale > raw) {
-      reportFloor(style, raw * nominal, floor_);
+      reportFloor(style, raw * nominal, minScale * nominal);
       return Math.round(minScale * 100) / 100;
     }
   }

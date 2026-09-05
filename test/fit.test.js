@@ -104,3 +104,29 @@ test("fitOneLine respects the stat floor", () => {
   assert.ok(scale >= 0.44, `stat must not shrink below its floor, got ${scale}`);
   assert.ok(drainFloorEvents().length >= 1, "must flag the below-floor need");
 });
+
+/* ------------------------------------------- the floor a report actually names */
+
+test("a floor report names the size the text was really clamped at", () => {
+  // The fitter has always handled a theme whose own size is below the role
+  // floor correctly — minScale caps at 1, so a compact theme keeps its design
+  // size and is never grown. Only the MESSAGE was wrong: minimal-muji sets
+  // body at 13pt and every one of its reports read "floor 14pt", describing a
+  // rule that was not the one applied and making the gap look a point wider
+  // than it is.
+  resetFloorEvents();
+  const compact = { family: "Inter", size: 13, weight: 400, line: 1.5, _role: "body" };
+  fitScale("A sentence long enough that it cannot possibly fit.".repeat(6), 3, 0.4, compact);
+  const [msg] = drainFloorEvents();
+  assert.ok(msg, "a clamped fit must report something");
+  assert.match(msg, /floor 13pt/, msg);
+  assert.ok(!/floor 14pt/.test(msg), "the role floor is not the applied floor here");
+});
+
+test("a theme at or above the role floor still reports the role floor", () => {
+  resetFloorEvents();
+  const roomy = { family: "Inter", size: 18, weight: 400, line: 1.5, _role: "body" };
+  fitScale("A sentence long enough that it cannot possibly fit.".repeat(6), 3, 0.4, roomy);
+  const [msg] = drainFloorEvents();
+  assert.match(msg, /floor 14pt/, msg);
+});
