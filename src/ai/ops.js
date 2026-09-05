@@ -35,6 +35,7 @@ const OP_NAMES = [
  * @param {object} [opts]
  * @param {number} [opts.slideCount]  how many slides the deck currently has
  * @param {string[]} [opts.onlyTypes] restrict to these slide types
+ * @param {string[]} [opts.patchTypes] restrict the PATCH key space only
  * @param {string[]} [opts.excludeProps]  shared fields the payload must not carry
  *
  * `onlyTypes` is the important lever. Unioning all 28 slide fields produces a
@@ -43,6 +44,23 @@ const OP_NAMES = [
  * small model off-distribution into loops and confabulation. Narrowing to the
  * one type being written keeps the grammar tight.
  *
+ * `patchTypes` narrows the patch key space WITHOUT narrowing the full-slide
+ * one, because the two are not scoped alike. A patch targets a slide that
+ * already exists, so when the caller knows which slides may be touched it also
+ * knows their types exactly. A full `slide` carries its own `type` and may be
+ * anything — a turn scoped to slide 10 may still be asked to append a chart,
+ * and `scopeOpsToSelection` deliberately lets append/insert through, so
+ * narrowing both would make that unrepresentable.
+ *
+ * Under a single-slide selection this makes the patch grammar EXACT: one
+ * type's fields, no collisions. That matters because 22 property names are
+ * declared by more than one type — `items` alone by thirteen types with
+ * thirteen distinct element shapes — and a flat merge is won by whichever type
+ * is walked last. It also puts the grammar in agreement with the guard that
+ * already runs afterwards: `stripForeignFields` exists to remove one type's
+ * fields from another's slide, and making them unrepresentable beats scrubbing
+ * them after the fact.
+ *
  * `excludeProps` removes shared fields entirely. The first-generation writer
  * excludes `presenter` for every type — presenters are assigned centrally by
  * `distributePresenters` after generation, not by the model — and the divider
@@ -50,7 +68,10 @@ const OP_NAMES = [
  * part is the slide, not somebody's slide". Making a stray `presenter`
  * unrepresentable in the grammar beats scrubbing it after the fact.
  */
-export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, excludeProps = null } = {}) {
+export function buildOpsSchema(
+  deckSchema,
+  { slideCount = 0, onlyTypes = null, patchTypes = null, excludeProps = null } = {},
+) {
   const slide = deckSchema.definitions.slide;
 
   // Constrain the op set to what the current deck can actually accept. Against
@@ -82,35 +103,53 @@ export function buildOpsSchema(deckSchema, { slideCount = 0, onlyTypes = null, e
     return out;
   };
 
-  // Shared fields, then each selected type's own. Narrowing `onlyTypes` to a
-  // single type cuts the key space from ~28 to ~5.
-  const props = {};
-  for (const [name, spec] of Object.entries(slide.properties)) props[name] = deref(spec);
-  for (const name of excludeProps ?? []) delete props[name];
+  // Shared fields, then each selected type's own. Narrowing to a single type
+  // cuts the key space from ~28 to ~5.
+  const shared = {};
+  for (const [name, spec] of Object.entries(slide.properties)) shared[name] = deref(spec);
 
-  const required = new Set(["type"]);
-  for (const rule of slide.allOf ?? []) {
-    const t = rule.if?.properties?.type?.const;
-    if (onlyTypes && !onlyTypes.includes(t)) continue;
-    for (const [name, spec] of Object.entries(rule.then?.properties ?? {})) {
-      props[name] = deref(spec);
+  /** The key space for one set of types, and what a full slide of it must
+   *  carry. Built per key space because a patch and a full slide are not
+   *  scoped alike — see `patchTypes`. */
+  const keySpace = (types) => {
+    const props = { ...shared };
+    const required = new Set(["type"]);
+    for (const rule of slide.allOf ?? []) {
+      const t = rule.if?.properties?.type?.const;
+      if (types && !types.includes(t)) continue;
+      for (const [name, spec] of Object.entries(rule.then?.properties ?? {})) {
+        props[name] = deref(spec);
+      }
+      // Only meaningful when writing a single type; with several, one type's
+      // required field is another's illegal one.
+      if (types?.length === 1) {
+        for (const r of rule.then?.required ?? []) required.add(r);
+      }
     }
-    // Only meaningful when writing a single type; with several, one type's
-    // required field is another's illegal one.
-    if (onlyTypes?.length === 1) {
-      for (const r of rule.then?.required ?? []) required.add(r);
+    // After the type loop, not before it: an excluded name a type re-declares
+    // as its own would otherwise come back through the conditional block.
+    for (const name of excludeProps ?? []) {
+      delete props[name];
+      required.delete(name);
     }
-  }
+    return { props, required: [...required] };
+  };
+
+  const forSlide = keySpace(onlyTypes);
+  const forPatch = keySpace(patchTypes ?? onlyTypes);
 
   const slideSchema = {
     type: "object",
-    required: [...required],
+    required: forSlide.required,
     properties: onlyTypes
-      ? { ...props, type: { enum: onlyTypes } }
-      : props,
+      ? { ...forSlide.props, type: { enum: onlyTypes } }
+      : forSlide.props,
   };
-  // A patch is the same key space with nothing mandatory.
-  const patchSchema = { type: "object", properties: props };
+  // A patch is a key space with nothing mandatory. `type` is left at the full
+  // enum even under patchTypes: changing a slide's type means supplying the
+  // new type's fields, which is a replace_slide, and leaving the door open
+  // here would just reintroduce the foreign-field problem one op along.
+  const patchSchema = { type: "object", properties: forPatch.props };
 
   return {
     type: "object",

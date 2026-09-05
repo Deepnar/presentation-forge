@@ -78,3 +78,73 @@ test("no scope still lets a turn write any type — chat must stay unrestricted"
   const type = seen.properties.ops.items.properties.slide.properties.type;
   assert.ok(!type?.enum || type.enum.length > 20, "every type stays available to an unscoped turn");
 });
+
+/**
+ * The critic names its slides and so gets `onlyTypes`. Chat has the same
+ * knowledge and was not using it: the panel's selection reaches `runTurn` as
+ * `onlySlides`, which was only ever applied AFTER the model answered, to
+ * filter the ops it produced. The grammar it answered against was still the
+ * flat merge of every type.
+ */
+
+test("a selection narrows the patch grammar to the selected slides' own types", async () => {
+  const deck = {
+    title: "t",
+    slides: [
+      { type: "bullets", headline: "h", bullets: ["a", "b", "c"] },
+      { type: "feature-grid", headline: "h", items: [{ title: "a" }, { title: "b" }] },
+    ],
+  };
+  let seen = null;
+  const chat = async ({ schema }) => { seen = schema; return { data: { ops: [] } }; };
+
+  await runTurn({ deck, instruction: "shorten this", onlySlides: [1], chat });
+  assert.deepEqual(
+    itemsOf(seen).items.required, ["title"],
+    "the selected slide is a feature-grid, so `items` should be its shape",
+  );
+});
+
+test("a selection does not stop the turn adding a slide of another type", async () => {
+  // scopeOpsToSelection lets append and insert through on purpose, so
+  // narrowing the full-slide grammar with the patch grammar would trade one
+  // silent failure for another.
+  const deck = {
+    title: "t",
+    slides: [{ type: "feature-grid", headline: "h", items: [{ title: "a" }, { title: "b" }] }],
+  };
+  let seen = null;
+  const chat = async ({ schema }) => { seen = schema; return { data: { ops: [] } }; };
+
+  await runTurn({ deck, instruction: "add a chart after this", onlySlides: [0], chat });
+  const type = seen.properties.ops.items.properties.slide.properties.type;
+  assert.ok(!type?.enum || type.enum.length > 20, "every type stays appendable under a selection");
+});
+
+test("an empty or out-of-range selection falls back to the unscoped grammar", async () => {
+  const deck = { title: "t", slides: [{ type: "bullets", headline: "h", bullets: ["a", "b", "c"] }] };
+  for (const onlySlides of [null, [], [99]]) {
+    let seen = null;
+    const chat = async ({ schema }) => { seen = schema; return { data: { ops: [] } }; };
+    await runTurn({ deck, instruction: "x", onlySlides, chat });
+    assert.ok(
+      itemsOf(seen),
+      `a selection of ${JSON.stringify(onlySlides)} should leave the full patch grammar in place`,
+    );
+  }
+});
+
+test("an explicit onlyTypes still wins over the selection", async () => {
+  // The critic passes both: it names slides AND the types its findings concern.
+  const deck = {
+    title: "t",
+    slides: [{ type: "bullets", headline: "h", bullets: ["a", "b", "c"] }],
+  };
+  let seen = null;
+  const chat = async ({ schema }) => { seen = schema; return { data: { ops: [] } }; };
+
+  await runTurn({ deck, instruction: "x", onlySlides: [0], onlyTypes: ["feature-grid"], chat });
+  const type = seen.properties.ops.items.properties.slide.properties.type;
+  assert.deepEqual(type, { enum: ["feature-grid"] });
+  assert.deepEqual(itemsOf(seen).items.required, ["title"]);
+});

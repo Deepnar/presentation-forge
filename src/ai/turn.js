@@ -173,10 +173,29 @@ export async function runTurn({
 }) {
   const catalog = await slideCatalog();
   const base = deck ?? { title: "", slides: [] };
+
+  // A selection names slides, and a slide names its type — so a turn the user
+  // has scoped already knows exactly which types it may PATCH, and there is no
+  // reason to hand it the flat merge of all 73. That merge is won by whichever
+  // type is walked last for each of 22 shared property names, which on a real
+  // 22-slide deck gets 10 slides' own fields wrong.
+  //
+  // Only the patch key space narrows. `scopeOpsToSelection` deliberately lets
+  // append and insert through, so a turn scoped to slide 10 may still be asked
+  // to add a chart, and narrowing the full-slide grammar too would make that
+  // unrepresentable — trading one silent failure for another.
+  // A caller that named its types outranks the inference: `onlyTypes` is a
+  // deliberate statement about what the turn writes, and the critic passes it
+  // alongside the slides its findings concern.
+  const selected = !onlyTypes?.length && onlySlides?.length
+    ? [...new Set(onlySlides.map((i) => base.slides?.[i]?.type).filter(Boolean))]
+    : null;
+
   // Schema is rebuilt per turn so the op set matches what this deck can accept.
   const schema = buildOpsSchema(await deckSchema(), {
     slideCount: base.slides?.length ?? 0,
     onlyTypes: onlyTypes?.length ? [...new Set(onlyTypes)] : null,
+    patchTypes: selected?.length ? selected : null,
   });
   const synthesis = (await authorTransport({ model })) === "cloud" ? "full" : "local";
   const MAX_REPAIR = synthesis === "full" ? MAX_REPAIR_CLOUD : MAX_REPAIR_LOCAL;
