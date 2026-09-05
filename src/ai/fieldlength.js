@@ -237,12 +237,65 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
  * null when the field did not end mid-sentence, when nothing can be salvaged,
  * or when salvaging would gut the field — those are left for the rewrite.
  */
+/** Words a phrase never ends on. A grammar cut lands wherever the character
+ *  budget ran out, and often that is here. */
+const DANGLING = new Set([
+  "a", "an", "and", "or", "but", "the", "of", "to", "in", "on", "at", "by", "for",
+  "with", "from", "as", "than", "that", "this", "these", "those", "is", "are",
+  "was", "were", "be", "been", "its", "their", "which", "while", "when", "into",
+  "over", "under", "per", "via", "up", "out", "off", "if", "so", "not", "no",
+]);
+
+/**
+ * Whether a field sitting at its cap was cut by the grammar mid-thought.
+ *
+ * It used to be "at cap and no terminal punctuation", which is true of every
+ * headline ever written — a headline is a noun phrase and ends without a full
+ * stop by design. So `"Weighing V2G Economics Against Grid Impact"` and
+ * `"$10.9M"` were sent to the rewrite, which is a wasted model call and, since
+ * tokens stopped being free, a wasted one that costs money.
+ *
+ * What an actual cut looks like, from the two on a real feature-grid:
+ * `"…improves stability and P"` and `"…than spiro-OM"`. Both end on something
+ * no writer would end on. That, rather than the absence of a full stop, is the
+ * signal.
+ *
+ * The bias is still toward flagging: a cut field that ships is worse than a
+ * rewrite that was not needed, so anything not recognisably deliberate is
+ * still handed on.
+ */
 export function looksCutAtCap(text, cap) {
   if (typeof text !== "string" || cap == null) return false;
   // Only a field AT its cap is a grammar cut. A short field ending without a
   // full stop is a label, a heading, or a fragment the writer meant.
   if (text.length < cap) return false;
-  return !/[.!?…:;)"'\u2019\u201d]$/.test(text.trim());
+
+  const t = text.trim();
+  if (!t) return false;
+  if (/[.!?…:;)"'\u2019\u201d]$/.test(t)) return false;
+
+  // Cut on a joiner: nothing ends on an open hyphen or slash.
+  if (/[-\u2013\u2014/,]$/.test(t)) return true;
+
+  // A single token with no space is a VALUE — "$10.9M", "27.6%", "RTX-4090".
+  // Its cap is small, so it sits at cap constantly, and it is complete.
+  if (!/\s/.test(t)) return false;
+
+  const last = (t.match(/[A-Za-z0-9'\u2019-]+$/) ?? [""])[0].toLowerCase();
+  if (!last) return false;
+  if (DANGLING.has(last)) return true;
+  // "…stability and P": a lone letter left behind by the budget.
+  if (last.length === 1 && !/\d/.test(last)) return true;
+
+  // Title Case is a headline convention — most words capitalised, ending on a
+  // content word. A cut lands where the budget ran out and does not respect
+  // it, so a field that keeps it to the end reads as finished.
+  const words = t.split(/\s+/);
+  if (words.length >= 3) {
+    const capped = words.filter((w) => /^[A-Z0-9]/.test(w)).length;
+    if (capped >= words.length - 2 && /^[A-Z]/.test(words.at(-1))) return false;
+  }
+  return true;
 }
 
 export function healCutField(text, cap) {

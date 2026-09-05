@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fieldLengthPass, fieldInventory } from "../src/ai/fieldlength.js";
+import { fieldLengthPass, fieldInventory, looksCutAtCap } from "../src/ai/fieldlength.js";
 import { slideCatalog, catalogForType } from "../src/ai/catalog.js";
 import { readFile } from "node:fs/promises";
 
@@ -130,4 +130,49 @@ test("fieldLengthPass leaves a deck with nothing overlong alone", async () => {
   const r = await fieldLengthPass({ deck: clean, model: "mock", chat: () => { throw new Error("no model call expected"); } });
   assert.deepEqual(r.repaired, []);
   assert.deepEqual(r.deck, clean);
+});
+
+/* ------------------------------------------------- what a grammar cut looks like */
+
+/**
+ * `looksCutAtCap` used to be "at cap and no terminal punctuation", which is
+ * true of every headline ever written — a headline is a noun phrase and ends
+ * without a full stop by design. Each false positive is a rewrite call that was
+ * not needed, and since tokens stopped being free that is money.
+ */
+test("a headline at its cap is not a cut", () => {
+  for (const h of [
+    "Weighing V2G Economics Against Grid Impact",
+    "Bidirectional Charging Cuts Depot Costs",
+  ]) {
+    assert.equal(looksCutAtCap(h, h.length), false, h);
+  }
+});
+
+test("a single-token value at its cap is not a cut", () => {
+  // Its cap is small so it sits at cap constantly, and it is complete.
+  for (const v of ["$10.9M", "27.6%", "RTX-4090", "1000h"]) {
+    assert.equal(looksCutAtCap(v, v.length), false, v);
+  }
+});
+
+test("a phrase ending where no writer would end is a cut", () => {
+  // Both observed on a real feature-grid.
+  for (const c of [
+    "Depot charging improves stability and P",
+    "cheaper to run than spiro-OM",
+    "Grid revenue averaged EUR 41 per bus per",
+    "Costs fall as fleets scale, and utilisation",
+  ]) {
+    assert.equal(looksCutAtCap(c, c.length), true, c);
+  }
+});
+
+test("a field under its cap is never a cut, however it ends", () => {
+  assert.equal(looksCutAtCap("Ends on and", 200), false);
+});
+
+test("a finished sentence at its cap is not a cut", () => {
+  const s = "Depot charging improves operational stability.";
+  assert.equal(looksCutAtCap(s, s.length), false);
 });
