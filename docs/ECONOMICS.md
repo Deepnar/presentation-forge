@@ -62,9 +62,9 @@ provider — **check current prices before committing to any of them.**
 | cheap-mid | $0.60 | 1,616,600 | $0.97 | ₹82.4 |
 | mid | $3.00 | 1,616,600 | $4.85 | ₹412.2 |
 
-For scale: a print shop near a campus charges ₹50–100 to make a
-PowerPoint by hand. At the mid band this product currently costs **four times
-that** in raw inference to produce one deck.
+For scale: a print shop near a campus charges ₹50–100 to make a PowerPoint by
+hand. At the mid band, producing one deck cost **four times that** in raw
+inference. After §4 it costs ₹34.32 — and ₹1.72 at the budget band.
 
 ---
 
@@ -84,20 +84,20 @@ insurance policy rather than a target:
 | ₹249 | **before** | 8 | 2 | 0 |
 | ₹249 | **now** | **101** | **25** | 5 |
 
-Read the first row. **At today's token cost, ₹99 buys three decks on the
-cheapest model available and none at all on anything better.** There is no
-student price point that works. Lowering the free tier does not change that; it
-only decides who gets refused.
+Read the "before" rows. **At the old token cost, ₹99 bought three decks on the
+cheapest model available and none at all on anything better.** There was no
+student price point that worked, and lowering the free tier would not have
+changed that — it only decides who gets refused.
 
-The last row is a product. Fourteen decks a month for ₹99, on a model good
-enough to be worth using.
+The "now" rows are a product: ten decks a month for ₹99 on a model good enough
+to be worth using, or forty on the cheapest one.
 
 **So the cost reduction is not an optimisation. It is the precondition for
 charging anything.**
 
 ---
 
-## 4. The three levers, in order of what they buy
+## 4. The three levers, and which one was taken
 
 | level | change | tokens/deck | vs before | status |
 |---|---|---|---|---|
