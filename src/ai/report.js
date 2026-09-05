@@ -7,7 +7,6 @@ import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
 import { REPORT_SECTIONS, validateReport } from "../report.js";
-import { targetSections } from "./team.js";
 
 /**
  * The report content generator — the deck pipeline's writer for the report
@@ -411,11 +410,20 @@ export function assembleReport(plan, sectionsData) {
 
 async function planReport({ brief, research, deckSections, identity, model, signal, chat }) {
   const subject = identity?.academic?.subject;
-  // Like the deck planner, the report is sized to the team: one substantive
-  // section per member, floored at the graded core (4) and capped at the
-  // fixed eight. The schema's maxItems is tightened to the same number so a
-  // small group cannot be handed a sprawling report.
-  const maxSections = targetSections(identity, { min: 4 });
+  // The report is NOT sized to the team, and the deck planner's rule does not
+  // transfer. A talk is divided between the people giving it; a report's
+  // structure is set by the institution that grades it, and one author writing
+  // up a large project owes the same sections as six.
+  //
+  // Binding the budget to team size made the substance unreachable. The cap was
+  // the TOTAL section count with a floor of four, while the prompt also
+  // requires the four-section graded core — so every team of four or fewer
+  // spent its whole budget on the frame and Theoretical Background,
+  // Application and Future Scope could not be planned at all. A solo author,
+  // which is what `report-new` is by construction, could only ever produce
+  // Abstract/Introduction/Conclusion/References. That shipped: one report on
+  // disk has no body section.
+  const maxSections = REPORT_SECTIONS.length;
   const res = await chat({
     role: "author",
     model,
@@ -429,9 +437,10 @@ async function planReport({ brief, research, deckSections, identity, model, sign
           "",
           REPORT_SECTIONS.map((s, i) => `${i + 1}. ${s}`).join("\n"),
           "",
-          `The team writing it has about ${maxSections} members, one substantive section each, so`,
-          `choose about ${maxSections} sections to carry real content (never more than that). The`,
-          "graded core — Abstract, Introduction, Conclusion, References — is always included.",
+          "Plan the FULL structure. The graded core — Abstract, Introduction, Conclusion,",
+          "References — is always included, and Theoretical Background, Application and Future",
+          "Scope carry the report's substance, so include each one unless the topic genuinely",
+          "gives it nothing to say. Omit a section only for that reason, never for brevity.",
           "Give each chosen section a single specific focus sentence stating what that section",
           "must establish.",
           "The report must AGREE with the deck's approved outline below: the two artefacts are",

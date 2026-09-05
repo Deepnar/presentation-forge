@@ -209,55 +209,78 @@ test("resolveReportInputs with requirePlan:false needs no plan.yaml — the stan
   assert.match(research, /Facts for the report/);
 });
 
-test("planReport sizes the section cap to the team — small team, small report", async (t) => {
-  const dir = await fixtureDir(t);
-  await writeDeckFiles(dir);
-  // A two-person team: the graded core is the floor, never a sprawling report.
-  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({
-    slug: "fixture", brief: "x", status: "ready",
-    team: { label: "G", members: [
-      { name: "A", presenting: true },
-      { name: "B", presenting: true },
-    ] },
-  }));
-  const planSchemas = [];
-  const chat = async ({ schema }) => {
+/* --------------------------------------- report size vs the team that writes it */
+
+/** A model stand-in that OBEYS the plan grammar it is handed.
+ *
+ *  `fakeChat` above returns six sections whatever the schema says, and every
+ *  generateReport test used it — so no test could see a `maxItems` that the
+ *  real, grammar-constrained model would have been held to. A stub that
+ *  ignores the bound tests the stub. This one spends its budget the way the
+ *  prompt directs: the graded core first, then the body sections. */
+function obedientChat(planSchemas = []) {
+  const CORE = ["Abstract", "Introduction", "Conclusion", "References"];
+  const order = [...CORE, ...REPORT_SECTIONS.filter((s) => !CORE.includes(s))];
+  return async ({ schema }) => {
     if (schema.properties?.sections) {
       planSchemas.push(schema);
-      return { data: { title: "T", sections: [] } };
+      const max = schema.properties.sections.maxItems ?? REPORT_SECTIONS.length;
+      return { data: { title: "T", sections: order.slice(0, max).map((name) => ({ name, focus: "f" })) } };
     }
+    // Obedience has to extend to the section grammars too: Acknowledgement
+    // allows at most two paragraphs, so a stub that always returns four has
+    // its Acknowledgement dropped and the test reads that as a planning bug.
+    const fill = (spec, text) =>
+      Array.from({ length: Math.max(spec.minItems ?? 1, Math.min(spec.maxItems ?? 4, 4)) }, (_, i) => `${text} ${i + 1}.`);
     if (schema.required?.includes("entries")) {
-      return { data: { entries: ["1. S.", "2. S.", "3. S.", "4. S."] } };
+      return { data: { entries: fill(schema.properties.entries, "Source") } };
     }
-    return { data: { paragraphs: ["A.", "B.", "C.", "D."] } };
+    return { data: { paragraphs: fill(schema.properties.paragraphs, "Paragraph") } };
   };
-  const r = await generateReport({ dir, depth: "brief", chat });
-  assert.equal(planSchemas.length, 1);
-  assert.equal(planSchemas[0].properties.sections.maxItems, 4);
-  // The graded core is guaranteed and fits inside the tightened cap.
-  assert.deepEqual(r.sections, ["Abstract", "Introduction", "Conclusion", "References"]);
+}
+
+async function withTeam(dir, members) {
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({
+    slug: "fixture", brief: "x", status: "ready",
+    team: { label: "G", members: members.map((name) => ({ name, presenting: true })) },
+  }));
+}
+
+test("a solo author's report still carries the substance sections", async (t) => {
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir);
+  await withTeam(dir, []);
+  const planSchemas = [];
+  const r = await generateReport({ dir, depth: "brief", chat: obedientChat(planSchemas) });
+
+  // The budget was the TOTAL section count floored at four, while the prompt
+  // also requires the four-section graded core — so one author could plan
+  // nothing but the frame and the report had no body at all.
+  assert.equal(planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length);
+  const body = ["Theoretical Background", "Application", "Future Scope"];
+  assert.ok(
+    body.some((s) => r.sections.includes(s)),
+    `a report with no body section: ${r.sections.join(", ")}`,
+  );
 });
 
-test("planReport opens the section cap up to eight for a large team", async (t) => {
-  const dir = await fixtureDir(t);
-  await writeDeckFiles(dir);
-  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({
-    slug: "fixture", brief: "x", status: "ready",
-    team: { label: "G", members: Array.from({ length: 11 }, (_, i) => ({ name: `M${i}`, presenting: true })) },
-  }));
-  const planSchemas = [];
-  const chat = async ({ schema }) => {
-    if (schema.properties?.sections) {
-      planSchemas.push(schema);
-      return { data: { title: "T", sections: [] } };
-    }
-    if (schema.required?.includes("entries")) {
-      return { data: { entries: ["1. S.", "2. S.", "3. S.", "4. S."] } };
-    }
-    return { data: { paragraphs: ["A.", "B.", "C.", "D."] } };
-  };
-  await generateReport({ dir, depth: "brief", chat });
-  assert.equal(planSchemas[0].properties.sections.maxItems, 8);
+test("the report's section budget does not shrink with the team", async (t) => {
+  // A talk is divided between the people giving it; a report's structure is
+  // set by the institution grading it. One author writing up a large project
+  // owes the same sections as six.
+  const sizes = [[], ["A"], ["A", "B"], ["A", "B", "C", "D"], Array.from({ length: 11 }, (_, i) => `M${i}`)];
+  for (const members of sizes) {
+    const dir = await fixtureDir(t);
+    await writeDeckFiles(dir);
+    await withTeam(dir, members);
+    const planSchemas = [];
+    const r = await generateReport({ dir, depth: "brief", chat: obedientChat(planSchemas) });
+    assert.equal(
+      planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length,
+      `team of ${members.length} was handed a tightened cap`,
+    );
+    assert.deepEqual(r.sections, REPORT_SECTIONS, `team of ${members.length}`);
+  }
 });
 
 test("generateReport with requirePlan:false builds a standalone report with no deck", async (t) => {
