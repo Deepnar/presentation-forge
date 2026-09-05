@@ -2,9 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "report.schema.json",
   "title": "Report content",
-  "description": "Content contract for a report drawn on the institutional .docx template. Unlike a deck there is no layout: the renderer injects these sections into the donor's body in the fixed order below, and that order is what is graded.",
+  "description": "Content contract for a report drawn on the institutional .docx template. Unlike a deck there is no layout: the renderer injects these sections into the donor's body in the order `order` gives, and that order is what is graded. The eight named below are the default structure; a donor template that declares its own headings, or a topic that earns a section of its own, may add to them.",
   "type": "object",
-  "required": ["title", "content"],
+  "required": [
+    "title",
+    "content"
+  ],
   "additionalProperties": false,
   "properties": {
     "title": {
@@ -18,17 +21,52 @@
     },
     "content": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "Abstract": { "$ref": "#/definitions/section" },
-        "Acknowledgement": { "$ref": "#/definitions/section" },
-        "Introduction": { "$ref": "#/definitions/section" },
-        "Theoretical Background": { "$ref": "#/definitions/section" },
-        "Application": { "$ref": "#/definitions/section" },
-        "Future Scope": { "$ref": "#/definitions/section" },
-        "Conclusion": { "$ref": "#/definitions/section" },
-        "References": { "$ref": "#/definitions/section" }
+        "Abstract": {
+          "$ref": "#/definitions/section"
+        },
+        "Acknowledgement": {
+          "$ref": "#/definitions/section"
+        },
+        "Introduction": {
+          "$ref": "#/definitions/section"
+        },
+        "Theoretical Background": {
+          "$ref": "#/definitions/section"
+        },
+        "Application": {
+          "$ref": "#/definitions/section"
+        },
+        "Future Scope": {
+          "$ref": "#/definitions/section"
+        },
+        "Conclusion": {
+          "$ref": "#/definitions/section"
+        },
+        "References": {
+          "$ref": "#/definitions/section"
+        }
+      },
+      "description": "Section name -> content. The eight named here are the default graded structure and are spelled out so the contract documents them; a section the donor template declares, or one the topic earns, is accepted under its own name and positioned by `order`.",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+      },
+      "maxProperties": 20,
+      "additionalProperties": {
+        "$ref": "#/definitions/section"
       }
+    },
+    "order": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+      },
+      "description": "The section names in the order they are emitted, including any not in the default eight. Omitted on reports written before the structure became data; the renderer then falls back to the fixed graded order."
     }
   },
   "definitions": {
@@ -40,7 +78,11 @@
           "type": "array",
           "minItems": 1,
           "maxItems": 16,
-          "items": { "type": "string", "minLength": 1, "maxLength": 4000 }
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
         },
         "table": {
           "$ref": "#/definitions/table"
@@ -49,7 +91,11 @@
           "type": "array",
           "minItems": 1,
           "maxItems": 40,
-          "items": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
           "description": "A list rendered as plain paragraphs; the References section uses this for its numbered source lines."
         }
       }
@@ -57,7 +103,10 @@
     "table": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["header", "rows"],
+      "required": [
+        "header",
+        "rows"
+      ],
       "properties": {
         "caption": {
           "type": "string",
@@ -68,7 +117,11 @@
           "type": "array",
           "minItems": 1,
           "maxItems": 8,
-          "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
         },
         "rows": {
           "type": "array",
@@ -77,7 +130,10 @@
             "type": "array",
             "minItems": 1,
             "maxItems": 8,
-            "items": { "type": "string", "maxLength": 800 }
+            "items": {
+              "type": "string",
+              "maxLength": 800
+            }
           }
         }
       }

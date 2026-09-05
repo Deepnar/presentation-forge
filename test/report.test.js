@@ -55,11 +55,17 @@ test("validateReport accepts a full report and rejects malformed ones", async ()
   delete noTitle.title;
   assert.equal((await validateReport(noTitle)).ok, false);
 
-  const unknownSection = report();
-  unknownSection.content.Summary = { paragraphs: ["nope"] };
-  const r = await validateReport(unknownSection);
-  assert.equal(r.ok, false);
-  assert.ok(r.errors.some((e) => e.includes("Summary")));
+  // A section outside the default eight is accepted — the structure belongs to
+  // whichever donor template is installed, and a topic may earn one of its own.
+  const custom = report();
+  custom.content["Grid Integration Case Study"] = { paragraphs: ["A real section."] };
+  custom.order = [...presentSections(report()), "Grid Integration Case Study"];
+  assert.deepEqual(await validateReport(custom), { ok: true, errors: [] });
+
+  // Accepted by NAME, still held to the section shape by CONTENT.
+  const malformedCustom = report();
+  malformedCustom.content["Grid Integration Case Study"] = { paragraphs: "not an array" };
+  assert.equal((await validateReport(malformedCustom)).ok, false);
 
   const tooLong = report();
   tooLong.content.Introduction.paragraphs = ["x".repeat(5000)];

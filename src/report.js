@@ -15,7 +15,7 @@
  * only its body. Section order is fixed (the graded constant), not negotiated.
  */
 
-import { readFile, writeFile, readdir, mkdir, mkdtemp, rm, access } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir, mkdtemp, rm, access, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { execFile } from "node:child_process";
@@ -196,17 +196,129 @@ export async function loadReport(file) {
   return report;
 }
 
-/** The sections that have anything to say, in fixed order. An empty section is
- *  skipped gracefully — never a bare heading. */
+/** Whether a section object carries anything worth a heading. */
+function sectionHasContent(sec) {
+  if (!sec || typeof sec !== "object") return false;
+  const paras = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])].filter((s) => String(s).trim());
+  const hasTable = Array.isArray(sec.table?.header) && sec.table.header.length;
+  return paras.length > 0 || hasTable;
+}
+
+/**
+ * The sections that have anything to say, in the order they are to be emitted.
+ * An empty section is skipped gracefully — never a bare heading.
+ *
+ * `order` is the report's own record of its structure and wins when present:
+ * a report may carry topic-specific sections that are in no fixed list, and
+ * their position is meaningful and cannot be recovered from the section names.
+ * Without it the graded constant is the order, which is what every report
+ * written before the structure became data relies on.
+ */
 export function presentSections(report) {
   const content = report.content ?? {};
-  return REPORT_SECTIONS.filter((name) => {
-    const sec = content[name];
-    if (!sec || typeof sec !== "object") return false;
-    const paras = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])].filter((s) => String(s).trim());
-    const hasTable = Array.isArray(sec.table?.header) && sec.table.header.length;
-    return paras.length > 0 || hasTable;
-  });
+  const declared = Array.isArray(report.order) && report.order.length ? report.order : REPORT_SECTIONS;
+  const seen = new Set();
+  const order = [];
+  for (const name of declared) {
+    if (typeof name !== "string" || seen.has(name)) continue;
+    seen.add(name);
+    order.push(name);
+  }
+  // A section present in `content` but missing from `order` would silently
+  // vanish, taking model-written prose with it. Anything unlisted is appended
+  // in the graded position it has if it has one, and at the end if it does not.
+  for (const name of [...REPORT_SECTIONS, ...Object.keys(content)]) {
+    if (!seen.has(name) && sectionHasContent(content[name])) {
+      seen.add(name);
+      order.push(name);
+    }
+  }
+  return order.filter((name) => sectionHasContent(content[name]));
+}
+
+/**
+ * The section list the donor template itself declares.
+ *
+ * The renderer has never cared what a section is called — `buildBody` emits
+ * `content[name]` for any name, which is how the Image Credits appendix works
+ * without being in the graded constant. What was fixed was the LIST, and that
+ * belongs to whichever institution's template is installed, not to us. A
+ * college whose report has a "Methodology" gets one by uploading its own donor.
+ *
+ * The headings are read rather than guessed: numbered top-level paragraphs
+ * (never inside a table — the roster and the TOC are tables) that are bold,
+ * forming a run numbered 1..N. Bold is the discriminator that separates the
+ * heading run from a numbered References list, which is the other consecutively
+ * numbered thing in the document and is not bold.
+ *
+ * Returns null when the donor declares nothing recognisable, which is the
+ * signal to fall back to the graded constant rather than to render a report
+ * with no structure at all.
+ */
+export function parseDonorSections(documentXml) {
+  const headings = [];
+  let depth = 0;
+  const re = /<w:tbl[ >]|<\/w:tbl>|<w:p[ >][\s\S]*?<\/w:p>/g;
+  for (const m of documentXml.matchAll(re)) {
+    const chunk = m[0];
+    if (chunk.startsWith("<w:tbl")) { depth++; continue; }
+    if (chunk.startsWith("</w:tbl")) { depth = Math.max(0, depth - 1); continue; }
+    if (depth > 0) continue;
+    if (!/<w:b\/>/.test(chunk)) continue;
+    const text = unesc([...chunk.matchAll(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g)].map((t) => t[1]).join("")).trim();
+    const numbered = /^(\d+)[.)]\s+(\S.*)$/.exec(text);
+    if (!numbered) continue;
+    headings.push({ n: Number(numbered[1]), title: numbered[2].trim() });
+  }
+
+  // The longest run numbered 1,2,3,… — a stray bold "1. " elsewhere in the
+  // body cannot then pass itself off as the structure.
+  let best = [];
+  let run = [];
+  for (const h of headings) {
+    if (h.n === (run.length ? run.at(-1).n + 1 : 1)) run.push(h);
+    else run = h.n === 1 ? [h] : [];
+    if (run.length > best.length) best = [...run];
+  }
+  if (best.length < 3) return null;
+  return best.map((h) => h.title).filter((t) => t.length <= 60);
+}
+
+const structureCache = new Map();
+
+/** The donor's declared structure, cached per file+mtime so a re-uploaded
+ *  template is re-read rather than remembered. Falls back to the graded
+ *  constant whenever the donor cannot be read or declares nothing. */
+export async function donorSections(donorPath) {
+  if (!donorPath) return null;
+  let key;
+  try {
+    const { mtimeMs, size } = await stat(donorPath);
+    key = `${donorPath}:${mtimeMs}:${size}`;
+  } catch {
+    return null;
+  }
+  if (structureCache.has(key)) return structureCache.get(key);
+  let sections = null;
+  try {
+    const zip = await JSZip.loadAsync(await readFile(donorPath));
+    const xml = await zip.file("word/document.xml")?.async("string");
+    if (xml) sections = parseDonorSections(xml);
+  } catch {
+    sections = null;                        // an unreadable donor is not a structure
+  }
+  structureCache.set(key, sections);
+  return sections;
+}
+
+/** The section list a report for this deck should be planned against. */
+export async function reportStructureForDeck(deckDir) {
+  try {
+    const donorPath = await resolveDonor(null, await donorDirForDeck(deckDir));
+    return (await donorSections(donorPath)) ?? REPORT_SECTIONS;
+  } catch {
+    return REPORT_SECTIONS;
+  }
 }
 
 /* ------------------------------------------------------------ XML pieces */
@@ -214,6 +326,12 @@ export function presentSections(report) {
 const esc = (s) => String(s ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
+
+/** The other direction, for text read back OUT of a donor's XML. */
+const unesc = (s) => String(s ?? "")
+  .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+  .replace(/&apos;/g, "'").replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+  .replace(/&amp;/g, "&");
 
 const FONT = '<w:rFonts w:ascii="Times New Roman" w:eastAsia="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>';
 const CELL_FONT = '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>';
