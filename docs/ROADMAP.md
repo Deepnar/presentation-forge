@@ -5145,6 +5145,31 @@ more headroom and wants to spend it on the deck they already have.
 > free. Build it on `writeSlide` rather than on `runTurn` and the grammar
 > question does not arise.
 
+### [ ] A provider key, so the money figures stop being derived
+
+*Blocked on the operator, not on code. Expected — a key is coming, but not
+immediately, so nothing should be planned around having one this week.*
+
+Everything monetary in `docs/ECONOMICS.md` rests on ~4 characters per token,
+illustrative price bands, and a count of research-carrying calls read from the
+source rather than observed. One 22-slide generation through any paid key
+settles all three at once, and `meterSummary()` breaks the total down per role
+so it reports exactly where the tokens went.
+
+It is also now the cheapest it will ever be to run: per-slide retrieval took a
+deck from ~1.6M tokens to ~135K, so the measurement run costs about a rupee at
+the budget band.
+
+**Until the key exists**, treat every ₹ figure as an order of magnitude and do
+not publish a price against it. The constants in `src/usage.js` lean
+conservative on purpose — they over-estimate, so a reservation refuses early
+rather than overspending — which is the safe direction to be wrong in while
+waiting.
+
+The same key unblocks: the report content run, chat and convert turns through
+the UI, `--upload` research, and the research-to-page flow. Those are the
+sessions to plan for the day it arrives.
+
 ### [ ] The free tier should be a trial, not an allowance
 
 *Priority: high, and it decides what the paid tiers can be. No model needed.*
@@ -5294,7 +5319,7 @@ knowable while they are unexercised.
 > *within* a mount, not per route. A new top-level prefix is not covered by
 > anything. Worth knowing before adding one.
 
-### [ ] "Auto" is bound to one institution's name, not to a role
+### [x] "Auto" is bound to one institution's name, not to a role
 
 *Priority: medium, and it rises the moment this is hosted for anyone outside
 the college. No model.*
@@ -5324,6 +5349,29 @@ The fix is a rename to a role — `auto` / `FORGE_AUTO_API_KEY` — reading the 
 names as fallbacks so no deployment breaks, and a migration for the
 `global_keys` and `auto_events` rows keyed by the old id. Worth doing before
 anyone outside the college is invited, not before.
+
+> **Learned.**
+>
+> - **A rename is only safe if the old name still resolves, in BOTH
+>   directions.** An upgraded install has the old env var in its compose file
+>   and the old rows in its database; a fresh one has neither. Reading only the
+>   new name breaks the first, and migrating without a read-fallback breaks
+>   anything the migration cannot reach.
+> - **Rename the rows, or the user sees a reset.** `auto_events.provider` and
+>   `global_keys.provider` both held the literal. Left alone, spend history
+>   would appear to vanish and an admin-uploaded key would appear to be gone —
+>   both silent, both alarming, neither an error.
+> - **The column DEFAULT is part of the rename.** `auto_events.provider`
+>   defaulted to the old literal, so a fresh database would have started
+>   stamping new rows with it. Nothing hit it, because every caller passes the
+>   provider explicitly — which is exactly why it would have survived a review.
+> - **The test fixture was already the compatibility test.** `modelchoices`
+>   writes the old provider block and the old env var; it kept passing through
+>   the whole rename, which is the evidence the fallback works. Only its `kind`
+>   assertion needed changing, and that assertion WAS the defect.
+> - **Keep the institution where it is true.** The gateway's `label` and
+>   `baseURL` still name TCET, because that is whose gateway it is. What was
+>   wrong was the tier, the env var and the id.
 
 ### [ ] Nothing can test the browser
 

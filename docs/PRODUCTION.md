@@ -222,7 +222,7 @@ What sits there now, roughly in the order it matters:
 | The front end, and the landing page | no | **yes** |
 | Add a slide to a finished deck, written like the others | no | no |
 | A turn's grammar is built from every type at once | no | partly |
-| "Auto" is bound to one institution's name, not a role | no | no |
+| ~~"Auto" is bound to one institution's name~~ — **done** | — | — |
 | Nothing can test the browser | no | **yes** — see §1.4 |
 | Research and content flow, end to end | **yes** | no |
 | The full functional sweep | **yes** | no |
