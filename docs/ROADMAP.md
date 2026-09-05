@@ -629,8 +629,12 @@ review:
 
 ### [ ] (stretch) Canvas slide-builder
 
-*Priority: stretch, and not on the path to launch. Blocked on the same
-front-end direction as the app sweep — it is a new surface, not a fix.*
+*Priority: stretch, and not on the path to launch.*
+
+*Not blocked by the app-sweep direction — that covers sweeping surfaces that
+exist, and this invents one, so it is its own conversation. Two real reasons it
+is not moving: nobody has asked for it, and it could not be VERIFIED without a
+model, since the whole point is slides appearing as they are written.*
 
 Live slides appearing as they stream (status → plan → slides) as a
 filmstrip/storyboard the user can point the model at. Not built this session —
@@ -5554,6 +5558,25 @@ alternatives are worth weighing against it: a scripted browser pass over the
 surfaces that matter, run before a release rather than per commit, would have
 caught all three and needs no new dependency, since the tooling is already
 used to find them. **Agree the direction before building either.**
+
+**Option 2 has now been piloted, by accident (2026-09-05).** The app-sweep walk
+drove every route in a real browser and measured contrast, tap targets,
+overflow and heading order — which is exactly what a scripted pass would do —
+and it found a real defect class in seven places that the 785-test suite could
+not see. It also demonstrated the two things that decide whether the approach
+is worth committing to:
+
+- **It catches what reading cannot.** A fix that named `<a>` silently skipped a
+  column of `<button>`s; the markup looked right and the measurement said
+  otherwise.
+- **The audit itself needs an audit.** Its first output was 22 findings on one
+  route of which 11 were prose links WCAG exempts. A pass that cries wolf gets
+  turned off, so the exemptions are as much of the work as the checks.
+
+None of that chooses between the two options — a component test would have
+caught the navigation defect this entry opens with, and a route walk would not.
+But the scripted pass is no longer hypothetical, and its cost is now known
+rather than estimated.
 
 What is NOT in doubt is the trigger: a surface nobody drives is a surface
 nobody has tested, whatever the suite says.
