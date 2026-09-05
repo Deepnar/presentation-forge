@@ -465,6 +465,25 @@ export async function createDeckFromReport({
   return { slug, plan, stats };
 }
 
+/**
+ * One progress frame as the CLI's one-line status.
+ *
+ * `done` is the counter when a stage supplies one; `index` is a counter only
+ * for the stages whose unit IS the sequence position. Image supply emits both
+ * and they mean different things — its `index` is the SLIDE being illustrated,
+ * so a one-image deck whose picture belongs on slide 3 logged `images 3/1`.
+ * Preferring `done` is the whole fix; requiring `total` stops the other
+ * stages printing `3/undefined`.
+ *
+ * Exported because it was an arrow function inside the CLI's entry guard,
+ * where nothing could reach it to check.
+ */
+export function formatProgress(p) {
+  const at = p?.done != null ? p.done + 1 : (p?.index != null ? p.index + 1 : null);
+  const count = at != null && p?.total != null ? ` ${at}/${p.total}` : "";
+  return `${p?.status ?? ""}${count}`;
+}
+
 /** The report's sections as a planning brief — title plus each section's prose.
  *
  *  `presentSections` rather than the graded constant: a report may carry a
@@ -1362,7 +1381,7 @@ function parseArgs(argv) {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const { cmd, opts } = parseArgs(process.argv.slice(2));
-  const progress = (p) => process.stderr.write(`  ${p.status}${p.index != null ? ` ${p.index + 1}/${p.total}` : ""}\n`);
+  const progress = (p) => process.stderr.write(`  ${formatProgress(p)}\n`);
 
   /** --upload <path>: read + ingest the document into an inline upload payload
    *  (the CLI equivalent of the server's staged-token path). */
