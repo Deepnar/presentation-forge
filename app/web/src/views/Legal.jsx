@@ -244,12 +244,14 @@ export function Usage() {
   const [usage, setUsage] = useState(null);
   const [limits, setLimits] = useState(null);
   const [err, setErr] = useState(null);
+  const [plan, setPlan] = useState(null);
   useEffect(() => {
     // try per-user usage first, fall back to public limits so page is useful unauth
     api.autoUsage()
       .then((r) => {
         setUsage(r.usage ?? r);
         setLimits(r.limits ?? null);
+        setPlan({ name: r.planLabel ?? r.plan ?? null, trial: r.trial ?? null });
       })
       .catch((e) => {
         // if 401 (log in), still fetch public limits
@@ -299,6 +301,32 @@ export function Usage() {
             )}
             {err && !usage && !limits && <div className="mt-8 rounded-xl border border-danger/20 bg-danger/10 p-4 text-[13px] text-danger">Could not load — {err}</div>}
             {!err && !usage && !limits && <div className="mt-8 h-40 skeleton rounded-xl" />}
+            {/* The trial is the one budget that never comes back, so it is the
+                one worth seeing before it runs out — a refusal that arrives
+                with no warning reads as the product breaking. */}
+            {plan?.trial && (
+              <div className="mt-8 rounded-2xl border border-line bg-panel p-5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-faint">
+                    {plan.name ?? "Free"} trial
+                  </div>
+                  <div className="text-[12px] text-fg-muted">
+                    {plan.trial.remaining > 0
+                      ? "does not reset — this is a fixed amount, not a weekly allowance"
+                      : "used up — add your own key under Cloud, which is unmetered"}
+                  </div>
+                </div>
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-sunken">
+                  <div
+                    className={`h-full rounded-full ${plan.trial.remaining > 0 ? "bg-accent" : "bg-danger"}`}
+                    style={{ width: `${Math.min(100, Math.round((plan.trial.spent / Math.max(1, plan.trial.cap)) * 100))}%` }}
+                  />
+                </div>
+                <div className="mt-2 font-mono text-[12px] text-fg-muted">
+                  {plan.trial.spent.toLocaleString()} of {plan.trial.cap.toLocaleString()} tokens used
+                </div>
+              </div>
+            )}
             {(usage || limits) && (
               <div className="mt-8 space-y-8">
                 <div className="grid gap-4 sm:grid-cols-3">
