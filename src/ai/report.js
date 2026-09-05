@@ -6,7 +6,7 @@ import { DECKS } from "../paths.js";
 import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
-import { REPORT_SECTIONS, validateReport } from "../report.js";
+import { REPORT_SECTIONS, IMAGE_CREDITS, reportStructureForDeck, validateReport } from "../report.js";
 
 /**
  * The report content generator — the deck pipeline's writer for the report
@@ -14,9 +14,13 @@ import { REPORT_SECTIONS, validateReport } from "../report.js";
  *
  * One brief → one research pass → both deck.yaml and report.yaml from the same
  * decks/<slug>/research/ artefact. This module is to the deck's generate.js
- * what src/report.js is to the deck's render.js: the report uses the fixed
- * graded section order, so there is no structure to plan, only the depth of
- * each section's prose.
+ * what src/report.js is to the deck's render.js.
+ *
+ * The report's structure is the donor template's, read from the donor itself
+ * (`reportStructureForDeck`) and falling back to the graded eight. So there is
+ * a little structure to plan — which of the template's sections carry content,
+ * and the few a particular topic earns for itself — and then the depth of each
+ * section's prose.
  *
  * Depth is a parameter, not a second generator. Full depth writes four
  * paragraphs and a table where one earns its place; brief depth writes a
@@ -30,9 +34,26 @@ export const REPORT_DEPTHS = ["full", "brief"];
 
 /* ------------------------------------------------------ plan / plan schema */
 
-/** The report's plan: title plus which fixed sections carry content and what
- *  each must say. Small grammar, and `name` is coerced after (the same reason
- *  the deck outline leaves `type` free). */
+/**
+ * How many sections a report may invent for itself, on top of the structure
+ * its template declares.
+ *
+ * Bounded rather than free: the structure is what the report is graded on, and
+ * a writer that can add sections at will drifts into an essay with headings.
+ * Three is enough for the case study, the methodology or the comparison a
+ * particular topic genuinely earns, and few enough that the graded shape still
+ * reads as the graded shape.
+ */
+export const MAX_CUSTOM_SECTIONS = 3;
+
+/** The sections a report is not allowed to come out without, where its
+ *  structure has them. A donor that declares none of these is trusted on its
+ *  own terms — it is the institution's own contract, not a guess. */
+const GUARANTEED = ["Abstract", "Introduction", "Conclusion", "References"];
+
+/** The report's plan: title plus which sections carry content and what each
+ *  must say. Small grammar, and `name` is coerced after (the same reason the
+ *  deck outline leaves `type` free). */
 const reportPlanSchema = ({ maxSections = 8 } = {}) => ({
   type: "object",
   required: ["title", "sections"],
@@ -47,7 +68,12 @@ const reportPlanSchema = ({ maxSections = 8 } = {}) => ({
         type: "object",
         required: ["name", "focus"],
         properties: {
-          name: { type: "string", maxLength: 30 },
+          // 60, matching the content contract's own propertyNames bound. 30
+          // was enough to spell the eight fixed names and nothing else: a
+          // topic-specific section is named for its topic, and "Vehicle-to-Grid
+          // Economic Modelling" is 34 characters. A cap that cannot spell the
+          // answer reads as the model declining to give it.
+          name: { type: "string", maxLength: 60 },
           focus: { type: "string", maxLength: 160 },
         },
       },
@@ -56,34 +82,73 @@ const reportPlanSchema = ({ maxSections = 8 } = {}) => ({
 });
 
 /**
- * Coerce the planner's output onto the fixed graded order: unknown names
- * dropped (case-insensitive match against REPORT_SECTIONS), duplicates
- * removed, and the graded core (Abstract, Introduction, Conclusion,
- * References) guaranteed present. Same role as sanitizePlan in generate.js —
- * both a model's output and any future human edit pass through here.
+ * Coerce the planner's output onto the report's structure: a name that matches
+ * the structure is snapped to its canonical spelling and its graded position,
+ * duplicates are removed, and the guaranteed sections are forced in. Same role
+ * as sanitizePlan in generate.js — both a model's output and any future human
+ * edit pass through here.
+ *
+ * A name the structure does NOT have used to be dropped, which made a
+ * topic-specific section unrepresentable however well it was argued for. It is
+ * now kept, up to `maxCustom`, and this is where its POSITION is decided —
+ * the one thing that cannot be recovered later, because sorting by structure
+ * index says nothing about where a section that has no index belongs.
+ *
+ * A custom section is anchored to the last structural section the model listed
+ * before it, so "…Application, Grid Case Study, Future Scope…" keeps the
+ * writer's intended placement. The anchor is then clamped away from the final
+ * structural position: a report whose References are not last is a report that
+ * fails its own format, and a model that lists a case study after them should
+ * not be able to cause that.
  */
-export function sanitizeReportPlan(plan) {
+export function sanitizeReportPlan(plan, { structure = REPORT_SECTIONS, maxCustom = MAX_CUSTOM_SECTIONS } = {}) {
+  const index = new Map(structure.map((n, i) => [n.toLowerCase(), i]));
   const seen = new Set();
-  const sections = [];
+  const entries = [];
+  // Sort key: [anchor, custom?, order seen]. The third element keeps two
+  // custom sections sharing an anchor in the order the model wrote them.
+  let anchor = 0;
+  let seq = 0;
+  let custom = 0;
+  const lastBodyAnchor = Math.max(0, structure.length - 2);
+
   for (const s of plan?.sections ?? []) {
-    const name = typeof s?.name === "string" ? s.name.trim() : "";
-    const match = REPORT_SECTIONS.find((r) => r.toLowerCase() === name.toLowerCase());
-    if (!match || seen.has(match)) continue;
-    seen.add(match);
-    sections.push({ name: match, focus: String(s.focus ?? "").trim() });
-  }
-  // The graded core is non-negotiable even when the model omits it.
-  for (const core of ["Abstract", "Introduction", "Conclusion", "References"]) {
-    if (!seen.has(core)) {
-      seen.add(core);
-      sections.push({ name: core, focus: "" });
+    const raw = typeof s?.name === "string" ? s.name.trim() : "";
+    if (!raw) continue;
+    const focus = String(s?.focus ?? "").trim();
+    const at = index.get(raw.toLowerCase());
+
+    if (at != null) {
+      const name = structure[at];
+      if (seen.has(name)) continue;
+      seen.add(name);
+      anchor = at;
+      entries.push({ name, focus, key: [at, 0, seq++] });
+      continue;
     }
+
+    if (custom >= maxCustom) continue;
+    const name = raw.slice(0, 60);
+    // "Image Credits" is the renderer's own appendix, built from the picture
+    // record rather than written; a section claiming that name would be
+    // overwritten by it at render time.
+    if (seen.has(name) || name === IMAGE_CREDITS) continue;
+    seen.add(name);
+    custom++;
+    entries.push({ name, focus, key: [Math.min(anchor, lastBodyAnchor), 1, seq++] });
   }
-  sections.sort((a, b) => REPORT_SECTIONS.indexOf(a.name) - REPORT_SECTIONS.indexOf(b.name));
+
+  for (const name of structure.filter((n) => GUARANTEED.includes(n))) {
+    if (seen.has(name)) continue;
+    seen.add(name);
+    entries.push({ name, focus: "", key: [index.get(name.toLowerCase()), 0, seq++] });
+  }
+
+  entries.sort((a, b) => a.key[0] - b.key[0] || a.key[1] - b.key[1] || a.key[2] - b.key[2]);
   return {
     title: String(plan?.title ?? "").trim(),
     subtitle: String(plan?.subtitle ?? "").trim(),
-    sections,
+    sections: entries.map(({ name, focus }) => ({ name, focus })),
   };
 }
 
@@ -395,20 +460,28 @@ function cleanSection(section, name = "") {
  *  renderer skips them gracefully, never a bare heading. */
 export function assembleReport(plan, sectionsData) {
   const content = {};
+  const order = [];
   for (const spec of plan.sections) {
     const cleaned = cleanSection(sectionsData[spec.name], spec.name);
-    if (cleaned) content[spec.name] = cleaned;
+    if (cleaned) {
+      content[spec.name] = cleaned;
+      order.push(spec.name);
+    }
   }
   return {
     title: plan.title,
     ...(plan.subtitle ? { subtitle: plan.subtitle } : {}),
+    // Written down rather than implied: once a report may carry a section the
+    // graded constant has never heard of, its order stops being recoverable
+    // from the section names and becomes part of the artefact.
+    order,
     content,
   };
 }
 
 /* -------------------------------------------------------------- model calls */
 
-async function planReport({ brief, research, deckSections, identity, model, signal, chat }) {
+async function planReport({ brief, research, deckSections, identity, structure = REPORT_SECTIONS, model, signal, chat }) {
   const subject = identity?.academic?.subject;
   // The report is NOT sized to the team, and the deck planner's rule does not
   // transfer. A talk is divided between the people giving it; a report's
@@ -423,29 +496,36 @@ async function planReport({ brief, research, deckSections, identity, model, sign
   // which is what `report-new` is by construction, could only ever produce
   // Abstract/Introduction/Conclusion/References. That shipped: one report on
   // disk has no body section.
-  const maxSections = REPORT_SECTIONS.length;
+  const guaranteed = structure.filter((s) => GUARANTEED.includes(s));
   const res = await chat({
     role: "author",
     model,
     signal,
-    schema: reportPlanSchema({ maxSections }),
+    schema: reportPlanSchema({ maxSections: structure.length + MAX_CUSTOM_SECTIONS }),
     messages: [
       {
         role: "system",
         content: [
-          "You plan the structure of an academic report. The section order is FIXED and graded:",
+          "You plan the structure of an academic report. This report is graded on the template's",
+          "own section order, which is:",
           "",
-          REPORT_SECTIONS.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+          structure.map((s, i) => `${i + 1}. ${s}`).join("\n"),
           "",
-          "Plan the FULL structure. The graded core — Abstract, Introduction, Conclusion,",
-          "References — is always included, and Theoretical Background, Application and Future",
-          "Scope carry the report's substance, so include each one unless the topic genuinely",
-          "gives it nothing to say. Omit a section only for that reason, never for brevity.",
+          "Plan the FULL structure: include every section above unless the topic genuinely gives",
+          "it nothing to say. Omit a section only for that reason, never for brevity.",
+          ...(guaranteed.length ? [`${guaranteed.join(", ")} are always included.`] : []),
+          "",
+          `You may ALSO add up to ${MAX_CUSTOM_SECTIONS} sections of your own where this specific topic`,
+          "earns one — a case study, a methodology, a comparison that does not fit any section",
+          "above. Name it for the topic, not generically, and list it in the position it belongs:",
+          "immediately after the section it follows. Add none if none is earned; an invented",
+          "section that merely re-cuts material already covered makes the report worse.",
+          "",
           "Give each chosen section a single specific focus sentence stating what that section",
           "must establish.",
           "The report must AGREE with the deck's approved outline below: the two artefacts are",
           "built from the same research and must not contradict each other.",
-          "`name` must be one of the fixed section names above. Return {title, subtitle, sections}.",
+          "Return {title, subtitle, sections}.",
         ].join("\n"),
       },
       {
@@ -459,7 +539,7 @@ async function planReport({ brief, research, deckSections, identity, model, sign
       },
     ],
   });
-  return sanitizeReportPlan(res.data ?? {});
+  return sanitizeReportPlan(res.data ?? {}, { structure });
 }
 
 const ACK_PROMPT =
@@ -562,6 +642,7 @@ export async function generateReport({
   onProgress,
   chat = chatJSON,
   requirePlan = true,
+  structure = null,
 }) {
   if (!REPORT_DEPTHS.includes(depth)) {
     throw new Error(`report depth must be one of ${REPORT_DEPTHS.join(", ")}, got "${depth}"`);
@@ -570,12 +651,17 @@ export async function generateReport({
   const deckDir = path.resolve(dir ?? path.join(DECKS, slug ?? ""));
   const { meta, plan, research, identity } = await resolveReportInputs(deckDir, { requirePlan, model });
 
+  // The template that will be rendered onto decides what sections exist, so it
+  // is read before anything is planned rather than discovered at render time.
+  const reportStructure = structure ?? (await reportStructureForDeck(deckDir));
+
   onProgress?.({ status: "report_planning" });
   const planned = await planReport({
     brief: meta.brief ?? plan.title ?? "",
     research,
     deckSections: plan.sections,
     identity,
+    structure: reportStructure,
     model,
     signal,
     chat,
@@ -619,7 +705,7 @@ export async function generateReport({
   return {
     report: assembled,
     reportFile,
-    sections: Object.keys(assembled.content),
+    sections: assembled.order,
     skipped,
     depth,
   };

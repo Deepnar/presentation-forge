@@ -12,6 +12,7 @@ import {
   assembleReport,
   resolveReportInputs,
   generateReport,
+  MAX_CUSTOM_SECTIONS,
 } from "../src/ai/report.js";
 
 async function fixtureDir(t) {
@@ -77,12 +78,11 @@ function fakeChat(log) {
 
 /* ------------------------------------------------------------ plan coercion */
 
-test("sanitizeReportPlan maps names onto the fixed order, dropping junk", () => {
+test("sanitizeReportPlan snaps structural names onto the graded order, dropping duplicates", () => {
   const out = sanitizeReportPlan({
     title: "T", subtitle: "S",
     sections: [
       { name: "Conclusion", focus: "c" },
-      { name: "Summary", focus: "not a section" },
       { name: "abstract", focus: "lowercase ok" },
       { name: "Conclusion", focus: "duplicate dropped" },
       { name: "References", focus: "r" },
@@ -105,6 +105,95 @@ test("sanitizeReportPlan sorts into the fixed graded order regardless of input o
     ],
   });
   assert.deepEqual(out.sections.map((s) => s.name), ["Abstract", "Introduction", "Future Scope", "Conclusion", "References"]);
+});
+
+/* ------------------------------------------------- sections a topic earns */
+
+test("a topic-specific section is kept, in the position the plan gave it", () => {
+  const out = sanitizeReportPlan({
+    sections: [
+      { name: "Abstract", focus: "" },
+      { name: "Introduction", focus: "" },
+      { name: "Application", focus: "" },
+      { name: "Grid Integration Case Study", focus: "One depot, measured." },
+      { name: "Future Scope", focus: "" },
+      { name: "Conclusion", focus: "" },
+      { name: "References", focus: "" },
+    ],
+  });
+  assert.deepEqual(out.sections.map((s) => s.name), [
+    "Abstract", "Introduction", "Application",
+    "Grid Integration Case Study",
+    "Future Scope", "Conclusion", "References",
+  ]);
+  assert.equal(out.sections.find((s) => s.name === "Grid Integration Case Study").focus, "One depot, measured.");
+});
+
+test("a custom section is never allowed to displace the closing section", () => {
+  // References last is the format. A plan that puts an appendix after them
+  // must not be able to produce a report that fails on its own structure.
+  const out = sanitizeReportPlan({
+    sections: [
+      { name: "Abstract", focus: "" },
+      { name: "Conclusion", focus: "" },
+      { name: "References", focus: "" },
+      { name: "Cost Model Appendix", focus: "" },
+    ],
+  });
+  assert.equal(out.sections.at(-1).name, "References");
+  assert.deepEqual(out.sections.map((s) => s.name), [
+    "Abstract", "Introduction", "Conclusion", "Cost Model Appendix", "References",
+  ]);
+});
+
+test("custom sections are capped, and the ones over the cap are dropped", () => {
+  const extra = ["One", "Two", "Three", "Four", "Five"].map((n) => ({ name: `Custom ${n}`, focus: "" }));
+  const out = sanitizeReportPlan({
+    sections: [{ name: "Introduction", focus: "" }, ...extra],
+  });
+  const custom = out.sections.filter((s) => s.name.startsWith("Custom "));
+  assert.equal(custom.length, MAX_CUSTOM_SECTIONS);
+  // The cap keeps the FIRST ones asked for, not an arbitrary subset.
+  assert.deepEqual(custom.map((s) => s.name), ["Custom One", "Custom Two", "Custom Three"]);
+});
+
+test("a custom section cannot claim the renderer's own appendix name", () => {
+  const out = sanitizeReportPlan({
+    sections: [{ name: "Introduction", focus: "" }, { name: "Image Credits", focus: "steal it" }],
+  });
+  assert.ok(!out.sections.some((s) => s.name === "Image Credits"));
+});
+
+test("sanitizeReportPlan follows a donor's structure, not the default eight", () => {
+  const structure = ["Abstract", "Introduction", "Methodology", "Results", "Discussion", "References"];
+  const out = sanitizeReportPlan({
+    sections: [
+      { name: "results", focus: "lowercase snaps to the donor's spelling" },
+      { name: "Methodology", focus: "" },
+      { name: "Ablation Study", focus: "custom, after methodology" },
+    ],
+  }, { structure });
+  assert.deepEqual(out.sections.map((s) => s.name), [
+    "Abstract", "Introduction", "Methodology", "Ablation Study", "Results", "References",
+  ]);
+  // "Theoretical Background" is not this donor's section and is not invented.
+  assert.ok(!out.sections.some((s) => s.name === "Theoretical Background"));
+});
+
+test("assembleReport records the section order, including sections with no index", () => {
+  const plan = sanitizeReportPlan({
+    sections: [
+      { name: "Abstract", focus: "" },
+      { name: "Application", focus: "" },
+      { name: "Depot Case Study", focus: "" },
+      { name: "Conclusion", focus: "" },
+      { name: "References", focus: "" },
+    ],
+  });
+  const data = Object.fromEntries(plan.sections.map((s) => [s.name, { paragraphs: [`${s.name} prose.`] }]));
+  const report = assembleReport(plan, data);
+  assert.deepEqual(report.order, plan.sections.map((s) => s.name));
+  assert.ok(report.order.includes("Depot Case Study"));
 });
 
 /* --------------------------------------------------------- depth as grammar */
@@ -256,7 +345,7 @@ test("a solo author's report still carries the substance sections", async (t) =>
   // The budget was the TOTAL section count floored at four, while the prompt
   // also requires the four-section graded core — so one author could plan
   // nothing but the frame and the report had no body at all.
-  assert.equal(planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length);
+  assert.equal(planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length + MAX_CUSTOM_SECTIONS);
   const body = ["Theoretical Background", "Application", "Future Scope"];
   assert.ok(
     body.some((s) => r.sections.includes(s)),
@@ -276,7 +365,7 @@ test("the report's section budget does not shrink with the team", async (t) => {
     const planSchemas = [];
     const r = await generateReport({ dir, depth: "brief", chat: obedientChat(planSchemas) });
     assert.equal(
-      planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length,
+      planSchemas[0].properties.sections.maxItems, REPORT_SECTIONS.length + MAX_CUSTOM_SECTIONS,
       `team of ${members.length} was handed a tightened cap`,
     );
     assert.deepEqual(r.sections, REPORT_SECTIONS, `team of ${members.length}`);
