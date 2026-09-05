@@ -4,8 +4,12 @@ The operating question behind this file: **if the TCET gateway does not come
 back and Auto has to run on a commercial API key somebody pays for, is there a
 price a student would pay that also makes money?**
 
-Today the answer is no. After the work in §4 it is comfortably yes. That gap —
-not the saving — is why the token cost matters.
+Before the work in §4 the answer was no. After it, yes. That gap — not the
+saving — is why the token cost mattered.
+
+**Status: L2 is shipped.** A 22-slide deck went from ~1,616,600 tokens to
+~134,600, a measured **12x**. The tables below give both, because the
+before-figure is the argument for the after-figure.
 
 Every number here is derived from the code and stated with its arithmetic, so
 it can be corrected by measurement rather than re-argued. Nothing in this file
@@ -73,14 +77,12 @@ the wrong lever, and the table below is the reason.
 burns *100% of their allowance* still leaves a 30% margin — the cap as an
 insurance policy rather than a target:
 
-| price | optimisation | budget | cheap-mid | mid |
+| price | | budget | cheap-mid | mid |
 |---|---|---|---|---|
-| ₹99 | **today** | 3 | **0** | **0** |
-| ₹99 | excerpt cut to 48k | 14 | 3 | 0 |
-| ₹99 | per-slide retrieval | **56** | **14** | 2 |
-| ₹249 | **today** | 8 | 2 | 0 |
-| ₹249 | excerpt cut to 48k | 37 | 9 | 1 |
-| ₹249 | per-slide retrieval | **142** | **35** | 7 |
+| ₹99 | **before** | 3 | **0** | **0** |
+| ₹99 | **now** | **40** | **10** | 2 |
+| ₹249 | **before** | 8 | 2 | 0 |
+| ₹249 | **now** | **101** | **25** | 5 |
 
 Read the first row. **At today's token cost, ₹99 buys three decks on the
 cheapest model available and none at all on anything better.** There is no
@@ -97,21 +99,25 @@ charging anything.**
 
 ## 4. The three levers, in order of what they buy
 
-| level | change | tokens/deck | vs today |
-|---|---|---|---|
-| **L0** | today — 240k chars on every call | 1,616,600 | 1.0x |
-| **L1** | cut `excerpt_chars` for cloud to ~48k | 368,600 | **4.4x** |
-| **L2** | send each slide only the research it needs | 95,600 | **16.9x** |
+| level | change | tokens/deck | vs before | status |
+|---|---|---|---|---|
+| **L0** | 240k chars on every call | 1,616,600 | 1.0x | was |
+| **L1** | cut `excerpt_chars` for cloud | 368,600 | 4.4x | **rejected** |
+| **L2** | send each call only the research it needs | **134,600** | **12x** | **shipped** |
 
-### L1 — lower the cloud excerpt cap
+### L1 — lower the cloud excerpt cap *(rejected)*
 
-One line in `config/models.yaml`. Immediate, no new code, and it costs
-grounding quality: the writer sees less of the research, so a fact that would
-have supported a slide may not be in front of it.
+Recommended here first as a stopgap, then dropped. Attempting it failed
+`test/transport.test.js`, which asserts the cloud excerpt is *strictly deeper*
+than the local one — a deliberate invariant, written when a cloud model was
+chosen because it has the window for more research.
 
-Worth doing today as a stopgap. Not the answer.
+That test was right. Auto is still the free college gateway, so cutting the
+excerpt today buys nothing and costs grounding, and L2 makes the cap moot
+anyway. A failing test that encodes a real premise is worth more than a
+stopgap.
 
-### L2 — retrieve per slide *(the one to build)*
+### L2 — retrieve per call *(shipped)*
 
 Send each slide the research that slide needs, rather than all of it. The plan
 already says what every slide is about — `spec.purpose`, `spec.section` and the
@@ -123,8 +129,22 @@ relevant; the rest is distractor. The grounding guard and the coherence pass
 both exist to catch failures that this noise contributes to. Less context, more
 signal.
 
-It also composes with everything already built: the meter will report exactly
-what it saved.
+Built as BM25 over heading-anchored passages in `src/ai/retrieve.js` — lexical,
+deterministic, no dependency and no model. An embedding index would score
+better and cannot be justified: it needs a model to build, a store to keep and
+an invalidation rule, to improve on a job where query and corpus share a
+vocabulary by construction.
+
+**The deck title had to come out of the query, and that was the whole
+difference.** Every passage in the corpus shares the title's terms — that is
+why the corpus was researched — so including them pulled every slide toward
+the same generically-on-topic passages. Measured on the real V2G deck: with
+the title, any two slides shared 62% of their top passages and the whole deck
+reached 16 of 55; without it, 24% and 36 of 55.
+
+The report writer had the identical defect and took the identical fix, with the
+section's focus sentence as its query. References keep the whole corpus, since
+that section is drawn from the sources rather than from an argument.
 
 ### L3 — prompt caching
 
@@ -157,11 +177,11 @@ margin.
 
 At L2, with the cap set so worst case still returns 30%:
 
-| model band | cap for ₹99 | median user (25%) | cost | **margin** |
+| model band | ₹/deck | cap for ₹99 | median user (25%) | **margin** |
 |---|---|---|---|---|
-| budget | 56 decks | 14 decks | ₹17.1 | **83%** |
-| cheap-mid | 14 decks | 4 decks | ₹19.5 | **80%** |
-| mid | 2 decks | 1 deck | ₹24.4 | **75%** |
+| budget | ₹1.72 | 40 decks | 10 decks | **83%** |
+| cheap-mid | ₹6.86 | 10 decks | 3 decks | **79%** |
+| mid | ₹34.32 | 2 decks | 1 deck | **65%** |
 
 Why each side wins:
 
@@ -216,14 +236,16 @@ over-estimate, so a reservation refuses early rather than overspending.
 
 ## 7. Recommended order
 
-1. **L1 now** — one config line, 4.4x, buys room while L2 is built.
-2. **L2 next** — per-slide retrieval. The real fix, and it should improve
-   output quality rather than trade against it.
-3. **Measure** — one paid run, correct the constants in `src/usage.js`.
+1. ~~L1~~ — attempted and rejected; see above.
+2. ~~L2~~ — **shipped.** 12x measured.
+3. **Measure** — one paid run, correct the constants in `src/usage.js`. Still
+   the outstanding item, and now the cheapest it will ever be to do.
 4. **Then choose the tier numbers**, using the table in §5 against whichever
    provider was actually picked.
 5. **Then the refusal surface**, which is the last thing between a working
    meter and a working checkout.
+6. **L3, prompt caching**, only if the numbers still need it after a real
+   measurement. Retrieval has taken most of what caching would have.
 
 Payments integration itself is a day or two (`PRODUCTION.md` §2.1). The legal
 and entity work (§2.2) is the real cost and is unaffected by any of this.
