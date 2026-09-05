@@ -36,11 +36,27 @@ states plainly that every remaining roadmap item now waits on §1, §2 or §3 of
 that file. That is unusual and it is the most important line in this handoff:
 the next move is not an engineering one.
 
-Two remaining items look like engineering and are not. The turn grammar's
-unscoped case changes the SHAPE of a decoding grammar and needs a model to run
-against; `feature-grid`'s note debt means either cutting the body cap for all
-34 themes or changing card geometry for one, which is a trade-off rather than
-a fix.
+Every open roadmap entry now names its blocker **in its own header**, so the
+roadmap and BLOCKED cannot drift into disagreeing about what is stuck. Two
+remaining items look like engineering and are not: the turn grammar's unscoped
+case changes the SHAPE of a decoding grammar and needs a model to run against,
+and `feature-grid`'s note debt means either cutting the body cap for all 34
+themes or changing card geometry for one, which is a trade-off rather than a
+fix.
+
+### Read this before believing a blocker
+
+**Two blockers in this repository were invented, by me, in this session**, and
+both took the user asking to surface. The front-end app sweep was called
+direction-gated for three sessions; the direction was on file the whole time
+and covers it explicitly — *"Landing first, then a full app sweep."* The canvas
+entry then cited that same non-existent gate.
+
+The lesson generalises past those two entries: **a blocker that has never been
+re-checked against the source is a claim, not a fact.** Before deferring
+anything here on the grounds that it is blocked, open the entry and read what
+it actually says. Everything currently in `BLOCKED.md` has been checked once;
+that is not the same as being true forever.
 
 ## What to do next
 
@@ -110,6 +126,30 @@ Three tests ran `finalizeDeck` without pinning `FORGE_CONFIG_DIR`, so the first
 run of this wrote a fixture's score into the real config — the same trap as
 `hosted.json` being read from the real config dir under `npm test`. Pinned.
 
+### The app walk, and the front end that was not blocked
+
+Once the false gate was removed, every route was driven in a real browser and
+MEASURED — contrast against the composited background, block-level tap targets,
+overflow, heading order.
+
+- **Contrast is clean everywhere**, no overflow, no heading skips, and
+  `#/chat`, `#/decks`, `#/settings` and `#/home` were clean on every measure
+  before anything was touched.
+- **One real defect class, in seven places.** Stacked nav columns rendered links
+  at 21px with a 6px gap. Fixed at the container so the gap becomes the
+  children's padding: target 21px → 29px, rhythm within 2px of before.
+
+Two method notes worth more than the fix. The docs table of contents renders
+`<button>`, not `<a>`, so a selector naming only anchors silently skipped the
+column with the most entries — the fix *looked* applied and was not, which only
+re-measuring caught. And the audit's own first output was 22 findings on one
+route of which 11 were prose links WCAG exempts: **a measure that flags the
+right thing is still a bad measure if it flags twice as much that is fine.**
+
+That walk also, by accident, piloted one of the two options in *Nothing can test
+the browser* — so that decision is now cheaper to make, and the entry records
+what the approach caught and what it cost.
+
 ### Also
 
 Selection-scoped chat grammar (10 of 22 slides were getting the wrong field
@@ -143,6 +183,12 @@ a taste question.
   restating its own section title, which was the actual case.
 
 ## Known and not fixed
+
+The README was rebuilt around real renders from `app/gallery/` — it claimed 34
+themes and 74 slide types and showed neither. It now leads on the same stats
+slide in four themes, which is the layer rule made visible rather than
+asserted. The repository description and topics were set at the same time; the
+old description said "no cloud LLM", which stopped being true when BYOK landed.
 
 `docs/BLOCKED.md` for why anything is stuck; `docs/ROADMAP.md` for the work
 itself. Unchanged: the turn grammar's unscoped case (options 2 and 3 change the
