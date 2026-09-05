@@ -12,7 +12,7 @@ Three kinds of blocker, and they are not equally bad:
 |---|---|---|
 | **External** | outside anyone's control here; wait or route around | 1 |
 | **Operator** | one person, one account, usually under an hour | 4 |
-| **Decision** | needs a judgement nobody should make unilaterally | 3 |
+| **Decision** | needs a judgement nobody should make unilaterally | 2 |
 
 Every open item in `docs/ROADMAP.md` now states which of these it waits on, in
 its own header — so the two files cannot drift into disagreeing about what is
@@ -144,22 +144,21 @@ cannot forecast.
 forgets to cancel is how you earn refund requests on a campus where everyone
 knows each other.
 
-### 3.3 The front end, and the landing page
+### 3.3 ~~The front end, and the landing page~~ — not blocked
 
-**Blocks:** the app sweep, and the refusal surface that sits inside it.
+**Struck.** A direction WAS agreed and it covers the app sweep as well as the
+landing page — the roadmap entry records it verbatim: *"Landing first, then a
+full app sweep."* Treating the app half as direction-gated was a
+misreading, and it kept the item off three sessions' lists for no reason.
 
-The roadmap entry says to agree direction before building, because it changes
-what a surface IS rather than whether it works.
+What is left there is a polish pass with no named defects, re-scoped off
+HIGHEST, and it needs a walk rather than a decision.
 
-**The half of the refusal surface that is not a taste question is done.** The
-usage panel shows the trial and how much of it is gone, because a refusal that
-arrives with no warning reads as the product breaking — and the panel already
-fetched that data and discarded it. The refusal message itself names both ways
-out, a paid tier and BYOK.
-
-What is left IS a taste question, and it is blocked on more than taste: where a
-429 becomes a Buy button and what it says depends on §3.2 being settled, and
-there is no checkout to point it at.
+The one genuinely blocked piece is the **refusal as an offer**, and it waits on
+§3.2 rather than on any question of taste: where a 429 becomes a Buy button and
+what it says depends on whether a purchase is credits or a subscription, and on
+there being a checkout to point at. The half that needed neither — the usage
+panel showing the trial and how much of it is spent — is built.
 
 ---
 

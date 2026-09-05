@@ -3540,21 +3540,27 @@ wrong in a way worth keeping:
 
 ### [ ] The front end, and the landing page
 
-*Priority: HIGHEST. No model needed — **but a direction has to be agreed for
-the app half before any of it is written**, which is why it is not moving.
-`docs/BLOCKED.md` §3.3.*
+*Priority: medium, down from HIGHEST. No model, and **not blocked** — the
+direction below covers the app sweep as well as the landing page, and says so:
+"Landing first, then a full app sweep."*
 
-Direction was agreed for the LANDING page and it was rebuilt against it. The
-app half — the surfaces you live in rather than the front door — has no agreed
-direction, and it changes what a surface IS rather than whether it works, so
-the working agreement says to ask and wait rather than start.
+**Re-scoped.** This entry was the biggest thing on the list when it was
+written, and almost all of it has since shipped: the design system, the landing
+rebuild, the deck workspace (its own entry, ticked, and the largest piece of
+the app half), project navigation, the report-first entry flow, the briefing
+flow, the density sweep's first pass, and 390px verification across every
+project page and `SlideEditor.jsx`.
 
-One piece of it did not need the decision and is done: the usage panel shows
-the free trial and how much of it is spent, because a refusal arriving with no
-warning reads as the product breaking, and the panel already fetched that data
-and discarded it. What is left of the refusal surface — where a 429 becomes an
-offer, and what it says — waits on the subscription-vs-credits decision and on
-there being a checkout to point at.
+Left at HIGHEST it kept reading as a large blocked project, and it is neither
+large nor blocked. What remains is a polish pass with **no named defects behind
+it** — which is the honest description and also the reason it needs a WALK
+rather than a plan: the density sweep's first pass found what it found by
+opening every route and looking, not by reasoning about what might be wrong.
+
+The refusal-as-offer is the one piece that genuinely waits, and not on this
+entry's direction: it waits on the subscription-vs-credits decision and on
+there being a checkout to point at. The half that did not — the usage panel
+showing the free trial and how much of it is spent — is done.
 
 **The answers.** Reference: all four of Linear/Vercel, Framer/Gamma,
 Stripe/Raycast and Apple, which resolve to one thesis — *the interface is
