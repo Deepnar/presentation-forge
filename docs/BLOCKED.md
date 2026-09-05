@@ -147,11 +147,15 @@ knows each other.
 The roadmap entry says to agree direction before building, because it changes
 what a surface IS rather than whether it works.
 
-One piece of it is *not* a taste question and could be split out: **the refusal
-surface.** The data already exists — a 429 carries the tier and what is left of
-every budget, and `/api/auto/usage` reports the same including the trial — and
-nothing renders it. "12 of 12 used" beside a price converts; a bare error does
-not.
+**The half of the refusal surface that is not a taste question is done.** The
+usage panel shows the trial and how much of it is gone, because a refusal that
+arrives with no warning reads as the product breaking — and the panel already
+fetched that data and discarded it. The refusal message itself names both ways
+out, a paid tier and BYOK.
+
+What is left IS a taste question, and it is blocked on more than taste: where a
+429 becomes a Buy button and what it says depends on §3.2 being settled, and
+there is no checkout to point it at.
 
 ---
 
