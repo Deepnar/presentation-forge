@@ -5097,7 +5097,7 @@ is charged for two model calls.
 >   nothing has measured a real run. It wants calibrating before anyone is
 >   charged against it.
 
-### [ ] Add a slide to a finished deck, written like the others
+### [x] Add a slide to a finished deck, written like the others
 
 *Priority: high. No direction needed — the primitive exists and the surface
 does not.*
@@ -5145,6 +5145,23 @@ more headroom and wants to spend it on the deck they already have.
 > free. Build it on `writeSlide` rather than on `runTurn` and the grammar
 > question does not arise.
 
+> **Learned.**
+>
+> - **A capability is not a feature.** `insert_slide` was in the ops grammar
+>   the whole time and chat could emit it, which is why this read as done. What
+>   was missing was a surface and — far more importantly — that the slide be
+>   written by the WRITER rather than the chat path. The op existing is what
+>   made the gap invisible.
+> - **The writer must be shown the deck up to the insertion point.** It is
+>   handed "SLIDES SO FAR"; passing the whole deck would tell it that slides
+>   after this one had already been said.
+> - **The type has to be decided before the grammar can be built.** `onlyTypes`
+>   scopes the ops schema, so asking the model which type it wants would be a
+>   round trip to answer a question the deck can answer itself. Choosing by
+>   least-used family gives five different families over five inserts.
+> - **The plan is not bookkeeping.** A slide in deck.yaml but not plan.yaml is
+>   lost at the next replan and never given a presenter.
+
 ### [ ] A provider key, so the money figures stop being derived
 
 *Blocked on the operator, not on code. Expected — a key is coming, but not
@@ -5170,7 +5187,7 @@ The same key unblocks: the report content run, chat and convert turns through
 the UI, `--upload` research, and the research-to-page flow. Those are the
 sessions to plan for the day it arrives.
 
-### [ ] The free tier should be a trial, not an allowance
+### [x] The free tier should be a trial, not an allowance
 
 *Priority: high, and it decides what the paid tiers can be. No model needed.*
 
@@ -5209,6 +5226,22 @@ Email confirmation already exists and is enforced whenever SMTP is configured
 > **Decide alongside this**: whether paid is a subscription or non-expiring
 > credits. A student's need is bursty — nothing for two months, four decks in
 > exam week — so credits fit the use and subscriptions fit the revenue.
+
+> **Learned.**
+>
+> - **A rolling window cannot bound anything.** Every cap in the file was one,
+>   which is right for fair use on a free gateway and wrong the moment the key
+>   costs money: waiting refills it, so exposure per account is unbounded.
+> - **Derive the counter from rows and the prune will refill it.**
+>   `pruneAutoEvents` deletes past 30 days, so a lifetime cap computed from
+>   `auto_events` would quietly reset every month — the exact property the cap
+>   exists to remove. It is a running total on the account.
+> - **The remedy has to reach the new limit.** `clearAutoEvents` is the
+>   operator's only lever for someone wrongly capped, and it would otherwise
+>   not have worked on the one limit that never recovers by itself.
+> - **Two limits cannot both be the binding one in a test.** The trial and the
+>   rolling caps needed separate fixtures; a test where the wrong one refuses
+>   is a test about nothing.
 
 ### [ ] Surfaces nothing has ever run
 
@@ -5452,13 +5485,15 @@ running in parallel with this one.
   single-token value and Title Case held to the last word as deliberate. The
   bias stays toward flagging: a cut field that ships is worse than a rewrite
   that was not needed.
-- **The coherence pass missed three near-identical headlines.** On the V2G
-  deck, slides 18, 21 and 22 all said a version of "Scaling V2G Requires
-  Cross-Sector Collaboration". The REPORT half of this had a mechanical cause
-  and is fixed — its writer was told not to repeat other sections while being
-  shown none of them. The deck half is unexamined and may be the same shape of
-  problem: check what the coherence pass is actually given before assuming the
-  comparison is at fault.
+- **[x] The coherence pass missed three near-identical headlines.** Not a
+  faulty comparison — there was none. The pass asked a reviewer about topical
+  drift and about data with no point, and never about repetition. It is now
+  computed rather than asked about, because deciding whether slide 21 restates
+  slide 18 means holding the whole deck in view and the reviewer sees a digest.
+  Dividers are compared but never rewritten, which is what exposes the real
+  defect: slide 18 is a section divider and slide 21 is a `framework` with the
+  identical headline. Four real duplicates across the nine decks on disk, no
+  false positives.
 - **`feature-grid` carries two lines of speaker-note debt on `minimal-muji`** —
   the only failure in the `--notes` sweep. **Diagnosed:** it is a 1pt gap, not
   the 2pt the sweep used to claim. `minimal-muji` sets body at 13pt by design

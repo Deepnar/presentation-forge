@@ -1,136 +1,122 @@
-# Handoff — 2026-09-05, the report's structure: read it, do not hardcode it
+# Handoff — 2026-09-05, metering, retrieval, and the price that made both necessary
 
-Everything is on `main`. `npm test` is **681 passing** (was 660; every new test
-was run against the old code and seen to fail first). `themematrix` is clean
-across 34 themes. The working tree is clean.
+Everything is on `main`. `npm test` is **776 passing** (was 660 at the start of
+the day). `themematrix` is clean across 34 themes; `--notes` has its one known
+`feature-grid` failure, now correctly stated. The working tree is clean.
 
 **Start here.** `AGENTS.md` is the working agreement. `CLAUDE.md` is the
-operational map. `docs/PRODUCTION.md` is what stands between here and real
-users, and is the thing to read before planning a session. `docs/TRAPS.md` is
-the cross-cutting failure list and gained five entries.
+operational map. Two files are new and change how sessions should run:
 
-## No model was available this session
+- **`docs/BLOCKED.md`** — every blocker in one place, split into external /
+  operator / decision, each naming who can clear it. Read it before concluding
+  anything is stuck.
+- **`docs/ECONOMICS.md`** — what a deck costs to produce and what it can be
+  sold for. Read it before changing anything that sends tokens.
 
-Both backends were out, which shaped everything below:
+And one rule now written into both agreement files: **`docs/ROADMAP.md` is the
+only place future work is recorded**, written there in the session it is
+discussed. Work had accumulated in `PRODUCTION.md` §4 and §5 in parallel, and
+whichever list was not being edited went stale.
 
-- **The TCET gateway is still wedged.** Re-probed today: `/v1/models` answers in
-  **0.7s**, a two-token `/v1/chat/completions` still times out at **90s**. Same
-  failure shape as before — healthy-looking listing in front of a dead backend.
-- **Local Ollama was in use for other work** and deliberately not touched.
+## No model was available
 
-So the report's *content* question is still unanswered, and everything below was
-verified three other ways: grammar analysis (can the right answer be spelled at
-all?), a stub that obeys every bound it is handed, and **rendering real `.docx`
-files and reading them back with `pdftotext -layout`**.
+Both backends were out all day. The gateway is still wedged — re-probed:
+`/v1/models` in 0.7s, a two-token completion timing out at 90s. Local Ollama was
+in use for other work and deliberately untouched. Everything below was verified
+by grammar analysis, by stubs that obey the bounds they are handed, and by
+rendering artefacts and looking at them.
 
 ---
 
 ## What to do next
 
-**1. Generate a report on Auto and read it.** This is unchanged as the top item
-and is now the *only* open question on the report path — whether the prose the
-model writes into the sections is any good. The machinery underneath it is
-verified (below); a stub cannot answer this and neither can local.
+**1. Get a provider key and run one deck.** It settles every money figure at
+once — `meterSummary()` reports per-role token spend — and it is now the
+cheapest it will ever be, about a rupee at the budget band. It also unblocks
+report content quality, chat and convert through the UI, `--upload` research
+and the research-to-page flow. `docs/BLOCKED.md` §2.1.
 
-```bash
-FORGE_HOSTED=1 npm run forge -- report-new "<brief>" --depth full
-FORGE_HOSTED=1 npm run forge -- deck-from-report <slug>
-```
+**2. SMTP.** Fifteen minutes, and it stopped being optional: with a lifetime
+trial, making a new account is the way around the cap, and confirmation is the
+cheapest deterrent.
 
-Read the artefact back, not `report.yaml`: render the `.docx` through the donor,
-`soffice --headless --convert-to pdf`, then `pdftotext -layout`.
-
-**2. The turn grammar for chat** (`PRODUCTION.md` §4.1) — `buildOpsSchema` still
-merges all 74 types into one flat object for chat. The critic path is fixed;
-chat is not, and the product vision puts chat at the centre. Needs no model to
-fix, and two candidate directions are already written up.
-
-**3. The browser-coverage direction** (§1.4) — *needs a decision before
-building.* Three total outages have shipped that no test could reach. The
-recommendation on file is the scripted pass, not component tests.
+**3. Two decisions** — browser coverage, and subscription vs credits.
+`docs/BLOCKED.md` §3 states both with a recommendation.
 
 ---
 
 ## What this session did
 
-The report is the graded artefact and had never been run end to end. It could
-not be run end to end without a model — so the half that does not need one was
-run instead, and it found four defects, all of the same family as the five
-"the right answer was unrepresentable" findings from the previous session.
+### The report path, audited without a model
 
-**A team of four or fewer got a report with no body.** The section budget was
-`targetSections(identity, {min: 4})` — the deck's "one part per presenting
-member" rule, borrowed. It counted the TOTAL sections with a floor of four,
-while the prompt separately requires the four-section graded core, so every
-small team spent its whole budget on the frame and Theoretical Background,
-Application and Future Scope were unplannable. `report-new` is solo by
-construction and could produce nothing else. **This had already shipped** —
-`decks/topic-exploring-first-impressions-and-networ/report.yaml` has no body
-section. A report's structure is the institution's, not the team's.
+Four defects, all of the "the right answer was unrepresentable" family. The
+worst had already shipped: the section budget was the deck's team-sizing rule
+borrowed, so **any team of four or fewer got a report with no body section at
+all**, and `report-new` is solo by construction.
 
-**The section list was ours rather than the template's.** Now read from the
-donor (`parseDonorSections` → `reportStructureForDeck`), so a college whose
-report has a Methodology gets one by uploading its own template. The graded
-eight are the fallback.
+The section list is now read from the donor template (`parseDonorSections`), a
+topic can earn up to three sections of its own, and each section writer is
+shown the outline and what has already been written — the prompt told it not to
+repeat other sections while showing it none of them.
 
-**A section the topic earned was dropped.** The planner may now add up to three
-of its own; their position is decided during coercion, anchored to the last
-structural section listed before them and clamped so nothing can be planted
-after the References.
+### Metering, tiers, and a trial
 
-**The writer was told not to repeat sections it was never shown.** Each write
-call now carries the plan outline and the opening line of every section already
-written — and only prose that passed its own grammar.
+The quota metered "requests" while the operator is billed in tokens. The counts
+were never missing — `chat()` has always returned them and every caller threw
+them away. An async-local meter now adds them up, reservations settle at what a
+run actually cost, and accounts carry a tier.
 
-Alongside: `deck-from-report` read `meta.yaml` *after* planning (so a companion
-deck was always planned at the 24-slide default) and built its brief by walking
-the graded eight (so a custom section's prose would have been silently missing).
+Wiring it surfaced **four routes spending on the gateway with no quota check at
+all**: `report/generate`, `script`, `sweep`, and `resume`/`finalize`.
 
-### Verified by rendering, not by asserting
+The free tier is a **lifetime trial** rather than a rolling allowance, because a
+rolling window resets and exposure per account was unbounded. ~₹5–21 per signup
+once, against ₹110–439 per user per semester.
 
-- `renderReport` end to end on a real model-written `report.yaml`: 10 pages,
-  sections ordered, references numbered, and **the two-pass TOC page numbers
-  exact on all five sections**.
-- A report carrying a topic-specific section: numbered in sequence in both TOC
-  and body, its table rendered, the tail renumbered, page numbers exact.
-- The whole chain brief → plan → per-section write → assemble → validate →
-  render → `.docx` → PDF, against the real donor, producing nine sections with
-  the custom one in the right place.
-- All three pre-existing `report.yaml` files (none carrying the new `order`
-  field) render identically to before — the fallback path is intact.
+### The cost, which turned out to be the business question
+
+`writeSlide` sent the entire research excerpt on every call — 26 times for a
+22-slide deck, ~1.6M tokens, 98.9% of it input and almost all the same text
+again. At that price **₹99 bought three decks on the cheapest model and none on
+anything better**: there was no student price point that worked.
+
+Per-slide BM25 retrieval took it to ~135K, a measured **12×**. ₹99 now buys 40
+decks at the budget band, 10 on a good model, at ~80% margin.
+
+### Also
+
+Selection-scoped chat grammar (10 of 22 slides were getting the wrong field
+shapes; now 0). Six status frames the UI could not label. The `Auto` rename off
+one institution's name, with both spellings resolving. Inserting a slide into a
+finished deck, written by the writer rather than by chat. `looksCutAtCap`. The
+coherence pass's repetition blindness.
 
 ---
 
 ## Instruments worth reusing
 
-- **A stub that ignores the bound it is handed makes the whole file blind to
-  bounds.** The report fake returned six sections whatever `maxItems` said. That
-  single line is why a solo report with no body survived a passing suite.
-  Obedience has to be total: the first corrected stub honoured the plan bound
-  and still overran the Acknowledgement's two-paragraph cap, and the dropped
-  section read as a planning bug.
-- **A test can freeze a defect as an intention.** The old test asserted the plan
-  came out as exactly `[Abstract, Introduction, Conclusion, References]` under
-  the name "small team, small report". That list *is* the defect.
-- **Look for the thing already violating the constant before assuming it is
-  load-bearing.** `REPORT_SECTIONS` looked foundational; it was one `filter`.
-  `IMAGE_CREDITS` had been proving the renderer was name-agnostic for as long
-  as it had existed.
-- **When a fixed list stops being fixed, grep the constant, not the function you
-  were editing.** `reportBrief` walked it too, three files away.
-- **Two individually defensible bounds can be jointly unsatisfiable.** Write
-  down one instance that satisfies both and check it is the answer you wanted.
+- **A stub that ignores the bound it is handed makes a whole file blind to
+  bounds.** One line — a fake returning six sections whatever `maxItems` said —
+  is why a solo report with no body survived a passing suite.
+- **A test can freeze a defect as an intention.** "small team, small report"
+  asserted the plan came out as exactly the four graded-core sections. That
+  list *is* the defect.
+- **Ask what the code already violates before assuming a constant is
+  load-bearing.** `REPORT_SECTIONS` looked foundational; it was one `filter`,
+  and `IMAGE_CREDITS` had been proving the renderer name-agnostic for as long
+  as it existed.
+- **When a fixed list stops being fixed, grep the constant, not the function
+  you were editing.** `reportBrief` walked it three files away.
+- **Measure before defending a number.** The first token estimate was six times
+  too low, in the direction that made the product look affordable.
+- **The obvious protection can hide the defect.** Excluding dividers from the
+  repetition comparison protects structure and conceals a content slide
+  restating its own section title, which was the actual case.
 
 ## Known and not fixed
 
-`PRODUCTION.md` §5 and §6 carry the full list. Unchanged this session: the turn
-grammar still merges every type for chat; the image progress line prints a slide
-index where a counter belongs; `looksCutAtCap` false-positives on at-cap
-headlines; `feature-grid` carries two lines of speaker-note debt on
-`minimal-muji`. The **deck** side of the near-identical-headline problem is
-still unexamined — the report side of it had a mechanical cause and is fixed,
-and the deck side may be the same shape.
-
-`decks/vehicle-to-grid-integration-for-electric-bus` remains the fixture worth
-keeping. `decks/topic-exploring-first-impressions-and-networ` is now also worth
-keeping: its `report.yaml` is the shipped example of a report with no body.
+`docs/BLOCKED.md` for why anything is stuck; `docs/ROADMAP.md` for the work
+itself. Unchanged: the turn grammar's unscoped case (options 2 and 3 change the
+SHAPE of a decoding grammar and should not land without a model), the refusal
+surface in the UI, and `feature-grid`'s note debt on `minimal-muji` — a 1pt gap
+on a deliberately compact theme, not the 2pt the sweep used to claim.
