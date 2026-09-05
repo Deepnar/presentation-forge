@@ -9,6 +9,10 @@ import YAML from "yaml";
 // to point at a scratch dir before the pipeline is imported.
 const scratch = await mkdtemp(path.join(tmpdir(), "forge-genstatus-"));
 process.env.FORGE_DECKS_DIR = scratch;
+// Pinned for the same reason FORGE_DECKS_DIR is: finalize now records the
+// deck's score, and an unpinned config dir writes that row into the real
+// config/scores.jsonl — a test polluting the operator's history.
+process.env.FORGE_CONFIG_DIR = process.env.FORGE_CONFIG_DIR ?? path.join(scratch, "config");
 
 const { generationStatus } = await import("../src/ai/pipeline.js");
 

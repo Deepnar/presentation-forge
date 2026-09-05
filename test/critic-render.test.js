@@ -10,6 +10,10 @@ import JSZip from "jszip";
 // at a scratch dir before importing the pipeline.
 const scratch = await mkdtemp(path.join(tmpdir(), "forge-critic-"));
 process.env.FORGE_DECKS_DIR = scratch;
+// Pinned for the same reason FORGE_DECKS_DIR is: finalize now records the
+// deck's score, and an unpinned config dir writes that row into the real
+// config/scores.jsonl — a test polluting the operator's history.
+process.env.FORGE_CONFIG_DIR = process.env.FORGE_CONFIG_DIR ?? path.join(scratch, "config");
 
 const { finalizeDeck } = await import("../src/ai/pipeline.js");
 const { render } = await import("../src/render.js");

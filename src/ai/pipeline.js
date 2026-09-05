@@ -16,8 +16,10 @@ import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
 import { assignPresenters } from "./team.js";
 import { generateReport } from "./report.js";
+import { scoreDeck } from "../deckscore.js";
+import { recordScore } from "../scorelog.js";
 import { loadIdentity, deepMerge } from "./identity.js";
-import { chatJSON, researchProfile, researchExcerptCap } from "./ollama.js";
+import { chatJSON, researchProfile, researchExcerptCap, authorTransport } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
@@ -868,6 +870,31 @@ export async function finalizeDeck({
 
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();
+
+  // Score the finished deck and keep the number.
+  //
+  // `scoreDeck` has always existed and has always been run by hand, which
+  // answers "is this deck any good" once and then loses the answer. Recorded at
+  // generation it becomes a different instrument: the next session can ask what
+  // the last ten runs scored, on which backend, and see a drop before reading a
+  // slide. Never allowed to fail the generation — the deck is the artefact and
+  // this is bookkeeping about it.
+  try {
+    const scored = await scoreDeck(tr.grounded.deck, { research: researchText, deckDir: dir });
+    meta.score = scored.score;
+    meta.scoredAt = meta.updatedAt;
+    // Which backend produced it. A score is not comparable across backends —
+    // that is why roleAudit reports the model actually used — and a row that
+    // cannot say which one is a row nobody can act on.
+    await recordScore({
+      ...scored,
+      slug,
+      kind: "generate",
+      model: model ?? null,
+      transport: await authorTransport({ model }).catch(() => null),
+    });
+  } catch { /* a scoring failure is not a generation failure */ }
+
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
   onProgress?.({ status: "rendering" });
