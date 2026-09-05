@@ -58,8 +58,9 @@ const SETTINGS = {
   // what the operator is actually billed for.
   //
   // DERIVED from the slide budget, not chosen: 90 slides a week is about four
-  // 22-slide decks, and `estimateTokens` puts one of those at ~1.6M tokens, so
-  // four is ~6.5M. Stating the SAME allowance in both units is the point — the
+  // 22-slide decks, and `estimateTokens` puts one of those at ~135K tokens
+  // now that each call retrieves only the research it needs, so four is
+  // ~550K. Before retrieval the same four decks were ~6.5M. Stating the SAME allowance in both units is the point — the
   // two caps have already contradicted each other twice. It shipped at 80,000,
   // which is a twentieth of one deck, and was briefly 1,000,000, which is
   // still only two thirds of one. Both were survivable only because nothing
@@ -70,7 +71,7 @@ const SETTINGS = {
   // every author call. If this ever runs against a key somebody pays for, the
   // lever is that re-send — prompt caching, or a smaller per-slide excerpt —
   // and NOT this number, which merely says how many decks a week is free.
-autoWeeklyTokens: { env: "FORGE_AUTO_WEEKLY_TOKENS", label: "Tokens per week", parse: posInt, fallback: 6500000 },
+autoWeeklyTokens: { env: "FORGE_AUTO_WEEKLY_TOKENS", label: "Tokens per week", parse: posInt, fallback: 550000 },
 };
 
 function posInt(v) {

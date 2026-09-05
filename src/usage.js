@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+import { CALL_RESEARCH_CHARS } from "./ai/retrieve.js";
 
 /**
  * What one pipeline operation actually cost, in tokens.
@@ -87,24 +88,20 @@ export function meterSummary(m) {
 export const CHARS_PER_TOKEN = 4;
 
 /**
- * The research excerpt sent with EVERY author call, in characters.
+ * The research one author call carries, in characters.
  *
- * This is the whole cost model, and it is not the writing. `writeSlide` puts
- * `RESEARCH NOTES\n${research}` in the user message of every single slide
- * call, so a 22-slide deck sends the excerpt 22 times, plus once more for the
- * plan and for each of the field-length, coherence and script passes. The
- * slides' own output is noise beside it — a slide is perhaps 800 tokens out
- * against 60,000 in.
+ * This is the whole cost model. `writeSlide` and `writeSection` put research
+ * into the user message of every call, so a 22-slide deck pays for it 26 times
+ * — and the slides' own output is noise beside it, perhaps 800 tokens out
+ * against the research in.
  *
- * 240,000 is the CLOUD figure from config/models.yaml, and the cloud figure is
- * the right one here because the metered path is Auto, which is an
- * openai-compatible gateway and therefore the cloud transport. The local
- * default is 80,000 and is not metered.
- *
- * Real research files on disk run 126,000 to 594,000 characters, so this cap
- * binds for most decks rather than being a ceiling nothing reaches.
+ * It is now the RETRIEVAL budget, not the excerpt cap. `excerpt_chars` in
+ * config/models.yaml bounds what is read off disk into the retrieval pool;
+ * `CALL_RESEARCH_CHARS` bounds what any one call is actually shown, and that
+ * is what is billed. Before retrieval the two were the same number and a deck
+ * cost ~1.6M tokens; they are not the same number any more.
  */
-export const RESEARCH_EXCERPT_CHARS = 240_000;
+export { CALL_RESEARCH_CHARS as RESEARCH_EXCERPT_CHARS } from "./ai/retrieve.js";
 
 /** Prompt overhead per author call that is not the research: the system
  *  prompt, the slide catalogue, the theme voice, the deck so far. */
@@ -134,7 +131,7 @@ export const RESEARCH_CARRYING_PASSES = 4;
  */
 export function estimateTokens({ slides = 0, research = false, depth = null, excerptChars = null } = {}) {
   const n = Number(slides) > 0 ? Number(slides) : 0;
-  const excerpt = Math.max(0, Number(excerptChars ?? RESEARCH_EXCERPT_CHARS));
+  const excerpt = Math.max(0, Number(excerptChars ?? CALL_RESEARCH_CHARS));
   const perExcerpt = research || n > 0 ? Math.round(excerpt / CHARS_PER_TOKEN) : 0;
 
   // A report section is a bigger write than a slide, and there are eight of

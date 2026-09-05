@@ -261,3 +261,24 @@ test("the free tier's SHIPPED token budget agrees with its slide budget", async 
     `the two budgets disagree: ${decksByTokens.toFixed(1)} decks by tokens, ${decksBySlides.toFixed(1)} by slides`,
   );
 });
+
+test("the estimator's research size tracks what a call actually carries", async () => {
+  // A spend model reading a stale number over-reserves, refusing people for
+  // tokens that cannot be spent. Before retrieval this had to track
+  // `excerpt_chars` in models.yaml; now that only bounds the POOL read off
+  // disk, and what is billed is the retrieval budget.
+  const { RESEARCH_EXCERPT_CHARS } = await import("../src/usage.js");
+  const { CALL_RESEARCH_CHARS } = await import("../src/ai/retrieve.js");
+  assert.equal(RESEARCH_EXCERPT_CHARS, CALL_RESEARCH_CHARS);
+});
+
+test("retrieval is what makes the free tier affordable, and the budget says so", async () => {
+  const { settingDefault } = await import("../src/runtime.js");
+  const { estimateTokens } = await import("../src/usage.js");
+  const perDeck = estimateTokens({ slides: 22, research: true });
+  // Before per-slide retrieval a deck was ~1.6M tokens and no student price
+  // point worked at all (docs/ECONOMICS.md).
+  assert.ok(perDeck < 400_000, `a deck should not cost ${perDeck.toLocaleString()} tokens`);
+  const decks = settingDefault("autoWeeklyTokens") / perDeck;
+  assert.ok(decks >= 3, `the weekly budget buys only ${decks.toFixed(1)} decks`);
+});
