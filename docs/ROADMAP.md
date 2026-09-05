@@ -5042,6 +5042,61 @@ the topic-specific material the deck most needs.
 >   every section including a custom one, and that the tail renumbers. Nothing
 >   asserted on `report.yaml` could have shown that.
 
+### [x] Metering in the unit the operator is actually billed in
+
+*Priority: high, no model needed. `PRODUCTION.md` §2.3 called this the first
+thing to do on the payments track, because nothing can be priced honestly until
+it is done.*
+
+The quota counted "requests". The operator is billed in tokens. `auto_events`
+has had a `tokens` column since it was created and every call site wrote 0 into
+it, so `weeklyTokens` was a cap nothing could reach and a 24-slide dense deck
+with deep research cost exactly what a 10-slide sparse one did.
+
+**The numbers were never missing.** `chat()` has always returned `promptCount`
+and `evalCount` for both transports. Every caller above threw them away. What
+was missing was somewhere to add them up, which is now an async-local meter —
+the same shape as `src/account.js`, for the same reason.
+
+**Four routes were spending with no quota check at all**, found while wiring
+it: `report/generate` (the entire graded report), `script` (a model call per
+slide), `sweep` (rewrites every slide) and `generate/resume`/`finalize` (the
+rest of a plan, then the field-length, coherence, image and critic passes).
+
+**Tiers**, so an account can be given headroom without raising the caps for
+everybody. **Reserve-then-settle**, so a run that failed after two model calls
+is charged for two model calls.
+
+> **Learned.**
+>
+> - **A column that exists is not a feature that works.** `tokens` was in the
+>   schema, in `recordAutoEvent`'s signature, in `checkAutoLimits`' comparison
+>   and in the limit config. Every layer was built. The value was 0 at every
+>   call site, so the whole chain was decoration — and it read as finished in
+>   every file you might open to check.
+> - **Two caps in different units silently disagree.** The token budget shipped
+>   at 80,000 against a slide budget of ~4 decks a week; the estimator puts one
+>   22-slide researched deck at ~244,000. A third of a single deck. It could
+>   never bite because nothing counted, so the contradiction sat there. The
+>   test now asserts the two budgets agree, in decks.
+> - **Look for what a new subsystem reveals about the old one.** Wiring the
+>   meter meant visiting every route that reaches a model, which is the only
+>   reason anyone noticed that four of them had no quota check. The audit was a
+>   side effect of the feature, not a task.
+> - **Metering must follow the work, not the request, when the work outlives
+>   it.** `/generate` returns as soon as the run is registered so a client can
+>   drop and reattach; a request-scoped meter would have recorded almost
+>   nothing for the most expensive operation in the product.
+> - **An estimate is safe only because something reconciles it.** The
+>   reservation has to be taken before the cost is knowable. That is tolerable
+>   because `settleAuto` replaces it minutes later — without the second half,
+>   every estimate would be a permanent charge and the constants would have to
+>   be right first time.
+> - **The estimate is still an estimate.** `estimateTokens` is derived with its
+>   arithmetic written down rather than tuned, because the gateway is down and
+>   nothing has measured a real run. It wants calibrating before anyone is
+>   charged against it.
+
 ### [ ] Surfaces nothing has ever run
 
 *Priority: high. Some need a model, none needs the gateway specifically.*

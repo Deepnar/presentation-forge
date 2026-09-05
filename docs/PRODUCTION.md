@@ -101,30 +101,49 @@ activation, and `Legal.jsx` is a start. Days to weeks of paperwork.
 something carrying a college's name is a problem to solve before writing any
 code.
 
-### 2.3 Making the limits bind is where the engineering is
+### 2.3 Making the limits bind — mostly done
 
-`src/limits.js` is a good foundation built for the wrong purpose — fair use on
-the operator's key, not billing. The gaps, in the order they bite:
+`src/limits.js` was a good foundation built for the wrong purpose — fair use on
+the operator's key, not billing. The metering half is now built; what is left is
+the surface that sells against it, and a calibration run.
 
-- **Tokens are never recorded.** `recordAutoEvent` accepts a token count and
-  every call site passes zero: `reserveAutoOrThrow(email, slides)` in
-  `app/server/index.js` has a `tokens = 0` default and not one of its five
-  callers supplies it. So `weeklyTokens` (80,000) is a cap nothing can reach.
-  **You are billed in tokens and metering in "requests"** — a 24-slide dense
-  deck with deep research costs many times a 10-slide sparse one and both count
-  as 1. *Nothing can be priced honestly until this is fixed, and it is the first
-  thing to do.* It needs no model.
-- **No plan or tier.** Every account gets identical caps; the `users` table
-  (`src/db.js:39`) has no plan column. Per-plan limits are a small change once
-  the settings layer is used.
-- **Spend is taken up front and never reconciled.** `reserveAuto` holds the
-  budget before the run, which is right — but a failed generation still consumes
-  it. For fair use that is fine; for money it is a refund request. Reserve an
-  estimate, adjust to actual on completion, which is how metered APIs work.
-- **A refusal is a dead end, not a product surface.** A 429 saying "12 of 12
-  used" with a Buy button converts; a bare error does not.
+- **[x] Tokens are recorded.** `src/usage.js` is an async-local meter, attached
+  in the same middleware as the account; `chat()` adds every call's
+  `promptCount`/`evalCount` to it. Those numbers were never missing — the
+  gateway reports `usage.prompt_tokens`, Ollama reports `prompt_eval_count` —
+  they were discarded by every caller above. **You were billed in tokens and
+  metering in "requests"**; you are now metering in tokens.
+- **[x] Four routes spent with no quota check at all.** Found while wiring the
+  meter: `report/generate` (the whole graded report), `script` (one model call
+  per slide), `sweep` (rewrites every slide), and `generate/resume` +
+  `finalize` (the rest of a plan, then the field-length, coherence, image and
+  critic passes). All metered now.
+- **[x] Plans and tiers.** `users.plan`, and `PLANS` in `src/limits.js`. The
+  admin settings define FREE — unchanged from what every account already got —
+  and a paid tier is a multiple of it. Budgets scale; window length and
+  slides-per-deck do not, because those are the shape of one piece of work
+  rather than an allowance. `POST /api/admin/users/:email/plan`, admin-gated
+  and asserted so over HTTP.
+- **[x] Spend is reconciled.** `reserveAuto` still holds an estimate before the
+  run — it must, or concurrent requests all read an unspent budget — and
+  `settleAuto` replaces it with the measured total, including when the run
+  failed or was stopped. A generation settles its own reservation because it
+  outlives the request that started it.
+- **[x] The free tier's token budget was a third of one deck.** 80,000 against
+  a 90-slide week, which is about four 22-slide decks at roughly 244,000 tokens
+  each. Harmless only while nothing counted. Now 1,000,000 — four decks, the
+  same allowance said in the other unit — and admin-settable.
+  **It is an estimate and wants calibrating against a real gateway run before
+  anyone is charged against it.** `estimateTokens` in `src/usage.js` has the
+  arithmetic written down; replace the constants with measurements.
+- **A refusal is still a dead end in the UI.** The data is there now — a 429
+  carries the tier and what is left of each budget, and `/api/auto/usage`
+  reports the same so it can be seen coming — but nothing renders it. A 429
+  saying "12 of 12 used" with a Buy button converts; a bare error does not.
+  *This is front-end work and is what remains of this item.*
 - **Keep BYOK as the pressure valve.** A user on their own key costs nothing and
-  should not be metered at all — `resolveProviderKey` already works this way.
+  should not be metered at all — `resolveProviderKey` already works this way,
+  and `isAutoRoute` decides it before any of the above is consulted.
 
 **What actually makes people pay** is not enforcement, it is a free tier that is
 genuinely useful and bounded exactly where a real user needs more. The current

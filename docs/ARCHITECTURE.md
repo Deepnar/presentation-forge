@@ -1341,6 +1341,57 @@ modal over whatever view is open (an old `#/identity` hash resolves to chat).
   animating transform/opacity only, and a `prefers-reduced-motion` media query
   collapses them all to instant state changes.
 
+### Metering — tokens, tiers, and a reservation that settles
+
+`src/usage.js` and `src/limits.js`. The quota began as fair use on the
+operator's shared gateway key and is now the thing a price could be attached
+to, which required three changes.
+
+**The unit.** It metered "requests" — one plan, one generate, one chat turn —
+while the operator is billed in tokens, so a 24-slide dense deck with deep
+research and a 10-slide sparse one both counted as 1. `auto_events` has always
+had a `tokens` column and every caller wrote 0 into it. The counts were never
+missing either: `chat()` returns `promptCount`/`evalCount` for both transports
+(`usage.prompt_tokens` from an OpenAI-compatible gateway,
+`prompt_eval_count` from Ollama) and every caller above discarded them.
+
+`src/usage.js` is an async-local meter, the same shape and for the same reason
+as `src/account.js`: the model client sits five or six calls below the HTTP
+layer, and threading an accumulator through pipeline → generate → turn → chat
+would touch the CLI, which has no request to account to. The server attaches a
+meter in the same middleware that attaches the account. Outside a metered scope
+every call is a no-op. `chat` wraps `chatOnce` so the count is taken at the one
+point all four of its returns — streaming and non-streaming, two transports —
+pass through.
+
+**Reserve, then settle.** A reservation must be taken BEFORE the work or
+concurrent requests all read an unspent budget (`reserveAuto` is synchronous
+from count to insert for exactly that reason), and before the work the cost is
+unknown — so what is held is an estimate from `estimateTokens`. `settleAuto`
+replaces it with the measured total afterwards, including when the run failed
+or was aborted: a generation that died in its third slide still spent those
+three slides' tokens, and charging it a full deck is a refund request. A
+generation carries its OWN meter rather than the request's, because it outlives
+the request — `/generate` returns once the run is registered, and the client may
+drop and reattach.
+
+**Tiers.** `users.plan`, and `PLANS` in `src/limits.js`. The admin settings
+define the free tier, which is what every account was already given, so an
+operator who has tuned them keeps the budget they tuned; a paid tier is a
+multiple of it, so there is one place to adjust "how much is a little" and the
+paid tiers cannot drift out of proportion. Budgets scale; `windowHours` and
+`maxSlidesPerDeck` do not, because those describe the shape of one piece of
+work rather than an allowance. `unlimited` is uncapped rather than very large,
+and exists so the operator's own account can be exempted without raising the
+caps for everyone. BYOK is deliberately not a tier: a user on their own key
+costs the operator nothing and `isAutoRoute` excuses them before any of this is
+consulted.
+
+Wiring the meter surfaced that four routes spent on the gateway with no quota
+check whatever — `report/generate`, `script`, `sweep`, and
+`generate/resume`/`finalize`. Any new route that reaches a model must reserve
+and settle; there is no ambient enforcement that would catch one that forgets.
+
 ### The auth gate — local single-install accounts
 
 Accounts are deliberately NOT a multi-user system: they exist so the Cloud-key
