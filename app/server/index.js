@@ -13,6 +13,7 @@ import { preview, reportPreview } from "../../src/preview.js";
 import { renderReport, validateReport, donorStatus, donorDirFor, donorDirForDeck } from "../../src/report.js";
 import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge, identityStatus, identityUnconfigured } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
+import { newMeter, withMeter, meterTotal, meterSummary, estimateTokens } from "../../src/usage.js";
 import { userBrandDirs, userReferenceDir } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
@@ -29,7 +30,7 @@ import { register, authenticate, startSession, endSession, userForToken, bearerT
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
-import { getUsage, reserveAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents } from "../../src/limits.js";
+import { getUsage, reserveAuto, settleAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents, planFor, setPlan, PLANS, isPlan } from "../../src/limits.js";
 import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
 import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
 
@@ -91,8 +92,15 @@ app.use(async (req, _res, next) => {
     const user = await resolveUser(req, { allowCookie: true });
     if (user) account = { email: user.email, userId: getUserId(user.email) };
   } catch { /* an unreadable token is simply an anonymous request */ }
-  if (!account) return next();
-  runAsAccount(account, () => next());
+  // The token meter is per REQUEST, which is the same unit the quota calls a
+  // "pipeline operation": one generate, one chat turn. It is attached whether
+  // or not there is an account, so an anonymous or BYOK request still has
+  // somewhere for the model client to add up to and the numbers are simply
+  // never charged to anybody.
+  req.meter = newMeter();
+  const run = () => withMeter(req.meter, () => next());
+  if (!account) return run();
+  runAsAccount(account, run);
 });
 
 // Deliberately NOT `PORT` — dev harnesses inject that for the frontend, and the
@@ -125,16 +133,37 @@ async function isAutoRoute(model, userEmail = null) {
  * A refusal spends nothing. An unauthenticated caller has no budget to take:
  * the CLI and tests never reach here.
  */
-function reserveAutoOrThrow(userEmail, upcomingSlides = 0, tokens = 0) {
+function reserveAutoOrThrow(userEmail, upcomingSlides = 0, tokens = null) {
   const uid = getUserId(userEmail);
   if (!uid) return { allowed: true };
-  const chk = reserveAuto({ userId: uid, upcomingSlides, upcomingTokens: tokens });
+  // What the run is expected to cost. Every caller used to pass 0, so the
+  // token budget was a cap nothing could reach — the operator was billed in
+  // tokens and the user metered in "requests", and a 24-slide dense deck with
+  // deep research counted the same as a 10-slide sparse one.
+  const upcomingTokens = tokens ?? estimateTokens({ slides: upcomingSlides, research: true });
+  const chk = reserveAuto({ userId: uid, upcomingSlides, upcomingTokens });
   if (!chk.allowed) {
     const e = new Error(chk.errors.join(" · "));
     e.status = 429;
+    e.limits = { plan: chk.plan, remaining: chk.remaining, usage: chk.usage };
     throw e;
   }
   return chk;
+}
+
+/**
+ * Replace a reservation's estimate with what the request actually spent.
+ *
+ * Safe to call more than once and safe to call on a run that failed: a
+ * generation that died halfway still spent the tokens it spent, and charging
+ * the user the full estimate for it is the difference between fair use and a
+ * refund request. Called from a `finally`, so an abort settles too.
+ */
+function settleRequest(req, reservation, { slides = null } = {}) {
+  if (!reservation?.eventId || !req?.meter) return;
+  try {
+    settleAuto({ eventId: reservation.eventId, tokens: meterTotal(req.meter), slides });
+  } catch { /* metering must never be the reason a response fails */ }
 }
 
 /**
@@ -809,9 +838,21 @@ app.get("/api/admin/users", wrap(async (req, res) => {
   ok(res, {
     users: users.map((u) => {
       const id = getUserId(u.email);
-      return { ...u, usage: (id && spend.get(id)) || { windowRequests: 0, windowSlides: 0, weekRequests: 0, weekSlides: 0 } };
+      const plan = id ? planFor(id) : "free";
+      return {
+        ...u,
+        plan,
+        usage: (id && spend.get(id)) || {
+          windowRequests: 0, windowSlides: 0, windowTokens: 0,
+          weekRequests: 0, weekSlides: 0, weekTokens: 0,
+        },
+        // The caps THIS account is held to, which is no longer the same for
+        // everybody and so can no longer be read off the install-wide row.
+        limits: limitConfig(plan),
+      };
     }),
     limits: limitConfig(),
+    plans: Object.fromEntries(Object.entries(PLANS).map(([k, v]) => [k, { ...v, limits: limitConfig(k) }])),
   });
 }));
 
@@ -922,6 +963,27 @@ app.post("/api/admin/users/:email/role", wrap(async (req, res) => {
   await setUserRole(req.params.email, role);
   ok(res, {});
 }));
+/**
+ * Move one account between tiers.
+ *
+ * Install-wide by definition and therefore admin-gated, like every other
+ * setting written to config. Until this existed the only way to give one
+ * person more headroom was to raise the caps for everybody, and the only way
+ * to exempt the operator's own account was the same.
+ */
+app.post("/api/admin/users/:email/plan", wrap(async (req, res) => {
+  const user = await userForToken(bearerToken(req.headers.authorization));
+  if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
+  const plan = String(req.body?.plan ?? "");
+  if (!isPlan(plan)) {
+    return fail(res, 400, `plan must be one of ${Object.keys(PLANS).join(", ")}`);
+  }
+  const id = getUserId(req.params.email);
+  if (!id) return fail(res, 404, "no such user");
+  setPlan(id, plan);
+  ok(res, { plan, limits: limitConfig(plan) });
+}));
+
 app.delete("/api/admin/users/:email", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
@@ -1283,7 +1345,13 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
     return sse.close();
   }
 
+  let reservation = null;
   (async () => {
+    // A sweep rewrites every slide in the deck — as many model calls as a
+    // generation has, and it was unmetered.
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({ slides: 12 }));
+    }
     const r = await sweepDensity({
       slug: req.params.slug, density, theme, model,
       signal: ctrl.signal,
@@ -1298,7 +1366,7 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
       swept: r.swept,
     });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1317,7 +1385,17 @@ app.post("/api/decks/:slug/script", (req, res) => {
   sse.done.catch(() => ctrl.abort());
 
   const { index, model } = req.body ?? {};
+  let reservation = null;
   (async () => {
+    // A whole-deck script is one model call per slide, which is a generation's
+    // worth of spend; regenerating a single slide is one call. Neither was
+    // metered.
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(
+        req.user.email, 0,
+        index != null ? estimateTokens({}) : estimateTokens({ slides: 12 }),
+      );
+    }
     const r = await generateScript({
       slug: req.params.slug,
       index: index != null ? Number(index) : null,
@@ -1332,7 +1410,7 @@ app.post("/api/decks/:slug/script", (req, res) => {
       file: `/api/decks/${req.params.slug}/download/script.md`,
     });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1432,7 +1510,11 @@ app.post("/api/decks/:slug/slides/:index/convert", (req, res) => {
     return sse.close();
   }
 
+  let reservation = null;
   (async () => {
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({}));
+    }
     const r = await convertSlideType({
       slug: req.params.slug,
       index: Number(req.params.index),
@@ -1451,7 +1533,7 @@ app.post("/api/decks/:slug/slides/:index/convert", (req, res) => {
       problems: r.problems,
     });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1718,7 +1800,16 @@ app.post("/api/decks/:slug/report/generate", (req, res) => {
   sse.done.catch(() => ctrl.abort());
 
   const { depth, model } = req.body ?? {};
+  let reservation = null;
   (async () => {
+    // Writing the report is a plan call plus one call per section — the whole
+    // graded artefact — and it was not metered at all.
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(
+        req.user.email, 0,
+        estimateTokens({ slides: 8, depth: depth ?? "full" }),
+      );
+    }
     const r = await generateReport({
       slug: req.params.slug,
       depth,
@@ -1728,7 +1819,7 @@ app.post("/api/decks/:slug/report/generate", (req, res) => {
     });
     sse.send("result", { sections: r.sections, skipped: r.skipped, depth: r.depth });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1849,10 +1940,17 @@ app.post("/api/decks", (req, res) => {
   sse.done.catch(() => ctrl.abort());
 
   const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply } = req.body ?? {};
+  let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
       const upcoming = Number(maxSlides) > 0 ? Number(maxSlides) : 12;
-      reserveAutoOrThrow(req.user.email, upcoming);
+      // Planning an outline is a research pass and one plan call, not the
+      // deck — reserving a whole generation's worth here would refuse people
+      // for spend that has not happened.
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({ research: Boolean(research) }));
+      // The slide budget is still held against the plan's size: that IS known
+      // now, and it is what the deck will cost when it is written.
+      settleAuto({ eventId: reservation.eventId, slides: upcoming });
     }
     const r = await createDeck({
       brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply,
@@ -1862,7 +1960,7 @@ app.post("/api/decks", (req, res) => {
     });
     sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1907,9 +2005,10 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
   const onlySlides = Array.isArray(slides)
     ? slides.filter((n) => Number.isInteger(n) && n >= 0)
     : null;
+  let reservation = null;
   if (await isAutoRoute(model, req.user.email)) {
-    try { reserveAutoOrThrow(req.user.email, 0); } catch (e) {
-      sse.send("error", { error: e.message }); return sse.close();
+    try { reservation = reserveAutoOrThrow(req.user.email, 0); } catch (e) {
+      sse.send("error", { error: e.message, limits: e.limits }); return sse.close();
     }
   }
 
@@ -1939,7 +2038,7 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
       problems: r.problems,
     });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1962,9 +2061,16 @@ app.post("/api/reports", (req, res) => {
     return sse.close();
   }
 
+  let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
-      reserveAutoOrThrow(req.user.email, 0);
+      // A standalone report is a research pass plus one write per section —
+      // the whole artefact, unlike the outline route, so it is estimated as
+      // one.
+      reservation = reserveAutoOrThrow(
+        req.user.email, 0,
+        estimateTokens({ slides: 8, research: true, depth: depth ?? "full" }),
+      );
     }
     const r = await createReport({
       brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
@@ -1981,7 +2087,7 @@ app.post("/api/reports", (req, res) => {
       docx: `/api/decks/${r.slug}/download/report.docx`,
     });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -1999,7 +2105,12 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
   sse.done.catch(() => ctrl.abort());
 
   const { theme, model } = req.body ?? {};
+  let reservation = null;
   (async () => {
+    // Planning a companion deck is one model call, like the outline route.
+    if (await isAutoRoute(model, req.user.email)) {
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({}));
+    }
     const r = await createDeckFromReport({
       slug: req.params.slug, theme, model,
       signal: ctrl.signal,
@@ -2007,7 +2118,7 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
     });
     sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
     sse.close();
-  })().catch((err) => {
+  })().finally(() => settleRequest(req, reservation)).catch((err) => {
     if (ctrl.signal.aborted) return;
     sse.send("error", { error: err.message });
     sse.close();
@@ -2040,7 +2151,7 @@ function generationRunInfo(slug) {
  * reconnecting client that already has a live run for the slug is attached by
  * `attachToRun` instead of starting a second pipeline.
  */
-function startDeckRun({ slug, kind, plan, theme, model }) {
+function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
   const ctrl = new AbortController();
   const run = {
     slug,
@@ -2061,7 +2172,14 @@ function startDeckRun({ slug, kind, plan, theme, model }) {
     for (const s of run.subscribers) s.send(event, data);
   };
 
-  (async () => {
+  // A generation OUTLIVES the request that started it — the client may drop
+  // and reattach, and /generate returns as soon as the run is registered. So
+  // the run carries its own meter rather than the request's, and settles its
+  // own reservation when it ends.
+  const meter = newMeter();
+  run.meter = meter;
+
+  withMeter(meter, () => (async () => {
     const job = kind === "finalize"
       ? () => finalizeDeck({ slug, theme, model, signal: ctrl.signal, onProgress: (p) => broadcast("status", p) })
       : kind === "resume"
@@ -2088,6 +2206,15 @@ function startDeckRun({ slug, kind, plan, theme, model }) {
     run.finished = true;
     broadcast("error", { error: run.error });
   }).finally(() => {
+    // What the run really cost replaces what it was estimated at — including
+    // when it failed or was stopped, because those spent real tokens too and
+    // charging the full estimate for a run that died in its third slide is
+    // the difference between fair use and a refund request.
+    if (reservation?.eventId) {
+      try {
+        settleAuto({ eventId: reservation.eventId, tokens: meterTotal(meter) });
+      } catch { /* metering must never break a run's teardown */ }
+    }
     // Close every attached response, then drop the record after a grace period
     // so a very late reconnect still reads the terminal frame.
     for (const s of run.subscribers) s.close();
@@ -2095,7 +2222,7 @@ function startDeckRun({ slug, kind, plan, theme, model }) {
     setTimeout(() => {
       if (generationRuns.get(slug) === run) generationRuns.delete(slug);
     }, 5 * 60 * 1000);
-  });
+  }));
 
   return run;
 }
@@ -2131,13 +2258,15 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
     return sse.close();
   }
   // Auto-tier gate: hourly / weekly caps before burning the shared gateway
-  if (await isAutoRoute(model, req.user.email) && plan?.slides?.length) {
-    try { reserveAutoOrThrow(req.user.email, plan.slides.length); } catch (e) {
-      const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
-    }
-  } else if (await isAutoRoute(model, req.user.email)) {
-    try { reserveAutoOrThrow(req.user.email, 0); } catch (e) {
-      const sse = startSSE(res); sse.send("error", { error: e.message }); return sse.close();
+  let reservation = null;
+  if (await isAutoRoute(model, req.user.email)) {
+    const slides = plan?.slides?.length ?? 0;
+    try {
+      reservation = reserveAutoOrThrow(req.user.email, slides, estimateTokens({ slides }));
+    } catch (e) {
+      const sse = startSSE(res);
+      sse.send("error", { error: e.message, limits: e.limits });
+      return sse.close();
     }
   }
   startDeckRun({
@@ -2146,6 +2275,7 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
     plan,
     theme,
     model,
+    reservation,
   });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
@@ -2153,28 +2283,56 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
 /** Resume a dropped generation from its checkpoint (continues writing the
  *  remaining plan slides, then finalizes). Reconnects to a live run if one
  *  exists, exactly like /generate. */
-app.post("/api/decks/:slug/generate/resume", (req, res) => {
+app.post("/api/decks/:slug/generate/resume", async (req, res) => {
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
     attachToRun(res, live);
     return;
   }
   const { theme, model } = req.body ?? {};
-  startDeckRun({ slug: req.params.slug, kind: "resume", plan: null, theme, model });
+  // Resuming writes the rest of the plan and then finalizes, on the operator's
+  // key — and it was not metered at all. Neither was /finalize below. Both
+  // spend, so both reserve; how much is unknown here because it depends on how
+  // far the dropped run got, and the estimate is replaced by the measured
+  // total when the run ends anyway.
+  let reservation = null;
+  if (await isAutoRoute(model, req.user.email)) {
+    try {
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({ slides: 8 }));
+    } catch (e) {
+      const sse = startSSE(res);
+      sse.send("error", { error: e.message, limits: e.limits });
+      return sse.close();
+    }
+  }
+  startDeckRun({ slug: req.params.slug, kind: "resume", plan: null, theme, model, reservation });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
 /** The finalize watchdog — the deck's content is already written and complete
  *  (a dropped run, or a deck whose run died before finalize), so run the
  *  post-write pass and flip it to ready instead of re-writing slides. */
-app.post("/api/decks/:slug/finalize", (req, res) => {
+app.post("/api/decks/:slug/finalize", async (req, res) => {
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
     attachToRun(res, live);
     return;
   }
   const { theme, model } = req.body ?? {};
-  startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model });
+  // Finalize is not free: it is the field-length pass, the coherence pass,
+  // image supply and the vision critic, and the critic alone runs model calls
+  // over every slide for up to two rounds.
+  let reservation = null;
+  if (await isAutoRoute(model, req.user.email)) {
+    try {
+      reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({ slides: 6 }));
+    } catch (e) {
+      const sse = startSSE(res);
+      sse.send("error", { error: e.message, limits: e.limits });
+      return sse.close();
+    }
+  }
+  startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model, reservation });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
@@ -2853,7 +3011,24 @@ app.get("/api/auto/usage", wrap(async (req, res) => {
   if (!user) return fail(res, 401, "log in to see usage");
   const uid = getUserId(user.email);
   if (!uid) return fail(res, 404, "no such user");
-  ok(res, { usage: getUsage({ userId: uid }), limits: limitConfig() });
+  const plan = planFor(uid);
+  const cfg = limitConfig(plan);
+  const usage = getUsage({ userId: uid });
+  ok(res, {
+    usage,
+    limits: cfg,
+    plan,
+    planLabel: PLANS[plan]?.label ?? plan,
+    // A refusal is a dead end unless the surface can say how close you are
+    // BEFORE it happens, so the remaining budget ships with the usage.
+    remaining: {
+      windowRequests: Math.max(0, cfg.windowRequests - usage.window.requests),
+      weeklyRequests: Math.max(0, cfg.weeklyRequests - usage.week.requests),
+      windowSlides: Math.max(0, cfg.windowSlides - usage.window.slides),
+      weeklySlides: Math.max(0, cfg.weeklySlides - usage.week.slides),
+      weeklyTokens: Math.max(0, cfg.weeklyTokens - usage.week.tokens),
+    },
+  });
 }));
 
 /* Per-user BYOK vault — encrypted at rest, operator-blind */
