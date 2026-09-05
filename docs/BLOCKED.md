@@ -155,21 +155,35 @@ not.
 
 ---
 
-## 4. Not blocked — available right now
+## 4. Nothing is available right now
 
-For contrast, so this file is not read as "everything is stuck". All of these
-need no model, no key and no decision:
+Everything that could be done without a key, a model or a decision **has been
+done.** The list this section used to hold is closed:
 
-- Housekeeping found during the audit
-- The coherence pass's deck half — check what it is actually given before
-  assuming the comparison is at fault
-- `feature-grid`'s remaining note debt on `minimal-muji` — now correctly
-  reported as a 1pt gap on a deliberately compact theme rather than a 2pt one
-- The turn grammar's unscoped case (options 2 and 3), though those change the
-  SHAPE of a decoding grammar and should not land without a model to run them
-  against — which makes them *partly* blocked by §2.1
+- Housekeeping found during the audit — every item struck through
+- The coherence pass's repetition blindness — it was never looking; now computed
+- `looksCutAtCap` — a headline is not a truncated sentence
+- The image progress counter, and six status frames the UI could not label
+- The `Auto` rename off one institution's name
+- Adding a slide to a finished deck, written by the writer rather than by chat
+- The lifetime trial, and the score recorded per generation
+- `feature-grid`'s note debt, *diagnosed* — a 1pt gap on a deliberately compact
+  theme rather than the 2pt a misreported floor claimed
 
----
+**Every remaining roadmap item is blocked on §1, §2 or §3 of this file.** That
+is unusual and worth stating plainly: the next move is not an engineering one.
+
+Two are worth naming because they look like engineering and are not:
+
+- **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped
+  half is shipped and covers the common path. What is left changes the SHAPE of
+  a decoding grammar — an `anyOf` union or a discriminated `oneOf` — and this
+  module's history is a list of grammars that die silently rather than loudly.
+  It needs a model to run against, so it is blocked by §2.1 rather than by
+  anybody's judgement.
+- **`feature-grid`'s remaining note debt.** Closing it means either cutting the
+  `body` cap for all 34 themes or changing card geometry for one. That is a
+  trade-off, not a fix, so it is §3 — a decision — and a small one.
 
 ## 5. What is NOT a blocker, so nobody looks for one
 
