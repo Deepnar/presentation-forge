@@ -6,6 +6,7 @@ import { DECKS } from "../paths.js";
 import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
+import { selectResearch } from "./retrieve.js";
 import { REPORT_SECTIONS, IMAGE_CREDITS, reportStructureForDeck, validateReport } from "../report.js";
 
 /**
@@ -595,6 +596,13 @@ async function writeSection({ spec, plan, report, research, identity, depth, den
   const isAck = spec.name === "Acknowledgement";
   const isRefs = spec.name === "References";
 
+  // References are drawn from the SOURCES rather than the prose, so that one
+  // section still needs the breadth of the corpus; every other section is
+  // about its own focus.
+  const sectionResearch = isRefs
+    ? research
+    : selectResearch(research, [spec.name, spec.focus].filter(Boolean).join(" "));
+
   const system = [
     `You write the prose of ONE section of an academic report: "${spec.name}".`,
     "Layout, fonts and colours are not your concern — the institutional template handles those.",
@@ -637,7 +645,11 @@ async function writeSection({ spec, plan, report, research, identity, depth, den
           subject ? `Subject: ${subject}` : "",
           outline ? `\nTHE OTHER SECTIONS AND WHAT THEY COVER\n${outline}` : "",
           written ? `\nALREADY WRITTEN — do not restate these\n${written}` : "",
-          research ? `\nRESEARCH NOTES\n${research}` : "",
+          // The research THIS section needs. Same reason as the slide writer:
+          // the whole excerpt went out with every section, so an eight-section
+          // report sent it nine times. The section's focus sentence is the
+          // query, and it was written by the planner for exactly this purpose.
+          sectionResearch ? `\nRESEARCH NOTES\n${sectionResearch}` : "",
         ].filter(Boolean).join("\n"),
       },
     ],

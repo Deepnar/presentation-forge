@@ -1,5 +1,6 @@
 import { chatJSON, authorTransport } from "./ollama.js";
 import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
+import { selectResearch, slideQuery, CALL_RESEARCH_CHARS } from "./retrieve.js";
 import { imageSeat } from "./images.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
@@ -592,6 +593,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
 
   const voice = theme?.voice ?? {};
   const fullStrength = (await authorTransport({ model })) === "cloud";
+  const slideResearch = selectResearch(research, slideQuery({ spec, plan }), { budget: CALL_RESEARCH_CHARS });
   const already = deck.slides
     .map((s, i) => `[${i}] ${s.type}: ${s.headline ?? s.quote ?? "—"}`)
     .join("\n") || "(none yet)";
@@ -676,7 +678,13 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
         content: [
           `DECK: ${plan.title}`,
           plan.sections?.length ? `SECTIONS: ${plan.sections.map((s, i) => `${i}=${s}`).join(", ")}` : "",
-          research ? `\nRESEARCH NOTES\n${research}\n` : "",
+          // The research THIS slide needs, not all of it. Every slide call used
+          // to carry the whole excerpt — 26 times over a 22-slide deck, ~1.6M
+          // tokens for one deck on the cloud transport, almost all of it the
+          // same input again (docs/ECONOMICS.md). It is also better writing:
+          // the model was receiving 60,000 tokens of which perhaps 1,500 bore
+          // on the slide in front of it, and the rest competed for attention.
+          slideResearch ? `\nRESEARCH NOTES\n${slideResearch}\n` : "",
           `SLIDES SO FAR\n${already}`,
           `\nWRITE THIS SLIDE`,
           `type: ${spec.type}`,
