@@ -5097,6 +5097,94 @@ is charged for two model calls.
 >   nothing has measured a real run. It wants calibrating before anyone is
 >   charged against it.
 
+### [ ] Add a slide to a finished deck, written like the others
+
+*Priority: high. No direction needed — the primitive exists and the surface
+does not.*
+
+`insert_slide` and `append_slide` are in the ops grammar, `applyOps` handles
+both, and a chat turn can already say "add a chart after slide 5". So the
+capability is there and the feature is not, which is the worst of the two
+states: a user who wants one more slide has to know to phrase it as chat, and
+what they get back is written by the CHAT path rather than the writer.
+
+That difference is the whole item. `writeSlide` gives a new slide the writer's
+grammar scoped to its own type, a purpose from the plan, retrieved research for
+that purpose, and the field-length and coherence passes afterwards. A chat turn
+gives it the merged ops grammar, whatever research the turn happened to carry,
+and no post-passes. The slide that comes out is visibly not a sibling of the
+ones around it.
+
+What it should be:
+
+- **A first-class action on a slide**: "add a slide after this one", the way
+  convert already sits on `/slides/:index/convert`. A route, an affordance in
+  the deck view, not a sentence the user has to compose.
+- **Content written by the slide writer**, not the chat turn. The insertion
+  point implies a purpose: it sits inside a section, between two slides whose
+  headlines are known, so a purpose can be derived the way `mintedSpec` already
+  derives one for a padded slide. That purpose is also the retrieval query, so
+  the new slide is drawn from the same research as its neighbours.
+- **The plan updated too.** A deck whose `deck.yaml` has a slide its
+  `plan.yaml` does not know about will lose it the next time anything replans,
+  and `assignPresenters` will not give it an owner.
+- **A type chosen, not asked for.** The user wants a slide, not a `feature-grid`
+  — the writer already picks types against the composition rules, and the
+  neighbours say what would not be a repetition.
+
+**The motivating case is a run that stopped.** Someone generating a deck hits
+their quota, or a run drops, and the deck exists but is short. Today the answer
+is resume — which continues the *approved plan*. There is no answer for "the
+plan is finished, the deck is fine, I want three more slides in the middle",
+and after tiering that is exactly the shape of a user who has just paid for
+more headroom and wants to spend it on the deck they already have.
+
+> **Look-ahead.** This shares its whole spine with the turn grammar item above
+> (§ *A turn's grammar is built from every type at once*): a first-class insert
+> is a single-type write, so it takes `onlyTypes` and gets an exact grammar for
+> free. Build it on `writeSlide` rather than on `runTurn` and the grammar
+> question does not arise.
+
+### [ ] The free tier should be a trial, not an allowance
+
+*Priority: high, and it decides what the paid tiers can be. No model needed.*
+
+Every quota in `src/limits.js` is a ROLLING WINDOW — five hours, seven days —
+and a rolling window resets. That is correct for fair use on a free campus
+gateway and wrong the moment the key costs money: a user who waits gets
+unlimited decks, forever, at the operator's expense. The exposure per account
+is unbounded and cannot be budgeted.
+
+A lifetime trial is bounded by construction. Measured against the shipped
+per-deck cost (`docs/ECONOMICS.md`):
+
+| free tier | exposure per signup | 1,000 signups |
+|---|---|---|
+| 4 decks/week, one semester | ₹110 – ₹439, *and it never stops* | unbounded |
+| **3 decks, lifetime** | **₹5.15 – ₹20.59, once** | ₹5,100 – ₹20,600 |
+
+Twenty-one times cheaper, and — the part that matters for a one-person
+operation — a number that can be written on a page in advance.
+
+**What to build.** `checkAutoLimits` counts events since a cutoff; a lifetime
+cap is the same query without one. The pieces already exist: `auto_events` rows
+are never deleted before 30 days (`pruneAutoEvents` would have to spare the
+counter, or the count moves onto `users`), tiers exist, and `settleAuto` means
+the count is of real spend rather than of estimates.
+
+Keep the rolling windows on top as ABUSE protection, not as the product limit —
+they stop a script, and the lifetime cap decides what is free.
+
+**The open risk is signup, not metering.** A lifetime cap makes each new
+account worth exactly three decks, so the pressure moves to making accounts.
+Email confirmation already exists and is enforced whenever SMTP is configured
+(`mailConfigured()`), which is the cheapest real deterrent and another reason
+§1.2 is a launch blocker rather than a nicety.
+
+> **Decide alongside this**: whether paid is a subscription or non-expiring
+> credits. A student's need is bursty — nothing for two months, four decks in
+> exam week — so credits fit the use and subscriptions fit the revenue.
+
 ### [ ] Surfaces nothing has ever run
 
 *Priority: high. Some need a model, none needs the gateway specifically.*

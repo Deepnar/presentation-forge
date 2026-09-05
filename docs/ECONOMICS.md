@@ -183,6 +183,24 @@ At L2, with the cap set so worst case still returns 30%:
 | cheap-mid | ₹6.86 | 10 decks | 3 decks | **79%** |
 | mid | ₹34.32 | 2 decks | 1 deck | **65%** |
 
+### The three tiers, concretely
+
+| tier | price | allowance | worst-case cost | worst-case margin |
+|---|---|---|---|---|
+| **Free** | — | **3 decks, lifetime** | ₹5–21 *once, per signup* | n/a — it is the ad |
+| **Starter** | ₹99/mo | 10 decks/mo | ₹17 – ₹69 | 83% / 31% |
+| **Pro** | ₹249/mo | 25 decks/mo | ₹43 – ₹172 | 83% / 31% |
+| **BYOK** | — | unlimited | ₹0 | n/a |
+
+Two figures per cell because the model band is not settled: the first is the
+budget band, the second cheap-mid. At the budget band every tier is comfortable
+at any utilisation. At cheap-mid the worst case is 31% and the realistic case
+near 80% — still a business, but the allowances are the lever if that feels
+thin.
+
+`unlimited` stays in `PLANS` for the operator's own account and for anyone
+comped by hand; it is not a sales tier.
+
 Why each side wins:
 
 - **The buyer** pays ₹99 for what looks like far more than they will use, at
@@ -200,10 +218,17 @@ Why each side wins:
 - **Price in decks, not tokens.** A student understands "15 decks". Nobody
   outside this repository has an intuition for a million tokens, and a number
   that cannot be reasoned about reads as a trap.
-- **The free tier should finish one assignment.** Three decks is enough to
-  produce something submittable and discover the tool is good. That is the
-  conversion event; a free tier that cannot complete one real task converts
-  nobody.
+- **The free tier should be a TRIAL, not an allowance.** Three decks is enough
+  to produce something submittable and discover the tool is good, which is the
+  conversion event — a free tier that cannot complete one real task converts
+  nobody. But it must be three decks *ever*, not three a week. Every quota in
+  `src/limits.js` is a rolling window, and a rolling window resets: a user who
+  waits gets unlimited decks forever, and the exposure per account cannot be
+  budgeted. A lifetime cap is bounded by construction — **₹5–21 per signup,
+  once**, against ₹110–439 per user per semester and rising. Twenty-one times
+  cheaper, and a number that can be written down in advance, which is what a
+  one-person operation actually needs. Keep the rolling windows on top as abuse
+  protection; the lifetime cap is what decides what is free.
 - **BYOK stays free and unmetered.** A user on their own key costs nothing —
   `isAutoRoute` excuses them before any of this is consulted. It is the
   pressure valve for the heavy user who would otherwise be the loss.
