@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { CONFIG } from "../paths.js";
 import { resolveSecret, resolveProviderKey, routingPreference, cloudProvider, autoProvider, isHosted } from "../cloud.js";
 import { currentUserId } from "../account.js";
+import { recordModelUsage } from "../usage.js";
 import { localFallbackArmed, isGatewayUnreachable, armedTimeout } from "../devfallback.js";
 
 /**
@@ -602,7 +603,24 @@ async function cloudSpec(cfg, model, role) {
  * the model being strong enough to obey it — so prefer big cloud models and
  * keep the schema small. `model` overrides the role's default on either.
  */
-export async function chat({
+/**
+ * One model call, metered.
+ *
+ * Every transport already reported what it spent — `usage.prompt_tokens` from
+ * the gateway, `prompt_eval_count` from Ollama — and every caller above threw
+ * the numbers away, which is why the quota system billed in "requests" while
+ * the operator was billed in tokens. There are four return points inside
+ * `chatOnce` (streaming and non-streaming, two transports), so the count is
+ * taken here, at the one place all four pass through. Outside a metered scope
+ * `recordModelUsage` is a no-op, so the CLI and the tests are unaffected.
+ */
+export async function chat(opts) {
+  const res = await chatOnce(opts);
+  recordModelUsage(res);
+  return res;
+}
+
+async function chatOnce({
   role,
   messages,
   format,
