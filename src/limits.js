@@ -33,26 +33,113 @@ import { settingValue } from "./runtime.js";
  *  - weekly_tokens: rough token budget (optional)
  */
 
-export function limitConfig() {
+/**
+ * The tiers an account can be metered against.
+ *
+ * The admin settings define the FREE tier — that is what every account was
+ * already being given, so an operator who has tuned them keeps exactly the
+ * budget they tuned. A paid tier is a multiple of it, which means there is one
+ * place to adjust "how much is a little" and the paid tiers follow rather than
+ * silently drifting out of proportion.
+ *
+ * `unlimited` is not a sales tier. It is for the operator's own account and for
+ * anyone comped by hand, and it is the honest way to say so — previously the
+ * only way to exempt somebody was to raise the caps for everybody.
+ *
+ * BYOK is deliberately absent: a user on their own key costs the operator
+ * nothing and is not metered at all. `isAutoRoute` decides that before any of
+ * this is consulted.
+ */
+export const PLANS = {
+  free: { label: "Free", multiplier: 1 },
+  plus: { label: "Plus", multiplier: 4 },
+  pro: { label: "Pro", multiplier: 12 },
+  unlimited: { label: "Unlimited", multiplier: null },
+};
+
+export const DEFAULT_PLAN = "free";
+
+export const isPlan = (p) => Object.hasOwn(PLANS, String(p ?? ""));
+
+/** Budgets scale with the tier; the shape of one piece of work does not.
+ *  `windowHours` is how long a sitting is and `maxSlidesPerDeck` is how big a
+ *  deck may be — paying more does not make an hour longer, and deck length is
+ *  a separate admin setting because it is about what the renderer and the
+ *  planner do well, not about spend. */
+const SCALED = ["windowRequests", "weeklyRequests", "windowSlides", "weeklySlides", "weeklyTokens"];
+
+export function limitConfig(plan = DEFAULT_PLAN) {
   // Read per call, never cached: an admin changing a cap in the panel must
   // apply to the next request, not the next restart.
-  return {
+  const base = {
     windowHours: settingValue("autoWindowHours"),
     windowRequests: settingValue("autoWindowRequests"),
     weeklyRequests: settingValue("autoWeeklyRequests"),
     windowSlides: settingValue("autoWindowSlides"),
     weeklySlides: settingValue("autoWeeklySlides"),
-    weeklyTokens: Number(process.env.FORGE_AUTO_WEEKLY_TOKENS ?? 80000),
+    weeklyTokens: settingValue("autoWeeklyTokens"),
     // One deck may still burst to full length inside the window budget.
     maxSlidesPerDeck: settingValue("autoMaxSlidesPerDeck"),
   };
+  const spec = PLANS[plan] ?? PLANS[DEFAULT_PLAN];
+  const name = PLANS[plan] ? plan : DEFAULT_PLAN;
+  if (spec.multiplier == null) {
+    return { ...base, ...Object.fromEntries(SCALED.map((k) => [k, Infinity])), plan: name, unlimited: true };
+  }
+  const out = { ...base, plan: name, unlimited: false };
+  for (const k of SCALED) out[k] = Math.round(base[k] * spec.multiplier);
+  return out;
+}
+
+/** The tier an account is on. Unknown or missing means free, which is what
+ *  every account got before tiers existed. */
+export function planFor(userId) {
+  if (!userId) return DEFAULT_PLAN;
+  const row = getDb().prepare("SELECT plan FROM users WHERE id=?").get(userId);
+  return isPlan(row?.plan) ? row.plan : DEFAULT_PLAN;
+}
+
+export function setPlan(userId, plan) {
+  if (!isPlan(plan)) throw new Error(`unknown plan "${plan}" — one of ${Object.keys(PLANS).join(", ")}`);
+  getDb().prepare("UPDATE users SET plan=? WHERE id=?").run(plan, userId);
+  return plan;
 }
 
 export function recordAutoEvent({ userId, eventType = "request", slides = 0, tokens = 0, provider = "tcet-auto" }) {
   const db = getDb();
   const now = Date.now();
-  db.prepare(`INSERT INTO auto_events (user_id, event_type, slides, tokens, provider, created_at) VALUES (?,?,?,?,?,?)`)
+  const r = db.prepare(`INSERT INTO auto_events (user_id, event_type, slides, tokens, provider, created_at) VALUES (?,?,?,?,?,?)`)
     .run(userId, eventType, slides, tokens, provider, now);
+  // The row id is the reservation handle: settleAuto replaces the estimate on
+  // this row with what the run actually spent.
+  return Number(r.lastInsertRowid);
+}
+
+/**
+ * Replace a reservation's estimate with what the operation really cost.
+ *
+ * A reservation must be taken before the work — that is the whole point of
+ * `reserveAuto`, and concurrent requests would otherwise all read an unspent
+ * budget — but before the work the true cost is unknown, so what is held is an
+ * estimate. Leaving it there means a run that was cheaper than expected keeps
+ * charging the difference for a week, and a run that failed after two model
+ * calls costs the same as one that finished.
+ *
+ * Settling is deliberately unconditional on success: a generation that died
+ * halfway still spent the tokens it spent, and the operator was still billed.
+ * What changes is that the user is charged for those and not for the rest.
+ */
+export function settleAuto({ eventId, tokens = null, slides = null }) {
+  if (!eventId) return false;
+  const db = getDb();
+  const sets = [];
+  const args = [];
+  if (tokens != null) { sets.push("tokens=?"); args.push(Math.max(0, Math.round(tokens))); }
+  if (slides != null) { sets.push("slides=?"); args.push(Math.max(0, Math.round(slides))); }
+  if (!sets.length) return false;
+  args.push(eventId);
+  db.prepare(`UPDATE auto_events SET ${sets.join(", ")} WHERE id=?`).run(...args);
+  return true;
 }
 
 export function getUsage({ userId, provider = "tcet-auto" }) {
@@ -78,8 +165,8 @@ export function getUsage({ userId, provider = "tcet-auto" }) {
   };
 }
 
-export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0 }) {
-  const cfg = limitConfig();
+export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
+  const cfg = limitConfig(plan ?? planFor(userId));
   const usage = getUsage({ userId, provider });
   const errors = [];
 
@@ -99,18 +186,23 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
     errors.push(`This deck needs ${upcomingSlides} slides but auto allows ${cfg.maxSlidesPerDeck} per deck — split it or use your own key`);
   }
   if (usage.week.tokens + upcomingTokens > cfg.weeklyTokens) {
-    errors.push(`Weekly token budget: ${usage.week.tokens}/${cfg.weeklyTokens} tokens this week`);
+    errors.push(
+      `Weekly token budget: ${usage.week.tokens.toLocaleString()}/${cfg.weeklyTokens.toLocaleString()} ` +
+      `tokens this week, and this run is estimated at ${Math.round(upcomingTokens).toLocaleString()}`,
+    );
   }
   return {
     allowed: errors.length === 0,
     errors,
     usage,
     cfg,
+    plan: cfg.plan,
     remaining: {
       windowRequests: Math.max(0, cfg.windowRequests - usage.window.requests),
       weeklyRequests: Math.max(0, cfg.weeklyRequests - usage.week.requests),
       windowSlides: Math.max(0, cfg.windowSlides - usage.window.slides),
       weeklySlides: Math.max(0, cfg.weeklySlides - usage.week.slides),
+      weeklyTokens: Math.max(0, cfg.weeklyTokens - usage.week.tokens),
     },
   };
 }
@@ -134,16 +226,17 @@ export function checkAutoLimits({ userId, provider = "tcet-auto", upcomingSlides
  * A refusal writes nothing: a request that was denied cost the operator
  * nothing and must not consume the budget it was refused for.
  */
-export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0 }) {
+export function reserveAuto({ userId, provider = "tcet-auto", upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
   const db = getDb();
   db.exec("BEGIN IMMEDIATE");
   try {
-    const chk = checkAutoLimits({ userId, provider, upcomingSlides, upcomingTokens });
+    const chk = checkAutoLimits({ userId, provider, upcomingSlides, upcomingTokens, plan });
+    let eventId = null;
     if (chk.allowed) {
-      recordAutoEvent({ userId, slides: upcomingSlides, tokens: upcomingTokens, provider });
+      eventId = recordAutoEvent({ userId, slides: upcomingSlides, tokens: upcomingTokens, provider });
     }
     db.exec("COMMIT");
-    return chk;
+    return { ...chk, eventId };
   } catch (err) {
     db.exec("ROLLBACK");
     throw err;
@@ -165,13 +258,19 @@ export function usageByUser({ provider = "tcet-auto" } = {}) {
   const out = new Map();
   const add = (rows, key) => {
     for (const r of rows) {
-      const e = out.get(r.user_id) ?? { windowRequests: 0, windowSlides: 0, weekRequests: 0, weekSlides: 0 };
+      const e = out.get(r.user_id) ?? {
+        windowRequests: 0, windowSlides: 0, windowTokens: 0,
+        weekRequests: 0, weekSlides: 0, weekTokens: 0,
+      };
       e[`${key}Requests`] = r.reqs;
       e[`${key}Slides`] = r.slides;
+      e[`${key}Tokens`] = r.tokens;
       out.set(r.user_id, e);
     }
   };
-  const q = `SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides
+  // Tokens are what the operator is billed in, so the operator's own view of
+  // who is spending what has to show them.
+  const q = `SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens
              FROM auto_events WHERE provider=? AND created_at>=? GROUP BY user_id`;
   add(db.prepare(q).all(provider, windowAgo), "window");
   add(db.prepare(q).all(provider, weekAgo), "week");

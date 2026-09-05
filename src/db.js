@@ -108,6 +108,7 @@ function ensureSchema(d) {
     CREATE INDEX IF NOT EXISTS idx_auth_tokens_expiry ON auth_tokens(expires_at);
   `);
   addVerifiedColumn(d);
+  addPlanColumn(d);
 }
 
 /**
@@ -120,6 +121,23 @@ function ensureSchema(d) {
  * ALTER succeeding is the signal that this is the first boot on the new schema,
  * so the backfill runs exactly once and later registrations are unaffected.
  */
+/**
+ * `plan` on users — the tier an account is metered against.
+ *
+ * Every account got identical caps, so there was nowhere to put "this one paid"
+ * short of editing the install-wide settings, which changes it for everybody.
+ * Existing rows become `free`, which is what they were being given already, so
+ * the migration changes no account's actual budget.
+ */
+function addPlanColumn(d) {
+  try {
+    d.exec("ALTER TABLE users ADD COLUMN plan TEXT");
+  } catch {
+    return; // column already present
+  }
+  d.exec("UPDATE users SET plan = 'free' WHERE plan IS NULL");
+}
+
 function addVerifiedColumn(d) {
   try {
     d.exec("ALTER TABLE users ADD COLUMN verified_at TEXT");

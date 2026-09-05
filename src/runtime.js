@@ -54,6 +54,16 @@ const SETTINGS = {
   autoWindowSlides: { env: "FORGE_AUTO_WINDOW_SLIDES", label: "Slides per window", parse: posInt, fallback: 45 },
   autoWeeklySlides: { env: "FORGE_AUTO_WEEKLY_SLIDES", label: "Slides per week", parse: posInt, fallback: 90 },
   autoMaxSlidesPerDeck: { env: "FORGE_AUTO_MAX_SLIDES_PER_DECK", label: "Slides per deck", parse: posInt, fallback: 24 },
+  // The free tier's weekly token budget, and the first cap here that reflects
+  // what the operator is actually billed for. Sized to match the slide budget
+  // rather than guessed independently: the estimator puts a 22-slide deck with
+  // research at roughly 240k tokens, the weekly slide budget is about four such
+  // decks, so a million is the same allowance said in the other unit. It was
+  // env-only at 80,000 — under half of ONE deck — which was harmless only
+  // because nothing ever counted a token. It counts now, so this is admin-
+  // settable like every other cap, and it wants calibrating against a real
+  // gateway run before anyone is charged against it.
+  autoWeeklyTokens: { env: "FORGE_AUTO_WEEKLY_TOKENS", label: "Tokens per week", parse: posInt, fallback: 1000000 },
 };
 
 function posInt(v) {
@@ -63,6 +73,11 @@ function posInt(v) {
 }
 
 export const SETTING_KEYS = Object.keys(SETTINGS);
+
+/** A setting's shipped default, ignoring env and stored overrides. What the
+ *  free tier is out of the box, which is a different question from what this
+ *  particular box is currently configured for. */
+export const settingDefault = (name) => SETTINGS[name]?.fallback;
 
 /** Read synchronously: every caller is on a hot path and the file is tiny. */
 function stored() {
