@@ -68,6 +68,10 @@ config/hosted.json
 # state like hosted.json, never a repository value.
 config/runtime.json
 
+# Recorded deck scores. Operator state and machine-specific — one box's history
+# says nothing about another's, and committing it would merge two timelines.
+config/scores.jsonl
+
 # Local single-install accounts and their sessions — the Cloud-key gate. Never
 # committed: users.json holds scrypt hashes, sessions.json holds bearer tokens.
 # SQLite DB (forge.db) holds the same data encrypted plus vault and auto usage.
