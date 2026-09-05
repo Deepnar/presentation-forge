@@ -21,7 +21,7 @@ import { chatJSON, researchProfile, researchExcerptCap } from "./ollama.js";
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
-import { renderReport, donorStatus, donorDirFor, REPORT_SECTIONS } from "../report.js";
+import { renderReport, donorStatus, donorDirFor, presentSections } from "../report.js";
 import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
 import { creditsSlide } from "../credits.js";
@@ -431,22 +431,31 @@ export async function createDeckFromReport({
   const identityObj = identity ?? (await loadIdentity(dir));
   const themeObj = theme ? await loadTheme(theme) : undefined;
 
+  // meta is read BEFORE planning, not after. The deck's size, the per-member
+  // promise and the briefing are all recorded here, and reading them
+  // afterwards meant a companion deck was planned at the 24-slide default
+  // whatever the user had asked for — the one setting that cannot be repaired
+  // downstream, because the outline is already the wrong length.
+  let meta = {};
+  try {
+    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
+  } catch { /* no meta yet */ }
+
   // The report IS the brief: its title and the section content describe the
   // deck's structure better than the original one-liner, so feed it wholesale.
   const brief = reportBrief(report);
 
   onProgress?.({ status: "planning" });
   const { plan, stats } = await planDeck({
-    brief, theme: themeObj, identity: identityObj,
-    research: excerptResearch(researchText, await researchExcerptCap({ model })), model, signal,
+    brief, briefing: meta.briefing ?? "", theme: themeObj, identity: identityObj,
+    research: excerptResearch(researchText, await researchExcerptCap({ model })),
+    maxSlides: meta.maxSlides ?? 24,
+    slidesPerMember: meta.slidesPerMember ?? null,
+    model, signal,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");
 
-  let meta = {};
-  try {
-    meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
-  } catch { /* no meta yet */ }
   meta.status = "planned";
   meta.brief = report.title ?? meta.brief ?? "";
   meta.updatedAt = new Date().toISOString();
@@ -456,13 +465,16 @@ export async function createDeckFromReport({
   return { slug, plan, stats };
 }
 
-/** The report's sections as a planning brief — title plus each section's prose. */
-/** The report's sections as a planning brief — title plus each section's prose. */
+/** The report's sections as a planning brief — title plus each section's prose.
+ *
+ *  `presentSections` rather than the graded constant: a report may carry a
+ *  section the constant has never heard of, and walking the constant would
+ *  drop exactly the topic-specific material the companion deck most needs. */
 function reportBrief(report) {
   const content = report?.content ?? {};
   const lines = [report?.title ?? ""];
   if (report?.subtitle) lines.push(report.subtitle);
-  for (const name of REPORT_SECTIONS) {
+  for (const name of presentSections(report)) {
     const sec = content[name];
     if (!sec || typeof sec !== "object") continue;
     const text = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])]
