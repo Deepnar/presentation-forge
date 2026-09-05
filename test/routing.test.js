@@ -118,3 +118,38 @@ test("the workspace still refuses an unauthenticated caller", async () => {
   });
   assert.equal(res.status, 401, "search sits below the workspace gate, not above it");
 });
+
+/* ------------------------------------------------- tiers are an admin lever */
+
+/**
+ * The tier an account is metered against is install-wide state that costs the
+ * operator money, so it must be admin-gated like every other setting written
+ * outside a user's own scope. This account is deliberately not an admin.
+ */
+test("a non-admin cannot move themselves onto a bigger tier", async () => {
+  const res = await post("/api/admin/users/member@example.com/plan", { plan: "unlimited" });
+  assert.equal(res.status, 403);
+  assert.equal((await res.json()).error, "admin only");
+
+  const { planFor } = await import("../src/limits.js");
+  assert.equal(
+    planFor(auth.getUserId("member@example.com")), "free",
+    "a refused request must not have changed the tier anyway",
+  );
+});
+
+test("a non-admin cannot read everyone's spend", async () => {
+  const res = await fetch(`${base}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` } });
+  assert.equal(res.status, 403);
+});
+
+test("an account can read its own usage, and is told which tier and what is left", async () => {
+  const res = await fetch(`${base}/api/auto/usage`, { headers: { Authorization: `Bearer ${token}` } });
+  assert.equal(res.status, 200);
+  const json = await res.json();
+  assert.equal(json.plan, "free");
+  assert.equal(json.planLabel, "Free");
+  // A refusal is a dead end unless the surface can see it coming.
+  assert.ok(Number.isFinite(json.remaining.weeklyTokens), "the token budget must be legible before it runs out");
+  assert.ok(json.limits.weeklyTokens > 0);
+});
