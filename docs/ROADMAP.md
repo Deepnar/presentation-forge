@@ -5445,12 +5445,13 @@ running in parallel with this one.
   the CLI printer and the UI read `index`, so a one-image deck reported
   `images 3/1`. Fixed, along with six status frames the UI could not label at
   all — the whole post-write half of a generation read as "Working…".
-- **`looksCutAtCap` false-positives on headlines and labels.** It flags any
-  field sitting at its cap without terminal punctuation, but a headline is a
-  noun phrase and ends without a full stop by design, so `"$10.9M"` and
-  `"Weighing V2G Economics Against Grid Impact"` go to the rewrite
-  unnecessarily. Harmless, imprecise, and it spends a model call each time —
-  which is no longer free (see `docs/ECONOMICS.md`).
+- **[x] `looksCutAtCap` false-positived on headlines and labels.** It flagged
+  any field at its cap without terminal punctuation, which is true of every
+  headline ever written. Fixed by looking for what a cut actually looks like —
+  a dangling function word, a lone letter, an open hyphen — and treating a
+  single-token value and Title Case held to the last word as deliberate. The
+  bias stays toward flagging: a cut field that ships is worse than a rewrite
+  that was not needed.
 - **The coherence pass missed three near-identical headlines.** On the V2G
   deck, slides 18, 21 and 22 all said a version of "Scaling V2G Requires
   Cross-Sector Collaboration". The REPORT half of this had a mechanical cause
@@ -5459,7 +5460,13 @@ running in parallel with this one.
   problem: check what the coherence pass is actually given before assuming the
   comparison is at fault.
 - **`feature-grid` carries two lines of speaker-note debt on `minimal-muji`** —
-  the only failure in the `--notes` sweep.
+  the only failure in the `--notes` sweep. **Diagnosed:** it is a 1pt gap, not
+  the 2pt the sweep used to claim. `minimal-muji` sets body at 13pt by design
+  and `reportFloor` was naming the role floor (14) rather than the effective
+  one; that message is fixed. The remaining gap is real but small, and closing
+  it means either cutting the `body` cap for every theme or changing the card
+  geometry for one — neither obviously worth it for one theme, one type, and
+  only with a note present.
 - **`illustrated-points` with an empty seat leaves the lower half of the slide
   empty**, and the vision critic flags it as `blank`. Equally true of a
   four-item `bullets` slide, so the question is whether the layout should
@@ -5469,22 +5476,10 @@ running in parallel with this one.
 
 *Priority: low.*
 
-Found in the plan-to-picture session, and each has a named symptom:
-
-- **Image progress prints a slide index where a counter belongs.** The supply
-  emits `{ index }` (the slide) and the CLI's generic progress printer renders
-  `index + 1 / total`, so a one-image deck logs `images 3/1`.
-- **`looksCutAtCap` false-positives on headlines and labels.** It flags any
-  field at its cap without terminal punctuation, but a headline is a noun
-  phrase and ends without a full stop by design — `"$10.9M"` and `"Weighing V2G
-  Economics Against Grid Impact"` are handed to the model rewrite for nothing.
-- **The coherence pass missed three near-identical headlines.** Slides 18, 21
-  and 22 of the V2G deck each said a version of "Scaling V2G Requires
-  Cross-Sector Collaboration".
-- **`illustrated-points` with an empty seat leaves the lower half of the slide
-  empty**, and the vision critic reports it as `blank`. Equally true of a
-  four-item `bullets` slide, so the question is whether the layout should
-  breathe differently when no picture is coming — a decision, not a defect.
+Found in the plan-to-picture session. **The content-level items moved to
+*Small defects and papercuts* above** — they were listed in two entries at
+once, which is the thing the working agreement now forbids. What is left here
+is the repository hygiene half.
 
 - ~~`config/identity.yaml` contains `institution.name: HACKED`.~~ Fixed under
   *Hosting blockers*: the file is reset to the template and `identityStatus()`
