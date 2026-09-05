@@ -3552,10 +3552,33 @@ flow, the density sweep's first pass, and 390px verification across every
 project page and `SlideEditor.jsx`.
 
 Left at HIGHEST it kept reading as a large blocked project, and it is neither
-large nor blocked. What remains is a polish pass with **no named defects behind
-it** — which is the honest description and also the reason it needs a WALK
-rather than a plan: the density sweep's first pass found what it found by
-opening every route and looking, not by reasoning about what might be wrong.
+large nor blocked. What remained was a polish pass with no named defects behind
+it — which is the reason it needed a WALK rather than a plan.
+
+**The walk (2026-09-05).** Every route driven and MEASURED rather than read:
+contrast against the actual composited background, block-level tap targets,
+horizontal overflow, and heading-level skips. Result:
+
+- **Contrast is clean on every route.** Zero text below its WCAG ratio, in the
+  app and on the marketing pages. The first pass's work holds.
+- **No horizontal overflow and no heading-level skips anywhere.**
+- **`#/chat`, `#/decks`, `#/settings` and `#/home` were clean on every measure**
+  before this pass touched anything — the deck workspace entry did its job.
+- **One real class of defect, in seven places.** Stacked nav columns — the
+  footer's three and Legal's four — rendered links at 21px with a 6px gap, a
+  27px pitch. Fixed at the container so the gap becomes the children's padding:
+  target 21px → 29px, visual rhythm within 2px of what it was. Breadcrumbs on
+  three pages had the same problem at 19px.
+
+Two things about the method are worth keeping. The docs table of contents
+renders `<button>` and not `<a>`, so the first fix silently skipped the column
+with the most entries — the fix *looked* applied and was not, which reading
+could not have caught. And the audit's own first output was noise: `#/docs`
+reported 22 findings of which 11 were links inline in prose, which WCAG 2.5.8
+exempts. **A measure that flags the correct thing is still a bad measure.**
+
+What is left under this entry is now genuinely nothing named. The next thing to
+find here needs either a new kind of measurement or a person with an opinion.
 
 The refusal-as-offer is the one piece that genuinely waits, and not on this
 entry's direction: it waits on the subscription-vs-credits decision and on
