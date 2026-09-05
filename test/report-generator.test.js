@@ -471,3 +471,76 @@ test("generateReport drops a section whose prose violates its depth grammar", as
   assert.equal(r.skipped.length, 1);
   assert.equal(r.skipped[0].section, "Introduction");
 });
+
+/* ------------------------------------------ what one section knows of another */
+
+test("each section is shown the outline and the prose already written", async (t) => {
+  // "Do not repeat wording already used in another section" was in the system
+  // prompt while the model was shown no other section, so it could not be
+  // followed and near-duplicate sections are what the reports came out with.
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir);
+  const seen = [];
+  const chat = async ({ schema, messages }) => {
+    if (schema.properties?.sections) {
+      return { data: { title: "T", sections: [
+        { name: "Abstract", focus: "Summarise." },
+        { name: "Introduction", focus: "Motivate." },
+        { name: "Conclusion", focus: "Close." },
+        { name: "References", focus: "Cite." },
+      ] } };
+    }
+    seen.push(messages.at(-1).content);
+    if (schema.required?.includes("entries")) {
+      return { data: { entries: ["1. S.", "2. S.", "3. S."] } };
+    }
+    return { data: { paragraphs: [`Prose for a section.`, "B.", "C."] } };
+  };
+  await generateReport({ dir, depth: "brief", chat });
+
+  // The FIRST section has nothing written yet, and still learns what the
+  // other sections are for — the half no history can supply.
+  assert.match(seen[0], /THE OTHER SECTIONS AND WHAT THEY COVER/);
+  assert.match(seen[0], /Introduction: Motivate\./);
+  assert.ok(!seen[0].includes("ALREADY WRITTEN"), "nothing is written before the first section");
+  // A section never appears in its own outline.
+  assert.ok(!/- Abstract:/.test(seen[0]), "the Abstract was listed as another section");
+
+  // A later section is shown what the earlier ones actually said.
+  assert.match(seen.at(-1), /ALREADY WRITTEN — do not restate these/);
+  assert.match(seen.at(-1), /- Abstract: Prose for a section\./);
+});
+
+test("a section that failed its grammar is not offered as prose to avoid", async (t) => {
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir);
+  const seen = [];
+  const chat = async ({ schema, messages }) => {
+    if (schema.properties?.sections) {
+      return { data: { title: "T", sections: [
+        { name: "Abstract", focus: "Summarise." },
+        { name: "Conclusion", focus: "Close." },
+        { name: "References", focus: "Cite." },
+      ] } };
+    }
+    seen.push(messages.at(-1).content);
+    if (schema.required?.includes("entries")) {
+      return { data: { entries: ["1. S.", "2. S.", "3. S."] } };
+    }
+    // The Abstract comes back over its brief-depth length cap and is dropped.
+    if (seen.length === 1) return { data: { paragraphs: ["x".repeat(600), "B.", "C."] } };
+    return { data: { paragraphs: ["Real prose.", "B.", "C."] } };
+  };
+  const r = await generateReport({ dir, depth: "brief", chat });
+
+  assert.ok(!r.sections.includes("Abstract"), "the over-length Abstract should have been dropped");
+  // The Abstract legitimately appears in every other section's OUTLINE — it
+  // was planned. What must not appear is its prose, under "already written".
+  for (const msg of seen.slice(1)) {
+    const block = msg.split("ALREADY WRITTEN — do not restate these")[1] ?? "";
+    assert.ok(!block.includes("- Abstract:"), "prose that failed its grammar was fed forward");
+  }
+  // …and the block is genuinely being built, or the check above proves nothing.
+  const last = seen.at(-1).split("ALREADY WRITTEN — do not restate these")[1] ?? "";
+  assert.match(last, /- Conclusion: Real prose\./);
+});

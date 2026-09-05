@@ -546,8 +546,32 @@ const ACK_PROMPT =
   "You write the Acknowledgement of an academic report. A short, sincere paragraph " +
   "thanking the guide, the institution and the sources used. One or two paragraphs.";
 
-async function writeSection({ spec, report, research, identity, depth, density, model, signal, chat }) {
+async function writeSection({ spec, plan, report, research, identity, depth, density, model, signal, chat }) {
   const subject = identity?.academic?.subject;
+
+  // "Do not repeat wording already used in another section" was in the system
+  // prompt while the model was shown no other section: `report.content` was
+  // empty for the whole write loop and only the title ever reached the
+  // message. The instruction was unfollowable, and near-duplicate sections are
+  // exactly what the reports came out with.
+  //
+  // Two things fix it, and both are cheap. The outline says what the OTHER
+  // sections are for, so a writer knows what is not its job — this is the half
+  // that helps the section written first, which no amount of history can
+  // reach. The openings of what has been written say what has actually been
+  // said, in the writer's own words rather than the planner's.
+  const outline = (plan ?? [])
+    .filter((s) => s.name !== spec.name)
+    .map((s) => (s.focus ? `- ${s.name}: ${s.focus}` : `- ${s.name}`))
+    .join("\n");
+
+  const written = Object.entries(report.content ?? {})
+    .map(([name, sec]) => {
+      const first = (sec?.paragraphs ?? sec?.entries ?? [])[0];
+      return first ? `- ${name}: ${String(first).slice(0, 240)}` : null;
+    })
+    .filter(Boolean)
+    .join("\n");
 
   const densityNote = density === "sparse"
     ? "Keep the prose lean: state each point once, avoid restating the same idea in consecutive sentences."
@@ -611,6 +635,8 @@ async function writeSection({ spec, report, research, identity, depth, density, 
           `SECTION: ${spec.name}`,
           spec.focus ? `FOCUS: ${spec.focus}` : "",
           subject ? `Subject: ${subject}` : "",
+          outline ? `\nTHE OTHER SECTIONS AND WHAT THEY COVER\n${outline}` : "",
+          written ? `\nALREADY WRITTEN — do not restate these\n${written}` : "",
           research ? `\nRESEARCH NOTES\n${research}` : "",
         ].filter(Boolean).join("\n"),
       },
@@ -677,13 +703,18 @@ export async function generateReport({
   for (const [i, spec] of planned.sections.entries()) {
     onProgress?.({ status: "report_writing", index: i, total: planned.sections.length, section: spec.name });
     try {
-      const data = await writeSection({ spec, report, research, identity, depth, density, model, signal, chat });
+      const data = await writeSection({
+        spec, plan: planned.sections, report, research, identity, depth, density, model, signal, chat,
+      });
       const check = validateSection(spec.name, depth, data ?? {});
       if (!check.ok) {
         skipped.push({ section: spec.name, reason: check.errors.slice(0, 2).join("; ") });
         continue;
       }
       sectionsData[spec.name] = data;
+      // The running report is what the next section is shown, so only prose
+      // that actually passed its grammar becomes something to avoid repeating.
+      report.content[spec.name] = data;
     } catch (err) {
       skipped.push({ section: spec.name, reason: err.message.slice(0, 120) });
     }
