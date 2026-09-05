@@ -81,6 +81,44 @@ export function meterSummary(m) {
 }
 
 /**
+ * Roughly four characters per token for English prose. Good enough for a spend
+ * estimate; nothing here should be read as a tokeniser.
+ */
+export const CHARS_PER_TOKEN = 4;
+
+/**
+ * The research excerpt sent with EVERY author call, in characters.
+ *
+ * This is the whole cost model, and it is not the writing. `writeSlide` puts
+ * `RESEARCH NOTES\n${research}` in the user message of every single slide
+ * call, so a 22-slide deck sends the excerpt 22 times, plus once more for the
+ * plan and for each of the field-length, coherence and script passes. The
+ * slides' own output is noise beside it — a slide is perhaps 800 tokens out
+ * against 60,000 in.
+ *
+ * 240,000 is the CLOUD figure from config/models.yaml, and the cloud figure is
+ * the right one here because the metered path is Auto, which is an
+ * openai-compatible gateway and therefore the cloud transport. The local
+ * default is 80,000 and is not metered.
+ *
+ * Real research files on disk run 126,000 to 594,000 characters, so this cap
+ * binds for most decks rather than being a ceiling nothing reaches.
+ */
+export const RESEARCH_EXCERPT_CHARS = 240_000;
+
+/** Prompt overhead per author call that is not the research: the system
+ *  prompt, the slide catalogue, the theme voice, the deck so far. */
+export const TOKENS_CALL_OVERHEAD = 1_500;
+
+/** What one slide's own output costs. Small, and included for honesty rather
+ *  than because it moves the total. */
+export const TOKENS_SLIDE_OUTPUT = 800;
+
+/** Calls that carry the research but are not slide writes: the plan, the
+ *  field-length pass, the coherence pass, the critic's fix turn. */
+export const RESEARCH_CARRYING_PASSES = 4;
+
+/**
  * What an operation is expected to cost, before it runs.
  *
  * A reservation has to be taken BEFORE the work, or concurrent requests all
@@ -88,24 +126,21 @@ export function meterSummary(m) {
  * before the work the true cost is unknown. So the reservation is an estimate
  * and `settleAuto` replaces it with the measured total afterwards.
  *
- * The estimate is deliberately rough and deliberately DERIVED rather than
- * tuned: per content slide, the writer sends a system prompt plus the slide
- * catalogue plus a research excerpt and receives a slide, and the finalize,
- * field-length, coherence and critic passes each re-read some of that. Until a
- * real run on the gateway has been measured this is an educated guess with the
- * arithmetic written down, which is worth more than a magic number — and being
- * wrong is survivable in a way it would not be if nothing reconciled, because
- * the estimate lives only for the duration of the run.
+ * The first version of this multiplied a flat 9,000 tokens by the slide count
+ * and put a 22-slide deck at 244,000. That was six times too low, because it
+ * costed the WRITING and the writing is not what is expensive. Re-sending the
+ * research excerpt on every call is, and it is the single thing to attack if
+ * this is ever running against a key somebody pays for.
  */
-export const TOKENS_PER_SLIDE = 9000;
-export const TOKENS_RESEARCH = 40000;
-export const TOKENS_BASE = 6000;
-
-export function estimateTokens({ slides = 0, research = false, depth = null } = {}) {
+export function estimateTokens({ slides = 0, research = false, depth = null, excerptChars = null } = {}) {
   const n = Number(slides) > 0 ? Number(slides) : 0;
-  // A report section is a bigger write than a slide but there are far fewer of
-  // them; full depth writes four paragraphs and a table where brief writes four
-  // sentences.
-  const perUnit = depth === "full" ? TOKENS_PER_SLIDE * 2 : depth === "brief" ? TOKENS_PER_SLIDE : TOKENS_PER_SLIDE;
-  return TOKENS_BASE + n * perUnit + (research ? TOKENS_RESEARCH : 0);
+  const excerpt = Math.max(0, Number(excerptChars ?? RESEARCH_EXCERPT_CHARS));
+  const perExcerpt = research || n > 0 ? Math.round(excerpt / CHARS_PER_TOKEN) : 0;
+
+  // A report section is a bigger write than a slide, and there are eight of
+  // them rather than twenty-two — but each still carries the same excerpt.
+  const outPer = depth === "full" ? TOKENS_SLIDE_OUTPUT * 4 : TOKENS_SLIDE_OUTPUT;
+
+  const calls = n + (research ? RESEARCH_CARRYING_PASSES : 1);
+  return calls * (perExcerpt + TOKENS_CALL_OVERHEAD) + n * outPer;
 }
