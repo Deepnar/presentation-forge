@@ -1,4 +1,4 @@
-# Handoff — 2026-09-06, local self-hosting complete
+# Handoff — 2026-09-06, local self-hosting and BYOK guard complete
 
 Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then the
 relevant entry in `docs/ROADMAP.md`. The roadmap is the only future-work list;
@@ -6,10 +6,10 @@ do not copy work items into this file or `PRODUCTION.md`.
 
 ## Clean stopping point
 
-The private local-install track is complete, documented, tested and running.
-There is no partially implemented local feature to continue. Provider-quality,
-economics, checkout and public hosting remain separate later tracks and were
-not touched in this pass.
+The private local-install track and the cross-deployment BYOK spending guard are
+complete, documented, tested and running. There is no partially implemented
+local or BYOK-safety feature to continue. Provider-quality, checkout and public
+hosting remain separate later tracks.
 
 ## The local product as shipped
 
@@ -28,7 +28,9 @@ is deliberately not bundled into that process image.
 Model access is chosen after startup:
 
 - BYOK works in the downloadable app under **Settings → Cloud** and requires no
-  Ollama installation. Only model requests go to the chosen provider.
+  Ollama installation. Only model requests go to the chosen provider. The key
+  owner's provider bills their account, and the owner must acknowledge that
+  before saving a key.
 - Local inference uses host Ollama through `host.docker.internal` or an explicit
   `FORGE_OLLAMA_HOST`. `qwen3:4b` is documented as a lightweight starter, not as
   the product's quality reference.
@@ -74,9 +76,34 @@ host/LAN Ollama, BYOK, persistent data and destructive reset behavior. Host
 LibreOffice/Poppler/Chromium requirements are clearly scoped to source
 development, not Docker use. All 34 README-local paths resolve.
 
+## BYOK cost safety
+
+The same guard applies to user-supplied OpenAI-compatible keys in the local and
+hosted applications because enforcement lives in the shared model transport:
+
+- each account starts with a 180,000-token rolling 24-hour ceiling, editable in
+  **Profile → Cloud** between 10,000 and 5,000,000;
+- every real provider attempt is atomically reserved before the network call,
+  including retries, repairs, reports, scripts and key tests;
+- successful calls settle to provider-reported usage or a conservative text
+  estimate; failed/time-out calls retain their reservation;
+- each response is capped at 12,000 tokens, output-cap doubling is disabled and
+  transport failures receive at most one retry;
+- the UI shows used/remaining tokens and the approximately 134,600-token
+  preflight estimate for a researched 22-slide deck;
+- saving or replacing a key requires explicit acknowledgement that provider
+  pricing, balance, taxes, currency, billing limit and final invoice belong to
+  the key owner. Terms, Privacy, README, local setup and deployment docs repeat
+  the boundary and direct the owner to set a hard provider-side monetary cap.
+
+This is deliberately a token safety rail rather than currency accounting.
+Provider-specific prompt caching is still a separate roadmap item and should be
+implemented only after a provider is selected and measured; the spending guard
+does not depend on it.
+
 ## Verification
 
-- `npm test` — **797 passing, 0 failing** outside the restricted test sandbox.
+- `npm test` — **808 passing, 0 failing** outside the restricted test sandbox.
 - `npx vite build --config app/web/vite.config.js` — clean build; only the
   pre-existing bundle-size/dynamic-import warnings remain.
 - Local-owner HTTP integration — fresh setup, admin/session creation,
@@ -99,6 +126,15 @@ development, not Docker use. All 34 README-local paths resolve.
   dummy owner, enter a topic, choose briefing settings and open optional thesis
   details. It stopped before generation, made no model call, and the temporary
   containers, network and volume were removed after capture.
+- BYOK unit/transport tests — concurrent reservations, refusal-before-fetch,
+  provider-usage settlement, omitted-usage estimation, retained failed-call
+  reserve, response cap and one-retry ceiling all pass.
+- Disposable Docker HTTP integration — changed a fresh owner's budget, proved
+  key save fails without cost acknowledgement, saved a dummy key with
+  acknowledgement and observed its acceptance timestamp. The temporary
+  container and its fake account/key were removed afterward.
+- Browser legal-page check — the rebuilt app visibly serves the
+  **Bring-your-own-key costs** Terms section at `127.0.0.1:8090`.
 
 ## Local runtime left in place
 
@@ -112,6 +148,6 @@ deletes decks, accounts, keys and the report donor.
 
 Choose an item directly from `docs/ROADMAP.md`, using `docs/BLOCKED.md` to avoid
 work that still needs a provider, operator asset or product decision. There is
-no remaining local-hosting item to select. Do not run a local model to judge
-content quality; the repository working agreement defines the hosted Auto path
-as the quality reference.
+no remaining local-hosting or provider-neutral BYOK-safety item to select. Do
+not run a local model to judge content quality; the repository working
+agreement defines the hosted Auto path as the quality reference.
