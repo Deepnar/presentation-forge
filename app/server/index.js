@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { readFile, writeFile, readdir, mkdir, stat, access, rm } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT, DECKS, THEMES, CONFIG, BRAND, REFERENCE } from "../../src/paths.js";
@@ -3247,12 +3248,24 @@ const SWEEP_HOUR = Number(process.env.FORGE_SWEEP_HOUR || 3);
  */
 const UI_DIST = path.join(ROOT, "app", "web", "dist");
 try {
-  await stat(path.join(UI_DIST, "index.html"));
+  const uiIndex = path.join(UI_DIST, "index.html");
+  await stat(uiIndex);
+  // index.html deliberately carries one tiny, synchronous pre-paint script:
+  // it resolves the saved light/dark appearance before React can flash the
+  // wrong ground. `script-src 'self'` blocked it in Docker, so every real
+  // browser reported a CSP error and dark mode silently lost its pre-paint
+  // guarantee. Hash the BUILT file, not the source template, so the policy is
+  // exact even if Vite changes whitespace while producing the asset.
+  const indexHtml = await readFile(uiIndex, "utf8");
+  const inline = indexHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+  const inlineHash = inline
+    ? `'sha256-${createHash("sha256").update(inline).digest("base64")}'`
+    : null;
   app.use((req, res, next) => {
     if (!req.path.startsWith("/api/")) {
       res.setHeader("Content-Security-Policy",
         "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; " +
-        "script-src 'self'; font-src 'self' data:; connect-src 'self'");
+        `script-src 'self'${inlineHash ? ` ${inlineHash}` : ""}; font-src 'self' data:; connect-src 'self'`);
     }
     next();
   });
@@ -3323,7 +3336,19 @@ async function reportBootGaps() {
  * file that no unit test can reach — a literal path shadowed by a parameterised
  * `app.use` parses fine, passes every test, and refuses in production.
  */
-export const server = app.listen(PORT, () => {
-  console.log(`  api   http://localhost:${server.address().port}`);
+// Do not use the `listen` callback here. When binding fails, Node can still
+// reach that callback path with no address available; reading `.port` then
+// throws a second TypeError and hides the useful problem (usually "5174 is
+// already in use") behind an internal-looking crash. The server's events say
+// exactly which state it reached.
+export const server = app.listen(PORT);
+server.once("listening", () => {
+  const address = server.address();
+  const port = typeof address === "object" && address ? address.port : PORT;
+  console.log(`  api   http://localhost:${port}`);
   reportBootGaps().catch(() => { /* a warning that cannot be computed is not worth failing over */ });
+});
+server.once("error", (err) => {
+  console.error(`  api could not listen on ${PORT}: ${err.message}`);
+  process.exitCode = 1;
 });
