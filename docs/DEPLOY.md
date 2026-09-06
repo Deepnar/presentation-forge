@@ -1,5 +1,13 @@
 # Deploying the hosted site
 
+This is deliberately the **production** path: a domain, TLS, SMTP, an
+operator-owned model key, secure cookies, an administrator and tenant controls.
+It is not the first thing a person cloning the repo needs. For private
+self-hosting on Linux, macOS or Windows, use the root
+[`compose.yaml`](../compose.yaml): Ollama stays local, SearXNG is bundled, and
+`docker compose up -d --build` needs no production secret, mail account or
+domain.
+
 The hosted product is **Auto (shared gateway) + BYOK**. Ollama stays in the
 repository for people who clone it and run their own models; it is not part of
 this deployment and `FORGE_HOSTED=1` disables it entirely.

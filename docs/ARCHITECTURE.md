@@ -290,6 +290,31 @@ deliberation.
 
 The admin UI (`#/admin` → System) and `Settings → Deployment mode` both call `POST /api/admin/hosted` (`src/cloud.js:setHosted`) which writes `config/hosted.json` and reloads the frontend (`forge:hostedChanged` + `window.location.reload()`), so Chat's `hosted/local` badge (`ChatView.jsx:1015`) and `Local·Ollama` / `Auto·TCET` pill (`ChatView.jsx:944`) plus the Sidebar `Auto/Cloud` toggle reflect instantly. No fork, no second branch — one repo, one image, one env var.
 
+### Local Docker bundle vs hosted deployment
+
+The two modes deliberately use different Compose entry points. The root
+[`compose.yaml`](../compose.yaml) is the private self-hosted product: it binds
+Forge to `127.0.0.1:8090`, sets `FORGE_HOSTED=0`, keeps decks/accounts/BYOK keys
+in the `forge_local_data` volume, starts an unexposed SearXNG companion, and
+generates a random `/data/config/local-key-pepper` on first boot if the user did
+not supply one. It opens registration and disables retention sweeps because a
+personal install must not surprise its owner by deleting work.
+
+Ollama is intentionally outside that bundle. `FORGE_OLLAMA_HOST` overrides the
+normal `models.yaml` host at the transport seam, so a container can reach
+`host.docker.internal` (Docker Desktop, or Linux's explicit host-gateway
+mapping) without copying or rewriting the user’s model configuration. A trusted
+LAN endpoint can be supplied with the same variable. Settings → Cloud is still
+available, so BYOK works in a downloaded local install as well as in hosted
+mode.
+
+[`docker/docker-compose.app.yml`](../docker/docker-compose.app.yml) is the
+separate internet-facing deployment: hosted mode, explicit `FORGE_KEY_PEPPER`,
+TLS/Caddy profile, mail and retention/operator controls. The image is shared;
+the security posture is not. The final runtime image also copies
+`app/gallery`, because the API serves theme-picker thumbnails from there and a
+build-only copy left Docker users with a working app but no thumbnail assets.
+
 ## Why the human gate replaces presets
 
 Presets guess the deck's structure in advance and are wrong whenever the

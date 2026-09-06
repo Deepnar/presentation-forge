@@ -8,10 +8,10 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 
 ---
 
-> **Everything still outstanding between here and real users lives in
-> [`PRODUCTION.md`](PRODUCTION.md)** — launch blockers, the payments track, the
-> journeys nobody has ever run, and the open defect list. This file is the
-> per-feature plan and history behind it.
+> **Every future work item lives in this file.** [`PRODUCTION.md`](PRODUCTION.md)
+> is a launch-readiness snapshot, [`BLOCKED.md`](BLOCKED.md) says why an item
+> cannot move, and the other documentation explains the system as it is. None
+> of them is a second to-do list.
 
 ## 1. Foundation
 
@@ -5371,6 +5371,128 @@ Two things follow from that and are engineering:
   reads a template's own heading run, and nothing has ever been run against a
   template that is not TCET's. One borrowed `.docx` from another college would
   tell us whether "it just works" is true or hopeful.
+
+### [x] One-command self-hosting — local bundle, no deployment ceremony
+
+*Priority: high. No model needed to build or verify the installation path. User
+intent is explicit: Open WebUI-like local setup — clone, start, open it — with
+no hosted gateway, domain, SMTP or deployment secrets required.*
+
+The root [`compose.yaml`](../compose.yaml) is now the normal local install:
+
+```bash
+git clone https://github.com/Deepnar/presentation-forge.git
+cd presentation-forge
+ollama pull qwen3:4b
+docker compose up -d --build
+```
+
+It starts Forge and a private SearXNG service, binds Forge only to
+`127.0.0.1:8090`, persists the application in `forge_local_data`, opens
+registration, and never requires a domain, SMTP account, hosted-provider key
+or production secret. `docker compose exec forge env
+FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs` proves the
+app is healthy and its model picker can see Ollama. The same bundle accepts
+`FORGE_OLLAMA_HOST` for a trusted LAN endpoint and keeps Settings → Cloud/BYOK
+available. A random encryption pepper is generated once inside the persistent
+volume, rather than falling back to a published development value.
+
+**The unit is one command, not one badly-supervised container.** The app,
+LibreOffice and Chromium belong in Forge’s image; SearXNG remains an independent
+private search service and Ollama remains the user’s model runtime, exactly as
+Open WebUI relies on an external model endpoint. Merging all three into one
+process image would make upgrades, health checks and failures worse while only
+making the marketing sentence shorter.
+
+The hardened hosted path remains
+[`docker/docker-compose.app.yml`](../docker/docker-compose.app.yml): hosted
+mode, Caddy/TLS, operator-owned secrets, mail and tenant controls. Its stale
+quota environment names were corrected to the runtime’s current rolling caps
+and 420,000-token lifetime trial; local convenience cannot weaken production.
+
+The local contract is documented in [`README.md`](../README.md) and
+[`LOCAL_SETUP.md`](../LOCAL_SETUP.md), including Docker Desktop on macOS/Windows
+and Docker Engine on Linux. The runtime image now also ships `app/gallery`, so
+the theme picker no longer becomes 34 Docker-only thumbnail 404s.
+
+> **Learned.** Docker’s build context is part of the product experience and a
+> security boundary. The legacy builder on the test machine ignored the former
+> blacklist shape and uploaded roughly 950 MB; a deliberate allow-list reduces
+> it to about 2.6 MB. An initial `config/*.yaml` allow-list was concise and
+> unsafe because it would copy a self-hoster’s `identity.yaml` or `local.yaml`;
+> only the two committed templates may cross the image boundary. A build can
+> succeed while the app is still broken: the selective runtime copy omitted the
+> gallery, so every theme thumbnail failed only in Docker. The Compose contract
+> test now holds both boundaries, the local/production split and the host-Ollama
+> override.
+
+> **Look-ahead.** This stays a two-service local bundle even if future optional
+> integrations are added. A production deployment must continue to use its
+> separate compose file and explicit secrets; the image may be shared, its
+> security posture must not be.
+
+### [ ] Local authentication should feel like a personal install
+
+*Priority: medium. No model. Needs a product decision before code.*
+
+The local Compose bundle has no SMTP by design. Today it retains the normal
+account model because it owns workspace separation and encrypted BYOK keys, but
+`mailConfigured()` consequently creates a local registration as verified and
+cannot offer password reset. That is safe enough on one private machine and
+confusing if presented as a hosted account system.
+
+Decide which explicit local posture to build:
+
+- **Personal-owner mode (recommended):** first run creates one local owner;
+  later registration is closed; email verification and reset are absent rather
+  than imitated. The owner can keep a password as a local lock or remove it
+  deliberately. This is the Open WebUI-like default for a private computer.
+- **Shared-machine accounts:** retain registration and workspace isolation, but
+  state plainly that there is no email verification or recovery without SMTP.
+  It is suitable only for people who already trust one another.
+
+An internet-facing or untrusted multi-user instance must use the hosted
+deployment with SMTP, verified addresses, secure cookies and operator controls.
+Do not make the current production account flow conditional on local mode in
+piecemeal route checks: identify the local boundary first, then make every auth
+surface and API guard agree with it.
+
+> **Look-ahead.** BYOK is the seam that makes this non-trivial. A one-user mode
+> can collapse account identity safely only if its encrypted key vault, existing
+> deck ownership and migration from the current local database are designed
+> together; otherwise a convenience toggle becomes a data-loss toggle.
+
+### [~] A real product demo — GIF now, generation video after a model run
+
+*Priority: medium. The GIF is unblocked; a truthful end-to-end generation video
+is blocked on a provider key or Auto returning.*
+
+The README now has two committed, locally hosted GIF/MP4 pairs made from actual
+Forge output and UI:
+
+- **Theme system:** one real stats slide crossing four themes. This makes the
+  chrome/theme/content split legible without asking the viewer to trust a
+  claim.
+- **App workflow:** a local Docker session opening the public Green Hydrogen
+  deck, inspecting its editable slide, then opening the real theme picker. It
+  is explicitly captioned as inspection of existing work, not a fabricated
+  generation story.
+
+What remains is a 30–60 second real model run: topic → briefing → approved
+outline → deck → editable slide → report. It must name the backend used and is
+blocked by the provider key/Auto recovery already recorded in
+[`BLOCKED.md`](BLOCKED.md) §1–2; it must never be staged from a scripted UI.
+
+The hosted demo / public URL is a separate later choice. A repo can earn stars
+before it exists; the media makes output legible and the one-command bundle
+makes trying it credible.
+
+> **Learned.** Demo assets are product evidence, so their provenance matters.
+> An initial capture was discarded because its deck title carried personal and
+> institutional context. The committed capture uses only the repository’s
+> public Green Hydrogen material, and `tools/landing.mjs` marks the four manual
+> GIF/MP4 assets as protected so regenerating static landing renders cannot
+> silently delete them.
 
 ### [ ] Surfaces nothing has ever run
 

@@ -1,144 +1,174 @@
-# Running Presentation Forge on your own machine
+# Run Presentation Forge on your own machine
 
-The app does the bulk — research, structure, draft content, render. You do the
-final touches: verify the facts, tune the words, make it yours.
+There are two intentionally different ways to run Forge:
 
-Two ways to run this yourself — pick the one that fits your machine:
-
-- **Local models (fully offline)** — needs a machine with ~8GB+ RAM for a small
-  model. Nothing leaves your computer.
-- **Cloud models (any laptop)** — attach an API key in the app and the pipeline
-  runs on a cloud model. No GPU needed. Your decks, research and data stay on
-  your machine; only the model calls go out.
-
-Both share the same setup steps below; the difference is just which model
-backend you point at.
-
-> **Single repo, two modes:** `main` ships hosted-ready (`FORGE_HOSTED=1` in `docker/.env`). Clone locally = `FORGE_HOSTED` unset, so it falls back to Ollama. No fork needed — one codebase, one switch, GitHub only.
-
----
-
-## What you need
-
-| Requirement | Local-model path | Cloud path |
+| You want to… | Use | What runs where |
 |---|---|---|
-| Node.js 24+ | yes | yes |
-| [Ollama](https://ollama.com) + a model | yes (e.g. `qwen3:4b` or bigger) | no |
-| LibreOffice + poppler | yes (renders slide previews) | yes |
-| Docker (optional) | local web search | local web search |
-| An API key | no | yes (in-app) |
+| **Use the app** | [`compose.yaml`](compose.yaml) | Forge + LibreOffice + Chromium + fonts + private SearXNG in Docker; Ollama on your machine |
+| **Develop Forge** | this guide | Node, LibreOffice, Chromium and fonts installed on your machine |
+| **Operate it for other people** | [`docs/DEPLOY.md`](docs/DEPLOY.md) | hosted mode, TLS, mail, admin controls, persistent production secrets |
 
-LibreOffice and poppler are used to rasterise slides so you can *see* them
-(`npm run preview`). Without them the app runs but previews fail.
+The first is the normal path. It is one command after Docker and Ollama are
+installed. The rest of this document covers both paths.
 
-## One-time setup
+## Normal local install — Docker
 
 ```bash
-# 1. Get the code
 git clone https://github.com/Deepnar/presentation-forge.git
 cd presentation-forge
-
-# 2. Install
-npm install
-
-# 3. Fonts (27 typefaces the themes call for) and brand placeholders
-npm run fonts
-npm run brand
-
-# 4. Your institution identity
-cp config/identity.example.yaml config/identity.yaml
-#    edit config/identity.yaml: institution name, guide, academic, your team
-
-# 5. (Local models only) start Ollama and pull a model
-ollama pull qwen3:4b          # or any instruction-following model you have
+ollama pull qwen3:4b
+docker compose up -d --build
+docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs
 ```
 
-## Choose your model backend
+Open <http://localhost:8090>. Compose starts Forge and an unexposed SearXNG
+research service; Ollama remains on your machine. The first build downloads
+the application image, renderer dependencies and theme fonts. Later starts are
+`docker compose up -d`.
 
-**Local models (default when you clone):** nothing to do — the app resolves every role to
-Ollama automatically. Check `config/models.yaml` if you want to change which
-local model handles which role. Keep `FORGE_HOSTED` unset or `0` so Auto falls
-back to `localhost:11434`.
+This is a **private-machine** install, not a replacement for a hosted account
+service. It has no SMTP: registration works and new local accounts are marked
+verified immediately, but there is no email confirmation or password-reset
+mail. Accounts currently still separate workspaces and protect BYOK keys. Do
+not expose this bundle to strangers or use it as shared public hosting; use the
+production deployment when those account guarantees matter.
 
-**Hosted (TCET gateway):** set `FORGE_HOSTED=1` and `FORGE_TCET_API_KEY` (or add the key via Settings → Cloud / admin vault). Then Auto = TCET `qwen3.6` only, Cloud = your BYOK, **no local Ollama fallback** — the same code, one env switch. The Docker hosted compose already sets `FORGE_HOSTED=1`.
+### Docker Desktop — macOS and Windows
 
-**Cloud models (either mode):** in the app, go to Settings → Cloud, paste your API key, and
-flip the header toggle to CLOUD. The key is stored encrypted in the vault / gitignored
-`config/local.yaml` and never sent anywhere but the model provider. Supported: any OpenAI-compatible endpoint (OpenCode Go, OpenAI, etc).
+Install Docker Desktop and the Ollama desktop app, then run the commands above
+in Terminal or PowerShell. Docker Desktop already exposes the host model
+endpoint under `host.docker.internal`.
 
-## Run it
+### Docker Engine — Linux
+
+Install Docker Engine with the Compose plugin and Ollama, then run the same
+commands. Forge supplies Docker's host-gateway mapping automatically. If
+the container check says it cannot find a model while `ollama list` works on
+the host, Ollama is likely listening only on loopback. Start it with an
+endpoint the container can reach:
 
 ```bash
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
+```
+
+For a permanent system service, set that environment value using your Linux
+service manager rather than leaving a terminal open. Do this only on a trusted
+network: it makes Ollama reachable from Docker and potentially your LAN.
+
+### Ollama somewhere else
+
+The model can live on a trusted LAN machine instead. Point Forge at it while
+starting Compose:
+
+```bash
+FORGE_OLLAMA_HOST=http://192.168.1.42:11434 docker compose up -d
+```
+
+The `docker compose exec … local-check` command is the install proof: it asks
+Forge, rather than Docker, whether the app is healthy and whether the model
+picker sees Ollama. It runs inside the container so Docker-only users do not
+need Node on the host.
+
+## Before you start
+
+| Requirement | Linux | macOS | Windows |
+|---|---|---|---|
+| Node.js 24+ | package manager / nvm | Homebrew / installer | installer / nvm-windows |
+| Ollama | [Ollama](https://ollama.com) | Ollama app | Ollama app |
+| LibreOffice | package manager | LibreOffice app | LibreOffice app |
+| Poppler | package manager | `brew install poppler` | install Poppler and put `bin` on PATH |
+| Chromium | package manager | Chrome/Chromium | Chrome/Chromium |
+
+The Docker route carries LibreOffice, Poppler, Chromium and the 21 font
+families already. Do **not** install them merely to use the container.
+
+## Source setup
+
+```bash
+git clone https://github.com/Deepnar/presentation-forge.git
+cd presentation-forge
+npm install
+npm run fonts
+npm run brand
+cp config/identity.example.yaml config/identity.yaml
+ollama pull qwen3:4b
 npm run dev
 ```
 
-- Web app: http://localhost:5173/
-- API: http://localhost:5174/
+- Web app: <http://localhost:5173>
+- API: <http://localhost:5174>
 
-Register an account (first run), then start a new chat, type a topic, answer
-the briefing questions, approve the outline — deck and report come out.
+On first run, register, start **New chat**, describe the topic, answer the
+briefing, review the outline, then approve it.
 
-## Working from the terminal (headless)
+`config/identity.yaml` is ignored by Git. Put your institution, guide and team
+there; it is a local default, not a file to commit.
 
-```bash
-npm run render decks/gpu-demo/deck.yaml        # deck.yaml -> .pptx
-npm run preview decks/gpu-demo/out/deck.pptx   # .pptx -> PNGs, so you can SEE it
-npm run search "your query"                    # research from the terminal
-npm run sweep -- --dry-run                     # preview the monthly deck sweep
-```
+## Choose a model
 
-Generate a deck from a brief in a script:
+### Ollama — default
 
-```js
-import { generateDeck } from "./src/ai/generate.js";
-import { loadTheme } from "./src/theme.js";
+With `FORGE_HOSTED` unset or `0`, Auto resolves to Ollama on
+`http://localhost:11434`. Change the roles or models in `config/models.yaml`
+if you have a different local setup.
 
-const { deck } = await generateDeck({
-  theme: await loadTheme("warm-humanist"),
-  brief: "Introduce real-time ray tracing.",
-});
-```
+### BYOK — optional, including in the Docker install
 
-## Where your data lives (all local, all yours)
+Open **Settings → Cloud**, add an OpenAI-compatible provider key, then switch
+the app to Cloud. The app sends model requests only to that provider; decks,
+research, accounts and the report donor remain local.
 
-| What | Where |
-|---|---|
-| Decks (per account) | `decks/<slug>/` — deck.yaml, plan.yaml, research/, out/ |
-| Accounts | `config/users.json` (scrypt hashes — no plaintext passwords) |
-| Sessions | `config/sessions.json` (opaque bearer tokens) |
-| Saved briefing presets | per-account, in config/ |
-| Institution identity | `config/identity.yaml` |
-| Cloud API key | `config/local.yaml` (gitignored, never committed) |
-| Brand marks | `brand/logos/` + `brand/generated/` (gitignored) |
+For source development, provider keys are stored in local state and must never
+be committed. For the Docker install they live in its persistent volume. On
+first local Docker boot Forge creates a random encryption pepper in that volume
+automatically; production never does this and still requires the operator to
+supply `FORGE_KEY_PEPPER` explicitly.
 
-Every user of the app gets their own scope: decks carry the owning account's
-email, presets are per-account, sessions are per-account. Nothing is shared
-between accounts except the machine-level identity and brand files. No
-database — it's all JSON and YAML files, which is also what makes a deck
-portable: copy `decks/<slug>/` to another machine and it opens there.
-
-## Updating
+## Useful source commands
 
 ```bash
-git pull
-npm install
+npm test                                      # tests
+npm run render decks/<slug>/deck.yaml         # content -> .pptx
+npm run preview decks/<slug>/out/deck.pptx    # .pptx -> PNGs
+npm run forge -- new "<topic>" --research     # headless outline
+npm run forge -- generate <slug> --critic     # headless deck
+npm run searxng                                # optional SearXNG only, for source mode
 ```
+
+The browser app and the CLI call the same `src/` pipeline. The server is a
+transport, not a second implementation.
+
+## Where data lives
+
+| Data | Source run | Docker local run |
+|---|---|---|
+| Deck workspaces | `decks/<slug>/` | `forge_local_data` volume (`/data/decks`) |
+| Accounts, sessions, encrypted keys | `config/forge.db` | `forge_local_data` volume (`/data/config/forge.db`) |
+| Identity and local model config | `config/` | `forge_local_data` volume (`/data/config/`) |
+| Brand and report donor | `brand/`, `reference/` | `forge_local_data` volume (`/data/brand`, `/data/reference`) |
+
+Nothing is deleted by default. A production retention sweep is a production
+choice, not a local-install surprise.
 
 ## Troubleshooting
 
-- **Previews fail / "pdftoppm not found"** — install poppler-utils and
-  LibreOffice, or `sudo apt install libreoffice poppler-utils` (Debian/Ubuntu)
-  / `sudo pacman -S libreoffice-fresh poppler` (Arch).
-- **Nothing renders from chat** — check the API log (`npm run dev` output) and
-  that Ollama is running (`ollama list`); if using cloud, check the key in
-  Identity → Cloud.
-- **Ports busy** — the app binds :5173 (UI) and :5174 (API); change with
-  `FORGE_API_PORT` or the Vite config.
-- **"No such deck" on an old folder** — decks created before an account
-  existed are ownerless; they stay visible but are not editable by new
-  accounts. Create a new deck from the chat instead.
+- **Ollama cannot be reached** — make sure `ollama list` works. In Docker run
+  the `docker compose exec … local-check` command above; if Ollama is on
+  another machine, start Compose with
+  `FORGE_OLLAMA_HOST=http://host:11434 docker compose up -d`.
+- **Preview fails** — source runs need LibreOffice and Poppler on `PATH`;
+  Docker already includes both.
+- **Plate or freeform slides fail** — source runs need Chrome/Chromium. Docker
+  includes Chromium and configures its no-sandbox container mode.
+- **Ports are busy** — source uses :5173 / :5174. The local Docker bundle uses
+  :8090; change it with `FORGE_PORT=8091 docker compose up -d`.
+- **I want to start clean** — `docker compose down -v` removes the local Docker
+  volume. It permanently removes decks, accounts, keys and the report donor.
+  `docker compose down` does not.
 
-## Want the hosted version instead?
+## Production is different on purpose
 
-See `docs/DEPLOY.md` (or the README's "Deploying on a home Linux server"
-section) — one container, one command, intended for an always-on home server.
+The local bundle is private, local mode and convenience-first. Do not expose it
+to the internet by changing its port binding. When you need users outside your
+machine, use [`docs/DEPLOY.md`](docs/DEPLOY.md): it enables hosted mode, Caddy
+TLS, SMTP, secure cookies, an administrator, tenant controls and real secrets.

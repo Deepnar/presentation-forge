@@ -1,9 +1,7 @@
-# What is left — production and hosting readiness
+# Production and hosting readiness
 
-Everything still outstanding, in one place. `docs/ROADMAP.md` is the per-feature
-plan and history; this is the operational answer to *"what stands between here
-and real users?"*, written so the list can be worked through rather than
-rediscovered.
+This is the operational answer to *"what stands between here and real users?"*.
+`docs/ROADMAP.md` remains the only work list and per-feature history.
 
 Every claim below was checked against the code on the day it was written, not
 carried forward from memory. Where something is asserted as broken, the file and
@@ -25,7 +23,7 @@ decks, identity, brand marks, report donor and BYOK keys with
 `test/tenancy.test.js` as the executable contract; an admin panel that reports
 what is broken and can change the operating settings without a restart; atomic
 spend limits; a Docker deployment with a TLS profile and documented backups;
-legal pages. 660 tests, `themematrix` / `drawcheck` / `textcheck` / `capfit`
+legal pages; the automated test suite, `themematrix` / `drawcheck` / `textcheck` / `capfit`
 clean across 34 themes × 74 slide types.
 
 What is left divides into four blockers, a payments track that only matters if
@@ -139,13 +137,12 @@ the surface that sells against it, and a calibration run.
   `settleAuto` replaces it with the measured total, including when the run
   failed or was stopped. A generation settles its own reservation because it
   outlives the request that started it.
-- **[x] The free tier's token budget was a third of one deck.** 80,000 against
-  a 90-slide week, which is about four 22-slide decks at roughly 244,000 tokens
-  each. Harmless only while nothing counted. Now 1,000,000 — four decks, the
-  same allowance said in the other unit — and admin-settable.
-  **It is an estimate and wants calibrating against a real gateway run before
-  anyone is charged against it.** `estimateTokens` in `src/usage.js` has the
-  arithmetic written down; replace the constants with measurements.
+- **[x] The old token caps contradicted the slide allowance in both directions.**
+  80,000 was too small for even one deck; 1,000,000 was too large for the
+  stated four-deck week. The shipped defaults are now 550,000 tokens per week
+  (about four ~135,000-token decks) and a 420,000-token lifetime free trial
+  (about three). They remain estimates until one provider-backed run replaces
+  the constants in `src/usage.js` with measurements.
 - **A refusal is still a dead end in the UI.** The data is there now — a 429
   carries the tier and what is left of each budget, and `/api/auto/usage`
   reports the same so it can be seen coming — but nothing renders it. A 429
@@ -218,24 +215,10 @@ work — planned, in progress and done, with the reasoning and the `Learned.`
 blocks — and this section used to be a second copy of part of it, which meant
 two places to update and one of them always stale.
 
-What sits there now, roughly in the order it matters:
-
-| item | needs a model? | needs a decision? |
-|---|---|---|
-| The front end, and the landing page | no | **yes** |
-| Add a slide to a finished deck, written like the others | no | no |
-| A turn's grammar is built from every type at once | no | partly |
-| ~~"Auto" is bound to one institution's name~~ — **done** | — | — |
-| Nothing can test the browser | no | **yes** — see §1.4 |
-| Research and content flow, end to end | **yes** | no |
-| The full functional sweep | **yes** | no |
-| Measuring content quality | **yes** | no |
-| Housekeeping found during the audit | no | no |
-| (stretch) Canvas slide-builder | no | **yes** |
-
-The launch-blocking items keep their own section above, because "what stops a
-stranger using this" is a different question from "what is worth building next"
-and this file exists to answer the first one.
+The launch-blocking context remains in the sections above because "what stops a
+stranger using this" is a different question from "what is worth building
+next". The current work, its order and each completion record are only in
+[`ROADMAP.md`](ROADMAP.md).
 
 ## 5. Known and accepted — not defects
 
