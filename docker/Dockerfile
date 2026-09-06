@@ -20,17 +20,22 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY app ./app
-RUN npx vite build --config app/web/vite.config.js
-
 # The typefaces every theme is designed around. This runs at BUILD time and its
 # output is copied into the runtime image: a machine with only DejaVu and
 # Liberation renders all 38 themes with substituted fonts, which is invisible in
 # the .pptx (font names are just strings there) and wrong in every server-side
 # preview PNG and every plate background — i.e. wrong in everything the user
 # actually looks at in the app.
-COPY tools ./tools
+#
+# Copy only the two inputs this layer reads. Copying all of tools/ here made a
+# change to an unrelated smoke script re-download all 59 font files on the next
+# local `docker compose up --build` — a bad cache boundary is a bad first-run
+# experience.
+COPY tools/install-fonts.mjs tools/fonts.manifest.json ./tools/
 RUN node tools/install-fonts.mjs
+
+COPY app ./app
+RUN npx vite build --config app/web/vite.config.js
 
 
 FROM node:24-bookworm-slim
@@ -75,6 +80,12 @@ COPY README.md ./README.md
 COPY --from=build /app/app/web/dist ./app/web/dist
 COPY app/server ./app/server
 COPY app/web/index.html ./app/web/index.html
+# Theme-picker thumbnails and the README's real-render assets are served by the
+# API from app/gallery. The build stage had them, but the runtime image copied
+# only the web bundle and server, so every `/api/themes/:name/thumb.png` was a
+# 404 in Docker even though source runs worked. Gallery output is part of the
+# shipped product, not a build-time decoration.
+COPY app/gallery ./app/gallery
 COPY --from=build /root/.local/share/fonts/presentation-forge /usr/local/share/fonts/presentation-forge
 RUN fc-cache -f \
     && fc-match "Inter" | grep -qi inter \

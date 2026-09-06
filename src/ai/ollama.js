@@ -121,9 +121,28 @@ export async function researchExcerptCap({ model } = {}) {
  */
 
 let _cfg;
+
+/**
+ * Apply the runtime endpoint only where it belongs: at the local Ollama
+ * transport. `models.yaml` remains a portable description of a normal local
+ * install (`localhost:11434`), while the Compose bundle can name the host from
+ * inside a container without rewriting a user-owned config file on first boot.
+ */
+export function withOllamaHost(cfg, host = process.env.FORGE_OLLAMA_HOST) {
+  const override = host?.trim();
+  return override ? { ...cfg, host: override } : cfg;
+}
+
 async function config() {
   if (!_cfg) _cfg = YAML.parse(await readFile(path.join(CONFIG, "models.yaml"), "utf8"));
-  return _cfg;
+  // The committed config names localhost because that is right when Forge runs
+  // directly on the user's machine. A container's localhost is the container,
+  // though, not the Ollama process the user already runs on the host. Keeping
+  // the override at the transport seam lets the one-command local bundle point
+  // at `host.docker.internal` without copying or mutating models.yaml on first
+  // boot. It also makes a remote LAN Ollama endpoint possible without turning
+  // a personal config file into deployment state.
+  return withOllamaHost(_cfg);
 }
 
 /**

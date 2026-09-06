@@ -62,14 +62,18 @@ services:
       FORGE_SMTP_SECURE: "${FORGE_SMTP_SECURE:-0}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
-      # Auto-tier caps. These are what keep one user from spending the shared
-      # gateway's whole budget in an afternoon.
-      FORGE_AUTO_HOURLY_REQUESTS: "${FORGE_AUTO_HOURLY_REQUESTS:-20}"
-      FORGE_AUTO_WEEKLY_REQUESTS: "${FORGE_AUTO_WEEKLY_REQUESTS:-100}"
-      FORGE_AUTO_HOURLY_SLIDES: "${FORGE_AUTO_HOURLY_SLIDES:-60}"
-      FORGE_AUTO_WEEKLY_SLIDES: "${FORGE_AUTO_WEEKLY_SLIDES:-300}"
-      FORGE_AUTO_WEEKLY_TOKENS: "${FORGE_AUTO_WEEKLY_TOKENS:-200000}"
-      FORGE_AUTO_MAX_SLIDES_PER_DECK: "${FORGE_AUTO_MAX_SLIDES_PER_DECK:-30}"
+      # Auto-tier caps. These names are the runtime settings names, not an
+      # older hourly spelling the app no longer reads. The lifetime trial is
+      # distinct from rolling abuse windows: a free account's allowance does
+      # not refill merely because it waits a week.
+      FORGE_AUTO_WINDOW_HOURS: "${FORGE_AUTO_WINDOW_HOURS:-5}"
+      FORGE_AUTO_WINDOW_REQUESTS: "${FORGE_AUTO_WINDOW_REQUESTS:-12}"
+      FORGE_AUTO_WEEKLY_REQUESTS: "${FORGE_AUTO_WEEKLY_REQUESTS:-30}"
+      FORGE_AUTO_WINDOW_SLIDES: "${FORGE_AUTO_WINDOW_SLIDES:-45}"
+      FORGE_AUTO_WEEKLY_SLIDES: "${FORGE_AUTO_WEEKLY_SLIDES:-90}"
+      FORGE_AUTO_WEEKLY_TOKENS: "${FORGE_AUTO_WEEKLY_TOKENS:-550000}"
+      FORGE_AUTO_TRIAL_TOKENS: "${FORGE_AUTO_TRIAL_TOKENS:-420000}"
+      FORGE_AUTO_MAX_SLIDES_PER_DECK: "${FORGE_AUTO_MAX_SLIDES_PER_DECK:-24}"
     volumes:
       - forge_data:/data
     depends_on:

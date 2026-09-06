@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -82,15 +82,14 @@ function inBuildContext(patterns, file) {
 
 const patterns = parseDockerignore(await readFile(path.join(ROOT, ".dockerignore"), "utf8"));
 
-test("the committed config templates reach the image", async () => {
+test("the two config templates the image seeds reach the image", async () => {
   // The entrypoint seeds /data/config from /app/config/*.yaml on first boot, so
   // excluding these would leave a fresh volume with no models.yaml at all.
-  const tracked = execFileSync("git", ["ls-files", "config"], { cwd: ROOT, encoding: "utf8" })
-    .split("\n")
-    .filter(Boolean);
-
-  assert.ok(tracked.length > 0, "expected committed files under config/");
-  for (const file of tracked) {
+  // This is intentionally an explicit deployment contract, rather than a
+  // `git ls-files` subprocess. The image must seed exactly these templates;
+  // any later config file must be added deliberately instead of becoming an
+  // accidental part of its initial state merely because it was committed.
+  for (const file of ["config/identity.example.yaml", "config/models.yaml"]) {
     assert.equal(inBuildContext(patterns, file), true, `${file} is committed but excluded from the build context`);
   }
 });
@@ -161,6 +160,8 @@ test("the repo's own state directories stay out of the context", () => {
   for (const file of ["decks/some-slug/deck.yaml", ".env", "brand/logos/crest.png", "reference/institution.docx"]) {
     assert.equal(inBuildContext(patterns, file), false, `${file} would be copied into the image`);
   }
-  // reference/.gitkeep is re-included so the volume mount point exists.
-  assert.equal(inBuildContext(patterns, "reference/.gitkeep"), true);
+  // The entrypoint creates the volume-backed reference directory. A donor is
+  // user data and no reference file, including the placeholder, belongs in the
+  // app image.
+  assert.equal(inBuildContext(patterns, "reference/.gitkeep"), false);
 });

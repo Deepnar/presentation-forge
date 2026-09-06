@@ -1,0 +1,87 @@
+# The local, self-hosted install.
+#
+#   ollama pull qwen3:4b
+#   docker compose up -d --build
+#   open http://localhost:8090
+#
+# This is deliberately NOT docker/docker-compose.app.yml. That file is the
+# hardened production deployment: hosted mode, TLS, mail, operator secrets,
+# quotas, Caddy and an administrator. A person cloning an open-source repo
+# should not need a domain, SMTP credentials, or someone else's gateway key to
+# prove it works on their own machine.
+#
+# One command is the product boundary; one Unix process is not. Forge owns the
+# app, LibreOffice and Chromium. SearXNG is an independent local search
+# service. Ollama is the user's model runtime, just as Open WebUI uses a model
+# endpoint rather than baking model weights into its application image.
+name: presentation-forge
+
+services:
+  forge:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      # 8090 avoids the 8080 collision with a common Open WebUI install.
+      - "127.0.0.1:${FORGE_PORT:-8090}:5174"
+    environment:
+      FORGE_HOSTED: "0"
+      FORGE_DECKS_DIR: /data/decks
+      FORGE_BRAND_DIR: /data/brand
+      FORGE_CONFIG_DIR: /data/config
+      FORGE_REFERENCE_DIR: /data/reference
+      FORGE_PLATE_CACHE: /data/plate-cache
+      FORGE_API_PORT: "5174"
+      SEARXNG_URL: http://searxng:8080
+      # Docker Desktop resolves this itself; the extra_hosts rule below gives
+      # Linux Docker Engine the same name. Set FORGE_OLLAMA_HOST for a LAN or
+      # remote endpoint instead.
+      FORGE_OLLAMA_HOST: "${FORGE_OLLAMA_HOST:-http://host.docker.internal:11434}"
+      FORGE_OPEN_REGISTRATION: "1"
+      # Local means local: nothing is swept while someone is learning the app.
+      FORGE_SWEEP_DAYS: "0"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - forge_local_data:/data
+    depends_on:
+      searxng:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5174/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    # Not exposed to the host. It is Forge's local research dependency, not a
+    # public metasearch instance.
+    volumes:
+      - ./docker/searxng:/etc/searxng:rw
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8090/
+      # It is only reachable on the Compose network. Production's secret stays
+      # required in docker/docker-compose.app.yml; making a local clone create
+      # one by hand would be ceremony without protection.
+      SEARXNG_SECRET: forge-local-search-only
+      UWSGI_WORKERS: "2"
+      UWSGI_THREADS: "2"
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  forge_local_data:
