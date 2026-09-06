@@ -10,6 +10,14 @@ the symptom are named so it can be confirmed in a minute.
 **Blocked on something?** `docs/BLOCKED.md` is the single list of blockers and
 who can clear each one.
 
+**Two launches, now explicitly separated.** The self-hosted repository is
+public and released as
+[`v0.1.0`](https://github.com/Deepnar/presentation-forge/releases/tag/v0.1.0).
+It needs neither a domain nor operator-funded model access: a user runs the
+private Docker bundle and chooses BYOK or host Ollama. The blockers in this
+document apply to an operator-run, internet-facing multi-user service and its
+possible paid tiers. They do not make the downloadable release unfinished.
+
 **How this file relates to the others.** `docs/ROADMAP.md` is the single list
 of work items and the only place a new one should be written. This file is the
 standing answer to *what stops real users*, `docs/ECONOMICS.md` to *what it
@@ -31,7 +39,7 @@ money is involved, a set of journeys nobody has ever run, and a defect list.
 
 ---
 
-## 1. The four things that actually block a public launch
+## 1. The four things that block an operator-hosted public launch
 
 ### 1.1 A model you can serve — the only real blocker
 

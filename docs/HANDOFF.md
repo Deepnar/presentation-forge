@@ -1,4 +1,4 @@
-# Handoff — 2026-09-06, local self-hosting and BYOK guard complete
+# Handoff — 2026-09-06, self-hosting, BYOK guard and v0.1.0 released
 
 Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then the
 relevant entry in `docs/ROADMAP.md`. The roadmap is the only future-work list;
@@ -11,14 +11,21 @@ complete, documented, tested and running. There is no partially implemented
 local or BYOK-safety feature to continue. Provider-quality, checkout and public
 hosting remain separate later tracks.
 
-The matching public checkpoint is version `0.1.0`, tagged as `v0.1.0`. Release
+The matching public checkpoint is version `0.1.0`, tagged as `v0.1.0` and
+published at
+<https://github.com/Deepnar/presentation-forge/releases/tag/v0.1.0>. Release
 copy describes the repository as self-hosted software and does not claim that
-the later hosted/paid product is live.
+the later hosted/paid product is live. Its assets include the briefing,
+app-viewer and four-theme demonstrations in both GIF and MP4 form.
 
 Public contribution routing is also in place: `CONTRIBUTING.md`,
 `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`, issue forms and the pull
 request template. README points questions to Discussions, defects to Issues and
 vulnerabilities to private advisories.
+GitHub reports a 100% community profile; Discussions and private vulnerability
+reporting are enabled, and repository discovery metadata now names Docker,
+BYOK, Ollama and AI presentations accurately. These community files landed on
+`main` immediately after the immutable `v0.1.0` product tag.
 
 ## The local product as shipped
 

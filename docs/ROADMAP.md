@@ -5892,6 +5892,10 @@ Docker installation, BYOK or host-Ollama inference, bundled SearXNG research,
 editable PowerPoint output, local-owner authentication, real README captures
 and the cross-deployment BYOK spending guard. The release is intentionally
 described as self-hosted software, not as an already available hosted SaaS.
+The GitHub release is published at
+<https://github.com/Deepnar/presentation-forge/releases/tag/v0.1.0> and carries
+the briefing, app-viewer and four-theme demonstrations as both GIF and MP4—six
+downloadable assets in addition to the automatic source archives.
 
 > **Learned.** A release boundary is also a claims boundary. The useful product
 > can be promoted now without implying that public hosting, paid plans or
@@ -5907,6 +5911,12 @@ contribution guide carries the architecture boundary and real verification
 commands; issue forms collect installation, platform and model-route context
 without asking users to publish credentials. Discussions is the support and
 idea surface, while reproducible product defects remain in Issues.
+
+GitHub's community profile reports 100%. Discussions and private vulnerability
+reporting are enabled; the repository description now names the self-hosted
+Docker, BYOK and Ollama paths, and discovery topics include `docker`, `byok` and
+`ai-presentation`. `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`,
+`SUPPORT.md`, two issue forms and the pull-request template are all on `main`.
 
 > **Learned.** A public repository needs routing as much as documentation.
 > Without it, setup questions look like defects, security reports risk becoming
