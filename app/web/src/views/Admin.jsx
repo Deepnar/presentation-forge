@@ -443,9 +443,10 @@ function Analytics({ stats }) {
   const maxReq = Math.max(...byUser.map((u)=>u.requests), 1);
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Auto runs (all time)" value={stats.usage.totalRequests} sub="plans, generates, chat turns" />
         <StatCard label="Slides generated" value={stats.usage.totalSlides} />
+        <StatCard label="Tokens measured" value={stats.usage.totalTokens.toLocaleString()} sub="prompt + completion" />
         <StatCard label="Accounts with usage" value={byUser.length} sub={byUser.length ? `top: ${byUser[0].requests} runs` : "none yet"} />
       </div>
       <Panel className="p-4">
@@ -466,17 +467,14 @@ function Analytics({ stats }) {
         <div className="mb-2 text-[12px] font-semibold text-fg">Limits per account (env-overridable)</div>
         <div className="grid grid-cols-2 gap-2 text-[12px] sm:grid-cols-3">
           {Object.entries(stats.limits ?? {}).map(([k,v]) => (
-            <div key={k} className={`rounded-lg px-2.5 py-1.5 ${k === "weeklyTokens" ? "bg-sunken opacity-50" : "bg-sunken"}`}>
+            <div key={k} className="rounded-lg bg-sunken px-2.5 py-1.5">
               <span className="font-mono text-[11px] text-fg-faint">{k}</span>
               <span className="float-right font-medium text-fg">{String(v)}</span>
             </div>
           ))}
         </div>
-        {/* A cap nothing can reach reads as protection that is not there. No
-            call site records a token count — every one passes 0 — so this one
-            can never fire, and saying so beats printing it like the others. */}
         <div className="mt-2 text-[11px] text-fg-faint">
-          <code className="font-mono">weeklyTokens</code> is inert: nothing records token counts yet, so it can never be reached.
+          Token limits are reserved before an Auto run and settled against the provider-reported prompt and completion usage afterwards.
         </div>
       </Panel>
     </div>

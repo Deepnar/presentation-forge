@@ -5112,7 +5112,9 @@ rest of a plan, then the field-length, coherence, image and critic passes).
 
 **Tiers**, so an account can be given headroom without raising the caps for
 everybody. **Reserve-then-settle**, so a run that failed after two model calls
-is charged for two model calls.
+is charged for two model calls. Admin analytics reports the measured total and
+shows the token limits as active; it no longer carries the pre-metering warning
+that `weeklyTokens` is inert.
 
 > **Learned.**
 >
@@ -5143,6 +5145,11 @@ is charged for two model calls.
 >   arithmetic written down rather than tuned, because the gateway is down and
 >   nothing has measured a real run. It wants calibrating before anyone is
 >   charged against it.
+> - **Completion work includes removing the old warning.** The backend meter was
+>   live while Admin still dimmed `weeklyTokens` and said every caller recorded
+>   zero. A protection surface that contradicts its enforcement is operationally
+>   worse than omitting the metric: the operator cannot tell which layer to
+>   trust.
 
 ### [x] Add a slide to a finished deck, written like the others
 
@@ -5311,6 +5318,30 @@ OpenAI and Google all offer some form and none of them the same one), so this
 waits until a provider is actually chosen, and then only if a measured run says
 the cost still needs it. Guessing at three formats to save money that may
 already be saved is the wrong order.
+
+### [ ] A BYOK owner can set a spending guard
+
+*Priority: medium. No model needed, but agree the user-facing budget before
+building it.*
+
+BYOK is correctly absent from the operator's Auto quota: the operator pays
+nothing for those calls. That does not mean the person who supplied the key
+wants an unlimited client. Today their protection is indirect — per-call output
+ceilings, bounded retries, per-slide research retrieval, and the provider's own
+account limit — rather than a budget they can set inside Forge. Local Docker and
+hosted mode use the same Cloud transport, so this is one feature, not two.
+
+Prompt caching is not the answer to this item. A cache can reduce the price of
+a repeated prefix where a provider supports it, but it cannot promise what one
+new deck may spend. The useful contract is a visible pre-run estimate and a
+user-owned refusal threshold, with actual usage shown when the provider reports
+it. OpenAI-compatible providers do not all return streaming usage in the same
+shape, so a hard promise cannot rely on the post-response number alone; it must
+also constrain the number and size of requests before they are sent.
+
+Agree whether the guard is per run, per day, or both, and whether retry/repair
+calls may consume the remaining budget automatically. The provider dashboard
+remains the billing authority; Forge's guard is a safety rail, not an invoice.
 
 ### [ ] Selling it: tiers, checkout, and what a refusal offers
 
