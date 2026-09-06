@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/node-24%2B-242424?style=flat-square" alt="Node.js 24 or newer" />
   <img src="https://img.shields.io/badge/themes-34-242424?style=flat-square" alt="34 themes" />
   <img src="https://img.shields.io/badge/slide%20types-74-242424?style=flat-square" alt="74 slide types" />
-  <img src="https://img.shields.io/badge/tests-785-242424?style=flat-square" alt="785 tests" />
+  <img src="https://img.shields.io/badge/test%20suite-242424?style=flat-square" alt="Automated test suite" />
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
@@ -26,6 +26,14 @@ Every image in this README is a real render from the repository, produced by the
 same code path a generated deck goes through — not a mockup. The left one is a
 *plate*: a background Chrome renders as an image because PowerPoint cannot draw
 frosted glass, with the text still native and editable on top of it.
+
+| A real local app session — project workspace → slide viewer |
+|:---:|
+| <img src="app/gallery/landing/app-workflow.gif" width="720" alt="Presentation Forge opening the public Green Hydrogen deck, then showing its editable first PowerPoint slide" /> |
+
+Captured from the local Docker bundle using the public Green Hydrogen deck in
+this repository. It shows opening and inspecting existing work, **not a
+fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
 
 ---
 
@@ -54,6 +62,13 @@ Which is what makes this possible. **The same slide, same words, four themes:**
 
 Nothing in the content changed between those four. Switching theme is one field
 in `deck.yaml`, and 34 of them ship.
+
+| One slide, four themes — 6-second loop |
+|:---:|
+| <img src="app/gallery/landing/theme-system.gif" width="720" alt="The same statistics slide cycling through Swiss International, Neubrutalism, Editorial Magazine, and Sci-Fi HUD themes" /> |
+
+This is a real render loop, not a product simulation: the same slide content is
+rendered by four design languages. [Download the MP4](app/gallery/landing/theme-system.mp4).
 
 ---
 
@@ -129,40 +144,85 @@ real: the render is two-pass, converting once to find where each heading lands.
 
 ---
 
-## Quick start
+## Self-host in one command
+
+**The normal install.** It runs Forge and its private SearXNG research backend
+in Docker; Ollama remains your local model runtime, exactly as it does for Open
+WebUI. There is no domain, SMTP account, hosted gateway key, TLS setup, or
+production secret to supply.
 
 ```bash
 git clone https://github.com/Deepnar/presentation-forge.git
 cd presentation-forge
+ollama pull qwen3:4b
+docker compose up -d --build
+```
+
+Open <http://localhost:8090>, register, choose **New chat**, describe a topic,
+answer the briefing, review the outline, then approve it. Your app data lives
+in the `forge_local_data` Docker volume; `docker compose down` keeps it, while
+`docker compose down -v` deliberately removes it.
+
+This is a private-machine install: it intentionally has no SMTP. Registration
+works, but email confirmation and password-reset mail do not; do not expose
+this bundle to untrusted or public users. The separate production deployment
+adds those controls.
+
+| Requirement | Why |
+|---|---|
+| Docker Desktop *(Windows/macOS)* or Docker Engine + Compose *(Linux)* | runs Forge, LibreOffice, Chromium, fonts and SearXNG |
+| Ollama + an instruction model | runs on the host; Forge connects to it from the container |
+
+On Windows/macOS, Docker Desktop and the Ollama desktop app work as-is. On
+Linux, install Docker Compose and Ollama normally; the Compose bundle maps the
+host gateway name that Docker Desktop already provides. If the **container
+check** below cannot see a model even though `ollama list` works,
+start Ollama where Docker can reach it:
+
+```bash
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
+```
+
+Do this only on a trusted network; it may make Ollama reachable from your LAN.
+If Ollama lives on a different trusted machine, point Forge at it explicitly:
+
+```bash
+FORGE_OLLAMA_HOST=http://192.168.1.42:11434 docker compose up -d
+```
+
+Verify the install after both services settle — no Node install on the host is
+needed for this check:
+
+```bash
+docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs
+```
+
+**BYOK works in this local install too.** Open **Settings → Cloud**, add any
+OpenAI-compatible provider key, then choose Cloud in the app. Your decks,
+research, accounts and report donor stay in the Docker volume; only model calls
+go to the provider you chose. Forge creates a random local encryption pepper in
+that volume on first boot, so BYOK keys do not use the published development
+default. Ollama remains the default and BYOK is optional.
+
+## Run from source *(contributors)*
+
+Use this only when developing Forge itself rather than using it. It exposes the
+Vite UI on :5173 and API on :5174, and expects the renderer prerequisites on
+your host:
+
+```bash
 npm install
-npm run fonts          # 21 families; a machine without them renders wrong
+npm run fonts
 npm run brand
 cp config/identity.example.yaml config/identity.yaml
 ollama pull qwen3:4b
 npm run dev
 ```
 
-Open <http://localhost:5173>, register, choose **New chat**, describe a topic,
-answer the briefing, review the outline, approve.
-
-| Requirement | Why |
-|---|---|
-| Node.js 24+ | runs everything |
-| Ollama + an instruction model | the default local backend |
-| LibreOffice + Poppler | previews, and the report's page numbering |
-| Headless Chrome | plate themes and `freeform` slides |
-| Docker *(optional)* | the bundled local SearXNG |
-
-```bash
-sudo apt install libreoffice poppler-utils    # Debian / Ubuntu
-```
-
-`config/identity.yaml` is gitignored — put your institution, guide and team
-there without committing them.
-
-**A hosted model is optional.** Configure an OpenAI-compatible provider in
-`config/models.yaml`, add the key under **Settings → Cloud**. Keys live in the
-ignored `config/local.yaml`; only model requests leave the machine.
+[`LOCAL_SETUP.md`](LOCAL_SETUP.md) covers the source path, platform-specific
+prerequisites and troubleshooting. [`docs/DEPLOY.md`](docs/DEPLOY.md) is the
+separate hardened production route — hosted mode, Caddy/TLS, mail, persistent
+secrets, administrator controls and tenant limits.
 
 ---
 
@@ -170,7 +230,7 @@ ignored `config/local.yaml`; only model requests leave the machine.
 
 ```bash
 npm run dev                                   # API :5174 + UI :5173
-npm test                                      # 785 tests
+npm test                                      # automated test suite
 
 npm run render decks/<slug>/deck.yaml         # content -> .pptx
 npm run preview decks/<slug>/out/deck.pptx    # .pptx -> PNGs

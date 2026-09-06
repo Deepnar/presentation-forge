@@ -6,7 +6,9 @@
  *   node tools/landing.mjs --themes bauhaus,sunset
  *   node tools/landing.mjs --width 1400          # override the switcher width
  *
- * Output: app/gallery/landing/*.webp plus a manifest, all committed.
+ * Output: app/gallery/landing/*.webp plus a manifest, all committed. The
+ * README's two GIF/MP4 demos live beside those renders and are declared below
+ * as manual assets so the generator's stale-file sweep cannot erase them.
  *
  * WHY COMMITTED. The same reasoning as app/gallery, written out in .gitignore:
  * regenerating needs LibreOffice, Poppler and the theme fonts, and takes
@@ -68,6 +70,17 @@ const SWITCHER_TYPES = ["title", "stats"];
 
 /** The theme whose full sequence carries the slide-type showcase. */
 const SHOWCASE_THEME = "swiss-international";
+
+/** Assets captured from real app/render sessions rather than produced by this
+ * theme-cast generator. They still belong in this directory because the README
+ * needs committed, local media, but deleting them on every `npm run landing`
+ * would make a source-only regeneration erase the product demo. */
+const MANUAL_ASSETS = new Set([
+  "theme-system.gif",
+  "theme-system.mp4",
+  "app-workflow.gif",
+  "app-workflow.mp4",
+]);
 
 /**
  * Types held back from the showcase, with the reason. Not a taste list — a
@@ -193,7 +206,7 @@ for (const name of themes) {
 
 // Sweep anything a previous cast left behind, or the directory accumulates
 // images for themes no longer shipped and the manifest stops describing it.
-const keep = new Set(["manifest.json", ...manifest.themes.flatMap((t) => t.slides.map((s) => s.file)),
+const keep = new Set(["manifest.json", ...MANUAL_ASSETS, ...manifest.themes.flatMap((t) => t.slides.map((s) => s.file)),
   ...(manifest.showcase?.slides ?? []).map((s) => s.file)]);
 for (const f of await readdir(OUT)) {
   if (!keep.has(f)) await rm(path.join(OUT, f));

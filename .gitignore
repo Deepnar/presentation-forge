@@ -104,3 +104,8 @@ test/fixtures/
 
 # Theme audit contact sheets — a look-at-it scratch dir, regenerated on demand.
 .themeaudit/
+
+# Local agent/browser captures. They document a development session, not the
+# product, and can carry browser state or screenshots of private decks.
+.codex/
+.playwright-mcp/
