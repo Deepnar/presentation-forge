@@ -35,6 +35,15 @@ Captured from the local Docker bundle using the public Green Hydrogen deck in
 this repository. It shows opening and inspecting existing work, **not a
 fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
 
+| A real briefing session — topic → choices → optional thesis |
+|:---:|
+| <img src="app/gallery/landing/briefing-workflow.gif" width="720" alt="Presentation Forge accepting a presentation topic, asking for deck choices, and opening optional thesis and audience questions" /> |
+
+Captured from a fresh private Docker install. The session enters a real topic,
+chooses presentation settings, and opens the actual optional-detail questions.
+It stops before generation because no model was available; it does **not**
+pretend a deck was produced. [Download the MP4](app/gallery/landing/briefing-workflow.mp4).
+
 ## Run it locally
 
 Install [Docker](https://docs.docker.com/get-docker/), then:
@@ -88,14 +97,13 @@ schema it is decoding against.
 
 Which is what makes this possible. **The same slide, same words, four themes:**
 
-| Swiss International | Neubrutalism |
-|:---:|:---:|
-| <img src="app/gallery/landing/swiss-international--stats.webp" width="420" alt="Stats slide, Swiss International" /> | <img src="app/gallery/landing/neubrutalism--stats.webp" width="420" alt="Stats slide, Neubrutalism" /> |
-| **Editorial Magazine** | **Sci-Fi HUD** |
-| <img src="app/gallery/landing/editorial-magazine--stats.webp" width="420" alt="Stats slide, Editorial Magazine" /> | <img src="app/gallery/landing/sci-fi-hud--stats.webp" width="420" alt="Stats slide, Sci-Fi HUD" /> |
+| One slide, four themes — 6-second loop |
+|:---:|
+| <img src="app/gallery/landing/theme-system.gif" width="720" alt="The same statistics slide cycling through Swiss International, Neubrutalism, Editorial Magazine, and Sci-Fi HUD themes" /> |
 
-Nothing in the content changed between those four. Switching theme is one field
-in `deck.yaml`, and 34 of them ship.
+This is a real render loop, not a product simulation. Nothing in the content
+changes between frames; switching theme is one field in `deck.yaml`, and 34 of
+them ship. [Download the MP4](app/gallery/landing/theme-system.mp4).
 
 ## The pipeline
 

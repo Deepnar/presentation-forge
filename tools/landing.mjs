@@ -7,7 +7,7 @@
  *   node tools/landing.mjs --width 1400          # override the switcher width
  *
  * Output: app/gallery/landing/*.webp plus a manifest, all committed. The
- * README's two GIF/MP4 demos live beside those renders and are declared below
+ * README's three GIF/MP4 demos live beside those renders and are declared below
  * as manual assets so the generator's stale-file sweep cannot erase them.
  *
  * WHY COMMITTED. The same reasoning as app/gallery, written out in .gitignore:
@@ -80,6 +80,8 @@ const MANUAL_ASSETS = new Set([
   "theme-system.mp4",
   "app-workflow.gif",
   "app-workflow.mp4",
+  "briefing-workflow.gif",
+  "briefing-workflow.mp4",
 ]);
 
 /**
