@@ -39,6 +39,9 @@ services:
       FORGE_OLLAMA_HOST: "${FORGE_OLLAMA_HOST:-http://host.docker.internal:11434}"
       # Local means local: nothing is swept while someone is learning the app.
       FORGE_SWEEP_DAYS: "0"
+      # Install-wide default; each owner can choose a lower or higher personal
+      # ceiling in Profile without rebuilding the container.
+      FORGE_BYOK_DAILY_TOKENS: "${FORGE_BYOK_DAILY_TOKENS:-180000}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

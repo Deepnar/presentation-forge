@@ -77,6 +77,7 @@ test("the production Compose path keeps production controls and current quota na
     "FORGE_AUTO_WINDOW_HOURS", "FORGE_AUTO_WINDOW_REQUESTS", "FORGE_AUTO_WEEKLY_REQUESTS",
     "FORGE_AUTO_WINDOW_SLIDES", "FORGE_AUTO_WEEKLY_SLIDES", "FORGE_AUTO_WEEKLY_TOKENS",
     "FORGE_AUTO_TRIAL_TOKENS", "FORGE_AUTO_MAX_SLIDES_PER_DECK",
+    "FORGE_BYOK_DAILY_TOKENS",
   ]) assert.ok(key in forge.environment, `production Compose is missing ${key}`);
 
   assert.ok(!("FORGE_AUTO_HOURLY_REQUESTS" in forge.environment));

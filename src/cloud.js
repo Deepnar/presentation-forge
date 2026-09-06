@@ -6,6 +6,7 @@ import { CONFIG } from "./paths.js";
 import { getDb } from "./db.js";
 import { currentUserId } from "./account.js";
 import { AUTO_PROVIDER, AUTO_PROVIDER_IDS, AUTO_KEY_ENV, LEGACY_AUTO_KEY_ENV, isAutoProviderId, pickAutoProvider } from "./autoid.js";
+import { estimateByokActual, estimateByokReservation, reserveByokCall, settleByokCall } from "./byok-budget.js";
 
 function getVault() {
   try { return import("./vault.js"); } catch { return null; }
@@ -474,21 +475,39 @@ export async function testCloudConnection() {
     return { ok: false, detail: "no API key set — add one in Settings or export the env var" };
   }
   const probe = p.models[0] ?? "gpt-4.1-mini";
+  const body = {
+    model: probe,
+    messages: [{ role: "user", content: "ping" }],
+    max_tokens: 1,
+  };
+  const reservation = currentUserId()
+    ? reserveByokCall({
+        userId: currentUserId(),
+        provider: p.id,
+        tokens: estimateByokReservation(body),
+      })
+    : null;
   try {
     const res = await fetch(`${p.baseURL}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-      body: JSON.stringify({
-        model: probe,
-        messages: [{ role: "user", content: "ping" }],
-        max_tokens: 1,
-      }),
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) {
       const text = (await res.text()).slice(0, 160);
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }
+    const data = await res.json().catch(() => ({}));
+    settleByokCall(
+      reservation?.eventId,
+      estimateByokActual(
+        body,
+        data.choices?.[0]?.message?.content,
+        data.usage?.prompt_tokens,
+        data.usage?.completion_tokens,
+      ),
+    );
     return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };
   } catch (err) {
     return { ok: false, detail: err.message };

@@ -81,6 +81,8 @@ function ensureSchema(d) {
     CREATE TABLE IF NOT EXISTS user_prefs (
       user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
       routing TEXT,
+      byok_daily_tokens INTEGER,
+      byok_terms_accepted_at TEXT,
       updated_at TEXT NOT NULL
     );
 
@@ -94,6 +96,15 @@ function ensureSchema(d) {
       created_at INTEGER NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_auto_events_user_time ON auto_events(user_id, created_at);
+
+    CREATE TABLE IF NOT EXISTS byok_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      provider TEXT NOT NULL,
+      tokens INTEGER NOT NULL,
+      created_at INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_byok_events_user_time ON byok_events(user_id, created_at);
 
     CREATE TABLE IF NOT EXISTS auth_tokens (
       token_hash TEXT PRIMARY KEY,
@@ -110,7 +121,21 @@ function ensureSchema(d) {
   addVerifiedColumn(d);
   addPlanColumn(d);
   addLifetimeTokensColumn(d);
+  addByokBudgetColumn(d);
+  addByokAcceptanceColumn(d);
   renameAutoProviderRows(d);
+}
+
+function addByokBudgetColumn(d) {
+  try {
+    d.exec("ALTER TABLE user_prefs ADD COLUMN byok_daily_tokens INTEGER");
+  } catch { /* column already present on a current database */ }
+}
+
+function addByokAcceptanceColumn(d) {
+  try {
+    d.exec("ALTER TABLE user_prefs ADD COLUMN byok_terms_accepted_at TEXT");
+  } catch { /* column already present on a current database */ }
 }
 
 /**

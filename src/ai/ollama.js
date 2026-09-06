@@ -7,6 +7,13 @@ import { currentUserId } from "../account.js";
 import { recordModelUsage } from "../usage.js";
 import { AUTO_PROVIDER_IDS, isAutoProviderId } from "../autoid.js";
 import { localFallbackArmed, isGatewayUnreachable, armedTimeout } from "../devfallback.js";
+import {
+  BYOK_OUTPUT_CAP,
+  estimateByokActual,
+  estimateByokReservation,
+  reserveByokCall,
+  settleByokCall,
+} from "../byok-budget.js";
 
 /**
  * Per-transport capability split. A role's sampling/output/context settings are
@@ -184,6 +191,8 @@ async function backendFor(cfg, spec) {
     baseURL: p.baseURL,
     apiKey: await providerKey(spec.provider, p.apiKey),
     supportsThinking: Boolean(p.supports_thinking),
+    providerId: spec.provider,
+    billingOwner: isAutoProviderId(spec.provider) ? "operator" : "user",
   };
 }
 
@@ -236,6 +245,8 @@ export async function resolveRole(role) {
             baseURL: ap.baseURL,
             apiKey: await providerKey(ap.id, ap.apiKey),
             supportsThinking: Boolean(cfg.providers?.[ap.id]?.supports_thinking),
+            providerId: ap.id,
+            billingOwner: "operator",
           },
           model: ap.models[0],
           fellBack: spec.model,
@@ -253,6 +264,8 @@ export async function resolveRole(role) {
               baseURL: cp.baseURL,
               apiKey: key,
               supportsThinking: Boolean(cfg.providers?.[cp.id]?.supports_thinking),
+              providerId: cp.id,
+              billingOwner: "user",
             },
             model: cp.models[0],
             fellBack: spec.model,
@@ -607,6 +620,8 @@ async function cloudSpec(cfg, model, role) {
         baseURL: p.baseURL,
         apiKey: await providerKey(name, p.apiKey),
         supportsThinking: Boolean(p.supports_thinking),
+        providerId: name,
+        billingOwner: isAutoProviderId(name) ? "operator" : "user",
       },
       model,
       fellBack: false,
@@ -691,10 +706,19 @@ async function chatOnce({
   // one backend, and the transport it actually runs on may override it (cloud
   // gets the larger num_predict / excerpt budget, never the local caps).
   spec = applyTransport(spec, spec.backend);
+  const guardedByok = spec.backend?.billingOwner === "user";
+  if (guardedByok) {
+    spec = { ...spec, num_predict: Math.min(spec.num_predict ?? BYOK_OUTPUT_CAP, BYOK_OUTPUT_CAP) };
+  }
   const stream = typeof onToken === "function";
   const timeout = armedTimeout(cfg.defaults?.request_timeout_ms ?? 300_000);
-  const maxRetries = cfg.defaults?.max_retries ?? 2;
-  const bumpCeiling = cfg.defaults?.num_predict_bump_ceiling ?? 64_000;
+  const configuredRetries = cfg.defaults?.max_retries ?? 2;
+  const maxRetries = guardedByok ? Math.min(configuredRetries, 1) : configuredRetries;
+  // A length bump spends a fresh completion. Auto can trade cost for recovery;
+  // BYOK stops at its explicit ceiling and asks the user before spending again.
+  const bumpCeiling = guardedByok
+    ? BYOK_OUTPUT_CAP
+    : (cfg.defaults?.num_predict_bump_ceiling ?? 64_000);
 
   // Set once the dev fallback has moved this request off the gateway, so the
   // result can say so. A caller must never have to guess which model answered.
@@ -803,12 +827,19 @@ async function cloudChat(spec, {
   const onAbort = () => ctrl.abort();
   signal?.addEventListener("abort", onAbort);
 
+  // A BYOK provider is paid by the signed-in user. Keep its per-attempt output
+  // bounded independently of the more generous operator-owned Auto gateway.
+  const byok = spec.backend.billingOwner === "user";
+  const byokUserId = byok ? currentUserId() : null;
+  const outputCap = byok
+    ? Math.min(spec.num_predict ?? BYOK_OUTPUT_CAP, BYOK_OUTPUT_CAP)
+    : spec.num_predict;
   const body = {
     model: spec.model,
     messages: cloudMessages(messages, images, format),
     stream,
     temperature: temperature ?? spec.temperature ?? 0.7,
-    ...(spec.num_predict ? { max_tokens: spec.num_predict } : {}),
+    ...(outputCap ? { max_tokens: outputCap } : {}),
     ...(spec.top_p != null ? { top_p: spec.top_p } : {}),
     // The cloud transport cannot compile a decoding grammar; json_object is the
     // closest universal guarantee, and chatJSON's salvage covers the rest.
@@ -835,6 +866,17 @@ async function cloudChat(spec, {
     ...(spec.backend.apiKey ? { Authorization: `Bearer ${spec.backend.apiKey}` } : {}),
   };
 
+  // Reserve each actual network attempt, not the surrounding logical call:
+  // transport retries and length bumps can each be billed by the provider.
+  // A failed attempt deliberately remains at the conservative reservation.
+  const reservation = byokUserId
+    ? reserveByokCall({
+        userId: byokUserId,
+        provider: spec.backend.providerId,
+        tokens: estimateByokReservation(body),
+      })
+    : null;
+
   try {
     const url = `${String(spec.backend.baseURL).replace(/\/+$/, "")}/chat/completions`;
     const res = await fetch(url, {
@@ -848,6 +890,10 @@ async function cloudChat(spec, {
     if (!stream) {
       const data = await res.json();
       const msg = data.choices?.[0]?.message ?? {};
+      settleByokCall(
+        reservation?.eventId,
+        estimateByokActual(body, msg.content, data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      );
       return {
         content: msg.content ?? "",
         toolCalls: msg.tool_calls ?? [],
@@ -899,6 +945,10 @@ async function cloudChat(spec, {
       }
     }
 
+    settleByokCall(
+      reservation?.eventId,
+      estimateByokActual(body, content, promptCount, evalCount),
+    );
     return {
       content, toolCalls, thinking: thinking || null,
       model: spec.model, role: spec.role, fellBack: spec.fellBack,

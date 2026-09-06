@@ -33,6 +33,7 @@ import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { getUsage, reserveAuto, settleAuto, limitConfig, pruneAutoEvents, usageByUser, clearAutoEvents, planFor, setPlan, lifetimeTokens, PLANS, isPlan } from "../../src/limits.js";
+import { byokUsage, setByokBudget, pruneByokUsage, recordByokCostAcceptance, byokCostAcceptedAt } from "../../src/byok-budget.js";
 import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
 import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
 
@@ -110,6 +111,10 @@ app.use(async (req, _res, next) => {
 const PORT = process.env.FORGE_API_PORT || 5174;
 const ok = (res, data) => res.json({ ok: true, ...data });
 const fail = (res, code, message) => res.status(code).json({ ok: false, error: message });
+const byokBudgetStatus = (userId) => ({
+  ...byokUsage(userId),
+  typicalDeckEstimate: estimateTokens({ slides: 22, research: true }),
+});
 
 /** Auto-tier guard: only the shared TCET gateway is rate-limited;
  *  local fallback (Ollama) is unlimited. */
@@ -3025,7 +3030,21 @@ async function requireAdminUser(req, res, message = "admin only") {
  */
 app.get("/api/cloud", wrap(async (req, res) => {
   const user = await resolveUser(req);
-  ok(res, { cloud: await cloudStatus(user ? getUserId(user.email) : null) });
+  const uid = user ? getUserId(user.email) : null;
+  ok(res, {
+    cloud: await cloudStatus(uid),
+    budget: uid ? byokBudgetStatus(uid) : null,
+  });
+}));
+
+/** The key owner chooses the ceiling; it follows the account across local and hosted mode. */
+app.put("/api/cloud/budget", wrap(async (req, res) => {
+  const user = await requireAuth(req, res, "log in to change the BYOK safety budget");
+  if (!user) return;
+  const uid = getUserId(user.email);
+  if (!uid) return fail(res, 404, "no such user");
+  setByokBudget(uid, req.body?.dailyTokens);
+  ok(res, { budget: byokBudgetStatus(uid) });
 }));
 
 /**
@@ -3116,19 +3135,22 @@ app.get("/api/keys/status", wrap(async (req, res) => {
   if (!user) return fail(res, 401, "log in to see keys");
   const uid = getUserId(user.email);
   const hasKey = uid ? Boolean(await getUserApiKey(uid)) : false;
-  ok(res, { hasKey });
+  ok(res, { hasKey, costAcceptedAt: uid ? byokCostAcceptedAt(uid) : null });
 }));
 app.put("/api/keys", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user) return fail(res, 401, "log in to save a key");
-  const { key, provider } = req.body ?? {};
+  const { key, provider, acceptCosts } = req.body ?? {};
   if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
     return fail(res, 400, "key must look like sk-... (at least 8 chars after prefix)");
   }
   const uid = getUserId(user.email);
   if (!uid) return fail(res, 404, "no such user");
+  if (acceptCosts !== true) {
+    return fail(res, 400, "confirm that your model provider bills your account and that its own billing cap remains your responsibility");
+  }
   await setUserApiKey(uid, provider ?? "openai", key);
-  ok(res, {});
+  ok(res, { costAcceptedAt: recordByokCostAcceptance(uid) });
 }));
 app.delete("/api/keys", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
@@ -3263,6 +3285,7 @@ const SWEEP_HOUR = Number(process.env.FORGE_SWEEP_HOUR || 3);
 {
   const runPrune = () => {
     try { pruneAutoEvents(); } catch (err) { console.error(`  usage prune failed: ${err.message}`); }
+    try { pruneByokUsage(); } catch (err) { console.error(`  BYOK usage prune failed: ${err.message}`); }
   };
   runPrune();
   setInterval(runPrune, 24 * 60 * 60 * 1000).unref();
