@@ -5882,3 +5882,17 @@ is the repository hygiene half.
   `slug = "search"`. `test/routing.test.js` boots the server and asks it over
   HTTP as a non-admin — the first HTTP-level test in the suite, and the only
   shape that can catch a route-ordering bug at all.
+
+### [x] Publish the first self-hosted release
+
+*Priority: immediate distribution checkpoint. No model needed.*
+
+Version `0.1.0` is the first tagged public checkpoint: one-command private
+Docker installation, BYOK or host-Ollama inference, bundled SearXNG research,
+editable PowerPoint output, local-owner authentication, real README captures
+and the cross-deployment BYOK spending guard. The release is intentionally
+described as self-hosted software, not as an already available hosted SaaS.
+
+> **Learned.** A release boundary is also a claims boundary. The useful product
+> can be promoted now without implying that public hosting, paid plans or
+> operator-funded inference already exist.

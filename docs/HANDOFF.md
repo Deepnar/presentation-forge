@@ -11,6 +11,10 @@ complete, documented, tested and running. There is no partially implemented
 local or BYOK-safety feature to continue. Provider-quality, checkout and public
 hosting remain separate later tracks.
 
+The matching public checkpoint is version `0.1.0`, tagged as `v0.1.0`. Release
+copy describes the repository as self-hosted software and does not claim that
+the later hosted/paid product is live.
+
 ## The local product as shipped
 
 From a clone, the application starts with one Docker command:
