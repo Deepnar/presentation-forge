@@ -22,7 +22,8 @@ const dockerfile = await readFile(path.join(ROOT, "docker", "Dockerfile"), "utf8
 test("the root Compose file is local mode, not a disguised production deployment", () => {
   const forge = compose.services.forge;
   assert.equal(forge.environment.FORGE_HOSTED, "0");
-  assert.equal(forge.environment.FORGE_OPEN_REGISTRATION, "1");
+  assert.ok(!("FORGE_OPEN_REGISTRATION" in forge.environment), "local mode owns first-run setup instead of public registration");
+  assert.ok(!("FORGE_LOCAL_MULTI_USER" in forge.environment), "the normal local bundle defaults to one owner");
   assert.equal(forge.environment.FORGE_SWEEP_DAYS, "0");
   assert.equal(forge.environment.SEARXNG_URL, "http://searxng:8080");
   assert.ok(!("FORGE_KEY_PEPPER" in forge.environment), "a local clone must not need an operator secret");

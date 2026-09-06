@@ -5,8 +5,8 @@
  * Docker tells us a container is "up" even when it is pointed at no Ollama
  * endpoint, and browser users then meet a vague generation failure much later.
  * This check asks the app the three things a new self-hoster actually needs to
- * know: is Forge alive, is local mode active, and did the model picker find an
- * Ollama model?
+ * know: is Forge alive, is local mode active, and is local inference ready or
+ * does this fresh install still need Ollama/BYOK configuration?
  */
 
 // A Docker-only user should not need Node on the host just to verify the
@@ -20,7 +20,7 @@ async function json(path) {
   try {
     response = await fetch(`${base}${path}`, { signal: AbortSignal.timeout(5_000) });
   } catch (err) {
-    throw new Error(`cannot reach Forge at ${base} — run \`docker compose up -d --build\` first (${err.message})`);
+    throw new Error(`cannot reach Forge at ${base} — run \`docker compose up -d --build --wait\` first (${err.message})`);
   }
   if (!response.ok) throw new Error(`${path} returned HTTP ${response.status}`);
   return response.json();
@@ -38,15 +38,12 @@ try {
   // only the former as success made a healthy local install report that it had
   // no Ollama model at all.
   const found = models.hosted ? auto?.models ?? [] : localModels;
-  if (!found.length) {
-    throw new Error(
-      "Forge is running but cannot find Ollama. Start Ollama, pull a model (for example `ollama pull qwen3:4b`), " +
-      "then confirm `FORGE_OLLAMA_HOST` points at it.",
-    );
-  }
-
   console.log(`  Forge healthy at ${base}`);
-  console.log(`  local model: ${models.hosted ? found.join(", ") : models.default ?? found[0]}`);
+  if (found.length) {
+    console.log(`  local model: ${models.hosted ? found.join(", ") : models.default ?? found[0]}`);
+  } else {
+    console.log("  model: not configured yet — add a provider under Settings → Cloud, or start Ollama and pull a model");
+  }
   console.log("  research: bundled SearXNG configured");
 } catch (err) {
   console.error(`  local check failed: ${err.message}`);

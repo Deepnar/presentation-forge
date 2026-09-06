@@ -1,7 +1,6 @@
 # The local, self-hosted install.
 #
-#   ollama pull qwen3:4b
-#   docker compose up -d --build
+#   docker compose up -d --build --wait
 #   open http://localhost:8090
 #
 # This is deliberately NOT docker/docker-compose.app.yml. That file is the
@@ -10,7 +9,7 @@
 # should not need a domain, SMTP credentials, or someone else's gateway key to
 # prove it works on their own machine.
 #
-# One command is the product boundary; one Unix process is not. Forge owns the
+# One start command is the product boundary; one Unix process is not. Forge owns the
 # app, LibreOffice and Chromium. SearXNG is an independent local search
 # service. Ollama is the user's model runtime, just as Open WebUI uses a model
 # endpoint rather than baking model weights into its application image.
@@ -38,7 +37,6 @@ services:
       # Linux Docker Engine the same name. Set FORGE_OLLAMA_HOST for a LAN or
       # remote endpoint instead.
       FORGE_OLLAMA_HOST: "${FORGE_OLLAMA_HOST:-http://host.docker.internal:11434}"
-      FORGE_OPEN_REGISTRATION: "1"
       # Local means local: nothing is swept while someone is learning the app.
       FORGE_SWEEP_DAYS: "0"
     extra_hosts:

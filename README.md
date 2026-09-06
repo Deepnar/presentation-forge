@@ -35,6 +35,40 @@ Captured from the local Docker bundle using the public Green Hydrogen deck in
 this repository. It shows opening and inspecting existing work, **not a
 fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
 
+## Run it locally
+
+Install [Docker](https://docs.docker.com/get-docker/), then:
+
+```bash
+git clone https://github.com/Deepnar/presentation-forge.git
+cd presentation-forge
+docker compose up -d --build --wait
+```
+
+Open <http://localhost:8090>. The first visit creates one local owner and signs
+you in; after that, public signup is closed. There is no email verification,
+Google login or password-reset ceremony in this private-machine mode.
+
+Forge and its private SearXNG research service now run. To generate, choose one
+of two model paths:
+
+- **Bring your own key:** add an OpenAI-compatible provider under
+  **Settings → Cloud**. Only model requests go to that provider.
+- **Keep inference local:** install [Ollama](https://ollama.com), run
+  `ollama pull qwen3:4b`, and leave Forge on Auto. This is a lightweight
+  starting model; use a stronger model or BYOK when output quality matters.
+
+```bash
+# Optional install check; Node runs inside the container.
+docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs
+```
+
+Windows and macOS work through Docker Desktop. Linux may need Ollama exposed to
+Docker's host gateway when using local inference. [`LOCAL_SETUP.md`](LOCAL_SETUP.md)
+has that command, platform notes, data locations and troubleshooting. This
+private bundle binds only to localhost; use [`docs/DEPLOY.md`](docs/DEPLOY.md)
+for an internet-facing multi-user service.
+
 ---
 
 ## The rule that makes it work
@@ -63,15 +97,6 @@ Which is what makes this possible. **The same slide, same words, four themes:**
 Nothing in the content changed between those four. Switching theme is one field
 in `deck.yaml`, and 34 of them ship.
 
-| One slide, four themes — 6-second loop |
-|:---:|
-| <img src="app/gallery/landing/theme-system.gif" width="720" alt="The same statistics slide cycling through Swiss International, Neubrutalism, Editorial Magazine, and Sci-Fi HUD themes" /> |
-
-This is a real render loop, not a product simulation: the same slide content is
-rendered by four design languages. [Download the MP4](app/gallery/landing/theme-system.mp4).
-
----
-
 ## The pipeline
 
 ```text
@@ -96,8 +121,9 @@ approved it. Everything after it is deterministic or checked.
 
 ## The vocabulary
 
-74 slide types. The model chooses among them by what the content *is* — a
-comparison becomes a comparison layout, not a bulleted list about comparing.
+74 slide types: 73 native layouts plus the deliberate `freeform` exception.
+The model chooses among them by what the content *is* — a comparison becomes a
+comparison layout, not a bulleted list about comparing.
 
 | `timeline` | `compare` | `chart` |
 |:---:|:---:|:---:|
@@ -143,66 +169,6 @@ template is an upload, not a code change. Table-of-contents page numbers are
 real: the render is two-pass, converting once to find where each heading lands.
 
 ---
-
-## Self-host in one command
-
-**The normal install.** It runs Forge and its private SearXNG research backend
-in Docker; Ollama remains your local model runtime, exactly as it does for Open
-WebUI. There is no domain, SMTP account, hosted gateway key, TLS setup, or
-production secret to supply.
-
-```bash
-git clone https://github.com/Deepnar/presentation-forge.git
-cd presentation-forge
-ollama pull qwen3:4b
-docker compose up -d --build
-```
-
-Open <http://localhost:8090>, register, choose **New chat**, describe a topic,
-answer the briefing, review the outline, then approve it. Your app data lives
-in the `forge_local_data` Docker volume; `docker compose down` keeps it, while
-`docker compose down -v` deliberately removes it.
-
-This is a private-machine install: it intentionally has no SMTP. Registration
-works, but email confirmation and password-reset mail do not; do not expose
-this bundle to untrusted or public users. The separate production deployment
-adds those controls.
-
-| Requirement | Why |
-|---|---|
-| Docker Desktop *(Windows/macOS)* or Docker Engine + Compose *(Linux)* | runs Forge, LibreOffice, Chromium, fonts and SearXNG |
-| Ollama + an instruction model | runs on the host; Forge connects to it from the container |
-
-On Windows/macOS, Docker Desktop and the Ollama desktop app work as-is. On
-Linux, install Docker Compose and Ollama normally; the Compose bundle maps the
-host gateway name that Docker Desktop already provides. If the **container
-check** below cannot see a model even though `ollama list` works,
-start Ollama where Docker can reach it:
-
-```bash
-OLLAMA_HOST=0.0.0.0:11434 ollama serve
-```
-
-Do this only on a trusted network; it may make Ollama reachable from your LAN.
-If Ollama lives on a different trusted machine, point Forge at it explicitly:
-
-```bash
-FORGE_OLLAMA_HOST=http://192.168.1.42:11434 docker compose up -d
-```
-
-Verify the install after both services settle — no Node install on the host is
-needed for this check:
-
-```bash
-docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs
-```
-
-**BYOK works in this local install too.** Open **Settings → Cloud**, add any
-OpenAI-compatible provider key, then choose Cloud in the app. Your decks,
-research, accounts and report donor stay in the Docker volume; only model calls
-go to the provider you chose. Forge creates a random local encryption pepper in
-that volume on first boot, so BYOK keys do not use the published development
-default. Ollama remains the default and BYOK is optional.
 
 ## Run from source *(contributors)*
 
@@ -287,8 +253,8 @@ docs/             architecture, blockers, economics, roadmap, traps
 
 ## Data and privacy
 
-No external database. A deck workspace is ordinary files and copies to another
-installation.
+No external database service is required. A deck workspace is ordinary files
+and copies to another installation.
 
 | Data | Location | Committed? |
 |---|---|---|
@@ -307,22 +273,13 @@ clock is *inactivity*, not age. `GET /api/policy` reports what the running
 install actually enforces, so the notice in the app cannot drift from the
 scheduler behind it.
 
-## Deployment
+## Hosted deployment
 
-```bash
-cd docker
-cp ../.env.example .env       # FORGE_KEY_PEPPER, SEARXNG_SECRET, FORGE_DOMAIN have no defaults
-docker compose -f docker-compose.app.yml --profile tls up -d --build
-```
-
-The image carries LibreOffice, Poppler, Chromium and the theme fonts, and builds
-for **arm64 as well as amd64**, because the free tiers worth using are ARM.
-State lives in the `forge_data` volume.
-
-This workload is **not serverless-compatible** — generation is a multi-minute
-stream, rendering shells out to LibreOffice and Chrome, and state is a local
-SQLite file plus a directory tree. [`docs/DEPLOY.md`](docs/DEPLOY.md) covers
-where it can actually run.
+The internet-facing stack is intentionally separate: TLS, SMTP, secure cookies,
+operator secrets, tenant limits and retention. It still uses the same image and
+builds for amd64 and arm64. See [`docs/DEPLOY.md`](docs/DEPLOY.md); the root
+Compose file is private local software and must not be exposed as a public
+service.
 
 ## Further reading
 
