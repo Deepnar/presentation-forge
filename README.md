@@ -27,14 +27,6 @@ same code path a generated deck goes through — not a mockup. The left one is a
 *plate*: a background Chrome renders as an image because PowerPoint cannot draw
 frosted glass, with the text still native and editable on top of it.
 
-| A real local app session — project workspace → slide viewer |
-|:---:|
-| <img src="app/gallery/landing/app-workflow.gif" width="720" alt="Presentation Forge opening the public Green Hydrogen deck, then showing its editable first PowerPoint slide" /> |
-
-Captured from the local Docker bundle using the public Green Hydrogen deck in
-this repository. It shows opening and inspecting existing work, **not a
-fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
-
 | A real briefing session — topic → choices → optional thesis |
 |:---:|
 | <img src="app/gallery/landing/briefing-workflow.gif" width="720" alt="Presentation Forge accepting a presentation topic, asking for deck choices, and opening optional thesis and audience questions" /> |
@@ -43,6 +35,14 @@ Captured from a fresh private Docker install. The session enters a real topic,
 chooses presentation settings, and opens the actual optional-detail questions.
 It stops before generation because no model was available; it does **not**
 pretend a deck was produced. [Download the MP4](app/gallery/landing/briefing-workflow.mp4).
+
+| A real local app session — project workspace → slide viewer |
+|:---:|
+| <img src="app/gallery/landing/app-workflow.gif" width="720" alt="Presentation Forge opening the public Green Hydrogen deck, then showing its editable first PowerPoint slide" /> |
+
+Captured from the local Docker bundle using the public Green Hydrogen deck in
+this repository. It shows opening and inspecting existing work, **not a
+fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
 
 ## Run it locally
 
