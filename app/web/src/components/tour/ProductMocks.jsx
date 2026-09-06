@@ -84,7 +84,7 @@ export function ThemeGalleryMock({ themes }) {
   return (
     <div>
       <div className="mb-2 flex items-center gap-2">
-        <span className="text-[11px] text-fg-faint">{list.length} of 38 themes — drawn live, this is exactly how slides look</span>
+        <span className="text-[11px] text-fg-faint">{list.length} of {themes?.length ?? list.length} themes — drawn live, this is exactly how slides look</span>
         <span className="ml-auto w-36 rounded-full border border-line bg-sunken px-2.5 py-1 text-left text-[11px] text-fg-faint">Filter themes…</span>
       </div>
       <div className="grid max-h-[300px] grid-cols-3 gap-3 overflow-hidden pr-1">

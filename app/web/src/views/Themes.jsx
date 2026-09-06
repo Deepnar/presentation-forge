@@ -6,7 +6,7 @@ import { SearchIcon, PanelLeft } from "../components/icons.jsx";
 /**
  * The theme gallery. Clicking a card sets it as the deck default (written to
  * config/identity.yaml via the same identity save the briefing uses) with a
- * toast and an undo. A search box and vibe chips filter the 38 themes; the
+ * toast and an undo. A search box and vibe chips filter the theme catalog; the
  * current default carries a badge so "which one will my next deck use?" is
  * answered at a glance.
  */
