@@ -15,6 +15,11 @@ The matching public checkpoint is version `0.1.0`, tagged as `v0.1.0`. Release
 copy describes the repository as self-hosted software and does not claim that
 the later hosted/paid product is live.
 
+Public contribution routing is also in place: `CONTRIBUTING.md`,
+`CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`, issue forms and the pull
+request template. README points questions to Discussions, defects to Issues and
+vulnerabilities to private advisories.
+
 ## The local product as shipped
 
 From a clone, the application starts with one Docker command:

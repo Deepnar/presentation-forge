@@ -5896,3 +5896,18 @@ described as self-hosted software, not as an already available hosted SaaS.
 > **Learned.** A release boundary is also a claims boundary. The useful product
 > can be promoted now without implying that public hosting, paid plans or
 > operator-funded inference already exist.
+
+### [x] Establish the public contribution and support path
+
+*Priority: immediate repository readiness. No model needed.*
+
+The repository now separates bug reports, feature proposals, setup questions,
+pull requests, conduct reports and private vulnerability disclosures. The
+contribution guide carries the architecture boundary and real verification
+commands; issue forms collect installation, platform and model-route context
+without asking users to publish credentials. Discussions is the support and
+idea surface, while reproducible product defects remain in Issues.
+
+> **Learned.** A public repository needs routing as much as documentation.
+> Without it, setup questions look like defects, security reports risk becoming
+> public, and contributors cannot know that a valid PPTX still needs visual QA.

@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a reproducible problem in Presentation Forge
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting a problem. Remove keys, tokens, personal data and private deck content before submitting.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release tag or commit hash.
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installation
+      options:
+        - Private Docker bundle
+        - Source development
+        - Internet-facing self-hosted deployment
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and architecture
+      placeholder: Windows 11 x64, macOS arm64, Ubuntu 24.04 amd64
+    validations:
+      required: true
+  - type: dropdown
+    id: model
+    attributes:
+      label: Model route
+      options:
+        - No model call involved
+        - BYOK cloud provider
+        - Host Ollama
+        - Hosted Auto operator
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Give the smallest repeatable sequence.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or screenshots
+      description: Never include credentials, session tokens, private documents or personal data.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and discussions.
+          required: true
+        - label: I removed secrets and private content from this report.
+          required: true

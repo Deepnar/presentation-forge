@@ -305,6 +305,16 @@ service.
 | [TRAPS](docs/TRAPS.md) | failure modes that have already bitten |
 | [LOCAL_SETUP](LOCAL_SETUP.md) | prerequisites and troubleshooting |
 
+## Community
+
+Questions and early ideas belong in
+[GitHub Discussions](https://github.com/Deepnar/presentation-forge/discussions).
+Reproducible defects and scoped feature requests use the repository issue
+templates. Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately through
+the process in [SECURITY.md](SECURITY.md); never put keys or private deck content
+in a public issue.
+
 ## License
 
 [MIT](LICENSE). Institutional marks, donor templates and assets you add remain
