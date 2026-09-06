@@ -1423,6 +1423,27 @@ check whatever — `report/generate`, `script`, `sweep`, and
 `generate/resume`/`finalize`. Any new route that reaches a model must reserve
 and settle; there is no ambient enforcement that would catch one that forgets.
 
+### BYOK spending guard
+
+BYOK bypasses the operator's Auto quota but not safety enforcement.
+`src/byok-budget.js` owns a per-user rolling 24-hour budget stored through
+`user_prefs.byok_daily_tokens` and `byok_events`; the shipped default is 180,000
+tokens. The enforcement point is `cloudChat`, after routing has identified a
+non-Auto provider and before each `fetch`. This covers both local and hosted
+deployment and every caller above the transport, including retries and repair
+passes. Reservations are atomic SQLite transactions, then settle to reported
+usage or a prompt/response estimate. Failed attempts remain reserved because a
+provider may complete after the client times out.
+
+The transport independently limits a BYOK response to 12,000 tokens, disables
+automatic length-cap doubling and permits at most one transport retry. The key
+save endpoint requires a cost-responsibility acknowledgement and records its
+timestamp in `user_prefs.byok_terms_accepted_at`. Profile shows the rolling
+usage, remaining budget and a typical-deck estimate, and lets the key owner set
+the ceiling. This is not monetary accounting: provider price, cache discount,
+tax, currency and invoice remain external, so the UI and Terms direct the user
+to set a hard billing cap with the provider.
+
 ### The auth gate — local single-install accounts
 
 Accounts are deliberately NOT a multi-user system: they exist so the Cloud-key
@@ -1886,7 +1907,7 @@ is no second account to leak to and `decks/<topic>` is the name every sweep and
 | `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it. `identityStatus()` reports it as missing / template / incomplete / ok at boot and in Admin, because an unset default is wrong silently — the deck renders, under the wrong institution |
 | `config/identities/<hash>.yaml` | no | one account's identity overrides — institution, guide, brand paths |
 | `config/local.yaml` | no | the install-wide provider key + the fallback `routing.default`; per-account keys live encrypted in the DB |
-| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), per-user routing, auto-tier usage |
+| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), routing, Auto usage, BYOK budgets/usage and cost-acceptance timestamps |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `config/presets/` | no | saved briefing formats, one file per user |
 | `config/uploads/` | no | staged briefing documents — upload-only research mode; short-lived (swept after the TTL), resolved by token at planning |

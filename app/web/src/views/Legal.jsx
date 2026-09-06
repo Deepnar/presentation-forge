@@ -61,7 +61,7 @@ export function Privacy() {
               ["Account", "Email, display name, password hash or Google ID, session tokens."],
               ["Content", "decks/<slug>/ with deck.yaml, report.yaml, research/, script.md, uploaded assets."],
               ["Config", "Per-user API keys (AES-256-GCM with FORGE_KEY_PEPPER, never logged), presets, identity."],
-              ["Ops", "auto_events counters for Auto rate limits, sweep logs."],
+              ["Ops", "Auto quota counters, BYOK safety-budget counters, and sweep logs."],
             ].map(([k, v]) => (
               <div key={k} className="rounded-xl border border-line bg-panel p-4">
                 <div className="text-[13px] font-semibold text-fg">{k}</div>
@@ -73,6 +73,7 @@ export function Privacy() {
         <section>
           <h2 className="text-[18px] font-semibold tracking-tight text-fg">Model calls</h2>
           <p className="mt-3">When you generate, the brief, research notes, slide purposes and your chosen theme voice are sent to the model backend (Auto or your Cloud provider). No other files or browsing history are sent. If you use upload-only research, that file becomes <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">research/notes.md</code> and is the sole source.</p>
+          <p className="mt-3">A BYOK provider processes those requests under its own privacy policy and account terms. Review them before attaching a key; the operator of this Forge instance does not control that provider’s retention or training policy.</p>
         </section>
         <section>
           <h2 className="text-[18px] font-semibold tracking-tight text-fg">Retention & deletion</h2>
@@ -106,7 +107,11 @@ export function Terms() {
         </section>
         <section>
           <h2 className="text-[18px] font-semibold tracking-tight text-fg">Quotas</h2>
-          <p className="mt-3">Auto is rate-limited (hourly/weekly requests, slides, tokens, max 30 slides/deck — see <a href="#/usage" className="text-accent underline">API usage</a>). Cloud (BYOK) is unlimited and billed to your provider. We may adjust limits to keep it fair.</p>
+          <p className="mt-3">Auto is rate-limited (requests, slides, tokens and deck size—see <a href="#/usage" className="text-accent underline">API usage</a>). Cloud (BYOK) is billed directly to the account connected to your key. Forge applies a user-configurable rolling token guard, an output ceiling and bounded retries, but provider pricing and the final bill remain yours. Configure a monetary spending cap with your provider as the final backstop.</p>
+        </section>
+        <section>
+          <h2 className="text-[18px] font-semibold tracking-tight text-fg">Bring-your-own-key costs</h2>
+          <p className="mt-3">By attaching a personal API key, you acknowledge that you selected the provider and authorised Forge to send model requests using your provider account. You are responsible for that provider’s prices, credits, taxes, currency conversion, billing limits and charges. Forge’s token counts and pre-request reservations are safety estimates, not an invoice or a guarantee of cost; the provider’s records control. Remove the key or switch away from Cloud to stop new BYOK requests.</p>
         </section>
         <section>
           <h2 className="text-[18px] font-semibold tracking-tight text-fg">Warranty</h2>
@@ -294,7 +299,7 @@ export function Usage() {
             <div className="max-w-2xl">
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">Resources · API</div>
               <h1 className="mt-3 text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg">API usage & limits</h1>
-              <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">Auto is free and rate-limited. Cloud (BYOK) is your key, unlimited. This page shows your current windows from <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">GET /api/auto/usage</code>.</p>
+              <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">Auto is free and rate-limited. Cloud (BYOK) is billed by your provider and protected by a separate user-owned rolling token guard in Profile → Cloud. This page shows the Auto windows from <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[12px]">GET /api/auto/usage</code>.</p>
             </div>
             {err && !usage && limits && (
               <div className="mt-8 rounded-xl border border-accent/20 bg-accent-tint p-4 text-[13px] text-accent">Log in to see your personal windows — showing public limits below.</div>
@@ -313,7 +318,7 @@ export function Usage() {
                   <div className="text-[12px] text-fg-muted">
                     {plan.trial.remaining > 0
                       ? "does not reset — this is a fixed amount, not a weekly allowance"
-                      : "used up — add your own key under Cloud, which is unmetered"}
+                      : "used up — attach your own key under Cloud, where your personal safety budget applies"}
                   </div>
                 </div>
                 <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-sunken">
@@ -348,7 +353,7 @@ export function Usage() {
                   <div className="text-[13px] font-semibold text-fg">Raw {usage ? "usage" : "limits"}</div>
                   <pre className="mt-3 max-h-[50vh] overflow-auto rounded-xl border border-line bg-sunken p-4 font-mono text-[12px] leading-relaxed text-fg">{JSON.stringify(usage ?? limits, null, 2)}</pre>
                 </div>
-                <p className="text-[12px] leading-relaxed text-fg-faint">Limits are sliding windows — oldest events fall out automatically. Switch to Cloud in the header toggle to bypass these.</p>
+                <p className="text-[12px] leading-relaxed text-fg-faint">Auto limits are sliding windows—oldest events fall out automatically. Cloud does not use the operator’s Auto allowance, but it does use your provider account and your personal BYOK safety budget.</p>
               </div>
             )}
             <div className="mt-10 flex gap-2">

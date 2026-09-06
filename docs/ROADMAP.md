@@ -5319,29 +5319,48 @@ waits until a provider is actually chosen, and then only if a measured run says
 the cost still needs it. Guessing at three formats to save money that may
 already be saved is the wrong order.
 
-### [ ] A BYOK owner can set a spending guard
+### [x] A BYOK owner can set a spending guard
 
-*Priority: medium. No model needed, but agree the user-facing budget before
-building it.*
+*Priority: medium. No model needed.*
 
-BYOK is correctly absent from the operator's Auto quota: the operator pays
-nothing for those calls. That does not mean the person who supplied the key
-wants an unlimited client. Today their protection is indirect — per-call output
-ceilings, bounded retries, per-slide research retrieval, and the provider's own
-account limit — rather than a budget they can set inside Forge. Local Docker and
-hosted mode use the same Cloud transport, so this is one feature, not two.
+BYOK remains absent from the operator's Auto quota—the operator does not pay
+for those calls—but is no longer an unlimited client from the key owner's point
+of view. `src/byok-budget.js` gives every account a 180,000-token rolling
+24-hour default, editable from Profile between 10,000 and 5,000,000. Every
+actual OpenAI-compatible BYOK attempt reserves its worst case atomically before
+`fetch`, so concurrent tabs, transport retries, chat, reports, scripts and
+background repair all meet the same refusal. A successful attempt settles to
+provider-reported usage; where an OpenAI-compatible endpoint omits usage, Forge
+estimates from the prompt and returned text. A failed or timed-out attempt keeps
+its reservation because it may have completed and been billed upstream.
 
-Prompt caching is not the answer to this item. A cache can reduce the price of
-a repeated prefix where a provider supports it, but it cannot promise what one
-new deck may spend. The useful contract is a visible pre-run estimate and a
-user-owned refusal threshold, with actual usage shown when the provider reports
-it. OpenAI-compatible providers do not all return streaming usage in the same
-shape, so a hard promise cannot rely on the post-response number alone; it must
-also constrain the number and size of requests before they are sent.
+The second boundary is per attempt: BYOK output is capped at 12,000 tokens,
+automatic length-doubling is disabled, and transport failure gets at most one
+retry. Auto keeps its larger recovery budget. The Profile panel shows used,
+remaining and the ~134,600-token estimate for a typical researched 22-slide
+deck before the user changes the guard.
 
-Agree whether the guard is per run, per day, or both, and whether retry/repair
-calls may consume the remaining budget automatically. The provider dashboard
-remains the billing authority; Forge's guard is a safety rail, not an invoice.
+Attaching or replacing a key now requires an explicit acknowledgement that the
+provider bills the key owner's account and controls the final invoice. The same
+contract is stated in the in-app Terms and Privacy surfaces, README,
+`LOCAL_SETUP.md` and `docs/DEPLOY.md`: Forge's meter is a safety rail, while a
+monetary cap in the provider dashboard is the billing backstop.
+
+> **Learned.**
+>
+> - **Reserve attempts, not logical calls.** One `chat()` may make two HTTP
+>   requests after a transport failure, and both may be billed. Guarding the
+>   outer function would make the retry invisible.
+> - **A timeout is not proof that nothing was spent.** The server may finish
+>   after the client disconnects. Keeping the failed attempt's worst-case
+>   reservation is conservative in exactly the direction a spending guard must
+>   be conservative.
+> - **Missing usage cannot mean zero.** Streaming and third-party compatible
+>   endpoints do not all return the same usage frame. Prompt/response estimation
+>   preserves the ceiling; the provider dashboard remains the bill of record.
+> - **Caching and budgeting answer different questions.** Cached input can make
+>   repeated prefixes cheaper but cannot bound a novel deck. This guard remains
+>   useful if provider-specific prompt caching is added later.
 
 ### [ ] Selling it: tiers, checkout, and what a refusal offers
 

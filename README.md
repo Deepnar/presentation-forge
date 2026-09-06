@@ -62,7 +62,11 @@ Forge and its private SearXNG research service now run. To generate, choose one
 of two model paths:
 
 - **Bring your own key:** add an OpenAI-compatible provider under
-  **Settings → Cloud**. Only model requests go to that provider.
+  **Settings → Cloud**. Only model requests go to that provider. Forge starts
+  with a 180,000-token rolling 24-hour safety budget, caps each BYOK response
+  at 12,000 tokens, and allows at most one transport retry; the key owner can
+  change the daily guard in Profile. Your provider bills your account directly,
+  so also set a hard spending limit in its dashboard.
 - **Keep inference local:** install [Ollama](https://ollama.com), run
   `ollama pull qwen3:4b`, and leave Forge on Auto. This is a lightweight
   starting model; use a stronger model or BYOK when output quality matters.

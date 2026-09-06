@@ -12,6 +12,15 @@ The hosted product is **Auto (shared gateway) + BYOK**. Ollama stays in the
 repository for people who clone it and run their own models; it is not part of
 this deployment and `FORGE_HOSTED=1` disables it entirely.
 
+BYOK has the same safety contract here as in the private Docker install. The
+key owner's provider bills the key owner's account; its prices, credits,
+currency conversion, caching policy and invoice are outside the operator's
+control. Forge requires an acknowledgement when a personal key is attached,
+enforces the account's rolling token guard before every provider attempt, caps
+BYOK output and retries, and estimates usage when the provider omits it. State
+this in the deployed Terms and keep telling users to set a monetary cap at the
+provider—the provider dashboard, not Forge, is the billing authority.
+
 ## What the workload actually needs
 
 This is not a serverless application and no amount of rewriting makes it one.

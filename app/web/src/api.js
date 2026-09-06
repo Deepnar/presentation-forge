@@ -208,6 +208,7 @@ export const api = {
   cloudSaveKey: (key) => call("/api/cloud/key", { method: "PUT", body: JSON.stringify({ key }) }),
   cloudClearKey: () => call("/api/cloud/key", { method: "DELETE" }),
   cloudTest: () => call("/api/cloud/test", { method: "POST", body: JSON.stringify({}) }),
+  cloudBudget: (dailyTokens) => call("/api/cloud/budget", { method: "PUT", body: JSON.stringify({ dailyTokens }) }),
   // AUTO/CLOUD routing preference — auto is Forge hosted gateway (free, rate-limited).
   cloudRoute: (route) => call("/api/cloud/routing", { method: "PUT", body: JSON.stringify({ route }) }),
   autoStatus: () => call("/api/auto/status"),
@@ -215,7 +216,7 @@ export const api = {
   autoUsage: () => call("/api/auto/usage"),
   // Per-user BYOK vault — encrypted at rest
   keysStatus: () => call("/api/keys/status"),
-  keysSave: (key, provider) => call("/api/keys", { method: "PUT", body: JSON.stringify({ key, provider }) }),
+  keysSave: (key, provider, acceptCosts) => call("/api/keys", { method: "PUT", body: JSON.stringify({ key, provider, acceptCosts }) }),
   keysClear: () => call("/api/keys", { method: "DELETE" }),
   googleLogin: (credential) => call("/api/auth/google", { method: "POST", body: JSON.stringify({ credential }) }).then((r) => { rememberToken(r.token); return r.user; }),
   // Brand assets — institutional marks live in gitignored brand/logos/; the

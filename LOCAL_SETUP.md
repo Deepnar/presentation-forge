@@ -133,6 +133,15 @@ Open **Settings → Cloud**, add an OpenAI-compatible provider key, then switch
 the app to Cloud. The app sends model requests only to that provider; decks,
 research, accounts and the report donor remain local.
 
+The key owner pays that provider directly. Forge cannot know the provider's
+prices, account balance, cached-input rules, currency conversion or final bill.
+Before a key is saved, the owner explicitly acknowledges that responsibility.
+Forge adds a safety rail—a 180,000-token rolling 24-hour default, a 12,000-token
+maximum response per provider attempt, and at most one transport retry—and
+estimates usage when the endpoint omits it. Change the daily guard in
+**Profile → Cloud** if needed, and always configure a hard monetary limit in the
+provider's own dashboard; that dashboard remains the billing authority.
+
 For source development, provider keys are stored in local state and must never
 be committed. For the Docker install they live in its persistent volume. On
 first local Docker boot Forge creates a random encryption pepper in that volume

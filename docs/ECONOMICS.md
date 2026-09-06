@@ -197,7 +197,7 @@ At L2, with the cap set so worst case still returns 30%:
 | **Free** | — | **3 decks, lifetime** | ₹5–21 *once, per signup* | n/a — it is the ad |
 | **Starter** | ₹99/mo | 10 decks/mo | ₹17 – ₹69 | 83% / 31% |
 | **Pro** | ₹249/mo | 25 decks/mo | ₹43 – ₹172 | 83% / 31% |
-| **BYOK** | — | unlimited | ₹0 | n/a |
+| **BYOK** | — | user-funded; 180K-token/day safety default | ₹0 to operator | n/a |
 
 Two figures per cell because the model band is not settled: the first is the
 budget band, the second cheap-mid. At the budget band every tier is comfortable
@@ -236,9 +236,12 @@ Why each side wins:
   cheaper, and a number that can be written down in advance, which is what a
   one-person operation actually needs. Keep the rolling windows on top as abuse
   protection; the lifetime cap is what decides what is free.
-- **BYOK stays free and unmetered.** A user on their own key costs nothing —
-  `isAutoRoute` excuses them before any of this is consulted. It is the
-  pressure valve for the heavy user who would otherwise be the loss.
+- **BYOK stays free to the operator, not unbounded for the key owner.** A user
+  on their own key costs the operator nothing—`isAutoRoute` still excuses them
+  from Auto quota—but Forge reserves every provider attempt against that
+  account's rolling safety budget and caps output and retries. It remains the
+  pressure valve for a heavy user without pretending somebody else's bill is
+  not a product concern.
 - **A refusal must be a surface.** A 429 already carries the tier and what is
   left of every budget (`app/server/index.js`), and `/api/auto/usage` reports
   the same. Nothing renders it yet. "12 of 12 used" beside a price converts;

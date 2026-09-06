@@ -44,17 +44,24 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
   useEffect(() => subscribeAppearance((m) => setAppearanceState(m)), []);
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
+  const [byokBudget, setByokBudgetState] = useState(null);
+  const [budgetDraft, setBudgetDraft] = useState("");
   const [usage, setUsage] = useState(null);
   const [limits, setLimits] = useState(null);
   const [vaultHasKey, setVaultHasKey] = useState(false);
   const [keyDraft, setKeyDraft] = useState("");
+  const [acceptByokCosts, setAcceptByokCosts] = useState(false);
   const [busy, setBusy] = useState(false);
   const [state, setState] = useState({ status: "idle", message: "" });
   const [confirmLogout, setConfirmLogout] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    api.cloud().then((r) => setCloud(r.cloud ?? null)).catch(() => {});
+    api.cloud().then((r) => {
+      setCloud(r.cloud ?? null);
+      setByokBudgetState(r.budget ?? null);
+      if (r.budget?.limit) setBudgetDraft(String(r.budget.limit));
+    }).catch(() => {});
     api.autoStatus().then((r) => { setAuto(r.auto ?? null); setLimits(r.limits ?? null); }).catch(() => {});
     api.autoUsage().then((r) => { setUsage(r.usage); setLimits(r.limits); }).catch(() => {});
     api.keysStatus().then((r) => setVaultHasKey(Boolean(r.hasKey))).catch(() => {});
@@ -70,9 +77,9 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
   async function saveKey() {
     setBusy(true); setState({ status: "busy", message: "" });
     try {
-      await api.keysSave(keyDraft.trim(), cloud?.provider ?? "openai");
-      setKeyDraft(""); setVaultHasKey(true);
-      const r = await api.cloud(); setCloud(r.cloud);
+      await api.keysSave(keyDraft.trim(), cloud?.provider ?? "openai", acceptByokCosts);
+      setKeyDraft(""); setAcceptByokCosts(false); setVaultHasKey(true);
+      const r = await api.cloud(); setCloud(r.cloud); setByokBudgetState(r.budget ?? null);
       setState({ status: "saved", message: "Key saved — encrypted, never shown again" });
     } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
   }
@@ -87,6 +94,15 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
   async function testAuto() {
     setBusy(true); setState({ status: "busy", message: "Testing Auto…" });
     try { const r = await api.autoTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
+  }
+  async function saveBudget() {
+    setBusy(true); setState({ status: "busy", message: "" });
+    try {
+      const r = await api.cloudBudget(Number(budgetDraft));
+      setByokBudgetState(r.budget);
+      setBudgetDraft(String(r.budget.limit));
+      setState({ status: "saved", message: "BYOK safety budget saved" });
+    } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
   }
   async function setRoute(route) {
     setBusy(true); try { await api.cloudRoute(route); setModelMode(route); const r = await api.cloud(); setCloud(r.cloud); const a = await api.autoStatus(); setAuto(a.auto); setState({ status: "saved", message: `Route: ${route}` }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
@@ -190,16 +206,48 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
               <div className="flex items-center justify-between"><div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Cloud — Your key (encrypted)</div>{vaultHasKey ? <Badge className="bg-accent/10 text-accent">saved</Badge> : <Badge className="bg-transparent text-fg-faint">none</Badge>}</div>
               <div className="mt-2 flex gap-2">
                 <input type="password" value={keyDraft} onChange={(e) => setKeyDraft(e.target.value)} placeholder={vaultHasKey ? "…attached — type to replace" : "sk-…"} className={`${inputCls} font-mono flex-1`} />
-                <Button size="sm" variant="primary" onClick={saveKey} disabled={busy || !keyDraft.trim()}>Save</Button>
+                <Button size="sm" variant="primary" onClick={saveKey} disabled={busy || !keyDraft.trim() || !acceptByokCosts}>Save</Button>
                 {vaultHasKey && <Button size="sm" variant="outline" onClick={removeKey} disabled={busy}>Remove</Button>}
               </div>
+              {keyDraft.trim() && (
+                <label className="mt-2 flex items-start gap-2 text-[10.5px] leading-relaxed text-fg-muted">
+                  <input type="checkbox" checked={acceptByokCosts} onChange={(e) => setAcceptByokCosts(e.target.checked)} className="mt-0.5" />
+                  <span>I understand that this key is billed directly by my model provider. I am responsible for its pricing, account balance and provider-side billing cap; Forge’s token guard is an estimate, not the provider’s invoice.</span>
+                </label>
+              )}
               <div className="mt-2 flex items-center gap-2">
                 <Button size="sm" variant="outline" onClick={testKey} disabled={busy || !vaultHasKey}>Test key</Button>
                 {busy && <Spinner />}
                 {state.status === "saved" && <span className="text-[11px] text-accent">{state.message}</span>}
                 {state.status === "error" && <span className="text-[11px] text-danger">{state.message}</span>}
               </div>
+              {byokBudget && (
+                <div className="mt-3 rounded-lg border border-line bg-sunken/40 p-3">
+                  <div className="flex items-end gap-2">
+                    <label className="min-w-0 flex-1">
+                      <span className="block text-[10.5px] font-medium text-fg-muted">24-hour safety budget</span>
+                      <input
+                        type="number"
+                        min="10000"
+                        max="5000000"
+                        step="10000"
+                        value={budgetDraft}
+                        onChange={(e) => setBudgetDraft(e.target.value)}
+                        className={`${inputCls} mt-1 w-full font-mono`}
+                      />
+                    </label>
+                    <Button size="sm" variant="outline" onClick={saveBudget} disabled={busy || !budgetDraft}>Save limit</Button>
+                  </div>
+                  <div className="mt-2 text-[10.5px] text-fg-faint">
+                    {byokBudget.tokens.toLocaleString()} used · {byokBudget.remaining.toLocaleString()} remaining. Forge reserves every provider attempt before sending it and stops at this limit.
+                  </div>
+                  <div className="mt-1 text-[10.5px] text-fg-faint">
+                    A typical 22-slide researched deck is estimated at about {byokBudget.typicalDeckEstimate.toLocaleString()} tokens before it runs; provider and subject can change the actual total.
+                  </div>
+                </div>
+              )}
               <p className="mt-2 text-[10.5px] leading-relaxed text-fg-faint">Keys are AES-256-GCM encrypted with server pepper — never logged, never returned.</p>
+              <p className="mt-1 text-[10.5px] leading-relaxed text-fg-faint">Keep a billing limit at your provider too. Forge estimates usage when an OpenAI-compatible endpoint omits token counts; your provider remains the billing authority.</p>
             </section>
           )}
         </div>
