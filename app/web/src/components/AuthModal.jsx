@@ -22,6 +22,8 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   // accounts on creation, so the sign-up copy must not promise an email.
   const [mailOk, setMailOk] = useState(false);
   const [verifyRequired, setVerifyRequired] = useState(false);
+  const [localOwner, setLocalOwner] = useState(false);
+  const [ownerConfigured, setOwnerConfigured] = useState(false);
   const [forgotSent, setForgotSent] = useState(false);
   const [googleId, setGoogleId] = useState(null);
   const [googleBusy, setGoogleBusy] = useState(false);
@@ -39,6 +41,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
       setRegOpen(c.open === true);
       setMailOk(c.mail === true);
       setVerifyRequired(c.verifyRequired === true);
+      setLocalOwner(c.localOwner === true);
+      setOwnerConfigured(c.ownerConfigured === true);
+      if (c.localOwner) setMode(c.ownerConfigured ? "login" : "register");
     }).catch(() => setRegOpen(true));
     api.themes().then((r) => setThemes(r.themes)).catch(() => setThemes([]));
     fetch("/api/auth/google/config").then((r) => r.json()).then((j) => setGoogleId(j.clientId ?? j.googleClientId ?? null)).catch(() => {});
@@ -101,9 +106,13 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
         const user = await api.login({ email: email.trim(), password });
         onDone?.(user);
       } else {
-        // Registration never hands out a session — the account is created and
-        // the visitor signs in with it explicitly.
+        // Ordinary hosted registration requires an explicit login. The one
+        // private-owner setup returns a session and can enter immediately.
         const user = await api.register({ name: name.trim(), email: email.trim(), password });
+        if (user.localOwner) {
+          onDone?.(user);
+          return;
+        }
         setMode("login");
         setPassword("");
         setSuccess(user.verifySent
@@ -208,7 +217,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
 
           <div className="mt-8">
             <div className="mb-2 text-[10px] font-medium uppercase tracking-wider text-fg-faint">
-              38 themes, drawn live
+              {themes?.length ?? "—"} themes, drawn live
             </div>
             <div className="-mx-1 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {(themes ?? []).slice(0, 4).map((t) => (
@@ -223,7 +232,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               )}
             </div>
             <div className="mt-4 text-[10.5px] leading-relaxed text-fg-faint">
-              Hosted and ready — create, generate and share from anywhere.
+              {localOwner
+                ? "Private on this machine — local models or your own provider key."
+                : "Hosted and ready — create, generate and share from anywhere."}
             </div>
           </div>
         </div>
@@ -232,7 +243,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
         <div className="flex min-w-0 flex-1 flex-col overflow-y-auto p-6 sm:p-7">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[16px] font-semibold tracking-tight">
-              {mode === "forgot" ? "Reset your password" : mode === "login" ? "Log in" : "Sign up"}
+              {localOwner
+                ? (mode === "login" ? "Open your workspace" : "Set up your workspace")
+                : (mode === "forgot" ? "Reset your password" : mode === "login" ? "Log in" : "Sign up")}
             </h2>
             <button
               onClick={onClose}
@@ -251,7 +264,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
               Back to log in
             </button>
-          ) : (
+          ) : !localOwner ? (
           <div className="mb-4 flex items-center gap-0.5 rounded-full bg-sunken p-0.5">
             <button
               onClick={() => { setMode("login"); setFieldErrors({}); setFormError(""); setSuccess(""); }}
@@ -268,17 +281,25 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               </button>
             )}
           </div>
-          )}
+          ) : null}
 
           {!regOpen && (
             <div className="mb-4 rounded-lg border border-line bg-sunken px-3 py-2.5 text-[12px] leading-relaxed text-fg-muted">
-              This server belongs to one owner and accounts are closed —
-              ask them to add you, or use the account they set up.
+              {localOwner
+                ? "This private workspace already has an owner. Log in with the local account created on first setup."
+                : "This server belongs to one owner and accounts are closed — ask them to add you, or use the account they set up."}
             </div>
           )}
 
-          {mode !== "forgot" && <GoogleButton />}
-          {mode !== "forgot" && googleId && <div className="my-3 flex items-center gap-3"><div className="h-px flex-1 bg-line" /><span className="text-[11px] text-fg-faint">or</span><div className="h-px flex-1 bg-line" /></div>}
+          {mode !== "forgot" && !localOwner && <GoogleButton />}
+          {mode !== "forgot" && !localOwner && googleId && <div className="my-3 flex items-center gap-3"><div className="h-px flex-1 bg-line" /><span className="text-[11px] text-fg-faint">or</span><div className="h-px flex-1 bg-line" /></div>}
+
+          {localOwner && mode === "register" && (
+            <p className="mb-4 text-[12.5px] leading-relaxed text-fg-muted">
+              Create the one owner for this private install. The account stays
+              on this machine; no email is sent and setup signs you in directly.
+            </p>
+          )}
 
           {mode === "forgot" && !forgotSent && (
             <p className="mb-4 text-[12.5px] leading-relaxed text-fg-muted">
@@ -314,7 +335,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               </label>
             )}
             <label className="block">
-              <div className="mb-1.5 text-[12px] font-medium text-fg-faint">Email</div>
+              <div className="mb-1.5 text-[12px] font-medium text-fg-faint">
+                {localOwner ? "Local account email" : "Email"}
+              </div>
               <input
                 type="email"
                 value={email}
@@ -323,6 +346,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
                 className={fieldCls("email")}
               />
               <ErrorLine field="email" />
+              {localOwner && mode === "register" && !fieldErrors.email && (
+                <div className="mt-1 text-[12px] text-fg-faint">Used only to identify this workspace; it is not verified or mailed.</div>
+              )}
             </label>
             {mode !== "forgot" && (
             <label className="block">
@@ -372,7 +398,7 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
 
             <Button type="submit" variant="primary" className="w-full" disabled={busy}>
               {busy && <Spinner />}
-              {mode === "forgot" ? "Send the link" : mode === "login" ? "Log in" : "Sign up"}
+              {mode === "forgot" ? "Send the link" : mode === "login" ? "Open workspace" : localOwner ? "Create local owner" : "Sign up"}
             </Button>
           </form>
           )}
@@ -381,7 +407,9 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
               what happens next, and a line about Cloud keys does not. */}
           {mode !== "forgot" && (
             <p className="mt-3 text-center text-[12px] leading-relaxed text-fg-faint">
-              {mode === "register" && verifyRequired
+              {localOwner
+                ? (ownerConfigured ? "Private local owner — no public signup or email recovery." : "One owner, stored only on this machine.")
+                : mode === "register" && verifyRequired
                 ? "You will confirm your email before you can generate — everything else opens straight away."
                 : "Hosted accounts — your decks stay on the server, Cloud keys are per account."}
             </p>

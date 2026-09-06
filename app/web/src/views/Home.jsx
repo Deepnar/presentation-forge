@@ -22,7 +22,7 @@ import CheckScene from "../components/landing/CheckScene.jsx";
  * block above the frame means the frame begins below the fold, and the reader
  * gets a screen of empty page before the content catches up.
  */
-export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
+export default function Home({ user, onStartChat, onBrowseThemes, onAuth, authConfig }) {
   const [themes, setThemes] = useState(null);
   const [manifest, setManifest] = useState(null);
   const pageRef = useRef(null);
@@ -58,6 +58,11 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
   const typeCount = manifest?.vocabulary?.types;
   const themeCount = themes?.length;
   const start = () => (user ? onStartChat?.() : onAuth?.("register"));
+  const startLabel = user
+    ? "Go to your decks"
+    : authConfig?.localOwner
+      ? (authConfig.ownerConfigured ? "Open your workspace" : "Set up your workspace")
+      : "Start free";
 
   return (
     <div ref={pageRef} className="w-full">
@@ -76,7 +81,7 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
             to think about.
           </p>
           <div className="reveal mt-9 flex flex-wrap items-center justify-center gap-3" style={{ "--reveal-delay": "200ms" }}>
-            <CTA onClick={start}>{user ? "Go to your decks" : "Start free"}</CTA>
+            <CTA onClick={start}>{startLabel}</CTA>
             <CTA variant="secondary" onClick={onBrowseThemes}>See the themes</CTA>
           </div>
           <div className="reveal mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4" style={{ "--reveal-delay": "260ms" }}>
@@ -102,8 +107,8 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth }) {
             minutes.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <CTA onClick={start}>{user ? "Go to your decks" : "Start free"}</CTA>
-            {!user && (
+            <CTA onClick={start}>{startLabel}</CTA>
+            {!user && !authConfig?.localOwner && (
               <button
                 onClick={() => onAuth?.("login")}
                 className="press rounded-pill px-5 py-3 text-[14px] font-medium text-fg-muted transition-colors hover:text-fg"

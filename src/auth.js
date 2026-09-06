@@ -310,6 +310,66 @@ export async function register({ name, email, password }) {
   return publicUser(user);
 }
 
+/** Number of accounts in the active store.
+ *
+ * Local-owner setup asks this before showing or accepting its one registration.
+ * Keep the question in the auth layer: probing SQLite from Express would make
+ * the transport responsible for account-store details and would skip the JSON
+ * fallback used by the CLI tests. */
+export async function accountCount() {
+  const d = db();
+  if (d) return Number(d.prepare("SELECT COUNT(*) AS c FROM users").get()?.c ?? 0);
+  return (await loadUsers()).length;
+}
+
+/** Create the one owner of a fresh private/local install.
+ *
+ * This is not ordinary self-registration. The first account is an operator,
+ * is usable immediately (there is deliberately no SMTP in local mode), and
+ * closes the setup door behind itself. SQLite uses BEGIN IMMEDIATE so two
+ * first-load browser tabs cannot both observe an empty store and create two
+ * owners. Existing accounts are never modified or deleted; an upgraded local
+ * volume simply skips setup and keeps its old logins working. */
+export async function registerLocalOwner({ name, email, password }) {
+  const error = validateRegistration({ name, email, password });
+  if (error) throw new Error(error);
+  const normalized = email.trim().toLowerCase();
+  const d = db();
+  if (d) {
+    d.exec("BEGIN IMMEDIATE");
+    try {
+      const count = Number(d.prepare("SELECT COUNT(*) AS c FROM users").get()?.c ?? 0);
+      if (count !== 0) throw new Error("this local workspace already has an owner");
+      const { salt, hash } = hashPassword(password);
+      const now = new Date().toISOString();
+      d.prepare("INSERT INTO users (email,name,password_hash,salt,role,created_at,verified_at) VALUES (?,?,?,?,?,?,?)")
+        .run(normalized, name.trim(), hash, salt, "admin", now, now);
+      d.exec("COMMIT");
+      return publicUser(rowToUser(d.prepare("SELECT * FROM users WHERE email=?").get(normalized)));
+    } catch (err) {
+      try { d.exec("ROLLBACK"); } catch {}
+      throw err;
+    }
+  }
+
+  // The JSON store is retained as a test/legacy fallback. Its writes are not a
+  // deployment concurrency boundary; the Docker product always uses SQLite.
+  const users = await loadUsers();
+  if (users.length) throw new Error("this local workspace already has an owner");
+  const now = new Date().toISOString();
+  const user = {
+    name: name.trim(),
+    email: normalized,
+    role: "admin",
+    createdAt: now,
+    verifiedAt: now,
+    ...hashPassword(password),
+  };
+  users.push(user);
+  await writeJson(USERS_FILE, users);
+  return publicUser(user);
+}
+
 /**
  * Give an existing account the admin role. Called at boot for FORGE_ADMIN_EMAIL
  * so the operator keeps admin even when the account was created by ordinary

@@ -28,7 +28,7 @@ import { runChatTurn, loadThread, resetThread } from "../../src/ai/chat.js";
 import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
 import { cloudStatus, setApiKey, clearApiKey, cloudKeyName, testCloudConnection, testAutoConnection, autoStatus, autoHealth, setUserApiKey, clearUserApiKey, getUserApiKey, setRoutingPreference, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
 import { localFallbackArmed } from "../../src/devfallback.js";
-import { register, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, getUserEmailById, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
+import { register, registerLocalOwner, accountCount, authenticate, startSession, endSession, userForToken, bearerToken, publicUser, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, verifyGoogleIdToken, findOrCreateGoogleUser, getUserId, getUserEmailById, listUsers, setUserRole, deleteUserAccount, cookieToken, sessionCookie, clearedSessionCookie, verificationRequired, verifiedRequestOnly, issueAuthToken, consumeAuthToken, pruneAuthTokens, markVerified, resetPassword, accountVerificationState, RESET_TTL_MINUTES, VERIFY_TTL_HOURS } from "../../src/auth.js";
 import { sendMail, mailConfigured, resetMail, verifyMail } from "../../src/mail.js";
 import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
 import { normalizeBrand } from "../../tools/prep-brand.mjs";
@@ -2738,12 +2738,37 @@ function rateLimit(req, res, next) {
 // Read per request, not once at boot: an operator closing signup because it is
 // being abused should not have to restart the box to do it.
 const openRegistration = () => settingValue("openRegistration");
+// Private local installs are single-owner by default. Existing deployments
+// that intentionally use several trusted local accounts can retain the old
+// behavior explicitly; internet-facing instances belong in hosted mode.
+const localOwnerMode = () => !isHosted() && process.env.FORGE_LOCAL_MULTI_USER !== "1";
+
+async function authRegistrationState() {
+  const localOwner = localOwnerMode();
+  const ownerConfigured = localOwner ? (await accountCount()) > 0 : false;
+  return {
+    open: localOwner ? !ownerConfigured : openRegistration(),
+    mail: localOwner ? false : mailConfigured(),
+    verifyRequired: localOwner ? false : verificationRequired(),
+    localOwner,
+    ownerConfigured,
+  };
+}
+
 app.post("/api/auth/register", rateLimit, wrap(async (req, res) => {
-  if (!openRegistration()) {
+  const state = await authRegistrationState();
+  if (!state.open) {
+    if (state.localOwner) return fail(res, 403, "this local workspace already has an owner — log in to continue");
     return fail(res, 403, "registration is closed on this server — ask the owner for an account");
   }
   const { name, email, password } = req.body ?? {};
   try {
+    if (state.localOwner) {
+      const user = await registerLocalOwner({ name, email, password });
+      const token = await startSession(user);
+      res.setHeader("Set-Cookie", sessionCookie(token, { secure: secureRequest(req) }));
+      return ok(res, { user, token, localOwner: true, verifySent: false });
+    }
     const user = await register({ name, email, password });
     // Registration deliberately does not start a session — the visitor logs in
     // with the new credentials explicitly, so creating an account never hands
@@ -2776,6 +2801,7 @@ app.post("/api/auth/login", rateLimit, wrap(async (req, res) => {
 }));
 
 app.post("/api/auth/google", rateLimit, wrap(async (req, res) => {
+  if (localOwnerMode()) return fail(res, 403, "Google sign-in is disabled for a private local workspace");
   const { id_token, credential } = req.body ?? {};
   const token = id_token ?? credential;
   if (!token) return fail(res, 400, "missing Google id_token");
@@ -2869,6 +2895,7 @@ function dispatchMail(message, to) {
  * users.
  */
 app.post("/api/auth/forgot", rateLimit, wrap(async (req, res) => {
+  if (localOwnerMode()) return fail(res, 404, "password recovery is not available in local-owner mode");
   const email = String(req.body?.email ?? "").trim().toLowerCase();
   const generic = () => ok(res, { sent: true });
   if (!email || !mailConfigured()) return generic();
@@ -2890,6 +2917,7 @@ app.post("/api/auth/forgot", rateLimit, wrap(async (req, res) => {
 /** Spend a reset token and set the new password. Every session for the account
  *  dies with it — see resetPassword in auth.js. */
 app.post("/api/auth/reset", rateLimit, wrap(async (req, res) => {
+  if (localOwnerMode()) return fail(res, 404, "password recovery is not available in local-owner mode");
   const { token, password } = req.body ?? {};
   if (!token) return fail(res, 400, "missing reset token");
   const spent = consumeAuthToken(token, "reset");
@@ -2912,6 +2940,7 @@ app.post("/api/auth/reset", rateLimit, wrap(async (req, res) => {
  *  sitting in an inbox should confirm an address, not be a way into the
  *  account. The visitor logs in as they normally would. */
 app.post("/api/auth/verify", rateLimit, wrap(async (req, res) => {
+  if (localOwnerMode()) return fail(res, 404, "email verification is not used in local-owner mode");
   const { token } = req.body ?? {};
   if (!token) return fail(res, 400, "missing verification token");
   const spent = consumeAuthToken(token, "verify");
@@ -2927,6 +2956,7 @@ app.post("/api/auth/verify", rateLimit, wrap(async (req, res) => {
  *  only ever mail the caller's own address, so it is not a send-mail-to-anyone
  *  endpoint wearing a session. */
 app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
+  if (localOwnerMode()) return fail(res, 404, "email verification is not used in local-owner mode");
   const user = await requireAuth(req, res, "log in to resend the confirmation");
   if (!user) return;
   // Already confirmed is the first thing to say. Asked in the other order, an
@@ -2952,12 +2982,14 @@ app.post("/api/auth/verify/resend", rateLimit, wrap(async (req, res) => {
 
 /** Whether new accounts can self-register on this server. */
 app.get("/api/auth/registration", wrap(async (_req, res) => {
-  // `mail` decides whether the form can offer "forgot password" and whether it
-  // should promise a confirmation message that would never arrive.
-  ok(res, { open: openRegistration(), mail: mailConfigured(), verifyRequired: verificationRequired() });
+  // This is the auth surface contract, not only an on/off registration flag:
+  // the browser must not infer local-owner behavior from missing SMTP.
+  ok(res, await authRegistrationState());
 }));
 app.get("/api/auth/google/config", wrap(async (_req, res) => {
-  ok(res, { clientId: process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null });
+  ok(res, {
+    clientId: localOwnerMode() ? null : process.env.GOOGLE_CLIENT_ID || process.env.FORGE_GOOGLE_CLIENT_ID || null,
+  });
 }));
 
 /** Session gate for the routes that sit outside the deck workspace. */
@@ -3296,8 +3328,10 @@ async function reportBootGaps() {
     console.warn(`           fill in ${identity.file}, or set it per account under Settings → Identity.`);
   }
   if (!mailConfigured()) {
-    console.warn("  WARNING: no SMTP configured (FORGE_SMTP_*) — password reset cannot be delivered,");
-    console.warn("           and new accounts are verified on creation because nothing can be sent to them.");
+    if (!localOwnerMode()) {
+      console.warn("  WARNING: no SMTP configured (FORGE_SMTP_*) — password reset cannot be delivered,");
+      console.warn("           and new accounts are verified on creation because nothing can be sent to them.");
+    }
   } else if (!process.env.FORGE_PUBLIC_URL && !process.env.FORGE_UI_ORIGIN) {
     console.warn("  WARNING: FORGE_PUBLIC_URL is unset — reset and confirmation links will point at localhost.");
   }

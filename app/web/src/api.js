@@ -253,18 +253,25 @@ export const api = {
       return body;
     }),
   donorRemove: () => call("/api/donor", { method: "DELETE" }),
-  // Local single-install accounts. The token is the only credential the browser
-  // holds; the password is never stored or returned. Registering never logs in:
-  // the new account is created and the visitor signs in with it explicitly.
+  // The token is the only credential the browser holds; the password is never
+  // stored or returned. Ordinary registration requires an explicit login;
+  // private first-owner setup returns a session immediately.
   register: (payload) =>
     call("/api/auth/register", { method: "POST", body: JSON.stringify(payload) })
-      .then((r) => ({ ...r.user, verifySent: r.verifySent === true })),
+      .then((r) => {
+        // Local-owner setup is the one registration that is also a login. It
+        // is a first-boot action, not public self-registration, so making the
+        // owner type the same credentials twice is ceremony with no boundary.
+        if (r.token) rememberToken(r.token);
+        return { ...r.user, verifySent: r.verifySent === true, localOwner: r.localOwner === true };
+      }),
   login: (payload) =>
     call("/api/auth/login", { method: "POST", body: JSON.stringify(payload) })
       .then((r) => { rememberToken(r.token); return r.user; }),
   // What the sign-in surface is allowed to offer: whether anyone may register,
-  // whether "forgot password" can actually deliver anything, and whether a new
-  // account will have to confirm its address.
+  // whether "forgot password" can actually deliver anything, whether a new
+  // account will have to confirm its address, and whether this is the one-owner
+  // private install rather than a hosted account service.
   authConfig: () =>
     call("/api/auth/registration").catch(() => ({ open: true, mail: false, verifyRequired: false })),
   forgotPassword: (email) =>

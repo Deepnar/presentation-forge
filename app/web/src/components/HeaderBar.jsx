@@ -9,7 +9,7 @@ import { setModelMode, subscribeModelMode, getModelMode } from "../lib/modelMode
  * client model-mode store so every picker filters immediately. CLOUD is only
  * reachable when a BYOK key is attached — without one it points at Settings.
  */
-export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, onOpenProfile, user, onAuthClick, view }) {
+export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, onOpenProfile, user, onAuthClick, view, authConfig }) {
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
   const [route, setRoute] = useState("auto");
@@ -107,13 +107,16 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
           ) : null
         ) : (
           <>
-            <button
-              onClick={() => onAuthClick?.("login")}
-              title="Log in"
-              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-[13px] font-medium text-fg-muted transition hover:border-line-strong hover:text-fg"
-            >
-              Log in
-            </button>
+            {(!authConfig?.localOwner || authConfig.ownerConfigured) && (
+              <button
+                onClick={() => onAuthClick?.("login")}
+                title={authConfig?.localOwner ? "Open local workspace" : "Log in"}
+                className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-[13px] font-medium text-fg-muted transition hover:border-line-strong hover:text-fg"
+              >
+                {authConfig?.localOwner ? "Open workspace" : "Log in"}
+              </button>
+            )}
+            {!authConfig?.localOwner && (
             <button
               onClick={() => onAuthClick?.("register")}
               title="Sign up"
@@ -121,6 +124,16 @@ export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettin
             >
               Sign up
             </button>
+            )}
+            {authConfig?.localOwner && !authConfig.ownerConfigured && (
+              <button
+                onClick={() => onAuthClick?.("register")}
+                title="Set up local workspace"
+                className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-on-accent transition hover:bg-accent-hi"
+              >
+                Set up
+              </button>
+            )}
           </>
         )}
       </div>

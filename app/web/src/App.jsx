@@ -35,6 +35,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
  */
 export default function App() {
   const [user, setUser] = useState(undefined); // undefined = auth still checking
+  const [authConfig, setAuthConfig] = useState(undefined);
   // Whether this install asks accounts to confirm their address at all. A box
   // with no SMTP does not, so the banner must never appear there.
   const [verifyRequired, setVerifyRequired] = useState(false);
@@ -70,9 +71,17 @@ export default function App() {
   // undefined (still checking) so a reload never flashes the landing for an
   // authed visitor; it resolves to the session or null before anything renders.
   useEffect(() => {
-    api.me()
-      .then((r) => { setUser(r.user); setVerifyRequired(r.verifyRequired === true); })
-      .catch(() => setUser(null));
+    // Resolve identity and the installation's auth posture together. A local
+    // first load must not briefly advertise hosted Log in / Sign up actions
+    // while the owner-mode request is still in flight.
+    Promise.all([
+      api.me().catch(() => ({ user: null, verifyRequired: false })),
+      api.authConfig().catch(() => null),
+    ]).then(([me, config]) => {
+      setUser(me.user);
+      setVerifyRequired(me.verifyRequired === true);
+      setAuthConfig(config);
+    });
   }, []);
 
   // Identity is per account, and reading it needs a session — institution,
@@ -495,6 +504,13 @@ export default function App() {
   }
 
   if (!user) {
+    const localAuthMode = authConfig?.localOwner
+      ? (authConfig.ownerConfigured ? "login" : "register")
+      : null;
+    const openAuth = (preferred = "login") => {
+      setAuthMode(localAuthMode ?? preferred);
+      setAuthOpen(true);
+    };
     const tourView = parseHash(window.location.hash).view;
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
     return (
@@ -508,18 +524,20 @@ export default function App() {
             onOpenProfile={() => {}}
             user={null}
             view={tourExtra ?? "home"}
-            onAuthClick={(mode) => { setAuthMode(mode === "register" ? "register" : "login"); setAuthOpen(true); }}
+            authConfig={authConfig}
+            onAuthClick={(mode) => openAuth(mode === "register" ? "register" : "login")}
           />
           <div className="flex-1">
-            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : tourExtra === "themes" ? <TourThemes onAuth={() => { setAuthMode("register"); setAuthOpen(true); }} /> : (
+            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "themes" ? <TourThemes onAuth={() => openAuth("register")} /> : (
               <Home
                 user={null}
-                onStartChat={() => { setAuthMode("register"); setAuthOpen(true); }}
+                authConfig={authConfig}
+                onStartChat={() => openAuth("register")}
                 // "See the themes" shows the themes. It used to open the
                 // register modal, which asks someone to sign up for the thing
                 // they were trying to look at.
                 onBrowseThemes={() => { window.location.hash = "#/tour-themes"; }}
-                onAuth={(mode) => { setAuthMode(mode); setAuthOpen(true); }}
+                onAuth={openAuth}
               />
             )}
           </div>
@@ -722,4 +740,3 @@ export default function App() {
     </div>
   );
 }
-
