@@ -63,12 +63,11 @@ posture, so the browser never guesses auth behavior from missing SMTP.
 
 The README now puts the local path before implementation detail, presents BYOK
 and Ollama as equal choices, and contains one local-install explanation instead
-of two. The duplicate animated four-theme proof was removed from the page; the
-static comparison already makes that point. The real app-workflow GIF remains
-and is accurately labelled as inspection of existing committed work, not a
-fabricated generation run. The user plans to replace or supplement it later
-with a real screen recording; that remaining demo work lives only in the
-roadmap.
+of two. The animated four-theme proof replaces its duplicate static grid. Two
+real app captures are embedded: the existing-work viewer and a fresh private
+install walking from topic entry through briefing choices and optional thesis
+details. The latter stops before generation and says so because no model was
+available; it makes no output claim.
 
 `LOCAL_SETUP.md` covers Docker Desktop on Windows/macOS, Docker Engine on Linux,
 host/LAN Ollama, BYOK, persistent data and destructive reset behavior. Host
@@ -96,6 +95,10 @@ development, not Docker use. All 34 README-local paths resolve.
   showed **Open workspace** with no public signup action. The browser control's
   screenshot/click channel timed out after that read, so no modal screenshot is
   claimed; route behavior is covered by the HTTP test.
+- Briefing capture — a disposable isolated Docker volume was used to create a
+  dummy owner, enter a topic, choose briefing settings and open optional thesis
+  details. It stopped before generation, made no model call, and the temporary
+  containers, network and volume were removed after capture.
 
 ## Local runtime left in place
 

@@ -5470,13 +5470,12 @@ normal registration, Google, verification and recovery behavior unchanged.
 
 ### [~] A real product demo — GIF now, generation video after a model run
 
-*Priority: medium. The GIF is unblocked; a truthful end-to-end generation video
-is blocked on a provider key or Auto returning.*
+*Priority: medium. The truthful UI-only clips are done; an end-to-end generation
+video is blocked on a provider key or Auto returning.*
 
-The repository has two committed, locally hosted GIF/MP4 pairs made from actual
-Forge output and UI. The README embeds only the app workflow because the static
-four-theme table already communicates the same theme-system proof without
-repeating it:
+The repository has three committed, locally hosted GIF/MP4 pairs made from
+actual Forge output and UI. The README keeps the animated theme proof and drops
+the static four-image table that repeated the same comparison:
 
 - **Theme system:** one real stats slide crossing four themes. This makes the
   chrome/theme/content split legible without asking the viewer to trust a
@@ -5485,6 +5484,10 @@ repeating it:
   deck, inspecting its editable slide, then opening the real theme picker. It
   is explicitly captioned as inspection of existing work, not a fabricated
   generation story.
+- **Briefing workflow:** a fresh private Docker session entering a topic,
+  choosing deck settings, and opening the optional thesis/audience questions.
+  It stops before the generation action because no model was available, and is
+  captioned that way. The temporary capture stack made no model call.
 
 What remains is a 30–60 second real model run: topic → briefing → approved
 outline → deck → editable slide → report. It must name the backend used and is
@@ -5498,7 +5501,7 @@ makes trying it credible.
 > **Learned.** Demo assets are product evidence, so their provenance matters.
 > An initial capture was discarded because its deck title carried personal and
 > institutional context. The committed capture uses only the repository’s
-> public Green Hydrogen material, and `tools/landing.mjs` marks the four manual
+> public Green Hydrogen material, and `tools/landing.mjs` marks the six manual
 > GIF/MP4 assets as protected so regenerating static landing renders cannot
 > silently delete them.
 
