@@ -12,7 +12,7 @@ Three kinds of blocker, and they are not equally bad:
 |---|---|---|
 | **External** | outside anyone's control here; wait or route around | 1 |
 | **Operator** | one person, one account, usually under an hour | 4 |
-| **Decision** | needs a judgement nobody should make unilaterally | 3 |
+| **Decision** | needs a judgement nobody should make unilaterally | 2 |
 
 Every open item in `docs/ROADMAP.md` now states which of these it waits on, in
 its own header — so the two files cannot drift into disagreeing about what is
@@ -160,21 +160,6 @@ what it says depends on whether a purchase is credits or a subscription, and on
 there being a checkout to point at. The half that needed neither — the usage
 panel showing the trial and how much of it is spent — is built.
 
-### 3.4 Local authentication posture
-
-**Blocks:** *Local authentication should feel like a personal install* in the
-roadmap.
-
-The Docker bundle intentionally has no SMTP, so accounts are immediately
-verified and have no mail-based recovery. The code still uses accounts to
-separate workspaces and protect BYOK keys. Choose whether a personal install
-should become a one-owner application with registration closed after first boot
-(recommended), or remain a trusted shared-machine app with that limitation
-stated plainly. This must be decided before changing auth routes, database
-migration or UI copy; an internet-facing instance remains the hosted deployment.
-
----
-
 ## 4. Nothing is available right now
 
 Everything that could be done without a key, a model or a decision **has been
@@ -217,12 +202,3 @@ Two are worth naming because they look like engineering and are not:
 - **Payments integration.** A day or two of code. What is slow is the entity
   and KYC question, which is §2 of `docs/PRODUCTION.md` and is paperwork, not
   engineering.
-- **The Node 24 test-worker crash seen in the Codex sandbox on 2026-09-06.**
-  `npm test` reached 81 passing test files, then ten unrelated integration
-  workers aborted in Node's native `InternalCallbackScope::Close` assertion;
-  the same affected tests abort when run alone here. The changed build-context
-  and local-Compose tests pass directly, and the running Docker bundle passes
-  its health check. This is a verification-environment limitation, not evidence
-  of a product defect or a reason to change the application. Re-run the full
-  suite in an ordinary host shell before a release and record a reproducible
-  application assertion only if one appears there.

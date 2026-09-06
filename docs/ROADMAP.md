@@ -3542,7 +3542,7 @@ wrong in a way worth keeping:
 > 0.28in, which is why the hub was sized against the wrong number. Derive it
 > once and use the same value for the fit, the box and the advance.
 
-### [ ] The front end, and the landing page
+### [x] The front end, and the landing page
 
 *Priority: medium, down from HIGHEST. No model, and **not blocked** — the
 direction below covers the app sweep as well as the landing page, and says so:
@@ -5383,19 +5383,21 @@ The root [`compose.yaml`](../compose.yaml) is now the normal local install:
 ```bash
 git clone https://github.com/Deepnar/presentation-forge.git
 cd presentation-forge
-ollama pull qwen3:4b
-docker compose up -d --build
+docker compose up -d --build --wait
 ```
 
 It starts Forge and a private SearXNG service, binds Forge only to
-`127.0.0.1:8090`, persists the application in `forge_local_data`, opens
-registration, and never requires a domain, SMTP account, hosted-provider key
-or production secret. `docker compose exec forge env
-FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs` proves the
-app is healthy and its model picker can see Ollama. The same bundle accepts
-`FORGE_OLLAMA_HOST` for a trusted LAN endpoint and keeps Settings → Cloud/BYOK
-available. A random encryption pepper is generated once inside the persistent
-volume, rather than falling back to a published development value.
+`127.0.0.1:8090`, persists the application in `forge_local_data`, offers one
+private-owner setup on a fresh volume, and never requires a domain, SMTP
+account, hosted-provider key or production secret. Model access is a choice
+after the app starts: Settings →
+Cloud accepts BYOK without Ollama, while Auto uses a host Ollama installation.
+`docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node
+tools/local-check.mjs` proves the app is healthy and reports whether local
+inference is visible or still needs model setup. The same bundle accepts
+`FORGE_OLLAMA_HOST` for a trusted LAN endpoint. A random encryption pepper is
+generated once inside the persistent volume, rather than falling back to a
+published development value.
 
 **The unit is one command, not one badly-supervised container.** The app,
 LibreOffice and Chromium belong in Forge’s image; SearXNG remains an independent
@@ -5425,50 +5427,56 @@ the theme picker no longer becomes 34 Docker-only thumbnail 404s.
 > gallery, so every theme thumbnail failed only in Docker. The Compose contract
 > test now holds both boundaries, the local/production split and the host-Ollama
 > override.
+>
+> Detached Compose returning does not mean the health check is ready. An
+> immediate in-container check failed against a correctly built image because
+> the API was still starting; the public command uses `--wait`, making service
+> health part of the one-command contract instead of a timing guess.
 
 > **Look-ahead.** This stays a two-service local bundle even if future optional
 > integrations are added. A production deployment must continue to use its
 > separate compose file and explicit secrets; the image may be shared, its
 > security posture must not be.
 
-### [ ] Local authentication should feel like a personal install
+### [x] Local authentication feels like a personal install
 
-*Priority: medium. No model. Needs a product decision before code.*
+*Priority: medium. No model.*
 
-The local Compose bundle has no SMTP by design. Today it retains the normal
-account model because it owns workspace separation and encrypted BYOK keys, but
-`mailConfigured()` consequently creates a local registration as verified and
-cannot offer password reset. That is safe enough on one private machine and
-confusing if presented as a hosted account system.
+The private local bundle now defaults to personal-owner mode. On a fresh data
+volume, its only registration creates a verified administrator and starts that
+owner's session; from then on registration is closed. The browser calls this
+"Set up your workspace" rather than presenting hosted Log in / Sign up tabs.
+Google sign-in, address confirmation and mail-based recovery are absent in this
+mode rather than offered as flows that cannot work without SMTP.
 
-Decide which explicit local posture to build:
+Accounts were retained deliberately: the owner still owns deck workspaces and
+the encrypted BYOK vault. Existing volumes are never rewritten or merged; if
+accounts already exist, the install goes directly to login and all of those
+accounts continue to work. Trusted legacy shared-machine installs can preserve
+that behavior explicitly with `FORGE_LOCAL_MULTI_USER=1`. Hosted mode keeps its
+normal registration, Google, verification and recovery behavior unchanged.
 
-- **Personal-owner mode (recommended):** first run creates one local owner;
-  later registration is closed; email verification and reset are absent rather
-  than imitated. The owner can keep a password as a local lock or remove it
-  deliberately. This is the Open WebUI-like default for a private computer.
-- **Shared-machine accounts:** retain registration and workspace isolation, but
-  state plainly that there is no email verification or recovery without SMTP.
-  It is suitable only for people who already trust one another.
+> **Learned.** Missing SMTP is not an authentication mode. The API now returns
+> an explicit local-owner posture so every browser surface agrees, and the
+> first-owner insert uses an SQLite `BEGIN IMMEDIATE` transaction so two fresh
+> tabs cannot create two owners. Preserving the account boundary made the
+> convenience change compatible with existing deck ownership and BYOK data;
+> removing login entirely would have broken both.
 
-An internet-facing or untrusted multi-user instance must use the hosted
-deployment with SMTP, verified addresses, secure cookies and operator controls.
-Do not make the current production account flow conditional on local mode in
-piecemeal route checks: identify the local boundary first, then make every auth
-surface and API guard agree with it.
-
-> **Look-ahead.** BYOK is the seam that makes this non-trivial. A one-user mode
-> can collapse account identity safely only if its encrypted key vault, existing
-> deck ownership and migration from the current local database are designed
-> together; otherwise a convenience toggle becomes a data-loss toggle.
+> **Look-ahead.** The one-owner default belongs only to the localhost bundle.
+> Internet-facing or untrusted multi-user instances continue through the hosted
+> deployment with SMTP, verified addresses, secure cookies and operator
+> controls; local convenience does not weaken that path.
 
 ### [~] A real product demo — GIF now, generation video after a model run
 
 *Priority: medium. The GIF is unblocked; a truthful end-to-end generation video
 is blocked on a provider key or Auto returning.*
 
-The README now has two committed, locally hosted GIF/MP4 pairs made from actual
-Forge output and UI:
+The repository has two committed, locally hosted GIF/MP4 pairs made from actual
+Forge output and UI. The README embeds only the app workflow because the static
+four-theme table already communicates the same theme-system proof without
+repeating it:
 
 - **Theme system:** one real stats slide crossing four themes. This makes the
   chrome/theme/content split legible without asking the viewer to trust a

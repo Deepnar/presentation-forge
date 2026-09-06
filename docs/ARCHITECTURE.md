@@ -141,7 +141,7 @@ off, leaving every card a flat block of the title colour: two themes with
 similar title grounds became indistinguishable, and type, which is most of what
 separates these designs, was not shown at all. The images are committed —
 without them the picker falls back to a token synthesis that cannot show a
-plate background, and regenerating 38 themes needs LibreOffice and several
+plate background, and regenerating 34 themes needs LibreOffice and several
 minutes, which is the wrong thing to do on a container's first boot. The
 type-swap gallery's specimen slides are neutral the same way (`src/specimens.js`
 carries hand-written payloads rather than reaching into demo decks, which is
@@ -297,7 +297,13 @@ The two modes deliberately use different Compose entry points. The root
 Forge to `127.0.0.1:8090`, sets `FORGE_HOSTED=0`, keeps decks/accounts/BYOK keys
 in the `forge_local_data` volume, starts an unexposed SearXNG companion, and
 generates a random `/data/config/local-key-pepper` on first boot if the user did
-not supply one. It opens registration and disables retention sweeps because a
+not supply one. A fresh volume exposes one setup registration: that account is
+created verified as an administrator, receives a session immediately, and
+closes registration behind it. Existing volumes keep all of their accounts and
+go directly to login. Local mode omits Google sign-in, address confirmation and
+mail recovery rather than presenting flows that cannot work without SMTP;
+`FORGE_LOCAL_MULTI_USER=1` is the explicit compatibility escape hatch for a
+trusted shared-machine install. Retention sweeps are disabled because a
 personal install must not surprise its owner by deleting work.
 
 Ollama is intentionally outside that bundle. `FORGE_OLLAMA_HOST` overrides the
@@ -1440,9 +1446,12 @@ salt+hash, and the password is never logged, stored, or returned. Sessions are
 opaque random bearer tokens held server-side in a gitignored sessions file —
 the browser only ever sees the token, and tokens idle-expire after
 `FORGE_SESSION_TTL_DAYS` (default 30), refreshed on use and pruned when dead.
-`POST /api/auth/login` mints a session, `POST /api/auth/register` does not:
-creating an account returns the user without a token and the visitor signs in
-explicitly, so registration never silently logs anyone in. `POST /api/auth/logout`
+`POST /api/auth/login` mints a session. Hosted registration returns the user
+without a token and the visitor signs in explicitly, so ordinary registration
+never silently logs anyone in. Private local-owner setup is intentionally
+different: `registerLocalOwner()` atomically creates the first verified admin
+under `BEGIN IMMEDIATE`, starts its session, and refuses every later setup
+attempt. `POST /api/auth/logout`
 and `GET /api/auth/me` back the header's account entry. `PUT/DELETE
 /api/cloud/key` return 401 without a session, and the Settings modal's Cloud
 section shows a login prompt until one exists. The AuthModal — reachable from
@@ -1451,12 +1460,14 @@ login surface (the full-screen LoginScreen was retired when the landing became
 the front door); both `config/users.json` and `config/sessions.json` are
 gitignored.
 
-**Registration** is open by default for local dev but closes on a public box:
-`FORGE_OPEN_REGISTRATION=0` turns `POST /api/auth/register` into a 403 and the
-owner's account is seeded at boot from `FORGE_ADMIN_EMAIL` +
-`FORGE_ADMIN_PASSWORD` (idempotent — a restart never errors). The AuthModal
-asks the server whether signup is open and hides the register tab when it is
-not.
+**Registration has two explicit postures.** The normal root Compose bundle is a
+personal install: `GET /api/auth/registration` reports `localOwner` and whether
+an owner exists, so the browser shows one setup action on a fresh volume and a
+login action afterwards. `FORGE_LOCAL_MULTI_USER=1` restores ordinary trusted
+local registration for legacy shared-machine use. Hosted mode follows
+`FORGE_OPEN_REGISTRATION`; when closed, the owner's account is seeded at boot
+from `FORGE_ADMIN_EMAIL` + `FORGE_ADMIN_PASSWORD` (idempotent — a restart never
+errors). The browser does not infer any of these states from SMTP availability.
 
 **Destructive and config-writing endpoints are gated.** `POST /api/sweep`
 (deletes decks, and therefore operator-only), `PUT /api/identity`, brand
@@ -1568,14 +1579,16 @@ through `singleFlight` (`app/web/src/lib/singleflight.js`) — one call per
 token, the promise shared so every run reads the same outcome. `#/reset` is
 submit-driven and never had the problem.
 
-**`mailConfigured()` is load-bearing beyond sending.** It also decides whether
+**`mailConfigured()` is load-bearing beyond sending in normal/hosted auth.** It also decides whether
 address confirmation is enforced: with no SMTP, accounts are verified on
 creation, since a gate whose only key is an email nobody can send is a locked
 door with no handle. The consequence for development is that these flows do not
 run at all on a box without SMTP — not a weaker version of them, none of them.
 `npm run dev:mail` starts `tools/mailsink.mjs` beside the app so they can be
 exercised; it speaks the dialogue `src/mail.js` sends and prints each message
-with its link.
+with its link. Personal local-owner mode bypasses that ambiguity entirely:
+registration state explicitly reports no mail or verification, and the Google,
+forgot, reset, verify and resend routes are unavailable.
 
 ### The report donor is a server state, not a runtime surprise
 
