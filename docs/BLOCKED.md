@@ -11,7 +11,7 @@ Three kinds of blocker, and they are not equally bad:
 | kind | meaning | how many |
 |---|---|---|
 | **External** | outside anyone's control here; wait or route around | 1 |
-| **Operator** | one person, one account, usually under an hour | 4 |
+| **Operator** | one person, one account, usually under an hour | 5 |
 | **Decision** | needs a judgement nobody should make unilaterally | 2 |
 
 Every open item in `docs/ROADMAP.md` now states which of these it waits on, in
@@ -106,6 +106,16 @@ creation is normal — retry, or pick a quieter region **at signup**, because th
 home region cannot be changed afterwards. And an idle Always Free account can
 be reclaimed; this app with a healthcheck is not idle. If ARM will not come
 free, Hetzner CX22 is about €4/month.
+
+### 2.5 No repository funding destination
+
+**Blocks:** the GitHub funding button and `.github/FUNDING.yml` roadmap item.
+
+`github.com/sponsors/Deepnar` currently redirects to the ordinary profile, so
+the account is not GitHub Sponsors-enabled. No verified Ko-fi, Buy Me a Coffee,
+Open Collective, Patreon or custom funding URL has been supplied either. The
+operator must choose and activate one destination; only then can the repository
+point at it without creating a broken or misleading payment link.
 
 ---
 

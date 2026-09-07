@@ -27,6 +27,16 @@ reporting are enabled, and repository discovery metadata now names Docker,
 BYOK, Ollama and AI presentations accurately. These community files landed on
 `main` immediately after the immutable `v0.1.0` product tag.
 
+The upload-ready repository social card is
+`app/gallery/social/repository-open-graph.png`: 1280×640 RGB PNG, crop-safe and
+worded for the released self-hosted product. GitHub does not read this file
+automatically; upload it under **Settings → General → Social preview**.
+
+The custom bug/feature forms and their labels were verified live on GitHub; the
+generic template-setup screen is not missing work. Repository funding remains
+off because no active funding destination exists. The reason and exact unblock
+are recorded in `docs/BLOCKED.md` §2.5 and the roadmap funding entry.
+
 ## The local product as shipped
 
 From a clone, the application starts with one Docker command:

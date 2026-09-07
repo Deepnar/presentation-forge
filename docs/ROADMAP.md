@@ -5921,3 +5921,27 @@ Docker, BYOK and Ollama paths, and discovery topics include `docker`, `byok` and
 > **Learned.** A public repository needs routing as much as documentation.
 > Without it, setup questions look like defects, security reports risk becoming
 > public, and contributors cannot know that a valid PPTX still needs visual QA.
+
+### [x] Give repository links a recognizable social preview
+
+*Priority: immediate distribution polish. No model runtime needed.*
+
+`app/gallery/social/repository-open-graph.png` is the 1280×640 GitHub social
+card. It keeps the real Forge mark and short product promise inside a 64-pixel
+crop-safe area, names the self-hosted Docker and BYOK/Ollama paths, and uses a
+presentation stack instead of a fabricated application screenshot.
+
+> **Learned.** Link cards are read at thumbnail scale. One product sentence and
+> three deployment signals survive that reduction; a copied README feature list
+> would not.
+
+### [ ] Offer a repository funding link once a destination exists
+
+*Priority: low. Blocked on an operator account/decision; no model needed.*
+
+GitHub can surface `.github/FUNDING.yml`, but `Deepnar` is not currently enabled
+for GitHub Sponsors—the Sponsors URL redirects to the ordinary profile—and no
+Ko-fi, Buy Me a Coffee, Open Collective, Patreon or other funding destination
+has been supplied. Choose and activate one destination first, then add only
+that verified link and enable the repository funding display. Do not commit the
+placeholder template or advertise a dead payment route.
