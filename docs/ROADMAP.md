@@ -5916,8 +5916,12 @@ behavior with the existing test suite, production build and a rasterized render.
     cleanup, storage inventory and system health now register from
     `app/server/admin-routes.js`. This also fixed the stats route's latent
     reference to a sweep-hour constant that had moved into lifecycle scope.
-  - **[ ] Deck artefact and report family.**
-  - **[ ] Chat and generation-run family.**
+  - **[x] Deck artefact and report family.** Versioning, uploads, render/preview,
+    scripts, slide insertion/conversion, exports, research and report operations
+    now register from `app/server/artifact-routes.js`.
+  - **[x] Chat and generation-run family.** Type specimens, creation, chat,
+    report-to-deck conversion and resumable generation now register from
+    `app/server/generation-routes.js`; the live-run registry moved with them.
 - **[ ] Split the renderer layout registry** by slide family while keeping one
   shared composition/fitting primitive layer and one public dispatcher.
 - **[ ] Split the large React views** by state machine and panel responsibility,
@@ -5943,6 +5947,8 @@ behavior with the existing test suite, production build and a rasterized render.
 > narratives stop carrying the architecture. The server entry point now has a
 > single file-purpose note and no standalone line commentary; its behavior is
 > described by module names, tests, the architecture document and git history.
+> After all route-family extractions, `app/server/index.js` is 516 lines rather
+> than 3,411, and the full 808-test suite still exercises the same route table.
 
 ### [x] Publish the first self-hosted release
 

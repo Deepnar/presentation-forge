@@ -867,6 +867,11 @@ translate HTTP requests and register routes.
 and health endpoints. It receives deck metadata and directory-size readers from
 the composition root rather than reaching back into the entry point.
 
+`artifact-routes.js` owns deck files, render/preview, exports, research and
+reports. `generation-routes.js` owns specimens, chat, creation and resumable
+generation, including the in-memory live-run registry. Shared SSE, render-queue
+and metering guards are injected by the composition root.
+
 The admin routes guard `GET /api/admin/hosted` / `POST /api/admin/hosted`
 (`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env
 for runtime flips), user role/deletion operations, deck inventory and aggregate
