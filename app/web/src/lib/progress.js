@@ -1,9 +1,3 @@
-/** Human labels for the pipeline's SSE status frames, shared by every surface
- *  that streams research/planning/writing progress. Every long action reports
- *  per-step movement so the UI never looks stuck: research names the query,
- *  writing/sweeping names the slide of M, the report names its section.
- *  A frame that carries detail on top of its status (a query under
- *  "researching", a slide index under "writing") shows both. */
 export function progressLabel(p) {
   switch (p.status) {
     case "researching":
@@ -21,15 +15,9 @@ export function progressLabel(p) {
     case "reading": return "Reading the deck…";
     case "editing": return "Editing the deck…";
 
-    // Everything below runs AFTER the last slide is written, and together it is
-    // the slow half of a generation — the critic alone interleaves a full
-    // render with model calls, twice. All of it used to fall through to
-    // "Working…", so the phase the user waits longest through was the one the
-    // UI said least about.
     case "papers": return "Searching the paper archives…";
     case "field_length_checking": return "Checking what fits…";
     case "field_length":
-      // `index` here is the slide being repaired, and it IS the sequence.
       return `Shortening slide ${(p.index ?? 0) + 1} of ${p.total ?? "…"}…`;
     case "coherence_checking": return "Checking the deck holds together…";
     case "coherence_fixing":
@@ -37,7 +25,6 @@ export function progressLabel(p) {
     case "coherence":
       return p.round ? `Checking coherence, round ${p.round}…` : "Checking coherence…";
     case "images":
-      // `index` is the SLIDE being illustrated, not the counter — `done` is.
       return p.total
         ? `Finding image ${(p.done ?? 0) + 1} of ${p.total}…`
         : "Finding images…";

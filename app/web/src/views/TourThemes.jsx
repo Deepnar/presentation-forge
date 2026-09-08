@@ -3,12 +3,6 @@ import { api } from "../api.js";
 import { SearchIcon } from "../components/icons.jsx";
 import Footer from "../components/Footer.jsx";
 
-/**
- * Marketing themes showcase — distinct from the app's Themes grid.
- * Dark editorial, full-bleed cards, larger type. Same data (GET /api/themes)
- * but a marketing surface for the tour. Authed visitors get a CTA to the app grid;
- * visitors get a Sign-up door.
- */
 export default function TourThemes({ onAuth, authed = false }) {
   const [themes, setThemes] = useState(null);
   const [query, setQuery] = useState("");
@@ -83,20 +77,6 @@ export default function TourThemes({ onAuth, authed = false }) {
   );
 }
 
-/**
- * A theme card that shows the theme.
- *
- * The specimen used to be `useThumb = false` — a flat rectangle of the title
- * background, which is the one thing every theme has in common and tells a
- * reader nothing. The committed thumbnails are real renders of a specimen
- * with branding off (see tools/gallery.mjs and the .gitignore note), so there
- * is no institutional mark to keep out of them, and they are the only thing
- * on this page that actually distinguishes one theme from another.
- *
- * Colours come from tokens rather than the literal slate the card was built
- * in, so the surrounding page can be light or dark without the cards staying
- * on one ground.
- */
 function MarketingThemeCard({ theme, onAuth, authed }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
@@ -142,8 +122,6 @@ function MarketingThemeCard({ theme, onAuth, authed }) {
   const shell =
     "group flex flex-col overflow-hidden rounded-2xl border border-line bg-panel text-left shadow-[var(--shadow-card)] transition hover:border-line-strong hover:shadow-[var(--shadow-card-hover)]";
 
-  // A visitor is here to look. Making every card a door to the register modal
-  // asks them to sign up for the thing they are currently looking at.
   if (!authed) return <div className={shell}>{body}</div>;
   return <a href="#/themes" className={shell}>{body}</a>;
 }

@@ -9,7 +9,6 @@ export default class ErrorBoundary extends Component {
     return { error };
   }
   componentDidCatch(error, info) {
-    // Log for diagnostics — not a crash
     console.error("ErrorBoundary caught", error, info);
   }
   render() {

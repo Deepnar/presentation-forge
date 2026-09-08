@@ -9,11 +9,6 @@ export function anonymizeModel(name) {
   return name;
 }
 
-/**
- * The model pickers' data source. Now AUTO (Forge hosted) or CLOUD (BYOK).
- * Header toggle flips every picker without refetch; "auto" default is
- * the hosted model when the gateway key is present.
- */
 export function useModels() {
   const [raw, setRaw] = useState({ models: [], default: "", cloud: null, auto: null, hosted: false });
   const [mode, setMode] = useState(getModelMode());
@@ -33,8 +28,6 @@ export function useModels() {
 
   const autoOn = mode === "auto" && Boolean(raw.auto?.models?.length);
   const cloudOn = mode === "cloud" && Boolean(raw.cloud?.models?.length);
-  // Hosted has no local Ollama — raw.models is always [] there, so the
-  // fallback to raw.models naturally hides the local list.
   const models = autoOn ? raw.auto.models : cloudOn ? raw.cloud.models : raw.models;
   const rawDefault = autoOn ? raw.auto.models[0] : cloudOn ? raw.cloud.models[0] : raw.default;
   const defaultModel = anonymizeModel(rawDefault);

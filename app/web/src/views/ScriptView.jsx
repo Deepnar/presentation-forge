@@ -4,17 +4,6 @@ import { Button, Panel, Spinner } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
 import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 
-/**
- * The speaker script as one of the project's four pages.
- *
- * It was a panel stacked below the report and research panels on the deck page,
- * which put three empty states between the deck's header and its slides. As a
- * page it gets the width its content wants — one card per slide, each with the
- * words that slide's presenter says — and the deck page gets its content back.
- *
- * A script only exists for a deck, so with no deck this says so rather than
- * offering to write words for slides that do not exist.
- */
 export default function ScriptView({ slug, refreshToken, onBack, onNavigate }) {
   const project = useProject(slug, refreshToken);
   const hasDeck = project ? project.deck : true;

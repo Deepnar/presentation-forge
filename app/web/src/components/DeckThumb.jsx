@@ -1,10 +1,5 @@
 import { useState } from "react";
 
-/**
- * A deck's rendered cover thumb with a graceful fallback tile when no preview
- * is on disk — sidebar rows, the home carousel and any future list share this
- * so a broken <img> can never appear. Sized by the parent via `className`.
- */
 export default function DeckThumb({ slug, title, theme, className = "", alt }) {
   const [failed, setFailed] = useState(false);
 

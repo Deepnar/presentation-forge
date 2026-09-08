@@ -2,22 +2,6 @@ import { useRef } from "react";
 import { useSceneProgress } from "../../lib/scene.js";
 import { SlideImage } from "./parts.jsx";
 
-/**
- * One slide, every theme, advanced by scrolling.
- *
- * This is the product's central claim made checkable — the content was written
- * once, and the theme decided every colour, typeface and coordinate. Saying
- * that in a paragraph is a claim; watching the words stay put while everything
- * around them changes is a demonstration.
- *
- * The heading is INSIDE the sticky frame. It used to sit in a block above,
- * which meant the frame started below the fold: at the top of the section the
- * slide was centred in a box that had barely entered the viewport, and the
- * reader got most of a screen of nothing before it caught up.
- *
- * Nothing here is clickable on purpose. Reaching the end of the section means
- * having seen every theme, not having thought to interact.
- */
 export default function ThemeCycle({ manifest, themeCount, onBrowseThemes }) {
   const themes = manifest?.themes ?? [];
   const ref = useRef(null);

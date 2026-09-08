@@ -13,30 +13,15 @@ const STEPS = [
   { n: "07", t: "Critique", d: "Every slide rasterised and read back, so a flaw is caught in the image rather than on the projector." },
 ];
 
-// Each step's panel arrives from a different edge. One shared direction reads
-// as a single block twitching; alternating reads as a sequence being built.
 const FROM = ["left", "up", "right", "scale", "left", "down", "right"];
 
-/**
- * The pipeline as a pinned scene.
- *
- * The heading lives INSIDE the sticky frame. When it sat in a normal block
- * above, the frame only began below it — so at the top of the section the
- * panel was centred in a box that started off-screen, and the reader got a
- * screen of nothing before the content caught up.
- */
 export default function PipelineScene() {
   const ref = useRef(null);
   const p = useSceneProgress(ref);
-  // A phone cannot hold the two-column frame AND seven steps in one screen,
-  // and the stacked version is different content rather than the same content
-  // repositioned — so this is a query, not a measurement.
   const narrow = useNarrow("(max-width: 1023px)");
   const i = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length * 0.999));
   const Mock = PIPELINE_MOCKS[i];
   const step = STEPS[i];
-  // How far into THIS step we are, so the panel finishes arriving rather than
-  // snapping the instant the index changes.
   const local = span(p * STEPS.length - i, 0, 0.35);
 
   const HEAD = (
@@ -50,8 +35,6 @@ export default function PipelineScene() {
     </div>
   );
 
-  // Narrow: every step, in order, each with its own panel. Nothing is hidden
-  // behind a scroll position the layout is too small to spend.
   if (narrow) {
     return (
       <section className="px-5 py-20 sm:px-8" data-section="pipeline">

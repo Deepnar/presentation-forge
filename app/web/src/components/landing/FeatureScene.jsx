@@ -12,19 +12,10 @@ const FEATURES = [
   { t: "Real files out", d: "A .pptx and a .docx you can open, edit and hand in. No viewer, no lock-in, no export step that loses the formatting.", from: "up" },
 ];
 
-/**
- * The eight things around the deck, assembling as the scene is scrolled.
- *
- * Each card has its own entry vector and its own slice of the scroll, so the
- * grid builds itself rather than fading in as one plate. The slices overlap by
- * design — a strict sequence makes the reader wait for each card, and the
- * whole point is that scrolling alone shows the set.
- */
 export default function FeatureScene() {
   const ref = useRef(null);
   const innerRef = useRef(null);
   const p = useSceneProgress(ref);
-  // A pinned frame is one viewport tall; taller content would simply be cut.
   const flow = useTooTall(innerRef);
 
   return (
@@ -32,17 +23,8 @@ export default function FeatureScene() {
       <div
         className={
           flow
-            // The flow branch is the phone path (useTooTall), and it carries the
-            // same entry vectors — a card arriving `from: "left"` is translated
-            // outside the container exactly as in the pinned frame. It had no
-            // clipping at all, so the landing page scrolled sideways by 47px at
-            // 375px wide. `clip` rather than `hidden`: hidden on one axis
-            // promotes the other to `auto`, which makes a scroll container, and
-            // a scroll container is what `position: sticky` sticks to.
             ? "overflow-x-clip px-5 py-20 sm:px-8"
             : // Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
-              // Without it a card entering from the left is pushed past the right
-              // edge and the whole document scrolls sideways.
               "sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8"
         }
       >

@@ -1,5 +1,3 @@
-/** Human-friendly timestamps for the shell — relative time plus coarse date
- *  grouping for the sidebar. Full dates stay available as title tooltips. */
 
 export function relative(ts) {
   const diff = Date.now() - new Date(ts).getTime();

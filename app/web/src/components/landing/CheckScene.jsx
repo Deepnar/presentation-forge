@@ -60,12 +60,10 @@ const CHECKS = [
   },
 ];
 
-/** The four questions the checks ask, in the order they ask them. */
 export default function CheckScene() {
   const ref = useRef(null);
   const innerRef = useRef(null);
   const p = useSceneProgress(ref);
-  // A pinned frame is one viewport tall; taller content would simply be cut.
   const flow = useTooTall(innerRef);
 
   return (
@@ -73,16 +71,8 @@ export default function CheckScene() {
       <div
         className={
           flow
-            // Same hazard as the pinned branch below, and the flow branch is the
-            // phone path: the cards keep their entry vectors, so one arriving
-            // from the left is translated outside the container and the document
-            // scrolls sideways. `clip` not `hidden` — hidden on one axis
-            // promotes the other to `auto`, and that scroll container is what
-            // `position: sticky` would then stick to.
             ? "overflow-x-clip px-5 py-20 sm:px-8"
             : // Clipping the FRAME is safe — only a clipping ANCESTOR breaks sticky.
-              // Without it a card entering from the left is pushed past the right
-              // edge and the whole document scrolls sideways.
               "sticky top-0 flex h-screen items-center overflow-hidden px-5 sm:px-8"
         }
       >

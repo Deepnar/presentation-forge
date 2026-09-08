@@ -3,14 +3,6 @@ import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 
-/**
- * The full Research view — the proper place for the researched content that
- * used to live in a small panel. Reads notes.md as readable prose, sources.json
- * as a table (domain, kind, URL), and the diversity/grounding summary the
- * research pass produced (how many sources, which domains, how many look
- * academic, which are single-source). Editing saves back through PUT /research,
- * and an edit is exactly what the next generation reads.
- */
 export default function ResearchView({ slug, refreshToken, onBack, onNavigate }) {
   const project = useProject(slug, refreshToken);
   const [state, setState] = useState({ loading: true, exists: false, notes: "", sources: [], summary: null, figures: [], imageCredits: [] });
@@ -206,15 +198,6 @@ export default function ResearchView({ slug, refreshToken, onBack, onNavigate })
   );
 }
 
-/**
- * Where the pictures came from.
- *
- * It sits with the sources because it answers the same question — provenance —
- * and because a licence that requires attribution is only satisfied if someone
- * can find it. The report prints the citable ones; this lists all of them, and
- * says which is which, so a stock photograph missing from the report is an
- * explained absence rather than a silent one.
- */
 function ImageCredits({ credits }) {
   if (!credits?.length) return null;
   const owed = credits.filter((c) => c.attribution_required).length;
@@ -288,8 +271,6 @@ function Metric({ label, value }) {
   const num = Number(value) || 0;
   const animatedRef = useRef(false);
 
-  // Count-up: 0 → value over 700ms on the shell ease, triggered the first time
-  // the metric scrolls into view. Reduced motion jumps straight to the value.
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setDisplay(num); return; }
     const el = ref.current;
@@ -335,13 +316,6 @@ function KindBadge({ src }) {
   return <Badge className={cls}>{label}</Badge>;
 }
 
-/**
- * Render notes.md as readable prose: source sections as blocks, lines as
- * paragraphs, one blank line between. Kept deliberately dependency-free — the
- * notes are plain research text, not rich markdown. Inline emphasis and code
- * markers are stripped too: the writer emits **bold** and backticks that the
- * reader should see as plain text, not literals.
- */
 function ProseNotes({ text }) {
   const blocks = String(text ?? "")
     .split(/\n{2,}/)
@@ -350,9 +324,6 @@ function ProseNotes({ text }) {
 
   if (!blocks.length) return <div className="text-[12px] text-fg-faint">(empty)</div>;
 
-  // Strip **bold**, *italic* and `code` inline markers — they leak from the
-  // model's notes and read as literals. The stripper runs char-wise so paired
-  // markers inside a line all go, and a stray unmatched marker is dropped too.
   const stripInline = (s) => s
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/\*([^*]+)\*/g, "$1")

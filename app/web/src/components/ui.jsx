@@ -1,5 +1,3 @@
-/** Shared primitives. Kept deliberately small — enough to stop every view
- *  reinventing a button, not a component library. */
 import { useEffect, useState } from "react";
 
 export function Button({ variant = "ghost", size = "md", className = "", ...props }) {
@@ -77,7 +75,6 @@ export function Spinner({ className = "" }) {
   );
 }
 
-/** Skeleton in 16:9, so the grid does not reflow when real slides arrive. */
 export function SlideSkeleton() {
   return <div className="skeleton aspect-video rounded-lg" />;
 }
@@ -90,20 +87,9 @@ export function Kbd({ children }) {
   );
 }
 
-/** Shared text-input treatment so no view reinvents the field style. The fill
- *  is one step stronger than the panels it sits on and the border one step
- *  stronger than the resting hairline, so a field reads as a control, not a
- *  hole. Focus adds the tint halo (mousers) — keyboard users keep the global
- *  accent outline. */
 export const inputCls =
   "w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-[15px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";
 
-/**
- * A styled tooltip that replaces native `title` where the label matters —
- * instant, theme-aware, and the shell's shadow language. Rendered above the
- * child on hover/focus; the label text is passed separately so it can never be
- * read aloud twice by a screen reader.
- */
 export function Tooltip({ label, children, side = "top", className = "" }) {
   const [show, setShow] = useState(false);
   const sideCls = side === "bottom"
@@ -130,9 +116,6 @@ export function Tooltip({ label, children, side = "top", className = "" }) {
   );
 }
 
-/** A centred confirm dialog — the shared "are you sure" gate for destructive
- *  or consequential actions (logout, deletes). Esc or clicking the backdrop
- *  cancels; the confirm button carries the optional danger treatment. */
 export function ConfirmModal({ title, body, confirmLabel = "Confirm", danger, onCancel, onConfirm }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onCancel(); };

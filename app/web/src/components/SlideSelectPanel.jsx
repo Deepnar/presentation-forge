@@ -2,17 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Spinner, Tooltip } from "./ui.jsx";
 import { ChevronDown, PanelRightClose } from "./icons.jsx";
 
-/**
- * The chat's slide-selection panel — how the user tells the AI WHICH slides
- * they mean. Rendered beside the thread once the deck is ready (~40% width,
- * the chat shifts left): every slide as a scrollable card, click to select
- * one or many, and the selection flows into the next turn's context by index
- * and content excerpt. The enlarged view (openSlide) keeps the panel honest —
- * selection is by looking, not by guessing numbers.
- *
- * The selected set is a Set of slide indices held by the parent (ChatView);
- * this component is the surface, never the store.
- */
 export default function SlideSelectPanel({
   slides,        // [{ type, headline, ... }] deck content
   thumbs,        // preview URLs, index-aligned
@@ -31,7 +20,6 @@ export default function SlideSelectPanel({
   const listRef = useRef(null);
   const n = slides.length;
 
-  // Keep the enlarged slide visible as selection moves.
   useEffect(() => {
     listRef.current
       ?.querySelector(`[data-i="${openIndex}"]`)

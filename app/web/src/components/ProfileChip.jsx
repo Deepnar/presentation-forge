@@ -1,11 +1,3 @@
-/**
- * The settings entry, bottom-left in the sidebar. A chip (avatar + name, or
- * avatar-only in the collapsed rail) opens the Settings modal — the ONE
- * management surface: account + cloud, saved briefing formats (presets) and
- * the long-term identity facts (institution, guide). The modal itself lives
- * in SettingsModal.jsx, rendered by the shell so the sidebar's Settings row
- * opens the same surface.
- */
 export default function ProfileChip({ user, identity, onOpenSettings, collapsed = false }) {
   const name = user?.name ?? identity?.institution?.short ?? "Account";
 
@@ -13,11 +5,6 @@ export default function ProfileChip({ user, identity, onOpenSettings, collapsed 
     return (
       <button
         onClick={onOpenSettings}
-        // Named for the account, not for Settings: the shell hands this chip
-        // `onOpenProfile`, so it opens the profile modal while the gear two
-        // rows up opens Settings. Both claiming "Settings" left the collapsed
-        // rail with two identically-named controls going to different places
-        // — indistinguishable to a screen reader, and wrong in the tooltip.
         title={name}
         aria-label={`Account — ${name}`}
         className="grid h-8 w-8 place-items-center rounded-full bg-accent/15 text-[11px] font-semibold uppercase text-accent transition hover:bg-accent/25"

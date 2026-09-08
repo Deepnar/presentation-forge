@@ -11,15 +11,6 @@ const REPORT_SECTIONS = [
   "Application", "Future Scope", "Conclusion", "References",
 ];
 
-/**
- * A report's full-document view — the land target of the sidebar's Reports tab
- * and of the home "from a brief" report flow. It FEELS like reading the report:
- * a cover block (title, subject, guide, team), then each section in the fixed
- * graded order with its paragraphs and tables rendered as prose, not YAML.
- * Render .docx and the download action sit at the bottom, and a report-only
- * deck also gets the reverse-flow door: plan a companion deck from the same
- * research through the outline gate.
- */
 export default function ReportView({ slug, refreshToken, onBack, onPlanReady, onDeckChanged, onNavigate }) {
   const project = useProject(slug, refreshToken);
   const [data, setData] = useState(null);
@@ -29,17 +20,10 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [job, setJob] = useState(null);
-  // Whether a rendered report.docx exists on disk — SERVER state, so the
-  // Download link survives reopen/navigation without re-rendering. Probe on
-  // load, update after each render. The render result itself (preview pages)
-  // stays component state; the link is derived from this flag.
   const [rendered, setRendered] = useState(false);
   const [preview, setPreview] = useState(null); // { pages, thumbs } after render
   const [previewing, setPreviewing] = useState(false); // the second pass, after the download
   const [notFound, setNotFound] = useState(false);
-  // A report WRITE in flight for this slug — registered by whoever started the
-  // generation (the deck's Report panel, or a standalone report chat), so the
-  // view knows not to render or download a report that is being rewritten.
   const [writing, setWriting] = useState(null); // { status } | null
 
   useEffect(() => {
@@ -57,11 +41,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     }).catch(() => {});
   }, [slug, refreshToken]);
 
-  // Adopt any in-flight report write for this slug (started from the deck's
-  // Report panel or the chat) and disable the render/download/plan actions
-  // while it runs, showing its status and a Stop that aborts it. The write
-  // and the render share one busy state (`busy || writing` below), so a
-  // "Writing section N of M" can never leave a stuck "Rendering…" behind.
   useEffect(() => {
     const run = reportWrites.get(slug);
     if (run && !run.finished) setWriting({ status: run.status });
@@ -81,8 +60,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       const r = await api.renderReport(slug);
       setRendered(true);
       setStatus("");
-      // The render wrote the .docx — grab it without a second click. Same
-      // synthetic-anchor trick the deck export flow uses.
       const href = r.docx ?? `/api/decks/${slug}/download/report.docx`;
       const a = document.createElement("a");
       a.href = href;
@@ -91,10 +68,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
       a.click();
       a.remove();
 
-      // The page images are a second LibreOffice pass over the file that just
-      // downloaded — roughly as long again as the render itself. Asked for
-      // after the document is in the user's hands, not before, and its failure
-      // is a missing preview rather than a failed render.
       setPreviewing(true);
       api.reportPreview(slug)
         .then((p) => {
@@ -138,9 +111,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     }
   }
 
-  // F20 — the report-as-deck bridge: append one report section as a real slide
-  // of the companion deck, so the two artefacts share content freely. Only
-  // decks that already have a deck.yaml can take a slide.
   async function addSectionAsSlide(name) {
     setBusy(true);
     setError("");
@@ -166,9 +136,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   }
 
   function stop() {
-    // A write in flight (started from the deck's Report panel or a chat) is
-    // aborted through the shared registry; a render/plan started here through
-    // the local job.
     reportWrites.get(slug)?.abort?.();
     job?.abort();
     setWriting(null);
@@ -177,9 +144,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
 
   const content = data?.content ?? {};
 
-  // The fixed section order is the document's spine: sections appear in the
-  // graded order whether or not every one has content. Empty sections are
-  // skipped gracefully — never a bare heading.
   const present = REPORT_SECTIONS.filter((name) => {
     const sec = content[name];
     if (!sec) return false;
@@ -392,8 +356,6 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
   );
 }
 
-/** A report table as a real table — header row, plain rows, borderless like
- *  the donor's style. Never raw YAML. */
 function SectionTable({ table }) {
   const header = table.header ?? [];
   const rows = table.rows ?? [];

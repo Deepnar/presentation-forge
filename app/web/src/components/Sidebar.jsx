@@ -66,15 +66,6 @@ function SidebarToggle({ onOpenSettings }) {
   );
 }
 
-/**
- * The per-user navigation. Two tabs: Chats (the conversation threads that end
- * in decks or reports) and Decks (your actual artefacts). Search filters the
- * deck list and greps content server-side; the chats need no search yet. The
- * one creation entry app-wide lives here — "+ New chat". Collapses to an icon
- * rail; Themes and Settings are compact rows at the bottom. Each row carries a
- * "⋯" menu on hover — delete a chat (local) or open/delete a deck (server-side,
- * behind a confirm modal). Settings opens the modal, not a view.
- */
 export default function Sidebar({
   chats, decks, activeChatId, activeSlug, view, open, focusSearch,
   onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
@@ -98,7 +89,6 @@ export default function Sidebar({
     return () => clearTimeout(t);
   }, [query]);
 
-  // Ctrl+K lands here from anywhere: switch to the Projects tab and focus search.
   useEffect(() => {
     if (focusSearch > 0) {
       setTab("projects");
@@ -373,7 +363,6 @@ export default function Sidebar({
   );
 }
 
-/** The hover "⋯" popover on a sidebar row. Outside click closes it. */
 function RowMenu({ open, onToggle, items }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -416,7 +405,6 @@ function RowMenu({ open, onToggle, items }) {
   );
 }
 
-/** Deck-delete confirmation — deleting decks/<slug> server-side is irreversible. */
 function ConfirmModal({ deck, onCancel, onConfirm }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onCancel(); };
@@ -470,10 +458,6 @@ function NavRow({ active, icon: Icon, label, href }) {
     <a
       href={href}
       onClick={(e) => {
-        // These are pure view anchors (#/themes): let the hash change — the
-        // App's hashchange listener switches the view. Middle-click and
-        // copy-link keep working. (preventDefault here used to swallow the
-        // navigation entirely, leaving the view stuck.)
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       }}
       className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition ${
@@ -487,13 +471,6 @@ function NavRow({ active, icon: Icon, label, href }) {
   );
 }
 
-/**
- * Settings is a modal, not a view — the row opens it rather than routing.
- *
- * So it carries no right-chevron. That mark is this sidebar's word for "this
- * goes somewhere", and using it on a control that opens a dialog over the
- * current page promises a journey the click does not make.
- */
 function SettingsRow({ icon: Icon, label, onClick }) {
   return (
     <button
@@ -523,8 +500,6 @@ function IconButton({ icon: Icon, title, onClick, href, active }) {
         title={title}
         aria-label={title}
         onClick={(e) => {
-          // Pure view anchors — let the hash change; the App's hashchange
-          // listener switches the view (see NavRow).
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
         }}
         className={cls}

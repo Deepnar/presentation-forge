@@ -1,11 +1,3 @@
-/**
- * Live report-WRITE runs, keyed by slug, kept OUTSIDE React so a write started
- * in the deck's Report panel survives navigating to the ReportView mid-write.
- * The ReportView subscribes and disables Render .docx / Download / Plan while
- * a write for its slug is in flight, so a report can never be double-rendered
- * while it is being rewritten. Mirrors runs.js but keyed by slug (the ReportView
- * has no chat id).
- */
 
 const store = new Map(); // slug -> { abort, status, finished, subs:Set<fn> }
 

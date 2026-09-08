@@ -1,10 +1,3 @@
-/**
- * Immutable slide-array operations for the deck editor.
- *
- * Every deck mutation from the detail view goes through these, so the UI never
- * splices state ad hoc and the semantics are testable without React. Each
- * returns a fresh array; the original is untouched.
- */
 
 export function moveSlide(slides, index, dir) {
   const to = index + dir;
@@ -25,7 +18,6 @@ export function deleteSlide(slides, index) {
   return slides.filter((_, i) => i !== index);
 }
 
-/** Replace one slide wholesale (the editor's saved draft). */
 export function replaceSlide(slides, index, slide) {
   const out = [...slides];
   out[index] = structuredClone(slide);

@@ -7,9 +7,6 @@ import App from "./App.jsx";
 import { startAppearance } from "./lib/appearance.js";
 import "./styles.css";
 
-// Before render: the pre-paint script in index.html has already put a theme on
-// the root, this re-applies it from the same source and starts listening for
-// OS and cross-tab changes.
 startAppearance();
 
 createRoot(document.getElementById("root")).render(

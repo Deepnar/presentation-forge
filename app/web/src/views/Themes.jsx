@@ -3,13 +3,6 @@ import { api } from "../api.js";
 import { Empty, Button } from "../components/ui.jsx";
 import { SearchIcon, PanelLeft } from "../components/icons.jsx";
 
-/**
- * The theme gallery. Clicking a card sets it as the deck default (written to
- * config/identity.yaml via the same identity save the briefing uses) with a
- * toast and an undo. A search box and vibe chips filter the theme catalog; the
- * current default carries a badge so "which one will my next deck use?" is
- * answered at a glance.
- */
 export default function Themes({ leftOpen, onToggleLeft }) {
   const [themes, setThemes] = useState(null);
   const [query, setQuery] = useState("");
@@ -25,8 +18,6 @@ export default function Themes({ leftOpen, onToggleLeft }) {
     }).catch(() => setThemes([]));
   }, []);
 
-  // The default lives in the browser so it survives reloads without a server
-  // round-trip, and the briefing reads it when a chat starts.
   useEffect(() => {
     localStorage.setItem("forge.defaultTheme", defaultTheme);
   }, [defaultTheme]);
@@ -41,7 +32,6 @@ export default function Themes({ leftOpen, onToggleLeft }) {
       t.summary?.toLowerCase().includes(q));
   }, [themes, query]);
 
-  /** Set the default theme — with an undo that restores the previous one. */
   function setDefault(name) {
     setBefore(defaultTheme);
     setDefaultTheme(name);
@@ -136,13 +126,6 @@ function ThemeCard({ theme, isDefault, onClick }) {
   const title = theme.surfaces?.title ?? {};
   const swatches = [p.bg, p.surface, p.ink, p.accent, p.accent_alt].filter(Boolean);
 
-  // A plate theme's real background only exists as a rasterised PNG — tokens
-  // can't fake a mesh. When a gallery thumbnail exists, show it over the token
-  // synthesis; if it's missing (a clone that never ran `npm run gallery`) the
-  // synthesis stays visible underneath rather than an empty band.
-  // The specimen renders with branding off, so it shows the design and never an
-  // institution — which is why it was switched off before, leaving every card a
-  // flat block of the title colour.
   const [thumbFailed, setThumbFailed] = useState(false);
   const useThumb = Boolean(theme.thumb) && !thumbFailed;
 

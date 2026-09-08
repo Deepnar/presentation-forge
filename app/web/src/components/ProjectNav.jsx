@@ -1,26 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 
-/**
- * The four things a project is, as four plain links.
- *
- * A project holds a deck, a report, its research and a speaker script. Until
- * now the deck page carried thinner copies of the report and research panels
- * *and* linked out to the full views of both, so the same artefact had two
- * surfaces and the deck page had three empty states stacked above its own
- * content. These are those views, sharing one navigation.
- *
- * All four are always shown, including the ones that do not exist yet. A
- * project should read as what it could be, and a set of links that changes as
- * the project grows means the same project has a different navigation on
- * Tuesday than it had on Monday.
- *
- * Deliberately not a tab strip and not pills: text on the page's own ground,
- * separated by weight and ink alone. This sits directly under a title, and a
- * boxed control there reads as a second header rather than as a way through
- * one page.
- */
-
 const PAGES = [
   { key: "deck", label: "Deck", has: (p) => p.deck },
   { key: "report", label: "Report", has: (p) => p.report },
@@ -28,13 +8,6 @@ const PAGES = [
   { key: "script", label: "Script", has: (p) => p.script },
 ];
 
-/**
- * Which page a project should open on.
- *
- * A report-first project has no deck, and landing it on an empty slide grid
- * offering "Render now" is the deck-shaped assumption this navigation exists to
- * undo. Open on the artefact that is actually there.
- */
 export function defaultProjectPage(project) {
   if (!project) return "deck";
   if (project.deck) return "deck";
@@ -43,8 +16,6 @@ export function defaultProjectPage(project) {
   return "deck";
 }
 
-/** The project's own shape, for the navigation and for a view that needs to
- *  know whether the deck exists at all. Null while loading. */
 export function useProject(slug, refreshToken) {
   const [project, setProject] = useState(null);
   useEffect(() => {
@@ -63,9 +34,6 @@ export default function ProjectNav({ active, project, onNavigate, className = ""
     <nav className={`flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px] ${className}`}>
       {PAGES.map(({ key, label, has }) => {
         const current = key === active;
-        // Absent is dimmer than merely inactive, so "this project has no
-        // script" is legible without opening it — but it stays a link, because
-        // the empty state is where you go to make one.
         const exists = project ? has(project) : true;
         return (
           <button
@@ -88,15 +56,6 @@ export default function ProjectNav({ active, project, onNavigate, className = ""
   );
 }
 
-/**
- * The head of every project page: one way out, the project's name, the page's
- * own primary action, and the four links.
- *
- * It exists so the four pages read as one project rather than four screens that
- * happen to share a slug. Each view keeps its own content and supplies its own
- * `action` — the primary thing to do differs per page and per stage, and that
- * is the point — but the identity above it never moves.
- */
 export function ProjectHeader({ project, active, onNavigate, onBack, action, meta }) {
   return (
     <>

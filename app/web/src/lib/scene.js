@@ -1,24 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-/**
- * How far through a pinned scene the reader has scrolled, 0 to 1.
- *
- * A scene is a tall wrapper containing one `position: sticky` frame. The
- * wrapper's height is the scroll budget; the frame holds still while it is
- * spent. This turns that spend into a number, and every scene animates off it
- * — so the whole page moves on one clock instead of each section inventing its
- * own timeline.
- *
- * Sticky rather than a pinned GSAP timeline on purpose: a pin rewrites the
- * document with spacer elements and takes ownership of the scroll, which
- * breaks on resize, on zoom, and under a touch fling. This is the browser
- * doing the same job natively, and it needs no second code path for reduced
- * motion — the position is the scroll, and there is no animation to disable.
- *
- * NOTE: any ancestor with overflow clipping turns itself into a scroll
- * container and the sticky frame will stick to THAT box instead of the
- * viewport, which reads as the scene vanishing and leaving a blank page.
- */
 export function useSceneProgress(ref, deps = []) {
   const [progress, setProgress] = useState(0);
 
@@ -42,29 +23,14 @@ export function useSceneProgress(ref, deps = []) {
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(frame);
     };
-    // `deps` is not optional in practice. A scene that returns null until its
-    // data arrives has no element on first render, so the effect binds to
-    // nothing — and a ref identity never changes, so without a dep that moves
-    // when the element finally mounts it never rebinds. The scene then sits at
-    // progress 0 forever, which looks exactly like a scene that works but
-    // never advances.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, ...deps]);
 
   return progress;
 }
 
-/** Map x from [a,b] onto [0,1], clamped. The scenes' only easing primitive. */
 export const span = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a)));
 
-/**
- * Entry transform for an element that has not fully arrived.
- *
- * `t` is 0 (fully out) to 1 (landed). Directions are deliberately varied
- * across a scene: everything rising by the same 18px is the house style of a
- * template, and reads as one block twitching rather than a composition
- * assembling.
- */
 export function entry(t, from = "up", distance = 44) {
   const d = (1 - t) * distance;
   const axis = {
@@ -77,20 +43,6 @@ export function entry(t, from = "up", distance = 44) {
   return { opacity: t, transform: axis };
 }
 
-/**
- * Whether a scene's content is taller than the screen it would be pinned to.
- *
- * A pinned frame is exactly one viewport tall, so anything taller than that is
- * simply cut off — and on a phone every multi-column grid in here stacks and
- * becomes taller than that. When it does, the scene stops pinning and renders
- * as an ordinary section with everything visible: the pin is a way of spending
- * scroll, not a thing worth losing content over.
- *
- * Measured rather than keyed to a breakpoint, because a short desktop window
- * has the same problem as a tall phone and no media query catches both. The
- * measurement is stable across the switch: it reads the content's own natural
- * height, which pinning does not change.
- */
 export function useTooTall(ref, deps = []) {
   const [tooTall, setTooTall] = useState(false);
   useEffect(() => {

@@ -1,14 +1,4 @@
-/**
- * Landing primitives.
- *
- * Everything here paints from tokens only — no literal colours. The old page
- * mixed `bg-white`, `text-slate-900` and amber-500 into the token surfaces,
- * which is why eighteen of its elements stayed light-on-light once the shell
- * gained a dark mode. A landing section must be legible in both grounds by
- * construction, not by a second pass.
- */
 
-/** A page section: consistent rhythm, and the max width every band shares. */
 export function Section({ id, className = "", children, tight = false }) {
   return (
     <section id={id} className={`relative px-5 sm:px-8 ${tight ? "py-16 sm:py-20" : "py-20 sm:py-28"} ${className}`}>
@@ -17,15 +7,10 @@ export function Section({ id, className = "", children, tight = false }) {
   );
 }
 
-/** Small caps label above a heading. */
 export function Eyebrow({ children, className = "" }) {
   return <div className={`eyebrow ${className}`}>{children}</div>;
 }
 
-/**
- * A section's opening: eyebrow, heading, lede. Kept as one component so the
- * spacing between the three is decided once.
- */
 export function SectionHead({ eyebrow, title, lede, align = "left", className = "" }) {
   const centred = align === "center";
   return (
@@ -37,11 +22,6 @@ export function SectionHead({ eyebrow, title, lede, align = "left", className = 
   );
 }
 
-/**
- * The card. One shape for the whole page — the previous landing had five
- * different card treatments across its ten beats, which is what made it read
- * as a collection of screenshots rather than one surface.
- */
 export function Card({ className = "", children, as: As = "div", interactive = false, ...rest }) {
   return (
     <As
@@ -55,19 +35,6 @@ export function Card({ className = "", children, as: As = "div", interactive = f
   );
 }
 
-/**
- * A rendered slide.
- *
- * `dark` is measured off the painted pixels at generation time, not read from
- * a palette token — swiss-international declares a white page and renders a
- * near-black cover. The frame needs it because a dark slide on a dark page
- * needs a hairline to separate it from the ground, and a light slide on a
- * light page needs the same for the opposite reason.
- *
- * Width and height are always set: without them the page reflows as each
- * image arrives, which on a scroll-driven layout means every reveal below the
- * image fires at the wrong moment.
- */
 export function SlideImage({ src, alt, w = 1200, h = 675, dark = false, className = "", priority = false }) {
   return (
     <div
@@ -94,7 +61,6 @@ export function SlideImage({ src, alt, w = 1200, h = 675, dark = false, classNam
   );
 }
 
-/** A figure with its number and label, used for the trust row. */
 export function Figure({ value, label }) {
   return (
     <div className="reveal">
@@ -104,7 +70,6 @@ export function Figure({ value, label }) {
   );
 }
 
-/** The page's primary and secondary buttons. */
 export function CTA({ variant = "primary", className = "", ...props }) {
   const base =
     "press inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-[14px] font-medium transition-colors";

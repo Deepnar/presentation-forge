@@ -158,7 +158,6 @@ export function Docs() {
       .then((text) => {
         marked.setOptions({ gfm: true, breaks: false });
         const raw = marked.parse(text);
-        // build TOC from headings
         const headings = [];
         const re = /<h([1-3])[^>]*>(.*?)<\/h\1>/gi;
         let m;
@@ -168,18 +167,11 @@ export function Docs() {
           const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
           headings.push({ level, title, id });
         }
-        // inject ids
         let htmlWithIds = raw;
         headings.forEach(({ title, id }) => {
           htmlWithIds = htmlWithIds.replace(`>${title}<`, ` id="${id}">${title}<`);
         });
         setToc(headings.filter((h) => h.level <= 2).slice(0, 12));
-        // Give every table its own scroll container. The docs carry wide
-        // reference tables and nothing wrapped them, so at 375px a 437px table
-        // widened the document and the whole page scrolled sideways. A wrapper
-        // rather than `display: block` on the table itself, which would also
-        // stop it filling the column on a wide screen. GFM tables cannot nest,
-        // so matching the outermost pair is safe.
         setHtml(htmlWithIds.replace(
           /<table[^>]*>[\s\S]*?<\/table>/g,
           (t) => `<div class="my-6 overflow-x-auto">${t}</div>`,
@@ -251,7 +243,6 @@ export function Usage() {
   const [err, setErr] = useState(null);
   const [plan, setPlan] = useState(null);
   useEffect(() => {
-    // try per-user usage first, fall back to public limits so page is useful unauth
     api.autoUsage()
       .then((r) => {
         setUsage(r.usage ?? r);
@@ -259,13 +250,11 @@ export function Usage() {
         setPlan({ name: r.planLabel ?? r.plan ?? null, trial: r.trial ?? null });
       })
       .catch((e) => {
-        // if 401 (log in), still fetch public limits
         setErr(String(e.message || e));
         fetch("/api/auto/status").then((r) => r.json()).then((j) => {
           if (j.ok) setLimits(j.limits ?? null);
         }).catch(() => {});
       });
-    // also fetch limits standalone for header
     fetch("/api/auto/status").then((r) => r.json()).then((j) => { if (j.ok && j.limits) setLimits((prev) => prev ?? j.limits); }).catch(() => {});
   }, []);
   const hourly = usage?.hourly ?? usage?.hour ?? null;

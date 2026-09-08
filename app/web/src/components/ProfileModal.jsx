@@ -4,7 +4,6 @@ import { getAppearance, setAppearance, subscribeAppearance } from "../lib/appear
 import { Button, Badge, Spinner, ConfirmModal, inputCls } from "./ui.jsx";
 import { setModelMode } from "../lib/modelMode.js";
 
-/** Sun / moon / monitor, at the size a chip allows. */
 const APPEARANCES = [
   {
     value: "light",
@@ -39,8 +38,6 @@ const APPEARANCES = [
 
 export default function ProfileModal({ open, onClose, user, onLogout }) {
   const [appearance, setAppearanceState] = useState(getAppearance);
-  // The store is the source of truth — Settings can change it while this is
-  // open, and the OS can change it under a "system" preference.
   useEffect(() => subscribeAppearance((m) => setAppearanceState(m)), []);
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);

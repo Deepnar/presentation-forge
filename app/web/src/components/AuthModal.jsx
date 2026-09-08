@@ -3,23 +3,9 @@ import { api } from "../api.js";
 import { Button, Spinner, inputCls } from "./ui.jsx";
 import ThemeMiniCard from "./ThemeMiniCard.jsx";
 
-/**
- * Login / Sign-up surface — a proper split screen. Left is visual: the
- * logo, the product tagline and a live strip of theme specimens (the ember
- * particle field lives behind the whole app shell). Right is the clean
- * sign-up/login card, labelled "Sign up" as the primary action. Password
- * fields are type=password and never stored client-side; the API returns a
- * session token and the password is dropped on the floor server-side
- * (scrypt-hashed before anything touches disk). Honest scope: single local
- * install, not a multi-user system — accounts exist for the Cloud-key gate
- * and future hosting.
- */
 export default function AuthModal({ mode: initialMode, onDone, onClose }) {
   const [mode, setMode] = useState(initialMode ?? "login"); // login | register | forgot
   const [regOpen, setRegOpen] = useState(true);
-  // What this install can actually offer. A box with no SMTP cannot deliver a
-  // reset, so offering one would be a link to a dead end; and it confirms
-  // accounts on creation, so the sign-up copy must not promise an email.
   const [mailOk, setMailOk] = useState(false);
   const [verifyRequired, setVerifyRequired] = useState(false);
   const [localOwner, setLocalOwner] = useState(false);
@@ -59,8 +45,6 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     document.head.appendChild(s);
   }, [googleId]);
 
-  // If registration closed while the form sat on the register tab, land on
-  // login instead of showing a dead form.
   useEffect(() => {
     if (!regOpen && mode === "register") setMode("login");
   }, [regOpen, mode]);
@@ -71,14 +55,6 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  /**
-   * Route a server error to the offending field. The API's messages are
-   * written to name the field ("a name is required", "a valid email is
-   * required", "an account with that email already exists") — the field-level
-   * mapping below catches them so the error sits under the input it names
-   * instead of in a pill that reads as a fourth field. Login failures ("invalid
-   * email or password") and network errors stay on the form.
-   */
   function routeError(message) {
     const m = String(message ?? "");
     const errors = {};
@@ -97,17 +73,12 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     setFormError("");
     try {
       if (mode === "forgot") {
-        // The answer never varies, so neither does the message. Saying "no
-        // account with that address" here would hand a stranger the account
-        // list one guess at a time.
         await api.forgotPassword(email.trim());
         setForgotSent(true);
       } else if (mode === "login") {
         const user = await api.login({ email: email.trim(), password });
         onDone?.(user);
       } else {
-        // Ordinary hosted registration requires an explicit login. The one
-        // private-owner setup returns a session and can enter immediately.
         const user = await api.register({ name: name.trim(), email: email.trim(), password });
         if (user.localOwner) {
           onDone?.(user);
@@ -137,7 +108,6 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
     } finally { setGoogleBusy(false); }
   }
 
-  /** Field with an inline error — danger border + message under it. */
   const fieldCls = (field) =>
     `${inputCls} ${fieldErrors[field] ? "border-danger/70 focus:border-danger" : ""}`;
 
@@ -309,9 +279,6 @@ export default function AuthModal({ mode: initialMode, onDone, onClose }) {
           )}
 
           {mode === "forgot" && forgotSent ? (
-            /* The same message whether or not that address has an account.
-               Confirming which addresses are registered would hand a stranger
-               the account list one guess at a time. */
             <div className="rounded-lg border border-accent/30 bg-accent/10 px-3 py-3 text-[12.5px] leading-relaxed text-fg">
               If <span className="font-medium">{email.trim()}</span> has an account with a
               password, a reset link is on its way. Check the spam folder before asking again.

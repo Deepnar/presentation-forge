@@ -9,19 +9,6 @@ import ThemeCycle from "../components/landing/ThemeCycle.jsx";
 import FeatureScene from "../components/landing/FeatureScene.jsx";
 import CheckScene from "../components/landing/CheckScene.jsx";
 
-/**
- * The landing page.
- *
- * Built as a run of pinned SCENES rather than a stack of blocks. Each scene
- * owns a slice of scroll and spends it advancing something — a step, a theme,
- * a rail, a grid assembling itself — so a reader who does nothing but scroll
- * still sees the whole product. Nothing on this page needs to be clicked or
- * dragged to reveal its content.
- *
- * Every scene keeps its own heading inside its sticky frame. A heading in a
- * block above the frame means the frame begins below the fold, and the reader
- * gets a screen of empty page before the content catches up.
- */
 export default function Home({ user, onStartChat, onBrowseThemes, onAuth, authConfig }) {
   const [themes, setThemes] = useState(null);
   const [manifest, setManifest] = useState(null);
@@ -35,9 +22,6 @@ export default function Home({ user, onStartChat, onBrowseThemes, onAuth, authCo
 
   useReveal(pageRef, [themes, manifest]);
 
-  // The hero recedes as the first scene arrives. Driven from scroll position
-  // rather than a scroll-linked animation, because it has to stop dead under
-  // reduced motion and a paused animation still holds its transform.
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;

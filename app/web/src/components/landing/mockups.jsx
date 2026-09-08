@@ -1,16 +1,3 @@
-/**
- * Small, real pieces of interface — not screenshots.
- *
- * A picture of a product goes stale the moment the product moves, and it
- * cannot be read by a screen reader, selected, or scaled without blurring.
- * These are the same tokens, radii and type scale the app itself is built
- * from, so they stay honest for free and cost a few kilobytes instead of a
- * few hundred.
- *
- * They are illustrations of a step, not live controls: nothing here is
- * focusable, because a landing page that hands a reader a fake text field is
- * worse than one that hands them a picture of it.
- */
 
 const Frame = ({ label, children, className = "" }) => (
   <div className={`overflow-hidden rounded-panel border border-line bg-panel shadow-[var(--shadow-card)] ${className}`}>
@@ -34,7 +21,6 @@ const Chip = ({ children, on = false }) => (
   </span>
 );
 
-/** 01 — the briefing asks one question at a time. */
 export function BriefMock() {
   return (
     <Frame label="forge / new chat">
@@ -58,7 +44,6 @@ export function BriefMock() {
   );
 }
 
-/** 02 — research keeps what it read. */
 export function ResearchMock() {
   const sources = [
     { host: "iea.org", title: "Global Hydrogen Review", kind: "report" },
@@ -84,7 +69,6 @@ export function ResearchMock() {
   );
 }
 
-/** 03 — a plan you can rearrange before anything renders. */
 export function OutlineMock() {
   const rows = [
     { t: "Why the question changed", k: "bullets" },
@@ -108,7 +92,6 @@ export function OutlineMock() {
   );
 }
 
-/** 04 — the gate. */
 export function GateMock() {
   return (
     <Frame label="forge / outline · awaiting approval">
@@ -127,7 +110,6 @@ export function GateMock() {
   );
 }
 
-/** 05 — written against the notes, and kept to what fits. */
 export function ContentMock() {
   return (
     <Frame label="forge / slide 03 · stats">
@@ -156,7 +138,6 @@ export function ContentMock() {
   );
 }
 
-/** 06 — two real files, and no coordinate chosen by a model. */
 export function RenderMock() {
   return (
     <Frame label="forge / render">
@@ -179,7 +160,6 @@ export function RenderMock() {
   );
 }
 
-/** 07 — the render gets inspected. */
 export function CritiqueMock() {
   return (
     <Frame label="forge / slide-07.png · read back">

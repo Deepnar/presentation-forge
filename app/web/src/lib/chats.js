@@ -1,11 +1,3 @@
-/**
- * The chat store — the new home surface. A chat is a conversation that ends in
- * a deck (or a standalone report); the briefing happens in the thread and the
- * produced artefact's slug links the two. Chats are client-side, persisted per
- * account in localStorage — the deck they produce is server-side and owned by
- * the user, but the conversation itself is pure view state, so it needs no
- * server round-trip.
- */
 
 export const chatsKey = (email) => `forge.chats.${email.toLowerCase()}`;
 
@@ -68,11 +60,8 @@ export function normalizeChat(raw) {
   b.branding = ["full", "minimal", "none"].includes(b.branding) ? b.branding : "full";
   b.depth = ["full", "brief"].includes(b.depth) ? b.depth : "full";
   if (!["web", "upload", "none"].includes(b.researchSource)) {
-    // Migrate old `research` boolean — default remains web
     b.researchSource = "web";
   }
-  // Auto image supply is opt-in: a chat written before the question existed
-  // reads as "none", which is the behaviour it already had.
   b.imageSupply = b.imageSupply === "auto" ? "auto" : "none";
   b.uploadedSource = b.uploadedSource && typeof b.uploadedSource === "object" ? b.uploadedSource : null;
   b.research = Boolean(b.research);
@@ -90,7 +79,6 @@ export function loadChats(email) {
     let migrated = false;
     const normalized = list.map((c) => {
       const n = normalizeChat(c);
-      // Detect if normalization changed shape — shallow json compare
       if (JSON.stringify(n) !== JSON.stringify(c)) migrated = true;
       return n;
     });
@@ -128,17 +116,10 @@ export function touchChat(email, chat) {
   return saveChat(email, { ...chat, updatedAt: new Date().toISOString() });
 }
 
-/**
- * The thread already in hand for this product: an empty chat (nothing sent,
- * nothing produced) that "New chat" should return to rather than stacking
- * another empty row. Only a chat of the same kind is reusable — "New chat"
- * must not land a user in a half-broken report thread.
- */
 export function findEmptyChat(chats, kind = "deck") {
   return (chats ?? []).find((c) => c.kind === kind && !c.topic && !c.produced) ?? null;
 }
 
-/** A fresh empty thread. Nothing touches the network until the topic is sent. */
 export function createChat({ kind = "deck" } = {}) {
   const now = new Date().toISOString();
   return {

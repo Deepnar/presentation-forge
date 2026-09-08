@@ -1,5 +1,3 @@
-/** Shared inline stroke icons — one consistent set beats an icon dependency.
- *  Stroke 1.8 throughout; the GitHub mark is a filled silhouette by convention. */
 
 const stroke = {
   fill: "none",
@@ -30,19 +28,6 @@ export function ChevronDown(props) {
     </svg>
   );
 }
-/**
- * The four panel toggles, and the direction is the whole content of them.
- *
- * `PanelLeftClose` and `PanelLeftOpen` differed by a single x-coordinate — 13
- * against 14 — and both drew the chevron pointing RIGHT. A collapse control and
- * an expand control rendered the same arrow, so the one thing the icon is for,
- * saying which way the panel is about to move, it did not say.
- *
- * The rule: the chevron points the way the panel edge travels. Closing a left
- * panel sends it left; opening one brings it right. The Right pair mirrors
- * both the divider and the arrow, because the slide panel lives on the right
- * and a left-panel glyph there is the same mistake one step quieter.
- */
 export function PanelLeftClose(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>
@@ -140,19 +125,6 @@ export function SlidersIcon(props) {
     </svg>
   );
 }
-/**
- * A gear, which is what it is called and was not what it drew.
- *
- * The old path was a circle with eight straight rays around it — a sun, or a
- * brightness control. It sat beside the word "Settings" in the sidebar and
- * inside the Settings modal's own header, so the one place the app names the
- * concept in words also drew the wrong picture of it.
- *
- * Eight teeth, generated rather than eyeballed: tips at r=9.2 tapering to a
- * root circle at r=6.8, tooth half-widths 11 degrees at the tip and 17 at the
- * root, valleys carried by an arc along the root circle so the outline stays
- * smooth at 16px.
- */
 export function GearIcon(props) {
   return (
     <svg viewBox="0 0 24 24" {...props} {...stroke}>

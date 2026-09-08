@@ -1,49 +1,22 @@
 import { useEffect, useCallback, useRef } from "react";
 import { Kbd, Spinner } from "./ui.jsx";
 
-/**
- * Full-screen slide viewer.
- *
- * Keyboard is the primary interface here — reviewing a deck means stepping
- * through it, and reaching for the mouse between every slide makes the review
- * pass tedious enough that it stops happening.
- *
- *   ← →  previous / next      Home End  first / last      Esc  close
- *
- * When `actions` is given, a toolbar below the image carries the SAME per-slide
- * actions the small card has (edit, punch-up, swap type, add image, move,
- * duplicate, delete) for the CURRENT slide — the enlarged view is not a dead
- * end, it is the same slide with more room.
- */
 export default function Lightbox({ slides, thumbs, types, index, onIndex, onClose, actions }) {
   const scrollerRef = useRef(null);
   const total = slides.length;
 
   const clamp = useCallback((i) => Math.max(0, Math.min(total - 1, i)), [total]);
 
-  /** Absolute jump — filmstrip clicks and Home/End. */
   const go = useCallback((next) => onIndex(clamp(next)), [onIndex, clamp]);
 
-  /**
-   * Relative move, via the functional updater.
-   *
-   * Reading `index` from the closure loses keystrokes: several keydowns can
-   * fire before React re-renders, so each one computes from the same stale
-   * value and a held arrow key silently skips slides.
-   */
   const step = useCallback(
     (delta) => onIndex((prev) => clamp(prev + delta)),
     [onIndex, clamp],
   );
 
   useEffect(() => {
-    // The click that opened us left focus on a slide button; the keydown
-    // guard skips BUTTON targets, so the first arrow/Escape would be eaten.
-    // Blur the opener so the very first keypress reaches the viewer.
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     const onKey = (e) => {
-      // A focused toolbar button owns Space/Enter — never let the viewer also
-      // navigate from it.
       const tag = e.target?.tagName;
       if (tag === "BUTTON" || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       switch (e.key) {
@@ -59,7 +32,6 @@ export default function Lightbox({ slides, thumbs, types, index, onIndex, onClos
       }
     };
     window.addEventListener("keydown", onKey);
-    // The grid behind must not scroll while the viewer is open.
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -68,14 +40,12 @@ export default function Lightbox({ slides, thumbs, types, index, onIndex, onClos
     };
   }, [total, go, step, onClose]);
 
-  // Keep the active filmstrip cell in view as the selection moves.
   useEffect(() => {
     scrollerRef.current
       ?.querySelector(`[data-i="${index}"]`)
       ?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
   }, [index]);
 
-  // Prefetch neighbours so stepping through does not flash.
   useEffect(() => {
     [index + 1, index - 1].forEach((i) => {
       if (slides[i]) new Image().src = slides[i];

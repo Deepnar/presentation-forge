@@ -1,28 +1,3 @@
-/**
- * The guided briefing, in two tiers.
- *
- * Every answer maps to plan/research — thesis → planner purpose/coherence,
- * audience+emphasis+evidence → research angles + dataAffinityNote + TYPE_USE_WHEN.
- *
- * It was fifteen questions walked one card at a time, and a user who answered
- * none of them still clicked through all fifteen before reaching a deck. The
- * defect was never the count: it was that every question was a *walk*. So the
- * questions carry a `tier`, and the surface renders each tier as ONE form
- * rather than a sequence —
- *
- *   required   the handful that change the artefact most and that people
- *              actually set. One card, answered together, then generate.
- *   optional   everything else, behind one "add detail" affordance, fillable
- *              in any order and skippable in a single action.
- *
- * Tiering by "does this change the output" rather than "is this needed" is
- * deliberate: nothing here is needed — every field has a default, which is the
- * product's promise. `research` sits in required against that instinct because
- * it changes the deck more than any other single answer, and `images` sits
- * beside it because it is the same kind of answer — where content comes from —
- * and because a tier is one FORM, so a sixth field costs no extra turn. The
- * count is not what made fifteen questions painful; the walk was.
- */
 
 const REQUIRED = "required";
 const OPTIONAL = "optional";
@@ -47,10 +22,6 @@ export const BRIEFING_QUESTIONS = [
   { key: "branding", tier: OPTIONAL, ask: "How much institutional branding should the slides carry?" },
 ];
 
-/**
- * The report briefing — original 11 plus thesis + evidence (13).
- * Sections scale with the team already, so they are not asked.
- */
 export const REPORT_QUESTIONS = [
   { key: "preset", tier: REQUIRED, ask: "Use a saved format, or start fresh?" },
   { key: "depth", tier: REQUIRED, ask: "How deep should the report be?" },
@@ -68,19 +39,10 @@ export const REPORT_QUESTIONS = [
   { key: "branding", tier: OPTIONAL, ask: "How much institutional branding should it carry?" },
 ];
 
-/** The question list for a product kind — reports ask a different briefing. */
 export function questionsFor(kind) {
   return kind === "report" ? REPORT_QUESTIONS : BRIEFING_QUESTIONS;
 }
 
-/**
- * One tier's questions, minus the ones a chosen preset already fixes.
- *
- * The preset question itself is dropped once there is nothing to choose from:
- * "use a saved format, or start fresh?" offers exactly one answer on an account
- * that has never saved one, and a question with a single possible answer is not
- * a question. `presets` is the account's list; pass it as loaded.
- */
 export function tierQuestions(kind, tier, briefing = {}, presets = null) {
   const unskip = new Set(briefing.unskip ?? []);
   return questionsFor(kind).filter((q) => {
@@ -91,15 +53,6 @@ export function tierQuestions(kind, tier, briefing = {}, presets = null) {
   });
 }
 
-/**
- * Which tier the thread is on, from the stored step.
- *
- * `briefStep` used to be an index into fifteen questions. It stays a number so
- * threads written before the tiers still open: step 0 is the required form,
- * anything short of the end is the optional one, and the end is the summary. A
- * thread abandoned halfway through the old walk therefore resumes in the
- * optional tier with its answers intact, which is where those answers now live.
- */
 export function briefTier(kind, step) {
   const len = questionsFor(kind).length;
   if (!(step > 0)) return "required";
@@ -107,21 +60,12 @@ export function briefTier(kind, step) {
   return "optional";
 }
 
-/** The step to store for a tier — the inverse, so the view never does the maths. */
 export function stepForTier(kind, tier) {
   if (tier === "required") return 0;
   if (tier === "optional") return 1;
   return questionsFor(kind).length;
 }
 
-/**
- * Whether one briefing field actually carries an answer.
- *
- * "Answered" used to mean "the walk has gone past it", which the walk made
- * equivalent — and the tier forms do not. It is also what stopped the summary
- * printing "0 members" and "no guide set" as though they were answers: an empty
- * shape is not a filled one.
- */
 export function isAnswered(briefing, key) {
   const v = (briefing ?? {})[key];
   if (v == null) return false;
@@ -132,16 +76,6 @@ export function isAnswered(briefing, key) {
   return true;
 }
 
-/**
- * How many optional fields the USER has set — not how many carry a value.
- *
- * Almost all of them carry one: the title is suggested from the topic and
- * branding defaults to full, so a briefing nobody has touched reported "2 of 10
- * set" directly above the sentence "the rest stay at their defaults". Comparing
- * against the baseline the thread started from is what makes the number mean
- * what the label says. Without a baseline it falls back to counting values,
- * which is the old behaviour and still right for a caller that has none.
- */
 export function optionalAnswered(kind, briefing = {}, baseline = null) {
   return questionsFor(kind)
     .filter((q) => q.tier === OPTIONAL && isAnswered(briefing, q.key))
@@ -149,32 +83,16 @@ export function optionalAnswered(kind, briefing = {}, baseline = null) {
     .length;
 }
 
-/**
- * The briefing fields a preset fixes. When a preset is picked these questions
- * are treated as answered and skipped; the user still walks the changing bits
- * (title, thesis, audience, emphasis, evidence, research and academic context).
- * Guide/academic live in identity (Settings) but are still asked per-submission;
- * maxSlides/slidesPerMember/density/theme/branding are preset-fixable.
- */
 export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
- /**
-  * Alias for older callers — now identical to PRESET_KEYS.
-  */
 export const PRESET_KEYS_LEGACY = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
-/**
- * Pre-fill a briefing from a saved preset, over the identity defaults.
- * The preset's values win on every fixed field; everything else keeps its
- * default so the changing questions still get asked.
- */
 export function briefingFromPreset(preset, identity) {
   const b = initialBriefing(identity);
   const p = preset ?? {};
   return {
     ...b,
     team: p.team ?? b.team,
-    // legacy: old presets store maxSlides/slidesPerMember — keep them for sizing
     maxSlides: p.maxSlides ?? b.maxSlides,
     theme: p.theme ?? b.theme,
     density: p.density ?? b.density,
@@ -183,10 +101,6 @@ export function briefingFromPreset(preset, identity) {
   };
 }
 
-/**
- * Re-fill the fixed briefing fields from a preset without touching the fields
- * the user has already answered in this thread (title, thesis, audience, …).
- */
 export function applyPresetToBriefing(briefing, preset) {
   const p = preset ?? {};
   return {
@@ -200,14 +114,6 @@ export function applyPresetToBriefing(briefing, preset) {
   };
 }
 
-/**
- * The briefing walk skips the questions a picked preset already answers, so
- * after "use a saved format" the thread lands straight on the next open
- * question instead of re-asking the fixed fields. A question the user has
- * explicitly rewound to (clicked "change" on) is un-skipped — `unskip` holds
- * those keys — so the fixed fields stay editable, not frozen. `questions` is
- * the per-kind list (deck or report).
- */
 export function effectiveBriefStep(briefing, step, questions = BRIEFING_QUESTIONS) {
   if (!briefing?.presetId) return step;
   const unskip = new Set(briefing.unskip ?? []);
@@ -216,22 +122,10 @@ export function effectiveBriefStep(briefing, step, questions = BRIEFING_QUESTION
   return i;
 }
 
-/**
- * The step to store once the question on screen has been answered.
- *
- * It has to advance from the question the user actually saw — the EFFECTIVE
- * step — not from the stored one. A preset skips fixed questions, so the two
- * drift apart, and incrementing the stored step re-resolved to a question that
- * had just been answered: with a preset chosen the walk asked "who is your
- * guide?" twice and the research question six times. The pure skip function was
- * correct throughout; only its caller was wrong, which is why it lives here now
- * rather than inline in the view.
- */
 export function nextBriefStep(briefing, step, questions = BRIEFING_QUESTIONS) {
   return Math.min(effectiveBriefStep(briefing, step, questions) + 1, questions.length);
 }
 
-/** The briefing fields a "save as preset" captures. */
 export function presetPayload(briefing) {
   const b = briefing ?? {};
   return {
@@ -244,14 +138,6 @@ export function presetPayload(briefing) {
   };
 }
 
-/**
- * The full briefing record as explicit text for the plan prompt — "The user
- * answered: …". Every guided question the user actually answered must reach
- * the planner verbatim; a plan built from the topic sentence alone ignores
- * the thesis, audience, emphasis, evidence. Only non-empty answers are listed,
- * so a skipped question (defaulted) reads as "not stated" rather than inventing
- * a value. `label` supplies human theme names when the caller has them.
- */
 export function briefingAnsweredText(briefing, label = (t) => t) {
   const b = briefing ?? {};
   const team = b.team ?? {};
@@ -266,9 +152,7 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
 
   put("Title", b.title);
   put("Thesis", b.thesis);
-  // Thesis is the ONE thing to remember — also surface as Takeaway for prompts that key on it
   if (b.thesis?.trim() && !b.takeaway?.trim()) {
-    // no-op, thesis already the takeaway contract
   }
   if (members.length) {
     const names = members.map((m) => `${m.name}${m.roll ? ` (${m.roll})` : ""}${m.presenting ? " — presents" : ""}`).join(", ");
@@ -301,10 +185,6 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   return `The user answered:\n${lines.join("\n")}`;
 }
 
-/** Pre-fill from config/identity.yaml — the remembered defaults, not truth.
- *  The identity file now holds only the long-term facts (institution, guide);
- *  team and academic context are per-submission and start blank here. Thesis and
- *  evidence are per-deck and always start blank. */
 export function initialBriefing(identity) {
   const id = identity ?? {};
   const guide = id.guide ?? {};
@@ -323,8 +203,6 @@ export function initialBriefing(identity) {
     audience: "",
     emphasis: "",
     evidence: "",
-    // The remembered default theme (set from the Themes gallery) wins over the
-    // generic default; a saved preset overrides it on pick.
     theme: (() => {
       try { return localStorage.getItem("forge.defaultTheme") ?? ""; } catch { return ""; }
     })(),
@@ -333,9 +211,6 @@ export function initialBriefing(identity) {
     density: "balanced",
     branding: "full",   // full | minimal | none
     depth: "full",      // report only: full | brief
-    // Where the content comes from: web | upload | none. "upload" means the
-    // user's own document is the ONLY source — the research pass is skipped
-    // and the file becomes notes.md.
     researchSource: "web",
     uploadedSource: null, // { token, name, words } — the staged briefing document
     research: false,
@@ -343,14 +218,12 @@ export function initialBriefing(identity) {
   };
 }
 
-/** "Green hydrogen: how electrolysis works" → "Green hydrogen". */
 export function suggestTitle(topic) {
   const t = String(topic ?? "").trim();
   if (!t) return "";
   return t.split(/[:.;!?]/, 1)[0].replace(/\s+/g, " ").trim().slice(0, 80);
 }
 
-/** One-line echo of a recorded answer, shown in the thread under the card. */
 export function echoAnswer(briefing, key, opts = {}) {
   const b = briefing ?? {};
   switch (key) {
@@ -392,19 +265,12 @@ export function echoAnswer(briefing, key, opts = {}) {
   }
 }
 
-/**
- * Answer the current question with free text from the input bar. Returns
- * `{ briefing, echo }` when the text maps to the question, or null to signal
- * "this does not answer the question — let the card handle it". Adding a team
- * member is a pure local state change: nothing here touches the network.
- */
 export function applyFreeText(briefing, key, text) {
   const t = String(text ?? "").trim();
   if (!t) return null;
   const b = briefing ?? {};
   switch (key) {
     case "preset":
-      // Free text names a preset to use, or "none"/"fresh" to start clean.
       if (/^(none|fresh|new|no)/i.test(t)) return { briefing: { ...b, presetId: null }, echo: "Fresh briefing" };
       return { briefing: { ...b, presetId: t }, echo: `Preset: ${t}` };
     case "title":

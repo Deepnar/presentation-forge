@@ -3,21 +3,6 @@ import { api } from "../api.js";
 import { singleFlight } from "../lib/singleflight.js";
 import { Button, Spinner, inputCls } from "./ui.jsx";
 
-/**
- * The two screens a link in an email lands on: set a new password, and confirm
- * an address.
- *
- * They are one component because they are one situation — someone arrived from
- * outside the app holding a token, and the whole screen has to work while
- * signed out. That is also why this renders above the auth gate rather than
- * inside it: a person resetting a password is by definition unable to log in,
- * and a reset kills every session the account had, so even a signed-in tab
- * lands here signed out.
- *
- * The token is in the URL fragment, which is never sent to the server. It is
- * read here and POSTed back, and the fragment is scrubbed as soon as it has
- * been spent so a shared screen or a back button does not leave it on display.
- */
 export default function RecoveryScreen({ kind, token, onDone, onSignIn }) {
   const reset = kind === "reset";
   return (
@@ -37,7 +22,6 @@ export default function RecoveryScreen({ kind, token, onDone, onSignIn }) {
   );
 }
 
-/** Strip the token out of the address bar once it has been spent. */
 function clearHash() {
   window.history.replaceState(null, "", "#/home");
 }
@@ -58,8 +42,6 @@ function Notice({ tone = "info", children }) {
 function ResetPanel({ token, onSignIn }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  // A rejected password comes back with a replacement token, so a typo does not
-  // cost the user another email and another trip to their inbox.
   const [live, setLive] = useState(token);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -106,7 +88,6 @@ function ResetPanel({ token, onSignIn }) {
       setDone(true);
     } catch (err) {
       setError(err.message);
-      // A replacement arrives only when the token itself was still good.
       if (err.token) setLive(err.token);
       else setLive(null);
     } finally {
@@ -163,20 +144,9 @@ function ResetPanel({ token, onSignIn }) {
   );
 }
 
-/**
- * The confirmation token is spent on first use and this effect can run more
- * than once — StrictMode mounts it, cleans it up and mounts it again. Sending
- * it twice spent the token on the first call and reported the second call's
- * "already used" to someone whose address had just been confirmed, offering
- * "ask for a new one", which issues a fresh token and repeats the whole thing.
- * Keyed by the token, so a genuinely different link is still exchanged.
- */
 const verifyOnce = singleFlight((token) => api.verifyEmail(token));
 
 function VerifyPanel({ token, onDone, onSignIn }) {
-  // idle → working → good | bad. The exchange starts on mount: the person
-  // already clicked something, and asking them to click again to confirm the
-  // click is a step that carries no decision.
   const [state, setState] = useState(token ? "working" : "bad");
   const [error, setError] = useState(token ? "" : "The address is missing its token — copy the whole link out of the message.");
 

@@ -1,29 +1,11 @@
 import { useState } from "react";
 
-/**
- * One theme, shown as what it actually renders.
- *
- * This card used to draw a synthetic swatch from the theme's tokens, and then
- * even that was reduced to a single block of the title-surface colour — so two
- * themes with similar title backgrounds were indistinguishable, and the type,
- * which is most of what separates these designs, was not shown at all. Picking
- * a theme became guessing from a name.
- *
- * The thumbnail is a real render of two surfaces — the title and a body slide —
- * with institutional branding off, so it shows the design and never an
- * institution. That branding is why the thumbnails were switched off before.
- * `npm run gallery` regenerates them; the token synthesis below is the fallback
- * for a theme whose thumbnail has not been generated yet.
- */
 export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme = false, hideSpecimen = false }) {
   const p = theme.palette;
   const title = theme.surfaces?.title ?? {};
   const label = theme.label;
   const sub = defaultTheme ? `${label} · default` : label;
   const [thumbFailed, setThumbFailed] = useState(false);
-  // `hideSpecimen` dated from a synthesised content strip that no longer
-  // exists; it must not suppress the render, or the landing carousel goes
-  // back to showing blocks of colour.
   const showThumb = Boolean(theme.thumb) && !thumbFailed;
 
   return (
@@ -51,9 +33,6 @@ export default function ThemeMiniCard({ theme, selected, onClick, defaultTheme =
             onError={() => setThumbFailed(true)}
           />
         ) : (
-          /* Fallback: synthesise the two surfaces from tokens. Less faithful
-             than a render — it cannot show a plate background or the decor
-             layer — but it still distinguishes palette and type. */
           <div className="absolute inset-0 grid grid-cols-2">
             <div className="flex flex-col justify-end p-3" style={{ background: title.bg ?? p.ink }}>
               <div

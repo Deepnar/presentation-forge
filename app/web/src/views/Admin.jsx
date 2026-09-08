@@ -30,9 +30,6 @@ export default function Admin({ onBack }) {
   };
   useEffect(() => { load(); }, []);
 
-  // The Auto probe is answered out of band so the page never blocks on it (see
-  // autoHealth in src/cloud.js). Collect the result when it lands instead of
-  // leaving "checking…" on screen until someone presses Refresh.
   useEffect(() => {
     if (!stats?.system?.auto?.pending) return;
     const t = setTimeout(() => { api.adminStats().then(setStats).catch(() => {}); }, 4000);
@@ -177,13 +174,6 @@ function BarChart({ data }) {
   );
 }
 
-/**
- * What one account has spent, against what it is allowed.
- *
- * The window is the number that actually blocks somebody — the weekly cap is
- * the slower one — so it leads, and it turns amber as it approaches rather
- * than only once refused, which is when the operator hears about it.
- */
 function UsageCell({ usage, limits }) {
   const w = usage?.windowRequests ?? 0;
   const wk = usage?.weekRequests ?? 0;
@@ -204,9 +194,6 @@ function UsersTab({ users, limits, onRole, onDelete, onClearUsage, onReload }) {
   const [q, setQ] = useState("");
   const [shown, setShown] = useState(USERS_PAGE);
   const filtered = users.filter((u) => !q || u.email.toLowerCase().includes(q.toLowerCase()) || u.name.toLowerCase().includes(q.toLowerCase()));
-  // The table rendered every account at once. That is fine at ten and is not
-  // the shape to keep: this box already carries 116, most of them throwaway
-  // test accounts, and search is the way anyone finds one.
   const page = filtered.slice(0, shown);
   return (
     <Panel className="p-4">
@@ -259,20 +246,6 @@ function UsersTab({ users, limits, onRole, onDelete, onClearUsage, onReload }) {
   );
 }
 
-/**
- * Bulk removal of stale accounts, in two deliberate steps.
- *
- * The danger here is not deleting the wrong number — it is a filter matching
- * more than the operator read. So the preview shows the whole list rather than
- * a count, says why each spared account was spared, and hands back a token
- * bound to that exact set: anything that changes the set before the confirm
- * invalidates it and the list has to be read again.
- *
- * The rules the server will not relax, restated here because an operator
- * should not have to discover them by being refused: admins, whoever is signed
- * in, anyone who owns a deck, and anyone who has generated are never included,
- * and nothing under seven days old is either.
- */
 function CleanupPanel({ onReload }) {
   const [open, setOpen] = useState(false);
   const [days, setDays] = useState(30);
@@ -386,8 +359,6 @@ function CleanupPanel({ onReload }) {
   );
 }
 
-/** Why each spared account was spared — grouped, because 112 lines of "newer
- *  than 7 days" is not information. */
 function SparedSummary({ skipped }) {
   if (!skipped?.length) return null;
   const byReason = skipped.reduce((m, s) => { (m[s.reason] ??= []).push(s.email); return m; }, {});
@@ -532,16 +503,6 @@ function SystemTab({ stats, hosted, onToggle, onReload }) {
     </div>
   );
 }
-/**
- * The report template, and the fact that half the product does not work without
- * it.
- *
- * The donor is gitignored and excluded from the build context, so a fresh
- * hosted box has none — and every other screen looks perfectly healthy while
- * every report route refuses. The upload endpoint has existed since hosting
- * readiness landed; nothing in the app ever offered it, so the only way to
- * install a template was curl.
- */
 function DonorPanel({ donor, mailOk, onReload }) {
   const file = useRef(null);
   const [busy, setBusy] = useState(false);
@@ -593,15 +554,6 @@ function DonorPanel({ donor, mailOk, onReload }) {
   );
 }
 
-/**
- * The institution an unconfigured deck goes out under.
- *
- * Same class of fault as the missing donor, and harder to notice: nothing
- * fails. The render succeeds, the .pptx opens, and the only symptom is the
- * wrong college on a submitted deck. Per-account identity is set in Settings;
- * this is the fallback underneath it, and on a fresh box it is the committed
- * example.
- */
 function IdentityPanel({ identity }) {
   if (!identity) return null;
   const ok = identity.ok;
@@ -632,14 +584,6 @@ function IdentityPanel({ identity }) {
   );
 }
 
-/**
- * Which model each role is actually running.
- *
- * A role whose configured model is missing falls back and keeps going, and the
- * only symptom is output that is quietly worse than it should be — section 9
- * traced a thin outline to exactly this once, and it took a while. The
- * substitution has always been recorded; it had nowhere to be seen.
- */
 function RolePanel({ audit }) {
   if (!audit) return null;
   const ok = audit.reachable && audit.ok;
@@ -683,15 +627,6 @@ function RolePanel({ audit }) {
   );
 }
 
-/**
- * One setting, editable, with where its value came from.
- *
- * The source matters as much as the value. A stored override wins over the
- * environment — that is the point of being able to change it here — and the
- * cost is that an operator who edits their compose file and redeploys will not
- * see the change. So a value that is shadowing an env var says so, and can be
- * handed back to the environment in one click.
- */
 function SettingRow({ name, s, onSave, busy }) {
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
@@ -752,13 +687,6 @@ function SourceTag({ s }) {
   return <Badge className="bg-raised text-fg-faint">default</Badge>;
 }
 
-/**
- * The operating controls, changeable without a redeploy.
- *
- * They were env-only, which on a box somebody is using means a container
- * restart to change one number — so retention in particular stayed at whatever
- * it was at deploy time, and two of the three were on no screen at all.
- */
 function ControlsPanel({ settings, storageMb, onReload }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -801,18 +729,6 @@ function ControlsPanel({ settings, storageMb, onReload }) {
   );
 }
 
-/**
- * The shared gateway key.
- *
- * Write only, and that is deliberate: nothing here can read a key back, so an
- * XSS on this page cannot take one. The status carries the last four characters
- * — enough to tell two keys apart, not enough to be one.
- *
- * The environment still wins at resolve time, so a key rotated in the
- * deployment beats one typed in here months earlier. That is the opposite
- * precedence to the settings above, and it is deliberate too: rotation must not
- * depend on somebody remembering to clear a stored row.
- */
 function AutoKeyPanel({ onReload }) {
   const [st, setSt] = useState(null);
   const [draft, setDraft] = useState("");
@@ -896,9 +812,6 @@ function AutoKeyPanel({ onReload }) {
 }
 
 function Row({ label, ok, detail }) {
-  // A failure detail is a sentence from the service, not a word — it wraps
-  // rather than being clipped, because the sentence is the whole value.
-  // `ok === null` is "no answer yet", which is neither green nor a fault.
   const dot = ok === null ? "bg-fg-faint animate-pulse" : ok ? "bg-emerald-500" : "bg-amber";
   return (
     <div className="flex items-start gap-2">

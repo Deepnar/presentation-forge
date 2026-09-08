@@ -3,12 +3,6 @@ import { api } from "../api.js";
 import { Badge } from "./ui.jsx";
 import { ChevronLeft, ChevronRight, DocIcon, GithubIcon } from "./icons.jsx";
 import { setModelMode, subscribeModelMode, getModelMode } from "../lib/modelMode.js";
-/**
- * Full-width product bar. AUTO = Forge hosted gateway (free, rate-limited),
- * CLOUD = your own key. The toggle writes the routing preference and flips the
- * client model-mode store so every picker filters immediately. CLOUD is only
- * reachable when a BYOK key is attached — without one it points at Settings.
- */
 export default function HeaderBar({ leftOpen, onToggleLeft, onHome, onOpenSettings, onOpenProfile, user, onAuthClick, view, authConfig }) {
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);

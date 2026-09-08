@@ -1,12 +1,5 @@
 import ThemeMiniCard from "../ThemeMiniCard.jsx";
 
-/**
- * Presentational replicas of the app's real briefing UI, for the tour.
- * Deliberately NOT imports of ChatView's cards: those carry autoFocus and
- * pipeline wiring that must not run on a marketing page. Markup and tokens
- * mirror the live components so what the tour shows IS what the product is.
- */
-
 export function BrowserFrame({ url = "forge.local/#/chat", children, className = "" }) {
   return (
     <div className={`overflow-hidden rounded-2xl border border-line bg-panel shadow-[0_40px_80px_-20px_rgba(15,23,42,0.35)] ${className}`}>
@@ -24,7 +17,6 @@ export function BrowserFrame({ url = "forge.local/#/chat", children, className =
 const inputCls =
   "w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-[15px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";
 
-/** Replica of TitleCard — the real first question of every briefing. */
 export function TitleMock() {
   return (
     <div>
@@ -37,7 +29,6 @@ export function TitleMock() {
   );
 }
 
-/** Replica of TeamCard — Name / Roll / Presents rows + add member. */
 export function TeamMock() {
   const rows = [
     { name: "Aarav Sharma", roll: "21", presenting: true },
@@ -78,7 +69,6 @@ export function TeamMock() {
   );
 }
 
-/** Replica of ThemeCard — searchable live gallery. */
 export function ThemeGalleryMock({ themes }) {
   const list = (themes ?? []).slice(0, 9);
   return (
@@ -99,7 +89,6 @@ export function ThemeGalleryMock({ themes }) {
   );
 }
 
-/** Density pills — Sparse / Balanced / Dense. */
 export function DensityMock() {
   const opts = ["Sparse", "Balanced", "Dense"];
   return (
@@ -113,7 +102,6 @@ export function DensityMock() {
   );
 }
 
-/** Outline review — plain-language slide cards, each visually distinct. */
 export function OutlineMock() {
   const rows = [
     { n: "01", t: "Title", d: "Opening — topic + team", icon: "◈", accent: "bg-accent-tint text-accent" },
@@ -140,7 +128,6 @@ export function OutlineMock() {
   );
 }
 
-/** Research pass — sources + coverage summary. */
 export function ResearchMock() {
   return (
     <div className="space-y-2.5">

@@ -2,15 +2,6 @@ import { useState } from "react";
 import { api } from "../api.js";
 import { Button, Spinner } from "./ui.jsx";
 
-/**
- * The strip an unconfirmed account sees until it confirms.
- *
- * It is not a toast and not a modal. The account can sign in, look at the
- * themes and read everything — it just cannot create or generate — so the state
- * persists across the whole session and has to be legible without blocking
- * anything. A dismissible notice would hide the one explanation for the refusal
- * the person is about to hit.
- */
 export default function VerifyBanner({ email }) {
   const [state, setState] = useState("idle"); // idle | sending | sent
   const [note, setNote] = useState(null); // { text, bad }
@@ -23,9 +14,6 @@ export default function VerifyBanner({ email }) {
       await api.resendVerification();
       setState("sent");
     } catch (err) {
-      // Being told a message is already on its way is the outcome the click
-      // was asking for, not a failure — the signup itself counts against the
-      // send budget, so this is what a prompt second click gets.
       const alreadySent = err.code === "recently_sent";
       setNote({ text: err.message, bad: !alreadySent });
       setState(alreadySent ? "sent" : "idle");

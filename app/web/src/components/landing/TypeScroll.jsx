@@ -13,17 +13,6 @@ const NAMES = {
 };
 const label = (t) => NAMES[t] ?? t[0].toUpperCase() + t.slice(1).replace(/-/g, " ");
 
-/**
- * The slide vocabulary, travelling sideways as the page scrolls down.
- *
- * The rail used to sit under a horizontal scrollbar, which meant a reader had
- * to notice it was draggable and then drag it — on a landing page that is the
- * same as not showing it. Vertical scroll is the only input now.
- *
- * Travel is measured from the real laid-out width rather than assumed, so
- * adding a slide type to the deck changes no constant here, and a narrow
- * viewport (where the cards are smaller) scrubs the right amount.
- */
 export default function TypeScroll({ manifest, typeCount }) {
   const slides = manifest?.showcase?.slides ?? [];
   const ref = useRef(null);
@@ -37,15 +26,12 @@ export default function TypeScroll({ manifest, typeCount }) {
     const measure = () => setDistance(Math.max(0, track.scrollWidth - window.innerWidth + 64));
     measure();
     window.addEventListener("resize", measure);
-    // The cards are images; their width is known from the attributes, but a
-    // late font swap still nudges the captions.
     const t = setTimeout(measure, 600);
     return () => { window.removeEventListener("resize", measure); clearTimeout(t); };
   }, [slides.length]);
 
   if (!slides.length) return null;
 
-  // The rail waits for the heading to land, then takes the rest of the budget.
   const x = span(p, 0.12, 1) * distance;
 
   return (

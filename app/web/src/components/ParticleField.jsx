@@ -1,14 +1,5 @@
 import { useEffect, useRef } from "react";
 
-/**
- * Ambient constellation field — richer than before.
- * - 2x more dots, variable sizes, twinkle + size pulse
- * - Nearby dots link with faint lines (constellation)
- * - Velocity-based drift (vx/vy) + sine wander, not just sine
- * - Strong reactive repulsion: push, scale, brighten on hover
- * - Mouse trail: emit short-lived sparkles
- * - Pause/resume, reduce-motion, visibility guards kept
- */
 export default function ParticleField({ paused = false, boost = 1, className = "" }) {
   const canvasRef = useRef(null);
   const controlRef = useRef(null);
@@ -51,7 +42,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       w: 0, h: 0, dpr: 1, frames: 0, running: false, last: 0,
     };
 
-    // Scroll drives the field: velocity smears dots vertically and biases drift.
     let lastScrollY = window.scrollY;
     function onScroll() {
       const y = window.scrollY;
@@ -103,11 +93,9 @@ export default function ParticleField({ paused = false, boost = 1, className = "
       for (const d of state.dots) {
         d.phase += 0.0032;
         d.tw += 0.008;
-        // velocity + sine wander, plus scroll-velocity smear
         const sv = state.scrollVel * 0.06 * dpr;
         d.x += d.vx * dpr + Math.sin(d.phase * d.fx * 2.1) * 0.18;
         d.y += d.vy * dpr + Math.sin(d.phase * d.fy * 2.1 + 1.1) * 0.18 - sv;
-        // wrap softly
         if (d.x < -20) d.x = state.w + 20;
         if (d.x > state.w + 20) d.x = -20;
         if (d.y < -20) d.y = state.h + 20;
@@ -130,7 +118,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
             bright = 1 + t * 0.35;
             pushed += 1;
           }
-          // repulse velocity a bit — subtler
           if (dist2 < (90 * dpr) ** 2) {
             d.vx += (dx / (Math.sqrt(dist2) || 1)) * 0.001;
             d.vy += (dy / (Math.sqrt(dist2) || 1)) * 0.001;
@@ -149,7 +136,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-        // soft glow for accents — very faint now
         if (d.accent) {
           ctx.globalAlpha *= 0.10;
           ctx.beginPath();
@@ -158,7 +144,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         }
       }
 
-      // constellation lines — faint, only near pointer
       ctx.globalAlpha = 1;
       if (pts.length < 180) {
         for (let i = 0; i < pts.length; i++) {
@@ -183,7 +168,6 @@ export default function ParticleField({ paused = false, boost = 1, className = "
         }
       }
 
-      // mouse trail — rare, subtle
       if (pointer.x >= 0 && (Math.abs(pointer.vx) > 1.2 || Math.abs(pointer.vy) > 1.2)) {
         if (Math.random() < 0.18) {
           state.trails.push({ x: pointer.x * dpr, y: pointer.y * dpr, life: 0.7, vx: (Math.random() - 0.5) * 0.9, vy: (Math.random() - 0.5) * 0.9 });

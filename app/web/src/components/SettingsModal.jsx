@@ -16,11 +16,6 @@ const SLIDE_COUNTS = [0, 8, 12, 16, 20];
 const PER_MEMBER = [null, 1, 2, 3];
 const BRAND_ASSETS = ["crest", "banner", "watermark"];
 
-/**
- * Settings — saved formats + identity/brand. Profile is separate (api keys,
- * routing, logout) and both close with Esc. This keeps the two concerns
- * distinct: one is "how you work", the other is "who you are / how you pay".
- */
 export default function SettingsModal({ open, onClose, identity, user, isAdmin, onIdentityChanged }) {
   useEffect(() => {
     if (!open) return;
@@ -65,13 +60,6 @@ export default function SettingsModal({ open, onClose, identity, user, isAdmin, 
   );
 }
 
-/* ----------------------------------------------------------- appearance */
-
-/**
- * Three choices, not a switch. "System" has to be reachable: a two-state
- * toggle can only ever mean "the OS is wrong", and the preference then stops
- * tracking a machine that changes at sunset.
- */
 function AppearanceSection() {
   const [mode, setMode] = useState(getAppearance());
   useEffect(() => subscribeAppearance((m) => setMode(m)), []);
@@ -117,11 +105,6 @@ function AppearanceSection() {
   );
 }
 
-/**
- * The swatches are painted from literal hexes rather than the tokens, because
- * a preview drawn in tokens shows the theme that is already on — three
- * identical chips. These are the two palettes as they are, side by side.
- */
 function ModeSwatch({ mode }) {
   const light = { page: "#FBFBFD", panel: "#FFFFFF", line: "#E7E8EF", ink: "#0B0F1A" };
   const dark = { page: "#0A0A0C", panel: "#141519", line: "#26272E", ink: "#F5F6F8" };
@@ -134,8 +117,6 @@ function ModeSwatch({ mode }) {
   const panes = mode === "system" ? [bar(light, "l"), bar(dark, "d")] : [bar(mode === "dark" ? dark : light, "s")];
   return <span className="flex h-8 gap-1">{panes}</span>;
 }
-
-/* -------------------------------------------------------------- presets */
 
 function PresetsSection() {
   const [presets, setPresets] = useState(presetsStore.get());
@@ -426,8 +407,6 @@ function SettingSelect({ label, value, onChange, options, className = "" }) {
   );
 }
 
-/* ------------------------------------------------------------- identity */
-
 function IdentitySection({ identity, onIdentityChanged }) {
   const [draft, setDraft] = useState(null);
   const [state, setState] = useState({ status: "idle", message: "" });
@@ -440,8 +419,6 @@ function IdentitySection({ identity, onIdentityChanged }) {
   const donorRef = useRef(null);
   const fileRefs = { crest: useRef(null), banner: useRef(null), watermark: useRef(null) };
 
-  // The identity prop is the whole config file; the draft edits institution
-  // and guide, keeping brand/chrome and anything else untouched.
   useEffect(() => {
     setDraft(structuredClone(identity ?? {}));
   }, [identity]);
@@ -467,9 +444,6 @@ function IdentitySection({ identity, onIdentityChanged }) {
     if (!draft) return;
     setState({ status: "saving", message: "" });
     try {
-      // Identity holds ONLY the long-term facts — institution and guide. Any
-      // pre-redesign academic/team defaults in the file are dropped here,
-      // since those are per-submission and asked in the briefing now.
       const next = structuredClone(draft);
       delete next.academic;
       delete next.team;
