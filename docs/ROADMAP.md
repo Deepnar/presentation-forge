@@ -5928,10 +5928,28 @@ behavior with the existing test suite, production build and a rasterized render.
   lists/data, process/diagram and special families plus shared helpers. The
   former 5,199-line file and its 731 standalone comments are gone. All 34 × 74
   geometry runs and all 34 raster/OCR text-survival runs are clean.
-- **[ ] Split the large React views** by state machine and panel responsibility,
-  then lazy-load route-level surfaces to address the real 646 kB initial bundle.
-- **[ ] Split AI orchestration modules** only after characterisation tests pin
-  resume, metering, repair and transport behavior at their seams.
+- **[x] Split the large React views** by state machine and panel responsibility,
+  then lazy-load route-level surfaces. Chat briefing controls, deck controls,
+  admin panels, settings sections and slide-field descriptors now have explicit
+  modules. Route surfaces load independently and the initial bundle fell from
+  about 647 kB to 321 kB.
+- **[x] Separate AI orchestration from its command-line adapter** after the
+  resume, metering, repair and transport suites pinned the seam. The public
+  pipeline API remains in `pipeline.js`; parsing, terminal output and process
+  exits live in `pipeline-cli.js`. OpenCode providers can also declare their
+  required stable per-conversation session header, with retries sharing one ID.
+- **[x] Separate specimen assembly from specimen data.** The public specimen
+  builder is 51 lines; the exhaustive one-slide-per-type payload is isolated in
+  `specimens-data.js` without pretending that static fixture size is executable
+  complexity.
+- **[ ] Refresh the public example showcase after the cleanup is complete.**
+  Generate three current, contrasting decks through OpenCode Go using only the
+  Muse 1.3 Contributor model. Exercise the complete briefing/question flow,
+  image handling and representative product features; inspect every rendered
+  page; then publish each PPTX with its report, script and PDF. Replace the
+  README's old two-image showcase with a front-and-centre three-example table
+  whose PDFs can be viewed on GitHub and whose remaining artefacts can be
+  downloaded. Keep credentials and generated runtime state out of Git.
 
 > **Learned.** File size alone is not a safe extraction boundary. The server's
 > literal routes must remain ahead of `/:slug` ownership middleware, and its
@@ -5958,6 +5976,15 @@ behavior with the existing test suite, production build and a rasterized render.
 > small public registry preserves the renderer contract, while imports make
 > each family's dependencies explicit. Moving method bodies unchanged before
 > improving them made the matrix and OCR sweeps meaningful regression proofs.
+>
+> React split points are panel contracts, not arbitrary line counts. Keeping
+> state machines in route views while moving briefing, modal, settings and
+> administration panels made dependencies visible without inventing a second
+> state layer. Lazy imports address load cost independently of file structure.
+>
+> Provider-specific transport requirements belong in provider configuration.
+> A session ID is minted once per logical completion and reused by retries;
+> unrelated providers receive no proprietary header.
 
 ### [x] Publish the first self-hosted release
 

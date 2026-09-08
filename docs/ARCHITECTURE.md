@@ -694,7 +694,9 @@ pipeline has to run headless.
 The orchestrator (`src/ai/pipeline.js`) is where the CLI and the API meet:
 `createDeck` (brief → research → outline) and `generateFromPlan` (outline →
 deck → render → rasterise) are shared, and the `forge` CLI plus the server's
-SSE endpoints are thin wrappers. Long-running calls stream Server-Sent Events
+SSE endpoints are thin wrappers. `src/ai/pipeline-cli.js` owns argument parsing,
+terminal formatting and process exits; importing the pipeline never imports the
+command adapter. Long-running calls stream Server-Sent Events
 over a POST body; dropping the socket aborts the request via an
 `AbortController`, so a vanished client stops the model call.
 
@@ -1254,6 +1256,12 @@ site, and a deep link like `#/deck/<slug>` reopens that view on reload (per-user
 auth still gates it, and a route's hash survives logout, so logging back in
 restores where the user was). Settings is deliberately NOT a route — it is a
 modal over whatever view is open (an old `#/identity` hash resolves to chat).
+
+Route views are loaded through React `lazy`, so the shell does not download the
+chat, deck, admin, legal and tour surfaces at startup. Large surfaces keep their
+state machines in the route module and move independently reusable panels into
+`ChatPanels`, `DeckDetailControls`, `AdminPanels` and `SettingsSections`.
+`SlideEditor` reads its schema-shaped descriptors from `slideEditorFields.js`.
 
 **Entry flow — landing-first.** The `#/home` landing page is the front door, now with a pinned scroll tour (GSAP `ScrollTrigger` pin `2000%`, `scrub 1.2`) and a `fixed` header that auto-hides on scroll down and reappears at the footer. An unauthenticated visitor lands on it whatever the hash; the landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the rest as quiet links. The `AuthModal` is split screen. After login the landing is a **pending New chat** (lazy, not in sidebar until first prompt) — `pendingChat` in `App.jsx` holds it, `handleChatChanged` saves on `topic`.
 
