@@ -12,6 +12,7 @@ import { runs } from "../lib/runs.js";
 import { deckContext } from "../lib/deckContext.js";
 import { presetsStore } from "../lib/presets.js";
 import { parseSlashCommand, SLASH_HELP, looksLikeSlash } from "../lib/slash.js";
+import { setModelMode } from "../lib/modelMode.js";
 
 const DENSITIES = [
   { id: "sparse", note: "few words, mostly visuals" },
@@ -89,7 +90,6 @@ export default function ChatView({
    *  write does not leave the picker claiming a mode the server never took. */
   async function switchMode() {
     const next = modelMode === "cloud" ? "auto" : "cloud";
-    const { setModelMode } = await import("../lib/modelMode.js");
     try { await api.cloudRoute(next); } catch { return; }
     setModelMode(next);
     if (next === "auto") {
