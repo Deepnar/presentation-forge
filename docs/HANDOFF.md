@@ -22,6 +22,12 @@ creation and resumable-generation routes live in `generation-routes.js`. Both
 receive shared transport primitives from the entry point. The full suite remains
 at 808 passing tests after these moves.
 
+The 5,199-line `src/layouts.js` monolith is now a 15-line public registry.
+Implementations are grouped under `src/layouts/` into four semantic families
+and shared helpers. Standalone narrative comments were removed. `themematrix`
+is clean across 34 themes × 74 layouts, `textcheck` confirms every declared
+word survives across all 34 themes, and the full 808-test suite passes.
+
 The ineffective dynamic import of `modelMode.js` in `ChatView.jsx` is now a
 normal static dependency. The Vite warning for that false split is gone. The
 remaining bundle-size warning is real and belongs to the roadmap's React

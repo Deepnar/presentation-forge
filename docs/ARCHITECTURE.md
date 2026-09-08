@@ -50,6 +50,12 @@ The fix is to make layout something the model cannot touch.
 
 ## The three layers
 
+`src/render.js` consumes the stable public registry in `src/layouts.js`.
+Implementations live under `src/layouts/` in core, lists/data, process/diagram
+and special families; `helpers.js` owns shared geometry, fitting and drawing
+primitives. Existing callers still receive the same `layouts` map and `content`
+export.
+
 Everything follows from this separation.
 
 ### chrome — locked

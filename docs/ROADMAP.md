@@ -5922,8 +5922,12 @@ behavior with the existing test suite, production build and a rasterized render.
   - **[x] Chat and generation-run family.** Type specimens, creation, chat,
     report-to-deck conversion and resumable generation now register from
     `app/server/generation-routes.js`; the live-run registry moved with them.
-- **[ ] Split the renderer layout registry** by slide family while keeping one
+- **[x] Split the renderer layout registry** by slide family while keeping one
   shared composition/fitting primitive layer and one public dispatcher.
+  `src/layouts.js` is now a 15-line compatibility registry over core,
+  lists/data, process/diagram and special families plus shared helpers. The
+  former 5,199-line file and its 731 standalone comments are gone. All 34 × 74
+  geometry runs and all 34 raster/OCR text-survival runs are clean.
 - **[ ] Split the large React views** by state machine and panel responsibility,
   then lazy-load route-level surfaces to address the real 646 kB initial bundle.
 - **[ ] Split AI orchestration modules** only after characterisation tests pin
@@ -5949,6 +5953,11 @@ behavior with the existing test suite, production build and a rasterized render.
 > described by module names, tests, the architecture document and git history.
 > After all route-family extractions, `app/server/index.js` is 516 lines rather
 > than 3,411, and the full 808-test suite still exercises the same route table.
+>
+> Layout families can share drawing primitives without sharing ownership. A
+> small public registry preserves the renderer contract, while imports make
+> each family's dependencies explicit. Moving method bodies unchanged before
+> improving them made the matrix and OCR sweeps meaningful regression proofs.
 
 ### [x] Publish the first self-hosted release
 
