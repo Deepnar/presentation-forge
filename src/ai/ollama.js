@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "../paths.js";
@@ -117,6 +118,7 @@ async function backendFor(cfg, spec) {
     baseURL: p.baseURL,
     apiKey: await providerKey(spec.provider, p.apiKey),
     supportsThinking: Boolean(p.supports_thinking),
+    sessionHeader: p.session_header === true,
     providerId: spec.provider,
     billingOwner: isAutoProviderId(spec.provider) ? "operator" : "user",
   };
@@ -161,6 +163,7 @@ export async function resolveRole(role) {
             baseURL: ap.baseURL,
             apiKey: await providerKey(ap.id, ap.apiKey),
             supportsThinking: Boolean(cfg.providers?.[ap.id]?.supports_thinking),
+            sessionHeader: cfg.providers?.[ap.id]?.session_header === true,
             providerId: ap.id,
             billingOwner: "operator",
           },
@@ -180,6 +183,7 @@ export async function resolveRole(role) {
               baseURL: cp.baseURL,
               apiKey: key,
               supportsThinking: Boolean(cfg.providers?.[cp.id]?.supports_thinking),
+              sessionHeader: cfg.providers?.[cp.id]?.session_header === true,
               providerId: cp.id,
               billingOwner: "user",
             },
@@ -401,6 +405,7 @@ async function cloudSpec(cfg, model, role) {
         baseURL: p.baseURL,
         apiKey: await providerKey(name, p.apiKey),
         supportsThinking: Boolean(p.supports_thinking),
+        sessionHeader: p.session_header === true,
         providerId: name,
         billingOwner: isAutoProviderId(name) ? "operator" : "user",
       },
@@ -466,6 +471,7 @@ async function chatOnce({
   const bumpCeiling = guardedByok
     ? BYOK_OUTPUT_CAP
     : (cfg.defaults?.num_predict_bump_ceiling ?? 64_000);
+  const sessionId = randomUUID();
 
   let devLocalFallback = false;
   let lastErr;
@@ -497,7 +503,7 @@ async function chatOnce({
       } else {
         res = await cloudChat(spec, {
           messages, format, tools, images, temperature,
-          stream, onToken, timeout, signal,
+          stream, onToken, timeout, signal, sessionId,
         });
       }
 
@@ -543,7 +549,7 @@ async function chatOnce({
 
 async function cloudChat(spec, {
   messages, format, tools, images, temperature,
-  stream, onToken, timeout, signal,
+  stream, onToken, timeout, signal, sessionId,
 }) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeout);
@@ -576,6 +582,7 @@ async function cloudChat(spec, {
   const headers = {
     "Content-Type": "application/json",
     ...(spec.backend.apiKey ? { Authorization: `Bearer ${spec.backend.apiKey}` } : {}),
+    ...(spec.backend.sessionHeader ? { "x-opencode-session": sessionId } : {}),
   };
 
   const reservation = byokUserId

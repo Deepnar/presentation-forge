@@ -71,6 +71,7 @@ providers:
     baseURL: https://opencode.ai/zen/go/v1
     apiKey: env:OPENCODE_GO_API_KEY
     label: OpenCode Go
+    session_header: true
     models:
       - deepseek-v4-flash
       - qwen3.8-max

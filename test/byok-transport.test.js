@@ -14,6 +14,7 @@ host: http://127.0.0.1:1
 providers:
   paid:
     type: openai-compatible
+    session_header: true
     baseURL: https://paid.invalid/v1
     apiKey: env:PAID_API_KEY
     models: [paid-model]
@@ -56,9 +57,11 @@ const asOwner = (fn) => runAsAccount({ userId, email: "owner@example.test" }, fn
 
 test("BYOK uses the conservative output ceiling in local and hosted mode", async () => {
   const caps = [];
+  const sessions = [];
   global.fetch = async (_url, init) => {
     const body = JSON.parse(init.body);
     caps.push(body.max_tokens);
+    sessions.push(init.headers["x-opencode-session"]);
     return new Response(JSON.stringify({
       choices: [{ message: { content: "ok" }, finish_reason: "stop" }],
       usage: { prompt_tokens: 8, completion_tokens: 2 },
@@ -70,6 +73,8 @@ test("BYOK uses the conservative output ceiling in local and hosted mode", async
   await asOwner(() => chat({ role: "author", model: "paid-model", messages: [{ role: "user", content: "hosted" }] }));
 
   assert.deepEqual(caps, [BYOK_OUTPUT_CAP, BYOK_OUTPUT_CAP]);
+  assert.match(sessions[0], /^[0-9a-f-]{36}$/);
+  assert.notEqual(sessions[0], sessions[1]);
   assert.equal(byokUsage(userId).tokens, 20);
 });
 

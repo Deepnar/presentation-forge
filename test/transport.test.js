@@ -140,10 +140,11 @@ test("providerModels fetches GET {baseURL}/models when the list is empty and a k
   globalThis.fetch = async (url, opts = {}) => {
     assert.equal(String(url), "https://x.example/v1/models");
     assert.equal(opts.headers.Authorization, "Bearer envkey");
+    assert.match(opts.headers["x-opencode-session"], /^[0-9a-f-]{36}$/);
     return fakeResponse({ data: [{ id: "m1" }, { id: "m2" }] });
   };
   try {
-    const list = await providerModels({ models: [], baseURL: "https://x.example/v1/", apiKey: "env:FAKE_PROV_KEY" });
+    const list = await providerModels({ models: [], baseURL: "https://x.example/v1/", apiKey: "env:FAKE_PROV_KEY", session_header: true });
     assert.deepEqual(list, ["m1", "m2"]);
   } finally {
     globalThis.fetch = orig;

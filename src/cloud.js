@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import YAML from "yaml";
 import { CONFIG } from "./paths.js";
@@ -74,7 +75,10 @@ export async function providerModels(p, providerId = null) {
   const base = String(p.baseURL).replace(/\/+$/, "");
   try {
     const res = await fetch(`${base}/models`, {
-      headers: key ? { Authorization: `Bearer ${key}` } : {},
+      headers: {
+        ...(key ? { Authorization: `Bearer ${key}` } : {}),
+        ...(p.session_header === true ? { "x-opencode-session": randomUUID() } : {}),
+      },
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return [];
@@ -197,6 +201,7 @@ export async function autoProvider() {
       apiKey: spec.apiKey ?? `env:${AUTO_KEY_ENV}`,
       keySet: true,
       kind: AUTO_PROVIDER,
+      sessionHeader: spec.session_header === true,
     };
   }
   if (isHosted()) return null;
@@ -249,6 +254,7 @@ export async function cloudProvider() {
       baseURL: String(p.baseURL).replace(/\/+$/, ""),
       models: list,
       apiKey: p.apiKey ?? "",
+      sessionHeader: p.session_header === true,
     };
   }
   return null;
@@ -394,9 +400,14 @@ export async function testCloudConnection() {
       })
     : null;
   try {
+    const sessionId = p.sessionHeader ? randomUUID() : null;
     const res = await fetch(`${p.baseURL}/chat/completions`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`,
+        ...(sessionId ? { "x-opencode-session": sessionId } : {}),
+      },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(20000),
     });
