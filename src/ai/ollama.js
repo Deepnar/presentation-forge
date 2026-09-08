@@ -703,7 +703,7 @@ async function responsesChat(spec, {
     input: cloudMessages(messages, images, format),
     ...(outputCap ? { max_output_tokens: outputCap } : {}),
     ...(temperature != null ? { temperature } : {}),
-    ...(format ? { text: { format: { type: "json_schema", name: "forge_response", schema: format, strict: true } } } : {}),
+    ...(format ? { text: { format: { type: "json_object" } } } : {}),
     ...(responseTools.length ? { tools: responseTools } : {}),
   };
   try {
