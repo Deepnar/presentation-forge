@@ -5,12 +5,17 @@ Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 
 ## Current state
 
-Two structural passes are complete and behaviorally verified. The Express entry
-point is 2,405 lines, down from 3,411. Authentication, provider/account settings,
+Three structural passes are complete and behaviorally verified. The Express entry
+point is 1,552 lines, down from 3,411. Authentication, provider/account settings,
 workspace settings, shared HTTP responses, and boot/lifecycle work now live in
 dedicated registrar modules under `app/server/`. Workspace settings comprise
 presets, identity overrides, brand assets and report templates. Route ordering
 remains controlled by `index.js`, and business logic remains in `src/`.
+
+Admin account, plan, quota, cleanup, storage and health routes now live in
+`app/server/admin-routes.js`. The entry point and admin registrar have only a
+file-purpose comment; standalone narrative comments were removed after their
+invariants were captured by module boundaries, tests and architecture docs.
 
 The ineffective dynamic import of `modelMode.js` in `ChatView.jsx` is now a
 normal static dependency. The Vite warning for that false split is gone. The

@@ -863,6 +863,10 @@ assets, and account/operator report-template uploads, while `http.js` owns the
 response wrapper. Business behavior remains in `src/`; these modules only
 translate HTTP requests and register routes.
 
+`admin-routes.js` owns administrative account, plan, quota, cleanup, storage
+and health endpoints. It receives deck metadata and directory-size readers from
+the composition root rather than reaching back into the entry point.
+
 The admin routes guard `GET /api/admin/hosted` / `POST /api/admin/hosted`
 (`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env
 for runtime flips), user role/deletion operations, deck inventory and aggregate

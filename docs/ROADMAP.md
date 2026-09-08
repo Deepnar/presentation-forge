@@ -5912,7 +5912,10 @@ behavior with the existing test suite, production build and a rasterized render.
     `app/server/workspace-settings-routes.js`. Shared upload validation remains
     one implementation, and focused tenancy/donor/preset tests plus the full
     suite hold behavior. The entry point is 2,405 lines after this pass.
-  - **[ ] Admin and analytics family.**
+  - **[x] Admin and analytics family.** Account roles, plan/quota controls,
+    cleanup, storage inventory and system health now register from
+    `app/server/admin-routes.js`. This also fixed the stats route's latent
+    reference to a sweep-hour constant that had moved into lifecycle scope.
   - **[ ] Deck artefact and report family.**
   - **[ ] Chat and generation-run family.**
 - **[ ] Split the renderer layout registry** by slide family while keeping one
@@ -5934,6 +5937,12 @@ behavior with the existing test suite, production build and a rasterized render.
 > files need different limits and signatures, but the authentication, replace
 > semantics and error contract belong together. Pulling them into one registrar
 > also exposed the repeated preset payload projection, which is now one helper.
+>
+> Comment removal is safest at a responsibility boundary: once a route family
+> has a name and a small public registrar, section banners and historical bug
+> narratives stop carrying the architecture. The server entry point now has a
+> single file-purpose note and no standalone line commentary; its behavior is
+> described by module names, tests, the architecture document and git history.
 
 ### [x] Publish the first self-hosted release
 
