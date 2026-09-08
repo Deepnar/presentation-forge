@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
 import { useNarrow } from "./lib/viewport.js";
@@ -8,22 +8,28 @@ import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import RecoveryScreen from "./components/RecoveryScreen.jsx";
 import VerifyBanner from "./components/VerifyBanner.jsx";
-import Home from "./views/Home.jsx";
-import ChatView from "./views/ChatView.jsx";
-import DeckDetail from "./views/DeckDetail.jsx";
-import ReportView from "./views/ReportView.jsx";
-import ResearchView from "./views/ResearchView.jsx";
-import ScriptView from "./views/ScriptView.jsx";
 import { defaultProjectPage } from "./components/ProjectNav.jsx";
-import Themes from "./views/Themes.jsx";
-import TourThemes from "./views/TourThemes.jsx";
-import { Privacy, Terms, Contact, Docs, Usage } from "./views/Legal.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
-import Admin from "./views/Admin.jsx";
 import { loadChats, saveChat, createChat, deleteChat as deleteChatStore, chatsKey, findEmptyChat, normalizeChat } from "./lib/chats.js";
 import { BRIEFING_QUESTIONS } from "./lib/briefing.js";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+
+const Home = lazy(() => import("./views/Home.jsx"));
+const ChatView = lazy(() => import("./views/ChatView.jsx"));
+const DeckDetail = lazy(() => import("./views/DeckDetail.jsx"));
+const ReportView = lazy(() => import("./views/ReportView.jsx"));
+const ResearchView = lazy(() => import("./views/ResearchView.jsx"));
+const ScriptView = lazy(() => import("./views/ScriptView.jsx"));
+const Themes = lazy(() => import("./views/Themes.jsx"));
+const TourThemes = lazy(() => import("./views/TourThemes.jsx"));
+const Admin = lazy(() => import("./views/Admin.jsx"));
+const legalView = (name) => lazy(() => import("./views/Legal.jsx").then((module) => ({ default: module[name] })));
+const Privacy = legalView("Privacy");
+const Terms = legalView("Terms");
+const Contact = legalView("Contact");
+const Docs = legalView("Docs");
+const Usage = legalView("Usage");
 
 /**
  * The chat-first shell. Logging in is the landing; the chat window is the app.
@@ -33,7 +39,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
  * per account and knows the deck it produced; the deck list in the sidebar
  * shows only your decks.
  */
-export default function App() {
+function AppContent() {
   const [user, setUser] = useState(undefined); // undefined = auth still checking
   const [authConfig, setAuthConfig] = useState(undefined);
   // Whether this install asks accounts to confirm their address at all. A box
@@ -738,5 +744,13 @@ export default function App() {
         />
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center text-fg-muted">Loading…</div>}>
+      <AppContent />
+    </Suspense>
   );
 }
