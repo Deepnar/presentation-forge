@@ -31,24 +31,10 @@ const Contact = legalView("Contact");
 const Docs = legalView("Docs");
 const Usage = legalView("Usage");
 
-/**
- * The chat-first shell. Logging in is the landing; the chat window is the app.
- * Views: chat (the active conversation), deck, report, themes, home. Settings
- * is a MODAL over any view — opened from the profile chip or the sidebar row —
- * holding presets, identity and the account/cloud controls. A chat persists
- * per account and knows the deck it produced; the deck list in the sidebar
- * shows only your decks.
- */
 function AppContent() {
   const [user, setUser] = useState(undefined); // undefined = auth still checking
   const [authConfig, setAuthConfig] = useState(undefined);
-  // Whether this install asks accounts to confirm their address at all. A box
-  // with no SMTP does not, so the banner must never appear there.
   const [verifyRequired, setVerifyRequired] = useState(false);
-  // The reset and confirm screens are reached from an email, so they have to
-  // render before the auth gate — the person clicking a reset link is by
-  // definition unable to log in. Tracked separately from `view`, which only
-  // updates once the shell is already mounted.
   const [hash, setHash] = useState(() => window.location.hash);
   const [identity, setIdentity] = useState(null);
   const [org, setOrg] = useState("");
@@ -62,24 +48,13 @@ function AppContent() {
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
-  // On a phone the sidebar cannot be a column: 256px of a 390px screen leaves
-  // the app 134px. It becomes an overlay drawer instead, and starts closed —
-  // the remembered preference is about a desktop layout that does not exist
-  // here.
   const narrow = useNarrow();
   useEffect(() => { if (narrow) setLeftOpen(false); }, [narrow]);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login"); // login | register — the landing's auth modal
   const [focusSearch, setFocusSearch] = useState(0);
 
-  // Boot: rehydrate the session (a stale token just logs out) and remember the
-  // institution. Auth-first — everything else waits for a user. `user` starts
-  // undefined (still checking) so a reload never flashes the landing for an
-  // authed visitor; it resolves to the session or null before anything renders.
   useEffect(() => {
-    // Resolve identity and the installation's auth posture together. A local
-    // first load must not briefly advertise hosted Log in / Sign up actions
-    // while the owner-mode request is still in flight.
     Promise.all([
       api.me().catch(() => ({ user: null, verifyRequired: false })),
       api.authConfig().catch(() => null),
@@ -90,10 +65,6 @@ function AppContent() {
     });
   }, []);
 
-  // Identity is per account, and reading it needs a session — institution,
-  // department and guide are the personal details the file is gitignored to
-  // protect, so an anonymous visitor is not told them. Refetched on sign-in and
-  // cleared on sign-out so one account's college never lingers into another's.
   useEffect(() => {
     if (!user) { setIdentity({}); setOrg(""); return; }
     api.identity()
@@ -101,20 +72,10 @@ function AppContent() {
       .catch(() => {});
   }, [user?.email]);
 
-  // A logged-in user gets their own chat list; the first visit starts one
-  // empty thread so the landing is already a chat. StrictMode double-fires this
-  // effect, so the initial-chat guard reads localStorage, not React state. The
-  // constant landing after login/register is a NEW chat: the account's empty
-  // thread is reused if one exists, so repeated logins never stack empties.
-  // Only an explicitly-opened artefact deep link (#/deck/<slug>, #/report/…,
-  // #/research/…) overrides it — those are honoured by the boot effect below.
-  // The "reopen at last position" restore is gone: a stale chat id in the URL
-  // is the last route, not a deep link, so it never wins.
   useEffect(() => {
     if (!user) { setChats([]); setActiveChatId(null); setPendingChat(null); return; }
     const list = loadChats(user.email);
     setChats(list);
-    // If there's a pending chat already, keep it
     if (pendingChat && !pendingChat.topic) return;
     if (!list.length) {
       const c = createChat();
@@ -128,18 +89,11 @@ function AppContent() {
       setPendingChat(null);
       return;
     }
-    // No empty chat — show pending new chat as landing, not yet saved
     const c = createChat();
     setPendingChat(c);
     setActiveChatId(c.id);
   }, [user?.email]);
 
-  // Cross-tab sync. localStorage fires the `storage` event in every OTHER tab
-  // when this one writes the chat list, so a middle-clicked tab that is already
-  // mounted stays current: it reloads the list and drops the active chat only
-  // if the other tab deleted it. (The tab that made the change does not get the
-  // event — it already holds the new state.) A produced chat implies a deck may
-  // have appeared, so the deck list refreshes too.
   useEffect(() => {
     if (!user) return;
     const onStorage = (e) => {
@@ -179,13 +133,10 @@ function AppContent() {
     return () => window.removeEventListener("keydown", onKey);
   }, [user]);
 
-  // Mirrors the server's isAdmin(): the role, and nothing derived from the
-  // address. The Admin routes enforce this server-side regardless.
   const isAdminUser = Boolean(user && user.role === "admin");
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
   const isChatView = view === "chat";
-  // Landing header auto-hide on scroll (immersive), reappear at footer — only for home
   useEffect(() => {
     if (view !== "home") return;
     const header = document.querySelector("header");
@@ -214,10 +165,6 @@ function AppContent() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isTourView, view]);
 
-  /**
-   * The one creation entry: lazy — don't spawn in the sidebar until the
-   * first prompt is sent, so the list doesn't fill with empties.
-   */
   function newChat(kind = "deck") {
     if (!user) return;
     if (typeof kind !== "string") kind = "deck";
@@ -244,12 +191,9 @@ function AppContent() {
 
   function openChat(id) {
     setActiveChatId(id);
-    // Leaving a pending new chat without using it — keep it for now, it
-    // will be reused on next New chat or discarded on next boot.
     navigate("chat", { chatId: id });
   }
 
-  /** Persist a chat the view changed (briefing progress, produced deck, …). */
   function handleChatChanged(chat) {
     if (!user) return;
     const isPending = pendingChat && chat.id === pendingChat.id;
@@ -270,20 +214,12 @@ function AppContent() {
     if (chat.produced && chat.deckSlug) bumpDeck();
   }
 
-  /**
-   * The one place view changes meet the URL. Every navigation pushes a hash
-   * entry, so the browser back button walks the same route the user walked
-   * forward (chat → deck → home) instead of exiting the site. Non-navigation
-   * actions (toggles, modals, renders) never call this.
-   */
   function navigate(view, opts = {}) {
     const h = hashFor(view, opts);
     if (window.location.hash === h) return applyHash();
     window.location.hash = h; // pushes a history entry and fires hashchange
   }
 
-  /** Hash → shell state. The single consumer of the URL for both navigation
-   *  pushes and back/forward restores, so the two can never drift apart. */
   function applyHash() {
     const r = parseHash(window.location.hash);
     switch (r.view) {
@@ -312,7 +248,6 @@ function AppContent() {
       case "chat":
       default:
         setView("chat");
-        // use storage-direct check so a fresh hashchange before React commits still finds the chat
         if (r.chatId) {
           let fresh = chats;
           try { if (user?.email) fresh = loadChats(user.email); } catch {}
@@ -323,27 +258,6 @@ function AppContent() {
     }
   }
 
-  /**
-   * Back/forward and manual hash edits restore the view they name.
-   *
-   * Subscribed ONCE, through a ref, and that is load-bearing rather than tidy.
-   * Written without a dependency array — the obvious way to keep the handler's
-   * closure fresh — this effect re-subscribed on every render, and every
-   * in-app navigation silently did nothing.
-   *
-   * The sequence: a hashchange dispatches, the second listener below runs
-   * first and calls setHash, React flushes that render synchronously because
-   * hashchange is a discrete event, the flush runs this effect's cleanup, and
-   * the cleanup removes this listener while the same event is still
-   * dispatching. The DOM spec says a listener removed mid-dispatch is not
-   * invoked, so applyHash never ran — the URL changed, the view did not, and
-   * only a reload showed the page you asked for. Re-dispatching the same hash
-   * worked, because setHash was then a no-op and nothing re-rendered: exactly
-   * the shape that makes this look intermittent.
-   *
-   * A ref keeps one listener for the lifetime of the component and still calls
-   * the freshest applyHash, so nothing is ever unsubscribed mid-event.
-   */
   const applyHashRef = useRef(applyHash);
   applyHashRef.current = applyHash;
   useEffect(() => {
@@ -352,21 +266,12 @@ function AppContent() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  // A second, standalone subscription. The token screens render above the auth
-  // gate, before applyHash has ever run for a signed-out visitor, so they read
-  // the address bar directly rather than the view state applyHash maintains.
   useEffect(() => {
     const onHash = () => setHash(window.location.hash);
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  // Boot and login: the constant landing is New chat (the chats effect picks
-  // the account's empty thread). An EXPLICITLY-opened view hash is honoured
-  // instead — #/deck/<slug>, #/report/…, #/research/…, and also #/themes,
-  // #/home (a middle-clicked nav link must open ITS view, not spawn a New
-  // chat). Only a bare chat route (or a stale chat id, which is the last
-  // route, not a deep link) resets to #/chat and New chat wins.
   useEffect(() => {
     if (!user) return;
     const r = parseHash(window.location.hash);
@@ -376,8 +281,6 @@ function AppContent() {
     applyHash();
   }, [user?.email]);
 
-  // The front door for a visitor is the landing page. An empty hash reads as
-  // the tour, not a dead chat route.
   useEffect(() => {
     if (user) return;
     if (!window.location.hash) window.history.replaceState(null, "", "#/home");
@@ -386,31 +289,14 @@ function AppContent() {
   const rawActiveChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
   const activeChat = rawActiveChat ? normalizeChat(rawActiveChat) : null;
   const goHome = () => navigate("chat");
-  /** Move between a project's four pages. They are routes, not tabs, so a link
-   *  into any of them survives a reload and back walks the pages you walked. */
   const openProjectPage = (page) => navigate(page, { slug: activeSlug });
 
-  /** Logging out is consequential (it clears the session) — the confirm lives
-   *  with the ProfileChip that triggers it. */
   async function doLogout() {
     try { await api.logout(); } catch { /* token already gone */ }
-    // The front door is the landing page — reset the hash so the next
-    // login lands on New chat, not the route they were on.
     window.history.replaceState(null, "", "#/home");
     setUser(null);
   }
 
-  /**
-   * Open a project on the page that has something on it.
-   *
-   * A project started from a report has no deck, so landing it on the Deck page
-   * meant an empty state every time — the deck-shaped assumption this
-   * navigation exists to undo. The deck list already carries which artefacts
-   * exist, so this costs no request and cannot flash the wrong page first.
-   *
-   * A deep link to #/deck/<slug> is still honoured exactly as typed; only
-   * opening a project from the sidebar or a chat chooses.
-   */
   const openDeck = (slug) => {
     const entry = decks.find((d) => d.slug === slug);
     navigate(defaultProjectPage(entry), { slug });
@@ -418,7 +304,6 @@ function AppContent() {
   const openReport = (slug) => navigate("report", { slug });
   const openResearch = (slug) => navigate("research", { slug });
 
-  /** Delete a chat thread locally; if it was active, land on another. */
   function handleDeleteChat(id) {
     if (!user) return;
     if (pendingChat?.id === id) {
@@ -439,7 +324,6 @@ function AppContent() {
     }
   }
 
-  /** Delete decks/<slug> server-side, then leave it if it was open. */
   async function handleDeleteDeck(slug) {
     try {
       await api.deleteDeck(slug);
@@ -451,11 +335,6 @@ function AppContent() {
     if (activeSlug === slug && (view === "deck" || view === "report" || view === "research")) goHome();
   }
 
-  /**
-   * The reverse flow's chat: a report's plan arrives already made, so the chat
-   * skips the briefing and lands straight on the outline gate — same surface,
-   * same approve step, no second wizard.
-   */
   function startCompanionChat(slug, plan, theme = "") {
     const c = createChat();
     const now = new Date().toISOString();
@@ -481,8 +360,6 @@ function AppContent() {
       <RecoveryScreen
         kind={recovery.view}
         token={recovery.token}
-        // Confirming while a session is open should not leave the shell
-        // insisting the address is unconfirmed behind the screen.
         onDone={() => api.me().then((r) => setUser(r.user)).catch(() => {})}
         onSignIn={() => {
           window.location.hash = "#/home";
@@ -495,7 +372,6 @@ function AppContent() {
   }
 
   if (user === undefined) {
-    // Auth is still resolving — show branded loading, not blank particles. Solid bg, not particle field (tour is solid per request).
     return (
       <div className="grid h-full place-items-center bg-base">
         <div className="flex flex-col items-center gap-4">
@@ -539,9 +415,6 @@ function AppContent() {
                 user={null}
                 authConfig={authConfig}
                 onStartChat={() => openAuth("register")}
-                // "See the themes" shows the themes. It used to open the
-                // register modal, which asks someone to sign up for the thing
-                // they were trying to look at.
                 onBrowseThemes={() => { window.location.hash = "#/tour-themes"; }}
                 onAuth={openAuth}
               />
@@ -746,7 +619,6 @@ function AppContent() {
     </div>
   );
 }
-
 export default function App() {
   return (
     <Suspense fallback={<div className="flex h-screen items-center justify-center text-fg-muted">Loading…</div>}>
