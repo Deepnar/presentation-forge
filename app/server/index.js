@@ -3,19 +3,18 @@ import cors from "cors";
 import { readFile, writeFile, readdir, mkdir, stat, access, rm } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { ROOT, DECKS, THEMES, CONFIG, BRAND, REFERENCE } from "../../src/paths.js";
+import { ROOT, DECKS, THEMES, CONFIG, BRAND } from "../../src/paths.js";
 import { readCredits, isCitable } from "../../src/credits.js";
 import { loadTheme, listThemes, loadStyle, listStyles } from "../../src/theme.js";
 import { validateDeck } from "../../src/validate.js";
 import { render } from "../../src/render.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { preview, reportPreview } from "../../src/preview.js";
-import { renderReport, validateReport, donorStatus, donorDirFor, donorDirForDeck } from "../../src/report.js";
-import { loadIdentity, loadUserIdentity, saveUserIdentity, loadBaseIdentity, deepMerge, identityStatus } from "../../src/ai/identity.js";
+import { renderReport, validateReport, donorStatus, donorDirForDeck } from "../../src/report.js";
+import { loadIdentity, identityStatus } from "../../src/ai/identity.js";
 import { runAsAccount } from "../../src/account.js";
 import { AUTO_PROVIDER, AUTO_PROVIDER_IDS, isAutoProviderId } from "../../src/autoid.js";
 import { newMeter, withMeter, meterTotal, meterSummary, estimateTokens } from "../../src/usage.js";
-import { userBrandDirs, userReferenceDir } from "../../src/tenant.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
 import { createDeck, generateFromPlan, resumeGeneration, finalizeDeck, createReport, createDeckFromReport, sweepDensity, convertSlideType, insertDeckSlide, generationStatus, reportUnavailable } from "../../src/ai/pipeline.js";
 import { generateScript } from "../../src/ai/script.js";
@@ -28,8 +27,6 @@ import { modelChoices, roleAudit } from "../../src/ai/ollama.js";
 import { autoHealth, routingPreference, autoProvider, isHosted, setHosted } from "../../src/cloud.js";
 import { userForToken, bearerToken, seedAdmin, promoteToAdmin, isAdmin, canAccessDeck, getUserId, getUserEmailById, listUsers, setUserRole, deleteUserAccount, verificationRequired, verifiedRequestOnly } from "../../src/auth.js";
 import { mailConfigured } from "../../src/mail.js";
-import { listPresets, savePreset, updatePreset, deletePreset } from "../../src/presets.js";
-import { normalizeBrand } from "../../tools/prep-brand.mjs";
 import { reserveAuto, settleAuto, limitConfig, usageByUser, clearAutoEvents, planFor, setPlan, PLANS, isPlan } from "../../src/limits.js";
 import { settingValue, settingsReport, setSetting, SETTING_KEYS } from "../../src/runtime.js";
 import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
@@ -37,6 +34,7 @@ import { localOwnerMode, registerAuthRoutes, requireAdminUser, requireAuth, reso
 import { fail, ok, wrap } from "./http.js";
 import { registerAccountRoutes } from "./account-routes.js";
 import { configureLifecycle, reportBootGaps } from "./lifecycle.js";
+import { registerWorkspaceSettingsRoutes } from "./workspace-settings-routes.js";
 
 /**
  * Thin HTTP wrapper over the existing pipeline modules. Deliberately holds no
@@ -2375,309 +2373,7 @@ app.post("/api/decks/:slug/generate/stop", wrap(async (req, res) => {
   ok(res, { stopped: Boolean(run && !run.finished) });
 }));
 
-/* ---------------------------------------------------------------- presets */
-
-/**
- * Saved briefing formats, per user. A preset is the reusable half of a
- * briefing — the fixed fields (team, theme, density, branding, slide counts) —
- * so the briefing's first question can offer "use a saved format?" and
- * pre-fill the rest. The long-term facts (institution, guide) live in
- * config/identity.yaml, never in a preset. Gated by the same session check as
- * the deck workspace.
- */
-app.get("/api/presets", wrap(async (req, res) => {
-  ok(res, { presets: await listPresets(req.user.email) });
-}));
-
-app.post("/api/presets", wrap(async (req, res) => {
-  const { name, team, maxSlides, theme, density, branding, slidesPerMember } = req.body ?? {};
-  const preset = await savePreset(req.user.email, { name, team, maxSlides, theme, density, branding, slidesPerMember });
-  ok(res, { preset });
-}));
-
-app.put("/api/presets/:id", wrap(async (req, res) => {
-  const { name, team, maxSlides, theme, density, branding, slidesPerMember } = req.body ?? {};
-  const preset = await updatePreset(req.user.email, req.params.id, { name, team, maxSlides, theme, density, branding, slidesPerMember });
-  ok(res, { preset });
-}));
-
-app.delete("/api/presets/:id", wrap(async (req, res) => {
-  await deletePreset(req.user.email, req.params.id);
-  ok(res, {});
-}));
-
-/* ---------------------------------------------------------------- identity */
-
-/**
- * The caller's own institution, guide and chrome defaults.
- *
- * This is per account. It used to read and write one install-wide
- * config/identity.yaml, so a second user editing their college in Settings
- * replaced the first user's — and every deck rendered afterwards carried the
- * wrong institution. The install-wide file survives underneath as the
- * operator's default for accounts that have set nothing.
- *
- * Reading it requires a session too: institution, department and guide name are
- * exactly the personal details the file is gitignored to protect.
- */
-app.get("/api/identity", wrap(async (req, res) => {
-  const user = await requireAuth(req, res);
-  if (!user) return;
-  const base = await loadBaseIdentity();
-  const own = await loadUserIdentity(user.email);
-  ok(res, { identity: deepMerge(base, own), overrides: own });
-}));
-
-app.put("/api/identity", wrap(async (req, res) => {
-  const user = await requireAuth(req, res);
-  if (!user) return;
-  const { identity } = req.body ?? {};
-  if (!identity || typeof identity !== "object") return fail(res, 400, "body must include `identity`");
-  await saveUserIdentity(user.email, identity);
-  ok(res, {});
-}));
-
-/* ------------------------------------------------------------------- brand */
-
-const BRAND_ASSETS = ["crest", "banner", "watermark"];
-const BRAND_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "tiff"]);
-
-/**
- * Brand marks are per account, for the same reason identity is: a hosted box
- * serves students from more than one institution, and uploading a crest used to
- * overwrite the single install-wide one for everybody. Each account normalises
- * into its own directory and its identity points at those paths; an account
- * that has uploaded nothing falls through to the operator's default marks.
- */
-async function brandStatus(email) {
-  const dirs = userBrandDirs(email);
-  let entries = [];
-  try {
-    entries = await readdir(dirs.logos, { withFileTypes: true });
-  } catch { /* no marks uploaded yet */ }
-  const sources = {};
-  let any = false;
-  for (const name of BRAND_ASSETS) {
-    const hit = entries.find((e) => !e.isDirectory() && e.name.startsWith(`${name}.`));
-    sources[name] = hit ? hit.name : null;
-    if (hit) any = true;
-  }
-  return { sources, placeholder: !any };
-}
-
-/** Point the account's identity at its own marks — or back at the defaults. */
-async function syncBrandIdentity(email) {
-  const dirs = userBrandDirs(email);
-  const status = await brandStatus(email);
-  const own = await loadUserIdentity(email);
-  const next = { ...own };
-  if (status.placeholder) {
-    delete next.brand;
-  } else {
-    next.brand = {
-      ...(status.sources.banner ? { banner: dirs.rel.banner } : {}),
-      ...(status.sources.crest ? { crest: dirs.rel.crest, crest_light: dirs.rel.crest_light } : {}),
-      ...(status.sources.watermark ? { watermark: dirs.rel.watermark } : {}),
-    };
-  }
-  await saveUserIdentity(email, next);
-  return status;
-}
-
-app.get("/api/brand", wrap(async (req, res) => {
-  const user = await requireAuth(req, res, "log in to manage brand marks");
-  if (!user) return;
-  ok(res, { brand: await brandStatus(user.email) });
-}));
-
-/**
- * Upload a source mark. The body is the raw image bytes; the extension comes
- * from the request, so any raster format works (png/jpg/webp/tiff/gif). The
- * file lands in gitignored brand/logos/ and normalisation re-runs, so the
- * renderer picks it up on the next render — no repo edits, marks stay local.
- */
-app.post("/api/brand/:name", (req, res) => {
-  const name = req.params.name;
-  if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
-  const ext = typeof req.headers["x-file-ext"] === "string"
-    ? req.headers["x-file-ext"].toLowerCase().replace(/[^a-z0-9]/g, "")
-    : "";
-  if (!BRAND_IMAGE_EXT.has(ext)) {
-    return fail(res, 400, `unsupported image extension — allowed: ${[...BRAND_IMAGE_EXT].join(", ")}`);
-  }
-  express.raw({ type: () => true, limit: "20mb" })(req, res, (err) => {
-    if (err) return fail(res, 413, "image too large — max 20 MB");
-    (async () => {
-      try {
-        const user = await requireAuth(req, res, "log in to upload brand marks");
-        if (!user) return;
-        if (!req.body?.length) return fail(res, 400, "empty upload");
-        if (!sniffImage(req.body, ext)) {
-          return fail(res, 400, `file does not look like a ${ext} image`);
-        }
-        const dirs = userBrandDirs(user.email);
-        const file = path.join(dirs.logos, `${name}.${ext}`);
-        await mkdir(dirs.logos, { recursive: true });
-        // Replace any earlier extension of the same asset (crest.jpg -> crest.png).
-        const entries = await readdir(dirs.logos).catch(() => []);
-        for (const e of entries) {
-          if (e.startsWith(`${name}.`) && e !== path.basename(file)) {
-            await rm(path.join(dirs.logos, e), { force: true });
-          }
-        }
-        await writeFile(file, req.body);
-        // No placeholders for an account: a user with no marks of their own
-        // should fall through to the operator's, not get generic stand-ins.
-        await normalizeBrand({ srcDir: dirs.logos, outDir: dirs.generated, placeholders: false });
-        const status = await syncBrandIdentity(user.email);
-        ok(res, { asset: name, file: path.basename(file), brand: status });
-      } catch (err) {
-        fail(res, 500, err.message);
-      }
-    })();
-  });
-});
-
-/** Remove a source mark and re-normalise — falls back to placeholders. */
-app.delete("/api/brand/:name", wrap(async (req, res) => {
-  const user = await requireAuth(req, res, "log in to manage brand marks");
-  if (!user) return;
-  const name = req.params.name;
-  if (!BRAND_ASSETS.includes(name)) return fail(res, 400, `unknown brand asset "${name}"`);
-  const dirs = userBrandDirs(user.email);
-  const entries = await readdir(dirs.logos).catch(() => []);
-  let removed = null;
-  for (const e of entries) {
-    if (e.startsWith(`${name}.`)) {
-      await rm(path.join(dirs.logos, e), { force: true });
-      removed = e;
-    }
-  }
-  await rm(path.join(dirs.generated, `${name}.png`), { force: true });
-  if (name === "crest") await rm(path.join(dirs.generated, "crest-light.png"), { force: true });
-  await normalizeBrand({ srcDir: dirs.logos, outDir: dirs.generated, placeholders: false });
-  const status = await syncBrandIdentity(user.email);
-  ok(res, { asset: name, removed, brand: status });
-}));
-
-/* ---------------------------------------------------------- report donor */
-
-/**
- * The institutional .docx the report renderer injects generated content into.
- *
- * It is gitignored (it carries third-party names) and excluded from the Docker
- * build context, so a hosted deployment starts with no donor at all and every
- * report render fails.
- *
- * There are two of these, in the same relationship identity and brand marks
- * have: the install-wide default an admin uploads, and an account's own,
- * which overrides it. The donor decides the headers, margins and watermark a
- * report is graded on, so a box serving two colleges cannot have one.
- */
-const DONOR_MAGIC = Buffer.from([0x50, 0x4b, 0x03, 0x04]); // a .docx is a zip
-
-/**
- * Shared by both upload routes — the only difference is where it writes.
- * Returns the stored filename, or null after answering the request itself.
- * fail() returns the response object rather than undefined, so the rejection
- * paths have to say null in as many words or the caller replies twice.
- */
-async function acceptDonorUpload(req, res, dir) {
-  if (!req.body?.length) { fail(res, 400, "empty upload"); return null; }
-  if (!req.body.subarray(0, 4).equals(DONOR_MAGIC)) {
-    fail(res, 400, "that is not a .docx file");
-    return null;
-  }
-  let name = "";
-  try { name = decodeURIComponent(String(req.headers["x-file-name"] ?? "")); } catch { name = ""; }
-  name = path.basename(name).replace(/[^\w .()-]/g, "").slice(0, 120);
-  if (!name.toLowerCase().endsWith(".docx")) name = `${name || "template"}.docx`;
-  await mkdir(dir, { recursive: true });
-  // resolveDonor refuses to guess between several templates, so a new upload
-  // replaces the old rather than accumulating alternatives.
-  for (const f of (await readdir(dir).catch(() => []))) {
-    if (f.toLowerCase().endsWith(".docx")) await rm(path.join(dir, f), { force: true });
-  }
-  await writeFile(path.join(dir, name), req.body);
-  return name;
-}
-
-/**
- * This account's own report template.
- *
- * `own` is what this account has uploaded and `effective` is what its reports
- * will actually be drawn on — they differ exactly when the account is falling
- * through to the operator's default, which is the ordinary case and not a
- * fault. A student at the operator's own institution should never have to
- * upload anything.
- */
-app.get("/api/donor", wrap(async (req, res) => {
-  const user = await requireAuth(req, res, "log in to manage your report template");
-  if (!user) return;
-  const mine = userReferenceDir(user.email);
-  const own = await donorStatus(mine);
-  const effective = await donorStatus(await donorDirFor(user.email));
-  ok(res, {
-    own,
-    effective,
-    fallback: !own.ok,
-    message: effective.ok ? null : reportUnavailable(effective),
-  });
-}));
-
-app.post("/api/donor", (req, res) => {
-  express.raw({ type: () => true, limit: "25mb" })(req, res, (err) => {
-    if (err) return fail(res, 413, "template too large — max 25 MB");
-    (async () => {
-      try {
-        const user = await requireAuth(req, res, "log in to upload a report template");
-        if (!user) return;
-        const name = await acceptDonorUpload(req, res, userReferenceDir(user.email));
-        if (name === null) return;                   // acceptDonorUpload already replied
-        ok(res, { donor: name });
-      } catch (err) {
-        fail(res, 500, err.message);
-      }
-    })();
-  });
-});
-
-/** Drop this account's template and fall back to the operator's default. */
-app.delete("/api/donor", wrap(async (req, res) => {
-  const user = await requireAuth(req, res, "log in to manage your report template");
-  if (!user) return;
-  const dir = userReferenceDir(user.email);
-  let removed = null;
-  for (const f of (await readdir(dir).catch(() => []))) {
-    if (f.toLowerCase().endsWith(".docx")) {
-      await rm(path.join(dir, f), { force: true });
-      removed = f;
-    }
-  }
-  ok(res, { removed, effective: await donorStatus(await donorDirFor(user.email)) });
-}));
-
-app.get("/api/admin/donor", wrap(async (req, res) => {
-  if (!(await requireAdminUser(req, res))) return;
-  const donor = await donorStatus();
-  ok(res, { ...donor, message: donor.ok ? null : reportUnavailable(donor) });
-}));
-
-app.post("/api/admin/donor", (req, res) => {
-  express.raw({ type: () => true, limit: "25mb" })(req, res, (err) => {
-    if (err) return fail(res, 413, "template too large — max 25 MB");
-    (async () => {
-      try {
-        if (!(await requireAdminUser(req, res))) return;
-        const name = await acceptDonorUpload(req, res, REFERENCE);
-        if (name === null) return;                   // acceptDonorUpload already replied
-        ok(res, { donor: name });
-      } catch (err) {
-        fail(res, 500, err.message);
-      }
-    })();
-  });
-});
+registerWorkspaceSettingsRoutes(app, { sniffImage });
 
 registerAuthRoutes(app);
 
