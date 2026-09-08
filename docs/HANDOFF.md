@@ -1,179 +1,36 @@
-# Handoff — 2026-09-06, self-hosting, BYOK guard and v0.1.0 released
+# Handoff — 2026-09-08, repository structural cleanup started
 
-Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then the
-relevant entry in `docs/ROADMAP.md`. The roadmap is the only future-work list;
-do not copy work items into this file or `PRODUCTION.md`.
+Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
+`docs/ROADMAP.md` → **Repository-wide structural cleanup**.
 
-## Clean stopping point
+## Current state
 
-The private local-install track and the cross-deployment BYOK spending guard are
-complete, documented, tested and running. There is no partially implemented
-local or BYOK-safety feature to continue. Provider-quality, checkout and public
-hosting remain separate later tracks.
+The first structural pass is complete and behaviorally verified. The Express
+entry point is 2,709 lines, down from 3,411. Authentication, provider/account
+settings, shared HTTP responses, and boot/lifecycle work now live in dedicated
+registrar modules under `app/server/`. Route ordering remains controlled by
+`index.js`, and business logic remains in `src/`.
 
-The matching public checkpoint is version `0.1.0`, tagged as `v0.1.0` and
-published at
-<https://github.com/Deepnar/presentation-forge/releases/tag/v0.1.0>. Release
-copy describes the repository as self-hosted software and does not claim that
-the later hosted/paid product is live. Its assets include the briefing,
-app-viewer and four-theme demonstrations in both GIF and MP4 form.
-
-Public contribution routing is also in place: `CONTRIBUTING.md`,
-`CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`, issue forms and the pull
-request template. README points questions to Discussions, defects to Issues and
-vulnerabilities to private advisories.
-GitHub reports a 100% community profile; Discussions and private vulnerability
-reporting are enabled, and repository discovery metadata now names Docker,
-BYOK, Ollama and AI presentations accurately. These community files landed on
-`main` immediately after the immutable `v0.1.0` product tag.
-
-The upload-ready repository social card is
-`app/gallery/social/repository-open-graph.png`: 1280×640 RGB PNG, crop-safe and
-worded for the released self-hosted product. GitHub does not read this file
-automatically; upload it under **Settings → General → Social preview**.
-
-The custom bug/feature forms and their labels were verified live on GitHub; the
-generic template-setup screen is not missing work. Repository funding remains
-off because no active funding destination exists. The reason and exact unblock
-are recorded in `docs/BLOCKED.md` §2.5 and the roadmap funding entry.
-
-## The local product as shipped
-
-From a clone, the application starts with one Docker command:
-
-```bash
-docker compose up -d --build --wait
-```
-
-The root `compose.yaml` starts Forge and a private SearXNG companion, exposes
-only `127.0.0.1:8090`, persists all state in `forge_local_data`, and requires no
-domain, SMTP credentials, shared-provider key or production secret. Forge's
-image contains Node, LibreOffice, Chromium, fonts and the theme gallery. Ollama
-is deliberately not bundled into that process image.
-
-Model access is chosen after startup:
-
-- BYOK works in the downloadable app under **Settings → Cloud** and requires no
-  Ollama installation. Only model requests go to the chosen provider. The key
-  owner's provider bills their account, and the owner must acknowledge that
-  before saving a key.
-- Local inference uses host Ollama through `host.docker.internal` or an explicit
-  `FORGE_OLLAMA_HOST`. `qwen3:4b` is documented as a lightweight starter, not as
-  the product's quality reference.
-
-`tools/local-check.mjs` now distinguishes application readiness from model
-choice. A healthy fresh install passes and explains that it still needs BYOK or
-Ollama; when Ollama is visible it reports the selected local model. It runs
-inside Forge's container, so a Docker-only user does not need host Node.
-
-## Local authentication
-
-Private installs default to personal-owner mode:
-
-- A fresh volume offers **Set up your workspace**.
-- The first registration atomically creates a verified administrator, starts
-  its session, and closes registration.
-- Later visits offer **Open workspace** and normal local login.
-- Google sign-in, email confirmation, resend and password-reset routes are not
-  local-owner surfaces; the UI does not advertise them.
-- Accounts remain because they own decks and encrypted BYOK keys. Existing
-  volumes and all existing accounts are preserved without migration or merge.
-- `FORGE_LOCAL_MULTI_USER=1` is the explicit compatibility option for an old,
-  trusted shared-machine install. It is not the normal Compose default.
-- Hosted mode retains its existing multi-user registration, verification,
-  recovery, Google and administrator behavior.
-
-The first-owner insert uses SQLite `BEGIN IMMEDIATE`; two first-load tabs cannot
-both create owners. `/api/auth/registration` carries the explicit installation
-posture, so the browser never guesses auth behavior from missing SMTP.
-
-## README and platform contract
-
-The README now puts the local path before implementation detail, presents BYOK
-and Ollama as equal choices, and contains one local-install explanation instead
-of two. The animated four-theme proof replaces its duplicate static grid. Two
-real app captures are embedded: the existing-work viewer and a fresh private
-install walking from topic entry through briefing choices and optional thesis
-details. The latter stops before generation and says so because no model was
-available; it makes no output claim.
-
-`LOCAL_SETUP.md` covers Docker Desktop on Windows/macOS, Docker Engine on Linux,
-host/LAN Ollama, BYOK, persistent data and destructive reset behavior. Host
-LibreOffice/Poppler/Chromium requirements are clearly scoped to source
-development, not Docker use. All 34 README-local paths resolve.
-
-## BYOK cost safety
-
-The same guard applies to user-supplied OpenAI-compatible keys in the local and
-hosted applications because enforcement lives in the shared model transport:
-
-- each account starts with a 180,000-token rolling 24-hour ceiling, editable in
-  **Profile → Cloud** between 10,000 and 5,000,000;
-- every real provider attempt is atomically reserved before the network call,
-  including retries, repairs, reports, scripts and key tests;
-- successful calls settle to provider-reported usage or a conservative text
-  estimate; failed/time-out calls retain their reservation;
-- each response is capped at 12,000 tokens, output-cap doubling is disabled and
-  transport failures receive at most one retry;
-- the UI shows used/remaining tokens and the approximately 134,600-token
-  preflight estimate for a researched 22-slide deck;
-- saving or replacing a key requires explicit acknowledgement that provider
-  pricing, balance, taxes, currency, billing limit and final invoice belong to
-  the key owner. Terms, Privacy, README, local setup and deployment docs repeat
-  the boundary and direct the owner to set a hard provider-side monetary cap.
-
-This is deliberately a token safety rail rather than currency accounting.
-Provider-specific prompt caching is still a separate roadmap item and should be
-implemented only after a provider is selected and measured; the spending guard
-does not depend on it.
+The ineffective dynamic import of `modelMode.js` in `ChatView.jsx` is now a
+normal static dependency. The Vite warning for that false split is gone. The
+remaining bundle-size warning is real and belongs to the roadmap's React
+route-level splitting pass.
 
 ## Verification
 
-- `npm test` — **808 passing, 0 failing** outside the restricted test sandbox.
-- `npx vite build --config app/web/vite.config.js` — clean build; only the
-  pre-existing bundle-size/dynamic-import warnings remain.
-- Local-owner HTTP integration — fresh setup, admin/session creation,
-  registration closure, login, disabled local mail/Google routes and unchanged
-  hosted registration all pass.
-- Compose/build-context tests — local/production separation, private SearXNG,
-  persistence, host-Ollama override and config allow-list all pass.
-- Local-check tests — both BYOK-ready/no-Ollama and visible-Ollama states pass.
-- Live `docker compose up -d --build` — Forge and SearXNG healthy.
-- Live install check — Forge healthy, bundled research configured, existing
-  local model visible. This read the model list only; it did not generate or
-  use the local model.
-- Live auth contract — `localOwner: true`, `ownerConfigured: true`, signup
-  closed, mail and verification disabled on the existing volume.
-- Browser DOM check — rebuilt app loaded at `#/home` with no console errors and
-  showed **Open workspace** with no public signup action. The browser control's
-  screenshot/click channel timed out after that read, so no modal screenshot is
-  claimed; route behavior is covered by the HTTP test.
-- Briefing capture — a disposable isolated Docker volume was used to create a
-  dummy owner, enter a topic, choose briefing settings and open optional thesis
-  details. It stopped before generation, made no model call, and the temporary
-  containers, network and volume were removed after capture.
-- BYOK unit/transport tests — concurrent reservations, refusal-before-fetch,
-  provider-usage settlement, omitted-usage estimation, retained failed-call
-  reserve, response cap and one-retry ceiling all pass.
-- Disposable Docker HTTP integration — changed a fresh owner's budget, proved
-  key save fails without cost acknowledgement, saved a dummy key with
-  acknowledgement and observed its acceptance timestamp. The temporary
-  container and its fake account/key were removed afterward.
-- Browser legal-page check — the rebuilt app visibly serves the
-  **Bring-your-own-key costs** Terms section at `127.0.0.1:8090`.
+- `npm test` — 808 passing, 0 failing.
+- `npx vite build --config app/web/vite.config.js` — successful; only the real
+  646 kB initial-chunk warning remains.
+- `npm run render -- decks/solar-microgrids-for-rural-electrification-i/deck.yaml`
+  — successful, 2 slides.
+- `npm run preview -- decks/solar-microgrids-for-rural-electrification-i/out/deck.pptx`
+  — successful, 2 rasterized pages; slide 1 was visually inspected and is clean.
+- `git diff --check` — clean.
 
-## Local runtime left in place
+## Continue from here
 
-The Forge and SearXNG containers are healthy on `127.0.0.1:8090`. The preserved
-`forge_local_data` volume contains the prior throwaway capture account and
-public demo workspace. Do not publish that volume or browser state.
-`docker compose down` preserves it; `docker compose down -v` permanently
-deletes decks, accounts, keys and the report donor.
-
-## Next session
-
-Choose an item directly from `docs/ROADMAP.md`, using `docs/BLOCKED.md` to avoid
-work that still needs a provider, operator asset or product decision. There is
-no remaining local-hosting or provider-neutral BYOK-safety item to select. Do
-not run a local model to judge content quality; the repository working
-agreement defines the hosted Auto path as the quality reference.
+Do not mechanically split files by line count or delete every explanatory
+comment. Follow the checked seams in the roadmap: server route families first,
+then the layout registry, React views and AI orchestration. Add route-order
+characterisation tests before moving each remaining server family. Preserve the
+chrome/theme/content boundary throughout.

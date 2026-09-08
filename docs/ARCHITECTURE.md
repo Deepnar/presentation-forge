@@ -854,7 +854,19 @@ immediately, and re-renders on a short debounce.
 
 `#/admin` (`app/web/src/views/Admin.jsx`) is the operator surface, gated by `src/auth.js:isAdmin` — `role=admin` in `users` table, or `email==18deepnar@gmail.com` (hardcoded seed, auto-promoted on `register`/`findOrCreateGoogleUser`), or `FORGE_ADMIN_EMAIL` env. `App.jsx:139` `isAdminUser` controls the Sidebar shield link (`Sidebar.jsx:287`) and `App.jsx:244` `#/admin` route; the view itself also handles `403` from the API.
 
-Server `app/server/index.js:486` `requireAdmin` guards `GET /api/admin/hosted` / `POST /api/admin/hosted` (`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env for runtime flips), `GET /api/admin/users` / `POST /api/admin/users/:email/role` / `DELETE /api/admin/users/:email` (`src/auth.js:listUsers`/`setUserRole`/`deleteUserAccount` with last-admin guard), `GET /api/admin/decks` (all owners + `deck.pptx` size), and `GET /api/admin/stats` (users total/admins/week, decks total/slides/reports/size, `byTheme`/`byOwner`/`recent`, `auto_events` aggregate total/top-10, `limits`, `system` — TCET key, Ollama/SearXNG health, disk `df`, uptime, node). `published/` (`published/*.pptx|*.pdf|*.docx`) is the public showcase, force-added via `!published/**` in `.gitignore:28` while private `decks/*` stays ignored except `!decks/_public/**`.
+The HTTP server is composed in `app/server/index.js`, which keeps route order
+explicit. `app/server/auth-routes.js` owns authentication and throttling,
+`account-routes.js` owns provider keys, budgets and usage, `lifecycle.js` owns
+public system routes, maintenance jobs, static UI hosting and boot diagnostics,
+and `http.js` owns the response wrapper. Business behavior remains in `src/`;
+these modules only translate HTTP requests and register routes.
+
+The admin routes guard `GET /api/admin/hosted` / `POST /api/admin/hosted`
+(`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env
+for runtime flips), user role/deletion operations, deck inventory and aggregate
+statistics. `published/` (`published/*.pptx|*.pdf|*.docx`) is the public
+showcase, force-added via `!published/**` in `.gitignore:28` while private
+`decks/*` stays ignored except `!decks/_public/**`.
 
 Frontend `Admin.jsx` has five tabs — Overview (4 stat cards + `BarChart` for themes/owners + recent decks), Users (search, Make/Remove admin, Delete), Decks (search, all decks table), Analytics (total requests/slides/tokens, top users bar chart, limits grid), System (hosted/local switch with `forge:hostedChanged` + reload, backend health, disk/uptime, RBAC explanation). `SettingsModal.jsx:522` `HostedSection` (admin only) also toggles hosted and reloads, so Settings and Chat (`ChatView.jsx:1015` `hosted/local` badge + `944` `Local·Ollama`/`Auto·TCET` pill) stay linked.
 

@@ -5883,6 +5883,45 @@ is the repository hygiene half.
   HTTP as a non-admin — the first HTTP-level test in the suite, and the only
   shape that can catch a route-ordering bug at all.
 
+### [~] Repository-wide structural cleanup
+
+*Priority: maintainability. No model needed.*
+
+Audit every executable source file, reduce commentary that restates the code,
+and split oversized modules along existing subsystem boundaries without moving
+business logic into the HTTP layer or exposing layout tokens to content. Start
+with `app/server/index.js`, whose route registration, authentication, account
+settings, lifecycle jobs and static hosting have accumulated in one file, then
+apply the same responsibility and dependency audit to the renderer, AI pipeline
+and React surfaces. Preserve route ordering, public imports and observable
+behavior with the existing test suite, production build and a rasterized render.
+
+- **[x] Server composition pass.** Extracted authentication and abuse controls,
+  account/provider settings, shared HTTP responses, and lifecycle/static-hosting
+  concerns. `app/server/index.js` fell from 3,411 to 2,709 lines while keeping
+  route order visible at the composition point. Verified with the full 808-test
+  suite, Vite production build, and a real render/preview pass.
+- **[x] Remove the ineffective model-mode dynamic import.** The same module was
+  already in the initial graph through five static consumers, so the async load
+  created no chunk and only obscured the dependency.
+- **[ ] Split the remaining server route families** (admin, deck artefacts,
+  generation runs, identity/brand/donor) after adding route-table contract tests
+  for each literal-before-parameter ordering dependency.
+- **[ ] Split the renderer layout registry** by slide family while keeping one
+  shared composition/fitting primitive layer and one public dispatcher.
+- **[ ] Split the large React views** by state machine and panel responsibility,
+  then lazy-load route-level surfaces to address the real 646 kB initial bundle.
+- **[ ] Split AI orchestration modules** only after characterisation tests pin
+  resume, metering, repair and transport behavior at their seams.
+
+> **Learned.** File size alone is not a safe extraction boundary. The server's
+> literal routes must remain ahead of `/:slug` ownership middleware, and its
+> shared guards are used by routes outside the auth family. Registrar modules
+> preserve both properties: the entry point owns ordering, while each subsystem
+> owns its handlers and private state. A build warning also exposed a different
+> kind of false split: dynamically importing a module that is already statically
+> reachable cannot create a chunk.
+
 ### [x] Publish the first self-hosted release
 
 *Priority: immediate distribution checkpoint. No model needed.*
