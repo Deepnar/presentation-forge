@@ -76,6 +76,7 @@ providers:
       - deepseek-v4-flash
       - qwen3.8-max
       - mimo-v2.5
+      - muse-spark-1.3-contributor
     # BYOK has to be explicit too: none of these is declared vision-capable, so
     # the critic skips on a Cloud route rather than guessing. Add a model here
     # when you know it reads images.
