@@ -72,7 +72,8 @@ providers:
     apiKey: env:OPENCODE_GO_API_KEY
     label: OpenCode Go
     session_header: true
-    api: responses
+    responses_models:
+      - muse-spark-1.3-contributor
     models:
       - deepseek-v4-flash
       - qwen3.8-max

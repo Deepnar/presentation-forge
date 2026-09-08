@@ -15,7 +15,7 @@ providers:
   paid:
     type: openai-compatible
     session_header: true
-    api: responses
+    responses_models: [paid-model]
     baseURL: https://paid.invalid/v1
     apiKey: env:PAID_API_KEY
     models: [paid-model]

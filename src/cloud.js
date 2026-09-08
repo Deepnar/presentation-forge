@@ -255,7 +255,7 @@ export async function cloudProvider() {
       models: list,
       apiKey: p.apiKey ?? "",
       sessionHeader: p.session_header === true,
-      responsesApi: p.api === "responses",
+      responsesModels: p.responses_models ?? [],
     };
   }
   return null;

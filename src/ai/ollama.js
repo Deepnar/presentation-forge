@@ -119,7 +119,7 @@ async function backendFor(cfg, spec) {
     apiKey: await providerKey(spec.provider, p.apiKey),
     supportsThinking: Boolean(p.supports_thinking),
     sessionHeader: p.session_header === true,
-    responsesApi: p.api === "responses",
+    responsesModels: p.responses_models ?? [],
     providerId: spec.provider,
     billingOwner: isAutoProviderId(spec.provider) ? "operator" : "user",
   };
@@ -165,7 +165,7 @@ export async function resolveRole(role) {
             apiKey: await providerKey(ap.id, ap.apiKey),
             supportsThinking: Boolean(cfg.providers?.[ap.id]?.supports_thinking),
             sessionHeader: cfg.providers?.[ap.id]?.session_header === true,
-            responsesApi: cfg.providers?.[ap.id]?.api === "responses",
+            responsesModels: cfg.providers?.[ap.id]?.responses_models ?? [],
             providerId: ap.id,
             billingOwner: "operator",
           },
@@ -186,7 +186,7 @@ export async function resolveRole(role) {
               apiKey: key,
               supportsThinking: Boolean(cfg.providers?.[cp.id]?.supports_thinking),
               sessionHeader: cfg.providers?.[cp.id]?.session_header === true,
-              responsesApi: cp.responsesApi === true,
+              responsesModels: cp.responsesModels ?? [],
               providerId: cp.id,
               billingOwner: "user",
             },
@@ -409,7 +409,7 @@ async function cloudSpec(cfg, model, role) {
         apiKey: await providerKey(name, p.apiKey),
         supportsThinking: Boolean(p.supports_thinking),
         sessionHeader: p.session_header === true,
-        responsesApi: p.api === "responses",
+        responsesModels: p.responses_models ?? [],
         providerId: name,
         billingOwner: isAutoProviderId(name) ? "operator" : "user",
       },
@@ -597,7 +597,7 @@ async function cloudChat(spec, {
       })
     : null;
 
-  if (spec.backend.responsesApi) {
+  if (spec.backend.responsesModels?.includes(spec.model)) {
     clearTimeout(timer);
     signal?.removeEventListener("abort", onAbort);
     return responsesChat(spec, { messages, format, tools, images, temperature, outputCap, onToken, timeout, signal, sessionId, reservation });
