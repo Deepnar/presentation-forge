@@ -15,6 +15,7 @@ providers:
   paid:
     type: openai-compatible
     session_header: true
+    api: responses
     baseURL: https://paid.invalid/v1
     apiKey: env:PAID_API_KEY
     models: [paid-model]
@@ -58,13 +59,15 @@ const asOwner = (fn) => runAsAccount({ userId, email: "owner@example.test" }, fn
 test("BYOK uses the conservative output ceiling in local and hosted mode", async () => {
   const caps = [];
   const sessions = [];
-  global.fetch = async (_url, init) => {
+  global.fetch = async (url, init) => {
     const body = JSON.parse(init.body);
-    caps.push(body.max_tokens);
+    assert.equal(String(url), "https://paid.invalid/v1/responses");
+    caps.push(body.max_output_tokens);
     sessions.push(init.headers["x-opencode-session"]);
     return new Response(JSON.stringify({
-      choices: [{ message: { content: "ok" }, finish_reason: "stop" }],
-      usage: { prompt_tokens: 8, completion_tokens: 2 },
+      status: "completed",
+      output: [{ type: "message", content: [{ type: "output_text", text: "ok" }] }],
+      usage: { input_tokens: 8, output_tokens: 2 },
     }), { status: 200, headers: { "Content-Type": "application/json" } });
   };
 
@@ -110,7 +113,8 @@ test("BYOK retries at most once even when the provider keeps failing", async () 
 
 test("missing usage metadata is estimated instead of becoming free", async () => {
   global.fetch = async () => new Response(JSON.stringify({
-    choices: [{ message: { content: "answer without usage metadata" }, finish_reason: "stop" }],
+    status: "completed",
+    output: [{ type: "message", content: [{ type: "output_text", text: "answer without usage metadata" }] }],
   }), { status: 200, headers: { "Content-Type": "application/json" } });
 
   await asOwner(() => chat({ role: "author", model: "paid-model", messages: [{ role: "user", content: "hello" }] }));

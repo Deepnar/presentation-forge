@@ -72,6 +72,7 @@ providers:
     apiKey: env:OPENCODE_GO_API_KEY
     label: OpenCode Go
     session_header: true
+    api: responses
     models:
       - deepseek-v4-flash
       - qwen3.8-max

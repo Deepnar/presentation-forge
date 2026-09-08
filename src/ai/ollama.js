@@ -119,6 +119,7 @@ async function backendFor(cfg, spec) {
     apiKey: await providerKey(spec.provider, p.apiKey),
     supportsThinking: Boolean(p.supports_thinking),
     sessionHeader: p.session_header === true,
+    responsesApi: p.api === "responses",
     providerId: spec.provider,
     billingOwner: isAutoProviderId(spec.provider) ? "operator" : "user",
   };
@@ -164,6 +165,7 @@ export async function resolveRole(role) {
             apiKey: await providerKey(ap.id, ap.apiKey),
             supportsThinking: Boolean(cfg.providers?.[ap.id]?.supports_thinking),
             sessionHeader: cfg.providers?.[ap.id]?.session_header === true,
+            responsesApi: cfg.providers?.[ap.id]?.api === "responses",
             providerId: ap.id,
             billingOwner: "operator",
           },
@@ -184,6 +186,7 @@ export async function resolveRole(role) {
               apiKey: key,
               supportsThinking: Boolean(cfg.providers?.[cp.id]?.supports_thinking),
               sessionHeader: cfg.providers?.[cp.id]?.session_header === true,
+              responsesApi: cp.responsesApi === true,
               providerId: cp.id,
               billingOwner: "user",
             },
@@ -406,6 +409,7 @@ async function cloudSpec(cfg, model, role) {
         apiKey: await providerKey(name, p.apiKey),
         supportsThinking: Boolean(p.supports_thinking),
         sessionHeader: p.session_header === true,
+        responsesApi: p.api === "responses",
         providerId: name,
         billingOwner: isAutoProviderId(name) ? "operator" : "user",
       },
@@ -593,6 +597,12 @@ async function cloudChat(spec, {
       })
     : null;
 
+  if (spec.backend.responsesApi) {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", onAbort);
+    return responsesChat(spec, { messages, format, tools, images, temperature, outputCap, onToken, timeout, signal, sessionId, reservation });
+  }
+
   try {
     const url = `${String(spec.backend.baseURL).replace(/\/+$/, "")}/chat/completions`;
     const res = await fetch(url, {
@@ -666,6 +676,76 @@ async function cloudChat(spec, {
       content, toolCalls, thinking: thinking || null,
       model: spec.model, role: spec.role, fellBack: spec.fellBack,
       evalCount, promptCount, doneReason,
+    };
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", onAbort);
+  }
+}
+
+async function responsesChat(spec, {
+  messages, format, tools, images, temperature, outputCap,
+  onToken, timeout, signal, sessionId, reservation,
+}) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeout);
+  const onAbort = () => ctrl.abort();
+  signal?.addEventListener("abort", onAbort);
+  const responseTools = (tools ?? []).map((tool) => ({
+    type: "function",
+    name: tool.function?.name,
+    description: tool.function?.description,
+    parameters: tool.function?.parameters,
+    ...(tool.function?.strict != null ? { strict: tool.function.strict } : {}),
+  }));
+  const body = {
+    model: spec.model,
+    input: cloudMessages(messages, images, format),
+    ...(outputCap ? { max_output_tokens: outputCap } : {}),
+    ...(temperature != null ? { temperature } : {}),
+    ...(format ? { text: { format: { type: "json_schema", name: "forge_response", schema: format, strict: true } } } : {}),
+    ...(responseTools.length ? { tools: responseTools } : {}),
+  };
+  try {
+    const base = String(spec.backend.baseURL).replace(/\/+$/, "");
+    const res = await fetch(`${base}/responses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(spec.backend.apiKey ? { Authorization: `Bearer ${spec.backend.apiKey}` } : {}),
+        ...(spec.backend.sessionHeader ? { "x-opencode-session": sessionId } : {}),
+      },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    if (!res.ok) throw new Error(`Cloud ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const data = await res.json();
+    const content = data.output_text ?? (data.output ?? [])
+      .flatMap((item) => item.content ?? [])
+      .filter((item) => item.type === "output_text")
+      .map((item) => item.text ?? "")
+      .join("");
+    if (onToken && content) onToken(content);
+    const toolCalls = (data.output ?? [])
+      .filter((item) => item.type === "function_call")
+      .map((item) => ({
+        id: item.call_id ?? item.id,
+        type: "function",
+        function: { name: item.name, arguments: item.arguments ?? "{}" },
+      }));
+    settleByokCall(
+      reservation?.eventId,
+      estimateByokActual(body, content, data.usage?.input_tokens, data.usage?.output_tokens),
+    );
+    return {
+      content,
+      toolCalls,
+      model: data.model ?? spec.model,
+      role: spec.role,
+      fellBack: spec.fellBack,
+      evalCount: data.usage?.output_tokens ?? 0,
+      promptCount: data.usage?.input_tokens ?? 0,
+      doneReason: data.status === "incomplete" ? "length" : "stop",
     };
   } finally {
     clearTimeout(timer);
