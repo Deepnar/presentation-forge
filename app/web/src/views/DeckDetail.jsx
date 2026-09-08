@@ -10,18 +10,10 @@ import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
+import { TypeSwapModal, CardBtn, CardMenu, ActionBtn, MenuBtn, EditIcon, BoltIcon } from "../components/DeckDetailControls.jsx";
 
-/**
- * One deck: header with theme/style + render + download, a Report panel (the
- * land target of the home Report mode), then the live slide grid with lightbox,
- * inline editing and presenter picks. Rendering happens through the real API;
- * "rendering…" and the problems list are sync feedback, not decoration.
- */
 export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, onOpenDeck, onNavigate }) {
   const project = useProject(slug, refreshToken);
-  // GET /api/decks/:slug opens deck.yaml unconditionally, so a report-first
-  // project fails here. Without this the page sat on its loading skeleton
-  // forever — the deck-shaped assumption, as a symptom.
   const [loadErr, setLoadErr] = useState(null);
   const [data, setData] = useState(null);
   const [themes, setThemes] = useState([]);
@@ -37,44 +29,25 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const [punch, setPunch] = useState(null); // slide index being punched up
   const [punchErr, setPunchErr] = useState("");
   const [actionErr, setActionErr] = useState("");
-  // Slides whose generation failed — placeholder content must not ship. The
-  // badge, the warning panel and the regenerate affordance all derive here.
   const [placeholders, setPlaceholders] = useState([]); // [{ index, type, headline }]
   const [versions, setVersions] = useState(null); // null = not loaded
   const [mode, setMode] = useState(null); // deck's remembered dark mode
-  // Generation-run state (server-reported): whether a run is live, and whether
-  // this complete-but-unfinalised deck needs the finalize pass — the stuck
-  // "Working…" fix. Polled while a run is active so the banner flips by itself.
   const [deckRun, setDeckRun] = useState(null);
   const [runBusy, setRunBusy] = useState(false);
-  // One automatic finalize per mount — a failure must not retry on every render.
   const autoFinalizedRef = useRef(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [overflowOpen, setOverflowOpen] = useState(false);
   const overflowRef = useRef(null);
-  // Render dirty: deck.yaml (or the theme/style/mode override) changed since
-  // the last render. The server computes the deck.yaml-vs-pptx half from
-  // mtimes; theme/style/mode never touch deck.yaml, so every local change to
-  // them also flips the flag. Render is disabled with "Up to date" when clean.
   const [renderDirty, setRenderDirty] = useState(false);
-  // The content-density sweep: rewrite all slide content at a chosen density,
-  // keeping structure, types and presenters. density = current deck density.
   const [density, setDensity] = useState("balanced");
   const [sweeping, setSweeping] = useState(false);
   const [sweepMsg, setSweepMsg] = useState("");
-  // The type-swap gallery: which slide is being re-typed, the loaded specimen
-  // previews, and the conversion state.
   const [swap, setSwap] = useState(null); // slide index
   const [specimens, setSpecimens] = useState(null); // { types, previews }
   const [swapBusy, setSwapBusy] = useState(false);
   const [swapErr, setSwapErr] = useState("");
-  // Image upload: which slide an uploaded image is destined for, and the file.
-  // A ref, not state: the file-input change fires synchronously after the
-  // picker click, before a state update could commit.
   const imgForRef = useRef(null);
   const imgInputRef = useRef(null);
-  // F9 — undo/redo stacks of full deck states. Every commitDeck pushes the
-  // previous deck; Ctrl+Z/Ctrl+Y walk the stacks and re-save + re-render.
   const [past, setPast] = useState([]);
   const [future, setFuture] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -83,8 +56,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const renderTimer = useRef(null);
   const exportRef = useRef(null);
 
-
-  // The Export menu closes on outside click and Escape.
   useEffect(() => {
     if (!exportOpen && !overflowOpen) return;
     const onDown = (e) => {
@@ -101,8 +72,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   }, [exportOpen, overflowOpen]);
 
   useEffect(() => {
-    // refreshToken bumps after a chat turn or report generate, so a deck
-    // changed elsewhere shows its new slides here without a manual reload.
     api.deck(slug).catch((e) => { setLoadErr(e); return null; }).then((r) => {
       if (!r) return;
       const stamp = Date.now();
@@ -112,13 +81,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
         thumbs: r.thumbs.map((s) => `${s}?t=${stamp}`),
       });
       setPlaceholders(r.placeholders ?? []);
-      // Theme/style/density/mode are human-picked and may be dirty locally
-      // (e.g. picker changed theme but deck.yaml not yet re-fetched after save).
-      // Don't clobber a dirty local pick with the stale deck value that just
-      // arrived from a refresh triggered by an unrelated mutation (swap, move,
-      // etc.) — the save for the new theme is already in flight or the deck
-      // refetch simply hasn't seen it yet. Once the save lands, deck.theme
-      // equals the local pick and the guard falls through.
       const nextTheme = r.deck.theme ?? "";
       const nextStyle = r.deck.style ?? "";
       const nextMode = r.meta?.mode ?? null;
@@ -133,7 +95,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     api.themes().then((r) => setThemes(r.themes)).catch(() => {});
     api.styles().then((r) => setStyles(r.styles)).catch(() => {});
     api.templates().then((r) => setTemplates(r.templates ?? [])).catch(() => {});
-    // Team members for the presenter picker; the deck's own meta snapshot wins.
     api.identity().then((r) => setIdentity(r.identity ?? {})).catch(() => {});
   }, [slug, refreshToken]);
 
@@ -141,9 +102,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     ? data.meta.team.members
     : identity?.team?.members) ?? [];
 
-  // While a generation run is live, poll so the banner (and the slides once
-  // they land) appear without a manual reload — the "refresh restarted from
-  // slide 1" fix's companion: the deck view adopts the run instead of hanging.
   useEffect(() => {
     if (!deckRun?.active) return;
     const id = setInterval(() => {
@@ -160,12 +118,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     return () => clearInterval(id);
   }, [deckRun?.active, slug]);
 
-  /**
-   * Gamma-style per-slide quick action: "make this punchier" is a chat turn
-   * scoped to the slide, through the same runTurn pipeline the chat rail uses.
-   * The instruction names the slide's index so the structural command handling
-   * in runTurn resolves it; the deck re-renders when the turn lands.
-   */
   function punchUp(i) {
     if (punch !== null) return;
     setPunch(i);
@@ -183,12 +135,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     }).finally(() => setPunch(null));
   }
 
-  /**
-   * Regenerate ONE placeholder slide — a scoped chat turn that replaces the
-   * placeholder content with real content drawn from the deck's research. The
-   * render gate refuses to render a deck that still carries placeholders, so
-   * this is the only way past it. Runs in place and re-renders on landing.
-   */
   function regenerate(i) {
     if (punch !== null) return;
     setPunch(i);
@@ -209,14 +155,8 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     }).finally(() => setPunch(null));
   }
 
-  /**
-   * Persist a deck mutation directly to deck.yaml (never through a model), then
-   * re-render. The grid updates optimistically so the change is visible
-   * immediately; the rasterised preview catches up within a beat.
-   */
   function commitDeck(nextDeck) {
     setData((d) => (d ? { ...d, deck: nextDeck } : d));
-    // The deck being replaced joins the undo history.
     setPast((p) => [...p.slice(-19), deck]);
     setFuture([]);
     api.saveDeck(slug, nextDeck, data?.meta)
@@ -229,8 +169,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .catch((err) => setProblems([err.message, ...(err.errors ?? [])]));
   }
 
-  // Ctrl+Z / Ctrl+Y undo and redo across the stacks, saving + re-rendering the
-  // restored deck exactly like any other mutation.
   function stepHistory(dir) {
     const from = dir < 0 ? past : future;
     if (!from.length) return;
@@ -299,7 +237,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     runRender();
   }
 
-  /** Reload the deck payload — used after a resume/finalize run lands. */
   const reload = () => {
     api.deck(slug).then((r) => {
       const stamp = Date.now();
@@ -314,7 +251,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     }).catch(() => {});
   };
 
-  /** Resume a dropped generation from its checkpoint (SSE like render). */
   function resumeRun() {
     if (runBusy || !deckRun?.resumable) return;
     setRunBusy(true);
@@ -327,9 +263,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .finally(() => setRunBusy(false));
   }
 
-  /** Finalize watchdog: the deck is complete but was never finalised — run the
-   *  post-write pass (grounding + text fit + review + render) and flip it to
-   *  ready. The "stuck on Working…" fix. */
   function finalizeRun() {
     if (runBusy || !deckRun?.needsFinalize) return;
     autoFinalizedRef.current = true;
@@ -343,27 +276,11 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .finally(() => setRunBusy(false));
   }
 
-  /**
-   * Finalize is the tail of generation, not a separate thing to remember.
-   *
-   * `needsFinalize` means every slide is written and no run is live — which is
-   * what an interrupted run leaves behind: a closed tab, a dropped connection,
-   * a restarted server. Generation already calls finalize itself, so reaching
-   * this state is always an accident, and the deck is unusable until it clears.
-   * It was only ever offered as a button, so a deck sat unfinished until
-   * somebody noticed the banner and pressed it.
-   *
-   * Run it once per deck per mount. The ref guard matters: a failed attempt
-   * must not retry on every render, and the button stays as the way to try
-   * again deliberately.
-   */
   useEffect(() => {
     if (!deckRun?.needsFinalize || deckRun.active || runBusy) return;
     if (autoFinalizedRef.current) return;
     autoFinalizedRef.current = true;
     finalizeRun();
-    // finalizeRun reads the current deckRun; re-running on its identity alone
-    // would fire the moment the poll returns the same state again.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deckRun?.needsFinalize, deckRun?.active]);
 
@@ -371,12 +288,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     api.stopGenerate(slug).catch(() => {});
   }
 
-  /**
-   * The content-density sweep — the deck-level control that replaces the old
-   * chat rail's whole-deck edits. Rewrites every content slide at the chosen
-   * density (sparse/balanced/dense) keeping structure, types and presenters,
-   * then re-renders. One scoped model call per slide, streamed as progress.
-   */
   function sweep() {
     if (sweeping) return;
     if (!window.confirm("Rewrite every slide's content at this density? This replaces the current slide text (structure, types and presenters are kept).")) return;
@@ -408,13 +319,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .finally(() => { setSweeping(false); setSweepMsg(""); });
   }
 
-  /**
-   * The type-swap gallery. Opening it loads one rendered preview per slide
-   * type in the current theme (cached server-side), so the user sees each of
-   * the 75 types AS IT RENDERS here before choosing. Picking a type converts
-   * that slide — a compatible type remaps instantly, anything else gets a
-   * scoped model rewrite — preserving section and presenter.
-   */
   function openSwap(i) {
     setSwap(i);
     setSwapErr("");
@@ -453,21 +357,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .finally(() => setSwapBusy(false));
   }
 
-  /**
-   * Add an image to a slide. Picking a file opens the native chooser; the
-   * upload lands in decks/<slug>/assets/ (gitignored) and the slide is set to
-   * an image-carrying type with that asset as its image field. If the slide is
-   * already an image type, the image field is set in place; otherwise it is
-   * converted to image-text so the image has somewhere to render.
-   */
-  /**
-   * Add an image to a slide. Picking a file uploads it to decks/<slug>/assets/
-   * (gitignored), then the slide is set to an image-carrying type with that
-   * asset as its image field — directly, no model involved (an image slide's
-   * layout is deterministic; only the picture is new). If the slide already
-   * carries the image, just attach it; otherwise it becomes an image-text slide
-   * preserving its headline.
-   */
   async function handleImageFile(file) {
     if (!file || imgForRef.current === null) return;
     const idx = imgForRef.current;
@@ -488,7 +377,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
             section: prev?.section,
             presenter: prev?.presenter,
           };
-      // The [image] hint is satisfied — drop it so the "add image" badge clears.
       if (/\[image\]/.test(target.notes ?? "")) {
         target.notes = target.notes.replace(/\[image\][^\n]*\n?/, "").trim() || undefined;
       }
@@ -513,10 +401,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     setTimeout(() => imgInputRef.current?.click(), 0);
   }
 
-  /**
-   * The deck's remembered dark mode (F17): toggling saves `mode` into meta.yaml
-   * and re-renders in that mode, so a dark deck stays dark across reloads.
-   */
   function toggleMode() {
     const next = mode === "dark" ? "light" : "dark";
     setMode(next);
@@ -541,13 +425,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .finally(() => setSyncing(false));
   }
 
-  /**
-   * Persist a theme change: the deck's `theme` lives in deck.yaml, so picking
-   * a new theme must save it there, otherwise a later deck reload (swap,
-   * move, chat) would clobber the local `theme` state with the old
-   * deck.theme and the gallery would keep showing the old theme's previews.
-   * This was the "selector turned back to Glassmorphism" regression.
-   */
   function changeTheme(newTheme) {
     if (!deck || newTheme === (theme || deck.theme)) {
       setThemePickerOpen(false);
@@ -557,12 +434,9 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     setThemePickerOpen(false);
     setRenderDirty(true);
     const nextDeck = { ...deck, theme: newTheme };
-    // Optimistic UI — the header pill and the gallery read `theme || deck.theme`
     setData((d) => (d ? { ...d, deck: nextDeck } : d));
     setPast((p) => [...p.slice(-19), deck]);
     setFuture([]);
-    // Persist so the server's deck.theme matches the UI and future reloads,
-    // conversions and specimen renders all use the new theme.
     api.saveDeck(slug, nextDeck, data?.meta)
       .catch((e) => setProblems([e.message, ...(e.errors ?? [])]));
     clearTimeout(renderTimer.current);
@@ -622,11 +496,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .catch((e) => setActionErr(e.message));
   }
 
-  /**
-   * Export's "Speaker script" item: download decks/<slug>/script.md, generating
-   * it first if it has never been written. The user's flow is "at the end if I
-   * want" — a button, never automatic.
-   */
   function doScriptExport() {
     setActionErr("");
     const download = () => {
@@ -660,9 +529,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
       .catch((e) => setActionErr(e.message));
   }
 
-  // A project whose deck does not exist yet. Reached by starting from a report:
-  // the reverse flow plans a companion deck, and until it runs there is nothing
-  // here to render, edit or download.
   if (!data && project && !project.deck) {
     return (
       <div className="mx-auto max-w-6xl px-10 py-10">
@@ -714,11 +580,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const types = slides.map((s) => s.type);
   const themeName = theme || deck.theme;
   const themeLabel = themes.find((t) => t.name === themeName)?.label ?? themeName;
-  // Re-sweep is gated on the chosen density differing from the density the
-  // content was last written at — the user's "we didn't change the setting,
-  // yet we can still click it" complaint.
   const sweepDirty = density !== (data?.meta?.density ?? "balanced");
-  // Whether the deck's own stage is claiming the page's primary action.
   const stageBanner = Boolean(deckRun && (deckRun.active || deckRun.resumable || deckRun.needsFinalize));
 
   function onMove(i, dir) {
@@ -752,16 +614,6 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
         active="deck"
         onNavigate={onNavigate}
         onBack={onBack}
-        // ONE action, chosen by where the deck actually is. Render and Download
-        // used to sit side by side permanently, so the page offered the same two
-        // buttons whether the deck had never been rendered or was up to date and
-        // waiting to be taken away.
-        //
-        // A deck mid-run, resumable, or written-but-never-finalised has its own
-        // banner below, and that banner carries the action next to the sentence
-        // explaining it. Offering a second primary up here — "Download" beside
-        // "Finalize this deck" — is the same two-primaries problem in a new
-        // place, so the header stands down while the banner is up.
         action={stageBanner ? null : renderDirty || busy ? (
           <Button
             variant="primary"
@@ -1235,14 +1087,8 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
           thumbs={data.thumbs}
           types={types}
           index={zoom}
-          // The focused slide is shared with the chat: the turn context reads
-          // it so "make THIS punchier" names the slide the user was looking at.
           onIndex={(i) => { setZoom(i); deckContext.focusSlide(slug, i); }}
           onClose={() => setZoom(null)}
-          // The enlarged view carries the same per-slide actions as the small
-          // card — editing/swap/image close the viewer so their modal can own
-          // the screen; punch, move, duplicate and delete run in place. Moving
-          // follows the slide to its new position.
           actions={{
             onEdit: (i) => { setZoom(null); setEditing(i); },
             onPunch: (i) => punchUp(i),
@@ -1285,280 +1131,3 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     </div>
   );
 }
-
-/**
- * The type-swap gallery: a scrollable grid of every slide type rendered in the
- * current theme (one cached specimen render per type). Picking a type converts
- * that slide — remap when compatible, scoped model rewrite otherwise.
- *
- * A thumb at 75-across grid resolution is too small to judge, so this has two
- * previews on top of a bigger tile: hovering a tile shows that type enlarged in
- * the dock below the grid, and clicking a tile opens a full-size single preview
- * (the same cached PNG, no re-render) where the commit happens. The current
- * type keeps its "now" badge and the filter box stays.
- */
-function TypeSwapModal({ index, slide, specimens, busy, error, onPick, onClose }) {
-  const [query, setQuery] = useState("");
-  const [hover, setHover] = useState(null);   // hovered type name → dock preview
-  const [preview, setPreview] = useState(null); // pinned type → full-size preview
-  const types = specimens?.types ?? [];
-  const previews = specimens?.previews ?? [];
-  const filtered = query.trim()
-    ? types.map((t, i) => ({ t, i })).filter(({ t }) => t.replace(/-/g, " ").includes(query.trim().toLowerCase()))
-    : types.map((t, i) => ({ t, i }));
-
-  const activeType = slide?.type;
-  const dockType = hover ?? activeType ?? null;
-  const dockIdx = dockType ? types.indexOf(dockType) : -1;
-  const previewIdx = preview ? types.indexOf(preview) : -1;
-
-  // Escape closes the full-size preview before anything else.
-  useEffect(() => {
-    if (!preview) return;
-    const onKey = (e) => { if (e.key === "Escape") setPreview(null); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [preview]);
-
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm"
-        onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      >
-        <div className="fade-in flex max-h-[86vh] w-full max-w-6xl flex-col overflow-hidden rounded-card border border-line bg-panel shadow-[0_40px_80px_-40px_rgba(0,0,0,0.9)]">
-          <div className="flex items-center gap-3 border-b border-line px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-semibold text-fg">Swap slide type</div>
-              <div className="truncate text-[11px] text-fg-faint">
-                Slide {index + 1} · <span className="font-mono">{slide?.type}</span> — pick how it renders next.
-                Compatible types convert instantly; the rest are rewritten.
-              </div>
-            </div>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Filter types…"
-              className="w-40 rounded-lg border border-line bg-sunken px-2.5 py-1.5 text-[12px] text-fg outline-none transition focus:border-accent"
-            />
-            <button onClick={onClose} className="rounded p-1.5 text-fg-faint transition hover:bg-hover hover:text-fg" title="Close">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
-            </button>
-          </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto p-4">
-            {error ? (
-              <div className="rounded-lg border border-amber/30 bg-amber/5 px-3 py-2 text-[12px] text-amber">{error}</div>
-            ) : !specimens ? (
-              <div className="flex items-center gap-2 text-[12.5px] text-fg-muted"><Spinner /> Rendering one preview per type in this theme…</div>
-            ) : (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {filtered.map(({ t, i }) => {
-                  const active = t === activeType;
-                  return (
-                    <button
-                      key={t}
-                      onClick={() => setPreview(t)}
-                      onMouseEnter={() => setHover(t)}
-                      onMouseLeave={() => setHover((h) => (h === t ? null : h))}
-                      onFocus={() => setHover(t)}
-                      onBlur={() => setHover((h) => (h === t ? null : h))}
-                      disabled={busy}
-                      className={`group overflow-hidden rounded-card border text-left transition ${
-                        active
-                          ? "border-accent ring-1 ring-accent/60"
-                          : hover === t
-                            ? "border-accent/50"
-                            : "border-line hover:border-line-strong"
-                      } bg-sunken`}
-                      title={`Preview ${t}${active ? " (current)" : ""} — click for full size`}
-                    >
-                      <div className="overflow-hidden border-b border-line/60">
-                        {previews[i] ? (
-                          <img src={previews[i]} alt={t} className="aspect-video w-full object-cover transition duration-200 group-hover:scale-[1.04]" loading="lazy" />
-                        ) : (
-                          <div className="skeleton aspect-video" />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1.5 px-2.5 py-2">
-                        <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg-muted">{t}</span>
-                        {active && <span className="shrink-0 text-[9px] font-semibold uppercase text-accent">now</span>}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* The hover dock — whatever tile the pointer is over, enlarged. */}
-          {specimens && dockIdx >= 0 && (
-            <div className="shrink-0 border-t border-line px-4 py-3">
-              <div className="flex items-center gap-4">
-                <div className="w-60 shrink-0 overflow-hidden rounded-lg border border-line bg-sunken">
-                  <img src={previews[dockIdx]} alt={dockType} className="aspect-video w-full object-cover" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-[12px] font-medium text-fg">{dockType}</span>
-                    {dockType === activeType && <span className="text-[9px] font-semibold uppercase text-accent">now</span>}
-                    <span className="text-[10.5px] text-fg-faint">
-                      {hover === dockType ? "hover preview" : "current type"}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">
-                    {hover === dockType ? "Hovering shows the type at this size — click the tile (or here) for the full-size preview." : ""}
-                  </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Button size="sm" variant="primary" disabled={busy || dockType === activeType} onClick={() => onPick(dockType)}>
-                      Use this type
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setPreview(dockType)}>See full size</Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {busy && (
-            <div className="shrink-0 border-t border-line px-4 py-2 text-[12px] text-fg-muted">
-              <Spinner /> Converting…
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* The full-size preview — the same cached specimen PNG, undocked. */}
-      {preview && previewIdx >= 0 && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-8 backdrop-blur-sm"
-          onClick={() => setPreview(null)}
-        >
-          <div className="fade-in flex max-h-full w-full max-w-5xl flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-              <span className="font-mono text-[13px] font-medium text-fg">{preview}</span>
-              {preview === activeType && <span className="text-[9px] font-semibold uppercase text-accent">now</span>}
-              <span className="text-[11px] text-fg-faint">rendered in this theme</span>
-              <div className="ml-auto flex items-center gap-2">
-                <Button size="sm" variant="primary" disabled={busy || preview === activeType} onClick={() => onPick(preview)}>
-                  {busy ? <Spinner /> : null}
-                  Use this type
-                </Button>
-                <button
-                  onClick={() => setPreview(null)}
-                  className="rounded-lg border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-            <div className="flex min-h-0 flex-1 items-center justify-center rounded-card border border-line bg-sunken p-4">
-              {previews[previewIdx] ? (
-                <img src={previews[previewIdx]} alt={preview} className="max-h-full max-w-full rounded-lg shadow-2xl" />
-              ) : (
-                <Spinner />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function CardBtn({ children, ...props }) {
-  return (
-    <button
-      {...props}
-      className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg disabled:pointer-events-none disabled:opacity-30"
-    >
-      {children}
-    </button>
-  );
-}
-
-/** The "⋯" overflow menu for a slide card. Outside-click closes it; the danger
- *  item (delete) renders crimson so destructive weight reads before the click. */
-function CardMenu({ items }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative">
-      <Tooltip label="More actions">
-        <button
-          onClick={() => setOpen((o) => !o)}
-          aria-label="More actions"
-          aria-expanded={open}
-          className="grid h-6 w-6 place-items-center rounded-md text-fg-faint transition hover:bg-hover hover:text-fg"
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-            <circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" />
-          </svg>
-        </button>
-      </Tooltip>
-      {open && (
-        <div className="absolute right-0 top-7 z-30 min-w-36 rounded-card border border-line bg-panel py-1 shadow-[var(--shadow-float)]">
-          {items.map((it, idx) => (
-            <button
-              key={idx}
-              disabled={it.disabled}
-              onClick={() => { setOpen(false); it.onClick?.(); }}
-              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[12px] transition disabled:pointer-events-none disabled:opacity-30 ${
-                it.danger ? "text-danger hover:bg-hover" : "text-fg-muted hover:bg-hover hover:text-fg"
-              }`}
-            >
-              {it.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ActionBtn({ children, ...props }) {
-  return (
-    <button
-      {...props}
-      className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-[12px] text-fg-muted transition hover:border-line-strong hover:text-fg"
-    >
-      {children}
-    </button>
-  );
-}
-
-function MenuBtn({ children, ...props }) {
-  return (
-    <button
-      {...props}
-      className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
-    >
-      {children}
-    </button>
-  );
-}
-
-const icon = {
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.8,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-};
-const EditIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-  </svg>
-);
-const BoltIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...icon}>
-    <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5Z" />
-  </svg>
-);
