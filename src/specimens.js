@@ -1,23 +1,6 @@
 import { deckSchema } from "./ai/catalog.js";
 import { ROOT } from "./paths.js";
 
-/**
- * The slide-type specimen deck: one valid example per slide type, used by the
- * deck detail's type-swap gallery to preview all 75 types in the current theme.
- *
- * The examples are now self-contained: neutral gap specimens for the layout-
- * focused types plus a curated fallback set derived from the former demo decks.
- * They are embedded here so the gallery never depends on external deck folders
- * that may be pruned (the "swap slide type" validation failure that motivated
- * this change: decks/type-batch* were removed and the old fallback produced a
- * headline-only slide for ~60 types, which fails validation for every type
- * that requires structured fields).
- *
- * This is build-on-demand: a single specimen deck is assembled, rendered in the
- * requested theme, and the per-slide PNGs are the gallery thumbnails. Cached by
- * theme so re-rendering the gallery is free.
- */
-
 const SPECIMEN_GAPS = {
   image: {
     headline: "A headline over the image",
@@ -30,12 +13,6 @@ const SPECIMEN_GAPS = {
     body: ["Image on one side, the claim on the other.", "A supporting sentence that grounds the visual."],
     caption: "Where the picture came from, and when it was taken.",
   },
-  // The FILLED state, deliberately: this type renders two ways, and the sweeps
-  // can only see one of them. The filled one is where the risk is — a narrowed
-  // text column is where points overflow, and `caption` only exists in that
-  // branch, so an empty-seat specimen would leave it a field nothing has ever
-  // rendered. The empty state is the bullets layout at full width and is
-  // covered by test/illustrated-points.test.js, which renders both.
   "illustrated-points": {
     headline: "Points that can take a picture",
     image: "__placeholder__",

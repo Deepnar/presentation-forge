@@ -1,31 +1,4 @@
 #!/usr/bin/env node
-/**
- * What it would actually cost to pay the divider-surface contrast debt.
- *
- * `test/contrast.test.js` carries an OWED list — surfaces whose secondary text
- * clears the 3:1 headline floor but not the 4.5:1 floor for muted type — and
- * reads as a to-do list twenty-four items long. It is not one, and this says
- * why: for most of them the muted token is not the constraint, the ground is.
- *
- * `muted` is a dimmed `ink`. It may move toward ink; it may not cross the
- * background and come out the other side, because a section divider with dark
- * secondary text on a saturated ground under white headline type is a different
- * design, not a repaired one. That single constraint splits the list three ways:
- *
- *   unpayable   even `ink` — usually pure white — does not clear 4.5:1 against
- *               this ground, so nothing dimmer can. Changing the background is
- *               the only fix, and that is the theme's identity.
- *   collapsing  reachable only by moving muted so far into ink that the two are
- *               the same colour. The debt is paid and the distinction it
- *               existed to express is gone.
- *   payable     reaches 4.5:1 and still reads as secondary.
- *
- *   node tools/contrast-debt.mjs           # the three lists
- *   node tools/contrast-debt.mjs --apply   # rewrite the payable themes' muted
- *
- * `--apply` moves each payable theme's muted the minimum distance toward its
- * own ink, so the edit is the smallest one that clears the floor.
- */
 
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -40,7 +13,6 @@ const toRgb = (h) => { const s = h.replace("#", ""); return [0, 2, 4].map((i) =>
 const toHex = (a) => `#${a.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase()}`;
 const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 
-/** The least movement toward `ink` that clears TARGET, or null if none does. */
 function nudge(muted, ink, bg) {
   const from = toRgb(muted), to = toRgb(ink);
   let lo = 0, hi = 1, best = null;
@@ -64,8 +36,6 @@ export async function debt() {
     const inkRatio = contrast(s.ink, s.bg);
     const row = { name, bg: s.bg, ink: s.ink, muted: s.muted, now, inkRatio };
 
-    // Nothing dimmer than ink can beat ink. If ink itself is short, the ground
-    // is the constraint and no token edit reaches the floor.
     if (inkRatio < TARGET) { unpayable.push(row); continue; }
 
     const next = nudge(s.muted, s.ink, s.bg);
@@ -80,7 +50,6 @@ async function apply(rows) {
   for (const r of rows) {
     const file = path.join(THEMES, `${r.name}.yaml`);
     const text = await readFile(file, "utf8");
-    // Replace only the muted inside the `section:` surface, never the title's.
     const marker = text.indexOf("section:");
     if (marker < 0) { console.error(`  ! ${r.name}: no section surface`); continue; }
     const head = text.slice(0, marker), tail = text.slice(marker);

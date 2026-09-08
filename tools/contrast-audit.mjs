@@ -1,18 +1,4 @@
 #!/usr/bin/env node
-/**
- * Contrast audit across every theme — renders one deck carrying the
- * geometry-ish slide types (vs, compare, cards, framework, diagram, flow,
- * checklist, roadmap, chart, layered-architecture) in EVERY theme and writes
- * one contact sheet per slide type, each cell labelled with its theme, so a
- * vision model can flag any cell with invisible or low-contrast text.
- *
- *   node tools/contrast-audit.mjs [--themes a,b] [--types a,b] [--out dir]
- *   node tools/contrast-audit.mjs --deck decks/<slug>/deck.yaml [--out dir]
- *
- * A cell must be big enough to actually read text — this is a contrast check,
- * not the distinctness check, so cells are ~4 per row at preview resolution
- * rather than thumbnails.
- */
 import { mkdir, writeFile, readdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,18 +17,12 @@ const pick = (flag) => {
 const outDir = pick("--out")?.[0] ?? path.join(ROOT, "decks", ".specimen-cache", "contrast-audit");
 const themes = pick("--themes") ?? (await listThemes());
 
-// The geometry-ish types from the user's report: these draw text on or near
-// painted surfaces, so a theme whose token pairs clash shows up here. Any
-// other type can be asked for by name — one sheet per type across every theme
-// is also how a composition change is judged, not only a colour one.
 const DEFAULT_TYPES = [
   "vs", "compare", "cards", "framework", "diagram", "flow",
   "checklist", "roadmap", "chart", "layered-architecture",
 ];
 const TYPES = pick("--types") ?? DEFAULT_TYPES;
 
-// A real deck asks the question the specimen cannot: its payloads are
-// hand-written to behave, and a model writes whatever length the topic wants.
 const deckArg = pick("--deck")?.[0];
 const specimen = deckArg ? await loadDeck(deckArg) : await specimenDeck();
 const byType = new Map(specimen.slides.map((s) => [s.type, s]));
@@ -50,9 +30,6 @@ const work = path.join(ROOT, "decks", ".specimen-cache", "__contrast__");
 await mkdir(work, { recursive: true });
 await mkdir(outDir, { recursive: true });
 
-// Render the chosen types once per theme.
-// One sheet per slide. The specimen has one slide per type so the key is the
-// type; a real deck can repeat a type, so the key carries its position.
 const SHEETS = deckArg
   ? specimen.slides.map((s, i) => `${String(i + 1).padStart(2, "0")}-${s.type}`)
   : TYPES;
@@ -83,7 +60,6 @@ for (const theme of themes) {
   }
 }
 
-// One contact sheet per type: ~4 cells per row at preview resolution.
 const cols = 4;
 const cellW = 700, cellH = Math.round(cellW * (9 / 16));
 const pad = 6, labelH = 24;
@@ -114,5 +90,4 @@ for (const type of SHEETS) {
   process.stdout.write(`${type}: ${list.length} themes -> ${path.relative(ROOT, out)}\n`);
 }
 
-// Clean the per-theme intermediate renders.
 await rm(work, { recursive: true, force: true });

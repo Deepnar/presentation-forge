@@ -28,19 +28,6 @@ import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
 import { creditsSlide } from "../credits.js";
 
-/**
- * Orchestration shared by the CLI and the API: creating a deck from a brief and
- * generating it from an approved outline. The server is a transport over this,
- * so anything the UI can do the CLI can do headless.
- *
- * A deck has a lifecycle: `planning` (folder + meta + plan only) → `ready`
- * (deck.yaml exists). Only ready decks appear in the deck list; the outline
- * gate is the boundary between the two.
- */
-
-/** The durable in-flight marker a generation leaves on disk: `.run.json` next
- *  to deck.yaml. Existence + `written` vs plan length is what lets a fresh
- *  process tell "resumable partial deck" from "complete but unfinalised". */
 export const RUN_FILE = ".run.json";
 
 export function slugify(text, max = 44) {
@@ -53,39 +40,14 @@ export function slugify(text, max = 44) {
   return slug || "deck";
 }
 
-// Lowercase alphanumerics only: the slug is a directory name, a URL segment
-// and something a person retypes from a terminal, and SLUG_RE in the server
-// accepts exactly this set.
 const TOKEN_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-/** randomInt rather than randomBytes % 36 — unbiased, and the same length. */
 function slugToken(length) {
   let out = "";
   for (let i = 0; i < length; i++) out += TOKEN_ALPHABET[randomInt(TOKEN_ALPHABET.length)];
   return out;
 }
 
-/**
- * A deck's directory name.
- *
- * `decks/` is one flat global namespace but the accounts on a hosted box are
- * not, and the counter minted `-2`, `-4` against every folder on disk. That
- * answers a question the caller was not entitled to ask: creating "Exploring
- * First Impressions" and being handed `...-19` reports how many OTHER accounts
- * already hold that title. The suffixes on this box really do run to -19.
- *
- * An owned deck therefore gets an opaque token, and gets one whether or not
- * anything collided — a suffix that appears only on a collision still answers
- * the question, just one bit at a time. Every hosted slug carrying one means
- * its presence says nothing.
- *
- * Ownerless decks keep the readable counter. The CLI, the tests and a
- * single-operator install have no second account to leak to, and
- * `decks/<topic>` is the name every sweep, `--deck` flag and doc refers to;
- * `npm run deckscore perovskite-solar-cells-stability-challenges-2` should not
- * become a random string. The token is not a secret and does not gate
- * anything — assertDeckAccess is what guards a deck.
- */
 export async function uniqueSlug(base, owner = null) {
   const slug = slugify(base);
   const exists = new Set();
@@ -102,9 +64,6 @@ export async function uniqueSlug(base, owner = null) {
     return `${slug}-${i}`;
   }
 
-  // Four characters is 1.7M and the check below is exact, so this is a
-  // formality — but a fixed width that silently gave up would reintroduce the
-  // counter by another route, so it widens instead of failing.
   for (let width = 4; ; width++) {
     for (let attempt = 0; attempt < 24; attempt++) {
       const candidate = `${slug}-${slugToken(width)}`;
@@ -113,20 +72,7 @@ export async function uniqueSlug(base, owner = null) {
   }
 }
 
-/**
-  * One research pass: explicit sources are fetched directly, otherwise the brief
-  * drives a deep metasearch pass — several subtopic queries plus follow-ups on
-  * the richest sources, so a deck and its report draw from more than one
-  * search's top five. When `papers` is set, the same brief also hits arXiv and
-  * Crossref, and the top papers' full text joins the notes. Returns text for
-  * the model plus a sources list (web sources and papers marked kind:"paper").
-  */
 export async function runResearch(brief, sources = [], onProgress, { papers = false, briefing = "" } = {}) {
-  // The research role's per-transport depth budget: the cloud override runs
-  // every stage of the pass deeper (more queries, higher source/read caps,
-  // more papers and fuller full-text coverage). `briefing` is the verbatim
-  // briefingAnsweredText so the pass can steer queries toward the thesis/
-  // evidence figures the plan will need and re-query if they are absent.
   const profile = await researchProfile();
   let out = [];
   const allSources = [];
@@ -139,9 +85,6 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
   }
   allSources.push(...out.map(({ url, title, words }) => ({ url, title, words })));
 
-  // The academic half: arXiv + Crossref for the brief, top papers' full text
-  // pulled into the notes. Defaults off — papers are slow (two public APIs +
-  // two full-text fetches) and the plain web pass is the fast path.
   if (papers && brief?.trim()) {
     onProgress?.({ status: "papers" });
     const { searchPapers, paperFullTexts, mergePapers } = await import("../papers.js");
@@ -160,13 +103,6 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
   };
 }
 
-/**
- * The research-mode resolution shared by deck and report creation. The
- * briefing's explicit `researchSource` (web | upload | none) wins; legacy
- * callers that only pass the `research`/`papers`/`sources` booleans fall back
- * to their historical meaning. `upload` carries either a staged token (the
- * server/browser path) or an inline `{ name, text }` (the CLI path).
- */
 export async function resolveResearchSource({ researchSource, research, papers, sources, upload }) {
   if (researchSource === "upload") {
     let text = "";
@@ -194,15 +130,9 @@ export async function resolveResearchSource({ researchSource, research, papers, 
   }
   if (researchSource === "none") return { mode: "none" };
   if (researchSource === "web") return { mode: "web" };
-  // Legacy callers: a research pass runs when any research signal is present.
   return { mode: research || papers || (sources?.length ?? 0) > 0 ? "web" : "none" };
 }
 
-/**
- * Persist the research artefact a deck/report writes from. Web research hands
- * in the accumulated pages; upload-only hands in the user's own document,
- * marked user-provided so the Research view shows it is the whole story.
- */
 async function writeResearch(dir, { text, sources }) {
   const rdir = path.join(dir, "research");
   await mkdir(rdir, { recursive: true });
@@ -210,9 +140,6 @@ async function writeResearch(dir, { text, sources }) {
   await writeFile(path.join(rdir, "sources.json"), JSON.stringify(sources, null, 2), "utf8");
 }
 
-/** What the grounding line names the notes as — "your uploaded file" carries
- *  the strict-fidelity contract of upload-only mode, web research keeps the
- *  historical wording. */
 async function groundNotesLabel(dir) {
   try {
     const meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
@@ -222,10 +149,6 @@ async function groundNotesLabel(dir) {
   }
 }
 
-/**
- * Stage 1 — brief → outline. Saves meta.yaml and plan.yaml so a session can
- * come back to a planned deck, and the outline survives an interrupted browser.
- */
 export async function createDeck({
   brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
   upload = null, theme = null, maxSlides = 24, imageSupply = "none",
@@ -237,12 +160,6 @@ export async function createDeck({
   const dir = path.join(DECKS, slug);
   await mkdir(dir, { recursive: true });
 
-  // The intake wizard's identity snapshot: what each deck used freezes into
-  // meta.yaml (the renderer already merges meta over config/identity.yaml), and
-  // planning sees the merged identity so the model knows the subject, guide and
-  // team it is writing for. slidesPerMember freezes too — the presenter split
-  // is decided deterministically at generation, and needs the briefing answer
-  // to reach it without the model interpreting a sentence in the brief.
   const snapshot = identity && typeof identity === "object"
     ? {
         academic: identity.academic ?? {},
@@ -255,16 +172,10 @@ export async function createDeck({
   const meta = {
     slug, brief, sources, research, papers, theme, maxSlides, density,
     ...(researchSource ? { researchSource } : {}),
-    // Auto image supply is opt-in per deck and frozen here, so a resumed or
-    // re-finalised deck supplies on the same terms the briefing agreed to.
     ...(imageSupply && imageSupply !== "none" ? { imageSupply } : {}),
     ...(slidesPerMember != null ? { slidesPerMember } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
-    // Per-user workspace: the owning account's email. Ownerless meta (legacy
-    // decks, CLI runs) is operator-owned — hidden from other accounts' lists,
-    // visible to the admin. CLI runs keep working headless: they never go
-    // through the server's auth, so an ownerless deck stays usable.
     ...(owner ? { owner } : {}),
     ...snapshot,
   };
@@ -274,10 +185,6 @@ export async function createDeck({
   let researchText = "";
 
   if (src.mode === "upload") {
-    // The user's file is the ONLY content source: no SearXNG, no papers, no
-    // Jina. The file becomes notes.md verbatim and sources.json marks it as
-    // user-provided, so the grounding pass is a strict fidelity check against
-    // exactly what the user gave.
     onProgress?.({ status: "researching", source: "upload" });
     await writeResearch(dir, {
       text: src.text,
@@ -285,9 +192,6 @@ export async function createDeck({
     });
     researchText = src.text;
   } else if (src.mode === "web") {
-    // Supplied sources imply a research pass: a brief with sources but no
-    // --research would otherwise silently skip research and later fail report
-    // generation with "no research/notes.md" for a reason nothing explains.
     onProgress?.({ status: "researching" });
     const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
     if (r.text) {
@@ -314,16 +218,6 @@ export async function createDeck({
   return { slug, plan, stats };
 }
 
-/**
- * Standalone report — brief → research → report.yaml → .docx with NO deck.
- * The reverse of the deck pipeline: a report is the graded artefact, and there
- * is no outline gate because the fixed section order (the graded constant) is
- * the structure. Research is still shared: decks/<slug>/research/ holds the
- * notes, so a companion deck can later be generated from the same material.
- * Writes meta.yaml marked status "report" (no plan.yaml, no deck.yaml).
- */
-/** One sentence for a box that cannot render reports, so the CLI, the API and
- *  the admin page do not each invent their own wording for it. */
 export function reportUnavailable(donor) {
   return donor.reason === "ambiguous"
     ? `this server has ${donor.donors.length} report templates and cannot choose between them — an admin should leave exactly one`
@@ -337,11 +231,6 @@ export async function createReport({
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
-  // The donor is checked here rather than at the render call three steps down.
-  // This run is a web research pass, a full model write and then a render, and
-  // discovering at the end that the box has no template spends every minute of
-  // that plus the account's Auto budget to arrive at a failure that was knowable
-  // before the first request went out.
   const donor = await donorStatus(await donorDirFor(owner));
   if (!donor.ok) throw new Error(reportUnavailable(donor));
 
@@ -363,11 +252,6 @@ export async function createReport({
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
-  // A standalone report always needs research/notes.md to write from — that is
-  // the whole source. Upload-only supplies the user's own document instead of
-  // a web pass; any other resolution falls back to the web research the
-  // report path has always run (a report with nothing to write from is a
-  // contradiction either way).
   const src = await resolveResearchSource({ researchSource, research, papers, sources, upload });
   if (src.mode === "upload") {
     onProgress?.({ status: "researching", source: "upload" });
@@ -382,13 +266,10 @@ export async function createReport({
     await writeResearch(dir, { text: r.text, sources: r.sources });
   }
 
-  // No plan.yaml for a standalone report — requirePlan: false lets the report
-  // generator derive its structure from the brief and the fixed section order.
   const g = await generateReport({
     slug, depth, density, model, signal, onProgress, requirePlan: false,
   });
 
-  // Render straight through so the .docx exists the moment the brief resolves.
   onProgress?.({ status: "rendering" });
   const doc = await renderReport({ reportFile: g.reportFile });
 
@@ -406,13 +287,6 @@ export async function createReport({
   };
 }
 
-/**
- * Deck-from-report — the reverse of deck → report. Given an existing
- * decks/<slug>/report.yaml (and its shared research), plan a companion deck
- * outline from the report's own sections, so the deck and report agree by
- * construction. The outline gate still applies: nothing renders until a human
- * approves, then generateFromPlan writes deck.yaml.
- */
 export async function createDeckFromReport({
   slug, theme = null, model, identity, onProgress, signal,
 }) {
@@ -433,18 +307,11 @@ export async function createDeckFromReport({
   const identityObj = identity ?? (await loadIdentity(dir));
   const themeObj = theme ? await loadTheme(theme) : undefined;
 
-  // meta is read BEFORE planning, not after. The deck's size, the per-member
-  // promise and the briefing are all recorded here, and reading them
-  // afterwards meant a companion deck was planned at the 24-slide default
-  // whatever the user had asked for — the one setting that cannot be repaired
-  // downstream, because the outline is already the wrong length.
   let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* no meta yet */ }
 
-  // The report IS the brief: its title and the section content describe the
-  // deck's structure better than the original one-liner, so feed it wholesale.
   const brief = reportBrief(report);
 
   onProgress?.({ status: "planning" });
@@ -467,30 +334,12 @@ export async function createDeckFromReport({
   return { slug, plan, stats };
 }
 
-/**
- * One progress frame as the CLI's one-line status.
- *
- * `done` is the counter when a stage supplies one; `index` is a counter only
- * for the stages whose unit IS the sequence position. Image supply emits both
- * and they mean different things — its `index` is the SLIDE being illustrated,
- * so a one-image deck whose picture belongs on slide 3 logged `images 3/1`.
- * Preferring `done` is the whole fix; requiring `total` stops the other
- * stages printing `3/undefined`.
- *
- * Exported because it was an arrow function inside the CLI's entry guard,
- * where nothing could reach it to check.
- */
 export function formatProgress(p) {
   const at = p?.done != null ? p.done + 1 : (p?.index != null ? p.index + 1 : null);
   const count = at != null && p?.total != null ? ` ${at}/${p.total}` : "";
   return `${p?.status ?? ""}${count}`;
 }
 
-/** The report's sections as a planning brief — title plus each section's prose.
- *
- *  `presentSections` rather than the graded constant: a report may carry a
- *  section the constant has never heard of, and walking the constant would
- *  drop exactly the topic-specific material the companion deck most needs. */
 function reportBrief(report) {
   const content = report?.content ?? {};
   const lines = [report?.title ?? ""];
@@ -506,17 +355,6 @@ function reportBrief(report) {
   return lines.join("\n");
 }
 
-/**
- * Stage 2 — approved outline → deck content, checkpointed per slide.
- *
- * This is the write half of generation. The approved outline is persisted to
- * plan.yaml FIRST (it is the resume contract — a dropped run restarts from
- * exactly what the human approved), then deck.yaml is written as each slide
- * lands, so a connection drop leaves a resumable deck instead of a lost run.
- * `meta.status` becomes "writing" for the duration; the finalize half flips it
- * to "ready". A resumed run (`resume: true`) loads the checkpointed deck.yaml
- * and the stored plan and continues from where the writer stopped.
- */
 export async function writeDeckContent({
   slug, plan, theme = null, model, identity, onProgress, signal, resume = false,
 }) {
@@ -541,9 +379,6 @@ export async function writeDeckContent({
       baseDeck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
     } catch { /* no partial deck yet — start fresh */ }
     fromIndex = baseDeck?.slides?.length ?? 0;
-    // The stored plan is authoritative on resume: it is the outline the human
-    // approved and the writer is continuing, not the caller's possibly-stale
-    // re-send after a reload.
     let stored = null;
     try {
       stored = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8"));
@@ -558,9 +393,6 @@ export async function writeDeckContent({
 
   await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(plan), "utf8");
 
-  // The durable in-flight marker. The server's in-memory registry decides
-  // whether a run is actively executing; this file is what a fresh process (or
-  // the UI) reads to see "a generation happened and did not finish".
   const run = {
     kind: "deck-generation",
     status: "writing",
@@ -607,26 +439,12 @@ export async function writeDeckContent({
   if (!res.ok || !res.deck) {
     throw new Error(res.errors?.join("; ") || "Generation failed");
   }
-  // The write half hands over the full deck; finalize persists the grounded
-  // version. deck.yaml already holds the raw writer output via the checkpoint.
   return { deck: res.deck, plan, skipped: res.skipped ?? [], stats: res.stats, problems: res.problems ?? [] };
 }
 
-/**
- * Stage 2b — the finalize half: ground, trim, review, render, rasterise, and
- * flip the deck to ready.
- *
- * Runs standalone so a deck whose content is already complete (a dropped run,
- * or a manual "the deck.yaml is done but never finalised" state) can be
- * finalised without re-writing any slides. Reads deck.yaml + plan.yaml from
- * disk, so it is idempotent with respect to whatever the write half did.
- */
 export async function finalizeDeck({
   slug, theme = null, model, identity, onProgress, signal, critic = false, write = null, chat = null,
   imageSupply = null,
-  // Injectable for the same reason `chat` is: the critic loop reaches a vision
-  // model and a renderer, so nothing about what finalize does WITH its findings
-  // was reachable from a test until this seam existed.
   critique = critiqueDeck,
 }) {
   const dir = path.join(DECKS, slug);
@@ -648,12 +466,6 @@ export async function finalizeDeck({
     researchText = await readFile(path.join(dir, "research", "notes.md"), "utf8");
   } catch { /* no research pass */ }
 
-  // Ground the deck against its research before persisting. The writer was told
-  // to derive stats from notes.md, and the writer is a model: anything it emits
-  // that the research does not support is flagged into the slide's notes and
-  // the problems list rather than silently shipped. The critic below may
-  // rewrite deck.yaml, so grounding runs once more on its output. In upload-only
-  // mode the label names the user's file, the strict-fidelity contract.
   const label = await groundNotesLabel(dir);
   const groundOnce = (d) => {
     const g = groundDeck(d, researchText, { label });
@@ -663,18 +475,7 @@ export async function finalizeDeck({
   let grounded = groundOnce(deck);
   await writeFile(deckFile, YAML.stringify(grounded.deck), "utf8");
 
-  // The FIELD-LENGTH pass first: a field the fitter flags below its floor is
-  // REWRITTEN as a complete sentence via a targeted model call, so the
-  // deterministic trim never has to cut prose mid-sentence ("the…"). Only what
-  // the rewrite cannot fix reaches the trim.
   let repaired = grounded;
-  // A pass that needs a model must not be able to strand a deck that is already
-  // fully written. These two are IMPROVEMENTS to finished content, and when one
-  // throws — a gateway timing out, a model unreachable — an unhandled throw
-  // left meta.status at "writing" forever, which is the "fully written but
-  // never finalised" state a user then has to clear by hand. Losing an
-  // improvement must not cost someone their finished deck. An abort still
-  // propagates: a stop is a stop, not a pass to skip.
   const passSkips = [];
   const optionalPass = async (label, run) => {
     try {
@@ -701,17 +502,9 @@ export async function finalizeDeck({
       repaired = { deck: fix.deck, problems: groundOnce(fix.deck).problems };
       await writeFile(deckFile, YAML.stringify(repaired.deck), "utf8");
     }
-    // A rewrite this pass could not make — or had to reject — is the reader's
-    // to know: what is left is a field the deterministic trim will cut, and the
-    // cut is what shows up on the slide. These were computed and dropped.
     for (const p of (fix?.problems ?? []).slice(0, 6)) passSkips.push(p);
   }
 
-  // Content-trim pass: slides the fitter flags below the readable floor get
-  // their text trimmed deterministically until they fit or cannot be trimmed
-  // further — the overfull flag used to ship with the deck. Trims only shorten
-  // text, but the deck is re-grounded so problems never reference a claim that
-  // was trimmed away.
   const trimOnce = async (candidate) => {
     const trimRes = await trimDeckToFit({
       deck: candidate,
@@ -726,12 +519,6 @@ export async function finalizeDeck({
 
   let tr = await trimOnce(repaired.deck);
 
-  // The coherence pass: every slide must serve the deck's topic AND be
-  // presenter-ready. The writer is told the framing rule, but a model can still
-  // ship a well-researched slide that drifts (data without a point). The pass
-  // reviews the finished deck against its title and sections, rewrites what it
-  // flags, and the rewrite is re-grounded + re-trimmed so a fix never trades a
-  // coherence problem for an ungrounded claim or an overfull slide.
   let coherence = null;
   {
     onProgress?.({ status: "coherence_checking" });
@@ -750,25 +537,12 @@ export async function finalizeDeck({
     }
   }
 
-  // Image supply — auto, not just upload: when the writer wants an image it
-  // emitted `[image] description` (sanitised, never a URL). This finds a freely
-  // licenced one, caches it under assets/auto/, seats it, and writes the credits
-  // the licence obliges. Opt-in per deck via meta.imageSupply, because it spends
-  // network on someone else's rate limit and puts a picture on a slide a person
-  // may not want one on. A manual upload still wins: it targets the slide
-  // directly and never leaves an [image] note for this pass to find.
   let imageResult = null;
   if ((imageSupply ?? meta.imageSupply) === "auto") {
     try {
       const r = await supplyDeckImages(tr.grounded.deck, dir, {
         signal,
         onProgress: (e) => onProgress?.({ status: "images", ...e }),
-        // What to photograph for a slide the PLAN opened a seat on. A small,
-        // literal job, so it goes to the utility role rather than the author —
-        // and it is asked directly rather than hoped for as an [image] note the
-        // writer never volunteers. The slide's own headline cannot serve: it is
-        // written to be read, and searched as a picture "The Physical Anatomy
-        // of a V2G Bus Depot" returns human anatomy.
         describeSeat: async (slide) => {
           const said = [slide.headline, ...(slide.points ?? [])].filter(Boolean).join(" — ").slice(0, 400);
           const res = await optionalPass("image description", async () => (chat ?? chatJSON)({
@@ -778,10 +552,6 @@ export async function finalizeDeck({
             schema: {
               type: "object",
               required: ["subject"],
-              // A floor as well as a ceiling. Asked for "six words at most" the
-              // utility model answered "bus", the search obliged, and the slide
-              // got an abandoned bus in a desert. One word is a category, not a
-              // photograph; the grammar has to make it unrepresentable.
               properties: { subject: { type: "string", minLength: 18, maxLength: 60 } },
             },
             messages: [
@@ -809,43 +579,22 @@ export async function finalizeDeck({
       });
       imageResult = r;
       if (r.supplied.length) {
-        // The supply returns a NEW deck (a promotion rewrites the slide's type),
-        // so the result has to be adopted, not assumed to have been mutated in.
         tr = { ...tr, grounded: { ...tr.grounded, deck: r.deck } };
         await writeFile(deckFile, YAML.stringify(r.deck), "utf8");
       }
       onProgress?.({ status: "images_done", supplied: r.supplied.length, skipped: r.skipped.length });
     } catch (err) {
-      // A picture is never worth failing a deck for.
       imageResult = { supplied: [], skipped: [], credits: [], notes: [String(err?.message ?? err)] };
     }
   }
 
-  // PPTs themselves — better by default: deterministic quality gate.
-  // Flags monotony (8 bullets in a row, one family dominating) and data-blind
-  // (research has >=5 numeric facts but deck uses zero data slides). Surfaces as
-  // problems[] so DeckDetail can show it; a future rewrite pass can use the
-  // same findings. No model, no second-guessing — the flag is the feature.
   const qualityFindings = analyzeQuality(tr.grounded.deck, researchText);
   const qualityProbs = qualityProblems(qualityFindings);
 
-  // A slide that asked for a picture and did not get one is reported, not
-  // silently left bare: its [image] note survives, so the deck page still shows
-  // the "add image" door, and the problem says which door and why.
-  // A slide that ASKED for a picture and did not get one is a problem worth
-  // reporting. A seat the plan opened speculatively is not: it renders as an
-  // ordinary list, which is the correct slide, so an unfilled one is silence
-  // rather than a failure.
   const imageProbs = (imageResult?.skipped ?? [])
     .filter((s) => !s.optional)
     .map((s) => `slide ${s.index + 1}: no image supplied for "${s.description}" — ${s.reason}`);
 
-  // Presenter distribution runs on finalize too, not just in the write half.
-  // The write half checkpoints deck.yaml per slide DURING the write loop and
-  // only assigns presenters in memory at the very end, so a deck that reached
-  // finalize via the resume shortcut (or a direct finalize of a hand-written
-  // deck.yaml) has never had its presenters assigned. Assign here, on the deck
-  // that will render, and persist before the render reads deck.yaml from disk.
   const identityObj = identity ?? (await loadIdentity(dir));
   const assignAndPersist = async (d) => {
     assignPresenters(d, identityObj, meta.slidesPerMember ?? null);
@@ -855,13 +604,6 @@ export async function finalizeDeck({
 
   tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
 
-  // The deck's own copy of the credits, appended AFTER presenters are assigned:
-  // it is back matter nobody presents, and assignPresenters would hand it a
-  // member. It sits outside maxSlides on purpose — a credit the licence
-  // requires is not content competing for a slot, and dropping a slide the
-  // writer meant to make in order to fit it would be the worse surprise. Only
-  // images that actually owe attribution reach it, so a deck of public-domain
-  // pictures gets no extra slide at all.
   const creditSlide = creditsSlide(imageResult?.credits ?? []);
   if (creditSlide) {
     tr.grounded.deck.slides.push(creditSlide);
@@ -871,21 +613,10 @@ export async function finalizeDeck({
   meta.status = "ready";
   meta.updatedAt = new Date().toISOString();
 
-  // Score the finished deck and keep the number.
-  //
-  // `scoreDeck` has always existed and has always been run by hand, which
-  // answers "is this deck any good" once and then loses the answer. Recorded at
-  // generation it becomes a different instrument: the next session can ask what
-  // the last ten runs scored, on which backend, and see a drop before reading a
-  // slide. Never allowed to fail the generation — the deck is the artefact and
-  // this is bookkeeping about it.
   try {
     const scored = await scoreDeck(tr.grounded.deck, { research: researchText, deckDir: dir });
     meta.score = scored.score;
     meta.scoredAt = meta.updatedAt;
-    // Which backend produced it. A score is not comparable across backends —
-    // that is why roleAudit reports the model actually used — and a row that
-    // cannot say which one is a row nobody can act on.
     await recordScore({
       ...scored,
       slug,
@@ -898,8 +629,6 @@ export async function finalizeDeck({
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
   onProgress?.({ status: "rendering" });
-  // The render gate refuses a deck that still carries placeholder slides, so a
-  // generation that left failures visible ships neither silently nor half-broken.
   let rendered;
   try {
     rendered = await render({ deckFile, themeName });
@@ -924,8 +653,6 @@ export async function finalizeDeck({
   const p = await preview(rendered.outFile, { dpi: 110 });
 
   let criticReport = null;
-  // The render that matches what finally lands on disk, when the passes after
-  // the critic move the deck past the last render the critic itself did.
   let recut = null;
   if (critic) {
     criticReport = await critique({
@@ -937,22 +664,11 @@ export async function finalizeDeck({
     });
     if (criticReport.deck) {
       const critiqued = YAML.stringify(criticReport.deck);
-      // The critic rewrites content; run the trim on its output too so a fix
-      // never trades a visual defect for an overfull slide.
       tr = await trimOnce(criticReport.deck);
-      // The critic's rewrite went through the ops layer, which knows nothing of
-      // the deterministic split — re-apply so the persisted deck stays
-      // presenter-complete (the deck the render reads below already did, but
-      // trimOnce rewrote deck.yaml after that).
       tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
       meta.status = "ready";
       await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
 
-      // …and then nothing drew it. critiqueDeck renders inside its own loop, so
-      // the .pptx was the deck the critic FINISHED with — before this trim, this
-      // grounding and this presenter re-assignment. Whenever a fix landed, the
-      // only artefact anyone opens was a different deck from deck.yaml, missing
-      // exactly the presenters the ops layer had just dropped. Draw it again.
       if (YAML.stringify(tr.grounded.deck) !== critiqued) {
         const drawn = await optionalPass("post-critic render", async () => {
           const r = await render({ deckFile, themeName });
@@ -968,7 +684,6 @@ export async function finalizeDeck({
     }
   }
 
-  // A finalised deck has no in-flight marker left behind.
   await rm(path.join(dir, RUN_FILE), { force: true });
 
   return {
@@ -983,9 +698,6 @@ export async function finalizeDeck({
       ...(coherence?.problems ?? []),
       ...qualityProbs,
       ...imageProbs,
-      // A pass that could not run is reported, never swallowed: the deck is
-      // finished and rendered, and the user is told which improvement it did
-      // not get rather than being handed a silently weaker deck.
       ...passSkips,
     ],
     skipped: write?.skipped ?? [],
@@ -1000,12 +712,6 @@ export async function finalizeDeck({
   };
 }
 
-/**
- * Stage 2 — approved outline → deck, rendered and rasterised. The write half
- * then the finalize half; both are exposed separately so the server can resume
- * a dropped run (resumeGeneration) or finalise a complete-but-unfinalised deck
- * (finalizeDeck) without re-entering the writer.
- */
 export async function generateFromPlan({
   slug, plan, theme = null, model, identity, onProgress, signal, critic = false,
 }) {
@@ -1013,11 +719,6 @@ export async function generateFromPlan({
   return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic, write });
 }
 
-/**
- * Resume a dropped generation from its checkpoint. A partial deck.yaml
- * continues from where the writer stopped; a complete one skips straight to
- * finalize (the "the deck is already N/M written — finalize it" path).
- */
 export async function resumeGeneration({
   slug, theme = null, model, identity, onProgress, signal, critic = false,
 }) {
@@ -1039,8 +740,6 @@ export async function resumeGeneration({
 
   const written = deck?.slides?.length ?? 0;
   if (written >= plan.slides.length) {
-    // All slides are on disk — the run died between the last slide and
-    // finalize. Nothing to write; finalize what is there.
     onProgress?.({ status: "writing", phase: "done", slides: written });
     return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic });
   }
@@ -1049,25 +748,6 @@ export async function resumeGeneration({
   return finalizeDeck({ slug, theme, model, identity, onProgress, signal, critic, write });
 }
 
-/**
- * The on-disk state of a (possibly interrupted) generation: how many plan
- * slides are written versus total, whether finalize has run, and whether the
- * deck is complete but unfinalised. The server folds the in-memory registry on
- * top for `active`.
- *
- * `finalized` is the one that is not arithmetic. `complete` only says every
- * plan slide reached deck.yaml, which is true of every FINISHED deck too — so
- * "complete and no run is live" describes a normal deck, not an interrupted
- * one, and reading it as the latter made the finalize watchdog fire on every
- * deck that had ever succeeded. `meta.status` already carries the answer:
- * `writeDeckContent` sets "writing" for the duration and `finalizeDeck` flips
- * it to "ready", so a deck stranded between the two is exactly the state the
- * watchdog is for.
- *
- * Absent or unreadable meta is reported as NOT finalized, which is the old
- * behaviour: offering a finalize that was not needed costs a run, and
- * withholding one that was leaves a deck the user cannot use.
- */
 export async function generationStatus(slug) {
   const dir = path.join(DECKS, slug);
   let deck = null;
@@ -1095,22 +775,12 @@ export async function generationStatus(slug) {
     total,
     complete,
     finalized,
-    // What the watchdog is actually for: written through, and finalize did not
-    // finish. `active` is not knowable from disk; the server folds it in.
     unfinalised: complete && !finalized,
     partial: written > 0 && total > 0 && written < total,
     status: run?.status ?? null,
   };
 }
 
-/**
- * The density sweep: rewrite an existing deck's content at a chosen density,
- * keeping structure, types, presenters and order intact. Reads deck.yaml,
- * runs `sweepDeck` (one scoped call per content slide), grounds the result
- * against the research again, writes it back, renders and rasterises. The
- * density is remembered in meta.yaml so the deck detail can show what it
- * currently is.
- */
 export async function sweepDensity({
   slug, density = "balanced", theme = null, model, onProgress, signal,
 }) {
@@ -1140,10 +810,6 @@ export async function sweepDensity({
   const grounded = groundDeck(r.deck, researchText, { label });
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
-  // A denser rewrite is exactly what overfills slides — rewrite the overlong
-  // fields as complete sentences first (the FIELD-LENGTH pass), then run the
-  // content-trim pass on whatever remains, and re-ground so problems never
-  // cite a trimmed claim.
   let repaired = grounded.notes;
   {
     onProgress?.({ status: "field_length_checking" });
@@ -1168,10 +834,6 @@ export async function sweepDensity({
   });
   let finalGrounded = groundDeck(trimRes.deck, researchText, { label });
 
-  // The coherence pass also runs after a sweep: a density rewrite can reframe
-  // a slide away from the deck's argument (or lean on a statistic with no
-  // point). Review and rewrite against the deck's own sections, then re-ground
-  // the fixed deck exactly as the generation path does.
   let coherence = null;
   {
     onProgress?.({ status: "coherence_checking" });
@@ -1218,26 +880,6 @@ export async function sweepDensity({
   };
 }
 
-/**
- * The type-swap conversion: change one slide's type from the deck detail's
- * gallery. Compatible types remap locally (bullets → numbered list, cards →
- * feature grid); the rest get a scoped model rewrite grounded in the research.
- * Persists deck.yaml, grounds, renders. Returns the converted slide and the
- * new previews so the UI can show the result immediately.
- */
-/**
- * Add one slide to a finished deck, after `index`.
- *
- * The motivating case is a deck that stopped short: a run that hit a quota or
- * dropped, or simply a deck the author now wants three more slides in the
- * middle of. `resume` is not that — it continues the APPROVED PLAN, so a deck
- * whose plan is complete has no way to grow.
- *
- * The plan is updated alongside the deck, and that is not bookkeeping: a slide
- * present in deck.yaml but absent from plan.yaml is lost the next time
- * anything replans, and `assignPresenters` walks the plan's sections, so it
- * would never be given an owner either.
- */
 export async function insertDeckSlide({
   slug, index, type = null, purpose = null, model, onProgress, signal,
 }) {
@@ -1272,8 +914,6 @@ export async function insertDeckSlide({
   const grounded = groundDeck(r.deck, researchText, { label: await groundNotesLabel(dir) });
   await writeFile(deckFile, YAML.stringify(grounded.notes), "utf8");
 
-  // The plan gains the same slide in the same position, so the two artefacts
-  // still describe one deck.
   if (plan?.slides?.length) {
     const entry = { type: r.slide.type, purpose: r.spec.purpose };
     if (r.spec.section != null) entry.section = r.spec.section;
@@ -1344,18 +984,8 @@ export async function convertSlideType({
     problems: [...(rendered.problems ?? []), ...grounded.problems],
   };
 }
-/**
- * Clone a deck under a new slug — the "iterate without fear" affordance. Every
- * content file (deck, plan, meta, report, research) copies across so the clone
- * is a fully independent deck; the meta's slug and timestamp are re-stamped so
- * the copy shows as its own entry.
- */
 export async function cloneDeck({ slug }) {
   const src = path.join(DECKS, slug);
-  // The clone inherits the source's owner with the rest of its meta, so its
-  // slug has to be minted in the same namespace. Cloning an owned deck through
-  // the ownerless counter would put the leak back on the one path that starts
-  // from a deck the caller already holds.
   let source = {};
   try {
     source = YAML.parse(await readFile(path.join(src, "meta.yaml"), "utf8")) ?? {};
@@ -1380,8 +1010,6 @@ export async function cloneDeck({ slug }) {
   await writeFile(path.join(ddir, "meta.yaml"), YAML.stringify(meta), "utf8");
   return { slug: dest };
 }
-
-/* --------------------------------------------------------------------- CLI */
 
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
@@ -1481,8 +1109,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const { cmd, opts } = parseArgs(process.argv.slice(2));
   const progress = (p) => process.stderr.write(`  ${formatProgress(p)}\n`);
 
-  /** --upload <path>: read + ingest the document into an inline upload payload
-   *  (the CLI equivalent of the server's staged-token path). */
   const uploadFromFile = async (p) => {
     const buf = await readFile(p);
     const { text, name, ext, words } = await ingestUpload(buf, { name: path.basename(p) });
@@ -1611,11 +1237,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.stdout.write(YAML.stringify(r.plan));
     } else if (cmd === "script") {
       if (!opts.slug) { console.error(USAGE); process.exit(2); }
-      // --slide is 1-BASED, like every slide number this product shows: the
-      // render reports "slide 5", the script writes "## Slide 5", a chat turn
-      // says "~ slide 5". It was passed through as a 0-based index, so asking
-      // for slide 12 rewrote slide 13 — the same off-by-one that let a chat
-      // turn edit the slide after the one that was named.
       const slideArg = opts.slide != null ? Number(opts.slide) : null;
       if (slideArg != null && (!Number.isInteger(slideArg) || slideArg < 1)) {
         console.error("--slide takes a slide NUMBER, counting from 1.");

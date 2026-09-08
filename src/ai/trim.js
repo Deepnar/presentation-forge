@@ -1,29 +1,10 @@
-/**
- * Deterministic content trim for overfull slides.
- *
- * The fitter's role floor is a hard stop: a slide whose text would need to
- * render below the readable floor gets flagged into the render `problems[]`
- * ("body would need 11.4pt — floor 14pt") and the overfull content used to
- * ship as-is. This module closes that loop without a model call.
- *
- * The trim is rule-based and schema-driven: which fields a slide type owns
- * (which arrays are drop-able, which strings are shortenable) derives from
- * deck.schema.json at run time, so a new type gets a sensible trim for free
- * and no drift. Each `trimSlide` step is small and deterministic — drop the
- * last element of the most-slack array, then shorten the longest prose string
- * at a sentence boundary — and `trimDeckToFit` re-renders between steps, so
- * a slide is trimmed only as far as its box actually demands. The flag stays
- * only when the content genuinely cannot fit at the floor.
- */
 
 import { deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 import { render } from "../render.js";
 import { themeMatrix } from "../themematrix.js";
 
-/** A slide that renders cleanly at its floor needs no trim and reports no flag. */
 export function parseFloorProblems(problems) {
-  // "slide 6 (feature-grid): body would need 8.1pt — floor 14pt (cut text...)"
   const re = /^slide (\d+) \(([^)]+)\): (.+?) would need [\d.]+pt — floor \d+pt/;
   const map = new Map();
   for (const p of problems ?? []) {
@@ -42,20 +23,6 @@ function resolveRef(ref, schema) {
 
 const _meta = new Map();
 
-/**
- * Per-type trim metadata, derived from the schema: which fields are arrays
- * (with their minItems floor — a drop may not go below it) and which are
- * strings. Item-field strings are encoded as `<array>[].<field>`.
- *
- * The walk covers the SHARED slide fields as well as the type's own. It used to
- * read only the type rule's `then.properties`, and `headline` (≤80) and
- * `standfirst` (≤220) are declared once on the base slide object — so on 75 of
- * 75 types the headline was not a field anything downstream could see. The
- * length pass never budgeted it, `trimSlide` could never shorten it (its own
- * skip-headline-first branch was unreachable), and the cap prober never grew
- * it, so no measured cap and no capstress render has ever carried a headline
- * longer than the specimen's hand-written one.
- */
 export async function slideFieldMeta(type) {
   return metaFor(type);
 }
@@ -68,14 +35,11 @@ async function metaFor(type) {
   );
   const arrays = [];
   const strings = [];
-  // `prefix` accumulates the parent path ("left.", "items[]."), so a string
-  // inside a nested object or an array item resolves to its real location.
   const walk = (props, prefix) => {
     for (const [name, spec] of Object.entries(props ?? {})) {
       const resolved = spec.$ref ? resolveRef(spec.$ref, schema) : spec;
       const path = prefix ? `${prefix}${name}` : name;
       if (resolved.type === "string") {
-        // An image field names a file, not prose — never shorten it.
         if (name !== "image") strings.push(path);
       } else if (resolved.type === "array") {
         arrays.push({ path, minItems: resolved.minItems ?? 0 });
@@ -87,14 +51,6 @@ async function metaFor(type) {
       }
     }
   };
-  // Shared fields the layout draws as prose. `notes` is documented as never
-  // rendered, `speaker_note` goes to the notes pane and reserves a fixed bar
-  // whatever its length, and `presenter` is chrome — drawn unfitted at a fixed
-  // size, so the fitter never flags it and shortening it cannot relieve an
-  // overfull slide. Trimming any of the three spends a round without moving the
-  // page. `cites` is held out for a different reason: it is the record, not the
-  // layout, and it sits above minItems 0 — offering it to the trim makes
-  // dropping a citation the CHEAPEST way to make a slide fit.
   const NOT_TRIMMABLE = new Set(["notes", "speaker_note", "presenter", "cites"]);
   const shared = Object.fromEntries(
     Object.entries(schema.definitions.slide.properties ?? {})
@@ -107,16 +63,10 @@ async function metaFor(type) {
   return meta;
 }
 
-/** Read an array by a dot path ("left.points"). */
 export function readArray(slide, path) {
   return path.split(".").reduce((o, k) => o?.[k], slide);
 }
 
-/**
- * Every string under a path, with a `set` that writes back into `slide`.
- * "items[].text" iterates the items array; a plain array-of-strings path
- * ("bullets") yields each element.
- */
 export function walkStrings(slide, path) {
   const segs = path.split(".");
   let nodes = [{ val: slide, path: [] }];
@@ -152,15 +102,6 @@ export function walkStrings(slide, path) {
     }));
 }
 
-/**
- * Cut prose at a sentence boundary with an ellipsis — and ONLY at a sentence
- * boundary. A mid-sentence cut ("…the") is the exact defect the field-length
- * pass exists to eliminate, so the trim refuses to produce one: when no
- * sentence end falls inside the cut window, nothing is cut and the fitter's
- * floor flag reports the slide instead. The field-length pass runs first and
- * rewrites overfull fields as complete short sentences, so a trim cut lands
- * on a whole sentence, never a fragment.
- */
 export function shortenString(s) {
   const t = String(s).trim();
   if (t.length <= 40 || !t.includes(" ")) return null;
@@ -178,12 +119,6 @@ export function shortenString(s) {
   return `${kept}…`;
 }
 
-/**
- * One deterministic trim step, on a clone:
- * 1. drop the last element of the array with the most slack over minItems;
- * 2. else shorten the longest prose string (headline/standfirst last).
- * Returns a new slide, or null when nothing more can be trimmed.
- */
 export async function trimSlide(slide) {
   const { arrays, strings } = await metaFor(slide.type);
 
@@ -218,15 +153,7 @@ export async function trimSlide(slide) {
   return null;
 }
 
-/**
- * The trim pass. Renders (in-memory, no pptx written), trims every slide the
- * fitter flags below its floor, and re-renders until the deck is clean or no
- * trim can help. Deterministic throughout — no model call.
- */
 export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, signal, everyTheme = true, onlySlides = null }) {
-  // A generation trims the whole deck it just wrote. An EDIT must not: trimming
-  // slides the user never touched is the same surprise as editing them, and a
-  // chat turn that shortened one slide was quietly cutting four.
   const scope = Array.isArray(onlySlides) && onlySlides.length ? new Set(onlySlides) : null;
   let cur = structuredClone(deck);
   const trimmed = [];
@@ -234,18 +161,6 @@ export async function trimDeckToFit({ deck, themeName, deckDir, maxRounds = 24, 
 
   for (let round = 0; round < maxRounds; round++) {
     audit = await render({ deck: cur, themeName, deckDir, write: false, signal });
-    // Trim for every theme the deck could be rendered in, not just the one it
-    // was generated with. The theme switcher re-renders the SAME deck.yaml, so
-    // a deck fitted only to its own theme breaks the moment a user picks
-    // another: a freshly generated 14-slide deck was clean in its own theme
-    // and lost thirteen text elements below the readable floor across six
-    // others. Trimming against the whole gallery cost 2.7% of the deck's
-    // characters and removed nine of the thirteen; the rest are headings the
-    // trim will not shorten.
-    //
-    // The covering set is the wrong instrument here — it covers layout AXES,
-    // and fit is decided by typeface metrics that it deliberately ignores.
-    // Hence every theme. It costs ~0.6s per round on a 14-slide deck.
     const sweepProblems = everyTheme
       ? (await themeMatrix({ deck: cur, deckDir })).runs.flatMap((r) => r.problems.map((p) => p.raw))
       : [];

@@ -1,30 +1,9 @@
-/**
- * The model-facing research excerpt.
- *
- * The research artefact (decks/<slug>/research/notes.md) is first-class and
- * kept whole on disk; the model only ever sees a bounded excerpt of it. A
- * research pass can easily outgrow the author role's context window — 138 KB
- * of notes is ~40K tokens against a 32K num_ctx — and when the prompt
- * overflows, Ollama truncates and the model degrades to token loops or a
- * one-token reply. Capping well under the window keeps every prompt, schema
- * and output inside it.
- *
- * Every consumer (deck planning, slide writing, chat turns, report section
- * writing) reads research through this so the whole pipeline shares one
- * budget and one failure mode to think about.
- */
 
 import { chatJSON, DEFAULT_EXCERPT_CHARS } from "./ollama.js";
 import { researchQuery } from "../search.js";
 
-/**
- * The cap the LOCAL author's 32768 num_ctx window has headroom for. On the
- * cloud transport the author role's `excerpt_chars` override raises it; callers
- * that know the transport pass the resolved cap explicitly.
- */
 export const RESEARCH_EXCERPT = DEFAULT_EXCERPT_CHARS;
 
-/** Cap to the excerpt budget, ending on a line boundary when truncated. */
 export function excerptResearch(text, cap = RESEARCH_EXCERPT) {
   if (!text) return "";
   if (text.length <= cap) return text;
@@ -32,12 +11,6 @@ export function excerptResearch(text, cap = RESEARCH_EXCERPT) {
   return text.slice(0, cut > 0 ? cut : cap);
 }
 
-/**
- * The trust surface for the Research view: how many sources, how many distinct
- * domains, which look academic/authoritative vs listicle, and which sources
- * carry the single-source claims the grounding pass flagged. Built from
- * sources.json so the CLI can produce it too, not just the UI.
- */
 export function researchSummary(sources = [], notes = "") {
   const list = Array.isArray(sources) ? sources : [];
   const domains = new Set();
@@ -55,8 +28,6 @@ export function researchSummary(sources = [], notes = "") {
     /^(medium\.com|substack\.com|quora\.com|reddit\.com|slideshare\.net|pinterest|buzzfeed|lifehacker|hubspot|wordpress\.com)$/.test(host ?? "");
 
   for (const s of list) {
-    // A user-provided source is the upload-only mode's whole document — it has
-    // no URL, so it must never be counted as a web domain or an academic find.
     if (String(s.kind).toLowerCase() === "user-provided") {
       userProvided++;
       continue;
@@ -73,10 +44,6 @@ export function researchSummary(sources = [], notes = "") {
     }
   }
 
-  // Single-source claims: the grounding pass writes `[grounding] …` lines into
-  // the slide notes, not into notes.md, so the closest proxy in the research
-  // view is noting how many sources each domain contributes and which are
-  // alone. A domain appearing once is a single-source bullet point.
   const domainCount = {};
   for (const d of domains) domainCount[d] = 0;
   for (const s of list) {
@@ -100,11 +67,6 @@ export function researchSummary(sources = [], notes = "") {
   };
 }
 
-/* ----------------------------------------------------- the deep research pass */
-
-/** The five query angles the research role expands a brief into. Each produces
- *  a distinct search so the pass covers the keyword, scientific, practical,
- *  regional and data/counterpoint sides rather than one listicle's top hits. */
 const ANGLES = [
   { key: "keywords", hint: "the core terms and synonyms people search for" },
   { key: "science", hint: "the mechanism or concept behind the topic" },
@@ -114,16 +76,6 @@ const ANGLES = [
   { key: "counterpoint", hint: "opposing views, limitations, controversies" },
 ];
 
-/**
- * Expand one brief into 5-`max` angle queries: the 6 angles above, each a
- * concrete search term. Falls back to the brief alone when the model is
- * unavailable, so a dead model degrades depth, never the pass. `max` is the
- * per-transport budget — the cloud research profile opens it up.
- *
- * `briefing` is the verbatim `briefingAnsweredText` (thesis/audience/emphasis/
- * evidence) so queries can target the figures the plan will need. When present
- * it is appended to the user message but never replaces the brief.
- */
 export async function expandQueries(brief, { chat, max = 8, briefing = "" } = {}) {
   const schema = {
     type: "object",
@@ -167,11 +119,6 @@ export async function expandQueries(brief, { chat, max = 8, briefing = "" } = {}
   }
 }
 
-/**
- * The source-diversity guard: after a pass, check that the notes cover enough
- * distinct domains and an academic/authoritative voice. Returns the follow-up
- * queries for whatever is missing, or [] when the pass is diverse enough.
- */
 export async function diversityFollowups(brief, sources, { chat, max = 2 } = {}) {
   const s = researchSummary(sources);
   const follows = [];
@@ -183,11 +130,6 @@ export async function diversityFollowups(brief, sources, { chat, max = 2 } = {})
   return follows.slice(0, max);
 }
 
-/**
- * Gap-driven follow-up: ask the research role what an examiner for this
- * subject would expect a strong submission to cover, and search those gaps.
- * Returns 1-`max` concrete queries, or [] when the model is unavailable.
- */
 export async function gapQueries(brief, notes, { chat, max = 3 } = {}) {
   const schema = {
     type: "object",
@@ -223,7 +165,6 @@ export async function gapQueries(brief, notes, { chat, max = 3 } = {}) {
   }
 }
 
-/** Extract the evidence figures/phrases the briefing says must not be invented — numbers with units etc. */
 function evidenceFacts(evidence) {
   const t = String(evidence ?? "");
   if (!t.trim()) return [];
@@ -236,46 +177,20 @@ function evidenceFacts(evidence) {
   return facts.slice(0, 4);
 }
 
-/** Which evidence facts are absent from the accumulated notes (normalized). */
 function missingFacts(facts, notes) {
   const norm = String(notes ?? "").toLowerCase().replace(/,/g, "");
   const out = [];
   for (const f of facts) {
     const key = f.toLowerCase().replace(/,/g, "").split(/\s+/).filter(Boolean).slice(0, 3).join(" ");
-    // Check for any token of the fact (numbers or scheme name) in notes
     const tokens = f.toLowerCase().split(/\s+/).filter((w) => /\d/.test(w) || w.length > 4);
     const hit = tokens.some((tok) => norm.includes(tok.toLowerCase().replace(/,/g, "")));
     if (!hit) out.push(f);
     else if (key && !norm.includes(key)) {
-      // still consider missing if the exact phrase not found, but token hit is enough for now
     }
   }
-  // Dedupe by first token
   return [...new Set(out)];
 }
 
-/**
- * Host diversity across the CORPUS, not just within one query.
- *
- * `search()` caps results per host at 2 and says why: "SearXNG happily returns
- * eight pages from one domain and a model given those will write a report
- * sourced entirely from one site." But that cap is PER QUERY, and a deep
- * research run makes eight of them plus follow-ups, absorbing into a corpus
- * deduped by URL alone — so the guard bought nothing at the level it was
- * written to protect. A real run came back three-tenths Wikipedia, including
- * the mineralogy article for a deck about solar cells.
- *
- * Overflow is kept rather than discarded. On a topic where one authority
- * genuinely holds the material, starving the corpus to enforce variety is the
- * worse failure, so the surplus goes back if too little else arrives.
- */
-/**
- * Words too common to say anything about what a page is about.
- *
- * Deliberately short and generic. This list may never learn a topic — the
- * three-layer rule applies to research too: the code stays topic-agnostic and
- * the brief supplies the subject.
- */
 const TOPIC_STOP = new Set([
   "the", "and", "for", "with", "from", "into", "that", "this", "their", "there",
   "what", "when", "which", "while", "about", "after", "before", "between",
@@ -283,18 +198,6 @@ const TOPIC_STOP = new Set([
   "new", "more", "most", "than", "then", "such", "also", "over", "under", "your",
 ]);
 
-/**
- * The distinctive words of a brief, as a relevance yardstick.
- *
- * Short words carry almost no topical signal, so the floor is four characters.
- *
- * A hyphenated compound is kept WHOLE and never also split, which was measured
- * rather than assumed: splitting "solid-state" into "solid" and "state" put
- * "state" in the yardstick, and an article about India — a country of states —
- * scored seven times higher on it. Splitting cut the margin between on- and
- * off-topic pages from 5.8x to 3.9x. The compound is the distinctive term; its
- * halves are not.
- */
 export function topicTerms(brief) {
   const out = new Set();
   for (const w of String(brief).toLowerCase().replace(/[^\p{L}\p{N}\s-]+/gu, " ").split(/\s+/)) {
@@ -303,16 +206,6 @@ export function topicTerms(brief) {
   return [...out];
 }
 
-/**
- * How densely a page speaks the brief's vocabulary — hits per 1000 words.
- *
- * DENSITY, not presence, and the difference is the whole point. Wikipedia's
- * "India" article contains five of the seven terms of a solid-state battery
- * brief, so any "does it mention the topic" rule passes it; at 31,000 words
- * that is 0.44 hits per 1000, against 35.55 for an article actually about the
- * subject. Presence cannot separate them and density separates them by eighty
- * times.
- */
 export function topicalDensity(text, terms) {
   if (!terms.length) return Infinity; // nothing to judge against: judge nothing
   const { hits, words } = topicalHits(text, terms);
@@ -320,8 +213,6 @@ export function topicalDensity(text, terms) {
   return (hits / words) * 1000;
 }
 
-/** The raw evidence behind the density: how many times the brief's vocabulary
- *  appears, and in how many words. */
 export function topicalHits(text, terms) {
   const lower = String(text ?? "").toLowerCase();
   const words = lower.split(/\s+/).filter(Boolean).length;
@@ -333,41 +224,8 @@ export function topicalHits(text, terms) {
   return { hits, words };
 }
 
-/**
- * The floor a page must clear to enter the corpus.
- *
- * Measured, not guessed. Against the pages that prompted this, per 1000 words:
- *
- *   Solid-state battery  35.6   |   Lithium (element)   3.1
- *   Electric vehicle     42.9   |   India               0.4
- *   Lithium-ion battery  17.6   |   History of India    0.2
- *                               |   Microsoft Windows   0.4
- *
- * The floor sits in that gap, nearer the junk than the middle: a dropped source
- * is one fewer voice, and an absorbed one puts 60,000 words about the wrong
- * subject in front of the writer, so the errors are not symmetric and the bias
- * is towards keeping.
- */
 export const RELEVANCE_FLOOR = 4.0;
 
-/**
- * The evidence a page must carry as well as the ratio, and the reason the ratio
- * alone is not a gate.
- *
- * Density has a floor it cannot see below: the smallest non-zero density a page
- * of N words can score is 1000/N, so every page under 250 words clears a floor
- * of 4.0 on a SINGLE occurrence of a single term. The gate was therefore
- * inoperative on exactly the pages least likely to be about anything.
- *
- * Measured, again on a real run: a 211-word page of algebra help entered a
- * vehicle-to-grid corpus at 4.74, one point above the floor, on one appearance
- * of "integration" — in "definite and indefinite integration". A homonym, once,
- * on a short page, and the writer was handed a page about calculus.
- *
- * Two occurrences is the least that can distinguish a topic from a coincidence,
- * and it costs nothing on a real source: a page genuinely about the brief says
- * so repeatedly, and the on-topic pages in that same run carried 12 to 89 hits.
- */
 export const RELEVANCE_MIN_HITS = 2;
 
 export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6, terms = [] } = {}) {
@@ -383,14 +241,6 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6,
     for (const item of batch ?? []) {
       if (!item?.ok || seenUrl.has(item.url)) continue;
       seenUrl.add(item.url);
-      // Is this page about the topic at all? Nothing used to ask. A real run
-      // for a solid-state battery deck absorbed Wikipedia's "India" and
-      // "History of India" — 60,000 words — because one angle query said
-      // "India", plus four Microsoft support pages and drugs.com on lithium
-      // the medication. Five of twenty-one sources were about batteries.
-      //
-      // Off-topic pages are never backfilled. A thin corpus is a worse deck; a
-      // corpus about the wrong subject is a deck about the wrong subject.
       if (terms.length) {
         const { hits, words } = topicalHits(item.text, terms);
         const density = words ? (hits / words) * 1000 : 0;
@@ -407,7 +257,6 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6,
     }
   };
 
-  /** Put the surplus back when the diverse corpus is too thin to write from. */
   const backfill = () => {
     while (pages.length < minCorpus && overflow.length) pages.push(overflow.shift());
   };
@@ -415,15 +264,6 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6,
   return { absorb, backfill, offtopic };
 }
 
-/**
- * The deep research pass: expand the brief into angle queries, run each at a
- * higher read budget than the single-shot `researchQuery`, then follow up on
- * the top sources, then close the two gaps the diversity guard finds (missing
- * domains / missing academic voice). The `profile` is the research role's
- * per-transport depth budget — the cloud override runs every stage deeper.
- * `briefing` is the verbatim briefingAnsweredText so evidence figures steer queries
- * and the post-pass can verify coverage. Returns the deduplicated accumulated pages.
- */
 export async function deepResearch(brief, { onProgress, profile, briefing = "" } = {}) {
   const p = {
     per_query_limit: 8, per_query_read: 4,
@@ -451,8 +291,6 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
     absorb((await researchQuery(q, { limit: p.per_query_limit, read: p.per_query_read })).pages);
   }
 
-  // Follow up the top sources: the richest extracted pages, queried for the
-  // material around them. Capped so a degenerate brief cannot spin forever.
   backfill();
 
   const top = [...pages]
@@ -465,8 +303,6 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
     absorb((await researchQuery(q, { limit: p.followup_limit, read: p.followup_read })).pages);
   }
 
-  // Diversity + examiner-gap follow-ups: if the pass is one-domain or has no
-  // academic voice, run the targeted queries the guard returns.
   const sourceRecords = pages.map((page) => ({ url: page.url, title: page.title, words: page.words }));
   for (const q of await diversityFollowups(brief, sourceRecords, { max: p.diversity_max ?? 2 })) {
     onProgress?.({ query: `↳ ${q}` });
@@ -477,8 +313,6 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
     absorb((await researchQuery(q, { limit: p.gap_limit, read: p.gap_read })).pages);
   }
 
-  // Evidence-coverage post-pass: if the briefing named figures that the notes still lack,
-  // re-query specifically for them — this is what makes "the notes contain the figures the plan will need" true.
   if (facts.length) {
     const notesSoFar = pages.map((page) => page.text).join("\n\n");
     const missing = missingFacts(facts, notesSoFar);
@@ -489,10 +323,8 @@ export async function deepResearch(brief, { onProgress, profile, briefing = "" }
     }
   }
 
-  // Last chance to put the surplus back: the gap queries may have added little.
   backfill();
 
-  // What the gate refused, so a thin corpus is explicable rather than mysterious.
   if (offtopic.length) onProgress?.({ offtopic: offtopic.length });
   return { query: brief, pages, offtopic };
 }

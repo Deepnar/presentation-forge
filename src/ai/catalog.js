@@ -2,19 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ROOT } from "../paths.js";
 
-/**
- * Renders the slide-type catalogue that goes into the model's prompt, derived
- * from deck.schema.json at run time.
- *
- * Hand-writing this list is the obvious shortcut and guarantees drift: the
- * schema gains a field, the prompt keeps describing the old shape, and the
- * model produces output that fails validation for reasons nothing explains.
- */
-
 let _cache;
 let _schema;
 
-/** The parsed deck schema, loaded once. */
 export async function deckSchema() {
   if (!_schema) {
     _schema = JSON.parse(await readFile(path.join(ROOT, "schema", "deck.schema.json"), "utf8"));
@@ -22,13 +12,6 @@ export async function deckSchema() {
   return _schema;
 }
 
-/**
- * Family grouping for the wider type vocabulary. Hand-maintained because the
- * schema has no family concept and its only job is to make 50 choices
- * navigable; the type *list* and every field still derive from the schema, so
- * a typo here mislabels a type, never invents one. Types absent from every
- * family (freeform) are the escape hatch, listed last.
- */
 const FAMILIES = {
   Foundation: ["title", "section", "chapter", "closing", "agenda", "references"],
   "List & Grid": ["bullets", "numbered-list", "checklist", "cards", "illustrated-points", "feature-grid", "grid-items", "icon-list", "stacked-list"],
@@ -47,8 +30,6 @@ const FAMILIES = {
   Special: ["equation", "bibliography", "data-source"],
 };
 
-/** The families, as a map, for callers that need to pick a type rather than
- *  classify one — inserting a slide chooses by family to keep variety. */
 export const FAMILY_TYPES = new Map(Object.entries(FAMILIES));
 
 export function familyFor(type) {
@@ -58,12 +39,6 @@ export function familyFor(type) {
   return null;
 }
 
-/**
- * Per-family content budgets at each density. The sweep rewrites a deck's
- * content at a chosen density; these are the per-type targets the writer is
- * told to hit — sparse means few short bullets, dense means more, longer.
- * Families absent here fall back to the generic budget.
- */
 export const DENSITY_BUDGETS = {
   sparse: {
     generic: "a few words — 1-2 short items where the type allows lists, one-line bodies",
@@ -97,21 +72,11 @@ export const DENSITY_BUDGETS = {
   },
 };
 
-/** The budget string for one slide type at one density, or the generic fallback. */
 export function densityBudget(density, type, family) {
   const level = DENSITY_BUDGETS[density] ?? DENSITY_BUDGETS.balanced;
   return level[family] ?? level.generic;
 }
 
-/**
- * Per-type content invitations — the substance a layout is BUILT to hold,
- * beyond the schema's minimum. The 75-type visual audit showed several types
- * render sparse because the writer filled the schema minima: 2 stats on a
- * four-up grid, a 3-row table on a full-width slide, title-only framework
- * elements round a ring. These tell the writer how much the layout invites, so
- * a slide fills its space instead of reading as an empty shell. Types absent
- * here get no extra guidance — the family density budget governs.
- */
 export const TYPE_BUDGETS = {
   framework: "a full ring of 6 elements, EACH with its own one-line body — a title-only element reads as an empty node",
   stats: "4 stats — the layout is a four-up grid; two stats on it read half-empty",
@@ -171,22 +136,10 @@ export const TYPE_BUDGETS = {
   "side-by-side": "a heading and a body line on each side — the comparison needs both sides filled",
 };
 
-/**
- * The per-type content invitation for one type, or the empty string when the
- * family budget governs. Rides the planner and writer catalogues so the model
- * fills what the layout invites.
- */
 export function typeBudget(type) {
   return TYPE_BUDGETS[type] ?? "";
 }
 
-/**
- * Plain-language slide descriptions for the outline review — "Stats — shows 4
- * big numbers with captions". One source of truth: the in-chat outline renders
- * exactly these, so a slide type reads as what it will contain rather than as a
- * schema enum value. Every type in the enum must have an entry; the guard at
- * the bottom of this file refuses to ship a drift.
- */
 export const TYPE_DESCRIPTIONS = {
   title: "the cover with your team and guide",
   section: "a divider announcing the next part of the talk",
@@ -264,13 +217,6 @@ export const TYPE_DESCRIPTIONS = {
   freeform: "a fully custom design — rasterised, not editable in PowerPoint",
 };
 
-/**
- * Per-type selection guidance — "use this type when…" in one line. The
- * description says WHAT a type is; this says WHEN to pick it, so the writer's
- * and planner's type choice is grounded in intent, not the type name alone.
- * Every enum type must have an entry (the guard below refuses to ship a
- * drift, exactly like TYPE_DESCRIPTIONS).
- */
 export const TYPE_USE_WHEN = {
   title: "use for the opening cover — one shot to say what the talk is, who presents and for whom",
   section: "use to open a new major part of the talk — it announces the next section, carries no presenter",
@@ -348,7 +294,6 @@ export const TYPE_USE_WHEN = {
   freeform: "use sparingly for a hero moment no native layout can express — the whole slide rasterises and text stops being editable",
 };
 
-/** "flow" in the outline; "Flow — six steps connected by arrows". */
 export function describeType(type) {
   const meta = TYPE_DESCRIPTIONS[type];
   return meta ? `${meta}` : type;
@@ -359,18 +304,8 @@ export function typeLabel(type) {
   return pretty || "Slide";
 }
 
-/**
- * The chart kinds the schema's `chart` type accepts, in one place so the
- * steering hint can name them without re-deriving the enum.
- */
 export const CHART_KINDS = ["bar", "hbar", "line", "area", "pie", "doughnut", "scatter", "radar", "stacked-bar"];
 
-/**
- * How many distinct numeric facts the research carries. A fact is a number
- * with a unit or percentage ("180 GW", "4.2%") or a 3+ digit figure ("1789",
- * "1.23"), deduplicated so one figure repeated across sources counts once.
- * This is the "≥2 numeric facts" threshold behind the data-affinity steering.
- */
 export function numericFactCount(research) {
   const t = String(research ?? "");
   const facts = new Set();
@@ -383,14 +318,6 @@ export function numericFactCount(research) {
   return facts.size;
 }
 
-/**
- * The data-affinity steering note: when the research carries real figures, a
- * data beat should be visualised as a chart, not restated as big numbers. When
- * it does NOT, the note must say so explicitly — an empty chart is the one
- * outcome that must be impossible. The planner (and the writer, for chart
- * slides) is told the chart kinds and which one matches which comparison.
- * Returns the note for either case.
- */
 export function dataAffinityNote(research) {
   const count = numericFactCount(research);
   if (count < 2) {
@@ -412,11 +339,6 @@ export function dataAffinityNote(research) {
   );
 }
 
-/**
- * The enum's plain-language descriptions, for the outline review and the inline
- * editor. Walks the schema so the set never drifts from the vocabulary, and
- * throws on a type the map has missed — the guard that keeps the two in lockstep.
- */
 export async function typeDescriptions() {
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
@@ -482,8 +404,6 @@ export async function slideCatalog() {
   return _cache;
 }
 
-/** Each conditional branch → { type → { required, fields } }. Shared extraction
- *  for the full catalog and the per-type prompt. */
 async function fieldsByType(schema) {
   const slide = schema.definitions.slide;
   const types = slide.properties.type.enum;
@@ -501,9 +421,6 @@ async function fieldsByType(schema) {
   return byType;
 }
 
-/** The field spec for ONE slide type — a scoped catalog line for prompts that
- *  only touch a single slide (the density sweep), instead of the whole 75-type
- *  catalogue. Keeping the grammar-relevant contract while cutting prompt size. */
 export async function catalogForType(type) {
   const schema = await deckSchema();
   const slide = schema.definitions.slide;
@@ -522,10 +439,6 @@ export async function catalogForType(type) {
   );
 }
 
-/** The shared fields WITH their caps. Naming them without the numbers told the
- *  writer that `headline` exists and left it to discover ≤80 from an ajv
- *  rejection — the one budget on every slide of every deck, and the only one
- *  the catalog stated without it. */
 function sharedFieldList(slide, schema) {
   return Object.entries(slide.properties)
     .filter(([k]) => k !== "type")
@@ -545,10 +458,6 @@ function describeField(name, spec, schema) {
   return { name, text: `${name}${bits.length ? ` (${bits.join(", ")})` : ""}` };
 }
 
-/** A compact shape description including the per-field length caps, so the
- *  writer sees the real budget for nested fields ("layers[] body ≤80 chars"),
- *  not just the array bounds. The caps are the schema's hard limits — a model
- *  that cannot see them overflows a field and its slide is rejected. */
 function shapeOf(spec, schema) {
   const resolved = spec.$ref ? resolveRef(spec.$ref, schema) : spec;
   if (resolved.type === "string") return resolved.maxLength ? `≤${resolved.maxLength} chars` : null;

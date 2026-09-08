@@ -1,4 +1,3 @@
-/** Deck files, rendering, export, research, and report routes. */
 
 import express from "express";
 import { access, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
@@ -45,7 +44,6 @@ app.get("/api/decks/:slug/versions", wrap(async (req, res) => {
   ok(res, { versions });
 }));
 
-
 app.post("/api/decks/:slug/versions/:file/restore", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "backups", path.basename(req.params.file));
   if (!/^deck\.\d{4}-\d{2}-\d{2}T.+\.yaml$/.test(path.basename(req.params.file))) {
@@ -56,14 +54,12 @@ app.post("/api/decks/:slug/versions/:file/restore", wrap(async (req, res) => {
   ok(res, {});
 }));
 
-
 app.post("/api/validate", wrap(async (req, res) => {
   const { ok: valid, errors } = await validateDeck(req.body?.deck ?? {});
   ok(res, { valid, errors });
 }));
 const DECK_IMAGE_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "avif"]);
 const DECK_IMAGE_MAX = 15 * 1024 * 1024; // 15 MB — a slide image, not a photo library
-
 
 function sniffImage(buf, ext) {
   const h = buf.slice(0, 16);
@@ -88,8 +84,6 @@ function sniffImage(buf, ext) {
       return false;
   }
 }
-
-
 
 app.post("/api/decks/:slug/assets", (req, res) => {
   const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -117,7 +111,6 @@ app.post("/api/decks/:slug/assets", (req, res) => {
   });
 });
 
-
 app.get("/api/decks/:slug/assets/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "assets", path.basename(req.params.file));
   try {
@@ -128,7 +121,6 @@ app.get("/api/decks/:slug/assets/:file", wrap(async (req, res) => {
     res.status(404).end();
   }
 }));
-
 
 app.post("/api/briefing/upload", (req, res, next) => {
   const ext = String(req.headers["x-file-ext"] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -151,7 +143,6 @@ app.post("/api/briefing/upload", (req, res, next) => {
     })();
   });
 });
-
 
 sweepStagedUploads().catch(() => {});
 
@@ -186,7 +177,6 @@ app.post("/api/decks/:slug/render", withRenderSlot(async (req, res) => {
     pptx: `/api/decks/${req.params.slug}/download/deck.pptx`,
   });
 }));
-
 
 app.post("/api/decks/:slug/sweep", (req, res) => {
   const sse = startSSE(res);
@@ -225,7 +215,6 @@ app.post("/api/decks/:slug/sweep", (req, res) => {
   });
 });
 
-
 app.post("/api/decks/:slug/script", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
@@ -260,7 +249,6 @@ app.post("/api/decks/:slug/script", (req, res) => {
     sse.close();
   });
 });
-
 
 app.get("/api/decks/:slug/script", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "script.md");
@@ -304,7 +292,6 @@ function parseScriptBlocks(markdown) {
   return blocks;
 }
 
-
 app.get("/api/decks/:slug/preview/report/thumbs/:file", wrap(async (req, res) => {
   const file = path.join(DECKS, req.params.slug, "out", "report-preview", "thumbs", path.basename(req.params.file));
   try {
@@ -334,8 +321,6 @@ app.get("/api/decks/:slug/preview/thumbs/:file", wrap(async (req, res) => {
     res.status(404).end();
   }
 }));
-
-
 
 app.post("/api/decks/:slug/slides/:index/insert", (req, res) => {
   const sse = startSSE(res);
@@ -447,7 +432,6 @@ app.get("/api/decks/:slug/download/:file", wrap(async (req, res) => {
   }
 }));
 
-
 app.post("/api/decks/:slug/export", wrap(async (req, res) => {
   const { format = "pdf", theme } = req.body ?? {};
   const { exportDeck } = await import("../../src/export.js");
@@ -459,13 +443,11 @@ app.post("/api/decks/:slug/export", wrap(async (req, res) => {
   });
 }));
 
-
 app.post("/api/decks/:slug/clone", wrap(async (req, res) => {
   const { cloneDeck } = await import("../../src/ai/pipeline.js");
   const r = await cloneDeck({ slug: req.params.slug });
   ok(res, r);
 }));
-
 
 app.post("/api/decks/:slug/bundle", wrap(async (req, res) => {
   const JSZip = (await import("jszip")).default;
@@ -516,7 +498,6 @@ app.get("/api/decks/:slug/research", wrap(async (req, res) => {
   ok(res, { exists: notes != null, notes, sources, summary: researchSummary(sources, notes), figures, imageCredits });
 }));
 
-
 app.put("/api/decks/:slug/research", wrap(async (req, res) => {
   const { notes, sources } = req.body ?? {};
   if (notes != null && typeof notes !== "string") {
@@ -551,7 +532,6 @@ app.get("/api/decks/:slug/report", wrap(async (req, res) => {
   ok(res, { report, identity, rendered });
 }));
 
-
 app.put("/api/decks/:slug/report", wrap(async (req, res) => {
   const { report } = req.body ?? {};
   if (!report) return fail(res, 400, "body must include `report`");
@@ -564,7 +544,6 @@ app.put("/api/decks/:slug/report", wrap(async (req, res) => {
   await writeFile(path.join(dir, "report.yaml"), YAML.stringify(report), "utf8");
   ok(res, {});
 }));
-
 
 app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   const reportFile = path.join(DECKS, req.params.slug, "report.yaml");
@@ -587,7 +566,6 @@ app.post("/api/decks/:slug/report/render", withRenderSlot(async (req, res) => {
   });
 }));
 
-
 app.post("/api/decks/:slug/report/preview", withRenderSlot(async (req, res) => {
   const docx = path.join(DECKS, req.params.slug, "out", "report.docx");
   try { await access(docx); } catch {
@@ -604,7 +582,6 @@ app.post("/api/decks/:slug/report/preview", withRenderSlot(async (req, res) => {
     fail(res, 500, `report preview failed: ${err.message}`);
   }
 }));
-
 
 app.post("/api/decks/:slug/report/generate", (req, res) => {
   const sse = startSSE(res);

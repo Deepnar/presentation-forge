@@ -1,20 +1,4 @@
 #!/usr/bin/env node
-/**
- * Slide-type QA pass — render every slide type from the specimen deck in a set
- * of themes, rasterise, and emit:
- *
- *   1. `problems.json`  — the renderer's own per-slide problems (fit-floor
- *      flags, placeholders) so a broken type is flagged before any vision pass.
- *   2. `per-slide/<theme>/NN-<type>.png` — one full-size PNG per type per theme.
- *   3. `sheets/<theme>-<chunk>.png` — labelled contact sheets, chunked so each
- *      cell stays readable for a vision model (cells at ~360px, ~20 per sheet).
- *
- *   node tools/slideqa.mjs [--themes warm-humanist,swiss-international,sci-fi-hud] [--out /tmp/slideqa]
- *   node tools/slideqa.mjs --deck decks/<slug>/deck.yaml --themes a,b
- *
- * The sheets are the deliverable the vision pass reads; the full-size PNGs let
- * it zoom a suspect type. problems.json is the deterministic half of the audit.
- */
 import { mkdir, writeFile, copyFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,17 +24,12 @@ await mkdir(work, { recursive: true });
 await mkdir(perSlide, { recursive: true });
 await mkdir(sheetsDir, { recursive: true });
 
-// A real deck asks what the specimen cannot: its payloads are hand-written to
-// behave, and a model writes whatever length the topic wants.
 const deckArg = pick("--deck")?.[0];
 const deck = deckArg ? await loadDeck(deckArg) : await specimenDeck();
 const index = deckArg ? {} : await specimenIndex();
 const byIndex = deck.slides.map((s) => s.type);
 const deckFile = path.join(work, "deck.yaml");
 
-// The renderer's own verdict per slide: fit-floor flags, placeholder issues,
-// layout errors. This is the deterministic half of the audit — the vision pass
-// reads the sheets for the structural half.
 const problemsByType = {};
 const allProblems = [];
 
@@ -63,7 +42,6 @@ for (const theme of themes) {
   const r = await render({ deckFile, themeName: theme, out });
   const p = await preview(r.outFile, { dpi: 80, outDir: path.join(work, `${theme}`) });
 
-  // Map render problems to their slide's type via the "slide N" prefix.
   for (const prob of r.problems) {
     const m = prob.match(/^slide (\d+)[:)]/);
     const type = m ? byIndex[Number(m[1]) - 1] : "deck";
@@ -72,7 +50,6 @@ for (const theme of themes) {
     allProblems.push({ theme, type, slide: m ? Number(m[1]) : null, problem: prob });
   }
 
-  // Full-size per-type PNGs, named by type so a suspect is easy to find.
   for (let i = 0; i < p.pages.length; i++) {
     await copyFile(p.pages[i], path.join(perSlide, `${theme}-${String(i + 1).padStart(2, "0")}-${byIndex[i]}.png`));
   }
@@ -80,8 +57,6 @@ for (const theme of themes) {
 
 await writeFile(path.join(outDir, "problems.json"), JSON.stringify({ themes, problemsByType, allProblems }, null, 2));
 
-// Contact sheets, chunked ~20 per sheet so each cell stays readable. Each cell
-// is labelled with its slide number and type.
 const CELL_W = 360;
 const CELL_H = Math.round(CELL_W * (9 / 16));
 const COLS = 5;

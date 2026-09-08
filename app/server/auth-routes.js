@@ -1,4 +1,3 @@
-/** Authentication routes and their abuse controls. */
 
 import {
   accountCount, accountVerificationState, authenticate, bearerToken,

@@ -10,19 +10,6 @@ import { preview } from "../preview.js";
 import { loadTheme } from "../theme.js";
 import { validateDeck } from "../validate.js";
 
-/**
- * The vision critic loop.
- *
- * Renders a deck, sends each slide PNG to a vision model with a small bounded
- * findings schema, converts any findings into a turn instruction, and lets
- * `runTurn` fix the deck. Re-renders and re-critiques, capped at two rounds —
- * a critic that has not converged twice is arguing with itself, and every round
- * costs a full render plus a model pass per slide.
- *
- * The findings schema must stay small: this is a vision model reading images
- * under constrained decoding, and gemma degrades badly on large grammars.
- */
-
 const MAX_ROUNDS = 2;
 
 const findingsSchema = {
@@ -64,7 +51,6 @@ function criticPrompt(deck, index) {
   ].join("\n");
 }
 
-/** Turn findings into the instruction a `runTurn` fix pass executes. */
 function buildInstruction(findings) {
   const lines = findings.map(
     (f) => `- Slide ${f.slide}: ${f.kind} — ${f.detail}${f.fix ? ` Fix: ${f.fix}` : ""}`,
@@ -78,24 +64,6 @@ function buildInstruction(findings) {
   );
 }
 
-/**
- * The slide types the fix turn is allowed to write: exactly those the findings
- * name.
- *
- * Without this the turn built its grammar from all 73 types at once, and
- * `buildOpsSchema` assigns each type's properties into one flat object — so a
- * name two types share belongs to whichever was walked last. Thirteen types
- * declare `items`; `contact` wins. A model asked to repair a clipped
- * `feature-grid` card was therefore REQUIRED by the grammar to emit
- * `{label, value}` items, and the fix failed validation with "missing required
- * field \"title\"". It could not have succeeded: the correct answer was
- * unrepresentable and the incorrect one mandatory.
- *
- * Scoping also narrows what the turn may do — it cannot change a slide's type
- * or add one of a different type — which is why the instruction above no longer
- * offers those. A prompt that promises what the grammar forbids is the same
- * defect one level up.
- */
 function typesInPlay(deck, findings) {
   const types = new Set();
   for (const f of findings) {
@@ -105,22 +73,10 @@ function typesInPlay(deck, findings) {
   return [...types];
 }
 
-/**
- * Critique a deck and fix what the critic finds. `deck` is a deck object; the
- * deck is written to `decks/<slug>/deck.yaml` before each render so the final
- * state on disk is the fixed deck. Returns the round history plus the final
- * deck.
- */
 export async function critiqueDeck({ slug, deck, model, onProgress, signal }) {
   let current = deck;
   const report = { slug, rounds: [] };
 
-  // The critic READS IMAGES. `config/models.yaml` declared `vision: true` on
-  // the role and nothing enforced it, so in hosted mode — where resolveRole
-  // sends every non-author role to the gateway — this loop would post base64
-  // slide PNGs to a text model and then edit the deck from whatever came back.
-  // Findings invented about an image the model never saw are worse than no
-  // critic: the fix turn acts on them. Refuse instead, and say why.
   const sight = await roleCanSeeImages("critic");
   if (!sight.ok) {
     report.skipped = sight.reason;
@@ -136,8 +92,6 @@ export async function critiqueDeck({ slug, deck, model, onProgress, signal }) {
     await writeFile(deckFile, YAML.stringify(current), "utf8");
     const r = await render({ deckFile, themeName: current.theme });
     const p = await preview(r.outFile, { dpi: 110 });
-    // The last round's preview corresponds to the final deck on disk; expose
-    // it so callers can show the fixed slides rather than the pre-critique ones.
     report.slides = p.pages.map((f) => path.basename(f));
     report.thumbs = p.thumbs.map((f) => path.basename(f));
     report.problems = r.problems ?? [];

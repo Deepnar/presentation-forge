@@ -1,4 +1,3 @@
-/** Account-scoped provider settings, budgets, usage, and key routes. */
 
 import { bearerToken, getUserId, userForToken } from "../../src/auth.js";
 import {

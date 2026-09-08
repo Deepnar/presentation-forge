@@ -1,4 +1,3 @@
-/** Public system routes, maintenance jobs, static UI hosting, and boot diagnostics. */
 
 import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";

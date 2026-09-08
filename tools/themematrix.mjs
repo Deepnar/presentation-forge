@@ -1,24 +1,4 @@
 #!/usr/bin/env node
-/**
- * Render every slide type in every theme and report what will not fit.
- *
- *   node tools/themematrix.mjs                          # 38 themes x 75 types
- *   node tools/themematrix.mjs --themes flow-heavy,a,b
- *   node tools/themematrix.mjs --types flow,branching-flow
- *   node tools/themematrix.mjs --mode both              # light and dark
- *   node tools/themematrix.mjs --deck decks/<slug>/deck.yaml
- *   node tools/themematrix.mjs --notes                  # every slide with a note bar
- *   node tools/themematrix.mjs --save .themeaudit/base.json
- *   node tools/themematrix.mjs --against .themeaudit/base.json
- *
- * `--against` is the gate: it exits non-zero when a change introduces a
- * theme/type failure the saved run did not have, which is the failure mode a
- * layout change actually causes — a narrower measure somewhere costs an
- * unrelated theme its body text, and the .pptx still writes.
- *
- * Nothing here rasterises. It proves text fits at a legible size and nothing
- * more; use tools/themeaudit.mjs to look at the slides.
- */
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { themeMatrix, byType, signature } from "../src/themematrix.js";

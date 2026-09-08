@@ -1,19 +1,4 @@
 #!/usr/bin/env node
-/**
- * Render one contact sheet per theme, for looking at.
- *
- * A written .pptx proves the file parsed and a passing contrast test proves a
- * number; neither tells you whether a theme looks like anything. This renders
- * chosen slide types from the specimen deck in chosen themes, rasterises them
- * and tiles them, so a theme change can be judged the only way it can be
- * judged — by looking at the slides.
- *
- *   node tools/themeaudit.mjs --themes glassmorphism,claymorphism
- *   node tools/themeaudit.mjs --themes warm-humanist --types title,section,chart
- *   node tools/themeaudit.mjs --all --types bullets            # every theme
- *
- * Output: .themeaudit/sheet-<theme>.png (gitignored scratch).
- */
 import { mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
@@ -33,8 +18,6 @@ const themes = process.argv.includes("--all")
   ? await listThemes()
   : list(arg("--themes")) ?? ["warm-humanist"];
 const types = list(arg("--types")) ?? ["title", "section", "bullets", "big-number", "compare", "chart"];
-// Branding on by default: the institutional marks sit on whatever the theme
-// paints, and that interaction is exactly what needs looking at.
 const branding = arg("--branding", "full");
 
 const OUT = path.join(ROOT, ".themeaudit");

@@ -1,21 +1,4 @@
 #!/usr/bin/env node
-/**
- * What does the visual sweep cover, and what would deleting a theme cost?
- *
- *   node tools/coverage.mjs                          # the covering set's report
- *   node tools/coverage.mjs --without minimal-muji   # what deleting it costs
- *   node tools/coverage.mjs --without a,b,c
- *
- * The gallery is deliberately large and a theme that does not earn its place
- * should go. The only thing deletion can break that is not obvious from looking
- * is COVERAGE: the layouts branch on composition axes, and a theme may be the
- * last one carrying a frame, an opening or a list treatment. Delete that and
- * the branch is never rendered by any sweep again — it does not fail, it simply
- * stops being looked at.
- *
- * So: run this before deleting, not after. It answers only that question.
- * Whether a theme is any good is a matter of taste and is not machine-decidable.
- */
 import { loadTheme } from "../src/theme.js";
 import { COVERING_THEMES, themeTraits, allThemeNames, coverageReport } from "../src/coverage.js";
 

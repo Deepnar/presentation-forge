@@ -7,39 +7,6 @@ import { excerptResearch } from "./research.js";
 import { DIVIDER_TYPES } from "./team.js";
 import { healCutField } from "./fieldlength.js";
 
-/**
- * The speaker-script generator — what the presenter SAYS for each slide.
- *
- * A slide's bullets state the shape of an argument; the person presenting has
- * to voice the rest. This writes that rest as spoken prose, one call per slide
- * (the same decomposition that keeps every other writer grammar small): the
- * script bridges the slide's bullets to the deck's full argument, names the
- * "so what" the coherence pass only implies, and fills gaps from the same
- * research the deck was written from. A cloud author gets the full-strength
- * prose budget; the schema stays tiny either way.
- *
- * Output is decks/<slug>/script.md — plain markdown with an invisible
- * `<!-- slide:N -->` marker per block, so a per-slide regeneration replaces
- * exactly that slide's words and nothing else. The markers are HTML comments,
- * invisible when rendered.
- */
-
-/**
- * A spoken segment, bounded well under the grammar-breaking 2000 cap. 60–90
- * seconds of speech is roughly 180–250 words, comfortably inside 1999 chars.
- *
- * A DIVIDER gets a much tighter cap. The prompt has always asked for "a short
- * spoken transition, about 15-30 seconds" on those slides and the writer
- * ignored it: a section divider in a real script came back with a 200-word
- * monologue, the same weight as the content slides around it. An instruction in
- * prose is a hint; the grammar is the part that binds.
- *
- * 600 rather than the ~500 those word counts imply, because a cap the model
- * runs into mid-sentence is its own defect — the segment is healed back to a
- * whole sentence below, and the headroom keeps that from being the normal case.
- * At 800 the writer simply filled it (106 words against a 40-80 target), which
- * is the same lesson again: the model writes to the bound it is given.
- */
 const slideScriptSchema = (isDivider = false) => ({
   type: "object",
   additionalProperties: false,
@@ -56,9 +23,6 @@ const slideScriptSchema = (isDivider = false) => ({
   },
 });
 
-/** The slide as the script writer needs it: its headline, its content, and who
- *  presents it. Content is flattened so the model sees every field the layout
- *  draws, in slide order. */
 function digestSlide(slide) {
   const { headline, standfirst, type, presenter, ...rest } = slide;
   const lines = [];
@@ -107,11 +71,6 @@ function writerSystem() {
   ].join("\n");
 }
 
-/**
- * Write one slide's script segment. A divider gets a short transition (15-30
- * seconds — it announces structure, nothing more); a content slide gets the
- * full spoken treatment.
- */
 async function writeSlideScript({
   deck, plan, slide, index, presenter, research, model, signal, chat,
 }) {
@@ -155,19 +114,8 @@ async function writeSlideScript({
     ],
   });
 
-  // A segment that stopped exactly at its cap was cut by the grammar, not
-  // finished by the writer — the same failure that left six of nine speaker
-  // notes ending mid-word on a real deck. A presenter reads this aloud, so a
-  // sentence that stops halfway is worse here than anywhere.
   const words = String(res.data?.words ?? "").trim();
 
-  // A segment has to be SPEECH. The grammar asks for a string of minLength 1,
-  // which a malformed turn satisfies with a brace: slide 13 of a real script
-  // was written as the single character "}" — presented to the reader as the
-  // words that presenter says aloud. The same shape as the JSON that reached
-  // the report's prose. Throwing routes it to the caller's existing handler,
-  // which reports the slide and leaves it blockless for a deliberate retry,
-  // and that is strictly better than a brace on the page.
   if (!isSpeech(words)) {
     throw new Error(`unusable segment ${JSON.stringify(words.slice(0, 40))}`);
   }
@@ -176,8 +124,6 @@ async function writeSlideScript({
   return healCutField(words, cap) ?? words;
 }
 
-
-/** The spoken prose inside a rendered block, without its heading and byline. */
 function spokenWordsOf(block) {
   return String(block ?? "")
     .split("\n")
@@ -186,13 +132,6 @@ function spokenWordsOf(block) {
     .trim();
 }
 
-/**
- * Whether a segment is speech rather than syntax.
- *
- * The grammar asks for a string of minLength 1, which a malformed turn
- * satisfies with a brace: slide 13 of a real script was written as the single
- * character "}" and presented as the words that presenter says aloud.
- */
 function isSpeech(words) {
   const w = String(words ?? "").trim();
   return /[A-Za-z]/.test(w) && w.split(/\s+/).length >= 5;
@@ -230,14 +169,6 @@ function headerFor(deck) {
   );
 }
 
-/**
- * Generate (or regenerate) the speaker script for a deck.
- *
- * `index` selects ONE slide to rewrite (the per-slide "regen this slide" path);
- * without it every content slide is written. Each slide is one small-grammar
- * call; successful segments replace their `<!-- slide:N -->` block in
- * script.md, failures are reported and leave the previous words in place.
- */
 export async function generateScript({
   slug, dir, model, signal, onProgress, chat = chatJSON, index = null,
 }) {
@@ -262,11 +193,6 @@ export async function generateScript({
 
   const blocks = parseScript(existing);
 
-  // "Keep previous words" is right for a transient failure and wrong when the
-  // previous words are themselves the failure. A block written before the prose
-  // guard existed can be a lone brace, and preserving it means the file keeps
-  // presenting "}" as what a presenter says. Drop an unusable block so the
-  // reader gets the missing-segment note instead of the garbage.
   for (const [i, block] of Object.entries(blocks)) {
     if (block && !isSpeech(spokenWordsOf(block))) delete blocks[i];
   }
@@ -291,17 +217,6 @@ export async function generateScript({
     }
   }
 
-  // The file is always rebuilt from the deck's slide order so a deleted slide
-  // drops its block and a regenerated one keeps its neighbours' words. Slides
-  // that were never written stay blockless — the panel shows them as "not
-  // written yet" with a regenerate affordance instead of placeholder text.
-  // A slide with no segment gets a visible note IN PLACE OF its block, not a
-  // silent gap. script.md is downloadable (Export -> Speaker script), and the
-  // panel's "not written yet" affordance does not travel with the file — so a
-  // presenter who took the script away found it running 11, 13 with nothing to
-  // say a slide was missing. The note sits OUTSIDE the <!-- slide:N --> markers
-  // the panel parses, so the affordance is untouched and only the reader of the
-  // file gains anything.
   const body = slides
     .map((slide, i) => blocks[i] ?? `> **Slide ${i + 1} (${slide.type}) — no script yet.** Open the deck's Script page to write it.`)
     .join("\n\n");

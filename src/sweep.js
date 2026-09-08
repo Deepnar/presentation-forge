@@ -4,18 +4,6 @@ import YAML from "yaml";
 import { DECKS } from "./paths.js";
 import { sendMail, sweepMailBody, sweepMailConfigured } from "./mail.js";
 
-/**
- * The monthly sweep — the thing that keeps a friend's home server from becoming
- * cloud storage. Decks older than `olderThanDays` are deleted EXCEPT ones
- * marked keep (`meta.keep: true`), people download daily to local machines, so
- * the server only ever holds recent work plus what is explicitly kept.
- *
- * Runs from the server's scheduler (src/ai pipeline boot) and from the CLI
- * (`npm run sweep` / `forge sweep`), so a cron line works just as well as the
- * in-process timer. The email is sent whether or not anything was deleted, so
- * the owner knows the sweep ran.
- */
-
 export const SWEEP_DEFAULT_DAYS = 30;
 
 export async function sweep({ olderThanDays = SWEEP_DEFAULT_DAYS, dryRun = false } = {}) {
@@ -66,8 +54,6 @@ export async function sweep({ olderThanDays = SWEEP_DEFAULT_DAYS, dryRun = false
     }
   }
 
-  // Always mail, so the owner knows the sweep ran — listing what it will do on
-  // a dry run, what it did otherwise.
   if (sweepMailConfigured()) {
     const subject = dryRun ? "Forge sweep preview" : "Forge monthly sweep complete";
     await sendMail({
@@ -78,8 +64,6 @@ export async function sweep({ olderThanDays = SWEEP_DEFAULT_DAYS, dryRun = false
 
   return { olderThanDays, deleted, willDelete, skipped, errors, dryRun };
 }
-
-/* --------------------------------------------------------------------- CLI */
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const argv = process.argv.slice(2);

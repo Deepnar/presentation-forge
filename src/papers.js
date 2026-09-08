@@ -1,20 +1,3 @@
-/**
- * Academic paper search — the "proper way to search and research papers"
- * half of the research pass. Two public APIs, no keys, no cloud:
- *
- * - arXiv: export.arxiv.org/api/query — the preprint server, returns Atom XML
- *   with title, authors, abstract and the pdf/html links.
- * - Crossref: api.crossref.org — the DOI registry, returns JSON with title,
- *   abstract (when the publisher supplies one), DOI, journal and year.
- *
- * Results are deduped (arXiv IDs and DOIs are canonical), ranked by how many
- * of the brief's key terms appear in the title+abstract, and shaped into the
- * same source record the rest of the research pass writes to sources.json —
- * plus a `kind: "paper"` marker and an arXiv id / DOI for the Research view to
- * link. Full text for the top paper(s) is pulled from arXiv's HTML page (the
- * paper's own abstract.txt is short; the HTML carries the full text) through
- * the shared extraction pipeline.
- */
 
 import { researchQuery, fetchPage } from "./search.js";
 import { researchSummary } from "./ai/research.js";
@@ -57,7 +40,6 @@ async function getAtom(url, params) {
   }
 }
 
-/** Extract <title>, <summary> and <id> from an arXiv Atom feed. */
 function parseArxiv(xml) {
   const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)];
   return entries.map(([, body]) => {
@@ -95,12 +77,6 @@ function rankByBrief(scoreText, brief) {
   return hits / ts.length;
 }
 
-/**
- * Query both APIs, dedupe by canonical id, rank by brief term overlap. `limit`
- * is the number of papers kept; the upstream result windows scale with it so a
- * deeper pass (the cloud research profile) still sees enough raw candidates to
- * rank from.
- */
 export async function searchPapers(brief, { limit = 6 } = {}) {
   const term = String(brief ?? "").slice(0, 200);
   const upstream = Math.max(12, limit * 2);
@@ -167,11 +143,6 @@ export async function searchPapers(brief, { limit = 6 } = {}) {
   return { papers: ranked, errors: out.filter((p) => p.kind === "paper_error") };
 }
 
-/**
- * Pull the full text for the top-ranked paper(s): arXiv HTML first (its own
- * reading view), else the arXiv PDF's abstract via the shared fetcher. Returns
- * the extracted text records the research pass merges into its notes.
- */
 export async function paperFullTexts(papers, { top = 2 } = {}) {
   const targets = papers
     .filter((p) => p.html || /arxiv\.org/.test(p.url ?? ""))
@@ -192,7 +163,6 @@ export async function paperFullTexts(papers, { top = 2 } = {}) {
   return records;
 }
 
-/** Merge paper search results into the source list a research pass writes. */
 export function mergePapers(sources, papers) {
   return [
     ...sources,

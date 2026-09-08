@@ -1,5 +1,3 @@
-/** Administrative account, quota, storage, and health routes. */
-
 
 
 import { readFile, readdir, stat } from "node:fs/promises";
@@ -33,7 +31,6 @@ app.post("/api/admin/hosted", wrap(async (req, res) => {
   ok(res, { hosted: isHosted() });
 }));
 
-
 app.put("/api/admin/settings/:name", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user || !isAdmin(user)) return fail(res, 403, "admin only");
@@ -46,7 +43,6 @@ app.put("/api/admin/settings/:name", wrap(async (req, res) => {
     return fail(res, 400, err.message);
   }
 }));
-
 
 app.get("/api/admin/auto/key", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
@@ -121,7 +117,6 @@ app.get("/api/admin/users", wrap(async (req, res) => {
     plans: Object.fromEntries(Object.entries(PLANS).map(([k, v]) => [k, { ...v, limits: limitConfig(k) }])),
   });
 }));
-
 
 app.delete("/api/admin/users/:email/usage", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));

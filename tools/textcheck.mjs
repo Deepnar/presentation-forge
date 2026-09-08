@@ -1,21 +1,4 @@
 #!/usr/bin/env node
-/**
- * Did the words survive onto the slide?
- *
- *   node tools/textcheck.mjs                       # every theme, the specimen deck
- *   node tools/textcheck.mjs --themes a,b
- *   node tools/textcheck.mjs --deck decks/<slug>/deck.yaml --themes a,b
- *   node tools/textcheck.mjs --min 8               # only longer words
- *
- * The fit sweep (`themematrix`) proves text was set at a readable size. This
- * proves it is still there and still spelled the way it was written: it
- * rasterises to PDF, reads the text back, and reports every word the content
- * declared that did not survive. It catches the two failures nothing else can
- * see — a word too wide for its column broken in the middle of itself, and a
- * layout that simply never draws a field the schema lets the model fill.
- *
- * Needs LibreOffice and Poppler's pdftotext.
- */
 import { mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { ROOT } from "../src/paths.js";
@@ -47,13 +30,9 @@ let total = 0;
 for (const theme of themes) {
   const dir = path.join(work, theme);
   await mkdir(dir, { recursive: true });
-  // Branding is a per-install variable and reserves title-band width, so a
-  // sweep that included it would report this machine's identity.
   await writeFile(path.join(dir, "meta.yaml"), "chrome:\n  branding: none\n", "utf8");
   const substituted = await substitutedFaces(await loadTheme(theme));
   if (substituted.length) {
-    // The page has to be rasterised in the theme's own faces or the result
-    // describes this machine's fallbacks, not the layout. See docs/TRAPS.md.
     console.log(`  ${theme.padEnd(24)} SKIPPED — not installed: ${substituted.join(", ")} (npm run fonts)`);
     continue;
   }

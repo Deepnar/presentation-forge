@@ -3,14 +3,6 @@ import path from "node:path";
 import { render } from "./render.js";
 import { libreofficeToPdf } from "./preview.js";
 
-/**
- * Deck export — PPTX is the primary artefact, but submission portals want a PDF
- * and a content review is easier as Markdown. Both reuse the same pipeline: the
- * PDF is the rendered deck run through the LibreOffice converter the preview
- * already trusts; the Markdown is a plain-text extraction from deck.yaml, so a
- * reviewer never needs PowerPoint or a render to read the argument.
- */
-
 function flatten(slide) {
   const out = [];
   const walk = (v) => {
@@ -25,7 +17,6 @@ function flatten(slide) {
   return out;
 }
 
-/** A readable markdown document derived from deck.yaml's own content. */
 export function deckToMarkdown(deck) {
   const lines = [`# ${deck.title ?? "Untitled deck"}`];
   if (deck.subtitle) lines.push(`\n*${deck.subtitle}*`);
@@ -44,10 +35,6 @@ export function deckToMarkdown(deck) {
   return lines.join("\n") + "\n";
 }
 
-/**
- * Export a deck in the requested format. PDF converts the freshly rendered
- * pptx; markdown extracts from deck.yaml directly. Returns the output path.
- */
 export async function exportDeck({ deckFile, format = "pdf", themeName }) {
   const dir = path.dirname(deckFile);
   const outDir = path.join(dir, "out");
@@ -66,9 +53,6 @@ export async function exportDeck({ deckFile, format = "pdf", themeName }) {
   if (format !== "pdf") throw new Error(`Unknown export format "${format}" — use pdf or markdown`);
 
   const r = await render({ deckFile, themeName });
-  // libreofficeToPdf clears its outDir before converting, so it must never be
-  // the same directory as the freshly rendered pptx — a subdir keeps the source.
-  // The final PDF lands in out/ root where the download route can serve it.
   const pdfOut = path.join(outDir, "pdf");
   const converted = await libreofficeToPdf(r.outFile, { outDir: pdfOut });
   const outFile = path.join(outDir, "deck.pdf");

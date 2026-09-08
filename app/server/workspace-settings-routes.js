@@ -1,4 +1,3 @@
-/** Per-account presets, identity, brand assets, and report-template routes. */
 
 import express from "express";
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";

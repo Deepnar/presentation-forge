@@ -1,4 +1,3 @@
-/** Public slide-layout registry. */
 
 import { layouts as core } from "./layouts/core.js";
 import { layouts as listsData } from "./layouts/lists-data.js";

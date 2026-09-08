@@ -2,25 +2,11 @@ import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
 
-/**
- * Saved briefing formats, per user. A preset is the reusable half of a
- * briefing — the fields that stay the same across many decks (team, theme,
- * density, branding, slide counts) — so picking one pre-fills the briefing and
- * the user only re-answers the changing bits (title, subject, teacher). The
- * long-term facts (institution, guide) live in config/identity.yaml, never in
- * a preset; the per-submission academic context is asked per chat. Stored as
- * config/presets/<email>.json, one file per account, gitignored like the rest
- * of the account store.
- */
-
 function fileFor(email) {
   const safe = String(email ?? "").replace(/[^a-zA-Z0-9@._-]/g, "_");
   return path.join(CONFIG, "presets", `${safe}.json`);
 }
 
-/** A stored preset keeps only its identity keys — pre-redesign files carried
- *  `guide` and `academic`, which have no home here anymore, so a list read
- *  migrates them away without a separate step. */
 function sanitize(input) {
   const p = input ?? {};
   return {
@@ -87,7 +73,6 @@ export async function deletePreset(email, id) {
   }
 }
 
-/** Forget a user's presets when their account is removed. */
 export async function clearPresets(email) {
   await rm(fileFor(email), { force: true }).catch(() => {});
 }

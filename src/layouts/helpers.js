@@ -1,4 +1,3 @@
-/** Shared geometry, fitting, and drawing primitives for slide layouts. */
 
 import { hex, textStyle, applyTransform } from "../theme.js";
 import { fitScale, fitScaleAll, fitOneLine, lineCount, measure, floorOf } from "../fit.js";
@@ -9,17 +8,9 @@ import {
   sectionField, sectionStyle, titlePlacement,
 } from "../composition.js";
 
-
-
-
-/* ------------------------------------------------------------------ utils */
-
-
 export function onInk(theme, floor = 4.5) {
   return ensureContrast(theme.palette.accent_alt ?? theme.palette.accent, theme.palette.ink, floor);
 }
-
-
 
 export function linesBox(theme, token, texts, width) {
   const st = theme.type[token];
@@ -74,28 +65,23 @@ export function card(slide, theme, { x, y, w, h }) {
   slide.addShape("roundRect", opts);
 }
 
-
 export function eyebrow(slide, ctx) {
   drawOpening(slide, ctx);
 }
 
-
 export function heading(slide, ctx) {
   return drawHeading(slide, ctx);
 }
-
 
 export function lineAtFloor(theme, role, fallbackRatio = 1.35) {
   const st = atFloor(theme, role);
   return ((st.size * (st.line ?? fallbackRatio)) / 72) * 1.05;
 }
 
-
 export function atFloor(theme, role) {
   const style = theme.type[role];
   return { ...style, size: Math.min(style.size, Math.max(style.size * 0.62, floorOf(style) ?? style.size)) };
 }
-
 
 export function designed(theme, role, design) {
   const st = theme.type[role];
@@ -103,17 +89,14 @@ export function designed(theme, role, design) {
 }
 export const atDesign = (design, s) => Math.round(design * s * 100) / 100;
 
-
 export function fitAt(theme, role, design, text, w, h, opts) {
   return atDesign(design, fitScale(text, w, h, designed(theme, role, design), opts));
 }
-
 
 export function fitAllAt(theme, role, design, texts, w, h, opts) {
   const set = texts.filter(Boolean);
   return set.length ? atDesign(design, fitScaleAll(set, w, h, designed(theme, role, design), opts)) : design;
 }
-
 
 export function fitLineAt(theme, role, design, texts, w, opts) {
   const set = (Array.isArray(texts) ? texts : [texts]).filter(Boolean);
@@ -122,15 +105,11 @@ export function fitLineAt(theme, role, design, texts, w, opts) {
   return atDesign(design, fitOneLine(widest(set, st), w, st, opts));
 }
 
-
 export function widest(texts, style) {
   return texts.reduce((a, b) => (measure(b, style) > measure(a, style) ? b : a));
 }
-
 
 export function paint(slide, ctx, color) {
   if (ctx.plate) return;
   slide.background = { color: hex(color) };
 }
-
-/* ---------------------------------------------------------------- layouts */

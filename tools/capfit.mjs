@@ -1,21 +1,4 @@
 #!/usr/bin/env node
-/**
- * What length can each field actually be, in every theme?
- *
- *   node tools/capfit.mjs                  # every type
- *   node tools/capfit.mjs --types cards,takeaway
- *   node tools/capfit.mjs --json .themeaudit/caps.json
- *
- * The schema's `maxLength` is the instruction the model writes to, and it was
- * never derived from what the layouts can seat: `cards[].body` accepts 320
- * characters and the type accepts four of them, which no theme can hold. A cap
- * the renderer cannot honour guarantees a rewrite pass on every generation.
- *
- * This grows each type's own specimen payload — one valid slide per type — until
- * some theme can no longer seat it at the readable floor, and reports the
- * largest length every theme clears. It reports; it does not edit the schema.
- * Which caps to move, and to what, is a judgement about the product.
- */
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { capFit } from "../src/capfit.js";

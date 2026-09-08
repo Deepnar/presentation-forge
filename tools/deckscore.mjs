@@ -5,15 +5,6 @@ import YAML from "yaml";
 import { scoreDeck } from "../src/deckscore.js";
 import { DECKS } from "../src/paths.js";
 
-/**
- * Score one generated deck, deterministically.
- *
- *   npm run deckscore <slug|path/to/deck.yaml>
- *
- * Prints a number so two runs can be compared — the same brief on Auto and on
- * local, a deck before and after a prompt change. It measures what can be
- * measured without a model; it does not claim the deck is any good.
- */
 const arg = process.argv[2];
 if (!arg) {
   console.error("usage: npm run deckscore <slug|deck.yaml>\n"
@@ -21,7 +12,6 @@ if (!arg) {
   process.exit(2);
 }
 
-// `--history` answers the question a single score cannot: did this get worse?
 if (process.argv.includes("--history")) {
   const { readScores, regression } = await import("../src/scorelog.js");
   const only = arg && !arg.startsWith("--") ? arg : null;

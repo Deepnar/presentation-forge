@@ -3,28 +3,6 @@ import { groundDeck } from "./ai/grounding.js";
 import { placeholderSlides } from "./placeholders.js";
 import { themeMatrix } from "./themematrix.js";
 
-/**
- * A deterministic score for a generated deck.
- *
- * The gap this fills is stated plainly: every content question about this
- * product — does the deck argue anything, is the research any good — is
- * answered by reading it, on the gateway, by a person. That is right and it
- * does not scale, so it happens rarely and nothing accumulates between times.
- *
- * This measures the part that CAN be measured without a model and without an
- * opinion, and returns one comparable number so two runs can be set beside each
- * other: the same brief on Auto and on local, a deck before and after a prompt
- * change, this week's output against last month's.
- *
- * What it deliberately does NOT claim: that a high score is a good deck. Every
- * component here is necessary and none is sufficient. A deck can score 100 and
- * say nothing worth hearing. It exists so that a deck which is BROKEN in a way
- * somebody already found once cannot quietly come back.
- *
- * Each component is 0..1 and carries its own findings, so a fallen score always
- * names what fell.
- */
-
 const WEIGHTS = {
   intact: 0.30,      // nothing is a placeholder, nothing structural is missing
   fits: 0.25,        // the text seats in every theme it could be switched to
@@ -33,18 +11,11 @@ const WEIGHTS = {
   whole: 0.10,       // no field was cut mid-sentence by the grammar
 };
 
-/**
- * Field names that hold a LABEL rather than prose. A headline, a stat value or
- * a CTA is a noun phrase and ends without a full stop by design, so measuring
- * it for mid-sentence truncation reports every deck as broken — the first run
- * of this scorer scored `whole` at 0% because it counted the deck's own title.
- */
 const LABEL_FIELDS = new Set([
   "headline", "title", "subtitle", "standfirst", "label", "value", "name",
   "cta", "eyebrow", "caption", "tag", "unit", "quote", "author", "role", "term",
 ]);
 
-/** The prose a reader actually reads: bodies, notes and list items. */
 function proseFields(slide) {
   const out = [];
   const walk = (node, key) => {
@@ -53,8 +24,6 @@ function proseFields(slide) {
       return;
     }
     if (Array.isArray(node)) {
-      // An array's items inherit their array's name: `bullets` holds prose,
-      // `points` holds prose, and a list of labels is still labels.
       node.forEach((v) => walk(v, key));
       return;
     }
@@ -69,8 +38,6 @@ function proseFields(slide) {
   return out;
 }
 
-/** A string that stops without terminal punctuation and is long enough that it
- *  was prose rather than a label — the shape a grammar cut leaves behind. */
 function looksTruncated(text) {
   const t = String(text ?? "").trim();
   if (t.length < 60) return false;                       // labels are short
@@ -78,17 +45,11 @@ function looksTruncated(text) {
   return /\s/.test(t);
 }
 
-/**
- * Score one deck. `research` enables the grounding component; without it that
- * component is skipped and its weight is redistributed, so a deck written from
- * an upload is not punished for having no notes.md.
- */
 export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
   const slides = deck?.slides ?? [];
   const components = {};
   const findings = [];
 
-  // 1. Intact — placeholders and empty structure are the loudest failure.
   const placeholders = placeholderSlides(deck);
   const emptyHeadlines = slides
     .map((s, i) => ({ i, s }))
@@ -99,7 +60,6 @@ export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
   for (const p of placeholders) findings.push(`slide ${p.index + 1}: placeholder was never rewritten`);
   if (noSection) findings.push(`${noSection} slide(s) carry no section — the chrome eyebrow draws no label`);
 
-  // 2. Fits — across every theme, because the theme picker re-renders this deck.
   let fitFailures = 0;
   try {
     const sweep = await themeMatrix({ deck, deckDir });
@@ -110,7 +70,6 @@ export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
     components.fits = null; // cannot render here; do not invent a number
   }
 
-  // 3. Grounded — every figure on a slide traceable to the notes.
   if (research.trim()) {
     const g = groundDeck(structuredClone(deck), research);
     const ungrounded = (g.problems ?? []).length;
@@ -120,27 +79,17 @@ export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
     components.grounded = null;
   }
 
-  // 4. Varied — the monotony and data-blindness checks, and ONLY those.
-  //
-  // `analyzeQuality` is the deck's deterministic content gate and has grown
-  // past variety: a chart whose series and categories disagree is a finding it
-  // reports, and counting it here dropped a perfectly varied deck from 100% to
-  // 50% for a defect that has nothing to do with variety. Score each finding
-  // against the thing it is evidence of.
   const quality = analyzeQuality(deck, research);
   const VARIETY_KINDS = new Set(["monotony", "data_unused"]);
   const variety = quality.filter((q) => VARIETY_KINDS.has(q.kind));
   components.varied = Math.max(0, 1 - variety.length * 0.25);
   for (const q of quality) findings.push(`${q.kind}: ${q.detail}`);
 
-  // A chart the renderer had to reconcile is an INTACTNESS failure: left alone
-  // it produces a file LibreOffice will not open at all.
   const shapeBroken = quality.filter((q) => q.kind === "chart_shape").length;
   if (shapeBroken) {
     components.intact = Math.max(0, components.intact - shapeBroken / Math.max(1, slides.length));
   }
 
-  // 5. Whole — no field stopped mid-sentence.
   let truncated = 0;
   let fields = 0;
   for (const slide of slides) {
@@ -154,7 +103,6 @@ export async function scoreDeck(deck, { research = "", deckDir = null } = {}) {
   }
   components.whole = fields ? Math.max(0, 1 - truncated / fields * 4) : 1;
 
-  // Weighted over the components that could actually be measured.
   let total = 0;
   let weight = 0;
   for (const [k, w] of Object.entries(WEIGHTS)) {

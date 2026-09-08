@@ -1,28 +1,6 @@
 import { connect } from "node:net";
 import { connect as tlsConnect } from "node:tls";
 
-/**
- * A minimal SMTP client — pulling nodemailer in for a handful of messages is
- * the kind of dependency the local-first project is built against. Node's
- * net/tls only; no framework.
- *
- * It began as "send an email on sweep day", to one address the operator set in
- * env. Password reset and address verification made the recipient a per-message
- * argument: FORGE_SMTP_TO is now only the sweep's destination, and `to` is what
- * every transactional message carries.
- *
- * Env config (all optional — with none set the helper is a silent no-op):
- *   FORGE_SMTP_HOST, FORGE_SMTP_PORT (default 587), FORGE_SMTP_USER,
- *   FORGE_SMTP_PASS, FORGE_SMTP_FROM, FORGE_SMTP_TO,
- *   FORGE_SMTP_SECURE=1  (implicit TLS on connect, port 465 style)
- *   FORGE_PUBLIC_URL     where the app answers, for the links in the messages
- *
- * On a plain connection the client upgrades via STARTTLS when the server
- * advertises it (the standard submission-port handshake, 587); servers that do
- * not offer STARTTLS still work over the plain socket. One recipient, one text
- * message — that is the entire job.
- */
-
 const cfg = () => ({
   host: process.env.FORGE_SMTP_HOST ?? "",
   port: Number(process.env.FORGE_SMTP_PORT ?? 587),
@@ -33,33 +11,15 @@ const cfg = () => ({
   secure: process.env.FORGE_SMTP_SECURE === "1",
 });
 
-/**
- * Whether outbound mail can be sent at all. Deliberately says nothing about
- * FORGE_SMTP_TO: that address is the sweep's destination, and a box that can
- * reach an SMTP server can send a reset to whoever asked for one.
- *
- * This predicate is load-bearing beyond mail. Address verification is only
- * enforced where a verification message can actually be delivered — an install
- * with no SMTP verifies accounts on creation, because the alternative is a box
- * that locks out every account it creates and offers no way back.
- */
 export function mailConfigured() {
   const c = cfg();
   return Boolean(c.host && c.from && c.user && c.pass);
 }
 
-/** The sweep's fixed recipient, which is a separate question from whether mail
- *  works at all. */
 export function sweepMailConfigured() {
   return mailConfigured() && Boolean(cfg().to);
 }
 
-/**
- * Where this install answers, for the links inside a message. A reset link that
- * points at localhost is useless in an inbox, so the operator sets
- * FORGE_PUBLIC_URL; the CORS allow-list is the next best guess, since it is
- * already the browser origin the API expects to be called from.
- */
 export function linkBase() {
   const explicit = (process.env.FORGE_PUBLIC_URL ?? "").trim();
   if (explicit) return explicit.replace(/\/+$/, "");
@@ -68,30 +28,10 @@ export function linkBase() {
   return "http://localhost:5173";
 }
 
-/** Whether a multiline EHLO reply advertises STARTTLS. */
 function offersStartTls(reply) {
   return /STARTTLS/i.test(reply);
 }
 
-/**
- * The SMTP dialogue: banner (220), EHLO, optional STARTTLS upgrade + a second
- * EHLO, AUTH LOGIN, MAIL FROM, RCPT TO, DATA, QUIT. `step` counts accepted
- * responses so far; the send function at that index produces the next command.
- *
- * Step layout:
- *   0  banner    220 -> EHLO
- *   1  EHLO      250 -> STARTTLS (if plain + advertised) else AUTH LOGIN
- *   2  STARTTLS  220 -> (upgrade here, send EHLO, advance to 3)
- *   3  EHLO#2    250 -> AUTH LOGIN
- *   4  AUTH      334 -> user  (b64)
- *   5  PASS      334 -> pass  (b64)
- *   6  LOGIN     235 -> MAIL FROM
- *   7  MAIL      250 -> RCPT TO
- *   8  RCPT      250 -> DATA
- *   9  DATA      354 -> message body + "."
- *  10  BODY      250 -> QUIT
- *  11  QUIT      221 -> done
- */
 export function sendMail({ subject, body, to } = {}) {
   const c = cfg();
   const rcpt = String(to ?? c.to ?? "").trim();
@@ -142,9 +82,6 @@ export function sendMail({ subject, body, to } = {}) {
     let step = 0;
     let startedTls = false;
     let buffer = "";
-    // A multiline reply (EHLO advertises its capabilities on 250-… continuation
-    // lines) must be accumulated as a whole before the state machine advances;
-    // checking only the final line would miss a STARTTLS offer on an earlier one.
     let reply = "";
     const onData = (chunk) => {
       buffer += chunk.toString("utf8");
@@ -162,9 +99,6 @@ export function sendMail({ subject, body, to } = {}) {
       if (!expected) return finish(new Error(`SMTP unexpected response ${code}`));
       if (code !== expected.code) return finish(new Error(`SMTP ${code} (expected ${expected.code})`));
 
-      // Step 1: decide the path after the first EHLO. Plain + STARTTLS offered
-      // -> upgrade; otherwise (TLS already up, or the server has no STARTTLS)
-      // go straight to auth.
       if (step === 1) {
         if (!c.secure && !startedTls && offersStartTls(complete)) {
           socket.write("STARTTLS\r\n");
@@ -176,9 +110,6 @@ export function sendMail({ subject, body, to } = {}) {
         return;
       }
 
-      // Step 2: the server accepted STARTTLS. Wrap the live socket in TLS,
-      // re-attach handlers, and send the required post-upgrade EHLO. The TLS
-      // layer replays buffered plaintext into the encrypted stream.
       if (step === 2) {
         startedTls = true;
         const plain = socket;
@@ -196,8 +127,6 @@ export function sendMail({ subject, body, to } = {}) {
 
       if (expected.send) {
         const payload = expected.send();
-        // Every SMTP command line must end CRLF; the DATA payload already
-        // carries its own terminators, so only append when missing.
         socket.write(payload.endsWith("\r\n") ? payload : payload + "\r\n");
       }
       step++;
@@ -207,7 +136,6 @@ export function sendMail({ subject, body, to } = {}) {
   });
 }
 
-/** Plain-text email body for a sweep: what will be deleted, when, by whom. */
 export function sweepMailBody({ deleted = [], willDelete = [], olderThanDays }) {
   const lines = [];
   if (willDelete.length) {
@@ -222,20 +150,6 @@ export function sweepMailBody({ deleted = [], willDelete = [], olderThanDays }) 
   return lines.join("\n");
 }
 
-/* ------------------------------------------------------- transactional mail */
-
-/**
- * The two messages an account can be sent about itself. Both are plain text on
- * purpose: this client sends one part, and a reset link that arrives as legible
- * text in every mail reader is worth more than a styled one that arrives as a
- * blob in some of them.
- *
- * The link carries the token in the URL fragment, not the query string. A
- * fragment is never sent to the server, never lands in an access log, and is
- * not forwarded in a Referer header when the page loads its own assets — the
- * app reads it in the browser and POSTs it back over TLS. It is also already
- * how this SPA routes.
- */
 export function resetMail({ name, token, minutes }) {
   const link = `${linkBase()}/#/reset/${token}`;
   return {

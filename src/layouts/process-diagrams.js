@@ -1,4 +1,3 @@
-/** process-diagrams slide layouts. */
 
 import { hex, textStyle, applyTransform } from "../theme.js";
 import { fitScale, fitScaleAll, fitOneLine, lineCount, measure, floorOf } from "../fit.js";
@@ -1103,4 +1102,3 @@ export const layouts = {
     });
   },
 };
-

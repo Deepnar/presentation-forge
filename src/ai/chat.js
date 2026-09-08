@@ -12,31 +12,9 @@ import { render } from "../render.js";
 import { preview } from "../preview.js";
 import { loadDeck } from "../validate.js";
 
-/**
- * The chat panel's orchestrator, shared by the CLI and the API.
- *
- * Per-deck threads over the turn primitive. The memory model is state over
- * transcript, exactly as the roadmap specifies:
- *
- *   State    current deck.yaml + theme voice + meta.yaml   the files themselves
- *   Recent   last ~10 turns verbatim                      decks/<slug>/chat.jsonl
- *   Durable  extracted standing preferences               decks/<slug>/decisions.md
- *
- * deck.yaml IS the memory: after a turn the result is in the file the model
- * reads every turn, so the transcript only has to carry intent that has not yet
- * been materialised. Older turns collapse into a rolling summary instead of
- * being dropped, so a long session degrades gracefully.
- */
-
 export const RECENT_WINDOW = 10;
 const MAX_SUMMARY = 900;
 
-/**
- * Promotes only standing preferences. A one-off request ("make slide 4
- * punchier") is not durable and must never land in decisions.md; a deck-wide or
- * future-facing instruction ("keep it under 12 slides") is. The schema is small
- * because this is the utility role under constrained decoding.
- */
 const decisionSchema = {
   type: "object",
   required: ["durable"],
@@ -86,11 +64,6 @@ export function serializeJsonl(records) {
   return records.map((r) => JSON.stringify(r)).join("\n") + (records.length ? "\n" : "");
 }
 
-/**
- * Read a deck's thread: the rolling summary, the recent turns, and the durable
- * decisions. chat.jsonl is one JSON object per line; the summary record sits at
- * the top, turn records after it.
- */
 export async function loadThread(dir) {
   let records = [];
   try {
@@ -108,15 +81,10 @@ export async function loadThread(dir) {
   };
 }
 
-/** Start the thread over. Standing decisions survive — durable is durable. */
 export async function resetThread(dir) {
   await writeFile(path.join(dir, "chat.jsonl"), "", "utf8");
 }
 
-/**
- * Split records into what folds into the summary and what stays verbatim.
- * The window counts user turns (each turn is a user + assistant pair).
- */
 export function retireOldTurns(records, window = RECENT_WINDOW) {
   const userIdx = records
     .map((r, i) => (r.role === "user" ? i : -1))
@@ -125,12 +93,6 @@ export function retireOldTurns(records, window = RECENT_WINDOW) {
   return { retired: records.slice(0, keep), recent: records.slice(keep) };
 }
 
-/**
- * The transcript the model actually sees on the next turn. The deck file is the
- * truth; this carries only un-materialised intent. Promoted instructions are
- * skipped — they live in decisions.md, which runTurn already feeds as system
- * context, so replaying them would be redundant.
- */
 export function buildReplayHistory({ summary, turns }) {
   const out = [];
   if (summary) {
@@ -148,10 +110,6 @@ export function buildReplayHistory({ summary, turns }) {
   return out;
 }
 
-/**
- * The pure half of thread maintenance — extracted so the windowing, promotion
- * flagging and record shape are testable without a model or disk.
- */
 export function maintainThreadState(thread, { instruction, durable, model, changes, stats, ts }) {
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const userRec = {
@@ -167,7 +125,6 @@ export function maintainThreadState(thread, { instruction, durable, model, chang
   return { userRec, asstRec, records, retired, recent, decisions: durable };
 }
 
-/** One-off requests against a broken deck get the repair demand first. */
 export function assembleInstruction(instruction, deckErrors) {
   if (!deckErrors.length) return instruction;
   return (
@@ -202,7 +159,6 @@ async function extractDecisions(instruction, { model, signal }) {
     });
     return (res.data?.durable ?? []).map((d) => d.rule).filter(Boolean);
   } catch {
-    // A utility call must never fail the turn it is bookkeeping for.
     return [];
   }
 }
@@ -244,12 +200,6 @@ async function collapseSummary(dir, retired, prev, { model, signal }) {
   return res.data?.summary ?? prev;
 }
 
-/**
- * Persist the thread after a turn: append the two records, promote durable
- * decisions, and fold anything past the window into the rolling summary. If
- * the summary call fails the retired turns are kept verbatim instead of being
- * dropped — a full transcript beats a missing one.
- */
 async function updateThread(dir, { instruction, turn, model, signal }) {
   const thread = await loadThread(dir);
   const durable = await extractDecisions(instruction, { model, signal });
@@ -300,22 +250,8 @@ async function updateThread(dir, { instruction, turn, model, signal }) {
   };
 }
 
-/**
- * One chat turn on a deck.
- *
- * Reads deck.yaml, the thread and the research notes; replays recent intent
- * (not the transcript) into runTurn; validates via runTurn's own repair loop;
- * persists deck.yaml; maintains chat.jsonl / decisions.md; then renders and
- * rasterises so the result is inspectable immediately.
- *
- * The seam is enforced: this edits an existing deck. Building one from empty
- * is generateFromPlan's job — the two are deliberately not merged.
- */
 export async function runChatTurn({
   slug, instruction, model, render: doRender = true, onToken, onProgress, signal,
-  // The slide indices the user selected in the panel. The selection also goes
-  // to the model as prose, but prose is a hint — this is what holds the turn
-  // to it. Null or empty means the whole deck, which is the CLI's case.
   onlySlides = null,
 }) {
   if (!instruction?.trim()) throw new Error("instruction is required");
@@ -330,7 +266,6 @@ export async function runChatTurn({
     );
   }
 
-  // A broken deck is a bug; the turn repairs it or reports the failure.
   let deck;
   let deckErrors = [];
   try {
@@ -376,19 +311,8 @@ export async function runChatTurn({
     };
   }
 
-  // Generation runs grounding, a field-length pass, a trim and a coherence
-  // check after the writer. A chat edit ran NONE of them and went straight to
-  // the render — and editing is what a user does most once the deck exists, so
-  // the quality machinery guarded the path people use least. The trim is the
-  // one that is deterministic, needs no model call and cannot make the deck
-  // worse: it only shortens text the fitter says will not fit, and it fits
-  // every theme rather than only the current one. An edit that asks for "more
-  // detail" can push a body past the readable floor, and nothing shortened it.
   let edited = turn.deck;
   let trimmedSlides = [];
-  // Only the slides this turn actually changed. Trimming the rest would edit
-  // slides the user did not ask about, which is the very surprise the slide
-  // selection exists to prevent.
   const touched = turn.deck.slides
     .map((s, i) => (JSON.stringify(s) !== JSON.stringify(deck.slides?.[i]) ? i : -1))
     .filter((i) => i >= 0);
@@ -400,7 +324,6 @@ export async function runChatTurn({
     trimmedSlides = tr.trimmed ?? [];
   } catch { /* a trim that cannot run must not lose the user's edit */ }
 
-  // deck.yaml is memory — persist it before touching the thread.
   await writeFile(deckFile, YAML.stringify(edited), "utf8");
   const threadUpdate = await updateThread(dir, { instruction, turn, model, signal });
 

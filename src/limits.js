@@ -2,62 +2,7 @@ import { getDb } from "./db.js";
 import { settingValue } from "./runtime.js";
 import { AUTO_PROVIDER } from "./autoid.js";
 
-/**
- * Auto-tier limits for the shared TCET gateway.
- * Hourly / weekly sliding windows, counting both requests and slides.
- *
- * A "request" here is ONE PIPELINE OPERATION — a plan, a generate, a chat turn
- * — not one model call. `enforceAuto`/`recordAutoFor` are invoked per API
- * route, and a single generate makes many model calls behind one recorded
- * event. Reading these as model calls makes every number look ten times
- * tighter than it is, which is how they came to be set this high.
- *
- * The Auto key bills the operator, so the budget is a real cost and the free
- * tier is deliberately enough to produce a few decks a week and iterate on
- * them, not to run a workload. A full deck cycle is roughly three to six
- * requests and twenty-odd slides; the weekly numbers are about four of those.
- * Anyone who needs more attaches their own key under Cloud, where none of this
- * applies, and a local Ollama backend is unlimited.
- *
- * Defaults are env-overridable so hosting can tune without a code change.
- * The short window is FIVE HOURS, not one. An hour is shorter than a sitting:
- * someone who plans a deck, reads the outline, changes their mind and
- * regenerates is doing one piece of work, and a sixty-minute window cuts them
- * off in the middle of it. Five hours covers a session and still stops a
- * script.
- *
- *  - window_hours: the length of the short window
- *  - window_requests: pipeline operations within it
- *  - weekly_requests: overall throttle
- *  - window_slides: slides generated within the window (covers one big deck)
- *  - weekly_slides: weekly slide budget
- *  - weekly_tokens: rough token budget (optional)
- */
-
-/**
- * The tiers an account can be metered against.
- *
- * The admin settings define the FREE tier — that is what every account was
- * already being given, so an operator who has tuned them keeps exactly the
- * budget they tuned. A paid tier is a multiple of it, which means there is one
- * place to adjust "how much is a little" and the paid tiers follow rather than
- * silently drifting out of proportion.
- *
- * `unlimited` is not a sales tier. It is for the operator's own account and for
- * anyone comped by hand, and it is the honest way to say so — previously the
- * only way to exempt somebody was to raise the caps for everybody.
- *
- * BYOK is deliberately absent: a user on their own key costs the operator
- * nothing and is not metered at all. `isAutoRoute` decides that before any of
- * this is consulted.
- */
 export const PLANS = {
-  // `trial: true` is the whole difference between a free tier and a free
-  // allowance. Every other cap here is a rolling window, and a rolling window
-  // RESETS — a user who waits gets unlimited decks forever, so exposure per
-  // account is unbounded and cannot be budgeted. The trial does not reset.
-  // See docs/ECONOMICS.md: ~₹5-21 per signup once, against ₹110-439 per user
-  // per semester and climbing.
   free: { label: "Free", multiplier: 1, trial: true },
   plus: { label: "Plus", multiplier: 4 },
   pro: { label: "Pro", multiplier: 12 },
@@ -68,16 +13,9 @@ export const DEFAULT_PLAN = "free";
 
 export const isPlan = (p) => Object.hasOwn(PLANS, String(p ?? ""));
 
-/** Budgets scale with the tier; the shape of one piece of work does not.
- *  `windowHours` is how long a sitting is and `maxSlidesPerDeck` is how big a
- *  deck may be — paying more does not make an hour longer, and deck length is
- *  a separate admin setting because it is about what the renderer and the
- *  planner do well, not about spend. */
 const SCALED = ["windowRequests", "weeklyRequests", "windowSlides", "weeklySlides", "weeklyTokens"];
 
 export function limitConfig(plan = DEFAULT_PLAN) {
-  // Read per call, never cached: an admin changing a cap in the panel must
-  // apply to the next request, not the next restart.
   const base = {
     windowHours: settingValue("autoWindowHours"),
     windowRequests: settingValue("autoWindowRequests"),
@@ -85,13 +23,10 @@ export function limitConfig(plan = DEFAULT_PLAN) {
     windowSlides: settingValue("autoWindowSlides"),
     weeklySlides: settingValue("autoWeeklySlides"),
     weeklyTokens: settingValue("autoWeeklyTokens"),
-    // One deck may still burst to full length inside the window budget.
     maxSlidesPerDeck: settingValue("autoMaxSlidesPerDeck"),
   };
   const spec = PLANS[plan] ?? PLANS[DEFAULT_PLAN];
   const name = PLANS[plan] ? plan : DEFAULT_PLAN;
-  // A paid tier buys a recurring allowance, so it has no lifetime ceiling; the
-  // trial has nothing else.
   const lifetimeTokens = spec.trial ? settingValue("autoTrialTokens") : Infinity;
   if (spec.multiplier == null) {
     return {
@@ -108,8 +43,6 @@ export function limitConfig(plan = DEFAULT_PLAN) {
   return out;
 }
 
-/** The tier an account is on. Unknown or missing means free, which is what
- *  every account got before tiers existed. */
 export function planFor(userId) {
   if (!userId) return DEFAULT_PLAN;
   const row = getDb().prepare("SELECT plan FROM users WHERE id=?").get(userId);
@@ -127,29 +60,10 @@ export function recordAutoEvent({ userId, eventType = "request", slides = 0, tok
   const now = Date.now();
   const r = db.prepare(`INSERT INTO auto_events (user_id, event_type, slides, tokens, provider, created_at) VALUES (?,?,?,?,?,?)`)
     .run(userId, eventType, slides, tokens, provider, now);
-  // The trial counter is a running total on the account, not a sum over these
-  // rows: pruneAutoEvents deletes them past 30 days, and a lifetime cap that
-  // refills monthly is not a lifetime cap.
   db.prepare("UPDATE users SET lifetime_tokens = lifetime_tokens + ? WHERE id=?").run(Math.max(0, Math.round(tokens)), userId);
-  // The row id is the reservation handle: settleAuto replaces the estimate on
-  // this row with what the run actually spent.
   return Number(r.lastInsertRowid);
 }
 
-/**
- * Replace a reservation's estimate with what the operation really cost.
- *
- * A reservation must be taken before the work — that is the whole point of
- * `reserveAuto`, and concurrent requests would otherwise all read an unspent
- * budget — but before the work the true cost is unknown, so what is held is an
- * estimate. Leaving it there means a run that was cheaper than expected keeps
- * charging the difference for a week, and a run that failed after two model
- * calls costs the same as one that finished.
- *
- * Settling is deliberately unconditional on success: a generation that died
- * halfway still spent the tokens it spent, and the operator was still billed.
- * What changes is that the user is charged for those and not for the rest.
- */
 export function settleAuto({ eventId, tokens = null, slides = null }) {
   if (!eventId) return false;
   const db = getDb();
@@ -163,9 +77,6 @@ export function settleAuto({ eventId, tokens = null, slides = null }) {
   if (!sets.length) return false;
   args.push(eventId);
   db.prepare(`UPDATE auto_events SET ${sets.join(", ")} WHERE id=?`).run(...args);
-  // The trial counter moves by the DIFFERENCE, since the reservation's
-  // estimate was already added to it. A run cheaper than estimated gives the
-  // difference back; one that overran takes it.
   if (settled != null) {
     const delta = settled - (Number(before.tokens) || 0);
     if (delta !== 0) {
@@ -176,7 +87,6 @@ export function settleAuto({ eventId, tokens = null, slides = null }) {
   return true;
 }
 
-/** How much of the trial this account has spent, ever. */
 export function lifetimeTokens(userId) {
   if (!userId) return 0;
   return Number(getDb().prepare("SELECT lifetime_tokens FROM users WHERE id=?").get(userId)?.lifetime_tokens) || 0;
@@ -225,9 +135,6 @@ export function checkAutoLimits({ userId, provider = AUTO_PROVIDER, upcomingSlid
   if (upcomingSlides > cfg.maxSlidesPerDeck) {
     errors.push(`This deck needs ${upcomingSlides} slides but auto allows ${cfg.maxSlidesPerDeck} per deck — split it or use your own key`);
   }
-  // The trial is checked FIRST because its message is the one that should be
-  // read: a rolling limit says "come back later" and is true; the trial says
-  // "this is the end of the free tier" and is a different conversation.
   if (cfg.lifetimeTokens !== Infinity) {
     const spent = lifetimeTokens(userId);
     if (spent + upcomingTokens > cfg.lifetimeTokens) {
@@ -266,25 +173,6 @@ export function checkAutoLimits({ userId, provider = AUTO_PROVIDER, upcomingSlid
   };
 }
 
-/**
- * Check the limits and spend the budget in one indivisible step.
- *
- * The routes used to `await enforceAuto(...)` and then `recordAutoFor(...)`.
- * Node being single-threaded is not the protection it looks like: an `await`
- * is a yield, so every request in flight reads the same pre-spend usage,
- * every one of them passes, and only then does any of them record. Ten
- * concurrent requests against a budget of three admitted ten, and the gateway
- * key bills the operator for all of them.
- *
- * The fix is that there is no yield. This function is synchronous from the
- * count to the insert, so no other request can observe the unspent budget in
- * between. The IMMEDIATE transaction is for the case JS cannot cover — two
- * processes on the same database file — and takes the write lock up front, so
- * the count and the insert cannot straddle another writer's commit.
- *
- * A refusal writes nothing: a request that was denied cost the operator
- * nothing and must not consume the budget it was refused for.
- */
 export function reserveAuto({ userId, provider = AUTO_PROVIDER, upcomingSlides = 0, upcomingTokens = 0, plan = null }) {
   const db = getDb();
   db.exec("BEGIN IMMEDIATE");
@@ -302,13 +190,6 @@ export function reserveAuto({ userId, provider = AUTO_PROVIDER, upcomingSlides =
   }
 }
 
-/**
- * Every account's spend in both windows, in one query per window.
- *
- * The admin users list needs this for every row, and the per-row alternative
- * is a query per account — which is how the stats page came to run 116 queries
- * to label ten bars. Returns a Map keyed by user id.
- */
 export function usageByUser({ provider = AUTO_PROVIDER } = {}) {
   const db = getDb();
   const now = Date.now();
@@ -327,8 +208,6 @@ export function usageByUser({ provider = AUTO_PROVIDER } = {}) {
       out.set(r.user_id, e);
     }
   };
-  // Tokens are what the operator is billed in, so the operator's own view of
-  // who is spending what has to show them.
   const q = `SELECT user_id, COUNT(*) as reqs, COALESCE(SUM(slides),0) as slides, COALESCE(SUM(tokens),0) as tokens
              FROM auto_events WHERE provider=? AND created_at>=? GROUP BY user_id`;
   add(db.prepare(q).all(provider, windowAgo), "window");
@@ -336,25 +215,14 @@ export function usageByUser({ provider = AUTO_PROVIDER } = {}) {
   return out;
 }
 
-/**
- * Forget one account's Auto spend.
- *
- * The operator vocabulary was find, promote, delete — so the only remedy for
- * someone wrongly capped (a failed run that still counted, a shared machine,
- * a demo) was to delete their account or wait out the week. Returns how many
- * events were dropped.
- */
 export function clearAutoEvents({ userId, provider = AUTO_PROVIDER }) {
   const db = getDb();
   const before = db.prepare("SELECT COUNT(*) as n FROM auto_events WHERE user_id=? AND provider=?").get(userId, provider);
   db.prepare("DELETE FROM auto_events WHERE user_id=? AND provider=?").run(userId, provider);
-  // Forgetting an account's spend has to forget the trial too, or the one
-  // remedy an operator has stops working for the one limit that never resets.
   db.prepare("UPDATE users SET lifetime_tokens = 0 WHERE id=?").run(userId);
   return before?.n ?? 0;
 }
 
-// cleanup old events (>30 days) to keep DB small
 export function pruneAutoEvents() {
   const db = getDb();
   const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;

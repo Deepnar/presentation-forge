@@ -1,4 +1,3 @@
-/** Type specimens, chat, creation, and resumable generation routes. */
 
 import { access, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -41,7 +40,6 @@ app.get("/api/types", wrap(async (_req, res) => {
   });
 }));
 
-
 app.get("/api/types/:theme/specimens", withRenderSlot(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
   if (!user) return fail(res, 401, "log in to use the deck workspace");
@@ -75,7 +73,6 @@ app.get("/api/types/:theme/specimens", withRenderSlot(async (req, res) => {
     previews: buildSpecimenUrls(themeName, types.length),
   });
 }));
-
 
 app.get("/api/specimens/:theme", withRenderSlot(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
@@ -121,7 +118,6 @@ app.get("/api/specimens/:theme/:file", wrap(async (req, res) => {
   }
 }));
 
-
 app.post("/api/decks", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
@@ -154,18 +150,15 @@ app.get("/api/models", wrap(async (_req, res) => {
   ok(res, { models, default: def, cloud, auto, route, hosted: isHosted() });
 }));
 
-
 app.get("/api/decks/:slug/chat", wrap(async (req, res) => {
   const thread = await loadThread(path.join(DECKS, req.params.slug));
   ok(res, thread);
 }));
 
-
 app.delete("/api/decks/:slug/chat", wrap(async (req, res) => {
   await resetThread(path.join(DECKS, req.params.slug));
   ok(res, {});
 }));
-
 
 app.post("/api/decks/:slug/chat", async (req, res) => {
   const sse = startSSE(res);
@@ -220,7 +213,6 @@ app.post("/api/decks/:slug/chat", async (req, res) => {
   });
 });
 
-
 app.post("/api/reports", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
@@ -262,7 +254,6 @@ app.post("/api/reports", (req, res) => {
   });
 });
 
-
 app.post("/api/decks/:slug/report/deck", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
@@ -287,8 +278,6 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
     sse.close();
   });
 });
-
-
 
 function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
   const ctrl = new AbortController();
@@ -355,7 +344,6 @@ function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
   return run;
 }
 
-
 function attachToRun(res, run) {
   const sse = startSSE(res);
   const sub = { send: sse.send, close: sse.close };
@@ -370,7 +358,6 @@ function attachToRun(res, run) {
   }
   return sse;
 }
-
 
 app.post("/api/decks/:slug/generate", async (req, res) => {
   const { plan, theme, model, resume } = req.body ?? {};
@@ -407,7 +394,6 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
-
 app.post("/api/decks/:slug/generate/resume", async (req, res) => {
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
@@ -429,7 +415,6 @@ app.post("/api/decks/:slug/generate/resume", async (req, res) => {
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
-
 app.post("/api/decks/:slug/finalize", async (req, res) => {
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
@@ -450,7 +435,6 @@ app.post("/api/decks/:slug/finalize", async (req, res) => {
   startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model, reservation });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
-
 
 app.post("/api/decks/:slug/generate/stop", wrap(async (req, res) => {
   const run = generationRuns.get(req.params.slug);

@@ -1,17 +1,4 @@
 #!/usr/bin/env node
-/**
- * Generates neutral placeholder brand marks into brand/logos/.
- *
- * The real institutional marks are trademarks and are gitignored, so a fresh
- * clone has nothing to render. Rather than fail or draw empty boxes, ship
- * generic stand-ins that exercise every code path the real ones do: a wide
- * banner, a square crest with transparency, and a watermark.
- *
- * Existing files are never overwritten — running this after dropping in real
- * logos is a no-op.
- *
- *   node tools/make-placeholder-brand.mjs
- */
 import { mkdir, access, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
@@ -24,7 +11,6 @@ const ACCENT = "#b4472f";
 
 const exists = (p) => access(p).then(() => true, () => false);
 
-/** Wide department strip — the mark used on title slides and report headers. */
 const bannerSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="253" viewBox="0 0 1600 253">
   <rect width="1600" height="253" fill="#ffffff"/>
@@ -43,7 +29,6 @@ const bannerSVG = `
   <rect x="0" y="245" width="1600" height="8" fill="${INK}"/>
 </svg>`;
 
-/** Square crest. Deliberately drawn on white so prep-brand's keying is exercised. */
 const crestSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="447" height="447" viewBox="0 0 447 447">
   <rect width="447" height="447" fill="#ffffff"/>
@@ -58,7 +43,6 @@ const crestSVG = `
         fill="${INK}" text-anchor="middle">EXAMPLE INSTITUTE</text>
 </svg>`;
 
-/** Report body watermark — the crest without the wordmark. */
 const watermarkSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="916" height="953" viewBox="0 0 916 953">
   <rect width="916" height="953" fill="#ffffff"/>

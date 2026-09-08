@@ -4,24 +4,6 @@ import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ROOT } from "./paths.js";
 
-/**
- * The HTML plate primitive.
- *
- * Headless Chrome renders a decorative HTML document to a PNG at build time;
- * the renderer places that PNG as a slide background with all text still
- * native. This is the single seam both plate themes and freeform slides use —
- * input is HTML + viewport, output is a cached PNG keyed by the content hash,
- * so repeated renders are free and a changed document gets a fresh plate
- * automatically.
- *
- * The page is sandboxed: a CSP with `default-src 'none'` blocks scripts and
- * every network scheme, and only inline styles plus local data:/file: images
- * and fonts are allowed. The HTML renders in a real browser, so anything else
- * must be unrepresentable rather than merely discouraged.
- */
-
-// The slide is 13.333×7.5in = 16:9. 1280×720 CSS px at scale 1.5 is a 1920×1080
-// plate, comfortably above the ~1466px the preview rasteriser wants.
 export const PLATE_W = 1280;
 export const PLATE_H = 720;
 export const PLATE_SCALE = 1.5;
@@ -39,19 +21,16 @@ const WRAPPER = (body) =>
   `<style>html,body{margin:0;height:100%;overflow:hidden}</style>` +
   `</head><body>${body}</body></html>`;
 
-/** Cache key = hash of everything that affects the pixels. */
 export function plateCacheKey(html, { w = PLATE_W, h = PLATE_H, scale = PLATE_SCALE } = {}) {
   return createHash("sha256")
     .update(`${VERSION}\n${w}x${h}@${scale}\n${html}`)
     .digest("hex");
 }
 
-/** Resolve the Chrome binary once; the env override is for machines without it. */
 export function chromeBinary() {
   return CHROME;
 }
 
-/** Screenshot one URL at a fixed viewport. Resolves when the PNG exists. */
 function screenshot(htmlFile, outFile, { w, h, scale }) {
   const args = [
     "--headless=new",
@@ -63,16 +42,10 @@ function screenshot(htmlFile, outFile, { w, h, scale }) {
     "--force-color-profile=srgb",
     `--force-device-scale-factor=${scale}`,
     `--window-size=${w},${h}`,
-    // Virtual time makes animations, fonts and images settle deterministically
-    // without waiting real seconds.
     "--virtual-time-budget=2000",
     `--screenshot=${outFile}`,
     `file://${htmlFile}`,
   ];
-  // The Docker image runs as root, where Chromium's setuid sandbox is refused;
-  // as its unprivileged user the container has neither the setuid sandbox nor
-  // user namespaces, so the sandbox is unavailable either way. FORGE_CHROME_NO_SANDBOX=1
-  // is set in the image for both cases. Desktop installs keep the sandbox.
   if (process.env.FORGE_CHROME_NO_SANDBOX === "1") args.splice(1, 0, "--no-sandbox");
   return new Promise((resolve, reject) => {
     const child = spawn(CHROME, args, { stdio: ["ignore", "ignore", "pipe"] });
@@ -93,18 +66,10 @@ function screenshot(htmlFile, outFile, { w, h, scale }) {
   });
 }
 
-/**
- * Render an HTML document to a plate PNG. Returns the cached file path.
- * Two concurrent renders of the same document both land on the same key, so
- * the last writer wins and the bytes are identical either way.
- */
 export async function renderPlate(
   html,
   { w = PLATE_W, h = PLATE_H, scale = PLATE_SCALE, cacheDir = PLATE_CACHE } = {},
 ) {
-  // The screenshot URL is file://htmlFile; a relative cacheDir would make that
-  // a malformed file URL (host = ".plate-cache") and Chrome renders a blank
-  // error page. Resolve so the URL always names a real absolute path.
   const dir = path.resolve(cacheDir);
   const key = plateCacheKey(html, { w, h, scale });
   const outFile = path.join(dir, `${key}.png`);
@@ -114,12 +79,9 @@ export async function renderPlate(
   } catch { /* miss — render */ }
 
   await mkdir(dir, { recursive: true });
-  // A unique temp name keeps concurrent renders from deleting each other's
-  // input; the keyed output is shared by design.
   const htmlFile = path.join(dir, `${key}.${process.pid}.${Math.random().toString(36).slice(2, 6)}.html`);
   await writeFile(htmlFile, WRAPPER(html), "utf8");
   try {
-    // One retry: a crashed tab produces no file, and a single restart is cheap.
     try {
       await screenshot(htmlFile, outFile, { w, h, scale });
     } catch (err) {
@@ -132,13 +94,6 @@ export async function renderPlate(
   return { path: outFile, cached: false, key };
 }
 
-/**
- * The theme's plate template as an interpolated document. `{{path.to.token}}`
- * resolves into the resolved theme (tokens and voice), so the theme YAML stays
- * the single source of colours and the renderer never hardcodes one. The
- * surface — title / section / content — picks a variant when the theme defines
- * one.
- */
 export function interpolateTemplate(tpl, theme) {
   return tpl.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (m, p) => {
     const val = p.split(".").reduce((o, k) => (o == null ? o : o[k]), theme);
@@ -146,7 +101,6 @@ export function interpolateTemplate(tpl, theme) {
   });
 }
 
-/** Which plate a slide gets: a slide `html` override wins, then the theme. */
 export function plateHtmlFor({ theme, surface, slide, box }) {
   if (typeof slide?.html === "string" && slide.html.trim()) {
     return { html: slide.html, kind: "slide" };
@@ -162,35 +116,12 @@ export function plateHtmlFor({ theme, surface, slide, box }) {
   };
 }
 
-/**
- * The content region in CSS pixels (1in = 96px at the plate's viewport), so a
- * plate template can place a soft panel exactly behind where the native
- * content draws. Without this the soft-UI themes could not frost/emboss the
- * actual content area — they would only have a pretty border.
- */
 function boxPx(box) {
   if (!box) return null;
-  // content() returns `bottom` and `y`, not `h` — derive it so a template's
-  // {{box.h}} is always a real number.
   const h = box.h ?? box.bottom - box.y;
   return { x: Math.round(box.x * 96), y: Math.round(box.y * 96), w: Math.round(box.w * 96), h: Math.round(h * 96) };
 }
 
-/**
- * The region a theme should draw a panel in, if it draws one.
- *
- * Every plate theme that panelled the content area placed it at exactly
- * `{{box.*}}`, so the headline began on the panel's edge and cards inside a
- * comparison touched it — the panel read as a backdrop the text was pasted
- * over rather than a surface the content rests on. That relationship is
- * renderer geometry, not a per-theme decision, so it is expressed once here
- * instead of as `calc()` arithmetic repeated in every template.
- *
- * A theme still decides whether there is a panel and what it looks like; it
- * just no longer has to work out where the edge belongs. Themes must leave room
- * for the overhang in their margins, or the panel reaches the slide edge and
- * whatever the ground was doing is lost.
- */
 const PANEL_INSET = { x: 30, y: 26 };
 
 function panelPx(box) {
@@ -203,7 +134,6 @@ function panelPx(box) {
   };
 }
 
-/** Resolve a plate's source into a rendered PNG path, or null if none. */
 export async function renderSlidePlate({ theme, surface, slide, box, signal }) {
   const want = plateHtmlFor({ theme, surface, slide, box });
   if (!want) return null;

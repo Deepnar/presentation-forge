@@ -1,19 +1,4 @@
 #!/usr/bin/env node
-/**
- * The report renderer — the opposite of the deck.
- *
- * A deck is free and themed; a report is rigid and graded against the
- * institutional template exactly as it is. The template's own .docx (gitignored
- * reference/) is the donor: we strip only its body, keep every other part
- * byte-identical (headers with the VML watermark, footer, styles, settings,
- * theme, media), and inject generated content into the donor's body plus its
- * own section properties.
- *
- * The `docx` package is generation-only and cannot open an existing file, so
- * this is unzip + OOXML surgery via jszip. The donor's XML parts are preserved
- * as raw strings; the only part we touch is word/document.xml, and we touch
- * only its body. Section order is fixed (the graded constant), not negotiated.
- */
 
 import { readFile, writeFile, readdir, mkdir, mkdtemp, rm, access, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -31,8 +16,6 @@ import { readCredits, isCitable, creditText } from "./credits.js";
 
 const run = promisify(execFile);
 
-/** The graded constant. The renderer emits these in this order, never the order
- *  the content file happens to list them in. */
 export const REPORT_SECTIONS = [
   "Abstract",
   "Acknowledgement",
@@ -44,18 +27,7 @@ export const REPORT_SECTIONS = [
   "References",
 ];
 
-/**
- * The image-credits appendix, deliberately NOT in REPORT_SECTIONS.
- *
- * That list is the graded structure the model writes prose into, and a credit
- * is a record rather than prose — putting the name there would ask a model to
- * invent the provenance of files it never saw. It is appended to `present`
- * instead, which is all the TOC and the page-locator key off, so it numbers
- * and paginates like any other section without being writable.
- */
 export const IMAGE_CREDITS = "Image Credits";
-
-/* ------------------------------------------------------- donor discovery */
 
 function donorMissing(refDir = REFERENCE) {
   return new Error(
@@ -65,18 +37,6 @@ function donorMissing(refDir = REFERENCE) {
   );
 }
 
-/**
- * Which reference directory a given account's report is drawn from.
- *
- * The donor supplies the headers, margins, watermark and footer a report is
- * graded on, so it is institutional in the way identity and brand marks are —
- * and it was the last of the three still install-wide. A box serving two
- * colleges put one college's letterhead on the other's submission.
- *
- * An account is only moved off the operator's default by actually having a
- * template of its own. Anything else — no directory, an empty one — falls
- * through, so the single-institution install and the CLI are unchanged.
- */
 export async function donorDirFor(owner) {
   const dir = userReferenceDir(owner);
   if (!dir) return REFERENCE;
@@ -87,12 +47,6 @@ export async function donorDirFor(owner) {
   return REFERENCE;
 }
 
-/**
- * The same answer for a deck folder, which records its own owner. This is the
- * seam every render already passes through — `renderReport` takes a reportFile
- * and nothing else — so no caller has to learn to thread a user, exactly as
- * loadIdentity(deckDir) resolves the identity layer.
- */
 export async function donorDirForDeck(deckDir) {
   if (!deckDir) return REFERENCE;
   try {
@@ -103,19 +57,6 @@ export async function donorDirForDeck(deckDir) {
   }
 }
 
-/**
- * Whether this install can render a report at all, and why not when it cannot.
- *
- * The donor is gitignored and excluded from the build context, so a fresh
- * hosted box starts with none and every report route 500s while the rest of the
- * product looks healthy. This is what the admin page and the boot log read, so
- * that failure is visible before a user finds it.
- *
- * `refDir` is a parameter because the donor is per account: pass
- * `donorDirFor(owner)` or `donorDirForDeck(dir)` to ask about one user's
- * template, and the bare call still answers for the operator's default — which
- * is what the boot log and the admin panel want.
- */
 export async function donorStatus(refDir = REFERENCE) {
   let files = [];
   try {
@@ -132,8 +73,6 @@ export async function donorStatus(refDir = REFERENCE) {
   return { ok: true, dir: refDir, donors: files, reason: null, detail: files[0] };
 }
 
-/** The donor lives in gitignored reference/. With several present, an explicit
- *  path is required rather than guessing which template to match. */
 export async function resolveDonor(explicit, refDir = REFERENCE) {
   if (explicit) {
     await access(explicit).catch(() => {
@@ -155,8 +94,6 @@ export async function resolveDonor(explicit, refDir = REFERENCE) {
   }
   return path.join(refDir, files[0]);
 }
-
-/* -------------------------------------------------------- content loading */
 
 const ajv = new Ajv({ allErrors: true, strict: false, allowUnionTypes: true });
 
@@ -196,7 +133,6 @@ export async function loadReport(file) {
   return report;
 }
 
-/** Whether a section object carries anything worth a heading. */
 function sectionHasContent(sec) {
   if (!sec || typeof sec !== "object") return false;
   const paras = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])].filter((s) => String(s).trim());
@@ -204,16 +140,6 @@ function sectionHasContent(sec) {
   return paras.length > 0 || hasTable;
 }
 
-/**
- * The sections that have anything to say, in the order they are to be emitted.
- * An empty section is skipped gracefully — never a bare heading.
- *
- * `order` is the report's own record of its structure and wins when present:
- * a report may carry topic-specific sections that are in no fixed list, and
- * their position is meaningful and cannot be recovered from the section names.
- * Without it the graded constant is the order, which is what every report
- * written before the structure became data relies on.
- */
 export function presentSections(report) {
   const content = report.content ?? {};
   const declared = Array.isArray(report.order) && report.order.length ? report.order : REPORT_SECTIONS;
@@ -224,9 +150,6 @@ export function presentSections(report) {
     seen.add(name);
     order.push(name);
   }
-  // A section present in `content` but missing from `order` would silently
-  // vanish, taking model-written prose with it. Anything unlisted is appended
-  // in the graded position it has if it has one, and at the end if it does not.
   for (const name of [...REPORT_SECTIONS, ...Object.keys(content)]) {
     if (!seen.has(name) && sectionHasContent(content[name])) {
       seen.add(name);
@@ -236,25 +159,6 @@ export function presentSections(report) {
   return order.filter((name) => sectionHasContent(content[name]));
 }
 
-/**
- * The section list the donor template itself declares.
- *
- * The renderer has never cared what a section is called — `buildBody` emits
- * `content[name]` for any name, which is how the Image Credits appendix works
- * without being in the graded constant. What was fixed was the LIST, and that
- * belongs to whichever institution's template is installed, not to us. A
- * college whose report has a "Methodology" gets one by uploading its own donor.
- *
- * The headings are read rather than guessed: numbered top-level paragraphs
- * (never inside a table — the roster and the TOC are tables) that are bold,
- * forming a run numbered 1..N. Bold is the discriminator that separates the
- * heading run from a numbered References list, which is the other consecutively
- * numbered thing in the document and is not bold.
- *
- * Returns null when the donor declares nothing recognisable, which is the
- * signal to fall back to the graded constant rather than to render a report
- * with no structure at all.
- */
 export function parseDonorSections(documentXml) {
   const headings = [];
   let depth = 0;
@@ -271,8 +175,6 @@ export function parseDonorSections(documentXml) {
     headings.push({ n: Number(numbered[1]), title: numbered[2].trim() });
   }
 
-  // The longest run numbered 1,2,3,… — a stray bold "1. " elsewhere in the
-  // body cannot then pass itself off as the structure.
   let best = [];
   let run = [];
   for (const h of headings) {
@@ -286,9 +188,6 @@ export function parseDonorSections(documentXml) {
 
 const structureCache = new Map();
 
-/** The donor's declared structure, cached per file+mtime so a re-uploaded
- *  template is re-read rather than remembered. Falls back to the graded
- *  constant whenever the donor cannot be read or declares nothing. */
 export async function donorSections(donorPath) {
   if (!donorPath) return null;
   let key;
@@ -311,7 +210,6 @@ export async function donorSections(donorPath) {
   return sections;
 }
 
-/** The section list a report for this deck should be planned against. */
 export async function reportStructureForDeck(deckDir) {
   try {
     const donorPath = await resolveDonor(null, await donorDirForDeck(deckDir));
@@ -321,13 +219,10 @@ export async function reportStructureForDeck(deckDir) {
   }
 }
 
-/* ------------------------------------------------------------ XML pieces */
-
 const esc = (s) => String(s ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 
-/** The other direction, for text read back OUT of a donor's XML. */
 const unesc = (s) => String(s ?? "")
   .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
   .replace(/&apos;/g, "'").replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
@@ -379,12 +274,6 @@ function caption(text) {
   return `<w:p><w:pPr><w:jc w:val="center"/><w:rPr>${CAPTION_RPR}</w:rPr></w:pPr>${t(text, CAPTION_RPR)}</w:p>`;
 }
 
-/* ------------------------------------------------------------ body build */
-
-/** Cover page from the merged identity: title, group label, names table and
- *  the submission block, matching the donor's own cover structure. The title
- *  is the one heading the user sees first — bold, centred, larger than the
- *  body so the report announces itself. */
 function cover(report, identity) {
   const ac = identity.academic ?? {};
   const g = identity.guide ?? {};
@@ -444,9 +333,6 @@ function namesTable(members) {
   );
 }
 
-/** The static table of contents, mirroring the donor's: page numbers are the
- *  real ones from the two-pass locate step, or an em dash when a section could
- *  not be found in the PDF pass. */
 export function tocTable(present, tocPages = {}) {
   const widths = [2883, 2910, 2884];
   const rows = [["SR. NO.", "TITLE", "PAGE NO."]].concat(
@@ -475,8 +361,6 @@ export function tocTable(present, tocPages = {}) {
   );
 }
 
-/** Generated content tables keep the donor's own style: borderless, bold
- *  header, plain rows. */
 function contentTable({ header, rows }) {
   const n = header.length;
   const total = 9026;
@@ -495,12 +379,6 @@ function contentTable({ header, rows }) {
   );
 }
 
-/** The body: cover, ONE page break, TOC, ONE page break, then the fixed
- *  sections in order. The single breaks reproduce the donor's cover-page and
- *  TOC-page boundaries without the blank interior pages the doubled breaks
- *  produced when a cover or TOC ended near a page boundary; the first section
- *  follows the TOC's break directly, so it needs no pageBreakBefore of its
- *  own. Pure, so tests can assert on the XML directly. */
 export function buildBody(report, identity, present, tocPages = {}, { includeToc = true, imageCredits = [] } = {}) {
   const out = [cover(report, identity)];
   if (includeToc) {
@@ -513,8 +391,6 @@ export function buildBody(report, identity, present, tocPages = {}, { includeToc
   out.push(pageBreak);
   present.forEach((name, i) => {
     out.push(sectionHeading(`${i + 1}. ${name}`));
-    // The credits appendix has no authored content: its paragraphs are built
-    // from what the supply recorded, one numbered entry per picture.
     if (name === IMAGE_CREDITS) {
       out.push(caption("Images reproduced under the licences named below. Slide numbers refer to the presentation."));
       imageCredits.forEach((c, n) => {
@@ -535,9 +411,6 @@ export function buildBody(report, identity, present, tocPages = {}, { includeToc
   return out.join("\n");
 }
 
-/** Load the donor, swap its body for the generated one, keep every other part
- *  untouched. The sectPr is lifted verbatim, so the header/footer/watermark
- *  references and the page geometry survive exactly as the template has them. */
 export async function assembleDocx(donorPath, report, identity, present, tocPages = {}, { includeToc = true, imageCredits = [] } = {}) {
   const zip = await JSZip.loadAsync(await readFile(donorPath));
   const doc = await zip.file("word/document.xml").async("string");
@@ -558,15 +431,10 @@ export async function assembleDocx(donorPath, report, identity, present, tocPage
   return zip;
 }
 
-/* -------------------------------------------------- two-pass TOC pages */
-
 async function which(bin) {
   try { await run("which", [bin]); return true; } catch { return false; }
 }
 
-/** Render once, ask LibreOffice where each heading actually lands, and return
- *  section → page. A heading the PDF pass cannot find yields null — the TOC
- *  shows an em dash for it rather than a wrong number. */
 export async function locateSectionPages(donorPath, report, identity, present, { signal, imageCredits = [] } = {}) {
   if (!(await which("pdftotext"))) {
     throw new Error("pdftotext not found (install poppler) — needed to number the report's table of contents; pass --no-toc to skip");
@@ -576,8 +444,6 @@ export async function locateSectionPages(donorPath, report, identity, present, {
     const pass = path.join(dir, "report.docx");
     const zip = await assembleDocx(donorPath, report, identity, present, {}, { includeToc: true, imageCredits });
     await writeFile(pass, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
-    // libreofficeToPdf clears its outDir, so the PDF pass gets a nested dir
-    // and the pass document survives it.
     const pdf = await libreofficeToPdf(pass, { outDir: path.join(dir, "pdf") });
     const { stdout } = await run("pdftotext", ["-layout", pdf, "-"], { timeout: 60_000 });
     return locatePages(stdout, present);
@@ -598,8 +464,6 @@ export function locatePages(text, present) {
   return out;
 }
 
-/* --------------------------------------------------------------- render */
-
 export async function renderReport({ reportFile, donor, out, toc = true, identity, signal } = {}) {
   if (!reportFile) throw new Error("reportFile is required");
   const report = await loadReport(reportFile);
@@ -611,9 +475,6 @@ export async function renderReport({ reportFile, donor, out, toc = true, identit
   const present = presentSections(report);
   if (!present.length) throw new Error("report has no section content — nothing to render");
 
-  // Auto-supplied pictures are credited in the report only when their source is
-  // one it can name. A stock photograph is a real credit and shows on the app's
-  // surfaces; listing it beside the References misrepresents what it is.
   const imageCredits = (await readCredits(deckDir)).filter(isCitable);
   if (imageCredits.length) present.push(IMAGE_CREDITS);
 
@@ -630,8 +491,6 @@ export async function renderReport({ reportFile, donor, out, toc = true, identit
     : [];
   return { outFile, sections: present, pages: tocPages, problems };
 }
-
-/* ------------------------------------------------------------------- CLI */
 
 function parseArgs(argv) {
   const args = { toc: true };

@@ -5,26 +5,6 @@ import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
 import { validateDeck, errorsForSlide } from "../validate.js";
 import { themeMatrix } from "../themematrix.js";
 
-/**
- * The FIELD-LENGTH pass — the "no mid-sentence ellipsis" rule.
- *
- * The deterministic trim (trim.js) shortens an overfull field at a word
- * boundary and appends "…", which is exactly the "the…" defect the user called
- * out: a half-sentence ships because the writer overfilled the field and the
- * layout could not hold it. This pass runs BEFORE the trim and fixes overfull
- * fields with a REWRITE instead: a targeted model call that turns each flagged
- * field into one complete sentence within its schema cap, with no ellipsis.
- * The trim then only cuts what the rewrite cannot fix.
- *
- * A field is a candidate when the fitter flags the slide below its readable
- * floor (the layout cannot hold the current text), or when the field exceeds
- * its schema maxLength outright (a defensive net — validation normally stops
- * these, but the pass should not assume every write path validated).
- */
-
-/** Every string field on a slide with its schema cap, current length and a
- *  stable label — the writer's view of "what is too long". Exported so tests
- *  can assert the cap contract the pass rewrites against. */
 export async function fieldInventory(slide) {
   const { strings } = await slideFieldMeta(slide.type);
   const schema = await deckSchema();
@@ -45,18 +25,13 @@ export async function fieldInventory(slide) {
   return out;
 }
 
-/** The per-field maxLength from the schema (a dot path like "steps[].body"). */
 function capForPath(schema, type, path) {
   const rule = schema.definitions.slide.allOf?.find(
     (r) => r.if?.properties?.type?.const === type,
   );
-  // A shared field (`headline`, `standfirst`) is declared once on the base
-  // slide object, so the type rule alone resolves it to undefined — which reads
-  // downstream as "no cap" rather than "not found here".
   const resolved = resolvePath(rule?.then?.properties ?? {}, path, schema)
     ?? resolvePath(schema.definitions.slide.properties ?? {}, path, schema);
   if (resolved?.type === "string") return resolved.maxLength ?? null;
-  // An array-of-strings field ("bullets") caps its items, not the array.
   if (resolved?.type === "array") {
     const item = resolved.items?.$ref ? resolveRef(resolved.items.$ref, schema) : resolved.items;
     return item?.type === "string" ? item.maxLength ?? null : null;
@@ -64,24 +39,11 @@ function capForPath(schema, type, path) {
   return null;
 }
 
-/**
- * A dot path to its schema node, through `$ref`s and nested arrays alike.
- *
- * Both of those used to end the walk at `undefined`, and the caller reads a
- * missing node as "this field has no cap" — so `compare.left.title` (behind a
- * `$ref`), `branching-flow.steps[].title` (same) and
- * `roadmap.phases[].items[].title` (an array inside an array) all carried a
- * maxLength the schema states and nothing downstream could see. The length
- * pass told the model those fields were uncapped and the cap prober skipped
- * them; only ajv, at validate time, still knew.
- */
 function resolvePath(props, path, schema) {
   const segs = path.split(".");
   let node = props;
   for (const seg of segs) {
     const name = seg.endsWith("[]") ? seg.slice(0, -2) : seg;
-    // An object spec keeps its fields under `properties`; the type rule's own
-    // `then.properties` is already that map.
     node = deref(deref(node, schema)?.properties ?? node, schema)?.[name];
     node = deref(node, schema);
     if (seg.endsWith("[]")) node = deref(node?.items, schema);
@@ -91,7 +53,6 @@ function resolvePath(props, path, schema) {
 
 const deref = (node, schema) => (node?.$ref ? resolveRef(node.$ref, schema) : node);
 
-/** A human label for a schema path: "steps[].body" → "step body". */
 function labelPath(path) {
   return path
     .replace(/\[\]/, "")
@@ -103,22 +64,6 @@ function resolveRef(ref, schema) {
   return ref.replace(/^#\//, "").split("/").reduce((o, k) => o?.[k], schema) ?? {};
 }
 
-/** A targeted rewrite of ONE slide's overlong fields, via its own type grammar.
- *  Returns the repaired slide (validated) or null. */
-/**
- * The field a rewrite emptied, if it emptied one.
- *
- * A patch that comes back `{title: "", body: ""}` satisfies every cap, every
- * required key and every schema rule, so neither ajv nor a per-slide error
- * count can refuse it — and it is strictly worse than the truncation it
- * replaced. Observed on a real `compare` slide whose `right` half came back
- * blank in place of a body cut four characters short.
- *
- * `fieldInventory` skips blank strings, so a field that was emptied or dropped
- * simply stops appearing under its path. Compare the two inventories by path
- * and position — the same guard `healCutField` applies to itself, which will
- * not trade a truncated field for a stub.
- */
 function emptiedField(before, after) {
   const byPath = (inv) => {
     const m = new Map();
@@ -196,9 +141,6 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
     ],
   });
 
-  // The ops grammar allows a full `slide` on any op, and models drift toward
-  // writing the whole slide rather than a patch — resolve the intended shape
-  // tolerantly and apply it as the slide's replacement.
   const got = slideFromOps(res.data?.ops, index);
   if (!got) return null;
   let candidate;
@@ -214,31 +156,6 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
   return ok ? candidate : null;
 }
 
-/**
- * Run the pass over a freshly-written deck. Renders it in EVERY theme
- * (in-memory) to find slides the fitter flags below the floor, walks each
- * flagged slide's fields against their schema caps, and rewrites the overlong
- * fields via a scoped model call (two attempts). Returns the repaired deck
- * plus what changed. Slides the rewrite cannot fix are left for the
- * deterministic trim.
- */
-/**
- * A field the decoding grammar cut at its cap.
- *
- * Constrained decoding masks any token that would exceed a string's maxLength,
- * so a model still mid-sentence at the cap simply stops — there is no signal,
- * no ellipsis, and the field is exactly at its limit rather than over it, which
- * is why neither the length check nor the trim ever saw it. On one freshly
- * generated deck SIX of nine speaker notes ended that way: "…creates a 30",
- * "…and insufficient 1", "…i cells maintain 8". A presenter reads those aloud.
- *
- * The repair is deterministic and needs no model: fall back to the last
- * complete sentence. A shorter whole note beats a longer broken one. Returns
- * null when the field did not end mid-sentence, when nothing can be salvaged,
- * or when salvaging would gut the field — those are left for the rewrite.
- */
-/** Words a phrase never ends on. A grammar cut lands wherever the character
- *  budget ran out, and often that is here. */
 const DANGLING = new Set([
   "a", "an", "and", "or", "but", "the", "of", "to", "in", "on", "at", "by", "for",
   "with", "from", "as", "than", "that", "this", "these", "those", "is", "are",
@@ -246,50 +163,23 @@ const DANGLING = new Set([
   "over", "under", "per", "via", "up", "out", "off", "if", "so", "not", "no",
 ]);
 
-/**
- * Whether a field sitting at its cap was cut by the grammar mid-thought.
- *
- * It used to be "at cap and no terminal punctuation", which is true of every
- * headline ever written — a headline is a noun phrase and ends without a full
- * stop by design. So `"Weighing V2G Economics Against Grid Impact"` and
- * `"$10.9M"` were sent to the rewrite, which is a wasted model call and, since
- * tokens stopped being free, a wasted one that costs money.
- *
- * What an actual cut looks like, from the two on a real feature-grid:
- * `"…improves stability and P"` and `"…than spiro-OM"`. Both end on something
- * no writer would end on. That, rather than the absence of a full stop, is the
- * signal.
- *
- * The bias is still toward flagging: a cut field that ships is worse than a
- * rewrite that was not needed, so anything not recognisably deliberate is
- * still handed on.
- */
 export function looksCutAtCap(text, cap) {
   if (typeof text !== "string" || cap == null) return false;
-  // Only a field AT its cap is a grammar cut. A short field ending without a
-  // full stop is a label, a heading, or a fragment the writer meant.
   if (text.length < cap) return false;
 
   const t = text.trim();
   if (!t) return false;
   if (/[.!?…:;)"'\u2019\u201d]$/.test(t)) return false;
 
-  // Cut on a joiner: nothing ends on an open hyphen or slash.
   if (/[-\u2013\u2014/,]$/.test(t)) return true;
 
-  // A single token with no space is a VALUE — "$10.9M", "27.6%", "RTX-4090".
-  // Its cap is small, so it sits at cap constantly, and it is complete.
   if (!/\s/.test(t)) return false;
 
   const last = (t.match(/[A-Za-z0-9'\u2019-]+$/) ?? [""])[0].toLowerCase();
   if (!last) return false;
   if (DANGLING.has(last)) return true;
-  // "…stability and P": a lone letter left behind by the budget.
   if (last.length === 1 && !/\d/.test(last)) return true;
 
-  // Title Case is a headline convention — most words capitalised, ending on a
-  // content word. A cut lands where the budget ran out and does not respect
-  // it, so a field that keeps it to the end reads as finished.
   const words = t.split(/\s+/);
   if (words.length >= 3) {
     const capped = words.filter((w) => /^[A-Z0-9]/.test(w)).length;
@@ -304,13 +194,10 @@ export function healCutField(text, cap) {
   const m = text.match(/^[\s\S]*[.!?](?=\s|$)/);
   if (!m) return null;
   const healed = m[0].trim();
-  // Never trade a truncated field for a stub: a 200-char note cut back to five
-  // words has lost more than the broken tail cost it.
   if (healed.length < Math.min(40, cap * 0.35)) return null;
   return healed === text ? null : healed;
 }
 
-/** Replace one exact string value in a slide, wherever it sits. */
 function replaceStringValue(node, from, to) {
   if (Array.isArray(node)) {
     for (let i = 0; i < node.length; i++) {
@@ -331,11 +218,6 @@ function replaceStringValue(node, from, to) {
 export async function fieldLengthPass({
   deck, deckDir, research = "", model, signal, onProgress, chat = chatJSON,
 }) {
-  // A deck is written once and rendered in whichever theme the reader picks.
-  // Fitting it to the one theme it currently names is why a deck can pass this
-  // pass with nothing flagged and still lose a card body under an inset frame
-  // or a sidebar: the same text that clears a full-width theme does not clear
-  // a narrower measure. Flag against every theme and rewrite once.
   const audit = await themeMatrix({ deck, deckDir });
   const flagged = new Map();
   for (const run of audit.runs) {
@@ -351,9 +233,6 @@ export async function fieldLengthPass({
 
   for (let i = 0; i < out.slides.length; i++) {
     const slide = out.slides[i];
-    // Heal grammar-cut fields first, deterministically — a field sitting
-    // exactly at its cap mid-sentence is neither over the cap nor
-    // ellipsis-marked, so nothing below would ever have looked at it.
     for (const f of await fieldInventory(slide)) {
       const healed = healCutField(f.text, f.cap);
       if (healed && replaceStringValue(slide, f.text, healed)) {
@@ -361,17 +240,8 @@ export async function fieldLengthPass({
       }
     }
     const inventory = await fieldInventory(slide);
-    // A field is a candidate when it exceeds its schema cap outright, when it
-    // already carries a mid-sentence ellipsis (a previous trim's cut — exactly
-    // what this pass exists to eliminate), or when the slide is floor-flagged
-    // (the layout cannot hold its text at a readable size) and the field is
-    // long enough to be a plausible cause.
     let over = inventory.filter((f) => f.cap != null && f.length > f.cap);
     over = [...over, ...inventory.filter((f) => /…$/.test(f.text) || /\.\.\.$/.test(f.text)).filter((f) => !over.includes(f))];
-    // A field still sitting at its cap with no terminator was cut by the
-    // grammar and had no sentence to fall back to — "…improves stability and
-    // P", "…than spiro-OM" on a real feature-grid. Deterministic repair cannot
-    // invent the missing words, so hand it to the rewrite, which can.
     over = [...over, ...inventory
       .filter((f) => looksCutAtCap(f.text, f.cap))
       .filter((f) => !over.includes(f))];
@@ -395,15 +265,6 @@ export async function fieldLengthPass({
       problems.push(`slide ${i + 1} (${slide.type}): field-length rewrite failed — leaving to the trim`);
       continue;
     }
-    // Judge the rewrite by what IT did to THIS slide, never by whether the
-    // whole deck is clean. This pass runs BECAUSE a deck has fields over their
-    // caps, and it deliberately leaves the hard ones to the deterministic trim
-    // — so a whole-deck ok/not-ok gate is false on very nearly every deck it is
-    // asked to repair. It used to return the input deck in that case, throwing
-    // away every repair it had just made, while still reporting them in
-    // `repaired` so the caller believed they had been applied. Observed on a
-    // real generated deck: four feature-grid card bodies cut mid-word by the
-    // grammar, rewritten correctly here, and shipped cut anyway.
     const before = errorsForSlide((await validateDeck(out)).errors, i);
     const next = structuredClone(out);
     next.slides[i] = candidate;
@@ -426,17 +287,13 @@ export async function fieldLengthPass({
     out.slides[i] = candidate;
   }
 
-  // Reported, never acted on: `out` is now never worse than the deck handed in,
-  // slide by slide, so what is left is the trim's work and the caller's to know.
   const { errors } = await validateDeck(out);
   if (errors?.length) problems.push(...errors);
 
   return { deck: out, repaired, problems };
 }
 
-/** After a rewrite, the new text of a specific field (by value match fallback). */
 function findFieldText(slide, path, prevText) {
-  // Walk for the FIRST string under the path whose value is not the old one.
   let found = null;
   const seek = (node, segs) => {
     if (found) return;

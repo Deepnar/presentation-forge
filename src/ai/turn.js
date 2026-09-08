@@ -4,23 +4,6 @@ import { buildOpsSchema, applyOps, diffDecks, stripForeignFields, scopeOpsToSele
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 
-/**
- * The turn primitive.
- *
- * Everything that changes a deck goes through here: first generation, a chat
- * instruction, a critic's fix list. A turn takes the current deck plus an
- * instruction and returns a *validated* new deck and a diff.
- *
- * Generation is not a special case — it is a turn against an empty deck. Adding
- * a separate one-shot generate path would duplicate prompt construction,
- * validation and repair, and the two would drift.
- */
-
-// Repair attempts are capped per transport. The local grammar path is slow
-// (minutes per call) and a model that has failed twice is not converging, so
-// the local ceiling stays low. On a cloud transport a retry is cheap and the
-// model is strong enough to profit from another pass at the error list, so it
-// gets more room before the turn hands its failures to the caller.
 const MAX_REPAIR_LOCAL = 2;
 const MAX_REPAIR_CLOUD = 4;
 
@@ -96,9 +79,6 @@ function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
     "argument, do not use it — even if it is grounded in the research.",
   );
 
-  // The full-strength bar for cloud authors: the deck-editing surface is where
-  // the user feels prose quality, so a cloud model is expected to write like
-  // one rather than inherit the conservative local standard.
   if (synthesis === "full") {
     lines.push(
       "",
@@ -117,7 +97,6 @@ function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
   return lines.join("\n");
 }
 
-/** The deck as the model sees it: compact, indexed, no rendering detail. */
 function deckState(deck) {
   if (!deck?.slides?.length) {
     return (
@@ -140,14 +119,6 @@ function deckState(deck) {
   return `${head}\n\nSlides (0-based):\n${slides}`;
 }
 
-/**
- * Run one turn.
- *
- * On validation failure the schema errors are fed straight back — they are
- * written as correction instructions for exactly this loop. Repair attempts are
- * capped: a model that has failed twice is not converging, and returning the
- * errors to the caller beats burning minutes.
- */
 export async function runTurn({
   deck,
   instruction,
@@ -162,36 +133,16 @@ export async function runTurn({
   onToken,
   signal,
   onlySlides = null,
-  // The slide types this turn is allowed to write. Left null a turn may write
-  // any of them — which is what a chat instruction needs, and which costs the
-  // grammar its precision: buildOpsSchema assigns every type's properties into
-  // one flat object, so a name two types share is won by whichever is walked
-  // last. Thirteen types declare `items`; a caller that knows it is editing a
-  // `feature-grid` should say so and get `feature-grid`'s shape.
   onlyTypes = null,
   chat = chatJSON,
 }) {
   const catalog = await slideCatalog();
   const base = deck ?? { title: "", slides: [] };
 
-  // A selection names slides, and a slide names its type — so a turn the user
-  // has scoped already knows exactly which types it may PATCH, and there is no
-  // reason to hand it the flat merge of all 73. That merge is won by whichever
-  // type is walked last for each of 22 shared property names, which on a real
-  // 22-slide deck gets 10 slides' own fields wrong.
-  //
-  // Only the patch key space narrows. `scopeOpsToSelection` deliberately lets
-  // append and insert through, so a turn scoped to slide 10 may still be asked
-  // to add a chart, and narrowing the full-slide grammar too would make that
-  // unrepresentable — trading one silent failure for another.
-  // A caller that named its types outranks the inference: `onlyTypes` is a
-  // deliberate statement about what the turn writes, and the critic passes it
-  // alongside the slides its findings concern.
   const selected = !onlyTypes?.length && onlySlides?.length
     ? [...new Set(onlySlides.map((i) => base.slides?.[i]?.type).filter(Boolean))]
     : null;
 
-  // Schema is rebuilt per turn so the op set matches what this deck can accept.
   const schema = buildOpsSchema(await deckSchema(), {
     slideCount: base.slides?.length ?? 0,
     onlyTypes: onlyTypes?.length ? [...new Set(onlyTypes)] : null,
@@ -228,13 +179,6 @@ export async function runTurn({
       signal,
     });
 
-    // An op without an `op` field can never be valid — a model that emits one
-    // stray `{}` or `{index, patch}` item currently poisons the ENTIRE rewrite
-    // (applyOps is transactional), so the coherence/critic fix silently fails
-    // even when the other ops were fine. Drop the never-valid items first; a
-    // genuinely empty response is reported below like any other no-op, while a
-    // response whose ops were ALL malformed goes through the repair loop so the
-    // model gets the feedback instead of the caller.
     const rawOps = res.data?.ops ?? [];
     let ops = rawOps.filter((o) => o && typeof o === "object" && typeof o.op === "string");
     attempts.push(
@@ -252,11 +196,6 @@ export async function runTurn({
       };
     }
 
-    // Hold the turn to the slides the user selected. The selection reaches the
-    // model only as prose, and prose is a hint: a real turn asking to shorten
-    // slide 5's bullets edited slide 6 and reported success. An edit to a slide
-    // the user did not mean produces a perfectly valid deck, so nothing further
-    // down can catch it.
     const scoped = scopeOpsToSelection(ops, onlySlides);
     ops = scoped.ops;
     let applied = applyOps(base, ops);
@@ -271,11 +210,6 @@ export async function runTurn({
         ],
       };
     }
-    // A conversational turn's ops grammar is not narrowed to the slide being
-    // edited, so the model can write one type's fields onto another's slide —
-    // a request for shorter bullets put a `bullets` array on a before-after
-    // slide, which has nowhere to draw them. The deck validated, the turn
-    // reported a change, and the rendered slide was identical.
     if (applied.ok) {
       const stripped = stripForeignFields(applied.deck, await deckSchema());
       if (stripped.dropped.length) {
@@ -318,7 +252,6 @@ export async function runTurn({
       };
     }
 
-    // Feed the failure back as the next user turn.
     messages.push(
       { role: "assistant", content: JSON.stringify(res.data) },
       {

@@ -1,4 +1,3 @@
-/** Express route composition; business behavior remains in src/. */
 
 import express from "express";
 import cors from "cors";
@@ -38,8 +37,6 @@ import { registerAdminRoutes } from "./admin-routes.js";
 import { registerArtifactRoutes, sniffImage } from "./artifact-routes.js";
 import { generationRunInfo, registerGenerationRoutes } from "./generation-routes.js";
 
-
-
 const app = express();
 app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -61,7 +58,6 @@ if (process.env.FORGE_TRUST_PROXY === "1") {
 
 app.use(express.json({ limit: "8mb" }));
 
-
 app.use(async (req, _res, next) => {
   let account = null;
   try {
@@ -74,7 +70,6 @@ app.use(async (req, _res, next) => {
   runAsAccount(account, run);
 });
 const PORT = process.env.FORGE_API_PORT || 5174;
-
 
 async function isAutoRoute(model, userEmail = null) {
   const ap = await autoProvider();
@@ -100,7 +95,6 @@ function reserveAutoOrThrow(userEmail, upcomingSlides = 0, tokens = null) {
   return chk;
 }
 
-
 function settleRequest(req, reservation, { slides = null } = {}) {
   if (!reservation?.eventId || !req?.meter) return;
   try {
@@ -108,10 +102,8 @@ function settleRequest(req, reservation, { slides = null } = {}) {
   } catch { /* metering must never be the reason a response fails */ }
 }
 
-
 const RENDER_MAX_WAIT = 3 * 60 * 1000;
 const RENDER_MAX_QUEUE = 2;
-
 
 let renderTail = Promise.resolve();
 let renderQueued = 0;
@@ -155,9 +147,7 @@ const withRenderSlot = (fn) => async (req, res) => {
   }
 };
 
-
 const SLUG_RE = /^[a-z0-9][a-z0-9_-]{0,99}$/;
-
 
 const MEDIA_PATH = /^\/([^/]+)\/(preview|download|assets)\//;
 
@@ -180,7 +170,6 @@ app.use("/api/decks", deckWorkspace);
 app.use("/api/reports", deckWorkspace);
 app.use("/api/presets", deckWorkspace);
 app.use("/api/briefing", deckWorkspace);
-
 
 app.post("/api/decks/search", wrap(async (req, res) => {
   const q = String(req.body?.q ?? "").trim().toLowerCase();
@@ -207,7 +196,6 @@ app.post("/api/decks/search", wrap(async (req, res) => {
   ok(res, { hits });
 }));
 
-
 async function assertDeckAccess(slug, user) {
   if (!slug || /[\/\\]|\.\./.test(slug)) throw new Error("no such deck");
   const dir = path.join(DECKS, slug);
@@ -226,7 +214,6 @@ app.use("/api/decks/:slug", async (req, res, next) => {
     fail(res, 404, err.message);
   }
 });
-
 
 function startSSE(res) {
   res.setHeader("Content-Type", "text/event-stream");
@@ -301,7 +288,6 @@ app.get("/api/styles", wrap(async (_req, res) => {
   }));
   ok(res, { styles });
 }));
-
 
 app.get("/api/templates", wrap(async (_req, res) => {
   const { readdir, readFile } = await import("node:fs/promises");
@@ -400,7 +386,6 @@ app.get("/api/decks", wrap(async (req, res) => {
   ok(res, { decks });
 }));
 
-
 app.get("/api/decks/:slug/project", wrap(async (req, res) => {
   try {
     const m = await deckMeta(req.params.slug);
@@ -471,12 +456,10 @@ app.put("/api/decks/:slug", wrap(async (req, res) => {
   ok(res, {});
 }));
 
-
 app.delete("/api/decks/:slug", wrap(async (req, res) => {
   await rm(path.join(DECKS, req.params.slug), { recursive: true, force: true });
   ok(res, {});
 }));
-
 
 app.post("/api/sweep", wrap(async (req, res) => {
   const user = await userForToken(bearerToken(req.headers.authorization));
@@ -490,7 +473,6 @@ app.post("/api/sweep", wrap(async (req, res) => {
 }));
 
 registerAdminRoutes(app, { deckMeta, dirSize });
-
 
 registerArtifactRoutes(app, { withRenderSlot, startSSE, isAutoRoute, reserveAutoOrThrow, settleRequest });
 

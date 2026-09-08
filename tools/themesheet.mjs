@@ -1,15 +1,4 @@
 #!/usr/bin/env node
-/**
- * Contact sheet for theme distinctness — one slide (the content slide) from
- * every theme side by side, so a vision model or a human can judge whether the
- * themes actually look different. The sheet is a single PNG, written so it can
- * be handed straight to a vision subagent.
- *
- *   node tools/themesheet.mjs [--themes a,b] [--out sheets/themes.png]
- *
- * Uses the committed specimen deck's first content slide so every theme renders
- * the SAME content — the point is to compare the theme, not the deck.
- */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,9 +19,6 @@ const outFlag = pick("--out")?.[0] ?? OUT;
 const themes = pick("--themes") ?? (await listThemes());
 
 const deck = await specimenDeck();
-// Use the first non-full-bleed content slide so the wash is visible on a
-// standard page (title/section/quote are full-bleed and skip the background
-// layer entirely), and give it a card so the layout has structure to read.
 const FULL = new Set(["title", "freeform", "section", "quote", "image", "chapter", "closing", "epigraph", "hero-image"]);
 const idx = deck.slides.findIndex((s) => !FULL.has(s.type));
 const contentSlide = deck.slides[Math.max(0, idx)];
@@ -44,9 +30,6 @@ const rendered = [];
 for (const theme of themes) {
   const themed = structuredClone(deck);
   themed.theme = theme;
-  // Render ONLY the chosen content slide — a full specimen deck would put the
-  // dark title slide first and the sheet would compare title screens, not the
-  // background washes on standard pages.
   themed.slides = [contentSlide];
   await writeFile(deckFile, JSON.stringify(themed));
   try {
@@ -60,11 +43,6 @@ for (const theme of themes) {
   }
 }
 
-// Distinctness audit: downscale each render to a tiny thumbnail and compare
-// every pair by mean absolute per-pixel difference. This is a blunt "how far
-// apart do they look" meter — it is not a judgement, just a way to surface the
-// near-neighbour pairs a human or vision model should look at. Pairs closer
-// than the threshold get printed.
 if (process.argv.includes("--score")) {
   const SIZE = 48;
   const thumbs = {};
@@ -97,7 +75,6 @@ if (process.argv.includes("--score")) {
   process.exit(0);
 }
 
-// Grid: up to 6 per row, cells scaled to a uniform thumbnail height.
 const cols = 6;
 const rows = Math.ceil(rendered.length / cols);
 const cellH = 220;

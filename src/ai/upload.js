@@ -1,22 +1,3 @@
-/**
- * The upload-only research seam — the user's own document as the sole content
- * source.
- *
- * The user wants search OFF: "my uploaded file is the source of truth for the
- * ppt or report". A briefing picks Research source = web | uploaded file, and
- * when the file wins the research pass is skipped entirely — no SearXNG, no
- * arXiv/Crossref, no Jina. The uploaded document (md/txt/docx/pdf) is
- * converted to markdown and becomes research/notes.md, which is what the
- * writer, the planner and the grounding pass already draw from. Grounding then
- * means strict fidelity against the user's document: anything the model emits
- * that the file does not carry is flagged.
- *
- * Conversion is LibreOffice for office formats (the same engine the preview
- * rasteriser trusts) and a direct decode for plain text. The document is
- * staged between the briefing and the plan so a large file never round-trips
- * through the browser or localStorage; a token resolves it once the deck's
- * slug exists.
- */
 
 import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
@@ -26,14 +7,10 @@ import { CONFIG } from "../paths.js";
 
 const run = promisify(execFile);
 
-/** The file types the upload-only mode accepts — plain text read directly,
- *  office formats converted via LibreOffice. */
 export const UPLOAD_EXT = new Set(["md", "txt", "markdown", "docx", "pdf"]);
 export const UPLOAD_MAX_BYTES = 25 * 1024 * 1024;
 export const UPLOAD_MAX_WORDS = 60_000;
 
-/** Staged documents are consumed by the next plan; anything older is a dead
- *  briefing the user abandoned. Swept on every stage and at server boot. */
 const STAGE_TTL_MS = 48 * 60 * 60 * 1000;
 
 async function which(bin) {
@@ -45,7 +22,6 @@ async function which(bin) {
   }
 }
 
-/** The staging directory — gitignored, like the other per-user stores. */
 export function uploadStageDir() {
   return path.join(CONFIG, "uploads");
 }
@@ -55,9 +31,6 @@ function tokenFile(token) {
   return path.join(uploadStageDir(), `${token}.json`);
 }
 
-/** Plain-text decode with a binary sniff: an uploaded .txt that is really an
- *  executable must fail loudly rather than smear control bytes across the
- *  notes the model writes from. */
 function decodeText(buf) {
   if (buf.includes(0)) throw new Error("file looks binary — .md/.txt uploads must be plain text");
   const text = buf.toString("utf8").replace(/^\uFEFF/, "");
@@ -72,10 +45,6 @@ function decodeText(buf) {
   return text;
 }
 
-/** Convert a binary office document to plain text via LibreOffice headless.
- *  The same private-profile + absolute-path discipline as the preview
- *  rasteriser, or the conversion silently no-ops on a box with a desktop
- *  instance running. */
 async function sofficeToText(buf, name, ext) {
   if (!(await which("soffice"))) {
     throw new Error("LibreOffice (soffice) not found — needed to read .docx/.pdf uploads");
@@ -101,11 +70,6 @@ async function sofficeToText(buf, name, ext) {
   }
 }
 
-/**
- * Turn one uploaded document into the markdown that becomes notes.md.
- * Validates type, size and readability; returns the trimmed text plus the
- * display metadata the briefing and sources.json carry.
- */
 export async function ingestUpload(buf, { name = "", ext = "" } = {}) {
   if (!buf?.length) throw new Error("the file is empty");
   if (buf.length > UPLOAD_MAX_BYTES) {
@@ -128,10 +92,6 @@ export async function ingestUpload(buf, { name = "", ext = "" } = {}) {
   return { text: trimmed, name: name || `upload.${e}`, ext: e, words };
 }
 
-/**
- * Stage a converted document so the briefing can hold a token instead of the
- * full text. Returns the token plus the small display record the client keeps.
- */
 export async function stageUpload({ text, name, ext, words }) {
   await mkdir(uploadStageDir(), { recursive: true });
   await sweepStagedUploads();
@@ -144,7 +104,6 @@ export async function stageUpload({ text, name, ext, words }) {
   return { token, name, ext, words };
 }
 
-/** Resolve a staged token to the full document text, or null when it is gone. */
 export async function readStagedUpload(token) {
   const file = tokenFile(token ?? "");
   if (!file) return null;
@@ -156,7 +115,6 @@ export async function readStagedUpload(token) {
   }
 }
 
-/** Drop staged documents older than the TTL — abandoned briefings, not data. */
 export async function sweepStagedUploads() {
   let entries = [];
   try {

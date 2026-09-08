@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-/**
- * Downloads every typeface listed in fonts.manifest.json from Google Fonts
- * into brand/fonts/, then installs them into the user font dir so that
- * LibreOffice (preview rendering) and headless Chrome (background plates)
- * both resolve them. Idempotent — skips files already on disk.
- *
- * Note: we deliberately send NO User-Agent. The CSS2 API content-negotiates on
- * it, and the default gets us plain `.ttf` urls. Spoofing an old browser gets
- * extension-less `/l/font?kit=` urls instead, which fontconfig won't index.
- */
 import { readFile, mkdir, writeFile, access, copyFile, readdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -31,7 +21,6 @@ async function ttfUrlsFor(family, weights) {
   if (!res.ok) throw new Error(`CSS2 API ${res.status} for "${family}"`);
   const css = await res.text();
 
-  // Each @font-face block carries one weight and one src url.
   const out = [];
   for (const block of css.split("@font-face").slice(1)) {
     const weight = block.match(/font-weight:\s*(\d+)/)?.[1];
@@ -77,7 +66,6 @@ async function main() {
     }
   }
 
-  // Mirror into the user font dir so fontconfig picks them up.
   for (const f of await readdir(FONT_DIR)) {
     if (f.endsWith(".ttf")) {
       await copyFile(path.join(FONT_DIR, f), path.join(INSTALL_DIR, f));

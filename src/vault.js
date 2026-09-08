@@ -5,14 +5,6 @@ import { AUTO_KEY_ENV, LEGACY_AUTO_KEY_ENV, isAutoProviderId } from "./autoid.js
 
 const DEV_PEPPER = "dev-pepper-change-me-in-prod-32b-min-32chars!!";
 
-/**
- * The key every stored API key is encrypted under.
- *
- * The development fallback is a constant in a public repository, so a hosted
- * box that forgot FORGE_KEY_PEPPER would encrypt its users' BYOK keys under a
- * value anyone can read — which is not encryption at all. Hosted mode therefore
- * refuses to run without a real pepper rather than quietly pretending.
- */
 function masterKey() {
   const pepper = process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY || "";
   if (!pepper) {
@@ -27,7 +19,6 @@ function masterKey() {
   if (pepper === DEV_PEPPER && isHosted()) {
     throw new Error("FORGE_KEY_PEPPER is still the published development value — set a real one before hosting.");
   }
-  // derive 32 bytes via sha256 (stable, no salt needed for master)
   return createHash("sha256").update(pepper).digest();
 }
 
@@ -52,7 +43,6 @@ export function decryptSecret({ iv, ciphertext, tag }) {
   return dec.toString("utf8");
 }
 
-// Per-user BYOK
 export function saveUserKey(userId, provider, apiKey) {
   const db = getDb();
   const { iv, ciphertext, tag } = encryptSecret(apiKey);
@@ -79,7 +69,6 @@ export function clearUserKey(userId) {
   db.prepare("DELETE FROM user_keys WHERE user_id=?").run(userId);
 }
 
-// The single install-wide Auto key.
 export function saveGlobalKey(provider, apiKey) {
   const db = getDb();
   const { iv, ciphertext, tag } = encryptSecret(apiKey);
@@ -98,8 +87,6 @@ export function loadGlobalKey(provider) {
   try { return decryptSecret(row); } catch { return null; }
 }
 
-// The environment always wins for the shared key: a key rotated in the
-// deployment must beat one typed into a browser months earlier.
 export function resolveGlobalKey(provider) {
   if (isAutoProviderId(provider) || provider === "tcet" || provider === "auto") {
     const env = process.env[AUTO_KEY_ENV] || process.env[LEGACY_AUTO_KEY_ENV];
@@ -107,6 +94,5 @@ export function resolveGlobalKey(provider) {
   }
   const fromDb = loadGlobalKey(provider);
   if (fromDb) return fromDb;
-  // legacy: config/local.yaml plaintext fallback
   return null;
 }

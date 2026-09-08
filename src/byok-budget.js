@@ -1,16 +1,5 @@
 import { getDb } from "./db.js";
 
-/**
- * A user's own key must not turn Forge into an unbounded API client.
- *
- * Provider prices and usage payloads differ, so this is deliberately a token
- * safety rail rather than a money estimate. Every outbound BYOK completion is
- * reserved before fetch. Successful calls settle to reported usage (or a
- * conservative text estimate when usage is absent); failed calls keep the
- * reservation because a timed-out provider may still have completed and
- * billed the request.
- */
-
 export const DEFAULT_BYOK_DAILY_TOKENS = 180_000;
 export const MIN_BYOK_DAILY_TOKENS = 10_000;
 export const MAX_BYOK_DAILY_TOKENS = 5_000_000;
@@ -89,7 +78,6 @@ export class ByokBudgetError extends Error {
   }
 }
 
-/** Atomically reserve one provider attempt so concurrent tabs cannot overspend. */
 export function reserveByokCall({ userId, provider, tokens, now = Date.now() }) {
   if (!userId) return null;
   const amount = Math.max(1, Math.ceil(Number(tokens) || 0));
@@ -133,8 +121,6 @@ function contentChars(content) {
   if (!Array.isArray(content)) return JSON.stringify(content ?? "").length;
   return content.reduce((sum, part) => {
     if (part?.type === "text") return sum + String(part.text ?? "").length;
-    // Base64 bytes are not text tokens. A fixed reserve is intentionally
-    // conservative without treating a 2 MB PNG as half a million tokens.
     if (part?.type === "image_url") return sum + 6_000;
     return sum + JSON.stringify(part ?? "").length;
   }, 0);

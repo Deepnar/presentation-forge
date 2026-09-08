@@ -12,13 +12,6 @@ function getVault() {
   try { return import("./vault.js"); } catch { return null; }
 }
 
-/**
- * Opt-in cloud backends — now with TCET auto tier.
- * - `auto`  = the operator's shared gateway key, rate-limited per user
- * - `cloud` = user's own BYOK (openai, opencode-go, etc.)
- * The key never lives in the repo: env first, then DB vault, then local.yaml legacy.
- */
-
 const LOCAL_FILE = path.join(CONFIG, "local.yaml");
 const MODELS_FILE = path.join(CONFIG, "models.yaml");
 
@@ -30,13 +23,8 @@ async function readYaml(file) {
   }
 }
 
-/** env first, then global_keys DB, then config/local.yaml — the file the Settings panel writes. */
 export async function resolveSecret(name) {
   if (process.env[name]) return process.env[name];
-  // The shared key was named for one institution and is now named for its
-  // role. Both spellings resolve, in both directions, so an upgrade needs no
-  // edit to a compose file and a fresh install needs no knowledge of the old
-  // name. See src/autoid.js.
   if (name === AUTO_KEY_ENV && process.env[LEGACY_AUTO_KEY_ENV]) return process.env[LEGACY_AUTO_KEY_ENV];
   if (name === LEGACY_AUTO_KEY_ENV && process.env[AUTO_KEY_ENV]) return process.env[AUTO_KEY_ENV];
 
@@ -50,21 +38,12 @@ export async function resolveSecret(name) {
       }
     } catch {}
   }
-  // per-user BYOK is resolved separately via vault per userId
   const stored = (await readYaml(LOCAL_FILE)).api_keys ?? {};
   if (stored[name]) return stored[name];
   if (name === AUTO_KEY_ENV && stored[LEGACY_AUTO_KEY_ENV]) return stored[LEGACY_AUTO_KEY_ENV];
   return "";
 }
 
-/**
- * The key a provider actually authenticates with, for whoever is calling.
- *
- * BYOK means the signed-in account's own key, so that wins for every provider
- * except the shared gateway — which is deliberately install-wide, because it is
- * the operator's key being rate-limited per user, not the user's own. Without
- * an account (CLI, tests) this is exactly the old env-then-local.yaml lookup.
- */
 export async function resolveProviderKey(providerId, apiKeyRef) {
   const userId = currentUserId();
   if (userId && providerId && !isAutoProviderId(providerId)) {
@@ -82,19 +61,11 @@ export async function resolveUserSecret(userId, providerId) {
     const { loadUserKey } = await import("./vault.js");
     const k = loadUserKey(userId);
     if (k && k.provider === providerId) return k.apiKey;
-    // fallback: try any key for user if provider mismatch?
     if (k?.apiKey) return k.apiKey;
   } catch {}
   return "";
 }
 
-/**
- * A provider's model list. The static `models:` array in config/models.yaml is
- * the admin's curated list; when it is empty or absent the list is fetched
- * from the provider's own GET {baseURL}/models instead, so a hosted box with a
- * provider that does not declare models still offers a picker. The fetch is
- * best-effort and key-gated: no key, no fetch, empty result.
- */
 export async function providerModels(p, providerId = null) {
   if (p && Array.isArray(p.models) && p.models.length) return [...p.models];
   if (!p || !p.baseURL) return [];
@@ -119,7 +90,6 @@ export async function setApiKey(name, key) {
   const cfg = await readYaml(LOCAL_FILE);
   const next = { ...cfg, api_keys: { ...(cfg.api_keys ?? {}), [name]: key } };
   await writeFile(LOCAL_FILE, YAML.stringify(next), "utf8");
-  // also write to the global vault so the shared key persists encrypted
   if (name === "FORGE_TCET_API_KEY") {
     try {
       const { saveGlobalKey } = await import("./vault.js");
@@ -141,7 +111,6 @@ export async function clearApiKey(name) {
   }
 }
 
-// Per-user BYOK helpers (encrypted at rest)
 export async function setUserApiKey(userId, provider, key) {
   const { saveUserKey } = await import("./vault.js");
   saveUserKey(userId, provider, key);
@@ -160,15 +129,6 @@ export async function getUserApiKey(userId) {
 
 const ROUTES = ["auto", "cloud", "local"];
 
-/**
- * Where the model pickers default: auto (shared gateway) or cloud (BYOK).
- *
- * This is a PER-ACCOUNT preference. It used to live only in config/local.yaml,
- * which meant one user flipping the header toggle re-routed every other user's
- * generations — including onto a key that was not theirs. The install-wide
- * value survives as the default for accounts that have never chosen, and as
- * the whole answer for the CLI, which has no account.
- */
 export async function routingPreference(userId = null) {
   if (userId) {
     try {
@@ -197,12 +157,6 @@ export async function setRoutingPreference(route, userId = null) {
 
 const HOSTED_FILE = path.join(CONFIG, "hosted.json");
 
-/**
- * Test seam. `isHosted()` reads a runtime file in the real config dir, so a
- * developer box that an admin has flipped to hosted changes the outcome of
- * tests that are about the local transport. A test that depends on the mode
- * states which mode it means instead of inheriting the machine's.
- */
 let hostedOverride = null;
 export function setHostedForTest(flag) {
   hostedOverride = flag === null ? null : Boolean(flag);
@@ -210,8 +164,6 @@ export function setHostedForTest(flag) {
 
 export function isHosted() {
   if (hostedOverride !== null) return hostedOverride;
-  // Runtime file (admin toggle) wins over env, so a flip takes effect without a
-  // redeploy on a box whose compose file pins FORGE_HOSTED.
   try {
     if (existsSync(HOSTED_FILE)) {
       const j = JSON.parse(readFileSync(HOSTED_FILE, "utf8"));
@@ -228,13 +180,8 @@ export async function setHosted(flag) {
   return next;
 }
 
-// Auto provider — the free tier. On hosted it's TCET CoE (qwen3.6), on a local
-// download with no TCET key it falls back to the local Ollama model so "AUTO"
-// always works. This is what the header shows as AUTO. When FORGE_HOSTED=1 the
-// local fallback is disabled — hosted has only Auto (TCET) + BYOK.
 export async function autoProvider() {
   const models = await readYaml(MODELS_FILE);
-  // Either spelling of the provider block, new name preferred.
   const found = pickAutoProvider(models.providers);
   const key = await resolveSecret(AUTO_KEY_ENV);
   if (found && key.length > 0) {
@@ -243,8 +190,6 @@ export async function autoProvider() {
       ? [...spec.models]
       : await providerModels(spec, AUTO_PROVIDER);
     return {
-      // Always the canonical id, whichever block it was read from: everything
-      // downstream (usage rows, key storage, the UI) then agrees on one name.
       id: AUTO_PROVIDER,
       label: "Auto",
       baseURL: String(spec.baseURL).replace(/\/+$/, ""),
@@ -254,8 +199,6 @@ export async function autoProvider() {
       kind: AUTO_PROVIDER,
     };
   }
-  // Fallback: local Ollama as the free tier (download-and-run case)
-  // Hosted has no local fallback — only TCET + BYOK.
   if (isHosted()) return null;
   const host = models.host ?? "http://localhost:11434";
   let localModels = [];
@@ -266,8 +209,6 @@ export async function autoProvider() {
       localModels = (body.models ?? []).map((m) => m.name);
     }
   } catch {}
-  // If no Ollama installed, still return a synthetic entry so AUTO is visible
-  // but keySet false — the UI will show it as unavailable.
   return {
     id: "local",
     label: "Local",
@@ -295,9 +236,6 @@ export async function autoStatus(userId = null) {
   };
 }
 
-/**
- * The BYOK cloud provider (first opt-in provider with a key, excluding the shared Auto tier).
- */
 export async function cloudProvider() {
   const models = await readYaml(MODELS_FILE);
   for (const [id, p] of Object.entries(models.providers ?? {})) {
@@ -316,20 +254,17 @@ export async function cloudProvider() {
   return null;
 }
 
-/** The env var (or local.yaml key name) a provider's apiKey reference reads. */
 export async function cloudKeyName() {
   const p = await cloudProvider();
   if (!p) return null;
   return p.apiKey.match(/^env:(.+)$/)?.[1] ?? null;
 }
 
-/** What the Settings panel renders — never the key itself. */
 export async function cloudStatus(userId = null) {
   const ap = await autoProvider();
   const p = await cloudProvider();
   const name = await cloudKeyName();
   if (!p || !name) {
-    // still return auto info so UI can show auto status
     const a = await autoStatus(userId);
     return {
       configured: false,
@@ -353,21 +288,6 @@ export async function cloudStatus(userId = null) {
   };
 }
 
-/**
- * A live authentication check. For the shared tier it probes with 1 token.
- */
-/**
- * Is the Auto tier actually able to generate, cached briefly.
- *
- * `autoStatus().keySet` answers "is a key configured", which the admin page was
- * showing as the backend's health light — so a gateway that was completely
- * unable to generate still read green. A key is a fact about this box's
- * configuration; it says nothing about the service at the other end.
- *
- * The real check costs one token, so it is cached: an operator refreshing the
- * admin page should not each time make a request to a service that may already
- * be struggling. Short enough that a recovery shows up quickly.
- */
 const AUTO_HEALTH_TTL_MS = 60_000;
 let autoHealthCache = null;
 
@@ -390,21 +310,12 @@ export async function autoHealth({ force = false } = {}) {
   const fresh = autoHealthCache && Date.now() - autoHealthCache.at < AUTO_HEALTH_TTL_MS;
   if (!force && fresh) return autoHealthCache.value;
 
-  // Stale-while-revalidate. The probe takes twenty seconds precisely when the
-  // news is bad, so blocking on it makes the admin page slowest exactly when
-  // someone has opened it to find out why. One probe in flight at a time; a
-  // known-stale answer now beats a fresh one after the timeout.
   if (!autoHealthInFlight) {
     autoHealthInFlight = probeAutoHealth().finally(() => { autoHealthInFlight = null; });
   }
   if (force) return autoHealthInFlight;
   if (autoHealthCache) return { ...autoHealthCache.value, stale: true };
 
-  // Cold cache — the case the revalidate above could not cover, and the one
-  // that actually bit: on the first load after a restart there is nothing
-  // stale to serve, so the admin page blocked for the full probe. That is the
-  // first page an operator opens after restarting a box whose gateway is down.
-  // Report "checking" and let the probe land in the cache for the next load.
   return { ok: null, pending: true, detail: "checking…", checkedAt: null };
 }
 
@@ -450,11 +361,6 @@ export async function testAutoConnection() {
     }
     return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };
   } catch (err) {
-    // A timeout is the shape that matters here and the one a raw message
-    // describes worst: the gateway's API answers — its model list came back a
-    // line ago — while the model service behind it never replies. That is an
-    // upstream outage, not a misconfiguration on this box, and the message
-    // should not send an operator hunting through their own settings.
     if (err.name === "TimeoutError" || /aborted due to timeout/i.test(err.message)) {
       return {
         ok: false,

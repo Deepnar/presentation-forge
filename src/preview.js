@@ -1,12 +1,4 @@
 #!/usr/bin/env node
-/**
- * Rasterises a .pptx to one PNG per slide via LibreOffice + pdftoppm.
- *
- * This is the eyes of the pipeline. The vision-capable local model reads these
- * PNGs and reports overflow, clipping and contrast problems that no amount of
- * schema validation can catch — a deck can be perfectly valid YAML and still
- * have a headline running off the slide.
- */
 import { mkdir, mkdtemp, readdir, rm, access } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -17,8 +9,6 @@ import sharp from "sharp";
 
 const run = promisify(execFile);
 
-/** Grid thumbnails. Full-res plates are ~1.5 MP each and a 12-slide deck will
- *  stall a browser if the gallery loads them directly. */
 const THUMB_W = 480;
 
 async function which(bin) {
@@ -30,45 +20,15 @@ async function which(bin) {
   }
 }
 
-/**
- * Convert any Office document to PDF via LibreOffice headless. The one
- * trustworthy rendering primitive in the repo: the report's TOC page-number
- * pass and the deck's rasterisation both need a real layout engine.
- *
- * Absolute throughout: soffice's -env:UserInstallation needs a real file://
- * URL, and --outdir is resolved against soffice's cwd, not ours.
- */
-/**
- * One LibreOffice profile per process, built once and reused.
- *
- * A private profile is not optional: soffice silently no-ops when an instance
- * is already running in the user's session, which is the trap this whole
- * function exists around. But building one from scratch on every conversion
- * pays that setup cost every time — measured at roughly 0.8s of a 7s
- * conversion, on every slide sweep and every report render.
- *
- * Private and reused, not fresh and reused: a directory of our own under the
- * OS temp dir, so two concurrent PROCESSES still get separate profiles and
- * cannot lock each other out.
- */
 let profileDir = null;
 async function loProfile() {
   if (!profileDir) {
     profileDir = await mkdtemp(path.join(tmpdir(), "forge-lo-"));
-    // Best effort: a leftover profile is harmless, but tidy is better.
     process.once("exit", () => { try { rmSync(profileDir, { recursive: true, force: true }); } catch {} });
   }
   return profileDir;
 }
 
-/**
- * Serialise conversions within this process.
- *
- * Two soffice invocations sharing one profile directory is exactly the
- * lock-out the private profile prevents, so reusing the profile is only safe
- * if nothing overlaps. Every caller today awaits sequentially; this makes that
- * a property of the function rather than of its callers' good manners.
- */
 let loQueue = Promise.resolve();
 function loSlot() {
   const prev = loQueue;
@@ -137,12 +97,6 @@ export async function preview(pptxFile, { outDir, dpi = 110 } = {}) {
   };
 }
 
-/**
- * Rasterise a report .docx to one PNG per page, exactly like the deck preview —
- * the preview IS the real Word output, drawn by LibreOffice and split by
- * pdftoppm, so what the user sees in the report view is what opens in Word.
- * Lives in out/report-preview so it never collides with the deck's slides.
- */
 export async function reportPreview(docxFile, { dpi = 110 } = {}) {
   const dir = path.resolve(path.join(path.dirname(docxFile), "report-preview"));
   const pdf = await libreofficeToPdf(docxFile, { outDir: dir });

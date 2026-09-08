@@ -1,17 +1,3 @@
-/**
- * Deck mutation operations.
- *
- * Every change to a deck — first generation, a chat instruction, a critic fix —
- * is expressed as a list of ops. Rewriting the whole deck instead would be
- * expensive for a one-slide edit and, worse, lets the model quietly restyle
- * slides nobody asked about.
- *
- * Application is transactional: ops apply to a clone, the result is validated,
- * and the original is returned untouched if anything fails. A half-applied deck
- * is never observable.
- *
- * Pure module — no model, no I/O — so the semantics are testable on their own.
- */
 
 const OP_NAMES = [
   "set_meta", "append_slide", "insert_slide",
@@ -19,74 +5,16 @@ const OP_NAMES = [
   "duplicate_slide",
 ];
 
-/**
- * Build the Ollama structured-output schema from deck.schema.json.
- *
- * The slide payload MUST enumerate its properties. Declaring it as a bare
- * `{type: "object"}` produces a decoding grammar that permits arbitrary nested
- * keys, and small models fall into it and never come out — observed as endless
- * `{"patch_details":{"patch_details":{…}}}` and token loops inside free-form
- * strings. Concrete keys give the grammar somewhere to land.
- *
- * Derived rather than hand-written so it cannot drift from the contract.
- */
-/**
- * @param {object} deckSchema      parsed deck.schema.json
- * @param {object} [opts]
- * @param {number} [opts.slideCount]  how many slides the deck currently has
- * @param {string[]} [opts.onlyTypes] restrict to these slide types
- * @param {string[]} [opts.patchTypes] restrict the PATCH key space only
- * @param {string[]} [opts.excludeProps]  shared fields the payload must not carry
- *
- * `onlyTypes` is the important lever. Unioning all 28 slide fields produces a
- * large grammar, and constrained decoding masks the model's preferred token far
- * more often against a large grammar than a small one — which is what pushes a
- * small model off-distribution into loops and confabulation. Narrowing to the
- * one type being written keeps the grammar tight.
- *
- * `patchTypes` narrows the patch key space WITHOUT narrowing the full-slide
- * one, because the two are not scoped alike. A patch targets a slide that
- * already exists, so when the caller knows which slides may be touched it also
- * knows their types exactly. A full `slide` carries its own `type` and may be
- * anything — a turn scoped to slide 10 may still be asked to append a chart,
- * and `scopeOpsToSelection` deliberately lets append/insert through, so
- * narrowing both would make that unrepresentable.
- *
- * Under a single-slide selection this makes the patch grammar EXACT: one
- * type's fields, no collisions. That matters because 22 property names are
- * declared by more than one type — `items` alone by thirteen types with
- * thirteen distinct element shapes — and a flat merge is won by whichever type
- * is walked last. It also puts the grammar in agreement with the guard that
- * already runs afterwards: `stripForeignFields` exists to remove one type's
- * fields from another's slide, and making them unrepresentable beats scrubbing
- * them after the fact.
- *
- * `excludeProps` removes shared fields entirely. The first-generation writer
- * excludes `presenter` for every type — presenters are assigned centrally by
- * `distributePresenters` after generation, not by the model — and the divider
- * types (title, section, chapter, closing) never carry one by rule: "the next
- * part is the slide, not somebody's slide". Making a stray `presenter`
- * unrepresentable in the grammar beats scrubbing it after the fact.
- */
 export function buildOpsSchema(
   deckSchema,
   { slideCount = 0, onlyTypes = null, patchTypes = null, excludeProps = null } = {},
 ) {
   const slide = deckSchema.definitions.slide;
 
-  // Constrain the op set to what the current deck can actually accept. Against
-  // an empty deck the model reliably reaches for update_slide/replace_slide and
-  // then fails to recover through the repair loop; removing those from the
-  // grammar makes the mistake unrepresentable rather than merely discouraged.
   const available = slideCount === 0
     ? ["set_meta", "append_slide"]
     : OP_NAMES;
 
-  /**
-   * Inline every $ref, at any depth. Ollama's schema converter has no document
-   * to resolve against, so a surviving `#/definitions/…` anywhere in the tree
-   * fails the whole request — including ones nested inside `items`.
-   */
   const deref = (node, seen = new Set()) => {
     if (Array.isArray(node)) return node.map((n) => deref(n, seen));
     if (!node || typeof node !== "object") return node;
@@ -103,14 +31,9 @@ export function buildOpsSchema(
     return out;
   };
 
-  // Shared fields, then each selected type's own. Narrowing to a single type
-  // cuts the key space from ~28 to ~5.
   const shared = {};
   for (const [name, spec] of Object.entries(slide.properties)) shared[name] = deref(spec);
 
-  /** The key space for one set of types, and what a full slide of it must
-   *  carry. Built per key space because a patch and a full slide are not
-   *  scoped alike — see `patchTypes`. */
   const keySpace = (types) => {
     const props = { ...shared };
     const required = new Set(["type"]);
@@ -120,14 +43,10 @@ export function buildOpsSchema(
       for (const [name, spec] of Object.entries(rule.then?.properties ?? {})) {
         props[name] = deref(spec);
       }
-      // Only meaningful when writing a single type; with several, one type's
-      // required field is another's illegal one.
       if (types?.length === 1) {
         for (const r of rule.then?.required ?? []) required.add(r);
       }
     }
-    // After the type loop, not before it: an excluded name a type re-declares
-    // as its own would otherwise come back through the conditional block.
     for (const name of excludeProps ?? []) {
       delete props[name];
       required.delete(name);
@@ -145,10 +64,6 @@ export function buildOpsSchema(
       ? { ...forSlide.props, type: { enum: onlyTypes } }
       : forSlide.props,
   };
-  // A patch is a key space with nothing mandatory. `type` is left at the full
-  // enum even under patchTypes: changing a slide's type means supplying the
-  // new type's fields, which is a replace_slide, and leaving the door open
-  // here would just reintroduce the foreign-field problem one op along.
   const patchSchema = { type: "object", properties: forPatch.props };
 
   return {
@@ -161,13 +76,6 @@ export function buildOpsSchema(
       },
       ops: {
         type: "array",
-        // Bounded, for the reason the outline schema is bounded: an unbounded
-        // array in a constrained-decoding grammar never REQUIRES a closing
-        // bracket, so the model may keep appending until it hits the token
-        // ceiling — the failure that produced an 8192-token outline for a
-        // six-slide deck. The fix was applied there and not here, and a chat
-        // turn is the same shape. A turn never needs more operations than the
-        // deck has slides plus room to add a few.
         maxItems: Math.max(12, slideCount + 8),
         items: {
           type: "object",
@@ -205,17 +113,6 @@ export function buildOpsSchema(
 
 const clone = (x) => structuredClone(x);
 
-/**
- * The best-effort replacement slide for one index from a model's op list.
- *
- * Models drift between the legal shapes: `update_slide {patch}`, `update_slide
- * {slide}` (a full replacement on the wrong key — the union grammar allows
- * it), and `replace_slide {slide}`, with or without an index. Rather than let
- * a model that chose the "wrong" but correct-in-intent shape fail a whole
- * rewrite (the sweep/coherence "no usable rewrite" and "Unknown op undefined"
- * defects), resolve to the first op that plausibly targets `index`. Returns
- * null when nothing usable exists.
- */
 export function slideFromOps(ops, index) {
   for (const o of ops ?? []) {
     if (o.op === "update_slide" && (o.index === index || o.index == null)) {
@@ -246,10 +143,6 @@ function requireSlide(slide, op) {
   if (!slide.type) throw new OpError(`${op}: slide is missing "type"`);
 }
 
-/**
- * Apply one op to a deck in place. Exported for tests; callers should use
- * `applyOps`, which is transactional.
- */
 export function applyOp(deck, op) {
   switch (op.op) {
     case "set_meta": {
@@ -286,8 +179,6 @@ export function applyOp(deck, op) {
       if (!op.patch || typeof op.patch !== "object") {
         throw new OpError("update_slide: missing \"patch\" object");
       }
-      // Shallow merge: a slide's fields are flat, and deep-merging arrays would
-      // make "replace these bullets" impossible to express.
       deck.slides[op.index] = { ...deck.slides[op.index], ...clone(op.patch) };
       return `~ slide ${op.index + 1} (${Object.keys(op.patch).join(", ")})`;
     }
@@ -305,7 +196,6 @@ export function applyOp(deck, op) {
       requireIndex(deck, op.index, "move_slide");
       requireIndex(deck, op.to, "move_slide", { allowEnd: true });
       const [moved] = deck.slides.splice(op.index, 1);
-      // Removing first shifts everything after it down by one.
       const dest = op.to > op.index ? op.to - 1 : op.to;
       deck.slides.splice(dest, 0, moved);
       return `↕ slide ${op.index + 1} → ${dest + 1} (${moved.type})`;
@@ -322,12 +212,6 @@ export function applyOp(deck, op) {
   }
 }
 
-/**
- * Which ops name an EXISTING slide, and the field that names it.
- *
- * `append_slide` and `insert_slide` add rather than target, and `set_meta` is
- * about the deck, so none of them is scoped by a slide selection.
- */
 const OP_TARGET_FIELD = {
   update_slide: "index",
   replace_slide: "index",
@@ -336,18 +220,6 @@ const OP_TARGET_FIELD = {
   move_slide: "from",
 };
 
-/**
- * Hold a turn to the slides the user actually selected.
- *
- * The selection reaches the model as PROSE ("the request below applies to
- * EXACTLY these"), and prose is a hint. A real turn asking to shorten slide 5's
- * bullets edited slide 6 instead and reported success — the change list said
- * one slide changed, and it was the wrong one. Nothing downstream can catch
- * that: editing a slide the user did not mean produces a perfectly valid deck.
- *
- * With one slide selected an op that names no index is pointed AT it rather
- * than refused, since "no index" is the same drift with a different shape.
- */
 export function scopeOpsToSelection(ops, allowed) {
   const list = Array.isArray(allowed) ? allowed.filter((n) => Number.isInteger(n)) : [];
   if (!list.length) return { ops, refused: [] };
@@ -370,19 +242,6 @@ export function scopeOpsToSelection(ops, allowed) {
   return { ops: kept, refused };
 }
 
-/**
- * Every field a slide of this type may legitimately carry: the shared ones on
- * `definitions.slide.properties`, plus whatever its own conditional block adds.
- *
- * The ops grammar for a conversational turn is not narrowed to the slide being
- * edited — the user may name any slide — so the model can write one type's
- * fields onto another's slide. It did: a chat turn asking for shorter bullets
- * put a `bullets` array on a `before-after` slide, which owns `before`/`after`
- * and has nowhere to draw them. `additionalProperties` is unset on the slide
- * definition (it cannot be set, because the type rules compose through allOf),
- * so the deck validated and the turn reported "applied 1 change" while the
- * rendered slide was byte-identical. A field nothing draws is silent loss.
- */
 export function fieldsForType(schema, type) {
   const slide = schema.definitions?.slide ?? {};
   const fields = new Set(Object.keys(slide.properties ?? {}));
@@ -394,11 +253,6 @@ export function fieldsForType(schema, type) {
   return fields;
 }
 
-/**
- * Drop fields a slide's type does not own. Returns the deck plus the list of
- * what was removed, so a caller can say so rather than silently differing from
- * what the model proposed.
- */
 export function stripForeignFields(deck, schema) {
   const dropped = [];
   const slides = deck.slides.map((slide, i) => {
@@ -415,14 +269,6 @@ export function stripForeignFields(deck, schema) {
   return { deck: { ...deck, slides }, dropped };
 }
 
-/**
- * Apply a list of ops transactionally.
- *
- * Ops are indexed against the deck as it evolves, so an insert shifts the
- * targets of later ops — the same semantics a human editing top-to-bottom
- * would expect. Models routinely get this wrong on multi-op edits, which is why
- * `describe` reports final positions and the caller shows them back.
- */
 export function applyOps(deck, ops) {
   if (!Array.isArray(ops)) return { ok: false, deck, changes: [], errors: ["ops must be an array"] };
 
@@ -443,17 +289,11 @@ export function applyOps(deck, ops) {
   return { ok: true, deck: draft, changes, errors: [] };
 }
 
-/** Compact human-readable summary of what a turn did. */
 export function describe(changes) {
   if (!changes.length) return "no changes";
   return changes.join("\n");
 }
 
-/**
- * Structural diff between two decks, for the UI.
- * Matches slides by identity where possible so a move reads as a move rather
- * than a delete plus an insert.
- */
 export function diffDecks(before, after) {
   const out = [];
   for (const k of ["title", "subtitle", "theme"]) {
@@ -475,7 +315,6 @@ export function diffDecks(before, after) {
     if (!aKeys.includes(k)) out.push({ kind: "added", index: i, type: b[i].type, label: b[i].headline ?? b[i].type });
   });
 
-  // Same position, same identity, different content.
   const n = Math.min(a.length, b.length);
   for (let i = 0; i < n; i++) {
     if (aKeys[i] === bKeys[i] && JSON.stringify(a[i]) !== JSON.stringify(b[i])) {

@@ -2,32 +2,15 @@ import { Readability } from "@mozilla/readability";
 import { parseHTML } from "linkedom";
 import TurndownService from "turndown";
 
-/**
- * Local research: metasearch via SearXNG, plus readable extraction of pages.
- *
- * Extraction quality matters more here than search quality. A small local model
- * handed raw HTML spends its context on nav chrome, cookie banners and footers,
- * and starts quoting them. Readability strips a page to its article body before
- * the model ever sees it.
- */
-
 const SEARX = process.env.SEARXNG_URL ?? "http://localhost:8888";
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
 
-/**
- * The Jina Reader (https://r.jina.ai/<url>) is a second extraction path for
- * pages Readability mangles — JS-heavy, paywalled, behind redirects. It is a
- * free cloud service, so it stays OPT-IN: without this flag the pipeline is
- * exactly as local as before, and the fallback only ever fires on a page that
- * Readability already failed to extract.
- */
 const JINA_ENABLED = process.env.RESEARCH_JINA === "1";
 
 const FETCH_TIMEOUT = 12_000;
 const MAX_BYTES = 4 * 1024 * 1024;   // pathological pages exist; cap before parsing
 const MAX_CONCURRENT = 4;            // politeness, and SearXNG's upstreams throttle
 
-/** Hosts that never yield usable article text. */
 const BLOCKED_HOSTS = new Set([
   "pinterest.com", "www.pinterest.com",
   "facebook.com", "www.facebook.com",
@@ -40,8 +23,6 @@ const turndown = new TurndownService({
   codeBlockStyle: "fenced",
   bulletListMarker: "-",
 });
-// Images carry no information once the page is text; links become noise at
-// citation density, so keep the anchor text and drop the target.
 turndown.remove(["script", "style", "noscript", "iframe", "form"]);
 turndown.addRule("stripImages", { filter: "img", replacement: () => "" });
 turndown.addRule("unwrapLinks", { filter: "a", replacement: (content) => content });
@@ -77,11 +58,6 @@ async function withTimeout(url, options = {}, ms = FETCH_TIMEOUT) {
   }
 }
 
-/**
- * Metasearch. Returns results deduped by URL and diversified by host, because
- * SearXNG happily returns eight pages from one domain and a model given those
- * will write a report sourced entirely from one site.
- */
 export async function search(query, {
   limit = 10,
   perHost = 2,
@@ -134,16 +110,10 @@ export async function search(query, {
     query,
     results: out,
     answers: body.answers ?? [],
-    // SearXNG's own suggested refinements — useful for a second research pass.
     suggestions: (body.suggestions ?? []).slice(0, 5),
   };
 }
 
-/**
- * Fetch one page and reduce it to readable markdown.
- * Never throws — a dead link during research should degrade that source, not
- * abort the run — so callers must check `ok`.
- */
 export async function fetchPage(url) {
   return gate.run(async () => {
     const base = { url, host: hostOf(url), ok: false, title: "", text: "", error: null };
@@ -162,8 +132,6 @@ export async function fetchPage(url) {
       if (buf.byteLength > MAX_BYTES) return { ...base, error: "page too large" };
       const html = new TextDecoder("utf-8").decode(buf);
 
-      // linkedom rather than jsdom: Readability needs only a DOM shape, and
-      // jsdom's full browser emulation costs seconds per page.
       const { document } = parseHTML(html);
       const article = new Readability(document, { charThreshold: 250 }).parse();
 
@@ -187,10 +155,6 @@ export async function fetchPage(url) {
         }
       }
 
-      // Readability failed or the body was too thin — a JS-heavy or paywalled
-      // page is exactly what the Jina Reader exists for. It is a cloud service,
-      // so this path is gated behind RESEARCH_JINA=1; without it the page is
-      // reported as unextractable exactly as before.
       if (JINA_ENABLED) {
         const jina = await jinaRead(url, res.url || url);
         if (jina?.text) return { ...jina, error: null };
@@ -203,12 +167,6 @@ export async function fetchPage(url) {
   });
 }
 
-/**
- * The Jina Reader extraction path: GET https://r.jina.ai/<url> returns the
- * page as clean markdown, which is exactly the shape Readability produces, so
- * a Jina result slots into the same { title, text, words } contract. Capped to
- * the same size budget as a Readability parse.
- */
 async function jinaRead(originalUrl, finalUrl) {
   const target = `https://r.jina.ai/${encodeURIComponent(finalUrl || originalUrl)}`;
   let res;
@@ -234,7 +192,6 @@ async function jinaRead(originalUrl, finalUrl) {
   };
 }
 
-/** Search, then extract the top N in parallel. The unit a research turn uses. */
 export async function researchQuery(query, { limit = 8, read = 5, ...opts } = {}) {
   const found = await search(query, { limit, ...opts });
   const pages = await Promise.all(found.results.slice(0, read).map((r) => fetchPage(r.url)));
@@ -257,8 +214,6 @@ export async function searxngHealthy() {
     return false;
   }
 }
-
-/* --------------------------------------------------------------------- CLI */
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const query = process.argv.slice(2).join(" ");

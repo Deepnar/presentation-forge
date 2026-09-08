@@ -4,13 +4,6 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CONFIG } from "./paths.js";
 
-/**
- * Resolved per open, not once at import. `setDbPathForTest` works by setting
- * FORGE_DB_PATH, so a constant captured at module load meant the seam quietly
- * did nothing and a test that asked for a scratch database got the real one.
- * The two suites that redirect the store both took the JSON escape hatch, which
- * is why nothing noticed.
- */
 const dbPath = () => process.env.FORGE_DB_PATH || path.join(CONFIG, "forge.db");
 
 let db = null;
@@ -21,14 +14,11 @@ function getDb() {
   const file = dbPath();
   mkdirSync(path.dirname(file), { recursive: true });
   db = new DatabaseSync(file);
-  // WAL for concurrent reads
   db.exec("PRAGMA journal_mode=WAL;");
   db.exec("PRAGMA foreign_keys=ON;");
   ensureSchema(db);
-  // migrate JSON files once
   if (!initDone) {
     initDone = true;
-    // fire-and-forget sync migration (no async in DatabaseSync)
     try { migrateJsonIfNeeded(db); } catch {}
   }
   return db;
@@ -138,24 +128,6 @@ function addByokAcceptanceColumn(d) {
   } catch { /* column already present on a current database */ }
 }
 
-/**
- * `users.verified_at` arrived after accounts existed, and the backfill decides
- * whether a running install survives the upgrade. Every row already in the
- * table is grandfathered as verified: those people registered when nothing was
- * asked of them, and a migration that locks them all out of their own decks is
- * a worse failure than the one verification exists to prevent.
- *
- * ALTER succeeding is the signal that this is the first boot on the new schema,
- * so the backfill runs exactly once and later registrations are unaffected.
- */
-/**
- * `plan` on users — the tier an account is metered against.
- *
- * Every account got identical caps, so there was nowhere to put "this one paid"
- * short of editing the install-wide settings, which changes it for everybody.
- * Existing rows become `free`, which is what they were being given already, so
- * the migration changes no account's actual budget.
- */
 function addPlanColumn(d) {
   try {
     d.exec("ALTER TABLE users ADD COLUMN plan TEXT");
@@ -165,17 +137,6 @@ function addPlanColumn(d) {
   d.exec("UPDATE users SET plan = 'free' WHERE plan IS NULL");
 }
 
-/**
- * `lifetime_tokens` on users — the trial counter.
- *
- * A running total rather than a query over `auto_events`, because
- * `pruneAutoEvents` deletes rows past 30 days: a trial derived from the rows
- * would quietly refill itself every month, which is the exact property a
- * lifetime cap exists to remove.
- *
- * Backfilled from whatever events survive, so an existing account is not
- * handed a fresh trial by the migration.
- */
 function addLifetimeTokensColumn(d) {
   try {
     d.exec("ALTER TABLE users ADD COLUMN lifetime_tokens INTEGER NOT NULL DEFAULT 0");
@@ -186,16 +147,6 @@ function addLifetimeTokensColumn(d) {
             (SELECT COALESCE(SUM(tokens), 0) FROM auto_events WHERE auto_events.user_id = users.id)`);
 }
 
-/**
- * The shared tier stopped being named for one institution.
- *
- * `auto_events.provider` and `global_keys.provider` both held the literal
- * `tcet-auto`. Left alone, an upgraded install would keep its usage history
- * and its stored key under the old name while everything new wrote the new
- * one — so a user's spend would appear to reset and the key would appear to
- * vanish. Renaming the rows is the migration; `src/autoid.js` still reads both
- * spellings for anything this cannot reach, such as a compose file.
- */
 function renameAutoProviderRows(d) {
   for (const table of ["auto_events", "global_keys"]) {
     try {
@@ -236,7 +187,6 @@ function migrateJsonIfNeeded(d) {
         u.createdAt ?? new Date().toISOString()
       );
     }
-    // sessions
     if (existsSync(sessionsFile)) {
       const sRaw = readFileSync(sessionsFile, "utf8");
       const sObj = JSON.parse(sRaw);
@@ -254,10 +204,8 @@ function migrateJsonIfNeeded(d) {
   } catch {}
 }
 
-// Helpers for tests to redirect DB path (must be called before getDb)
 export function setDbPathForTest(p) {
   if (db) { try { db.close(); } catch {} db = null; }
-  // hack: override CONFIG resolution by env
   process.env.FORGE_DB_PATH = p;
   initDone = false;
 }

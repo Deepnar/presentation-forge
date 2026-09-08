@@ -1,12 +1,4 @@
 #!/usr/bin/env node
-/**
- * Render one deck across every theme × style combination and write an HTML
- * contact sheet so the look can be compared side by side before choosing.
- *
- *   node tools/compare.mjs decks/<slug>/deck.yaml [--themes a,b] [--styles a,b]
- *
- * Output: decks/<slug>/out/compare/index.html (+ per-combo .pptx + previews).
- */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,7 +25,6 @@ async function main() {
 
   const { themes: onlyThemes, styles: onlyStyles } = parseFlags(process.argv.slice(3));
   const themes = onlyThemes ?? (await listThemes());
-  // "" is the theme's own default; each named style is a cross-cutting variant.
   const styles = onlyStyles ?? ["", ...(await listStyles())];
 
   const deckDir = path.dirname(path.resolve(deckFile));
