@@ -5907,6 +5907,14 @@ behavior with the existing test suite, production build and a rasterized render.
 - **[ ] Split the remaining server route families** (admin, deck artefacts,
   generation runs, identity/brand/donor) after adding route-table contract tests
   for each literal-before-parameter ordering dependency.
+  - **[x] Workspace settings family.** Presets, identity overrides, brand assets
+    and account/operator report templates now register from
+    `app/server/workspace-settings-routes.js`. Shared upload validation remains
+    one implementation, and focused tenancy/donor/preset tests plus the full
+    suite hold behavior. The entry point is 2,405 lines after this pass.
+  - **[ ] Admin and analytics family.**
+  - **[ ] Deck artefact and report family.**
+  - **[ ] Chat and generation-run family.**
 - **[ ] Split the renderer layout registry** by slide family while keeping one
   shared composition/fitting primitive layer and one public dispatcher.
 - **[ ] Split the large React views** by state machine and panel responsibility,
@@ -5921,6 +5929,11 @@ behavior with the existing test suite, production build and a rasterized render.
 > owns its handlers and private state. A build warning also exposed a different
 > kind of false split: dynamically importing a module that is already statically
 > reachable cannot create a chunk.
+>
+> Raw uploads are a useful route-family boundary: brand images and donor DOCX
+> files need different limits and signatures, but the authentication, replace
+> semantics and error contract belong together. Pulling them into one registrar
+> also exposed the repeated preset payload projection, which is now one helper.
 
 ### [x] Publish the first self-hosted release
 

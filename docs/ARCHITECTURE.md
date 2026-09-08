@@ -858,8 +858,10 @@ The HTTP server is composed in `app/server/index.js`, which keeps route order
 explicit. `app/server/auth-routes.js` owns authentication and throttling,
 `account-routes.js` owns provider keys, budgets and usage, `lifecycle.js` owns
 public system routes, maintenance jobs, static UI hosting and boot diagnostics,
-and `http.js` owns the response wrapper. Business behavior remains in `src/`;
-these modules only translate HTTP requests and register routes.
+`workspace-settings-routes.js` owns presets, per-account identity and brand
+assets, and account/operator report-template uploads, while `http.js` owns the
+response wrapper. Business behavior remains in `src/`; these modules only
+translate HTTP requests and register routes.
 
 The admin routes guard `GET /api/admin/hosted` / `POST /api/admin/hosted`
 (`src/cloud.js:isHosted`/`setHosted` → `config/hosted.json`, file wins over env
