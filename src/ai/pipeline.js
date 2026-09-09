@@ -447,6 +447,7 @@ export async function finalizeDeck({
   imageSupply = null,
   critique = critiqueDeck,
 }) {
+  const modelChat = typeof chat === "function" ? chat : chatJSON;
   const dir = path.join(DECKS, slug);
   const deckFile = path.join(dir, "deck.yaml");
   let meta = {};
@@ -495,7 +496,7 @@ export async function finalizeDeck({
       research: excerptResearch(researchText, await researchExcerptCap({ model })),
       model,
       signal,
-      chat,
+      chat: modelChat,
       onProgress: (p) => onProgress?.({ status: "field_length", ...p }),
     }));
     if (fix?.repaired?.length) {
@@ -527,7 +528,7 @@ export async function finalizeDeck({
       sections: plan.sections ?? [],
       model,
       signal,
-      chat,
+      chat: modelChat,
       onProgress: (e) => onProgress?.({ status: "coherence", ...e }),
     }));
     coherence = pass;
@@ -545,7 +546,7 @@ export async function finalizeDeck({
         onProgress: (e) => onProgress?.({ status: "images", ...e }),
         describeSeat: async (slide) => {
           const said = [slide.headline, ...(slide.points ?? [])].filter(Boolean).join(" — ").slice(0, 400);
-          const res = await optionalPass("image description", async () => (chat ?? chatJSON)({
+          const res = await optionalPass("image description", async () => modelChat({
             role: "utility",
             model,
             signal,
