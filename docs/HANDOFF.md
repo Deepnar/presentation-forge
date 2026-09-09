@@ -1,4 +1,4 @@
-# Handoff — 2026-09-09, repository structural cleanup complete
+# Handoff — 2026-09-10, project pages repaired
 
 Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **Repository-wide structural cleanup**.
@@ -32,6 +32,12 @@ the separate generation command ignored `meta.yaml` and fell back to
 `warm-humanist`. Generation and finalization now resolve and persist the briefing
 theme, with explicit overrides and an existing deck theme taking precedence.
 
+The post-cleanup project-page blank screen is fixed. `DeckDetailControls.jsx`
+lost its `useRef` and `Tooltip` imports during extraction; the populated deck
+route was the first path to execute them. Project routes now also have keyed
+error boundaries so an isolated Deck, Report, Research or Script render failure
+keeps the shell alive and offers recovery.
+
 ## Verification
 
 - `npm test` — 812 tests pass.
@@ -41,6 +47,8 @@ theme, with explicit overrides and an existing deck theme taking precedence.
   visually inspected as contact sheets.
 - PDF export completed through the public render CLI for all three examples.
 - `git diff --check` — clean.
+- A signed-in browser opened the 17-slide bus-depot project and navigated Deck,
+  Report, Research and Script successfully after the project-page repair.
 
 ## Continue from here
 

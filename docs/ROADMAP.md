@@ -5933,6 +5933,12 @@ behavior with the existing test suite, production build and a rasterized render.
   admin panels, settings sections and slide-field descriptors now have explicit
   modules. Route surfaces load independently and the initial bundle fell from
   about 647 kB to 321 kB.
+- **[x] Repair the extracted deck controls at their real render boundary.** The
+  card menu now imports the React ref hook and shared tooltip it uses. All four
+  project pages are enclosed by per-project recovery boundaries, so an isolated
+  view defect cannot collapse the authenticated shell into a blank screen.
+  Verified by opening a complete 17-slide project and navigating Deck → Report
+  → Research → Script in the running browser.
 - **[x] Separate AI orchestration from its command-line adapter** after the
   resume, metering, repair and transport suites pinned the seam. The public
   pipeline API remains in `pipeline.js`; parsing, terminal output and process
@@ -5981,6 +5987,11 @@ behavior with the existing test suite, production build and a rasterized render.
 > state machines in route views while moving briefing, modal, settings and
 > administration panels made dependencies visible without inventing a second
 > state layer. Lazy imports address load cost independently of file structure.
+> A successful production bundle does not prove that every extracted React
+> component can render: unresolved identifiers remain legal JavaScript until
+> the affected branch executes. Browser-driving the populated project route
+> exposed both missing imports, while route-local error boundaries changed the
+> failure from a blank application into an actionable recovery screen.
 >
 > Provider-specific transport requirements belong in provider configuration.
 > A session ID is minted once per logical completion and reused by retries;

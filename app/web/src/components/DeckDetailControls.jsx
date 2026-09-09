@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Spinner } from "./ui.jsx";
+import { useEffect, useRef, useState } from "react";
+import { Button, Spinner, Tooltip } from "./ui.jsx";
 
 export function TypeSwapModal({ index, slide, specimens, busy, error, onPick, onClose }) {
   const [query, setQuery] = useState("");

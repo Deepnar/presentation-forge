@@ -537,40 +537,48 @@ function AppContent() {
               </div>
             )}
             {view === "deck" && activeSlug && (
-              <DeckDetail
-                slug={activeSlug}
-                refreshToken={deckVersion}
-                onBack={goHome}
-                onDeckChanged={bumpDeck}
-                onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
-                onNavigate={openProjectPage}
-              />
+              <ErrorBoundary key={`deck-err-${activeSlug}`}>
+                <DeckDetail
+                  slug={activeSlug}
+                  refreshToken={deckVersion}
+                  onBack={goHome}
+                  onDeckChanged={bumpDeck}
+                  onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
+                  onNavigate={openProjectPage}
+                />
+              </ErrorBoundary>
             )}
             {view === "report" && activeSlug && (
-              <ReportView
-                slug={activeSlug}
-                refreshToken={deckVersion}
-                onBack={goHome}
-                onDeckChanged={bumpDeck}
-                onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
-                onNavigate={openProjectPage}
-              />
+              <ErrorBoundary key={`report-err-${activeSlug}`}>
+                <ReportView
+                  slug={activeSlug}
+                  refreshToken={deckVersion}
+                  onBack={goHome}
+                  onDeckChanged={bumpDeck}
+                  onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
+                  onNavigate={openProjectPage}
+                />
+              </ErrorBoundary>
             )}
             {view === "research" && activeSlug && (
-              <ResearchView
-                slug={activeSlug}
-                refreshToken={deckVersion}
-                onBack={goHome}
-                onNavigate={openProjectPage}
-              />
+              <ErrorBoundary key={`research-err-${activeSlug}`}>
+                <ResearchView
+                  slug={activeSlug}
+                  refreshToken={deckVersion}
+                  onBack={goHome}
+                  onNavigate={openProjectPage}
+                />
+              </ErrorBoundary>
             )}
             {view === "script" && activeSlug && (
-              <ScriptView
-                slug={activeSlug}
-                refreshToken={deckVersion}
-                onBack={goHome}
-                onNavigate={openProjectPage}
-              />
+              <ErrorBoundary key={`script-err-${activeSlug}`}>
+                <ScriptView
+                  slug={activeSlug}
+                  refreshToken={deckVersion}
+                  onBack={goHome}
+                  onNavigate={openProjectPage}
+                />
+              </ErrorBoundary>
             )}
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
             {view === "tour-themes" && <TourThemes onAuth={() => navigate("themes")} authed />}
