@@ -5993,9 +5993,13 @@ behavior with the existing test suite, production build and a rasterized render.
 > import. Both paths now complete under the real CLI.
 >
 > The public showcase is most useful as a set of complete workflows rather than
-> isolated screenshots. The three current examples span environmental analysis,
-> materials engineering and grid operations, use contrasting themes, and each
-> ships a GitHub-viewable PDF with its editable PPTX, report and speaker script.
+> isolated screenshots. The first Muse-only set passed file-level checks but
+> failed visual review: blank renders, illegal control bytes and themes that
+> looked substantially alike made it unsuitable as the front door. The corrected
+> showcase uses the strongest existing local runs across Sci-Fi HUD, Letterpress
+> and the academic theme. Each ships a GitHub-viewable PDF with its editable
+> PPTX, report and speaker script. Model JSON is now cleaned of XML-illegal
+> control bytes at the transport boundary.
 
 ### [x] Publish the first self-hosted release
 

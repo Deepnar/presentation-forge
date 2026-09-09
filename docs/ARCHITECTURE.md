@@ -891,13 +891,13 @@ Frontend `Admin.jsx` has five tabs — Overview (4 stat cards + `BarChart` for t
 
 ### Published presentations — public without leaking private decks
 
-`published/` holds three complete current examples: urban heat islands,
-solid-state batteries and vehicle-to-grid bus depots. Each example includes a
+`published/` holds three complete visually verified examples: mixed-mode HPC,
+first impressions and perovskite solar cells. Each example includes a
 GitHub-viewable presentation PDF, editable PPTX, companion DOCX report and
 Markdown speaker script; `published/previews/` supplies the README thumbnails.
 The directory is force-added through `!published/**` while private `decks/*`
 remains ignored. The README presents these outputs immediately after the product
-badges, and `published/README.md` records their generation path.
+badges, and `published/README.md` records their provenance.
 
 ### Security — no leaks
 

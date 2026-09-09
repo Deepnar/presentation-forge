@@ -18,11 +18,11 @@
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
-| Urban heat islands | Solid-state batteries | Vehicle-to-grid bus depots |
+| Mixed-mode HPC | First impressions | Perovskite solar cells |
 |:---:|:---:|:---:|
-| [<img src="published/previews/urban-heat-islands.webp" width="280" alt="Urban heat island intervention roadmap slide" />](published/urban-heat-islands-presentation.pdf) | [<img src="published/previews/solid-state-batteries.webp" width="280" alt="Solid-state battery ion transport framework slide" />](published/solid-state-batteries-presentation.pdf) | [<img src="published/previews/v2g-bus-depots.webp" width="280" alt="Vehicle-to-grid electric bus depot system diagram" />](published/v2g-bus-depots-presentation.pdf) |
-| Nature Organic · 17 slides | Swiss International · 17 slides | Blueprint · 17 slides |
-| [PDF](published/urban-heat-islands-presentation.pdf) · [PPTX](published/urban-heat-islands-presentation.pptx) · [report](published/urban-heat-islands-report.docx) · [script](published/urban-heat-islands-script.md) | [PDF](published/solid-state-batteries-presentation.pdf) · [PPTX](published/solid-state-batteries-presentation.pptx) · [report](published/solid-state-batteries-report.docx) · [script](published/solid-state-batteries-script.md) | [PDF](published/v2g-bus-depots-presentation.pdf) · [PPTX](published/v2g-bus-depots-presentation.pptx) · [report](published/v2g-bus-depots-report.docx) · [script](published/v2g-bus-depots-script.md) |
+| [<img src="published/previews/mixed-mode-programming.webp" width="280" alt="Mixed-mode programming performance chart in the Sci-Fi HUD theme" />](published/mixed-mode-programming-presentation.pdf) | [<img src="published/previews/first-impressions.webp" width="280" alt="First-impressions networking process in the Letterpress theme" />](published/first-impressions-presentation.pdf) | [<img src="published/previews/perovskite-solar-cells.webp" width="280" alt="Perovskite solar-cell efficiency chart in the academic theme" />](published/perovskite-solar-cells-presentation.pdf) |
+| Sci-Fi HUD · 21 slides | Letterpress · 20 slides | Academic · 14 slides |
+| [PDF](published/mixed-mode-programming-presentation.pdf) · [PPTX](published/mixed-mode-programming-presentation.pptx) · [report](published/mixed-mode-programming-report.docx) · [script](published/mixed-mode-programming-script.md) | [PDF](published/first-impressions-presentation.pdf) · [PPTX](published/first-impressions-presentation.pptx) · [report](published/first-impressions-report.docx) · [script](published/first-impressions-script.md) | [PDF](published/perovskite-solar-cells-presentation.pdf) · [PPTX](published/perovskite-solar-cells-presentation.pptx) · [report](published/perovskite-solar-cells-report.docx) · [script](published/perovskite-solar-cells-script.md) |
 
 These are complete outputs from the current pipeline. Open a PDF in GitHub, or
 download the editable presentation, companion report and speaker script.
@@ -160,9 +160,9 @@ be inspected without running the application:
 
 | Presentation | Size | Files |
 |---|---|---|
-| **Urban Heat Islands** | 17 slides + report + script | [PDF](./published/urban-heat-islands-presentation.pdf) · [PPTX](./published/urban-heat-islands-presentation.pptx) · [DOCX](./published/urban-heat-islands-report.docx) · [script](./published/urban-heat-islands-script.md) |
-| **Solid-State Batteries** | 17 slides + report + script | [PDF](./published/solid-state-batteries-presentation.pdf) · [PPTX](./published/solid-state-batteries-presentation.pptx) · [DOCX](./published/solid-state-batteries-report.docx) · [script](./published/solid-state-batteries-script.md) |
-| **Vehicle-to-Grid Bus Depots** | 17 slides + report + script | [PDF](./published/v2g-bus-depots-presentation.pdf) · [PPTX](./published/v2g-bus-depots-presentation.pptx) · [DOCX](./published/v2g-bus-depots-report.docx) · [script](./published/v2g-bus-depots-script.md) |
+| **Mixed-Mode Programming for HPC** | 21 slides + report + script | [PDF](./published/mixed-mode-programming-presentation.pdf) · [PPTX](./published/mixed-mode-programming-presentation.pptx) · [DOCX](./published/mixed-mode-programming-report.docx) · [script](./published/mixed-mode-programming-script.md) |
+| **First Impressions and Networking** | 20 slides + report + script | [PDF](./published/first-impressions-presentation.pdf) · [PPTX](./published/first-impressions-presentation.pptx) · [DOCX](./published/first-impressions-report.docx) · [script](./published/first-impressions-script.md) |
+| **Perovskite Solar Cells** | 14 slides + report + script | [PDF](./published/perovskite-solar-cells-presentation.pdf) · [PPTX](./published/perovskite-solar-cells-presentation.pptx) · [DOCX](./published/perovskite-solar-cells-report.docx) · [script](./published/perovskite-solar-cells-script.md) |
 
 Browse [`published/`](./published/). Private decks live in `decks/<slug>/` and
 are gitignored.

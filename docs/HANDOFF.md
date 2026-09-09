@@ -20,17 +20,19 @@ only `muse-spark-1.3-contributor` through the Responses API. Missing chat
 overrides no longer disable finalization repairs, and render CLI PDF export no
 longer stalls on a circular dynamic import.
 
-The public showcase now contains three 17-slide examples covering urban heat,
-solid-state batteries and V2G bus depots. Each includes PPTX, presentation PDF,
-DOCX report and Markdown script. All deck and report pages were rasterized and
-visually inspected before publication.
+The public showcase contains three visually distinct local examples covering
+mixed-mode HPC, first impressions and perovskite solar cells. Each includes
+PPTX, presentation PDF, DOCX report and Markdown script. The earlier Muse-only
+showcase was removed after visual review found blank renders and repetitive
+styling. Parsed model JSON now strips XML-illegal control bytes before content
+can reach a deck.
 
 ## Verification
 
 - `npm test` — full suite passes.
 - `npx vite build --config app/web/vite.config.js` — successful; initial bundle
   is about 321 kB.
-- All 51 example slides and 42 report pages rasterized successfully and were
+- All 55 replacement slides and 34 report pages rasterized successfully and were
   visually inspected as contact sheets.
 - PDF export completed through the public render CLI for all three examples.
 - `git diff --check` — clean.
