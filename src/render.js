@@ -15,6 +15,7 @@ import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
 import { watchGeometry } from "./geometry.js";
 import { loadIdentity } from "./ai/identity.js";
+import { exportDeck } from "./export.js";
 
 function drawBackground(slide, theme) {
   const decor = theme.tokens?.background?.decor;
@@ -214,7 +215,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   try {
     if (args.format) {
-      const { exportDeck } = await import("./export.js");
       const r = await exportDeck({ deckFile: args.deckFile, format: args.format, themeName: args.themeName });
       console.log(`  ${r.format} · ${path.relative(ROOT, r.outFile)}`);
     } else {
