@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { ROOT } from "../src/paths.js";
-import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, ollamaThink, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
+import { applyTransport, authorTransport, researchExcerptCap, researchProfile, chat, ollamaThink, sanitizeModelData, DEFAULT_EXCERPT_CHARS } from "../src/ai/ollama.js";
 import { excerptResearch, RESEARCH_EXCERPT } from "../src/ai/research.js";
 import { providerModels, setHostedForTest } from "../src/cloud.js";
 
@@ -26,6 +26,13 @@ async function configuredAuthorModel() {
 // (config/hosted.json) happens to be flipped — green in CI, red on a box that
 // has been switched to hosted.
 setHostedForTest(false);
+
+test("model data drops XML-illegal controls without flattening its shape", () => {
+  assert.deepEqual(
+    sanitizeModelData({ headline: "Scale \u0019 decides", items: ["keep\nthis", { body: "grid\u0004ready" }] }),
+    { headline: "Scale  decides", items: ["keep\nthis", { body: "gridready" }] },
+  );
+});
 
 /* -------------------------------------------------------- applyTransport */
 

@@ -851,14 +851,23 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
   }
 }
 
+export function sanitizeModelData(value) {
+  if (typeof value === "string") return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "");
+  if (Array.isArray(value)) return value.map(sanitizeModelData);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeModelData(item)]));
+  }
+  return value;
+}
+
 export async function chatJSON({ role, messages, schema, ...rest }) {
   const res = await chat({ role, messages, format: schema, ...rest });
   const raw = res.content.trim();
   try {
-    return { ...res, data: JSON.parse(raw) };
+    return { ...res, data: sanitizeModelData(JSON.parse(raw)) };
   } catch {
     const salvage = salvageJSON(raw);
-    if (salvage.value !== undefined) return { ...res, data: salvage.value, salvaged: true };
+    if (salvage.value !== undefined) return { ...res, data: sanitizeModelData(salvage.value), salvaged: true };
     const why = res.doneReason === "length"
       ? ` Generation was CUT SHORT (done_reason=length, ${res.evalCount} tokens) — the ` +
         `${res.transport ?? "?"} transport's effective cap (${res.cap ?? "unset"} tokens) was hit; ` +
