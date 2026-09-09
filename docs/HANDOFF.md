@@ -1,53 +1,41 @@
-# Handoff — 2026-09-08, repository structural cleanup started
+# Handoff — 2026-09-09, repository structural cleanup complete
 
 Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **Repository-wide structural cleanup**.
 
 ## Current state
 
-Three structural passes are complete and behaviorally verified. The Express entry
-point is 516 lines, down from 3,411. Authentication, provider/account settings,
-workspace settings, shared HTTP responses, and boot/lifecycle work now live in
-dedicated registrar modules under `app/server/`. Workspace settings comprise
-presets, identity overrides, brand assets and report templates. Route ordering
-remains controlled by `index.js`, and business logic remains in `src/`.
+The repository-wide cleanup roadmap item is complete. The Express entry point
+is about 500 lines rather than 3,411 and composes focused route registrars. The
+5,199-line layout monolith is a 15-line registry over semantic layout families.
+Large React routes retain their state machines while panels and field metadata
+live in focused modules; route-level lazy loading reduced the initial bundle
+from roughly 647 kB to 321 kB. AI pipeline CLI handling and specimen data are
+also separated from their runtime APIs.
 
-Admin account, plan, quota, cleanup, storage and health routes now live in
-`app/server/admin-routes.js`. The entry point and admin registrar have only a
-file-purpose comment; standalone narrative comments were removed after their
-invariants were captured by module boundaries, tests and architecture docs.
+Redundant standalone comments were removed across executable source while
+comments that preserve an invariant, lint control or non-obvious reason remain.
+Provider configuration now supports stable `x-opencode-session` IDs and routes
+only `muse-spark-1.3-contributor` through the Responses API. Missing chat
+overrides no longer disable finalization repairs, and render CLI PDF export no
+longer stalls on a circular dynamic import.
 
-Deck artefact/report routes now live in `artifact-routes.js`; specimen, chat,
-creation and resumable-generation routes live in `generation-routes.js`. Both
-receive shared transport primitives from the entry point. The full suite remains
-at 808 passing tests after these moves.
-
-The 5,199-line `src/layouts.js` monolith is now a 15-line public registry.
-Implementations are grouped under `src/layouts/` into four semantic families
-and shared helpers. Standalone narrative comments were removed. `themematrix`
-is clean across 34 themes × 74 layouts, `textcheck` confirms every declared
-word survives across all 34 themes, and the full 808-test suite passes.
-
-The ineffective dynamic import of `modelMode.js` in `ChatView.jsx` is now a
-normal static dependency. The Vite warning for that false split is gone. The
-remaining bundle-size warning is real and belongs to the roadmap's React
-route-level splitting pass.
+The public showcase now contains three 17-slide examples covering urban heat,
+solid-state batteries and V2G bus depots. Each includes PPTX, presentation PDF,
+DOCX report and Markdown script. All deck and report pages were rasterized and
+visually inspected before publication.
 
 ## Verification
 
-- `npm test` — 808 passing, 0 failing.
-- `npx vite build --config app/web/vite.config.js` — successful; only the real
-  646 kB initial-chunk warning remains.
-- `npm run render -- decks/solar-microgrids-for-rural-electrification-i/deck.yaml`
-  — successful, 2 slides.
-- `npm run preview -- decks/solar-microgrids-for-rural-electrification-i/out/deck.pptx`
-  — successful, 2 rasterized pages; slide 1 was visually inspected and is clean.
+- `npm test` — full suite passes.
+- `npx vite build --config app/web/vite.config.js` — successful; initial bundle
+  is about 321 kB.
+- All 51 example slides and 42 report pages rasterized successfully and were
+  visually inspected as contact sheets.
+- PDF export completed through the public render CLI for all three examples.
 - `git diff --check` — clean.
 
 ## Continue from here
 
-Do not mechanically split files by line count or delete every explanatory
-comment. Follow the checked seams in the roadmap: server route families first,
-then the layout registry, React views and AI orchestration. Add route-order
-characterisation tests before moving each remaining server family. Preserve the
-chrome/theme/content boundary throughout.
+No cleanup work remains. Continue from the next unchecked roadmap item, keeping
+the chrome/theme/content boundary and the current route-order contracts intact.

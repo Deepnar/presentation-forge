@@ -18,14 +18,14 @@
   <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
 </p>
 
-| Glassmorphism — a frosted plate, rendered in Chrome | Swiss International — a dense KPI slide |
-|:---:|:---:|
-| <img src="app/gallery/landing/glassmorphism--stats.webp" width="420" alt="Stats slide in the Glassmorphism theme, on a frosted glass plate" /> | <img src="app/gallery/landing/swiss-international--kpi-dashboard.webp" width="420" alt="KPI dashboard slide in the Swiss International theme" /> |
+| Urban heat islands | Solid-state batteries | Vehicle-to-grid bus depots |
+|:---:|:---:|:---:|
+| [<img src="published/previews/urban-heat-islands.webp" width="280" alt="Urban heat island intervention roadmap slide" />](published/urban-heat-islands-presentation.pdf) | [<img src="published/previews/solid-state-batteries.webp" width="280" alt="Solid-state battery ion transport framework slide" />](published/solid-state-batteries-presentation.pdf) | [<img src="published/previews/v2g-bus-depots.webp" width="280" alt="Vehicle-to-grid electric bus depot system diagram" />](published/v2g-bus-depots-presentation.pdf) |
+| Nature Organic · 17 slides | Swiss International · 17 slides | Blueprint · 17 slides |
+| [PDF](published/urban-heat-islands-presentation.pdf) · [PPTX](published/urban-heat-islands-presentation.pptx) · [report](published/urban-heat-islands-report.docx) · [script](published/urban-heat-islands-script.md) | [PDF](published/solid-state-batteries-presentation.pdf) · [PPTX](published/solid-state-batteries-presentation.pptx) · [report](published/solid-state-batteries-report.docx) · [script](published/solid-state-batteries-script.md) | [PDF](published/v2g-bus-depots-presentation.pdf) · [PPTX](published/v2g-bus-depots-presentation.pptx) · [report](published/v2g-bus-depots-report.docx) · [script](published/v2g-bus-depots-script.md) |
 
-Every image in this README is a real render from the repository, produced by the
-same code path a generated deck goes through — not a mockup. The left one is a
-*plate*: a background Chrome renders as an image because PowerPoint cannot draw
-frosted glass, with the text still native and editable on top of it.
+These are complete outputs from the current pipeline. Open a PDF in GitHub, or
+download the editable presentation, companion report and speaker script.
 
 | A real briefing session — topic → choices → optional thesis |
 |:---:|
@@ -155,14 +155,14 @@ retype.
 
 ## Real output
 
-Decks and reports made with this app, committed so you can open them without
-running anything:
+The three complete examples at the top of this page are committed so they can
+be inspected without running the application:
 
 | Presentation | Size | Files |
 |---|---|---|
-| **Recent Trends in Mixed-Mode Programming** | 21 slides + report | [PPTX](./published/recent-trends-mixed-mode-presentation.pptx) · [DOCX](./published/recent-trends-mixed-mode-report.docx) |
-| **First Impressions & Networking** | 20 slides + report | [PDF](./published/first-impressions-networking-presentation.pdf) · [PPTX](./published/first-impressions-networking-presentation.pptx) · [DOCX](./published/first-impressions-networking-report.docx) |
-| **First Impressions & Networking**, a second run | 20 slides | [PPTX](./published/first-impressions-topic2-presentation.pptx) |
+| **Urban Heat Islands** | 17 slides + report + script | [PDF](./published/urban-heat-islands-presentation.pdf) · [PPTX](./published/urban-heat-islands-presentation.pptx) · [DOCX](./published/urban-heat-islands-report.docx) · [script](./published/urban-heat-islands-script.md) |
+| **Solid-State Batteries** | 17 slides + report + script | [PDF](./published/solid-state-batteries-presentation.pdf) · [PPTX](./published/solid-state-batteries-presentation.pptx) · [DOCX](./published/solid-state-batteries-report.docx) · [script](./published/solid-state-batteries-script.md) |
+| **Vehicle-to-Grid Bus Depots** | 17 slides + report + script | [PDF](./published/v2g-bus-depots-presentation.pdf) · [PPTX](./published/v2g-bus-depots-presentation.pptx) · [DOCX](./published/v2g-bus-depots-report.docx) · [script](./published/v2g-bus-depots-script.md) |
 
 Browse [`published/`](./published/). Private decks live in `decks/<slug>/` and
 are gitignored.

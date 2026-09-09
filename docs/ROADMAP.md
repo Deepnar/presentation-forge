@@ -5883,7 +5883,7 @@ is the repository hygiene half.
   HTTP as a non-admin — the first HTTP-level test in the suite, and the only
   shape that can catch a route-ordering bug at all.
 
-### [~] Repository-wide structural cleanup
+### [x] Repository-wide structural cleanup
 
 *Priority: maintainability. No model needed.*
 
@@ -5904,7 +5904,7 @@ behavior with the existing test suite, production build and a rasterized render.
 - **[x] Remove the ineffective model-mode dynamic import.** The same module was
   already in the initial graph through five static consumers, so the async load
   created no chunk and only obscured the dependency.
-- **[ ] Split the remaining server route families** (admin, deck artefacts,
+- **[x] Split the remaining server route families** (admin, deck artefacts,
   generation runs, identity/brand/donor) after adding route-table contract tests
   for each literal-before-parameter ordering dependency.
   - **[x] Workspace settings family.** Presets, identity overrides, brand assets
@@ -5942,7 +5942,7 @@ behavior with the existing test suite, production build and a rasterized render.
   builder is 51 lines; the exhaustive one-slide-per-type payload is isolated in
   `specimens-data.js` without pretending that static fixture size is executable
   complexity.
-- **[ ] Refresh the public example showcase after the cleanup is complete.**
+- **[x] Refresh the public example showcase after the cleanup is complete.**
   Generate three current, contrasting decks through OpenCode Go using only the
   Muse 1.3 Contributor model. Exercise the complete briefing/question flow,
   image handling and representative product features; inspect every rendered
@@ -5983,6 +5983,16 @@ behavior with the existing test suite, production build and a rasterized render.
 > state layer. Lazy imports address load cost independently of file structure.
 >
 > Provider-specific transport requirements belong in provider configuration.
+> Muse's Responses transport, stable conversation header and portable JSON mode
+> were exercised through three complete 17-slide runs. Finalization exposed two
+> integration defects that unit-only checks had missed: a null optional chat
+> override disabled repair calls, and PDF export deadlocked on a dynamic circular
+> import. Both paths now complete under the real CLI.
+>
+> The public showcase is most useful as a set of complete workflows rather than
+> isolated screenshots. The three current examples span environmental analysis,
+> materials engineering and grid operations, use contrasting themes, and each
+> ships a GitHub-viewable PDF with its editable PPTX, report and speaker script.
 > A session ID is minted once per logical completion and reused by retries;
 > unrelated providers receive no proprietary header.
 

@@ -891,7 +891,13 @@ Frontend `Admin.jsx` has five tabs — Overview (4 stat cards + `BarChart` for t
 
 ### Published presentations — public without leaking private decks
 
-`published/` (`published/*.pptx|*.pdf|*.docx` + `published/README.md`) holds only decks owned by `18deepnar@gmail.com` (3 decks: `recent-trends-mixed-mode` + 2× `first-impressions`, 6 files, 9.2 MB total) force-added via `!published/**` in `.gitignore:28` while private `decks/*` stays ignored (`decks/*` + `!decks/_public/**`). `decks/_public` (previous sanitized yaml-only examples) and `app/web/public/examples`/`docs/assets/examples` previews were removed per request to only publish your own PDFs. `README.md` links to `[published/](published/)` (`app/web/src/views/Home.jsx` gallery removed). `src/sweep.js:37` skips `public` and `.`/`_` prefixed decks so the sweep never deletes the showcase.
+`published/` holds three complete current examples: urban heat islands,
+solid-state batteries and vehicle-to-grid bus depots. Each example includes a
+GitHub-viewable presentation PDF, editable PPTX, companion DOCX report and
+Markdown speaker script; `published/previews/` supplies the README thumbnails.
+The directory is force-added through `!published/**` while private `decks/*`
+remains ignored. The README presents these outputs immediately after the product
+badges, and `published/README.md` records their generation path.
 
 ### Security — no leaks
 
