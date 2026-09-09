@@ -5983,6 +5983,9 @@ behavior with the existing test suite, production build and a rasterized render.
 > state layer. Lazy imports address load cost independently of file structure.
 >
 > Provider-specific transport requirements belong in provider configuration.
+> A session ID is minted once per logical completion and reused by retries;
+> unrelated providers receive no proprietary header.
+>
 > Muse's Responses transport, stable conversation header and portable JSON mode
 > were exercised through three complete 17-slide runs. Finalization exposed two
 > integration defects that unit-only checks had missed: a null optional chat
@@ -5993,8 +5996,6 @@ behavior with the existing test suite, production build and a rasterized render.
 > isolated screenshots. The three current examples span environmental analysis,
 > materials engineering and grid operations, use contrasting themes, and each
 > ships a GitHub-viewable PDF with its editable PPTX, report and speaker script.
-> A session ID is minted once per logical completion and reused by retries;
-> unrelated providers receive no proprietary header.
 
 ### [x] Publish the first self-hosted release
 
