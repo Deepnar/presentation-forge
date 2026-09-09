@@ -899,6 +899,12 @@ The directory is force-added through `!published/**` while private `decks/*`
 remains ignored. The README presents these outputs immediately after the product
 badges, and `published/README.md` records their provenance.
 
+Theme selection is persisted in deck content. `writeDeckContent()` resolves an
+explicit override first, then a resumed deck's theme, then `meta.yaml`; finalizing
+uses the same precedence and writes the result onto `deck.yaml`. This prevents a
+separate `generate` command from silently replacing a briefing choice with the
+default theme.
+
 ### Security — no leaks
 
 `FORGE_TCET_API_KEY` in `.env.example` is now `sk-change-me-tcet-key` placeholder, `config/hosted.json` is gitignored (`config/hosted.json`), `config/local.yaml`/`users.json`/`sessions.json`/`forge.db` stay gitignored. `git ls-files` shows no real `sk-` keys; `config/local.yaml` on disk holds the real `OPENCODE_GO_API_KEY` but is ignored. Chat normalization (`app/web/src/lib/chats.js:12` `normalizeChat`, `briefing.js:222` `echoAnswer` guard) and `ErrorBoundary.jsx:1` + `SlideSelectPanel.jsx:52` `PanelLeftClose` fix prevent the white-screen on existing chats; favicon regenerated from `logo.svg` (`app/web/public/favicon.png` 32 + `apple-touch-icon.png` 180).

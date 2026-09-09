@@ -71,6 +71,21 @@ of two model paths:
   `ollama pull qwen3:4b`, and leave Forge on Auto. This is a lightweight
   starting model; use a stronger model or BYOK when output quality matters.
 
+### Model compatibility
+
+Forge can connect to many Ollama and OpenAI-compatible models, but transport
+compatibility does not guarantee good presentation writing. A useful author
+model must reliably follow the deck schema, return complete structured content,
+stay grounded in the supplied research and revise fields without dropping them.
+Smaller or aggressively optimized models may produce valid files with repetitive,
+sparse or malformed slides.
+
+Always inspect the rasterized preview before presenting or publishing a deck.
+In repository testing, `muse-spark-1.3-contributor` completed the API workflow
+but produced inconsistent deck quality, so it is supported as a transport target
+and is not used as the public quality baseline. The hosted Auto route remains the
+product baseline; local and BYOK results depend on the model selected.
+
 ```bash
 # Optional install check; Node runs inside the container.
 docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs

@@ -27,9 +27,14 @@ showcase was removed after visual review found blank renders and repetitive
 styling. Parsed model JSON now strips XML-illegal control bytes before content
 can reach a deck.
 
+Theme persistence was also the cause of the three Muse examples appearing alike:
+the separate generation command ignored `meta.yaml` and fell back to
+`warm-humanist`. Generation and finalization now resolve and persist the briefing
+theme, with explicit overrides and an existing deck theme taking precedence.
+
 ## Verification
 
-- `npm test` — full suite passes.
+- `npm test` — 812 tests pass.
 - `npx vite build --config app/web/vite.config.js` — successful; initial bundle
   is about 321 kB.
 - All 55 replacement slides and 34 report pages rasterized successfully and were

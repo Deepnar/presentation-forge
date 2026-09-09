@@ -6000,6 +6000,12 @@ behavior with the existing test suite, production build and a rasterized render.
 > and the academic theme. Each ships a GitHub-viewable PDF with its editable
 > PPTX, report and speaker script. Model JSON is now cleaned of XML-illegal
 > control bytes at the transport boundary.
+>
+> The repeated visual language was not a model limitation: separate generation
+> commands discarded the theme stored by briefing and fell back to
+> `warm-humanist`. Theme resolution now carries `meta.yaml` through generation
+> and persists it on the deck. Public compatibility guidance distinguishes API
+> support from presentation quality and requires inspection of rasterized output.
 
 ### [x] Publish the first self-hosted release
 
