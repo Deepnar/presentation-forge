@@ -7,10 +7,10 @@ and Markdown speaker script. No private deck sources or credentials are included
 
 | File | Description |
 |---|---|
-| `urban-heat-islands-*` | Urban heat islands — Nature Organic, 17 slides |
-| `solid-state-batteries-*` | Solid-state batteries — Swiss International, 17 slides |
-| `v2g-bus-depots-*` | Vehicle-to-grid bus depots — Blueprint, 17 slides |
+| `mixed-mode-programming-*` | Mixed-mode HPC — Sci-Fi HUD, 21 slides |
+| `first-impressions-*` | First impressions and networking — Letterpress, 20 slides |
+| `perovskite-solar-cells-*` | Perovskite solar cells — academic, 14 slides |
 
-Generated through the full brief, plan, write, finalize, report, script, render
-and preview path with `muse-spark-1.3-contributor`. Private deck sources remain
-under gitignored `decks/<slug>/` directories.
+The presentations and reports come from the strongest visually verified local
+deck runs. Speaker scripts were generated separately. Private deck sources
+remain under gitignored `decks/<slug>/` directories.
