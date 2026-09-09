@@ -30,6 +30,10 @@ import { creditsSlide } from "../credits.js";
 
 export const RUN_FILE = ".run.json";
 
+export function resolveDeckTheme({ explicit = null, deck = null, meta = null } = {}) {
+  return explicit ?? deck?.theme ?? meta?.theme ?? "warm-humanist";
+}
+
 export function slugify(text, max = 44) {
   const slug = String(text ?? "")
     .toLowerCase()
@@ -305,7 +309,6 @@ export async function createDeckFromReport({
   } catch { /* report may have no research pass */ }
 
   const identityObj = identity ?? (await loadIdentity(dir));
-  const themeObj = theme ? await loadTheme(theme) : undefined;
 
   let meta = {};
   try {
@@ -365,7 +368,6 @@ export async function writeDeckContent({
   } catch { /* planned deck written before meta existed — carry on */ }
 
   const identityObj = identity ?? (await loadIdentity(dir));
-  const themeObj = theme ? await loadTheme(theme) : undefined;
 
   let researchText = "";
   try {
@@ -390,6 +392,9 @@ export async function writeDeckContent({
     }
     if (stored?.slides?.length) plan = stored;
   }
+
+  const themeName = resolveDeckTheme({ explicit: theme, deck: baseDeck, meta });
+  const themeObj = await loadTheme(themeName);
 
   await writeFile(path.join(dir, "plan.yaml"), YAML.stringify(plan), "utf8");
 
@@ -460,7 +465,8 @@ export async function finalizeDeck({
   try {
     plan = YAML.parse(await readFile(path.join(dir, "plan.yaml"), "utf8")) ?? {};
   } catch { /* optional */ }
-  const themeName = theme ?? deck.theme ?? "warm-humanist";
+  const themeName = resolveDeckTheme({ explicit: theme, deck, meta });
+  deck.theme = themeName;
 
   let researchText = "";
   try {
