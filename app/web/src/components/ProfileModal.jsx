@@ -41,6 +41,7 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
   useEffect(() => subscribeAppearance((m) => setAppearanceState(m)), []);
   const [auto, setAuto] = useState(null);
   const [cloud, setCloud] = useState(null);
+  const [keyStorageReady, setKeyStorageReady] = useState(true);
   const [byokBudget, setByokBudgetState] = useState(null);
   const [budgetDraft, setBudgetDraft] = useState("");
   const [usage, setUsage] = useState(null);
@@ -56,6 +57,7 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
     if (!open) return;
     api.cloud().then((r) => {
       setCloud(r.cloud ?? null);
+      setKeyStorageReady(r.keyStorageReady !== false);
       setByokBudgetState(r.budget ?? null);
       if (r.budget?.limit) setBudgetDraft(String(r.budget.limit));
     }).catch(() => {});
@@ -86,7 +88,7 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
   }
   async function testKey() {
     setBusy(true); setState({ status: "busy", message: "Testing…" });
-    try { const r = await api.cloudTest(); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
+    try { const r = await api.cloudTest(keyDraft.trim() || undefined); setState(r.ok ? { status: "saved", message: r.detail } : { status: "error", message: r.detail }); } catch (e) { setState({ status: "error", message: e.message }); } finally { setBusy(false); }
   }
   async function testAuto() {
     setBusy(true); setState({ status: "busy", message: "Testing Auto…" });
@@ -202,10 +204,15 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
             <section className="rounded-card border border-line bg-panel p-4">
               <div className="flex items-center justify-between"><div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Cloud — Your key (encrypted)</div>{vaultHasKey ? <Badge className="bg-accent/10 text-accent">saved</Badge> : <Badge className="bg-transparent text-fg-faint">none</Badge>}</div>
               <div className="mt-2 flex gap-2">
-                <input type="password" value={keyDraft} onChange={(e) => setKeyDraft(e.target.value)} placeholder={vaultHasKey ? "…attached — type to replace" : "sk-…"} className={`${inputCls} font-mono flex-1`} />
-                <Button size="sm" variant="primary" onClick={saveKey} disabled={busy || !keyDraft.trim() || !acceptByokCosts}>Save</Button>
+                <input type="password" value={keyDraft} onChange={(e) => setKeyDraft(e.target.value)} disabled={!keyStorageReady} placeholder={vaultHasKey ? "…attached — type to replace" : "Provider API key"} className={`${inputCls} font-mono flex-1`} />
+                <Button size="sm" variant="primary" onClick={saveKey} disabled={busy || !keyStorageReady || !keyDraft.trim() || !acceptByokCosts}>Save</Button>
                 {vaultHasKey && <Button size="sm" variant="outline" onClick={removeKey} disabled={busy}>Remove</Button>}
               </div>
+              {!keyStorageReady && (
+                <p className="mt-2 rounded border border-danger/20 bg-danger/5 px-2.5 py-2 text-[10.5px] leading-relaxed text-danger">
+                  Personal key storage is unavailable because this server has no encryption secret. The operator must set <code className="font-mono">FORGE_KEY_PEPPER</code> and restart Forge.
+                </p>
+              )}
               {keyDraft.trim() && (
                 <label className="mt-2 flex items-start gap-2 text-[10.5px] leading-relaxed text-fg-muted">
                   <input type="checkbox" checked={acceptByokCosts} onChange={(e) => setAcceptByokCosts(e.target.checked)} className="mt-0.5" />
@@ -213,7 +220,7 @@ export default function ProfileModal({ open, onClose, user, onLogout }) {
                 </label>
               )}
               <div className="mt-2 flex items-center gap-2">
-                <Button size="sm" variant="outline" onClick={testKey} disabled={busy || !vaultHasKey}>Test key</Button>
+                <Button size="sm" variant="outline" onClick={testKey} disabled={busy || !keyStorageReady || (!vaultHasKey && (!keyDraft.trim() || !acceptByokCosts))}>Test key</Button>
                 {busy && <Spinner />}
                 {state.status === "saved" && <span className="text-[11px] text-accent">{state.message}</span>}
                 {state.status === "error" && <span className="text-[11px] text-danger">{state.message}</span>}

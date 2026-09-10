@@ -3,7 +3,7 @@ import { bearerToken, getUserId, userForToken } from "../../src/auth.js";
 import {
   autoStatus, clearApiKey, clearUserApiKey, cloudKeyName, cloudStatus,
   getUserApiKey, routingPreference, setApiKey, setRoutingPreference,
-  setUserApiKey, testAutoConnection, testCloudConnection,
+  setUserApiKey, testAutoConnection, testCloudConnection, isHosted,
 } from "../../src/cloud.js";
 import {
   byokCostAcceptedAt, byokUsage, recordByokCostAcceptance, setByokBudget,
@@ -24,7 +24,11 @@ export function registerAccountRoutes(app) {
   app.get("/api/cloud", wrap(async (req, res) => {
     const user = await resolveUser(req);
     const userId = user ? getUserId(user.email) : null;
-    ok(res, { cloud: await cloudStatus(userId), budget: userId ? budgetStatus(userId) : null });
+    ok(res, {
+      cloud: await cloudStatus(userId),
+      budget: userId ? budgetStatus(userId) : null,
+      keyStorageReady: !isHosted() || Boolean(process.env.FORGE_KEY_PEPPER || process.env.FORGE_KEY),
+    });
   }));
 
   app.put("/api/cloud/budget", wrap(async (req, res) => {
@@ -40,8 +44,8 @@ export function registerAccountRoutes(app) {
     if (!(await requireAdminUser(req, res,
       "the shared provider key is an operator setting — add your own key under Settings → Cloud"))) return;
     const { key } = req.body ?? {};
-    if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
-      return fail(res, 400, "key must look like an API key (starts with sk-, at least 8 chars)");
+    if (typeof key !== "string" || key.trim().length < 12 || /\s/.test(key)) {
+      return fail(res, 400, "key must be at least 12 characters with no spaces");
     }
     const name = await cloudKeyName();
     if (!name) return fail(res, 400, "no cloud provider configured in config/models.yaml");
@@ -58,7 +62,11 @@ export function registerAccountRoutes(app) {
 
   app.post("/api/cloud/test", wrap(async (req, res) => {
     if (!(await requireAuth(req, res, "log in to test a provider"))) return;
-    ok(res, await testCloudConnection());
+    const key = req.body?.key;
+    if (key != null && (typeof key !== "string" || key.trim().length < 12 || /\s/.test(key))) {
+      return fail(res, 400, "key must be at least 12 characters with no spaces");
+    }
+    ok(res, await testCloudConnection({ key }));
   }));
 
   app.put("/api/cloud/routing", wrap(async (req, res) => {
@@ -122,8 +130,8 @@ export function registerAccountRoutes(app) {
     const user = await userForToken(bearerToken(req.headers.authorization));
     if (!user) return fail(res, 401, "log in to save a key");
     const { key, provider, acceptCosts } = req.body ?? {};
-    if (typeof key !== "string" || !/^sk-[A-Za-z0-9_-]{8,}$/.test(key)) {
-      return fail(res, 400, "key must look like sk-... (at least 8 chars after prefix)");
+    if (typeof key !== "string" || key.trim().length < 12 || /\s/.test(key)) {
+      return fail(res, 400, "key must be at least 12 characters with no spaces");
     }
     const userId = getUserId(user.email);
     if (!userId) return fail(res, 404, "no such user");

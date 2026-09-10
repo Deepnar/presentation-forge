@@ -378,21 +378,21 @@ export async function testAutoConnection() {
   }
 }
 
-export async function testCloudConnection() {
+export async function testCloudConnection({ key: draftKey } = {}) {
   const p = await cloudProvider();
   if (!p) {
     return { ok: false, detail: "no cloud provider configured in config/models.yaml" };
   }
-  const key = await resolveProviderKey(p.id, p.apiKey);
+  const key = String(draftKey ?? "").trim() || await resolveProviderKey(p.id, p.apiKey);
   if (!key) {
     return { ok: false, detail: "no API key set — add one in Settings or export the env var" };
   }
-  const probe = p.models[0] ?? "gpt-4.1-mini";
-  const body = {
-    model: probe,
-    messages: [{ role: "user", content: "ping" }],
-    max_tokens: 1,
-  };
+  const responsesModels = p.responsesModels ?? [];
+  const probe = responsesModels[0] ?? p.models[0] ?? "gpt-4.1-mini";
+  const responses = responsesModels.includes(probe);
+  const body = responses
+    ? { model: probe, input: [{ role: "user", content: "ping" }], max_output_tokens: 1 }
+    : { model: probe, messages: [{ role: "user", content: "ping" }], max_tokens: 1 };
   const reservation = currentUserId()
     ? reserveByokCall({
         userId: currentUserId(),
@@ -402,7 +402,7 @@ export async function testCloudConnection() {
     : null;
   try {
     const sessionId = p.sessionHeader ? randomUUID() : null;
-    const res = await fetch(`${p.baseURL}/chat/completions`, {
+    const res = await fetch(`${p.baseURL}/${responses ? "responses" : "chat/completions"}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -417,13 +417,16 @@ export async function testCloudConnection() {
       return { ok: false, detail: `HTTP ${res.status}: ${text}` };
     }
     const data = await res.json().catch(() => ({}));
+    const content = responses
+      ? data.output_text ?? (data.output ?? []).flatMap((item) => item.content ?? []).map((item) => item.text ?? "").join("")
+      : data.choices?.[0]?.message?.content;
     settleByokCall(
       reservation?.eventId,
       estimateByokActual(
         body,
-        data.choices?.[0]?.message?.content,
-        data.usage?.prompt_tokens,
-        data.usage?.completion_tokens,
+        content,
+        responses ? data.usage?.input_tokens : data.usage?.prompt_tokens,
+        responses ? data.usage?.output_tokens : data.usage?.completion_tokens,
       ),
     );
     return { ok: true, detail: `connected — ${probe} authenticated`, model: probe };

@@ -33,7 +33,7 @@ defaults:
 
 const auth = await import("../src/auth.js");
 const { runAsAccount } = await import("../src/account.js");
-const { setUserApiKey } = await import("../src/cloud.js");
+const { setUserApiKey, testCloudConnection } = await import("../src/cloud.js");
 const { setHostedForTest } = await import("../src/cloud.js");
 const { BYOK_OUTPUT_CAP, byokUsage, clearByokUsage, setByokBudget } = await import("../src/byok-budget.js");
 const { chat } = await import("../src/ai/ollama.js");
@@ -55,6 +55,28 @@ test.beforeEach(() => {
 });
 
 const asOwner = (fn) => runAsAccount({ userId, email: "owner@example.test" }, fn);
+
+test("a draft key is tested without persistence through the provider's Responses model", async () => {
+  let request;
+  global.fetch = async (url, init) => {
+    request = { url: String(url), headers: init.headers, body: JSON.parse(init.body) };
+    return new Response(JSON.stringify({
+      status: "completed",
+      output_text: "ok",
+      usage: { input_tokens: 3, output_tokens: 1 },
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  };
+
+  const result = await asOwner(() => testCloudConnection({ key: "sk-draft-key-87654321" }));
+
+  assert.equal(result.ok, true);
+  assert.equal(result.model, "paid-model");
+  assert.equal(request.url, "https://paid.invalid/v1/responses");
+  assert.equal(request.body.model, "paid-model");
+  assert.equal(request.body.max_output_tokens, 1);
+  assert.equal(request.headers.Authorization, "Bearer sk-draft-key-87654321");
+  assert.match(request.headers["x-opencode-session"], /^[0-9a-f-]{36}$/);
+});
 
 test("BYOK uses the conservative output ceiling in local and hosted mode", async () => {
   const caps = [];
