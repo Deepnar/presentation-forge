@@ -13,8 +13,11 @@ import { generateScript } from "../../src/ai/script.js";
 import { ingestUpload, stageUpload, sweepStagedUploads, UPLOAD_MAX_BYTES, UPLOAD_EXT } from "../../src/ai/upload.js";
 import { generateReport } from "../../src/ai/report.js";
 import { researchSummary } from "../../src/ai/research.js";
+import { loadIdentity } from "../../src/ai/identity.js";
 import { deckFigures } from "../../src/ai/grounding.js";
+import { placeholderSlides } from "../../src/placeholders.js";
 import { estimateTokens, meterSummary } from "../../src/usage.js";
+import { validateDeck } from "../../src/validate.js";
 import { fail, ok, wrap } from "./http.js";
 
 export function sniffImage(buf, ext) {

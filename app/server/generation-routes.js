@@ -1,17 +1,19 @@
 
-import { access, mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
-import { DECKS } from "../../src/paths.js";
+import { DECKS, ROOT } from "../../src/paths.js";
 import { deckSchema, typeDescriptions } from "../../src/ai/catalog.js";
-import { loadTheme } from "../../src/theme.js";
+import { listThemes, loadTheme } from "../../src/theme.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { render } from "../../src/render.js";
 import { preview } from "../../src/preview.js";
 import { createDeck, createDeckFromReport, createReport, finalizeDeck, generateFromPlan, generationStatus, resumeGeneration } from "../../src/ai/pipeline.js";
 import { loadThread, resetThread, runChatTurn } from "../../src/ai/chat.js";
 import { modelChoices } from "../../src/ai/ollama.js";
-import { meterSummary, estimateTokens } from "../../src/usage.js";
+import { isHosted } from "../../src/cloud.js";
+import { meterSummary, estimateTokens, meterTotal, newMeter, withMeter } from "../../src/usage.js";
+import { settleAuto } from "../../src/limits.js";
 import { donorStatus } from "../../src/report.js";
 import { bearerToken, userForToken } from "../../src/auth.js";
 import { fail, ok, wrap } from "./http.js";

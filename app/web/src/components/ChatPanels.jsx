@@ -1,10 +1,11 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
+import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "./ui.jsx";
 import ThemeMiniCard from "./ThemeMiniCard.jsx";
 import { ChevronDown } from "./icons.jsx";
 import { echoAnswer, optionalAnswered, tierQuestions } from "../lib/briefing.js";
 
-const DENSITIES = [
+export const DENSITIES = [
   { id: "sparse", note: "few words, mostly visuals" },
   { id: "balanced", note: "a sentence or two per point" },
   { id: "dense", note: "fuller sentences, more per slide" },
@@ -121,7 +122,7 @@ function PresetCard({ presets, value, themeLabel, onPick, onDelete }) {
             >
               <span className="block truncate text-[12.5px] font-medium text-fg">{p.name}</span>
               <span className="block truncate text-[10.5px] text-fg-faint">
-                {p.maxSlides ? `${p.maxSlides} slides` : "auto slides"} · {(p.team?.members ?? []).filter((m) => m.name?.trim()).length} people
+                {p.maxSlides ? `${p.maxSlides} content slides` : "auto slides"} · {(p.team?.members ?? []).filter((m) => m.name?.trim()).length} people
                 {p.branding !== "full" ? ` · ${p.branding} branding` : ""} · {themeLabel(p.theme)}
               </span>
             </button>
@@ -518,6 +519,7 @@ function MaxSlidesCard({ value, onNext, embedded = false }) {
         value={v}
         onPick={pick}
       />
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Title, section dividers, and closing are added around this content count.</div>
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
@@ -752,7 +754,7 @@ function ImagesCard({ value, onNext, onPick, embedded = false }) {
   );
 }
 
-function PresetSave({ onSave, state }) {
+export function PresetSave({ onSave, state }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   if (!open) {
@@ -789,7 +791,7 @@ function researchLabel(b) {
   return "no research";
 }
 
-function SummaryLine({ chat, themeLabel }) {
+export function SummaryLine({ chat, themeLabel }) {
   const b = chat.briefing ?? {};
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
   const bits = chat.kind === "report"
@@ -802,7 +804,7 @@ function SummaryLine({ chat, themeLabel }) {
       ]
     : [
         b.title || "Untitled",
-        `${b.maxSlides || "auto"} slides`,
+        `${b.maxSlides || "auto"} content slides`,
         themeLabel(b.theme),
         `${b.density} density`,
         b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
@@ -837,7 +839,7 @@ export function DeckBriefing({ chat, answered, echoAnswer, themeLabel, presetLab
   const presenting = (b.team?.members ?? []).filter((m) => m.presenting && m.name?.trim()).map((m) => m.name.trim());
   const bits = [
     b.title?.trim() || chat.title || "Untitled",
-    `${b.maxSlides || "auto"} slides`,
+    `${b.maxSlides || "auto"} content slides`,
     themeLabel(b.theme),
     `${b.density} density`,
     b.branding === "full" ? "full branding" : b.branding === "minimal" ? "minimal branding" : "no branding",
@@ -874,7 +876,7 @@ export function DeckBriefing({ chat, answered, echoAnswer, themeLabel, presetLab
   );
 }
 
-function turnSummary(r) {
+export function turnSummary(r) {
   const parts = [];
   if (r.changes?.length) parts.push(r.changes.slice(0, 5).join("; "));
   if (r.problems?.length) parts.push(r.problems.slice(0, 3).join("; "));

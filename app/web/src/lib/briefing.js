@@ -5,7 +5,7 @@ const OPTIONAL = "optional";
 export const BRIEFING_QUESTIONS = [
   { key: "preset", tier: REQUIRED, ask: "Use a saved format, or start fresh?" },
   { key: "theme", tier: REQUIRED, ask: "Which visual style should it use?" },
-  { key: "maxSlides", tier: REQUIRED, ask: "How many slides?" },
+  { key: "maxSlides", tier: REQUIRED, ask: "How many content slides?" },
   { key: "density", tier: REQUIRED, ask: "How much text per slide?" },
   { key: "research", tier: REQUIRED, ask: "Run a research pass over the topic?" },
   { key: "images", tier: REQUIRED, ask: "Find images for slides that ask for one?" },
@@ -251,7 +251,7 @@ export function echoAnswer(briefing, key, opts = {}) {
     case "emphasis": return b.emphasis?.trim() || "no emphasis set";
     case "evidence": return b.evidence?.trim() || "no constraints set";
     case "theme": return opts.themeLabel?.(b.theme) || "Default";
-    case "maxSlides": return b.maxSlides ? `${b.maxSlides} slides` : "auto";
+    case "maxSlides": return b.maxSlides ? `${b.maxSlides} content slides` : "auto";
     case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
     case "density": return b.density;
     case "depth": return b.depth === "brief" ? "brief — headline + 3 sentences" : "full — 3-6 paragraphs + table";
@@ -307,7 +307,7 @@ export function applyFreeText(briefing, key, text) {
     case "maxSlides": {
       const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? 0 : NaN;
       if (Number.isNaN(n)) return null;
-      return { briefing: { ...b, maxSlides: n }, echo: n ? `${n} slides` : "auto" };
+      return { briefing: { ...b, maxSlides: n }, echo: n ? `${n} content slides` : "auto" };
     }
     case "slidesPerMember": {
       const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? null : NaN;

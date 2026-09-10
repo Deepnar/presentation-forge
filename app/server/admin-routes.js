@@ -8,6 +8,7 @@ import { bearerToken, deleteUserAccount, getUserEmailById, getUserId, isAdmin, l
 import { autoHealth, isHosted, setHosted } from "../../src/cloud.js";
 import { selectDeletableAccounts, selectionToken, confirmPhrase } from "../../src/cleanup.js";
 import { identityStatus } from "../../src/ai/identity.js";
+import { roleAudit } from "../../src/ai/ollama.js";
 import { clearAutoEvents, isPlan, limitConfig, planFor, PLANS, setPlan, usageByUser } from "../../src/limits.js";
 import { mailConfigured } from "../../src/mail.js";
 import { DECKS } from "../../src/paths.js";

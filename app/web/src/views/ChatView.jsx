@@ -3,7 +3,7 @@ import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
-import { DocIcon, LayersIcon, PanelRightOpen, SparkleIcon } from "../components/icons.jsx";
+import { ChevronDown, DocIcon, LayersIcon, PanelRightOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText, tierQuestions, optionalAnswered, briefTier, stepForTier, isAnswered } from "../lib/briefing.js";
@@ -12,7 +12,7 @@ import { deckContext } from "../lib/deckContext.js";
 import { presetsStore } from "../lib/presets.js";
 import { parseSlashCommand, SLASH_HELP, looksLikeSlash } from "../lib/slash.js";
 import { setModelMode } from "../lib/modelMode.js";
-import { AutoGrowTextarea, Welcome, Bubble, RequiredForm, OptionalForm, DeckBriefing, DeckRunCard, OutlineCard, TypePickModal } from "../components/ChatPanels.jsx";
+import { AutoGrowTextarea, Welcome, Bubble, DENSITIES, RequiredForm, OptionalForm, DeckBriefing, DeckRunCard, OutlineCard, PresetSave, SummaryLine, turnSummary, TypePickModal } from "../components/ChatPanels.jsx";
 
 function phaseOf(chat, effStep, questions) {
   const briefingOpen = briefTier(chat.kind, chat.briefStep) !== "done";

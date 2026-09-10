@@ -810,6 +810,7 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
     const decoder = new TextDecoder();
     let buffer = "";
     let content = "";
+    let thinking = "";
     let toolCalls = [];
     let evalCount = 0;
     let promptCount = 0;

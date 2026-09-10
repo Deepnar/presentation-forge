@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { getModelMode, subscribeModelMode } from "./modelMode.js";
+import { getModelMode, setModelMode, subscribeModelMode } from "./modelMode.js";
 
 export function anonymizeModel(name) {
   if (!name) return name;
@@ -15,13 +15,16 @@ export function useModels() {
 
   useEffect(() => {
     api.models()
-      .then((r) => setRaw({
-        models: r.models ?? [],
-        default: r.default ?? "",
-        cloud: r.cloud ?? null,
-        auto: r.auto ?? null,
-        hosted: Boolean(r.hosted),
-      }))
+      .then((r) => {
+        setRaw({
+          models: r.models ?? [],
+          default: r.default ?? "",
+          cloud: r.cloud ?? null,
+          auto: r.auto ?? null,
+          hosted: Boolean(r.hosted),
+        });
+        setModelMode(r.route);
+      })
       .catch(() => {});
     return subscribeModelMode(setMode);
   }, []);

@@ -315,6 +315,9 @@ export async function createDeckFromReport({
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* no meta yet */ }
 
+  const themeName = resolveDeckTheme({ explicit: theme, meta });
+  const themeObj = await loadTheme(themeName);
+
   const brief = reportBrief(report);
 
   onProgress?.({ status: "planning" });
