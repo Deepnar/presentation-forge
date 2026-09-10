@@ -54,6 +54,12 @@ this audit, not installed as a product-wide restriction.
 - A 13-slide Muse briefing was planned, approved, interrupted by a server reload,
   resumed from 11/13, finalized, rendered and inspected as a contact sheet. The
   resulting PPTX and PDF contain all 13 non-blank slides.
+- The local Docker image was rebuilt from the repaired tree, recreated against
+  its existing persistent volume and reached healthy state. `local-check.mjs`
+  confirmed the API, host Ollama model and bundled private SearXNG. Production
+  Compose rejects a missing `FORGE_KEY_PEPPER` and accepts a complete required
+  secret set. README and local setup instructions point BYOK users to the actual
+  Profile → Cloud surface.
 - All 55 replacement slides and 34 report pages rasterized successfully and were
   visually inspected as contact sheets.
 - PDF export completed through the public render CLI for all three examples.

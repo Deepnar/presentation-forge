@@ -27,8 +27,8 @@ dependencies and theme fonts. Later starts are `docker compose up -d --wait`.
 
 Before generating, choose either model path:
 
-- **BYOK, no Ollama required:** open **Settings → Cloud**, add an
-  OpenAI-compatible provider and switch to Cloud. Decks, accounts, research and
+- **BYOK, no Ollama required:** open the account menu, add an
+  OpenAI-compatible provider key under **Profile → Cloud**, and switch to Cloud. Decks, accounts, research and
   the report donor remain local; only model requests leave the machine.
 - **Local inference:** install [Ollama](https://ollama.com), run
   `ollama pull qwen3:4b`, and leave the picker on Auto. The 4B model is a small
@@ -129,7 +129,8 @@ if you have a different local setup.
 
 ### BYOK — first-class, including in the Docker install
 
-Open **Settings → Cloud**, add an OpenAI-compatible provider key, then switch
+Open the account menu, add an OpenAI-compatible provider key under
+**Profile → Cloud**, then switch
 the app to Cloud. The app sends model requests only to that provider; decks,
 research, accounts and the report donor remain local.
 

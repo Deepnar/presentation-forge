@@ -61,8 +61,8 @@ Google login or password-reset ceremony in this private-machine mode.
 Forge and its private SearXNG research service now run. To generate, choose one
 of two model paths:
 
-- **Bring your own key:** add an OpenAI-compatible provider under
-  **Settings → Cloud**. Only model requests go to that provider. Forge starts
+- **Bring your own key:** open your account menu and add an OpenAI-compatible
+  provider key under **Profile → Cloud**. Only model requests go to that provider. Forge starts
   with a 180,000-token rolling 24-hour safety budget, caps each BYOK response
   at 12,000 tokens, and allows at most one transport retry; the key owner can
   change the daily guard in Profile. Your provider bills your account directly,

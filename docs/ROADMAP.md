@@ -5948,6 +5948,12 @@ behavior with the existing test suite, production build and a rasterized render.
   formats, and explains when hosted key storage lacks its encryption secret.
   Slide-count copy now consistently distinguishes requested content slides from
   structural title, divider and closing slides.
+- **[x] Revalidate the self-hosting boundary after the website repair.** The
+  private Compose path remains local mode, persists a randomly generated vault
+  pepper, keeps SearXNG private and exposes only the application on loopback;
+  the production Compose path still requires its operator secrets before boot.
+  Local setup documentation now points personal credentials to the actual
+  Profile → Cloud surface instead of the former Settings location.
 - **[x] Separate AI orchestration from its command-line adapter** after the
   resume, metering, repair and transport suites pinned the seam. The public
   pipeline API remains in `pipeline.js`; parsing, terminal output and process
