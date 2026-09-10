@@ -1,17 +1,15 @@
-# Handoff — 2026-09-10, project pages repaired
+# Handoff — 2026-09-10, full website runtime repair
 
 Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **Repository-wide structural cleanup**.
 
 ## Current state
 
-The repository-wide cleanup roadmap item is complete. The Express entry point
-is about 500 lines rather than 3,411 and composes focused route registrars. The
-5,199-line layout monolith is a 15-line registry over semantic layout families.
-Large React routes retain their state machines while panels and field metadata
-live in focused modules; route-level lazy loading reduced the initial bundle
-from roughly 647 kB to 321 kB. AI pipeline CLI handling and specimen data are
-also separated from their runtime APIs.
+The repository-wide cleanup remains complete. A subsequent exhaustive runtime
+audit repaired missing dependencies left by the extraction pass across chat,
+Admin, artifact routes, generation routes, report-to-deck conversion and local
+streaming. A no-undefined audit now reports only declared browser/Node globals,
+and the signed-in browser opens the real populated branches.
 
 Redundant standalone comments were removed across executable source while
 comments that preserve an invariant, lint control or non-obvious reason remain.
@@ -32,17 +30,30 @@ the separate generation command ignored `meta.yaml` and fell back to
 `warm-humanist`. Generation and finalization now resolve and persist the briefing
 theme, with explicit overrides and an existing deck theme taking precedence.
 
-The post-cleanup project-page blank screen is fixed. `DeckDetailControls.jsx`
-lost its `useRef` and `Tooltip` imports during extraction; the populated deck
-route was the first path to execute them. Project routes now also have keyed
-error boundaries so an isolated Deck, Report, Research or Script render failure
-keeps the shell alive and offers recovery.
+Chat model selection and briefing summaries render again, Admin loads its model
+audit, artifact and generation handlers have every extracted dependency, and
+the server-reported routing mode survives reload. Requested slide counts are
+labelled as content slides because title, divider and closing slides are added
+around them.
+
+Personal provider keys can be tested as unsaved drafts without persistence.
+The probe follows provider configuration, including Responses-only models, and
+key syntax is opaque rather than assuming an `sk-` prefix. Hosted instances now
+announce a missing `FORGE_KEY_PEPPER` before Save instead of failing after the
+secret is submitted; local self-hosted mode continues using its development
+vault default. Muse 1.3 was used only as the controlled generation model for
+this audit, not installed as a product-wide restriction.
 
 ## Verification
 
-- `npm test` — 812 tests pass.
+- `npm test` — 813 tests pass.
 - `npx vite build --config app/web/vite.config.js` — successful; initial bundle
-  is about 321 kB.
+  is about 322 kB.
+- Repository-wide ESLint `no-undef` diagnostic — no application-symbol failures;
+  only standard runtime globals and unavailable React-hooks plugin directives.
+- A 13-slide Muse briefing was planned, approved, interrupted by a server reload,
+  resumed from 11/13, finalized, rendered and inspected as a contact sheet. The
+  resulting PPTX and PDF contain all 13 non-blank slides.
 - All 55 replacement slides and 34 report pages rasterized successfully and were
   visually inspected as contact sheets.
 - PDF export completed through the public render CLI for all three examples.
@@ -52,5 +63,8 @@ keeps the shell alive and offers recovery.
 
 ## Continue from here
 
-No cleanup work remains. Continue from the next unchecked roadmap item, keeping
-the chrome/theme/content boundary and the current route-order contracts intact.
+No known website-runtime defect from this pass remains. The three post-fix Luna
+browser rechecks were attempted but their isolated CUA providers were
+unavailable; the parent browser performed the signed-in regression instead.
+Continue from the next unchecked roadmap item, keeping the chrome/theme/content
+boundary and current route-order contracts intact.

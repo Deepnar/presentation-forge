@@ -5939,6 +5939,15 @@ behavior with the existing test suite, production build and a rasterized render.
   view defect cannot collapse the authenticated shell into a blank screen.
   Verified by opening a complete 17-slide project and navigating Deck → Report
   → Research → Script in the running browser.
+- **[x] Repair the remaining extracted runtime dependencies.** A route-by-route
+  browser pass and repository-wide undefined-symbol audit restored the imports
+  used only by chat summaries and model controls, Admin, artifact actions,
+  generation, report-to-deck conversion and local streaming. The provider-key
+  flow now tests an unsaved draft without persisting it, uses the provider's
+  configured Responses model where required, accepts opaque provider key
+  formats, and explains when hosted key storage lacks its encryption secret.
+  Slide-count copy now consistently distinguishes requested content slides from
+  structural title, divider and closing slides.
 - **[x] Separate AI orchestration from its command-line adapter** after the
   resume, metering, repair and transport suites pinned the seam. The public
   pipeline API remains in `pipeline.js`; parsing, terminal output and process
@@ -6017,6 +6026,17 @@ behavior with the existing test suite, production build and a rasterized render.
 > `warm-humanist`. Theme resolution now carries `meta.yaml` through generation
 > and persists it on the deck. Public compatibility guidance distinguishes API
 > support from presentation quality and requires inspection of rasterized output.
+>
+> A successful bundle is also not a complete undefined-symbol check: both Vite
+> and the JavaScript runtime permit a missing binding to survive until its branch
+> executes. The structural split therefore needed two complementary checks: a
+> no-undefined source audit to enumerate latent failures, and a signed-in browser
+> walk that opened the real populated branches. The latter caught the briefing
+> summary and generation controls that an empty-route smoke test never reaches.
+> The same end-to-end run proved refresh recovery by interrupting a 13-slide Muse
+> run at 11 slides, resuming it, rasterising all 13 pages and inspecting the
+> contact sheet. Muse was the controlled test model, not a product restriction;
+> provider selection and opaque credential handling remain configuration-driven.
 
 ### [x] Publish the first self-hosted release
 

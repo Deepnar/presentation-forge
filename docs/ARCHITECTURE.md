@@ -1695,20 +1695,20 @@ provider unless the user attaches one. `config/models.yaml` already allowed a
 role to opt into an `openai-compatible` provider; the shell now makes that
 usable end-to-end.
 
-- **`src/cloud.js`** owns the secret store and the provider surface. Keys
-  resolve environment-first, then from `config/local.yaml` — the gitignored
-  file the Settings panel writes — so attaching a key never requires exporting
-  anything. No code path returns a key value: status is booleans and labels,
+- **`src/cloud.js`** owns provider resolution and the credential surface. Shared
+  operator keys resolve from the environment before the encrypted global vault;
+  personal keys live encrypted per account in SQLite and override the shared key
+  for that account. No code path returns a key value: status is booleans and labels,
   and the connection test reports success/failure text only. A provider's
   model list is the static `models:` array when declared, otherwise it is
   fetched live from `GET {baseURL}/models` (key-gated, best-effort, both the
   `{data:[{id}]}` and string-array shapes) — so a hosted box whose provider
   does not curate a list still gets a working picker.
-- **The Settings/Cloud panel** (in the Settings modal's Account section) explains what the
-  key is for, shows the provider/baseURL/model list under "Models this host
-  has enabled", and offers save, remove and test actions wired to
-  `GET/PUT/DELETE /api/cloud/key` and `POST /api/cloud/test`. The write path
-  lands in `config/local.yaml`, never the repo.
+- **The Profile/Cloud panel** explains what the key is for and offers save,
+  remove and test actions wired to `/api/keys` and `/api/cloud/test`. An unsaved
+  draft can be authenticated in one request without being persisted. Hosted
+  storage is disabled with an actionable message until `FORGE_KEY_PEPPER` is
+  configured; local installs retain the development-only vault default.
 - **Routing.** A `model` override in a request that names one of a cloud
   provider's `models:` list routes that request to the provider instead of a
   (likely absent) local pull — that is how picking `deepseek-v4-flash` in the
@@ -1724,10 +1724,11 @@ usable end-to-end.
   switches its depth profile to the deeper cloud budgets (see the per-transport
   split above).
 - **The connection test is an authenticated probe.** `/models` lists are public
-  on some providers and prove nothing about a key, so the test issues a
-  one-token chat call against the provider's first listed model and checks the
-  status — a dummy key fails with the provider's 401, a real key reports the
-  authenticated model.
+  on some providers and prove nothing about a key, so the test issues a one-token
+  completion against the first configured model, choosing `/responses` when the
+  provider declares that transport and `/chat/completions` otherwise. A dummy
+  key fails with the provider's status; a real key reports the authenticated
+  model.
 - **Cloud structured output.** OpenAI-compatible providers reject
   `response_format: json_object` unless the prompt contains the word "json",
   and guarantee only that output parses — never that it matches the schema

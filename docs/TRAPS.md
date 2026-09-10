@@ -6,6 +6,23 @@ is for things that bite from any direction.
 
 ---
 
+## Browser and module boundaries
+
+**A production bundle can contain a missing identifier.** JavaScript bundling
+proves that modules parse and imports resolve; it does not prove that every name
+used inside a lazily reached branch exists. Extracted panels can therefore build
+cleanly and crash only when a populated route, menu or recovery action executes.
+After moving code across modules, run an undefined-symbol audit and then drive
+the authenticated branches with real data. Either check alone leaves gaps.
+
+**A credential error discovered only after Save is a broken setup surface.** A
+hosted vault without `FORGE_KEY_PEPPER` must refuse encryption, but the UI must
+surface that server prerequisite before accepting a secret. Keep the guard; make
+readiness visible. Local self-hosting is different because its documented
+development pepper intentionally keeps BYOK usable without operator setup.
+
+---
+
 ## Rendering and output
 
 **PowerPoint's autofit does not exist until a human opens the file.**
@@ -1488,4 +1505,3 @@ gives a 1.2in label about 0.12in of margin and a 3in label 0.3in — so the
 short labels, which is to say the ones most likely to be a single unbreakable
 word, get almost nothing. Add the inset as a constant and keep the percentage
 for the measurement error it is actually there for.
-
