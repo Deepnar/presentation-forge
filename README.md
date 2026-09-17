@@ -320,6 +320,27 @@ service.
 | [TRAPS](docs/TRAPS.md) | failure modes that have already bitten |
 | [LOCAL_SETUP](LOCAL_SETUP.md) | prerequisites and troubleshooting |
 
+## Star history
+
+<p align="center">
+  <a href="https://www.star-history.com/#Deepnar/presentation-forge&Date">
+    <picture>
+      <source
+        media="(prefers-color-scheme: dark)"
+        srcset="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date&theme=dark"
+      />
+      <source
+        media="(prefers-color-scheme: light)"
+        srcset="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date"
+      />
+      <img
+        alt="Star history for Presentation Forge"
+        src="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date"
+      />
+    </picture>
+  </a>
+</p>
+
 ## Community
 
 Questions and early ideas belong in
