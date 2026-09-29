@@ -227,7 +227,8 @@ export async function deckFallbackText(dir) {
   return lines.length ? lines.join("\n\n") : null;
 }
 
-export async function resolveReportInputs(dir, { requirePlan = true, model } = {}) {  let meta = {};
+export async function resolveReportInputs(dir, { requirePlan = true, model } = {}) {
+  let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* no meta yet */ }
