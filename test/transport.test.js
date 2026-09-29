@@ -34,6 +34,17 @@ test("model data drops XML-illegal controls without flattening its shape", () =>
   );
 });
 
+test("model data drops markdown bold — the renderer draws text, not markdown", () => {
+  assert.equal(
+    sanitizeModelData("kept **90% after 1,100 hours** under heat"),
+    "kept 90% after 1,100 hours under heat",
+  );
+  assert.equal(
+    sanitizeModelData("a 2**3 gain"),
+    "a 2**3 gain",
+  );
+});
+
 /* -------------------------------------------------------- applyTransport */
 
 test("applyTransport leaves a spec without overrides untouched", () => {

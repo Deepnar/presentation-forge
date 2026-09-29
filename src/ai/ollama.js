@@ -858,7 +858,11 @@ async function once(spec, payload, { stream, onToken, timeout, signal }) {
 }
 
 export function sanitizeModelData(value) {
-  if (typeof value === "string") return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "");
+  if (typeof value === "string") {
+    return value
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+      .replace(/(^|\s)\*\*([^*]+?)\*\*(?=[\s.,;:!?]|$)/g, "$1$2");
+  }
   if (Array.isArray(value)) return value.map(sanitizeModelData);
   if (value && typeof value === "object") {
     return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeModelData(item)]));
