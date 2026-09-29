@@ -6,6 +6,7 @@ import { DECKS } from "../paths.js";
 import { chatJSON, researchExcerptCap } from "./ollama.js";
 import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
+import { flattenSlide } from "./grounding.js";
 import { selectResearch } from "./retrieve.js";
 import { REPORT_SECTIONS, IMAGE_CREDITS, reportStructureForDeck, validateReport } from "../report.js";
 
@@ -210,8 +211,23 @@ export function validateSection(name, depth, data) {
   };
 }
 
-export async function resolveReportInputs(dir, { requirePlan = true, model } = {}) {
-  let meta = {};
+export async function deckFallbackText(dir) {
+  let deck;
+  try {
+    deck = YAML.parse(await readFile(path.join(dir, "deck.yaml"), "utf8"));
+  } catch {
+    return null;
+  }
+  const lines = [];
+  if (deck?.title) lines.push(`# ${deck.title}`);
+  for (const slide of deck?.slides ?? []) {
+    const parts = flattenSlide(slide).map((s) => String(s).trim()).filter(Boolean);
+    if (parts.length) lines.push(`## ${slide.type}\n${parts.join("\n")}`);
+  }
+  return lines.length ? lines.join("\n\n") : null;
+}
+
+export async function resolveReportInputs(dir, { requirePlan = true, model } = {}) {  let meta = {};
   try {
     meta = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8")) ?? {};
   } catch { /* no meta yet */ }
@@ -232,10 +248,13 @@ export async function resolveReportInputs(dir, { requirePlan = true, model } = {
   try {
     research = await readFile(path.join(dir, "research", "notes.md"), "utf8");
   } catch {
-    throw new Error(
-      `no decks/${path.basename(dir)}/research/notes.md — the report is generated from the same ` +
-      "research pass as the deck; create the deck with --research first",
-    );
+    research = await deckFallbackText(dir) ?? "";
+    if (!research.trim()) {
+      throw new Error(
+        `no decks/${path.basename(dir)}/research/notes.md — the report is generated from the same ` +
+        "research pass as the deck; create the deck with --research first",
+      );
+    }
   }
   research = excerptResearch(research, await researchExcerptCap({ model }));
 

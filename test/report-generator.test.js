@@ -279,6 +279,20 @@ test("resolveReportInputs errors clearly when research is missing", async (t) =>
   await assert.rejects(resolveReportInputs(dir), /research\/notes\.md.*--research/);
 });
 
+test("resolveReportInputs falls back to deck.yaml slides when research is missing", async (t) => {
+  const dir = await fixtureDir(t);
+  await writeDeckFiles(dir, { withResearch: false });
+  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify({
+    title: "GPU Architectures: NVIDIA vs AMD",
+    slides: [
+      { type: "title", headline: "GPU Architectures" },
+      { type: "bullets", headline: "NVIDIA packs 16,384 CUDA cores", bullets: ["Point one here.", "Point two here.", "Point three here.", "Point four here."] },
+    ],
+  }), "utf8");
+  const { research } = await resolveReportInputs(dir);
+  assert.match(research, /16,384 CUDA cores/);
+});
+
 test("resolveReportInputs errors clearly when the outline gate was skipped", async (t) => {
   const dir = await fixtureDir(t);
   await mkdir(dir, { recursive: true });
