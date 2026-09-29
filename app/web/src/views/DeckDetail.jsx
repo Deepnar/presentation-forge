@@ -4,6 +4,7 @@ import { Button, Panel, Empty, Spinner, SlideSkeleton, Tooltip } from "../compon
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
+import { blankSlideForType, blankSlideTypes } from "../lib/blankSlides.js";
 import { deckContext } from "../lib/deckContext.js";
 import { progressLabel } from "../lib/progress.js";
 import { withBudgetRetry } from "../lib/budget.js";
@@ -53,6 +54,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const [future, setFuture] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [tplOpen, setTplOpen] = useState(false);
+  const [tplFilter, setTplFilter] = useState("");
   const [themePickerOpen, setThemePickerOpen] = useState(false);
   const renderTimer = useRef(null);
   const exportRef = useRef(null);
@@ -947,11 +949,17 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                 + Add slide
               </Button>
               {tplOpen && (
-                <div className="absolute right-0 top-full z-30 mt-1.5 w-56 rounded-card border border-line bg-panel p-1.5 shadow-lg">
+                <div className="absolute right-0 top-full z-30 mt-1.5 w-72 rounded-card border border-line bg-panel p-1.5 shadow-lg">
+                  <div className="px-1.5 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-fg-faint">
+                    Add without AI — a blank you fill in
+                  </div>
                   <button
                     onClick={() => {
-                      commitDeck({ ...deck, slides: [...slides, { type: "bullets", headline: "New slide", bullets: ["Point one", "Point two"] }] });
+                      const at = slides.length;
+                      commitDeck({ ...deck, slides: [...slides, blankSlideForType("bullets")] });
                       setTplOpen(false);
+                      setTplFilter("");
+                      setEditing(at);
                     }}
                     className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
                   >
@@ -961,14 +969,44 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                     <button
                       key={t.name}
                       onClick={() => {
+                        const at = slides.length;
                         commitDeck({ ...deck, slides: [...slides, structuredClone(t.slide)] });
                         setTplOpen(false);
+                        setTplFilter("");
+                        setEditing(at);
                       }}
                       className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
                     >
                       {t.name}
                     </button>
                   ))}
+                  <div className="mx-1.5 mb-1 mt-2 border-t border-line pt-2">
+                    <input
+                      value={tplFilter}
+                      onChange={(e) => setTplFilter(e.target.value)}
+                      placeholder="Filter all types…"
+                      className="w-full rounded-lg border border-line bg-sunken px-2.5 py-1.5 text-[12px] text-fg outline-none placeholder:text-fg-faint/60 focus:border-accent"
+                    />
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {blankSlideTypes()
+                      .filter((t) => t.toLowerCase().includes(tplFilter.trim().toLowerCase()))
+                      .map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => {
+                            const at = slides.length;
+                            commitDeck({ ...deck, slides: [...slides, blankSlideForType(t)] });
+                            setTplOpen(false);
+                            setTplFilter("");
+                            setEditing(at);
+                          }}
+                          className="block w-full rounded-lg px-2.5 py-1.5 text-left text-[12.5px] text-fg-muted transition hover:bg-hover hover:text-fg"
+                        >
+                          {t}
+                        </button>
+                      ))}
+                  </div>
                 </div>
               )}
             </div>
