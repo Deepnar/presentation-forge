@@ -83,6 +83,7 @@ export const TYPE_FIELDS = {
     { key: "attribution", label: "Attribution", kind: "text", maxLength: 80 },
   ],
   callout: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
     { key: "label", label: "Label", kind: "text", maxLength: 24 },
     { key: "body", label: "Body", kind: "textarea", maxLength: 300 },
   ],
@@ -118,6 +119,7 @@ export const TYPE_FIELDS = {
     },
   ],
   references: [
+    { key: "headline", label: "Headline", kind: "text", maxLength: 80 },
     { key: "items", label: "References", kind: "list", item: "Reference", maxLength: 220 },
   ],
   chart: [
@@ -354,7 +356,7 @@ export const TYPE_FIELDS = {
       key: "branches", label: "Branches", kind: "items", maxItems: 3, itemLabel: "Branch",
       fields: [
         { key: "label", maxLength: 16, placeholder: "Branch label" },
-        { key: "steps", kind: "list", item: "Step title", maxLength: 24, maxItems: 3 },
+        { key: "steps", kind: "items", maxItems: 3, itemLabel: "Step", fields: [{ key: "title", maxLength: 15, placeholder: "Step" }] },
       ],
     },
   ],
