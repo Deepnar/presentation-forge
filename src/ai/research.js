@@ -1,6 +1,8 @@
 
 import { chatJSON, DEFAULT_EXCERPT_CHARS } from "./ollama.js";
 import { researchQuery } from "../search.js";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export const RESEARCH_EXCERPT = DEFAULT_EXCERPT_CHARS;
 
@@ -9,6 +11,18 @@ export function excerptResearch(text, cap = RESEARCH_EXCERPT) {
   if (text.length <= cap) return text;
   const cut = text.lastIndexOf("\n", cap);
   return text.slice(0, cut > 0 ? cut : cap);
+}
+
+export async function readResearchPages(deckDir) {
+  try {
+    const raw = await readFile(path.join(deckDir, "research", "pages.json"), "utf8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    const pages = parsed.filter((p) => typeof p?.text === "string" && p.text.trim());
+    return pages.length ? pages : null;
+  } catch {
+    return null;
+  }
 }
 
 export function researchSummary(sources = [], notes = "") {

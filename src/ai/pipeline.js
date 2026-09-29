@@ -104,6 +104,7 @@ export async function runResearch(brief, sources = [], onProgress, { papers = fa
   return {
     text: out.map((s) => `## ${s.title}\n\n${s.text}`).join("\n\n"),
     sources: allSources,
+    pages: out.map((s) => ({ url: s.url ?? null, title: s.title ?? "", words: s.words ?? 0, text: s.text ?? "" })),
   };
 }
 
@@ -137,11 +138,26 @@ export async function resolveResearchSource({ researchSource, research, papers, 
   return { mode: research || papers || (sources?.length ?? 0) > 0 ? "web" : "none" };
 }
 
-async function writeResearch(dir, { text, sources }) {
+export async function writeResearch(dir, { text, sources, pages }) {
   const rdir = path.join(dir, "research");
   await mkdir(rdir, { recursive: true });
   await writeFile(path.join(rdir, "notes.md"), text, "utf8");
   await writeFile(path.join(rdir, "sources.json"), JSON.stringify(sources, null, 2), "utf8");
+  if (Array.isArray(pages) && pages.length) {
+    const records = pages
+      .filter((p) => typeof p?.text === "string" && p.text.trim())
+      .map((p) => ({
+        url: p.url ?? null,
+        title: p.title ?? "",
+        words: p.words ?? 0,
+        ...(p.kind ? { kind: p.kind } : {}),
+        ...(p.subtopic != null ? { subtopic: p.subtopic } : {}),
+        text: p.text,
+      }));
+    if (records.length) {
+      await writeFile(path.join(rdir, "pages.json"), JSON.stringify(records), "utf8");
+    }
+  }
 }
 
 async function groundNotesLabel(dir) {
@@ -193,13 +209,14 @@ export async function createDeck({
     await writeResearch(dir, {
       text: src.text,
       sources: [{ kind: "user-provided", name: src.name, title: src.name, words: src.words }],
+      pages: [{ url: null, title: src.name, words: src.words, kind: "user-provided", text: src.text }],
     });
     researchText = src.text;
   } else if (src.mode === "web") {
     onProgress?.({ status: "researching" });
     const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
     if (r.text) {
-      await writeResearch(dir, { text: r.text, sources: r.sources });
+      await writeResearch(dir, { text: r.text, sources: r.sources, pages: r.pages });
       researchText = r.text;
     }
   }
@@ -262,12 +279,13 @@ export async function createReport({
     await writeResearch(dir, {
       text: src.text,
       sources: [{ kind: "user-provided", name: src.name, title: src.name, words: src.words }],
+      pages: [{ url: null, title: src.name, words: src.words, kind: "user-provided", text: src.text }],
     });
   } else {
     onProgress?.({ status: "researching" });
     const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
     if (!r.text) throw new Error("Research produced nothing to write the report from.");
-    await writeResearch(dir, { text: r.text, sources: r.sources });
+    await writeResearch(dir, { text: r.text, sources: r.sources, pages: r.pages });
   }
 
   const g = await generateReport({
