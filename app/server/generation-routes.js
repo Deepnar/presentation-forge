@@ -230,7 +230,7 @@ app.post("/api/reports", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, sources, research, papers, researchSource, upload, depth, density, model, identity } = req.body ?? {};
+  const { brief, sources, research, papers, researchSource, upload, depth, density, model, identity, allowOverrun } = req.body ?? {};
   if (!brief?.trim()) {
     sse.send("error", { error: "body must include a `brief`" });
     return sse.close();
@@ -244,12 +244,20 @@ app.post("/api/reports", (req, res) => {
         estimateTokens({ slides: 8, research: true, depth: depth ?? "full" }),
       );
     }
-    const r = await createReport({
-      brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
-      owner: req.user.email,
-      signal: ctrl.signal,
-      onProgress: (p) => sse.send("status", p),
-    });
+    const r = await withByokRun(
+      {
+        userId: getUserId(req.user.email),
+        provider: "cloud",
+        estimate: estimateTokens({ slides: 8, research: true, depth: depth ?? "full" }),
+        allowOverrun: allowOverrun === true,
+      },
+      () => createReport({
+        brief, sources, research, papers, researchSource, upload, depth, density, model, identity,
+        owner: req.user.email,
+        signal: ctrl.signal,
+        onProgress: (p) => sse.send("status", p),
+      }),
+    );
     sse.send("result", {
       slug: r.slug,
       title: r.title,

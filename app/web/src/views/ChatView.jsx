@@ -426,30 +426,34 @@ export default function ChatView({
       chrome: { branding: b.branding ?? "full" },
     };
     runs.begin(c.id, { abort: () => {}, status: "Queued…" });
-    const j = api.createReport(
-      {
-        brief,
-        depth: b.depth ?? "full",
-        density: b.density ?? "balanced",
-        research: b.research ?? true,
-        researchSource: b.researchSource,
-        upload: b.uploadedSource,
-        papers: b.papers,
-        identity: identityPayload,
-        model: model || undefined,
-      },
-      {
-        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(c.id, { status: label }); },
-        result: (d) => {
-          const named = chatName(d.title, c.topic);
-          persist({ ...c, produced: true, deckSlug: d.slug, title: named, error: undefined, updatedAt: new Date().toISOString() });
-          onDeckChanged?.();
+    const attempt = (allowOverrun) => {
+      const j = api.createReport(
+        {
+          brief,
+          depth: b.depth ?? "full",
+          density: b.density ?? "balanced",
+          research: b.research ?? true,
+          researchSource: b.researchSource,
+          upload: b.uploadedSource,
+          papers: b.papers,
+          identity: identityPayload,
+          model: model || undefined,
+          allowOverrun,
         },
-      },
-    );
-    runs.update(c.id, { abort: j.abort });
-    setJob(j);
-    j.promise
+        {
+          status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(c.id, { status: label }); },
+          result: (d) => {
+            const named = chatName(d.title, c.topic);
+            persist({ ...c, produced: true, deckSlug: d.slug, title: named, error: undefined, updatedAt: new Date().toISOString() });
+            onDeckChanged?.();
+          },
+        },
+      );
+      runs.update(c.id, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => {
         const msg = err.name === "AbortError" ? "Cancelled." : err.message;
         setError(msg);
