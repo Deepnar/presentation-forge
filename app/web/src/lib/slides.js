@@ -32,3 +32,11 @@ export function setPresenter(slides, index, presenter) {
   out[index] = slide;
   return out;
 }
+
+export function moveListItem(list, index, dir) {
+  const to = index + dir;
+  if (to < 0 || to >= list.length) return list;
+  const out = [...list];
+  [out[index], out[to]] = [out[to], out[index]];
+  return out;
+}

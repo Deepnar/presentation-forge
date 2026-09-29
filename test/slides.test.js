@@ -6,6 +6,7 @@ import {
   deleteSlide,
   replaceSlide,
   setPresenter,
+  moveListItem,
 } from "../app/web/src/lib/slides.js";
 
 const S = (type, i) => ({ type, headline: `slide ${i}`, notes: `n${i}` });
@@ -57,4 +58,13 @@ test("setPresenter writes the field, and an empty value removes it", () => {
   assert.equal(a[0].presenter, undefined);
   const cleared = setPresenter(assigned, 0, "");
   assert.equal("presenter" in cleared[0], false);
+});
+
+test("moveListItem swaps neighbours and never leaves the bounds", () => {
+  const a = ["a", "b", "c"];
+  assert.deepEqual(moveListItem(a, 0, 1), ["b", "a", "c"]);
+  assert.deepEqual(moveListItem(a, 2, -1), ["a", "c", "b"]);
+  assert.equal(moveListItem(a, 0, -1), a);
+  assert.equal(moveListItem(a, 2, 1), a);
+  assert.deepEqual(a, ["a", "b", "c"]);
 });

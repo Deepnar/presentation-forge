@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Spinner } from "./ui.jsx";
+import { moveListItem } from "../lib/slides.js";
 
 const inputCls =
   "w-full rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent";
@@ -300,7 +301,23 @@ function RemoveButton({ onClick }) {
   );
 }
 
+function MoveButtons({ index, count, onMove }) {
+  return (
+    <span className="flex shrink-0 flex-col self-end">
+      <button onClick={() => onMove(index, -1)} disabled={index === 0} title="Move up"
+        className="grid h-4 w-7 place-items-center rounded-t-md text-fg-faint transition hover:bg-hover hover:text-fg disabled:pointer-events-none disabled:opacity-30">
+        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 14l6-6 6 6" /></svg>
+      </button>
+      <button onClick={() => onMove(index, 1)} disabled={index === count - 1} title="Move down"
+        className="grid h-4 w-7 place-items-center rounded-b-md text-fg-faint transition hover:bg-hover hover:text-fg disabled:pointer-events-none disabled:opacity-30">
+        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 10l6 6 6-6" /></svg>
+      </button>
+    </span>
+  );
+}
+
 function ListEditor({ field, value, onChange }) {
+  const move = (i, dir) => onChange(moveListItem(value, i, dir));
   return (
     <Field label={field.label}>
       <div className="space-y-1.5">
@@ -308,6 +325,7 @@ function ListEditor({ field, value, onChange }) {
           <div key={i} className="flex items-center gap-1.5">
             <input className={inputCls} value={item ?? ""} maxLength={field.maxLength}
               onChange={(e) => onChange(value.map((x, j) => (j === i ? e.target.value : x)))} />
+            <MoveButtons index={i} count={value.length} onMove={move} />
             <RemoveButton onClick={() => onChange(value.filter((_, j) => j !== i))} />
           </div>
         ))}
@@ -320,6 +338,7 @@ function ListEditor({ field, value, onChange }) {
 }
 
 function ItemListEditor({ field, value, onChange }) {
+  const move = (i, dir) => onChange(moveListItem(value, i, dir));
   return (
     <Field label={field.label}>
       <div className="space-y-2">
@@ -329,7 +348,10 @@ function ItemListEditor({ field, value, onChange }) {
               <span className="text-[10px] font-medium uppercase tracking-wider text-fg-faint">
                 {field.itemLabel} {i + 1}
               </span>
-              <RemoveButton onClick={() => onChange(value.filter((_, j) => j !== i))} />
+              <span className="flex items-center gap-1">
+                <MoveButtons index={i} count={value.length} onMove={move} />
+                <RemoveButton onClick={() => onChange(value.filter((_, j) => j !== i))} />
+              </span>
             </div>
             <div className="space-y-1.5">
               {field.fields.map((f) => itemField(f, item, (v) =>
@@ -404,6 +426,7 @@ function itemField(f, item, onPatch) {
 }
 
 function NestedListEditor({ field, value, onChange }) {
+  const move = (i, dir) => onChange(moveListItem(value, i, dir));
   return (
     <Field label={field.itemLabel ?? "Items"}>
       <div className="space-y-1.5">
@@ -413,6 +436,7 @@ function NestedListEditor({ field, value, onChange }) {
               <input className={inputCls} value={item.label ?? ""} maxLength={30}
                 placeholder="Label"
                 onChange={(e) => onChange(value.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+              <MoveButtons index={i} count={value.length} onMove={move} />
               <RemoveButton onClick={() => onChange(value.filter((_, j) => j !== i))} />
             </div>
             {field.fields?.some((f) => f.kind === "textarea") && (
@@ -534,6 +558,7 @@ function ChartEditor({ field, value, onChange }) {
                 <div className="flex items-center gap-1.5">
                   <input className={inputCls} placeholder="Series name" value={s.name ?? ""} maxLength={40}
                     onChange={(e) => patch({ series: series.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} />
+                  <MoveButtons index={i} count={series.length} onMove={(a, d) => patch({ series: moveListItem(series, a, d) })} />
                   <RemoveButton onClick={() => patch({ series: series.filter((_, j) => j !== i) })} />
                 </div>
                 <div className="mt-1.5">
@@ -559,6 +584,7 @@ function ChartEditor({ field, value, onChange }) {
 function SideEditor({ field, value, onChange }) {
   const patch = (p) => onChange({ ...value, ...p });
   const points = value.points ?? [];
+  const movePoint = (i, dir) => patch({ points: moveListItem(points, i, dir) });
   return (
     <Field label={field.label}>
       <div className="space-y-1.5 rounded-card border border-line bg-panel p-2.5">
@@ -572,6 +598,7 @@ function SideEditor({ field, value, onChange }) {
           <div key={i} className="flex items-center gap-1.5">
             <input className={inputCls} placeholder={`Point ${i + 1}`} maxLength={120} value={p ?? ""}
               onChange={(e) => patch({ points: points.map((x, j) => (j === i ? e.target.value : x)) })} />
+            <MoveButtons index={i} count={points.length} onMove={movePoint} />
             <RemoveButton onClick={() => patch({ points: points.filter((_, j) => j !== i) })} />
           </div>
         ))}
@@ -585,6 +612,7 @@ function RowsEditor({ field, value, onChange }) {
   const cols = value.columns ?? [];
   const rows = value.rows ?? [];
   const patch = (p) => onChange({ ...value, ...p });
+  const moveRow = (i, dir) => patch({ rows: moveListItem(rows, i, dir) });
   const textRows = field.textRows;
   const cellAt = (row, c) => {
     if (textRows) return Array.isArray(row.text) ? row.text[c] : c === 0 ? row.text : "";
@@ -611,6 +639,7 @@ function RowsEditor({ field, value, onChange }) {
                 value={cellAt(row, c) ?? ""}
                 onChange={(e) => patch({ rows: rows.map((x, j) => (j === r ? setCell(x, c, e.target.value) : x)) })} />
             ))}
+            <MoveButtons index={r} count={rows.length} onMove={moveRow} />
             <RemoveButton onClick={() => patch({ rows: rows.filter((_, j) => j !== r) })} />
           </div>
         ))}
