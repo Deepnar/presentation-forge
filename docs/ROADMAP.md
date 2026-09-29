@@ -6229,9 +6229,9 @@ three — and entries obey the 220-char item cap.
 > the corpus pollution itself (a "path" query absorbing PATH rail articles) is
 > the relevance floor's job, still open.
 
-### [ ] Canvas-like in-website slide editor
+### [~] Canvas-like in-website slide editor
 
-*Priority: unranked — needs direction first. Do not build unprompted.*
+*Priority: unranked — direction agreed 2026-09-30: human-only, AI out of layout.*
 
 What exists: `SlideEditor.jsx` (typed form modal over validated `deck.yaml`),
 chat turns that edit by instruction, per-slide toolbar (punch/swap/image/
@@ -6240,18 +6240,31 @@ direct manipulation (drag text, resize, restyle) inside the site after the
 deck is done. That is a new surface, not a fix — it breaks the
 chrome/theme/content split the moment content can set coordinates or colours,
 and it needs product judgement (which objects move, what stays locked to the
-theme). Options to agree first: (a) form editor + more slide types, (b) bounded
+theme). Options were: (a) form editor + more slide types, (b) bounded
 canvas (move/resize within theme boxes, no style escape), (c) full free canvas.
-Waiting on direction.
 
-### [ ] Add-new-slides-by-telling
+Direction agreed: the canvas is for humans after the AI is done — the model
+never writes layout, and no per-slide coordinates/colours/fonts enter the
+schema from any source. Landed as human-only bounded + manual: blank slide of
+any type without AI (`lib/blankSlides.js`, schema-validated per type, editor
+opens at the new slide), semantic reorder inside a slide (up/down over a pure
+`moveListItem`, no geometry), pics via the existing `assets/` upload with the
+`[image]` badge door, slide reorder/duplicate/delete as before. True pixel-free
+work stays on `type: freeform` (the sanctioned rasterised layer with its
+warning), never as fields on native types. Still open: visual drag for slide
+order on the grid (menu moves exist); no free-coordinate drag by design.
 
-*Priority: medium. Mostly exists; the gap is discoverability.*
+### [~] Add-new-slides-by-telling
+
+*Priority: medium. Machinery existed; the deck-page door landed 2026-09-30.*
 
 Chat structural commands ("add a slide at the end titled X"), the
 `/api/decks/:slug/slides/:index/insert` endpoint (`insertDeckSlide`), the
 "+ Add slide" menu, and per-section "+ Add as slide" from the report page all
-work. What is missing is reaching them from a finished deck without knowing
+work. What was missing is reaching them from a finished deck without knowing
 the phrasing: a visible "tell it what to add" entry on the deck page that
-routes into the existing chat-turn machinery. Small UI work once the editor
-direction (above) is agreed, so it lands in the right surface.
+routes into the existing chat-turn machinery. Landed beside manual add: a
+"Tell it what to add…" input under the Slides header appends one AI-written
+slide via the chat turn (`append one new slide, keep the rest`), while
+"+ Add slide" stays the no-AI blank path. Still open: behaviour validation
+against a live model turn (append lands, deck re-renders).

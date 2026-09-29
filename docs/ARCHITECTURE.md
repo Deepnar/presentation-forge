@@ -1444,7 +1444,12 @@ state machines in the route module and move independently reusable panels into
   folder), Clone (`cloneDeck` in the pipeline — content files copied to a fresh
   slug, meta re-stamped), and a Versions popover over the timestamped backups
   written into `decks/<slug>/backups/` on every save. A "+ Add slide" menu
-  inserts slides from `templates/*.yaml` (`GET /api/templates`). Ctrl+Z/Ctrl+Y
+  inserts starter slides from `templates/*.yaml` (`GET /api/templates`) plus a
+  schema-valid blank of any type (`lib/blankSlides.js`, derived from the
+  editor descriptors; the editor opens at the new slide). A "Tell it what to
+  add…" input beside it appends one AI-written slide through the existing
+  chat turn. Item rows inside the editor reorder via up/down over the pure
+  `moveListItem` helper — semantic order only, no geometry. Ctrl+Z/Ctrl+Y
   walk a 20-deep deck-state undo stack; Ctrl+S re-renders.
 - **The outline's generation storyboard (F15).** While a plan generates, one
   tile per planned slide appears in the review, the slide being written
