@@ -15,6 +15,8 @@ export const BRIEFING_QUESTIONS = [
   { key: "audience", tier: OPTIONAL, ask: "Who will be in the room, what do they already know, and what must they remember or do after your last slide?" },
   { key: "emphasis", tier: OPTIONAL, ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
   { key: "evidence", tier: OPTIONAL, ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
+  { key: "mode", tier: OPTIONAL, ask: "Team deck or a solo deep dive?" },
+  { key: "subtopicCount", tier: OPTIONAL, ask: "How many parts should the talk split into?" },
   { key: "team", tier: OPTIONAL, ask: "Who is on the team — and who presents?" },
   { key: "guide", tier: OPTIONAL, ask: "Who is your guide?" },
   { key: "academic", tier: OPTIONAL, ask: "Which subject and academic year is this for?" },
@@ -49,6 +51,7 @@ export function tierQuestions(kind, tier, briefing = {}, presets = null) {
     if (q.tier !== tier) return false;
     if (q.key === "preset") return Array.isArray(presets) ? presets.length > 0 : true;
     if (briefing.presetId && PRESET_KEYS.includes(q.key) && !unskip.has(q.key)) return false;
+    if (briefing.mode === "solo" && q.key === "slidesPerMember") return false;
     return true;
   });
 }
@@ -83,7 +86,7 @@ export function optionalAnswered(kind, briefing = {}, baseline = null) {
     .length;
 }
 
-export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
+export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "subtopicCount", "density", "theme", "branding"];
 
 export const PRESET_KEYS_LEGACY = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
@@ -98,6 +101,7 @@ export function briefingFromPreset(preset, identity) {
     density: p.density ?? b.density,
     branding: p.branding ?? b.branding,
     slidesPerMember: p.slidesPerMember ?? b.slidesPerMember,
+    subtopicCount: p.subtopicCount ?? b.subtopicCount,
   };
 }
 
@@ -111,6 +115,7 @@ export function applyPresetToBriefing(briefing, preset) {
     density: p.density ?? briefing.density,
     branding: p.branding ?? briefing.branding,
     slidesPerMember: p.slidesPerMember ?? briefing.slidesPerMember,
+    subtopicCount: p.subtopicCount ?? briefing.subtopicCount,
   };
 }
 
@@ -135,6 +140,7 @@ export function presetPayload(briefing) {
     density: b.density,
     branding: b.branding,
     slidesPerMember: b.slidesPerMember,
+    subtopicCount: b.subtopicCount ?? 0,
   };
 }
 
@@ -169,7 +175,9 @@ export function briefingAnsweredText(briefing, label = (t) => t) {
   put("Evidence / constraints", b.evidence);
   if (b.theme) lines.push(`- Theme: ${label(b.theme)}`);
   put("Slide count", b.maxSlides ? `${b.maxSlides}` : "auto");
-  put("Slides per member", b.slidesPerMember ? `${b.slidesPerMember}` : "auto");
+  put("Slides per member", b.mode === "solo" ? "n/a — solo deep dive" : b.slidesPerMember ? `${b.slidesPerMember}` : "auto");
+  put("Talk mode", b.mode === "solo" ? "solo deep dive" : "team");
+  put("Parts", b.subtopicCount ? `${b.subtopicCount}` : "auto — team-sized");
   put("Density", b.density);
   if (b.depth) put("Depth", b.depth);
   put("Branding", b.branding === "none" ? "no institutional branding" : b.branding === "minimal" ? "minimal branding" : "full branding");
@@ -208,6 +216,8 @@ export function initialBriefing(identity) {
     })(),
     maxSlides: 0,        // 0 = auto (collapsed into density; kept for preset compat)
     slidesPerMember: null, // collapsed into density; kept for preset compat
+    mode: "team",      // team | solo — solo sizes by parts + slides, never by members
+    subtopicCount: 0,  // 0 = auto (team-sized, or 6 solo)
     density: "balanced",
     branding: "full",   // full | minimal | none
     depth: "full",      // report only: full | brief
@@ -252,7 +262,9 @@ export function echoAnswer(briefing, key, opts = {}) {
     case "evidence": return b.evidence?.trim() || "no constraints set";
     case "theme": return opts.themeLabel?.(b.theme) || "Default";
     case "maxSlides": return b.maxSlides ? `${b.maxSlides} content slides` : "auto";
-    case "slidesPerMember": return b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
+    case "slidesPerMember": return b.mode === "solo" ? "n/a — solo deep dive" : b.slidesPerMember ? `${b.slidesPerMember} per presenting member` : "auto — split evenly";
+    case "mode": return b.mode === "solo" ? "solo deep dive" : "team deck";
+    case "subtopicCount": return b.subtopicCount ? `${b.subtopicCount} parts` : "auto — team-sized";
     case "density": return b.density;
     case "depth": return b.depth === "brief" ? "brief — headline + 3 sentences" : "full — 3-6 paragraphs + table";
     case "branding": return b.branding === "none" ? "no branding" : b.branding === "minimal" ? "minimal branding" : "full branding";
@@ -313,6 +325,16 @@ export function applyFreeText(briefing, key, text) {
       const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? null : NaN;
       if (Number.isNaN(n)) return null;
       return { briefing: { ...b, slidesPerMember: n }, echo: n ? `${n} each` : "auto — split evenly" };
+    }
+    case "mode": {
+      const m = /solo|deep|alone|single/i.test(t) ? "solo" : /team|group|together/i.test(t) ? "team" : null;
+      if (!m) return null;
+      return { briefing: { ...b, mode: m }, echo: m === "solo" ? "solo deep dive" : "team deck" };
+    }
+    case "subtopicCount": {
+      const n = /^\d+$/.test(t) ? Number(t) : /auto/i.test(t) ? 0 : NaN;
+      if (Number.isNaN(n)) return null;
+      return { briefing: { ...b, subtopicCount: n }, echo: n ? `${n} parts` : "auto — team-sized" };
     }
     case "density": {
       const m = /sparse|balanced|dense/i.exec(t);

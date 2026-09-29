@@ -169,6 +169,8 @@ function BriefingControl({ q, chat, themes, themeLabel, presets, onPickPreset, o
     case "depth": return <DepthCard value={b.depth} {...common} />;
     case "maxSlides": return <MaxSlidesCard value={b.maxSlides} {...common} />;
     case "slidesPerMember": return <SlidesPerMemberCard value={b.slidesPerMember} {...common} />;
+    case "mode": return <ModeCard value={b.mode} {...common} />;
+    case "subtopicCount": return <SubtopicCountCard value={b.subtopicCount} {...common} />;
     case "density": return <DensityCard value={b.density} {...common} />;
     case "branding": return <BrandingCard value={b.branding} {...common} />;
     case "research": return (
@@ -566,6 +568,53 @@ function SlidesPerMemberCard({ value, onNext, embedded = false }) {
   );
 }
 
+const MODES = [
+  { value: "team", label: "Team", note: "parts split across presenting members" },
+  { value: "solo", label: "Solo deep dive", note: "one person, sized by parts + slides" },
+];
+
+function ModeCard({ value, onNext, embedded = false }) {
+  const [v, setV] = useState(value ?? "team");
+  const pick = (x) => { setV(x); if (embedded) onNext({ mode: x }); };
+  return (
+    <div>
+      <ChoicePills options={MODES} value={v} onPick={pick} />
+      {!embedded && <CardFooter onNext={() => onNext({ mode: v })} nextLabel="Continue" />}
+    </div>
+  );
+}
+
+const PART_COUNTS = [0, 3, 4, 5, 6, 8];
+
+function SubtopicCountCard({ value, onNext, embedded = false }) {
+  const [v, setV] = useState(value ?? 0);
+  const [custom, setCustom] = useState("");
+  const pick = (n) => { setV(n); if (embedded) onNext({ subtopicCount: n }); };
+  return (
+    <div>
+      <ChoicePills
+        options={PART_COUNTS.map((n) => ({ value: n, label: n === 0 ? "Auto" : `${n} parts` }))}
+        value={v}
+        onPick={pick}
+      />
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Auto sizes the parts to the presenting team — or set the count outright.</div>
+      <div className="mt-2 flex items-center gap-2">
+        <input
+          type="number"
+          min={1}
+          max={8}
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          placeholder="…or a custom count"
+          className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
+        />
+        {custom && <Button size="sm" onClick={() => pick(Math.min(8, Math.max(1, Number(custom) || 0)))}>Set</Button>}
+      </div>
+      {!embedded && <CardFooter onNext={() => onNext({ subtopicCount: v })} nextLabel="Continue" />}
+    </div>
+  );
+}
+
 function DensityCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "balanced");
   const pick = (x) => { setV(x); if (embedded) onNext({ density: x }); };
@@ -933,6 +982,39 @@ export function DeckRunCard({ run, onResume, onFinalize, onStop, onOpen }) {
 export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApprove }) {
   if (!plan) return null;
   const edit = (i, patch) => onPlan({ ...plan, slides: plan.slides.map((s, j) => (j === i ? { ...s, ...patch } : s)) });
+  const renameSection = (si, name) =>
+    onPlan({ ...plan, sections: (plan.sections ?? []).map((s, j) => (j === si ? name : s)) });
+  const addSection = () => {
+    if ((plan.sections ?? []).length >= 8) return;
+    onPlan({
+      ...plan,
+      sections: [...(plan.sections ?? []), "New part"],
+      owners: [...(plan.owners ?? []), null],
+    });
+  };
+  const removeSection = (si) => {
+    const sections = (plan.sections ?? []).filter((_, j) => j !== si);
+    if (!sections.length) return;
+    const slides = (plan.slides ?? []).map((s) => {
+      if (!Number.isInteger(s.section)) return s;
+      if (s.section === si) return { ...s, section: si === 0 ? 0 : si - 1 };
+      if (s.section > si) return { ...s, section: s.section - 1 };
+      return s;
+    });
+    onPlan({
+      ...plan,
+      sections,
+      slides,
+      owners: (plan.owners ?? []).filter((_, j) => j !== si),
+    });
+  };
+  const setOwner = (si, name) => {
+    const owners = [...(plan.owners ?? [])];
+    while (owners.length < (plan.sections ?? []).length) owners.push(null);
+    owners[si] = name || null;
+    onPlan({ ...plan, owners });
+  };
+  const ownerNames = ((chat.briefing ?? {}).team?.members ?? []).map((m) => m.name).filter(Boolean);
   const move = (i, dir) => onPlan((() => {
     const slides = [...plan.slides];
     const j = i + dir;
@@ -960,6 +1042,48 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
           <div className="mb-1 text-[11px] text-fg-faint">Subtitle</div>
           <input value={plan.subtitle ?? ""} onChange={(e) => onPlan({ ...plan, subtitle: e.target.value })} className={inputCls} />
         </label>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-1.5 text-[11px] text-fg-faint">
+          Parts ({(plan.sections ?? []).length}) — rename freely, give each part an owner, add up to 8. Removing re-homes its slides.
+        </div>
+        <div className="space-y-1.5">
+          {(plan.sections ?? []).map((name, si) => (
+            <div key={si} className="flex items-center gap-2 rounded-lg border border-line bg-sunken px-2 py-1.5">
+              <span className="font-mono text-[10px] tabular-nums text-fg-faint">{String(si + 1).padStart(2, "0")}</span>
+              <input
+                value={name ?? ""}
+                onChange={(e) => renameSection(si, e.target.value)}
+                className="min-w-0 flex-1 bg-transparent text-[12.5px] font-medium text-fg outline-none"
+              />
+              {ownerNames.length > 0 && (
+                <select
+                  value={(plan.owners ?? [])[si] ?? ""}
+                  onChange={(e) => setOwner(si, e.target.value)}
+                  title="Who presents this part"
+                  className="max-w-[7rem] appearance-none rounded border border-line bg-panel px-1.5 py-0.5 text-[10.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+                >
+                  <option value="">auto</option>
+                  {ownerNames.map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
+              )}
+              <button
+                onClick={() => removeSection(si)}
+                disabled={(plan.sections ?? []).length <= 1}
+                className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber disabled:opacity-30"
+                title="Remove part"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+              </button>
+            </div>
+          ))}
+        </div>
+        {(plan.sections ?? []).length < 8 && (
+          <div className="mt-2">
+            <Button size="sm" variant="outline" onClick={addSection}>+ Add part</Button>
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">

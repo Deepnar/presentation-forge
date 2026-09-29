@@ -309,7 +309,8 @@ export async function createDeck({
   const { plan, stats } = await planDeck({
     brief: brief.trim(), briefing, theme: themeObj, identity: identityObj,
     research: excerptResearch(researchText, await researchExcerptCap({ model })),
-    maxSlides, slidesPerMember, model, signal,
+    maxSlides, model, signal,
+    slidesPerMember: splitMode === "solo" ? null : slidesPerMember,
     sections: subtopics?.map((s) => s.title) ?? null,
     owners,
   });

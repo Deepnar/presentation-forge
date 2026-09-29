@@ -36,6 +36,11 @@ test("solo mode takes the explicit count instead of the team", () => {
   assert.equal(clampSubtopics(0), 1);
 });
 
+test("an explicit part count wins over the team size in either mode", () => {
+  assert.equal(subtopicCountFor({ identity: identityWith(["A", "B", "C"]), subtopicCount: 6 }), 6);
+  assert.equal(subtopicCountFor({ mode: "solo", subtopicCount: 2 }), 2);
+});
+
 test("sanitize drops title-less, focus-less and duplicate parts", () => {
   const out = sanitizeSubtopics([
     { title: "Cells", focus: "How they work." },

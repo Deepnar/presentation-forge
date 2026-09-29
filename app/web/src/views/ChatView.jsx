@@ -269,6 +269,8 @@ export default function ChatView({
     if (b.thesis?.trim()) notes.push(`Thesis / takeaway that must land on the final slides: ${b.thesis.trim()}. Every slide must serve this claim and the conclusion must land it.`);
     if (b.density !== "balanced") notes.push(`Keep the slides ${b.density} density — ${densityNote(b.density)}.`);
     if (b.slidesPerMember) notes.push(`Distribute the CONTENT slides (not section dividers) roughly evenly, about ${b.slidesPerMember} per presenting member.`);
+    if (b.mode === "solo") notes.push(`This is a SOLO deep dive by one presenter — size the talk by its parts and the slide count, never by team size.`);
+    if (b.subtopicCount) notes.push(`Split the talk into about ${b.subtopicCount} major parts.`);
     if (b.audience?.trim()) notes.push(`The deck is for: ${b.audience.trim()}. Write to that audience and make sure they leave having absorbed it.`);
     if (b.emphasis?.trim()) notes.push(`Emphasis: ${b.emphasis.trim()}. These parts matter most — give them the most slides and the deepest treatment.`);
     if (b.evidence?.trim()) notes.push(`Figures/sources/constraints to respect — never invent beyond these: ${b.evidence.trim()}`);
@@ -291,6 +293,8 @@ export default function ChatView({
         papers: b.papers,
         slidesPerMember: b.slidesPerMember || undefined,
         density: b.density || undefined,
+        mode: b.mode === "solo" ? "solo" : "team",
+        subtopicCount: b.subtopicCount || undefined,
         identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
         model: model || undefined,
       },
@@ -306,6 +310,7 @@ export default function ChatView({
               subtitle: d.plan.subtitle ?? "",
               sections: d.plan.sections ?? [],
               slides: d.plan.slides ?? [],
+              owners: d.plan.owners ?? [],
             },
             deckSlug: d.slug,
             deckThumbs: [],
@@ -348,7 +353,7 @@ export default function ChatView({
     const j = api.generate(
       chat.deckSlug,
       {
-        plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean },
+        plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
         theme: (chat.briefing ?? {}).theme || undefined,
         model: model || undefined,
       },
@@ -357,7 +362,7 @@ export default function ChatView({
         result: (r) => {
           persist({
             ...chat,
-            plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean },
+            plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
             produced: true,
             deckSlug: r.slug ?? chat.deckSlug,
             deckThumbs: (r.thumbs ?? []).slice(0, 8),

@@ -6,7 +6,8 @@ export const MAX_SUBTOPICS = 8;
 export const clampSubtopics = (n) => Math.min(MAX_SUBTOPICS, Math.max(1, Math.floor(Number(n) || 0) || 1));
 
 export function subtopicCountFor({ mode, subtopicCount, identity } = {}) {
-  if (mode === "solo") return clampSubtopics(subtopicCount ?? 6);
+  if (Number(subtopicCount) > 0) return clampSubtopics(subtopicCount);
+  if (mode === "solo") return 6;
   const members = presentingNames(identity).length;
   return clampSubtopics(members || 3);
 }

@@ -21,6 +21,7 @@ const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
                         [--research] [--papers] [--upload <file.md|docx|pdf|txt>]
                         [--max-slides <n>] [--slides-per-member <n>]
+                        [--mode team|solo] [--subtopic-count <n>]
                         [--density sparse|balanced|dense] [--model <id>]
                         [--images]
   node src/ai/pipeline.js generate <slug> [--theme <name>] [--model <id>]
@@ -37,6 +38,10 @@ const USAGE = `Usage:
   new       brief → outline, saved to decks/<slug>/plan.yaml
             --upload  upload-only mode: the given document becomes research/
                       notes.md and is the ONLY content source — no web search
+            --mode    team (parts split across presenting members) or solo
+                      (one presenter, sized by parts + slides, never by members)
+            --subtopic-count  split the talk into this many parts (max 8);
+                      default is the presenting team, or 6 solo
   generate  approved outline → deck.yaml, rendered and rasterised
             --critic  also run the vision critic loop: detect visual defects in
                       the rendered slides and fix them via a content turn
@@ -83,6 +88,8 @@ function parseArgs(argv) {
     if (a === "--theme") opts.theme = argv[++i];
     else if (a === "--max-slides") opts.maxSlides = Number(argv[++i]);
     else if (a === "--slides-per-member") opts.slidesPerMember = Number(argv[++i]);
+    else if (a === "--mode") opts.mode = argv[++i];
+    else if (a === "--subtopic-count") opts.subtopicCount = Number(argv[++i]);
     else if (a === "--density") opts.density = argv[++i];
     else if (a === "--model") opts.model = argv[++i];
     else if (a === "--plan") opts.plan = argv[++i];

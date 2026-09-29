@@ -3,13 +3,14 @@ import assert from "node:assert/strict";
 import {
   PRESET_KEYS, initialBriefing, briefingFromPreset, applyPresetToBriefing,
   presetPayload, effectiveBriefStep, nextBriefStep, BRIEFING_QUESTIONS, REPORT_QUESTIONS,
-  questionsFor, tierQuestions, optionalAnswered,
+  questionsFor, tierQuestions, optionalAnswered, echoAnswer, applyFreeText,
 } from "../app/web/src/lib/briefing.js";
 
-test("PRESET_KEYS fixes team, slide counts, density, theme and branding — never guide or academic", () => {
-  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "maxSlides", "slidesPerMember", "team", "theme"]);
+test("PRESET_KEYS fixes team, slide counts, part count, density, theme and branding — never guide or academic", () => {
+  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "maxSlides", "slidesPerMember", "subtopicCount", "team", "theme"]);
   assert.ok(!PRESET_KEYS.includes("guide"));
   assert.ok(!PRESET_KEYS.includes("academic"));
+  assert.ok(!PRESET_KEYS.includes("mode"));
 });
 
 test("initialBriefing pre-fills the guide from identity but never team or academic", () => {
@@ -47,8 +48,7 @@ test("a preset pre-fills team, maxSlides, density, theme and branding — and no
   assert.equal(b.branding, "minimal");
   assert.equal(b.slidesPerMember, 2);
   assert.equal(b.guide.name, "Dr. G"); // guide comes from identity, not the preset
-  assert.equal(b.academic.subject, "");
-});
+  assert.equal(b.academic.subject, "");});
 
 test("presetPayload captures only the preset-fixable fields", () => {
   const payload = presetPayload({
@@ -238,4 +238,37 @@ test("a report briefing does not ask about slide images", () => {
   // Reports have no image slides; asking would be a question with no effect.
   const keys = REPORT_QUESTIONS.map((q) => q.key);
   assert.ok(!keys.includes("images"));
+});
+
+test("solo mode defaults team-sized parts off and drops the per-member question", () => {
+  const b = initialBriefing({});
+  assert.equal(b.mode, "team");
+  assert.equal(b.subtopicCount, 0);
+  assert.equal(echoAnswer(b, "mode"), "team deck");
+  assert.equal(echoAnswer(b, "subtopicCount"), "auto — team-sized");
+  const solo = { ...b, mode: "solo" };
+  assert.equal(echoAnswer(solo, "slidesPerMember"), "n/a — solo deep dive");
+  const keys = tierQuestions("deck", "optional", solo, []).map((q) => q.key);
+  assert.ok(keys.includes("mode") && keys.includes("subtopicCount"));
+  assert.ok(!keys.includes("slidesPerMember"), "per-member sizing is meaningless solo");
+  const teamKeys = tierQuestions("deck", "optional", b, []).map((q) => q.key);
+  assert.ok(teamKeys.includes("slidesPerMember"));
+});
+
+test("free text understands team/solo and part counts", () => {
+  assert.equal(applyFreeText({}, "mode", "just me, solo deep dive").briefing.mode, "solo");
+  assert.equal(applyFreeText({}, "mode", "team of four").briefing.mode, "team");
+  assert.equal(applyFreeText({}, "mode", "maybe"), null, "unmatched text is rejected");
+  assert.equal(applyFreeText({}, "subtopicCount", "6").briefing.subtopicCount, 6);
+  assert.equal(applyFreeText({}, "subtopicCount", "auto").briefing.subtopicCount, 0);
+  assert.equal(applyFreeText({}, "subtopicCount", "lots"), null);
+});
+
+test("a preset carries the part count but never the mode", () => {
+  const b = briefingFromPreset({ subtopicCount: 5, mode: "solo" }, {});
+  assert.equal(b.subtopicCount, 5);
+  assert.equal(b.mode, "team", "mode is always asked, never preset-fixed");
+  const payload = presetPayload({ subtopicCount: 5, mode: "solo" });
+  assert.equal(payload.subtopicCount, 5);
+  assert.equal(payload.mode, undefined);
 });

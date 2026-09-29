@@ -125,7 +125,7 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply } = req.body ?? {};
+  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount } = req.body ?? {};
   let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
@@ -134,7 +134,7 @@ app.post("/api/decks", (req, res) => {
       settleAuto({ eventId: reservation.eventId, slides: upcoming });
     }
     const r = await createDeck({
-      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply,
+      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount,
       owner: req.user.email,
       signal: ctrl.signal,
       onProgress: (p) => sse.send("status", p),
