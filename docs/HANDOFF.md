@@ -1,76 +1,62 @@
-# Handoff — 2026-09-10, full website runtime repair
+# Handoff — 2026-09-29, subtopic-first release + run-safe budgets + source map
 
-Read `AGENTS.md`, `CLAUDE.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **Repository-wide structural cleanup**.
+Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
+`docs/ROADMAP.md` → **§11 (all five build items ticked with Learned blocks)**.
 
 ## Current state
 
-The repository-wide cleanup remains complete. A subsequent exhaustive runtime
-audit repaired missing dependencies left by the extraction pass across chat,
-Admin, artifact routes, generation routes, report-to-deck conversion and local
-streaming. A no-undefined audit now reports only declared browser/Node globals,
-and the signed-in browser opens the real populated branches.
+The requested flow change is built, behaviourally validated on
+`muse-spark-1.3-contributor` (Responses API via opencode-go — the user's
+explicit test-model instruction for this session; NOT Auto, so content
+judgements below are labelled muse, not product quality), and pushed to
+`origin/main` in small commits. A 17-slide perovskite deck plus a brief
+companion report are the proof (`decks/perovskite-solar-cell-stability-
+challenges/`, gitignored, deliberately kept on disk as evidence).
 
-Redundant standalone comments were removed across executable source while
-comments that preserve an invariant, lint control or non-obvious reason remain.
-Provider configuration now supports stable `x-opencode-session` IDs and routes
-only `muse-spark-1.3-contributor` through the Responses API. Missing chat
-overrides no longer disable finalization repairs, and render CLI PDF export no
-longer stalls on a circular dynamic import.
-
-The public showcase contains three visually distinct local examples covering
-mixed-mode HPC, first impressions and perovskite solar cells. Each includes
-PPTX, presentation PDF, DOCX report and Markdown script. The earlier Muse-only
-showcase was removed after visual review found blank renders and repetitive
-styling. Parsed model JSON now strips XML-illegal control bytes before content
-can reach a deck.
-
-Theme persistence was also the cause of the three Muse examples appearing alike:
-the separate generation command ignored `meta.yaml` and fell back to
-`warm-humanist`. Generation and finalization now resolve and persist the briefing
-theme, with explicit overrides and an existing deck theme taking precedence.
-
-Chat model selection and briefing summaries render again, Admin loads its model
-audit, artifact and generation handlers have every extracted dependency, and
-the server-reported routing mode survives reload. Requested slide counts are
-labelled as content slides because title, divider and closing slides are added
-around them.
-
-Personal provider keys can be tested as unsaved drafts without persistence.
-The probe follows provider configuration, including Responses-only models, and
-key syntax is opaque rather than assuming an `sk-` prefix. Hosted instances now
-announce a missing `FORGE_KEY_PEPPER` before Save instead of failing after the
-secret is submitted; local self-hosted mode continues using its development
-vault default. Muse 1.3 was used only as the controlled generation model for
-this audit, not installed as a product-wide restriction.
+- **Subtopic-first generation** (`src/ai/subtopics.js`, `researchSubtopic`,
+  `planDeck` fixed sections, `ownersFor`/`owners` through `plan.owners` into
+  `distributePresenters`). Solo-deep `mode` + explicit `subtopicCount` in the
+  briefing (new Mode/SubtopicCount cards, outline-gate parts editor with
+  rename/add/remove/owners). Legacy callers without `mode` are untouched.
+- **Run-level BYOK budget** (`withByokRun` + `currentByokRun` ALS):
+  plan/write/finalize/report segments reserve once upfront and settle
+  actuals; per-call throws remain only for ad-hoc turns. UI continue-on-own-
+  key via `lib/budget.js` on all seven generation call sites. Anonymous/CLI
+  callers stay unmetered (existing behaviour). Auto caps untouched.
+- **Source-mapped references slide** (`research/pages.json` per-source store,
+  `src/ai/provenance.js`, `REFERENCE_TYPES` structural everywhere):
+  second-to-last, part-scoped "used on slides …", survives all model passes
+  verbatim. Rendered and read.
+- **Deck→report doors** (deck Export menu, report empty-state generate) plus
+  `deckFallbackText` so research-less decks still report from `deck.yaml`.
+- **Incidental visual finds, fixed**: model-written `**bold**` stripped at
+  the parse seam; model passes no longer paraphrase the source map.
 
 ## Verification
 
-- `npm test` — 813 tests pass.
-- `npx vite build --config app/web/vite.config.js` — successful; initial bundle
-  is about 322 kB.
-- Repository-wide ESLint `no-undef` diagnostic — no application-symbol failures;
-  only standard runtime globals and unavailable React-hooks plugin directives.
-- A 13-slide Muse briefing was planned, approved, interrupted by a server reload,
-  resumed from 11/13, finalized, rendered and inspected as a contact sheet. The
-  resulting PPTX and PDF contain all 13 non-blank slides.
-- The local Docker image was rebuilt from the repaired tree, recreated against
-  its existing persistent volume and reached healthy state. `local-check.mjs`
-  confirmed the API, host Ollama model and bundled private SearXNG. Production
-  Compose rejects a missing `FORGE_KEY_PEPPER` and accepts a complete required
-  secret set. README and local setup instructions point BYOK users to the actual
-  Profile → Cloud surface.
-- All 55 replacement slides and 34 report pages rasterized successfully and were
-  visually inspected as contact sheets.
-- PDF export completed through the public render CLI for all three examples.
-- `git diff --check` — clean.
-- A signed-in browser opened the 17-slide bus-depot project and navigated Deck,
-  Report, Research and Script successfully after the project-page repair.
+- `npm test` — 847/848. The one failure is pre-existing and unrelated
+  (`byok-budget.test.js` locale: `50,00,000` vs `5,000,000`); it failed
+  before this session.
+- `npx vite build` — clean. `git diff --check` — clean.
+- Muse live runs: split (4 knowledge-only parts) → per-part research (31
+  tagged pages) → fixed-section plan (full coverage) → 16/16 write →
+  finalize (references inserted, 17 slides) → report (10 sections, 2 custom)
+  → re-finalize after the mapping + passes fixes. Renders viewed: title,
+  chart, references, closing all clean.
+- `config/models.yaml` research-role routing used for the test was REVERTED;
+  the tree has no model-config diff. Test model for PPTs remains
+  muse-spark-1.3-contributor per user instruction (overrides the two-model
+  orchestration note for testing only).
 
 ## Continue from here
 
-No known website-runtime defect from this pass remains. The three post-fix Luna
-browser rechecks were attempted but their isolated CUA providers were
-unavailable; the parent browser performed the signed-in regression instead.
-Continue from the next unchecked roadmap item, keeping the chrome/theme/content
-boundary and current route-order contracts intact.
+- ROADMAP §11: canvas editor waits on direction (do not build unprompted);
+  add-new-slides is a discoverability follow-up once that direction lands.
+- Known open defects, both recorded: corpus pollution ("path" queries absorb
+  PATH/Hear-film pages — the relevance floor's job, §"Research and content
+  flow"); 9th+ part merges at the 8-section ceiling (renderer work, not
+  planned). Solo CLI decks carry null owners (no named members) — same as
+  legacy, but a solo identity with a name should own everything.
+- The full functional sweep (§"The full functional sweep") is the user's own
+  later pass; the UI doors it must exercise (report generate, parts editor,
+  budget confirm) are all in place.
