@@ -12,11 +12,18 @@ The fix is to make layout something the model cannot touch.
 
 ```
                        ┌──────────────────────────────┐
-   brief + sources ───►│  research  (tool-calling LLM) │───► notes.md, sources.json
+   brief + sources ───►│  subtopics (knowledge-only    │───► sections + owners
+                       │  LLM, no research in prompt) │
+                       └──────────────┬───────────────┘
+                                      │ one research pass per part
+                       ┌──────────────▼───────────────┐
+                       │  research  (tool-calling LLM) │───► notes.md, sources.json, pages.json
                        └──────────────────────────────┘
                                      │
                        ┌──────────────────────────────┐
-                       │  outline   (reasoning LLM)    │───► outline.yaml
+                       │  outline   (reasoning LLM,    │───► outline.yaml
+                       │  parts fixed — fills, never   │
+                       │  renames)                     │
                        └──────────────────────────────┘
                                      │
                               ┌──────▼──────┐
@@ -251,6 +258,18 @@ path escapes limits that only exist because the local model cannot handle more:
 - a completion cut at `done_reason=length` retries with the cap doubled up to
   `defaults.num_predict_bump_ceiling`, so a legitimate large output is not
   failed by a cap that was sized for a smaller model.
+
+**A BYOK cap guards the run, never kills it mid-deck.** The per-call
+reservation (`reserveByokCall` in `src/byok-budget.js`) throws 429 the moment
+one call would cross the daily budget — correct for a chat turn, fatal for a
+twenty-slide write. Generation requests (plan, write, finalize, report) run
+inside `withByokRun`: one reservation for the segment's whole estimate, taken
+upfront so an unaffordable run fails fast with numbers before burning
+anything, then per-call actuals accumulate into the run (`currentByokRun`, an
+`AsyncLocalStorage` like the account and the meter) and settle once at the
+end. Over the cap with no explicit `allowOverrun`, the UI offers continue-on-
+your-own-key rather than a dead deck. Local stays unmetered; Auto keeps hard
+caps — that is operator money, and nothing here touches `src/limits.js`.
 
 Prompts are per-transport too: `authorTransport()` tells prompt-builders which
 backend the author will run on, so the cloud writer gets a full-strength
@@ -523,12 +542,19 @@ They are not two flavours of the same artefact.
 Both are generated from the same research pass, so one brief produces both —
 which is the actual submission workflow.
 
-**A DECK's structure is sized to the team; a report's is not.** The deck
-planner derives its section count from the merged identity's team
-(`src/ai/team.js`): `clamp(members, 3, 8)` major parts, one per presenting
-member, capped at the renderer's 8-section ceiling, with the outline grammar's
-sections cap tightened to the same number. The count is the deck's own data,
-never a separate input.
+**A DECK's structure is an approved split; a report's is not.** In the
+subtopic flow (`mode: team | solo`) the model first splits the topic into
+ordered parts from knowledge alone (`src/ai/subtopics.js`) — team mode
+defaults to the presenting members, solo mode to an explicit count, and an
+explicit `subtopicCount` wins in either mode — then research runs per part and
+the outline fills exactly those parts (`planDeck` with fixed `sections`,
+clamped to the renderer's 8-section ceiling, every part guaranteed at least
+one slide). Each part has an owner (`ownersFor`: contiguous shares, one member
+may own several), carried on `plan.owners` into `distributePresenters`, which
+honours it whole-section rather than rebalancing. The outline gate edits the
+parts (rename, add up to 8, remove with re-homing, reassign owners) before
+anything is written. Legacy callers that pass no `mode` keep the old rule:
+`clamp(members, 3, 8)` from the merged identity's team.
 
 The report planner deliberately does NOT do this, and the deck's rule does not
 transfer: a talk is divided between the people giving it, while a report's
@@ -549,11 +575,24 @@ slide where the section sizes allow. With at least as many members as sections,
 each section goes to its own member — nobody doubled up while another sits
 idle. The writer's ops grammar drops the `presenter` field for every type
 (unrepresentable beats scrubbed), the distribution is force-applied after
-generation, and the chrome footer skips the presenter line on divider surfaces.
-The briefing's slides-per-member answer overrides the automatic per-member
-target (still contiguous) and reaches generation structurally through
-meta.yaml. Chat turns can still reassign a presenter by hand — their grammar
+generation, and the chrome footer skips the presenter line on divider surfaces
+and on `references`/`bibliography`/`data-source` slides (`REFERENCE_TYPES` in
+`src/ai/team.js` — a source map is nobody's slide, so it is also spared the
+density sweep). The briefing's slides-per-member answer overrides the
+automatic per-member target (still contiguous) and reaches generation
+structurally through meta.yaml; solo mode ignores it and sizes by parts plus
+slide count. Chat turns can still reassign a presenter by hand — their grammar
 keeps the field.
+
+**The deck carries its own source map.** `research/pages.json` keeps every
+source's full text beside the merged `notes.md` (same bytes the writer drew
+from, per-page attribution the merge forgets). After presenters are assigned,
+`finalizeDeck` maps each content slide's grounded claims back to the pages
+that ground them (`src/ai/provenance.js` — numeric claims only, so a shared
+name cannot false-link two sources) and inserts one `references` slide
+second-to-last: each source with the slides that drew on it, capped at ten
+220-char items. A deck that already carries a references-family slide keeps
+it; a deck with nothing mappable gets no slide rather than an empty one.
 
 ## The report generator
 
@@ -595,8 +634,10 @@ never filled, so only the title ever reached the message.
 
 **Shared research orchestration.** The report generator reads the same
 `research/notes.md`, the same approved `plan.yaml` and the same merged identity
-the deck used, and refuses to run without them — the outline gate is the human
-gate for both artefacts. The model only ever sees a bounded excerpt of the
+the deck used — the outline gate is the human gate for both artefacts. A deck
+built with research-source `none` has no notes file; rather than refuse, the
+report briefs from `deck.yaml` slides (`deckFallbackText`), so a finished deck
+can always grow its companion report with no new research pass. The model only ever sees a bounded excerpt of the
 research (`excerptResearch` in `src/ai/research.js`); the full artefact stays
 whole on disk, because a research pass can outgrow the model's context window
 and an unbounded prompt collapses generation. Reachable as
