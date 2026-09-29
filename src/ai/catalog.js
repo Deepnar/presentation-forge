@@ -441,7 +441,7 @@ export async function catalogForType(type) {
 
 function sharedFieldList(slide, schema) {
   return Object.entries(slide.properties)
-    .filter(([k]) => k !== "type")
+    .filter(([k]) => k !== "type" && k !== "overrides")
     .map(([k, spec]) => describeField(k, spec, schema).text);
 }
 

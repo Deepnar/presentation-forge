@@ -61,6 +61,94 @@
         }
       }
     },
+    "overrides": {
+      "type": "object",
+      "description": "Human-only manual overrides from the canvas editor. Named `overrides` (not `layout`) because `diagram` already owns `layout` as a content field. Never written by the model: every model grammar excludes it, and every AI pass preserves the human's block verbatim. Geometry is in inches on the 13.333 x 7.5 slide canvas. Element targets name renderer shapes; the renderer ignores targets it does not recognise, so validation checks shape and range only.",
+      "additionalProperties": false,
+      "properties": {
+        "elements": {
+          "type": "array",
+          "description": "Geometry overrides for renderer-placed elements. Dropped (with confirm) on a type swap, because targets do not transfer between layouts.",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": ["target"],
+            "additionalProperties": false,
+            "properties": {
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "x": { "type": "number", "minimum": 0, "maximum": 13.333 },
+              "y": { "type": "number", "minimum": 0, "maximum": 7.5 },
+              "w": { "type": "number", "exclusiveMinimum": 0, "maximum": 13.333 },
+              "h": { "type": "number", "exclusiveMinimum": 0, "maximum": 7.5 }
+            }
+          }
+        },
+        "paint": {
+          "type": "array",
+          "description": "Paint overrides. A value is either a theme token path (re-derived on a theme switch) or a hex colour (the user's explicit choice, kept verbatim). Survives theme switches and type swaps.",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": ["target"],
+            "additionalProperties": false,
+            "properties": {
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "fill": {
+                "type": "string",
+                "pattern": "^(#[0-9A-Fa-f]{6}|[a-z]+\\.[A-Za-z0-9_.]+)$"
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^(#[0-9A-Fa-f]{6}|[a-z]+\\.[A-Za-z0-9_.]+)$"
+              }
+            }
+          }
+        },
+        "textboxes": {
+          "type": "array",
+          "description": "Free text boxes placed in slide coordinates. Type-independent, so they survive type swaps.",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["text", "x", "y", "w", "h"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "x": { "type": "number", "minimum": 0, "maximum": 13.333 },
+              "y": { "type": "number", "minimum": 0, "maximum": 7.5 },
+              "w": { "type": "number", "exclusiveMinimum": 0, "maximum": 13.333 },
+              "h": { "type": "number", "exclusiveMinimum": 0, "maximum": 7.5 },
+              "size": { "type": "number", "minimum": 8, "maximum": 72 }
+            }
+          }
+        },
+        "images": {
+          "type": "array",
+          "description": "Free images placed in slide coordinates. The asset resolves like any slide image field.",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": ["asset", "x", "y", "w", "h"],
+            "additionalProperties": false,
+            "properties": {
+              "asset": { "type": "string", "minLength": 1, "maxLength": 200 },
+              "x": { "type": "number", "minimum": 0, "maximum": 13.333 },
+              "y": { "type": "number", "minimum": 0, "maximum": 7.5 },
+              "w": { "type": "number", "exclusiveMinimum": 0, "maximum": 13.333 },
+              "h": { "type": "number", "exclusiveMinimum": 0, "maximum": 7.5 }
+            }
+          }
+        }
+      }
+    },
     "side": {
       "type": "object",
       "required": [
@@ -203,6 +291,9 @@
           "type": "string",
           "maxLength": 200,
           "description": "A note rendered on the slide itself, in a thin bar above the chrome footer. For speaker instructions the audience may read. Only drawn on standard content-box slides."
+        },
+        "overrides": {
+          "$ref": "#/definitions/overrides"
         },
         "cites": {
           "type": "array",

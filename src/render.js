@@ -13,6 +13,7 @@ import { loadBrand, applyTitleChrome, applyContentChrome, CANVAS } from "./chrom
 import { renderSlidePlate } from "./plate.js";
 import { placeholderGateError } from "./placeholders.js";
 import { resetFloorEvents, drainFloorEvents } from "./fit.js";
+import { drawFreeforms } from "./overrides.js";
 import { watchGeometry } from "./geometry.js";
 import { loadIdentity } from "./ai/identity.js";
 import { exportDeck } from "./export.js";
@@ -93,6 +94,7 @@ export async function render({
   const total = deck.slides.length;
   const problems = [];
   const drawn = [];
+  const placed = [];
 
   for (const [i, data] of deck.slides.entries()) {
     const layout = layouts[data.type];
@@ -118,7 +120,7 @@ export async function render({
 
     const noteBar = data.speaker_note && !isFull;
     const box = content(theme, brand, { full: isFull, note: noteBar ? 0.7 : 0, identity, type: data.type });
-    const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total, problems };
+    const ctx = { theme, deck, data, identity, box, pres, resolveAsset, index: i + 1, total, problems, overrides: data.overrides };
 
     const plate = await renderSlidePlate({ theme, surface, slide: data, box, signal });
     if (plate) {
@@ -134,10 +136,15 @@ export async function render({
       resetFloorEvents();
       const watch = watchGeometry(slide);
       if (!isFreeform) layout(watch.slide, ctx);
+      if (!isFreeform) {
+        for (const p of drawFreeforms(watch.slide, ctx)) problems.push(`slide ${i + 1} (${data.type}): ${p}`);
+      }
       for (const g of watch.problems()) problems.push(`slide ${i + 1} (${data.type}): ${g}`);
       drawn.push(watch.drawn());
+      placed.push(ctx.placed ?? {});
     } catch (err) {
       problems.push(`slide ${i + 1} (${data.type}): ${err.message}`);
+      placed.push({});
     }
     for (const e of drainFloorEvents()) problems.push(`slide ${i + 1} (${data.type}): ${e}`);
 
@@ -181,7 +188,7 @@ export async function render({
   }
   if (write) await pres.writeFile({ fileName: outFile });
 
-  return { outFile, slides: total, theme: theme.label, problems, drawn };
+  return { outFile, slides: total, theme: theme.label, problems, drawn, placed };
 }
 
 function parseArgs(argv) {
@@ -193,6 +200,7 @@ function parseArgs(argv) {
     else if (a === "--style") args.style = argv[++i];
     else if (a === "--mode") args.mode = argv[++i];
     else if (a === "--out") args.out = argv[++i];
+    else if (a === "--geometry") args.geometry = true;
     else if (a === "--format") args.format = argv[++i];
     else rest.push(a);
   }
@@ -217,6 +225,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (args.format) {
       const r = await exportDeck({ deckFile: args.deckFile, format: args.format, themeName: args.themeName });
       console.log(`  ${r.format} · ${path.relative(ROOT, r.outFile)}`);
+    } else if (args.geometry) {
+      const r = await render({ ...args, write: false });
+      console.log(JSON.stringify(r.placed));
     } else {
       const r = await render(args);
       console.log(`  ${r.slides} slides · ${r.theme} · ${path.relative(ROOT, r.outFile)}`);

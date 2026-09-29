@@ -5,6 +5,7 @@ import { CANVAS, reservedTopRight } from "../chrome.js";
 import { chartSeries, ensureContrast } from "../chartpalette.js";
 import { frameBox, drawOpening, drawHeading, bulletOptions, listColumns, hasDropcap, sectionField, sectionStyle, titlePlacement } from "../composition.js";
 import { atDesign, atFloor, card, content, designed, eyebrow, fitAllAt, fitAt, fitLineAt, heading, lineAtFloor, linesBox, onInk, paint, widest } from "./helpers.js";
+import { overrideGeom, overridePaint } from "../overrides.js";
 
 export const layouts = {
 title(slide, ctx) {
@@ -192,8 +193,8 @@ title(slide, ctx) {
         slide.addText(
           col.map((b, j) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, from + j) } })),
           {
-            x: rx, y, w: cw, h: avail,
-            ...textStyle(theme, "body", { scale: colScale }),
+            ...overrideGeom(ctx, i === 0 ? "body-left" : "body-right", { x: rx, y, w: cw, h: avail }),
+            ...overridePaint(ctx, theme, i === 0 ? "body-left" : "body-right", textStyle(theme, "body", { scale: colScale })),
             paraSpaceAfter: 10,
             valign: "top",
           },
@@ -205,8 +206,8 @@ title(slide, ctx) {
     slide.addText(
       data.bullets.map((b, i) => ({ text: b, options: { breakLine: true, ...bulletOptions(theme, i) } })),
       {
-        x: box.x, y, w: box.w, h: avail,
-        ...textStyle(theme, "body", { scale }),
+        ...overrideGeom(ctx, "body", { x: box.x, y, w: box.w, h: avail }),
+        ...overridePaint(ctx, theme, "body", textStyle(theme, "body", { scale })),
         paraSpaceAfter: 10,
         valign: "top",
       },

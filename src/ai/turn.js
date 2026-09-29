@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps, diffDecks, stripForeignFields, scopeOpsToSelection } from "./ops.js";
+import { buildOpsSchema, applyOps, diffDecks, stripForeignFields, scopeOpsToSelection, scrubLayoutOps } from "./ops.js";
 import { slideCatalog, deckSchema } from "./catalog.js";
 import { validateDeck } from "../validate.js";
 
@@ -11,6 +11,8 @@ function systemPrompt({ catalog, theme, identity, decisions, synthesis }) {
   const voice = theme?.voice ?? {};
   const lines = [
     "You write presentation CONTENT. You never control layout.",
+    "A slide may carry a human's manual overrides, but they are invisible to",
+    "you: never emit an `overrides` field, never ask for one.",
     "",
     "Colours, fonts, sizes, spacing and positions belong to the theme and the",
     "renderer. Never emit them, never ask for them, never describe them. If a",
@@ -198,17 +200,19 @@ export async function runTurn({
 
     const scoped = scopeOpsToSelection(ops, onlySlides);
     ops = scoped.ops;
+    const layoutScrub = scrubLayoutOps(ops);
+    ops = layoutScrub.ops;
     let applied = applyOps(base, ops);
-    if (scoped.refused.length) {
-      applied = {
-        ...applied,
-        changes: [
-          ...(applied.changes ?? []),
-          ...scoped.refused.map((r) => (r.index == null
-            ? `ignored an ${r.op} that named no slide — the request was scoped to a selection`
-            : `ignored ${r.op} on slide ${r.index + 1} — outside the selected slides`)),
-        ],
-      };
+    const extraChanges = [
+      ...scoped.refused.map((r) => (r.index == null
+        ? `ignored an ${r.op} that named no slide — the request was scoped to a selection`
+        : `ignored ${r.op} on slide ${r.index + 1} — outside the selected slides`)),
+      ...layoutScrub.scrubbed.map((r) => (r.index == null
+        ? `ignored a manual-overrides block the model emitted — slide geometry is human-only`
+        : `ignored a manual-overrides block the model emitted on slide ${r.index + 1} — slide geometry is human-only`)),
+    ];
+    if (extraChanges.length) {
+      applied = { ...applied, changes: [...(applied.changes ?? []), ...extraChanges] };
     }
     if (applied.ok) {
       const stripped = stripForeignFields(applied.deck, await deckSchema());

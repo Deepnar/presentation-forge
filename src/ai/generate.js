@@ -1,5 +1,5 @@
 import { chatJSON, authorTransport } from "./ollama.js";
-import { buildOpsSchema, applyOps, slideFromOps } from "./ops.js";
+import { buildOpsSchema, applyOps, slideFromOps, layoutForTypeChange } from "./ops.js";
 import { selectResearch, slideQuery, CALL_RESEARCH_CHARS } from "./retrieve.js";
 import { imageSeat } from "./images.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, FAMILY_TYPES, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
@@ -418,7 +418,7 @@ async function writeSlide({ spec, plan, deck, theme, research, model, signal, ch
   const buildOps = buildOpsSchema(schema, {
     slideCount: deck.slides.length,
     onlyTypes: [spec.type],
-    excludeProps: ["presenter"],
+    excludeProps: ["presenter", "overrides"],
   });
 
   const voice = theme?.voice ?? {};
@@ -667,7 +667,7 @@ export async function sweepDeck({
 
     const current = Object.entries(slide)
       .map(([k, v]) => {
-        if (k === "notes" || k === "presenter") return null;
+        if (k === "notes" || k === "presenter" || k === "overrides") return null;
         const val = Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join(" | ") : String(v ?? "");
         return val ? `  ${k}: ${val}` : null;
       })
@@ -737,7 +737,7 @@ export async function sweepDeck({
     } else {
       next.slides[i] = got.slide;
     }
-    next.slides[i] = { ...next.slides[i], type: slide.type, presenter: slide.presenter, section: slide.section };
+    next.slides[i] = { ...next.slides[i], type: slide.type, presenter: slide.presenter, section: slide.section, overrides: slide.overrides };
     const { ok } = await validateDeck(next);
     if (!ok) {
       problems.push(`slide ${i + 1} (${slide.type}): density rewrite failed — kept original`);
@@ -804,6 +804,13 @@ export function compatibleRemap(slide, targetType) {
   }
 
   delete out.image;
+  // A type swap drops geometry: targets name the old layout's shapes. Paint,
+  // textboxes and images are type-independent and stay.
+  if (out.overrides !== undefined) {
+    const kept = layoutForTypeChange(out.overrides);
+    if (kept === undefined) delete out.overrides;
+    else out.overrides = kept;
+  }
   return out;
 }
 
@@ -889,6 +896,7 @@ export async function insertSlide({
   slide.type = slide.type ?? spec.type;
   if (slide.section == null && spec.section != null) slide.section = spec.section;
   delete slide.presenter;
+  delete slide.overrides;
 
   const nextSlides = [...slides.slice(0, at + 1), slide, ...slides.slice(at + 1)];
   return { slide, index: at + 1, deck: { ...deck, slides: nextSlides }, spec };
@@ -913,7 +921,7 @@ export async function convertSlide({
   const voice = theme?.voice ?? {};
   const fullStrength = (await authorTransport({ model })) === "cloud";
   const current = Object.entries(slide)
-    .map(([k, v]) => (k === "notes" ? null : `${k}: ${Array.isArray(v) ? v.join(" | ") : v}`))
+    .map(([k, v]) => (k === "notes" || k === "overrides" ? null : `${k}: ${Array.isArray(v) ? v.join(" | ") : v}`))
     .filter(Boolean)
     .join("\n");
 
@@ -955,10 +963,13 @@ export async function convertSlide({
   const got = slideFromOps(res.data?.ops, index);
   if (!got || got.kind !== "slide") return { slide: null, method: "model", errors: ["no usable op"] };
   const candidate = { ...got.slide, type: targetType };
+  delete candidate.overrides;
 
   if (isDivider) delete candidate.presenter;
   else candidate.presenter = slide.presenter;
   candidate.section = slide.section;
+  const keptLayout = layoutForTypeChange(slide.overrides);
+  if (keptLayout !== undefined) candidate.overrides = keptLayout;
 
   const imageField = candidate.image;
   if (imageField && /^[a-z][a-z0-9+.-]*:\/\//i.test(imageField)) {

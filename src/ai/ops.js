@@ -51,6 +51,11 @@ export function buildOpsSchema(
       delete props[name];
       required.delete(name);
     }
+    // The human overrides block is unrepresentable to the model in every
+    // grammar, regardless of what a caller excludes. A model that could name
+    // the field would start inventing geometry.
+    delete props.overrides;
+    required.delete("overrides");
     return { props, required: [...required] };
   };
 
@@ -170,7 +175,13 @@ export function applyOp(deck, op) {
       requireSlide(op.slide, "replace_slide");
       requireIndex(deck, op.index, "replace_slide");
       const was = deck.slides[op.index].type;
-      deck.slides[op.index] = clone(op.slide);
+      const prevLayout = deck.slides[op.index].overrides;
+      const next = clone(op.slide);
+      // A replace carries content, never the human's manual overrides. The
+      // turn path scrubs model-written overrides first, so anything arriving here
+      // with a block is human-intended and wins; otherwise the old one stands.
+      if (next.overrides === undefined && prevLayout !== undefined) next.overrides = prevLayout;
+      deck.slides[op.index] = next;
       return `~ slide ${op.index + 1} (${was} → ${op.slide.type})`;
     }
 
@@ -179,8 +190,10 @@ export function applyOp(deck, op) {
       if (!op.patch || typeof op.patch !== "object") {
         throw new OpError("update_slide: missing \"patch\" object");
       }
-      deck.slides[op.index] = { ...deck.slides[op.index], ...clone(op.patch) };
-      return `~ slide ${op.index + 1} (${Object.keys(op.patch).join(", ")})`;
+      const patch = clone(op.patch);
+      delete patch.overrides;
+      deck.slides[op.index] = { ...deck.slides[op.index], ...patch };
+      return `~ slide ${op.index + 1} (${Object.keys(patch).join(", ")})`;
     }
 
     case "delete_slide": {
@@ -251,6 +264,38 @@ export function fieldsForType(schema, type) {
     if (matches) for (const k of Object.keys(rule.then?.properties ?? {})) fields.add(k);
   }
   return fields;
+}
+
+/**
+ * The human `overrides` block is never model-writable. Turns scrub it from ops
+ * before applying so a model that invents geometry gets a visible note rather
+ * than a silent foothold; applyOp preserves it as defence in depth.
+ */
+export function scrubLayoutOps(ops) {
+  const scrubbed = [];
+  const out = (ops ?? []).map((o) => {
+    if (!o || typeof o !== "object") return o;
+    for (const holder of [o.slide, o.patch]) {
+      if (holder && typeof holder === "object" && holder.overrides !== undefined) {
+        delete holder.overrides;
+        scrubbed.push({ op: o.op, index: o.index ?? o.to ?? null });
+      }
+    }
+    return o;
+  });
+  return { ops: out, scrubbed };
+}
+
+/**
+ * What survives a type swap: paint, textboxes and images are type-independent,
+ * but geometry targets name the old layout's shapes and cannot transfer. The
+ * renderer ignores unresolvable targets, so dropping `elements` here is what
+ * makes the confirmed reset real.
+ */
+export function layoutForTypeChange(layout) {
+  if (!layout || typeof layout !== "object") return undefined;
+  const { elements, ...rest } = layout;
+  return Object.keys(rest).length ? rest : undefined;
 }
 
 export function stripForeignFields(deck, schema) {

@@ -86,7 +86,7 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
   const buildOps = buildOpsSchema(schema, {
     slideCount: Math.max(index + 1, 2),
     onlyTypes: [slide.type],
-    excludeProps: ["presenter"],
+    excludeProps: ["presenter", "overrides"],
   });
 
   const flagged = inventory
@@ -117,7 +117,7 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
 
   const current = Object.entries(slide)
     .map(([k, v]) => {
-      if (k === "notes" || k === "presenter" || k === "type") return null;
+      if (k === "notes" || k === "presenter" || k === "type" || k === "overrides") return null;
       const val = Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join(" | ") : String(v ?? "");
       return val ? `  ${k}: ${val}` : null;
     })
@@ -152,7 +152,7 @@ async function rewriteSlide({ slide, index, inventory, research, model, signal, 
     candidate = got.slide;
   }
   if (!candidate) return null;
-  candidate = { ...candidate, type: slide.type, presenter: slide.presenter, section: slide.section };
+  candidate = { ...candidate, type: slide.type, presenter: slide.presenter, section: slide.section, overrides: slide.overrides };
   const { ok } = await validateDeck({ title: "t", slides: [candidate] });
   return ok ? candidate : null;
 }

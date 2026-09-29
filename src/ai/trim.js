@@ -51,7 +51,9 @@ async function metaFor(type) {
       }
     }
   };
-  const NOT_TRIMMABLE = new Set(["notes", "speaker_note", "presenter", "cites"]);
+  // `overrides` is the human's canvas block, not content: no pass that walks
+  // schema fields (trim, field-length, drawcheck) may read or write it.
+  const NOT_TRIMMABLE = new Set(["notes", "speaker_note", "presenter", "cites", "overrides"]);
   const shared = Object.fromEntries(
     Object.entries(schema.definitions.slide.properties ?? {})
       .filter(([name]) => !NOT_TRIMMABLE.has(name) && !(rule?.then?.properties ?? {})[name]),

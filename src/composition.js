@@ -1,6 +1,7 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
 import { fitScale, fitOneLine, lineCount, measure } from "./fit.js";
 import { CANVAS } from "./chrome.js";
+import { overrideGeom, overridePaint } from "./overrides.js";
 
 const AXES = {
   title: { composition: ["flush-bottom", "centred", "split", "band", "top"] },
@@ -241,8 +242,8 @@ export function drawHeading(slide, ctx) {
     const lines = snug ? 1 : Math.min(maxLines, Math.max(2, raw));
     const hgt = (size * (st.line ?? 1.2) / 72) * lines;
     slide.addText(data.headline, {
-      x: head.x, y, w: head.w, h: hgt,
-      ...textStyle(theme, "heading", { scale }),
+      ...overrideGeom(ctx, "headline", { x: head.x, y, w: head.w, h: hgt }),
+      ...overridePaint(ctx, theme, "headline", textStyle(theme, "heading", { scale })),
       ...align, valign: "top",
     });
     y += hgt + 0.08;
@@ -262,8 +263,8 @@ export function drawHeading(slide, ctx) {
     const sfH = box.frame === "sidebar" ? 1.6 : standfirstH(theme);
     const scale = fitScale(data.standfirst, head.wide, sfH, st);
     slide.addText(data.standfirst, {
-      x: head.x, y, w: head.wide, h: sfH,
-      ...textStyle(theme, "subhead", { color: theme.palette.ink_muted, scale }),
+      ...overrideGeom(ctx, "standfirst", { x: head.x, y, w: head.wide, h: sfH }),
+      ...overridePaint(ctx, theme, "standfirst", textStyle(theme, "subhead", { color: theme.palette.ink_muted, scale })),
       ...align, valign: "top",
     });
     y += sfH;
