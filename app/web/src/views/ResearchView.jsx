@@ -100,6 +100,12 @@ export default function ResearchView({ slug, refreshToken, onBack, onNavigate })
             )}
           </Panel>
 
+          {/* The sources table — first, because everything below (figures,
+              notes) is checked against it. */}
+          {state.sources.length > 0 && (
+            <SourcesPanel sources={state.sources} />
+          )}
+
           {/* The figures the deck claims — so "are the graphs reflective of
               real numbers?" is answerable before presenting, not after. */}
           {state.figures.length > 0 && (
@@ -148,53 +154,54 @@ export default function ResearchView({ slug, refreshToken, onBack, onNavigate })
             )}
           </Panel>
 
-          {/* The sources table. */}
-          {state.sources.length > 0 && (
-            <Panel className="p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Sources</div>
-                <Badge className="bg-raised text-fg-faint">{state.sources.length}</Badge>
-              </div>
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-line text-[10.5px] uppercase tracking-wider text-fg-faint">
-                    <th className="py-2 pr-3 font-medium">Title</th>
-                    <th className="py-2 pr-3 font-medium">Domain</th>
-                    <th className="py-2 pr-3 font-medium">Kind</th>
-                    <th className="py-2 font-medium">Words</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {state.sources.map((src, i) => (
-                    <tr key={i} className="border-b border-line/60 last:border-0">
-                      <td className="max-w-md py-2 pr-3">
-                        {src.url ? (
-                          <a href={src.url} target="_blank" rel="noreferrer" className="break-all text-[12.5px] text-fg underline-offset-2 hover:underline">
-                            {src.title || src.url}
-                          </a>
-                        ) : (
-                          <span className="text-[12.5px] text-fg-muted">{src.title || "untitled"}</span>
-                        )}
-                      </td>
-                      <td className="py-2 pr-3 font-mono text-[11px] text-fg-faint">{domainOf(src.url)}</td>
-                      <td className="py-2 pr-3 text-[11.5px]">
-                        <KindBadge src={src} />
-                      </td>
-                      <td className="py-2 font-mono text-[11px] tabular-nums text-fg-faint">
-                        {typeof src.words === "number" ? src.words : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Panel>
-          )}
-
           <ImageCredits credits={state.imageCredits} />
         </div>
       )}
       </div>
     </div>
+  );
+}
+
+function SourcesPanel({ sources }) {
+  return (
+    <Panel className="p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Sources</div>
+        <Badge className="bg-raised text-fg-faint">{sources.length}</Badge>
+      </div>
+      <table className="w-full text-left">
+        <thead>
+          <tr className="border-b border-line text-[10.5px] uppercase tracking-wider text-fg-faint">
+            <th className="py-2 pr-3 font-medium">Title</th>
+            <th className="py-2 pr-3 font-medium">Domain</th>
+            <th className="py-2 pr-3 font-medium">Kind</th>
+            <th className="py-2 font-medium">Words</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sources.map((src, i) => (
+            <tr key={i} className="border-b border-line/60 last:border-0">
+              <td className="max-w-md py-2 pr-3">
+                {src.url ? (
+                  <a href={src.url} target="_blank" rel="noreferrer" className="break-all text-[12.5px] text-fg underline-offset-2 hover:underline">
+                    {src.title || src.url}
+                  </a>
+                ) : (
+                  <span className="text-[12.5px] text-fg-muted">{src.title || "untitled"}</span>
+                )}
+              </td>
+              <td className="py-2 pr-3 font-mono text-[11px] text-fg-faint">{domainOf(src.url)}</td>
+              <td className="py-2 pr-3 text-[11.5px]">
+                <KindBadge src={src} />
+              </td>
+              <td className="py-2 font-mono text-[11px] tabular-nums text-fg-faint">
+                {typeof src.words === "number" ? src.words : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Panel>
   );
 }
 
