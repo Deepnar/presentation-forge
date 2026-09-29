@@ -627,7 +627,11 @@ review:
 > 10-slide deck from an 11-person team planned 4 sections, not 8. The cap is the
 > contract; the count is a target the model reconciles with `maxSlides`.
 
-### [ ] (stretch) Canvas slide-builder
+### [ ] (stretch) Canvas slide-builder (live filmstrip during generation)
+
+*Priority: stretch, and not on the path to launch. Not the same item as the
+§11 full-free editor — that one is post-generation human editing; this one is
+slides appearing while the model writes them.*
 
 *Priority: stretch, and not on the path to launch.*
 
