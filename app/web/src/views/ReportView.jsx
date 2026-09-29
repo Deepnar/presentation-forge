@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, Empty } from "../components/ui.jsx";
 import { DownloadIcon } from "../components/icons.jsx";
 import { progressLabel } from "../lib/progress.js";
+import { withBudgetRetry } from "../lib/budget.js";
 import { reportWrites } from "../lib/reportWrites.js";
 import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 
@@ -93,9 +94,10 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     setError("");
     setStatus("Queued…");
     reportWrites.begin(slug, { abort: () => {}, status: "Queued…" });
-    const j = api.generateReport(
-      slug,
-      { depth },
+    const attempt = (allowOverrun) => {
+      const j = api.generateReport(
+        slug,
+        { depth, allowOverrun },
       {
         status: (p) => {
           const label = progressLabel(p);
@@ -116,10 +118,12 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
         },
       },
     );
-    reportWrites.update(slug, { abort: j.abort });
-    setJob(j);
+      reportWrites.update(slug, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
     try {
-      await j.promise;
+      await withBudgetRetry(attempt);
     } catch (err) {
       setError(err.name === "AbortError" ? "Cancelled." : err.message);
       setStatus("");

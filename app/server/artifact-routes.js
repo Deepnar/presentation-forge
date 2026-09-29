@@ -18,6 +18,8 @@ import { deckFigures } from "../../src/ai/grounding.js";
 import { placeholderSlides } from "../../src/placeholders.js";
 import { estimateTokens, meterSummary } from "../../src/usage.js";
 import { validateDeck } from "../../src/validate.js";
+import { getUserId } from "../../src/auth.js";
+import { withByokRun } from "../../src/byok-budget.js";
 import { fail, ok, wrap } from "./http.js";
 
 export function sniffImage(buf, ext) {
@@ -591,7 +593,7 @@ app.post("/api/decks/:slug/report/generate", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { depth, model } = req.body ?? {};
+  const { depth, model, allowOverrun } = req.body ?? {};
   let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
@@ -600,13 +602,21 @@ app.post("/api/decks/:slug/report/generate", (req, res) => {
         estimateTokens({ slides: 8, depth: depth ?? "full" }),
       );
     }
-    const r = await generateReport({
-      slug: req.params.slug,
-      depth,
-      model,
-      signal: ctrl.signal,
-      onProgress: (p) => sse.send("status", p),
-    });
+    const r = await withByokRun(
+      {
+        userId: getUserId(req.user.email),
+        provider: "cloud",
+        estimate: estimateTokens({ slides: 8, depth: depth ?? "full" }),
+        allowOverrun: allowOverrun === true,
+      },
+      () => generateReport({
+        slug: req.params.slug,
+        depth,
+        model,
+        signal: ctrl.signal,
+        onProgress: (p) => sse.send("status", p),
+      }),
+    );
     sse.send("result", { sections: r.sections, skipped: r.skipped, depth: r.depth });
     sse.close();
   })().finally(() => settleRequest(req, reservation)).catch((err) => {

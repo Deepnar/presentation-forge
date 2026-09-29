@@ -14,6 +14,8 @@ import {
   estimateByokReservation,
   reserveByokCall,
   settleByokCall,
+  currentByokRun,
+  reportByokRunUsage,
 } from "../byok-budget.js";
 
 export const DEFAULT_EXCERPT_CHARS = 80_000;
@@ -562,6 +564,8 @@ async function cloudChat(spec, {
 
   const byok = spec.backend.billingOwner === "user";
   const byokUserId = byok ? currentUserId() : null;
+  const byokRun = byokUserId ? currentByokRun() : null;
+  const activeRun = byokRun && byokRun.userId === byokUserId ? byokRun : null;
   const outputCap = byok
     ? Math.min(spec.num_predict ?? BYOK_OUTPUT_CAP, BYOK_OUTPUT_CAP)
     : spec.num_predict;
@@ -589,18 +593,22 @@ async function cloudChat(spec, {
     ...(spec.backend.sessionHeader ? { "x-opencode-session": sessionId } : {}),
   };
 
-  const reservation = byokUserId
+  const reservation = byokUserId && !activeRun
     ? reserveByokCall({
         userId: byokUserId,
         provider: spec.backend.providerId,
         tokens: estimateByokReservation(body),
       })
     : null;
+  const settleCall = (actual) => {
+    if (activeRun) reportByokRunUsage(activeRun, actual);
+    else settleByokCall(reservation?.eventId, actual);
+  };
 
   if (spec.backend.responsesModels?.includes(spec.model)) {
     clearTimeout(timer);
     signal?.removeEventListener("abort", onAbort);
-    return responsesChat(spec, { messages, format, tools, images, temperature, outputCap, onToken, timeout, signal, sessionId, reservation });
+    return responsesChat(spec, { messages, format, tools, images, temperature, outputCap, onToken, timeout, signal, sessionId, reservation, run: activeRun });
   }
 
   try {
@@ -616,8 +624,7 @@ async function cloudChat(spec, {
     if (!stream) {
       const data = await res.json();
       const msg = data.choices?.[0]?.message ?? {};
-      settleByokCall(
-        reservation?.eventId,
+      settleCall(
         estimateByokActual(body, msg.content, data.usage?.prompt_tokens, data.usage?.completion_tokens),
       );
       return {
@@ -668,8 +675,7 @@ async function cloudChat(spec, {
       }
     }
 
-    settleByokCall(
-      reservation?.eventId,
+    settleCall(
       estimateByokActual(body, content, promptCount, evalCount),
     );
     return {
@@ -685,7 +691,7 @@ async function cloudChat(spec, {
 
 async function responsesChat(spec, {
   messages, format, tools, images, temperature, outputCap,
-  onToken, timeout, signal, sessionId, reservation,
+  onToken, timeout, signal, sessionId, reservation, run,
 }) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeout);
@@ -733,10 +739,9 @@ async function responsesChat(spec, {
         type: "function",
         function: { name: item.name, arguments: item.arguments ?? "{}" },
       }));
-    settleByokCall(
-      reservation?.eventId,
-      estimateByokActual(body, content, data.usage?.input_tokens, data.usage?.output_tokens),
-    );
+    const actual = estimateByokActual(body, content, data.usage?.input_tokens, data.usage?.output_tokens);
+    if (run) reportByokRunUsage(run, actual);
+    else settleByokCall(reservation?.eventId, actual);
     return {
       content,
       toolCalls,

@@ -1,4 +1,5 @@
 import { getDb } from "./db.js";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 export const DEFAULT_BYOK_DAILY_TOKENS = 180_000;
 export const MIN_BYOK_DAILY_TOKENS = 10_000;
@@ -90,9 +91,7 @@ export function reserveByokCall({ userId, provider, tokens, now = Date.now() }) 
       "SELECT COALESCE(SUM(tokens),0) AS tokens FROM byok_events WHERE user_id=? AND created_at>=?",
     ).get(userId, since)?.tokens) || 0;
     if (used + amount > limit) throw new ByokBudgetError({ used, limit, requested: amount });
-    const result = db.prepare(
-      "INSERT INTO byok_events (user_id,provider,tokens,created_at) VALUES (?,?,?,?)",
-    ).run(userId, String(provider || "cloud"), amount, now);
+    const result = insertByokEvent(db, { userId, provider, tokens: amount, now });
     db.exec("COMMIT");
     return { eventId: Number(result.lastInsertRowid), reserved: amount };
   } catch (err) {
@@ -101,11 +100,79 @@ export function reserveByokCall({ userId, provider, tokens, now = Date.now() }) 
   }
 }
 
+function insertByokEvent(db, { userId, provider, tokens, now }) {
+  return db.prepare(
+    "INSERT INTO byok_events (user_id,provider,tokens,created_at) VALUES (?,?,?,?)",
+  ).run(userId, String(provider || "cloud"), tokens, now);
+}
+
 export function settleByokCall(eventId, tokens) {
   if (!eventId) return false;
   const amount = Math.max(1, Math.ceil(Number(tokens) || 0));
   const result = getDb().prepare("UPDATE byok_events SET tokens=? WHERE id=?").run(amount, eventId);
   return result.changes > 0;
+}
+
+const runStore = new AsyncLocalStorage();
+
+export function currentByokRun() {
+  return runStore.getStore() ?? null;
+}
+
+export function runByokWith(run, fn) {
+  if (!run?.eventId) return fn();
+  return runStore.run(run, fn);
+}
+
+export function startByokRun({ userId, provider, estimate, allowOverrun = false, now = Date.now() }) {
+  if (!userId) return null;
+  const amount = Math.max(1, Math.ceil(Number(estimate) || 0));
+  const db = getDb();
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const limit = byokBudgetFor(userId);
+    const since = now - BYOK_WINDOW_MS;
+    const used = Number(db.prepare(
+      "SELECT COALESCE(SUM(tokens),0) AS tokens FROM byok_events WHERE user_id=? AND created_at>=?",
+    ).get(userId, since)?.tokens) || 0;
+    if (used + amount > limit && !allowOverrun) {
+      throw new ByokBudgetError({ used, limit, requested: amount });
+    }
+    const result = insertByokEvent(db, { userId, provider, tokens: amount, now });
+    db.exec("COMMIT");
+    return {
+      eventId: Number(result.lastInsertRowid),
+      userId,
+      reserved: amount,
+      overrun: used + amount > limit,
+      actual: 0,
+      reported: false,
+    };
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
+}
+
+export function reportByokRunUsage(run, tokens) {
+  if (!run?.eventId) return;
+  run.actual += Math.max(0, Number(tokens) || 0);
+  run.reported = true;
+}
+
+export function settleByokRun(run) {
+  if (!run?.eventId) return false;
+  if (!run.reported) return true;
+  return settleByokCall(run.eventId, Math.max(1, Math.ceil(run.actual)));
+}
+
+export async function withByokRun({ userId, provider, estimate, allowOverrun = false } = {}, fn) {
+  const run = startByokRun({ userId, provider, estimate, allowOverrun });
+  try {
+    return await runByokWith(run, fn);
+  } finally {
+    settleByokRun(run);
+  }
 }
 
 export function clearByokUsage(userId) {

@@ -6,6 +6,7 @@ import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { deckContext } from "../lib/deckContext.js";
 import { progressLabel } from "../lib/progress.js";
+import { withBudgetRetry } from "../lib/budget.js";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { ChevronDown, DownloadIcon } from "../components/icons.jsx";
 import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
@@ -255,10 +256,14 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     if (runBusy || !deckRun?.resumable) return;
     setRunBusy(true);
     setActionErr("");
-    api.resumeGenerate(slug, { theme: theme || undefined, model: undefined }, {
-      status: () => {},
-      result: () => { reload(); },
-    }).promise
+    const attempt = (allowOverrun) => {
+      const { promise } = api.resumeGenerate(slug, { theme: theme || undefined, model: undefined, allowOverrun }, {
+        status: () => {},
+        result: () => { reload(); },
+      });
+      return promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => setActionErr(err.message))
       .finally(() => setRunBusy(false));
   }
@@ -268,10 +273,14 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     autoFinalizedRef.current = true;
     setRunBusy(true);
     setActionErr("");
-    api.finalizeDeck(slug, { theme: theme || undefined, model: undefined }, {
-      status: () => {},
-      result: () => { reload(); },
-    }).promise
+    const attempt = (allowOverrun) => {
+      const { promise } = api.finalizeDeck(slug, { theme: theme || undefined, model: undefined, allowOverrun }, {
+        status: () => {},
+        result: () => { reload(); },
+      });
+      return promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => setActionErr(err.message))
       .finally(() => setRunBusy(false));
   }

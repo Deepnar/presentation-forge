@@ -15,7 +15,8 @@ import { isHosted } from "../../src/cloud.js";
 import { meterSummary, estimateTokens, meterTotal, newMeter, withMeter } from "../../src/usage.js";
 import { settleAuto } from "../../src/limits.js";
 import { donorStatus } from "../../src/report.js";
-import { bearerToken, userForToken } from "../../src/auth.js";
+import { bearerToken, userForToken, getUserId } from "../../src/auth.js";
+import { withByokRun } from "../../src/byok-budget.js";
 import { fail, ok, wrap } from "./http.js";
 
 const generationRuns = new Map();
@@ -125,7 +126,7 @@ app.post("/api/decks", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount } = req.body ?? {};
+  const { brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount, allowOverrun } = req.body ?? {};
   let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
@@ -133,12 +134,21 @@ app.post("/api/decks", (req, res) => {
       reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({ research: Boolean(research) }));
       settleAuto({ eventId: reservation.eventId, slides: upcoming });
     }
-    const r = await createDeck({
-      brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount,
-      owner: req.user.email,
-      signal: ctrl.signal,
-      onProgress: (p) => sse.send("status", p),
-    });
+    const parts = Number(subtopicCount) > 0 ? Number(subtopicCount) : 0;
+    const r = await withByokRun(
+      {
+        userId: getUserId(req.user.email),
+        provider: "cloud",
+        estimate: estimateTokens({ slides: 2, research: Boolean(research) }) + parts * estimateTokens({ slides: 1 }),
+        allowOverrun: allowOverrun === true,
+      },
+      () => createDeck({
+        brief, briefing, sources, research, papers, researchSource, upload, theme, maxSlides, model, identity, slidesPerMember, density, imageSupply, mode, subtopicCount,
+        owner: req.user.email,
+        signal: ctrl.signal,
+        onProgress: (p) => sse.send("status", p),
+      }),
+    );
     sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
     sse.close();
   })().finally(() => settleRequest(req, reservation)).catch((err) => {
@@ -261,17 +271,25 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
   const ctrl = new AbortController();
   sse.done.catch(() => ctrl.abort());
 
-  const { theme, model } = req.body ?? {};
+  const { theme, model, allowOverrun } = req.body ?? {};
   let reservation = null;
   (async () => {
     if (await isAutoRoute(model, req.user.email)) {
       reservation = reserveAutoOrThrow(req.user.email, 0, estimateTokens({}));
     }
-    const r = await createDeckFromReport({
-      slug: req.params.slug, theme, model,
-      signal: ctrl.signal,
-      onProgress: (p) => sse.send("status", p),
-    });
+    const r = await withByokRun(
+      {
+        userId: getUserId(req.user.email),
+        provider: "cloud",
+        estimate: estimateTokens({ slides: 2 }),
+        allowOverrun: allowOverrun === true,
+      },
+      () => createDeckFromReport({
+        slug: req.params.slug, theme, model,
+        signal: ctrl.signal,
+        onProgress: (p) => sse.send("status", p),
+      }),
+    );
     sse.send("plan", { slug: r.slug, plan: r.plan, stats: r.stats });
     sse.close();
   })().finally(() => settleRequest(req, reservation)).catch((err) => {
@@ -281,7 +299,13 @@ app.post("/api/decks/:slug/report/deck", (req, res) => {
   });
 });
 
-function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
+function deckRunEstimate(kind, plan) {
+  if (kind === "finalize") return estimateTokens({ slides: 6 });
+  if (kind === "resume") return estimateTokens({ slides: 8 });
+  return estimateTokens({ slides: plan?.slides?.length ?? 12 });
+}
+
+function startDeckRun({ slug, kind, plan, theme, model, reservation = null, userEmail = null, allowOverrun = false }) {
   const ctrl = new AbortController();
   const run = {
     slug,
@@ -304,7 +328,14 @@ function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
   const meter = newMeter();
   run.meter = meter;
 
-  withMeter(meter, () => (async () => {
+  withMeter(meter, () => withByokRun(
+    {
+      userId: userEmail ? getUserId(userEmail) : null,
+      provider: "cloud",
+      estimate: deckRunEstimate(kind, plan),
+      allowOverrun,
+    },
+    () => (async () => {
     const job = kind === "finalize"
       ? () => finalizeDeck({ slug, theme, model, signal: ctrl.signal, onProgress: (p) => broadcast("status", p) })
       : kind === "resume"
@@ -341,7 +372,7 @@ function startDeckRun({ slug, kind, plan, theme, model, reservation = null }) {
     setTimeout(() => {
       if (generationRuns.get(slug) === run) generationRuns.delete(slug);
     }, 5 * 60 * 1000);
-  }));
+  })));
 
   return run;
 }
@@ -362,7 +393,7 @@ function attachToRun(res, run) {
 }
 
 app.post("/api/decks/:slug/generate", async (req, res) => {
-  const { plan, theme, model, resume } = req.body ?? {};
+  const { plan, theme, model, resume, allowOverrun } = req.body ?? {};
 
   const live = generationRuns.get(req.params.slug);
   if (live && !live.finished) {
@@ -392,6 +423,8 @@ app.post("/api/decks/:slug/generate", async (req, res) => {
     theme,
     model,
     reservation,
+    userEmail: req.user.email,
+    allowOverrun: allowOverrun === true,
   });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
@@ -402,7 +435,7 @@ app.post("/api/decks/:slug/generate/resume", async (req, res) => {
     attachToRun(res, live);
     return;
   }
-  const { theme, model } = req.body ?? {};
+  const { theme, model, allowOverrun } = req.body ?? {};
   let reservation = null;
   if (await isAutoRoute(model, req.user.email)) {
     try {
@@ -413,7 +446,7 @@ app.post("/api/decks/:slug/generate/resume", async (req, res) => {
       return sse.close();
     }
   }
-  startDeckRun({ slug: req.params.slug, kind: "resume", plan: null, theme, model, reservation });
+  startDeckRun({ slug: req.params.slug, kind: "resume", plan: null, theme, model, reservation, userEmail: req.user.email, allowOverrun: allowOverrun === true });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 
@@ -423,7 +456,7 @@ app.post("/api/decks/:slug/finalize", async (req, res) => {
     attachToRun(res, live);
     return;
   }
-  const { theme, model } = req.body ?? {};
+  const { theme, model, allowOverrun } = req.body ?? {};
   let reservation = null;
   if (await isAutoRoute(model, req.user.email)) {
     try {
@@ -434,7 +467,7 @@ app.post("/api/decks/:slug/finalize", async (req, res) => {
       return sse.close();
     }
   }
-  startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model, reservation });
+  startDeckRun({ slug: req.params.slug, kind: "finalize", plan: null, theme, model, reservation, userEmail: req.user.email, allowOverrun: allowOverrun === true });
   attachToRun(res, generationRuns.get(req.params.slug));
 });
 

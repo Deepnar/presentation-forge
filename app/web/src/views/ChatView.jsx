@@ -8,6 +8,7 @@ import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
 import { BRIEFING_QUESTIONS, REPORT_QUESTIONS, PRESET_KEYS, questionsFor, initialBriefing, suggestTitle, echoAnswer, applyPresetToBriefing, effectiveBriefStep, presetPayload, briefingAnsweredText, tierQuestions, optionalAnswered, briefTier, stepForTier, isAnswered } from "../lib/briefing.js";
 import { runs } from "../lib/runs.js";
+import { withBudgetRetry } from "../lib/budget.js";
 import { deckContext } from "../lib/deckContext.js";
 import { presetsStore } from "../lib/presets.js";
 import { parseSlashCommand, SLASH_HELP, looksLikeSlash } from "../lib/slash.js";
@@ -280,50 +281,54 @@ export default function ChatView({
     setError("");
     setStatus("Queued…");
     runs.begin(chat.id, { abort: () => {}, status: "Queued…" });
-    const j = api.createDeck(
-      {
-        brief,
-        briefing: briefingAnsweredText(b, themeLabel),
-        maxSlides: b.maxSlides || undefined,
-        theme: b.theme || undefined,
-        research: b.research,
-        researchSource: b.researchSource,
-        imageSupply: b.imageSupply ?? "none",
-        upload: b.uploadedSource,
-        papers: b.papers,
-        slidesPerMember: b.slidesPerMember || undefined,
-        density: b.density || undefined,
-        mode: b.mode === "solo" ? "solo" : "team",
-        subtopicCount: b.subtopicCount || undefined,
-        identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
-        model: model || undefined,
-      },
-      {
-        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
-        plan: (d) => {
-          runs.update(chat.id, { status: "Outline ready." });
-          persist({
-            ...chat,
-            title: chatName(d.plan.title ?? b.title, chat.topic),
-            plan: {
-              title: d.plan.title ?? b.title,
-              subtitle: d.plan.subtitle ?? "",
-              sections: d.plan.sections ?? [],
-              slides: d.plan.slides ?? [],
-              owners: d.plan.owners ?? [],
-            },
-            deckSlug: d.slug,
-            deckThumbs: [],
-            model: model || undefined,
-            error: undefined,
-            updatedAt: new Date().toISOString(),
-          });
+    const attempt = (allowOverrun) => {
+      const j = api.createDeck(
+        {
+          brief,
+          briefing: briefingAnsweredText(b, themeLabel),
+          maxSlides: b.maxSlides || undefined,
+          theme: b.theme || undefined,
+          research: b.research,
+          researchSource: b.researchSource,
+          imageSupply: b.imageSupply ?? "none",
+          upload: b.uploadedSource,
+          papers: b.papers,
+          slidesPerMember: b.slidesPerMember || undefined,
+          density: b.density || undefined,
+          mode: b.mode === "solo" ? "solo" : "team",
+          subtopicCount: b.subtopicCount || undefined,
+          allowOverrun,
+          identity: { academic: b.academic, guide: b.guide, team: b.team, chrome: { branding: b.branding ?? "full" } },
+          model: model || undefined,
         },
-      },
-    );
-    runs.update(chat.id, { abort: j.abort });
-    setJob(j);
-    j.promise
+        {
+          status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
+          plan: (d) => {
+            runs.update(chat.id, { status: "Outline ready." });
+            persist({
+              ...chat,
+              title: chatName(d.plan.title ?? b.title, chat.topic),
+              plan: {
+                title: d.plan.title ?? b.title,
+                subtitle: d.plan.subtitle ?? "",
+                sections: d.plan.sections ?? [],
+                slides: d.plan.slides ?? [],
+                owners: d.plan.owners ?? [],
+              },
+              deckSlug: d.slug,
+              deckThumbs: [],
+              model: model || undefined,
+              error: undefined,
+              updatedAt: new Date().toISOString(),
+            });
+          },
+        },
+      );
+      runs.update(chat.id, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => {
         const msg = err.name === "AbortError" ? "Cancelled." : err.message;
         setError(msg);
@@ -350,32 +355,36 @@ export default function ChatView({
     setError("");
     setStatus("Approving…");
     runs.begin(chat.id, { abort: () => {}, status: "Approving…" });
-    const j = api.generate(
-      chat.deckSlug,
-      {
-        plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
-        theme: (chat.briefing ?? {}).theme || undefined,
-        model: model || undefined,
-      },
-      {
-        status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
-        result: (r) => {
-          persist({
-            ...chat,
-            plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
-            produced: true,
-            deckSlug: r.slug ?? chat.deckSlug,
-            deckThumbs: (r.thumbs ?? []).slice(0, 8),
-            error: undefined,
-            updatedAt: new Date().toISOString(),
-          });
-          onDeckChanged?.();
+    const attempt = (allowOverrun) => {
+      const j = api.generate(
+        chat.deckSlug,
+        {
+          plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
+          theme: (chat.briefing ?? {}).theme || undefined,
+          model: model || undefined,
+          allowOverrun,
         },
-      },
-    );
-    runs.update(chat.id, { abort: j.abort });
-    setJob(j);
-    j.promise
+        {
+          status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
+          result: (r) => {
+            persist({
+              ...chat,
+              plan: { title: plan.title, subtitle: plan.subtitle, sections: plan.sections, slides: clean, owners: plan.owners ?? [] },
+              produced: true,
+              deckSlug: r.slug ?? chat.deckSlug,
+              deckThumbs: (r.thumbs ?? []).slice(0, 8),
+              error: undefined,
+              updatedAt: new Date().toISOString(),
+            });
+            onDeckChanged?.();
+          },
+        },
+      );
+      runs.update(chat.id, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => {
         const msg = err.name === "AbortError" ? "Cancelled." : err.message;
         setError(msg);
@@ -458,9 +467,10 @@ export default function ChatView({
     setError("");
     setStatus("Reconnecting…");
     runs.begin(chat.id, { abort: () => {}, status: "Reconnecting…" });
-    const j = api.resumeGenerate(
-      chat.deckSlug,
-      { model: model || undefined },
+    const attempt = (allowOverrun) => {
+      const j = api.resumeGenerate(
+        chat.deckSlug,
+        { model: model || undefined, allowOverrun },
       {
         status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
         result: (r) => {
@@ -476,9 +486,11 @@ export default function ChatView({
         },
       },
     );
-    runs.update(chat.id, { abort: j.abort });
-    setJob(j);
-    j.promise
+      runs.update(chat.id, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => {
         const msg = err.name === "AbortError" ? "Cancelled." : err.message;
         setError(msg);
@@ -494,9 +506,10 @@ export default function ChatView({
     setError("");
     setStatus("Finalizing…");
     runs.begin(chat.id, { abort: () => {}, status: "Finalizing…" });
-    const j = api.finalizeDeck(
-      chat.deckSlug,
-      { model: model || undefined },
+    const attempt = (allowOverrun) => {
+      const j = api.finalizeDeck(
+        chat.deckSlug,
+        { model: model || undefined, allowOverrun },
       {
         status: (p) => { const label = progressLabel(p); setStatus(label); runs.update(chat.id, { status: label }); },
         result: (r) => {
@@ -511,10 +524,12 @@ export default function ChatView({
           onDeckChanged?.();
         },
       },
-    );
-    runs.update(chat.id, { abort: j.abort });
-    setJob(j);
-    j.promise
+      );
+      runs.update(chat.id, { abort: j.abort });
+      setJob(j);
+      return j.promise;
+    };
+    withBudgetRetry(attempt)
       .catch((err) => {
         const msg = err.name === "AbortError" ? "Cancelled." : err.message;
         setError(msg);

@@ -93,3 +93,37 @@ test("concurrent-looking reservations cannot both observe an unspent budget", ()
   assert.equal(accepted.length, 2);
   assert.equal(byokUsage(userId).tokens, 8000);
 });
+
+test("a run reservation fails fast before burning when the estimate exceeds the cap", async () => {
+  const { startByokRun } = await import("../src/byok-budget.js");
+  assert.throws(
+    () => startByokRun({ userId, provider: "openai", estimate: 20000 }),
+    /BYOK safety budget reached/,
+  );
+  assert.equal(byokUsage(userId).tokens, 0, "nothing was reserved by the refused run");
+});
+
+test("an accepted overrun starts the run and settles actuals without a mid-run throw", async () => {
+  const { startByokRun, runByokWith, currentByokRun, reportByokRunUsage, settleByokRun } =
+    await import("../src/byok-budget.js");
+  const run = startByokRun({ userId, provider: "openai", estimate: 20000, allowOverrun: true });
+  assert.equal(run.overrun, true);
+  assert.equal(currentByokRun(), null, "no run leaks outside its scope");
+  await runByokWith(run, async () => {
+    assert.equal(currentByokRun(), run);
+    reportByokRunUsage(run, 9000);
+    reportByokRunUsage(run, 9000);
+  });
+  assert.equal(currentByokRun(), null);
+  settleByokRun(run);
+  assert.equal(byokUsage(userId).tokens, 18000, "actuals replace the estimate");
+});
+
+test("withByokRun passes anonymous callers through untouched", async () => {
+  const { withByokRun, currentByokRun } = await import("../src/byok-budget.js");
+  const out = await withByokRun({ userId: null, estimate: 10 }, () => {
+    assert.equal(currentByokRun(), null);
+    return "ok";
+  });
+  assert.equal(out, "ok");
+});
