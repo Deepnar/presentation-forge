@@ -14,7 +14,9 @@ import { critiqueDeck } from "./critic.js";
 import { coherencePass } from "./coherence.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
-import { assignPresenters } from "./team.js";
+import { assignPresenters, presentingNames } from "./team.js";
+import { planSubtopics, subtopicCountFor, ownersFor } from "./subtopics.js";
+import { researchSubtopic } from "./research.js";
 import { buildReferencesSlide, insertReferencesSlide } from "./provenance.js";
 import { generateReport } from "./report.js";
 import { scoreDeck } from "../deckscore.js";
@@ -75,6 +77,50 @@ export async function uniqueSlug(base, owner = null) {
       if (!exists.has(candidate)) return candidate;
     }
   }
+}
+
+export async function runSubtopicResearch({ brief, subtopics, papers = false, onProgress } = {}) {
+  const profile = await researchProfile();
+  const chunks = [];
+  const allSources = [];
+  const allPages = [];
+  for (let i = 0; i < subtopics.length; i++) {
+    const st = subtopics[i];
+    onProgress?.({ status: "researching", subtopic: st.title, index: i, total: subtopics.length });
+    const r = await researchSubtopic({
+      title: st.title,
+      focus: st.focus ?? "",
+      topic: brief,
+      profile,
+      onProgress: (p) => onProgress?.({ status: "researching", subtopic: st.title, ...p }),
+    });
+    const tagged = r.pages.map((p) => ({ ...p, subtopic: i }));
+    allPages.push(...tagged);
+    allSources.push(...tagged.map(({ url, title, words }) => ({ url, title, words, subtopic: i })));
+    chunks.push(
+      `## Part ${i + 1} — ${st.title}\n${st.focus ?? ""}\n\n` +
+      tagged.map((s) => `### ${s.title}\n\n${s.text}`).join("\n\n"),
+    );
+  }
+
+  if (papers && brief?.trim()) {
+    onProgress?.({ status: "papers" });
+    const { searchPapers, paperFullTexts, mergePapers } = await import("../papers.js");
+    const { papers: found } = await searchPapers(brief.trim(), { limit: profile.papers_limit });
+    allSources.push(...mergePapers([], found));
+    const full = await paperFullTexts(found, { top: profile.papers_fulltext });
+    for (const f of full) {
+      allPages.push(f);
+      allSources.push({ url: f.url, title: f.title, words: f.words, kind: "paper" });
+      chunks.push(`### ${f.title}\n\n${f.text}`);
+    }
+  }
+
+  return {
+    text: chunks.join("\n\n"),
+    sources: allSources,
+    pages: allPages.map((s) => ({ url: s.url ?? null, title: s.title ?? "", words: s.words ?? 0, text: s.text ?? "", ...(s.subtopic != null ? { subtopic: s.subtopic } : {}) })),
+  };
 }
 
 export async function runResearch(brief, sources = [], onProgress, { papers = false, briefing = "" } = {}) {
@@ -173,7 +219,8 @@ async function groundNotesLabel(dir) {
 export async function createDeck({
   brief, briefing = "", sources = [], research = false, papers = false, researchSource = null,
   upload = null, theme = null, maxSlides = 24, imageSupply = "none",
-  slidesPerMember = null, density = "balanced", model, identity, owner, onProgress, signal,
+  slidesPerMember = null, density = "balanced", mode = null, subtopicCount = null,
+  model, identity, owner, onProgress, signal,
 }) {
   if (!brief?.trim()) throw new Error("brief is required");
 
@@ -195,12 +242,36 @@ export async function createDeck({
     ...(researchSource ? { researchSource } : {}),
     ...(imageSupply && imageSupply !== "none" ? { imageSupply } : {}),
     ...(slidesPerMember != null ? { slidesPerMember } : {}),
+    ...(mode === "team" || mode === "solo" ? { mode } : {}),
+    ...(subtopicCount != null ? { subtopicCount } : {}),
     status: "planning",
     createdAt: new Date().toISOString(),
     ...(owner ? { owner } : {}),
     ...snapshot,
   };
   await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+
+  const identityObj = deepMerge(await loadIdentity(), identity ?? {});
+  const splitMode = mode === "team" || mode === "solo" ? mode : null;
+  let subtopics = null;
+  let owners = null;
+  if (splitMode) {
+    onProgress?.({ status: "splitting" });
+    try {
+      const split = await planSubtopics({
+        brief: brief.trim(), briefing, identity: identityObj,
+        count: subtopicCountFor({ mode: splitMode, subtopicCount, identity: identityObj }),
+        model, signal,
+      });
+      if (split.subtopics.length) {
+        subtopics = split.subtopics;
+        owners = ownersFor(subtopics, presentingNames(identityObj));
+        meta.subtopics = subtopics;
+        meta.owners = owners;
+        await writeFile(path.join(dir, "meta.yaml"), YAML.stringify(meta), "utf8");
+      }
+    } catch { /* a failed split falls back to the legacy whole-brief flow */ }
+  }
 
   const src = await resolveResearchSource({ researchSource, research, papers, sources, upload });
   let researchText = "";
@@ -215,20 +286,32 @@ export async function createDeck({
     researchText = src.text;
   } else if (src.mode === "web") {
     onProgress?.({ status: "researching" });
-    const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
-    if (r.text) {
-      await writeResearch(dir, { text: r.text, sources: r.sources, pages: r.pages });
-      researchText = r.text;
+    if (subtopics?.length) {
+      const researched = await runSubtopicResearch({
+        brief: brief.trim(), subtopics, papers,
+        onProgress: (p) => onProgress?.({ status: "researching", ...p }),
+      });
+      if (researched.text) {
+        await writeResearch(dir, { text: researched.text, sources: researched.sources, pages: researched.pages });
+        researchText = researched.text;
+      }
+    } else {
+      const r = await runResearch(brief, sources, (p) => onProgress?.({ status: "researching", ...p }), { papers, briefing });
+      if (r.text) {
+        await writeResearch(dir, { text: r.text, sources: r.sources, pages: r.pages });
+        researchText = r.text;
+      }
     }
   }
 
   onProgress?.({ status: "planning" });
-  const identityObj = deepMerge(await loadIdentity(), identity ?? {});
   const themeObj = theme ? await loadTheme(theme) : undefined;
   const { plan, stats } = await planDeck({
     brief: brief.trim(), briefing, theme: themeObj, identity: identityObj,
     research: excerptResearch(researchText, await researchExcerptCap({ model })),
     maxSlides, slidesPerMember, model, signal,
+    sections: subtopics?.map((s) => s.title) ?? null,
+    owners,
   });
 
   if (!plan.slides?.length) throw new Error("The model produced no outline.");
@@ -626,7 +709,7 @@ export async function finalizeDeck({
 
   const identityObj = identity ?? (await loadIdentity(dir));
   const assignAndPersist = async (d) => {
-    assignPresenters(d, identityObj, meta.slidesPerMember ?? null);
+    assignPresenters(d, identityObj, meta.slidesPerMember ?? null, plan.owners ?? null);
     await writeFile(deckFile, YAML.stringify(d), "utf8");
     return d;
   };

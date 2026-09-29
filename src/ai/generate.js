@@ -88,13 +88,13 @@ export function planTypeMaxLength(types) {
   return types.reduce((n, t) => Math.max(n, t.length), 0);
 }
 
-export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, model, signal, chat = chatJSON }) {
+export async function planDeck({ brief, briefing = "", theme, identity, research = "", maxSlides = 24, slidesPerMember = null, sections: fixedSections = null, owners = null, model, signal, chat = chatJSON }) {
   const catalog = await slideCatalog();
   const schema = await deckSchema();
   const types = schema.definitions.slide.properties.type.enum;
 
   const voice = theme?.voice ?? {};
-  const sectionCap = targetSections(identity);
+  const sectionCap = fixedSections?.length || targetSections(identity);
   const presenters = presentingNames(identity);
   const contentCap = slidesPerMember && presenters.length
     ? Math.min(maxSlides, presenters.length * slidesPerMember)
@@ -156,7 +156,13 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
     "  to it: it is a LIST type whose image field is OPTIONAL, so choosing it",
     "  commits you to nothing. Use it for a beat where a photograph or diagram",
     "  would genuinely help — a physical thing, a place, a piece of equipment.",
-    `- Structure the talk as about ${sectionCap} major parts, each member taking one.`,
+    ...(fixedSections?.length
+      ? [
+          "The talk's parts are FIXED — an approved split the writer must not change:",
+          fixedSections.map((s, i) => `${i}. ${s}`).join("\n"),
+          "Every slide's `section` is an index into exactly that list. Do not add, merge, split or rename parts.",
+        ]
+      : [`- Structure the talk as about ${sectionCap} major parts, each member taking one.`]),
     dataAffinityNote(research),
     voice.prefers?.length ? `- Favour: ${voice.prefers.join("; ")}.` : "",
     voice.density ? `- Density: ${voice.density}.` : "",
@@ -223,7 +229,45 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
   });
   slides = ensureStructuralSlides(slides, plan.sections ?? []);
   slides = seatIllustratedBeats(slides);
+  if (fixedSections?.length) {
+    // Approved parts are the contract: the model's own section labels are
+    // replaced, out-of-range indexes clamped, and a part the model starved
+    // gets one minted slide rather than vanishing. This may overshoot the
+    // content budget by the starved count — a part with no slide is worse
+    // than a slightly long deck, and the grammar's outer bound still holds.
+    plan.sections = [...fixedSections];
+    const last = fixedSections.length - 1;
+    const clampSec = (s) => (Number.isInteger(s) ? Math.min(Math.max(s, 0), last) : 0);
+    const title = slides.find((s) => s.type === "title");
+    const closing = slides.find((s) => s.type === "closing");
+    const bySec = new Map();
+    for (const s of slides) {
+      if (DIVIDER_TYPES.has(s.type)) continue;
+      const sec = clampSec(s.section);
+      if (!bySec.has(sec)) bySec.set(sec, []);
+      bySec.get(sec).push({ ...s, section: sec });
+    }
+    const grouped = [];
+    for (let sec = 0; sec <= last; sec++) {
+      const have = bySec.get(sec) ?? [];
+      if (have.length) grouped.push(...have);
+      else {
+        grouped.push({
+          type: "bullets",
+          section: sec,
+          purpose: `Establish the "${fixedSections[sec]}" part: one concrete point from the research that this part alone must convey.`,
+        });
+      }
+    }
+    slides = [
+      ...(title ? [{ ...title, section: 0 }] : []),
+      ...grouped,
+      ...(closing ? [{ ...closing, section: last }] : []),
+    ];
+    slides = ensureStructuralSlides(normalisePlanSections(slides), plan.sections);
+  }
   plan.slides = slides;
+  if (owners?.length) plan.owners = [...owners];
 
   return {
     plan,
@@ -593,7 +637,7 @@ export async function generateDeck({
     (s) => `slide ${s.index + 1} (${s.type}) is a PLACEHOLDER — its generation failed and it must be regenerated before this deck is presented`,
   );
 
-  assignPresenters(deck, identity, slidesPerMember);
+  assignPresenters(deck, identity, slidesPerMember, plan.owners ?? null);
 
   return { ok, deck, plan, skipped, errors, stats, problems: placeholderProblems };
 }

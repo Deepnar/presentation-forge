@@ -21,7 +21,7 @@ export const REFERENCE_TYPES = new Set(["references", "bibliography", "data-sour
 
 export const FRONT_MATTER_TYPES = new Set(["agenda"]);
 
-export function distributePresenters(slides, members, { slidesPerMember = null } = {}) {
+export function distributePresenters(slides, members, { slidesPerMember = null, owners = null } = {}) {
   const names = (members ?? []).map(String).filter(Boolean);
   const out = new Array(slides.length).fill(null);
   if (!names.length) return out;
@@ -36,6 +36,15 @@ export function distributePresenters(slides, members, { slidesPerMember = null }
     bySection.get(sec).push(i);
   }
   if (!order.length) return out;
+
+  if (owners?.length) {
+    for (const sec of order) {
+      const want = owners[sec];
+      const name = names.includes(want) ? want : names[sec % names.length];
+      for (const idx of bySection.get(sec)) out[idx] = name;
+    }
+    return out;
+  }
 
   const n = names.length;
   const sizes = order.map((sec) => bySection.get(sec).length);
@@ -80,13 +89,13 @@ function contentOrder(bySection, order) {
   return order.flatMap((sec) => bySection.get(sec));
 }
 
-export function assignPresenters(deck, identity, slidesPerMember = null) {
+export function assignPresenters(deck, identity, slidesPerMember = null, owners = null) {
   for (const s of deck.slides) {
     if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
     if (REFERENCE_TYPES.has(s.type)) delete s.presenter;
   }
   const presenters = presentingNames(identity);
-  const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember });
+  const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember, owners });
   for (let i = 0; i < deck.slides.length; i++) {
     if (assignment[i]) deck.slides[i].presenter = assignment[i];
   }

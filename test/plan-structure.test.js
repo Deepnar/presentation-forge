@@ -319,3 +319,33 @@ test("a deck with nothing showable gets no seats at all", () => {
   ];
   assert.deepEqual(seatIllustratedBeats(given).map((s) => s.type), ["bullets", "numbered-list"]);
 });
+
+test("fixed sections survive planning: labels kept, indexes clamped, every part covered", async () => {
+  const { planDeck } = await import("../src/ai/generate.js");
+  const chat = async () => ({
+    model: "stub",
+    data: {
+      title: "T",
+      sections: ["X", "Y"],
+      slides: [
+        { type: "bullets", section: 0, purpose: "First point about cells." },
+        { type: "bullets", section: 5, purpose: "Way out of range." },
+        { type: "cards", section: 1, purpose: "Second part point." },
+      ],
+    },
+  });
+  const identity = { team: { members: [{ name: "A", presenting: true }, { name: "B", presenting: true }] } };
+  const { plan } = await planDeck({
+    brief: "Cells", identity, research: "", maxSlides: 24,
+    sections: ["Intro", "Cells", "Grid", "Close"],
+    owners: ["A", "A", "B", "B"],
+    chat,
+  });
+  assert.deepEqual(plan.sections, ["Intro", "Cells", "Grid", "Close"]);
+  assert.deepEqual(plan.owners, ["A", "A", "B", "B"]);
+  for (const s of plan.slides) assert.ok(s.section >= 0 && s.section <= 3, JSON.stringify(s));
+  const contentSecs = new Set(plan.slides.filter((s) => !DIVIDER_TYPES.has(s.type)).map((s) => s.section));
+  assert.deepEqual([...contentSecs].sort(), [0, 1, 2, 3]);
+  assert.equal(plan.slides[0].type, "title");
+  assert.equal(plan.slides[plan.slides.length - 1].type, "closing");
+});

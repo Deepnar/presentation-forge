@@ -252,3 +252,29 @@ test("assignPresenters with no presenting members leaves every slide untouched",
   assignPresenters(deck, team([{ name: "", presenting: true }]));
   assert.ok(deck.slides.every((s) => s.presenter === undefined));
 });
+
+test("owners map whole sections to members — one member may own several", () => {
+  const slides = deckOf([["bullets"], ["bullets", "bullets"], ["bullets"], ["bullets"]]);
+  const out = distributePresenters(slides, ["A", "B"], { owners: ["A", "A", "B", "B"] });
+  assert.deepEqual(presenterAt(out), ["A", "A", "A", "B", "B"]);
+});
+
+test("owners fall back deterministically for a stale name", () => {
+  const slides = deckOf([["bullets"], ["bullets"]]);
+  const out = distributePresenters(slides, ["A", "B"], { owners: ["Z", "B"] });
+  assert.deepEqual(presenterAt(out), ["A", "B"]);
+});
+
+test("reference slides are never assigned and never break contiguity", () => {
+  const slides = [
+    { type: "title" },
+    { type: "bullets", section: 0 },
+    { type: "references", section: 0, headline: "References", items: ["A — used on slide 2"] },
+    { type: "closing", section: 0 },
+  ];
+  const deck = { slides: structuredClone(slides) };
+  const id = team([{ name: "A", presenting: true }]);
+  assignPresenters(deck, id);
+  assert.equal(deck.slides[2].presenter, undefined);
+  assert.equal(deck.slides[1].presenter, "A");
+});

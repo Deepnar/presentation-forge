@@ -278,6 +278,42 @@ export function hostDiversifier(pages, seenUrl, { maxPerHost = 4, minCorpus = 6,
   return { absorb, backfill, offtopic };
 }
 
+export async function researchSubtopic({ title, focus = "", topic = "", profile, onProgress } = {}) {
+  const p = {
+    per_query_limit: 8, per_query_read: 4,
+    ...(profile ?? {}),
+  };
+  const head = String(topic).split("\n")[0].trim().slice(0, 60);
+  const seen = new Set();
+  const queries = [];
+  for (const q of [String(title), head ? `${title} ${head}` : "", `${title} statistics evidence`]) {
+    const query = q.trim().slice(0, 120);
+    if (query.length >= 3 && !seen.has(query.toLowerCase())) {
+      seen.add(query.toLowerCase());
+      queries.push(query);
+    }
+    if (queries.length >= 3) break;
+  }
+
+  const pages = [];
+  const seenUrl = new Set();
+  const { absorb, backfill, offtopic } = hostDiversifier(pages, seenUrl, {
+    maxPerHost: p.max_per_host,
+    minCorpus: p.min_corpus,
+    terms: topicTerms(`${title} ${focus}`),
+  });
+
+  for (const q of queries) {
+    onProgress?.({ query: q });
+    absorb((await researchQuery(q, { limit: p.per_query_limit, read: p.per_query_read })).pages);
+  }
+
+  backfill();
+
+  if (offtopic.length) onProgress?.({ offtopic: offtopic.length });
+  return { query: String(title), pages, offtopic };
+}
+
 export async function deepResearch(brief, { onProgress, profile, briefing = "" } = {}) {
   const p = {
     per_query_limit: 8, per_query_read: 4,
