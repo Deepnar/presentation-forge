@@ -6106,3 +6106,106 @@ Ko-fi, Buy Me a Coffee, Open Collective, Patreon or other funding destination
 has been supplied. Choose and activate one destination first, then add only
 that verified link and enable the repository funding display. Do not commit the
 placeholder template or advertise a dead payment route.
+
+---
+
+## 11. Subtopic-first generation, run-safe budgets, source-mapped references
+
+Asked for 2026-09-29: the briefing-to-research order is backwards for team
+decks, a solo user cannot ask for a deep deck, a member cannot own several
+subtopics, the report has no door from a finished deck, a BYOK cap kills runs
+mid-deck, and no slide says which source each slide drew on.
+
+### [ ] Subtopic-first generation — split from knowledge, then research each part
+
+*Priority: high. Needs a model to judge the splits; the plumbing runs local.*
+
+Today research runs first (`deepResearch` spreads 5–8 whole-topic angle
+queries) and the section count derives from team size
+(`targetSections`: `clamp(members, 3, 8)` in `src/ai/team.js`). The model never
+decides the talk's parts, so a 10-person team gets at most 8 parts, a solo user
+gets ~3, and nobody can give one member two subtopics.
+
+The new order: after the briefing, a cheap internal-knowledge call splits the
+topic into ordered subtopics (intro → body arc → close, no web), the outline
+gate approves count/order, and research runs per subtopic with a smaller
+per-part budget, tagged into `research/notes.md` under per-subtopic headers.
+Count rule: team mode defaults to presenting members; solo-deep mode takes an
+explicit count; the member→subtopics mapping is editable at the gate (one
+member may own several). The 8-section renderer ceiling stays until lifted
+deliberately — a 9th part nudges a merge, it does not silently pass.
+
+### [ ] Solo-deep briefing mode and flexible sections
+
+*Priority: high. No model needed for the briefing half.*
+
+`slidesPerMember` × members currently sizes the deck, which strands a solo
+user at 2–3 slides with no way to ask for 30. A `team | solo-deep` mode: team
+keeps the member math, solo-deep asks subtopic count + slide count directly.
+Sections stop deriving from team size entirely — they follow the approved
+subtopics (see above). `distributePresenters` already handles any
+sections-vs-members shape; only the planner cap changes.
+
+### [ ] Deck → report door, reusing the deck's own research
+
+*Priority: high. No model needed for the door; needs one for the content.*
+
+`POST /api/decks/:slug/report/generate` exists but neither the deck page nor
+the report empty state links to it. Add "Generate report" on the deck page and
+a "Generate from this deck's research" action on the empty report page. No new
+research pass: the deck's `research/notes.md` is the source. Decks built with
+research-source `none` have no notes file — fall back to briefing from
+`deck.yaml` slides (the reverse of `reportBrief`) instead of throwing.
+
+### [ ] BYOK run-level budget — a cap must never cut a run mid-deck
+
+*Priority: high. No model needed.*
+
+`reserveByokCall` (`src/byok-budget.js`) reserves per call and throws 429 when
+`used + requested > limit`, so a 1M-cap user whose deck needs 1.2M dies
+mid-run with a half-written `deck.yaml`. Local stays unlimited; Auto keeps
+hard caps (operator money). For BYOK (user's own key, the cap is a safety
+rail): estimate the whole run at plan time, show cost-vs-cap with an explicit
+continue choice, reserve once per run, settle actuals per call with no mid-run
+throw. Overrun degrades (fewer gap queries, skip optional passes), never
+aborts written slides.
+
+### [ ] Source-mapped references slide before the closing slide
+
+*Priority: medium. Needs a model to judge wording; the mapping is deterministic.*
+
+`references` / `bibliography` / `data-source` types and per-slide `cites[]`
+exist, but the writer is never asked for cites and grounding matches claims
+against the whole notes blob, forgetting which source each came from. Keep
+per-source page texts beside the merged notes, match each slide's grounded
+claims per source, and emit one `references` slide second-to-last (structural:
+no presenter, out of sweep/trim counting) listing each source with "used on
+slides …". Best-effort by construction — a figure matching three sources lists
+three — and entries obey the 220-char item cap.
+
+### [ ] Canvas-like in-website slide editor
+
+*Priority: unranked — needs direction first. Do not build unprompted.*
+
+What exists: `SlideEditor.jsx` (typed form modal over validated `deck.yaml`),
+chat turns that edit by instruction, per-slide toolbar (punch/swap/image/
+move/duplicate/delete), lightbox actions. What is asked: Canva/PowerPoint-like
+direct manipulation (drag text, resize, restyle) inside the site after the
+deck is done. That is a new surface, not a fix — it breaks the
+chrome/theme/content split the moment content can set coordinates or colours,
+and it needs product judgement (which objects move, what stays locked to the
+theme). Options to agree first: (a) form editor + more slide types, (b) bounded
+canvas (move/resize within theme boxes, no style escape), (c) full free canvas.
+Waiting on direction.
+
+### [ ] Add-new-slides-by-telling
+
+*Priority: medium. Mostly exists; the gap is discoverability.*
+
+Chat structural commands ("add a slide at the end titled X"), the
+`/api/decks/:slug/slides/:index/insert` endpoint (`insertDeckSlide`), the
+"+ Add slide" menu, and per-section "+ Add as slide" from the report page all
+work. What is missing is reaching them from a finished deck without knowing
+the phrasing: a visible "tell it what to add" entry on the deck page that
+routes into the existing chat-turn machinery. Small UI work once the editor
+direction (above) is agreed, so it lands in the right surface.
