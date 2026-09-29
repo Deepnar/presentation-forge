@@ -6116,7 +6116,7 @@ decks, a solo user cannot ask for a deep deck, a member cannot own several
 subtopics, the report has no door from a finished deck, a BYOK cap kills runs
 mid-deck, and no slide says which source each slide drew on.
 
-### [ ] Subtopic-first generation — split from knowledge, then research each part
+### [x] Subtopic-first generation — split from knowledge, then research each part
 
 *Priority: high. Needs a model to judge the splits; the plumbing runs local.*
 
@@ -6135,7 +6135,19 @@ explicit count; the member→subtopics mapping is editable at the gate (one
 member may own several). The 8-section renderer ceiling stays until lifted
 deliberately — a 9th part nudges a merge, it does not silently pass.
 
-### [ ] Solo-deep briefing mode and flexible sections
+> **Learned.** Four things, all found against a live muse run, not reasoned out.
+> Clamping the model's section indexes is not enough: it also starves parts,
+> planning three slides for six approved parts and leaving the rest divider-
+> only. The fix regroups content by section and mints one slide per starved
+> part — and because that strips the dividers the earlier structural pass
+> added, the structural pass must run again after the regroup, or the plan
+> ships with no openers. Owner shares need the proportional rule (target run =
+> ceil of what is left over who is left), or fewer parts than people piles the
+> remainder onto the last member. And the split plus per-part research roughly
+> triples the plan-phase model calls versus one whole-brief pass — the estimate
+> the budget gate shows has to know that.
+
+### [x] Solo-deep briefing mode and flexible sections
 
 *Priority: high. No model needed for the briefing half.*
 
@@ -6146,7 +6158,14 @@ Sections stop deriving from team size entirely — they follow the approved
 subtopics (see above). `distributePresenters` already handles any
 sections-vs-members shape; only the planner cap changes.
 
-### [ ] Deck → report door, reusing the deck's own research
+> **Learned.** Two small things. `slidesPerMember` must be nulled for solo
+> before it reaches `planDeck`, or `contentCap` shrinks the deep dive to
+> 1×N — the old sizing rule is load-bearing in exactly one expression and
+> invisible everywhere else. And `mode` stays out of `PRESET_KEYS`: a preset
+> that fixed the mode would hide the per-member question from a team deck
+> restored from it, because the walk skips preset-fixed keys.
+
+### [x] Deck → report door, reusing the deck's own research
 
 *Priority: high. No model needed for the door; needs one for the content.*
 
@@ -6157,7 +6176,12 @@ research pass: the deck's `research/notes.md` is the source. Decks built with
 research-source `none` have no notes file — fall back to briefing from
 `deck.yaml` slides (the reverse of `reportBrief`) instead of throwing.
 
-### [ ] BYOK run-level budget — a cap must never cut a run mid-deck
+> **Learned.** The endpoint existed and both UIs lacked the door — one grep for
+> the route would have shown the work was a button, not a pipeline. The
+> fallback reuses `flattenSlide`, which already excludes notes/cites/presenter,
+> so deck-derived "research" cannot leak a grounding flag into the report.
+
+### [x] BYOK run-level budget — a cap must never cut a run mid-deck
 
 *Priority: high. No model needed.*
 
@@ -6170,7 +6194,16 @@ continue choice, reserve once per run, settle actuals per call with no mid-run
 throw. Overrun degrades (fewer gap queries, skip optional passes), never
 aborts written slides.
 
-### [ ] Source-mapped references slide before the closing slide
+> **Learned.** Three things. Context must be passed explicitly, not assumed:
+> the background deck runs (`startDeckRun`) execute detached from the request,
+> so the run needs the user id handed to it — the request's `AsyncLocalStorage`
+> does not reliably reach work that outlives the response. Anonymous and CLI
+> callers resolve to no user id and stay unmetered exactly as before; that is
+> existing behaviour, deliberately untouched. And the estimate only guards the
+> entry: underestimate and the run still completes (settlement grows the row),
+> overestimate and the user meets a false refusal — so estimates err low.
+
+### [x] Source-mapped references slide before the closing slide
 
 *Priority: medium. Needs a model to judge wording; the mapping is deterministic.*
 
@@ -6182,6 +6215,19 @@ claims per source, and emit one `references` slide second-to-last (structural:
 no presenter, out of sweep/trim counting) listing each source with "used on
 slides …". Best-effort by construction — a figure matching three sources lists
 three — and entries obey the 220-char item cap.
+
+> **Learned.** Four things, each found by rasterising a real deck, none visible
+> in unit tests. Substring claim matching lies: "25" matches "2025" and "3%"
+> matches "13%", so every source claimed every slide — matching must be
+> token-bounded on both sides, with `%`/`°`/unit-glue letters as legal right
+> edges. Deduplicated claims break "at least two": one repeated figure is one
+> distinct claim, so bare numbers need occurrence counting while unit figures
+> (`26.1%`, `139 USD`) link on a single hit. Even then, long junk pages match
+> by frequency — the actual fix is narrowing candidates to the slide's own
+> part, which the per-subtopic page tags make free. And junk in, junk mapped:
+> confining a polluted part's sources to its own slides bounds the damage but
+> the corpus pollution itself (a "path" query absorbing PATH rail articles) is
+> the relevance floor's job, still open.
 
 ### [ ] Canvas-like in-website slide editor
 

@@ -829,6 +829,23 @@ site — but the research corpus is built from eight queries plus follow-ups and
 deduped by URL only, so one domain still supplied three of ten sources. When a
 limit exists to shape an aggregate, enforce it where the aggregate is built.
 
+**Substring claim matching lies, in both directions.** `claimGrounded` asks
+whether the research *contains* the claim, so "25" matches "2025" and "3%"
+matches "13%" — every source then claims every slide, and the references slide
+reads as if the whole deck drew on the whole corpus. Numeric matching must be
+token-bounded on the left (start or whitespace before the number, so a longer
+number cannot donate its tail) with unit glue (`%`, `°`, letters) legal on the
+right, and bare numbers need occurrence weight where a unit figure links on a
+single hit. Deduplicating the claims first breaks "at least two", because one
+repeated figure is one distinct claim.
+
+**A model writes markdown; the renderer draws text.** A closing body reached
+the slide as "kept **90% after 1,100 hours**" with the markers visible,
+because nothing between the model and the layout interprets markdown — and
+there should not be: the fix belongs at the parse seam (`sanitizeModelData`),
+not in a layout. Guard the glued uses (`2**3`) by requiring whitespace around
+the markers, or the repair corrupts exactly the text it cannot see.
+
 **A field the schema offers is a field the model will fill.** The report's
 table was offered on every section at full depth, so the writer put a five-row
 data table in the Abstract. The grammar is not a menu of what is *permitted*,
