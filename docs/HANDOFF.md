@@ -48,15 +48,28 @@ challenges/`, gitignored, deliberately kept on disk as evidence).
   muse-spark-1.3-contributor per user instruction (overrides the two-model
   orchestration note for testing only).
 
-## Continue from here
+## Continue from here — next session starts on the recorded items
 
-- ROADMAP §11: canvas editor waits on direction (do not build unprompted);
-  add-new-slides is a discoverability follow-up once that direction lands.
-- Known open defects, both recorded: corpus pollution ("path" queries absorb
-  PATH/Hear-film pages — the relevance floor's job, §"Research and content
-  flow"); 9th+ part merges at the 8-section ceiling (renderer work, not
-  planned). Solo CLI decks carry null owners (no named members) — same as
-  legacy, but a solo identity with a name should own everything.
-- The full functional sweep (§"The full functional sweep") is the user's own
-  later pass; the UI doors it must exercise (report generate, parts editor,
-  budget confirm) are all in place.
+The user opens a new session for the two §11 items that were recorded, not
+built. Start there, in this order:
+
+1. **Canvas-like in-website slide editor — needs direction first.** Do NOT
+   build unprompted. Ask which of the three recorded options: (a) form editor
+   + more slide types, (b) bounded canvas (move/resize within theme boxes, no
+   style escape), (c) full free canvas. Note (c) breaks the chrome/theme/
+   content split the moment content sets coordinates or colours. Wait for the
+   answer before writing code.
+2. **Add-new-slides-by-telling.** Machinery audited working (chat structural
+   commands, `POST /api/decks/:slug/slides/:index/insert`, "+ Add slide",
+   per-section "+ Add as slide"). Build the visible "tell it what to add"
+   entry on the finished deck page, routed into the chat-turn machinery —
+   landing it in whatever surface (1) decides.
+3. Then the user's own full functional sweep (§"The full functional sweep");
+   the UI doors it must exercise (report generate, parts editor, budget
+   confirm) are all in place.
+
+Known open defects, still recorded for later: corpus pollution ("path" queries
+absorb PATH/Heat-film pages — the relevance floor's job, §"Research and
+content flow"); 9th+ part merges at the 8-section ceiling (renderer work, not
+planned). Solo CLI decks carry null owners (no named members) — same as
+legacy, but a solo identity with a name should own everything.
