@@ -17,6 +17,8 @@ export function targetSections(identity, { min = 3, max = 8 } = {}) {
 
 export const DIVIDER_TYPES = new Set(["title", "section", "chapter", "closing", "epigraph"]);
 
+export const REFERENCE_TYPES = new Set(["references", "bibliography", "data-source"]);
+
 export const FRONT_MATTER_TYPES = new Set(["agenda"]);
 
 export function distributePresenters(slides, members, { slidesPerMember = null } = {}) {
@@ -28,6 +30,7 @@ export function distributePresenters(slides, members, { slidesPerMember = null }
   const bySection = new Map();
   for (let i = 0; i < slides.length; i++) {
     if (DIVIDER_TYPES.has(slides[i].type)) continue;
+    if (REFERENCE_TYPES.has(slides[i].type)) continue;
     const sec = slides[i].section ?? 0;
     if (!bySection.has(sec)) { bySection.set(sec, []); order.push(sec); }
     bySection.get(sec).push(i);
@@ -80,6 +83,7 @@ function contentOrder(bySection, order) {
 export function assignPresenters(deck, identity, slidesPerMember = null) {
   for (const s of deck.slides) {
     if (DIVIDER_TYPES.has(s.type)) delete s.presenter;
+    if (REFERENCE_TYPES.has(s.type)) delete s.presenter;
   }
   const presenters = presentingNames(identity);
   const assignment = distributePresenters(deck.slides, presenters, { slidesPerMember });

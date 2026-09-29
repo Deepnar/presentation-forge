@@ -4,7 +4,7 @@ import { selectResearch, slideQuery, CALL_RESEARCH_CHARS } from "./retrieve.js";
 import { imageSeat } from "./images.js";
 import { slideCatalog, catalogForType, deckSchema, familyFor, FAMILY_TYPES, densityBudget, dataAffinityNote, numericFactCount } from "./catalog.js";
 import { validateDeck } from "../validate.js";
-import { DIVIDER_TYPES, FRONT_MATTER_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
+import { DIVIDER_TYPES, FRONT_MATTER_TYPES, REFERENCE_TYPES, presentingNames, targetSections, assignPresenters } from "./team.js";
 import { placeholderSlides } from "../placeholders.js";
 
 export function synthesisNote(mode) {
@@ -613,6 +613,7 @@ export async function sweepDeck({
   for (let i = 0; i < deck.slides.length; i++) {
     const slide = deck.slides[i];
     if (DIVIDER_TYPES.has(slide.type)) continue; // dividers carry no body content
+    if (REFERENCE_TYPES.has(slide.type)) continue; // the source map is rebuilt, not rewritten
 
     onProgress?.({ status: "sweeping", index: i, total: deck.slides.length, type: slide.type });
     const budget = densityBudget(density, slide.type, familyFor(slide.type));

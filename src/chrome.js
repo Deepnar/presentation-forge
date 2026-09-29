@@ -4,7 +4,7 @@ import sharp from "sharp";
 import { ROOT } from "./paths.js";
 import { resolveBrandPath } from "./tenant.js";
 import { hex } from "./theme.js";
-import { DIVIDER_TYPES } from "./ai/team.js";
+import { DIVIDER_TYPES, REFERENCE_TYPES } from "./ai/team.js";
 
 const CANVAS = { w: 13.333, h: 7.5 };
 
@@ -97,7 +97,7 @@ export function applyContentChrome(slide, { brand, theme, identity, data, index,
   const footFont = theme.type.caption?.family ?? "Inter";
 
   if (branding !== "none" && cfg.presenter_on_slides !== false) {
-    if (!DIVIDER_TYPES.has(data.type)) {
+    if (!DIVIDER_TYPES.has(data.type) && !REFERENCE_TYPES.has(data.type)) {
       const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
       const fallback = presenting.length
         ? presenting.map((m) => m.name).join(" · ")

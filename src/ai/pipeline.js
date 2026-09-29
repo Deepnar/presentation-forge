@@ -4,7 +4,7 @@ import { randomInt } from "node:crypto";
 import YAML from "yaml";
 import { DECKS } from "../paths.js";
 import { fetchPage } from "../search.js";
-import { excerptResearch, deepResearch } from "./research.js";
+import { excerptResearch, deepResearch, readResearchPages } from "./research.js";
 import { ingestUpload, readStagedUpload } from "./upload.js";
 import { planDeck, generateDeck, sweepDeck, convertSlide, insertSlide } from "./generate.js";
 import { generateScript } from "./script.js";
@@ -15,6 +15,7 @@ import { coherencePass } from "./coherence.js";
 import { groundDeck } from "./grounding.js";
 import { runChatTurn } from "./chat.js";
 import { assignPresenters } from "./team.js";
+import { buildReferencesSlide, insertReferencesSlide } from "./provenance.js";
 import { generateReport } from "./report.js";
 import { scoreDeck } from "../deckscore.js";
 import { recordScore } from "../scorelog.js";
@@ -631,6 +632,16 @@ export async function finalizeDeck({
   };
 
   tr.grounded.deck = await assignAndPersist(tr.grounded.deck);
+
+  try {
+    const pages = await readResearchPages(dir);
+    const refSlide = buildReferencesSlide(tr.grounded.deck, pages ?? []);
+    const { deck: withRefs, inserted } = insertReferencesSlide(tr.grounded.deck, refSlide);
+    if (inserted) {
+      tr.grounded.deck = withRefs;
+      await writeFile(deckFile, YAML.stringify(tr.grounded.deck), "utf8");
+    }
+  } catch { /* a missing source map is not a generation failure */ }
 
   const creditSlide = creditsSlide(imageResult?.credits ?? []);
   if (creditSlide) {
