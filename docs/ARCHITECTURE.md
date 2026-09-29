@@ -214,6 +214,31 @@ into the render problems rather than shrinking below it. Stacked zones size to
 the content's real line count, so long card titles keep their lines instead of
 being shrunk to ~8pt.
 
+A slide may also carry a human-only `overrides` block (geometry, paint, free
+textboxes and images, in slide inches) from the canvas editor. It is data, not
+an escape hatch in the other direction: no model grammar can name it
+(`buildOpsSchema` deletes it unconditionally, the catalogs never list it),
+turns scrub it from ops with a visible note, `replace_slide` carries the old
+block forward, `update_slide` cannot touch it, and the rewrite passes
+(sweep, field-length, convert, insert) re-attach the human's block or drop
+only the geometry a type swap invalidates. It is called `overrides` rather
+than `layout` because `diagram` already owns `layout` as a content field.
+Paint values are theme token paths (re-derived on a theme switch) or hex
+(the user's explicit choice, kept verbatim) — that split is what makes
+"nothing hand-made is silently lost" true without storing flags.
+
+The renderer applies the block in `render.js` through `src/overrides.js`.
+Placed elements cannot be moved after drawing (pptxgenjs shapes are
+immutable), so geometry and paint resolve inside the layout at draw time:
+`overrideGeom(ctx, target, geom)` merges a named entry over the default box,
+`overridePaint` merges token-or-hex colours into the draw opts, and layouts
+opt in one call site at a time — `bullets` first, headline/standfirst through
+the shared `drawHeading`, so every layout routing through it gains those
+targets at once. Untagged layouts ignore the block silently. Free textboxes
+and images draw after the layout in slide coordinates; the crest corner and
+the footer band are locked, and a free element intersecting them is refused
+with a problem entry rather than drawn.
+
 ## Why not LangChain / LangGraph
 
 The pipeline is a fixed sequence with LLM calls at known stations, not

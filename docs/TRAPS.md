@@ -1522,3 +1522,11 @@ gives a 1.2in label about 0.12in of margin and a 3in label 0.3in — so the
 short labels, which is to say the ones most likely to be a single unbreakable
 word, get almost nothing. Add the inset as a constant and keep the percentage
 for the measurement error it is actually there for.
+
+**A new shared slide field must not collide with any type's own fields.**
+`fieldsForType` merges the shared properties with every type's `allOf` block,
+so a shared `layout: object` failed every `diagram` slide (which owns `layout`
+as a `vertical|horizontal|radial` enum) — including blanks and specimens that
+never asked for the new field. Check a candidate name against all `allOf`
+`then.properties` before adding it to the schema; the vocabulary test catches
+it, but only after the fact.

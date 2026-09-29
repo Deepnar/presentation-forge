@@ -6253,15 +6253,70 @@ overridable) wins at render time. Model grammars exclude it everywhere
 punch, critic, insert, convert) preserves it verbatim or refuses the slide
 with a visible reason. Freeform stays the rasterised full-bleed escape hatch.
 Slices: (1) schema + validation + grammar exclusion + preservation tests, no
-UI; (2) renderer applies overrides (one layout first, then a shared helper);
-(3) per-pass preservation audits; (4) the visual editor surface
-(click-to-select on the rendered slide, drag/resize, paint, textboxes, images).
-Still open: paint fully custom vs theme-palette-first; override semantics on
-theme switch and type swap (likely reset-with-confirm).
+UI — LANDED 2026-09-30 (`overrides` block: elements/paint/textboxes/images in
+slide inches; `test/canvas-layout.test.js`, 22 tests; a real 17-slide deck
+renders zero-problem with a block attached, block inert until slice 2);
+(2) renderer applies overrides — LANDED 2026-09-30 (`src/overrides.js`:
+`overrideGeom`/`overridePaint` resolve inside the layout, `drawFreeforms`
+after it with the crest/footer bands locked and refused visibly; `bullets`
+first plus headline/standfirst through shared `drawHeading`;
+`test/canvas-overrides.test.js`, 11 tests (grew in slice 4a); rasterised demo read clean —
+shifted body, accent headline, clear textbox, no overflow);
+(3) per-pass preservation audits — LANDED 2026-09-30
+(`test/canvas-preservation.test.js`: turn-level scrub/preserve/refuse,
+coherence end to end, trim; the audit caught trim popping
+`overrides.elements` as a zero-min array — fixed at the root by excluding
+the block from `slideFieldMeta`, which also covers field-length inventory
+and drawcheck); (4) the visual editor surface — backend read path LANDED
+2026-09-30 (`overrideGeom` reports every tagged box into `ctx.placed`,
+`render()` returns per-slide `placed`, `GET /api/decks/:slug/geometry` serves
+it headless, `render --geometry` for CLI parity, `canvas-overrides` at 11
+tests; the editor pairs this with the slide PNGs)
+(click-to-select on the rendered slide, drag/resize, paint, textboxes, images);
+(5) the editor surface — LANDED 2026-09-30, reworked same day into canvas
+mode per user ask (`CanvasEditor.jsx`: full-page Canva view — filmstrip of
+every slide, stage with named content tags on each box, optimistic
+debounced autosave instead of manual Save, Title/Subtitle/Text presets;
+entry is "Open canvas" on the deck page plus the per-card button).
+Still open: override semantics on theme switch and type swap — decided
+2026-09-30: overrides store deltas only. Untouched properties re-derive from
+the current theme, so a theme switch keeps custom paint and refreshes the
+rest; nothing the user made is silently lost. A type swap drops geometry
+(targets do not exist in the new layout) with confirm, and keeps paint.
+Paint decision made 2026-09-30: palette-first defaults, full custom allowed —
+new slides/text default to the chosen theme, the user may change anything.
 
-### [~] Add-new-slides-by-telling
+> **Learned.** The block could not be called `layout`: `diagram` already owns
+> `layout` as a content field (`vertical|horizontal|radial`), and a shared
+> object-typed `layout` fails every diagram slide's validation. Shared-field
+> names must be checked against all 75 types' `allOf` properties before being
+> added — `fieldsForType` merges them, so a collision breaks types that never
+> asked for the new field. The rename also settled where the model boundary
+> sits: exclusion lives in `buildOpsSchema` unconditionally (callers cannot
+> forget it), while preservation lives per pass (each pass rebuilds slides
+> differently — merge, clone-mutate, or full replace).
+>
+> **Learned (slice 2).** pptxgenjs shapes are immutable once added, so there
+> is no post-hoc move: overrides resolve *inside* the layout at draw time,
+> and the shared `drawHeading`/`drawOpening`/`content frame` seam from the
+> composition work is the tagging surface — one helper call there covers
+> every layout that routes through it. Remaining 70+ layouts ignore unknown
+> targets silently, so tagging is incremental and never a flag day. The
+> geometry watcher doubles as the override backstop: a human move that pushes
+> a box off-canvas is flagged, not hidden.
+>
+> **Learned (slice 3).** Any pass that enumerates schema fields sees the human
+> block as content: `slideFieldMeta` registered `overrides.elements` as a
+> trimmable zero-min array, so trim *popped* manual geometry, and the
+> field-length inventory would have rewritten human textbox prose the same
+> way. The fix is one exclusion at the shared root, which also covers
+> drawcheck's unpopulated-field report. New shared slide fields need an
+> audit of every `slideFieldMeta` consumer, not just the pass being built.
 
-*Priority: medium. Machinery existed; the deck-page door landed 2026-09-30.*
+### [x] Add-new-slides-by-telling
+
+*Priority: medium. Machinery existed; the deck-page door landed 2026-09-30;
+validated end to end 2026-09-30.*
 
 Chat structural commands ("add a slide at the end titled X"), the
 `/api/decks/:slug/slides/:index/insert` endpoint (`insertDeckSlide`), the
@@ -6271,8 +6326,17 @@ the phrasing: a visible "tell it what to add" entry on the deck page that
 routes into the existing chat-turn machinery. Landed beside manual add: a
 "Tell it what to add…" input under the Slides header appends one AI-written
 slide via the chat turn (`append one new slide, keep the rest`), while
-"+ Add slide" stays the no-AI blank path. Still open: behaviour validation
-against a live model turn (append lands, deck re-renders).
+"+ Add slide" stays the no-AI blank path. Validated end to end 2026-09-30 on
+a scratch copy of the 17-slide perovskite deck: the exact deck-page
+instruction ("Add a slide at the end: a stats slide about the key efficiency
+figures…") via `runTurn` → `+ slide 18 (stats)`, all 17 existing slides
+byte-unchanged, re-render 18 slides zero-problem, appended slide rasterised
+and read clean (four stats, no overflow). Run on local `qwen3.6:35b-a3b`
+(same family as the gateway's Qwen3.6-35B) with `config/hosted.json`
+temporarily flipped — local answers the plumbing question (append lands,
+deck re-renders); whether the writing is good stays an Auto question for
+the gateway-blocked quality queue. No code changed; the run script was
+throwaway scratch.
 
 ### [ ] References slide carries clickable links
 
@@ -6287,3 +6351,62 @@ slide: (a) append short URLs within the existing cap, (b) hyperlink items in
 OOXML — needs URLs in the schema, but items are bare strings today, so this is
 schema + renderer work, (c) leave the slide human-readable and keep links in
 the Research tab only.
+
+---
+
+## 12. Asked by real users — external feedback, recorded 2026-09-30
+
+Three requests arrived as feedback on a public post. None is started; all are
+intent + rationale, to be specced when their turn comes. The canvas work (§11)
+already serves two of them halfway — noted per item.
+
+### [ ] LM Studio as a model backend
+
+*Priority: low-medium. Likely small.*
+
+A non-technical user runs Qwen 9B in LM Studio on an old laptop and wants the
+product against it. LM Studio serves an OpenAI-compatible `/v1` endpoint, and
+the pipeline already speaks `openai-compatible` per role (`src/ai/ollama.js`),
+so this is probably a connection preset plus docs, not a new backend — verify
+against a live LM Studio instance before assuming. Matters because it is the
+lowest-hardware path to a local pipeline: if it works, every "my machine is
+too weak for Ollama models" objection has an answer.
+
+### [ ] User-defined themes — company colours, logos, fonts
+
+*Priority: medium-high. Requested twice, in different words.*
+
+An annual-review deck must follow company branding, and today themes are
+predefined (logo upload is the only custom mark). The ask: define a theme from
+company colours + fonts (+ logo), either by entering values or by pointing at
+an existing template. Forward-compatible with the canvas paint decision (§11):
+palette-first editing already assumes "the theme is the default source", and a
+user-defined theme simply becomes another default source — build canvas paint
+against token *paths*, never hardcoded palettes, so custom themes slot in.
+Needs direction when its turn comes: value-entry vs template-import, and what
+"theme" guarantees (all 75 layouts must still render) when the values are
+arbitrary.
+
+### [ ] Template PPT + source document → finished deck
+
+*Priority: medium. The "I despise preparing PPT" flow.*
+
+Point at a folder — a template PPT, a Word doc with slide progression and
+data, supporting screenshots — and get a professional deck out. Two separable
+halves: (a) the source-doc half already half-exists (upload-only research,
+report-as-deck hybrid F20); (b) the template half is new and is the general
+form of the item above (a `.pptx` as a theme definition: read its masters for
+colours/fonts, not its slides as content). When scoped, do (a)-first if the
+template half is still open — a branded deck from our own renderer beats
+waiting on OOXML master parsing.
+
+### [ ] Per-slide source refs, written down and shown
+
+Asked 2026-09-30: research refs exist at the deck level (Sources panel, now
+at the top of the research tab) but nothing is recorded per slide — the
+schema has a `cites` array and nothing ever writes it, no UI reads it. The
+fix has two halves: (a) generation/grounding attaches the supporting source
+ids to each slide's `cites`; (b) the deck view shows them (slide footer or
+editor side panel). Half (a) needs a prompt/contract decision first: which
+sources count as "supporting" a slide, and what happens on regeneration when
+a cited source drops out.

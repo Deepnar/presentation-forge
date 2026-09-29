@@ -1,79 +1,113 @@
-# Handoff — 2026-09-30, manual editing landed; full-free canvas specified for elsewhere
+# Handoff — 2026-09-30, canvas slices 1–5 + research reorder (uncommitted)
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§11 canvas ([~], full-free human-only direction) +
-tell ([~]) + slide-links ([ ], needs direction)**.
+`docs/ROADMAP.md` → **§11 canvas ([x] — slices 1–5 landed) + §12 user feedback**
+(+ new "Per-slide source refs" item).
+
+## Session notes that override paper
+
+- **The human codes directly now — no opencode sessions.** The user corrected
+  this mid-session ("that was an old thing"): implementation happens in this
+  chat, not via delegated `opencode run` workers. `AGENTS.md`'s Orchestration
+  section still says otherwise and needs a rewrite when the user confirms.
+- **Commits still need explicit OK each time** — work below is uncommitted.
 
 ## Current state
 
-Pushed to `origin/main`. Two halves: what is built and verified here, and the
-canvas spec to be built elsewhere.
+Uncommitted changes (`git status`): `schema/deck.schema.json`,
+`src/{overrides,render,composition}.js`, `src/layouts/core.js`,
+`app/server/artifact-routes.js`, `app/web/src/views/ResearchView.jsx`,
+`src/ai/{ops,catalog,turn,generate,fieldlength,trim}.js`,
+`test/{canvas-layout,canvas-overrides,canvas-preservation}.test.js`,
+`app/web/{src/components/CanvasEditor.jsx,src/components/Lightbox.jsx,src/views/{DeckDetail,ResearchView}.jsx,src/api.js}`,
+`package.json` + `package-lock.json` (konva + react-konva),
+`docs/{ROADMAP,ARCHITECTURE,TRAPS}.md`.
 
-**Built here (human-only bounded + manual, no model):**
+Previously here (committed as `c497ffd`): human-only bounded editing — blank
+of any type without AI, descriptor fixes, semantic reorder, tell-to-add door,
+image blanks with the add-image badge. Refs slide verified against a real deck
+(second-to-last, part-scoped, top 10, plain text, nothing clickable).
 
-- Blank slide of any type without AI (`app/web/src/lib/blankSlides.js`,
-  `test/blank-slides.test.js`): shape derives from `TYPE_FIELDS` with schema
-  minima, validated through `validateDeck` for every editor type plus
-  `illustrated-points`. Deck-page "+ Add slide" offers templates plus a
-  filtered list of all types and opens the form editor at the new slide.
-- Descriptor fixes (`slideEditorFields.js`): callout/references gain the
-  required headline; branching-flow steps are title-objects per the schema.
-- Semantic reorder inside a slide (`lib/slides.js` `moveListItem`,
-  `SlideEditor.jsx` up/down): lists, cards, nested rows, table rows, side
-  points, chart series. Order only, no geometry.
-- Tell-to-add door (`DeckDetail.jsx`): "Tell it what to add…" appends one
-  AI-written slide via the existing chat turn. The same phrasing works in the
-  normal chat thread post-deck (`ChatView.jsx:574` → same `runTurn`
-  machinery, `src/ai/turn.js:40` maps "add a slide at the end" to
-  `append_slide`).
-- Image blanks carry a notes `[image]` marker so the card's add-image door
-  shows; upload flow unchanged (`assets/`, grey placeholder render).
+**Canvas slice 1 landed this session** (spec §11, paint + semantics decided
+last session): per-slide human `overrides` block — `elements` (geometry,
+inches on the 13.333×7.5 canvas), `paint` (theme-token-path or hex),
+`textboxes`, `images`. Named `overrides`, not `layout`: `diagram` already owns
+`layout` as a content enum and a shared object-typed `layout` failed every
+diagram slide (blank, vocabulary, specimen tests caught it; TRAPS has the rule
+now).
 
-**Refs status (verified against a real deck):** the source-mapped slide exists
-(second-to-last, part-scoped "used on slides …", top 10, 220-char plain text,
-nothing clickable — `src/ai/provenance.js:98`, `src/layouts/core.js:1172`).
-The Research tab already links every sourced URL including papers (title →
-URL, paper badge on arXiv/DOI — `ResearchView.jsx:171`, `src/papers.js:56`):
-31/31 sources linked on the perovskite deck. Open choice recorded in the
-roadmap: short URLs in slide text, real OOXML hyperlinks (schema work), or
-links tab-only.
+- Grammar exclusion is unconditional in `buildOpsSchema` + `sharedFieldList`;
+  turn prompt names the ban; `scrubLayoutOps` strips model-written blocks
+  with a visible change note.
+- Preservation: `replace_slide` carries the old block, `update_slide` cannot
+  touch it, sweep/field-length re-attach verbatim, insert strips, convert +
+  remap drop `elements` only (`layoutForTypeChange`). Chat/punch/coherence/
+  critic ride `runTurn`, covered centrally. Trim clones + mutates, untouched.
+- Editor PUT + SlideEditor merge whole slide objects, so the block round-trips
+  with no change (verified by reading, no UI yet).
+- Chrome stays locked; freeform stays the rasterised hatch (unchanged).
 
-## The canvas spec (to be built elsewhere)
+**Canvas slice 2 landed this session:** `src/overrides.js` (`overrideGeom` /
+`overridePaint` resolve inside the layout; `drawFreeforms` after it; crest +
+footer locked with visible refusal). `bullets` tagged first; headline +
+standfirst through shared `drawHeading`, so all routing layouts gain those
+targets. Remaining ~70 layouts ignore unknown targets — tagging is
+incremental follow-up, never a flag day.
 
-The user wants the whole PowerPoint/Canva experience: click into an editor
-mode after the deck is done and freely do anything — add/duplicate/remove
-slides, write, move/resize, add pictures — and that is the final slide.
+**Canvas slice 3 landed this session:** `test/canvas-preservation.test.js`
+(turn scrub/preserve/visible-refuse, scoped punch path, coherence end to
+end, trim). The audit caught a real defect: trim popped
+`overrides.elements` as a zero-min array — fixed at the shared root
+(`overrides` into `slideFieldMeta`'s NOT_TRIMMABLE), which also covers the
+field-length inventory and drawcheck. Critic fixes ride `runTurn`, covered.
 
-- Human-only layout-override layer. Content stays semantic; a per-slide human
-  `layout` block (geometry + paint) wins at render time. The model grammars
-  exclude it everywhere (unrepresentable beats scrubbed); every AI pass
-  (sweep, trim, coherence, punch, critic, insert, convert) preserves it
-  verbatim or refuses the slide with a visible reason.
-- Chrome stays locked (banner, crest, slide numbers are graded marks, never
-  overridable). Freeform stays the rasterised full-bleed hatch.
-- Slices in order: (1) schema + validation + grammar exclusion + preservation
-  tests, no UI; (2) renderer applies overrides (one layout first, then a
-  shared helper); (3) per-pass preservation audits; (4) the visual editor
-  surface (click-to-select on the rendered slide, drag/resize, paint,
-  textboxes, images).
-- Open decisions: paint fully custom vs theme-palette-first; override
-  semantics on theme switch and type swap (likely reset-with-confirm).
-- Bar (unchanged): full scope implemented *and* behaviourally validated — a
-  real run plus rasterised reads, `npm test`, `vite build`, `git diff --check`.
+**Canvas slice 4a landed this session (backend read path):** `overrideGeom`
+records every tagged box's resolved rect into `ctx.placed` (overridden or
+not — the editor needs defaults too); `render()` returns per-slide `placed`
+(one entry per slide, `{}` for untagged); `GET
+/api/decks/:slug/geometry?theme=&mode=` serves it headless (no .pptx, no
+raster); `render --geometry` keeps CLI parity. Editor pairs placed with the
+slide PNGs. Verified: CLI prints resolved rects; endpoint needs the normal
+session auth like every deck route. `test/canvas-overrides.test.js` now 11.
+
+**Tell-to-add validated end to end (2026-09-30, no code changed):** exact
+deck-page instruction via `runTurn` on a scratch copy of the 17-slide
+perovskite deck → `+ slide 18 (stats)`, existing slides byte-unchanged,
+re-render clean, appended slide rasterised and read clean. Local
+`qwen3.6:35b-a3b` (plumbing only); `config/hosted.json` flipped temporarily
+and restored (verified `{"hosted": true}` after). Roadmap entry marked [x].
+
+**Research tab reorder (2026-09-30, user ask):** the Sources panel moved to
+the top of `ResearchView` (right after Coverage, before Figures/Notes) via a
+new `SourcesPanel` component — same table, new position. `vite build` clean.
+Also filed §12 "Per-slide source refs" (schema `cites` exists, nothing
+writes/reads it — needs a supporting-source contract before building).
 
 ## Verification
 
-- `npm test` — 850/851. The one failure is pre-existing and unrelated
+- `test/canvas-layout.test.js` — 22/22, `test/canvas-overrides.test.js` — 11/11,
+  `test/canvas-preservation.test.js` — 5/5 (stub chats, no model calls).
+- Full `npm test` — 888/889; the one failure is pre-existing and unrelated
   (`byok-budget.test.js` locale: `50,00,000` vs `5,000,000`).
-- `npx vite build` — clean. `git diff --check` — clean.
-- Six representative blanks render with zero problems; placeholder images
-  grey-box via the null-asset path.
-- Dev server ran on `:5173`/`:5174` for the user's own visual check; it is
-  not part of the committed state.
+- Rasterised demo (bullets + moved body + accent headline + free textbox):
+  read clean — shifted body, accent headline, clear textbox, no overflow.
+  `npx vite build` clean. `git diff --check` clean.
+- Roadmap §11 entry records slice 1 + Learned; ARCHITECTURE content section
+  documents the block; §12 holds the three external-feedback items (LM Studio,
+  custom themes, template-PPT flow) — all unstarted.
 
 ## Continue from here
 
-1. Canvas slices (elsewhere) per the spec above; paint decision first.
-2. Tell-to-add live-model validation (append lands, deck re-renders).
-3. Slide-links pick: short-URL text, OOXML hyperlinks, or tab-only.
-4. Then the user's own full functional sweep (§"The full functional sweep").
+1. **Canvas slice 5** (the `react-konva` editor surface itself: stage over
+   the slide PNG, select/drag/resize placed targets, palette-first paint via
+   the existing `/api/themes` palette, free textboxes/images, save through
+   the existing `commitDeck` funnel so undo + re-render come free) — LANDED
+   2026-09-30 as `CanvasEditor.jsx` (entry: per-slide canvas button on the
+   deck-page cards, beside Edit/Punch/Swap — moved off the lightbox toolbar
+   per user ask; `konva@10` + `react-konva@19` installed, matching React 19; `vite build`
+   clean). NOT visually proofed — the site sits behind login and there are
+   no credentials in this session; needs a logged-in click-through (open any
+   deck → lightbox → canvas button → drag a box → Save).
+2. Then slide-links pick (the "References slide carries clickable links" item
+   needs direction first — options (a)/(b)/([c]) are in the entry; ask, then
+   wait), functional sweep (gateway-blocked for the generation half).
