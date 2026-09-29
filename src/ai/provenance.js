@@ -14,18 +14,54 @@ function slideClaims(slide) {
   const found = new Set();
   for (const text of flattenSlide(slide)) {
     for (const claim of extractClaims(text, { names: false })) found.add(claim);
+    for (const m of String(text).match(/\d[\d,.]*(?:\.\d+)?\s?[%°](?:C)?/g) ?? []) {
+      found.add(m.trim());
+    }
   }
   return [...found];
 }
 
-export function slideSourceUse(slide, pages) {
+function hasUnit(claim) {
+  return /[a-z%°]/i.test(String(claim).replace(/[\d\s,.\-+×x]/g, ""));
+}
+
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeStrict(s) {
+  return String(s).toLowerCase().replace(/,/g, "").replace(/[\s'’]+/g, " ").trim();
+}
+
+function strictGrounded(claim, text) {
+  const norm = normalizeStrict(text);
+  const n = normalizeStrict(claim);
+  if (hasUnit(claim)) {
+    const re = new RegExp(`(^|\\s)${escapeRegExp(n)}(?=[\\s.,;:!?()\\[\\]]|$)`, "g");
+    return (norm.match(re) ?? []).length;
+  }
+  const re = new RegExp(`(^|\\s)${escapeRegExp(n)}(?=[\\s.,;:!?()\\[\\]%°a-zA-Z]|$)`, "g");
+  return (norm.match(re) ?? []).length;
+}
+
+export function slideSourceUse(slide, pages, section = null) {
   const claims = slideClaims(slide);
   if (!claims.length || !pages?.length) return [];
+  const unit = claims.filter(hasUnit);
+  const bare = claims.filter((c) => !hasUnit(c));
   const use = [];
   for (let i = 0; i < pages.length; i++) {
-    const text = pages[i]?.text ?? "";
+    const page = pages[i] ?? {};
+    const text = page.text ?? "";
     if (!text.trim()) continue;
-    if (claims.some((c) => claimGrounded(c, text))) use.push(i);
+    if (page.subtopic != null && section != null && page.subtopic !== section) continue;
+    if (unit.some((c) => strictGrounded(c, text))) { use.push(i); continue; }
+    let hits = 0;
+    for (const c of bare) {
+      hits += Math.min(2, strictGrounded(c, text));
+      if (hits >= 2) break;
+    }
+    if (hits >= 2) use.push(i);
   }
   return use;
 }
@@ -35,7 +71,7 @@ export function mapDeckSources(deck, pages) {
   for (let i = 0; i < (deck?.slides ?? []).length; i++) {
     const slide = deck.slides[i];
     if (!isMappable(slide)) continue;
-    const use = slideSourceUse(slide, pages);
+    const use = slideSourceUse(slide, pages, slide.section ?? null);
     if (use.length) out.push({ slide: i, pages: use });
   }
   return out;

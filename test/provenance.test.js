@@ -94,3 +94,31 @@ test("the inserted slide validates", async () => {
   const v = await validateDeck(next);
   assert.equal(v.ok, true, JSON.stringify(v.errors));
 });
+
+test("a bare year mentioned once does not link a page", () => {
+  const slide = { type: "bullets", headline: "2023 review after 9 trials", bullets: ["First point here.", "Second point here.", "Third point here.", "Fourth point here."] };
+  const pages = [
+    { url: "https://a.example/x", title: "Passing mention", words: 10, text: "Published in 2023. Nothing else of note." },
+    { url: "https://b.example/y", title: "Both figures", words: 10, text: "Published in 2023, revised after 9 trials." },
+  ];
+  assert.deepEqual(slideSourceUse(slide, pages), [1]);
+});
+
+test("a bare number that only appears as a substring never links", () => {
+  const slide = { type: "bullets", headline: "25 years of warranty", bullets: ["First point here.", "Second point here.", "Third point here.", "Fourth point here."] };
+  const pages = [
+    { url: "https://a.example/x", title: "Year soup", words: 10, text: "In 2025 and 125 trials nothing was found." },
+  ];
+  assert.deepEqual(slideSourceUse(slide, pages), [], "25 must not match 2025 or 125");
+});
+
+test("tagged pages only link slides of their own part", () => {
+  const slide = { type: "bullets", section: 0, headline: "Cells hit 26.1%", bullets: ["Certified cells reach 26.1% efficiency.", "Second point here.", "Third point here.", "Fourth point here."] };
+  const pages = [
+    { url: "https://a.example/x", title: "Same part", words: 10, subtopic: 0, text: "Certified cells reach 26.1% efficiency. Confirmed twice." },
+    { url: "https://b.example/y", title: "Other part", words: 10, subtopic: 2, text: "Certified cells reach 26.1% efficiency. Confirmed twice." },
+    { url: "https://c.example/z", title: "Untagged legacy", words: 10, text: "Certified cells reach 26.1% efficiency. Confirmed twice." },
+  ];
+  assert.deepEqual(slideSourceUse(slide, pages, 0), [0, 2]);
+  assert.deepEqual(slideSourceUse(slide, pages, null), [0, 1, 2], "without a section every page is tested");
+});
