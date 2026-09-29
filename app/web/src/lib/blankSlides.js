@@ -226,16 +226,17 @@ export function blankSlideForType(type) {
       right: IMAGE_PLACEHOLDER,
       left_caption: "Left",
       right_caption: "Right",
+      notes: "[image] Replace with real uploads via Add image.",
     };
   }
   if (type === "image") {
-    return { type, image: IMAGE_PLACEHOLDER, caption: "Add a caption" };
+    return { type, image: IMAGE_PLACEHOLDER, caption: "Add a caption", notes: "[image] Replace with a real upload via Add image." };
   }
   if (type === "image-text") {
-    return { type, headline: "New slide", image: IMAGE_PLACEHOLDER, body: ["First point"] };
+    return { type, headline: "New slide", image: IMAGE_PLACEHOLDER, body: ["First point"], notes: "[image] Replace with a real upload via Add image." };
   }
   if (type === "hero-image") {
-    return { type, headline: "New slide", subtitle: "Subtitle", image: IMAGE_PLACEHOLDER };
+    return { type, headline: "New slide", subtitle: "Subtitle", image: IMAGE_PLACEHOLDER, notes: "[image] Replace with a real upload via Add image." };
   }
   if (type === "image-grid") {
     return {
@@ -245,6 +246,7 @@ export function blankSlideForType(type) {
         { src: IMAGE_PLACEHOLDER, caption: "First" },
         { src: IMAGE_PLACEHOLDER, caption: "Second" },
       ],
+      notes: "[image] Replace with real uploads via Add image.",
     };
   }
   const fields = TYPE_FIELDS[type];
