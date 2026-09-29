@@ -1,13 +1,26 @@
-# Handoff — 2026-09-30, manual editing landed; full-free canvas specified for elsewhere
+# Handoff — 2026-09-30, canvas moved to a branch; main clean
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§11 canvas ([~], full-free human-only direction) +
-tell ([~]) + slide-links ([ ], needs direction)**.
+`docs/ROADMAP.md` → **§11 canvas + tell + slide-links**. Note: the roadmap
+on main still describes canvas as unbuilt — the built slices live on the
+`canvas` branch (4 commits) and main's roadmap will catch up at merge.
 
 ## Current state
 
-Pushed to `origin/main`. Two halves: what is built and verified here, and the
-canvas spec to be built elsewhere.
+On `main`: one local commit ahead of `origin/main` (`487cd09`, needs
+explicit OK before push). Working tree clean.
+
+**Branch split (user ask, 2026-09-30):** all canvas work left main for the
+`canvas` branch (4 commits: overrides+renderer core, preservation tests,
+canvas mode UI + konva deps, docs). Main holds a single commit: the Sources
+panel moved to the top of the research tab (`ResearchView.jsx`). Anyone
+downloading main gets no canvas code — no `overrides.js`, no konva dep.
+
+**Also done this session (lives on `canvas`, recorded in its docs):**
+tell-to-add validated end to end on local `qwen3.6:35b-a3b` (17→18 slides,
+existing byte-unchanged, appended stats slide read clean); §12 gained a
+"Per-slide source refs" item (schema `cites` unwritten/unread — needs a
+supporting-source contract).
 
 **Built here (human-only bounded + manual, no model):**
 
