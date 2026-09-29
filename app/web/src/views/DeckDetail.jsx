@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { Button, Panel, Empty, Spinner, SlideSkeleton, Tooltip } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
+import CanvasEditor from "../components/CanvasEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { blankSlideForType, blankSlideTypes } from "../lib/blankSlides.js";
 import { deckContext } from "../lib/deckContext.js";
@@ -27,6 +28,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const [problems, setProblems] = useState([]);
   const [zoom, setZoom] = useState(null);
   const [editing, setEditing] = useState(null); // slide index in the editor
+  const [canvas, setCanvas] = useState(null); // slide index on the canvas
   const [identity, setIdentity] = useState(null);
   const [punch, setPunch] = useState(null); // slide index being punched up
   const [punchErr, setPunchErr] = useState("");
@@ -963,7 +965,10 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
         <div className="mt-7">
           <div className="relative mb-3 flex items-center justify-between">
             <div className="text-[11px] font-medium uppercase tracking-wider text-fg-faint">Slides</div>
-            <div className="relative">
+            <div className="relative flex items-center gap-1.5">
+              <Button size="sm" variant="outline" onClick={() => setCanvas(0)}>
+                Open canvas
+              </Button>
               <Button size="sm" variant="outline" onClick={() => setTplOpen((o) => !o)}>
                 + Add slide
               </Button>
@@ -1144,6 +1149,14 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                         </svg>
                       </CardBtn>
                     </Tooltip>
+                    <Tooltip label="Edit on canvas — move, resize, recolour">
+                      <CardBtn onClick={() => setCanvas(i)}>
+                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2" strokeDasharray="3 2" />
+                          <path d="M3 9h18M9 9v12" />
+                        </svg>
+                      </CardBtn>
+                    </Tooltip>
                   </div>
                   <div className="flex items-center gap-0.5 opacity-0 transition-opacity duration-[var(--dur-shell)] ease-[var(--ease-shell)] group-hover:opacity-100 [@media(hover:none)]:opacity-100">
                     <CardMenu
@@ -1197,6 +1210,22 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
             setEditing(null);
           }}
           onClose={() => setEditing(null)}
+        />
+      )}
+
+      {canvas !== null && deck && (
+        <CanvasEditor
+          slug={slug}
+          deck={deck}
+          index={canvas}
+          pngUrl={data.slides[canvas]}
+          themeName={theme || deck.theme}
+          mode={mode}
+          palette={themes.find((t) => t.name === (theme || deck.theme))?.palette}
+          thumbs={data.thumbs}
+          onSelectSlide={(i) => setCanvas(i)}
+          onSave={(nextDeck) => commitDeck(nextDeck)}
+          onClose={() => setCanvas(null)}
         />
       )}
 

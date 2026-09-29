@@ -154,6 +154,13 @@ export const api = {
       r.ok ? r.text() : Promise.reject(new Error("docs unavailable"))),
   report: (slug) => call(`/api/decks/${slug}/report`),
   research: (slug) => call(`/api/decks/${slug}/research`),
+  geometry: (slug, { theme, mode } = {}) => {
+    const q = new URLSearchParams();
+    if (theme) q.set("theme", theme);
+    if (mode) q.set("mode", mode);
+    const qs = q.toString();
+    return call(`/api/decks/${slug}/geometry${qs ? `?${qs}` : ""}`);
+  },
   saveResearch: (slug, { notes, sources }) =>
     call(`/api/decks/${slug}/research`, { method: "PUT", body: JSON.stringify({ notes, sources }) }),
   renderReport: (slug, opts = {}) =>

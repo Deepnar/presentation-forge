@@ -183,6 +183,31 @@ app.post("/api/decks/:slug/render", withRenderSlot(async (req, res) => {
   });
 }));
 
+app.get("/api/decks/:slug/geometry", wrap(async (req, res) => {
+  // The canvas editor's read path: where every tagged box actually drew, per
+  // slide, so selection handles sit on the rendered slide. Headless — no
+  // .pptx is written and no preview is rasterised; the editor pairs this with
+  // the PNGs from the render endpoint.
+  const dir = path.join(DECKS, req.params.slug);
+  const deckFile = path.join(dir, "deck.yaml");
+  let metaMode = null;
+  try {
+    metaMode = YAML.parse(await readFile(path.join(dir, "meta.yaml"), "utf8"))?.mode ?? null;
+  } catch { /* optional */ }
+  const r = await render({
+    deckFile,
+    deckDir: dir,
+    themeName: req.query?.theme ?? undefined,
+    mode: req.query?.mode ?? metaMode ?? "light",
+    write: false,
+  });
+  let types = [];
+  try {
+    types = YAML.parse(await readFile(deckFile, "utf8"))?.slides?.map((s) => s.type) ?? [];
+  } catch { /* unreachable — just rendered */ }
+  ok(res, { slides: r.placed.map((placed, i) => ({ type: types[i] ?? null, placed })) });
+}));
+
 app.post("/api/decks/:slug/sweep", (req, res) => {
   const sse = startSSE(res);
   const ctrl = new AbortController();
