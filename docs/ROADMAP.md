@@ -6231,28 +6231,29 @@ three — and entries obey the 220-char item cap.
 
 ### [~] Canvas-like in-website slide editor
 
-*Priority: unranked — direction agreed 2026-09-30: human-only, AI out of layout.*
+*Priority: high — direction revised 2026-09-30: full free, human-only.*
 
 What exists: `SlideEditor.jsx` (typed form modal over validated `deck.yaml`),
 chat turns that edit by instruction, per-slide toolbar (punch/swap/image/
-move/duplicate/delete), lightbox actions. What is asked: Canva/PowerPoint-like
-direct manipulation (drag text, resize, restyle) inside the site after the
-deck is done. That is a new surface, not a fix — it breaks the
-chrome/theme/content split the moment content can set coordinates or colours,
-and it needs product judgement (which objects move, what stays locked to the
-theme). Options were: (a) form editor + more slide types, (b) bounded
-canvas (move/resize within theme boxes, no style escape), (c) full free canvas.
+move/duplicate/delete), lightbox actions, plus the human-only bounded pieces
+landed 2026-09-30 (blank of any type without AI, semantic reorder, tell-to-add
+door, image upload with badge). What is asked now: the whole PowerPoint/Canva
+experience — click into an editor mode and freely do anything (add/duplicate/
+remove slides, write, move/resize, add pictures), and that is the final slide.
 
-Direction agreed: the canvas is for humans after the AI is done — the model
-never writes layout, and no per-slide coordinates/colours/fonts enter the
-schema from any source. Landed as human-only bounded + manual: blank slide of
-any type without AI (`lib/blankSlides.js`, schema-validated per type, editor
-opens at the new slide), semantic reorder inside a slide (up/down over a pure
-`moveListItem`, no geometry), pics via the existing `assets/` upload with the
-`[image]` badge door, slide reorder/duplicate/delete as before. True pixel-free
-work stays on `type: freeform` (the sanctioned rasterised layer with its
-warning), never as fields on native types. Still open: visual drag for slide
-order on the grid (menu moves exist); no free-coordinate drag by design.
+Design (not built): a human-only layout-override layer, not model output.
+Content stays semantic; a per-slide human `layout` block (geometry + paint —
+chrome stays locked: banner, crest, slide numbers are graded marks and never
+overridable) wins at render time. Model grammars exclude it everywhere
+(unrepresentable beats scrubbed); every AI pass (sweep, trim, coherence,
+punch, critic, insert, convert) preserves it verbatim or refuses the slide
+with a visible reason. Freeform stays the rasterised full-bleed escape hatch.
+Slices: (1) schema + validation + grammar exclusion + preservation tests, no
+UI; (2) renderer applies overrides (one layout first, then a shared helper);
+(3) per-pass preservation audits; (4) the visual editor surface
+(click-to-select on the rendered slide, drag/resize, paint, textboxes, images).
+Still open: paint fully custom vs theme-palette-first; override semantics on
+theme switch and type swap (likely reset-with-confirm).
 
 ### [~] Add-new-slides-by-telling
 
@@ -6268,3 +6269,17 @@ routes into the existing chat-turn machinery. Landed beside manual add: a
 slide via the chat turn (`append one new slide, keep the rest`), while
 "+ Add slide" stays the no-AI blank path. Still open: behaviour validation
 against a live model turn (append lands, deck re-renders).
+
+### [ ] References slide carries clickable links
+
+*Priority: low-medium. Needs direction before schema work.*
+
+The source-mapped slide exists and works (see the §11 item): second-to-last,
+part-scoped "used on slides …", top 10, 220-char plain-text items rendered
+numbered with no URLs and nothing clickable in the `.pptx`
+(`src/layouts/core.js:1172`). The Research tab already links every sourced URL
+including papers (title → URL, paper badge on arXiv/DOI). Options for the
+slide: (a) append short URLs within the existing cap, (b) hyperlink items in
+OOXML — needs URLs in the schema, but items are bare strings today, so this is
+schema + renderer work, (c) leave the slide human-readable and keep links in
+the Research tab only.
