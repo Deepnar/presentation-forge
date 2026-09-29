@@ -4,6 +4,7 @@ import { deckSchema, catalogForType } from "./catalog.js";
 import { slideFieldMeta, walkStrings, parseFloorProblems } from "./trim.js";
 import { validateDeck, errorsForSlide } from "../validate.js";
 import { themeMatrix } from "../themematrix.js";
+import { REFERENCE_TYPES } from "./team.js";
 
 export async function fieldInventory(slide) {
   const { strings } = await slideFieldMeta(slide.type);
@@ -233,6 +234,7 @@ export async function fieldLengthPass({
 
   for (let i = 0; i < out.slides.length; i++) {
     const slide = out.slides[i];
+    if (REFERENCE_TYPES.has(slide.type)) continue;
     for (const f of await fieldInventory(slide)) {
       const healed = healCutField(f.text, f.cap);
       if (healed && replaceStringValue(slide, f.text, healed)) {

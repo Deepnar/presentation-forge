@@ -206,3 +206,13 @@ test("computed repetition does not double up on a slide the reviewer flagged", a
   assert.equal(found.filter((f) => f.index === 1).length, 1);
   assert.equal(found[0].kind, "topic", "the reviewer's own finding wins");
 });
+
+test("a source-map slide is never a coherence finding, even when flagged", async () => {
+  const deck = { slides: [
+    slide("bullets", "Scaling Requires Cross-Sector Collaboration"),
+    { type: "references", headline: "References", items: ["A source (example.com) — used on slide 1"] },
+  ] };
+  const chat = async () => ({ data: { findings: [{ index: 1, kind: "topic", detail: "data without a point" }] } });
+  const found = await coherenceFindings({ deck, chat });
+  assert.ok(!found.some((f) => f.index === 1), "the source map survives review verbatim");
+});

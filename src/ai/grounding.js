@@ -1,4 +1,6 @@
 
+import { REFERENCE_TYPES } from "./team.js";
+
 const UNITS = new Set([
   "%", "gw", "mw", "kw", "w", "kwh", "mwh", "twh", "gwh", "kg", "km", "m",
   "cm", "mm", "v", "a", "hz", "gb", "tb", "billion", "million", "trillion",
@@ -136,6 +138,7 @@ export function groundDeck(deck, researchText, { label = "research/notes.md" } =
 
   const findings = [];
   (deck.slides ?? []).forEach((slide, i) => {
+    if (REFERENCE_TYPES.has(slide?.type)) return;
     const noNames = new Set([slide.headline, slide.standfirst].filter(Boolean));
     const claims = flattenSlide(slide, { relativeChart: isRelativeChart(slide) })
       .flatMap((text) => extractClaims(text, { names: !noNames.has(text) && strongField(text) }))

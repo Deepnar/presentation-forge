@@ -58,6 +58,8 @@ const DECK_LEVEL = new Set(["title", "agenda"]);
 
 export const STRUCTURAL_TYPES = new Set(["section", "chapter", "closing", "epigraph"]);
 
+export const SOURCE_MAP_TYPES = new Set(["references", "bibliography", "data-source"]);
+
 export function nearDuplicateHeadlines(slides = [], { threshold = 0.6 } = {}) {
   const heads = slides.map((s, i) => ({
     i,
@@ -114,7 +116,12 @@ export function digestSlide(slide, i) {
 }
 
 function reviewPrompt(deck, sections) {
-  const slides = deck.slides.map(digestSlide).join("\n");
+  const slides = deck.slides.map((s, i) => {
+    if (SOURCE_MAP_TYPES.has(s?.type)) {
+      return `[${i}] ${s.type} "${s.headline ?? s.type}" — SOURCE MAP, do not flag: a deterministic source list, not prose.`;
+    }
+    return digestSlide(s, i);
+  }).join("\n");
   return [
     "You are the coherence reviewer for a presentation deck. The deck must tell ONE story,",
     "and every slide must serve it.",
@@ -130,6 +137,7 @@ function reviewPrompt(deck, sections) {
     "   A statistic with no link to the section's point (data without an argument) is a failure.",
     "",
     "Flag ONLY slides that genuinely fail. A clean slide is not a finding.",
+    "Never flag a SOURCE MAP slide: it is generated provenance, and rewriting it destroys it.",
     "",
     `SLIDES\n${slides}`,
   ].join("\n");
@@ -180,7 +188,8 @@ export async function coherenceReview({ deck, sections = [], model, signal, chat
 export async function coherenceFindings({ deck, sections = [], model, signal, chat = chatJSON }) {
   const reviewed = await coherenceReview({ deck, sections, model, signal, chat });
   const seen = new Set(reviewed.map((f) => f.index));
-  return [...reviewed, ...repetitionFindings(deck).filter((f) => !seen.has(f.index))];
+  return [...reviewed, ...repetitionFindings(deck).filter((f) => !seen.has(f.index))]
+    .filter((f) => !SOURCE_MAP_TYPES.has(deck?.slides?.[f.index]?.type));
 }
 
 export async function coherencePass({

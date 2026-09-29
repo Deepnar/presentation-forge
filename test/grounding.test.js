@@ -226,3 +226,16 @@ test("a fabricated relative coordinate still flags when its delta is ungrounded"
   assert.ok(slide, "a relative coordinate whose delta is absent from the research must flag");
   assert.ok(slide.claims.includes("75"), JSON.stringify(slide.claims));
 });
+
+test("groundDeck leaves a source-map slide alone — provenance is not a claim", () => {
+  const deck = {
+    title: "T",
+    slides: [
+      { type: "bullets", headline: "Cells hit 26.1%", bullets: ["Certified cells reach 26.1% efficiency.", "Second point here.", "Third point here.", "Fourth point here."] },
+      { type: "references", headline: "References", items: ["A paper naming Nowhereville 2031 (example.com) — used on slide 1"] },
+    ],
+  };
+  const { findings, notes } = groundDeck(deck, "Certified cells reach 26.1% efficiency.");
+  assert.ok(!findings.some((f) => f.slide === 1));
+  assert.equal(notes.slides[1].notes, undefined);
+});
