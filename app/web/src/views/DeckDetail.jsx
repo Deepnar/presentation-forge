@@ -55,6 +55,9 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
   const [templates, setTemplates] = useState([]);
   const [tplOpen, setTplOpen] = useState(false);
   const [tplFilter, setTplFilter] = useState("");
+  const [tellText, setTellText] = useState("");
+  const [tellBusy, setTellBusy] = useState(false);
+  const [tellErr, setTellErr] = useState("");
   const [themePickerOpen, setThemePickerOpen] = useState(false);
   const renderTimer = useRef(null);
   const exportRef = useRef(null);
@@ -328,6 +331,22 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
     }).promise
       .catch((err) => setProblems([err.message]))
       .finally(() => { setSweeping(false); setSweepMsg(""); });
+  }
+
+  function tellAdd() {
+    const text = tellText.trim();
+    if (!text || tellBusy || punch !== null) return;
+    setTellBusy(true);
+    setTellErr("");
+    api.chatDeck(slug, {
+      instruction:
+        `Add a slide at the end: ${text}. Keep every existing slide unchanged; ` +
+        `append one new slide of the most fitting type.`,
+    }, {
+      result: () => { setTellText(""); onDeckChanged(); },
+    }).promise.catch((err) => {
+      setTellErr(err.message);
+    }).finally(() => setTellBusy(false));
   }
 
   function openSwap(i) {
@@ -1011,6 +1030,22 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
               )}
             </div>
           </div>
+          <div className="mb-4 flex items-center gap-2">
+            <input
+              value={tellText}
+              onChange={(e) => setTellText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") tellAdd(); }}
+              placeholder='Tell it what to add… e.g. "a stats slide about the key figures"'
+              disabled={tellBusy}
+              title="Describe the slide to add — the chat-turn machinery writes it, existing slides stay unchanged"
+              className="w-full rounded-lg border border-line bg-sunken px-3 py-2 text-[12.5px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent disabled:opacity-60"
+            />
+            <Button size="sm" variant="outline" onClick={tellAdd} disabled={!tellText.trim() || tellBusy || punch !== null}>
+              {tellBusy ? <Spinner className="h-3 w-3" /> : null}
+              {tellBusy ? "Adding…" : "Add with AI"}
+            </Button>
+          </div>
+          {tellErr && <div className="mb-3 text-[12px] text-amber">{tellErr}</div>}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {slides.map((slide, i) => {
             const src = data.slides[i];
