@@ -743,6 +743,7 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
                   <MenuBtn onClick={() => { doExport("pdf"); setExportOpen(false); }}>PDF</MenuBtn>
                   <MenuBtn onClick={() => { doExport("markdown"); setExportOpen(false); }}>Markdown (.md)</MenuBtn>
                   <MenuBtn onClick={() => { doBundle(); setExportOpen(false); }}>Bundle (.zip)</MenuBtn>
+                  <MenuBtn onClick={() => { onNavigate?.("report"); setExportOpen(false); }}>Generate report</MenuBtn>
                   <MenuBtn onClick={() => { doScriptExport(); setExportOpen(false); }}>
                     Speaker script (.md)
                   </MenuBtn>

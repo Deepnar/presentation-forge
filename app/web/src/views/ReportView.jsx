@@ -88,6 +88,47 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
     }
   }
 
+  async function generateFromDeck() {
+    setBusy(true);
+    setError("");
+    setStatus("Queued…");
+    reportWrites.begin(slug, { abort: () => {}, status: "Queued…" });
+    const j = api.generateReport(
+      slug,
+      { depth },
+      {
+        status: (p) => {
+          const label = progressLabel(p);
+          setStatus(label);
+          reportWrites.update(slug, { status: label });
+        },
+        result: () => {
+          api.report(slug)
+            .then((r) => {
+              setData(r.report);
+              setIdentity(r.identity ?? {});
+              setRendered(r.rendered === true);
+              setNotFound(false);
+              onDeckChanged?.();
+            })
+            .catch((e) => setError(e.message));
+          setStatus("");
+        },
+      },
+    );
+    reportWrites.update(slug, { abort: j.abort });
+    setJob(j);
+    try {
+      await j.promise;
+    } catch (err) {
+      setError(err.name === "AbortError" ? "Cancelled." : err.message);
+      setStatus("");
+    } finally {
+      setBusy(false);
+      reportWrites.end(slug);
+    }
+  }
+
   async function planDeck() {
     setBusy(true);
     setError("");
@@ -186,6 +227,36 @@ export default function ReportView({ slug, refreshToken, onBack, onPlanReady, on
             title="No report here yet"
             hint="Write one below, or start a report from the home prompt in Report mode. The machine drafts; the final words are yours."
           />
+          <Panel className="mt-4 p-4">
+            <div className="text-[13px] font-medium text-fg">Generate from this deck</div>
+            <p className="mt-1 text-[12px] leading-relaxed text-fg-muted">
+              Uses the deck's own research notes — no new research pass. When the
+              deck was built without research, its slides stand in instead.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2.5">
+              <div className="relative">
+                <select
+                  value={depth}
+                  onChange={(e) => setDepth(e.target.value)}
+                  title="Report depth"
+                  className="appearance-none rounded-lg border border-line bg-sunken py-1.5 pl-2.5 pr-7 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+                >
+                  <option value="full">Full depth</option>
+                  <option value="brief">Brief</option>
+                </select>
+                <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-faint" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+              <Button variant="primary" onClick={generateFromDeck} disabled={busy || writing}>
+                {(busy || writing) && <Spinner />}
+                Generate the report
+              </Button>
+              {(busy || writing) && (
+                <button onClick={stop} className="text-[11px] text-fg-faint transition hover:text-fg">Stop</button>
+              )}
+            </div>
+          </Panel>
         </div>
       ) : (
         <div className="mt-6">
