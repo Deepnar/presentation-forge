@@ -16,6 +16,7 @@ export const BRIEFING_QUESTIONS = [
   { key: "emphasis", tier: OPTIONAL, ask: "Which 2–3 ideas must own the most slides and the strongest evidence — and why do they matter to this audience?" },
   { key: "evidence", tier: OPTIONAL, ask: "What figures, sources, or limits must we respect — or must NOT invent? (leave blank if none)" },
   { key: "mode", tier: OPTIONAL, ask: "Team deck or a solo deep dive?" },
+  { key: "subtopicCount", tier: OPTIONAL, ask: "How many parts should the talk split into?" },
   { key: "team", tier: OPTIONAL, ask: "Who is on the team — and who presents?" },
   { key: "guide", tier: OPTIONAL, ask: "Who is your guide?" },
   { key: "academic", tier: OPTIONAL, ask: "Which subject and academic year is this for?" },
@@ -85,7 +86,7 @@ export function optionalAnswered(kind, briefing = {}, baseline = null) {
     .length;
 }
 
-export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
+export const PRESET_KEYS = ["team", "maxSlides", "slidesPerMember", "subtopicCount", "density", "theme", "branding"];
 
 export const PRESET_KEYS_LEGACY = ["team", "maxSlides", "slidesPerMember", "density", "theme", "branding"];
 
@@ -100,6 +101,7 @@ export function briefingFromPreset(preset, identity) {
     density: p.density ?? b.density,
     branding: p.branding ?? b.branding,
     slidesPerMember: p.slidesPerMember ?? b.slidesPerMember,
+    subtopicCount: p.subtopicCount ?? b.subtopicCount,
   };
 }
 
@@ -113,6 +115,7 @@ export function applyPresetToBriefing(briefing, preset) {
     density: p.density ?? briefing.density,
     branding: p.branding ?? briefing.branding,
     slidesPerMember: p.slidesPerMember ?? briefing.slidesPerMember,
+    subtopicCount: p.subtopicCount ?? briefing.subtopicCount,
   };
 }
 
@@ -137,6 +140,7 @@ export function presetPayload(briefing) {
     density: b.density,
     branding: b.branding,
     slidesPerMember: b.slidesPerMember,
+    subtopicCount: b.subtopicCount ?? 0,
   };
 }
 
