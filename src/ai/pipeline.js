@@ -550,6 +550,15 @@ export async function writeDeckContent({
   if (!res.ok || !res.deck) {
     throw new Error(res.errors?.join("; ") || "Generation failed");
   }
+  if ((plan.slides?.length ?? 0) > 0 && (res.skipped?.length ?? 0) >= plan.slides.length) {
+    // Every slide fell back to a placeholder, so onSlide never fired and no
+    // deck.yaml exists — fail here with the reasons instead of crashing
+    // later in finalize with a bare ENOENT.
+    const reasons = res.skipped.slice(0, 3).map((s) => `[${s.index}] ${s.type}: ${s.reason}`).join("; ");
+    throw new Error(
+      `every slide fell back to a placeholder — nothing was written: ${reasons}${res.skipped.length > 3 ? ` (+${res.skipped.length - 3} more)` : ""}`,
+    );
+  }
   return { deck: res.deck, plan, skipped: res.skipped ?? [], stats: res.stats, problems: res.problems ?? [] };
 }
 
