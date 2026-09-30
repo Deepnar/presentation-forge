@@ -323,9 +323,19 @@ function TeamCard({ team, onNext, embedded = false }) {
   // Embedded cards have no Next button — the form IS the save. Every edit
   // must reach the parent immediately, or the briefing (and Save-as-preset
   // downstream of it) never sees the members. Unnamed rows stay local-only
-  // so an in-progress empty row is never stored.
+  // so an in-progress empty row is never stored. Names and label are trimmed:
+  // the pipeline matches owners against trimmed names, so a trailing space
+  // ("mausam ") would otherwise silently unmatch its owner downstream.
   const sync = (nextLabel, nextMembers) => {
-    if (embedded) onNext({ team: { label: nextLabel, members: nextMembers.filter((m) => m.name?.trim()) } });
+    if (!embedded) return;
+    onNext({
+      team: {
+        label: nextLabel.trim(),
+        members: nextMembers
+          .filter((m) => m.name?.trim())
+          .map((m) => ({ ...m, name: m.name.trim() })),
+      },
+    });
   };
   const edit = (i, patch) => {
     const next = members.map((m, j) => (j === i ? { ...m, ...patch } : m));
@@ -622,7 +632,7 @@ function SubtopicCountCard({ value, onNext, embedded = false }) {
         value={v}
         onPick={pick}
       />
-      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the count to the presenting team — or set it outright.</div>
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the presenting team, up to 8 parts — or set the count outright.</div>
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
@@ -1039,7 +1049,9 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
     owners[si] = name || null;
     onPlan({ ...plan, owners });
   };
-  const ownerNames = ((chat.briefing ?? {}).team?.members ?? []).map((m) => m.name).filter(Boolean);
+  const ownerNames = ((chat.briefing ?? {}).team?.members ?? [])
+    .map((m) => m.name?.trim())
+    .filter(Boolean);
   const move = (i, dir) => onPlan((() => {
     const slides = [...plan.slides];
     const j = i + dir;

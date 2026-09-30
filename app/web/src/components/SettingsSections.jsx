@@ -213,7 +213,7 @@ function PresetEditor({ preset, onSave, onCancel }) {
       await onSave({
         id: preset?.id,
         name: name.trim(),
-        team: { label: team.label.trim(), members: named },
+        team: { label: team.label.trim(), members: named.map((m) => ({ ...m, name: m.name.trim() })) },
         maxSlides,
         slidesPerMember,
         density,
