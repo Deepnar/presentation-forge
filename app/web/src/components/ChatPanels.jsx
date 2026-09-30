@@ -170,6 +170,7 @@ function BriefingControl({ q, chat, themes, themeLabel, presets, onPickPreset, o
     case "maxSlides": return <MaxSlidesCard value={b.maxSlides} {...common} />;
     case "slidesPerMember": return <SlidesPerMemberCard value={b.slidesPerMember} {...common} />;
     case "mode": return <ModeCard value={b.mode} {...common} />;
+    case "subtopicCount": return <SubtopicCountCard value={b.subtopicCount} {...common} />;
     case "density": return <DensityCard value={b.density} {...common} />;
     case "branding": return <BrandingCard value={b.branding} {...common} />;
     case "research": return (
@@ -617,6 +618,36 @@ function ModeCard({ value, onNext, embedded = false }) {
   );
 }
 
+const PART_COUNTS = [0, 3, 4, 5, 6, 8];
+
+function SubtopicCountCard({ value, onNext, embedded = false }) {
+  const [v, setV] = useState(value ?? 0);
+  const [custom, setCustom] = useState("");
+  const pick = (n) => { setV(n); if (embedded) onNext({ subtopicCount: n }); };
+  return (
+    <div>
+      <ChoicePills
+        options={PART_COUNTS.map((n) => ({ value: n, label: n === 0 ? "Auto" : `${n} parts` }))}
+        value={v}
+        onPick={pick}
+      />
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the presenting team, however large — or set the count outright.</div>
+      <div className="mt-2 flex items-center gap-2">
+        <input
+          type="number"
+          min={1}
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          placeholder="…or a custom count"
+          className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
+        />
+        {custom && <Button size="sm" onClick={() => pick(Math.max(1, Number(custom) || 0))}>Set</Button>}
+      </div>
+      {!embedded && <CardFooter onNext={() => onNext({ subtopicCount: v })} nextLabel="Continue" />}
+    </div>
+  );
+}
+
 function DensityCard({ value, onNext, embedded = false }) {
   const [v, setV] = useState(value ?? "balanced");
   const pick = (x) => { setV(x); if (embedded) onNext({ density: x }); };
@@ -1026,6 +1057,66 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
     return { ...plan, slides };
   })());
 
+  // Parts are not a separate list above the slides — each part heads the
+  // slides that belong to it. Group here; the flat slides array stays the
+  // source of truth, so every card below operates on its flat index.
+  const slides = plan.slides ?? [];
+  const sections = plan.sections ?? [];
+  const isCover = (s) => s.type === "title";
+  const isClosing = (s) => s.type === "closing";
+  const indexed = slides.map((s, i) => ({ s, i }));
+  const cover = indexed.filter(({ s }) => isCover(s));
+  const closing = indexed.filter(({ s }) => isClosing(s));
+  const inSection = (si) => indexed.filter(({ s }) =>
+    !isCover(s) && !isClosing(s) && s.section === si);
+  const unassigned = indexed.filter(({ s }) =>
+    !isCover(s) && !isClosing(s) &&
+    !(Number.isInteger(s.section) && s.section >= 0 && s.section < sections.length));
+  const addSlideTo = (section) =>
+    onPlan({ ...plan, slides: [...slides, { type: "bullets", section, purpose: "" }] });
+
+  const SlideCard = ({ s, i }) => {
+    const meta = types[s.type] ?? { label: s.type, description: "" };
+    return (
+      <div key={i} className="rounded-card border border-line bg-sunken p-3">
+        <div className="mb-1.5 flex items-center gap-2">
+          <span className="font-mono text-[10px] tabular-nums text-fg-faint">{String(i + 1).padStart(2, "0")}</span>
+          <span className="text-[12.5px] font-semibold text-fg">{meta.label ?? s.type}</span>
+          <span className="truncate text-[11px] text-fg-faint">— {meta.description}</span>
+          <div className="ml-auto flex shrink-0 items-center gap-0.5">
+            <button onClick={() => move(i, -1)} disabled={i === 0} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-fg disabled:opacity-30" title="Move up">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 15 6-6 6 6" /></svg>
+            </button>
+            <button onClick={() => move(i, 1)} disabled={i === slides.length - 1} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-fg disabled:opacity-30" title="Move down">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <button onClick={() => onPlan({ ...plan, slides: slides.filter((_, j) => j !== i) })} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber" title="Remove slide">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
+        </div>
+        <div className="flex items-start gap-2">
+          <select
+            value={s.type ?? "bullets"}
+            onChange={(e) => edit(i, { type: e.target.value })}
+            className="w-40 shrink-0 appearance-none rounded-lg border border-line bg-panel px-2 py-1.5 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+          >
+            {Object.keys(types).length
+              ? Object.entries(types).map(([t, m]) => <option key={t} value={t}>{m.label}</option>)
+              : <option value={s.type}>{s.type}</option>}
+          </select>
+          <textarea
+            value={s.purpose ?? ""}
+            onChange={(e) => edit(i, { purpose: e.target.value })}
+            rows={1}
+            placeholder="What this slide must convey…"
+            className={`${inputCls} min-w-0 flex-1 resize-none py-1.5 text-[12.5px]`}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Panel className="p-5">
       <div className="mb-1 flex items-center gap-2">
@@ -1047,95 +1138,88 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
         </label>
       </div>
 
-      <div className="mb-4">
-        <div className="mb-1.5 text-[11px] text-fg-faint">
-          Parts ({(plan.sections ?? []).length}) — rename freely, give each part an owner, add more as needed. Removing re-homes its slides.
-        </div>
-        <div className="space-y-1.5">
-          {(plan.sections ?? []).map((name, si) => (
-            <div key={si} className="flex items-center gap-2 rounded-lg border border-line bg-sunken px-2 py-1.5">
-              <span className="font-mono text-[10px] tabular-nums text-fg-faint">{String(si + 1).padStart(2, "0")}</span>
-              <input
-                value={name ?? ""}
-                onChange={(e) => renameSection(si, e.target.value)}
-                className="min-w-0 flex-1 bg-transparent text-[12.5px] font-medium text-fg outline-none"
-              />
-              {ownerNames.length > 0 && (
-                <select
-                  value={(plan.owners ?? [])[si] ?? ""}
-                  onChange={(e) => setOwner(si, e.target.value)}
-                  title="Who presents this part"
-                  className="max-w-[7rem] appearance-none rounded border border-line bg-panel px-1.5 py-0.5 text-[10.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+      <div className="mb-1.5 text-[11px] text-fg-faint">
+        Your talk, part by part — each part heads the slides that belong to it.
+        Rename, assign owners, edit and reorder in place. Removing a part
+        re-homes its slides.
+      </div>
+
+      <div className="space-y-2">
+        {cover.map(({ s, i }) => <SlideCard key={i} s={s} i={i} />)}
+      </div>
+
+      <div className="mt-3 space-y-3">
+        {(sections ?? []).map((name, si) => {
+          const own = inSection(si);
+          return (
+            <section key={si} className="rounded-card border border-line bg-panel p-3">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] tabular-nums text-fg-faint">{String(si + 1).padStart(2, "0")}</span>
+                <input
+                  value={name ?? ""}
+                  onChange={(e) => renameSection(si, e.target.value)}
+                  className="min-w-0 flex-1 bg-transparent text-[12.5px] font-medium text-fg outline-none"
+                />
+                <span className="shrink-0 text-[10.5px] tabular-nums text-fg-faint">
+                  {own.length} slide{own.length === 1 ? "" : "s"}
+                </span>
+                {ownerNames.length > 0 && (
+                  <select
+                    value={(plan.owners ?? [])[si] ?? ""}
+                    onChange={(e) => setOwner(si, e.target.value)}
+                    title="Who presents this part"
+                    className="max-w-[7rem] shrink-0 appearance-none rounded border border-line bg-sunken px-1.5 py-0.5 text-[10.5px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
+                  >
+                    <option value="">auto</option>
+                    {ownerNames.map((n) => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                )}
+                <button
+                  onClick={() => removeSection(si)}
+                  disabled={(sections ?? []).length <= 1}
+                  className="shrink-0 rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber disabled:opacity-30"
+                  title="Remove part"
                 >
-                  <option value="">auto</option>
-                  {ownerNames.map((n) => <option key={n} value={n}>{n}</option>)}
-                </select>
-              )}
-              <button
-                onClick={() => removeSection(si)}
-                disabled={(plan.sections ?? []).length <= 1}
-                className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber disabled:opacity-30"
-                title="Remove part"
-              >
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+              </div>
+              <div className="mt-2 space-y-2">
+                {own.length === 0 && (
+                  <div className="rounded-lg border border-dashed border-line px-3 py-2 text-[11px] text-fg-faint">
+                    No slides in this part yet — add one below.
+                  </div>
+                )}
+                {own.map(({ s, i }) => <SlideCard key={i} s={s} i={i} />)}
+              </div>
+              <div className="mt-2">
+                <Button size="sm" variant="outline" onClick={() => addSlideTo(si)}>+ Add slide to this part</Button>
+              </div>
+            </section>
+          );
+        })}
+        <div>
           <Button size="sm" variant="outline" onClick={addSection}>+ Add part</Button>
         </div>
       </div>
 
-      <div className="space-y-2">
-        {plan.slides.map((s, i) => {
-          const meta = types[s.type] ?? { label: s.type, description: "" };
-          return (
-            <div key={i} className="rounded-card border border-line bg-sunken p-3">
-              <div className="mb-1.5 flex items-center gap-2">
-                <span className="font-mono text-[10px] tabular-nums text-fg-faint">{String(i + 1).padStart(2, "0")}</span>
-                <span className="text-[12.5px] font-semibold text-fg">{meta.label ?? s.type}</span>
-                <span className="truncate text-[11px] text-fg-faint">— {meta.description}</span>
-                <div className="ml-auto flex shrink-0 items-center gap-0.5">
-                  <button onClick={() => move(i, -1)} disabled={i === 0} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-fg disabled:opacity-30" title="Move up">
-                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 15 6-6 6 6" /></svg>
-                  </button>
-                  <button onClick={() => move(i, 1)} disabled={i === plan.slides.length - 1} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-fg disabled:opacity-30" title="Move down">
-                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
-                  </button>
-                  <button onClick={() => onPlan({ ...plan, slides: plan.slides.filter((_, j) => j !== i) })} className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber" title="Remove slide">
-                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
-                  </button>
-                </div>
+      {(closing.length > 0 || unassigned.length > 0) && (
+        <div className="mt-3 space-y-2">
+          {closing.map(({ s, i }) => <SlideCard key={i} s={s} i={i} />)}
+          {unassigned.length > 0 && (
+            <div className="rounded-card border border-dashed border-line p-3">
+              <div className="mb-2 text-[11px] text-fg-faint">
+                Unassigned — these slides belong to no part and land in part 1.
               </div>
-              <div className="flex items-start gap-2">
-                <select
-                  value={s.type ?? "bullets"}
-                  onChange={(e) => edit(i, { type: e.target.value })}
-                  className="w-40 shrink-0 appearance-none rounded-lg border border-line bg-panel px-2 py-1.5 text-[12px] text-fg-muted outline-none transition hover:border-line-strong focus:border-accent"
-                >
-                  {Object.keys(types).length
-                    ? Object.entries(types).map(([t, m]) => <option key={t} value={t}>{m.label}</option>)
-                    : <option value={s.type}>{s.type}</option>}
-                </select>
-                <textarea
-                  value={s.purpose ?? ""}
-                  onChange={(e) => edit(i, { purpose: e.target.value })}
-                  rows={1}
-                  placeholder="What this slide must convey…"
-                  className={`${inputCls} min-w-0 flex-1 resize-none py-1.5 text-[12.5px]`}
-                />
+              <div className="space-y-2">
+                {unassigned.map(({ s, i }) => <SlideCard key={i} s={s} i={i} />)}
+              </div>
+              <div className="mt-2">
+                <Button size="sm" variant="outline" onClick={() => addSlideTo(null)}>+ Add unassigned slide</Button>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-3 flex items-center gap-2">
-        <Button size="sm" variant="outline" onClick={() => onPlan({ ...plan, slides: [...plan.slides, { type: "bullets", section: null, purpose: "" }] })}>
-          + Add slide
-        </Button>
-      </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
         <span className="text-[12px] text-fg-muted">
