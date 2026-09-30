@@ -11,8 +11,8 @@ export function teamSize(identity) {
   return members.filter((m) => m.name?.trim()).length || 1;
 }
 
-export function targetSections(identity, { min = 3, max = 8 } = {}) {
-  return Math.min(max, Math.max(min, teamSize(identity)));
+export function targetSections(identity, { min = 3 } = {}) {
+  return Math.max(min, teamSize(identity));
 }
 
 export const DIVIDER_TYPES = new Set(["title", "section", "chapter", "closing", "epigraph"]);

@@ -30,7 +30,7 @@ export function synthesisNote(mode) {
   ].join("\n");
 }
 
-const outlineSchema = ({ maxSlides = 24, sectionCap = 8, minSlides = 3, typeMax = 24 } = {}) => ({
+const outlineSchema = ({ maxSlides = 24, sectionCap, minSlides = 3, typeMax = 24 } = {}) => ({
   type: "object",
   required: ["title", "sections", "slides"],
   properties: {
@@ -102,7 +102,7 @@ export async function planDeck({ brief, briefing = "", theme, identity, research
   const fullStrength = (await authorTransport({ model })) === "cloud";
   const teamNote = presenters.length
     ? `The team of ${presenters.length} presenting members (${presenters.join(", ")}) presents the deck together — one member per part, each member presenting only content slides, never the dividers.`
-    : "Plan the deck as three to eight major parts.";
+    : `Plan the deck as about ${sectionCap} major parts.`;
   const sizingNote = slidesPerMember && presenters.length
     ? `- Size the talk to the team: about ${presenters.length * slidesPerMember} content slides, roughly ${slidesPerMember} per presenting member. The title, section dividers and closing slide are structural and do not count toward that number.`
     : maxSlides < 24

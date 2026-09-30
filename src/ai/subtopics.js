@@ -1,9 +1,11 @@
 import { chatJSON } from "./ollama.js";
 import { presentingNames } from "./team.js";
 
-export const MAX_SUBTOPICS = 8;
-
-export const clampSubtopics = (n) => Math.min(MAX_SUBTOPICS, Math.max(1, Math.floor(Number(n) || 0) || 1));
+// Part counts have no ceiling: the split follows the presenting team (or an
+// explicit count) however large. Only the floor is fixed — a talk has at
+// least one part. Per-call model-schema bounds are set to the requested
+// count at the call site, never to a constant.
+export const clampSubtopics = (n) => Math.max(1, Math.floor(Number(n) || 0) || 1);
 
 export function subtopicCountFor({ mode, subtopicCount, identity } = {}) {
   if (Number(subtopicCount) > 0) return clampSubtopics(subtopicCount);
@@ -12,7 +14,7 @@ export function subtopicCountFor({ mode, subtopicCount, identity } = {}) {
   return clampSubtopics(members || 3);
 }
 
-const subtopicSchema = () => ({
+const subtopicSchema = (maxParts) => ({
   type: "object",
   required: ["title", "subtopics"],
   properties: {
@@ -20,7 +22,7 @@ const subtopicSchema = () => ({
     subtopics: {
       type: "array",
       minItems: 1,
-      maxItems: MAX_SUBTOPICS,
+      maxItems: Math.max(1, maxParts ?? 1),
       items: {
         type: "object",
         required: ["title", "focus"],
@@ -37,7 +39,7 @@ const subtopicSchema = () => ({
   },
 });
 
-export function sanitizeSubtopics(list) {
+export function sanitizeSubtopics(list, max = (list ?? []).length) {
   const seen = new Set();
   const out = [];
   for (const s of list ?? []) {
@@ -49,7 +51,7 @@ export function sanitizeSubtopics(list) {
     seen.add(key);
     out.push({ title, focus });
   }
-  return out.slice(0, MAX_SUBTOPICS);
+  return out.slice(0, Math.max(0, max));
 }
 
 export function ownersFor(subtopics, members) {
@@ -74,7 +76,7 @@ export async function planSubtopics({ brief, briefing = "", identity, count, mod
   const want = clampSubtopics(count ?? subtopicCountFor({ identity }));
   const teamNote = members.length
     ? `The team of ${members.length} presenting members (${members.join(", ")}) presents together — parts are shared out whole, one member may own several.`
-    : "Plan the talk as three to eight major parts.";
+    : `Plan the talk as about ${want} major parts.`;
 
   const system = [
     "You split a presentation topic into ordered subtopics. You do not write slide content, and you do NOT browse — this is your own structuring judgement.",
@@ -95,7 +97,7 @@ export async function planSubtopics({ brief, briefing = "", identity, count, mod
       role: "author",
       model,
       signal,
-      schema: subtopicSchema(),
+      schema: subtopicSchema(want),
       messages: [
         { role: "system", content: system },
         {
@@ -104,11 +106,11 @@ export async function planSubtopics({ brief, briefing = "", identity, count, mod
         },
       ],
     });
-    return { res, subtopics: sanitizeSubtopics(res.data?.subtopics ?? []) };
+    return { res, subtopics: sanitizeSubtopics(res.data?.subtopics ?? [], want) };
   };
 
   let { res, subtopics } = await ask();
-  if (subtopics.length < Math.min(want, MAX_SUBTOPICS)) {
+  if (subtopics.length < want) {
     const retry = await ask();
     if (retry.subtopics.length > subtopics.length) ({ res, subtopics } = retry);
   }

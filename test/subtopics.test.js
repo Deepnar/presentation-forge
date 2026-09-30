@@ -1,7 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  MAX_SUBTOPICS,
   clampSubtopics,
   subtopicCountFor,
   sanitizeSubtopics,
@@ -22,15 +21,16 @@ const identityWith = (names) => ({
   team: { members: names.map((name) => ({ name, presenting: true })) },
 });
 
-test("the count follows the presenting team, clamped to the renderer ceiling", () => {
+test("the count follows the presenting team with no ceiling", () => {
   assert.equal(subtopicCountFor({ identity: identityWith(["A", "B", "C"]) }), 3);
-  assert.equal(subtopicCountFor({ identity: identityWith(Array.from({ length: 10 }, (_, i) => `M${i}`)) }), MAX_SUBTOPICS);
+  assert.equal(subtopicCountFor({ identity: identityWith(Array.from({ length: 10 }, (_, i) => `M${i}`)) }), 10);
+  assert.equal(subtopicCountFor({ identity: identityWith(Array.from({ length: 15 }, (_, i) => `M${i}`)) }), 15);
   assert.equal(subtopicCountFor({ identity: identityWith([]) }), 3);
   assert.equal(subtopicCountFor({}), 3);
 });
 
 test("solo mode takes the explicit count instead of the team", () => {
-  assert.equal(subtopicCountFor({ mode: "solo", subtopicCount: 12 }), MAX_SUBTOPICS);
+  assert.equal(subtopicCountFor({ mode: "solo", subtopicCount: 12 }), 12);
   assert.equal(subtopicCountFor({ mode: "solo", subtopicCount: 5 }), 5);
   assert.equal(subtopicCountFor({ mode: "solo" }), 6);
   assert.equal(clampSubtopics(0), 1);

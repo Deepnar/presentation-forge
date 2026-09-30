@@ -36,13 +36,14 @@ test("teamSize counts named members, never the padding placeholders", () => {
   assert.equal(teamSize({}), 1);
 });
 
-test("targetSections clamps the team size into 3..8", () => {
+test("targetSections floors small teams at 3 with no ceiling", () => {
   assert.equal(targetSections(team([{ name: "A" }, { name: "B" }])), 3);
   assert.equal(targetSections(team([{ name: "A" }, { name: "B" }, { name: "C" }])), 3);
   assert.equal(targetSections(team([{ name: "A" }, { name: "B" }, { name: "C" }, { name: "D" }])), 4);
   assert.equal(targetSections(team([{ name: "A" }, { name: "B" }, { name: "C" }, { name: "D" }, { name: "E" }])), 5);
   assert.equal(targetSections(team([{ name: "A" }, { name: "B" }, { name: "C" }, { name: "D" }, { name: "E" }, { name: "F" }, { name: "G" }, { name: "H" }])), 8);
-  assert.equal(targetSections(team([{ name: "A" }, { name: "B" }, { name: "C" }, { name: "D" }, { name: "E" }, { name: "F" }, { name: "G" }, { name: "H" }, { name: "I" }])), 8);
+  const eleven = Array.from({ length: 11 }, (_, i) => ({ name: `M${i}` }));
+  assert.equal(targetSections(team(eleven)), 11);
 });
 
 test("targetSections honours a custom floor — a report's graded core", () => {
