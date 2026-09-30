@@ -157,9 +157,15 @@ export default function ChatView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
+  // Follow the thread only when the reader is already near the bottom.
+  // The old version scrolled on every chat change, so a keystroke in a form
+  // field at the top (each one syncs into the briefing) yanked the viewport
+  // to the bottom mid-typing.
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 160;
+    if (nearBottom) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [chat, status, busy, themes.length]);
 
   const questions = questionsFor(chat.kind);
