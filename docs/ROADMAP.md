@@ -2536,6 +2536,39 @@ matching the presenting team.
 Verified with the briefing/chats/presets suites (30 pass) and an esbuild
 transform of both edited views.
 
+### [x] Trailing-space member names broke owner matching + parts-cap honesty
+
+An 11-member test deck surfaced two small defects. A member typed as
+"mausam " (trailing space) silently unmatched its part owner: the pipeline
+trims names when assigning owners, but the plan-review owner dropdown matched
+against raw names, so part 06 rendered its owner as "auto" even though the
+stored owner was correct. Member names (and the group label) are now trimmed
+everywhere they enter the briefing — the team grid's live sync and the
+Settings format editor — and the owner dropdown matches on trimmed names, so
+already-stored untrimmed data displays correctly too. Separately, the new
+parts-picker hint said Auto "matches the presenting team" with no mention
+that parts hard-cap at 8; it now says "up to 8 parts".
+
+> **Learned.** Trimming on only one side of a match is a latent mismatch: the
+> pipeline trimmed owners while the UI matched raw names, and neither side
+> looked wrong in isolation. Canonicalise at entry (both editors) AND match
+> defensively at display (the dropdown), since stored data predates any fix.
+
+Verified with the briefing/chats/presets suites (30 pass) and an esbuild
+transform of both edited views, against the real test deck's
+`meta.yaml`/`plan.yaml` (8 trimmed owners intact, 11 content slides as the
+per-member math requires).
+
+### [ ] Teams larger than 8 presenters strand the extra members — needs direction
+
+Parts cap at 8, so members 9+ own no part — and the owners branch of
+`distributePresenters` then gives them no slides either, re-breaking the
+round-3 "every member presents" guarantee the mint restored for the
+owner-less path. Open question whether the fix is co-presenting (unassigned
+members take one slide each inside the largest sections), a plan-review
+warning when presenters outnumber parts, or accepting 8 presenters as the
+ceiling. Do not build until the direction is agreed.
+
 ## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
 
 Four queued items from the 2026-08-16 HPC-deck review (handoff A/B/C/E) plus the
