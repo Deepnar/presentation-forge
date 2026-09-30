@@ -622,7 +622,7 @@ function SubtopicCountCard({ value, onNext, embedded = false }) {
         value={v}
         onPick={pick}
       />
-      <div className="mt-1.5 text-[10.5px] text-fg-faint">Auto sizes the parts to the presenting team — or set the count outright.</div>
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the count to the presenting team — or set it outright.</div>
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
