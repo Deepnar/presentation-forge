@@ -2559,15 +2559,37 @@ transform of both edited views, against the real test deck's
 `meta.yaml`/`plan.yaml` (8 trimmed owners intact, 11 content slides as the
 per-member math requires).
 
-### [ ] Teams larger than 8 presenters strand the extra members — needs direction
+### [x] No ceilings — part and slide-count caps removed
 
-Parts cap at 8, so members 9+ own no part — and the owners branch of
-`distributePresenters` then gives them no slides either, re-breaking the
-round-3 "every member presents" guarantee the mint restored for the
-owner-less path. Open question whether the fix is co-presenting (unassigned
-members take one slide each inside the largest sections), a plan-review
-warning when presenters outnumber parts, or accepting 8 presenters as the
-ceiling. Do not build until the direction is agreed.
+The user's call after the 11-member deck clamped to 8 parts: no built-in
+ceilings anywhere in the sizing path. `MAX_SUBTOPICS` is gone —
+`clampSubtopics` keeps only the floor (at least one part), `targetSections`
+keeps only its floor (at least 3), and the per-call model-schema bounds are
+set to the requested count (`subtopicSchema(want)`, outline `sectionCap`
+always passed explicitly, no default). The UI follows: custom part counts and
+slide counts take any number, the outline gate adds parts freely. An 11-member
+team on Auto now plans 11 parts with 11 owners, which also resolves the
+stranding question below it — every member owns a part by construction, so no
+co-presenting fallback was needed.
+
+Deliberately kept: floors (≥1 part, ≥3 slides, ≥3 default sections — a deck
+below those is not a deck), and the Auto-tier `FORGE_AUTO_MAX_SLIDES_PER_DECK`
+budget gate in `src/limits.js`, which is operator-money protection tunable via
+env, not a product ceiling. Slide presets (0/8/12/16/20) and part presets
+(Auto/3/4/5/6/8) stay as quick picks; the custom fields beside them are now
+unbounded.
+
+> **Learned.** The cap was load-bearing in exactly one place — the model JSON
+> schema needs a concrete `maxItems` per call — and the fix is to derive it
+> from the ask instead of a constant. Everything else (clamps, input maxes,
+> add-guards, prompt prose saying "three to eight") was convention stacked on
+> that one requirement. Removing a cap means tracing it to every layer:
+> constant, clamp, schema, prompt text, UI input, UI guard, tests, and the
+> architecture doc all named 8.
+
+Verified with the full suite (851 tests, 850 pass — the one failure is the
+pre-existing env-dependent `byok-budget` assertion, failing identically on
+clean main) and an esbuild transform of the edited view.
 
 ## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
 

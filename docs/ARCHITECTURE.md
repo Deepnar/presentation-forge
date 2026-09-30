@@ -545,16 +545,18 @@ which is the actual submission workflow.
 **A DECK's structure is an approved split; a report's is not.** In the
 subtopic flow (`mode: team | solo`) the model first splits the topic into
 ordered parts from knowledge alone (`src/ai/subtopics.js`) — team mode
-defaults to the presenting members, solo mode to an explicit count, and an
-explicit `subtopicCount` wins in either mode — then research runs per part and
-the outline fills exactly those parts (`planDeck` with fixed `sections`,
-clamped to the renderer's 8-section ceiling, every part guaranteed at least
-one slide). Each part has an owner (`ownersFor`: contiguous shares, one member
-may own several), carried on `plan.owners` into `distributePresenters`, which
-honours it whole-section rather than rebalancing. The outline gate edits the
-parts (rename, add up to 8, remove with re-homing, reassign owners) before
+defaults to the presenting members however many there are, solo mode to an
+explicit count, and an explicit `subtopicCount` wins in either mode — then
+research runs per part and the outline fills exactly those parts (`planDeck`
+with fixed `sections`, every part guaranteed at least one slide). Part counts
+have no ceiling: the per-call model-schema bounds are set to the requested
+count, and only the floor (at least one part, at least three sections by
+default) is fixed. Each part has an owner (`ownersFor`: contiguous shares, one
+member may own several), carried on `plan.owners` into `distributePresenters`,
+which honours it whole-section rather than rebalancing. The outline gate edits
+the parts (rename, add freely, remove with re-homing, reassign owners) before
 anything is written. Legacy callers that pass no `mode` keep the old rule:
-`clamp(members, 3, 8)` from the merged identity's team.
+`max(3, members)` from the merged identity's team.
 
 The report planner deliberately does NOT do this, and the deck's rule does not
 transfer: a talk is divided between the people giving it, while a report's
