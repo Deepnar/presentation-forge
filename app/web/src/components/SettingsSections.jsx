@@ -201,7 +201,7 @@ function PresetEditor({ preset, onSave, onCancel }) {
   useEffect(() => { api.themes().then((r) => setThemes(r.themes ?? [])).catch(() => {}); }, []);
 
   const editMember = (i, patch) => setTeam((t) => ({ ...t, members: t.members.map((m, j) => (j === i ? { ...m, ...patch } : m)) }));
-  const addMember = () => setTeam((t) => ({ ...t, members: [...t.members, { name: "", roll: "", presenting: false }] }));
+  const addMember = () => setTeam((t) => ({ ...t, members: [...t.members, { name: "", roll: "", presenting: true }] }));
   const named = team.members.filter((m) => m.name?.trim());
   const canSave = name.trim() && named.length > 0;
 

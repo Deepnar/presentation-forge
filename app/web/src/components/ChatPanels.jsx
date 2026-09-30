@@ -170,7 +170,6 @@ function BriefingControl({ q, chat, themes, themeLabel, presets, onPickPreset, o
     case "maxSlides": return <MaxSlidesCard value={b.maxSlides} {...common} />;
     case "slidesPerMember": return <SlidesPerMemberCard value={b.slidesPerMember} {...common} />;
     case "mode": return <ModeCard value={b.mode} {...common} />;
-    case "subtopicCount": return <SubtopicCountCard value={b.subtopicCount} {...common} />;
     case "density": return <DensityCard value={b.density} {...common} />;
     case "branding": return <BrandingCard value={b.branding} {...common} />;
     case "research": return (
@@ -343,7 +342,7 @@ function TeamCard({ team, onNext, embedded = false }) {
     sync(label, next);
   };
   const add = () => {
-    const next = [...members, { name: "", roll: "", presenting: false }];
+    const next = [...members, { name: "", roll: "", presenting: true }];
     setMembers(next);
     sync(label, next);
   };
@@ -614,36 +613,6 @@ function ModeCard({ value, onNext, embedded = false }) {
     <div>
       <ChoicePills options={MODES} value={v} onPick={pick} />
       {!embedded && <CardFooter onNext={() => onNext({ mode: v })} nextLabel="Continue" />}
-    </div>
-  );
-}
-
-const PART_COUNTS = [0, 3, 4, 5, 6, 8];
-
-function SubtopicCountCard({ value, onNext, embedded = false }) {
-  const [v, setV] = useState(value ?? 0);
-  const [custom, setCustom] = useState("");
-  const pick = (n) => { setV(n); if (embedded) onNext({ subtopicCount: n }); };
-  return (
-    <div>
-      <ChoicePills
-        options={PART_COUNTS.map((n) => ({ value: n, label: n === 0 ? "Auto" : `${n} parts` }))}
-        value={v}
-        onPick={pick}
-      />
-      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the presenting team, however large — or set the count outright.</div>
-      <div className="mt-2 flex items-center gap-2">
-        <input
-          type="number"
-          min={1}
-          value={custom}
-          onChange={(e) => setCustom(e.target.value)}
-          placeholder="…or a custom count"
-          className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
-        />
-        {custom && <Button size="sm" onClick={() => pick(Math.max(1, Number(custom) || 0))}>Set</Button>}
-      </div>
-      {!embedded && <CardFooter onNext={() => onNext({ subtopicCount: v })} nextLabel="Continue" />}
     </div>
   );
 }

@@ -6,8 +6,8 @@ import {
   questionsFor, tierQuestions, optionalAnswered, echoAnswer, applyFreeText,
 } from "../app/web/src/lib/briefing.js";
 
-test("PRESET_KEYS fixes team, slide counts, part count, density, theme and branding — never guide or academic", () => {
-  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "maxSlides", "slidesPerMember", "subtopicCount", "team", "theme"]);
+test("PRESET_KEYS fixes team, slide counts, density, theme and branding — never guide, academic, parts or mode", () => {
+  assert.deepEqual(PRESET_KEYS.sort(), ["branding", "density", "maxSlides", "slidesPerMember", "team", "theme"]);
   assert.ok(!PRESET_KEYS.includes("guide"));
   assert.ok(!PRESET_KEYS.includes("academic"));
   assert.ok(!PRESET_KEYS.includes("mode"));
@@ -249,7 +249,8 @@ test("solo mode defaults team-sized parts off and drops the per-member question"
   const solo = { ...b, mode: "solo" };
   assert.equal(echoAnswer(solo, "slidesPerMember"), "n/a — solo deep dive");
   const keys = tierQuestions("deck", "optional", solo, []).map((q) => q.key);
-  assert.ok(keys.includes("mode") && keys.includes("subtopicCount"));
+  assert.ok(keys.includes("mode"));
+  assert.ok(!keys.includes("subtopicCount"), "parts are AI-split, never asked");
   assert.ok(!keys.includes("slidesPerMember"), "per-member sizing is meaningless solo");
   const teamKeys = tierQuestions("deck", "optional", b, []).map((q) => q.key);
   assert.ok(teamKeys.includes("slidesPerMember"));
@@ -264,11 +265,11 @@ test("free text understands team/solo and part counts", () => {
   assert.equal(applyFreeText({}, "subtopicCount", "lots"), null);
 });
 
-test("a preset carries the part count but never the mode", () => {
+test("a preset carries neither the part count nor the mode", () => {
   const b = briefingFromPreset({ subtopicCount: 5, mode: "solo" }, {});
-  assert.equal(b.subtopicCount, 5);
+  assert.equal(b.subtopicCount, 0, "parts are AI-split, never preset-fixed");
   assert.equal(b.mode, "team", "mode is always asked, never preset-fixed");
   const payload = presetPayload({ subtopicCount: 5, mode: "solo" });
-  assert.equal(payload.subtopicCount, 5);
+  assert.equal(payload.subtopicCount, undefined);
   assert.equal(payload.mode, undefined);
 });
