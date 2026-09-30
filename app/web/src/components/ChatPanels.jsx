@@ -561,7 +561,6 @@ function MaxSlidesCard({ value, onNext, embedded = false }) {
         <input
           type="number"
           min={3}
-          max={24}
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="…or a custom number"
@@ -632,18 +631,17 @@ function SubtopicCountCard({ value, onNext, embedded = false }) {
         value={v}
         onPick={pick}
       />
-      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the presenting team, up to 8 parts — or set the count outright.</div>
+      <div className="mt-1.5 text-[10.5px] text-fg-faint">Each part becomes a named section in the outline, owned by one presenter. Auto matches the presenting team, however large — or set the count outright.</div>
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
           min={1}
-          max={8}
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="…or a custom count"
           className={`${inputCls} w-44 py-1.5 text-[12.5px]`}
         />
-        {custom && <Button size="sm" onClick={() => pick(Math.min(8, Math.max(1, Number(custom) || 0)))}>Set</Button>}
+        {custom && <Button size="sm" onClick={() => pick(Math.max(1, Number(custom) || 0))}>Set</Button>}
       </div>
       {!embedded && <CardFooter onNext={() => onNext({ subtopicCount: v })} nextLabel="Continue" />}
     </div>
@@ -1020,7 +1018,6 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
   const renameSection = (si, name) =>
     onPlan({ ...plan, sections: (plan.sections ?? []).map((s, j) => (j === si ? name : s)) });
   const addSection = () => {
-    if ((plan.sections ?? []).length >= 8) return;
     onPlan({
       ...plan,
       sections: [...(plan.sections ?? []), "New part"],
@@ -1083,7 +1080,7 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
 
       <div className="mb-4">
         <div className="mb-1.5 text-[11px] text-fg-faint">
-          Parts ({(plan.sections ?? []).length}) — rename freely, give each part an owner, add up to 8. Removing re-homes its slides.
+          Parts ({(plan.sections ?? []).length}) — rename freely, give each part an owner, add more as needed. Removing re-homes its slides.
         </div>
         <div className="space-y-1.5">
           {(plan.sections ?? []).map((name, si) => (
@@ -1116,11 +1113,9 @@ export function OutlineCard({ chat, types, plan, onPlan, themeLabel, busy, onApp
             </div>
           ))}
         </div>
-        {(plan.sections ?? []).length < 8 && (
-          <div className="mt-2">
-            <Button size="sm" variant="outline" onClick={addSection}>+ Add part</Button>
-          </div>
-        )}
+        <div className="mt-2">
+          <Button size="sm" variant="outline" onClick={addSection}>+ Add part</Button>
+        </div>
       </div>
 
       <div className="space-y-2">
