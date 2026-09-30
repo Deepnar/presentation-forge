@@ -2515,6 +2515,27 @@ transform of the edited JSX, and a node round-trip of
 `presetPayload → savePreset → listPresets → briefingFromPreset` carrying two
 members with rolls and presenting flags intact.
 
+### [x] Briefing scroll yank + parts explainer
+
+Two small briefing complaints, one commit each. Typing in a form field at the
+top of the thread yanked the viewport to the bottom mid-word: the auto-scroll
+effect depended on the whole `chat` object, so every keystroke synced into
+the briefing re-scrolled to `scrollHeight`. It now follows only when the
+reader is already near the bottom (< 160px), which preserves following during
+generation and leaves the viewport alone while filling forms. Separately, the
+parts picker never said what a part IS — its hint now states each part
+becomes a named section in the outline, owned by one presenter, with Auto
+matching the presenting team.
+
+> **Learned.** A scroll effect keyed on the whole chat object is correct only
+> while the thread grows downward on its own. The moment embedded cards sync
+> per keystroke (the TeamCard fix above), every keystroke is a "new" chat and
+> the follow logic becomes a yank. The near-bottom guard is the standard fix
+> and should have gone in with the per-keystroke sync.
+
+Verified with the briefing/chats/presets suites (30 pass) and an esbuild
+transform of both edited views.
+
 ## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
 
 Four queued items from the 2026-08-16 HPC-deck review (handoff A/B/C/E) plus the
