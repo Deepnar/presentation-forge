@@ -2591,6 +2591,28 @@ Verified with the full suite (851 tests, 850 pass — the one failure is the
 pre-existing env-dependent `byok-budget` assertion, failing identically on
 clean main) and an esbuild transform of the edited view.
 
+### [x] Gateway-down end-to-end: local 11-member deck verifies refs + footers
+
+With the TCET gateway returning Cloudflare 502s, the test deck was generated
+on the local model instead — same plan, team, density and per-member count.
+Two findings. First, an all-placeholder run crashed finalize with a bare
+ENOENT and zero diagnostics after burning 40+ calls; `writeDeckContent` now
+throws the per-slide reasons immediately (`d91eecc`). Second, `FORGE_HOSTED=0`
+does not steer off the gateway (routing default is still Auto) and
+`config/hosted.json` overrides the env flag entirely, so local required both
+`--model` and a temporary hosted.json flip (restored after). Verified on the
+real output (22 slides, rasterised and read): references slide sits before
+closing with per-source "used on slides N, M" attribution, presenter footers
+carry owner names including the previously-trailing-space "mausam", and the
+title slide lists all 11 members plus guide.
+
+> **Learned.** A silent total failure is the most expensive kind: 42 model
+> calls burned with the reasons discarded, then a crash in an unrelated
+> stage. Any stage that can produce nothing must say so with its receipts
+> before the pipeline advances. Also: env flags that a config file silently
+> overrides are dead flags — `FORGE_HOSTED=0` read like an escape hatch and
+> was not one.
+
 ### [x] Presents-on-by-default, references explained, outline regrouped by part
 
 Three briefing questions from the same testing session. New team members now
