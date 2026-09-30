@@ -40,7 +40,7 @@ const USAGE = `Usage:
                       notes.md and is the ONLY content source — no web search
             --mode    team (parts split across presenting members) or solo
                       (one presenter, sized by parts + slides, never by members)
-            --subtopic-count  split the talk into this many parts (max 8);
+            --subtopic-count  split the talk into this many parts;
                       default is the presenting team, or 6 solo
   generate  approved outline → deck.yaml, rendered and rasterised
             --critic  also run the vision critic loop: detect visual defects in
