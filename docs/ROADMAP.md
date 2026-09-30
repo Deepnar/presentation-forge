@@ -2480,7 +2480,40 @@ picks up a Settings-created preset without reload. `mimo-v2.5` confirmed all
 four surfaces render clean (settings modal, preset list, post-pick thread,
 identity panel). 316 tests pass.
 
+### [x] Save-as-preset dropped the team — TeamCard never synced in embedded mode
 
+Saving a briefing as a preset from the summary card stored an empty team even
+though members were visible on screen. The payload path was innocent:
+`presetPayload`, the server's `presetBody` and `src/presets.js` all carry
+`team` through, and a team round-trips cleanly. The break was one layer up in
+`components/ChatPanels.jsx`: `TeamCard` only called `onNext` behind its Next
+button, which renders solely when `!embedded` — but the briefing forms always
+render it with `embedded: true`. Every other card pushes edits up in embedded
+mode (pickers call `onNext` immediately, text cards commit on blur); the team
+grid was the only one whose edits stayed in local component state, so
+`chat.briefing.team` was still `{ label: "", members: [] }` at save time.
+
+- `TeamCard` now syncs every mutation (edit, add, remove, label) to the
+  parent when embedded, so the briefing — and Save-as-preset downstream of
+  it — always sees the members. Unnamed rows stay local-only, matching the
+  old Next-button semantics that filtered them on commit. The non-embedded
+  path is unchanged. Inputs stay controlled by local state, so parent
+  re-renders never disturb typing or focus.
+- The helper copy ("nobody is saved until you press Next") was wrong in the
+  only mode that exists and now says edits save as you type when embedded.
+
+> **Learned.** An `embedded` flag that changes a card from stepped to
+> live-saving must also change its commit path, or the card becomes
+> write-only local state with no signal that anything is lost — the form
+> looks finished and the save silently stores the initial value. Audit rule
+> going forward: every briefing card rendered with `embedded: true` needs an
+> `onNext` call on every mutation path, not just on blur or a button that
+> the embedded layout never shows.
+
+Verified with the preset/briefing/chats suites (30 pass), an esbuild
+transform of the edited JSX, and a node round-trip of
+`presetPayload → savePreset → listPresets → briefingFromPreset` carrying two
+members with rolls and presenting flags intact.
 
 ## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
 
