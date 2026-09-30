@@ -2591,6 +2591,28 @@ Verified with the full suite (851 tests, 850 pass — the one failure is the
 pre-existing env-dependent `byok-budget` assertion, failing identically on
 clean main) and an esbuild transform of the edited view.
 
+### [x] Presents-on-by-default, parts question removed, references explained
+
+Three briefing questions from the same testing session. New team members now
+default to presenting in all three editors (briefing grid, Settings format
+editor, free-text add) — the old default-off contradicted the pipeline, which
+already treats "nobody flagged" as "everybody presents". The parts-count
+question is gone from the briefing walk entirely: parts ARE the AI's subtopic
+split, so asking for a count up front duplicated what the model decides from
+the topic — the split stays Auto (team-sized, uncapped) and the outline
+review remains where parts are adjusted for real (rename, add, remove,
+reassign). Presets no longer carry a part count either. Third was a
+no-change explanation: the references slide exists and inserts at finalize
+from cited research pages — the test deck ran with research off, so there
+was nothing to cite.
+
+> **Learned.** A question whose answer the next stage recomputes anyway is
+> UI that begs to be second-guessed: the count never constrained the model
+> beyond its own schema bound, and every tester read it as "the AI won't
+> decide". Deleting it removed no capability — the plan review edits the
+> actual parts — which is the test for whether a briefing question earns
+> its place.
+
 ## 8. Generation robustness — resumable runs, honest fit, and the slide-quality rules
 
 Four queued items from the 2026-08-16 HPC-deck review (handoff A/B/C/E) plus the
