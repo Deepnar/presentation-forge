@@ -320,16 +320,41 @@ function FreeTextCard({ field, value, onNext, placeholder = "", embedded = false
 function TeamCard({ team, onNext, embedded = false }) {
   const [label, setLabel] = useState(team?.label ?? "");
   const [members, setMembers] = useState(((team?.members ?? []).map((m) => ({ ...m }))));
-  const edit = (i, patch) => setMembers((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)));
-  const add = () => setMembers((ms) => [...ms, { name: "", roll: "", presenting: false }]);
+  // Embedded cards have no Next button — the form IS the save. Every edit
+  // must reach the parent immediately, or the briefing (and Save-as-preset
+  // downstream of it) never sees the members. Unnamed rows stay local-only
+  // so an in-progress empty row is never stored.
+  const sync = (nextLabel, nextMembers) => {
+    if (embedded) onNext({ team: { label: nextLabel, members: nextMembers.filter((m) => m.name?.trim()) } });
+  };
+  const edit = (i, patch) => {
+    const next = members.map((m, j) => (j === i ? { ...m, ...patch } : m));
+    setMembers(next);
+    sync(label, next);
+  };
+  const add = () => {
+    const next = [...members, { name: "", roll: "", presenting: false }];
+    setMembers(next);
+    sync(label, next);
+  };
+  const remove = (i) => {
+    const next = members.filter((_, j) => j !== i);
+    setMembers(next);
+    sync(label, next);
+  };
+  const setLabelSync = (v) => {
+    setLabel(v);
+    sync(v, members);
+  };
   const named = members.filter((m) => m.name?.trim());
   const presenting = named.filter((m) => m.presenting);
 
   return (
     <div className="w-full">
       <div className="mb-1.5 text-[11px] text-fg-faint">
-        Visible rows, an obvious add — nobody is saved until you press Next, and
-        “presents” decides who the slides split across.
+        {embedded
+          ? "Saved as you type — “presents” decides who the slides split across."
+          : "Visible rows, an obvious add — nobody is saved until you press Next, and “presents” decides who the slides split across."}
       </div>
 
       <div className="grid grid-cols-[1fr_4.5rem_5rem_2rem] items-center gap-2 px-1 pb-1 text-[10px] font-medium uppercase tracking-wider text-fg-faint">
@@ -362,7 +387,7 @@ function TeamCard({ team, onNext, embedded = false }) {
               presents
             </label>
             <button
-              onClick={() => setMembers((ms) => ms.filter((_, j) => j !== i))}
+              onClick={() => remove(i)}
               className="rounded p-1 text-fg-faint transition hover:bg-hover hover:text-amber"
               title="Remove member"
             >
@@ -382,7 +407,7 @@ function TeamCard({ team, onNext, embedded = false }) {
       <div className="mt-2 flex items-center gap-2">
         <input
           value={label}
-          onChange={(e) => setLabel(e.target.value)}
+          onChange={(e) => setLabelSync(e.target.value)}
           placeholder="Group label (optional)"
           className={`${inputCls} w-48 py-1.5 text-[12.5px]`}
         />
