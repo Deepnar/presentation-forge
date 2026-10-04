@@ -6654,13 +6654,23 @@ color}` only, mapped per renderer.
 > 0.7 fallback). Lesson: snapshots prove stability, only semantic
 > assertions prove mapping.
 
-### [ ] V2-2C — layout vocabulary + geometry
+### [x] V2-2C — layout vocabulary + geometry
 
 Renderer-neutral `AXES`/`resolveLayout`/`layoutOf` (memoization kept
 unless it blocks the API), frame constants and `frameBox`, list/section
 policy, rotation `footprint()` math. Direct `slide.add*` behavior stays
 legacy. Composition test splits (vocabulary moves, drawing stays);
 `frameBox` policy test moves intact.
+
+> **Learned.** The effective-frame boundary is what makes the ontology
+> split work: the legacy facade resolves `sidebar + wide-type → full`
+> and core geometry receives only the final frame, so core cannot
+> distinguish an explicit `full` from a compatibility-selected one —
+> and never needs to. `orthogonalFootprint` is deliberately named for
+> what it is (90/270 swap, otherwise identity); general rotation waits
+> for V2-5 editor demand, and V2 `checkBounds` stays rotation-blind
+> rather than invert the model←core direction for zero current
+> benefit.
 
 ### [ ] V2-2D — PPTX bytes renderer
 

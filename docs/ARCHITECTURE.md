@@ -1331,6 +1331,16 @@ paths yet, `packages/` holds the first agent-native primitive:
   `packages/model/scene-constants.ts`, drift-tested against the schema
   consts. `test/v2-core-boundary.test.js` enforces package import
   directions with the TypeScript parser (self-tested, fail-closed).
+- `packages/core/layout.ts` — canonical layout vocabulary (`AXES`,
+  derived defaults, strict `resolveLayout` with legacy error wording),
+  policy projections over `ResolvedLayout`, and `frameGeometry` over an
+  explicit final frame (no wide-type knowledge, no brand/identity).
+- `packages/core/geometry2d.ts` — `orthogonalFootprint` (verbatim
+  90/270 legacy semantics, explicitly not general rotation).
+  `src/composition.js` keeps its cache, wide-type rule, and drawing
+  while delegating resolution/geometry/policy; `src/geometry.js` keeps
+  its watcher while sourcing footprint math and canvas dimensions from
+  the canonical modules (chrome import removed).
 - `packages/core/design.ts` — pure `normalizeDesign({theme, style?,
   mode})` producing the schema-backed `DesignSystem` (palette, surfaces,
   roles, grid, shape, shadow, chart passthrough, layout preferences,
