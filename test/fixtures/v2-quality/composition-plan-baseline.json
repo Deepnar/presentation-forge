@@ -1,0 +1,76 @@
+{
+ "s-outcome": {
+  "pairId": "s-outcome",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "outcomeTreatments"
+    ]
+   }
+  ]
+ },
+ "s-relationship": {
+  "pairId": "s-relationship",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "family",
+     "variantKey"
+    ]
+   }
+  ]
+ },
+ "s-emphasis": {
+  "pairId": "s-emphasis",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "emphasisTargets"
+    ]
+   }
+  ]
+ },
+ "s-media-role": {
+  "pairId": "s-media-role",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "variantKey",
+     "mediaTreatment"
+    ]
+   }
+  ]
+ },
+ "s-uncertainty": {
+  "pairId": "s-uncertainty",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "caveatTargets"
+    ]
+   }
+  ]
+ },
+ "s-rhetorical-role": {
+  "pairId": "s-rhetorical-role",
+  "sensitive": true,
+  "differences": [
+   {
+    "slideIndex": 0,
+    "aspects": [
+     "variantKey"
+    ]
+   }
+  ]
+ }
+}
