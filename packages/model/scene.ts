@@ -13,8 +13,7 @@ import type { SlideScene, SceneElement } from "./scene.generated.ts";
 
 export type { SlideScene, SceneElement, Paragraph, TextRun } from "./scene.generated.ts";
 
-export const SCENE_W = 13.333;
-export const SCENE_H = 7.5;
+export { SCENE_W, SCENE_H } from "./scene-constants.ts";
 
 let _validate: ValidateFunction | null = null;
 

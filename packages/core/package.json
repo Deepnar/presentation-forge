@@ -1,0 +1,6 @@
+{
+  "name": "@forge/core",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Deterministic presentation primitives: fitting, palettes, normalization vocabulary. No filesystem, binaries, providers, or app code."
+}
