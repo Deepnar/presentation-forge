@@ -1,4 +1,7 @@
-import { CANVAS } from "./chrome.js";
+import { SCENE_W, SCENE_H } from "../packages/model/scene-constants.ts";
+import { orthogonalFootprint } from "../packages/core/geometry2d.ts";
+
+const CANVAS = { w: SCENE_W, h: SCENE_H };
 
 const ORNAMENT = 0.02;
 
@@ -8,7 +11,7 @@ export function watchGeometry(slide) {
 
   const check = (kind, o) => {
     if (!o || typeof o !== "object") return;
-    const { x, y, w, h } = footprint(o);
+    const { x, y, w, h } = orthogonalFootprint(o);
     if ([x, y, w, h].some((v) => typeof v !== "number" || !Number.isFinite(v))) return;
     if (w <= 0 || h <= 0) {
       report(found, `${kind} has a ${w <= 0 ? "width" : "height"} of ${round(w <= 0 ? w : h)}in`);
@@ -63,13 +66,6 @@ function report(found, message) {
   if (!process.env.FORGE_GEOM_TRACE) return;
   const at = new Error().stack.split("\n").slice(3, 6).map((l) => l.trim()).join(" | ");
   console.error(`  geometry: ${message}\n    ${at}`);
-}
-
-function footprint({ x, y, w, h, rotate }) {
-  const turn = ((Number(rotate) || 0) % 360 + 360) % 360;
-  if (turn !== 90 && turn !== 270) return { x, y, w, h };
-  if ([x, y, w, h].some((v) => typeof v !== "number")) return { x, y, w, h };
-  return { x: x + w / 2 - h / 2, y: y + h / 2 - w / 2, w: h, h: w };
 }
 
 const round = (n) => Math.round(n * 100) / 100;

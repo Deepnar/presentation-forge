@@ -1,53 +1,23 @@
 import { hex, textStyle, applyTransform } from "./theme.js";
 import { fitScale, fitOneLine, lineCount, measure } from "./fit.js";
 import { CANVAS } from "./chrome.js";
+import {
+  resolveLayout as coreResolveLayout,
+  listColumns as coreListColumns,
+  hasDropcap as coreHasDropcap,
+  sectionStyle as coreSectionStyle,
+  titlePlacement as coreTitlePlacement,
+  frameGeometry,
+} from "../packages/core/layout.ts";
 
-const AXES = {
-  title: { composition: ["flush-bottom", "centred", "split", "band", "top"] },
-  section: { composition: ["flush", "centred", "numeral", "band", "block", "rules"] },
-  heading: {
-    align: ["left", "centre"],
-    opening: ["pill", "rule", "bar", "numeral", "none"],
-    rule: ["none", "under"],
-  },
-  content: { frame: ["full", "inset", "sidebar", "offset"] },
-  list: { marker: ["dot", "dash", "square", "arrow", "number", "none"], columns: [1, 2] },
-  text: { dropcap: [false, true] },
-};
-
-const DEFAULTS = Object.fromEntries(
-  Object.entries(AXES).map(([group, keys]) => [
-    group,
-    Object.fromEntries(Object.entries(keys).map(([key, values]) => [key, values[0]])),
-  ]),
-);
-
-export function resolveLayout(given, themeName = "theme") {
-  const out = structuredClone(DEFAULTS);
-  for (const [group, keys] of Object.entries(given ?? {})) {
-    if (!AXES[group]) {
-      throw new Error(`${themeName}: unknown layout group "${group}" (expected ${Object.keys(AXES).join(", ")})`);
-    }
-    for (const [key, value] of Object.entries(keys ?? {})) {
-      const allowed = AXES[group][key];
-      if (!allowed) {
-        throw new Error(`${themeName}: unknown layout key "${group}.${key}" (expected ${Object.keys(AXES[group]).join(", ")})`);
-      }
-      if (!allowed.includes(value)) {
-        throw new Error(`${themeName}: layout.${group}.${key} = ${JSON.stringify(value)} is not one of ${allowed.map((v) => JSON.stringify(v)).join(", ")}`);
-      }
-      out[group][key] = value;
-    }
-  }
-  return out;
-}
+export { resolveLayout } from "../packages/core/layout.ts";
 
 const resolved = new WeakMap();
 
 export function layoutOf(theme) {
   let l = resolved.get(theme);
   if (!l) {
-    l = resolveLayout(theme.tokens?.layout, theme.name ?? "theme");
+    l = coreResolveLayout(theme.tokens?.layout, theme.name ?? "theme");
     resolved.set(theme, l);
   }
   return l;
@@ -58,59 +28,17 @@ const WIDE_TYPES = new Set([
   "equation", "before-after",
 ]);
 
-const FRAMES = {
-  full: { inset: 0, offset: 0, sidebar: 0 },
-  inset: { inset: 0.55, offset: 0, sidebar: 0 },
-  offset: { inset: 0, offset: 1.1, sidebar: 0 },
-  sidebar: { inset: 0, offset: 0, sidebar: 3.4 },
-};
-
-const SIDEBAR_BODY_Y = 1.25;
-const SIDEBAR_GUTTER = 0.5;
-
 export function frameBox(theme, base, frame = null, type = null) {
+  // Legacy compatibility: the sidebar + wide-type override resolves to an
+  // effective frame here, so core geometry never learns legacy type names.
   const declared = frame ?? layoutOf(theme).content.frame;
-  const chosen = declared === "sidebar" && WIDE_TYPES.has(type) ? "full" : declared;
+  const effective = declared === "sidebar" && WIDE_TYPES.has(type) ? "full" : declared;
   const band = theme.grid.band;
-  const reserve = base.w - base.titleW; // the crest's horizontal reservation
-  const geom = FRAMES[chosen];
-
-  const out = {
-    ...base,
-    frame: chosen,
-    bodyY: band.body_y,
-    mark: { x: base.x, y: band.eyebrow_y, w: base.titleW },
-    head: { x: base.x, y: band.title_y, w: base.titleW, wide: base.w, budget: 1.05 },
-  };
-
-  if (geom.inset) {
-    out.x = base.x + geom.inset;
-    out.w = base.w - geom.inset * 2;
-    out.right = base.right - geom.inset;
-    out.titleW = out.w - reserve;
-    out.mark = { x: out.x, y: band.eyebrow_y, w: out.titleW };
-    out.head = { x: out.x, y: band.title_y, w: out.titleW, wide: out.w, budget: 1.05 };
-  }
-
-  if (geom.offset) {
-    out.x = base.x + geom.offset;
-    out.w = base.w - geom.offset;
-    out.titleW = out.w - reserve;
-    out.mark = { x: base.x, y: band.eyebrow_y, w: geom.offset - 0.15 };
-    out.head = { x: out.x, y: band.title_y, w: out.titleW, wide: out.w, budget: 1.05 };
-  }
-
-  if (geom.sidebar) {
-    const colW = geom.sidebar;
-    out.x = base.x + colW + SIDEBAR_GUTTER;
-    out.w = base.right - out.x;
-    out.titleW = out.w - reserve;
-    out.bodyY = SIDEBAR_BODY_Y;
-    out.mark = { x: base.x, y: band.eyebrow_y, w: colW };
-    out.head = { x: base.x, y: band.title_y, w: colW, wide: colW, budget: 2.2 };
-  }
-
-  return out;
+  return frameGeometry({
+    base,
+    frame: effective,
+    band: { eyebrowY: band.eyebrow_y, titleY: band.title_y, bodyY: band.body_y },
+  });
 }
 
 function labelRoom(ctx, from) {
@@ -287,11 +215,11 @@ export function bulletOptions(theme, index = 0) {
 }
 
 export function listColumns(theme) {
-  return layoutOf(theme).list.columns;
+  return coreListColumns(layoutOf(theme));
 }
 
 export function hasDropcap(theme) {
-  return layoutOf(theme).text.dropcap;
+  return coreHasDropcap(layoutOf(theme));
 }
 
 export function sectionField(slide, theme, s, band) {
@@ -331,14 +259,9 @@ export function sectionField(slide, theme, s, band) {
 }
 
 export function sectionStyle(theme) {
-  const comp = layoutOf(theme).section.composition;
-  const place = comp === "numeral" ? "numeral"
-    : ["centred", "band", "rules"].includes(comp) ? "centred"
-    : "flush";
-  const field = ["block", "band", "rules"].includes(comp) ? comp : "none";
-  return { place, field };
+  return coreSectionStyle(layoutOf(theme));
 }
 
 export function titlePlacement(theme) {
-  return layoutOf(theme).title.composition;
+  return coreTitlePlacement(layoutOf(theme));
 }
