@@ -1,0 +1,680 @@
+{
+  "slides": [
+    {
+      "id": "s1",
+      "recipeId": "divider",
+      "elements": [
+        {
+          "id": "s1:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            1.02,
+            11.93,
+            1.4
+          ],
+          "runs": [
+            {
+              "role": "display",
+              "family": "Merriweather",
+              "weight": 900,
+              "size": 40,
+              "tracking": -0.5,
+              "line": 1.12,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s1:s1b1:content",
+          "kind": "text",
+          "geom": [
+            0.7,
+            2.62,
+            11.93,
+            3.61
+          ],
+          "semanticRef": "s1b1",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "recipeId": "prose-list",
+      "elements": [
+        {
+          "id": "s2:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "heading",
+              "family": "Merriweather",
+              "weight": 700,
+              "size": 30,
+              "tracking": -0.3,
+              "line": 1.18,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s2:s2b1:content",
+          "kind": "text",
+          "geom": [
+            0.7,
+            1.77,
+            11.93,
+            4.41
+          ],
+          "semanticRef": "s2b1",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "recipeId": "comparison",
+      "elements": [
+        {
+          "id": "s3:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "display",
+              "family": "Merriweather",
+              "weight": 900,
+              "size": 40,
+              "tracking": -0.5,
+              "line": 1.12,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s3:s3left:frame",
+          "kind": "shape",
+          "geom": [
+            0.7,
+            1.77,
+            5.77,
+            1.28
+          ],
+          "semanticRef": "s3left"
+        },
+        {
+          "id": "s3:s3left:content",
+          "kind": "text",
+          "geom": [
+            1,
+            1.97,
+            5.17,
+            0.88
+          ],
+          "semanticRef": "s3left",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55,
+              "bold": true
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        },
+        {
+          "id": "s3:s3right:frame",
+          "kind": "shape",
+          "geom": [
+            6.87,
+            1.77,
+            5.77,
+            1.28
+          ],
+          "semanticRef": "s3right"
+        },
+        {
+          "id": "s3:s3right:content",
+          "kind": "text",
+          "geom": [
+            7.17,
+            1.97,
+            5.17,
+            0.88
+          ],
+          "semanticRef": "s3right",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55,
+              "bold": true
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        },
+        {
+          "id": "s3:s3v:content",
+          "kind": "text",
+          "geom": [
+            0.7,
+            3.45,
+            11.93,
+            2.78
+          ],
+          "semanticRef": "s3v",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        },
+        {
+          "id": "s3:s3v:rule",
+          "kind": "shape",
+          "geom": [
+            0.7,
+            3.45,
+            11.93,
+            0.06
+          ],
+          "semanticRef": "s3v"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "recipeId": "media-led",
+      "elements": [
+        {
+          "id": "s4:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "heading",
+              "family": "Merriweather",
+              "weight": 700,
+              "size": 30,
+              "tracking": -0.3,
+              "line": 1.18,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s4:s4img:content",
+          "kind": "image",
+          "geom": [
+            0.7,
+            1.77,
+            5.14,
+            4.36
+          ],
+          "semanticRef": "s4img"
+        },
+        {
+          "id": "s4:s4body:content",
+          "kind": "text",
+          "geom": [
+            6.34,
+            1.77,
+            6.29,
+            4.46
+          ],
+          "semanticRef": "s4body",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "recipeId": "chart",
+      "elements": [
+        {
+          "id": "s5:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "display",
+              "family": "Merriweather",
+              "weight": 900,
+              "size": 40,
+              "tracking": -0.5,
+              "line": 1.12,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s5:s5c:content",
+          "kind": "chart",
+          "geom": [
+            0.7,
+            1.77,
+            11.93,
+            4.16
+          ],
+          "semanticRef": "s5c"
+        },
+        {
+          "id": "s5:s5c:caption",
+          "kind": "text",
+          "geom": [
+            0.7,
+            5.93,
+            11.93,
+            0.4
+          ],
+          "semanticRef": "s5c",
+          "runs": [
+            {
+              "role": "caption",
+              "family": "Inter",
+              "weight": 500,
+              "size": 10,
+              "tracking": 0.2,
+              "line": 1.35
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "recipeId": "sequence",
+      "elements": [
+        {
+          "id": "s6:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "display",
+              "family": "Merriweather",
+              "weight": 900,
+              "size": 40,
+              "tracking": -0.5,
+              "line": 1.12,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s6:s6a:frame",
+          "kind": "shape",
+          "geom": [
+            0.7,
+            1.77,
+            3.78,
+            1.52
+          ],
+          "semanticRef": "s6a"
+        },
+        {
+          "id": "s6:s6a:badge",
+          "kind": "text",
+          "geom": [
+            0.9,
+            1.92,
+            0.4,
+            0.4
+          ],
+          "semanticRef": "s6a",
+          "runs": [
+            {
+              "role": "subhead",
+              "family": "Inter",
+              "weight": 400,
+              "size": 15,
+              "tracking": 0,
+              "line": 1.45,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s6:s6a:content",
+          "kind": "text",
+          "geom": [
+            0.9,
+            2.37,
+            3.38,
+            0.72
+          ],
+          "semanticRef": "s6a",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55,
+              "bold": true
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        },
+        {
+          "id": "s6:s6b:frame",
+          "kind": "shape",
+          "geom": [
+            4.78,
+            1.77,
+            3.78,
+            1.52
+          ],
+          "semanticRef": "s6b"
+        },
+        {
+          "id": "s6:s6b:badge",
+          "kind": "text",
+          "geom": [
+            4.98,
+            1.92,
+            0.4,
+            0.4
+          ],
+          "semanticRef": "s6b",
+          "runs": [
+            {
+              "role": "subhead",
+              "family": "Inter",
+              "weight": 400,
+              "size": 15,
+              "tracking": 0,
+              "line": 1.45,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s6:s6b:content",
+          "kind": "text",
+          "geom": [
+            4.98,
+            2.37,
+            3.38,
+            0.72
+          ],
+          "semanticRef": "s6b",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55,
+              "bold": true
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        },
+        {
+          "id": "s6:s6c:frame",
+          "kind": "shape",
+          "geom": [
+            8.86,
+            1.77,
+            3.78,
+            1.52
+          ],
+          "semanticRef": "s6c"
+        },
+        {
+          "id": "s6:s6c:badge",
+          "kind": "text",
+          "geom": [
+            9.06,
+            1.92,
+            0.4,
+            0.4
+          ],
+          "semanticRef": "s6c",
+          "runs": [
+            {
+              "role": "subhead",
+              "family": "Inter",
+              "weight": 400,
+              "size": 15,
+              "tracking": 0,
+              "line": 1.45,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s6:s6c:content",
+          "kind": "text",
+          "geom": [
+            9.06,
+            2.37,
+            3.38,
+            0.72
+          ],
+          "semanticRef": "s6c",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55,
+              "bold": true
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "recipeId": "prose-list",
+      "elements": [
+        {
+          "id": "s7:title:heading",
+          "kind": "text",
+          "geom": [
+            0.7,
+            0.62,
+            11.93,
+            1
+          ],
+          "runs": [
+            {
+              "role": "display",
+              "family": "Merriweather",
+              "weight": 900,
+              "size": 28,
+              "tracking": -0.5,
+              "line": 1.12,
+              "bold": true
+            }
+          ]
+        },
+        {
+          "id": "s7:s7b1:content",
+          "kind": "text",
+          "geom": [
+            0.7,
+            1.77,
+            11.93,
+            4.41
+          ],
+          "semanticRef": "s7b1",
+          "runs": [
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            },
+            {
+              "role": "body",
+              "family": "Inter",
+              "weight": 400,
+              "size": 13,
+              "tracking": 0,
+              "line": 1.55
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fitDiagnostics": [
+    {
+      "slideId": "s7",
+      "elementId": "s7:title:heading",
+      "role": "display",
+      "kind": "floor-hit",
+      "message": "display would need 24.8pt — floor 28pt (cut text, don't shrink)"
+    }
+  ]
+}

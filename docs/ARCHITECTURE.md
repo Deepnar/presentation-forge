@@ -1459,8 +1459,29 @@ then semanticRef+kind matching; detached stays authoritative. Charts
 default honestly from `measure` (comparison→bar, trend→line,
 composition→doughnut); distribution/association fall back to exact
 editable tables. Outcome is structural tone, uncertainty is visible
-badges, takeaways render as headline/verdict/annotation. Fit, chrome
-emission, and full QA remain V2-3E.
+badges, takeaways render as headline/verdict/annotation.
+
+## V2 resolved typography + fit (V2-3E-1)
+
+Because SlideScene is the visual source of truth and renderers never
+receive DesignSystem, the typography used for fitting is resolved into
+Layer C: every compiler TextRun carries `role/family/weight/size/
+tracking/line` (plus `transform: upper` where the role declares it)
+resolved from its DesignSystem role by one helper
+(`packages/compiler/typography.ts`), and the fitter and the emitted
+run derive from that same object. Fitting chooses sizes inside
+mechanism-owned geometry — it never repositions later elements with
+`heightOf`/`lineCount` arithmetic. It is shrink-only with the role
+floor as a stop (never a grow target), guards the longest word as well
+as the wrap height, and never truncates: overflow stays complete,
+clamped at the floor, with a deterministic FitDiagnostic exposed via
+`compileDeckDetailed` (V2-3E-2 turns diagnostics into QA policy).
+Customized geometry is preserved exactly and refit against the
+preserved box; detached scenes return untouched. PPTX projects
+family/size/weight/tracking/line/uppercase with no client autofit;
+the SVG projection reflects the same fields. Native table cells and
+chart internals remain unfitted by this slice, recorded for later
+closure. Chrome emission and broad QA remain V2-3E-2/3E-3.
 
 ## The web shell
 

@@ -6839,7 +6839,7 @@ benchmark decks and important presentation classes.
 > must be structural (frames, accent restraint), never red/green
 > semantics, or themes cannot carry it.
 
-### [ ] V2-3E — fit + scene QA + chrome emission
+### [~] V2-3E — fit + scene QA + chrome emission
 
 Purpose: integrate canonical fit/budget behavior, complete
 deterministic scene QA, and emit chrome as ordinary locked
@@ -6847,6 +6847,34 @@ compiler-provenance scene elements shared by browser/PPTX rendering.
 Preserve all V2-2 chrome behavior, including the dark-mode
 presenter/slide-number opacity distinction. Native editability and
 customized/detached preservation remain hard invariants.
+
+Sequenced as three slices; the parent stays open until all three land.
+
+### [x] V2-3E-1 — typography truth + fit/budgets
+
+Layer-C TextRuns carry resolved typography (`role/family/weight/
+tracking/line`, `transform: upper` where declared) via one canonical
+`resolveRunStyle`; every compiler text path is fit-aware (shrink-only
+canonical fit inside mechanism-owned boxes, longest-word guard, stat
+sub-budgets, deterministic FitDiagnostics via `compileDeckDetailed`);
+PPTX/SVG project the resolved fields with no client autofit;
+customized geometry is refit against the preserved box; detached
+returns untouched; historical baselines byte-identical with a new
+focused 3E-1 baseline beside them.
+
+> **Learned.** Because SlideScene is the visual source of truth and
+> renderers do not receive DesignSystem, typography used for fitting
+> must be resolved into Layer C rather than existing only transiently
+> in the compiler — otherwise the fitter measures one style while the
+> renderer draws another. And fitting chooses sizes inside
+> mechanism-owned geometry; it does not reposition later elements
+> using heuristic text-height arithmetic — which is why the wrap fit
+> sums per-paragraph canonical heights instead of measuring one joined
+> string (joining loses paragraph breaks inside `lineCount`).
+
+### [ ] V2-3E-2 — deterministic QA completion
+
+### [ ] V2-3E-3 — chrome emission + projection
 
 ### [ ] V2-3F — theme/plate compatibility + full quality evaluation
 

@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitScale, fitOneLine, type FitStyle } from "../core/fit.ts";
+import { fitScale, fitOneLine, heightOf, floorOf, type FitStyle } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -202,6 +202,51 @@ function wordGuardScale(
   return scale;
 }
 
+// Paragraph-aware wrap fit built from the canonical heightOf: total
+// height is the SUM of paragraph heights, because joining paragraphs
+// into one string loses their line breaks inside lineCount and
+// under-counts multi-bullet elements. Stepping and floor semantics
+// mirror fitScale exactly (shrink-only, floor is a stop, not a goal).
+function fitWrapScale(
+  texts: string[],
+  box: FitBox,
+  style: FitStyle,
+  sink: FitDiagnostic[],
+  slideId: string,
+  elementId: string,
+  semanticRef: string | undefined,
+  role: string,
+): number {
+  const ratio = style.line ?? 1.35;
+  const nominal = style.size;
+  const min = 0.62;
+  const step = 0.04;
+  const floor = floorOf(style);
+  const minScale = floor == null ? min : Math.min(1, Math.max(min, floor / nominal));
+  const totalH = (s: number): number =>
+    texts.reduce((n, t) => n + heightOf(t, box.w, { ...style, size: nominal * s }, ratio), 0);
+
+  let need: number | null = null;
+  for (let s = 1; s >= min; s -= step) {
+    if (totalH(s) <= box.h) { need = s; break; }
+  }
+
+  const report = (neededPt: number, floorPt: number): void =>
+    emitDiagnostic(sink, slideId, elementId, semanticRef, role, "floor-hit",
+      `${role} would need ${Math.round(neededPt * 10) / 10}pt — floor ${Math.round(floorPt * 10) / 10}pt (cut text, don't shrink)`);
+
+  if (need != null) {
+    if (minScale > need) {
+      if (floor != null) report(need * nominal, minScale * nominal);
+      return Math.round(minScale * 100) / 100;
+    }
+    return Math.round(need * 100) / 100;
+  }
+
+  if (floor != null) report(min * nominal, minScale * nominal);
+  return Math.round(minScale * 100) / 100;
+}
+
 function fitWrap(
   paras: StyledPara[],
   box: FitBox,
@@ -212,14 +257,11 @@ function fitWrap(
 ): Paragraph[] {
   if (!paras.length) return [];
   const rep = representative(paras);
-  const wrapEvents: string[] = [];
   let scale: number;
   if (!rep) {
     scale = 1;
   } else {
-    const text = paras.map(paraText).join("\n");
-    scale = fitScale(text, box.w, box.h, rep.style, { events: wrapEvents });
-    drainEvents(sink, slideId, elementId, semanticRef, rep.role, "floor-hit", wrapEvents);
+    scale = fitWrapScale(paras.map(paraText), box, rep.style, sink, slideId, elementId, semanticRef, rep.role);
   }
   const wordScale = wordGuardScale(paras, box.w, sink, slideId, elementId, semanticRef);
   return applyScale(paras, Math.min(scale, wordScale));
@@ -295,13 +337,11 @@ function fitStat(
       }
     }
   }
-  const labelText = labelParas.map(paraText).join("\n");
+  const labelText = labelParas.map(paraText);
   const labelRep = representative(labelParas);
   let labelScale = 1;
-  if (labelRep && labelText) {
-    const events: string[] = [];
-    labelScale = fitScale(labelText, box.w, labelH, labelRep.style, { events });
-    drainEvents(sink, slideId, elementId, semanticRef, labelRep.role, "floor-hit", events);
+  if (labelRep && labelText.some((t) => t.trim())) {
+    labelScale = fitWrapScale(labelText, { ...box, h: labelH }, labelRep.style, sink, slideId, elementId, semanticRef, labelRep.role);
     const wordScale = wordGuardScale(labelParas, box.w, sink, slideId, elementId, semanticRef);
     labelScale = Math.min(labelScale, wordScale);
   }
@@ -396,10 +436,10 @@ export function refitTextEl(
   }
   const rep = representative(styled);
   if (!rep) return;
-  const wrapEvents: string[] = [];
-  const text = styled.map(paraText).join("\n");
-  const wrapScale = fitScale(text, el.w, el.h, { ...rep.style, size: rep.size }, { events: wrapEvents });
-  drainEvents(sink, slideId, el.id, el.semanticRef, rep.role, "floor-hit", wrapEvents);
+  const wrapScale = fitWrapScale(
+    styled.map(paraText), { x: el.x, y: el.y, w: el.w, h: el.h },
+    { ...rep.style, size: rep.size }, sink, slideId, el.id, el.semanticRef, rep.role,
+  );
   const wordScale = wordGuardScale(styled, el.w, sink, slideId, el.id, el.semanticRef);
   el.paragraphs = applyScale(styled, Math.min(wrapScale, wordScale));
 }
