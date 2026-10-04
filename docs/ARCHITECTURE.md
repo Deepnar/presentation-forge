@@ -1371,11 +1371,12 @@ paths yet, `packages/` holds the first agent-native primitive:
   series data, and tables survive as editable OOXML; empty image sources
   degrade to a labelled seat, never a dead deck.
 
-Proven by `test/v2-*.test.js` (106 tests: contracts, determinism, bounds,
-preservation including detached-editability, legacy mapping, generated-type
-drift, domain validation, design goldens, renderer bytes/metadata/adapter,
-report spec/domain, renderer-docx bytes/parity, unzip-and-assert text/chart
-survival) and
+Proven by `test/v2-*.test.js` (133 tests: contracts, determinism, bounds,
+preservation including family-change geometry survival, legacy mapping,
+generated-type drift, domain validation, design goldens, renderer
+bytes/metadata/adapter, report spec/domain, renderer-docx bytes/parity,
+composition planning, mechanism scenes, scene sensitivity, unzip-and-assert
+text/chart survival) and
 by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
 representative themes). The generator emits structural types without
 giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay
@@ -1399,18 +1400,6 @@ differences are compositionally invisible (all five counterfactual
 pairs indifferent), and stat/table/quote blocks can vanish silently —
 measured, not yet fixed. A byte-identical compiler-output regression
 proof guards the measurement work itself.
-
-## V2 composition planning (V2-3C)
-
-`DeckIntent → DeckCompositionPlan` is deterministic, ephemeral, and
-recomputed: per-slide family (12 selectable; taper/timeline/
-set-overlap/term-glossary deferred for lack of semantic justification),
-variantKey (compiler-private), density class, emphasis/media/outcome/
-caveat/takeaway treatments, and section breaks. Precedence is honesty
-> override > carrier > relationship > role > shape; rhythm only moves
-weak generic streaks to truthful alternatives. Free-text fields never
-reach the planner (proven by test). The six-recipe scene compiler does
-not consume the plan yet — that wiring is V2-3D.
 
 ## V2 semantic ownership (V2-3B)
 
@@ -1443,6 +1432,35 @@ A catastrophic, well-established experimental failure is
 expressible. Likewise `mediaRole` (how composition treats the visual)
 ≠ `evidenceRefs` (where support comes from), and `measure` (what must
 be communicated) ≠ `chartKind` (requested encoding).
+
+## V2 composition planning (V2-3C)
+
+`DeckIntent → DeckCompositionPlan` is deterministic, ephemeral, and
+recomputed: per-slide family (12 selectable; taper/timeline/
+set-overlap/term-glossary deferred for lack of semantic justification),
+variantKey (compiler-private), density class, emphasis/media/outcome/
+caveat/takeaway treatments, and section breaks. Precedence is honesty
+> override > carrier > relationship > role > shape; rhythm only moves
+weak generic streaks to truthful alternatives. Free-text fields never
+reach the planner (proven by test). The six-recipe scene compiler does
+not consume the plan yet — that wiring is V2-3D.
+
+## V2 composition mechanisms (V2-3D)
+
+`DeckCompositionPlan` is now consumed by canonical compilation:
+`compileDeck` plans first, then `compilePlannedSlide` realizes twelve
+families (divider/prose-list/card-grid/comparison/data-table/metric/
+chart/sequence/hierarchy/media-led/framed-prose/escape) as editable
+scene primitives with stable family-independent carrier IDs
+(`slide:block:content`). Taper/timeline/set-overlap/term-glossary stay
+deferred. Every authored block gets a primary carrier or compilation
+is refused; customized geometry survives family changes via exact-ID
+then semanticRef+kind matching; detached stays authoritative. Charts
+default honestly from `measure` (comparison→bar, trend→line,
+composition→doughnut); distribution/association fall back to exact
+editable tables. Outcome is structural tone, uncertainty is visible
+badges, takeaways render as headline/verdict/annotation. Fit, chrome
+emission, and full QA remain V2-3E.
 
 ## The web shell
 

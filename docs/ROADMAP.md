@@ -6815,7 +6815,7 @@ pairs plan-sensitive; scene compiler byte-identical; history preserved.
 > variant-free projection. Each answers a different question and
 > conflating them would fake either result.
 
-### [ ] V2-3D — representative composition mechanisms
+### [x] V2-3D — representative composition mechanisms
 
 Purpose: grow beyond the current six recipes using the
 semantic/composition architecture established in B/C. This is not
@@ -6823,6 +6823,21 @@ porting the legacy slide-type catalog; the family count stays
 provisional until B/C establish the real semantic boundaries.
 Implement the representative composition mechanisms necessary for the
 benchmark decks and important presentation classes.
+
+> **Learned.** Five things. (1) Uniform placement beats per-family
+> special cases: one `placePrimary` helper carrying survival, tone
+> frames, and caveats keeps all twelve families honest with a single
+> code path to audit. (2) Proportional distribution with a last-resort
+> canvas clamp guarantees finite/in-bounds/positive geometry for any
+> block count — content may overflow textually (V2-3E's job), boxes
+> never vanish. (3) `selectRecipe` stays exported but is no longer
+> canonical; canonical compilation is plan-first with the legacy path
+> preserved for compatibility tests and demos. (4) Takeaway realization
+> legitimately changed two old counterfactual pairs (takeaway text now
+> renders) — the history file stays byte-identical while the test
+> documents exactly which elements differ and why. (5) Outcome tone
+> must be structural (frames, accent restraint), never red/green
+> semantics, or themes cannot carry it.
 
 ### [ ] V2-3E — fit + scene QA + chrome emission
 
