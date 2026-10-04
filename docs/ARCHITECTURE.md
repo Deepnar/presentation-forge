@@ -1321,6 +1321,16 @@ paths yet, `packages/` holds the first agent-native primitive:
   (title, content, comparison, media, chart, process). Recompilation
   preserves `customized` geometry by `semanticRef`, carries human-added
   elements forward, and returns `detached` scenes untouched.
+- `packages/core/` — canonical deterministic primitives: `fit.ts`
+  (measurement and shrink-only fitting with an explicit diagnostics
+  sink, no process globals) and `chartpalette.ts` (contrast, palette
+  generation, monochrome ramps, series differentiation). `src/fit.js`
+  and `src/chartpalette.js` are thin compatibility facades delegating
+  to core, so every legacy layout and the full legacy suite run
+  unchanged. Scene dimensions live once in
+  `packages/model/scene-constants.ts`, drift-tested against the schema
+  consts. `test/v2-core-boundary.test.js` enforces package import
+  directions with the TypeScript parser (self-tested, fail-closed).
 - `packages/renderer-pptx/` and `packages/editor/` — the PPTX exporter
   and the browser renderer (SVG projection plus a direct-manipulation
   demo) consume the same scene object. Text, chart series data, and tables

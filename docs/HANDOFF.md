@@ -1,49 +1,50 @@
-# Handoff — V2-1 complete (Slice B landed), V2-2 not started
+# Handoff — V2-2A landed, V2-2B not started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§12 V2.1 program** (V2-0 and V2-1 ticked with
-Learned blocks; V2-2..V2-13 pending). External reference:
+`docs/ROADMAP.md` → **§12 V2.1 program** (V2-0, V2-1, V2-2A ticked;
+V2-2B..V2-2F specified per the corrected subdivision; V2-3+ unchanged
+except the fit-API reference). External reference:
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` (untracked root input,
 not a roadmap).
 
 ## Current state
 
-On `v2`, pushed to `origin/v2`. Slice A accepted as pushed; the
-hardening pass landed on top; Slice B just landed. V2-1 is marked
-complete against its Done-when criteria.
+On `v2`, to be pushed to `origin/v2` with this handoff. Revised V2-2A
+implemented per the corrected instruction (no core canvas authority, no
+`textStyle` move, no slide-type sets in core, facades not duplication,
+AST boundary test, WeakMap question moot — composition untouched).
 
-**Slice B (this session):** `Project`/`Artifact`/`FileRef`/`SourceRef`
-as schema-first domain contracts — 4 JSON Schemas, 4 checked-in
-generated types (via extended `tools/v2-types.mjs` targets, drift
-covered), `packages/model/validate.ts` with AJV validators, 4
-per-domain validation test files plus a `.ts` generated-type usability
-guard (plain-array assignability fails `typecheck` on tuple-union
-regression). Corrections applied: `projectId` required on FileRef and
-SourceRef; `storageKey` (never paths/URLs); `searchProvider` opaque;
-export invariants (`exportOf`/`format`/`storageKey`) enforced by schema
-`if`/`then` with tests; no `designName`, no `revision`, no job states,
-no `ToolResult` (stays V2-8); `design.js` untouched; `DesignSystem`
-deferred to V2-2.
+**V2-2A (this session):** `packages/core` exists (`fit.ts`,
+`chartpalette.ts`, strict TS, zero imports); `src/fit.js` and
+`src/chartpalette.js` are delegating facades preserving every export
+including the global floor-event API; scene dimensions canonicalized in
+`packages/model/scene-constants.ts` with schema drift test;
+`test/v2-core-boundary.test.js` enforces the direction matrix
+(model←core←compiler←renderers, editor neutral) with one named
+allowlist entry (`design.js → src/theme.js`, dies in V2-2B).
 
-**Still true from hardening:** `maxItems: -1` generation; detached is
-compiler-hands-off; V2-5 criteria require the shared command path and
-explicit-only relayout; no Neon/Vercel/provider/auth/agent imports in
-`packages/model` (domain only — verify with a grep before V2-2).
+**Still true:** Slice A/B contracts, detached semantics, `design.js`
+untouched (still imports `src/theme.js` — V2-2B removes it), legacy
+`src/render.js`/`layouts`/`report.js` unmodified and operational.
 
 ## Verification
 
-- `npm run types:generate` — clean, schemas-as-truth.
-- `npm run typecheck` — exit 0 (now covers 11 model files + 1 TS test).
-- Full `npm test` — 911 tests, 910 pass, sole failure the
-  pre-existing `byok-budget` locale expectation.
-- Drift test green; stale `.js`-specifier search clean.
-- `design.js`, intent/scene schemas, compiler untouched in Slice B.
-- Compiler output and raster output unchanged (no code path touched).
+- `npm run typecheck` — exit 0 (model + core + TS usage test).
+- Full `npm test` — 916 tests, 915 pass, sole failure the pre-existing
+  `byok-budget` locale expectation.
+- V2 tests: 61/61 green (incl. boundary self-tests + live repo scan,
+  scene-constants drift).
+- `npm run themematrix` — clean across 34 themes (legacy output
+  unchanged through the facades).
+- Transcription audit: `lab()` coefficient slip caught pre-commit by
+  line-level diff re-read; `measure()` no-style default (`NaN` before,
+  12pt now) affects no caller — all pass styles.
 
 ## Continue from here
 
-1. Slice B review (this handoff accompanies the pushed implementation).
-   Do NOT start V2-2 until approved.
-2. On approval: V2-2 core extraction per the §12 entry — theme/design
-   loading moves into packages then, and only then is the real
-   `DesignSystem` contract established from compiler evidence.
+1. V2-2A review (pushed implementation + this handoff). Do NOT start
+   V2-2B until approved.
+2. On approval: V2-2B per the roadmap slice — schema-backed
+   `DesignSystem`, pure `normalizeDesign`, theme adapter outside
+   model/core, `design.raw` removal, golden tests, `cmp`-proofed
+   compiler output.

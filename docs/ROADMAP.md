@@ -6583,18 +6583,82 @@ tests pass with assertions unchanged (import specifiers excepted).
 
 ### [ ] V2-2 deterministic core extraction
 
-*Depends on: V2-1. Blocks: V2-3, V2-5.*
+*Depends on: V2-1. Blocks: V2-3, V2-5. Implemented as slices V2-2A..V2-2F
+below — no monolithic move. Legacy `src/render.js`, `src/layouts/*`,
+and `src/report.js` stay operational as oracle/compatibility throughout;
+nothing is deleted until equivalent V2 coverage exists.*
 
-Extract theme/design loading, the recipe registry, geometry, fit, chrome,
-charts, diagrams, the PPTX renderer and the report engine into callable
-library form (`compileDeck(intent)` to scene, `renderPptx(scene)` to
-artifact, `renderReport(spec)` to artifact). Core must not import model
-providers, SearXNG, Neon, Vercel, or auth — the import boundary is
-asserted by test, not by convention. Port the renderer/fit/geometry/
-coverage/text-survival tests before touching behaviour.
+Core must not import model providers, SearXNG, Neon, Vercel, auth,
+Binaries (LibreOffice/Poppler/Chromium/sharp), pptxgenjs outside the
+PPTX renderer, or app code — the import boundary is asserted by
+`test/v2-core-boundary.test.js` (TypeScript-parser-based, direction
+matrix plus narrow named allowlist entries), not by convention.
 
-Done when: a fixture deck renders through package APIs with no
-Express/CLI/pipeline in the call path.
+### [x] V2-2A — deterministic foundation
+
+*First slice. Landed: `packages/core` exists with canonical `fit.ts`
+(pure diagnostics sink, no process globals) and `chartpalette.ts`;
+`src/fit.js` and `src/chartpalette.js` are thin compatibility facades
+delegating to core, so every legacy caller runs unchanged; scene
+dimensions have one model-level authority (`scene-constants.ts`,
+drift-tested against the schema consts); the boundary test enforces
+package directions with self-tests. Full suite green, themematrix clean.*
+
+> **Learned.** The `lab()` Y coefficient caught a transcription slip
+> during the port (`0.1805` vs legacy `0.0722`) — caught by reading the
+> diff line-by-line before committing, not by any test, because both
+> values produce plausible colors. Verbatim ports get a coefficient-level
+> re-read. Also: `measure()`'s legacy no-style path produced `NaN`;
+> the typed core measures it at 12pt instead — no caller ever hits that
+> path (all pass styles), but the difference is recorded here rather
+> than silently assumed.
+
+### [ ] V2-2B — DesignSystem contract + normalization
+
+Schema-backed `DesignSystem` in `packages/model` (`design.schema.json`,
+generated type, AJV validation, drift coverage) holding renderer-neutral
+normalized design only — no `raw`, no paths, no PptxGenJS options, no
+agent voice. Pure `normalizeDesign({theme, style?, mode})` in core
+(palette/mode resolution, surface derivation, role decoration, margins,
+chart-series passthrough); theme/style filesystem+YAML loading stays in
+an adapter outside model/core; `packages/model/design.js` loses `raw`
+and the `src/theme.js` import; the compiler consumes the normalized
+contract; golden normalization tests (themes × modes, byte-compared);
+compiler output byte-identical (`cmp` proof). No `textStyle` vocabulary
+in core — generic `{family, weight, size, line, tracking, transform,
+color}` only, mapped per renderer.
+
+### [ ] V2-2C — layout vocabulary + geometry
+
+Renderer-neutral `AXES`/`resolveLayout`/`layoutOf` (memoization kept
+unless it blocks the API), frame constants and `frameBox`, list/section
+policy, rotation `footprint()` math. Direct `slide.add*` behavior stays
+legacy. Composition test splits (vocabulary moves, drawing stays);
+`frameBox` policy test moves intact.
+
+### [ ] V2-2D — PPTX bytes renderer
+
+Promote `packages/renderer-pptx` to `renderPptx(scenes, {title, author,
+company, ...}) -> Uint8Array` with `renderPptxToFile` as an explicit
+Node adapter. No `src/render.js` extraction.
+
+### [ ] V2-2E — ReportSpec + deterministic DOCX renderer
+
+Schema-backed `ReportSpec` model contract (compatibility bridge from
+the legacy report shape acceptable), then `packages/renderer-docx`:
+pure OOXML builders + donor-bytes assembly + `tocPages`-explicit final
+render. Donor discovery, identity loading, and the LibreOffice/Poppler
+pagination pass stay outside; the two-pass TOC becomes provisional
+render → external pagination → deterministic final render.
+
+### [ ] V2-2F — chrome/brand compatibility seam
+
+Renderer-neutral chrome geometry/policy into core (constants, luminance
+rules, branding-mode policy over explicit chrome data — never the old
+slide-type sets, which stay legacy). Brand probing stays an adapter
+concern resolving to asset reference + intrinsic dimensions, never
+paths in core. Records the locked-scene-element contract V2-3 will use
+to emit chrome. Legacy render pixel-identical (raster proof).
 
 ### [ ] V2-3 scene compiler, full recipes
 
@@ -6603,7 +6667,7 @@ Express/CLI/pipeline in the call path.
 Grow the six-recipe slice into the representative set (title, content,
 comparison, image-text, chart, process/diagram families first, one theme
 then the representative set). Cards size to content; text budgets come
-from `src/fit.js` rather than fixed fractions; recipe choice considers
+from the canonical `packages/core` fit API rather than fixed fractions; recipe choice considers
 block kinds, content volume, visual direction, and theme. Scene
 validation, stable IDs, bounds/overlap/contrast rules, and the
 customized/detached preservation contract from V2-0 all hold and are
