@@ -20,6 +20,7 @@ decks/*
 !decks/README.md
 
 # Generated artefacts — reproducible from sources, never committed.
+out/
 decks/*/out/
 decks/*/assets/
 decks/_public/*/out/

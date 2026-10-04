@@ -1,92 +1,58 @@
-# Handoff — 2026-09-30, canvas moved to a branch; main clean
+# Handoff — 2026-10-04, V2.1 first slice landed on branch `v2`
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§11 canvas + tell + slide-links**. Note: the roadmap
-on main still describes canvas as unbuilt — the built slices live on the
-`canvas` branch (4 commits) and main's roadmap will catch up at merge.
+`docs/ROADMAP.md` → **§12 V2.1 program** (phases V2-0..V2-13 with
+dependencies and done-when criteria). The external workdoc and master
+prompt that started this session are inputs, not roadmaps —
+`PRESENTATION_FORGE_V2_1_ARCHITECTURE_WORKDOC.md` and
+`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` sit at the repo root,
+untracked, for reference during V2 work.
 
 ## Current state
 
-On `main`: one local commit ahead of `origin/main` (`487cd09`, needs
-explicit OK before push). Working tree clean.
+On `v2` (branched from `main` at `3d11971`): the V2-0 baseline + first
+vertical slice is built and behaviourally validated. Working tree holds
+the slice; nothing pushed yet — push needs explicit OK per standing
+discipline (push regularly after review, never hoard).
 
-**Branch split (user ask, 2026-09-30):** all canvas work left main for the
-`canvas` branch (4 commits: overrides+renderer core, preservation tests,
-canvas mode UI + konva deps, docs). Main holds a single commit: the Sources
-panel moved to the top of the research tab (`ResearchView.jsx`). Anyone
-downloading main gets no canvas code — no `overrides.js`, no konva dep.
+**Built this session (no model calls — local run, deterministic only):**
 
-**Also done this session (lives on `canvas`, recorded in its docs):**
-tell-to-add validated end to end on local `qwen3.6:35b-a3b` (17→18 slides,
-existing byte-unchanged, appended stats slide read clean); §12 gained a
-"Per-slide source refs" item (schema `cites` unwritten/unread — needs a
-supporting-source contract).
+- `packages/model/` — intent/scene/command/legacy/design contracts,
+  JSON Schema + ajv validation, JSDoc typedefs (no `tsc` step yet, by
+  decision recorded in the V2-0 roadmap entry).
+- `packages/compiler/` — deterministic six-recipe intent-to-scene with
+  managed/customized/detached preservation semantics.
+- `packages/renderer-pptx/` — scene to editable native PPTX.
+- `packages/editor/` — `sceneToSvg` + `demo.html` (drag, inline edit,
+  nudge, delete on real elements).
+- `tools/v2-slice.mjs` — six scenes across six representative themes to
+  `out/v2-slice/<theme>/{scene.json,scene.svg,deck.pptx}` (gitignored).
+- `test/v2-*.test.js` — 26 tests, all passing.
+- `docs/ROADMAP.md` §12 — the V2.1 program as phased entries.
+- `docs/ARCHITECTURE.md` — "The V2 slice" section (as built only).
 
-**Built here (human-only bounded + manual, no model):**
-
-- Blank slide of any type without AI (`app/web/src/lib/blankSlides.js`,
-  `test/blank-slides.test.js`): shape derives from `TYPE_FIELDS` with schema
-  minima, validated through `validateDeck` for every editor type plus
-  `illustrated-points`. Deck-page "+ Add slide" offers templates plus a
-  filtered list of all types and opens the form editor at the new slide.
-- Descriptor fixes (`slideEditorFields.js`): callout/references gain the
-  required headline; branching-flow steps are title-objects per the schema.
-- Semantic reorder inside a slide (`lib/slides.js` `moveListItem`,
-  `SlideEditor.jsx` up/down): lists, cards, nested rows, table rows, side
-  points, chart series. Order only, no geometry.
-- Tell-to-add door (`DeckDetail.jsx`): "Tell it what to add…" appends one
-  AI-written slide via the existing chat turn. The same phrasing works in the
-  normal chat thread post-deck (`ChatView.jsx:574` → same `runTurn`
-  machinery, `src/ai/turn.js:40` maps "add a slide at the end" to
-  `append_slide`).
-- Image blanks carry a notes `[image]` marker so the card's add-image door
-  shows; upload flow unchanged (`assets/`, grey placeholder render).
-
-**Refs status (verified against a real deck):** the source-mapped slide exists
-(second-to-last, part-scoped "used on slides …", top 10, 220-char plain text,
-nothing clickable — `src/ai/provenance.js:98`, `src/layouts/core.js:1172`).
-The Research tab already links every sourced URL including papers (title →
-URL, paper badge on arXiv/DOI — `ResearchView.jsx:171`, `src/papers.js:56`):
-31/31 sources linked on the perovskite deck. Open choice recorded in the
-roadmap: short URLs in slide text, real OOXML hyperlinks (schema work), or
-links tab-only.
-
-## The canvas spec (to be built elsewhere)
-
-The user wants the whole PowerPoint/Canva experience: click into an editor
-mode after the deck is done and freely do anything — add/duplicate/remove
-slides, write, move/resize, add pictures — and that is the final slide.
-
-- Human-only layout-override layer. Content stays semantic; a per-slide human
-  `layout` block (geometry + paint) wins at render time. The model grammars
-  exclude it everywhere (unrepresentable beats scrubbed); every AI pass
-  (sweep, trim, coherence, punch, critic, insert, convert) preserves it
-  verbatim or refuses the slide with a visible reason.
-- Chrome stays locked (banner, crest, slide numbers are graded marks, never
-  overridable). Freeform stays the rasterised full-bleed hatch.
-- Slices in order: (1) schema + validation + grammar exclusion + preservation
-  tests, no UI; (2) renderer applies overrides (one layout first, then a
-  shared helper); (3) per-pass preservation audits; (4) the visual editor
-  surface (click-to-select on the rendered slide, drag/resize, paint,
-  textboxes, images).
-- Open decisions: paint fully custom vs theme-palette-first; override
-  semantics on theme switch and type swap (likely reset-with-confirm).
-- Bar (unchanged): full scope implemented *and* behaviourally validated — a
-  real run plus rasterised reads, `npm test`, `vite build`, `git diff --check`.
+**Canvas branch:** read for the failure record only, stays unmerged —
+PNG/proxy architecture rejected; its requirements absorbed into V2-5.
 
 ## Verification
 
-- `npm test` — 850/851. The one failure is pre-existing and unrelated
-  (`byok-budget.test.js` locale: `50,00,000` vs `5,000,000`).
-- `npx vite build` — clean. `git diff --check` — clean.
-- Six representative blanks render with zero problems; placeholder images
-  grey-box via the null-asset path.
-- Dev server ran on `:5173`/`:5174` for the user's own visual check; it is
-  not part of the committed state.
+- Baseline on `main` before branching: 850 pass / 1 fail (the known
+  `byok-budget` locale expectation, pre-existing per prior handoff).
+- V2 slice: 26/26 new tests pass.
+- Rasterised reads: all six recipes on `warm-humanist` (title, bullets,
+  comparison, media placeholder, bar chart with real data, 3-step
+  process) plus the comparison on `gradient-mesh-dark` — text legible,
+  native elements, no overflow. Process/comparison cards span full
+  content height (recorded follow-up, not a defect for the slice).
+- Full suite re-run on `v2` pending before push (run `npm test`).
 
 ## Continue from here
 
-1. Canvas slices (elsewhere) per the spec above; paint decision first.
-2. Tell-to-add live-model validation (append lands, deck re-renders).
-3. Slide-links pick: short-URL text, OOXML hyperlinks, or tab-only.
-4. Then the user's own full functional sweep (§"The full functional sweep").
+1. `npm test` full on `v2`; confirm still 850+26 / 1 pre-existing fail.
+2. Commit in small focused chunks (model / compiler / renderer+editor /
+   tests / tools / docs — `git add <paths>` per commit, no `add -A`),
+   then push `v2` on explicit OK.
+3. Next work: V2-1 (TS workspace per §12 entry — re-check before
+   building; do not start from the entry text alone). V2-6 may proceed
+   in parallel once storage interfaces are agreed; V2-7..V2-13 wait
+   their turns. Serve the present phase before reaching for the next.

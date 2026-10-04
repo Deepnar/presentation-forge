@@ -1296,6 +1296,38 @@ A slide that fails any of this **keeps its `[image]` note**, so the deck page's
 `problems[]`. Manual upload always wins: it targets the slide directly and
 leaves no note for this pass to find.
 
+## The V2 slice — intent, scene, and two consumers
+
+On branch `v2`, beside the legacy pipeline and sharing none of its code
+paths yet, `packages/` holds the first agent-native primitive:
+
+- `packages/model/` — `DeckIntent`/`SlideIntent`/`ContentBlock` (Layer A,
+  no coordinates/colours/fonts by schema construction),
+  `SlideScene`/`SceneElement` (Layer C, canonical inches on the same
+  13.333×7.5 canvas as chrome), the `managed|customized|detached`
+  layout-state contract, command types with apply/inverse shared by human
+  and agent edits, a `DesignSystem` read-only view over `themes/*.yaml`
+  tokens, and a legacy bridge (six types map, the rest report `unmapped`
+  rather than degrade). JSON Schema + ajv at the boundary, JSDoc typedefs
+  mapping 1:1 to future TypeScript interfaces — no `tsc` step yet, so the
+  existing suite is undisturbed.
+- `packages/compiler/` — deterministic intent-to-scene for six recipes
+  (title, content, comparison, media, chart, process). Recompilation
+  preserves `customized` geometry by `semanticRef`, carries human-added
+  elements forward, and returns `detached` scenes untouched.
+- `packages/renderer-pptx/` and `packages/editor/` — the PPTX exporter
+  and the browser renderer (SVG projection plus a direct-manipulation
+  demo) consume the same scene object. Text, chart series data, and tables
+  survive as editable OOXML; empty image sources degrade to a labelled
+  seat, never a dead deck.
+
+Proven by `test/v2-*.test.js` (26 tests: contracts, determinism, bounds,
+preservation, legacy mapping, unzip-and-assert text/chart survival) and
+by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
+representative themes). Known slice limits live in the V2-0 roadmap entry:
+cards span full content height, plate themes render flat, text budgets
+are fixed fractions awaiting `src/fit.js` integration.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

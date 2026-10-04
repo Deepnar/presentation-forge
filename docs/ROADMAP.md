@@ -6438,3 +6438,297 @@ slide: (a) append short URLs within the existing cap, (b) hyperlink items in
 OOXML — needs URLs in the schema, but items are bare strings today, so this is
 schema + renderer work, (c) leave the slide human-readable and keep links in
 the Research tab only.
+
+---
+
+## 12. V2.1 — agent-native re-architecture (program)
+
+The V2.1 program turns the pipeline-plus-wizard into an agent-native
+workspace: the model orchestrates, a deterministic compiler turns semantic
+intent into an editable scene, and the browser editor and the PPTX exporter
+consume the same scene. Design input:
+`PRESENTATION_FORGE_V2_1_ARCHITECTURE_WORKDOC.md` (external, not a second
+roadmap); the master prompt
+`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` (session procedure).
+
+Rules that govern this section: `docs/ARCHITECTURE.md` describes only what
+is actually built; platform assumptions (MCP/OAuth/SIWC, Vercel
+limits/Workflow/Blob/Cron, SearXNG deployment, editor licences) are
+time-sensitive and must be re-checked against official docs when each phase
+starts, never carried forward from the workdoc.
+
+The `canvas` branch is rejected as an architecture (PNG background + proxy
+rectangles + server overrides + server rerender) and stays unmerged. Its
+requirement record — filmstrip, stage, autosave, drag/resize, custom
+text/image/shape, human-only manual edits — is absorbed by V2-5 below.
+
+### [x] V2-0 baseline + first vertical slice
+
+*Phase 0 + Phase 1 + smallest Phase 2/3 slice, on branch `v2`.*
+
+Baseline: `main` at `3d11971`, suite 850/851 (sole failure the known
+`byok-budget` locale expectation, pre-existing). Golden fixtures for the
+migration: the specimen deck (`src/specimens.js`, one slide per type),
+`decks/type-batch1..8` (per-family regression renders), and real generated
+decks on disk (`exploring-first-impressions-*`, perovskite). Representative
+themes: `warm-humanist` (reference), `swiss-international` (grid),
+`editorial-magazine` (two-column + editorial flag), `corporate-clean-blue`
+(offset frame), `sci-fi-hud` (sidebar frame), `gradient-mesh-dark` (plate
+representative).
+
+Built, all behaviourally validated (26 tests + rasterised reads of all six
+recipes on `warm-humanist` and a dark plate theme):
+
+- `packages/model/` — `DeckIntent`/`SlideIntent`/`ContentBlock`,
+  `SlideScene`/`SceneElement` (+ `managed|customized|detached`),
+  `DesignSystem` seam over existing theme tokens, command types with
+  apply/inverse, legacy bridge. Runtime validation is JSON Schema + ajv,
+  the same pattern as `src/validate.js`.
+- `packages/compiler/` — deterministic `compileDeck`/`compileSlide` for
+  six recipes (title, content, comparison, media, chart, process);
+  `recompileSlide` preserves `customized` geometry by `semanticRef` and
+  keeps human-added elements; `detached` returns the scene untouched.
+- `packages/renderer-pptx/` — scene to editable native PPTX (text runs,
+  shapes, charts with real series data, tables, images, lines, groups).
+- `packages/editor/` — `sceneToSvg` (same scene object) plus `demo.html`,
+  direct manipulation of real elements (drag, inline edit, nudge,
+  delete), no PNG proxy.
+- `tools/v2-slice.mjs` — intent to scene/SVG/PPTX across six themes.
+- Legacy bridge covers six slice types; unmapped types return `null`
+  with an explicit `unmapped` list rather than degrading.
+
+> **Learned.** Five things were not obvious beforehand.
+>
+> `allOf` + `additionalProperties: false` across `$ref`s rejects the base's
+> own properties — the scene schema has to be one merged object, the same
+> trap the legacy schema avoids by never composing that way.
+>
+> pptxgenjs `addText` takes a flat run list with `breakLine` on the run
+> ending each paragraph; passing one object per paragraph writes
+> `[object Object]` into the slide XML with every check green except a
+> byte read of the XML. Unzip-and-assert on literal text is the cheapest
+> guard for a new exporter.
+>
+> Its `addChart` takes `(type, data, opts)`, not `({type, data}, opts)` —
+> the wrong shape throws inside the library, which at least fails loudly.
+> The chart grouping lesson from the legacy renderer (`barGrouping`, not
+> `barStacked`) transfers unchanged.
+>
+> No TypeScript compiler in this slice, deliberately: the repo convention
+> is JS-only and a `tsc` build step would destabilise the existing suite.
+> Contracts are JSDoc typedefs mapping 1:1 to future interfaces plus JSON
+> Schema at the boundary, so the `.js` to `.ts` move is a rename with
+> types already written. The full TS workspace lands with V2-1.
+>
+> Process/comparison cards span the full content height with one or two
+> lines of text sitting at the top — honest (nothing overflows, nothing
+> shrinks) but the same leftover-bottom shape TRAPS warns about. Cards
+> that size to their content belong to the full Phase 3 compiler, not the
+> slice. Plate themes render flat backgrounds in the V2 path (no Chrome
+> raster yet); plate support is V2-3 business.
+
+### [ ] V2-1 TypeScript workspace and full contracts
+
+*Depends on: V2-0. Blocks: everything below.*
+
+Introduce the TS toolchain and the monorepo boundaries without changing
+product behaviour: `apps/web`, `apps/mcp`, `packages/model`,
+`packages/core`, `packages/renderer-pptx`, `packages/renderer-docx`,
+`packages/editor`, `packages/tools`, `packages/agent`, `packages/search`,
+`packages/search-searxng`, `packages/import-pptx`, `packages/import-docx`,
+`packages/storage`, `packages/storage-neon`, `packages/storage-local`,
+`packages/blob`, `packages/mcp`, `packages/skill`. Strict TS for new
+packages; Zod (or equivalent) at external/model/tool boundaries; generate
+TS types from the JSON Schemas rather than hand-duplicating them. Legacy
+deck.yaml stays readable through the V2-0 bridge, extended type by type.
+
+Done when: an old deck loads into V2 representation through package APIs
+with no user-visible change, and the V2-0 tests run unmodified against the
+TS packages.
+
+### [ ] V2-2 deterministic core extraction
+
+*Depends on: V2-1. Blocks: V2-3, V2-5.*
+
+Extract theme/design loading, the recipe registry, geometry, fit, chrome,
+charts, diagrams, the PPTX renderer and the report engine into callable
+library form (`compileDeck(intent)` to scene, `renderPptx(scene)` to
+artifact, `renderReport(spec)` to artifact). Core must not import model
+providers, SearXNG, Neon, Vercel, or auth — the import boundary is
+asserted by test, not by convention. Port the renderer/fit/geometry/
+coverage/text-survival tests before touching behaviour.
+
+Done when: a fixture deck renders through package APIs with no
+Express/CLI/pipeline in the call path.
+
+### [ ] V2-3 scene compiler, full recipes
+
+*Depends on: V2-2. Blocks: V2-4, V2-5.*
+
+Grow the six-recipe slice into the representative set (title, content,
+comparison, image-text, chart, process/diagram families first, one theme
+then the representative set). Cards size to content; text budgets come
+from `src/fit.js` rather than fixed fractions; recipe choice considers
+block kinds, content volume, visual direction, and theme. Scene
+validation, stable IDs, bounds/overlap/contrast rules, and the
+customized/detached preservation contract from V2-0 all hold and are
+tested. Plate backgrounds regain Chrome-raster support as a compatibility
+path, not the default.
+
+Done when: representative slides compile to scenes and export to editable
+PPTX on all representative themes with clean sweeps.
+
+### [ ] V2-4 browser scene renderer
+
+*Depends on: V2-3. Blocks: V2-5.*
+
+Render scenes directly in the browser (DOM/SVG + moveable/selecto
+first; Konva fallback only if it represents the real elements). Fixed
+slide viewport in canonical units, zoom, filmstrip from the browser
+renderer, selection — no editing yet, and no PPTX-to-PNG dependency for
+the interactive canvas. LibreOffice/Poppler stay as export QA only.
+
+Done when: the browser scene visually matches the exported PPTX for the
+golden fixtures without LibreOffice in the loop.
+
+### [ ] V2-5 real editor, commands, autosave
+
+*Depends on: V2-4. Blocks: V2-8 (agent edits ride the same commands).*
+
+Direct manipulation of real scene elements (the `demo.html` primitive
+grown up): inline text, drag/resize/rotate, nudge, multi-select,
+snapping, align/distribute, z-order, layers, group/ungroup, lock,
+copy/paste, undo/redo, add text/image/shape/line, chart/table/diagram
+editing, slide add/delete/duplicate/reorder, notes, contextual
+properties. Every mutation is a command with an inverse through the V2-0
+seam; agent operations use the same command system as human edits.
+Manual-edit preservation has automated tests (the V2-0 suite is the
+seed). No tldraw without an explicit licensing decision.
+
+Done when: a user builds and revises a slide without opening a schema
+form, and a later agent content change preserves their geometry.
+
+### [ ] V2-6 cloud persistence and artifact lifecycle
+
+*Depends on: V2-1 (storage interfaces). Independent of V2-2..V2-5;
+do not let it jump the queue ahead of the editor.*
+
+Storage interfaces with Neon/Postgres (durable: users, projects, files
+metadata, sources, intents, scenes as JSONB, revisions, runs, encrypted
+provider-connection references) and Vercel Private Blob (uploads,
+exports, previews) adapters; filesystem/SQLite adapters for local mode.
+Core never imports Neon/Vercel. Durable project truth until user
+deletion; generated exports/previews/temp files get TTLs with an
+"Export expired / Generate again" state, never whole-project deletion.
+Vercel Cron over an idempotent metadata-driven cleanup endpoint replaces
+the in-process sweep. No SMTP dependency for retention.
+
+Done when: no hosted project depends on local disk, and an expired
+export regenerates from intact project state.
+
+### [ ] V2-7 hosted web shell
+
+*Depends on: V2-4, V2-6. Do not port old pages 1:1.*
+
+Next.js App Router + TypeScript is the recommended consolidation (UI,
+API, auth callbacks, MCP endpoint, Blob signing, cron, agent endpoints)
+— explicitly not because Vercel requires it. If keeping Vite/Express
+reduces migration risk, keep it; the editor/core migration outranks the
+framework migration. Four surfaces only: landing, projects, project
+workspace (filmstrip + canvas + agent/inspector rail + notes), settings.
+
+Done when: the V2 project workflow (prompt to editable deck to export)
+runs end to end on Vercel.
+
+### [ ] V2-8 agent runtime + provider-independent search
+
+*Depends on: V2-5 (commands), V2-6 (project state). The product payoff;
+needs direction on scope before building.*
+
+`ModelProvider` with capability negotiation (tool calling, structured
+output, vision, reasoning, context, files, streaming) and a separate
+`SearchProvider` with SearXNG as the default implementation —
+`web_search` is a Forge tool, never a vendor feature. Academic
+(`paper_search`: arXiv/Crossref) and project (`project_search`) tools
+stay separate; all produce normalized sources that blocks cite by stable
+ID. The agent infers what it can and asks only blocking questions;
+selection-aware edits; source-aware generation; manual-edit preservation
+through V2-5 commands; durable jobs (Vercel Workflow or equivalent),
+never browser-SSE-owned. Prove two materially different provider
+adapters (e.g. Anthropic-style + OpenAI-compatible, or Gemini-style +
+local) researching through the same Forge search.
+
+Done when: a user creates and revises a deck conversationally with no
+briefing wizard, on two different providers sharing one search backend.
+
+### [ ] V2-9 file intelligence and PPTX import
+
+*Depends on: V2-8 (agent file roles), V2-3 (scene import targets).*
+
+Ingestion interface (PDF, DOCX, PPTX, Markdown/text, CSV, images; XLSX
+only if justified) with file roles (source, source-of-truth,
+visual-reference, template, brand, dataset, asset, unknown) the agent
+sets from natural language. PPTX progressively: source extraction, then
+design-system extraction, then supported OOXML to scene with explicit
+fallbacks/warnings, then true master/template support last — never
+blocking V2 on PowerPoint parity.
+
+Done when: "use this report as truth and this PPTX as visual reference,
+make a 12-slide technical deck" works.
+
+### [ ] V2-10 artifact unification
+
+*Depends on: V2-8, V2-9.*
+
+One project holds conversation, files/sources, presentation and report
+artifacts, script, notes, exports. The DOCX donor/template engine
+becomes an artifact tool (`create_report`, deck-from-report and
+report-from-deck share sources). No separate presentation/report modes.
+
+Done when: report, deck, and speaker notes coexist and cross-derive in
+one project.
+
+### [ ] V2-11 ChatGPT plugin (thin adapter)
+
+*Depends on: V2-7 (MCP endpoint), V2-10 (artifacts). Re-check
+OpenAI/MCP/OAuth/file-input requirements at phase start.*
+
+Focused MCP surface (`create_project`, `import_files`,
+`create_presentation`, `get_presentation`, `update_presentation`,
+`render_presentation`, `create_report`, `get_export`) over the same
+tool/core packages — an adapter, never a fork; ChatGPT is the agent, so
+no second Forge agent inside the plugin. Forge Skill teaching narrative,
+density, citations, source-of-truth behaviour, visual use, question
+policy, and edit preservation. OAuth for private/write actions. No
+duplicate Forge research when ChatGPT already researched; no second
+OpenAI BYOK key required inside ChatGPT.
+
+Done when: ChatGPT creates, updates, and exports a Forge deck through
+the plugin, evaluated against the plugin eval set.
+
+### [ ] V2-12 provider UX + Sign in with ChatGPT
+
+*Depends on: V2-8, V2-11. Hosted ChatGPT-plan usage only if approved;
+never a launch dependency.*
+
+Ordinary UX is one AI connection (provider-agnostic BYOK: OpenAI,
+Anthropic, Gemini, OpenRouter, OpenAI-compatible — each advertised only
+with a tested adapter) plus "Research: Forge Search" that nobody
+configures. Local keeps Ollama and local/configured SearXNG. The
+operator-funded Auto tier leaves the hosted target. Advanced settings
+expose provider/model/reasoning/context/search-backend diagnostics.
+
+Done when: a non-technical user connects once and never sees model
+plumbing again.
+
+### [ ] V2-13 remove legacy surfaces
+
+*Depends on: parity from V2-2..V2-12. Last, never first.*
+
+Only after migration: briefing wizard, old form editor, redundant
+Express paths, hosted filesystem/SQLite assumptions, duplicate
+pipeline/provider code. Compatibility readers stay until old projects
+migrate safely. No test is deleted to make migration pass; every phase
+keeps behavioural tests before old code is removed.
+
+Done when: the legacy paths are gone and old projects still open.
