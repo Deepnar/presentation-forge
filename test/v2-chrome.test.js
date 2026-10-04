@@ -90,6 +90,23 @@ describe("v2 chrome footer", () => {
     assert.deepEqual([light.foreground, light.opacity, light.fontFamily], ["5C5C59", 1, "Inter"]);
   });
 
+  it("only the presenter inherits dark translucency, never the number", () => {
+    const dark = planContentChrome({
+      branding: "full", index: 2, total: 3, background: "141110",
+      mutedInk: "5C5C59", presenterText: "Asha Rao",
+    });
+    assert.equal(dark.presenter.style.color, "FFFFFF");
+    assert.equal(dark.presenter.style.opacity, 0.45);
+    assert.equal(dark.slideNumber.style.color, "FFFFFF");
+    assert.equal(dark.slideNumber.style.opacity, 1);
+    const light = planContentChrome({
+      branding: "full", index: 2, total: 3, background: "EBEBE6",
+      mutedInk: "5C5C59", presenterText: "Asha Rao",
+    });
+    assert.equal(light.presenter.style.opacity, 1);
+    assert.equal(light.slideNumber.style.opacity, 1);
+  });
+
   it("presenter and number geometry match legacy constants", () => {
     const plan = planContentChrome({
       branding: "full", index: 2, total: 3, background: "FFFFFF",
@@ -122,8 +139,7 @@ describe("v2 chrome footer", () => {
   });
 });
 
-describe("v2 chrome legacy asymmetry", () => {
-  // Preserved quirk: a fallback-only mark draws without earning the
+describe("v2 chrome legacy asymmetry", () => {  // Preserved quirk: a fallback-only mark draws without earning the
   // primary-crest heading reservation. Pinned, not fixed.
   it("fallback crest draws while reservation stays zero", async () => {
     const { applyContentChrome, reservedTopRight } = await import("../src/chrome.js");
@@ -136,9 +152,28 @@ describe("v2 chrome legacy asymmetry", () => {
     assert.ok(calls.some(([k, o]) => k === "image" && o.path === "/x/light.png"), "fallback mark drawn");
     assert.equal(reservedTopRight(brand, identity), 0);
   });
+
+  it("dark facade: presenter gets transparency 55, number gets none", async () => {
+    const { applyContentChrome } = await import("../src/chrome.js");
+    const calls = [];
+    const slide = { addImage: (o) => calls.push(["image", o]), addText: (t, o) => calls.push(["text", t, o]) };
+    applyContentChrome(slide, {
+      brand: {}, theme: { palette: { ink_muted: "5C5C59" }, type: { caption: { family: "Inter" } } },
+      identity: { team: { members: [{ name: "Asha", presenting: true }] } },
+      data: { type: "bullets", presenter: "Asha" }, index: 2, total: 3, bg: "141110",
+    });
+    const texts = calls.filter(([k]) => k === "text");
+    const presenter = texts.find(([, t]) => t === "Asha");
+    const number = texts.find(([, t]) => t === "2 / 3");
+    assert.equal(presenter[2].transparency, 55);
+    assert.equal(presenter[2].color, "FFFFFF");
+    assert.ok(!("transparency" in number[2]), "slide number carries no transparency");
+    assert.equal(number[2].color, "FFFFFF");
+  });
 });
 
-describe("v2 chrome purity", () => {  it("core chrome names no legacy ontology, brand paths, or binaries", async () => {
+describe("v2 chrome purity", () => {
+  it("core chrome names no legacy ontology, brand paths, or binaries", async () => {
     const text = await readFile(new URL("../packages/core/chrome.ts", import.meta.url), "utf8");
     for (const name of ["DIVIDER_TYPES", "REFERENCE_TYPES", "bibliography", "chapter", "sharp", "child_process", "node:fs", "pptxgenjs", "resolveBrandPath", "loadIdentity", "addImage", "addText"]) {
       assert.ok(!text.includes(name), `core/chrome.ts mentions ${name}`);

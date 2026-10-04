@@ -158,6 +158,9 @@ export function planContentChrome(input: ContentChromeInput): ContentChromePlan 
     input.presenterOnSlides !== false &&
     !input.suppressPresenter &&
     Boolean((input.presenterText ?? "").trim());
+  // Preserved legacy quirk: on dark grounds only the presenter inherits
+  // the 55% PptxGenJS transparency (opacity 0.45); the slide number stays
+  // fully opaque even though it shares the white foreground.
   const presenter = showPresenter
     ? {
         show: true as const,
@@ -172,7 +175,7 @@ export function planContentChrome(input: ContentChromeInput): ContentChromePlan 
         show: true as const,
         text: `${input.index} / ${input.total}`,
         box: { x: SCENE_W - 1.9, y: FOOT_Y, w: 1.2, h: FOOT_H },
-        style: { ...style, align: "right" as const },
+        style: { ...style, align: "right" as const, opacity: 1 },
       }
     : null;
   return { mark, presenter, slideNumber };

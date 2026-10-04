@@ -6731,7 +6731,12 @@ to emit chrome. Legacy render pixel-identical (raster proof).
 > draws with zero heading reservation — both look wrong enough to
 > "fix" and both are current behavior. Opacity crosses the boundary
 > as 0..1 with the PptxGenJS `transparency: round((1-opacity)*100)`
-> mapping living in exactly one facade line.
+> mapping living in exactly one facade line. Post-review correction:
+> dark footer foreground becomes white, but only presenter text
+> inherits the legacy 55% PptxGenJS transparency (opacity 0.45) — slide
+> numbers remain fully opaque. The canonical plan now carries distinct
+> presenter/number opacities so V2-3 scene emission cannot make dark
+> slide numbers translucent.
 
 ### [ ] V2-3 scene compiler, full recipes
 
