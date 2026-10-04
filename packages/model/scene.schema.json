@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/slide-scene.json",
+  "title": "SlideScene",
+  "description": "Layer C: editable scene graph. Source of truth for the browser editor and the PPTX exporter. Canonical units are inches on a 13.333x7.5 canvas.",
+  "type": "object",
+  "required": ["id", "width", "height", "background", "elements", "layoutState"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "width": { "type": "number", "const": 13.333 },
+    "height": { "type": "number", "const": 7.5 },
+    "background": {
+      "type": "object",
+      "required": ["fill"],
+      "additionalProperties": false,
+      "properties": {
+        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+      }
+    },
+    "layoutState": { "enum": ["managed", "customized", "detached"] },
+    "recipeId": { "type": "string" },
+    "elements": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/sceneElement" }
+    }
+  },
+  "definitions": {
+    "textRun": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "bold": { "type": "boolean" },
+        "italic": { "type": "boolean" },
+        "size": { "type": "number", "exclusiveMinimum": 0 },
+        "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "required": ["runs"],
+      "additionalProperties": false,
+      "properties": {
+        "runs": { "type": "array", "items": { "$ref": "#/definitions/textRun" } },
+        "align": { "enum": ["left", "center", "right"] },
+        "bullet": { "type": "boolean" }
+      }
+    },
+    "sceneElement": {
+      "type": "object",
+      "required": ["id", "kind", "x", "y", "w", "h", "z", "provenance"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["text", "shape", "image", "line", "chart", "table", "group"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number", "exclusiveMinimum": 0 },
+        "h": { "type": "number", "exclusiveMinimum": 0 },
+        "rotation": { "type": "number" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "locked": { "type": "boolean" },
+        "z": { "type": "integer", "minimum": 0 },
+        "provenance": { "enum": ["compiler", "agent", "human", "import"] },
+        "semanticRef": { "type": "string" },
+        "customized": { "type": "boolean" },
+            "paragraphs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/paragraph" }
+            },
+            "shape": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "form": { "enum": ["rect", "roundRect", "ellipse"] },
+                "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "stroke": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "strokeWidth": { "type": "number", "minimum": 0 }
+              }
+            },
+            "image": {
+              "type": "object",
+              "required": ["src"],
+              "additionalProperties": false,
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" }
+              }
+            },
+            "line": {
+              "type": "object",
+              "required": ["x2", "y2"],
+              "additionalProperties": false,
+              "properties": {
+                "x2": { "type": "number" },
+                "y2": { "type": "number" },
+                "stroke": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "strokeWidth": { "type": "number", "minimum": 0 }
+              }
+            },
+            "chart": {
+              "type": "object",
+              "required": ["chartKind", "categories", "series"],
+              "additionalProperties": false,
+              "properties": {
+                "chartKind": { "enum": ["bar", "hbar", "line", "pie", "doughnut", "area"] },
+                "categories": { "type": "array", "items": { "type": "string" } },
+                "series": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["name", "values"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": { "type": "string" },
+                      "values": { "type": "array", "items": { "type": "number" } }
+                    }
+                  }
+                }
+              }
+            },
+            "table": {
+              "type": "object",
+              "required": ["rows"],
+              "additionalProperties": false,
+              "properties": {
+                "rows": {
+                  "type": "array",
+                  "items": { "type": "array", "items": { "type": "string" } }
+                },
+                "header": { "type": "boolean" }
+              }
+            },
+            "group": {
+              "type": "object",
+              "required": ["children"],
+              "additionalProperties": false,
+              "properties": {
+                "children": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/sceneElement" }
+                }
+              }
+            }
+          }
+        }
+  }
+}

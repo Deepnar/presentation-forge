@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/deck-intent.json",
+  "title": "DeckIntent",
+  "description": "Layer A: semantic intent. The model's creative language. No coordinates, colours, or font names.",
+  "type": "object",
+  "required": ["id", "title", "slides"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "audience": { "type": "string", "maxLength": 300 },
+    "objective": { "type": "string", "maxLength": 500 },
+    "narrative": { "type": "string", "maxLength": 1000 },
+    "designDirection": { "type": "string", "maxLength": 500 },
+    "sourcePolicy": {
+      "type": "object",
+      "required": ["mode"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["research", "source-of-truth", "none"] },
+        "fileIds": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 60,
+      "items": { "$ref": "#/definitions/slideIntent" }
+    }
+  },
+  "definitions": {
+    "slideIntent": {
+      "type": "object",
+      "required": ["id", "purpose", "blocks"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "title": { "type": "string", "maxLength": 120 },
+        "takeaway": { "type": "string", "maxLength": 300 },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": { "$ref": "#/definitions/contentBlock" }
+        },
+        "visualDirection": { "type": "string", "maxLength": 300 },
+        "layoutHint": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "recipe": {
+              "enum": ["title", "content", "comparison", "media", "chart", "process"]
+            },
+            "emphasis": { "type": "string", "maxLength": 120 },
+            "mediaSide": { "enum": ["left", "right"] }
+          }
+        },
+        "sourceRefs": { "type": "array", "items": { "type": "string" } },
+        "speakerNotes": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "contentBlock": {
+      "type": "object",
+      "required": ["id", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": ["text", "list", "stat", "image", "chart", "table", "quote", "callout"]
+        },
+        "text": { "type": "string", "maxLength": 2000 },
+        "items": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 300 } },
+        "label": { "type": "string", "maxLength": 120 },
+        "value": { "type": "string", "maxLength": 120 },
+        "src": { "type": "string", "maxLength": 500 },
+        "alt": { "type": "string", "maxLength": 300 },
+        "caption": { "type": "string", "maxLength": 300 },
+        "chartKind": { "enum": ["bar", "hbar", "line", "pie", "doughnut", "area"] },
+        "categories": { "type": "array", "items": { "type": "string", "maxLength": 60 } },
+        "series": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": ["name", "values"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 60 },
+              "values": { "type": "array", "minItems": 1, "items": { "type": "number" } }
+            }
+          }
+        },
+        "unit": { "type": "string", "maxLength": 16 },
+        "rows": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "string", "maxLength": 200 } }
+        },
+        "header": { "type": "boolean" }
+      }
+    }
+  }
+}
