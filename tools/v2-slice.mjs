@@ -8,7 +8,7 @@ import { normalizeDesign } from "../packages/core/design.ts";
 import { validateDeckIntent } from "../packages/model/intent.ts";
 import { validateScene, checkBounds } from "../packages/model/scene.ts";
 import { compileDeck } from "../packages/compiler/compile.js";
-import { renderScenesToFile } from "../packages/renderer-pptx/scene-to-pptx.js";
+import { renderPptxToFile } from "../packages/renderer-pptx/node.ts";
 import { sceneToSvg } from "../packages/editor/scene-svg.js";
 
 const theme = process.argv.includes("--theme")
@@ -85,5 +85,5 @@ const outDir = path.join("out", "v2-slice", theme);
 mkdirSync(outDir, { recursive: true });
 writeFileSync(path.join(outDir, "scene.json"), JSON.stringify(scenes, null, 1));
 writeFileSync(path.join(outDir, "scene-1.svg"), sceneToSvg(scenes[0]));
-await renderScenesToFile(scenes, path.join(outDir, "deck.pptx"));
+await renderPptxToFile(scenes, path.join(outDir, "deck.pptx"));
 console.log(`v2 slice ok: ${scenes.length} scenes, theme ${theme} -> ${outDir}/`);

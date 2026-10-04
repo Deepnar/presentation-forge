@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import JSZip from "jszip";
 import { compileDeck } from "../packages/compiler/compile.js";
-import { renderScenesToFile } from "../packages/renderer-pptx/scene-to-pptx.js";
+import { renderPptxToFile } from "../packages/renderer-pptx/node.ts";
 import { sceneToSvg } from "../packages/editor/scene-svg.js";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";
 
@@ -20,7 +20,7 @@ describe("v2 scene pptx", () => {
     const scenes = compileDeck(sampleDeckIntent(), design);
     // Empty image src must not kill the deck: placeholder, still editable.
     pptxPath = path.join(dir, "slice.pptx");
-    await renderScenesToFile(scenes, pptxPath);
+    await renderPptxToFile(scenes, pptxPath);
     const buf = readFileSync(pptxPath);
     const zip = await JSZip.loadAsync(buf);
     const names = Object.keys(zip.files).filter((n) => n.startsWith("ppt/slides/slide"));

@@ -31,8 +31,25 @@ const BARE_ALLOW = {
   editor: [],
 };
 
-// node: builtins allowed per package. Core stays dependency-free.
-const NODE_ALLOW = { model: true, core: false, compiler: false, "renderer-pptx": false, editor: false };
+// node: builtins allowed per package. Core stays dependency-free; the
+// renderer-pptx Node adapter is the single narrow exception.
+const NODE_ALLOW = {
+  model: ["node:fs/promises", "node:crypto"],
+  core: [],
+  compiler: [],
+  "renderer-pptx": [],
+  editor: [],
+};
+
+// Per-file exceptions inside otherwise-restricted packages. Each entry
+// names the exact file and why it exists.
+const FILE_ALLOW = [
+  {
+    file: "packages/renderer-pptx/node.ts",
+    bare: ["node:fs/promises", "node:path"],
+    why: "explicit Node-only persistence adapter; canonical render.ts stays fs-free",
+  },
+];
 
 // Banned everywhere under packages/, regardless of matrix.
 const GLOBAL_BAN = [
@@ -91,9 +108,14 @@ function edgeAllowed(fromPkg, fromFile, target, spec) {
   return null;
 }
 
-function bareAllowed(fromPkg, spec) {
+function bareAllowed(fromPkg, spec, file) {
   if (spec.startsWith("node:")) {
-    return NODE_ALLOW[fromPkg] ? null : `node builtin "${spec}" not allowed in ${fromPkg}`;
+    for (const a of FILE_ALLOW) {
+      if (file === path.join(ROOT, a.file) && a.bare.includes(spec)) return null;
+    }
+    return (NODE_ALLOW[fromPkg] ?? []).includes(spec)
+      ? null
+      : `node builtin "${spec}" not allowed in ${fromPkg} (only named adapter files)`;
   }
   for (const banned of GLOBAL_BAN) {
     if (spec === banned || spec.startsWith(`${banned}/`)) return `banned dependency "${spec}" in ${fromPkg}`;
@@ -112,7 +134,7 @@ async function scanFile(file) {
       const problem = edgeAllowed(fromPkg, file, resolveRelative(file, spec), spec);
       if (problem) problems.push(`${path.relative(ROOT, file)}: ${problem}`);
     } else {
-      const problem = bareAllowed(fromPkg, spec);
+      const problem = bareAllowed(fromPkg, spec, file);
       if (problem) problems.push(`${path.relative(ROOT, file)}: ${problem}`);
     }
   }
@@ -155,8 +177,18 @@ describe("v2 core boundary", () => {
     assert.match(edgeAllowed("core", fakeCore, coreChrome, "../src/chrome.js") ?? "", /escapes packages/);
     assert.equal(edgeAllowed("compiler", fakeCore, path.join(ROOT, "packages/core/fit.ts"), "../core/fit.ts"), null);
     assert.match(bareAllowed("core", "sharp") ?? "", /banned/);
-    assert.equal(bareAllowed("renderer-pptx", "pptxgenjs"), null);
-    assert.match(bareAllowed("renderer-pptx", "jszip") ?? "", /banned/);
+    assert.equal(bareAllowed("renderer-pptx", "pptxgenjs", path.join(ROOT, "packages/renderer-pptx/render.ts")), null);
+    assert.match(bareAllowed("renderer-pptx", "jszip", path.join(ROOT, "packages/renderer-pptx/render.ts")) ?? "", /banned/);
+  });
+
+  it("confines node builtins to the named renderer adapter", () => {
+    const render = path.join(ROOT, "packages/renderer-pptx/render.ts");
+    const adapter = path.join(ROOT, "packages/renderer-pptx/node.ts");
+    assert.match(bareAllowed("renderer-pptx", "node:fs", render) ?? "", /only named adapter/);
+    assert.match(bareAllowed("renderer-pptx", "node:fs/promises", render) ?? "", /only named adapter/);
+    assert.equal(bareAllowed("renderer-pptx", "node:fs/promises", adapter), null);
+    assert.equal(bareAllowed("renderer-pptx", "node:path", adapter), null);
+    assert.match(bareAllowed("renderer-pptx", "node:os", adapter) ?? "", /only named adapter/);
   });
 
   it("repository packages contain zero boundary violations", async () => {
