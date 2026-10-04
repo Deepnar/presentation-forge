@@ -1331,15 +1331,24 @@ paths yet, `packages/` holds the first agent-native primitive:
   `packages/model/scene-constants.ts`, drift-tested against the schema
   consts. `test/v2-core-boundary.test.js` enforces package import
   directions with the TypeScript parser (self-tested, fail-closed).
+- `packages/core/design.ts` — pure `normalizeDesign({theme, style?,
+  mode})` producing the schema-backed `DesignSystem` (palette, surfaces,
+  roles, grid, shape, shadow, chart passthrough, layout preferences,
+  decor — no `raw`, no paths, no renderer options, no voice) from parsed
+  theme documents; raw filesystem+YAML reads live in
+  `src/theme-loader.js`, which legacy `src/theme.js` also delegates to
+  while keeping its own output shape. The compiler consumes normalized
+  roles/palette/margins with byte-identical scene output.
 - `packages/renderer-pptx/` and `packages/editor/` — the PPTX exporter
   and the browser renderer (SVG projection plus a direct-manipulation
   demo) consume the same scene object. Text, chart series data, and tables
   survive as editable OOXML; empty image sources degrade to a labelled
   seat, never a dead deck.
 
-Proven by `test/v2-*.test.js` (32 tests: contracts, determinism, bounds,
+Proven by `test/v2-*.test.js` (77 tests: contracts, determinism, bounds,
 preservation including detached-editability, legacy mapping, generated-type
-drift, unzip-and-assert text/chart survival) and
+drift, domain validation, design goldens, unzip-and-assert text/chart
+survival) and
 by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
 representative themes). The generator emits structural types without
 giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay

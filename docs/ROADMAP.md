@@ -6592,7 +6592,9 @@ Core must not import model providers, SearXNG, Neon, Vercel, auth,
 Binaries (LibreOffice/Poppler/Chromium/sharp), pptxgenjs outside the
 PPTX renderer, or app code — the import boundary is asserted by
 `test/v2-core-boundary.test.js` (TypeScript-parser-based, direction
-matrix plus narrow named allowlist entries), not by convention.
+matrix plus narrow named allowlist entries), not by convention. The
+model→src/theme allowlist entry is gone with `design.js`; no
+model/core escape to `src/` remains.
 
 ### [x] V2-2A — deterministic foundation
 
@@ -6613,7 +6615,7 @@ package directions with self-tests. Full suite green, themematrix clean.*
 > path (all pass styles), but the difference is recorded here rather
 > than silently assumed.
 
-### [ ] V2-2B — DesignSystem contract + normalization
+### [x] V2-2B — DesignSystem contract + normalization
 
 Schema-backed `DesignSystem` in `packages/model` (`design.schema.json`,
 generated type, AJV validation, drift coverage) holding renderer-neutral
@@ -6627,6 +6629,20 @@ contract; golden normalization tests (themes × modes, byte-compared);
 compiler output byte-identical (`cmp` proof). No `textStyle` vocabulary
 in core — generic `{family, weight, size, line, tracking, transform,
 color}` only, mapped per renderer.
+
+> **Learned.** Four corrections shaped the slice. Alpha is three
+> different legacy representations, not one: 8-digit hex contributes
+> `AA/255` at full precision, 0–100 transparency inverts to
+> `1 - t/100`, shadow `opacity` passes through directly — each pinned
+> by tests including real values (`transparency: 94`, `#FFFFFF80`).
+> `layoutPreferences` carries declared string/number/boolean values
+> unresolved (no defaults copy ahead of V2-2C); `notion-clean` proves
+> the empty-map path. Surface `accent` stays optional (section surfaces
+> legitimately lack it) and `cardFill` normalizes to `palette.surface`
+> when undeclared. The `src/theme.js` raw-IO delegation was safe
+> precisely because no test pins its error strings and message
+> construction stayed in place — behavior preservation checked by the
+> untouched legacy suite, not assumed.
 
 ### [ ] V2-2C — layout vocabulary + geometry
 
