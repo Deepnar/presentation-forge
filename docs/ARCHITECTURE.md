@@ -1400,6 +1400,38 @@ pairs indifferent), and stat/table/quote blocks can vanish silently —
 measured, not yet fixed. A byte-identical compiler-output regression
 proof guards the measurement work itself.
 
+## V2 semantic ownership (V2-3B)
+
+Layer A fields and who owns their meaning. The deterministic compiler
+parses none of the free-text fields — no keyword matching anywhere.
+
+| field | semantic question | author | deterministic consumer (V2-3C+) | evaluation consumer | durable? |
+|---|---|---|---|---|---|
+| audience/objective/narrative/designDirection | who/for what end/in what frame | agent | none (consequences only) | planner, L3 judge | rationale |
+| purpose | why this slide exists | agent | recipe/semantic use | judge grounding | yes |
+| takeaway | the one assertion to leave behind | agent | emphasis contract | narrative QA | yes |
+| visualDirection | why this composition | agent | none (rationale) | honored-request heuristic | rationale |
+| rhetoricalRole | argumentative function | agent | section treatment, placement | coherence | yes |
+| relationship | content relationship to preserve | agent | recipe selection | judge | yes |
+| layoutHint.recipe/mediaSide | pinned override | agent/user | compiler override channel | — | yes |
+| sourceRefs | coarse slide bibliography | derived | bibliography render | grounding scope | derived |
+| speakerNotes | spoken/recorded words | agent | PPTX notes, script | judge context | yes |
+| emphasis | dominant/supporting/context | agent | visual hierarchy | judge | yes |
+| evidenceRefs | which sources support this block | agent | citation rendering, resolvability | grounding | yes |
+| outcome | favorable/unfavorable/mixed/neutral vs objective | agent | tone/annotation | polarity checks | yes |
+| uncertainty | qualified/mixed/inconclusive/contested | agent | annotation requirements | polarity checks | yes |
+| mediaRole | evidence/explanatory/decorative | agent | media treatment | judge | yes |
+| measure | trend/comparison/composition/distribution/association | agent | encoding choice | honesty checks | yes |
+| chartKind | explicit encoding override | agent | renderer (within honest set) | compatibility check | yes |
+
+Orthogonal by construction: emphasis (importance) ≠ outcome
+(evaluative) ≠ uncertainty (epistemic) ≠ rhetoricalRole (placement).
+A catastrophic, well-established experimental failure is
+`evidence`/`primary`/`unfavorable`/uncertainty-absent — intentionally
+expressible. Likewise `mediaRole` (how composition treats the visual)
+≠ `evidenceRefs` (where support comes from), and `measure` (what must
+be communicated) ≠ `chartKind` (requested encoding).
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

@@ -6765,20 +6765,28 @@ schema, recipe, or behavior changes.
 > Silent loss is real and now measured: stat/table/quote blocks and
 > recipe-ignored lists vanish without diagnostics today.
 
-### [ ] V2-3B — semantic intent hardening
+### [x] V2-3B — semantic intent hardening
 
 Purpose: define the minimum structured semantic vocabulary required so
 meaning that currently disappears before Layer C can survive into
-deterministic composition. Scope includes resolving and then
-implementing the eventual contracts around semantic relationship,
-rhetorical role, content emphasis, evidence/source linkage,
-quantitative/chart intent, takeaway expression, and uncertainty /
-epistemic / evaluative semantics. The exact schema is NOT yet frozen:
-`resultStatus` is unresolved (support, uncertainty, and
-favorable/unfavorable outcome are different dimensions);
-`seriesSourceIds[][]` is not approved; free-text `visualDirection`
-must not be parsed by the compiler; `compositionHint.variant: string`
-is not approved. No composition/geometry expansion in this slice.
+deterministic composition. Landed: `rhetoricalRole` (11),
+`relationship` (6, no none/process), block `emphasis`, `evidenceRefs`,
+separate `outcome` and `uncertainty` dimensions, image-only
+`mediaRole`, chart-only `measure` with the honesty matrix against
+`chartKind`, `takeaway` floor, semantic validator, evidence collector,
+structured counterfactuals with indifference baseline, novice-vs-expert
+reclassified as agent/L3. Deferred as decided: `resultStatus`
+(replaced by outcome+uncertainty), `seriesSourceIds[][]`,
+`compositionHint`, recipe expansion, composition planning.
+
+> **Learned.** The honesty matrix needed a capability gap, not a
+> bigger enum: `distribution`/`association` are valid intent with no
+> honest current encoding, so they validate while flagging the gap
+> for V2-3D instead of forcing a lying chart. Orthogonality had to be
+> proven, not asserted — the cross-product tests (primary/unfavorable,
+> primary/favorable/inconclusive) are what prevent the next collapse.
+> Counterfactual tightening from V2-3A generalized: structured pairs
+> hold all compiled content constant, so indifference is meaningful.
 
 ### [ ] V2-3C — deterministic deck + slide composition planning
 
