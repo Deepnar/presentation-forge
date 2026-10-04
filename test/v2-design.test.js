@@ -120,6 +120,63 @@ describe("v2 design semantics", () => {
   });
 });
 
+describe("v2 design radii", () => {
+  it("preserves real theme radii instead of fallbacks", async () => {
+    const warm = await designOf("warm-humanist");
+    assert.equal(warm.shape.radii.card, 0.24);
+    assert.equal(warm.shape.radii.pill, 0.4);
+    assert.equal(warm.shape.radii.chip, 0.12);
+  });
+
+  it("preserves zero radii where the theme means square", async () => {
+    const mono = await designOf("high-contrast-mono");
+    assert.equal(mono.shape.radii.card, 0);
+    assert.equal(mono.shape.radii.chip, 0);
+  });
+
+  it("carries style radius overrides through the merge", async () => {
+    const styled = await designOf("warm-humanist", { style: "compact" });
+    assert.equal(styled.shape.radii.card, 0.16);
+    assert.equal(styled.shape.radii.pill, 0.32);
+    assert.equal(styled.shape.radii.chip, 0.12);
+    assert.equal(styled.shape.cardPad, 0.24);
+  });
+});
+
+describe("v2 design crosswalk", () => {
+  // Hand-written expectations from the raw YAML documents (not generated
+  // by normalizeDesign): schema-valid output with correct snapshots can
+  // still mis-map a renamed field, as shape.radius proved.
+  it("maps representative raw declarations to normalized values", async () => {
+    const warm = await designOf("warm-humanist");
+    assert.deepEqual(warm.palette.bg, { hex: "EBEBE6" });
+    assert.equal(warm.palette.accent.hex, "C05D4E");
+    assert.deepEqual(warm.roles.body, {
+      family: "Inter", weight: 400, size: 13, line: 1.55, tracking: 0,
+    });
+    assert.deepEqual(warm.grid.margins, { top: 0.62, right: 0.7, bottom: 0.55, left: 0.7 });
+    assert.deepEqual(warm.shape.radii, { card: 0.24, chip: 0.12, pill: 0.4 });
+    assert.equal(warm.shape.cardPad, 0.3);
+    assert.equal(warm.shape.border.width, 0);
+    assert.deepEqual(warm.shape.border.color, { hex: "000000", alpha: 0 });
+    assert.equal(warm.layoutPreferences.heading?.opening, "bar");
+    assert.equal(warm.surfaces.title.bg.hex, warm.palette.ink.hex);
+
+    const ed = await designOf("editorial-magazine");
+    assert.equal(ed.layoutPreferences.list?.columns, 2);
+    assert.equal(ed.layoutPreferences.text?.dropcap, true);
+
+    const sci = await designOf("sci-fi-hud");
+    assert.equal(sci.layoutPreferences.content?.frame, "sidebar");
+    const rect = (sci.background?.decor ?? []).find((d) => d.shape === "rect");
+    assert.ok(rect && rect.w > 0 && rect.fill.hex.length === 6);
+
+    const mono = await designOf("high-contrast-mono", { mode: "dark" });
+    assert.equal(mono.chart?.series?.[0].hex, "111111");
+    assert.equal(mono.chart?.series?.length, 6);
+  });
+});
+
 describe("v2 design sweep", () => {
   it("all 34 themes normalize and validate in both modes", async () => {
     for (const name of await listThemeNames()) {

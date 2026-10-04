@@ -121,7 +121,7 @@ export function normalizeDesign({ theme, style, mode }: NormalizeInput): DesignS
   const margin = rec(grid, "margin");
   const band = rec(grid, "band");
   const shape = rec(merged, "shape");
-  const radii = rec(shape, "radii");
+  const radii = rec(shape, "radius");
   const border = rec(shape, "border");
   const shadowCard = rec(rec(merged, "shadow"), "card");
   const chartDecl = rec(merged, "chart").series;

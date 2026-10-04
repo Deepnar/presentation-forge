@@ -123,9 +123,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0.24,
+    "chip": 0.12,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -288,9 +288,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0,
+    "chip": 0,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -511,9 +511,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0,
+    "chip": 0,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -700,9 +700,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0.04,
+    "chip": 0,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -932,9 +932,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0.16,
+    "chip": 0.08,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -1103,9 +1103,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0.06,
+    "chip": 0.06,
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -1280,9 +1280,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
+    "card": 0.14,
     "chip": 0.1,
-    "pill": 0.3
+    "pill": 0.4
    },
    "border": {
     "color": {
@@ -1451,9 +1451,9 @@
   },
   "shape": {
    "radii": {
-    "card": 0.1,
-    "chip": 0.1,
-    "pill": 0.3
+    "card": 0.16,
+    "chip": 0.12,
+    "pill": 0.32
    },
    "border": {
     "color": {

@@ -6643,6 +6643,16 @@ color}` only, mapped per renderer.
 > precisely because no test pins its error strings and message
 > construction stayed in place — behavior preservation checked by the
 > untouched legacy suite, not assumed.
+>
+> Hardening follow-up: `shape.radius` was read as `shape.radii` from
+> raw theme data, so every theme silently received fallback radii behind
+> a valid schema and stable goldens. Fixed with explicit radii pinning
+> (warm-humanist 0.24/0.40/0.12, zero-radii mono, compact overlay) plus
+> a hand-written raw→normalized crosswalk across palette, type, grid,
+> shape, shadow, layout, decor, and chart — which immediately caught a
+> second bad assumption (warm-humanist margin bottom is 0.55, not the
+> 0.7 fallback). Lesson: snapshots prove stability, only semantic
+> assertions prove mapping.
 
 ### [ ] V2-2C — layout vocabulary + geometry
 
