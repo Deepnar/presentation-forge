@@ -142,7 +142,7 @@ function renderBlockPrimary(
         id, kind: "chart", x: region.x, y: region.y, w: region.w, h: region.h, z,
         provenance: "compiler", semanticRef: block.id,
         chart: {
-          chartKind: block.chartKind ?? "bar",
+          chartKind: chartKindFor(block),
           categories: [...(block.categories ?? [])],
           series: (block.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
         },
@@ -170,20 +170,11 @@ function toneFor(outcomeTreatments: { blockId: string; tone: string }[], block: 
   return t?.tone ?? "neutral";
 }
 
-// Structural tone frame: cautionary content gets a visible rule frame
-// instead of accent-forward treatment. No red/green semantics, no
-// factual rewrite. Balanced/neutral/affirming add no frame.
-function toneFrameEl(
-  slideId: string,
-  block: ContentBlock,
-  box: Box,
-  design: DesignSystem,
-  tone: string,
-  z: number,
-): SceneElement | null {
-  if (tone !== "cautionary") return null;
-  return shapeEl(`${slideId}:${block.id}:frame`, block.id, box, "rect", design.palette.rule.hex, z);
-}
+// Structural tone rail: cautionary content gets a narrow rule rail at
+// the region's left edge instead of accent-forward treatment. The rail
+// never covers content: it occupies a 0.08in edge band outside the
+// content box. No red/green semantics, no factual rewrite.
+// Balanced/neutral/affirming add no rail.
 
 // Proportional space distribution that always yields finite, positive
 // heights. Content may overflow its box textually (V2-3E fit exposes
@@ -205,22 +196,44 @@ interface MechanismCtx {
   box: Box & { bottom: number };
 }
 
-// Places one block's primary carrier plus its tone frame and caveat in
-// a region. The single call site for block realization keeps survival,
-// tone, and caveat behavior uniform across families.
+// Places one block's primary carrier plus its semantic treatments in a
+// region. The single call site for block realization keeps survival,
+// tone, and caveat behavior uniform across families, including custom
+// native branches (pass `render` to build a non-default primary, e.g.
+// the chart-to-table fallback, while keeping shared treatments).
+// Caveats own reserved space inside the region; the tone rail occupies
+// a narrow edge band outside the content box, never covering content.
 function placePrimary(
   ctx: MechanismCtx,
   els: SceneElement[],
   block: ContentBlock,
   region: Box,
-  nextZ: () => number,
+  takeZ: () => number,
+  render?: (region: Box, z: number) => SceneElement,
 ): SceneElement {
-  const primary = renderBlockPrimary(ctx.slide.id, block, region, ctx.design, nextZ());
+  const needsCaveat = block.uncertainty !== undefined;
+  const caveatH = needsCaveat ? 0.35 : 0;
+  const tone = toneFor(ctx.comp.outcomeTreatments, block);
+  const railW = tone === "cautionary" ? 0.12 : 0;
+  const contentRegion: Box = {
+    x: region.x + railW,
+    y: region.y,
+    w: Math.max(0.1, region.w - railW),
+    h: Math.max(0.2, region.h - (needsCaveat ? caveatH + 0.05 : 0)),
+  };
+  if (tone === "cautionary") {
+    els.push(shapeEl(`${ctx.slide.id}:${block.id}:tone`, block.id,
+      { x: region.x, y: region.y, w: 0.08, h: region.h }, "rect",
+      ctx.design.palette.rule.hex, takeZ()));
+  }
+  const primary = render
+    ? render(contentRegion, takeZ())
+    : renderBlockPrimary(ctx.slide.id, block, contentRegion, ctx.design, takeZ());
   els.push(primary);
-  const frame = toneFrameEl(ctx.slide.id, block, region, ctx.design, toneFor(ctx.comp.outcomeTreatments, block), nextZ());
-  if (frame) els.push(frame);
-  if (block.uncertainty !== undefined) {
-    const el = caveatEl(ctx.slide.id, block, { x: region.x, y: region.y + region.h + 0.05, w: region.w, h: 0.3 }, ctx.design, nextZ());
+  if (needsCaveat) {
+    const el = caveatEl(ctx.slide.id, block,
+      { x: region.x, y: region.y + region.h - caveatH, w: region.w, h: caveatH },
+      ctx.design, takeZ());
     if (el) els.push(el);
   }
   return primary;
@@ -313,16 +326,9 @@ function dividerScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const heights = distribute(Math.max(0.4, bottom - y), slide.blocks.map(() => 1), 0.4);
   slide.blocks.forEach((block, i) => {
     const h = heights[i];
-    const el = renderBlockPrimary(slide.id, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.1) }, design, takeZ());
+    const el = placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.1) }, takeZ);
     if (el.kind === "text" && el.paragraphs) {
       for (const p of el.paragraphs) p.align = "center";
-    }
-    els.push(el);
-    const frame = toneFrameEl(slide.id, block, { x: box.x, y, w: box.w, h }, design, toneFor(ctx.comp.outcomeTreatments, block), takeZ());
-    if (frame) els.push(frame);
-    if (block.uncertainty !== undefined) {
-      const caveat = caveatEl(slide.id, block, { x: box.x, y: y + h + 0.05, w: box.w, h: 0.3 }, design, takeZ());
-      if (caveat) els.push(caveat);
     }
     y += h;
   });
@@ -440,14 +446,10 @@ function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[]
     const h = supportHeights[i];
     if (block.kind === "callout" && comp.takeawayTreatment !== "verdict" && !slide.takeaway) {
       // A lone callout carries the verdict styling of this comparison.
-      const primary = renderBlockPrimary(slide.id, block, { x: box.x, y, w: box.w, h }, design, takeZ());
-      els.push(primary);
+      // Outcome and uncertainty treatments still apply orthogonally.
+      placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
       els.push(shapeEl(`${slide.id}:${block.id}:rule`, block.id,
         { x: box.x, y, w: box.w, h: 0.06 }, "rect", design.palette.accent.hex, takeZ()));
-      if (block.uncertainty !== undefined) {
-        const caveat = caveatEl(slide.id, block, { x: box.x, y: y + h + 0.05, w: box.w, h: 0.3 }, design, takeZ());
-        if (caveat) els.push(caveat);
-      }
     } else {
       placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
     }
@@ -470,31 +472,20 @@ function dataTableScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   slide.blocks.forEach((block, i) => {
     const h = heights[i];
     if (block.kind === "table") {
-      els.push({
-        id: primaryId(slide.id, block.id), kind: "table",
-        x: box.x, y, w: box.w, h, z: takeZ(),
-        provenance: "compiler", semanticRef: block.id,
-        table: { rows: (block.rows ?? []).map((r) => [...r]), header: block.header === true },
-      });
-      if (block.uncertainty !== undefined) {
-        const caveat = caveatEl(slide.id, block, { x: box.x, y: y + h + 0.05, w: box.w, h: 0.3 }, design, takeZ());
-        if (caveat) els.push(caveat);
-      }
-      const frame = toneFrameEl(slide.id, block, { x: box.x, y, w: box.w, h }, design, toneFor(ctx.comp.outcomeTreatments, block), takeZ());
-      void toneFor;
-      if (frame) els.push(frame);
+      placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
     } else if (block.kind === "chart") {
       // Honest fallback: exact values as an editable table, never a fake chart.
       const series = block.series ?? [];
       const header = ["", ...series.map((s) => s.name)];
       const rows = (block.categories ?? []).map((c, ci) => [c, ...series.map((s) => String(s.values[ci] ?? ""))]);
       const capH = block.unit !== undefined ? 0.3 : 0;
-      els.push({
+      const tableRegion = { x: box.x, y, w: box.w, h: Math.max(0.2, h - capH) };
+      placePrimary(ctx, els, block, tableRegion, takeZ, (region, z) => ({
         id: primaryId(slide.id, block.id), kind: "table",
-        x: box.x, y, w: box.w, h: Math.max(0.2, h - capH), z: takeZ(),
+        x: region.x, y: region.y, w: region.w, h: region.h, z,
         provenance: "compiler", semanticRef: block.id,
         table: { rows: [header, ...rows], header: true },
-      });
+      } as SceneElement));
       if (block.unit !== undefined) {
         els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
           { x: box.x, y: y + h - capH, w: box.w, h: capH },
@@ -547,11 +538,17 @@ function metricScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   return els;
 }
 
-const MEASURE_KIND: Record<string, string> = {
+const MEASURE_KIND: Record<string, "bar" | "hbar" | "line" | "pie" | "doughnut" | "area"> = {
   comparison: "bar",
   trend: "line",
   composition: "doughnut",
 };
+
+function chartKindFor(block: ContentBlock): "bar" | "hbar" | "line" | "pie" | "doughnut" | "area" {
+  if (block.chartKind !== undefined) return block.chartKind;
+  if (block.measure !== undefined) return MEASURE_KIND[block.measure] ?? "bar";
+  return "bar";
+}
 
 function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
@@ -570,21 +567,9 @@ function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   charts.forEach((block, i) => {
     const h = charts.length > 1 ? Math.max(1.0, (chartH - 0.3 * (charts.length - 1)) / charts.length) : chartH;
     const cy = y + (charts.length > 1 ? i * (h + 0.3) : 0);
-    const kind = block.chartKind ?? (block.measure !== undefined ? MEASURE_KIND[block.measure] ?? "bar" : "bar");
     const capH = (block.unit !== undefined ? 0.3 : 0) + (block.caption ? 0.4 : 0);
-    els.push({
-      id: primaryId(slide.id, block.id), kind: "chart",
-      x: box.x, y: cy, w: box.w, h: Math.max(0.4, h - capH), z: takeZ(),
-      provenance: "compiler", semanticRef: block.id,
-      chart: {
-        chartKind: kind as "bar" | "hbar" | "line" | "pie" | "doughnut" | "area",
-        categories: [...(block.categories ?? [])],
-        series: (block.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
-      },
-    });
-    const tone = toneFor(ctx.comp.outcomeTreatments, block);
-    const frame = toneFrameEl(slide.id, block, { x: box.x, y: cy, w: box.w, h: Math.max(0.4, h - capH) }, design, tone, takeZ());
-    if (frame) els.push(frame);
+    const chartRegion = { x: box.x, y: cy, w: box.w, h: Math.max(0.4, h - capH) };
+    placePrimary(ctx, els, block, chartRegion, takeZ);
     let ty = cy + Math.max(0.4, h - capH);
     if (block.unit !== undefined) {
       els.push(textEl(`${slide.id}:${block.id}:unit`, block.id,
@@ -598,10 +583,6 @@ function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
         { x: box.x, y: ty, w: box.w, h: 0.4 },
         [{ runs: [{ text: block.caption, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "center" as const }],
         takeZ()));
-    }
-    if (block.uncertainty !== undefined) {
-      const caveat = caveatEl(slide.id, block, { x: box.x, y: ty + 0.4, w: box.w, h: 0.3 }, design, takeZ());
-      if (caveat) els.push(caveat);
     }
   });
   let ry = y + chartH + 0.2;
