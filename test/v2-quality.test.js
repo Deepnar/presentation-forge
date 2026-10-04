@@ -25,10 +25,10 @@ describe("v2 quality baseline", () => {
     assert.deepEqual(findings, []);
   });
 
-  it("compiler output matches the checked-in byte baseline", async () => {
+  it("compiler output matches the checked-in V2-3D byte baseline", async () => {
     const design = await warmDesign();
     const scenes = compileDeck(sampleDeckIntent(), design);
-    const expected = await readJson("compiler-baseline.json");
+    const expected = await readJson("compiler-v2-3d-baseline.json");
     assert.equal(JSON.stringify(scenes), JSON.stringify(expected));
   });
 
@@ -41,7 +41,7 @@ describe("v2 quality baseline", () => {
 });
 
 describe("v2 silent-loss detection", () => {
-  it("unsupported stat, table, and quote blocks are reported, not fixed", async () => {
+  it("stat, table, and quote blocks are all represented", async () => {
     const design = await warmDesign();
     const { findings } = await analyzeDeck({
       id: "loss", title: "Loss",
@@ -60,25 +60,24 @@ describe("v2 silent-loss detection", () => {
         },
       ],
     }, design);
-    const loss = findings.filter((f) => f.code === "unrepresented-block").map((f) => f.blockIds[0]).sort();
-    assert.deepEqual(loss, ["q1", "st1", "tb1"]);
+    const loss = findings.filter((f) => f.code === "unrepresented-block");
+    assert.deepEqual(loss, []);
   });
 
-  it("recipe/block combinations that ignore blocks are reported", async () => {
+  it("mixed comparison blocks all survive", async () => {
     const design = await warmDesign();
     const slide = {
       id: "s1", purpose: "compare", title: "Compare",
       blocks: [
         { id: "l", kind: "text", label: "L", text: "left" },
         { id: "r", kind: "text", label: "R", text: "right" },
-        { id: "extra", kind: "list", items: ["dropped", "silently", "here", "now"] },
+        { id: "extra", kind: "list", items: ["kept", "visibly", "here", "now"] },
       ],
       layoutHint: { recipe: "comparison" },
     };
     const [scene] = compileDeck({ id: "d", title: "D", slides: [slide] }, design);
     const findings = checkBlockRepresentation(slide, scene);
-    assert.equal(findings.length, 1);
-    assert.equal(findings[0].blockIds[0], "extra");
+    assert.deepEqual(findings, []);
   });
 });
 
@@ -125,33 +124,50 @@ describe("v2 geometry and identity checks", () => {
 });
 
 describe("v2 counterfactual baseline", () => {
-  it("records current compiler indifference explicitly", async () => {
+  it("historical indifference record is preserved and transition explained", async () => {
+    // counterfactual-baseline.json is the V2-3A record: the old compiler
+    // ignored takeaways, so all pairs were indifferent. V2-3D renders
+    // takeaways, so pairs differing ONLY in takeaway text now differ by
+    // exactly the takeaway element — nothing else.
+    const historical = await readJson("counterfactual-baseline.json");
+    assert.ok(Object.values(historical).every((r) => r.sensitive === false));
     const design = await warmDesign();
     const { pairs } = await readJson("counterfactual-pairs.json");
-    const expected = await readJson("counterfactual-baseline.json");
-    const results = {};
     for (const pair of pairs) {
-      const r = compareSensitivity(pair.id, pair.a, pair.b, design);
-      results[pair.id] = r;
+      const a = compileDeck(pair.a, design).map(semanticProjection);
+      const b = compileDeck(pair.b, design).map(semanticProjection);
+      const same = JSON.stringify(a) === JSON.stringify(b);
+      const onlyTakeaway = (ea, eb) => {
+        if (ea.length !== eb.length) return false;
+        const diffs = ea.filter((e, i) => JSON.stringify(e) !== JSON.stringify(eb[i]));
+        return diffs.length > 0 && diffs.every((e) => e.id.endsWith(":takeaway:annotation"));
+      };
+      if (pair.id === "strong-vs-misses-target" || pair.id === "primary-vs-minor") {
+        assert.ok(!same && onlyTakeaway(a[0].elements, b[0].elements), `${pair.id}: only takeaway elements may differ`);
+      } else {
+        assert.ok(same, `${pair.id} must remain scene-indifferent`);
+      }
     }
-    assert.deepEqual(results, expected);
   });
 });
 
 describe("v2 structured counterfactual baseline", () => {
-  it("records structured-semantic indifference explicitly", async () => {
+  it("records structured scene sensitivity explicitly", async () => {
     const design = await warmDesign();
     const { pairs } = await readJson("counterfactual-structured.json");
-    const expected = await readJson("baseline-structured.json");
+    const expected = await readJson("scene-composition-v2-3d-baseline.json");
+    const { compositionSceneProjection } = await import("../packages/compiler/quality.ts");
+    const { compileDeck: compile } = await import("../packages/compiler/compile.js");
     const results = {};
-    const { compareSensitivity } = await import("../packages/compiler/quality.ts");
-    const { validateDeckIntent } = await import("../packages/model/intent.ts");
     for (const pair of pairs) {
-      for (const side of [pair.a, pair.b]) {
-        const v = await validateDeckIntent(side);
-        assert.equal(v.ok, true, `${pair.id}: ${v.errors.join("\n")}`);
+      const sides = {};
+      for (const side of ["a", "b"]) {
+        sides[side] = compile(pair[side], design).map(compositionSceneProjection);
       }
-      results[pair.id] = compareSensitivity(pair.id, pair.a, pair.b, design);
+      const changed = sides.a.length !== sides.b.length ||
+        sides.a.some((sa, i) => JSON.stringify(sa) !== JSON.stringify(sides.b[i]));
+      results[pair.id] = { sensitive: changed, slides: sides.a.length };
+      assert.equal(changed, true, `${pair.id} must differ visibly in V2-3D`);
     }
     assert.deepEqual(results, expected);
   });

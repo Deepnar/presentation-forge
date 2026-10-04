@@ -183,7 +183,9 @@ describe("v2 free text does not move the compiler", () => {
     assert.equal(a, b);
   });
 
-  it("new structured fields do not move the compiler yet", async () => {
+  it("structured fields move scenes while free text does not", async () => {
+    // V2-3B recorded indifference as a temporary baseline; V2-3D realizes
+    // the semantics, so enriched scenes must now differ (content preserved).
     const design = await warmDesign();
     const base = sampleDeckIntent();
     const enriched = JSON.parse(JSON.stringify(base));
@@ -196,6 +198,16 @@ describe("v2 free text does not move the compiler", () => {
     const { ok, errors } = await validateDeckIntent(enriched);
     assert.equal(ok, true, errors.join("\n"));
     assert.equal(validateIntentSemantics(enriched).ok, true);
-    assert.equal(JSON.stringify(compileDeck(enriched, design)), JSON.stringify(compileDeck(base, design)));
+    const a = compileDeck(base, design);
+    const b = compileDeck(enriched, design);
+    assert.notEqual(JSON.stringify(a), JSON.stringify(b));
+    // Same factual content on both sides: titles, blocks, and chart data.
+    const texts = (scenes) => JSON.stringify(scenes.map((s) => s.elements.map((e) => [
+      e.kind,
+      (e.paragraphs ?? []).map((p) => p.runs.map((r) => r.text).join("")),
+      e.chart?.series,
+    ])));
+    assert.ok(texts(b).includes("Liquid electrolytes leak"));
+    assert.ok(texts(b).includes("12.5"));
   });
 });

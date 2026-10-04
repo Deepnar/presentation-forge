@@ -1,0 +1,26 @@
+{
+ "s-outcome": {
+  "sensitive": true,
+  "slides": 1
+ },
+ "s-relationship": {
+  "sensitive": true,
+  "slides": 1
+ },
+ "s-emphasis": {
+  "sensitive": true,
+  "slides": 1
+ },
+ "s-media-role": {
+  "sensitive": true,
+  "slides": 1
+ },
+ "s-uncertainty": {
+  "sensitive": true,
+  "slides": 1
+ },
+ "s-rhetorical-role": {
+  "sensitive": true,
+  "slides": 1
+ }
+}
