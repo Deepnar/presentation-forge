@@ -51,3 +51,21 @@ export function validateSourceRef(value: unknown): Promise<Validation> {
 export function validateDesign(value: unknown): Promise<Validation> {
   return check("design", value, "design");
 }
+
+// ReportSpec validation preserves the legacy report error wording
+// exactly: "<path>: missing required field \"x\"", "<path>: unknown
+// field \"y\"", otherwise "<path>: <ajv message>". The canonical schema
+// compiles once here; legacy src/report.js delegates to this function.
+export async function validateReport(value: unknown): Promise<Validation> {
+  const validate = await validator("report");
+  if (validate(value)) return { ok: true, errors: [] };
+  return {
+    ok: false,
+    errors: (validate.errors ?? []).map((e) => {
+      const at = e.instancePath || "(root)";
+      if (e.keyword === "additionalProperties") return `${at}: unknown field "${e.params.additionalProperty}"`;
+      if (e.keyword === "required") return `${at}: missing required field "${e.params.missingProperty}"`;
+      return `${at}: ${e.message}`;
+    }),
+  };
+}
