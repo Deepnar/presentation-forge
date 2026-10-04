@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitOneLine, fitScaleStack, fitLineHeight, type FitStyle } from "../core/fit.ts";
+import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, type FitStyle, type StyledStackItem } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -147,18 +147,71 @@ function drainEvents(
 
 const round1 = (n: number): number => Math.round(n * 10) / 10;
 
-// Representative style for a wrap budget: the largest nominal size is
-// the pessimistic choice, so fitting against it can only overshrink,
-// never overflow. Hierarchy survives because every run keeps its own
-// resolved role/size — the scale is uniform, the typography is not.
-function representative(paras: StyledPara[]): StyledRun | null {
+// Intra-paragraph measurement boundary: compiler paragraphs are
+// single-run in practice, so each paragraph is measured with its own
+// run's style. A multi-run paragraph is measured with its
+// largest-nominal run's style — a documented approximation, not a
+// shaper. Floor protection never approximates: the uniform bound
+// spans every run (see uniformFloorBound below).
+function paraStyle(p: StyledPara): StyledRun | null {
   let best: StyledRun | null = null;
-  for (const p of paras) {
-    for (const r of p.runs) {
-      if (!best || r.size > best.size) best = r;
-    }
+  for (const r of p.runs) {
+    if (!best || r.size > best.size) best = r;
   }
   return best;
+}
+
+function stackItems(paras: StyledPara[]): StyledStackItem[] {
+  const items: StyledStackItem[] = [];
+  for (const p of paras) {
+    const rep = paraStyle(p);
+    if (!rep) continue;
+    items.push({
+      text: paraText(p),
+      style: rep.style,
+      runStyles: p.runs.map((r) => r.style),
+    });
+  }
+  return items;
+}
+
+function runStylesOf(paras: StyledPara[]): FitStyle[] {
+  return paras.flatMap((p) => p.runs.map((r) => r.style));
+}
+
+interface ScalePart {
+  scale: number;
+  role: string;
+  // Deterministic overflow label, e.g. word "budget…".
+  label: string;
+}
+
+// Combine independently fitted components (stack, word guard,
+// vertical) under one shared scale that cannot cross the element
+// floor bound. Components the bound overrules overflow by
+// construction, so each one diagnoses instead of failing silently.
+function resolveUniformScale(
+  bound: number,
+  parts: ScalePart[],
+  slideId: string,
+  elementId: string,
+  semanticRef: string | undefined,
+  sink: FitDiagnostic[],
+): number {
+  let scale = 1;
+  for (const p of parts) scale = Math.min(scale, p.scale);
+  scale = Math.max(bound, scale);
+  for (const p of parts) {
+    if (p.scale < scale - 1e-9) {
+      emitDiagnostic(sink, slideId, elementId, semanticRef, p.role, "floor-hit",
+        `${p.role} ${p.label} overflows at the uniform floor scale (kept readable, not shrunk)`);
+    }
+  }
+  return scale;
+}
+
+function shortWord(word: string): string {
+  return word.length > 32 ? `${word.slice(0, 32)}…` : word;
 }
 
 function applyScale(paras: StyledPara[], scale: number): Paragraph[] {
@@ -184,27 +237,32 @@ function applyScale(paras: StyledPara[], scale: number): Paragraph[] {
   }));
 }
 
-function wordGuardScale(
+interface WordPart extends ScalePart {
+  word: string;
+}
+
+function wordGuardParts(
   paras: StyledPara[],
   width: number,
   sink: FitDiagnostic[],
   slideId: string,
   elementId: string,
   semanticRef: string | undefined,
-): number {
-  let scale = 1;
+): WordPart[] {
+  const parts: WordPart[] = [];
   for (const { word, style } of allWords(paras)) {
     const events: string[] = [];
     const s = fitOneLine(word, width, style, { events });
     drainEvents(sink, slideId, elementId, semanticRef, style._role ?? "text", "word-floor-hit", events);
-    if (s < scale) scale = s;
+    parts.push({ scale: s, role: style._role ?? "text", label: `word "${shortWord(word)}"`, word });
   }
-  return scale;
+  return parts;
 }
 
-// Paragraph-aware wrap fit: total height is the canonical SUM of
-// paragraph heights (fitScaleStack), plus the longest-word guard.
-// No floor/step/min arithmetic lives here — core owns it.
+// Paragraph-aware wrap fit: every paragraph measured with the style
+// actually drawn for it (fitStyledStack), longest-word guard per
+// word style, one uniform scale under the strongest floor ratio
+// across every run. No floor/step/min arithmetic lives here.
 function fitWrap(
   paras: StyledPara[],
   box: FitBox,
@@ -214,15 +272,23 @@ function fitWrap(
   sink: FitDiagnostic[],
 ): Paragraph[] {
   if (!paras.length) return [];
-  const rep = representative(paras);
-  let scale = 1;
-  if (rep) {
+  const items = stackItems(paras);
+  const bound = uniformFloorBound(runStylesOf(paras));
+  const parts: ScalePart[] = [];
+  if (items.length) {
     const wrapEvents: string[] = [];
-    scale = fitScaleStack(paras.map(paraText), box.w, box.h, rep.style, { events: wrapEvents });
-    drainEvents(sink, slideId, elementId, semanticRef, rep.role, "floor-hit", wrapEvents);
+    const stackScale = fitStyledStack(items, box.w, box.h, { events: wrapEvents });
+    const firstPara = paras.find((p) => p.runs.length > 0);
+    const repRole = (firstPara && paraStyle(firstPara)?.role) ?? "text";
+    drainEvents(sink, slideId, elementId, semanticRef, repRole, "floor-hit", wrapEvents);
+    parts.push({ scale: stackScale, role: repRole, label: "paragraph stack" });
   }
-  const wordScale = wordGuardScale(paras, box.w, sink, slideId, elementId, semanticRef);
-  return applyScale(paras, Math.min(scale, wordScale));
+  for (const w of wordGuardParts(paras, box.w, sink, slideId, elementId, semanticRef)) {
+    parts.push(w);
+  }
+  if (!parts.length) return applyScale(paras, 1);
+  const scale = resolveUniformScale(bound, parts, slideId, elementId, semanticRef, sink);
+  return applyScale(paras, scale);
 }
 
 function fitOneLineEl(
@@ -234,24 +300,29 @@ function fitOneLineEl(
   sink: FitDiagnostic[],
 ): Paragraph[] {
   if (!paras.length) return [];
-  let scale = 1;
+  const bound = uniformFloorBound(runStylesOf(paras), { min: 0.5 });
+  const parts: ScalePart[] = [];
   for (const p of paras) {
     for (const r of p.runs) {
       const events: string[] = [];
       const s = fitOneLine(r.text || " ", box.w, r.style, { events });
       drainEvents(sink, slideId, elementId, semanticRef, r.role, "word-floor-hit", events);
-      if (s < scale) scale = s;
+      parts.push({ scale: s, role: r.role, label: `run "${shortWord(r.text || " ")}"` });
     }
   }
-  // One line still owns vertical space: the single line must fit the
-  // box height under the same shrink-stop semantics as the width fit.
-  const rep = representative(paras);
-  if (rep) {
-    const vEvents: string[] = [];
-    const vScale = fitLineHeight(rep.style, box.h, { events: vEvents });
-    drainEvents(sink, slideId, elementId, semanticRef, rep.role, "floor-hit", vEvents);
-    scale = Math.min(scale, vScale);
+  // One line still owns vertical space: every run's line must fit
+  // the box height under the same shrink-stop semantics as the width
+  // fit. The tightest vertical budget wins, floor-safe like the rest.
+  for (const p of paras) {
+    for (const r of p.runs) {
+      const vEvents: string[] = [];
+      const vScale = fitLineHeight(r.style, box.h, { events: vEvents });
+      drainEvents(sink, slideId, elementId, semanticRef, r.role, "floor-hit", vEvents);
+      parts.push({ scale: vScale, role: r.role, label: "line height" });
+    }
   }
+  if (!parts.length) return applyScale(paras, 1);
+  const scale = resolveUniformScale(bound, parts, slideId, elementId, semanticRef, sink);
   return applyScale(paras, scale);
 }
 
@@ -269,33 +340,44 @@ function fitStat(
 ): Paragraph[] {
   if (paras.length < 2) return fitWrap(paras, box, slideId, elementId, semanticRef, sink);
   const [valuePara, ...labelParas] = paras;
-  const valueRep = representative([valuePara]);
+  const valueRep = paraStyle(valuePara);
   const valueNominalH = valueRep ? (valueRep.size / 72) * (valueRep.style.line ?? 1) : 0.5;
   const valueH = Math.min(box.h * 0.62, valueNominalH + 0.12);
   const labelH = Math.max(0.15, box.h - valueH - 0.05);
-  let valueScale = 1;
-  if (valueRep) {
-    for (const r of valuePara.runs) {
-      const events: string[] = [];
-      const s = fitOneLine(r.text || " ", box.w, r.style, { events });
-      drainEvents(sink, slideId, elementId, semanticRef, r.role, "word-floor-hit", events);
-      if (s < valueScale) valueScale = s;
-    }
+  const valueBound = uniformFloorBound(valuePara.runs.map((r) => r.style), { min: 0.5 });
+  const valueParts: ScalePart[] = [];
+  for (const r of valuePara.runs) {
+    const events: string[] = [];
+    const s = fitOneLine(r.text || " ", box.w, r.style, { events });
+    drainEvents(sink, slideId, elementId, semanticRef, r.role, "word-floor-hit", events);
+    valueParts.push({ scale: s, role: r.role, label: `run "${shortWord(r.text || " ")}"` });
+  }
+  for (const r of valuePara.runs) {
     const vEvents: string[] = [];
-    const vScale = fitLineHeight(valueRep.style, valueH, { events: vEvents });
-    drainEvents(sink, slideId, elementId, semanticRef, valueRep.role, "floor-hit", vEvents);
-    valueScale = Math.min(valueScale, vScale);
+    const vScale = fitLineHeight(r.style, valueH, { events: vEvents });
+    drainEvents(sink, slideId, elementId, semanticRef, r.role, "floor-hit", vEvents);
+    valueParts.push({ scale: vScale, role: r.role, label: "line height" });
   }
-  const labelText = labelParas.map(paraText);
-  const labelRep = representative(labelParas);
-  let labelScale = 1;
-  if (labelRep && labelText.some((t) => t.trim())) {
+  const valueScale = valuePara.runs.length
+    ? resolveUniformScale(valueBound, valueParts, slideId, elementId, semanticRef, sink)
+    : 1;
+  const labelBound = uniformFloorBound(runStylesOf(labelParas));
+  const labelParts: ScalePart[] = [];
+  const labelItems = stackItems(labelParas);
+  if (labelItems.length && labelParas.some((p) => paraText(p).trim())) {
     const wrapEvents: string[] = [];
-    labelScale = fitScaleStack(labelText, box.w, labelH, labelRep.style, { events: wrapEvents });
-    drainEvents(sink, slideId, elementId, semanticRef, labelRep.role, "floor-hit", wrapEvents);
-    const wordScale = wordGuardScale(labelParas, box.w, sink, slideId, elementId, semanticRef);
-    labelScale = Math.min(labelScale, wordScale);
+    const stackScale = fitStyledStack(labelItems, box.w, labelH, { events: wrapEvents });
+    const firstLabel = labelParas.find((p) => p.runs.length > 0);
+    const labelRepRole = (firstLabel && paraStyle(firstLabel)?.role) ?? "text";
+    drainEvents(sink, slideId, elementId, semanticRef, labelRepRole, "floor-hit", wrapEvents);
+    labelParts.push({ scale: stackScale, role: labelRepRole, label: "paragraph stack" });
   }
+  for (const w of wordGuardParts(labelParas, box.w, sink, slideId, elementId, semanticRef)) {
+    labelParts.push(w);
+  }
+  const labelScale = labelParts.length
+    ? resolveUniformScale(labelBound, labelParts, slideId, elementId, semanticRef, sink)
+    : 1;
   return [
     ...applyScale([valuePara], valueScale),
     ...applyScale(labelParas, labelScale),

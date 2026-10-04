@@ -116,7 +116,7 @@ function searchScale(
 
 // Single owner of clamp-and-report: applies the floor rule to a search
 // result. Floor-clamped scales return the exact bound; genuine fits
-// keep the legacy 2dp convention.
+// round to 2dp without ever crossing the bound (see finishScale).
 function finishFit(
   style: FitStyle,
   nominal: number,
@@ -130,10 +130,22 @@ function finishFit(
       if (rule.floor != null) reportFloor(style, need * nominal, rule.bound * nominal, events);
       return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
     }
-    return Math.round(need * 100) / 100;
+    return finishScale(need, rule);
   }
   if (rule.floor != null) reportFloor(style, min * nominal, rule.bound * nominal, events);
   return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
+}
+
+// Single owner of scale rounding: legacy 2dp behavior when safe, but
+// rounding can never move the emitted scale below the effective
+// floor/min bound. A mathematically legal raw scale is still invalid
+// if quantization crosses its floor, so near-boundary raws round up.
+function finishScale(raw: number, rule: FloorRule): number {
+  const rounded = Math.round(raw * 100) / 100;
+  if (rule.floor != null && rounded < rule.bound) {
+    return Math.ceil(raw * 100) / 100;
+  }
+  return rounded;
 }
 
 function reportFloor(style: FitStyle, neededPt: number, floor: number, events: string[] | undefined): void {
@@ -219,6 +231,89 @@ export function fitScaleStack(
   return finishFit(style, nominal, min, rule, need, events);
 }
 
+export interface StyledStackItem {
+  // One wrapping unit (a paragraph): measured with its own style.
+  text: string;
+  style: FitStyle;
+  // Every run style inside this paragraph. The uniform floor bound
+  // spans all of them, so a smaller run's floor can hold the shared
+  // scale even when the measurement style is larger. Defaults to
+  // [style] for single-style paragraphs.
+  runStyles?: FitStyle[];
+}
+
+export interface StackFitOptions extends FitOptions {}
+
+interface StackRule extends FloorRule {
+  bindStyle: FitStyle;
+  bindNominal: number;
+}
+
+// Uniform-scale lower bound across every participating run style:
+// max(effectiveFloor(run) / nominalSize(run)), subject to the same
+// min semantics as a single-style rule. A run already at its
+// effective floor yields ratio 1 and the stack cannot shrink.
+function stackFloorRule(
+  items: StyledStackItem[],
+  floorOpt: number | null | undefined,
+  min: number,
+): StackRule {
+  let best: FloorRule = { floor: null, bound: min, floorBinds: false };
+  let bindStyle: FitStyle = items[0]?.style ?? { size: 12 };
+  let bindNominal = bindStyle.size;
+  const consider = (style: FitStyle): void => {
+    const r = floorRule(style, style.size, floorOpt, min);
+    if (r.bound > best.bound) {
+      best = { floor: r.floor, bound: r.bound, floorBinds: r.floorBinds };
+      bindStyle = style;
+      bindNominal = style.size;
+    }
+  };
+  for (const item of items) {
+    consider(item.style);
+    for (const run of item.runStyles ?? []) consider(run);
+  }
+  return { ...best, bindStyle, bindNominal };
+}
+
+// Mixed-style stack fit: each paragraph is measured with the style
+// actually drawn for it (family, size, weight, tracking, transform,
+// line), while one uniform scale covers the element under the
+// strongest floor ratio across ALL participating runs. Hierarchy is
+// preserved because every run keeps its own nominal size — only the
+// scale is shared. Pure: same grid, same floors, same events.
+export function fitStyledStack(
+  items: StyledStackItem[],
+  width: number,
+  height: number,
+  { min = 0.62, step = 0.04, floor = null, events }: StackFitOptions = {},
+): number {
+  if (!items.length) return 1;
+  const rule = stackFloorRule(items, floor, min);
+  const need = searchScale(min, step, (s) =>
+    items.reduce((n, it) => {
+      const ratio = it.style.line ?? 1.35;
+      const nominal = it.style.size;
+      return n + heightOf(it.text, width, { ...it.style, size: nominal * s }, ratio);
+    }, 0) <= height);
+  return finishFit(rule.bindStyle, rule.bindNominal, min, rule, need, events);
+}
+
+// Exact uniform-scale lower bound across run styles, for callers that
+// combine several canonical scales (stack + word guard + vertical)
+// under one shared scale. Same bound fitStyledStack enforces.
+export function uniformFloorBound(
+  styles: FitStyle[],
+  { min = 0.62, floor = null }: { min?: number; floor?: number | null } = {},
+): number {
+  let bound = min;
+  for (const style of styles) {
+    const r = floorRule(style, style.size, floor, min);
+    if (r.bound > bound) bound = r.bound;
+  }
+  return bound;
+}
+
 export function fitScaleAll(
   texts: string[],
   width: number,
@@ -244,7 +339,7 @@ export function fitOneLine(
     reportFloor(style, raw * nominal, rule.bound * nominal, events);
     return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
   }
-  return Math.round(Math.max(min, raw) * 100) / 100;
+  return finishScale(Math.max(min, raw), rule);
 }
 
 export interface LineHeightOptions {

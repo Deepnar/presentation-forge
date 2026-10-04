@@ -8,7 +8,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import JSZip from "jszip";
 import { compileDeck, compileDeckDetailed, compileSlide, recompileSlide } from "../packages/compiler/compile.js";
 import { fittedTextEl, refitTextEl } from "../packages/compiler/text-fit.ts";
-import { fitScale, fitOneLine, fitScaleStack, fitLineHeight } from "../packages/core/fit.ts";
+import { fitScale, fitOneLine, fitScaleStack, fitStyledStack, fitLineHeight, uniformFloorBound, measure, floorOf } from "../packages/core/fit.ts";
 import { resolveRunStyle } from "../packages/compiler/typography.ts";
 import { validateScene } from "../packages/model/scene.ts";
 import { semanticProjection } from "../packages/core/scene-quality.ts";
@@ -34,6 +34,29 @@ function textRuns(scene) {
 
 function runTexts(scene) {
   return textRuns(scene).flatMap((e) => (e.paragraphs ?? []).flatMap((p) => p.runs.map((r) => r.text)));
+}
+
+// Generic regression: every emitted run with a role must sit at or
+// above min(role floor, role nominal size). Role nominals are exact
+// here because the only above-role override in the compiler is the
+// takeaway headline (body+2), which has a dedicated exact test and
+// can only raise its nominal — never below the role size.
+function assertRunsFloorSafe(scene, design, label) {
+  for (const el of scene.elements) {
+    if (el.kind !== "text") continue;
+    for (const p of el.paragraphs ?? []) {
+      for (const r of p.runs) {
+        if (!r.role) continue;
+        const roleSize = design.roles[r.role]?.size ?? r.size;
+        const roleFloor = floorOf({ size: roleSize, _role: r.role });
+        const eff = roleFloor == null ? Infinity : Math.min(roleFloor, roleSize);
+        assert.ok(
+          (r.size ?? 0) >= eff - 1e-9,
+          `${label} ${scene.id}/${el.id}: ${r.role} emitted ${r.size}pt below effective floor ${eff}pt`,
+        );
+      }
+    }
+  }
 }
 
 describe("v2-3e1 schema and resolution", () => {
@@ -871,3 +894,215 @@ function fitDeck() {
     ],
   };
 }
+
+describe("v2-3e1 floor-safe rounding", () => {
+  // A raw width fit just above the floor must not round below it:
+  // raw 0.734 -> 0.74 (ceil), never 0.73 -> 21.9pt.
+  function widthForRaw(text, style, rawTarget, safety = 0.88) {
+    return (rawTarget * measure(text, style)) / safety;
+  }
+
+  it("fitOneLine rounds up instead of crossing the heading floor", () => {
+    const style = { family: "Merriweather", size: 30, weight: 700, line: 1.18, _role: "heading" };
+    const text = "Budget review";
+    const bound = 22 / 30;
+    const width = widthForRaw(text, style, bound + 0.001);
+    const events = [];
+    const scale = fitOneLine(text, width, style, { events });
+    assert.ok(scale * 30 >= 22, `30pt/22pt case cannot become 21.9pt, got ${scale * 30}`);
+    assert.equal(scale, 0.74, `near-boundary raw rounds up, got ${scale}`);
+  });
+
+  it("fitOneLine rounds up instead of crossing the subhead floor", () => {
+    const style = { family: "Inter", size: 15, weight: 400, line: 1.45, _role: "subhead" };
+    const text = "Chip label";
+    const bound = 14 / 15;
+    const width = widthForRaw(text, style, bound + 0.001);
+    const scale = fitOneLine(text, width, style, { events: [] });
+    assert.ok(scale * 15 >= 14, `15pt/14pt case holds, got ${scale * 15}`);
+    assert.equal(scale, 0.94, `near-boundary raw rounds up, got ${scale}`);
+  });
+
+  it("fitScaleStack shares the floor-safe rounding", () => {
+    const style = { family: "Merriweather", size: 30, weight: 700, line: 1.18, _role: "heading" };
+    // Single paragraph: stack must agree with the scalar fit exactly.
+    const text = "A heading long enough to need shrinking but not that long";
+    assert.equal(
+      fitScaleStack([text], 5, 1.1, style, {}),
+      fitScale(text, 5, 1.1, style, {}),
+    );
+  });
+
+  it("uniformFloorBound spans every run's floor", () => {
+    const subhead = { family: "Inter", size: 15, _role: "subhead" };
+    const body = { family: "Inter", size: 13, _role: "body" };
+    assert.equal(uniformFloorBound([subhead, body]), 1, "body at its effective floor holds the element");
+    assert.equal(uniformFloorBound([subhead]), 14 / 15);
+    assert.equal(uniformFloorBound([]), 0.62, "empty stack keeps the default min");
+  });
+});
+
+describe("v2-3e1 mixed-role floors", () => {
+  it("subhead 15pt + body 13pt holds both floors", async () => {
+    const design = await warmDesign();
+    const sink = [];
+    const el = fittedTextEl(design, {
+      id: "e1", slideId: "s1",
+      box: { x: 1, y: 1, w: 5, h: 0.8 },
+      paragraphs: [
+        { runs: [{ text: "A subhead that runs long enough to need shrinking", role: "subhead", bold: true }] },
+        { runs: [{ text: `Body copy that also runs long enough to force shrinking ${"words ".repeat(20).trim()}`, role: "body" }] },
+      ],
+      z: 10, sink,
+    });
+    const [sub, body] = el.paragraphs.map((p) => p.runs[0]);
+    assert.ok(sub.size >= 14, `subhead floor holds, got ${sub.size}`);
+    assert.ok(body.size >= 13, `body floor holds, got ${body.size}`);
+    assert.ok(sub.size >= body.size, "hierarchy stays proportional");
+    const kept = el.paragraphs.map((p) => p.runs[0].text).join(" ");
+    assert.ok(kept.includes("shrinking"), "all text survives");
+    assert.ok(sink.some((d) => d.kind === "floor-hit"), "impossible fit diagnoses");
+  });
+
+  it("stack measures actual styles, not largest nominal", async () => {
+    const design = await warmDesign();
+    const line = design.roles.subhead.line ?? 1.45;
+    const a = "Alpha line content here";
+    const b = "Beta line content here";
+    const styleA = { family: "Inter", size: 15, weight: 400, tracking: 0, line, _role: "subhead" };
+    const styleB = { family: "IBM Plex Mono", size: 15, weight: 400, tracking: 2, line, _role: "subhead" };
+    const wA = measure(a, styleA);
+    const wB = measure(b, styleB);
+    assert.ok(wA < wB, `demanding style measures wider (${wA} vs ${wB})`);
+    // Width between the two: Inter fits one line, mono+tracking wraps.
+    const W = (wA + wB) / 2;
+    const { lineCount } = await import("../packages/core/fit.ts");
+    assert.equal(lineCount(a, W, styleA), 1);
+    assert.ok(lineCount(b, W, styleB) > 1, "construction: demanding run wraps");
+    const sink = [];
+    const el = fittedTextEl(design, {
+      id: "e1", slideId: "s1",
+      box: { x: 1, y: 1, w: W, h: 2 * ((15 / 72) * line) + 0.02 },
+      paragraphs: [
+        { runs: [{ text: a, role: "subhead", family: "Inter" }] },
+        { runs: [{ text: b, role: "subhead", family: "IBM Plex Mono", tracking: 2 }] },
+      ],
+      z: 10, sink,
+    });
+    const size = el.paragraphs[0].runs[0].size;
+    assert.ok(size < 15, `demanding run forces shrink, got ${size}`);
+    assert.ok(size >= 14, `subhead floor still holds, got ${size}`);
+  });
+});
+
+describe("v2-3e1 legacy mixed-role floors", () => {
+  it("legacy comparison holds every run's floor", async () => {
+    const design = await warmDesign();
+    const slide = {
+      id: "s1", purpose: "compare sides at length", title: "Sides",
+      blocks: [
+        { id: "l", kind: "text", label: "Left side with a long label", text: `Left body text that runs on ${"words ".repeat(30).trim()}` },
+        { id: "r", kind: "text", label: "Right side with a long label", text: `Right body text that runs on ${"words ".repeat(30).trim()}` },
+      ],
+      layoutHint: { recipe: "comparison" },
+    };
+    const scene = compileSlide(slide, design, "comparison");
+    assert.equal(scene.recipeId, "comparison");
+    assertRunsFloorSafe(scene, design, "legacy comparison");
+    const texts = runTexts(scene).join(" ");
+    assert.ok(texts.includes("Left side with a long label") && texts.includes("Right side with a long label"));
+  });
+
+  it("legacy process holds every run's floor", async () => {
+    const design = await warmDesign();
+    const slide = {
+      id: "s1", purpose: "order steps at length", title: "Steps",
+      blocks: [
+        { id: "a", kind: "text", label: "First step label", text: `First step body ${"words ".repeat(25).trim()}` },
+        { id: "b", kind: "text", label: "Second step label", text: `Second step body ${"words ".repeat(25).trim()}` },
+        { id: "c", kind: "text", label: "Third step label", text: `Third step body ${"words ".repeat(25).trim()}` },
+      ],
+      layoutHint: { recipe: "process" },
+    };
+    const scene = compileSlide(slide, design, "process");
+    assert.equal(scene.recipeId, "process");
+    assertRunsFloorSafe(scene, design, "legacy process");
+    const texts = runTexts(scene).join(" ");
+    assert.ok(texts.includes("First step label") && texts.includes("Third step body"));
+  });
+});
+
+describe("v2-3e1 emitted-run floor invariant", () => {
+  it("all 12 canonical families obey the invariant", async () => {
+    const design = await warmDesign();
+    const { scenes } = compileDeckDetailed(mechanismDeck(), design);
+    assert.equal(scenes.length, 12);
+    for (const scene of scenes) assertRunsFloorSafe(scene, design, "canonical");
+  });
+
+  it("legacy six-recipe fixtures obey the invariant", async () => {
+    const design = await warmDesign();
+    for (const slide of sampleDeckIntent().slides) {
+      for (const recipe of ["title", "content", "comparison", "media", "chart", "process"]) {
+        const scene = compileSlide(slide, design, recipe);
+        assertRunsFloorSafe(scene, design, `legacy ${recipe}`);
+      }
+    }
+  });
+
+  it("five themes obey the invariant on canonical and legacy output", async () => {
+    for (const name of THEMES) {
+      const design = await themeDesign(name);
+      const { scenes } = compileDeckDetailed(mechanismDeck(), design);
+      for (const scene of scenes) assertRunsFloorSafe(scene, design, `theme ${name}`);
+      for (const slide of sampleDeckIntent().slides) {
+        assertRunsFloorSafe(compileSlide(slide, design), design, `theme ${name} legacy`);
+      }
+    }
+  });
+
+  it("takeaway headline (above-role override) holds its true floor", async () => {
+    const design = await warmDesign();
+    const nominal = design.roles.body.size + 2;
+    const { scenes } = compileDeckDetailed({
+      id: "t", title: "T",
+      slides: [{
+        id: "s1", purpose: "p", title: "Takeaway stress",
+        blocks: [{ id: "b1", kind: "text", label: "Side", text: "Content." }],
+        takeaway: `The evidence supports adoption across every measured dimension: ${"word ".repeat(60).trim()}`,
+      }],
+    }, design);
+    const el = scenes[0].elements.find((e) => e.id === "s1:takeaway:headline");
+    assert.ok(el && el.kind === "text", "headline takeaway emitted");
+    const size = el.paragraphs[0].runs[0].size;
+    assert.ok(size >= 14, `takeaway holds the body floor against its ${nominal}pt nominal, got ${size}`);
+    assert.ok(el.paragraphs[0].runs[0].text.includes("adoption"), "takeaway text complete");
+  });
+
+  it("customized mixed-role wrap diagnoses without crossing floors", async () => {
+    const design = await warmDesign();
+    const slide = {
+      id: "s1", purpose: "p", title: "Sides", relationship: "comparison",
+      blocks: [
+        { id: "l", kind: "text", label: "Left", text: "Mature and cheap" },
+        { id: "r", kind: "text", label: "Right", text: "Safe and dense" },
+      ],
+    };
+    const { plan } = planDeckComposition({ id: "d", title: "D", slides: [slide] }, design);
+    let scene = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design).scenes[0];
+    const target = scene.elements.find((e) => e.kind === "text" && e.semanticRef === "l");
+    assert.ok(target, "mixed side element exists");
+    applyCommand(scene, { type: "element.resize", id: target.id, w: 1.5, h: 0.5 });
+    const edited = JSON.parse(JSON.stringify(slide));
+    edited.blocks[0].text = `Mature and cheap with considerably more words than before ${"words ".repeat(20).trim()}`;
+    const sink = [];
+    scene = recompileSlide(edited, scene, design, plan.slides[0], sink);
+    const kept = scene.elements.find((e) => e.id === target.id);
+    assert.equal(kept.w, 1.5);
+    assert.equal(kept.h, 0.5);
+    assert.equal(kept.fitPolicy, "wrap");
+    assertRunsFloorSafe(scene, design, "customized mixed wrap");
+    assert.ok(runTexts(scene).join(" ").includes("considerably more words"), "edited text survives");
+    assert.ok(sink.length > 0, "shrunken preserved box diagnoses");
+  });
+});

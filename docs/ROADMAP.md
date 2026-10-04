@@ -6870,6 +6870,14 @@ one-line/stat constraints obey floor semantics (`fitLineHeight`),
 stored `fitPolicy` on text elements so customized recompilation refits
 with the same policy, SVG shares the core emphasis/transform helpers.
 
+Second correction (unaccepted — stays [~] until review passes):
+floor-safe rounding on every canonical return (`finishScale`;
+near-boundary raws round up, never below the bound), mixed-style
+stack fitting in core (`fitStyledStack` measures each paragraph with
+its drawn style; `uniformFloorBound` holds the strongest floor ratio
+across every run), policy-aware refit preserved, emitted-run floor
+invariant across all families/themes/legacy paths.
+
 > **Learned.** Because SlideScene is the visual source of truth and
 > renderers do not receive DesignSystem, typography used for fitting
 > must be resolved into Layer C rather than existing only transiently
@@ -6887,6 +6895,13 @@ with the same policy, SVG shares the core emphasis/transform helpers.
 > recompilation must preserve compiler fit policy as well as geometry;
 > otherwise a stat/one-line element can change fitting semantics after
 > a human resize.
+>
+> A floor belongs to every drawn run, not to the representative style
+> of its text element. Uniform scaling therefore needs the strongest
+> floor ratio across all participating runs, and fitting a mixed-role
+> stack must measure the styles actually drawn. Rounding is part of
+> floor enforcement: a mathematically legal raw scale is still invalid
+> if quantization moves the emitted size below its floor.
 
 ### [ ] V2-3E-2 — deterministic QA completion
 
