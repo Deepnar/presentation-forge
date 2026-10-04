@@ -23,8 +23,8 @@ parallel implementations). `test/v2-renderer-pptx.test.js` proves
 bytes/signature, structure, native families, metadata, freshness, and
 the adapter. Boundary test confines `node:` builtins to `node.ts` with
 dedicated synthetic tests. Image `src` stays path/URL passthrough;
-unprojected scene fields (rotation, per-run opacity, lock/provenance
-metadata) recorded as future fidelity work.
+unprojected scene fields (rotation, element-level opacity,
+lock/provenance metadata) recorded as future fidelity work.
 
 **Still true:** Slice A/B contracts, detached semantics, DesignSystem
 normalization, layout/geometry core, legacy render/layouts/report

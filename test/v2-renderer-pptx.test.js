@@ -85,6 +85,8 @@ describe("v2 renderer pptx bytes", () => {
     const app = await zip.files["docProps/app.xml"].async("string");
     assert.match(core, /Solid-state batteries/);
     assert.match(core, /Forge/);
+    assert.match(core, /<dc:subject>Materials<\/dc:subject>/);
+    assert.match(core, /<cp:revision>3<\/cp:revision>/);
     assert.match(app, /TCET/);
   });
 
@@ -98,7 +100,7 @@ describe("v2 renderer pptx bytes", () => {
 });
 
 describe("v2 renderer node adapter", () => {
-  it("writes the exact rendered bytes to a path", async () => {
+  it("writes its rendered bytes to a path", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "v2render-"));
     const design = await warmDesign();
     const scenes = compileDeck(sampleDeckIntent(), design);

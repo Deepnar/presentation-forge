@@ -6684,8 +6684,9 @@ Node adapter. No `src/render.js` extraction.
 > `prst="line"`, not connectors; the test asserts the true marker.
 > PPTX binaries are never byte-compared across renders (ZIP metadata
 > drifts); slide counts, native markers, metadata, and rasters are the
-> equivalence proof. Unprojected scene fields (rotation, per-run
-> opacity, locked/provenance metadata) are recorded, not redesigned —
+> equivalence proof. Unprojected scene fields (rotation,
+> element-level `SceneElement.opacity`, locked/provenance metadata) are
+> recorded, not redesigned —
 > V2-3/V2-5 extend fidelity when real consumers arrive.
 
 ### [ ] V2-2E — ReportSpec + deterministic DOCX renderer

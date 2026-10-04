@@ -4,8 +4,8 @@
 // OOXML, never raster. In-memory only: no output path, no filesystem
 // write. The Node-only file adapter lives in node.ts.
 //
-// Scene fields without a PPTX projection yet (rotation, per-run opacity
-// beyond element opacity, locked/provenance as metadata) are preserved
+// Scene fields without a PPTX projection yet (rotation, element-level
+// opacity, locked/provenance as metadata) are preserved
 // in the scene for editor/seed use; V2-3/V2-5 extend fidelity when those
 // gain real compiler/editor consumers. Image src stays the current
 // path/URL-style asset seam (see node.ts and the V2-2D report).
