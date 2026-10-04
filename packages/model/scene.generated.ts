@@ -73,4 +73,10 @@ export interface TextRun {
   italic?: boolean;
   size?: number;
   color?: string;
+  role?: string;
+  family?: string;
+  weight?: number;
+  tracking?: number;
+  line?: number;
+  transform?: "upper";
 }

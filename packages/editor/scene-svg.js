@@ -15,13 +15,20 @@ function textSvg(el) {
   for (const p of el.paragraphs ?? []) {
     const anchor = p.align === "center" ? "middle" : p.align === "right" ? "end" : "start";
     const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
-    const words = p.runs.map((r) => r.text).join("");
+    const words = p.runs.map((r) => (r.transform === "upper" ? r.text.toUpperCase() : r.text)).join("");
     const first = p.runs[0] ?? {};
     const size = (first.size ?? 13) * 1.1;
+    const attrs = [];
+    if (first.family) attrs.push(` font-family="${esc(first.family)}"`);
+    const bold = first.bold ?? ((first.weight ?? 400) >= 600);
+    if (bold) attrs.push(' font-weight="bold"');
+    else if (first.weight != null) attrs.push(` font-weight="${first.weight}"`);
+    if (first.italic) attrs.push(' font-style="italic"');
+    if (first.tracking) attrs.push(` letter-spacing="${((first.tracking * 96) / 72).toFixed(2)}"`);
     for (const chunk of words.split("\n")) {
       const prefix = p.bullet ? "• " : "";
-      lines.push(`<text x="${tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" font-size="${size.toFixed(1)}" fill="#${first.color ?? "111111"}"${first.bold ? ' font-weight="bold"' : ""}${first.italic ? ' font-style="italic"' : ""}>${esc(prefix + chunk)}</text>`);
-      y += size * 1.35;
+      lines.push(`<text x="${tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" font-size="${size.toFixed(1)}" fill="#${first.color ?? "111111"}"${attrs.join("")}>${esc(prefix + chunk)}</text>`);
+      y += size * (first.line ?? 1.35);
     }
   }
   return `<g data-el="${esc(el.id)}">${lines.join("")}</g>`;

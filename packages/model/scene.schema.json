@@ -35,7 +35,13 @@
         "bold": { "type": "boolean" },
         "italic": { "type": "boolean" },
         "size": { "type": "number", "exclusiveMinimum": 0 },
-        "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+        "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "role": { "type": "string", "minLength": 1 },
+        "family": { "type": "string" },
+        "weight": { "type": "number" },
+        "tracking": { "type": "number" },
+        "line": { "type": "number", "exclusiveMinimum": 0 },
+        "transform": { "enum": ["upper"] }
       }
     },
     "paragraph": {

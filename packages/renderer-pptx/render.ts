@@ -12,6 +12,7 @@
 
 import PptxGenJSModule from "pptxgenjs";
 import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
+import { runBold, visibleText } from "../core/text-run.ts";
 
 // The library's default-export typing does not expose its constructor
 // under nodenext module resolution. This narrow structural interface
@@ -56,22 +57,29 @@ const CHART_TYPE: Record<string, string> = {
 function addTextElement(slide: PptxSlide, el: SceneElement): void {
   // pptxgenjs takes a flat run list; a paragraph break is breakLine on the
   // run that ends the paragraph. Bullet/align live on the paragraph's runs.
+  // Resolved Layer C typography projects verbatim: family -> fontFace,
+  // tracking (points) -> charSpacing (points), line ratio -> lineSpacing
+  // (points, the same size*line product the legacy textStyle helper
+  // uses), transform -> visible uppercase text. Never autoFit: final
+  // sizes are baked into the scene by the compiler fitter.
   const runs: { text: string; options: Record<string, unknown> }[] = [];
   const paras = el.paragraphs ?? [];
   paras.forEach((p, pi) => {
     (p.runs ?? []).forEach((r, ri) => {
-      runs.push({
-        text: r.text,
-        options: {
-          bold: r.bold,
-          italic: r.italic,
-          fontSize: r.size,
-          color: r.color,
-          align: ri === 0 ? (p.align ?? "left") : undefined,
-          bullet: ri === 0 ? (p.bullet ? { code: "2022" } : false) : undefined,
-          breakLine: ri === p.runs.length - 1 && pi < paras.length - 1,
-        },
-      });
+      const size = r.size ?? 12;
+      const options: Record<string, unknown> = {
+        bold: runBold(r),
+        italic: r.italic,
+        fontSize: size,
+        color: r.color,
+        align: ri === 0 ? (p.align ?? "left") : undefined,
+        bullet: ri === 0 ? (p.bullet ? { code: "2022" } : false) : undefined,
+        breakLine: ri === p.runs.length - 1 && pi < paras.length - 1,
+      };
+      if (r.family) options.fontFace = r.family;
+      if (r.tracking) options.charSpacing = r.tracking;
+      if (r.line) options.lineSpacing = Math.round(size * r.line * 10) / 10;
+      runs.push({ text: visibleText(r), options });
     });
   });
   if (!runs.length) return;
