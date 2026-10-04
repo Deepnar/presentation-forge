@@ -6738,22 +6738,32 @@ to emit chrome. Legacy render pixel-identical (raster proof).
 > presenter/number opacities so V2-3 scene emission cannot make dark
 > slide numbers translucent.
 
-### [ ] V2-3 scene compiler, full recipes
+### [ ] V2-3 presentation quality (revised direction — see V2-3A)
 
 *Depends on: V2-2. Blocks: V2-4, V2-5.*
 
-Grow the six-recipe slice into the representative set (title, content,
-comparison, image-text, chart, process/diagram families first, one theme
-then the representative set). Cards size to content; text budgets come
-from the canonical `packages/core` fit API rather than fixed fractions; recipe choice considers
-block kinds, content volume, visual direction, and theme. Scene
-validation, stable IDs, bounds/overlap/contrast rules, and the
-customized/detached preservation contract from V2-0 all hold and are
-tested. Plate backgrounds regain Chrome-raster support as a compatibility
-path, not the default.
+The original "grow the recipe catalog" framing is superseded by the
+accepted quality architecture: semantic intent hardening, deterministic
+composition planning, recipe families driven by meaning, then fit/QA and
+theme compatibility — with measurement (V2-3A) preceding mechanism.
 
-Done when: representative slides compile to scenes and export to editable
-PPTX on all representative themes with clean sweeps.
+### [x] V2-3A — quality measurement + benchmark baseline
+
+Establishes L1/L2 finding contracts, scene semantic projection,
+deterministic gates (schema, geometry, identity, block representation,
+chart fidelity), monotony heuristics, five benchmark packs, five
+counterfactual pairs with a recorded indifference baseline, theme
+semantic-invariance testing, a versioned L3 rubric contract (no judge
+runtime), and a byte-identical compiler-output regression proof. No
+schema, recipe, or behavior changes.
+
+> **Learned.** Counterfactual pairs must hold compiled content constant
+> to mean anything: the first draft varied titles/wording alongside
+> intent, which made two pairs trivially "sensitive" through text
+> differences. Tightened pairs (identical blocks, intent-only deltas)
+> record true indifference across all five — the honest baseline.
+> Silent loss is real and now measured: stat/table/quote blocks and
+> recipe-ignored lists vanish without diagnostics today.
 
 ### [ ] V2-4 browser scene renderer
 

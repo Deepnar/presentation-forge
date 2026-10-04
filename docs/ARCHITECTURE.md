@@ -1385,6 +1385,21 @@ are fixed fractions awaiting `src/fit.js` integration; inline human
 text edits and human deletes have no persistence semantics yet by
 explicit V2-5 design deferral.
 
+## V2 quality measurement (V2-3A)
+
+Measurement precedes mechanism. `packages/core/scene-quality.ts` owns
+the finding contract (`L1` defect vs `L2` advisory, stable codes, no
+scores) plus meaning-preserving scene projection and geometry/identity
+checks; `packages/compiler/quality.ts` owns intent→scene integrity
+(block representation, chart fidelity), deck analysis, and
+counterfactual sensitivity comparison. Benchmarks and the versioned L3
+rubric live as test fixtures (`test/fixtures/v2-quality/`), never in
+production schemas. Recorded V2-2 baseline: semantic-only intent
+differences are compositionally invisible (all five counterfactual
+pairs indifferent), and stat/table/quote blocks can vanish silently —
+measured, not yet fixed. A byte-identical compiler-output regression
+proof guards the measurement work itself.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
