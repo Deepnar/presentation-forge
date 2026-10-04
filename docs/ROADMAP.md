@@ -6850,7 +6850,9 @@ customized/detached preservation remain hard invariants.
 
 Sequenced as three slices; the parent stays open until all three land.
 
-### [~] V2-3E-1 — typography truth + fit/budgets (correction pass in review)
+### [x] V2-3E-1 — typography truth + fit/budgets
+
+Accepted head: `bf11408`.
 
 Layer-C TextRuns carry resolved typography (`role/family/weight/
 tracking/line`, `transform: upper` where declared) via one canonical
@@ -6862,21 +6864,18 @@ customized geometry is refit against the preserved box; detached
 returns untouched; historical baselines byte-identical with a new
 focused 3E-1 baseline beside them.
 
-Correction (unaccepted — this entry stays [~] until review passes):
-exact floor stops (no rounded scale may emit below its effective
-floor), paragraph-stack fitting canonicalized into `core/fit.ts`
-(`fitScaleStack`, shared shrink-search and floor rule), vertical
-one-line/stat constraints obey floor semantics (`fitLineHeight`),
-stored `fitPolicy` on text elements so customized recompilation refits
-with the same policy, SVG shares the core emphasis/transform helpers.
-
-Second correction (unaccepted — stays [~] until review passes):
-floor-safe rounding on every canonical return (`finishScale`;
-near-boundary raws round up, never below the bound), mixed-style
+Corrections landed before acceptance: exact floor stops (no rounded
+scale may emit below its effective floor), paragraph-stack fitting
+canonicalized into `core/fit.ts` (`fitScaleStack`, shared
+shrink-search and floor rule), vertical one-line/stat constraints
+obey floor semantics (`fitLineHeight`), stored `fitPolicy` on text
+elements so customized recompilation refits with the same policy,
+SVG shares the core emphasis/transform helpers; then floor-safe
+rounding on every canonical return (`finishScale`), mixed-style
 stack fitting in core (`fitStyledStack` measures each paragraph with
 its drawn style; `uniformFloorBound` holds the strongest floor ratio
-across every run), policy-aware refit preserved, emitted-run floor
-invariant across all families/themes/legacy paths.
+across every run), and an emitted-run floor invariant across all
+families/themes/legacy paths.
 
 > **Learned.** Because SlideScene is the visual source of truth and
 > renderers do not receive DesignSystem, typography used for fitting
@@ -6903,7 +6902,27 @@ invariant across all families/themes/legacy paths.
 > floor enforcement: a mathematically legal raw scale is still invalid
 > if quantization moves the emitted size below its floor.
 
-### [ ] V2-3E-2 — deterministic QA completion
+### [~] V2-3E-2 — deterministic QA completion (implementation in review)
+
+`analyzeDeck()` consumes the compiler's own evidence instead of
+re-measuring: `FitDiagnostic`s become stable L1 findings
+(`text-fit-floor-hit`, `text-word-floor-hit`, with slide/element/
+role/block evidence), and the same invocation's composition plan
+drives takeaway-realization checks (`takeaway-not-realized`,
+`takeaway-treatment-mismatch`). One compile, one plan, one
+deterministic finding order. No generic overlap rule, no contrast
+QA, no chrome checks (those wait for 3E-3 chrome to exist), no
+scores, no L3. QA observes compilation and mutates nothing.
+
+> **Learned.** Deterministic QA should consume evidence produced by
+> the authoritative compiler operation rather than recreate the
+> operation with a second heuristic. A second overflow estimator
+> would create two competing truths for whether text fits.
+>
+> A deterministic validator can prove that an authored takeaway
+> requested as a verdict was actually emitted as that verdict. It
+> cannot prove that the takeaway is persuasive, important, or well
+> worded; those are semantic/visual evaluation questions.
 
 ### [ ] V2-3E-3 — chrome emission + projection
 
