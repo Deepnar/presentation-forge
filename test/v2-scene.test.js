@@ -1,7 +1,7 @@
 // Phase 1: scene contracts hold — validation, bounds, stable identity.
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { validateScene, checkBounds, compilerId, humanId } from "../packages/model/scene.js";
+import { validateScene, checkBounds, compilerId, humanId } from "../packages/model/scene.ts";
 import { compileDeck } from "../packages/compiler/compile.js";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";
 

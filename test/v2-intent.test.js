@@ -1,7 +1,7 @@
 // Phase 1: intent contracts hold — valid decks pass, layout smuggling fails.
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { validateDeckIntent, normalizeIntent } from "../packages/model/intent.js";
+import { validateDeckIntent, normalizeIntent } from "../packages/model/intent.ts";
 import { sampleDeckIntent } from "./v2-fixture.js";
 
 describe("v2 intent", () => {

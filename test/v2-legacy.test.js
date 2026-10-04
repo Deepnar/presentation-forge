@@ -1,8 +1,8 @@
 // Legacy bridge: old decks stay readable; the six slice types map to intent.
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { legacySlideToIntent, legacyDeckToIntent } from "../packages/model/legacy.js";
-import { validateDeckIntent } from "../packages/model/intent.js";
+import { legacySlideToIntent, legacyDeckToIntent } from "../packages/model/legacy.ts";
+import { validateDeckIntent } from "../packages/model/intent.ts";
 
 const LEGACY = [
   { type: "title", headline: "Solid-state batteries" },

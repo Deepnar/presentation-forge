@@ -4,8 +4,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { designFromTheme } from "../packages/model/design.js";
-import { validateDeckIntent } from "../packages/model/intent.js";
-import { validateScene, checkBounds } from "../packages/model/scene.js";
+import { validateDeckIntent } from "../packages/model/intent.ts";
+import { validateScene, checkBounds } from "../packages/model/scene.ts";
 import { compileDeck } from "../packages/compiler/compile.js";
 import { renderScenesToFile } from "../packages/renderer-pptx/scene-to-pptx.js";
 import { sceneToSvg } from "../packages/editor/scene-svg.js";

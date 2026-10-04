@@ -3,7 +3,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { compileSlide, recompileSlide } from "../packages/compiler/compile.js";
-import { applyCommand } from "../packages/model/commands.js";
+import { applyCommand } from "../packages/model/commands.ts";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";
 
 describe("v2 preservation", () => {

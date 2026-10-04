@@ -8,7 +8,7 @@
 // - chrome (banner/crest/footer) stays in src/chrome.js; scenes reserve the
 //   footer band and the PPTX renderer paints chrome-free pages for now.
 
-import { SCENE_W, SCENE_H, compilerId, findElement } from "../model/scene.js";
+import { SCENE_W, SCENE_H, compilerId, findElement } from "../model/scene.ts";
 
 const FOOTER_RESERVE = 0.62;
 
