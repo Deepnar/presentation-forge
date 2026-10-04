@@ -2,5 +2,5 @@
   "name": "@forge/model",
   "version": "0.1.0",
   "type": "module",
-  "description": "V2 intent/scene/command contracts. JSDoc typedefs map 1:1 to future TypeScript interfaces; JSON Schemas are the runtime boundary."
+  "description": "V2 model/domain contracts. Strict TypeScript over JSON Schema: schemas own runtime validation (AJV), generated types own compile-time shape; commands and the legacy bridge are hand-written internal contracts."
 }
