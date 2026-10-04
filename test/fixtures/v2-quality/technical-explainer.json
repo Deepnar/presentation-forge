@@ -1,0 +1,25 @@
+{
+  "id": "technical-explainer",
+  "audience": "Undergraduate students with no electrochemistry background; curious but easily lost by jargon.",
+  "objective": "Build a working mental model of why solid-state batteries matter, ending in one clear takeaway.",
+  "sourcePack": "Liquid electrolytes are flammable organic solvents; dendrites pierce separators; solid ceramic separators block dendrites physically; sulfides conduct 12.5 mS/cm vs liquids ~10 mS/cm (comparable); manufacturing (cold-pressing stacks) is the open hard problem, not chemistry alone.",
+  "requiredClaims": [
+    "Liquid electrolytes can burn; solids remove that fuel",
+    "Ceramic separators block dendrites mechanically",
+    "Manufacturing, not raw conductivity, is the open problem"
+  ],
+  "forbiddenClaims": [
+    "Solid-state batteries are already in mass production",
+    "Jargon without explanation (mS/cm must be grounded)"
+  ],
+  "requiredEvidence": [
+    "a mechanical intuition for dendrite blocking",
+    "the manufacturing caveat"
+  ],
+  "nuance": "Motivation before mechanism; every number needs an intuition anchor. A deck that front-loads figures fails.",
+  "beats": ["motivation", "mental model", "mechanism", "example", "trade-offs", "takeaway"],
+  "visualStrategies": ["before/after liquid-vs-solid", "layered stack diagram", "process steps for pressing"],
+  "antiPatterns": ["jargon-first ordering", "unexplained units", "missing takeaway"],
+  "deterministicChecks": ["takeaway text exists somewhere", "no invented figures"],
+  "l3Rubric": ["novice accessibility", "motivation-first ordering", "takeaway clarity"]
+}

@@ -1,0 +1,23 @@
+{
+  "version": "quality-rubric-v1",
+  "note": "Evaluation CONTRACT only. No judge runtime exists in V2-3A; future judges consume this rubric plus the listed evidence. Criteria are qualitative — never weighted scores.",
+  "acceptanceQuestion": "Would a competent presenter use this deck substantially unchanged for an important presentation?",
+  "criteria": [
+    { "id": "source-fidelity", "question": "Is every figure traceable to the source pack without invention or rounding drift?", "evidence": ["source pack", "DeckIntent", "rendered slides"] },
+    { "id": "narrative-coherence", "question": "Does the deck tell one coherent story from problem to conclusion?", "evidence": ["DeckIntent", "rendered slides"] },
+    { "id": "slide-purpose", "question": "Does each content slide have a discernible point?", "evidence": ["DeckIntent", "rendered slides"] },
+    { "id": "visual-evidence-fit", "question": "Does the chosen visual actually help explain that slide's point?", "evidence": ["DeckIntent", "rendered slides"] },
+    { "id": "visual-hierarchy", "question": "Is the most important content visually dominant?", "evidence": ["rendered slides", "contact sheet"] },
+    { "id": "uncertainty-preserved", "question": "Do negative, mixed, and inconclusive results retain their polarity?", "evidence": ["source pack", "DeckIntent", "rendered slides"] },
+    { "id": "audience-fit", "question": "Is the deck appropriate for its stated audience?", "evidence": ["DeckIntent", "rendered slides"] },
+    { "id": "deck-rhythm", "question": "Does composition vary intentionally across the deck rather than repeating one template?", "evidence": ["contact sheet"] },
+    { "id": "art-direction", "question": "Does the deck feel intentionally art-directed rather than templated?", "evidence": ["contact sheet"] },
+    { "id": "claim-evidence-link", "question": "Can central claims be linked to supporting evidence?", "evidence": ["source pack", "DeckIntent", "rendered slides"] }
+  ],
+  "judgeEvidence": ["source pack", "DeckIntent", "rendered slide images/contact sheet", "speaker notes if present"],
+  "protocol": {
+    "layers": ["L1 gates must pass", "L2 findings recorded", "L3 rubric evaluated at N=3 runs with agreement counts"],
+    "humanReview": "required at benchmark milestones plus random spot audits",
+    "noSingleScore": true
+  }
+}

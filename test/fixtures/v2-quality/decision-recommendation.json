@@ -1,0 +1,27 @@
+{
+  "id": "decision-recommendation",
+  "audience": "Engineering leadership choosing a pilot-line chemistry with real budget consequences.",
+  "objective": "Recommend sulfide for the pilot while keeping oxide as a credible fallback, with trade-offs explicit.",
+  "sourcePack": "Sulfide: 12.5 mS/cm, moisture-sensitive handling (+15% facility cost), 200-cycle data only. Oxide: 1.2 mS/cm, air-stable handling, 2000-cycle data. Polymer: 0.4 mS/cm, cheapest, insufficient rate capability. Recommendation: sulfide pilot with oxide fallback if moisture control misses budget.",
+  "requiredClaims": [
+    "Sulfide leads on conductivity at 12.5 mS/cm",
+    "Sulfide handling adds facility cost and has only 200-cycle data",
+    "Oxide is the named fallback with 2000-cycle data"
+  ],
+  "forbiddenClaims": [
+    "Sulfide is the obvious risk-free choice",
+    "Oxide has no advantages",
+    "A generic list of battery benefits"
+  ],
+  "requiredEvidence": [
+    "the conductivity gap",
+    "the cycle-data asymmetry (200 vs 2000)",
+    "the cost qualifier"
+  ],
+  "nuance": "The recommendation must survive its own caveats being read aloud. Flattening to a feature list fails.",
+  "beats": ["options", "evidence", "trade-offs", "recommendation with conditions", "fallback"],
+  "visualStrategies": ["side-by-side comparison with verdict", "risk-annotated figures"],
+  "antiPatterns": ["feature-list flattening", "buried caveats", "unconditional recommendation"],
+  "deterministicChecks": ["both chemistries present", "200 vs 2000 figures present", "no invented figures"],
+  "l3Rubric": ["trade-off visibility", "conditional recommendation", "fallback presence"]
+}

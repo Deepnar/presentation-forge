@@ -1,0 +1,26 @@
+{
+  "id": "data-heavy-analytical",
+  "audience": "Analysts who will check the numbers against the source pack.",
+  "objective": "Make the conductivity comparison and its limits legible at a glance, with every figure traceable.",
+  "sourcePack": "Room-temperature ionic conductivity in mS/cm: oxide 1.2, sulfide 12.5, polymer 0.4. Measurement method: EIS, n=5 per chemistry. Sulfide error bars ±1.1; oxide ±0.2; polymer ±0.1. Room temperature defined as 25C. Polymer measured on 3 samples only.",
+  "requiredClaims": [
+    "Sulfide 12.5, oxide 1.2, polymer 0.4 mS/cm at 25C",
+    "EIS method with stated sample sizes",
+    "Polymer conclusion rests on 3 samples"
+  ],
+  "forbiddenClaims": [
+    "Rounded figures presented as exact (12.5 must not become 13)",
+    "Error bars omitted where the pack provides them",
+    "Units dropped from any figure"
+  ],
+  "requiredEvidence": [
+    "all three values with units",
+    "method and sample-size annotation"
+  ],
+  "nuance": "Precision is the product. A chart that rounds, drops units, or hides the n=3 caveat fails even if beautiful.",
+  "beats": ["dataset", "comparison", "limits", "reading guidance"],
+  "visualStrategies": ["bar chart with annotated values", "method footnote"],
+  "antiPatterns": ["rounded figures", "missing units", "hidden sample sizes", "3D effects"],
+  "deterministicChecks": ["chart values equal source numbers exactly", "units present", "no invented figures"],
+  "l3Rubric": ["figure exactness", "unit presence", "limit visibility"]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "research-defense",
+  "audience": "Graduate examination committee in materials science; familiar with electrochemistry, skeptical of performance claims.",
+  "objective": "Defend the thesis that sulfide solid electrolytes are the most viable near-term path, without overstating inconclusive cycle-life data.",
+  "sourcePack": "Sulfide conductivity 12.5 mS/cm at room temperature (paper DOI:10.1000/sulfide-2025). Oxide 1.2 mS/cm. Polymer 0.4 mS/cm. Cycle-life test: 200 cycles, 8% capacity fade; authors call long-term stability inconclusive. Dendrite suppression observed but mechanism unconfirmed.",
+  "requiredClaims": [
+    "Sulfide conductivity 12.5 mS/cm exceeds oxide 1.2 and polymer 0.4",
+    "200-cycle fade of 8% is reported as inconclusive for long-term stability",
+    "Dendrite suppression mechanism is unconfirmed"
+  ],
+  "forbiddenClaims": [
+    "Sulfide cells are proven safe for decades of use",
+    "The dendrite problem is solved"
+  ],
+  "requiredEvidence": [
+    "conductivity comparison across three chemistries",
+    "the 8% fade figure with its inconclusive status"
+  ],
+  "nuance": "The strongest number (12.5) must not visually swallow the weakest finding (inconclusive stability). A triumphant deck fails this benchmark.",
+  "beats": ["problem", "method", "results", "negative/ambiguous results", "limitations", "conclusion"],
+  "visualStrategies": ["bar comparison for conductivity", "annotated caveat alongside the headline figure"],
+  "antiPatterns": ["success-story framing of inconclusive data", "dropping the fade figure", "triumphant verdict styling on uncertain results"],
+  "deterministicChecks": ["chart values equal source numbers", "fade figure present in some block", "no invented figures"],
+  "l3Rubric": ["uncertainty preserved", "central claim supported", "limitation visible"]
+}

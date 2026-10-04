@@ -1,0 +1,332 @@
+{
+ "pairs": [
+  {
+   "id": "strong-vs-misses-target",
+   "note": "Same numbers and blocks; only semantic framing differs. No resultStatus exists yet, so framing travels in takeaway/purpose.",
+   "a": {
+    "id": "cf-strong",
+    "title": "Sulfide conductivity",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Report the headline conductivity result",
+      "title": "Sulfide conductivity",
+      "takeaway": "Sulfide at 12.5 mS/cm is the clear winner",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "chart",
+        "chartKind": "bar",
+        "categories": [
+         "Oxide",
+         "Sulfide",
+         "Polymer"
+        ],
+        "series": [
+         {
+          "name": "mS/cm",
+          "values": [
+           1.2,
+           12.5,
+           0.4
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "b": {
+    "id": "cf-misses",
+    "title": "Sulfide conductivity",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Report conductivity against the program target",
+      "title": "Sulfide conductivity",
+      "takeaway": "12.5 mS/cm is real progress yet short of the 15 target",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "chart",
+        "chartKind": "bar",
+        "categories": [
+         "Oxide",
+         "Sulfide",
+         "Polymer"
+        ],
+        "series": [
+         {
+          "name": "mS/cm",
+          "values": [
+           1.2,
+           12.5,
+           0.4
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "compare-vs-sequence",
+   "note": "Same three text blocks; peer alternatives versus ordered stages, expressed in purpose only.",
+   "a": {
+    "id": "cf-compare",
+    "title": "Three options",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Compare three competing approaches",
+      "title": "Three items",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "text",
+        "label": "Alpha",
+        "text": "First item"
+       },
+       {
+        "id": "b2",
+        "kind": "text",
+        "label": "Beta",
+        "text": "Second item"
+       },
+       {
+        "id": "b3",
+        "kind": "text",
+        "label": "Gamma",
+        "text": "Third item"
+       }
+      ]
+     }
+    ]
+   },
+   "b": {
+    "id": "cf-sequence",
+    "title": "Three stages",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Show a three-stage causal chain",
+      "title": "Three items",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "text",
+        "label": "Alpha",
+        "text": "First item"
+       },
+       {
+        "id": "b2",
+        "kind": "text",
+        "label": "Beta",
+        "text": "Second item"
+       },
+       {
+        "id": "b3",
+        "kind": "text",
+        "label": "Gamma",
+        "text": "Third item"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "primary-vs-minor",
+   "note": "Same chart data; central finding versus supporting observation, expressed in takeaway only.",
+   "a": {
+    "id": "cf-primary",
+    "title": "Conductivity",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Present the central finding",
+      "title": "Conductivity",
+      "takeaway": "This sulfide number is the central result of the study",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "chart",
+        "chartKind": "bar",
+        "categories": [
+         "Oxide",
+         "Sulfide"
+        ],
+        "series": [
+         {
+          "name": "mS/cm",
+          "values": [
+           1.2,
+           12.5
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "b": {
+    "id": "cf-minor",
+    "title": "Conductivity",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Note a supporting observation",
+      "title": "Conductivity",
+      "takeaway": "A minor supporting observation beside the main claim",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "chart",
+        "chartKind": "bar",
+        "categories": [
+         "Oxide",
+         "Sulfide"
+        ],
+        "series": [
+         {
+          "name": "mS/cm",
+          "values": [
+           1.2,
+           12.5
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "evidence-vs-illustration",
+   "note": "Same image and list; evidence versus decorative context, expressed in visualDirection only.",
+   "a": {
+    "id": "cf-evidence",
+    "title": "Stack",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Show the cell",
+      "title": "Inside the stack",
+      "visualDirection": "the stack image is the key evidence for the claim",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "image",
+        "src": "",
+        "alt": "cell stack"
+       },
+       {
+        "id": "b2",
+        "kind": "list",
+        "items": [
+         "Cathode layer",
+         "Separator",
+         "Anode"
+        ]
+       }
+      ],
+      "layoutHint": {
+       "recipe": "media",
+       "mediaSide": "left"
+      }
+     }
+    ]
+   },
+   "b": {
+    "id": "cf-illustration",
+    "title": "Stack",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "Show the cell",
+      "title": "Inside the stack",
+      "visualDirection": "the stack image is decorative context only",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "image",
+        "src": "",
+        "alt": "cell stack"
+       },
+       {
+        "id": "b2",
+        "kind": "list",
+        "items": [
+         "Cathode layer",
+         "Separator",
+         "Anode"
+        ]
+       }
+      ],
+      "layoutHint": {
+       "recipe": "media",
+       "mediaSide": "left"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "novice-vs-expert",
+   "note": "Same content; audience changes materially. Audience is not consumed, so indifference is expected.",
+   "a": {
+    "id": "cf-novice",
+    "title": "Batteries",
+    "audience": "Undergraduates with no background",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "State the problem",
+      "title": "Leaks",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "list",
+        "items": [
+         "Flammable solvents",
+         "Dendrites pierce",
+         "Narrow window",
+         "Aging steals"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "b": {
+    "id": "cf-expert",
+    "title": "Batteries",
+    "audience": "Graduate examination committee",
+    "slides": [
+     {
+      "id": "s1",
+      "purpose": "State the problem",
+      "title": "Leaks",
+      "blocks": [
+       {
+        "id": "b1",
+        "kind": "list",
+        "items": [
+         "Flammable solvents",
+         "Dendrites pierce",
+         "Narrow window",
+         "Aging steals"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

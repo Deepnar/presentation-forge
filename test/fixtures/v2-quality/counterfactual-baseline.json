@@ -1,0 +1,27 @@
+{
+ "strong-vs-misses-target": {
+  "pairId": "strong-vs-misses-target",
+  "sensitive": false,
+  "differences": []
+ },
+ "compare-vs-sequence": {
+  "pairId": "compare-vs-sequence",
+  "sensitive": false,
+  "differences": []
+ },
+ "primary-vs-minor": {
+  "pairId": "primary-vs-minor",
+  "sensitive": false,
+  "differences": []
+ },
+ "evidence-vs-illustration": {
+  "pairId": "evidence-vs-illustration",
+  "sensitive": false,
+  "differences": []
+ },
+ "novice-vs-expert": {
+  "pairId": "novice-vs-expert",
+  "sensitive": false,
+  "differences": []
+ }
+}

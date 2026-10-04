@@ -1,0 +1,26 @@
+{
+  "id": "source-of-truth-project",
+  "audience": "Third-year computer science instructors grading a course project.",
+  "objective": "Present the Forge presentation compiler: what it does today, what it measured, what is planned.",
+  "sourcePack": "Implemented: six-recipe intent-to-scene compiler; deterministic output (byte-identical recompiles); preservation of customized geometry; detached-slide authority. Measured: 26/26 V2 tests green; full suite 877/878 with one pre-existing locale failure. Planned (not built): full recipe families; agent runtime; browser editor beyond demo. Limitation: process/comparison cards span full content height with sparse content.",
+  "requiredClaims": [
+    "Six recipes compile deterministically today",
+    "Customized geometry survives recompilation",
+    "Full recipe families are planned, not built"
+  ],
+  "forbiddenClaims": [
+    "The browser editor is complete",
+    "All 73 legacy layouts are ported",
+    "An agent runtime exists"
+  ],
+  "requiredEvidence": [
+    "the six recipe names",
+    "at least one measured test count"
+  ],
+  "nuance": "Implemented vs planned must stay visually and verbally distinct. A deck that presents the roadmap as shipped fails.",
+  "beats": ["system", "mechanism", "measured results", "limitations", "what is next"],
+  "visualStrategies": ["architecture diagram of intent-to-scene", "status-separated roadmap"],
+  "antiPatterns": ["roadmap as shipped features", "vague capability claims without measurements"],
+  "deterministicChecks": ["planned items absent from shipped-behavior claims", "no invented metrics"],
+  "l3Rubric": ["implemented/planned separation", "evidence-backed claims", "limitation honesty"]
+}
