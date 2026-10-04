@@ -6553,8 +6553,13 @@ created purely for ceremony. Legacy deck.yaml stays readable through the
 V2-0 bridge, extended type by type. Slice A converts `packages/model`
 (intent/scene/commands/legacy; `design.js` stays JS until the theme seam
 is typed in core extraction) with mechanical import-specifier updates only.
-Slice B adds `Project`/`Artifact`/`FileRef`/`SourceRef` plus a `ToolResult`
-envelope type for the later agent work.
+Slice B adds the remaining domain contracts `Project`/`Artifact`/
+`FileRef`/`SourceRef` plus the `DesignSystem` theme seam if the evidence
+says it belongs here (see Slice B proposal). Structured `ToolResult` /
+`ToolError` are explicitly out of V2-1: they belong to V2-8 Agent
+Runtime, where the tool registry, permissions, revision behaviour, and
+error semantics actually exist, and freezing that contract in the model
+package now would be premature.
 
 Done when: an old deck loads into V2 representation through package APIs
 with no user-visible change, `npm run typecheck` is clean, and the V2-0
@@ -6621,6 +6626,18 @@ seed). No tldraw without an explicit licensing decision.
 
 Done when: a user builds and revises a slide without opening a schema
 form, and a later agent content change preserves their geometry.
+Additionally, and explicitly: browser direct manipulation executes the
+shared command path rather than mutating scenes directly (the current
+demo page writes `element.paragraphs` in place — that seam must close
+here); inline human text edits have defined semantic/scene ownership so
+an unrelated agent semantic edit never silently overwrites them; human
+deletion of a compiler-generated element has defined persistence
+semantics (suppression/tombstone representation to be designed, not a
+local workaround) so a later recompile does not resurrect it;
+delete/restore participates in undo/redo; agent and human mutations use
+the same command/revision machinery; detached scenes remain manually
+editable; and only an explicit relayout/reset operation may
+intentionally discard applicable manual overrides.
 
 ### [ ] V2-6 cloud persistence and artifact lifecycle
 

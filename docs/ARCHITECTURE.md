@@ -1308,9 +1308,14 @@ paths yet, `packages/` holds the first agent-native primitive:
   layout-state contract, command types with apply/inverse shared by human
   and agent edits, a `DesignSystem` read-only view over `themes/*.yaml`
   tokens, and a legacy bridge (six types map, the rest report `unmapped`
-  rather than degrade). JSON Schema + ajv at the boundary, JSDoc typedefs
-  mapping 1:1 to future TypeScript interfaces — no `tsc` step yet, so the
-  existing suite is undisturbed.
+  rather than degrade). JSON Schema + ajv at the boundary; strict
+  TypeScript (`intent.ts`, `scene.ts`, `commands.ts`, `legacy.ts`)
+  imports compile-time types generated from the schemas
+  (`intent.generated.ts`, `scene.generated.ts`, checked in, drift-tested
+  by `test/v2-types-drift.test.js`), executed natively by Node 24 with
+  no build step and gated by `npm run typecheck`. Detached means
+  compiler-hands-off, not read-only: manual commands apply, locked
+  elements still reject, recompilation returns the scene untouched.
 - `packages/compiler/` — deterministic intent-to-scene for six recipes
   (title, content, comparison, media, chart, process). Recompilation
   preserves `customized` geometry by `semanticRef`, carries human-added
@@ -1321,12 +1326,17 @@ paths yet, `packages/` holds the first agent-native primitive:
   survive as editable OOXML; empty image sources degrade to a labelled
   seat, never a dead deck.
 
-Proven by `test/v2-*.test.js` (26 tests: contracts, determinism, bounds,
-preservation, legacy mapping, unzip-and-assert text/chart survival) and
+Proven by `test/v2-*.test.js` (32 tests: contracts, determinism, bounds,
+preservation including detached-editability, legacy mapping, generated-type
+drift, unzip-and-assert text/chart survival) and
 by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
-representative themes). Known slice limits live in the V2-0 roadmap entry:
+representative themes). The generator emits structural types without
+giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay
+enforced by AJV. Known slice limits live in the V2-0 roadmap entry:
 cards span full content height, plate themes render flat, text budgets
-are fixed fractions awaiting `src/fit.js` integration.
+are fixed fractions awaiting `src/fit.js` integration; inline human
+text edits and human deletes have no persistence semantics yet by
+explicit V2-5 design deferral.
 
 ## The web shell
 
