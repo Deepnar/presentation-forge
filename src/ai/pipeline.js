@@ -26,7 +26,8 @@ import { chatJSON, researchProfile, researchExcerptCap, authorTransport } from "
 import { loadTheme } from "../theme.js";
 import { render } from "../render.js";
 import { preview } from "../preview.js";
-import { renderReport, donorStatus, donorDirFor, presentSections } from "../report.js";
+import { renderReport, donorStatus, donorDirFor } from "../report.js";
+import { presentReportSections } from "../../packages/model/report.ts";
 import { analyzeQuality, qualityProblems } from "./quality.js";
 import { supplyDeckImages } from "./images.js";
 import { creditsSlide } from "../credits.js";
@@ -453,7 +454,7 @@ function reportBrief(report) {
   const content = report?.content ?? {};
   const lines = [report?.title ?? ""];
   if (report?.subtitle) lines.push(report.subtitle);
-  for (const name of presentSections(report)) {
+  for (const name of presentReportSections(report)) {
     const sec = content[name];
     if (!sec || typeof sec !== "object") continue;
     const text = [...(sec.paragraphs ?? []), ...(sec.entries ?? [])]

@@ -8,7 +8,8 @@ import { loadIdentity } from "./identity.js";
 import { excerptResearch } from "./research.js";
 import { flattenSlide } from "./grounding.js";
 import { selectResearch } from "./retrieve.js";
-import { REPORT_SECTIONS, IMAGE_CREDITS, reportStructureForDeck, validateReport } from "../report.js";
+import { DEFAULT_REPORT_SECTIONS as REPORT_SECTIONS, REPORT_IMAGE_CREDITS_SECTION as IMAGE_CREDITS } from "../../packages/model/report.ts";
+import { reportStructureForDeck, validateReport } from "../report.js";
 
 export const REPORT_DEPTHS = ["full", "brief"];
 

@@ -1,0 +1,6 @@
+{
+  "name": "@forge/renderer-docx",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "ReportSpec + donor DOCX bytes -> deterministic DOCX bytes, preserving donor package chrome; no filesystem or external pagination dependencies."
+}

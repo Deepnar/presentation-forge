@@ -14,5 +14,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["packages/model/**/*.ts", "packages/core/**/*.ts", "packages/renderer-pptx/**/*.ts", "test/v2-generated-usage.test.ts"]
+  "include": ["packages/model/**/*.ts", "packages/core/**/*.ts", "packages/renderer-pptx/**/*.ts", "packages/renderer-docx/**/*.ts", "test/v2-generated-usage.test.ts"]
 }
