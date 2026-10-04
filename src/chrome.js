@@ -1,16 +1,19 @@
 import { access } from "node:fs/promises";
-import path from "node:path";
 import sharp from "sharp";
 import { ROOT } from "./paths.js";
 import { resolveBrandPath } from "./tenant.js";
 import { hex } from "./theme.js";
 import { DIVIDER_TYPES, REFERENCE_TYPES } from "./ai/team.js";
+import { SCENE_W, SCENE_H } from "../packages/model/scene-constants.ts";
+import {
+  effectiveBranding,
+  planTitleBanner,
+  planContentMark,
+  reservationForTopRight,
+  planContentChrome,
+} from "../packages/core/chrome.ts";
 
-const CANVAS = { w: 13.333, h: 7.5 };
-
-const BANNER = { maxW: 6.4, y: 0.30 };   // title slide, horizontally centred
-const CREST = { h: 0.82, right: 0.55, y: 0.26 };
-const FOOT = { y: 6.92, h: 0.3 };
+const CANVAS = { w: SCENE_W, h: SCENE_H };
 
 async function probe(file) {
   const abs = resolveBrandPath(file, ROOT);
@@ -45,13 +48,6 @@ export async function loadBrand(identity) {
   return { banner, crest, crestLight, crestDark, watermark, missing };
 }
 
-function luminance(c) {
-  const s = String(c ?? "").replace(/^#/, "");
-  if (s.length < 6) return 1;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16) / 255);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
 function crestFor(brand) {
   return brand.crest ?? brand.crestLight ?? brand.crestDark ?? null;
 }
@@ -61,70 +57,84 @@ export function brandingMode(identity) {
 }
 
 export function applyTitleChrome(slide, { brand, identity }) {
-  if (brandingMode(identity) !== "full") return;
-  if (!brand.banner) return;
-  const w = Math.min(BANNER.maxW, CANVAS.w - 2);
-  const h = w / brand.banner.ratio;
+  const plan = planTitleBanner(
+    effectiveBranding(brandingMode(identity)),
+    brand.banner?.ratio ?? null,
+  );
+  if (!plan.place) return;
   slide.addImage({
     path: brand.banner.path,
-    x: (CANVAS.w - w) / 2,
-    y: BANNER.y,
-    w,
-    h,
+    x: plan.box.x,
+    y: plan.box.y,
+    w: plan.box.w,
+    h: plan.box.h,
   });
+}
+
+function presenterFallback(identity) {
+  const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
+  return presenting.length
+    ? presenting.map((m) => m.name).join(" · ")
+    : identity.team?.label || "";
 }
 
 export function applyContentChrome(slide, { brand, theme, identity, data, index, total, bg }) {
   const cfg = identity.chrome ?? {};
-  const branding = brandingMode(identity);
+  const branding = effectiveBranding(brandingMode(identity));
   const mark = crestFor(brand);
 
-  if (branding !== "none" && cfg.crest_on_content_slides !== false && mark) {
-    const h = CREST.h;
-    const w = h * mark.ratio;
+  const content = planContentChrome({
+    branding,
+    selectedCrestRatio: mark?.ratio ?? null,
+    crestOnContentSlides: cfg.crest_on_content_slides,
+    presenterOnSlides: cfg.presenter_on_slides,
+    slideNumbers: cfg.slide_numbers,
+    suppressPresenter: DIVIDER_TYPES.has(data.type) || REFERENCE_TYPES.has(data.type),
+    presenterText: data?.presenter?.trim() || presenterFallback(identity),
+    index,
+    total,
+    background: bg ?? theme.palette.bg,
+    mutedInk: hex(theme.palette.ink_muted),
+    captionFamily: theme.type.caption?.family,
+  });
+
+  if (content.mark.place) {
     slide.addImage({
       path: mark.path,
-      x: CANVAS.w - CREST.right - w,
-      y: CREST.y,
-      w,
-      h,
+      x: content.mark.box.x,
+      y: content.mark.box.y,
+      w: content.mark.box.w,
+      h: content.mark.box.h,
     });
   }
 
-  const bgColor = bg ?? theme.palette.bg;
-  const muted = hex(luminance(bgColor) < 0.45 ? "#FFFFFF" : theme.palette.ink_muted);
-  const footOpacity = luminance(bgColor) < 0.45 ? 55 : 0;
-  const footFont = theme.type.caption?.family ?? "Inter";
-
-  if (branding !== "none" && cfg.presenter_on_slides !== false) {
-    if (!DIVIDER_TYPES.has(data.type) && !REFERENCE_TYPES.has(data.type)) {
-      const presenting = (identity.team?.members ?? []).filter((m) => m.presenting);
-      const fallback = presenting.length
-        ? presenting.map((m) => m.name).join(" · ")
-        : identity.team?.label || "";
-      const who = data?.presenter?.trim() || fallback;
-      if (who) {
-        slide.addText(who, {
-          x: 0.7, y: FOOT.y, w: 6.5, h: FOOT.h,
-          fontFace: footFont, fontSize: 9, color: muted, transparency: footOpacity,
-          align: "left", valign: "middle",
-        });
-      }
-    }
+  if (content.presenter) {
+    slide.addText(content.presenter.text, {
+      x: content.presenter.box.x, y: content.presenter.box.y,
+      w: content.presenter.box.w, h: content.presenter.box.h,
+      fontFace: content.presenter.style.fontFamily,
+      fontSize: content.presenter.style.fontSize,
+      color: content.presenter.style.color,
+      transparency: Math.round((1 - content.presenter.style.opacity) * 100),
+      align: content.presenter.style.align, valign: content.presenter.style.valign,
+    });
   }
 
-  if (cfg.slide_numbers !== false) {
-    slide.addText(`${index} / ${total}`, {
-      x: CANVAS.w - 1.9, y: FOOT.y, w: 1.2, h: FOOT.h,
-      fontFace: footFont, fontSize: 9, color: muted,
-      align: "right", valign: "middle",
+  if (content.slideNumber) {
+    slide.addText(content.slideNumber.text, {
+      x: content.slideNumber.box.x, y: content.slideNumber.box.y,
+      w: content.slideNumber.box.w, h: content.slideNumber.box.h,
+      fontFace: content.slideNumber.style.fontFamily,
+      fontSize: content.slideNumber.style.fontSize,
+      color: content.slideNumber.style.color,
+      align: content.slideNumber.style.align, valign: content.slideNumber.style.valign,
     });
   }
 }
 
 export function reservedTopRight(brand, identity) {
   if (!brand.crest || brandingMode(identity) === "none") return 0;
-  return CREST.h * brand.crest.ratio + CREST.right + 0.25;
+  return reservationForTopRight(brand.crest.ratio ?? null);
 }
 
 export { CANVAS };
