@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitScale, fitOneLine, heightOf, floorOf, type FitStyle } from "../core/fit.ts";
+import { fitOneLine, fitScaleStack, fitLineHeight, type FitStyle } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -202,51 +202,9 @@ function wordGuardScale(
   return scale;
 }
 
-// Paragraph-aware wrap fit built from the canonical heightOf: total
-// height is the SUM of paragraph heights, because joining paragraphs
-// into one string loses their line breaks inside lineCount and
-// under-counts multi-bullet elements. Stepping and floor semantics
-// mirror fitScale exactly (shrink-only, floor is a stop, not a goal).
-function fitWrapScale(
-  texts: string[],
-  box: FitBox,
-  style: FitStyle,
-  sink: FitDiagnostic[],
-  slideId: string,
-  elementId: string,
-  semanticRef: string | undefined,
-  role: string,
-): number {
-  const ratio = style.line ?? 1.35;
-  const nominal = style.size;
-  const min = 0.62;
-  const step = 0.04;
-  const floor = floorOf(style);
-  const minScale = floor == null ? min : Math.min(1, Math.max(min, floor / nominal));
-  const totalH = (s: number): number =>
-    texts.reduce((n, t) => n + heightOf(t, box.w, { ...style, size: nominal * s }, ratio), 0);
-
-  let need: number | null = null;
-  for (let s = 1; s >= min; s -= step) {
-    if (totalH(s) <= box.h) { need = s; break; }
-  }
-
-  const report = (neededPt: number, floorPt: number): void =>
-    emitDiagnostic(sink, slideId, elementId, semanticRef, role, "floor-hit",
-      `${role} would need ${Math.round(neededPt * 10) / 10}pt — floor ${Math.round(floorPt * 10) / 10}pt (cut text, don't shrink)`);
-
-  if (need != null) {
-    if (minScale > need) {
-      if (floor != null) report(need * nominal, minScale * nominal);
-      return Math.round(minScale * 100) / 100;
-    }
-    return Math.round(need * 100) / 100;
-  }
-
-  if (floor != null) report(min * nominal, minScale * nominal);
-  return Math.round(minScale * 100) / 100;
-}
-
+// Paragraph-aware wrap fit: total height is the canonical SUM of
+// paragraph heights (fitScaleStack), plus the longest-word guard.
+// No floor/step/min arithmetic lives here — core owns it.
 function fitWrap(
   paras: StyledPara[],
   box: FitBox,
@@ -257,11 +215,11 @@ function fitWrap(
 ): Paragraph[] {
   if (!paras.length) return [];
   const rep = representative(paras);
-  let scale: number;
-  if (!rep) {
-    scale = 1;
-  } else {
-    scale = fitWrapScale(paras.map(paraText), box, rep.style, sink, slideId, elementId, semanticRef, rep.role);
+  let scale = 1;
+  if (rep) {
+    const wrapEvents: string[] = [];
+    scale = fitScaleStack(paras.map(paraText), box.w, box.h, rep.style, { events: wrapEvents });
+    drainEvents(sink, slideId, elementId, semanticRef, rep.role, "floor-hit", wrapEvents);
   }
   const wordScale = wordGuardScale(paras, box.w, sink, slideId, elementId, semanticRef);
   return applyScale(paras, Math.min(scale, wordScale));
@@ -285,18 +243,14 @@ function fitOneLineEl(
       if (s < scale) scale = s;
     }
   }
-  // One line still owns vertical space: clamp the single line into the box.
+  // One line still owns vertical space: the single line must fit the
+  // box height under the same shrink-stop semantics as the width fit.
   const rep = representative(paras);
   if (rep) {
-    const lineH = (rep.size / 72) * (rep.style.line ?? 1.35);
-    if (lineH > 0 && lineH * scale > box.h) {
-      const clamped = Math.max(0.1, box.h / lineH);
-      if (clamped < scale) {
-        emitDiagnostic(sink, slideId, elementId, semanticRef, rep.role, "floor-hit",
-          `${rep.role} line needs ${round1(lineH * scale)}in — box ${round1(box.h)}in (cut text, don't shrink)`);
-        scale = clamped;
-      }
-    }
+    const vEvents: string[] = [];
+    const vScale = fitLineHeight(rep.style, box.h, { events: vEvents });
+    drainEvents(sink, slideId, elementId, semanticRef, rep.role, "floor-hit", vEvents);
+    scale = Math.min(scale, vScale);
   }
   return applyScale(paras, scale);
 }
@@ -327,21 +281,18 @@ function fitStat(
       drainEvents(sink, slideId, elementId, semanticRef, r.role, "word-floor-hit", events);
       if (s < valueScale) valueScale = s;
     }
-    const valueLineH = (valueRep.size / 72) * (valueRep.style.line ?? 1);
-    if (valueLineH > 0 && valueLineH * valueScale > valueH) {
-      const clamped = Math.max(0.1, valueH / valueLineH);
-      if (clamped < valueScale) {
-        emitDiagnostic(sink, slideId, elementId, semanticRef, valueRep.role, "floor-hit",
-          `${valueRep.role} line needs ${round1(valueLineH * valueScale)}in — box ${round1(valueH)}in (cut text, don't shrink)`);
-        valueScale = clamped;
-      }
-    }
+    const vEvents: string[] = [];
+    const vScale = fitLineHeight(valueRep.style, valueH, { events: vEvents });
+    drainEvents(sink, slideId, elementId, semanticRef, valueRep.role, "floor-hit", vEvents);
+    valueScale = Math.min(valueScale, vScale);
   }
   const labelText = labelParas.map(paraText);
   const labelRep = representative(labelParas);
   let labelScale = 1;
   if (labelRep && labelText.some((t) => t.trim())) {
-    labelScale = fitWrapScale(labelText, { ...box, h: labelH }, labelRep.style, sink, slideId, elementId, semanticRef, labelRep.role);
+    const wrapEvents: string[] = [];
+    labelScale = fitScaleStack(labelText, box.w, labelH, labelRep.style, { events: wrapEvents });
+    drainEvents(sink, slideId, elementId, semanticRef, labelRep.role, "floor-hit", wrapEvents);
     const wordScale = wordGuardScale(labelParas, box.w, sink, slideId, elementId, semanticRef);
     labelScale = Math.min(labelScale, wordScale);
   }
@@ -349,6 +300,30 @@ function fitStat(
     ...applyScale([valuePara], valueScale),
     ...applyScale(labelParas, labelScale),
   ];
+}
+
+interface FitCtxArgs {
+  slideId: string;
+  elementId: string;
+  semanticRef: string | undefined;
+  sink: FitDiagnostic[];
+}
+
+// One dispatch for every fit, fresh or refit: the stored/emitted
+// policy decides the semantics, never IDs, text, sizes, or roles.
+function fitWithPolicy(
+  styled: StyledPara[],
+  box: FitBox,
+  policy: FitPolicy,
+  ctx: FitCtxArgs,
+): Paragraph[] {
+  if (policy === "stat") {
+    return fitStat(styled, box, ctx.slideId, ctx.elementId, ctx.semanticRef, ctx.sink);
+  }
+  if (policy === "one-line") {
+    return fitOneLineEl(styled, box, ctx.slideId, ctx.elementId, ctx.semanticRef, ctx.sink);
+  }
+  return fitWrap(styled, box, ctx.slideId, ctx.elementId, ctx.semanticRef, ctx.sink);
 }
 
 export interface FittedTextInput {
@@ -368,11 +343,9 @@ export function fittedTextEl(
 ): SceneElement {
   const styled = styleRuns(design, input.paragraphs);
   const policy = input.policy ?? "wrap";
-  const paragraphs = policy === "stat"
-    ? fitStat(styled, input.box, input.slideId, input.id, input.semanticRef, input.sink)
-    : policy === "one-line"
-      ? fitOneLineEl(styled, input.box, input.slideId, input.id, input.semanticRef, input.sink)
-      : fitWrap(styled, input.box, input.slideId, input.id, input.semanticRef, input.sink);
+  const paragraphs = fitWithPolicy(styled, input.box, policy, {
+    slideId: input.slideId, elementId: input.id, semanticRef: input.semanticRef, sink: input.sink,
+  });
   const el: SceneElement = {
     id: input.id,
     kind: "text",
@@ -383,6 +356,10 @@ export function fittedTextEl(
     z: input.z,
     provenance: "compiler",
     paragraphs,
+    // Compiler/render metadata, not Layer-A intent: lets customized
+    // recompilation refit with the same policy the fresh compile used.
+    // Renderers ignore it.
+    fitPolicy: policy,
   };
   if (input.semanticRef !== undefined) el.semanticRef = input.semanticRef;
   return el;
@@ -391,8 +368,10 @@ export function fittedTextEl(
 // Refit path for preserved customized geometry: shrink-only from the
 // CURRENT (already fitted) sizes against the PRESERVED box. Never grows
 // back toward nominal — the shrink-only contract — and never touches
-// geometry. Runs without a stored role (pre-3E-1 scenes, human text)
-// are left alone.
+// geometry. Refits with the element's stored compiler policy, so a
+// customized stat stays stat-aware and a one-line element stays
+// one-line-aware. Runs without a stored role (pre-3E-1 scenes, human
+// text) are left alone.
 export function refitTextEl(
   design: DesignSystem,
   el: SceneElement,
@@ -434,12 +413,7 @@ export function refitTextEl(
       ...(p.bullet !== undefined ? { bullet: p.bullet } : {}),
     });
   }
-  const rep = representative(styled);
-  if (!rep) return;
-  const wrapScale = fitWrapScale(
-    styled.map(paraText), { x: el.x, y: el.y, w: el.w, h: el.h },
-    { ...rep.style, size: rep.size }, sink, slideId, el.id, el.semanticRef, rep.role,
-  );
-  const wordScale = wordGuardScale(styled, el.w, sink, slideId, el.id, el.semanticRef);
-  el.paragraphs = applyScale(styled, Math.min(wrapScale, wordScale));
+  el.paragraphs = fitWithPolicy(styled, { x: el.x, y: el.y, w: el.w, h: el.h }, el.fitPolicy ?? "wrap", {
+    slideId, elementId: el.id, semanticRef: el.semanticRef, sink,
+  });
 }

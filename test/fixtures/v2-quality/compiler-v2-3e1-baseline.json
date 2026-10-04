@@ -13,6 +13,7 @@
             11.93,
             1.4
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "display",
@@ -35,6 +36,7 @@
             3.61
           ],
           "semanticRef": "s1b1",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -61,6 +63,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "heading",
@@ -83,6 +86,7 @@
             4.41
           ],
           "semanticRef": "s2b1",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -133,6 +137,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "display",
@@ -166,6 +171,7 @@
             0.88
           ],
           "semanticRef": "s3left",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -207,6 +213,7 @@
             0.88
           ],
           "semanticRef": "s3right",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -237,6 +244,7 @@
             2.78
           ],
           "semanticRef": "s3v",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -274,6 +282,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "heading",
@@ -307,6 +316,7 @@
             4.46
           ],
           "semanticRef": "s4body",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -349,6 +359,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "display",
@@ -382,6 +393,7 @@
             0.4
           ],
           "semanticRef": "s5c",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "caption",
@@ -408,6 +420,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "display",
@@ -441,6 +454,7 @@
             0.4
           ],
           "semanticRef": "s6a",
+          "fitPolicy": "one-line",
           "runs": [
             {
               "role": "subhead",
@@ -463,6 +477,7 @@
             0.72
           ],
           "semanticRef": "s6a",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -504,6 +519,7 @@
             0.4
           ],
           "semanticRef": "s6b",
+          "fitPolicy": "one-line",
           "runs": [
             {
               "role": "subhead",
@@ -526,6 +542,7 @@
             0.72
           ],
           "semanticRef": "s6b",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -567,6 +584,7 @@
             0.4
           ],
           "semanticRef": "s6c",
+          "fitPolicy": "one-line",
           "runs": [
             {
               "role": "subhead",
@@ -589,6 +607,7 @@
             0.72
           ],
           "semanticRef": "s6c",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",
@@ -624,6 +643,7 @@
             11.93,
             1
           ],
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "display",
@@ -646,6 +666,7 @@
             4.41
           ],
           "semanticRef": "s7b1",
+          "fitPolicy": "wrap",
           "runs": [
             {
               "role": "body",

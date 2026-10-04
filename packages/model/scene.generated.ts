@@ -29,6 +29,7 @@ export interface SceneElement {
   provenance: "compiler" | "agent" | "human" | "import";
   semanticRef?: string;
   customized?: boolean;
+  fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {
     form?: "rect" | "roundRect" | "ellipse";

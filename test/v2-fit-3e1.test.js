@@ -8,6 +8,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import JSZip from "jszip";
 import { compileDeck, compileDeckDetailed, compileSlide, recompileSlide } from "../packages/compiler/compile.js";
 import { fittedTextEl, refitTextEl } from "../packages/compiler/text-fit.ts";
+import { fitScale, fitOneLine, fitScaleStack, fitLineHeight } from "../packages/core/fit.ts";
 import { resolveRunStyle } from "../packages/compiler/typography.ts";
 import { validateScene } from "../packages/model/scene.ts";
 import { semanticProjection } from "../packages/core/scene-quality.ts";
@@ -183,7 +184,8 @@ describe("v2-3e1 fit behaviors", () => {
       z: 10, sink,
     });
     const size = el.paragraphs[0].runs[0].size;
-    assert.equal(size, 21.9, `clamps at the heading floor grid, got ${size}`);
+    assert.ok(size >= 22, `emitted size must not cross the 22pt floor, got ${size}`);
+    assert.equal(size, 22, `floor clamp is exact, got ${size}`);
     assert.ok(sink.some((d) => d.kind === "floor-hit" && d.elementId === "e1" && d.slideId === "s1" && d.semanticRef === "b1" && d.role === "heading"));
     const kept = el.paragraphs[0].runs[0].text.split(/\s+/).filter(Boolean);
     for (const w of words) assert.ok(kept.includes(w), `keeps word ${w}`);
@@ -300,6 +302,133 @@ describe("v2-3e1 fit behaviors", () => {
     const before = JSON.stringify(el);
     refitTextEl(design, el, "s1", []);
     assert.equal(JSON.stringify(el), before);
+  });
+});
+
+describe("v2-3e1 exact floors", () => {
+  it("fitScale never emits below the effective floor: heading 30/22", () => {
+    const style = { family: "Merriweather", size: 30, line: 1.18, _role: "heading" };
+    const events = [];
+    const scale = fitScale("A heading far too long for the tiny box it was given to live in", 2, 0.4, style, { events });
+    assert.equal(scale, 22 / 30, `exact floor ratio, got ${scale}`);
+    assert.equal(30 * scale >= 22, true);
+    assert.ok(events.length >= 1, "floor crossing is reported");
+  });
+
+  it("fitScale never emits below the effective floor: subhead 15/14", () => {
+    const style = { family: "Inter", size: 15, line: 1.45, _role: "subhead" };
+    const scale = fitScale("An over-long subhead that cannot fit on one line inside the chip it lives in", 2.2, 0.4, style, { events: [] });
+    assert.equal(scale, 14 / 15, `exact floor ratio, got ${scale}`);
+    assert.ok(15 * scale >= 14);
+  });
+
+  it("theme nominal below the role floor stays put: body 13/14", () => {
+    const style = { family: "Inter", size: 13, line: 1.55, _role: "body" };
+    const events = [];
+    const scale = fitScale("A body that is far too long for the box it has been given and cannot fit at a readable size", 2.5, 0.4, style, { events });
+    assert.equal(scale, 1, "floor never grows the theme");
+    assert.ok(events.length >= 1, "still reported");
+  });
+
+  it("fitOneLine never emits below the effective floor", () => {
+    const events = [];
+    const scale = fitOneLine("99.9%", 0.5, { family: "Merriweather", size: 54, line: 1.0, _role: "stat" }, { events });
+    assert.ok(54 * scale >= 24, `stat floor holds, got ${54 * scale}`);
+    assert.ok(events.length >= 1, "floor crossing is reported");
+    const heading = fitOneLine(
+      "Antidisestablishmentarianism", 1.0,
+      { family: "Merriweather", size: 30, line: 1.18, _role: "heading" }, { events: [] },
+    );
+    assert.ok(30 * heading >= 22, `heading floor holds, got ${30 * heading}`);
+  });
+
+  it("fitScaleStack agrees with fitScale on a single paragraph", () => {
+    const style = { family: "Inter", size: 30, line: 1.18, _role: "heading" };
+    const text = "A heading long enough to need shrinking but not that long";
+    assert.equal(
+      fitScaleStack([text], 5, 1.1, style, {}),
+      fitScale(text, 5, 1.1, style, {}),
+    );
+  });
+
+  it("fitScaleStack sums paragraph heights", () => {
+    const style = { family: "Inter", size: 13, line: 1.55 };
+    const one = fitScaleStack(["Short", "Tiny"], 6, 10, style, {});
+    assert.equal(one, 1);
+    const tight = fitScaleStack(["Short", "A much longer bullet that needs several wrapped lines to be fully expressed", "Tiny"], 6, 0.5, style, {});
+    assert.ok(tight < 1, `stacked paragraphs constrain the scale, got ${tight}`);
+  });
+
+  it("fitLineHeight holds the floor for short boxes", () => {
+    const events = [];
+    const scale = fitLineHeight({ family: "Inter", size: 15, line: 1.45, _role: "subhead" }, 0.1, { events });
+    assert.ok(15 * scale >= 14, `subhead floor holds vertically, got ${15 * scale}`);
+    assert.ok(events.length >= 1, "vertical floor crossing is reported");
+    assert.equal(fitLineHeight({ family: "Inter", size: 15, line: 1.45, _role: "subhead" }, 10, {}), 1);
+  });
+});
+
+describe("v2-3e1 vertical floor constraints", () => {
+  it("tiny one-line box holds the floor and diagnoses", async () => {
+    const design = await warmDesign();
+    const sink = [];
+    const el = fittedTextEl(design, {
+      id: "e1", slideId: "s1",
+      box: { x: 1, y: 1, w: 4, h: 0.1 },
+      paragraphs: [{ runs: [{ text: "Badge", role: "subhead", bold: true }] }],
+      z: 10, sink, policy: "one-line",
+    });
+    const size = el.paragraphs[0].runs[0].size;
+    assert.ok(size >= 14, `subhead floor holds vertically, got ${size}`);
+    assert.ok(sink.some((d) => d.kind === "floor-hit" && d.elementId === "e1"));
+    assert.equal(el.paragraphs[0].runs[0].text, "Badge");
+  });
+
+  it("sequence badges carry the one-line policy", async () => {
+    const design = await warmDesign();
+    const { scenes } = compileDeckDetailed({
+      id: "d", title: "D",
+      slides: [{
+        id: "s1", purpose: "p", title: "Steps", relationship: "sequence",
+        blocks: [
+          { id: "q1", kind: "text", label: "One", text: "First" },
+          { id: "q2", kind: "text", label: "Two", text: "Second" },
+        ],
+      }],
+    }, design);
+    const badge = scenes[0].elements.find((e) => e.id === "s1:q1:badge");
+    assert.ok(badge && badge.kind === "text");
+    assert.equal(badge.fitPolicy, "one-line");
+    assert.ok(badge.paragraphs[0].runs[0].size >= 14, "badge at or above the subhead floor");
+  });
+
+  it("tiny-height stat holds the value floor and diagnoses", async () => {
+    const design = await warmDesign();
+    const sink = [];
+    const el = fittedTextEl(design, {
+      id: "e1", slideId: "s1",
+      box: { x: 1, y: 1, w: 4, h: 0.4 },
+      paragraphs: [
+        { runs: [{ text: "12.5", role: "stat", bold: true }] },
+        { runs: [{ text: "millisiemens per centimetre", role: "body" }] },
+      ],
+      z: 10, sink, policy: "stat",
+    });
+    const [value, label] = el.paragraphs.map((p) => p.runs[0]);
+    assert.ok(value.size >= 24, `stat value floor holds, got ${value.size}`);
+    assert.ok(sink.some((d) => d.kind === "floor-hit" && d.elementId === "e1"));
+    assert.equal(value.text, "12.5");
+    assert.ok(label.text.includes("millisiemens"), "label text complete");
+  });
+
+  it("emitted compiler text always carries its fit policy", async () => {
+    const design = await warmDesign();
+    const { scenes } = compileDeckDetailed(mechanismDeck(), design);
+    for (const scene of scenes) {
+      for (const el of scene.elements.filter((e) => e.kind === "text")) {
+        assert.ok(["wrap", "one-line", "stat"].includes(el.fitPolicy), `${scene.id}/${el.id} stores a fit policy`);
+      }
+    }
   });
 });
 
@@ -476,6 +605,61 @@ describe("v2-3e1 preservation under fit", () => {
     scene = recompileSlide(slide, scene, design);
     assert.ok(scene.elements.some((e) => e.id === addedId));
   });
+
+  it("customized stat keeps stat policy, floor, and full text", async () => {
+    const design = await warmDesign();
+    const slide = {
+      id: "s1", purpose: "p", title: "Figure", rhetoricalRole: "evidence",
+      blocks: [{ id: "st", kind: "stat", value: "12.5", label: "mS/cm", emphasis: "primary" }],
+    };
+    let scene = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design).scenes[0];
+    const target = scene.elements.find((e) => e.kind === "text" && e.semanticRef === "st");
+    assert.equal(target.fitPolicy, "stat");
+    // Human shrinks the tile; the label then grows substantially.
+    applyCommand(scene, { type: "element.resize", id: target.id, w: 3, h: 0.9 });
+    const edited = JSON.parse(JSON.stringify(slide));
+    edited.blocks[0].label = "millisiemens per centimetre measured at room temperature across every sample in the study";
+    const sink = [];
+    scene = recompileSlide(edited, scene, design, await planned(edited, design), sink);
+    const kept = scene.elements.find((e) => e.id === target.id);
+    assert.equal(kept.x, target.x);
+    assert.equal(kept.y, target.y);
+    assert.equal(kept.w, 3);
+    assert.equal(kept.h, 0.9);
+    assert.equal(kept.fitPolicy, "stat", "stat policy survives stable-ID preservation");
+    const [value, label] = kept.paragraphs.map((p) => p.runs[0]);
+    assert.equal(value.role, "stat");
+    assert.ok(value.size >= 24, `label cannot force the value through its floor, got ${value.size}`);
+    assert.ok(value.text.includes("12.5"), "value survives");
+    assert.ok(label.text.includes("millisiemens"), "long label survives complete");
+    assert.ok(sink.length > 0, "insufficient preserved geometry diagnoses");
+  });
+
+  it("customized one-line badge keeps one-line policy, never degrading to wrap", async () => {
+    const design = await warmDesign();
+    const slide = {
+      id: "s1", purpose: "p", title: "Steps", relationship: "sequence",
+      blocks: [
+        { id: "q1", kind: "text", label: "One", text: "First" },
+        { id: "q2", kind: "text", label: "Two", text: "Second" },
+      ],
+    };
+    let scene = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design).scenes[0];
+    const badge = scene.elements.find((e) => e.id === "s1:q1:badge");
+    assert.equal(badge.fitPolicy, "one-line");
+    // Human flattens the badge; a wrap refit would treat the digit as
+    // flowing text, while one-line fitting holds the subhead floor.
+    applyCommand(scene, { type: "element.resize", id: badge.id, w: badge.w, h: 0.15 });
+    const sink = [];
+    scene = recompileSlide(slide, scene, design, await planned(slide, design), sink);
+    const kept = scene.elements.find((e) => e.id === badge.id);
+    assert.equal(kept.w, badge.w);
+    assert.equal(kept.h, 0.15);
+    assert.equal(kept.fitPolicy, "one-line", "one-line policy survives stable-ID preservation");
+    assert.ok(kept.paragraphs[0].runs[0].size >= 14, `badge floor holds, got ${kept.paragraphs[0].runs[0].size}`);
+    assert.equal(kept.paragraphs[0].runs[0].text, "1");
+    assert.ok(sink.length > 0, "insufficient preserved geometry diagnoses");
+  });
 });
 
 describe("v2-3e1 semantics and themes", () => {
@@ -602,6 +786,7 @@ describe("v2-3e1 baseline", () => {
           const o = { id: e.id, kind: e.kind, geom: [r2(e.x), r2(e.y), r2(e.w), r2(e.h)] };
           if (e.semanticRef !== undefined) o.semanticRef = e.semanticRef;
           if (e.kind === "text") {
+            if (e.fitPolicy !== undefined) o.fitPolicy = e.fitPolicy;
             o.runs = (e.paragraphs ?? []).flatMap((p) => p.runs.map((r) => {
               const q = { role: r.role, family: r.family, weight: r.weight, size: r.size, tracking: r.tracking, line: r.line };
               if (r.transform !== undefined) q.transform = r.transform;

@@ -6850,7 +6850,7 @@ customized/detached preservation remain hard invariants.
 
 Sequenced as three slices; the parent stays open until all three land.
 
-### [x] V2-3E-1 — typography truth + fit/budgets
+### [~] V2-3E-1 — typography truth + fit/budgets (correction pass in review)
 
 Layer-C TextRuns carry resolved typography (`role/family/weight/
 tracking/line`, `transform: upper` where declared) via one canonical
@@ -6862,6 +6862,14 @@ customized geometry is refit against the preserved box; detached
 returns untouched; historical baselines byte-identical with a new
 focused 3E-1 baseline beside them.
 
+Correction (unaccepted — this entry stays [~] until review passes):
+exact floor stops (no rounded scale may emit below its effective
+floor), paragraph-stack fitting canonicalized into `core/fit.ts`
+(`fitScaleStack`, shared shrink-search and floor rule), vertical
+one-line/stat constraints obey floor semantics (`fitLineHeight`),
+stored `fitPolicy` on text elements so customized recompilation refits
+with the same policy, SVG shares the core emphasis/transform helpers.
+
 > **Learned.** Because SlideScene is the visual source of truth and
 > renderers do not receive DesignSystem, typography used for fitting
 > must be resolved into Layer C rather than existing only transiently
@@ -6871,6 +6879,14 @@ focused 3E-1 baseline beside them.
 > using heuristic text-height arithmetic — which is why the wrap fit
 > sums per-paragraph canonical heights instead of measuring one joined
 > string (joining loses paragraph breaks inside `lineCount`).
+>
+> Floor diagnostics and floor enforcement are separate requirements:
+> reporting that a floor was crossed is insufficient if the emitted
+> size still crosses it — a rounded clamp scale (21.9pt against a 22pt
+> floor) is a defect the diagnostic cannot excuse. Customized
+> recompilation must preserve compiler fit policy as well as geometry;
+> otherwise a stat/one-line element can change fitting semantics after
+> a human resize.
 
 ### [ ] V2-3E-2 — deterministic QA completion
 

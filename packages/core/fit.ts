@@ -74,6 +74,68 @@ export function floorOf(style: FitStyle): number | null {
   return floorPt(style, null);
 }
 
+interface FloorRule {
+  // Effective floor in pt: min(role floor, nominal), so the floor never
+  // grows a theme whose own size sits below its role floor.
+  floor: number | null;
+  // Exact lower bound on the returned scale. When the floor (not the
+  // caller's min) binds, this is the exact floor/nominal ratio —
+  // returned unrounded so the emitted point size cannot slip below
+  // the floor through scale rounding.
+  bound: number;
+  floorBinds: boolean;
+}
+
+// Single owner of floor semantics: one effective-floor calculation
+// for every canonical fit entry point.
+function floorRule(
+  style: FitStyle,
+  nominal: number,
+  floorOpt: number | null | undefined,
+  min: number,
+): FloorRule {
+  const roleFloor = floorPt(style, floorOpt);
+  if (roleFloor == null) return { floor: null, bound: min, floorBinds: false };
+  const eff = Math.min(roleFloor, nominal);
+  if (eff / nominal >= min) return { floor: eff, bound: eff / nominal, floorBinds: true };
+  return { floor: eff, bound: min, floorBinds: false };
+}
+
+// Single owner of the shrink search: the first scale on the min/step
+// grid where fitsAt holds, or null when nothing on the grid fits.
+function searchScale(
+  min: number,
+  step: number,
+  fitsAt: (s: number) => boolean,
+): number | null {
+  for (let s = 1; s >= min; s -= step) {
+    if (fitsAt(s)) return s;
+  }
+  return null;
+}
+
+// Single owner of clamp-and-report: applies the floor rule to a search
+// result. Floor-clamped scales return the exact bound; genuine fits
+// keep the legacy 2dp convention.
+function finishFit(
+  style: FitStyle,
+  nominal: number,
+  min: number,
+  rule: FloorRule,
+  need: number | null,
+  events: string[] | undefined,
+): number {
+  if (need != null) {
+    if (rule.bound > need) {
+      if (rule.floor != null) reportFloor(style, need * nominal, rule.bound * nominal, events);
+      return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
+    }
+    return Math.round(need * 100) / 100;
+  }
+  if (rule.floor != null) reportFloor(style, min * nominal, rule.bound * nominal, events);
+  return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
+}
+
 function reportFloor(style: FitStyle, neededPt: number, floor: number, events: string[] | undefined): void {
   if (!events) return;
   const role = style?._role ?? "text";
@@ -132,25 +194,29 @@ export function fitScale(
 ): number {
   const ratio = style.line ?? 1.35;
   const nominal = style.size;
-  const floor_ = floorPt(style, floor);
-  const minScale = floor_ == null ? min : Math.min(1, Math.max(min, floor_ / nominal));
+  const rule = floorRule(style, nominal, floor, min);
+  const need = searchScale(min, step, (s) =>
+    heightOf(text, width, { ...style, size: nominal * s }, ratio) <= height);
+  return finishFit(style, nominal, min, rule, need, events);
+}
 
-  let need: number | null = null;
-  for (let s = 1; s >= min; s -= step) {
-    const h = heightOf(text, width, { ...style, size: nominal * s }, ratio);
-    if (h <= height) { need = s; break; }
-  }
-
-  if (need != null) {
-    if (minScale > need) {
-      if (floor_ != null) reportFloor(style, need * nominal, minScale * nominal, events);
-      return Math.round(minScale * 100) / 100;
-    }
-    return Math.round(need * 100) / 100;
-  }
-
-  if (floor_ != null) reportFloor(style, min * nominal, minScale * nominal, events);
-  return Math.round(minScale * 100) / 100;
+// Paragraph-stack variant of fitScale: total height is the SUM of the
+// per-paragraph heights, because joining paragraphs into one string
+// loses their line breaks inside lineCount and under-counts
+// multi-paragraph elements. Same grid, same floor rule, same events.
+export function fitScaleStack(
+  texts: string[],
+  width: number,
+  height: number,
+  style: FitStyle,
+  { min = 0.62, step = 0.04, floor = null, events }: FitOptions = {},
+): number {
+  const ratio = style.line ?? 1.35;
+  const nominal = style.size;
+  const rule = floorRule(style, nominal, floor, min);
+  const need = searchScale(min, step, (s) =>
+    texts.reduce((n, t) => n + heightOf(t, width, { ...style, size: nominal * s }, ratio), 0) <= height);
+  return finishFit(style, nominal, min, rule, need, events);
 }
 
 export function fitScaleAll(
@@ -170,17 +236,40 @@ export function fitOneLine(
   { min = 0.5, safety = 0.88, floor = null, events }: OneLineOptions = {},
 ): number {
   const nominal = style.size;
-  const floor_ = floorPt(style, floor);
+  const rule = floorRule(style, nominal, floor, min);
   const w = measure(text, style);
   if (w <= width * safety) return 1;
   const raw = (width * safety) / w;
-  const need = Math.max(min, raw);
-  if (floor_ != null) {
-    const minScale = Math.min(1, Math.max(min, floor_ / nominal));
-    if (minScale > raw) {
-      reportFloor(style, raw * nominal, minScale * nominal, events);
-      return Math.round(minScale * 100) / 100;
-    }
+  if (rule.floor != null && rule.bound > raw) {
+    reportFloor(style, raw * nominal, rule.bound * nominal, events);
+    return rule.floorBinds ? rule.bound : Math.round(rule.bound * 100) / 100;
   }
-  return Math.round(need * 100) / 100;
+  return Math.round(Math.max(min, raw) * 100) / 100;
+}
+
+export interface LineHeightOptions {
+  min?: number;
+  events?: string[];
+}
+
+// Vertical one-line budget: the largest scale at which a single line
+// still fits inside height. Obeys the same shrink-stop semantics as
+// the width fits — an insufficient box diagnoses at the effective
+// floor instead of shrinking through it.
+export function fitLineHeight(
+  style: FitStyle,
+  height: number,
+  { min = 0.1, events }: LineHeightOptions = {},
+): number {
+  const nominal = style.size;
+  const lineH = (nominal / 72) * (style.line ?? 1.35);
+  if (!(lineH > 0)) return 1;
+  const raw = height / lineH;
+  if (raw >= 1) return 1;
+  const rule = floorRule(style, nominal, null, min);
+  if (rule.floor != null && rule.bound > raw) {
+    reportFloor(style, raw * nominal, rule.bound * nominal, events);
+    return rule.bound;
+  }
+  return Math.max(min, raw);
 }

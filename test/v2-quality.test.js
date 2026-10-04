@@ -26,18 +26,18 @@ describe("v2 quality baseline", () => {
   });
 
   it("compiler output matches the checked-in V2-3D byte baseline", async () => {
-    // V2-3E-1 legitimately extends every text run with resolved
-    // typography (role/family/weight/tracking/line/transform) and fitted
-    // sizes. The historical file stays byte-identical; this compares the
-    // V2-3D shape — structure, geometry, ids, authored text, emphasis —
-    // with the 3E-1 additions stripped, proving nothing else moved.
+    // V2-3E-1 legitimately extends every text element with resolved
+    // typography (role/family/weight/tracking/line/transform),
+    // fitted sizes, and compiler fit policy. The historical file stays
+    // byte-identical; this compares the V2-3D shape with the 3E-1
+    // additions stripped, proving nothing else moved.
     const design = await warmDesign();
     const scenes = compileDeck(sampleDeckIntent(), design);
     const sortKeys = (value) => {
       if (Array.isArray(value)) return value.map(sortKeys);
       if (value && typeof value === "object") {
         return Object.fromEntries(Object.keys(value).sort().map((k) => {
-          if (["role", "family", "weight", "tracking", "transform"].includes(k)) return [k, undefined];
+          if (["role", "family", "weight", "tracking", "transform", "fitPolicy"].includes(k)) return [k, undefined];
           if ((k === "line" || k === "size") && typeof value[k] === "number") return [k, undefined];
           return [k, sortKeys(value[k])];
         }).filter(([, v]) => v !== undefined));

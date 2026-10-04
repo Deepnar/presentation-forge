@@ -2,6 +2,12 @@
 // SlideScene: the same object the PPTX exporter reads, rendered as SVG for
 // inspection, thumbnails, and tests. The interactive canvas (demo.html)
 // binds the same elements to DOM nodes for direct manipulation.
+//
+// Emphasis and uppercase handling share packages/core/text-run.ts with
+// the PPTX renderer, so the two projections cannot disagree on those
+// semantics. Point→pixel mapping (96px per inch) is preview-only:
+// V2-4 owns exact browser/PPTX visual parity.
+import { runBold, visibleText } from "../core/text-run.ts";
 
 function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -15,12 +21,12 @@ function textSvg(el) {
   for (const p of el.paragraphs ?? []) {
     const anchor = p.align === "center" ? "middle" : p.align === "right" ? "end" : "start";
     const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
-    const words = p.runs.map((r) => (r.transform === "upper" ? r.text.toUpperCase() : r.text)).join("");
+    const words = p.runs.map((r) => visibleText(r)).join("");
     const first = p.runs[0] ?? {};
     const size = (first.size ?? 13) * 1.1;
     const attrs = [];
     if (first.family) attrs.push(` font-family="${esc(first.family)}"`);
-    const bold = first.bold ?? ((first.weight ?? 400) >= 600);
+    const bold = runBold(first);
     if (bold) attrs.push(' font-weight="bold"');
     else if (first.weight != null) attrs.push(` font-weight="${first.weight}"`);
     if (first.italic) attrs.push(' font-style="italic"');
