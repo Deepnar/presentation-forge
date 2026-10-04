@@ -1349,16 +1349,19 @@ paths yet, `packages/` holds the first agent-native primitive:
   `src/theme-loader.js`, which legacy `src/theme.js` also delegates to
   while keeping its own output shape. The compiler consumes normalized
   roles/palette/margins with byte-identical scene output.
-- `packages/renderer-pptx/` and `packages/editor/` — the PPTX exporter
-  and the browser renderer (SVG projection plus a direct-manipulation
-  demo) consume the same scene object. Text, chart series data, and tables
-  survive as editable OOXML; empty image sources degrade to a labelled
-  seat, never a dead deck.
+- `packages/renderer-pptx/` — canonical `renderPptx(scenes, options)
+  -> Uint8Array` (strict TS, fresh presentation per call, document
+  metadata in options) with `node.ts` as the explicit Node-only file
+  adapter; generation is in-memory, persistence is the adapter's job.
+- `packages/editor/` — the browser renderer (SVG projection plus a
+  direct-manipulation demo) consumes the same scene object. Text, chart
+  series data, and tables survive as editable OOXML; empty image sources
+  degrade to a labelled seat, never a dead deck.
 
-Proven by `test/v2-*.test.js` (77 tests: contracts, determinism, bounds,
+Proven by `test/v2-*.test.js` (85 tests: contracts, determinism, bounds,
 preservation including detached-editability, legacy mapping, generated-type
-drift, domain validation, design goldens, unzip-and-assert text/chart
-survival) and
+drift, domain validation, design goldens, renderer bytes/metadata/adapter,
+unzip-and-assert text/chart survival) and
 by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
 representative themes). The generator emits structural types without
 giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay

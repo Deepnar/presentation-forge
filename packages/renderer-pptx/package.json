@@ -2,5 +2,5 @@
   "name": "@forge/renderer-pptx",
   "version": "0.1.0",
   "type": "module",
-  "description": "Layer C consumer 1: SlideScene -> editable native PPTX via pptxgenjs."
+  "description": "SlideScene[] -> editable PPTX bytes (Uint8Array) via pptxgenjs, plus an explicit Node file adapter. Generation is in-memory; persistence is the adapter's job."
 }

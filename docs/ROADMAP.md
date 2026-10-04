@@ -6672,11 +6672,21 @@ legacy. Composition test splits (vocabulary moves, drawing stays);
 > rather than invert the model←core direction for zero current
 > benefit.
 
-### [ ] V2-2D — PPTX bytes renderer
+### [x] V2-2D — PPTX bytes renderer
 
 Promote `packages/renderer-pptx` to `renderPptx(scenes, {title, author,
 company, ...}) -> Uint8Array` with `renderPptxToFile` as an explicit
 Node adapter. No `src/render.js` extraction.
+
+> **Learned.** The old `scene-to-pptx.js` had only two trivial callers,
+> so it was deleted rather than facaded — no parallel implementation
+> exists. PptxGenJS line shapes serialize as native `<p:sp>` with
+> `prst="line"`, not connectors; the test asserts the true marker.
+> PPTX binaries are never byte-compared across renders (ZIP metadata
+> drifts); slide counts, native markers, metadata, and rasters are the
+> equivalence proof. Unprojected scene fields (rotation, per-run
+> opacity, locked/provenance metadata) are recorded, not redesigned —
+> V2-3/V2-5 extend fidelity when real consumers arrive.
 
 ### [ ] V2-2E — ReportSpec + deterministic DOCX renderer
 
