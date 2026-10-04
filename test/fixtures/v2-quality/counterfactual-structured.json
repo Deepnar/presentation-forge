@@ -1,0 +1,135 @@
+{
+  "note": "Structured counterfactuals for V2-3C targets. Each pair holds raw content identical and varies ONLY structured semantic fields the current compiler cannot see. Baseline expectation: indifference on all pairs. Preserved alongside (not replacing) counterfactual-pairs.json.",
+  "pairs": [
+    {
+      "id": "s-outcome",
+      "note": "Same chart; favorable vs unfavorable outcome. No takeaway/outcome rendering exists yet.",
+      "a": {
+        "id": "s-out-fav", "title": "Recall",
+        "slides": [
+          { "id": "s1", "purpose": "Report recall", "title": "Recall",
+            "blocks": [{ "id": "b1", "kind": "chart", "chartKind": "bar", "categories": ["Base", "New"], "series": [{ "name": "%", "values": [82, 91] }], "emphasis": "primary", "outcome": "favorable" }] }
+        ]
+      },
+      "b": {
+        "id": "s-out-unfav", "title": "Recall",
+        "slides": [
+          { "id": "s1", "purpose": "Report recall", "title": "Recall",
+            "blocks": [{ "id": "b1", "kind": "chart", "chartKind": "bar", "categories": ["Base", "New"], "series": [{ "name": "%", "values": [82, 91] }], "emphasis": "primary", "outcome": "unfavorable" }] }
+        ]
+      }
+    },
+    {
+      "id": "s-relationship",
+      "note": "Same three blocks; comparison vs sequence relationship.",
+      "a": {
+        "id": "s-rel-cmp", "title": "Three items",
+        "slides": [
+          { "id": "s1", "purpose": "Present three items", "title": "Three items", "relationship": "comparison",
+            "blocks": [
+              { "id": "b1", "kind": "text", "label": "Alpha", "text": "First item" },
+              { "id": "b2", "kind": "text", "label": "Beta", "text": "Second item" },
+              { "id": "b3", "kind": "text", "label": "Gamma", "text": "Third item" }
+            ] }
+        ]
+      },
+      "b": {
+        "id": "s-rel-seq", "title": "Three items",
+        "slides": [
+          { "id": "s1", "purpose": "Present three items", "title": "Three items", "relationship": "sequence",
+            "blocks": [
+              { "id": "b1", "kind": "text", "label": "Alpha", "text": "First item" },
+              { "id": "b2", "kind": "text", "label": "Beta", "text": "Second item" },
+              { "id": "b3", "kind": "text", "label": "Gamma", "text": "Third item" }
+            ] }
+        ]
+      }
+    },
+    {
+      "id": "s-emphasis",
+      "note": "Same blocks; result primary vs supporting.",
+      "a": {
+        "id": "s-emph-prim", "title": "Results",
+        "slides": [
+          { "id": "s1", "purpose": "Report results", "title": "Results",
+            "blocks": [
+              { "id": "b1", "kind": "text", "label": "Finding", "text": "Sulfide leads", "emphasis": "primary" },
+              { "id": "b2", "kind": "text", "label": "Detail", "text": "Measured at 25C", "emphasis": "supporting" }
+            ] }
+        ]
+      },
+      "b": {
+        "id": "s-emph-supp", "title": "Results",
+        "slides": [
+          { "id": "s1", "purpose": "Report results", "title": "Results",
+            "blocks": [
+              { "id": "b1", "kind": "text", "label": "Finding", "text": "Sulfide leads", "emphasis": "supporting" },
+              { "id": "b2", "kind": "text", "label": "Detail", "text": "Measured at 25C", "emphasis": "supporting" }
+            ] }
+        ]
+      }
+    },
+    {
+      "id": "s-media-role",
+      "note": "Same image and list; evidence vs decorative role.",
+      "a": {
+        "id": "s-med-ev", "title": "Stack",
+        "slides": [
+          { "id": "s1", "purpose": "Show the cell", "title": "Inside the stack",
+            "blocks": [
+              { "id": "b1", "kind": "image", "src": "", "alt": "cell stack", "mediaRole": "evidence" },
+              { "id": "b2", "kind": "list", "items": ["Cathode layer", "Separator", "Anode"] }
+            ],
+            "layoutHint": { "recipe": "media", "mediaSide": "left" } }
+        ]
+      },
+      "b": {
+        "id": "s-med-dec", "title": "Stack",
+        "slides": [
+          { "id": "s1", "purpose": "Show the cell", "title": "Inside the stack",
+            "blocks": [
+              { "id": "b1", "kind": "image", "src": "", "alt": "cell stack", "mediaRole": "decorative" },
+              { "id": "b2", "kind": "list", "items": ["Cathode layer", "Separator", "Anode"] }
+            ],
+            "layoutHint": { "recipe": "media", "mediaSide": "left" } }
+        ]
+      }
+    },
+    {
+      "id": "s-uncertainty",
+      "note": "Same factual block; no uncertainty asserted vs inconclusive.",
+      "a": {
+        "id": "s-unc-plain", "title": "Stability",
+        "slides": [
+          { "id": "s1", "purpose": "Report stability", "title": "Stability",
+            "blocks": [{ "id": "b1", "kind": "text", "label": "Fade", "text": "8% fade over 200 cycles" }] }
+        ]
+      },
+      "b": {
+        "id": "s-un-inconc", "title": "Stability",
+        "slides": [
+          { "id": "s1", "purpose": "Report stability", "title": "Stability",
+            "blocks": [{ "id": "b1", "kind": "text", "label": "Fade", "text": "8% fade over 200 cycles", "uncertainty": "inconclusive" }] }
+        ]
+      }
+    },
+    {
+      "id": "s-rhetorical-role",
+      "note": "Same content; context vs evidence role.",
+      "a": {
+        "id": "s-rh-ctx", "title": "Background",
+        "slides": [
+          { "id": "s1", "purpose": "Set background", "title": "Background", "rhetoricalRole": "context",
+            "blocks": [{ "id": "b1", "kind": "list", "items": ["Liquid solvents burn", "Dendrites pierce", "Windows narrow", "Capacity fades"] }] }
+        ]
+      },
+      "b": {
+        "id": "s-rh-ev", "title": "Background",
+        "slides": [
+          { "id": "s1", "purpose": "Set background", "title": "Background", "rhetoricalRole": "evidence",
+            "blocks": [{ "id": "b1", "kind": "list", "items": ["Liquid solvents burn", "Dendrites pierce", "Windows narrow", "Capacity fades"] }] }
+        ]
+      }
+    }
+  ]
+}

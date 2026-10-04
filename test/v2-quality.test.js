@@ -138,6 +138,25 @@ describe("v2 counterfactual baseline", () => {
   });
 });
 
+describe("v2 structured counterfactual baseline", () => {
+  it("records structured-semantic indifference explicitly", async () => {
+    const design = await warmDesign();
+    const { pairs } = await readJson("counterfactual-structured.json");
+    const expected = await readJson("baseline-structured.json");
+    const results = {};
+    const { compareSensitivity } = await import("../packages/compiler/quality.ts");
+    const { validateDeckIntent } = await import("../packages/model/intent.ts");
+    for (const pair of pairs) {
+      for (const side of [pair.a, pair.b]) {
+        const v = await validateDeckIntent(side);
+        assert.equal(v.ok, true, `${pair.id}: ${v.errors.join("\n")}`);
+      }
+      results[pair.id] = compareSensitivity(pair.id, pair.a, pair.b, design);
+    }
+    assert.deepEqual(results, expected);
+  });
+});
+
 describe("v2 theme invariance", () => {
   it("semantic projection is preserved across representative themes", async () => {
     const intent = sampleDeckIntent();

@@ -70,7 +70,8 @@
       ]
      }
     ]
-   }
+   },
+   "scope": "compiler"
   },
   {
    "id": "compare-vs-sequence",
@@ -136,7 +137,8 @@
       ]
      }
     ]
-   }
+   },
+   "scope": "compiler"
   },
   {
    "id": "primary-vs-minor",
@@ -204,7 +206,8 @@
       ]
      }
     ]
-   }
+   },
+   "scope": "compiler"
   },
   {
    "id": "evidence-vs-illustration",
@@ -274,7 +277,8 @@
       }
      }
     ]
-   }
+   },
+   "scope": "compiler"
   },
   {
    "id": "novice-vs-expert",
@@ -326,7 +330,8 @@
       ]
      }
     ]
-   }
+   },
+   "scope": "agent-l3"
   }
  ]
 }

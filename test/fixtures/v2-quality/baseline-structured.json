@@ -1,0 +1,32 @@
+{
+ "s-outcome": {
+  "pairId": "s-outcome",
+  "sensitive": false,
+  "differences": []
+ },
+ "s-relationship": {
+  "pairId": "s-relationship",
+  "sensitive": false,
+  "differences": []
+ },
+ "s-emphasis": {
+  "pairId": "s-emphasis",
+  "sensitive": false,
+  "differences": []
+ },
+ "s-media-role": {
+  "pairId": "s-media-role",
+  "sensitive": false,
+  "differences": []
+ },
+ "s-uncertainty": {
+  "pairId": "s-uncertainty",
+  "sensitive": false,
+  "differences": []
+ },
+ "s-rhetorical-role": {
+  "pairId": "s-rhetorical-role",
+  "sensitive": false,
+  "differences": []
+ }
+}
