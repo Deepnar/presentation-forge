@@ -1,0 +1,18 @@
+{
+  // Strict TypeScript for the V2 package boundary only. Legacy JS is never
+  // typechecked (checkJs: false, narrow include). Native Node 24 executes
+  // the .ts sources directly via type stripping, so only erasable syntax
+  // is allowed and relative imports name the actual .ts file.
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
+  },
+  "include": ["packages/model/**/*.ts"]
+}

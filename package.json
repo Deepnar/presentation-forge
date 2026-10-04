@@ -30,7 +30,9 @@
     "coverage": "node --env-file-if-exists=.env tools/coverage.mjs",
     "landing": "node --env-file-if-exists=.env tools/landing.mjs",
     "deckscore": "node --env-file-if-exists=.env tools/deckscore.mjs",
-    "local:check": "node tools/local-check.mjs"
+    "local:check": "node tools/local-check.mjs",
+    "typecheck": "tsc --noEmit",
+    "types:generate": "node tools/v2-types.mjs"
   },
   "keywords": [],
   "author": "",
@@ -58,9 +60,11 @@
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.0.5",
     "concurrently": "^10.0.4",
+    "json-schema-to-typescript": "15.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
+    "typescript": "5.9.3",
     "vite": "^8.2.1"
   }
 }
