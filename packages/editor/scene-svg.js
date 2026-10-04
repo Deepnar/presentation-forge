@@ -16,8 +16,8 @@ function esc(s) {
 const IN = 96; // svg px per scene inch
 
 function textSvg(el) {
-  let y = el.y * IN + 14;
-  const lines = [];
+  const valign = el.valign ?? "top";
+  const chunks = [];
   for (const p of el.paragraphs ?? []) {
     const anchor = p.align === "center" ? "middle" : p.align === "right" ? "end" : "start";
     const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
@@ -33,11 +33,32 @@ function textSvg(el) {
     if (first.tracking) attrs.push(` letter-spacing="${((first.tracking * 96) / 72).toFixed(2)}"`);
     for (const chunk of words.split("\n")) {
       const prefix = p.bullet ? "• " : "";
-      lines.push(`<text x="${tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" font-size="${size.toFixed(1)}" fill="#${first.color ?? "111111"}"${attrs.join("")}>${esc(prefix + chunk)}</text>`);
-      y += size * (first.line ?? 1.35);
+      chunks.push({
+        tx, anchor, size, attrs, text: prefix + chunk,
+        color: first.color ?? "111111",
+        advance: size * (first.line ?? 1.35),
+      });
     }
   }
-  return `<g data-el="${esc(el.id)}">${lines.join("")}</g>`;
+  // Top preserves historical placement exactly. Middle/bottom center
+  // or ground the block in its box — enough for chrome inspection;
+  // V2-4 owns exact visual parity.
+  let y;
+  const total = chunks.reduce((n, c) => n + c.advance, 0);
+  if (valign === "middle" && chunks.length) {
+    y = (el.y + el.h / 2) * IN - total / 2 + chunks[0].size * 0.35;
+  } else if (valign === "bottom" && chunks.length) {
+    y = (el.y + el.h) * IN - total + chunks[0].size * 0.35;
+  } else {
+    y = el.y * IN + 14;
+  }
+  const lines = chunks.map((c) => {
+    const s = `<text x="${c.tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${c.anchor}" font-size="${c.size.toFixed(1)}" fill="#${c.color}"${c.attrs.join("")}>${esc(c.text)}</text>`;
+    y += c.advance;
+    return s;
+  });
+  const opacity = el.opacity !== undefined && el.opacity < 1 ? ` opacity="${el.opacity}"` : "";
+  return `<g data-el="${esc(el.id)}"${opacity}>${lines.join("")}</g>`;
 }
 
 function elementSvg(el) {

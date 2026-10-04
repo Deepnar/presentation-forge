@@ -1,13 +1,15 @@
 // @forge/core-adjacent @forge/renderer-pptx — canonical SlideScene to
 // editable PPTX bytes. Consumes the SAME scene representation as the
 // browser editor (hard invariant): text/charts/tables survive as editable
-// OOXML, never raster. In-memory only: no output path, no filesystem
-// write. The Node-only file adapter lives in node.ts.
+// OOXML, never raster. Chrome arrives as ordinary locked scene
+// elements; the renderer projects them like any other element and
+// never plans chrome itself. In-memory only: no output path, no
+// filesystem write. The Node-only file adapter lives in node.ts.
 //
-// Scene fields without a PPTX projection yet (rotation, element-level
-// opacity, locked/provenance as metadata) are preserved
-// in the scene for editor/seed use; V2-3/V2-5 extend fidelity when those
-// gain real compiler/editor consumers. Image src stays the current
+// Scene fields without a PPTX projection yet (rotation,
+// locked/provenance as metadata) are preserved in the scene for
+// editor/seed use; V2-5 extends fidelity when those gain real
+// compiler/editor consumers. Image src stays the current
 // path/URL-style asset seam (see node.ts and the V2-2D report).
 
 import PptxGenJSModule from "pptxgenjs";
@@ -83,7 +85,17 @@ function addTextElement(slide: PptxSlide, el: SceneElement): void {
     });
   });
   if (!runs.length) return;
-  slide.addText(runs, { x: el.x, y: el.y, w: el.w, h: el.h, valign: "top", margin: 0.05 });
+  // Element opacity projects to PptxGenJS transparency, the same
+  // mapping the legacy chrome facade uses: round((1 - opacity) * 100).
+  // Fully opaque or absent opacity omits the property, preserving the
+  // legacy slide-number behavior (no transparency key at all).
+  slide.addText(runs, {
+    x: el.x, y: el.y, w: el.w, h: el.h,
+    valign: el.valign ?? "top", margin: 0.05,
+    ...(el.opacity !== undefined && el.opacity < 1
+      ? { transparency: Math.round((1 - el.opacity) * 100) }
+      : {}),
+  });
 }
 
 function addShapeElement(slide: PptxSlide, el: SceneElement): void {
@@ -101,7 +113,16 @@ function addImageElement(slide: PptxSlide, el: SceneElement): void {
     slide.addText([{ text: "[image]", options: { align: "center", color: "5C5C59" } }], { x: el.x, y: el.y + el.h / 2 - 0.2, w: el.w, h: 0.4 });
     return;
   }
-  slide.addImage({ path: el.image.src, x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: "cover", w: el.w, h: el.h } });
+  // Renderer-ready asset seam: the scene carries what the adapter
+  // resolved. Data URIs ride the PptxGenJS data path; everything else
+  // rides the path as before. Nothing is fetched, probed, or read
+  // here beyond what PptxGenJS itself embeds.
+  const at = { x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: "cover", w: el.w, h: el.h } };
+  if (/^data:/i.test(el.image.src)) {
+    slide.addImage({ data: el.image.src, ...at });
+    return;
+  }
+  slide.addImage({ path: el.image.src, ...at });
 }
 
 function addChartElement(slide: PptxSlide, el: SceneElement): void {

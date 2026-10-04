@@ -6902,7 +6902,9 @@ families/themes/legacy paths.
 > floor enforcement: a mathematically legal raw scale is still invalid
 > if quantization moves the emitted size below its floor.
 
-### [~] V2-3E-2 — deterministic QA completion (implementation in review)
+### [x] V2-3E-2 — deterministic QA completion
+
+Accepted head: `82dcd44`.
 
 `analyzeDeck()` consumes the compiler's own evidence instead of
 re-measuring: `FitDiagnostic`s become stable L1 findings
@@ -6924,7 +6926,13 @@ scores, no L3. QA observes compilation and mutates nothing.
 > cannot prove that the takeaway is persuasive, important, or well
 > worded; those are semantic/visual evaluation questions.
 
-### [ ] V2-3E-3 — chrome emission + projection
+### [~] V2-3E-3 — chrome emission + projection (implementation in review)
+
+Compiler emits canonical core chrome policy as locked
+compiler-provenance scene elements (title banner, content crest,
+presenter, slide number) from explicit adapter-resolved
+ChromeInput; renderers project scenes only. No ChromeInput means
+byte-identical chrome-free scenes.
 
 ### [ ] V2-3F — theme/plate compatibility + full quality evaluation
 

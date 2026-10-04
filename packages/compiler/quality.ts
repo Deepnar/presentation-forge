@@ -2,16 +2,21 @@
 // the compiler emitted without changing it: schema validity, geometry,
 // identity, authored-block representation, chart fidelity, fit/floor
 // overflow (from compiler evidence, never re-measured), takeaway
-// realization, and composition monotony. Findings are ordered
-// deterministically. Pure apart from the model validators it delegates
-// schema checks to (their schemas load from package data, never user
-// disk). QA observes compilation; it never mutates it.
+// realization, chrome realization, footer-band reservation, and
+// composition monotony. Findings are ordered deterministically. Pure
+// apart from the model validators it delegates schema checks to (their
+// schemas load from package data, never user disk). QA observes
+// compilation; it never mutates it.
 import { compileDeckDetailed } from "./compile.js";
 import type { DeckIntent, SlideIntent } from "../model/intent.generated.ts";
 import type { SlideScene } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import type { FitDiagnostic } from "./text-fit.ts";
+import type { DeckChromeInput, DeckChromePlan, SlideChromePlan } from "./chrome.ts";
+import { chromePlanForSlide } from "./chrome.ts";
+import { FOOT_Y, FOOT_H } from "../core/chrome.ts";
+import { SCENE_W } from "../model/scene-constants.ts";
 import { validateDeckIntent } from "../model/intent.ts";
 import { validateScene } from "../model/scene.ts";
 import {
@@ -84,6 +89,160 @@ export function checkChartFidelity(slide: SlideIntent, scene: SlideScene): Quali
 export interface DeckAnalysis {
   scenes: SlideScene[];
   findings: QualityFinding[];
+}
+
+const CHROME_ID = /:chrome:(title-banner|content-mark|presenter|slide-number)$/;
+
+function isCompilerChrome(el: SlideScene["elements"][number]): boolean {
+  return el.provenance === "compiler" && CHROME_ID.test(el.id);
+}
+
+function chromeText(el: SlideScene["elements"][number]): string {
+  return (el.paragraphs ?? []).map((p) => (p.runs ?? []).map((r) => r.text).join("")).join("\n");
+}
+
+interface ExpectedChrome {
+  id: string;
+  kind: "text" | "image";
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  text?: string;
+  src?: string;
+  fontSize?: number;
+  fontFamily?: string;
+  color?: string;
+  opacity?: number;
+  align?: string;
+  valign?: string;
+}
+
+function expectedChromeElements(plan: SlideChromePlan): ExpectedChrome[] {
+  const out: ExpectedChrome[] = [];
+  if (plan.banner) {
+    out.push({ id: `${plan.slideId}:chrome:title-banner`, kind: "image", ...plan.banner.box, src: plan.banner.src });
+  }
+  if (plan.mark) {
+    out.push({ id: `${plan.slideId}:chrome:content-mark`, kind: "image", ...plan.mark.box, src: plan.mark.src });
+  }
+  for (const [suffix, part, align] of [
+    ["presenter", plan.presenter, "left"],
+    ["slide-number", plan.slideNumber, "right"],
+  ] as const) {
+    if (!part) continue;
+    out.push({
+      id: `${plan.slideId}:chrome:${suffix}`, kind: "text",
+      ...part.box, text: part.text,
+      fontSize: part.style.fontSize, fontFamily: part.style.fontFamily,
+      color: part.style.color, opacity: part.style.opacity,
+      align, valign: part.style.valign,
+    });
+  }
+  return out;
+}
+
+// The emitted scene must match the actual chrome plan: stable IDs,
+// kinds, locked compiler ownership, exact geometry, and exact
+// text/style for footer elements. A human element merely containing
+// the word "chrome" never qualifies — provenance must be compiler
+// and the ID must match the stable convention.
+export function checkChromeRealization(
+  plan: SlideChromePlan | null | undefined,
+  scene: SlideScene,
+): QualityFinding[] {
+  if (!plan) return [];
+  const findings: QualityFinding[] = [];
+  const expected = expectedChromeElements(plan);
+  const actual = new Map(scene.elements.filter(isCompilerChrome).map((e) => [e.id, e]));
+  const expectedIds = new Set(expected.map((e) => e.id));
+  for (const exp of expected) {
+    const base = { slideId: scene.id, elementIds: [exp.id] as string[] };
+    const el = actual.get(exp.id);
+    if (!el) {
+      findings.push({
+        layer: "L1", code: "chrome-not-realized",
+        message: `slide ${scene.id} planned chrome ${exp.id} has no scene element`,
+        ...base,
+      });
+      continue;
+    }
+    const mismatch = (field: string, want: unknown, got: unknown): QualityFinding => ({
+      layer: "L1", code: "chrome-realization-mismatch",
+      message: `slide ${scene.id} chrome ${exp.id} ${field} differs from plan`,
+      ...base,
+      evidence: { field, expected: String(want), actual: String(got) },
+    });
+    if (el.kind !== exp.kind) { findings.push(mismatch("kind", exp.kind, el.kind)); continue; }
+    if (el.locked !== true) findings.push(mismatch("locked", true, el.locked));
+    if (el.provenance !== "compiler") findings.push(mismatch("provenance", "compiler", el.provenance));
+    if (el.semanticRef !== undefined) findings.push(mismatch("semanticRef", "absent", el.semanticRef));
+    for (const k of ["x", "y", "w", "h"] as const) {
+      if (el[k] !== exp[k]) findings.push(mismatch(`box.${k}`, exp[k], el[k]));
+    }
+    if (exp.kind === "image") {
+      if (el.image?.src !== exp.src) findings.push(mismatch("image.src", exp.src, el.image?.src));
+    } else {
+      if (chromeText(el) !== exp.text) findings.push(mismatch("text", exp.text, chromeText(el)));
+      const run = el.paragraphs?.[0]?.runs?.[0];
+      if (run?.size !== exp.fontSize) findings.push(mismatch("fontSize", exp.fontSize, run?.size));
+      if ((run?.family ?? undefined) !== exp.fontFamily) findings.push(mismatch("fontFamily", exp.fontFamily, run?.family));
+      if ((run?.color ?? undefined) !== exp.color) findings.push(mismatch("color", exp.color, run?.color));
+      if ((el.opacity ?? undefined) !== exp.opacity) findings.push(mismatch("opacity", exp.opacity, el.opacity));
+      if ((el.paragraphs?.[0]?.align ?? undefined) !== exp.align) findings.push(mismatch("align", exp.align, el.paragraphs?.[0]?.align));
+      if ((el.valign ?? undefined) !== exp.valign) findings.push(mismatch("valign", exp.valign, el.valign));
+    }
+  }
+  for (const el of actual.values()) {
+    if (expectedIds.has(el.id)) continue;
+    findings.push({
+      layer: "L1", code: "chrome-not-realized",
+      message: `slide ${scene.id} has unexpected stale chrome ${el.id} with no plan entry`,
+      slideId: scene.id, elementIds: [el.id],
+    });
+  }
+  return findings;
+}
+
+function footprints(el: SlideScene["elements"][number], dx: number, dy: number): { x: number; y: number; w: number; h: number }[] {
+  const boxes: { x: number; y: number; w: number; h: number }[] = [];
+  if (el.kind === "line" && el.line) {
+    const x1 = Math.min(el.x + dx, el.line.x2 + dx);
+    const y1 = Math.min(el.y + dy, el.line.y2 + dy);
+    boxes.push({ x: x1, y: y1, w: Math.max(Math.abs(el.line.x2 - el.x), 0.01), h: Math.max(Math.abs(el.line.y2 - el.y), 0.01) });
+  } else if (el.kind !== "group") {
+    boxes.push({ x: el.x + dx, y: el.y + dy, w: el.w, h: el.h });
+  }
+  for (const c of el.group?.children ?? []) boxes.push(...footprints(c, dx + el.x, dy + el.y));
+  return boxes;
+}
+
+// Narrowly scoped footer-band reservation check: compiler-owned
+// NON-chrome content must not enter the known footer chrome band on
+// a content-surface slide. This is legal only because the band has
+// explicit semantics — it is not a generic overlap rule, and 3E-2's
+// no-generic-overlap boundary stands.
+export function checkChromeBand(
+  plan: SlideChromePlan | null | undefined,
+  scene: SlideScene,
+): QualityFinding[] {
+  if (!plan || plan.surface !== "content") return [];
+  const band = { x: 0, y: FOOT_Y, w: SCENE_W, h: FOOT_H };
+  const hits = (b: { x: number; y: number; w: number; h: number }): boolean =>
+    b.x < band.x + band.w && b.x + b.w > band.x && b.y < band.y + band.h && b.y + b.h > band.y;
+  const findings: QualityFinding[] = [];
+  for (const el of scene.elements) {
+    if (el.provenance !== "compiler" || isCompilerChrome(el)) continue;
+    const intruding = footprints(el, 0, 0).filter(hits);
+    if (intruding.length) {
+      findings.push({
+        layer: "L1", code: "chrome-band-overlap",
+        message: `slide ${scene.id} compiler content ${el.id} enters the reserved footer band`,
+        slideId: scene.id, elementIds: [el.id],
+      });
+    }
+  }
+  return findings;
 }
 
 // Compiler fit evidence becomes stable L1 QA. The fitter already
@@ -172,7 +331,7 @@ export function checkTakeawayRealization(
   return [];
 }
 
-export async function analyzeDeck(intent: DeckIntent, design: DesignSystem): Promise<DeckAnalysis> {
+export async function analyzeDeck(intent: DeckIntent, design: DesignSystem, chrome: DeckChromeInput | null = null): Promise<DeckAnalysis> {
   const intentVerdict = await validateDeckIntent(intent);
   if (!intentVerdict.ok) {
     return {
@@ -183,7 +342,7 @@ export async function analyzeDeck(intent: DeckIntent, design: DesignSystem): Pro
       }],
     };
   }
-  const { scenes, plan, findings: planFindings, fitDiagnostics } = compileDeckDetailed(intent, design);
+  const { scenes, plan, chromePlan, findings: planFindings, fitDiagnostics } = compileDeckDetailed(intent, design, chrome);
   const findings: QualityFinding[] = [...planFindings];
   findings.push(...checkFitDiagnostics(intent, fitDiagnostics));
   const byId = new Map(intent.slides.map((s) => [s.id, s]));
@@ -205,6 +364,8 @@ export async function analyzeDeck(intent: DeckIntent, design: DesignSystem): Pro
       findings.push(...checkChartFidelity(slide, scene));
       const comp = planById.get(scene.id);
       if (comp) findings.push(...checkTakeawayRealization(slide, comp, scene));
+      findings.push(...checkChromeRealization(chromePlanForSlide(chromePlan, scene.id), scene));
+      findings.push(...checkChromeBand(chromePlanForSlide(chromePlan, scene.id), scene));
     }
   }
   findings.push(...checkRecipeMonotony(scenes));

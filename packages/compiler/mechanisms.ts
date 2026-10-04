@@ -2,7 +2,8 @@
 // V2-3C planning decides WHAT strategy each slide uses; this module
 // realizes the 12 selectable families as editable scene geometry from
 // structured intent + plan + DesignSystem. No prose parsing, no model
-// calls, no fit integration (V2-3E), no chrome emission (V2-3E).
+// calls. V2-3E-3 emits locked chrome from an explicit adapter plan;
+// content fitting stays V2-3E-1 behavior.
 // Every authored block gets a primary semantic carrier; nothing is
 // silently dropped. Deferred families (taper/timeline/set-overlap/
 // term-glossary) are NOT implemented here.
@@ -12,9 +13,9 @@ import type { DesignSystem } from "../model/design.generated.ts";
 import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
+import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { fittedTextEl, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
-
-const FOOTER_RESERVE = 0.62;
+import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
 
 interface Box {
   x: number;
@@ -40,7 +41,7 @@ interface Para {
 
 function contentBox(design: DesignSystem): Box & { bottom: number } {
   const m = design.grid.margins;
-  const bottom = SCENE_H - m.bottom - FOOTER_RESERVE;
+  const bottom = SCENE_H - m.bottom - CONTENT_FOOTER_RESERVE;
   return {
     x: m.left,
     y: m.top,
@@ -227,6 +228,10 @@ interface MechanismCtx {
   design: DesignSystem;
   box: Box & { bottom: number };
   sink: FitDiagnostic[];
+  // Canonical top-right crest reservation for the standard content
+  // title box, applied BEFORE fitting. Zero when no primary crest
+  // earns reservation. Divider/full-bleed titles are untouched.
+  topRightReserve: number;
 }
 
 // Places one block's primary carrier plus its semantic treatments in a
@@ -293,10 +298,14 @@ function caveatEl(
 function titleBox(ctx: MechanismCtx, rs: { role: string; size: number }, z: number): { el: SceneElement; below: number } {
   const { slide, design, box } = ctx;
   const h = 1.0;
+  // The heading narrows for the crest reservation with a positive
+  // minimum; the fitter measures this narrower box, never the full
+  // width. Crest-side geometry, not a redesign.
+  const w = Math.max(1.0, box.w - ctx.topRightReserve);
   const el = textEl(
     `${slide.id}:title:heading`,
     undefined,
-    { x: box.x, y: box.y, w: box.w, h },
+    { x: box.x, y: box.y, w, h },
     [{ runs: [{ text: slide.title ?? "", role: rs.role, size: rs.size, bold: true, color: ink(design) }], align: "left" as const }],
     z,
     { design, slideId: slide.id, sink: ctx.sink },
@@ -850,9 +859,10 @@ export function compilePlannedSlide(
   comp: SlideCompositionPlan,
   design: DesignSystem,
   sink: FitDiagnostic[] = [],
+  chrome: SlideChromePlan | null = null,
 ): SlideScene {
   const box = contentBox(design);
-  const ctx: MechanismCtx = { slide, comp, design, box, sink };
+  const ctx: MechanismCtx = { slide, comp, design, box, sink, topRightReserve: chrome?.topRightReserve ?? 0 };
   let z = 0;
   const takeZ = (): number => (z += 10);
   let elements: SceneElement[];
@@ -872,6 +882,12 @@ export function compilePlannedSlide(
     default: elements = escapeScene({ ...ctx }, takeZ); break;
   }
   void takeZ;
+  if (chrome) {
+    // Chrome renders above ordinary content on the continuing z
+    // sequence: deterministic for identical inputs, stable across
+    // recompiles, never derived from array length.
+    elements.push(...emitChromeElements(chrome, takeZ));
+  }
   return {
     id: slide.id,
     width: SCENE_W,

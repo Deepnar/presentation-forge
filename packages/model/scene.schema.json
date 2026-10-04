@@ -68,6 +68,7 @@
         "rotation": { "type": "number" },
         "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
         "locked": { "type": "boolean" },
+        "valign": { "enum": ["top", "middle", "bottom"] },
         "z": { "type": "integer", "minimum": 0 },
         "provenance": { "enum": ["compiler", "agent", "human", "import"] },
         "semanticRef": { "type": "string" },

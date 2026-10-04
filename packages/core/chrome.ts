@@ -1,9 +1,9 @@
 // @forge/core — renderer-neutral chrome geometry and policy. Pure: no
 // filesystem, brand paths, identity, slide types, or PptxGenJS. The
 // legacy src/chrome.js facade translates identity/brand into these
-// explicit inputs and performs the actual drawing; V2-3 will emit the
-// same plan as locked compiler-provenance scene elements.
-import { SCENE_W } from "../model/scene-constants.ts";
+// explicit inputs and performs the actual drawing; the V2 compiler
+// emits the same plan as locked compiler-provenance scene elements.
+import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 
 export type BrandingMode = "full" | "minimal" | "none";
 
@@ -38,6 +38,19 @@ export const CREST_Y = 0.26;
 export const FOOT_Y = 6.92;
 export const FOOT_H = 0.3;
 export const FOOT_FONT_SIZE = 9;
+
+// Minimum daylight between compiler-managed content and the footer
+// chrome band, in inches. Part of the canonical geometry contract.
+export const FOOTER_DAYLIGHT = 0.04;
+
+// Canonical compiler content reserve above the canvas bottom edge.
+// Derivation: the footer band sits (SCENE_H - FOOT_Y) above the
+// bottom edge, plus FOOTER_DAYLIGHT of minimum daylight; theme
+// bottom margins add further daylight on top. Quantized to layout
+// precision. Preserves the historical 0.62 behavior exactly —
+// content bottom plus any nonnegative theme bottom margin stays at
+// or above FOOT_Y with daylight to spare.
+export const CONTENT_FOOTER_RESERVE = Math.round((SCENE_H - FOOT_Y + FOOTER_DAYLIGHT) * 100) / 100;
 
 const DARK_LUMINANCE_LINE = 0.45;
 

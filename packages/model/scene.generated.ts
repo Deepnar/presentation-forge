@@ -25,6 +25,7 @@ export interface SceneElement {
   rotation?: number;
   opacity?: number;
   locked?: boolean;
+  valign?: "top" | "middle" | "bottom";
   z: number;
   provenance: "compiler" | "agent" | "human" | "import";
   semanticRef?: string;

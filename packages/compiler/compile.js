@@ -2,18 +2,17 @@
 // intent and design always produce byte-identical scenes (asserted in
 // tests). Recipes own geometry; the model never sees a coordinate.
 //
-// Seam notes for the full Phase 2/3 work:
-// - text budgets are fixed fractions of the content box, not fitter calls;
-//   wiring src/fit.js budgets in is the next compiler item, not this slice.
-// - chrome (banner/crest/footer) stays in src/chrome.js; scenes reserve the
-//   footer band and the PPTX renderer paints chrome-free pages for now.
+// Chrome (banner/crest/footer) is emitted as locked scene elements by
+// the canonical planned path when explicit adapter-resolved
+// ChromeInput is supplied; without input, scenes stay chrome-free and
+// byte-identical to historical output.
 
 import { SCENE_W, SCENE_H, compilerId, findElement } from "../model/scene.ts";
 import { planDeckComposition } from "./composition.ts";
 import { compilePlannedSlide } from "./mechanisms.ts";
 import { fittedTextEl, refitTextEl } from "./text-fit.ts";
-
-const FOOTER_RESERVE = 0.62;
+import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
+import { planDeckChrome, chromePlanForSlide } from "./chrome.ts";
 
 function box(design) {
   const m = design.grid.margins;
@@ -21,7 +20,7 @@ function box(design) {
     x: m.left,
     y: m.top,
     w: SCENE_W - m.left - m.right,
-    bottom: SCENE_H - m.bottom - FOOTER_RESERVE,
+    bottom: SCENE_H - m.bottom - CONTENT_FOOTER_RESERVE,
   };
 }
 
@@ -229,18 +228,22 @@ export function compileSlide(slide, design, recipe = selectRecipe(slide), sink =
   };
 }
 
-export function compileDeck(intent, design) {
-  return compileDeckDetailed(intent, design).scenes;
+export function compileDeck(intent, design, chrome = null) {
+  return compileDeckDetailed(intent, design, chrome).scenes;
 }
 
-export function compileDeckDetailed(intent, design) {
+export function compileDeckDetailed(intent, design, chrome = null) {
   const { plan, findings } = planDeckComposition(intent, design);
+  // Chrome is planned once, from adapter input, beside composition —
+  // never replanned inside QA or rendering.
+  const chromePlan = planDeckChrome(intent.slides, chrome);
   const byId = new Map(plan.slides.map((s) => [s.slideId, s]));
   // One pass only: each slide compiles once, diagnostics collected in
   // emission order (slide order, then element order within a slide).
   const fitDiagnostics = [];
-  const scenes = intent.slides.map((s) => compilePlannedSlide(s, byId.get(s.id), design, fitDiagnostics));
-  return { scenes, plan, findings, fitDiagnostics };
+  const scenes = intent.slides.map((s) =>
+    compilePlannedSlide(s, byId.get(s.id), design, fitDiagnostics, chromePlanForSlide(chromePlan, s.id)));
+  return { scenes, plan, chromePlan, findings, fitDiagnostics };
 }
 
 // Recompile after a semantic edit while preserving human geometry.
@@ -252,10 +255,17 @@ export function compileDeckDetailed(intent, design) {
 // Deck-aware callers pass the current SlideCompositionPlan so rhythm
 // context survives; compatibility callers omit it and recompile through
 // the legacy six-recipe path with the same preservation rules.
-export function recompileSlide(intent, prev, design, planned = null, sink = []) {
+export function recompileSlide(intent, prev, design, planned = null, sink = [], chrome = null) {
   if (prev.layoutState === "detached") return prev;
+  // Chrome reflow requires the canonical planned path (reserve +
+  // emission live there). The frozen legacy path cannot honor it, so
+  // supplying chrome without a plan fails loudly instead of silently
+  // dropping institutional marks.
+  if (chrome && !planned) {
+    throw new Error("recompileSlide with chrome requires the canonical planned path (pass planned)");
+  }
   const fresh = planned
-    ? compilePlannedSlide(intent, planned, design, sink)
+    ? compilePlannedSlide(intent, planned, design, sink, chromePlanForSlide(planDeckChrome({ slides: [intent] }, chrome), intent.id))
     : compileSlide(intent, design, undefined, sink);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();
