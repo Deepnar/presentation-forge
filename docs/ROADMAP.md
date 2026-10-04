@@ -6711,7 +6711,7 @@ render → external pagination → deterministic final render.
 > preserved verbatim: duplicate By-lines, TNR, TABLE OF CONTENT
 > wording, unrendered subtitle, em-dash fallback.
 
-### [ ] V2-2F — chrome/brand compatibility seam
+### [x] V2-2F — chrome/brand compatibility seam
 
 Renderer-neutral chrome geometry/policy into core (constants, luminance
 rules, branding-mode policy over explicit chrome data — never the old
@@ -6719,6 +6719,17 @@ slide-type sets, which stay legacy). Brand probing stays an adapter
 concern resolving to asset reference + intrinsic dimensions, never
 paths in core. Records the locked-scene-element contract V2-3 will use
 to emit chrome. Legacy render pixel-identical (raster proof).
+
+> **Learned.** The effective-frame trick from V2-2C generalizes: the
+> facade resolves legacy answers (crest fallback order, unknown-mode
+> mapping, type-set suppression, presenter fallback text) into plain
+> core inputs, so core policy never learns identity, paths, or the old
+> ontology. Two pins worth keeping: unknown branding modes behave
+> minimal-like (only absent means full), and a fallback-only crest
+> draws with zero heading reservation — both look wrong enough to
+> "fix" and both are current behavior. Opacity crosses the boundary
+> as 0..1 with the PptxGenJS `transparency: round((1-opacity)*100)`
+> mapping living in exactly one facade line.
 
 ### [ ] V2-3 scene compiler, full recipes
 

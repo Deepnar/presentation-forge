@@ -1349,6 +1349,12 @@ paths yet, `packages/` holds the first agent-native primitive:
   `src/theme-loader.js`, which legacy `src/theme.js` also delegates to
   while keeping its own output shape. The compiler consumes normalized
   roles/palette/margins with byte-identical scene output.
+- `packages/core/chrome.ts` — renderer-neutral chrome geometry/policy
+  (branding modes, banner/crest placement, top-right reservation,
+  luminance rule, footer plan with 0..1 opacity); `src/chrome.js` keeps
+  brand probing, identity mapping, type-set suppression, and PptxGenJS
+  drawing while delegating the plan to core. V2-3 will emit chrome as
+  locked compiler-provenance scene elements; no renderer chrome API.
 - `packages/renderer-pptx/` — canonical `renderPptx(scenes, options)
   -> Uint8Array` (strict TS, fresh presentation per call, document
   metadata in options) with `node.ts` as the explicit Node-only file
