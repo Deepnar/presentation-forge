@@ -6788,7 +6788,7 @@ reclassified as agent/L3. Deferred as decided: `resultStatus`
 > Counterfactual tightening from V2-3A generalized: structured pairs
 > hold all compiled content constant, so indifference is meaningful.
 
-### [ ] V2-3C — deterministic deck + slide composition planning
+### [x] V2-3C — deterministic deck + slide composition planning
 
 Purpose: introduce the deterministic deck-level composition pass
 between semantic intent and scene compilation. It consumes structured
@@ -6798,6 +6798,22 @@ narrative/designDirection/visualDirection. It establishes deck rhythm,
 density, composition-family selection, emphasis targets, and related
 machine-actionable planning without fighting customized/detached
 scenes.
+
+Landed as `packages/compiler/composition.ts`: 12 selectable families
+(taper/timeline/set-overlap/term-glossary deferred with recorded
+reasons), honesty-first precedence (capability gap → data-table +
+finding, override honored unless dishonest, carriers, relationship,
+role, shape), structural density units, weak-streak rhythm subordinate
+to semantics, internal variantKeys, media/outcome/caveat/takeaway
+treatments, section breaks, selection-basis tracking. Six structured
+pairs plan-sensitive; scene compiler byte-identical; history preserved.
+
+> **Learned.** Sensitivity must be measured at the right layer:
+> rhetorical-role context-vs-evidence differs only in variantKey, which
+> the (theme-oriented) projection deliberately excludes — so plan
+> comparison uses full plans while theme invariance uses the
+> variant-free projection. Each answers a different question and
+> conflating them would fake either result.
 
 ### [ ] V2-3D — representative composition mechanisms
 

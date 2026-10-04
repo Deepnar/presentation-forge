@@ -1400,6 +1400,18 @@ pairs indifferent), and stat/table/quote blocks can vanish silently —
 measured, not yet fixed. A byte-identical compiler-output regression
 proof guards the measurement work itself.
 
+## V2 composition planning (V2-3C)
+
+`DeckIntent → DeckCompositionPlan` is deterministic, ephemeral, and
+recomputed: per-slide family (12 selectable; taper/timeline/
+set-overlap/term-glossary deferred for lack of semantic justification),
+variantKey (compiler-private), density class, emphasis/media/outcome/
+caveat/takeaway treatments, and section breaks. Precedence is honesty
+> override > carrier > relationship > role > shape; rhythm only moves
+weak generic streaks to truthful alternatives. Free-text fields never
+reach the planner (proven by test). The six-recipe scene compiler does
+not consume the plan yet — that wiring is V2-3D.
+
 ## V2 semantic ownership (V2-3B)
 
 Layer A fields and who owns their meaning. The deterministic compiler
