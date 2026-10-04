@@ -54,7 +54,7 @@ export function legacySlideToIntent(slide: LegacySlide, index: number): SlideInt
     case "bullets":
     case "numbered-list":
     case "checklist":
-      return { ...base, blocks: [block(`${id}-b1`, "list", { items: (slide.bullets ?? []) as ContentBlock["items"] })], layoutHint: { recipe: "content" } };
+      return { ...base, blocks: [block(`${id}-b1`, "list", { items: slide.bullets ?? [] })], layoutHint: { recipe: "content" } };
     case "compare":
     case "vs":
     case "pros-cons":
@@ -75,7 +75,7 @@ export function legacySlideToIntent(slide: LegacySlide, index: number): SlideInt
         ...base,
         blocks: [
           block(`${id}-img`, "image", { src: slide.image ?? "", caption: slide.caption }),
-          block(`${id}-body`, "list", { items: (slide.body ?? []) as ContentBlock["items"] }),
+          block(`${id}-body`, "list", { items: slide.body ?? [] }),
         ] as SlideIntent["blocks"],
         layoutHint: { recipe: "media", mediaSide: slide.side === "left" ? "left" : "right" },
       };

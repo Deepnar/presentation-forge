@@ -30,65 +30,7 @@ export interface SlideIntent {
    * @minItems 1
    * @maxItems 12
    */
-  blocks:
-    | [ContentBlock]
-    | [ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock]
-    | [ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock, ContentBlock]
-    | [
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock
-      ]
-    | [
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock
-      ]
-    | [
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock
-      ]
-    | [
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock,
-        ContentBlock
-      ];
+  blocks: [ContentBlock, ...ContentBlock[]];
   visualDirection?: string;
   layoutHint?: {
     recipe?: "title" | "content" | "comparison" | "media" | "chart" | "process";
@@ -105,16 +47,7 @@ export interface ContentBlock {
   /**
    * @maxItems 8
    */
-  items?:
-    | []
-    | [string]
-    | [string, string]
-    | [string, string, string]
-    | [string, string, string, string]
-    | [string, string, string, string, string]
-    | [string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string];
+  items?: string[];
   label?: string;
   value?: string;
   src?: string;
@@ -125,86 +58,13 @@ export interface ContentBlock {
   /**
    * @maxItems 4
    */
-  series?:
-    | []
-    | [
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        }
-      ]
-    | [
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        }
-      ]
-    | [
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        }
-      ]
-    | [
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        },
-        {
-          name: string;
-          /**
-           * @minItems 1
-           */
-          values: [number, ...number[]];
-        }
-      ];
+  series?: {
+    name: string;
+    /**
+     * @minItems 1
+     */
+    values: [number, ...number[]];
+  }[];
   unit?: string;
   rows?: string[][];
   header?: boolean;

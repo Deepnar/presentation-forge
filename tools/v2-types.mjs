@@ -21,7 +21,15 @@ export async function generateTypes({ write = true } = {}) {
   const results = [];
   for (const t of targets) {
     const schema = JSON.parse(await readFile(new URL(t.schema, ROOT), "utf8"));
-    const ts = await compile(schema, t.name, { bannerComment: banner(t.schema) });
+    const ts = await compile(schema, t.name, {
+      bannerComment: banner(t.schema),
+      // Ignore schema maxItems for tuple-union generation (verified against
+      // installed json-schema-to-typescript 15.0.1: maxItems -1 deletes the
+      // schema maximum before generation but preserves minItems). Maximum
+      // lengths stay enforced by AJV at runtime; the generated types keep
+      // useful non-empty shapes without giant unions.
+      maxItems: -1,
+    });
     results.push({ ...t, ts: ts.endsWith("\n") ? ts : ts + "\n" });
     if (write) await writeFile(path.join(new URL(ROOT).pathname, t.out), results.at(-1).ts);
   }
