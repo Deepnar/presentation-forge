@@ -6689,7 +6689,7 @@ Node adapter. No `src/render.js` extraction.
 > recorded, not redesigned —
 > V2-3/V2-5 extend fidelity when real consumers arrive.
 
-### [ ] V2-2E — ReportSpec + deterministic DOCX renderer
+### [x] V2-2E — ReportSpec + deterministic DOCX renderer
 
 Schema-backed `ReportSpec` model contract (compatibility bridge from
 the legacy report shape acceptable), then `packages/renderer-docx`:
@@ -6697,6 +6697,19 @@ pure OOXML builders + donor-bytes assembly + `tocPages`-explicit final
 render. Donor discovery, identity loading, and the LibreOffice/Poppler
 pagination pass stay outside; the two-pass TOC becomes provisional
 render → external pagination → deterministic final render.
+
+> **Learned.** Three extraction realities. First, the generator names
+> the root type from schema `title`, not the `name` argument — so the
+> V2 schema carries `title: ReportSpec`, with validation semantics
+> proven identical to legacy by differential verdicts over a document
+> battery. Second, optional named properties beside a `$ref` index
+> signature fail strict tsc and the generator cannot fix it — the eight
+> documentation-only declarations left the schema with zero validation
+> change (same battery proves it). Third, no caller consumed
+> `assembleDocx`'s JSZip return outside `report.js`, so the facade
+> re-wraps canonical bytes with no behavioral surface at all. Quirks
+> preserved verbatim: duplicate By-lines, TNR, TABLE OF CONTENT
+> wording, unrendered subtitle, em-dash fallback.
 
 ### [ ] V2-2F — chrome/brand compatibility seam
 

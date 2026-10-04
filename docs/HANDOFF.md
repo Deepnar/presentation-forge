@@ -1,52 +1,51 @@
-# Handoff — V2-2D landed, V2-2E not started
+# Handoff — V2-2E landed, V2-2F not started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§12 V2.1 program** (V2-0 through V2-2D ticked
-with Learned blocks; V2-2E/V2-2F specified; V2-3+ unchanged).
+`docs/ROADMAP.md` → **§12 V2.1 program** (V2-0 through V2-2E ticked
+with Learned blocks; V2-2F specified; V2-3+ unchanged).
 External reference:
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` (untracked root input,
 not a roadmap).
 
 ## Current state
 
-On `v2`, to be pushed to `origin/v2` with this handoff. V2-2D
-implemented per instruction (strict-TS renderer, bytes API, metadata,
-empty-input error, Node adapter, boundary exception, caller migration
-by deletion, no legacy extraction).
+On `v2`, to be pushed to `origin/v2` with this handoff. V2-2E
+implemented as E1–E5 per the corrected instruction set (ReportSpec
+naming fixed at generation, vocabulary in model, cover without title,
+derived section list, facade compatibility, bytes boundary).
 
-**V2-2D (this session):** `packages/renderer-pptx/render.ts`
-(`renderPptx(scenes, options) -> Uint8Array`, fresh presentation per
-call, five metadata fields, `[]` rejected loudly) and `node.ts`
-(`renderPptxToFile` persists the same bytes — the only generation path).
-Old `scene-to-pptx.js` deleted (two trivial callers migrated, zero
-parallel implementations). `test/v2-renderer-pptx.test.js` proves
-bytes/signature, structure, native families, metadata, freshness, and
-the adapter. Boundary test confines `node:` builtins to `node.ts` with
-dedicated synthetic tests. Image `src` stays path/URL passthrough;
-unprojected scene fields (rotation, element-level opacity,
-lock/provenance metadata) recorded as future fidelity work.
+**V2-2E (this session):** `ReportSpec` schema-first model contract
+(verbatim validation semantics, legacy-named messages preserved,
+differential proof), `packages/model/report.ts` (default sections,
+reserved appendix name, ordering policy), `packages/renderer-docx/`
+(`render.ts`, `body.ts`, `donor.ts`, `pagination.ts`, `types.ts` —
+bytes in/out, jszip-local), `src/report.js` as delegating facade +
+orchestrator (public API and CLI unchanged), AI planner/vocabulary
+imports pointed at the model domain module.
 
-**Still true:** Slice A/B contracts, detached semantics, DesignSystem
-normalization, layout/geometry core, legacy render/layouts/report
-operational; general rotation, fitted vertical flow, chrome policy
-deferred; report/DOCX work is V2-2E.
+**Still true:** all prior slices; `subtitle` schema-valid but
+unrendered; quirks preserved verbatim; LibreOffice/Poppler remain
+external QA/orchestration only; `design.js` gone; chrome/plate deferred
+(V2-2F/compat); general rotation deferred (V2-5).
 
 ## Verification
 
-- `npm run typecheck` — exit 0 (model + core + renderer + usage test).
-- Full `npm test` — 954 tests, 953 pass, sole failure the pre-existing
+- `npm run types:generate` + drift — clean.
+- `npm run typecheck` — exit 0 (model + core + both renderers + usage).
+- Full `npm test` — 975 tests, 974 pass, sole failure the pre-existing
   `byok-budget` locale expectation.
-- `npm run themematrix` — clean across 34 runs.
-- Slice re-rendered through the adapter and raster-read (chart) —
-  identical output.
-- `render.ts` contains no `writeFile`/fs/path logic; old module path
-  fully removed; `pptxgenjs` still renderer-local; boundary live-scan
-  clean.
+- Legacy report suites (incl. LO two-pass/preview, ran unskipped),
+  credits, structure, AI report/prose/generator suites — all green
+  through facades.
+- Canonical-vs-legacy `document.xml` byte-identical on the donor
+  fixture; untouched donor parts byte-identical.
+- Boundary live-scan clean (`renderer-docx`: model-relative + jszip
+  only; jszip rejected elsewhere incl. renderer-pptx).
 
 ## Continue from here
 
-1. V2-2D review (pushed implementation + this handoff). Do NOT start
-   V2-2E until approved.
-2. On approval: V2-2E per the roadmap slice — schema-backed ReportSpec
-   plus deterministic DOCX bytes with donor-bytes input and external
-   pagination; LibreOffice stays outside.
+1. V2-2E review (pushed implementation + this handoff). Do NOT start
+   V2-2F until approved.
+2. On approval: V2-2F per the roadmap slice — renderer-neutral chrome
+   geometry/policy, brand adapter boundary, locked-scene-element
+   contract for V2-3; no drawing moves.

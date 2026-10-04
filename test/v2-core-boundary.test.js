@@ -11,7 +11,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = path.resolve(new URL("..", import.meta.url).pathname);
-const PACKAGES = ["model", "core", "compiler", "renderer-pptx", "editor"];
+const PACKAGES = ["model", "core", "compiler", "renderer-pptx", "renderer-docx", "editor"];
 
 // Relative-import scope per package: where a file may point.
 const RELATIVE_SCOPE = {
@@ -19,6 +19,7 @@ const RELATIVE_SCOPE = {
   core: ["packages/model", "packages/core"],
   compiler: ["packages/model", "packages/core", "packages/compiler"],
   "renderer-pptx": ["packages/model", "packages/core", "packages/renderer-pptx"],
+  "renderer-docx": ["packages/model", "packages/renderer-docx"],
   editor: ["packages/model", "packages/core", "packages/editor"],
 };
 
@@ -28,6 +29,7 @@ const BARE_ALLOW = {
   core: [],
   compiler: [],
   "renderer-pptx": ["pptxgenjs"],
+  "renderer-docx": ["jszip"],
   editor: [],
 };
 
@@ -38,6 +40,7 @@ const NODE_ALLOW = {
   core: [],
   compiler: [],
   "renderer-pptx": [],
+  "renderer-docx": [],
   editor: [],
 };
 
@@ -53,7 +56,7 @@ const FILE_ALLOW = [
 
 // Banned everywhere under packages/, regardless of matrix.
 const GLOBAL_BAN = [
-  "sharp", "jszip", "docx", "yaml", "typescript",
+  "sharp", "docx", "yaml", "typescript",
   "openai", "anthropic", "openrouter", "ollama",
   "@google/generative-ai", "@google/genai",
   "@neondatabase/serverless", "@vercel/blob", "next", "express", "tldraw", "@tldraw/tldraw",
@@ -178,7 +181,7 @@ describe("v2 core boundary", () => {
     assert.equal(edgeAllowed("compiler", fakeCore, path.join(ROOT, "packages/core/fit.ts"), "../core/fit.ts"), null);
     assert.match(bareAllowed("core", "sharp") ?? "", /banned/);
     assert.equal(bareAllowed("renderer-pptx", "pptxgenjs", path.join(ROOT, "packages/renderer-pptx/render.ts")), null);
-    assert.match(bareAllowed("renderer-pptx", "jszip", path.join(ROOT, "packages/renderer-pptx/render.ts")) ?? "", /banned/);
+    assert.match(bareAllowed("renderer-pptx", "jszip", path.join(ROOT, "packages/renderer-pptx/render.ts")) ?? "", /not allowed/);
   });
 
   it("confines node builtins to the named renderer adapter", () => {
@@ -189,6 +192,21 @@ describe("v2 core boundary", () => {
     assert.equal(bareAllowed("renderer-pptx", "node:fs/promises", adapter), null);
     assert.equal(bareAllowed("renderer-pptx", "node:path", adapter), null);
     assert.match(bareAllowed("renderer-pptx", "node:os", adapter) ?? "", /only named adapter/);
+  });
+
+  it("allows jszip only in renderer-docx", () => {
+    const docx = path.join(ROOT, "packages/renderer-docx/render.ts");
+    const pptx = path.join(ROOT, "packages/renderer-pptx/render.ts");
+    const core = path.join(ROOT, "packages/core/fit.ts");
+    const model = path.join(ROOT, "packages/model/validate.ts");
+    assert.equal(bareAllowed("renderer-docx", "jszip", docx), null);
+    assert.match(bareAllowed("renderer-pptx", "jszip", pptx) ?? "", /not allowed/);
+    assert.match(bareAllowed("core", "jszip", core) ?? "", /not allowed/);
+    assert.match(bareAllowed("model", "jszip", model) ?? "", /not allowed/);
+    assert.match(bareAllowed("renderer-docx", "node:fs", docx) ?? "", /not allowed/);
+    assert.match(bareAllowed("renderer-docx", "node:path", docx) ?? "", /not allowed/);
+    assert.match(bareAllowed("renderer-docx", "node:os", docx) ?? "", /not allowed/);
+    assert.match(bareAllowed("renderer-docx", "child_process", docx) ?? "", /not allowed/);
   });
 
   it("repository packages contain zero boundary violations", async () => {

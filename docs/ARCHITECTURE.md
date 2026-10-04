@@ -1353,15 +1353,23 @@ paths yet, `packages/` holds the first agent-native primitive:
   -> Uint8Array` (strict TS, fresh presentation per call, document
   metadata in options) with `node.ts` as the explicit Node-only file
   adapter; generation is in-memory, persistence is the adapter's job.
+- `packages/renderer-docx/` — `renderDocx(report, donorBytes, options)
+  -> Uint8Array` (strict TS): deterministic OOXML body builders,
+  donor-bytes surgery preserving package chrome, pure pagination-text
+  search; no filesystem, identity loading, credit reading, or
+  LibreOffice/Poppler. `ReportSpec`, section vocabulary, and validation
+  are model-owned; cover identity and normalized credits are explicit
+  render context; the section list is derived, never caller-supplied.
 - `packages/editor/` — the browser renderer (SVG projection plus a
   direct-manipulation demo) consumes the same scene object. Text, chart
   series data, and tables survive as editable OOXML; empty image sources
   degrade to a labelled seat, never a dead deck.
 
-Proven by `test/v2-*.test.js` (85 tests: contracts, determinism, bounds,
+Proven by `test/v2-*.test.js` (106 tests: contracts, determinism, bounds,
 preservation including detached-editability, legacy mapping, generated-type
 drift, domain validation, design goldens, renderer bytes/metadata/adapter,
-unzip-and-assert text/chart survival) and
+report spec/domain, renderer-docx bytes/parity, unzip-and-assert text/chart
+survival) and
 by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
 representative themes). The generator emits structural types without
 giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay
