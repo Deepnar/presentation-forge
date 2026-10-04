@@ -6765,6 +6765,64 @@ schema, recipe, or behavior changes.
 > Silent loss is real and now measured: stat/table/quote blocks and
 > recipe-ignored lists vanish without diagnostics today.
 
+### [ ] V2-3B — semantic intent hardening
+
+Purpose: define the minimum structured semantic vocabulary required so
+meaning that currently disappears before Layer C can survive into
+deterministic composition. Scope includes resolving and then
+implementing the eventual contracts around semantic relationship,
+rhetorical role, content emphasis, evidence/source linkage,
+quantitative/chart intent, takeaway expression, and uncertainty /
+epistemic / evaluative semantics. The exact schema is NOT yet frozen:
+`resultStatus` is unresolved (support, uncertainty, and
+favorable/unfavorable outcome are different dimensions);
+`seriesSourceIds[][]` is not approved; free-text `visualDirection`
+must not be parsed by the compiler; `compositionHint.variant: string`
+is not approved. No composition/geometry expansion in this slice.
+
+### [ ] V2-3C — deterministic deck + slide composition planning
+
+Purpose: introduce the deterministic deck-level composition pass
+between semantic intent and scene compilation. It consumes structured
+semantics, content structure, DesignSystem constraints, and neighboring
+composition choices — never parsed free-text audience/objective/
+narrative/designDirection/visualDirection. It establishes deck rhythm,
+density, composition-family selection, emphasis targets, and related
+machine-actionable planning without fighting customized/detached
+scenes.
+
+### [ ] V2-3D — representative composition mechanisms
+
+Purpose: grow beyond the current six recipes using the
+semantic/composition architecture established in B/C. This is not
+porting the legacy slide-type catalog; the family count stays
+provisional until B/C establish the real semantic boundaries.
+Implement the representative composition mechanisms necessary for the
+benchmark decks and important presentation classes.
+
+### [ ] V2-3E — fit + scene QA + chrome emission
+
+Purpose: integrate canonical fit/budget behavior, complete
+deterministic scene QA, and emit chrome as ordinary locked
+compiler-provenance scene elements shared by browser/PPTX rendering.
+Preserve all V2-2 chrome behavior, including the dark-mode
+presenter/slide-number opacity distinction. Native editability and
+customized/detached preservation remain hard invariants.
+
+### [ ] V2-3F — theme/plate compatibility + full quality evaluation
+
+Purpose: run the completed V2-3 compiler through representative themes
+and compatibility paths, execute the V2-3A benchmark suite against the
+improved system, and establish evidence that presentation quality
+improved rather than merely layout variety. The later L3
+semantic/visual evaluation harness may be wired here once explicitly
+authorized. Completion evidence must combine clean deterministic L1
+gates, useful L2 findings, counterfactual sensitivity in the intended
+directions, theme semantic invariance, benchmark quality evidence, and
+human milestone review.
+
+Dependency: V2-3A → V2-3B → V2-3C → V2-3D → V2-3E → V2-3F → V2-4.
+
 ### [ ] V2-4 browser scene renderer
 
 *Depends on: V2-3. Blocks: V2-5.*

@@ -141,10 +141,13 @@ describe("v2 counterfactual baseline", () => {
 describe("v2 theme invariance", () => {
   it("semantic projection is preserved across representative themes", async () => {
     const intent = sampleDeckIntent();
-    const names = ["warm-humanist", "swiss-international", "editorial-magazine", "high-contrast-mono", "sci-fi-hud"];
+    const required = ["warm-humanist", "swiss-international", "editorial-magazine", "high-contrast-mono", "sci-fi-hud"];
     const available = new Set(await listThemeNames());
+    for (const name of required) {
+      assert.ok(available.has(name), `representative theme missing: ${name}`);
+    }
     let first = null;
-    for (const name of names.filter((n) => available.has(n))) {
+    for (const name of required) {
       const theme = await loadThemeDocument(name);
       const design = normalizeDesign({ theme, mode: "light" });
       const projection = compileDeck(intent, design).map(semanticProjection);
