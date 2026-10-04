@@ -1,7 +1,5 @@
-import { readFile, readdir } from "node:fs/promises";
-import path from "node:path";
 import YAML from "yaml";
-import { ROOT, THEMES } from "./paths.js";
+import { listThemeNames, listStyleNames, readThemeFile, readStyleFile } from "./theme-loader.js";
 
 export function hex(c) {
   if (!c) return undefined;
@@ -16,19 +14,17 @@ export function alphaPct(c) {
 }
 
 export async function listThemes() {
-  const files = await readdir(THEMES);
-  return files.filter((f) => f.endsWith(".yaml") && !f.startsWith("_")).map((f) => f.replace(/\.yaml$/, ""));
+  return listThemeNames();
 }
 
 export async function listStyles() {
-  const files = await readdir(path.join(ROOT, "styles"));
-  return files.filter((f) => f.endsWith(".yaml") && !f.startsWith("_")).map((f) => f.replace(/\.yaml$/, ""));
+  return listStyleNames();
 }
 
 export async function loadStyle(name) {
   let raw;
   try {
-    raw = YAML.parse(await readFile(path.join(ROOT, "styles", `${name}.yaml`), "utf8"));
+    raw = YAML.parse(await readStyleFile(name));
   } catch {
     const available = await listStyles();
     throw new Error(`Unknown style "${name}". Available: ${available.join(", ")}`);
@@ -47,10 +43,9 @@ function deepMerge(a, b) {
 }
 
 export async function loadTheme(name, { mode = "light", style } = {}) {
-  const file = path.join(THEMES, `${name}.yaml`);
   let raw;
   try {
-    raw = await readFile(file, "utf8");
+    raw = await readThemeFile(name);
   } catch {
     const available = await listThemes();
     throw new Error(`Unknown theme "${name}". Available: ${available.join(", ")}`);
