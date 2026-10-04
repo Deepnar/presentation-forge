@@ -1,59 +1,24 @@
 // @forge/model — Layer C contracts: SlideScene / SceneElement.
 //
-// Canonical units are inches on a 13.333 x 7.5 canvas (the same CANVAS
-// src/chrome.js defines), so compiler geometry and pptxgenjs agree without
-// conversion. Never store screen pixels here.
+// Types are generated from scene.schema.json (see scene.generated.ts);
+// AJV owns runtime validation. Canonical units are inches on a
+// 13.333 x 7.5 canvas (the same CANVAS src/chrome.js defines), so
+// compiler geometry and pptxgenjs agree without conversion. Never store
+// screen pixels here.
 
 import { readFile } from "node:fs/promises";
 import { randomBytes } from "node:crypto";
-import Ajv from "ajv";
+import { Ajv, type ValidateFunction } from "ajv";
+import type { SlideScene, SceneElement } from "./scene.generated.ts";
+
+export type { SlideScene, SceneElement, Paragraph, TextRun } from "./scene.generated.ts";
 
 export const SCENE_W = 13.333;
 export const SCENE_H = 7.5;
 
-/**
- * @typedef {object} TextRun
- * @property {string} text
- * @property {boolean} [bold]
- * @property {boolean} [italic]
- * @property {number} [size]
- * @property {string} [color] bare hex, no #
- */
+let _validate: ValidateFunction | null = null;
 
-/**
- * @typedef {object} Paragraph
- * @property {{text:string,bold?:boolean,italic?:boolean,size?:number,color?:string}[]} runs
- * @property {"left"|"center"|"right"} [align]
- * @property {boolean} [bullet]
- */
-
-/**
- * @typedef {object} SceneElement
- * @property {string} id stable across recompiles
- * @property {"text"|"shape"|"image"|"line"|"chart"|"table"|"group"} kind
- * @property {number} x @property {number} y @property {number} w @property {number} h
- * @property {number} [rotation]
- * @property {number} [opacity]
- * @property {boolean} [locked]
- * @property {number} z
- * @property {"compiler"|"agent"|"human"|"import"} provenance
- * @property {string} [semanticRef] block id this element was compiled from
- * @property {boolean} [customized] set by any human geometry edit
- */
-
-/**
- * @typedef {object} SlideScene
- * @property {string} id
- * @property {number} width @property {number} height
- * @property {{fill:string}} background
- * @property {SceneElement[]} elements
- * @property {"managed"|"customized"|"detached"} layoutState
- * @property {string} [recipeId]
- */
-
-let _validate = null;
-
-async function validator() {
+async function validator(): Promise<ValidateFunction> {
   if (!_validate) {
     const url = new URL("./scene.schema.json", import.meta.url);
     const schema = JSON.parse(await readFile(url, "utf8"));
@@ -63,7 +28,7 @@ async function validator() {
   return _validate;
 }
 
-export async function validateScene(scene) {
+export async function validateScene(scene: unknown): Promise<{ ok: boolean; errors: string[] }> {
   const validate = await validator();
   const ok = validate(scene);
   if (ok) return { ok: true, errors: [] };
@@ -76,20 +41,20 @@ export async function validateScene(scene) {
 // Deterministic compiler ids: slide + block + role, so a recompile of
 // unchanged intent yields byte-identical scenes. Human-added elements get
 // random ids because they have no semantic parent.
-export function compilerId(slideId, blockId, role) {
+export function compilerId(slideId: string, blockId: string, role: string): string {
   return `${slideId}:${blockId}:${role}`;
 }
 
-export function humanId() {
+export function humanId(): string {
   return `h-${randomBytes(6).toString("hex")}`;
 }
 
 // Geometry invariant shared by the compiler and the editor: every element
 // footprint must sit on the canvas with a positive extent. Mirrors the
 // reporting in src/geometry.js without depending on pptxgenjs.
-export function checkBounds(scene) {
-  const problems = [];
-  const walk = (el, path) => {
+export function checkBounds(scene: SlideScene): string[] {
+  const problems: string[] = [];
+  const walk = (el: SceneElement, path: string): void => {
     const where = path ? `${path}/${el.id}` : el.id;
     if (!(el.w > 0) || !(el.h > 0)) problems.push(`${where}: non-positive extent ${el.w}x${el.h}`);
     const x2 = el.kind === "line" ? Math.max(el.x, el.line?.x2 ?? el.x) : el.x + el.w;
@@ -105,8 +70,8 @@ export function checkBounds(scene) {
   return problems;
 }
 
-export function findElement(scene, id) {
-  const walk = (els) => {
+export function findElement(scene: SlideScene, id: string): SceneElement | null {
+  const walk = (els: SceneElement[]): SceneElement | null => {
     for (const el of els) {
       if (el.id === id) return el;
       const found = walk(el.group?.children ?? []);

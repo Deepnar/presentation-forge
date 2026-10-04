@@ -1,60 +1,19 @@
 // @forge/model — Layer A contracts: DeckIntent / SlideIntent / ContentBlock.
 //
-// JSDoc typedefs here map 1:1 to the future TypeScript interfaces; the JSON
-// Schemas beside this file are the runtime boundary (ajv, same pattern as
-// src/validate.js). No coordinates, colours, or font names may enter this
-// layer — that is the product invariant, not a style preference.
+// Type shapes are generated from intent.schema.json (see
+// intent.generated.ts); AJV owns runtime validation. No coordinates,
+// colours, or font names may enter this layer — that is the product
+// invariant, not a style preference.
 
 import { readFile } from "node:fs/promises";
-import Ajv from "ajv";
+import { Ajv, type ValidateFunction } from "ajv";
+import type { DeckIntent } from "./intent.generated.ts";
 
-/**
- * @typedef {object} ContentBlock
- * @property {string} id
- * @property {"text"|"list"|"stat"|"image"|"chart"|"table"|"quote"|"callout"} kind
- * @property {string} [text]
- * @property {string[]} [items]
- * @property {string} [label]
- * @property {string} [value]
- * @property {string} [src]
- * @property {string} [alt]
- * @property {string} [caption]
- * @property {string} [chartKind]
- * @property {string[]} [categories]
- * @property {{name:string,values:number[]}[]} [series]
- * @property {string} [unit]
- * @property {string[][]} [rows]
- * @property {boolean} [header]
- */
+export type { DeckIntent, SlideIntent, ContentBlock } from "./intent.generated.ts";
 
-/**
- * @typedef {object} SlideIntent
- * @property {string} id
- * @property {string} purpose
- * @property {string} [title]
- * @property {string} [takeaway]
- * @property {ContentBlock[]} blocks
- * @property {string} [visualDirection]
- * @property {{recipe?:string,emphasis?:string,mediaSide?:string}} [layoutHint]
- * @property {string[]} [sourceRefs]
- * @property {string} [speakerNotes]
- */
+let _validate: ValidateFunction | null = null;
 
-/**
- * @typedef {object} DeckIntent
- * @property {string} id
- * @property {string} title
- * @property {string} [audience]
- * @property {string} [objective]
- * @property {string} [narrative]
- * @property {string} [designDirection]
- * @property {{mode:string,fileIds?:string[]}} [sourcePolicy]
- * @property {SlideIntent[]} slides
- */
-
-let _validate = null;
-
-async function validator() {
+async function validator(): Promise<ValidateFunction> {
   if (!_validate) {
     const url = new URL("./intent.schema.json", import.meta.url);
     const schema = JSON.parse(await readFile(url, "utf8"));
@@ -66,7 +25,7 @@ async function validator() {
 
 // Validate a DeckIntent. Returns {ok, errors[]} with slide-scoped messages
 // so a model can repair its own output (same contract as src/validate.js).
-export async function validateDeckIntent(deck) {
+export async function validateDeckIntent(deck: unknown): Promise<{ ok: boolean; errors: string[] }> {
   const validate = await validator();
   const ok = validate(deck);
   if (ok) return { ok: true, errors: [] };
@@ -80,12 +39,12 @@ export async function validateDeckIntent(deck) {
 
 // Every slide and block needs a stable id before it reaches the compiler;
 // the compiler keys element identity off these.
-export function normalizeIntent(deck) {
+export function normalizeIntent(deck: DeckIntent): DeckIntent {
   let n = 0;
   const slides = (deck.slides ?? []).map((s, si) => ({
     ...s,
     id: s.id ?? `s${si + 1}`,
     blocks: (s.blocks ?? []).map((b, bi) => ({ ...b, id: b.id ?? `s${si + 1}b${bi + 1}-${n++}` })),
   }));
-  return { ...deck, id: deck.id ?? "deck", slides };
+  return { ...deck, id: deck.id ?? "deck", slides: slides as DeckIntent["slides"] };
 }
