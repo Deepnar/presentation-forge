@@ -53,6 +53,10 @@ describe("v2 report spec validation", () => {
 });
 
 describe("v2 report vocabulary drift", () => {
+  // The default names live in prose + additionalProperties, not as
+  // explicit named schema properties (optional-named + $ref index breaks
+  // strict tsc). This proves the names stay valid content keys and the
+  // promoted schema stays validation-equivalent to legacy.
   it("every default section validates as a content key", async () => {
     for (const name of DEFAULT_REPORT_SECTIONS) {
       const { ok, errors } = await validateReport({
