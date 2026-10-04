@@ -1,0 +1,1495 @@
+{
+ "warm-humanist/light": {
+  "name": "warm-humanist",
+  "palette": {
+   "bg": {
+    "hex": "EBEBE6"
+   },
+   "surface": {
+    "hex": "FFFFFF"
+   },
+   "ink": {
+    "hex": "2D2D2A"
+   },
+   "inkMuted": {
+    "hex": "5C5C59"
+   },
+   "accent": {
+    "hex": "C05D4E"
+   },
+   "accentAlt": {
+    "hex": "D97706"
+   },
+   "rule": {
+    "hex": "D8D8D2"
+   },
+   "onAccent": {
+    "hex": "0A0A0A"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "2D2D2A"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "A8A8A2"
+    },
+    "accent": {
+     "hex": "D97706"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "C05D4E"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "F2DCD7"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Merriweather",
+    "weight": 900,
+    "size": 40,
+    "line": 1.12,
+    "tracking": -0.5
+   },
+   "heading": {
+    "family": "Merriweather",
+    "weight": 700,
+    "size": 30,
+    "line": 1.18,
+    "tracking": -0.3
+   },
+   "subhead": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 15,
+    "line": 1.45,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 13,
+    "line": 1.55,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Inter",
+    "weight": 500,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.2,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Merriweather",
+    "weight": 900,
+    "size": 54,
+    "line": 1,
+    "tracking": -1
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.62,
+    "right": 0.7,
+    "bottom": 0.55,
+    "left": 0.7
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "000000",
+     "alpha": 0
+    },
+    "width": 0
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "FFFFFF"
+   }
+  },
+  "layoutPreferences": {
+   "heading": {
+    "opening": "bar",
+    "rule": "under"
+   },
+   "list": {
+    "marker": "dash"
+   }
+  },
+  "label": "Warm Humanist",
+  "summary": "Calm editorial warmth. Bone paper, terracotta accent, serif headlines.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 16,
+    "offset": 4,
+    "angle": 90,
+    "color": {
+     "hex": "2D2D2A",
+     "alpha": 0.09
+    }
+   }
+  }
+ },
+ "swiss-international/light": {
+  "name": "swiss-international",
+  "palette": {
+   "bg": {
+    "hex": "FFFFFF"
+   },
+   "surface": {
+    "hex": "F6F6F4"
+   },
+   "ink": {
+    "hex": "141414"
+   },
+   "inkMuted": {
+    "hex": "6B6B6B"
+   },
+   "accent": {
+    "hex": "E63946"
+   },
+   "accentAlt": {
+    "hex": "1D3557"
+   },
+   "rule": {
+    "hex": "D9D9D4"
+   },
+   "onAccent": {
+    "hex": "0A0A0A"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "141414"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "B9B9B9"
+    },
+    "accent": {
+     "hex": "E63946"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "E63946"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "FDF4F5"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 40,
+    "line": 1.08,
+    "tracking": -1
+   },
+   "heading": {
+    "family": "Inter",
+    "weight": 600,
+    "size": 30,
+    "line": 1.12,
+    "tracking": -0.5
+   },
+   "subhead": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 15,
+    "line": 1.4,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 13,
+    "line": 1.55,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Inter",
+    "weight": 500,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.6,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 54,
+    "line": 1,
+    "tracking": -1.5
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.62,
+    "right": 0.7,
+    "bottom": 0.55,
+    "left": 0.7
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "D9D9D4"
+    },
+    "width": 1
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "F6F6F4"
+   }
+  },
+  "layoutPreferences": {
+   "heading": {
+    "opening": "rule",
+    "rule": "under"
+   },
+   "list": {
+    "marker": "none"
+   }
+  },
+  "label": "Swiss International",
+  "summary": "Strict grid typography — black on white, hairline rules, one red accent.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 0,
+    "offset": 0,
+    "angle": 90,
+    "color": {
+     "hex": "141414",
+     "alpha": 0
+    }
+   }
+  },
+  "background": {
+   "decor": [
+    {
+     "shape": "rect",
+     "x": 0,
+     "y": 2.5,
+     "w": 13.333,
+     "h": 0.015,
+     "fill": {
+      "hex": "B9B9B9",
+      "alpha": 0.30000000000000004
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 0,
+     "y": 5,
+     "w": 13.333,
+     "h": 0.015,
+     "fill": {
+      "hex": "B9B9B9",
+      "alpha": 0.30000000000000004
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 3.33,
+     "y": 0,
+     "w": 0.015,
+     "h": 7.5,
+     "fill": {
+      "hex": "B9B9B9",
+      "alpha": 0.30000000000000004
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 6.66,
+     "y": 0,
+     "w": 0.015,
+     "h": 7.5,
+     "fill": {
+      "hex": "B9B9B9",
+      "alpha": 0.30000000000000004
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 9.99,
+     "y": 0,
+     "w": 0.015,
+     "h": 7.5,
+     "fill": {
+      "hex": "B9B9B9",
+      "alpha": 0.30000000000000004
+     }
+    }
+   ]
+  }
+ },
+ "high-contrast-mono/dark": {
+  "name": "high-contrast-mono",
+  "palette": {
+   "bg": {
+    "hex": "000000"
+   },
+   "surface": {
+    "hex": "111111"
+   },
+   "ink": {
+    "hex": "FFFFFF"
+   },
+   "inkMuted": {
+    "hex": "FFFFFF"
+   },
+   "accent": {
+    "hex": "FFFFFF"
+   },
+   "accentAlt": {
+    "hex": "000000"
+   },
+   "rule": {
+    "hex": "FFFFFF"
+   },
+   "onAccent": {
+    "hex": "000000"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "000000"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "FFFFFF"
+    },
+    "accent": {
+     "hex": "FFFFFF"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "000000"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "FFFFFF"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Anton",
+    "weight": 400,
+    "size": 46,
+    "line": 1,
+    "tracking": 0
+   },
+   "heading": {
+    "family": "Anton",
+    "weight": 400,
+    "size": 34,
+    "line": 1.05,
+    "tracking": 0
+   },
+   "subhead": {
+    "family": "Space Grotesk",
+    "weight": 500,
+    "size": 16,
+    "line": 1.3,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Space Grotesk",
+    "weight": 400,
+    "size": 14,
+    "line": 1.45,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Space Grotesk",
+    "weight": 500,
+    "size": 11,
+    "line": 1.3,
+    "tracking": 0.1
+   },
+   "eyebrow": {
+    "family": "Space Grotesk",
+    "weight": 700,
+    "size": 11,
+    "line": 1.2,
+    "tracking": 1.6,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Anton",
+    "weight": 400,
+    "size": 60,
+    "line": 0.95,
+    "tracking": 0
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.66,
+    "right": 0.8,
+    "bottom": 0.6,
+    "left": 0.8
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.66,
+    "titleY": 1.4,
+    "bodyY": 2.7
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "000000"
+    },
+    "width": 2
+   },
+   "cardPad": 0.32,
+   "cardFill": {
+    "hex": "111111"
+   }
+  },
+  "layoutPreferences": {
+   "section": {
+    "composition": "band"
+   },
+   "heading": {
+    "opening": "bar",
+    "rule": "under"
+   },
+   "list": {
+    "marker": "square"
+   }
+  },
+  "label": "High Contrast Mono",
+  "summary": "Pure black/white, huge type, hard edges — a stark poster.",
+  "mode": "dark",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 0,
+    "offset": 4,
+    "angle": 90,
+    "color": {
+     "hex": "000000",
+     "alpha": 1
+    }
+   }
+  },
+  "chart": {
+   "series": [
+    {
+     "hex": "111111"
+    },
+    {
+     "hex": "D32F2F"
+    },
+    {
+     "hex": "1565C0"
+    },
+    {
+     "hex": "B26A00"
+    },
+    {
+     "hex": "2E7D32"
+    },
+    {
+     "hex": "6A1B9A"
+    }
+   ]
+  }
+ },
+ "sci-fi-hud/light": {
+  "name": "sci-fi-hud",
+  "palette": {
+   "bg": {
+    "hex": "0A0F14"
+   },
+   "surface": {
+    "hex": "101A22"
+   },
+   "ink": {
+    "hex": "DFF3F2"
+   },
+   "inkMuted": {
+    "hex": "6E8B93"
+   },
+   "accent": {
+    "hex": "33D6E0"
+   },
+   "accentAlt": {
+    "hex": "E85AD4"
+   },
+   "rule": {
+    "hex": "1E3540"
+   },
+   "onAccent": {
+    "hex": "0A0F14"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "070B0F"
+    },
+    "ink": {
+     "hex": "DFF3F2"
+    },
+    "muted": {
+     "hex": "627D87"
+    },
+    "accent": {
+     "hex": "E85AD4"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "12303A"
+    },
+    "ink": {
+     "hex": "DFF3F2"
+    },
+    "muted": {
+     "hex": "7FB6C0"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Space Grotesk",
+    "weight": 600,
+    "size": 38,
+    "line": 1.1,
+    "tracking": 0.5
+   },
+   "heading": {
+    "family": "Space Grotesk",
+    "weight": 600,
+    "size": 28,
+    "line": 1.15,
+    "tracking": 0.3
+   },
+   "subhead": {
+    "family": "IBM Plex Mono",
+    "weight": 400,
+    "size": 13.5,
+    "line": 1.5,
+    "tracking": 0
+   },
+   "body": {
+    "family": "IBM Plex Mono",
+    "weight": 400,
+    "size": 12,
+    "line": 1.6,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "IBM Plex Mono",
+    "weight": 400,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "IBM Plex Mono",
+    "weight": 700,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.8,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Space Grotesk",
+    "weight": 600,
+    "size": 54,
+    "line": 1,
+    "tracking": 0
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.62,
+    "right": 0.7,
+    "bottom": 0.55,
+    "left": 0.7
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "2A4A58"
+    },
+    "width": 1
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "101A22"
+   }
+  },
+  "layoutPreferences": {
+   "title": {
+    "composition": "split"
+   },
+   "section": {
+    "composition": "rules"
+   },
+   "heading": {
+    "opening": "numeral",
+    "rule": "under"
+   },
+   "content": {
+    "frame": "sidebar"
+   },
+   "list": {
+    "marker": "arrow"
+   }
+  },
+  "label": "Sci-Fi HUD",
+  "summary": "A heads-up display — dark panels, cyan/magenta HUD linework.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 6,
+    "offset": 2,
+    "angle": 90,
+    "color": {
+     "hex": "000000",
+     "alpha": 0.45
+    }
+   }
+  },
+  "background": {
+   "decor": [
+    {
+     "shape": "rect",
+     "x": 0,
+     "y": 0,
+     "w": 13.333,
+     "h": 0.035,
+     "fill": {
+      "hex": "E85AD4",
+      "alpha": 0.65
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 2.22,
+     "y": 0.035,
+     "w": 0.02,
+     "h": 0.45,
+     "fill": {
+      "hex": "33D6E0",
+      "alpha": 0.06999999999999995
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 6.67,
+     "y": 0.035,
+     "w": 0.02,
+     "h": 0.45,
+     "fill": {
+      "hex": "33D6E0",
+      "alpha": 0.06999999999999995
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 11.11,
+     "y": 0.035,
+     "w": 0.02,
+     "h": 0.45,
+     "fill": {
+      "hex": "33D6E0",
+      "alpha": 0.06999999999999995
+     }
+    },
+    {
+     "shape": "rect",
+     "x": 0,
+     "y": 6.65,
+     "w": 13.333,
+     "h": 0.02,
+     "fill": {
+      "hex": "33D6E0",
+      "alpha": 0.06000000000000005
+     }
+    }
+   ]
+  }
+ },
+ "gradient-mesh-dark/dark": {
+  "name": "gradient-mesh-dark",
+  "palette": {
+   "bg": {
+    "hex": "0F0B1C"
+   },
+   "surface": {
+    "hex": "1B1429"
+   },
+   "ink": {
+    "hex": "EFE9F7"
+   },
+   "inkMuted": {
+    "hex": "9C8FC0"
+   },
+   "accent": {
+    "hex": "8B6DFF"
+   },
+   "accentAlt": {
+    "hex": "4AD3CB"
+   },
+   "rule": {
+    "hex": "312A4A"
+   },
+   "onAccent": {
+    "hex": "0F0B1C"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "0F0B1C"
+    },
+    "ink": {
+     "hex": "EFE9F7"
+    },
+    "muted": {
+     "hex": "9C8FC0"
+    },
+    "accent": {
+     "hex": "37C8C0"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "7A5CF0"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "D6CDFB"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Syne",
+    "weight": 700,
+    "size": 38,
+    "line": 1.1,
+    "tracking": -0.5
+   },
+   "heading": {
+    "family": "Syne",
+    "weight": 600,
+    "size": 28,
+    "line": 1.15,
+    "tracking": -0.3
+   },
+   "subhead": {
+    "family": "Manrope",
+    "weight": 400,
+    "size": 14,
+    "line": 1.5,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Manrope",
+    "weight": 400,
+    "size": 12.5,
+    "line": 1.6,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Manrope",
+    "weight": 500,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Manrope",
+    "weight": 700,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.6,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Syne",
+    "weight": 700,
+    "size": 54,
+    "line": 1,
+    "tracking": -1
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.7,
+    "right": 0.78,
+    "bottom": 0.62,
+    "left": 0.78
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "FFFFFF",
+     "alpha": 0.10196078431372549
+    },
+    "width": 1
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "1B1429"
+   }
+  },
+  "layoutPreferences": {
+   "title": {
+    "composition": "centred"
+   },
+   "section": {
+    "composition": "centred"
+   },
+   "heading": {
+    "align": "centre",
+    "opening": "none"
+   },
+   "content": {
+    "frame": "inset"
+   }
+  },
+  "label": "Gradient Mesh Dark",
+  "summary": "A rich dark aurora — deep plum through teal to amber. Premium keynote.",
+  "mode": "dark",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 16,
+    "offset": 4,
+    "angle": 90,
+    "color": {
+     "hex": "0F0B1C",
+     "alpha": 0.35
+    }
+   }
+  }
+ },
+ "editorial-magazine/light": {
+  "name": "editorial-magazine",
+  "palette": {
+   "bg": {
+    "hex": "FAF7F0"
+   },
+   "surface": {
+    "hex": "FFFFFF"
+   },
+   "ink": {
+    "hex": "1B1B1B"
+   },
+   "inkMuted": {
+    "hex": "6E6A61"
+   },
+   "accent": {
+    "hex": "B0322A"
+   },
+   "accentAlt": {
+    "hex": "2F4B6E"
+   },
+   "rule": {
+    "hex": "E4DED2"
+   },
+   "onAccent": {
+    "hex": "FFFFFF"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "1B1B1B"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "C9C4B8"
+    },
+    "accent": {
+     "hex": "B0322A"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "B0322A"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "F2D4D1"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Playfair Display",
+    "weight": 700,
+    "size": 42,
+    "line": 1.1,
+    "tracking": -0.8
+   },
+   "heading": {
+    "family": "Playfair Display",
+    "weight": 700,
+    "size": 31,
+    "line": 1.15,
+    "tracking": -0.4
+   },
+   "subhead": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 15,
+    "line": 1.45,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 13,
+    "line": 1.6,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Inter",
+    "weight": 500,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Inter",
+    "weight": 600,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 2.2,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Playfair Display",
+    "weight": 700,
+    "size": 52,
+    "line": 1,
+    "tracking": -1
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.62,
+    "right": 0.7,
+    "bottom": 0.55,
+    "left": 0.7
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "000000",
+     "alpha": 0
+    },
+    "width": 0
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "FFFFFF"
+   }
+  },
+  "layoutPreferences": {
+   "title": {
+    "composition": "band"
+   },
+   "section": {
+    "composition": "numeral"
+   },
+   "heading": {
+    "opening": "rule",
+    "rule": "under"
+   },
+   "list": {
+    "columns": 2
+   },
+   "text": {
+    "dropcap": true
+   }
+  },
+  "label": "Editorial Magazine",
+  "summary": "Print-magazine typography — serif headlines, paper white, deep red.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 14,
+    "offset": 3,
+    "angle": 90,
+    "color": {
+     "hex": "1B1B1B",
+     "alpha": 0.07
+    }
+   }
+  }
+ },
+ "notion-clean/light": {
+  "name": "notion-clean",
+  "palette": {
+   "bg": {
+    "hex": "FFFFFF"
+   },
+   "surface": {
+    "hex": "FFFFFF"
+   },
+   "ink": {
+    "hex": "37352F"
+   },
+   "inkMuted": {
+    "hex": "787774"
+   },
+   "accent": {
+    "hex": "2383E2"
+   },
+   "accentAlt": {
+    "hex": "9C6CFE"
+   },
+   "rule": {
+    "hex": "E9E9E7"
+   },
+   "onAccent": {
+    "hex": "0A0A0A"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "37352F"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "C9C6C0"
+    },
+    "accent": {
+     "hex": "2383E2"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "F1F1EF"
+    },
+    "ink": {
+     "hex": "37352F"
+    },
+    "muted": {
+     "hex": "6F6D6A"
+    },
+    "accent": {
+     "hex": "2383E2"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 40,
+    "line": 1.08,
+    "tracking": -0.8
+   },
+   "heading": {
+    "family": "Inter",
+    "weight": 600,
+    "size": 30,
+    "line": 1.12,
+    "tracking": -0.4
+   },
+   "subhead": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 15,
+    "line": 1.4,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 13,
+    "line": 1.55,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Inter",
+    "weight": 500,
+    "size": 10,
+    "line": 1.35,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Inter",
+    "weight": 600,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.2,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 54,
+    "line": 1,
+    "tracking": -1.5
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.62,
+    "right": 0.7,
+    "bottom": 0.55,
+    "left": 0.7
+   },
+   "gutter": 0.3,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.62,
+    "titleY": 1.3,
+    "bodyY": 2.55
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "E9E9E7"
+    },
+    "width": 1
+   },
+   "cardPad": 0.3,
+   "cardFill": {
+    "hex": "FFFFFF"
+   }
+  },
+  "layoutPreferences": {},
+  "label": "Notion Clean",
+  "summary": "Neutral workspace — white, gray ink, one blue accent, minimal.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 0,
+    "offset": 1,
+    "angle": 90,
+    "color": {
+     "hex": "37352F",
+     "alpha": 0.08
+    }
+   }
+  },
+  "background": {
+   "decor": [
+    {
+     "shape": "ellipse",
+     "x": 10,
+     "y": -2.6,
+     "w": 6.4,
+     "h": 6.4,
+     "fill": {
+      "hex": "2383E2",
+      "alpha": 0.06000000000000005
+     }
+    }
+   ]
+  }
+ },
+ "warm-humanist/light+compact": {
+  "name": "warm-humanist",
+  "palette": {
+   "bg": {
+    "hex": "EBEBE6"
+   },
+   "surface": {
+    "hex": "FFFFFF"
+   },
+   "ink": {
+    "hex": "2D2D2A"
+   },
+   "inkMuted": {
+    "hex": "5C5C59"
+   },
+   "accent": {
+    "hex": "C05D4E"
+   },
+   "accentAlt": {
+    "hex": "D97706"
+   },
+   "rule": {
+    "hex": "D8D8D2"
+   },
+   "onAccent": {
+    "hex": "0A0A0A"
+   }
+  },
+  "surfaces": {
+   "title": {
+    "bg": {
+     "hex": "2D2D2A"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "A8A8A2"
+    },
+    "accent": {
+     "hex": "D97706"
+    }
+   },
+   "section": {
+    "bg": {
+     "hex": "C05D4E"
+    },
+    "ink": {
+     "hex": "FFFFFF"
+    },
+    "muted": {
+     "hex": "F2DCD7"
+    }
+   }
+  },
+  "roles": {
+   "display": {
+    "family": "Merriweather",
+    "weight": 900,
+    "size": 40,
+    "line": 1.12,
+    "tracking": -0.5
+   },
+   "heading": {
+    "family": "Merriweather",
+    "weight": 700,
+    "size": 26,
+    "line": 1.12,
+    "tracking": -0.3
+   },
+   "subhead": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 13,
+    "line": 1.3,
+    "tracking": 0
+   },
+   "body": {
+    "family": "Inter",
+    "weight": 400,
+    "size": 12,
+    "line": 1.35,
+    "tracking": 0
+   },
+   "caption": {
+    "family": "Inter",
+    "weight": 500,
+    "size": 9,
+    "line": 1.2,
+    "tracking": 0.2
+   },
+   "eyebrow": {
+    "family": "Inter",
+    "weight": 700,
+    "size": 10,
+    "line": 1.2,
+    "tracking": 1.2,
+    "transform": "upper"
+   },
+   "stat": {
+    "family": "Merriweather",
+    "weight": 900,
+    "size": 54,
+    "line": 1,
+    "tracking": -1
+   }
+  },
+  "grid": {
+   "margins": {
+    "top": 0.5,
+    "right": 0.6,
+    "bottom": 0.45,
+    "left": 0.6
+   },
+   "gutter": 0.2,
+   "columns": 12,
+   "band": {
+    "eyebrowY": 0.5,
+    "titleY": 1.1,
+    "bodyY": 2.2
+   }
+  },
+  "shape": {
+   "radii": {
+    "card": 0.1,
+    "chip": 0.1,
+    "pill": 0.3
+   },
+   "border": {
+    "color": {
+     "hex": "000000",
+     "alpha": 0
+    },
+    "width": 0
+   },
+   "cardPad": 0.24,
+   "cardFill": {
+    "hex": "FFFFFF"
+   }
+  },
+  "layoutPreferences": {
+   "heading": {
+    "opening": "bar",
+    "rule": "under"
+   },
+   "list": {
+    "marker": "dash"
+   }
+  },
+  "label": "Warm Humanist",
+  "summary": "Calm editorial warmth. Bone paper, terracotta accent, serif headlines.",
+  "mode": "light",
+  "shadow": {
+   "card": {
+    "type": "outer",
+    "blur": 16,
+    "offset": 4,
+    "angle": 90,
+    "color": {
+     "hex": "2D2D2A",
+     "alpha": 0.09
+    }
+   }
+  }
+ }
+}

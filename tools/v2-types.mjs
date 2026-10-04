@@ -21,6 +21,7 @@ export async function generateTypes({ write = true } = {}) {
     { schema: "packages/model/artifact.schema.json", out: "packages/model/artifact.generated.ts", name: "Artifact" },
     { schema: "packages/model/file.schema.json", out: "packages/model/file.generated.ts", name: "FileRef" },
     { schema: "packages/model/source.schema.json", out: "packages/model/source.generated.ts", name: "SourceRef" },
+    { schema: "packages/model/design.schema.json", out: "packages/model/design.generated.ts", name: "DesignSystem" },
   ];
   const results = [];
   for (const t of targets) {
