@@ -38,7 +38,7 @@
         "id": { "type": "string", "minLength": 1 },
         "purpose": { "type": "string", "minLength": 1, "maxLength": 300 },
         "title": { "type": "string", "maxLength": 120 },
-        "takeaway": { "type": "string", "maxLength": 300 },
+        "takeaway": { "type": "string", "minLength": 1, "maxLength": 300 },
         "blocks": {
           "type": "array",
           "minItems": 1,
@@ -46,6 +46,12 @@
           "items": { "$ref": "#/definitions/contentBlock" }
         },
         "visualDirection": { "type": "string", "maxLength": 300 },
+        "rhetoricalRole": {
+          "enum": ["opening", "context", "problem", "method", "explanation", "evidence", "decision", "recommendation", "limitation", "conclusion", "transition"]
+        },
+        "relationship": {
+          "enum": ["comparison", "sequence", "cause-effect", "cycle", "hierarchy", "part-whole"]
+        },
         "layoutHint": {
           "type": "object",
           "additionalProperties": false,
@@ -93,11 +99,21 @@
           }
         },
         "unit": { "type": "string", "maxLength": 16 },
+        "emphasis": { "enum": ["primary", "supporting", "context"] },
+        "evidenceRefs": {
+          "type": "array", "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "outcome": { "enum": ["favorable", "unfavorable", "mixed", "neutral"] },
+        "uncertainty": { "enum": ["qualified", "mixed", "inconclusive", "contested"] },
         "rows": {
           "type": "array",
           "items": { "type": "array", "items": { "type": "string", "maxLength": 200 } }
         },
-        "header": { "type": "boolean" }
+        "header": { "type": "boolean" },
+        "mediaRole": { "enum": ["evidence", "explanatory", "decorative"] },
+        "measure": { "enum": ["comparison", "trend", "composition", "distribution", "association"] }
       }
     }
   }

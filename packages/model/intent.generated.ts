@@ -32,6 +32,19 @@ export interface SlideIntent {
    */
   blocks: [ContentBlock, ...ContentBlock[]];
   visualDirection?: string;
+  rhetoricalRole?:
+    | "opening"
+    | "context"
+    | "problem"
+    | "method"
+    | "explanation"
+    | "evidence"
+    | "decision"
+    | "recommendation"
+    | "limitation"
+    | "conclusion"
+    | "transition";
+  relationship?: "comparison" | "sequence" | "cause-effect" | "cycle" | "hierarchy" | "part-whole";
   layoutHint?: {
     recipe?: "title" | "content" | "comparison" | "media" | "chart" | "process";
     emphasis?: string;
@@ -66,6 +79,15 @@ export interface ContentBlock {
     values: [number, ...number[]];
   }[];
   unit?: string;
+  emphasis?: "primary" | "supporting" | "context";
+  /**
+   * @minItems 1
+   */
+  evidenceRefs?: [string, ...string[]];
+  outcome?: "favorable" | "unfavorable" | "mixed" | "neutral";
+  uncertainty?: "qualified" | "mixed" | "inconclusive" | "contested";
   rows?: string[][];
   header?: boolean;
+  mediaRole?: "evidence" | "explanatory" | "decorative";
+  measure?: "comparison" | "trend" | "composition" | "distribution" | "association";
 }
