@@ -12,6 +12,7 @@ import type { DesignSystem } from "../model/design.generated.ts";
 import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
+import { fittedTextEl, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
 
 const FOOTER_RESERVE = 0.62;
 
@@ -24,10 +25,11 @@ interface Box {
 
 interface ParaRun {
   text: string;
-  bold?: boolean;
-  italic?: boolean;
+  role: string;
   size?: number;
   color?: string;
+  bold?: boolean;
+  italic?: boolean;
 }
 
 interface Para {
@@ -56,22 +58,38 @@ function ink(design: DesignSystem): string {
   return design.palette.ink.hex;
 }
 
+interface FitCtx {
+  design: DesignSystem;
+  slideId: string;
+  sink: FitDiagnostic[];
+  policy?: FitPolicy;
+}
+
+function fitOf(ctx: MechanismCtx): FitCtx {
+  return { design: ctx.design, slideId: ctx.slide.id, sink: ctx.sink };
+}
+
+// Single choke point for compiler text: every kind:text element is
+// resolved against its DesignSystem role and fitted inside its
+// allocated box. Mechanisms own geometry; the fitter owns scale.
 function textEl(
   id: string,
   semanticRef: string | undefined,
   box: Box,
   paragraphs: Para[],
   z: number,
+  fit: FitCtx,
 ): SceneElement {
-  return {
-    id, kind: "text", x: box.x, y: box.y, w: box.w, h: box.h, z,
-    provenance: "compiler", ...(semanticRef !== undefined ? { semanticRef } : {}),
-    paragraphs: paragraphs.map((p) => ({
-      runs: p.runs.map((r) => ({ ...r })),
-      ...(p.align !== undefined ? { align: p.align } : {}),
-      ...(p.bullet !== undefined ? { bullet: p.bullet } : {}),
-    })),
-  } as SceneElement;
+  return fittedTextEl(fit.design, {
+    id,
+    ...(semanticRef !== undefined ? { semanticRef } : {}),
+    box,
+    paragraphs: paragraphs as RoleParagraph[],
+    z,
+    slideId: fit.slideId,
+    ...(fit.policy !== undefined ? { policy: fit.policy } : {}),
+    sink: fit.sink,
+  });
 }
 
 function shapeEl(
@@ -89,27 +107,39 @@ function shapeEl(
   };
 }
 
-function blockParas(block: ContentBlock, bodySize: number, color: string): Para[] {
+function blockParas(block: ContentBlock, design: DesignSystem): { paras: Para[]; policy: FitPolicy } {
+  const inkColor = ink(design);
+  const bodySize = roleSize(design, "body", 13);
   switch (block.kind) {
     case "list":
-      return (block.items ?? []).map((item) => ({
-        runs: [{ text: item, size: bodySize, color }],
-        align: "left" as const,
-        bullet: true,
-      }));
+      return {
+        paras: (block.items ?? []).map((item) => ({
+          runs: [{ text: item, role: "body", size: bodySize, color: inkColor }],
+          align: "left" as const,
+          bullet: true,
+        })),
+        policy: "wrap",
+      };
     case "stat":
-      return [
-        { runs: [{ text: block.value ?? "", bold: true, size: bodySize + 10, color }], align: "left" as const },
-        { runs: [{ text: block.label ?? "", size: bodySize, color }], align: "left" as const },
-      ];
+      return {
+        paras: [
+          { runs: [{ text: block.value ?? "", role: "stat", bold: true, color: inkColor }], align: "left" as const },
+          { runs: [{ text: block.label ?? "", role: "body", size: bodySize, color: inkColor }], align: "left" as const },
+        ],
+        policy: "stat",
+      };
     case "quote":
-      return [{ runs: [{ text: block.text ?? "", italic: true, size: bodySize, color }], align: "left" as const }];
+      return {
+        paras: [{ runs: [{ text: block.text ?? "", role: "body", size: bodySize, italic: true, color: inkColor }], align: "left" as const }],
+        policy: "wrap",
+      };
     default: {
       const paras: Para[] = [];
-      if (block.label) paras.push({ runs: [{ text: block.label, bold: true, size: bodySize, color }], align: "left" as const });
+      if (block.label) paras.push({ runs: [{ text: block.label, role: "body", size: bodySize, bold: true, color: inkColor }], align: "left" as const });
       const body = block.text ?? (block.items ?? []).join("\n");
-      if (body) paras.push({ runs: [{ text: body, size: bodySize, color }], align: "left" as const });
-      return paras.length ? paras : [{ runs: [{ text: "", size: bodySize, color }], align: "left" as const }];
+      if (body) paras.push({ runs: [{ text: body, role: "body", size: bodySize, color: inkColor }], align: "left" as const });
+      if (!paras.length) paras.push({ runs: [{ text: "", role: "body", size: bodySize, color: inkColor }], align: "left" as const });
+      return { paras, policy: "wrap" };
     }
   }
 }
@@ -121,15 +151,15 @@ function primaryId(slideId: string, blockId: string): string {
 // Primary semantic carrier for any block in a region. Every kind maps to
 // a native editable element; this is the no-silent-loss guarantee.
 function renderBlockPrimary(
-  slideId: string,
+  ctx: MechanismCtx,
   block: ContentBlock,
   region: Box,
-  design: DesignSystem,
   z: number,
 ): SceneElement {
-  const bodySize = roleSize(design, "body", 13);
-  const color = ink(design);
+  const design = ctx.design;
+  const slideId = ctx.slide.id;
   const id = primaryId(slideId, block.id);
+  const fitBase = { design, slideId, sink: ctx.sink };
   switch (block.kind) {
     case "image":
       return {
@@ -154,8 +184,10 @@ function renderBlockPrimary(
         table: { rows: (block.rows ?? []).map((r) => [...r]), header: block.header === true },
       };
     }
-    default:
-      return textEl(id, block.id, region, blockParas(block, bodySize, color), z);
+    default: {
+      const { paras, policy } = blockParas(block, design);
+      return textEl(id, block.id, region, paras, z, { ...fitBase, policy });
+    }
   }
 }
 
@@ -194,6 +226,7 @@ interface MechanismCtx {
   comp: SlideCompositionPlan;
   design: DesignSystem;
   box: Box & { bottom: number };
+  sink: FitDiagnostic[];
 }
 
 // Places one block's primary carrier plus its semantic treatments in a
@@ -228,52 +261,54 @@ function placePrimary(
   }
   const primary = render
     ? render(contentRegion, takeZ())
-    : renderBlockPrimary(ctx.slide.id, block, contentRegion, ctx.design, takeZ());
+    : renderBlockPrimary(ctx, block, contentRegion, takeZ());
   els.push(primary);
   if (needsCaveat) {
-    const el = caveatEl(ctx.slide.id, block,
+    const el = caveatEl(ctx, block,
       { x: region.x, y: region.y + region.h - caveatH, w: region.w, h: caveatH },
-      ctx.design, takeZ());
+      takeZ());
     if (el) els.push(el);
   }
   return primary;
 }
 
 function caveatEl(
-  slideId: string,
+  ctx: MechanismCtx,
   block: ContentBlock,
   box: Box,
-  design: DesignSystem,
   z: number,
 ): SceneElement | null {
   if (block.uncertainty === undefined) return null;
+  const design = ctx.design;
   return textEl(
-    `${slideId}:${block.id}:caveat`,
+    `${ctx.slide.id}:${block.id}:caveat`,
     block.id,
     box,
-    [{ runs: [{ text: caveatLabel(block.uncertainty), bold: true, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "left" as const }],
+    [{ runs: [{ text: caveatLabel(block.uncertainty), role: "caption", bold: true, color: design.palette.inkMuted.hex }], align: "left" as const }],
     z,
+    { design, slideId: ctx.slide.id, sink: ctx.sink },
   );
 }
 
-function titleBox(ctx: MechanismCtx, size: number, z: number): { el: SceneElement; below: number } {
+function titleBox(ctx: MechanismCtx, rs: { role: string; size: number }, z: number): { el: SceneElement; below: number } {
   const { slide, design, box } = ctx;
   const h = 1.0;
   const el = textEl(
     `${slide.id}:title:heading`,
     undefined,
     { x: box.x, y: box.y, w: box.w, h },
-    [{ runs: [{ text: slide.title ?? "", bold: true, size, color: ink(design) }], align: "left" as const }],
+    [{ runs: [{ text: slide.title ?? "", role: rs.role, size: rs.size, bold: true, color: ink(design) }], align: "left" as const }],
     z,
+    { design, slideId: slide.id, sink: ctx.sink },
   );
   return { el, below: box.y + h + 0.15 };
 }
 
-function headlineSize(ctx: MechanismCtx): number {
+function headlineSize(ctx: MechanismCtx): { role: string; size: number } {
   const density = ctx.comp.densityClass;
-  if (density === "sparse") return ctx.design.roles.display?.size ?? 40;
-  if (density === "dense") return ctx.design.roles.subhead?.size ?? 15;
-  return roleSize(ctx.design, "heading", 30);
+  if (density === "sparse") return { role: "display", size: ctx.design.roles.display?.size ?? 40 };
+  if (density === "dense") return { role: "subhead", size: ctx.design.roles.subhead?.size ?? 15 };
+  return { role: "heading", size: roleSize(ctx.design, "heading", 30) };
 }
 
 function takeawayReserve(ctx: MechanismCtx): number {
@@ -287,19 +322,20 @@ function takeawayEls(ctx: MechanismCtx, titleBelow: number, contentBottom: numbe
   if (!slide.takeaway) return [];
   const color = ink(design);
   const bodySize = roleSize(design, "body", 13);
+  const fitBase = { design, slideId: slide.id, sink: ctx.sink };
   switch (comp.takeawayTreatment) {
     case "headline":
       return [textEl(`${slide.id}:takeaway:headline`, undefined,
         { x: box.x, y: titleBelow, w: box.w, h: 0.7 },
-        [{ runs: [{ text: slide.takeaway, bold: true, size: bodySize + 2, color }], align: "left" as const }], z)];
+        [{ runs: [{ text: slide.takeaway, role: "body", size: bodySize + 2, bold: true, color }], align: "left" as const }], z, fitBase)];
     case "verdict":
       return [textEl(`${slide.id}:takeaway:verdict`, undefined,
         { x: box.x, y: contentBottom - 0.8, w: box.w, h: 0.8 },
-        [{ runs: [{ text: slide.takeaway, bold: true, size: bodySize, color: design.palette.accent.hex }], align: "center" as const }], z)];
+        [{ runs: [{ text: slide.takeaway, role: "body", size: bodySize, bold: true, color: design.palette.accent.hex }], align: "center" as const }], z, fitBase)];
     case "annotation":
       return [textEl(`${slide.id}:takeaway:annotation`, undefined,
         { x: box.x, y: contentBottom - 0.5, w: box.w, h: 0.5 },
-        [{ runs: [{ text: slide.takeaway, italic: true, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "left" as const }], z)];
+        [{ runs: [{ text: slide.takeaway, role: "caption", italic: true, color: design.palette.inkMuted.hex }], align: "left" as const }], z, fitBase)];
     default:
       return [];
   }
@@ -314,8 +350,9 @@ function dividerScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   els.push(textEl(
     `${slide.id}:title:heading`, undefined,
     { x: box.x, y: titleY, w: box.w, h: 1.4 },
-    [{ runs: [{ text: slide.title ?? "", bold: true, size: roleSize(design, "display", 40), color: ink(design) }], align: "center" as const }],
+    [{ runs: [{ text: slide.title ?? "", role: "display", bold: true, color: ink(design) }], align: "center" as const }],
     takeZ(),
+    fitOf(ctx),
   ));
   let y = titleY + 1.6;
   const bottom = box.bottom - takeawayReserve(ctx);
@@ -489,8 +526,8 @@ function dataTableScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
       if (block.unit !== undefined) {
         els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
           { x: box.x, y: y + h - capH, w: box.w, h: capH },
-          [{ runs: [{ text: `Unit: ${block.unit}. Values as authored.`, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "left" as const }],
-          takeZ()));
+          [{ runs: [{ text: `Unit: ${block.unit}. Values as authored.`, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const }],
+          takeZ(), fitOf(ctx)));
       }
     } else {
       placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
@@ -574,15 +611,15 @@ function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     if (block.unit !== undefined) {
       els.push(textEl(`${slide.id}:${block.id}:unit`, block.id,
         { x: box.x, y: ty, w: box.w, h: 0.3 },
-        [{ runs: [{ text: `Unit: ${block.unit}`, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "left" as const }],
-        takeZ()));
+        [{ runs: [{ text: `Unit: ${block.unit}`, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const }],
+        takeZ(), fitOf(ctx)));
       ty += 0.3;
     }
     if (block.caption) {
       els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
         { x: box.x, y: ty, w: box.w, h: 0.4 },
-        [{ runs: [{ text: block.caption, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "center" as const }],
-        takeZ()));
+        [{ runs: [{ text: block.caption, role: "caption", color: design.palette.inkMuted.hex }], align: "center" as const }],
+        takeZ(), fitOf(ctx)));
     }
   });
   let ry = y + chartH + 0.2;
@@ -646,8 +683,8 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
         { x, y, w: cw, h }, "roundRect", design.palette.surface.hex, takeZ()));
       els.push(textEl(`${slide.id}:${block.id}:badge`, block.id,
         { x: x + 0.2, y: y + 0.15, w: 0.4, h: 0.4 },
-        [{ runs: [{ text: String(i + 1), bold: true, size: roleSize(design, "subhead", 15), color: design.palette.accent.hex }], align: "left" as const }],
-        takeZ()));
+        [{ runs: [{ text: String(i + 1), role: "subhead", bold: true, color: design.palette.accent.hex }], align: "left" as const }],
+        takeZ(), { ...fitOf(ctx), policy: "one-line" }));
       placePrimary(ctx, els, block, { x: x + 0.2, y: y + 0.6, w: cw - 0.4, h: Math.max(0.2, h - 0.8) }, takeZ);
       if (comp.variantKey === "sequence/cause-effect" && i < steps.length - 1) {
         els.push({
@@ -740,8 +777,8 @@ function mediaLedScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     if (comp.variantKey === "media-led/evidence" && block.alt) {
       els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
         { x: mediaX, y: my + ih - 0.35, w: mediaW, h: 0.35 },
-        [{ runs: [{ text: block.alt, size: roleSize(design, "caption", 10), color: design.palette.inkMuted.hex }], align: "left" as const }],
-        takeZ()));
+        [{ runs: [{ text: block.alt, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const }],
+        takeZ(), fitOf(ctx)));
     }
     my += ih + 0.2;
   });
@@ -812,9 +849,10 @@ export function compilePlannedSlide(
   slide: SlideIntent,
   comp: SlideCompositionPlan,
   design: DesignSystem,
+  sink: FitDiagnostic[] = [],
 ): SlideScene {
   const box = contentBox(design);
-  const ctx: MechanismCtx = { slide, comp, design, box };
+  const ctx: MechanismCtx = { slide, comp, design, box, sink };
   let z = 0;
   const takeZ = (): number => (z += 10);
   let elements: SceneElement[];

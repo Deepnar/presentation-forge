@@ -11,6 +11,7 @@
 import { SCENE_W, SCENE_H, compilerId, findElement } from "../model/scene.ts";
 import { planDeckComposition } from "./composition.ts";
 import { compilePlannedSlide } from "./mechanisms.ts";
+import { fittedTextEl, refitTextEl } from "./text-fit.ts";
 
 const FOOTER_RESERVE = 0.62;
 
@@ -24,46 +25,58 @@ function box(design) {
   };
 }
 
-function textEl(id, semanticRef, x, y, w, h, paragraphs, size, color, align = "left") {
+function textEl(id, semanticRef, x, y, w, h, paragraphs, size, color, align = "left", fit = null) {
   const paras = paragraphs.map((p) =>
     typeof p === "string"
-      ? { runs: [{ text: p, size, color }], align }
-      : { align, ...p, runs: p.runs.map((r) => ({ size, color, ...r })) },
+      ? { runs: [{ text: p, role: "body", size, color }], align }
+      : { align, ...p, runs: p.runs.map((r) => ({ role: "body", size, color, ...r })) },
   );
-  return {
-    id, kind: "text", x, y, w, h, z: 10, provenance: "compiler", semanticRef,
-    paragraphs: paras,
-  };
+  if (!fit) {
+    return {
+      id, kind: "text", x, y, w, h, z: 10, provenance: "compiler", semanticRef,
+      paragraphs: paras,
+    };
+  }
+  return fittedTextEl(fit.design, {
+    id, semanticRef, box: { x, y, w, h }, paragraphs: paras, z: 10,
+    slideId: fit.slideId, sink: fit.sink,
+  });
 }
 
 function shapeEl(id, semanticRef, x, y, w, h, form, fill, z = 1) {
   return { id, kind: "shape", x, y, w, h, z, provenance: "compiler", semanticRef, shape: { form, fill } };
 }
 
-function para(text, { bold = false, size, color, align = "left", bullet = false } = {}) {
-  return { runs: [{ text, bold, size, color }], align, bullet };
+function para(text, { role = "body", bold = false, size, color, align = "left", bullet = false } = {}) {
+  return { runs: [{ text, role, bold, size, color }], align, bullet };
 }
 
-function titleBlock(slide, design, content) {
+function fitFor(design, slideId, sink) {
+  return { design, slideId, sink };
+}
+
+function titleBlock(slide, design, content, fit) {
   const t = design.roles;
   const size = t.heading?.size ?? 30;
   return textEl(
     compilerId(slide.id, "title", "heading"), "title",
     content.x, content.y, content.w, 1.1,
-    [para(slide.title ?? "", { bold: true, size, color: design.palette.ink.hex })],
+    [para(slide.title ?? "", { role: "heading", bold: true, size, color: design.palette.ink.hex })],
+    undefined, undefined, "left", fit,
   );
 }
 
 const RECIPES = {
-  title(slide, design) {
+  title(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
+    const fit = fitFor(design, slide.id, sink);
     const els = [
       textEl(
         compilerId(slide.id, "title", "display"), "title",
         c.x, 2.2, c.w, 1.6,
-        [para(slide.title ?? "", { bold: true, size: t.display?.size ?? 40, color: design.palette.ink.hex, align: "center" })],
-        undefined, undefined, "center",
+        [para(slide.title ?? "", { role: "display", bold: true, size: t.display?.size ?? 40, color: design.palette.ink.hex, align: "center" })],
+        undefined, undefined, "center", fit,
       ),
     ];
     const sub = slide.blocks.find((b) => b.kind === "text");
@@ -72,31 +85,33 @@ const RECIPES = {
         textEl(
           compilerId(slide.id, sub.id, "subtitle"), sub.id,
           c.x, 4.0, c.w, 1.0,
-          [para(sub.text, { size: t.subhead?.size ?? 15, color: design.palette.inkMuted.hex, align: "center" })],
-          undefined, undefined, "center",
+          [para(sub.text, { role: "subhead", size: t.subhead?.size ?? 15, color: design.palette.inkMuted.hex, align: "center" })],
+          undefined, undefined, "center", fit,
         ),
       );
     }
     return { recipeId: "title", background: design.palette.bg.hex, elements: els };
   },
 
-  content(slide, design) {
+  content(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
-    const els = [titleBlock(slide, design, c)];
+    const fit = fitFor(design, slide.id, sink);
+    const els = [titleBlock(slide, design, c, fit)];
     const list = slide.blocks.find((b) => b.kind === "list");
     const bodySize = t.body?.size ?? 13;
     if (list?.items?.length) {
-      const items = list.items.map((it) => ({ runs: [{ text: it, size: bodySize, color: design.palette.ink.hex }], align: "left", bullet: true }));
-      els.push({ id: compilerId(slide.id, list.id, "body"), kind: "text", x: c.x, y: c.y + 1.4, w: c.w, h: c.bottom - c.y - 1.4, z: 10, provenance: "compiler", semanticRef: list.id, paragraphs: items });
+      const items = list.items.map((it) => ({ runs: [{ text: it, role: "body", size: bodySize, color: design.palette.ink.hex }], align: "left", bullet: true }));
+      els.push(fittedTextEl(design, { id: compilerId(slide.id, list.id, "body"), semanticRef: list.id, box: { x: c.x, y: c.y + 1.4, w: c.w, h: c.bottom - c.y - 1.4 }, paragraphs: items, z: 10, slideId: slide.id, sink }));
     }
     return { recipeId: "content", background: design.palette.bg.hex, elements: els };
   },
 
-  comparison(slide, design) {
+  comparison(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
-    const els = [titleBlock(slide, design, c)];
+    const fit = fitFor(design, slide.id, sink);
+    const els = [titleBlock(slide, design, c, fit)];
     const gap = 0.4;
     const colW = (c.w - gap) / 2;
     const top = c.y + 1.4;
@@ -107,21 +122,22 @@ const RECIPES = {
       const x = c.x + i * (colW + gap);
       els.push(shapeEl(compilerId(slide.id, b.id, "card"), b.id, x, top, colW, bottom - top, "roundRect", design.palette.surface.hex, 1));
       const paras = [
-        ...(b.label ? [para(b.label, { bold: true, size: t.subhead?.size ?? 15, color: design.palette.ink.hex })] : []),
-        ...(b.text ? [para(b.text, { size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
+        ...(b.label ? [para(b.label, { role: "subhead", bold: true, size: t.subhead?.size ?? 15, color: design.palette.ink.hex })] : []),
+        ...(b.text ? [para(b.text, { role: "body", size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
       ];
-      els.push({ id: compilerId(slide.id, b.id, "body"), kind: "text", x: x + 0.3, y: top + 0.3, w: colW - 0.6, h: bottom - top - 0.6, z: 10, provenance: "compiler", semanticRef: b.id, paragraphs: paras });
+      els.push(fittedTextEl(design, { id: compilerId(slide.id, b.id, "body"), semanticRef: b.id, box: { x: x + 0.3, y: top + 0.3, w: colW - 0.6, h: bottom - top - 0.6 }, paragraphs: paras, z: 10, slideId: slide.id, sink }));
     });
     if (verdict) {
-      els.push({ id: compilerId(slide.id, verdict.id, "body"), kind: "text", x: c.x, y: c.bottom - 0.8, w: c.w, h: 0.8, z: 10, provenance: "compiler", semanticRef: verdict.id, paragraphs: [para(verdict.text ?? "", { bold: true, size: t.body?.size ?? 13, color: design.palette.accent.hex, align: "center" })] });
+      els.push(textEl(compilerId(slide.id, verdict.id, "body"), verdict.id, c.x, c.bottom - 0.8, c.w, 0.8, [para(verdict.text ?? "", { role: "body", bold: true, size: t.body?.size ?? 13, color: design.palette.accent.hex, align: "center" })], undefined, undefined, "center", fit));
     }
     return { recipeId: "comparison", background: design.palette.bg.hex, elements: els };
   },
 
-  media(slide, design) {
+  media(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
-    const els = [titleBlock(slide, design, c)];
+    const fit = fitFor(design, slide.id, sink);
+    const els = [titleBlock(slide, design, c, fit)];
     const img = slide.blocks.find((b) => b.kind === "image");
     const list = slide.blocks.find((b) => b.kind === "list" || b.kind === "text");
     const leftFirst = (slide.layoutHint?.mediaSide ?? "right") === "left";
@@ -137,32 +153,33 @@ const RECIPES = {
     }
     if (list) {
       const bodySize = t.body?.size ?? 13;
-      const paras = (list.items ?? []).map((it) => ({ runs: [{ text: it, size: bodySize, color: design.palette.ink.hex }], align: "left", bullet: true }));
-      if (list.text) paras.unshift(para(list.text, { size: bodySize, color: design.palette.ink.hex }));
-      els.push({ id: compilerId(slide.id, list.id, "body"), kind: "text", x: textX, y: top, w: textW, h, z: 10, provenance: "compiler", semanticRef: list.id, paragraphs: paras });
+      const paras = (list.items ?? []).map((it) => ({ runs: [{ text: it, role: "body", size: bodySize, color: design.palette.ink.hex }], align: "left", bullet: true }));
+      if (list.text) paras.unshift(para(list.text, { role: "body", size: bodySize, color: design.palette.ink.hex }));
+      els.push(fittedTextEl(design, { id: compilerId(slide.id, list.id, "body"), semanticRef: list.id, box: { x: textX, y: top, w: textW, h }, paragraphs: paras, z: 10, slideId: slide.id, sink }));
     }
     return { recipeId: "media", background: design.palette.bg.hex, elements: els };
   },
 
-  chart(slide, design) {
+  chart(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
-    const els = [titleBlock(slide, design, c)];
+    const fit = fitFor(design, slide.id, sink);
+    const els = [titleBlock(slide, design, c, fit)];
     const chart = slide.blocks.find((b) => b.kind === "chart");
     const top = c.y + 1.4;
     if (chart) {
       els.push({ id: compilerId(slide.id, chart.id, "chart"), kind: "chart", x: c.x, y: top, w: c.w, h: c.bottom - top - (chart.caption ? 0.5 : 0), z: 5, provenance: "compiler", semanticRef: chart.id, chart: { chartKind: chart.chartKind ?? "bar", categories: chart.categories ?? [], series: chart.series ?? [] } });
       if (chart.caption) {
-        els.push(textEl(compilerId(slide.id, chart.id, "caption"), chart.id, c.x, c.bottom - 0.4, c.w, 0.4, [para(chart.caption, { size: t.caption?.size ?? 10, color: design.palette.inkMuted.hex, align: "center" })]));
+        els.push(textEl(compilerId(slide.id, chart.id, "caption"), chart.id, c.x, c.bottom - 0.4, c.w, 0.4, [para(chart.caption, { role: "caption", size: t.caption?.size ?? 10, color: design.palette.inkMuted.hex, align: "center" })], undefined, undefined, "center", fit));
       }
     }
     return { recipeId: "chart", background: design.palette.bg.hex, elements: els };
   },
 
-  process(slide, design) {
+  process(slide, design, sink = []) {
     const c = box(design);
     const t = design.roles;
-    const els = [titleBlock(slide, design, c)];
+    const els = [titleBlock(slide, design, c, fitFor(design, slide.id, sink))];
     const steps = slide.blocks.filter((b) => b.kind === "text").slice(0, 6);
     const gap = 0.3;
     const cardW = (c.w - gap * (steps.length - 1)) / Math.max(1, steps.length);
@@ -172,10 +189,10 @@ const RECIPES = {
       const x = c.x + i * (cardW + gap);
       els.push(shapeEl(compilerId(slide.id, b.id, "card"), b.id, x, top, cardW, h, "roundRect", design.palette.surface.hex, 1));
       const paras = [
-        para(`${i + 1}. ${b.label ?? ""}`.trim(), { bold: true, size: t.subhead?.size ?? 15, color: design.palette.accent.hex }),
-        ...(b.text ? [para(b.text, { size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
+        para(`${i + 1}. ${b.label ?? ""}`.trim(), { role: "subhead", bold: true, size: t.subhead?.size ?? 15, color: design.palette.accent.hex }),
+        ...(b.text ? [para(b.text, { role: "body", size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
       ];
-      els.push({ id: compilerId(slide.id, b.id, "body"), kind: "text", x: x + 0.25, y: top + 0.25, w: cardW - 0.5, h: h - 0.5, z: 10, provenance: "compiler", semanticRef: b.id, paragraphs: paras });
+      els.push(fittedTextEl(design, { id: compilerId(slide.id, b.id, "body"), semanticRef: b.id, box: { x: x + 0.25, y: top + 0.25, w: cardW - 0.5, h: h - 0.5 }, paragraphs: paras, z: 10, slideId: slide.id, sink }));
     });
     return { recipeId: "process", background: design.palette.bg.hex, elements: els };
   },
@@ -197,10 +214,10 @@ export function selectRecipe(slide) {
   return "content";
 }
 
-export function compileSlide(slide, design, recipe = selectRecipe(slide)) {
+export function compileSlide(slide, design, recipe = selectRecipe(slide), sink = []) {
   // Compatibility-only legacy path: independent six-recipe selection.
   // Canonical deck compilation uses compilePlannedSlide via the plan.
-  const built = RECIPES[recipe](slide, design);
+  const built = RECIPES[recipe](slide, design, sink);
   return {
     id: slide.id,
     width: SCENE_W,
@@ -219,8 +236,11 @@ export function compileDeck(intent, design) {
 export function compileDeckDetailed(intent, design) {
   const { plan, findings } = planDeckComposition(intent, design);
   const byId = new Map(plan.slides.map((s) => [s.slideId, s]));
-  const scenes = intent.slides.map((s) => compilePlannedSlide(s, byId.get(s.id), design));
-  return { scenes, plan, findings };
+  // One pass only: each slide compiles once, diagnostics collected in
+  // emission order (slide order, then element order within a slide).
+  const fitDiagnostics = [];
+  const scenes = intent.slides.map((s) => compilePlannedSlide(s, byId.get(s.id), design, fitDiagnostics));
+  return { scenes, plan, findings, fitDiagnostics };
 }
 
 // Recompile after a semantic edit while preserving human geometry.
@@ -232,11 +252,11 @@ export function compileDeckDetailed(intent, design) {
 // Deck-aware callers pass the current SlideCompositionPlan so rhythm
 // context survives; compatibility callers omit it and recompile through
 // the legacy six-recipe path with the same preservation rules.
-export function recompileSlide(intent, prev, design, planned = null) {
+export function recompileSlide(intent, prev, design, planned = null, sink = []) {
   if (prev.layoutState === "detached") return prev;
   const fresh = planned
-    ? compilePlannedSlide(intent, planned, design)
-    : compileSlide(intent, design);
+    ? compilePlannedSlide(intent, planned, design, sink)
+    : compileSlide(intent, design, undefined, sink);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();
   const findPrev = (el) => {
@@ -266,6 +286,11 @@ export function recompileSlide(intent, prev, design, planned = null) {
       if (p.rotation !== undefined) el.rotation = p.rotation;
       el.customized = true;
       el.provenance = "human";
+      // Compiler-owned fitting is re-evaluated against the PRESERVED
+      // geometry, never the discarded fresh box: shrink-only from the
+      // current sizes, so a larger human box keeps readable text and a
+      // smaller box (or longer text) shrinks further or diagnoses.
+      if (el.kind === "text") refitTextEl(design, el, intent.id ?? prev.id, sink);
     }
   }
   const freshIds = new Set(fresh.elements.map((e) => e.id));
