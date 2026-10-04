@@ -9,6 +9,8 @@
 //   footer band and the PPTX renderer paints chrome-free pages for now.
 
 import { SCENE_W, SCENE_H, compilerId, findElement } from "../model/scene.ts";
+import { planDeckComposition } from "./composition.ts";
+import { compilePlannedSlide } from "./mechanisms.ts";
 
 const FOOTER_RESERVE = 0.62;
 
@@ -180,6 +182,9 @@ const RECIPES = {
 };
 
 export function selectRecipe(slide) {
+  // Compatibility-only: the six-recipe vocabulary predates composition
+  // planning. Canonical compilation goes through planDeckComposition;
+  // this remains for legacy callers, demos, and historical tests.
   if (slide.layoutHint?.recipe && RECIPES[slide.layoutHint.recipe]) return slide.layoutHint.recipe;
   const kinds = new Set(slide.blocks.map((b) => b.kind));
   if (kinds.has("chart")) return "chart";
@@ -193,6 +198,8 @@ export function selectRecipe(slide) {
 }
 
 export function compileSlide(slide, design, recipe = selectRecipe(slide)) {
+  // Compatibility-only legacy path: independent six-recipe selection.
+  // Canonical deck compilation uses compilePlannedSlide via the plan.
   const built = RECIPES[recipe](slide, design);
   return {
     id: slide.id,
@@ -206,19 +213,51 @@ export function compileSlide(slide, design, recipe = selectRecipe(slide)) {
 }
 
 export function compileDeck(intent, design) {
-  return intent.slides.map((s) => compileSlide(s, design));
+  return compileDeckDetailed(intent, design).scenes;
+}
+
+export function compileDeckDetailed(intent, design) {
+  const { plan, findings } = planDeckComposition(intent, design);
+  const byId = new Map(plan.slides.map((s) => [s.slideId, s]));
+  const scenes = intent.slides.map((s) => compilePlannedSlide(s, byId.get(s.id), design));
+  return { scenes, plan, findings };
 }
 
 // Recompile after a semantic edit while preserving human geometry.
 // - detached: scene is authoritative, returned untouched.
-// - customized geometry (customized === true) survives by semanticRef match.
+// - exact element IDs match first (stable across family changes);
+//   otherwise a unique compatible semanticRef + kind match preserves
+//   customized geometry without ambiguity.
 // - human-added elements (no regenerated id) survive appended on top.
-export function recompileSlide(intent, prev, design) {
+// Deck-aware callers pass the current SlideCompositionPlan so rhythm
+// context survives; compatibility callers omit it and recompile through
+// the legacy six-recipe path with the same preservation rules.
+export function recompileSlide(intent, prev, design, planned = null) {
   if (prev.layoutState === "detached") return prev;
-  const fresh = compileSlide(intent, design);
+  const fresh = planned
+    ? compilePlannedSlide(intent, planned, design)
+    : compileSlide(intent, design);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
+  const usedPrev = new Set();
+  const findPrev = (el) => {
+    const exact = prevById.get(el.id);
+    if (exact && !usedPrev.has(exact.id)) {
+      usedPrev.add(exact.id);
+      return exact;
+    }
+    if (el.semanticRef !== undefined) {
+      const cands = prev.elements.filter(
+        (e) => !usedPrev.has(e.id) && e.semanticRef === el.semanticRef && e.kind === el.kind,
+      );
+      if (cands.length === 1) {
+        usedPrev.add(cands[0].id);
+        return cands[0];
+      }
+    }
+    return null;
+  };
   for (const el of fresh.elements) {
-    const p = prevById.get(el.id);
+    const p = findPrev(el);
     if (p?.customized) {
       el.x = p.x;
       el.y = p.y;

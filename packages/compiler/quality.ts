@@ -4,7 +4,7 @@
 // composition monotony. Findings are ordered deterministically. Pure
 // apart from the model validators it delegates schema checks to (their
 // schemas load from package data, never user disk).
-import { compileDeck } from "./compile.js";
+import { compileDeckDetailed } from "./compile.js";
 import type { DeckIntent, SlideIntent } from "../model/intent.generated.ts";
 import type { SlideScene } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
@@ -98,8 +98,8 @@ export async function analyzeDeck(intent: DeckIntent, design: DesignSystem): Pro
       }],
     };
   }
-  const scenes = compileDeck(intent, design);
-  const findings: QualityFinding[] = [];
+  const { scenes, findings: planFindings } = compileDeckDetailed(intent, design);
+  const findings: QualityFinding[] = [...planFindings];
   const byId = new Map(intent.slides.map((s) => [s.id, s]));
   for (const scene of scenes) {
     const sceneVerdict = await validateScene(scene);
@@ -128,6 +128,57 @@ export interface SensitivityResult {
   differences: { slideIndex: number; recipeChanged: boolean; contentChanged: boolean }[];
 }
 
+// Visual-structure projection: like semanticProjection plus geometry
+// and frame treatment, minus renderer noise (colors, sizes, fills,
+// strokes, z). Used to prove counterfactuals produce materially
+// different scenes. This is NOT pixel comparison.
+export interface CompositionSceneElement {
+  kind: string;
+  semanticRef?: string;
+  geom: [number, number, number, number];
+  text?: string;
+  chartKind?: string;
+  hasTable?: boolean;
+  imageSrc?: string;
+  shapeForm?: string;
+}
+
+export interface CompositionSceneProjection {
+  recipeId?: string;
+  elements: CompositionSceneElement[];
+}
+
+const round2 = (n: number): number => Math.round(n * 100) / 100;
+
+export function compositionSceneProjection(scene: SlideScene): CompositionSceneProjection {
+  const elements = [...scene.elements]
+    .sort((a, b) => a.z - b.z || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    .map((el): CompositionSceneElement => {
+      const out: CompositionSceneElement = {
+        kind: el.kind,
+        geom: [round2(el.x), round2(el.y), round2(el.w), round2(el.h)],
+      };
+      if (el.semanticRef !== undefined) out.semanticRef = el.semanticRef;
+      if (el.kind === "text") {
+        out.text = (el.paragraphs ?? []).map((p) => (p.runs ?? []).map((r) => r.text).join("")).join("\n");
+      } else if (el.kind === "chart" && el.chart) {
+        out.chartKind = el.chart.chartKind;
+      } else if (el.kind === "table") {
+        out.hasTable = true;
+      } else if (el.kind === "image" && el.image) {
+        out.imageSrc = el.image.src ?? "";
+      } else if (el.kind === "shape" && el.shape) {
+        out.shapeForm = el.shape.form;
+      } else if (el.kind === "group") {
+        out.text = `group(${(el.group?.children ?? []).length})`;
+      }
+      return out;
+    });
+  const projection: CompositionSceneProjection = { elements };
+  if (scene.recipeId !== undefined) projection.recipeId = scene.recipeId;
+  return projection;
+}
+
 // Compiles both sides of a counterfactual pair and compares semantic
 // projections. Indifference here is a measurement, never a requirement:
 // future composition work must make relevant pairs differ.
@@ -137,8 +188,8 @@ export function compareSensitivity(
   b: DeckIntent,
   design: DesignSystem,
 ): SensitivityResult {
-  const pa = compileDeck(a, design).map(semanticProjection);
-  const pb = compileDeck(b, design).map(semanticProjection);
+  const pa = compileDeckDetailed(a, design).scenes.map(semanticProjection);
+  const pb = compileDeckDetailed(b, design).scenes.map(semanticProjection);
   const differences: SensitivityResult["differences"] = [];
   const n = Math.max(pa.length, pb.length);
   for (let i = 0; i < n; i++) {

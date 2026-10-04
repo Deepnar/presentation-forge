@@ -352,6 +352,19 @@ export function planDeckComposition(intent: DeckIntent, design: DesignSystem): P
     };
   });
   applyRhythm(slides, intent.slides);
+  for (let i = 0; i < slides.length; i++) {
+    // Ambiguous multi-block hierarchy carries no branching topology in
+    // Layer A: render tiers, but record the capability boundary.
+    if (slides[i].family === "hierarchy" && intent.slides[i].blocks.length > 2) {
+      findings.push({
+        layer: "L2",
+        code: "hierarchy-topology-unspecified",
+        message: `hierarchy renders ${intent.slides[i].blocks.length} blocks as tiers; no parent-child edges authored`,
+        slideId: slides[i].slideId,
+        blockIds: intent.slides[i].blocks.map((b) => b.id),
+      });
+    }
+  }
   return { plan: { slides }, findings };
 }
 
