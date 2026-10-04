@@ -6538,13 +6538,27 @@ product behaviour: `apps/web`, `apps/mcp`, `packages/model`,
 `packages/search-searxng`, `packages/import-pptx`, `packages/import-docx`,
 `packages/storage`, `packages/storage-neon`, `packages/storage-local`,
 `packages/blob`, `packages/mcp`, `packages/skill`. Strict TS for new
-packages; Zod (or equivalent) at external/model/tool boundaries; generate
-TS types from the JSON Schemas rather than hand-duplicating them. Legacy
-deck.yaml stays readable through the V2-0 bridge, extended type by type.
+packages. The migration is incremental and evidence-driven, never a
+repository-wide JS to TS conversion: Node 24 executes erasable-syntax TS
+natively with no build step, so converted files keep working under the
+existing `node --test` path; `erasableSyntaxOnly` plus `verbatimModuleSyntax`
+hold that invariant, and relative imports name the actual `.ts` file.
+AJV stays the runtime validator (no Zod migration): JSON Schema remains
+the source of truth, AJV validates at runtime, and `json-schema-to-typescript`
+generates the compile-time types from the schemas — checked in per schema
+(`intent.generated.ts`, `scene.generated.ts`) with a byte-for-byte drift
+test, never hand-duplicated. Hand-written types are allowed only where no
+schema is authoritative (internal command/bridge contracts); no schema is
+created purely for ceremony. Legacy deck.yaml stays readable through the
+V2-0 bridge, extended type by type. Slice A converts `packages/model`
+(intent/scene/commands/legacy; `design.js` stays JS until the theme seam
+is typed in core extraction) with mechanical import-specifier updates only.
+Slice B adds `Project`/`Artifact`/`FileRef`/`SourceRef` plus a `ToolResult`
+envelope type for the later agent work.
 
 Done when: an old deck loads into V2 representation through package APIs
-with no user-visible change, and the V2-0 tests run unmodified against the
-TS packages.
+with no user-visible change, `npm run typecheck` is clean, and the V2-0
+tests pass with assertions unchanged (import specifiers excepted).
 
 ### [ ] V2-2 deterministic core extraction
 
@@ -6651,7 +6665,24 @@ output, vision, reasoning, context, files, streaming) and a separate
 `web_search` is a Forge tool, never a vendor feature. Academic
 (`paper_search`: arXiv/Crossref) and project (`project_search`) tools
 stay separate; all produce normalized sources that blocks cite by stable
-ID. The agent infers what it can and asks only blocking questions;
+ID. The agent is one capable runtime with strong tools, not a giant
+monolithic prompt: compact core instructions, typed tool schemas backed
+by real Forge code, a modular Forge Skill (`packages/skill/`) loaded per
+need, compact project context from durable state, and on-demand
+inspection (`get_slide`, `get_scene`, `get_selected_elements`) so a
+targeted edit never ships the whole deck as context. An explicit
+`InstructionComposer` builds the model input and is tested (blocking
+policy present, irrelevant skill refs absent, credentials never in
+context, size bounded). Tools are exposed contextually, return concise
+structured results (`ok`/`revision`/`changed`/`preserved`/`warnings`, or
+actionable error codes), and human and agent mutations execute the same
+V2-0/V2-5 command path — undoable, revisioned, preservation-honouring.
+Deterministic work (validation, compilation, fit, commands, rendering,
+cleanup, auth) stays deterministic code. Runs are observable (run ID,
+provider/model, tool trace, steps, duration, token estimates, budgets)
+and bounded (steps, failures, fan-out, wall-clock); delegation stays
+disabled until a measured workload justifies bounded read-mostly
+workers. The agent infers what it can and asks only blocking questions;
 selection-aware edits; source-aware generation; manual-edit preservation
 through V2-5 commands; durable jobs (Vercel Workflow or equivalent),
 never browser-SSE-owned. Prove two materially different provider
@@ -6659,7 +6690,9 @@ adapters (e.g. Anthropic-style + OpenAI-compatible, or Gemini-style +
 local) researching through the same Forge search.
 
 Done when: a user creates and revises a deck conversationally with no
-briefing wizard, on two different providers sharing one search backend.
+briefing wizard, on two different providers sharing one search backend;
+targeted edits do not send the whole scene; agent runs are bounded and
+traceable.
 
 ### [ ] V2-9 file intelligence and PPTX import
 
