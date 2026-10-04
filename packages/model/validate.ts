@@ -47,3 +47,7 @@ export function validateFileRef(value: unknown): Promise<Validation> {
 export function validateSourceRef(value: unknown): Promise<Validation> {
   return check("source", value, "source");
 }
+
+export function validateDesign(value: unknown): Promise<Validation> {
+  return check("design", value, "design");
+}

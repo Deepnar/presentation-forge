@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/design.json",
+  "title": "DesignSystem",
+  "description": "Normalized renderer-neutral design. Produced by pure normalizeDesign() from parsed theme/style documents; never hand-written, never carries raw theme data, paths, renderer options, or agent voice.",
+  "type": "object",
+  "required": ["name", "palette", "surfaces", "roles", "grid", "shape", "layoutPreferences"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "label": { "type": "string" },
+    "summary": { "type": "string" },
+    "mode": { "enum": ["light", "dark"] },
+    "palette": { "$ref": "#/definitions/palette" },
+    "surfaces": {
+      "type": "object",
+      "required": ["title", "section"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "#/definitions/surface" },
+        "section": { "$ref": "#/definitions/surface" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "required": ["display", "heading", "subhead", "body", "caption", "eyebrow", "stat"],
+      "additionalProperties": { "$ref": "#/definitions/role" }
+    },
+    "grid": {
+      "type": "object",
+      "required": ["margins", "gutter", "columns", "band"],
+      "additionalProperties": false,
+      "properties": {
+        "margins": {
+          "type": "object",
+          "required": ["top", "right", "bottom", "left"],
+          "additionalProperties": false,
+          "properties": {
+            "top": { "type": "number" },
+            "right": { "type": "number" },
+            "bottom": { "type": "number" },
+            "left": { "type": "number" }
+          }
+        },
+        "gutter": { "type": "number" },
+        "columns": { "type": "integer" },
+        "band": {
+          "type": "object",
+          "required": ["eyebrowY", "titleY", "bodyY"],
+          "additionalProperties": false,
+          "properties": {
+            "eyebrowY": { "type": "number" },
+            "titleY": { "type": "number" },
+            "bodyY": { "type": "number" }
+          }
+        }
+      }
+    },
+    "shape": {
+      "type": "object",
+      "required": ["radii", "border", "cardPad", "cardFill"],
+      "additionalProperties": false,
+      "properties": {
+        "radii": {
+          "type": "object",
+          "required": ["card", "chip", "pill"],
+          "additionalProperties": false,
+          "properties": {
+            "card": { "type": "number" },
+            "chip": { "type": "number" },
+            "pill": { "type": "number" }
+          }
+        },
+        "border": {
+          "type": "object",
+          "required": ["color", "width"],
+          "additionalProperties": false,
+          "properties": {
+            "color": { "$ref": "#/definitions/color" },
+            "width": { "type": "number" }
+          }
+        },
+        "cardPad": { "type": "number" },
+        "cardFill": { "$ref": "#/definitions/color" }
+      }
+    },
+    "shadow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "card": {
+          "type": "object",
+          "required": ["type", "blur", "offset", "angle", "color"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "enum": ["outer"] },
+            "blur": { "type": "number" },
+            "offset": { "type": "number" },
+            "angle": { "type": "number" },
+            "color": { "$ref": "#/definitions/color" }
+          }
+        }
+      }
+    },
+    "chart": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "series": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/color" }
+        }
+      }
+    },
+    "layoutPreferences": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "type": ["string", "number", "boolean"] }
+      }
+    },
+    "background": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decor": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/decorShape" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "color": {
+      "type": "object",
+      "required": ["hex"],
+      "additionalProperties": false,
+      "properties": {
+        "hex": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "alpha": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "required": ["bg", "ink", "muted"],
+      "additionalProperties": false,
+      "properties": {
+        "bg": { "$ref": "#/definitions/color" },
+        "ink": { "$ref": "#/definitions/color" },
+        "muted": { "$ref": "#/definitions/color" },
+        "accent": { "$ref": "#/definitions/color" }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "required": ["bg", "surface", "ink", "inkMuted", "accent", "accentAlt", "rule", "onAccent"],
+      "additionalProperties": false,
+      "properties": {
+        "bg": { "$ref": "#/definitions/color" },
+        "surface": { "$ref": "#/definitions/color" },
+        "ink": { "$ref": "#/definitions/color" },
+        "inkMuted": { "$ref": "#/definitions/color" },
+        "accent": { "$ref": "#/definitions/color" },
+        "accentAlt": { "$ref": "#/definitions/color" },
+        "rule": { "$ref": "#/definitions/color" },
+        "onAccent": { "$ref": "#/definitions/color" }
+      }
+    },
+    "role": {
+      "type": "object",
+      "required": ["family", "weight", "size"],
+      "additionalProperties": false,
+      "properties": {
+        "family": { "type": "string" },
+        "weight": { "type": "number" },
+        "size": { "type": "number" },
+        "line": { "type": "number" },
+        "tracking": { "type": "number" },
+        "transform": { "type": "string" }
+      }
+    },
+    "decorShape": {
+      "type": "object",
+      "required": ["shape", "x", "y", "w", "h", "fill"],
+      "additionalProperties": false,
+      "properties": {
+        "shape": { "enum": ["rect", "ellipse"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number" },
+        "h": { "type": "number" },
+        "fill": { "$ref": "#/definitions/color" },
+        "rotation": { "type": "number" }
+      }
+    }
+  }
+}
