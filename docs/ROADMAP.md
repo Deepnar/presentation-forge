@@ -6581,12 +6581,14 @@ tests pass with assertions unchanged (import specifiers excepted).
 > stays deferred to V2-2 core extraction rather than freezing the
 > current theme-loader shape.
 
-### [ ] V2-2 deterministic core extraction
+### [x] V2-2 deterministic core extraction
 
 *Depends on: V2-1. Blocks: V2-3, V2-5. Implemented as slices V2-2A..V2-2F
-below — no monolithic move. Legacy `src/render.js`, `src/layouts/*`,
-and `src/report.js` stay operational as oracle/compatibility throughout;
-nothing is deleted until equivalent V2 coverage exists.*
+below — no monolithic move. All six slices landed and verified; the
+boundary test holds with zero allowlist entries. Legacy `src/render.js`,
+`src/layouts/*`, and `src/report.js` stay operational as
+oracle/compatibility; nothing is deleted until equivalent V2 coverage
+exists.*
 
 Core must not import model providers, SearXNG, Neon, Vercel, auth,
 Binaries (LibreOffice/Poppler/Chromium/sharp), pptxgenjs outside the
