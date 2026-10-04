@@ -48,7 +48,65 @@ describe("v2 preservation", () => {
     edited.title = "A completely different headline";
     const out = recompileSlide(edited, scene, design);
     assert.equal(out, scene);
-    assert.throws(() => applyCommand(scene, { type: "element.move", id: scene.elements[0].id, x: 1, y: 1 }), /detached/);
+  });
+
+  it("detached scenes stay manually editable: move", async () => {
+    const design = await warmDesign();
+    const scene = compileSlide(sampleDeckIntent().slides[1], design);
+    scene.layoutState = "detached";
+    const el = scene.elements[0];
+    applyCommand(scene, { type: "element.move", id: el.id, x: 2.5, y: 3.5 });
+    assert.equal(el.x, 2.5);
+    assert.equal(el.y, 3.5);
+    assert.equal(scene.layoutState, "detached");
+  });
+
+  it("detached scenes stay manually editable: resize", async () => {
+    const design = await warmDesign();
+    const scene = compileSlide(sampleDeckIntent().slides[1], design);
+    scene.layoutState = "detached";
+    const el = scene.elements[1];
+    applyCommand(scene, { type: "element.resize", id: el.id, w: 8, h: 2 });
+    assert.equal(el.w, 8);
+    assert.equal(el.h, 2);
+    assert.equal(scene.layoutState, "detached");
+  });
+
+  it("detached scenes stay manually editable: text edit", async () => {
+    const design = await warmDesign();
+    const scene = compileSlide(sampleDeckIntent().slides[1], design);
+    scene.layoutState = "detached";
+    const el = scene.elements[0];
+    const paras = [{ runs: [{ text: "Hand-edited headline", size: 30 }] }];
+    applyCommand(scene, { type: "element.updateText", id: el.id, paragraphs: paras });
+    assert.equal(el.paragraphs[0].runs[0].text, "Hand-edited headline");
+    assert.equal(scene.layoutState, "detached");
+  });
+
+  it("detached scenes stay manually editable: add and delete", async () => {
+    const design = await warmDesign();
+    const scene = compileSlide(sampleDeckIntent().slides[0], design);
+    scene.layoutState = "detached";
+    const before = scene.elements.length;
+    const inverse = applyCommand(scene, {
+      type: "element.add",
+      element: { kind: "text", x: 1, y: 6, w: 4, h: 0.6, paragraphs: [{ runs: [{ text: "Note" }] }] },
+    });
+    assert.equal(scene.elements.length, before + 1);
+    applyCommand(scene, inverse);
+    assert.equal(scene.elements.length, before);
+    assert.equal(scene.layoutState, "detached");
+  });
+
+  it("locked elements still reject edits on detached scenes", async () => {
+    const design = await warmDesign();
+    const scene = compileSlide(sampleDeckIntent().slides[1], design);
+    scene.layoutState = "detached";
+    scene.elements[0].locked = true;
+    assert.throws(
+      () => applyCommand(scene, { type: "element.move", id: scene.elements[0].id, x: 1, y: 1 }),
+      /locked/,
+    );
   });
 
   it("human-added elements survive a recompile that drops nothing", async () => {

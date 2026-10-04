@@ -22,9 +22,11 @@ export type ElementAdd = { type: "element.add"; element: SceneElementInput };
 export type ElementDelete = { type: "element.delete"; id: string };
 export type DeckCommand = ElementMove | ElementResize | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
-function assertEditable(scene: SlideScene, el: SceneElement): void {
+// Detached is NOT read-only: the scene is authoritative against compiler
+// reflow, but the user owns it more strongly, so manual commands still
+// apply. Only locked elements reject edits here.
+function assertEditable(el: SceneElement): void {
   if (el.locked) throw new Error(`element ${el.id} is locked`);
-  if (scene.layoutState === "detached") throw new Error(`slide ${scene.id} is detached`);
 }
 
 function markCustomized(scene: SlideScene, el: SceneElement, geometry = true): void {
@@ -38,7 +40,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
     case "element.move": {
       const el = findElement(scene, cmd.id);
       if (!el) throw new Error(`unknown element ${cmd.id}`);
-      assertEditable(scene, el);
+      assertEditable(el);
       const prev = { x: el.x, y: el.y };
       el.x = cmd.x;
       el.y = cmd.y;
@@ -48,7 +50,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
     case "element.resize": {
       const el = findElement(scene, cmd.id);
       if (!el) throw new Error(`unknown element ${cmd.id}`);
-      assertEditable(scene, el);
+      assertEditable(el);
       const prev = { w: el.w, h: el.h };
       el.w = cmd.w;
       el.h = cmd.h;
@@ -59,7 +61,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       const el = findElement(scene, cmd.id);
       if (!el) throw new Error(`unknown element ${cmd.id}`);
       if (el.kind !== "text") throw new Error(`element ${cmd.id} is not text`);
-      assertEditable(scene, el);
+      assertEditable(el);
       const prev = { paragraphs: el.paragraphs };
       el.paragraphs = cmd.paragraphs;
       markCustomized(scene, el, false);
