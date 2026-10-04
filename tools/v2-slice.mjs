@@ -3,7 +3,8 @@
 // Writes out/v2-slice/<theme>/{scene.json,scene.svg,deck.pptx}.
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { designFromTheme } from "../packages/model/design.js";
+import { loadThemeDocument } from "../src/theme-loader.js";
+import { normalizeDesign } from "../packages/core/design.ts";
 import { validateDeckIntent } from "../packages/model/intent.ts";
 import { validateScene, checkBounds } from "../packages/model/scene.ts";
 import { compileDeck } from "../packages/compiler/compile.js";
@@ -71,7 +72,7 @@ const intent = {
 const v = await validateDeckIntent(intent);
 if (!v.ok) throw new Error(v.errors.join("\n"));
 
-const design = await designFromTheme(theme);
+const design = normalizeDesign({ theme: await loadThemeDocument(theme), mode: "light" });
 const scenes = compileDeck(intent, design);
 for (const s of scenes) {
   const sv = await validateScene(s);

@@ -42,15 +42,8 @@ const GLOBAL_BAN = [
   "@neondatabase/serverless", "@vercel/blob", "next", "express", "tldraw", "@tldraw/tldraw",
 ];
 
-// Narrow temporary allowlist. Each entry names the exact file and why it
-// exists; entries die when their seam is eliminated.
-const ALLOWLIST = [
-  {
-    from: "packages/model/design.js",
-    to: "src/theme.js",
-    why: "transitional V2-0 theme seam; eliminated by V2-2B normalization",
-  },
-];
+const ALLOWLIST = [];
+
 
 function parseImports(text, filename) {
   const found = [];

@@ -1,5 +1,6 @@
 // Shared V2 slice fixture: one DeckIntent exercising all six recipes.
-import { designFromTheme } from "../packages/model/design.js";
+import { loadThemeDocument } from "../src/theme-loader.js";
+import { normalizeDesign } from "../packages/core/design.ts";
 
 export function sampleDeckIntent() {
   return {
@@ -59,5 +60,5 @@ export function sampleDeckIntent() {
 }
 
 export function warmDesign() {
-  return designFromTheme("warm-humanist");
+  return loadThemeDocument("warm-humanist").then((theme) => normalizeDesign({ theme, mode: "light" }));
 }
