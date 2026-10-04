@@ -1,0 +1,79 @@
+// @forge/editor — sceneToSvg. The browser-consumable projection of a
+// SlideScene: the same object the PPTX exporter reads, rendered as SVG for
+// inspection, thumbnails, and tests. The interactive canvas (demo.html)
+// binds the same elements to DOM nodes for direct manipulation.
+
+function esc(s) {
+  return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+const IN = 96; // svg px per scene inch
+
+function textSvg(el) {
+  let y = el.y * IN + 14;
+  const lines = [];
+  for (const p of el.paragraphs ?? []) {
+    const anchor = p.align === "center" ? "middle" : p.align === "right" ? "end" : "start";
+    const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
+    const words = p.runs.map((r) => r.text).join("");
+    const first = p.runs[0] ?? {};
+    const size = (first.size ?? 13) * 1.1;
+    for (const chunk of words.split("\n")) {
+      const prefix = p.bullet ? "• " : "";
+      lines.push(`<text x="${tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" font-size="${size.toFixed(1)}" fill="#${first.color ?? "111111"}"${first.bold ? ' font-weight="bold"' : ""}${first.italic ? ' font-style="italic"' : ""}>${esc(prefix + chunk)}</text>`);
+      y += size * 1.35;
+    }
+  }
+  return `<g data-el="${esc(el.id)}">${lines.join("")}</g>`;
+}
+
+function elementSvg(el) {
+  const x = el.x * IN;
+  const y = el.y * IN;
+  const w = el.w * IN;
+  const h = el.h * IN;
+  switch (el.kind) {
+    case "text":
+      return textSvg(el);
+    case "shape": {
+      const fill = `#${el.shape?.fill ?? "FFFFFF"}`;
+      if (el.shape?.form === "ellipse") {
+        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"/>`;
+      }
+      const rx = el.shape?.form === "roundRect" ? 10 : 0;
+      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"/>`;
+    }
+    case "image":
+      return `<g data-el="${esc(el.id)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
+    case "line":
+      return `<line data-el="${esc(el.id)}" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
+    case "chart": {
+      const vals = el.chart?.series?.[0]?.values ?? [];
+      const max = Math.max(1, ...vals);
+      const bw = w / Math.max(1, vals.length);
+      const bars = vals.map((v, i) => {
+        const bh = (v / max) * (h - 20);
+        return `<rect x="${(x + i * bw + 2).toFixed(1)}" y="${(y + h - bh).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="#C05D4E"/>`;
+      }).join("");
+      return `<g data-el="${esc(el.id)}">${bars}</g>`;
+    }
+    case "table": {
+      const rows = el.table?.rows ?? [];
+      const rh = h / Math.max(1, rows.length);
+      const cw = w / Math.max(1, rows[0]?.length ?? 1);
+      const cells = rows.map((row, ri) =>
+        row.map((cell, ci) => `<rect x="${(x + ci * cw).toFixed(1)}" y="${(y + ri * rh).toFixed(1)}" width="${cw.toFixed(1)}" height="${rh.toFixed(1)}" fill="none" stroke="#999"/><text x="${(x + ci * cw + 4).toFixed(1)}" y="${(y + ri * rh + 14).toFixed(1)}" font-size="12">${esc(cell)}</text>`).join(""),
+      ).join("");
+      return `<g data-el="${esc(el.id)}">${cells}</g>`;
+    }
+    case "group":
+      return `<g data-el="${esc(el.id)}">${(el.group?.children ?? []).map((c) => elementSvg({ ...c, x: c.x + el.x, y: c.y + el.y })).join("")}</g>`;
+    default:
+      return "";
+  }
+}
+
+export function sceneToSvg(scene) {
+  const els = [...scene.elements].sort((a, b) => a.z - b.z).map(elementSvg).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}"><rect width="100%" height="100%" fill="#${scene.background.fill}"/>${els}</svg>`;
+}

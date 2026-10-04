@@ -1,0 +1,6 @@
+{
+  "name": "@forge/renderer-pptx",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Layer C consumer 1: SlideScene -> editable native PPTX via pptxgenjs."
+}

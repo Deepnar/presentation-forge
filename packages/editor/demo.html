@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forge V2 scene demo — real elements, no PNG proxy</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #1c1a18; color: #eee; margin: 0; padding: 16px; }
+  #bar { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  #stage { position: relative; width: 960px; height: 540px; background: #fff; overflow: hidden; }
+  .el { position: absolute; box-sizing: border-box; }
+  .el.text { padding: 4px; overflow: hidden; }
+  .el.shape { pointer-events: none; }
+  .el.sel { outline: 2px solid #e0705a; }
+  .el[contenteditable="true"] { outline: 2px solid #4a90d9; }
+  #out { width: 960px; height: 120px; margin-top: 12px; font-family: monospace; font-size: 11px; }
+  kbd { background: #333; padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <strong>Scene demo</strong>
+  <span>drag to move · double-click text to edit · <kbd>←↑↓→</kbd> nudge · <kbd>Del</kbd> removes selected</span>
+  <button id="save">Copy scene JSON</button>
+  <span id="state"></span>
+</div>
+<div id="stage"></div>
+<textarea id="out" readonly></textarea>
+<script type="module">
+const res = await fetch("./scene.json");
+const scene = await res.json();
+const stage = document.getElementById("stage");
+const PX = 960 / scene.width;
+let selected = null;
+
+stage.style.background = "#" + scene.background.fill;
+
+function render() {
+  stage.querySelectorAll(".el").forEach((n) => n.remove());
+  for (const el of [...scene.elements].sort((a, b) => a.z - b.z)) {
+    const d = document.createElement("div");
+    d.className = "el " + el.kind + (selected === el.id ? " sel" : "");
+    d.dataset.id = el.id;
+    d.style.cssText += `left:${el.x * PX}px;top:${el.y * PX}px;width:${el.w * PX}px;height:${el.h * PX}px;z-index:${el.z};`;
+    if (el.kind === "text") {
+      d.innerHTML = (el.paragraphs ?? []).map((p) =>
+        `<div style="text-align:${p.align ?? "left"}">${(p.bullet ? "• " : "") + p.runs.map((r) =>
+          `<span style="font-size:${(r.size ?? 13) * PX / 12}px;color:#${r.color ?? "111111"};${r.bold ? "font-weight:bold;" : ""}">${escapeHtml(r.text)}</span>`).join("")}</div>`).join("");
+      d.addEventListener("dblclick", () => {
+        d.contentEditable = "true";
+        d.focus();
+      });
+      d.addEventListener("blur", () => {
+        d.contentEditable = "false";
+        const text = d.innerText;
+        const target = scene.elements.find((e) => e.id === el.id);
+        target.paragraphs = [{ runs: [{ text, size: 13, color: "2D2D2A" }] }];
+        target.provenance = "human";
+        if (scene.layoutState === "managed") scene.layoutState = "customized";
+        dump();
+      }, true);
+    } else if (el.kind === "shape") {
+      d.style.background = "#" + (el.shape?.fill ?? "FFFFFF");
+      d.style.borderRadius = el.shape?.form === "roundRect" ? "10px" : el.shape?.form === "ellipse" ? "50%" : "0";
+    } else {
+      d.style.background = "#D8D8D2";
+      d.style.display = "flex";
+      d.style.alignItems = "center";
+      d.style.justifyContent = "center";
+      d.textContent = `[${el.kind}]`;
+    }
+    d.addEventListener("pointerdown", (ev) => {
+      if (d.contentEditable === "true") return;
+      selected = el.id;
+      render();
+      const sx = ev.clientX;
+      const sy = ev.clientY;
+      const ox = el.x;
+      const oy = el.y;
+      const move = (e2) => {
+        el.x = Math.round((ox + (e2.clientX - sx) / PX) * 1000) / 1000;
+        el.y = Math.round((oy + (e2.clientY - sy) / PX) * 1000) / 1000;
+        const node = stage.querySelector(`[data-id="${CSS.escape(el.id)}"]`);
+        if (node) {
+          node.style.left = el.x * PX + "px";
+          node.style.top = el.y * PX + "px";
+        }
+      };
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        el.provenance = "human";
+        el.customized = true;
+        if (scene.layoutState === "managed") scene.layoutState = "customized";
+        dump();
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    });
+    stage.appendChild(d);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function dump() {
+  document.getElementById("out").value = JSON.stringify(scene, null, 1).slice(0, 4000);
+  document.getElementById("state").textContent = "layoutState: " + scene.layoutState;
+}
+
+window.addEventListener("keydown", (e) => {
+  if (!selected) return;
+  const el = scene.elements.find((x) => x.id === selected);
+  if (!el || document.activeElement?.contentEditable === "true") return;
+  const step = e.shiftKey ? 0.1 : 0.02;
+  if (e.key === "ArrowLeft") el.x -= step;
+  else if (e.key === "ArrowRight") el.x += step;
+  else if (e.key === "ArrowUp") el.y -= step;
+  else if (e.key === "ArrowDown") el.y += step;
+  else if (e.key === "Delete" || e.key === "Backspace") {
+    scene.elements = scene.elements.filter((x) => x.id !== selected);
+    selected = null;
+  } else return;
+  e.preventDefault();
+  if (el) {
+    el.provenance = "human";
+    el.customized = true;
+  }
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+  render();
+  dump();
+});
+
+document.getElementById("save").onclick(async () => {
+  await navigator.clipboard.writeText(JSON.stringify(scene, null, 1));
+  document.getElementById("state").textContent = "copied";
+};
+
+render();
+dump();
+</script>
+</body>
+</html>

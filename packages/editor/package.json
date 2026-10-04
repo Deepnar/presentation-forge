@@ -1,0 +1,6 @@
+{
+  "name": "@forge/editor",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Layer C consumer 2: browser scene renderer. Same SlideScene the PPTX exporter consumes."
+}
