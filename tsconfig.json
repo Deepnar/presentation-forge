@@ -14,5 +14,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["packages/model/**/*.ts"]
+  "include": ["packages/model/**/*.ts", "test/v2-generated-usage.test.ts"]
 }

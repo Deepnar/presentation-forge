@@ -17,6 +17,10 @@ export async function generateTypes({ write = true } = {}) {
   const targets = [
     { schema: "packages/model/intent.schema.json", out: "packages/model/intent.generated.ts", name: "DeckIntent" },
     { schema: "packages/model/scene.schema.json", out: "packages/model/scene.generated.ts", name: "SlideScene" },
+    { schema: "packages/model/project.schema.json", out: "packages/model/project.generated.ts", name: "Project" },
+    { schema: "packages/model/artifact.schema.json", out: "packages/model/artifact.generated.ts", name: "Artifact" },
+    { schema: "packages/model/file.schema.json", out: "packages/model/file.generated.ts", name: "FileRef" },
+    { schema: "packages/model/source.schema.json", out: "packages/model/source.generated.ts", name: "SourceRef" },
   ];
   const results = [];
   for (const t of targets) {
