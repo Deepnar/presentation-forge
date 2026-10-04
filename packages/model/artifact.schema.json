@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/artifact.json",
+  "title": "Artifact",
+  "description": "A renderable project product. Draft becomes ready on successful render; content changes are new revisions, never in-place rewrites. Export artifacts must name their source artifact, format, and storage key; expiry is computed from expiresAt, never written by a sweeper.",
+  "type": "object",
+  "required": ["id", "projectId", "kind", "status", "title"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "projectId": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["presentation", "report", "script", "export"] },
+    "status": { "enum": ["draft", "ready"] },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "sourceIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "fileIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "exportOf": { "type": "string", "minLength": 1 },
+    "format": { "type": "string", "maxLength": 16 },
+    "storageKey": { "type": "string", "minLength": 1 },
+    "expiresAt": { "type": "string", "maxLength": 64 },
+    "createdAt": { "type": "string", "maxLength": 64 },
+    "updatedAt": { "type": "string", "maxLength": 64 }
+  },
+  "if": {
+    "properties": { "kind": { "const": "export" } },
+    "required": ["kind"]
+  },
+  "then": {
+    "required": ["exportOf", "format", "storageKey"]
+  }
+}

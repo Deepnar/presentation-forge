@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/file.json",
+  "$id": "https://forge.local/schemas/file.json",
+  "title": "FileRef",
+  "description": "A file that has entered Forge's durable project domain. Immutable with respect to content: replacing content mints a new id. storageKey is opaque to the domain and resolved by the active storage adapter; it never carries paths or URLs.",
+  "type": "object",
+  "required": ["id", "projectId", "name", "mime", "sizeBytes", "storageKey", "role"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "projectId": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "mime": { "type": "string", "maxLength": 127 },
+    "sizeBytes": { "type": "integer", "minimum": 0 },
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "storageKey": { "type": "string", "minLength": 1 },
+    "role": {
+      "enum": ["source", "source-of-truth", "visual-reference", "template", "brand", "dataset", "asset", "unknown"]
+    },
+    "createdAt": { "type": "string", "maxLength": 64 }
+  }
+}

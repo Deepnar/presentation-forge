@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/project.json",
+  "title": "Project",
+  "description": "The durable project container. Children (artifacts, files, sources) point here via projectId; the project never mirrors child lists.",
+  "type": "object",
+  "required": ["id", "title"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "objective": { "type": "string", "maxLength": 1000 },
+        "audience": { "type": "string", "maxLength": 500 },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "createdAt": { "type": "string", "maxLength": 64 },
+    "updatedAt": { "type": "string", "maxLength": 64 }
+  }
+}

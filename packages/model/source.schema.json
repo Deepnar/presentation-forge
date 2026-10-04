@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/source.json",
+  "title": "SourceRef",
+  "description": "A normalized research/project source. Immutable: re-fetching changed content mints a new id so existing citations never change meaning. SlideIntent.sourceRefs references SourceRef.id.",
+  "type": "object",
+  "required": ["id", "projectId", "kind", "title"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "projectId": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["web", "paper", "project-file", "user-provided"] },
+    "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "url": { "type": "string", "maxLength": 2000 },
+    "doi": { "type": "string", "maxLength": 255 },
+    "fileId": { "type": "string", "minLength": 1 },
+    "locator": { "type": "string", "maxLength": 255 },
+    "excerpt": { "type": "string", "maxLength": 2000 },
+    "searchProvider": { "type": "string", "maxLength": 64 },
+    "publishedAt": { "type": "string", "maxLength": 64 },
+    "retrievedAt": { "type": "string", "maxLength": 64 }
+  }
+}
