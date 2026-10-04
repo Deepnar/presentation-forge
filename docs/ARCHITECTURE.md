@@ -1309,11 +1309,12 @@ paths yet, `packages/` holds the first agent-native primitive:
   and agent edits, a `DesignSystem` read-only view over `themes/*.yaml`
   tokens, and a legacy bridge (six types map, the rest report `unmapped`
   rather than degrade). JSON Schema + ajv at the boundary; strict
-  TypeScript (`intent.ts`, `scene.ts`, `commands.ts`, `legacy.ts`)
-  imports compile-time types generated from the schemas
-  (`intent.generated.ts`, `scene.generated.ts`, checked in, drift-tested
-  by `test/v2-types-drift.test.js`), executed natively by Node 24 with
-  no build step and gated by `npm run typecheck`. Detached means
+  TypeScript (`intent.ts`, `scene.ts`, `commands.ts`, `legacy.ts`,
+  `validate.ts`) imports compile-time types generated from the schemas
+  (`intent.generated.ts`, `scene.generated.ts`, plus Slice B's
+  `project`/`artifact`/`file`/`source` contracts), all checked in and
+  drift-tested, executed natively by
+  Node 24 with no build step and gated by `npm run typecheck`. Detached means
   compiler-hands-off, not read-only: manual commands apply, locked
   elements still reject, recompilation returns the scene untouched.
 - `packages/compiler/` — deterministic intent-to-scene for six recipes

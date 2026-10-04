@@ -1,67 +1,49 @@
-# Handoff — Slice A accepted, hardening pass landed, Slice B proposed
+# Handoff — V2-1 complete (Slice B landed), V2-2 not started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§12 V2.1 program** (phases V2-0..V2-13; V2-1 now
-reflects the corrected incremental-TS direction, V2-8 the V2.2
-agent-runtime scope, V2-5 the explicit preservation acceptance
-criteria). External reference:
+`docs/ROADMAP.md` → **§12 V2.1 program** (V2-0 and V2-1 ticked with
+Learned blocks; V2-2..V2-13 pending). External reference:
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` (untracked root input,
 not a roadmap).
 
 ## Current state
 
-On `v2`, pushed to `origin/v2`. Slice A accepted as pushed; this session
-is the approved hardening pass on top, also pushed.
+On `v2`, pushed to `origin/v2`. Slice A accepted as pushed; the
+hardening pass landed on top; Slice B just landed. V2-1 is marked
+complete against its Done-when criteria.
 
-**V2-1 Slice A (landed):** `packages/model/{intent,scene,commands,legacy}`
-are strict TypeScript executed natively by Node 24 (no build step).
-`intent.generated.ts` / `scene.generated.ts` are checked in from the
-JSON Schemas via `tools/v2-types.mjs` (`npm run types:generate`) with a
-byte-for-byte drift test; `npm run typecheck` is clean. AJV owns runtime
-validation; no Zod. `design.js` deliberately still JS. Tests import the
-`.ts` modules directly; assertions/fixtures unchanged (import specifiers
-excepted).
+**Slice B (this session):** `Project`/`Artifact`/`FileRef`/`SourceRef`
+as schema-first domain contracts — 4 JSON Schemas, 4 checked-in
+generated types (via extended `tools/v2-types.mjs` targets, drift
+covered), `packages/model/validate.ts` with AJV validators, 4
+per-domain validation test files plus a `.ts` generated-type usability
+guard (plain-array assignability fails `typecheck` on tuple-union
+regression). Corrections applied: `projectId` required on FileRef and
+SourceRef; `storageKey` (never paths/URLs); `searchProvider` opaque;
+export invariants (`exportOf`/`format`/`storageKey`) enforced by schema
+`if`/`then` with tests; no `designName`, no `revision`, no job states,
+no `ToolResult` (stays V2-8); `design.js` untouched; `DesignSystem`
+deferred to V2-2.
 
-**Hardening pass (this session, landed):**
-
-- Generated types use `maxItems: -1` (verified against installed
-  json-schema-to-typescript 15.0.1: schema maxima deleted before
-  generation, `minItems` preserved) — `blocks: [ContentBlock,
-  ...ContentBlock[]]`, plain arrays elsewhere. Schemas untouched; AJV
-  still enforces every maximum. Dead casts removed from `legacy.ts`;
-  genuine bridge casts (enum narrowing, tuple non-emptiness, series
-  values) remain and are documented.
-- `detached` corrected to compiler-hands-off (not read-only):
-  `assertEditable` rejects locked elements only; move/resize/text/add/
-  delete all work on detached scenes without flipping `layoutState`;
-  `recompileSlide` still returns detached scenes untouched. Five new
-  preservation tests prove it.
-- V2-5 roadmap criteria now require the shared command path, text-edit
-  ownership, delete persistence semantics, undo/redo participation, and
-  explicit-only relayout — design deferred, not worked around.
-- V2-1 Slice B scope corrected: `Project`/`Artifact`/`FileRef`/`SourceRef`
-  (+ `DesignSystem` seam question); `ToolResult`/`ToolError` stay V2-8.
-- `docs/HANDOFF.md` (this file) and the ARCHITECTURE V2 section rewritten
-  to built reality.
+**Still true from hardening:** `maxItems: -1` generation; detached is
+compiler-hands-off; V2-5 criteria require the shared command path and
+explicit-only relayout; no Neon/Vercel/provider/auth/agent imports in
+`packages/model` (domain only — verify with a grep before V2-2).
 
 ## Verification
 
-- `npm run typecheck` — exit 0.
-- Full `npm test` — 879 tests, 878 pass, 1 fail (pre-existing
-  `byok-budget` locale expectation, unchanged).
-- V2 tests: 32/32 (26 Slice A + 1 drift + 5 detached).
-- Stale `.js`-specifier search over packages/test/tools/app/src — zero.
-- No duplicate schema-contract definitions (generated files only).
-- Compiler output byte-identical pre/post migration (`cmp` clean).
-- Raster spot-check (comparison + chart, warm-humanist) — identical to
-  pre-migration reads.
+- `npm run types:generate` — clean, schemas-as-truth.
+- `npm run typecheck` — exit 0 (now covers 11 model files + 1 TS test).
+- Full `npm test` — 911 tests, 910 pass, sole failure the
+  pre-existing `byok-budget` locale expectation.
+- Drift test green; stale `.js`-specifier search clean.
+- `design.js`, intent/scene schemas, compiler untouched in Slice B.
+- Compiler output and raster output unchanged (no code path touched).
 
 ## Continue from here
 
-1. Slice B proposal (delivered with the hardening report, awaiting
-   approval) — do NOT implement until approved.
-2. On approval: `Project`/`Artifact`/`FileRef`/`SourceRef` schemas +
-   generated types (+ `DesignSystem` decision per proposal), drift
-   covered, tests, then push.
-3. V2-2 core extraction waits for Slice B. Serve the present phase
-   before reaching for the next.
+1. Slice B review (this handoff accompanies the pushed implementation).
+   Do NOT start V2-2 until approved.
+2. On approval: V2-2 core extraction per the §12 entry — theme/design
+   loading moves into packages then, and only then is the real
+   `DesignSystem` contract established from compiler evidence.

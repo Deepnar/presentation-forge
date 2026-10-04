@@ -6527,7 +6527,7 @@ recipes on `warm-humanist` and a dark plate theme):
 > slice. Plate themes render flat backgrounds in the V2 path (no Chrome
 > raster yet); plate support is V2-3 business.
 
-### [ ] V2-1 TypeScript workspace and full contracts
+### [x] V2-1 TypeScript workspace and full contracts
 
 *Depends on: V2-0. Blocks: everything below.*
 
@@ -6564,6 +6564,22 @@ package now would be premature.
 Done when: an old deck loads into V2 representation through package APIs
 with no user-visible change, `npm run typecheck` is clean, and the V2-0
 tests pass with assertions unchanged (import specifiers excepted).
+
+> **Learned.** Slice B closed V2-1 with `Project`/`Artifact`/`FileRef`/
+> `SourceRef` as schema-first contracts (generated types + AJV validators
+> + per-domain tests), and the hardening pass corrected two real issues.
+> First, `detached` was implemented as read-only — rejecting even manual
+> commands — when the architecture means compiler-hands-off; the guard
+> now rejects locked elements only, with five tests proving detached
+> scenes stay manually editable without flipping state. Second,
+> `json-schema-to-typescript@15.0.1` with `maxItems: -1` deletes schema
+> maxima but preserves `minItems` (verified in its normalizer, not just
+> its docs), and its `if`/`then` passes through without degrading the
+> generated `Artifact` type — so export invariants live in schema,
+> enforced by AJV, with plain optional fields in TS. `ToolResult` was
+> deliberately kept out of the model package for V2-8, and `DesignSystem`
+> stays deferred to V2-2 core extraction rather than freezing the
+> current theme-loader shape.
 
 ### [ ] V2-2 deterministic core extraction
 
