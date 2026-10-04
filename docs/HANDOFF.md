@@ -31,14 +31,13 @@ remain V2-5; fit/chrome/QA remain V2-3E; benchmark judgment V2-3F.
 ## Verification
 
 - `npm run typecheck` — exit 0.
-- Full `npm test` — 1062 tests, 1061 pass, sole failure the pre-existing
-  `byok-budget` locale expectation. (+18 real its: 13 mechanisms + 5
-  scene sensitivity; +1 phantom vacuous pass from the new
-  test/v2-mechanism-fixture.js helper, matching the two pre-existing
-  fixture helpers — verified by stashed 1043 baseline and TAP runs.)
+- Full `npm test` — 1070 tests, 1069 pass, sole failure the pre-existing
+  `byok-budget` locale expectation. (+8 treatment regressions on top
+  of the 1062-tree.)
 - Six structured pairs scene-sensitive; old indifference files intact.
 - Theme projections identical across five themes; free-text scenes
   identical; compiler scenes PPTX-native.
+- `themematrix` clean (legacy layouts untouched).
 - Boundary live-scan clean; legacy suites green.
 
 ## Continue from here
