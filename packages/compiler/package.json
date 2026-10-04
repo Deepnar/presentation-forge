@@ -1,0 +1,6 @@
+{
+  "name": "@forge/compiler",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Layer B: deterministic SlideIntent -> SlideScene compiler. No model, no network, no filesystem."
+}
