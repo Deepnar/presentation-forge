@@ -149,6 +149,88 @@ function primaryId(slideId: string, blockId: string): string {
   return `${slideId}:${blockId}:content`;
 }
 
+// Vertical cell padding, in inches, shared by the table layout
+// contract and both projections. Small enough to keep rows compact,
+// large enough that glyphs never touch row rules.
+const TABLE_CELL_PAD = 0.05;
+
+// Resolved Layer-C table presentation. Mirrors the schema-backed
+// SceneElement table layout field; renderers project it verbatim.
+interface TableLayout {
+  rowHeights: number[];
+  headerFill: string;
+  headerColor: string;
+  headerSize: number;
+  headerBold: boolean;
+  bodyColor: string;
+  bodySize: number;
+  fontFamily: string;
+  padding: number;
+  gridColor: string;
+}
+
+// Deterministic table layout: authored rows + allocated region +
+// DesignSystem roles/palette in, resolved Layer-C presentation out.
+// Short tables shrink to their content (compact rows at nominal body
+// metrics); dense tables keep the full region with even rows rather
+// than compressing below readability. Cell values are never read,
+// rounded, reordered, or reformatted here — only measured never;
+// per-cell capacity assessment belongs to V2-3F-8.
+function tableLayout(
+  design: DesignSystem,
+  rows: string[][],
+  header: boolean,
+  region: Box,
+): { height: number; layout: TableLayout } {
+  const bodySize = roleSize(design, "body", 13);
+  const bodyLine = design.roles.body?.line ?? 1.35;
+  const family = design.roles.body?.family ?? "";
+  const bodyRowH = bodySize / 72 * bodyLine + 2 * TABLE_CELL_PAD;
+  const headerRowH = bodySize / 72 * bodyLine + 2 * TABLE_CELL_PAD;
+  const layout = {
+    rowHeights: [] as number[],
+    headerFill: design.palette.surface.hex,
+    headerColor: design.palette.ink.hex,
+    headerSize: bodySize,
+    headerBold: true,
+    bodyColor: design.palette.ink.hex,
+    bodySize,
+    fontFamily: family,
+    padding: TABLE_CELL_PAD,
+    gridColor: design.palette.rule.hex,
+  };
+  const n = rows.length;
+  if (n === 0) return { height: region.h, layout };
+  const natural = (header ? headerRowH : 0) + (n - (header ? 1 : 0)) * bodyRowH;
+  if (natural <= region.h) {
+    layout.rowHeights = rows.map((_, i) => (header && i === 0 ? headerRowH : bodyRowH));
+    return { height: Math.max(0.05, natural), layout };
+  }
+  const each = region.h / n;
+  layout.rowHeights = rows.map(() => each);
+  // Exact-sum enforcement: fp division must not leave the contract
+  // claiming a total the element box does not have.
+  layout.rowHeights[n - 1] += region.h - layout.rowHeights.reduce((a, b) => a + b, 0);
+  return { height: region.h, layout };
+}
+
+function tableElement(
+  id: string,
+  semanticRef: string,
+  box: Box,
+  rows: string[][],
+  header: boolean,
+  z: number,
+  design: DesignSystem,
+): SceneElement {
+  const { height, layout } = tableLayout(design, rows, header, box);
+  return {
+    id, kind: "table", x: box.x, y: box.y, w: box.w, h: height, z,
+    provenance: "compiler", semanticRef,
+    table: { rows: rows.map((r) => [...r]), header, layout },
+  };
+}
+
 // Primary semantic carrier for any block in a region. Every kind maps to
 // a native editable element; this is the no-silent-loss guarantee.
 function renderBlockPrimary(
@@ -180,11 +262,7 @@ function renderBlockPrimary(
         },
       };
     case "table": {
-      return {
-        id, kind: "table", x: region.x, y: region.y, w: region.w, h: region.h, z,
-        provenance: "compiler", semanticRef: block.id,
-        table: { rows: (block.rows ?? []).map((r) => [...r]), header: block.header === true },
-      };
+      return tableElement(id, block.id, region, block.rows ?? [], block.header === true, z, design);
     }
     default: {
       const { paras, policy } = blockParas(block, design);
@@ -544,12 +622,10 @@ function dataTableScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
       const rows = (block.categories ?? []).map((c, ci) => [c, ...series.map((s) => String(s.values[ci] ?? ""))]);
       const capH = block.unit !== undefined ? 0.3 : 0;
       const tableRegion = { x: box.x, y, w: box.w, h: Math.max(0.2, h - capH) };
-      placePrimary(ctx, els, block, tableRegion, takeZ, (region, z) => ({
-        id: primaryId(slide.id, block.id), kind: "table",
-        x: region.x, y: region.y, w: region.w, h: region.h, z,
-        provenance: "compiler", semanticRef: block.id,
-        table: { rows: [header, ...rows], header: true },
-      } as SceneElement));
+      placePrimary(ctx, els, block, tableRegion, takeZ, (region, z) => tableElement(
+        primaryId(slide.id, block.id), block.id, region,
+        [header, ...rows], true, z, design,
+      ));
       if (block.unit !== undefined) {
         els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
           { x: box.x, y: y + h - capH, w: box.w, h: capH },

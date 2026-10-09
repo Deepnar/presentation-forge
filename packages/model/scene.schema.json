@@ -138,7 +138,27 @@
                   "type": "array",
                   "items": { "type": "array", "items": { "type": "string" } }
                 },
-                "header": { "type": "boolean" }
+                "header": { "type": "boolean" },
+                "layout": {
+                  "type": "object",
+                  "description": "Compiler-resolved table presentation: row geometry, header treatment, cell typography, padding, grid. Renderers project it verbatim and never recompute it.",
+                  "additionalProperties": false,
+                  "properties": {
+                    "rowHeights": {
+                      "type": "array",
+                      "items": { "type": "number", "exclusiveMinimum": 0 }
+                    },
+                    "headerFill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "headerColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "headerSize": { "type": "number", "exclusiveMinimum": 0 },
+                    "headerBold": { "type": "boolean" },
+                    "bodyColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "bodySize": { "type": "number", "exclusiveMinimum": 0 },
+                    "fontFamily": { "type": "string" },
+                    "padding": { "type": "number", "minimum": 0 },
+                    "gridColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+                  }
+                }
               }
             },
             "group": {

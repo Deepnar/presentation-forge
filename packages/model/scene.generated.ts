@@ -59,6 +59,21 @@ export interface SceneElement {
   table?: {
     rows: string[][];
     header?: boolean;
+    /**
+     * Compiler-resolved table presentation: row geometry, header treatment, cell typography, padding, grid. Renderers project it verbatim and never recompute it.
+     */
+    layout?: {
+      rowHeights?: number[];
+      headerFill?: string;
+      headerColor?: string;
+      headerSize?: number;
+      headerBold?: boolean;
+      bodyColor?: string;
+      bodySize?: number;
+      fontFamily?: string;
+      padding?: number;
+      gridColor?: string;
+    };
   };
   group?: {
     children: SceneElement[];
