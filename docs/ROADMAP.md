@@ -7006,6 +7006,12 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > the fitting module: keeping `heightOf` out of mechanisms.ts
 > preserves the static guardrail that layouts never do height
 > arithmetic, with no exception carved for this feature.
+>
+> A decoration positioned from an allocation must follow the carrier
+> when the carrier moves: the evidence accent rule now tracks the
+> primary's actual box (as the tone rail already does) instead of
+> the full region, or sparse centered content inherits a full-height
+> rail it never earned.
 - [ ] V2-3F-4 — table density: even row heights strand text;
   header indistinguishable from body.
 - [ ] V2-3F-6 — caveat detachment: caveats pin to region bottom

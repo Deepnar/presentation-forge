@@ -20,6 +20,10 @@ shrinks to content + 0.25in slack and centers; dense regions keep
 byte-identical geometry. Measurement lives in `text-fit.ts`
 (`centerSparseBox`) so mechanisms.ts stays free of height
 arithmetic; cautionary tone rails follow the carrier's actual box.
+Correction to the correction: the `prose-list/evidence` accent rule
+now also tracks the carrier's actual box (same structural alignment
+as the tone rail), keeping its array position, z sequence, x, width,
+color, provenance, and ID.
 Research-defense list: y=1.77/h=4.41 (19% fill) → y=3.43/h=1.09
 (77% fill), text/sizes/diagnostics unchanged. Framed cards, stats,
 titles, takeaways, caveats, badges, captions untouched by
@@ -38,10 +42,13 @@ runtime exists or is proposed.
 - `test/v2-rhythm-3f3.test.js` — 8/8 (distribution pins,
   dense byte-identity, reservations, stat exclusion, invariants
   across 5 decks × 5 themes × plain/chromed).
+- `test/v2-evidence-rule-3f3.test.js` — 3/3 (sparse rule tracks
+  carrier, dense geometry preserved, cautionary tone rail aligned;
+  fails 2/3 on pre-fix code as designed).
 - Historical V2-3D baseline file byte-identical; its test now
   proves only centered-text-box containment deltas.
 - V2-3E-1 baseline regenerated (3 recentered boxes, nothing else).
-- Full `npm test` — 1240 total / 1239 pass; sole failure is the
+- Full `npm test` — 1251 total / 1250 pass; sole failure is the
   known pre-existing `byok-budget` locale expectation.
 - Contact sheets regenerated and viewed (sparse improved, dense
   unchanged, dark chrome intact).
