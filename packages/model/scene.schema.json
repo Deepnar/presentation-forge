@@ -15,7 +15,13 @@
       "required": ["fill"],
       "additionalProperties": false,
       "properties": {
-        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "decor": {
+          "type": "array",
+          "description": "Theme-owned native dressing resolved by the compiler from DesignSystem. Projected behind all elements; never edited, never a ContentBlock carrier.",
+          "items": { "$ref": "#/definitions/backgroundDecor" }
+        },
+        "image": { "$ref": "#/definitions/backgroundImage" }
       }
     },
     "layoutState": { "enum": ["managed", "customized", "detached"] },
@@ -26,6 +32,31 @@
     }
   },
   "definitions": {
+    "backgroundDecor": {
+      "type": "object",
+      "required": ["shape", "x", "y", "w", "h", "fill"],
+      "additionalProperties": false,
+      "properties": {
+        "shape": { "enum": ["rect", "ellipse"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number", "exclusiveMinimum": 0 },
+        "h": { "type": "number", "exclusiveMinimum": 0 },
+        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "fillAlpha": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rotation": { "type": "number" }
+      }
+    },
+    "backgroundImage": {
+      "type": "object",
+      "description": "Adapter-resolved decorative background asset (e.g. a rasterized theme plate). Opaque renderer-ready reference: data URIs embed portably, other adapters may supply blob-backed sources. Content stays native above it; the hash is the determinism proof and dedup key.",
+      "required": ["src", "hash"],
+      "additionalProperties": false,
+      "properties": {
+        "src": { "type": "string", "minLength": 1 },
+        "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
     "textRun": {
       "type": "object",
       "required": ["text"],
@@ -84,8 +115,10 @@
               "properties": {
                 "form": { "enum": ["rect", "roundRect", "ellipse"] },
                 "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "fillAlpha": { "type": "number", "minimum": 0, "maximum": 1 },
                 "stroke": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
-                "strokeWidth": { "type": "number", "minimum": 0 }
+                "strokeWidth": { "type": "number", "minimum": 0 },
+                "strokeAlpha": { "type": "number", "minimum": 0, "maximum": 1 }
               }
             },
             "image": {

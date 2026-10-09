@@ -10,10 +10,32 @@ export interface SlideScene {
   height: 7.5;
   background: {
     fill: string;
+    /**
+     * Theme-owned native dressing resolved by the compiler from DesignSystem. Projected behind all elements; never edited, never a ContentBlock carrier.
+     */
+    decor?: BackgroundDecor[];
+    image?: BackgroundImage;
   };
   layoutState: "managed" | "customized" | "detached";
   recipeId?: string;
   elements: SceneElement[];
+}
+export interface BackgroundDecor {
+  shape: "rect" | "ellipse";
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  fill: string;
+  fillAlpha?: number;
+  rotation?: number;
+}
+/**
+ * Adapter-resolved decorative background asset (e.g. a rasterized theme plate). Opaque renderer-ready reference: data URIs embed portably, other adapters may supply blob-backed sources. Content stays native above it; the hash is the determinism proof and dedup key.
+ */
+export interface BackgroundImage {
+  src: string;
+  hash: string;
 }
 export interface SceneElement {
   id: string;
@@ -35,8 +57,10 @@ export interface SceneElement {
   shape?: {
     form?: "rect" | "roundRect" | "ellipse";
     fill?: string;
+    fillAlpha?: number;
     stroke?: string;
     strokeWidth?: number;
+    strokeAlpha?: number;
   };
   image?: {
     src: string;
