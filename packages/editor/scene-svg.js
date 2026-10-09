@@ -93,11 +93,34 @@ function elementSvg(el) {
     }
     case "table": {
       const rows = el.table?.rows ?? [];
-      const rh = h / Math.max(1, rows.length);
-      const cw = w / Math.max(1, rows[0]?.length ?? 1);
-      const cells = rows.map((row, ri) =>
-        row.map((cell, ci) => `<rect x="${(x + ci * cw).toFixed(1)}" y="${(y + ri * rh).toFixed(1)}" width="${cw.toFixed(1)}" height="${rh.toFixed(1)}" fill="none" stroke="#999"/><text x="${(x + ci * cw + 4).toFixed(1)}" y="${(y + ri * rh + 14).toFixed(1)}" font-size="12">${esc(cell)}</text>`).join(""),
-      ).join("");
+      const layout = el.table?.layout;
+      if (!layout) {
+        // Pre-contract scenes keep their historical rendering exactly.
+        const rh = h / Math.max(1, rows.length);
+        const cw = w / Math.max(1, rows[0]?.length ?? 1);
+        const cells = rows.map((row, ri) =>
+          row.map((cell, ci) => `<rect x="${(x + ci * cw).toFixed(1)}" y="${(y + ri * rh).toFixed(1)}" width="${cw.toFixed(1)}" height="${rh.toFixed(1)}" fill="none" stroke="#999"/><text x="${(x + ci * cw + 4).toFixed(1)}" y="${(y + ri * rh + 14).toFixed(1)}" font-size="12">${esc(cell)}</text>`).join(""),
+        ).join("");
+        return `<g data-el="${esc(el.id)}">${cells}</g>`;
+      }
+      const maxCols = Math.max(1, ...rows.map((r) => r.length));
+      const cw = w / maxCols;
+      const padPx = (layout.padding ?? 0.05) * 96;
+      const grid = `#${layout.gridColor ?? "999999"}`;
+      let cy = y;
+      const cells = rows.map((row, ri) => {
+        const isHeader = !!el.table?.header && ri === 0;
+        const rh = layout.rowHeights?.[ri] ?? h / Math.max(1, rows.length);
+        const size = ((isHeader ? layout.headerSize : layout.bodySize) ?? 10) * 1.1;
+        const fill = isHeader && layout.headerFill ? ` fill="#${layout.headerFill}"` : ` fill="none"`;
+        const weight = isHeader && layout.headerBold !== false ? ' font-weight="bold"' : "";
+        const family = layout.fontFamily ? ` font-family="${esc(layout.fontFamily)}"` : "";
+        const color = isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000");
+        const out = row.map((cell, ci) =>
+          `<rect x="${(x + ci * cw).toFixed(1)}" y="${cy.toFixed(1)}" width="${cw.toFixed(1)}" height="${(rh * 96).toFixed(1)}"${fill} stroke="${grid}"/><text x="${(x + ci * cw + padPx).toFixed(1)}" y="${(cy + padPx + size).toFixed(1)}" font-size="${size.toFixed(1)}" fill="#${color}"${family}${weight}>${esc(cell)}</text>`).join("");
+        cy += rh * 96;
+        return out;
+      }).join("");
       return `<g data-el="${esc(el.id)}">${cells}</g>`;
     }
     case "group":

@@ -142,11 +142,37 @@ function addChartElement(slide: PptxSlide, el: SceneElement): void {
 }
 
 function addTableElement(slide: PptxSlide, el: SceneElement): void {
-  const rows = (el.table?.rows ?? []).map((row) =>
-    row.map((cell) => ({ text: cell, options: { fontSize: 10 } })),
-  );
+  const table = el.table;
+  const rows = table?.rows ?? [];
   if (!rows.length) return;
-  slide.addTable(rows, { x: el.x, y: el.y, w: el.w, h: el.h, border: { pt: 0.5, color: "D8D8D2" } });
+  const layout = table?.layout;
+  if (!layout) {
+    // Pre-contract scenes keep their historical rendering exactly.
+    const legacy = rows.map((row) =>
+      row.map((cell) => ({ text: cell, options: { fontSize: 10 } })),
+    );
+    slide.addTable(legacy, { x: el.x, y: el.y, w: el.w, h: el.h, border: { pt: 0.5, color: "D8D8D2" } });
+    return;
+  }
+  const body = rows.map((row, ri) => {
+    const isHeader = !!table?.header && ri === 0;
+    return row.map((cell) => ({
+      text: cell,
+      options: {
+        fontSize: isHeader ? (layout.headerSize ?? 10) : (layout.bodySize ?? 10),
+        ...(layout.fontFamily ? { fontFace: layout.fontFamily } : {}),
+        color: isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000"),
+        bold: isHeader ? (layout.headerBold ?? true) : false,
+        ...(isHeader && layout.headerFill ? { fill: { color: layout.headerFill } } : {}),
+      },
+    }));
+  });
+  slide.addTable(body, {
+    x: el.x, y: el.y, w: el.w, h: el.h,
+    ...(layout.rowHeights?.length ? { rowH: layout.rowHeights } : {}),
+    border: { pt: 0.5, color: layout.gridColor ?? "D8D8D2" },
+    ...(layout.padding !== undefined ? { margin: layout.padding } : {}),
+  });
 }
 
 function addLineElement(slide: PptxSlide, el: SceneElement): void {
