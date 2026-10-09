@@ -449,3 +449,76 @@ describe("v2-3f-5 renderer projection", () => {
     assert.equal(presenter.paragraphs[0].runs[0].color, "FFFFFF", "dark footer reads white");
   });
 });
+
+describe("v2-3f-5 background layer parity", () => {
+  // No current theme combines both fields; this constructed scene
+  // proves the contract for one that does. The plate is fully opaque
+  // so any layering inversion would hide the decor completely.
+  const PNG_1X1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  const HASH_64 = "0".repeat(64);
+  function combinedScene() {
+    return {
+      id: "layered",
+      width: 13.333,
+      height: 7.5,
+      background: {
+        fill: "112233",
+        image: { src: PNG_1X1, hash: HASH_64 },
+        decor: [
+          { shape: "rect", x: 0, y: 0, w: 13.333, h: 0.1, fill: "E85AD4", fillAlpha: 0.65 },
+          { shape: "ellipse", x: 10, y: 5, w: 4, h: 2.5, fill: "33D6E0" },
+        ],
+      },
+      elements: [
+        {
+          id: "layered:body", kind: "text", x: 1, y: 1, w: 5, h: 1, z: 10,
+          provenance: "compiler", semanticRef: "b1",
+          paragraphs: [{ runs: [{ text: "Hello", role: "body", size: 13, color: "FFFFFF" }], align: "left" }],
+        },
+      ],
+      layoutState: "managed",
+    };
+  }
+
+  it("accepts the combined scene as valid", async () => {
+    const v = await validateScene(combinedScene());
+    assert.equal(v.ok, true, v.errors.join("; "));
+  });
+
+  it("orders SVG flat fill, plate image, decor, then elements", async () => {
+    const svg = sceneToSvg(combinedScene());
+    const flat = svg.indexOf('fill="#112233"');
+    const img = svg.indexOf("<image");
+    const firstDecor = svg.indexOf('fill="#E85AD4"');
+    const secondDecor = svg.indexOf('fill="#33D6E0"');
+    const el = svg.indexOf('data-el="layered:body"');
+    assert.ok(flat !== -1 && img !== -1 && firstDecor !== -1 && secondDecor !== -1 && el !== -1);
+    assert.ok(flat < img, "flat fallback first");
+    assert.ok(img < firstDecor, "plate image precedes decor");
+    assert.ok(firstDecor < secondDecor, "decor keeps declared order");
+    assert.ok(secondDecor < el, "decor precedes every editable element");
+    assert.match(svg, /fill-opacity="0.65"/, "decor fill opacity survives");
+    assert.ok(svg.includes(`href="${PNG_1X1}"`), "plate image embedded");
+  });
+
+  it("keeps the PPTX background-before-decor order", async () => {
+    const bytes = await renderPptx([combinedScene()], {});
+    const zip = await JSZip.loadAsync(bytes);
+    const xml = await zip.files["ppt/slides/slide1.xml"].async("string");
+    assert.match(xml, /<p:bg>/, "background element present");
+    const decorAt = xml.indexOf("E85AD4");
+    const textAt = xml.indexOf("<a:t>Hello</a:t>");
+    assert.ok(decorAt !== -1 && textAt !== -1 && decorAt < textAt, "decor shapes precede text runs");
+    const media = Object.keys(zip.files).filter((n) => /^ppt\/media\/.+\.png$/.test(n));
+    assert.ok(media.length >= 1, "plate bytes embedded");
+  });
+
+  it("renders the combined scene deterministically", async () => {
+    assert.equal(sceneToSvg(combinedScene()), sceneToSvg(combinedScene()), "SVG stable across renders");
+    const a = await JSZip.loadAsync(await renderPptx([combinedScene()], {}));
+    const b = await JSZip.loadAsync(await renderPptx([combinedScene()], {}));
+    const xa = await a.files["ppt/slides/slide1.xml"].async("string");
+    const xb = await b.files["ppt/slides/slide1.xml"].async("string");
+    assert.equal(xa, xb, "slide XML stable across renders");
+  });
+});

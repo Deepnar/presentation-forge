@@ -1409,6 +1409,13 @@ by both renderers:
   transitions read section ground, everything else reads content),
   never theme names.
 
+Both renderers project one canonical background layering —
+`flat fallback → plate asset → decor → editable elements` — so a
+scene carrying an image and decor together can never hide its
+dressing in one projection and show it in the other. No current
+theme combines both fields; the order is pinned by a constructed
+scene test regardless.
+
 Card tiles resolve the declared `shape.cardFill` with its alpha
 instead of the flat surface, mirroring the legacy card helper;
 table headers resolve the same color but stay opaque (data-density

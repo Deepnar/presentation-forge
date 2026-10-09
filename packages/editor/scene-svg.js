@@ -134,7 +134,17 @@ function elementSvg(el) {
 }
 
 function backgroundSvg(scene) {
+  // Canonical background layering, shared with the PPTX renderer:
+  // flat fallback fill, then the plate asset, then native decor in
+  // declared order. Decor sits above the image on both projections so
+  // a scene carrying both can never hide its dressing in one of them.
   const parts = [`<rect width="100%" height="100%" fill="#${scene.background.fill}"/>`];
+  // Adapter-resolved plate asset above the flat ground (which stays
+  // as the paint for transparent pixels and for viewers that cannot
+  // load the image) and below decor and content.
+  if (scene.background.image) {
+    parts.push(`<image x="0" y="0" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" preserveAspectRatio="xMidYMid slice" href="${esc(scene.background.image.src)}"/>`);
+  }
   for (const d of scene.background.decor ?? []) {
     const fill = `#${d.fill}`;
     const op = d.fillAlpha !== undefined && d.fillAlpha < 1 ? ` fill-opacity="${d.fillAlpha}"` : "";
@@ -147,12 +157,6 @@ function backgroundSvg(scene) {
     } else {
       parts.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}"${op}/>`);
     }
-  }
-  // Adapter-resolved plate asset behind everything. The flat fill
-  // above stays as the ground for transparent pixels and for viewers
-  // that cannot load the image.
-  if (scene.background.image) {
-    parts.push(`<image x="0" y="0" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" preserveAspectRatio="xMidYMid slice" href="${esc(scene.background.image.src)}"/>`);
   }
   return parts.join("");
 }
