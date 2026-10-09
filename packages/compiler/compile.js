@@ -13,6 +13,7 @@ import { compilePlannedSlide } from "./mechanisms.ts";
 import { fittedTextEl, refitTextEl } from "./text-fit.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { planDeckChrome, planSlideChrome, requireSlideChromeInput, chromePlanForSlide } from "./chrome.ts";
+import { cardFillOf, flatSceneBackground } from "./background.ts";
 
 function box(design) {
   const m = design.grid.margins;
@@ -42,8 +43,15 @@ function textEl(id, semanticRef, x, y, w, h, paragraphs, size, color, align = "l
   });
 }
 
-function shapeEl(id, semanticRef, x, y, w, h, form, fill, z = 1) {
-  return { id, kind: "shape", x, y, w, h, z, provenance: "compiler", semanticRef, shape: { form, fill } };
+function cardEl(id, semanticRef, x, y, w, h, form, design, z = 1) {
+  const card = cardFillOf(design);
+  return {
+    id, kind: "shape", x, y, w, h, z, provenance: "compiler", semanticRef,
+    shape: {
+      form, fill: card.hex,
+      ...(card.alpha !== undefined && card.alpha < 1 ? { fillAlpha: card.alpha } : {}),
+    },
+  };
 }
 
 function para(text, { role = "body", bold = false, size, color, align = "left", bullet = false } = {}) {
@@ -89,7 +97,7 @@ const RECIPES = {
         ),
       );
     }
-    return { recipeId: "title", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "title", background: flatSceneBackground(design), elements: els };
   },
 
   content(slide, design, sink = []) {
@@ -103,7 +111,7 @@ const RECIPES = {
       const items = list.items.map((it) => ({ runs: [{ text: it, role: "body", size: bodySize, color: design.palette.ink.hex }], align: "left", bullet: true }));
       els.push(fittedTextEl(design, { id: compilerId(slide.id, list.id, "body"), semanticRef: list.id, box: { x: c.x, y: c.y + 1.4, w: c.w, h: c.bottom - c.y - 1.4 }, paragraphs: items, z: 10, slideId: slide.id, sink }));
     }
-    return { recipeId: "content", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "content", background: flatSceneBackground(design), elements: els };
   },
 
   comparison(slide, design, sink = []) {
@@ -119,7 +127,7 @@ const RECIPES = {
     const sides = slide.blocks.filter((b) => b.kind === "text").slice(0, 2);
     sides.forEach((b, i) => {
       const x = c.x + i * (colW + gap);
-      els.push(shapeEl(compilerId(slide.id, b.id, "card"), b.id, x, top, colW, bottom - top, "roundRect", design.palette.surface.hex, 1));
+      els.push(cardEl(compilerId(slide.id, b.id, "card"), b.id, x, top, colW, bottom - top, "roundRect", design, 1));
       const paras = [
         ...(b.label ? [para(b.label, { role: "subhead", bold: true, size: t.subhead?.size ?? 15, color: design.palette.ink.hex })] : []),
         ...(b.text ? [para(b.text, { role: "body", size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
@@ -129,7 +137,7 @@ const RECIPES = {
     if (verdict) {
       els.push(textEl(compilerId(slide.id, verdict.id, "body"), verdict.id, c.x, c.bottom - 0.8, c.w, 0.8, [para(verdict.text ?? "", { role: "body", bold: true, size: t.body?.size ?? 13, color: design.palette.accent.hex, align: "center" })], undefined, undefined, "center", fit));
     }
-    return { recipeId: "comparison", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "comparison", background: flatSceneBackground(design), elements: els };
   },
 
   media(slide, design, sink = []) {
@@ -156,7 +164,7 @@ const RECIPES = {
       if (list.text) paras.unshift(para(list.text, { role: "body", size: bodySize, color: design.palette.ink.hex }));
       els.push(fittedTextEl(design, { id: compilerId(slide.id, list.id, "body"), semanticRef: list.id, box: { x: textX, y: top, w: textW, h }, paragraphs: paras, z: 10, slideId: slide.id, sink }));
     }
-    return { recipeId: "media", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "media", background: flatSceneBackground(design), elements: els };
   },
 
   chart(slide, design, sink = []) {
@@ -172,7 +180,7 @@ const RECIPES = {
         els.push(textEl(compilerId(slide.id, chart.id, "caption"), chart.id, c.x, c.bottom - 0.4, c.w, 0.4, [para(chart.caption, { role: "caption", size: t.caption?.size ?? 10, color: design.palette.inkMuted.hex, align: "center" })], undefined, undefined, "center", fit));
       }
     }
-    return { recipeId: "chart", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "chart", background: flatSceneBackground(design), elements: els };
   },
 
   process(slide, design, sink = []) {
@@ -186,14 +194,14 @@ const RECIPES = {
     const h = c.bottom - top;
     steps.forEach((b, i) => {
       const x = c.x + i * (cardW + gap);
-      els.push(shapeEl(compilerId(slide.id, b.id, "card"), b.id, x, top, cardW, h, "roundRect", design.palette.surface.hex, 1));
+      els.push(cardEl(compilerId(slide.id, b.id, "card"), b.id, x, top, cardW, h, "roundRect", design, 1));
       const paras = [
         para(`${i + 1}. ${b.label ?? ""}`.trim(), { role: "subhead", bold: true, size: t.subhead?.size ?? 15, color: design.palette.accent.hex }),
         ...(b.text ? [para(b.text, { role: "body", size: t.body?.size ?? 13, color: design.palette.ink.hex })] : []),
       ];
       els.push(fittedTextEl(design, { id: compilerId(slide.id, b.id, "body"), semanticRef: b.id, box: { x: x + 0.25, y: top + 0.25, w: cardW - 0.5, h: h - 0.5 }, paragraphs: paras, z: 10, slideId: slide.id, sink }));
     });
-    return { recipeId: "process", background: design.palette.bg.hex, elements: els };
+    return { recipeId: "process", background: flatSceneBackground(design), elements: els };
   },
 };
 
@@ -216,23 +224,25 @@ export function selectRecipe(slide) {
 export function compileSlide(slide, design, recipe = selectRecipe(slide), sink = []) {
   // Compatibility-only legacy path: independent six-recipe selection.
   // Canonical deck compilation uses compilePlannedSlide via the plan.
+  // Shares the flat background/decor and cardFill contract with the
+  // canonical path; plate assets ride the planned path only.
   const built = RECIPES[recipe](slide, design, sink);
   return {
     id: slide.id,
     width: SCENE_W,
     height: SCENE_H,
-    background: { fill: built.background },
+    background: built.background,
     elements: built.elements,
     layoutState: "managed",
     recipeId: built.recipeId,
   };
 }
 
-export function compileDeck(intent, design, chrome = null) {
-  return compileDeckDetailed(intent, design, chrome).scenes;
+export function compileDeck(intent, design, chrome = null, backgrounds = null) {
+  return compileDeckDetailed(intent, design, chrome, backgrounds).scenes;
 }
 
-export function compileDeckDetailed(intent, design, chrome = null) {
+export function compileDeckDetailed(intent, design, chrome = null, backgrounds = null) {
   const { plan, findings } = planDeckComposition(intent, design);
   // Chrome is planned once, from adapter input, beside composition —
   // never replanned inside QA or rendering.
@@ -242,7 +252,7 @@ export function compileDeckDetailed(intent, design, chrome = null) {
   // emission order (slide order, then element order within a slide).
   const fitDiagnostics = [];
   const scenes = intent.slides.map((s) =>
-    compilePlannedSlide(s, byId.get(s.id), design, fitDiagnostics, chromePlanForSlide(chromePlan, s.id)));
+    compilePlannedSlide(s, byId.get(s.id), design, fitDiagnostics, chromePlanForSlide(chromePlan, s.id), backgrounds));
   return { scenes, plan, chromePlan, findings, fitDiagnostics };
 }
 
@@ -255,7 +265,7 @@ export function compileDeckDetailed(intent, design, chrome = null) {
 // Deck-aware callers pass the current SlideCompositionPlan so rhythm
 // context survives; compatibility callers omit it and recompile through
 // the legacy six-recipe path with the same preservation rules.
-export function recompileSlide(intent, prev, design, planned = null, sink = [], chrome = null) {
+export function recompileSlide(intent, prev, design, planned = null, sink = [], chrome = null, backgrounds = null) {
   if (prev.layoutState === "detached") return prev;
   // Chrome reflow requires the canonical planned path (reserve +
   // emission live there). The frozen legacy path cannot honor it, so
@@ -272,7 +282,7 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
     ? planSlideChrome(requireSlideChromeInput(chrome.slides ?? [], intent.id))
     : null;
   const fresh = planned
-    ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan)
+    ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan, backgrounds)
     : compileSlide(intent, design, undefined, sink);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();

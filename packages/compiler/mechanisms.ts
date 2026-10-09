@@ -16,6 +16,7 @@ import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { fittedTextEl, centerSparseBox, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
+import { cardFillOf, sceneBackground, type SlideBackgrounds } from "./background.ts";
 
 interface Box {
   x: number;
@@ -108,6 +109,29 @@ function shapeEl(
   };
 }
 
+// Card tiles resolve the declared cardFill (with alpha) rather than
+// the flat surface: translucent themes layer over their plate instead
+// of covering it. Accent rules and tone rails keep shapeEl — they are
+// signal, not surface, and never translucent.
+function cardEl(
+  id: string,
+  semanticRef: string | undefined,
+  box: Box,
+  form: "rect" | "roundRect" | "ellipse",
+  design: DesignSystem,
+  z: number,
+): SceneElement {
+  const card = cardFillOf(design);
+  return {
+    id, kind: "shape", x: box.x, y: box.y, w: box.w, h: box.h, z,
+    provenance: "compiler", ...(semanticRef !== undefined ? { semanticRef } : {}),
+    shape: {
+      form, fill: card.hex,
+      ...(card.alpha !== undefined && card.alpha < 1 ? { fillAlpha: card.alpha } : {}),
+    },
+  };
+}
+
 function blockParas(block: ContentBlock, design: DesignSystem): { paras: Para[]; policy: FitPolicy } {
   const inkColor = ink(design);
   const bodySize = roleSize(design, "body", 13);
@@ -189,7 +213,7 @@ function tableLayout(
   const headerRowH = bodySize / 72 * bodyLine + 2 * TABLE_CELL_PAD;
   const layout = {
     rowHeights: [] as number[],
-    headerFill: design.palette.surface.hex,
+    headerFill: cardFillOf(design).hex,
     headerColor: design.palette.ink.hex,
     headerSize: bodySize,
     headerBold: true,
@@ -540,8 +564,8 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const primaryHeights = distribute(Math.max(0.4, bottom - y) - gap * primaries.length, primaries.map(() => 1.6), 0.8);
   primaries.forEach((block, pi) => {
     const h = primaryHeights[pi];
-    els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-      { x: box.x, y, w: box.w, h }, "roundRect", design.palette.surface.hex, takeZ()));
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+      { x: box.x, y, w: box.w, h }, "roundRect", design, takeZ()));
     placePrimary(ctx, els, block, { x: box.x + 0.3, y: y + 0.15, w: box.w - 0.6, h: Math.max(0.2, h - 0.3) }, takeZ);
     y += h + gap;
   });
@@ -559,8 +583,8 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
       }
       const ch = heights[Math.min(ri, heights.length - 1)];
       const cx = box.x + (i % cols) * (cw + gap);
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x: cx, y, w: cw, h: ch }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: cx, y, w: cw, h: ch }, "roundRect", design, takeZ()));
       placePrimary(ctx, els, block, { x: cx + 0.25, y: y + 0.15, w: cw - 0.5, h: Math.max(0.2, ch - 0.3) }, takeZ);
     });
   }
@@ -597,8 +621,8 @@ function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[]
     }
     const h = heights[Math.min(ri, heights.length - 1)];
     const x = box.x + (i % cols) * (cw + gap);
-    els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-      { x, y, w: cw, h }, "roundRect", design.palette.surface.hex, takeZ()));
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+      { x, y, w: cw, h }, "roundRect", design, takeZ()));
     placePrimary(ctx, els, block, { x: x + 0.3, y: y + 0.2, w: cw - 0.6, h: Math.max(0.2, h - 0.4) }, takeZ);
   });
   y += heights[heights.length - 1] + gap;
@@ -684,8 +708,8 @@ function metricScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     let x = box.x;
     stats.forEach((block, i) => {
       const w = ((box.w - gap * (stats.length - 1)) * shares[i]) / total;
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x, y, w, h: tileH }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x, y, w, h: tileH }, "roundRect", design, takeZ()));
       placePrimary(ctx, els, block, { x: x + 0.3, y: y + 0.2, w: w - 0.6, h: tileH - 0.4 }, takeZ);
       x += w + gap;
     });
@@ -789,8 +813,8 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
       const ang = (2 * Math.PI * i) / steps.length - Math.PI / 2;
       const px = cx + rx * Math.cos(ang) - cw / 2;
       const py = cy + ry * Math.sin(ang) - ch / 2;
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x: px, y: py, w: cw, h: ch }, "ellipse", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: px, y: py, w: cw, h: ch }, "ellipse", design, takeZ()));
       placePrimary(ctx, els, block, { x: px + 0.2, y: py + 0.15, w: cw - 0.4, h: ch - 0.3 }, takeZ);
       const nx = cx + rx * Math.cos((2 * Math.PI * (i + 1)) / steps.length - Math.PI / 2);
       const ny = cy + ry * Math.sin((2 * Math.PI * (i + 1)) / steps.length - Math.PI / 2);
@@ -809,8 +833,8 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     steps.forEach((block, i) => {
       const h = heights[i];
       const x = box.x + i * (cw + gap);
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x, y, w: cw, h }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x, y, w: cw, h }, "roundRect", design, takeZ()));
       els.push(textEl(`${slide.id}:${block.id}:badge`, block.id,
         { x: x + 0.2, y: y + 0.15, w: 0.4, h: 0.4 },
         [{ runs: [{ text: String(i + 1), role: "subhead", bold: true, color: design.palette.accent.hex }], align: "left" as const }],
@@ -854,8 +878,8 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   // parent tier, the rest share the child tier. No invented edges.
   const parentH = Math.max(1.0, (bottom - y) * 0.32);
   const parent = slide.blocks[0];
-  els.push(shapeEl(`${slide.id}:${parent.id}:frame`, parent.id,
-    { x: box.x, y, w: box.w, h: parentH }, "roundRect", design.palette.surface.hex, takeZ()));
+  els.push(cardEl(`${slide.id}:${parent.id}:frame`, parent.id,
+    { x: box.x, y, w: box.w, h: parentH }, "roundRect", design, takeZ()));
   placePrimary(ctx, els, parent, { x: box.x + 0.3, y: y + 0.15, w: box.w - 0.6, h: Math.max(0.2, parentH - 0.3) }, takeZ);
   y += parentH + gap;
   const children = slide.blocks.slice(1);
@@ -872,8 +896,8 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
       }
       const ch = heights[Math.min(ri, heights.length - 1)];
       const cx = box.x + (i % cols) * (cw + gap);
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x: cx, y, w: cw, h: ch }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: cx, y, w: cw, h: ch }, "roundRect", design, takeZ()));
       placePrimary(ctx, els, block, { x: cx + 0.25, y: y + 0.15, w: cw - 0.5, h: Math.max(0.2, ch - 0.3) }, takeZ);
     });
   }
@@ -943,13 +967,13 @@ function framedProseScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[
     const h = heights[i];
     if (comp.variantKey === "framed-prose/limitation") {
       // Bordered card: rule-border frame plus inset content.
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x: box.x, y, w: box.w, h }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: box.x, y, w: box.w, h }, "roundRect", design, takeZ()));
       placePrimary(ctx, els, block, { x: box.x + 0.4, y: y + 0.2, w: box.w - 0.8, h: Math.max(0.2, h - 0.4) }, takeZ);
     } else if (comp.variantKey === "framed-prose/recommendation" || comp.variantKey === "framed-prose/conclusion") {
       // Filled card with an accent top rule.
-      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x: box.x, y, w: box.w, h }, "roundRect", design.palette.surface.hex, takeZ()));
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: box.x, y, w: box.w, h }, "roundRect", design, takeZ()));
       els.push(shapeEl(`${slide.id}:${block.id}:rule`, block.id,
         { x: box.x, y, w: box.w, h: 0.08 }, "rect", design.palette.accent.hex, takeZ()));
       placePrimary(ctx, els, block, { x: box.x + 0.4, y: y + 0.3, w: box.w - 0.8, h: Math.max(0.2, h - 0.5) }, takeZ);
@@ -991,6 +1015,7 @@ export function compilePlannedSlide(
   design: DesignSystem,
   sink: FitDiagnostic[] = [],
   chrome: SlideChromePlan | null = null,
+  backgrounds: SlideBackgrounds | null = null,
 ): SlideScene {
   const box = contentBox(design);
   const ctx: MechanismCtx = { slide, comp, design, box, sink, topRightReserve: chrome?.topRightReserve ?? 0 };
@@ -1023,7 +1048,7 @@ export function compilePlannedSlide(
     id: slide.id,
     width: SCENE_W,
     height: SCENE_H,
-    background: { fill: design.palette.bg.hex },
+    background: sceneBackground(design, comp, backgrounds),
     elements: clampScene(elements),
     layoutState: "managed",
     recipeId: comp.family,
