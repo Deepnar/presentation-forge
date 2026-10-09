@@ -1,62 +1,64 @@
-# Handoff — V2-3F-3 implementation in review, rest of 3F NOT started
+# Handoff — V2-3F-4 implementation in review, rest of 3F NOT started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-3E [x] at `001edec`;
-V2-3F [~] with first measurement slice accepted, V2-3F-1 accepted,
-V2-3F-3 correction awaiting review).
+V2-3F [~] with first measurement slice accepted, V2-3F-1 and V2-3F-3
+accepted, V2-3F-4 correction awaiting review).
 
 ## Current state
 
 On `v2`, to be pushed to `origin/v2` with this handoff. This session
-implements narrow item V2-3F-3 against `6332cfc` — nothing else.
-No schema, family, fitter, or renderer changes.
+implements narrow item V2-3F-4 against `a4057a4` — nothing else.
+No schema-shape changes beyond one additive optional table layout
+object, no new families, no fitting algorithms, no renderer forks.
 
-**Correction (this session):** sparse frameless text recenters
-vertically inside its allocated region BEFORE fitting, via a
-`centerSparse` flag on `placePrimary` honored only for text/list/
-quote/callout carriers in prose-list, escape, divider blocks, and
-unframed prose. Nominal content fills under half the region → box
-shrinks to content + 0.25in slack and centers; dense regions keep
-byte-identical geometry. Measurement lives in `text-fit.ts`
-(`centerSparseBox`) so mechanisms.ts stays free of height
-arithmetic; cautionary tone rails follow the carrier's actual box.
-Correction to the correction: the `prose-list/evidence` accent rule
-now also tracks the carrier's actual box (same structural alignment
-as the tone rail), keeping its array position, z sequence, x, width,
-color, provenance, and ID.
-Research-defense list: y=1.77/h=4.41 (19% fill) → y=3.43/h=1.09
-(77% fill), text/sizes/diagnostics unchanged. Framed cards, stats,
-titles, takeaways, caveats, badges, captions untouched by
-construction. Rasters confirm improved distribution with no new
-overflow; dense comparison slides pixel-stable.
+**Correction (this session):** compiler resolves one Layer-C
+`table.layout` per table (row heights from nominal body metrics
+with 0.05in cell padding; short tables compact to content height,
+dense tables keep the full region with even rows; header is body
+size + bold on a theme-surface fill; typography/padding/grid from
+normalized theme tokens) shared by `dataTableScene` natives and
+chart-to-table fallbacks alike. PPTX projects the contract
+natively (rowH array, per-cell family/size/color/bold, header
+fills, margins, rule borders) with a byte-identical legacy path
+for layout-less scenes; SVG projects the same contract (row
+boundaries, header treatment, family/size, grid color) with its
+legacy path likewise preserved. Values byte-exact everywhere
+(±0.1, n=3, decimals verified in scene, OOXML, and SVG).
+Data-heavy benchmark reads as compact intentional data on
+warm-humanist, high-contrast-mono, and sci-fi-hud (plain and
+chromed), confirmed on rasterized slides.
 
 **Still true:** deferred families untouched; free-text/compiler
-separation intact; tombstones V2-5; table-cell/chart-internal
-fitting, plates, caveat placement, side capacity, implemented-vs-
-planned channel all still open as V2-3F-4…V2-3F-9; no judge
-runtime exists or is proposed.
+separation intact; tombstones V2-5; per-cell capacity assessment
+remains V2-3F-8 (documented, not measured); plates, caveat
+placement, side capacity, implemented-vs-planned channel all still
+open as V2-3F-5…V2-3F-9; no judge runtime exists or is proposed.
 
 ## Verification
 
 - `npm run typecheck` — exit 0 (see final report).
-- `test/v2-rhythm-3f3.test.js` — 8/8 (distribution pins,
-  dense byte-identity, reservations, stat exclusion, invariants
-  across 5 decks × 5 themes × plain/chromed).
-- `test/v2-evidence-rule-3f3.test.js` — 3/3 (sparse rule tracks
-  carrier, dense geometry preserved, cautionary tone rail aligned;
-  fails 2/3 on pre-fix code as designed).
-- Historical V2-3D baseline file byte-identical; its test now
-  proves only centered-text-box containment deltas.
-- V2-3E-1 baseline regenerated (3 recentered boxes, nothing else).
-- Full `npm test` — 1251 total / 1250 pass; sole failure is the
+- `test/v2-tables-3f4.test.js` — 14/14 (compact/dense geometry,
+  header distinction + absence, exact values, fallback fidelity,
+  native PPTX with contract row heights, SVG contract match,
+  legacy fallbacks, determinism, preservation, 5-theme
+  invariance, non-table stability).
+- All V2 suites green (mechanisms, scene, renderer, quality,
+  fit, benchmark, QA, cardinality, rhythm, preservation,
+  treatments, composition, scene-composition, chrome ×2,
+  design, layout, intent, semantics, legacy, report-spec,
+  renderer-docx, artifact, project, fileref, sourceref,
+  types-drift).
+- Full `npm test` — 1265 total / 1264 pass; sole failure is the
   known pre-existing `byok-budget` locale expectation.
-- Contact sheets regenerated and viewed (sparse improved, dense
-  unchanged, dark chrome intact).
+- Historical V2-3A/V2-3D files byte-identical; no fixture was
+  regenerated (sampleDeckIntent carries no tables; mechanism
+  tables assert validity/geometry only).
 
 ## Continue from here
 
-1. V2-3F-3 review (pushed correction + this handoff). On
-   acceptance, flip the V2-3F-3 backlog item.
-2. Remaining backlog V2-3F-4…V2-3F-9 — do NOT begin until
+1. V2-3F-4 review (pushed correction + this handoff). On
+   acceptance, flip the V2-3F-4 backlog item.
+2. Remaining backlog V2-3F-5…V2-3F-9 — do NOT begin until
    authorized, one item at a time.
 3. V2-4+ — do NOT begin until authorized.
