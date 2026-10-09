@@ -14,7 +14,7 @@ import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
-import { fittedTextEl, centerSparseBox, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
+import { fittedTextEl, centerSparseBox, nominalContentHeight, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
 import { cardFillOf, sceneBackground, designForSurface, type SlideBackgrounds } from "./background.ts";
 
@@ -338,6 +338,18 @@ function distribute(available: number, weights: number[], floor: number): number
 const CAVEAT_H = 0.35;
 const CAVEAT_GAP = 0.1;
 
+// Capacity planning slack, in inches, added to every measured text
+// demand. The fitter remains the authority — this absorbs
+// heuristic/grid fp edges so an exactly-fitting allocation seats at
+// nominal scale instead of misfiring a diagnostic, mirroring the
+// sparse-centering slack's reasoning. Generous is safe (trailing
+// whitespace); tight is not (spurious floor-hits).
+const CAPACITY_SLACK = 0.25;
+// Minimum useful heights: a side card below this reads as a sliver
+// whatever it holds; a support block below this cannot carry a line.
+const MIN_SIDE_ROW = 0.8;
+const MIN_SUPPORT = 0.4;
+
 interface MechanismCtx {
   slide: SlideIntent;
   comp: SlideCompositionPlan;
@@ -594,6 +606,44 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   return els;
 }
 
+// Nominal vertical demand of one block's flowing text at a carrier
+// width: measured paragraphs plus planning slack plus the caveat
+// band the shared placement path reserves for uncertain blocks.
+// Pure measurement — fitting verifies inside the chosen geometry.
+function textDemand(design: DesignSystem, block: ContentBlock, width: number): number {
+  const { paras } = blockParas(block, design);
+  return nominalContentHeight(design, paras, width) + CAPACITY_SLACK
+    + (block.uncertainty !== undefined ? CAVEAT_H + 0.05 : 0);
+}
+
+// Intrinsic minimum for support blocks whose content is not flowing
+// text: tables resolve their real natural height through the table
+// layout contract; charts and images size by aspect the compiler
+// must not probe, so they plan at the card minimum and the fitter
+// keeps them honest.
+function supportDemand(ctx: MechanismCtx, block: ContentBlock, width: number): number {
+  const caveat = block.uncertainty !== undefined ? CAVEAT_H + 0.05 : 0;
+  if (block.kind === "table") {
+    const { height } = tableLayout(ctx.design, block.rows ?? [], block.header === true,
+      { x: 0, y: 0, w: width, h: 1e6 });
+    return height + caveat;
+  }
+  if (block.kind === "chart" || block.kind === "image") {
+    return MIN_SIDE_ROW + caveat;
+  }
+  return textDemand(ctx.design, block, width);
+}
+
+// One side card's outer height: text demand inside the carrier
+// insets (matching the frame/text geometry below) plus the card
+// chrome, never below the card minimum. The cautionary rail takes
+// width, not height, but it narrows the carrier the demand is
+// measured against.
+function sideDemand(ctx: MechanismCtx, block: ContentBlock, textW: number): number {
+  const railW = toneFor(ctx.comp.outcomeTreatments, block) === "cautionary" ? 0.12 : 0;
+  return Math.max(MIN_SIDE_ROW, textDemand(ctx.design, block, Math.max(0.5, textW - railW)) + 0.4);
+}
+
 function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
@@ -608,25 +658,61 @@ function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[]
   const cols = Math.min(Math.max(sides.length, 1), 3);
   const cw = (box.w - gap * (cols - 1)) / cols;
   const verdictReserve = comp.takeawayTreatment === "verdict" && slide.takeaway ? 0.9 : 0;
-  const supportReserve = support.length ? 1.2 : 0;
   const bottom = box.bottom - verdictReserve - (comp.takeawayTreatment === "annotation" ? 0.6 : 0);
-  const gridH = Math.max(0.8, bottom - y - supportReserve - gap);
+  // Capacity-aware allocation: measure demand before dividing the
+  // region, replacing the fixed supporting-content reservation.
+  // Sides are what the family is named for, so they are served
+  // first; support shares whatever the sides leave. Peer cards in
+  // one row share the row's maximum demand, keeping alignment.
+  // Fitting runs after final geometry is chosen and diagnoses
+  // genuine overflow honestly — nothing shrinks below its floor.
+  const textW = cw - 0.6;
   const sideRows = Math.ceil(sides.length / cols);
-  const heights = distribute(gridH - gap * sideRows, sides.map(() => 1), 0.8);
+  const rowDemands: number[] = [];
+  for (let r = 0; r < sideRows; r++) {
+    let row = MIN_SIDE_ROW;
+    for (let i = r * cols; i < Math.min(sides.length, (r + 1) * cols); i++) {
+      row = Math.max(row, sideDemand(ctx, sides[i], textW));
+    }
+    rowDemands.push(row);
+  }
+  const rowsH = rowDemands.reduce((a, b) => a + b, 0) + gap * sideRows;
+  const supportDemands = support.map((b) => Math.max(MIN_SUPPORT, supportDemand(ctx, b, box.w)));
+  const supportH = supportDemands.reduce((a, b) => a + b, 0) + 0.1 * support.length;
+  const available = bottom - y;
+  let rowHs: number[];
+  let supHs: number[];
+  if (rowsH + supportH <= available) {
+    rowHs = rowDemands;
+    supHs = supportDemands;
+  } else {
+    // Scarce space splits proportional to need: each row keeps at
+    // least the card minimum, support at least one line, and
+    // anything still short of demand overflows into a fit diagnostic
+    // rather than shrinking below readability.
+    rowHs = rowsH <= available
+      ? rowDemands
+      : distribute(available - gap * sideRows, rowDemands, MIN_SIDE_ROW);
+    const used = rowHs.reduce((a, b) => a + b, 0) + gap * sideRows;
+    const rest = available - used;
+    supHs = rest - 0.1 * support.length >= supportH - 0.1 * support.length
+      ? supportDemands
+      : distribute(Math.max(0.4, rest - 0.1 * support.length), supportDemands, MIN_SUPPORT);
+  }
   let ri = 0;
   sides.forEach((block, i) => {
     if (i % cols === 0 && i > 0) {
-      y += heights[ri] + gap;
+      y += rowHs[ri] + gap;
       ri++;
     }
-    const h = heights[Math.min(ri, heights.length - 1)];
+    const h = rowHs[Math.min(ri, rowHs.length - 1)];
     const x = box.x + (i % cols) * (cw + gap);
     els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
       { x, y, w: cw, h }, "roundRect", design, takeZ()));
     placePrimary(ctx, els, block, { x: x + 0.3, y: y + 0.2, w: cw - 0.6, h: Math.max(0.2, h - 0.4) }, takeZ);
   });
-  y += heights[heights.length - 1] + gap;
-  const supportHeights = distribute(Math.max(0.4, bottom - y) - 0.1 * support.length, support.map(() => 1), 0.4);
+  y += rowHs[rowHs.length - 1] + gap;
+  const supportHeights = supHs;
   support.forEach((block, i) => {
     const h = supportHeights[i];
     if (block.kind === "callout" && comp.takeawayTreatment !== "verdict" && !slide.takeaway) {

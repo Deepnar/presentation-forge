@@ -62,8 +62,10 @@ const SPARSE_CENTER_SLACK = 0.25;
 // Nominal content height of already-built paragraphs, measured with
 // each paragraph's largest-nominal resolved style (conservative:
 // never smaller than what the fitter sees for single-role content).
-// Measurement only — fitting still owns scale.
-function nominalContentHeight(design: DesignSystem, paras: RoleParagraph[], width: number): number {
+// Measurement only — fitting still owns scale. Exported for
+// capacity-aware layout planning: mechanisms size regions from this
+// demand, then fit inside the chosen geometry as usual.
+export function nominalContentHeight(design: DesignSystem, paras: RoleParagraph[], width: number): number {
   let total = 0;
   for (const p of paras) {
     let best: { size: number; fit: FitStyle } | null = null;

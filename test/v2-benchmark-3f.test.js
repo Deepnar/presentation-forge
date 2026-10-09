@@ -118,16 +118,23 @@ describe("v2-3f benchmark matrix", () => {
     }
   });
 
-  it("decision overflow is reported with evidence, text kept whole", async () => {
+  it("decision overflow is resolved by capacity-aware allocation, text kept whole", async () => {
+    // V2-3F-7 fixed what this test used to detect: the comparison
+    // family measured side demand before dividing space, so the two
+    // side cards now seat their authored copy at nominal size. The
+    // historical failure (two text-fit-floor-hits, 0.43in carriers)
+    // is preserved in docs/V2-3F-EVAL-1.md; the live expectation is
+    // L1-clean with byte-complete text.
     const intents = benchmarkIntents();
     const design = await themeDesign("warm-humanist");
     const { scenes, findings } = await analyzeDeck(intents["decision-recommendation"], design);
     const hits = findings.filter((f) => f.code === "text-fit-floor-hit");
-    assert.ok(hits.length > 0, "overflow diagnosed, not silently shrunk");
+    assert.deepEqual(hits, [], "no floor-hits on the decision deck");
     const text = scenes.flatMap((s) =>
       s.elements.filter((e) => e.kind === "text")
         .flatMap((e) => (e.paragraphs ?? []).flatMap((p) => p.runs.map((r) => r.text)))).join("\n");
-    assert.ok(text.includes("moisture-sensitive handling"), "overflowing text kept complete");
+    assert.ok(text.includes("moisture-sensitive handling"), "side copy kept complete");
+    assert.ok(text.includes("15% facility cost"), "side copy kept complete");
   });
 
   it("PPTX and SVG render for every benchmark", async () => {
