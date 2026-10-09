@@ -308,6 +308,12 @@ function distribute(available: number, weights: number[], floor: number): number
   return shares.map((s) => Math.max(0.2, (s / sum) * available));
 }
 
+// Caveat band height and the gap attaching a caveat to a centered
+// carrier. The gap matches inter-block rhythm; attachment never
+// moves text, only chooses where the reserved band sits.
+const CAVEAT_H = 0.35;
+const CAVEAT_GAP = 0.1;
+
 interface MechanismCtx {
   slide: SlideIntent;
   comp: SlideCompositionPlan;
@@ -339,7 +345,7 @@ function placePrimary(
   opts?: { centerSparse?: boolean },
 ): SceneElement {
   const needsCaveat = block.uncertainty !== undefined;
-  const caveatH = needsCaveat ? 0.35 : 0;
+  const caveatH = needsCaveat ? CAVEAT_H : 0;
   const tone = toneFor(ctx.comp.outcomeTreatments, block);
   const railW = tone === "cautionary" ? 0.12 : 0;
   const contentRegion: Box = {
@@ -358,9 +364,24 @@ function placePrimary(
       ctx.design.palette.rule.hex, takeZ()));
   }
   if (needsCaveat) {
-    const el = caveatEl(ctx, block,
-      { x: region.x, y: region.y + region.h - caveatH, w: region.w, h: caveatH },
-      takeZ());
+    // Attached caveats follow a centered frameless carrier (carrier
+    // bottom + gap); everything else keeps the historical
+    // region-bottom band. Attachment is proven to fit whenever
+    // centering fired, and the fallback guards fp edges and future
+    // callers — so the band never leaves the region and never covers
+    // the primary, the next block, takeaway reserves, or chrome.
+    // Tables, charts, images, stats, custom renders, and framed
+    // content always take the region-bottom band by design: native
+    // table geometry plus unit-caption interplay make attachment
+    // unsafe there without per-cell measurement, which is V2-3F-8's
+    // boundary, not this slice's.
+    const centered = !render && primary.kind === "text" &&
+      (primary.y !== contentRegion.y || primary.h !== contentRegion.h);
+    const attachedY = primary.y + primary.h + CAVEAT_GAP;
+    const box = centered && attachedY + CAVEAT_H <= region.y + region.h + 1e-9
+      ? { x: primary.x, y: attachedY, w: primary.w, h: CAVEAT_H }
+      : { x: region.x, y: region.y + region.h - caveatH, w: region.w, h: caveatH };
+    const el = caveatEl(ctx, block, box, takeZ());
     if (el) els.push(el);
   }
   return primary;
