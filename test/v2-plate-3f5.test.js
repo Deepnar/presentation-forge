@@ -19,7 +19,7 @@ import { compileDeck, compileDeckDetailed, recompileSlide } from "../packages/co
 import { planDeckComposition } from "../packages/compiler/composition.ts";
 import { analyzeDeck } from "../packages/compiler/quality.ts";
 import { checkSceneGeometry, checkElementIds, semanticProjection } from "../packages/core/scene-quality.ts";
-import { surfaceForPlan, cardFillOf, flatSceneBackground } from "../packages/compiler/background.ts";
+import { surfaceForPlan, cardFillOf, flatSceneBackground, designForSurface } from "../packages/compiler/background.ts";
 import {
   resolvePlateBackgrounds,
   slideBackgrounds,
@@ -161,6 +161,27 @@ describe("v2-3f-5 native resolution", () => {
       assert.deepEqual(flatSceneBackground(design), { fill: design.palette.bg.hex });
     });
   });
+
+  it("dividers read surface ink only when their surface plate is present", async () => {
+    const design = await designOf("glassmorphism");
+    const opening = { family: "divider", variantKey: "divider/opening" };
+    const prose = { family: "prose-list", variantKey: "prose-list/standard" };
+    assert.equal(designForSurface(design, opening), design, "no backgrounds: passthrough");
+    assert.equal(designForSurface(design, prose, { title: { src: "x", hash: "0".repeat(64) } }), design, "non-divider: passthrough");
+    const withTitle = designForSurface(design, opening, { title: { src: "x", hash: "0".repeat(64) } });
+    assert.equal(withTitle.palette.ink.hex, design.surfaces.title.ink.hex, "title ink contracted");
+    assert.equal(withTitle.palette.inkMuted.hex, design.surfaces.title.muted.hex, "title muted contracted");
+    assert.equal(withTitle.palette.accent.hex, design.surfaces.title.accent.hex, "title accent contracted");
+    assert.equal(withTitle.palette.bg.hex, design.palette.bg.hex, "ground untouched");
+    const transition = { family: "divider", variantKey: "divider/transition" };
+    const withSection = designForSurface(design, transition, { section: { src: "x", hash: "0".repeat(64) } });
+    assert.equal(withSection.palette.ink.hex, design.surfaces.section.ink.hex, "section ink contracted");
+    // A surface without its own accent keeps the palette accent.
+    const chalk = await designOf("chalkboard");
+    const chalkSection = designForSurface(chalk, transition, { section: { src: "x", hash: "0".repeat(64) } });
+    assert.equal(chalkSection.palette.accent.hex, chalk.palette.accent.hex, "missing surface accent falls back");
+    assert.equal(chalkSection.palette.ink.hex, chalk.surfaces.section.ink.hex, "section ink still contracted");
+  });
 });
 
 describe("v2-3f-5 adapter seam", () => {
@@ -248,6 +269,18 @@ describe("v2-3f-5 scene integration", () => {
       const v = await validateScene(scene);
       assert.equal(v.ok, true, `${scene.id}: ${v.errors.join("; ")}`);
     }
+  });
+
+  it("plated dividers stay readable while content text is untouched", async () => {
+    const intent = mechanismDeck();
+    const { plan } = compileDeckDetailed(intent, glass, null, seam);
+    const { scenes } = compileDeckDetailed(intent, glass, null, seam);
+    const divider = scenes.find((s) => plan.slides.find((p) => p.slideId === s.id)?.family === "divider");
+    const titleRun = divider.elements.find((e) => e.kind === "text").paragraphs[0].runs[0];
+    assert.equal(titleRun.color, glass.surfaces.title.ink.hex, "divider title reads on the title plate");
+    const proseScene = scenes.find((s) => plan.slides.find((p) => p.slideId === s.id)?.family === "prose-list");
+    const proseRun = proseScene.elements.find((e) => e.kind === "text" && e.semanticRef).paragraphs[0].runs[0];
+    assert.equal(proseRun.color, glass.palette.ink.hex, "content text keeps palette ink on in-class plates");
   });
 
   it("backgrounds never alter authored semantics or identity", async () => {

@@ -16,7 +16,7 @@ import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { fittedTextEl, centerSparseBox, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
-import { cardFillOf, sceneBackground, type SlideBackgrounds } from "./background.ts";
+import { cardFillOf, sceneBackground, designForSurface, type SlideBackgrounds } from "./background.ts";
 
 interface Box {
   x: number;
@@ -1017,8 +1017,9 @@ export function compilePlannedSlide(
   chrome: SlideChromePlan | null = null,
   backgrounds: SlideBackgrounds | null = null,
 ): SlideScene {
-  const box = contentBox(design);
-  const ctx: MechanismCtx = { slide, comp, design, box, sink, topRightReserve: chrome?.topRightReserve ?? 0 };
+  const grounded = designForSurface(design, comp, backgrounds);
+  const box = contentBox(grounded);
+  const ctx: MechanismCtx = { slide, comp, design: grounded, box, sink, topRightReserve: chrome?.topRightReserve ?? 0 };
   let z = 0;
   const takeZ = (): number => (z += 10);
   let elements: SceneElement[];

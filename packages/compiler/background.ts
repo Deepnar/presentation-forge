@@ -104,3 +104,35 @@ export function sceneBackground(
   }
   return out;
 }
+
+// Divider text ground rule. Divider slides read the institutional
+// surface grounds (title/section), but the scene background stays the
+// flat palette ground on every family — so palette ink is correct
+// until a plate image actually replaces the ground. When the adapter
+// resolved a plate for the slide's surface, the divider compiles
+// against that surface's ink/muted/accent instead: the surface
+// contract exists precisely for text on its ground, and without this
+// a dark title plate would render dark palette text unreadably (six
+// light themes flip lightness on title plates, three on section
+// plates; content plates never flip, so other families are
+// untouched). No plate means the input design passes through
+// untouched, and fitting is unaffected (metrics never read color).
+export function designForSurface(
+  design: DesignSystem,
+  comp: Pick<SlideCompositionPlan, "family" | "variantKey">,
+  backgrounds?: SlideBackgrounds | null,
+): DesignSystem {
+  if (comp.family !== "divider") return design;
+  const surface = surfaceForPlan(comp);
+  if (!backgrounds?.[surface]) return design;
+  const contracted = surface === "title" ? design.surfaces.title : design.surfaces.section;
+  return {
+    ...design,
+    palette: {
+      ...design.palette,
+      ink: contracted.ink,
+      inkMuted: contracted.muted,
+      ...(contracted.accent !== undefined ? { accent: contracted.accent } : {}),
+    },
+  };
+}
