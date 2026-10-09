@@ -6985,15 +6985,27 @@ away, decision needs shorter sides or capacity work.
 
 Ranked backlog (defects first, then weaknesses, then capabilities):
 
-- [~] V2-3F-1 — headline takeaway duplicated in 9 families
+- [x] V2-3F-1 — headline takeaway duplicated in 9 families
   (comparison, data-table, metric, chart, sequence, hierarchy,
   media-led, framed-prose, escape call trailing `takeawayEls`
   unguarded; prose-list/card-grid already guard). Small fix with
   outsized effect: closes duplicate-element-id and the footer-band
   intrusion together. Implementation in review; do not start the
   next backlog item until it passes.
-- [ ] V2-3F-3 — vertical rhythm: content clumps top, dead space
+- [~] V2-3F-3 — vertical rhythm: content clumps top, dead space
   below. Composition-level distribution work, not fitter tweaks.
+  Implementation in review; do not start V2-3F-4 until it passes.
+  Sparse frameless text recenters in its region before fitting;
+  dense regions, frames, titles, takeaways, and caveats unchanged.
+
+> **Learned.** Whitespace inside a card reads as panel design, but
+> the same whitespace under frameless text reads as broken layout —
+> so the rhythm fix centers only frameless running text (prose,
+> escape, divider blocks, unframed prose), never card tiles, chart
+> regions, or media. And a fitter-adjacent measurement belongs in
+> the fitting module: keeping `heightOf` out of mechanisms.ts
+> preserves the static guardrail that layouts never do height
+> arithmetic, with no exception carved for this feature.
 - [ ] V2-3F-4 — table density: even row heights strand text;
   header indistinguishable from body.
 - [ ] V2-3F-6 — caveat detachment: caveats pin to region bottom
