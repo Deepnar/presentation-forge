@@ -122,7 +122,7 @@ families and plateless decks are untouched.
   `ppt/media` parts with slide rel targets, `<p:bg>` present,
   `<a:alpha val="58000"/>` on glass cards, text/charts/tables
   native (`<a:t>`, chart parts).
-- Full suite: 1308 + new tests pass; sole failure is the known
+- Full suite: 1311 tests, 1310 pass; sole failure is the known
   unrelated BYOK locale expectation (untouched).
 
 ## Known limits
