@@ -33,6 +33,16 @@ export interface SlideBackgrounds {
   content?: PlateAsset;
 }
 
+// Alpha resolution rounds to four decimals at the scene boundary:
+// the binary double for 1 - 70/100 prints as 0.30000000000000004,
+// which is deterministic but noisy in scene JSON and downstream
+// assertions. Four decimals hold transparency-derived values exactly
+// and 8-digit hex well below visibility while keeping scenes stable
+// to assert against.
+function roundAlpha(alpha: number): number {
+  return Math.round(alpha * 10000) / 10000;
+}
+
 // Divider variants carry the institutional surfaces (opening/closing
 // read as title ground, transitions as section ground); every other
 // family reads the content plate. Mirrors the legacy surface mapping
@@ -58,7 +68,7 @@ export function surfaceForPlan(
 // headers keep the accepted V2-3F-4 table contract byte-identical.
 export function cardFillOf(design: DesignSystem): { hex: string; alpha?: number } {
   const fill = design.shape.cardFill;
-  return fill.alpha === undefined ? { hex: fill.hex } : { hex: fill.hex, alpha: fill.alpha };
+  return fill.alpha === undefined ? { hex: fill.hex } : { hex: fill.hex, alpha: roundAlpha(fill.alpha) };
 }
 
 // Flat scene background: palette ground plus native decor when the
@@ -75,7 +85,7 @@ export function flatSceneBackground(design: DesignSystem): SlideScene["backgroun
       w: d.w,
       h: d.h,
       fill: d.fill.hex,
-      ...(d.fill.alpha !== undefined ? { fillAlpha: d.fill.alpha } : {}),
+      ...(d.fill.alpha !== undefined ? { fillAlpha: roundAlpha(d.fill.alpha) } : {}),
       ...(d.rotation !== undefined ? { rotation: d.rotation } : {}),
     }));
   }
