@@ -407,9 +407,14 @@ function proseListScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   slide.blocks.forEach((block, i) => {
     const h = heights[i];
     if (comp.variantKey === "prose-list/evidence") {
-      els.push(shapeEl(`${slide.id}:${block.id}:rule`, block.id,
-        { x: box.x, y, w: 0.06, h: Math.max(0.2, h - 0.15) }, "rect", design.palette.accent.hex, takeZ()));
-      placePrimary(ctx, els, block, { x: box.x + 0.25, y, w: box.w - 0.25, h: Math.max(0.2, h - 0.15) }, takeZ, undefined, { centerSparse: true });
+      // The rule annotates the carrier: build the carrier first so the
+      // rule follows its actual (possibly centered) geometry. The rule
+      // keeps its established array position and z sequence; only its
+      // y/h track the carrier instead of the full allocation.
+      const ruleZ = takeZ();
+      const primary = placePrimary(ctx, els, block, { x: box.x + 0.25, y, w: box.w - 0.25, h: Math.max(0.2, h - 0.15) }, takeZ, undefined, { centerSparse: true });
+      els.splice(els.indexOf(primary), 0, shapeEl(`${slide.id}:${block.id}:rule`, block.id,
+        { x: box.x, y: primary.y, w: 0.06, h: primary.h }, "rect", design.palette.accent.hex, ruleZ));
     } else {
       placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.15) }, takeZ, undefined, { centerSparse: true });
     }
