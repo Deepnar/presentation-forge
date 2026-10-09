@@ -6,14 +6,14 @@
 // never plans chrome itself. In-memory only: no output path, no
 // filesystem write. The Node-only file adapter lives in node.ts.
 //
-// Scene fields without a PPTX projection yet (rotation,
+// Scene fields without a PPTX projection yet (element rotation,
 // locked/provenance as metadata) are preserved in the scene for
 // editor/seed use; V2-5 extends fidelity when those gain real
 // compiler/editor consumers. Image src stays the current
 // path/URL-style asset seam (see node.ts and the V2-2D report).
 
 import PptxGenJSModule from "pptxgenjs";
-import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
+import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.generated.ts";
 import { runBold, visibleText } from "../core/text-run.ts";
 
 // The library's default-export typing does not expose its constructor
@@ -100,10 +100,46 @@ function addTextElement(slide: PptxSlide, el: SceneElement): void {
 
 function addShapeElement(slide: PptxSlide, el: SceneElement): void {
   const form = { rect: "rect", roundRect: "roundRect", ellipse: "ellipse" }[el.shape?.form ?? "rect"];
+  // Fill alpha projects to OOXML transparency, the inverse scale the
+  // legacy decor path uses: round((1 - alpha) * 100). Absent or fully
+  // opaque alpha omits the property, preserving historical bytes.
+  const fillT = el.shape?.fillAlpha !== undefined && el.shape.fillAlpha < 1
+    ? Math.round((1 - el.shape.fillAlpha) * 100)
+    : undefined;
+  const strokeT = el.shape?.strokeAlpha !== undefined && el.shape.strokeAlpha < 1
+    ? Math.round((1 - el.shape.strokeAlpha) * 100)
+    : undefined;
   slide.addShape(form, {
     x: el.x, y: el.y, w: el.w, h: el.h,
-    fill: { color: el.shape?.fill ?? "FFFFFF" },
-    line: el.shape?.stroke ? { color: el.shape.stroke, width: el.shape.strokeWidth ?? 1 } : { type: "none" },
+    fill: {
+      color: el.shape?.fill ?? "FFFFFF",
+      ...(fillT !== undefined ? { transparency: fillT } : {}),
+    },
+    line: el.shape?.stroke
+      ? {
+        color: el.shape.stroke,
+        width: el.shape.strokeWidth ?? 1,
+        ...(strokeT !== undefined ? { transparency: strokeT } : {}),
+      }
+      : { type: "none" },
+  });
+}
+
+// Theme-owned background dressing. Drawn once per slide, immediately
+// after the slide background and before every element, in array order
+// — decor can never cover content. Coordinates may bleed off-canvas
+// on purpose (corner halos, full-bleed rules); that is the theme's
+// declared geometry, projected verbatim.
+function addDecorShape(slide: PptxSlide, d: BackgroundDecor): void {
+  const form = d.shape === "ellipse" ? "ellipse" : "rect";
+  const t = d.fillAlpha !== undefined && d.fillAlpha < 1
+    ? Math.round((1 - d.fillAlpha) * 100)
+    : undefined;
+  slide.addShape(form, {
+    x: d.x, y: d.y, w: d.w, h: d.h,
+    fill: { color: d.fill, ...(t !== undefined ? { transparency: t } : {}) },
+    line: { type: "none" },
+    ...(d.rotation ? { rotation: d.rotation } : {}),
   });
 }
 
@@ -220,7 +256,20 @@ export async function renderPptx(
   if (options.revision !== undefined) pres.revision = options.revision;
   for (const scene of scenes) {
     const slide = pres.addSlide();
-    slide.background = { color: scene.background.fill };
+    // The background (image when the adapter resolved one, flat fill
+    // otherwise) is assigned BEFORE any element is drawn: pptxgenjs
+    // numbers a later background relationship against chart parts and
+    // the image silently never paints. Decor follows the background
+    // and precedes content, so dressing stays behind editable text.
+    const bgImage = scene.background.image;
+    if (bgImage && /^data:/i.test(bgImage.src)) {
+      slide.background = { data: bgImage.src.replace(/^data:[^,]+,/, ""), path: "plate.png" };
+    } else if (bgImage) {
+      slide.background = { path: bgImage.src };
+    } else {
+      slide.background = { color: scene.background.fill };
+    }
+    for (const d of scene.background.decor ?? []) addDecorShape(slide, d);
     const els = [...scene.elements].sort((a, b) => a.z - b.z);
     for (const el of els) drawElement(slide, el);
   }

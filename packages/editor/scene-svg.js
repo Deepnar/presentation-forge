@@ -71,11 +71,14 @@ function elementSvg(el) {
       return textSvg(el);
     case "shape": {
       const fill = `#${el.shape?.fill ?? "FFFFFF"}`;
+      const fillOp = el.shape?.fillAlpha !== undefined && el.shape.fillAlpha < 1
+        ? ` fill-opacity="${el.shape.fillAlpha}"`
+        : "";
       if (el.shape?.form === "ellipse") {
-        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"/>`;
+        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${fillOp}/>`;
       }
       const rx = el.shape?.form === "roundRect" ? 10 : 0;
-      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"/>`;
+      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}/>`;
     }
     case "image":
       return `<g data-el="${esc(el.id)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
@@ -130,7 +133,31 @@ function elementSvg(el) {
   }
 }
 
+function backgroundSvg(scene) {
+  const parts = [`<rect width="100%" height="100%" fill="#${scene.background.fill}"/>`];
+  for (const d of scene.background.decor ?? []) {
+    const fill = `#${d.fill}`;
+    const op = d.fillAlpha !== undefined && d.fillAlpha < 1 ? ` fill-opacity="${d.fillAlpha}"` : "";
+    const x = d.x * IN;
+    const y = d.y * IN;
+    const w = d.w * IN;
+    const h = d.h * IN;
+    if (d.shape === "ellipse") {
+      parts.push(`<ellipse cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${op}/>`);
+    } else {
+      parts.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}"${op}/>`);
+    }
+  }
+  // Adapter-resolved plate asset behind everything. The flat fill
+  // above stays as the ground for transparent pixels and for viewers
+  // that cannot load the image.
+  if (scene.background.image) {
+    parts.push(`<image x="0" y="0" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" preserveAspectRatio="xMidYMid slice" href="${esc(scene.background.image.src)}"/>`);
+  }
+  return parts.join("");
+}
+
 export function sceneToSvg(scene) {
   const els = [...scene.elements].sort((a, b) => a.z - b.z).map(elementSvg).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}"><rect width="100%" height="100%" fill="#${scene.background.fill}"/>${els}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}">${backgroundSvg(scene)}${els}</svg>`;
 }
