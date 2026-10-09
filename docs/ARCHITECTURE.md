@@ -1381,10 +1381,56 @@ by rasterised reads of all six recipes (`tools/v2-slice.mjs` across six
 representative themes). The generator emits structural types without
 giant `maxItems` tuple unions (`maxItems: -1`); maximum lengths stay
 enforced by AJV. Known slice limits live in the V2-0 roadmap entry:
-cards span full content height, plate themes render flat, text budgets
+cards span full content height, plate themes resolve through the
+`src/v2-plates.js` adapter seam (V2-3F-5), text budgets
 are fixed fractions awaiting `src/fit.js` integration; inline human
 text edits and human deletes have no persistence semantics yet by
 explicit V2-5 design deferral.
+
+## V2 backgrounds — native decor, card alpha, adapter plates (V2-3F-5)
+
+Layer C carries three background truths, all resolved by the compiler
+from renderer-neutral inputs, all projected behind editable content
+by both renderers:
+
+- **Flat ground.** `background.fill` — the palette ground, as before.
+  Themes without dressing compile byte-identical scenes to the
+  pre-decor output.
+- **Native decor.** `background.decor` — theme-owned shapes resolved
+  from `DesignSystem.background.decor` (with alpha), drawn after the
+  slide background and before every element. Dressing lives in the
+  background rather than as elements so QA geometry, semantic
+  projections, and block representation cannot mistake it for content,
+  and recompile preserves it wholesale like the fill.
+- **Plate asset.** `background.image: {src, hash}` — an opaque
+  renderer-ready reference (hash-pinned data: URI) copied verbatim
+  from the adapter's per-surface seam. Surface selection follows the
+  composition family (opening/closing dividers read title ground,
+  transitions read section ground, everything else reads content),
+  never theme names.
+
+Card tiles resolve the declared `shape.cardFill` with its alpha
+instead of the flat surface, mirroring the legacy card helper;
+table headers resolve the same color but stay opaque (data-density
+readability, and the accepted 3F-4 contract stays byte-identical).
+Element `shape` carries optional `fillAlpha`/`strokeAlpha`, projected
+as OOXML transparency and SVG fill-opacity.
+
+The raster path lives entirely outside the deterministic packages in
+`src/v2-plates.js`: theme documents load, plate templates interpolate
+against mode-resolved tokens plus DesignSystem panel geometry, and
+the existing sandboxed plate pipeline screenshots them. The compiler
+never imports it (boundary-tested); chrome contrast plans against the
+sampled plate corner per surface. Theme plates reference only
+embedded data: assets, so resolution has zero network surface, and
+hostile templates (scripts, remote/file references) fail explicitly
+before reaching Chrome.
+
+Deliberately deferred: shadow projection (declared widely, projected
+nowhere — a real channel, not a constant tweak), live frost over
+native cards (the baked panel plus flat translucent fills is the
+honest static approximation), and divider title/section grounds
+(scenes still render the single palette ground on every family).
 
 ## V2 quality measurement (V2-3A)
 

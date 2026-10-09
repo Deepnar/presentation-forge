@@ -6524,8 +6524,9 @@ recipes on `warm-humanist` and a dark plate theme):
 > lines of text sitting at the top — honest (nothing overflows, nothing
 > shrinks) but the same leftover-bottom shape TRAPS warns about. Cards
 > that size to their content belong to the full Phase 3 compiler, not the
-> slice. Plate themes render flat backgrounds in the V2 path (no Chrome
-> raster yet); plate support is V2-3 business.
+> slice. Plate themes rendered flat backgrounds in the V2 path at
+> slice time (no Chrome raster yet); plate support landed as
+> V2-3F-5, which this entry predates.
 
 ### [x] V2-1 TypeScript workspace and full contracts
 
@@ -7039,8 +7040,31 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > attachment decision has to observe the same centered-vs-full
 > geometry the carrier actually drew — otherwise the two drift
 > apart again.
-- [ ] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
-  bg, cardFill alpha dropped. Needs the raster/adapter path.
+- [~] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
+  bg, cardFill alpha dropped. Implementation pending review:
+  scene carries optional background decor/image plus shape alpha;
+  compiler resolves cardFill, native decor, and per-surface plate
+  assets with a divider surface-ink rule; `src/v2-plates.js`
+  rasterizes plates outside the deterministic packages; PPTX/SVG
+  project the same contract. Evidence: `docs/V2-3F-EVAL-2.md`
+  (35-cell scene diff, benchmark parity, rasters, OOXML reads).
+
+> **Learned.** Background fidelity loss was three independent drops,
+> not one: plate HTML had no asset seam back into the scene,
+> `cardFill` was never read and the scene could not carry alpha,
+> and normalized decor was never emitted. Decor belongs in the
+> scene *background*, not as elements — dressing-as-elements would
+> trip geometry QA, pollute semantic projections, and complicate
+> preservation; as background it is invisible to every content
+> check by construction. And translucency without the plate
+> beneath it is nearly invisible, so the alpha slice only pays off
+> together with the raster path — the two could not be sequenced
+> as separate milestones. The readability catch (dark title plates
+> vs dark palette text) was found by rasterising and looking, and
+> its fix follows the surface contract that already existed rather
+> than inventing plate-aware colors: content plates never flip
+> lightness, so dividers are the only family that reads surface
+> ink.
 - [ ] V2-3F-7 — comparison side capacity: honest floor-hits on
   real decision copy. Authoring guidance now; capacity-aware
   planning later. Not a fitter change.
