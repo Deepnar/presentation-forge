@@ -19,7 +19,10 @@ import path from "node:path";
 import { execSync } from "node:child_process";
 import { loadThemeDocument } from "../src/theme-loader.js";
 import { normalizeDesign } from "../packages/core/design.ts";
+import { surfaceForPlan } from "../packages/compiler/background.ts";
+import { resolvePlateBackgrounds, slideBackgrounds } from "../src/v2-plates.js";
 import { compileDeckDetailed, compileDeck } from "../packages/compiler/compile.js";
+import { planDeckComposition } from "../packages/compiler/composition.ts";
 import { analyzeDeck, compositionSceneProjection } from "../packages/compiler/quality.ts";
 import { semanticProjection } from "../packages/core/scene-quality.ts";
 import { renderPptx } from "../packages/renderer-pptx/render.ts";
@@ -40,28 +43,37 @@ const PNG_1X1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfF
 const PRESENTERS = ["Asha Rao", "Bruno Dias"];
 
 // Adapter-resolved chrome, mirroring the 3E-3 test seam: first slide
-// is the title surface, the rest are content surfaces.
-export function benchmarkChrome(intent, design) {
-  const bg = design.palette.bg.hex;
+// is the title surface, the rest are content surfaces (emission
+// mapping unchanged). The contrast background is the resolved plate
+// corner for the slide's planned surface when a plate replaces the
+// flat ground, else palette.bg — the ground V2 actually renders on
+// every family. Chrome policy itself is untouched.
+export function benchmarkChrome(intent, design, { backgrounds = null, plan = null } = {}) {
+  const surfaceById = new Map(
+    (plan?.slides ?? []).map((s) => [s.slideId, surfaceForPlan(s)]),
+  );
   return {
-    slides: intent.slides.map((s, i) => ({
-      slideId: s.id,
-      surface: i === 0 ? "title" : "content",
-      branding: "full",
-      banner: { src: PNG_1X1, ratio: 4 },
-      selectedCrest: { src: PNG_1X1, ratio: 0.8 },
-      primaryCrestRatio: 0.8,
-      crestOnContentSlides: true,
-      presenterOnSlides: true,
-      slideNumbers: true,
-      suppressPresenter: false,
-      presenterText: PRESENTERS[i % PRESENTERS.length],
-      index: i + 1,
-      total: intent.slides.length,
-      background: bg,
-      mutedInk: design.palette.inkMuted.hex,
-      captionFamily: design.roles.caption?.family,
-    })),
+    slides: intent.slides.map((s, i) => {
+      const surface = surfaceById.get(s.id) ?? (i === 0 ? "title" : "content");
+      return {
+        slideId: s.id,
+        surface: i === 0 ? "title" : "content",
+        branding: "full",
+        banner: { src: PNG_1X1, ratio: 4 },
+        selectedCrest: { src: PNG_1X1, ratio: 0.8 },
+        primaryCrestRatio: 0.8,
+        crestOnContentSlides: true,
+        presenterOnSlides: true,
+        slideNumbers: true,
+        suppressPresenter: false,
+        presenterText: PRESENTERS[i % PRESENTERS.length],
+        index: i + 1,
+        total: intent.slides.length,
+        background: backgrounds?.assets?.[surface]?.contrastBg ?? design.palette.bg.hex,
+        mutedInk: design.palette.inkMuted.hex,
+        captionFamily: design.roles.caption?.family,
+      };
+    }),
   };
 }
 
@@ -158,9 +170,15 @@ export async function evaluateBenchmarks({ outDir = "out/v2-3f", raster = "key",
     const intent = intents[benchId];
     for (const themeName of themes) {
       const design = normalizeDesign({ theme: await loadThemeDocument(themeName), mode: "light" });
+      // Plate assets resolve once per theme in the adapter; the
+      // compiler copies them opaquely and chrome plans contrast
+      // against the sampled corner. Native themes resolve nothing.
+      const backgrounds = await resolvePlateBackgrounds({ themeName, mode: "light", design });
+      const seam = slideBackgrounds(backgrounds);
       for (const variant of ["plain", "chromed"]) {
-        const chrome = variant === "chromed" ? benchmarkChrome(intent, design) : null;
-        const detailed = compileDeckDetailed(intent, design, chrome);
+        const { plan } = planDeckComposition(intent, design);
+        const chrome = variant === "chromed" ? benchmarkChrome(intent, design, { backgrounds, plan }) : null;
+        const detailed = compileDeckDetailed(intent, design, chrome, seam);
         const analysis = await analyzeDeck(intent, design, chrome);
         const key = `${benchId}/${themeName}/${variant}`;
         const scenes = detailed.scenes;
