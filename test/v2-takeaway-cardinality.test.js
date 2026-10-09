@@ -144,12 +144,17 @@ describe("v2-3f-1 root-cause proof on benchmarks", () => {
     }
   });
 
-  it("decision-deck floor hits survive the correction untouched", async () => {
+  it("decision-deck capacity is resolved, not merely reported", async () => {
+    // V2-3F-7 fixed what this test used to detect: capacity-aware
+    // side/support allocation seats both sides at nominal size, so
+    // the two genuine floor-hits are gone. Their history is
+    // preserved in docs/V2-3F-EVAL-1.md; the live expectation is
+    // L1-clean with complete text.
     const intents = benchmarkIntents();
     const design = await warmDesign();
     const { findings } = await analyzeDeck(intents["decision-recommendation"], design);
     const hits = findings.filter((f) => f.code === "text-fit-floor-hit");
-    assert.equal(hits.length, 2, "both genuine capacity failures still reported");
+    assert.deepEqual(hits, [], "capacity failures resolved");
   });
 
   it("surviving contract: blocks, titles, takeaways, charts, caveats intact", async () => {

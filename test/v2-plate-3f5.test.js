@@ -349,11 +349,19 @@ describe("v2-3f-5 scene integration", () => {
     assert.deepEqual(next, detached);
   });
 
-  it("decision-deck capacity failures remain reported on dressed themes", async () => {
+  it("decision-deck capacity is resolved on dressed themes", async () => {
+    // V2-3F-7 seats both decision sides at nominal size through
+    // capacity-aware allocation; the floor-hits this test used to
+    // detect are gone on every theme. History in
+    // docs/V2-3F-EVAL-1.md; live expectation is L1-clean.
     const intents = benchmarkIntents();
     const design = await designOf("warm-humanist");
     const analysis = await analyzeDeck(intents["decision-recommendation"], design);
-    assert.ok(analysis.findings.some((f) => f.code === "text-fit-floor-hit"), "honest floor-hits still reported");
+    assert.deepEqual(
+      analysis.findings.filter((f) => f.code === "text-fit-floor-hit"),
+      [],
+      "capacity failures resolved",
+    );
   });
 });
 

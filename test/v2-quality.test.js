@@ -30,12 +30,17 @@ describe("v2 quality baseline", () => {
     // typography (role/family/weight/tracking/line/transform),
     // fitted sizes, and compiler fit policy. V2-3F-3 legitimately
     // recenters sparse frameless text inside its allocated region
-    // (y/h only). The historical file stays byte-identical; this
-    // compares the V2-3D shape with the sanctioned additions
-    // stripped or scoped, proving nothing else moved: element IDs,
-    // order, kinds, text, and fitted sizes must match exactly, and
-    // any geometry delta must be a text box strictly contained in
-    // its historical box (centering), never an expansion or move of
+    // (y/h only). V2-3F-7 legitimately resizes comparison cards to
+    // measured demand (frames keep x/y/w, height follows content)
+    // and lets support boxes hug their demand below the sides. The
+    // historical file stays byte-identical; this compares the V2-3D
+    // shape with the sanctioned additions stripped or scoped,
+    // proving nothing else moved: element IDs, order, kinds, text,
+    // and fitted sizes must match exactly, and any geometry delta
+    // must be a text box strictly contained in its historical box
+    // (centering), a comparison frame resizing in place with its
+    // carrier contained, or a support box following the sides
+    // inside the content region — never an expansion or move of
     // anything else.
     const design = await warmDesign();
     const scenes = compileDeck(sampleDeckIntent(), design);
@@ -54,6 +59,10 @@ describe("v2 quality baseline", () => {
     const actual = sortKeys(scenes);
     const want = sortKeys(expected);
     assert.equal(actual.length, want.length, "same slide count");
+    const intent = sampleDeckIntent();
+    const supportRefs = new Set(
+      intent.slides.flatMap((s) => s.blocks.filter((b) => b.kind !== "text").map((b) => b.id)),
+    );
     actual.forEach((scene, i) => {
       assert.equal(scene.id, want[i].id, "same slide");
       assert.deepEqual(
@@ -61,10 +70,36 @@ describe("v2 quality baseline", () => {
         want[i].elements.map((e) => e.id),
         `${scene.id}: same element IDs in the same order`,
       );
+      const title = scene.elements.find((e) => /:title:heading$/.test(e.id));
+      const regionTop = title ? title.y + title.h + 0.15 : -Infinity;
       const byId = new Map(want[i].elements.map((e) => [e.id, e]));
+      const inside = (inner, outer) =>
+        inner.x >= outer.x - 1e-9 && inner.y >= outer.y - 1e-9 &&
+        inner.x + inner.w <= outer.x + outer.w + 1e-9 &&
+        inner.y + inner.h <= outer.y + outer.h + 1e-9;
       for (const el of scene.elements) {
         const prev = byId.get(el.id);
         if (JSON.stringify(el) === JSON.stringify(prev)) continue;
+        if (scene.recipeId === "comparison" && el.kind === "shape" && /:frame$/.test(el.id)) {
+          // Capacity-sized card: same position and width, height
+          // follows measured demand, carrier contained inside.
+          assert.equal(el.x, prev.x, `${scene.id}/${el.id}: frame never moves horizontally`);
+          assert.equal(el.y, prev.y, `${scene.id}/${el.id}: frame never moves vertically`);
+          assert.equal(el.w, prev.w, `${scene.id}/${el.id}: frame never changes width`);
+          assert.ok(el.h > 0, `${scene.id}/${el.id}: frame keeps positive height`);
+          const carrier = scene.elements.find((e) => e.id === el.id.replace(/:frame$/, ":content"));
+          assert.ok(carrier && inside(carrier, el), `${scene.id}/${el.id}: carrier contained in frame`);
+          continue;
+        }
+        if (scene.recipeId === "comparison" && el.semanticRef !== undefined && supportRefs.has(el.semanticRef)) {
+          // Support follows the sides: same x and width, inside the
+          // content region below the title.
+          assert.equal(el.x, prev.x, `${scene.id}/${el.id}: support never moves horizontally`);
+          assert.equal(el.w, prev.w, `${scene.id}/${el.id}: support never changes width`);
+          assert.ok(el.h > 0, `${scene.id}/${el.id}: support keeps positive height`);
+          assert.ok(el.y >= regionTop - 1e-9, `${scene.id}/${el.id}: support stays below the title`);
+          continue;
+        }
         assert.equal(el.kind, "text", `${scene.id}/${el.id}: only text boxes may move`);
         const { x, y, w, h, ...rest } = el;
         const { x: px, y: py, w: pw, h: ph, ...prevRest } = prev;
