@@ -7040,14 +7040,15 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > attachment decision has to observe the same centered-vs-full
 > geometry the carrier actually drew — otherwise the two drift
 > apart again.
-- [~] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
-  bg, cardFill alpha dropped. Implementation pending review:
-  scene carries optional background decor/image plus shape alpha;
-  compiler resolves cardFill, native decor, and per-surface plate
-  assets with a divider surface-ink rule; `src/v2-plates.js`
-  rasterizes plates outside the deterministic packages; PPTX/SVG
-  project the same contract. Evidence: `docs/V2-3F-EVAL-2.md`
-  (35-cell scene diff, benchmark parity, rasters, OOXML reads).
+- [x] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
+  bg, cardFill alpha dropped. Accepted head: `c67c5cc` (includes
+  the SVG/PPTX background-layer parity correction). Scene carries
+  optional background decor/image plus shape alpha; compiler
+  resolves cardFill, native decor, and per-surface plate assets
+  with a divider surface-ink rule; `src/v2-plates.js` rasterizes
+  plates outside the deterministic packages; PPTX/SVG project the
+  same contract. Evidence: `docs/V2-3F-EVAL-2.md` (35-cell scene
+  diff, benchmark parity, rasters, OOXML reads).
 
 > **Learned.** Background fidelity loss was three independent drops,
 > not one: plate HTML had no asset seam back into the scene,
@@ -7065,9 +7066,10 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > than inventing plate-aware colors: content plates never flip
 > lightness, so dividers are the only family that reads surface
 > ink.
-- [ ] V2-3F-7 — comparison side capacity: honest floor-hits on
-  real decision copy. Authoring guidance now; capacity-aware
-  planning later. Not a fitter change.
+- [~] V2-3F-7 — comparison side capacity: honest floor-hits on
+  real decision copy. Implementation pending review: capacity-aware
+  side/support allocation replaces the fixed supporting-content
+  reservation. Not a fitter change.
 - [ ] V2-3F-8 — table-cell fitting and chart-internal typography
   (carried boundary from 3E-1).
 - [ ] V2-3F-9 — no visual implemented-vs-planned channel
