@@ -6962,11 +6962,11 @@ gates, useful L2 findings, counterfactual sensitivity in the intended
 directions, theme semantic invariance, benchmark quality evidence, and
 human milestone review.
 
-This first slice is measurement-only: a reproducible benchmark
-evaluation runner, machine-readable L1/L2 and counterfactual results,
-visual contact sheets, a human-readable quality gap report, and a
-ranked improvement backlog. No compiler, schema, renderer, or
-mechanism changes.
+This first slice is measurement-only and now accepted: a reproducible
+benchmark evaluation runner, machine-readable L1/L2 and
+counterfactual results, visual contact sheets, a human-readable
+quality gap report, and a ranked improvement backlog. No compiler,
+schema, renderer, or mechanism changes.
 
 Dependency: V2-3A → V2-3B → V2-3C → V2-3D → V2-3E → V2-3F → V2-4.
 
@@ -6985,12 +6985,13 @@ away, decision needs shorter sides or capacity work.
 
 Ranked backlog (defects first, then weaknesses, then capabilities):
 
-- [ ] V2-3F-1 — headline takeaway duplicated in 9 families
+- [~] V2-3F-1 — headline takeaway duplicated in 9 families
   (comparison, data-table, metric, chart, sequence, hierarchy,
   media-led, framed-prose, escape call trailing `takeawayEls`
   unguarded; prose-list/card-grid already guard). Small fix with
   outsized effect: closes duplicate-element-id and the footer-band
-  intrusion together. Do this first.
+  intrusion together. Implementation in review; do not start the
+  next backlog item until it passes.
 - [ ] V2-3F-3 — vertical rhythm: content clumps top, dead space
   below. Composition-level distribution work, not fitter tweaks.
 - [ ] V2-3F-4 — table density: even row heights strand text;
@@ -7006,6 +7007,12 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
   (carried boundary from 3E-1).
 - [ ] V2-3F-9 — no visual implemented-vs-planned channel
   (verbal distinction only).
+
+> **Learned.** A shared emitter can be correct locally while its
+> call sites violate cardinality. Takeaway realization requires
+> both exact authored content and exactly one scene element for the
+> selected treatment. Checking only that the expected ID exists is
+> insufficient.
 
 ### [ ] V2-4 browser scene renderer
 

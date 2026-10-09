@@ -1,34 +1,35 @@
-# Handoff — V2-3F first slice in review, V2-3E accepted
+# Handoff — V2-3F-1 correction in review, rest of 3F NOT started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-3E [x] at `001edec`;
-V2-3F [~] with a first measurement slice awaiting review).
+V2-3F [~] with first measurement slice accepted and V2-3F-1
+correction awaiting review).
 
 ## Current state
 
 On `v2`, to be pushed to `origin/v2` with this handoff. This session
-is V2-3F slice 1 against verified baseline `001edec`:
-measurement-only, no compiler/schema/renderer/mechanism changes.
+implements narrow correction V2-3F-1 against `9745f5c` — nothing
+else. Architecture, schema, policy, renderers, and QA are otherwise
+unchanged.
 
-**Delivered this session:** `test/v2-benchmark-intents.js` (five
-hand-authored DeckIntents grounded in the V2-3A source packs, no
-model), `tools/v2-benchmark.mjs` (50-cell runner: plan, L1/L2, fit
-diagnostics, representation, takeaway, chart fidelity, PPTX bytes,
-SVG + LibreOffice PNGs + contact sheets into gitignored
-`out/v2-3f/`), `test/v2-benchmark-3f.test.js` (12 fast assertions),
-`docs/V2-3F-EVAL-1.md` (quality gap report with raster-backed
-observations), ranked backlog V2-3F-1…V2-3F-9 in ROADMAP.
+**Correction (this session):** nine unguarded trailing
+`takeawayEls()` calls (comparison, data-table, metric, chart,
+sequence, hierarchy, media-led, framed-prose, escape) now fire only
+for verdict/annotation, matching the established prose-list/card-grid
+pattern. Headline takeaways emit exactly once below the title;
+verdict/annotation/none paths are byte-identical to before. No new
+IDs, no geometry touched, no policy changed.
 
-**Headline results:** representation/chart/takeaway clean on all 50
-cells; structured counterfactuals 6/6 sensitive; free-text-only
-pairs correctly indifferent; theme semantics invariant 5×5. L1
-confined to one emission defect — headline takeaway duplicated in 9
-families (`duplicate-element-id`, plus consequent
-`chrome-band-overlap`) — and honest comparison-side overflow
-(`text-fit-floor-hit` with text kept whole). Verdict: materially
-better than V2-3A, not yet usable as a set. Proposed next slice:
-V2-3F-1 (guard trailing takeaway calls), the small fix with the
-largest effect.
+**Proof gathered:** all-12-family × 4-treatment cardinality matrix
+green (48 combos + planner-driven cases); new focused suite
+`test/v2-takeaway-cardinality.test.js` 17/17, verified to fail 12/17
+on the pre-fix code; benchmark harness rerun gives
+20 × text-fit-floor-hit / 0 duplicate / 0 band-overlap (was
+20 / 20 / 10 across both variants); old-vs-new scene diff shows the
+only change on 25 slides is the removal of the second
+`:takeaway:headline` copy (top copy kept); decision-deck floor hits
+intact; raster of the fixed closing slide confirms a single
+takeaway. `docs/V2-3F-EVAL-1.md` preserved untouched as history.
 
 **Still true:** deferred families untouched; free-text/compiler
 separation intact; tombstones V2-5; table-cell/chart-internal
@@ -37,18 +38,20 @@ fitting out of scope; no judge runtime exists or is proposed.
 ## Verification
 
 - `npm run typecheck` — exit 0 (see final report).
-- `test/v2-benchmark-3f.test.js` — 12/12, no LibreOffice in tests.
-- Full `npm test` — sole acceptable failure is the known
-  pre-existing `byok-budget` locale expectation.
-- Historical V2-3 baselines byte-identical (zero fixture changes;
-  evaluation adds files only).
-- Rasters actually viewed: research-defense ×5 themes, all decks ×
-  warm-humanist, plus SVG for all 50 cells.
+- `test/v2-takeaway-cardinality.test.js` — 17/17.
+- `test/v2-benchmark-3f.test.js` — 12/12 (detection test updated
+  to the fixed expectation, history preserved in EVAL-1).
+- Mechanism/preservation/quality/chrome/composition/fit/renderer/
+  boundary suites — green (see final report).
+- Full `npm test` — 1240 total / 1239 pass; sole failure is the
+  known pre-existing `byok-budget` locale expectation.
+- Historical V2-3A/3D/3E baselines byte-identical (zero fixture
+  changes).
 
 ## Continue from here
 
-1. V2-3F slice-1 review (pushed evaluation + this handoff). V2-3F
-   stays open; do NOT mark it complete.
-2. Proposed next: V2-3F-1 correction slice (duplicate headline
-   takeaway). Awaits authorization like any implementation work.
+1. V2-3F-1 review (pushed correction + this handoff). On
+   acceptance, flip the V2-3F-1 backlog item.
+2. Remaining backlog V2-3F-3…V2-3F-9 — do NOT begin until
+   authorized, one item at a time.
 3. V2-4+ — do NOT begin until authorized.
