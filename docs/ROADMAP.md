@@ -6839,7 +6839,9 @@ benchmark decks and important presentation classes.
 > must be structural (frames, accent restraint), never red/green
 > semantics, or themes cannot carry it.
 
-### [~] V2-3E — fit + scene QA + chrome emission
+### [x] V2-3E — fit + scene QA + chrome emission
+
+Accepted head: `001edec`.
 
 Purpose: integrate canonical fit/budget behavior, complete
 deterministic scene QA, and emit chrome as ordinary locked
@@ -6926,7 +6928,9 @@ scores, no L3. QA observes compilation and mutates nothing.
 > cannot prove that the takeaway is persuasive, important, or well
 > worded; those are semantic/visual evaluation questions.
 
-### [~] V2-3E-3 — chrome emission + projection (implementation in review)
+### [x] V2-3E-3 — chrome emission + projection
+
+Accepted head: `001edec`.
 
 Compiler emits canonical core chrome policy as locked
 compiler-provenance scene elements (title banner, content crest,
@@ -6946,7 +6950,7 @@ width.
 > emitted, not merely a configured asset ratio. Otherwise disabling
 > a crest can leave an invisible geometry penalty.
 
-### [ ] V2-3F — theme/plate compatibility + full quality evaluation
+### [~] V2-3F — theme/plate compatibility + full quality evaluation (first slice in review)
 
 Purpose: run the completed V2-3 compiler through representative themes
 and compatibility paths, execute the V2-3A benchmark suite against the
@@ -6958,7 +6962,50 @@ gates, useful L2 findings, counterfactual sensitivity in the intended
 directions, theme semantic invariance, benchmark quality evidence, and
 human milestone review.
 
+This first slice is measurement-only: a reproducible benchmark
+evaluation runner, machine-readable L1/L2 and counterfactual results,
+visual contact sheets, a human-readable quality gap report, and a
+ranked improvement backlog. No compiler, schema, renderer, or
+mechanism changes.
+
 Dependency: V2-3A → V2-3B → V2-3C → V2-3D → V2-3E → V2-3F → V2-4.
+
+First-slice evidence: `docs/V2-3F-EVAL-1.md` (runner
+`tools/v2-benchmark.mjs`, intents `test/v2-benchmark-intents.js`,
+assertions `test/v2-benchmark-3f.test.js`). Five hand-authored decks
+× five themes × {plain, chromed}: representation, chart fidelity,
+and takeaway realization clean on all 50 cells; structured
+counterfactuals 6/6 sensitive; free-text-only pairs correctly
+indifferent; theme semantics invariant. L1 confined to one emission
+defect (headline takeaway duplicated in 9 families, with a
+consequent footer-band intrusion) plus honest comparison-side
+overflow. Verdict: material improvement over V2-3A, not yet usable
+as a set — data-heavy closest, research/technical one small fix
+away, decision needs shorter sides or capacity work.
+
+Ranked backlog (defects first, then weaknesses, then capabilities):
+
+- [ ] V2-3F-1 — headline takeaway duplicated in 9 families
+  (comparison, data-table, metric, chart, sequence, hierarchy,
+  media-led, framed-prose, escape call trailing `takeawayEls`
+  unguarded; prose-list/card-grid already guard). Small fix with
+  outsized effect: closes duplicate-element-id and the footer-band
+  intrusion together. Do this first.
+- [ ] V2-3F-3 — vertical rhythm: content clumps top, dead space
+  below. Composition-level distribution work, not fitter tweaks.
+- [ ] V2-3F-4 — table density: even row heights strand text;
+  header indistinguishable from body.
+- [ ] V2-3F-6 — caveat detachment: caveats pin to region bottom
+  far below short content; hug content instead.
+- [ ] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
+  bg, cardFill alpha dropped. Needs the raster/adapter path.
+- [ ] V2-3F-7 — comparison side capacity: honest floor-hits on
+  real decision copy. Authoring guidance now; capacity-aware
+  planning later. Not a fitter change.
+- [ ] V2-3F-8 — table-cell fitting and chart-internal typography
+  (carried boundary from 3E-1).
+- [ ] V2-3F-9 — no visual implemented-vs-planned channel
+  (verbal distinction only).
 
 ### [ ] V2-4 browser scene renderer
 
