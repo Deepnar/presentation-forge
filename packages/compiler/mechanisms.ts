@@ -501,7 +501,9 @@ function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[]
     }
     y += h + 0.1;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -543,7 +545,9 @@ function dataTableScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
     }
     y += h + 0.1;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -580,7 +584,9 @@ function metricScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
     y += h + 0.1;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -638,7 +644,9 @@ function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     placePrimary(ctx, els, block, { x: box.x, y: ry, w: box.w, h }, takeZ);
     ry += h + 0.1;
   });
-  els.push(...takeawayEls(ctx, ry, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, ry, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -712,7 +720,9 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
       y += h + 0.1;
     });
   }
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -754,7 +764,9 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
       placePrimary(ctx, els, block, { x: cx + 0.25, y: y + 0.15, w: cw - 0.5, h: Math.max(0.2, ch - 0.3) }, takeZ);
     });
   }
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -798,7 +810,9 @@ function mediaLedScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     placePrimary(ctx, els, block, { x: textX, y: ry, w: textW, h: rh }, takeZ);
     ry += rh + 0.1;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -831,7 +845,9 @@ function framedProseScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[
     }
     y += h + 0.2;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 
@@ -850,7 +866,9 @@ function escapeScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
     y += h + 0.1;
   });
-  els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  if (ctx.comp.takeawayTreatment === "verdict" || ctx.comp.takeawayTreatment === "annotation") {
+    els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+  }
   return els;
 }
 

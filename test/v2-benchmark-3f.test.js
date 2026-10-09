@@ -102,24 +102,18 @@ describe("v2-3f benchmark matrix", () => {
     }
   });
 
-  it("the harness detects the known headline-duplication defect", async () => {
-    // BACKLOG V2-3F-1: trailing takeawayEls calls duplicate headline
-    // takeaways in unguarded families. This pins DETECTION, not the
-    // defect — the fix must make these decks L1-clean.
+  it("headline duplication is gone on every benchmark deck", async () => {
+    // V2-3F-1 fixed the defect this test used to detect (trailing
+    // takeawayEls calls duplicated headline takeaways in unguarded
+    // families). The historical failure is preserved in
+    // docs/V2-3F-EVAL-1.md; the live expectation is now L1-clean.
     const intents = benchmarkIntents();
     const design = await themeDesign("warm-humanist");
-    for (const benchId of ["research-defense", "technical-explainer"]) {
-      const { findings } = await analyzeDeck(intents[benchId], design);
-      assert.ok(
-        findings.some((f) => f.code === "duplicate-element-id"),
-        `${benchId}: harness reports the duplicated takeaway`,
-      );
-    }
-    for (const benchId of ["source-of-truth-project", "decision-recommendation", "data-heavy-analytical"]) {
+    for (const benchId of BENCHMARK_IDS) {
       const { findings } = await analyzeDeck(intents[benchId], design);
       assert.ok(
         !findings.some((f) => f.code === "duplicate-element-id"),
-        `${benchId}: no duplication`,
+        `${benchId}: no duplicated takeaway`,
       );
     }
   });
