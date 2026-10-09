@@ -7012,9 +7012,8 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > primary's actual box (as the tone rail already does) instead of
 > the full region, or sparse centered content inherits a full-height
 > rail it never earned.
-- [~] V2-3F-4 — table density: even row heights strand text;
-  header indistinguishable from body. Implementation in review;
-  do not start V2-3F-5 until it passes. Compiler resolves one
+- [x] V2-3F-4 — table density: even row heights strand text;
+  header indistinguishable from body. Accepted head: `2311160`. Compiler resolves one
   Layer-C table layout (row heights, header bold+fill, contract
   typography/padding/grid) consumed verbatim by PPTX and SVG;
   short tables compact to content, dense tables keep the region
@@ -7027,8 +7026,19 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > channel: header bold plus a theme-surface fill survives themes
 > where either alone would vanish (white-on-white surfaces, dark
 > grounds).
-- [ ] V2-3F-6 — caveat detachment: caveats pin to region bottom
-  far below short content; hug content instead.
+- [~] V2-3F-6 — caveat detachment: caveats pin to region bottom
+  far below short content; hug content instead. Implementation in
+  review; do not start V2-3F-5 until it passes. Attached caveats
+  follow centered carriers at a 0.1in gap; dense, framed, table,
+  and custom carriers keep the region-bottom band by design.
+
+> **Learned.** A reserved band is a budget, not a position: the
+> caveat reservation guarantees room, but where the band sits
+> should follow the carrier it qualifies. Cluster placement must
+> be decided before fitting (never move-then-refit), and the
+> attachment decision has to observe the same centered-vs-full
+> geometry the carrier actually drew — otherwise the two drift
+> apart again.
 - [ ] V2-3F-5 — plate backgrounds: 10/34 themes normalize to flat
   bg, cardFill alpha dropped. Needs the raster/adapter path.
 - [ ] V2-3F-7 — comparison side capacity: honest floor-hits on
