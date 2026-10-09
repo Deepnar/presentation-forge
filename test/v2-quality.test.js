@@ -28,9 +28,15 @@ describe("v2 quality baseline", () => {
   it("compiler output matches the checked-in V2-3D byte baseline", async () => {
     // V2-3E-1 legitimately extends every text element with resolved
     // typography (role/family/weight/tracking/line/transform),
-    // fitted sizes, and compiler fit policy. The historical file stays
-    // byte-identical; this compares the V2-3D shape with the 3E-1
-    // additions stripped, proving nothing else moved.
+    // fitted sizes, and compiler fit policy. V2-3F-3 legitimately
+    // recenters sparse frameless text inside its allocated region
+    // (y/h only). The historical file stays byte-identical; this
+    // compares the V2-3D shape with the sanctioned additions
+    // stripped or scoped, proving nothing else moved: element IDs,
+    // order, kinds, text, and fitted sizes must match exactly, and
+    // any geometry delta must be a text box strictly contained in
+    // its historical box (centering), never an expansion or move of
+    // anything else.
     const design = await warmDesign();
     const scenes = compileDeck(sampleDeckIntent(), design);
     const sortKeys = (value) => {
@@ -45,7 +51,29 @@ describe("v2 quality baseline", () => {
       return value;
     };
     const expected = await readJson("compiler-v2-3d-baseline.json");
-    assert.deepEqual(sortKeys(scenes), sortKeys(expected));
+    const actual = sortKeys(scenes);
+    const want = sortKeys(expected);
+    assert.equal(actual.length, want.length, "same slide count");
+    actual.forEach((scene, i) => {
+      assert.equal(scene.id, want[i].id, "same slide");
+      assert.deepEqual(
+        scene.elements.map((e) => e.id),
+        want[i].elements.map((e) => e.id),
+        `${scene.id}: same element IDs in the same order`,
+      );
+      const byId = new Map(want[i].elements.map((e) => [e.id, e]));
+      for (const el of scene.elements) {
+        const prev = byId.get(el.id);
+        if (JSON.stringify(el) === JSON.stringify(prev)) continue;
+        assert.equal(el.kind, "text", `${scene.id}/${el.id}: only text boxes may move`);
+        const { x, y, w, h, ...rest } = el;
+        const { x: px, y: py, w: pw, h: ph, ...prevRest } = prev;
+        assert.deepEqual(rest, prevRest, `${scene.id}/${el.id}: only geometry may differ`);
+        assert.ok(x === px && w === pw, `${scene.id}/${el.id}: centering never widens or shifts horizontally`);
+        assert.ok(y >= py - 1e-9 && y + h <= py + ph + 1e-9 && h <= ph,
+          `${scene.id}/${el.id}: centered box stays inside its historical box`);
+      }
+    });
   });
 
   it("quality analysis is deterministic", async () => {
