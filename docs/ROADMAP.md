@@ -7026,11 +7026,11 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > channel: header bold plus a theme-surface fill survives themes
 > where either alone would vanish (white-on-white surfaces, dark
 > grounds).
-- [~] V2-3F-6 — caveat detachment: caveats pin to region bottom
-  far below short content; hug content instead. Implementation in
-  review; do not start V2-3F-5 until it passes. Attached caveats
-  follow centered carriers at a 0.1in gap; dense, framed, table,
-  and custom carriers keep the region-bottom band by design.
+- [x] V2-3F-6 — caveat detachment: caveats pin to region bottom
+  far below short content; hug content instead. Accepted head:
+  `c61d9b3`. Attached caveats follow centered carriers at a 0.1in
+  gap; dense, framed, table, and custom carriers keep the
+  region-bottom band by design.
 
 > **Learned.** A reserved band is a budget, not a position: the
 > caveat reservation guarantees room, but where the band sits
