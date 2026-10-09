@@ -7067,9 +7067,23 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > lightness, so dividers are the only family that reads surface
 > ink.
 - [~] V2-3F-7 — comparison side capacity: honest floor-hits on
-  real decision copy. Implementation pending review: capacity-aware
-  side/support allocation replaces the fixed supporting-content
-  reservation. Not a fitter change.
+  real decision copy. Implementation pending review: sides measured
+  first at nominal demand with peer-row alignment, support shares
+  the remainder instead of the fixed 1.2in reserve; fitting
+  verifies after final geometry. Evidence: `docs/V2-3F-EVAL-3.md`
+  (50 cells L1 20 → 0, no new findings, rasters read).
+
+> **Learned.** A fixed reservation for variable content is a
+> constant deciding whether text survives: the 1.2in support
+> reserve starved 1.0in sides while a one-line callout held
+> 2.33in. Measure demand before dividing space, serve the named
+> element first (the branching-flow diamond precedent), and let
+> the fitter verify after geometry is chosen — never move-then-
+> refit, and never shrink to buy room. The 0.25in planning slack
+> is deliberately generous (trailing whitespace is honest, a
+> spurious floor-hit defeats the slice), and scarce space splits
+> proportional to need so overflow stays diagnostic, never
+> silent.
 - [ ] V2-3F-8 — table-cell fitting and chart-internal typography
   (carried boundary from 3E-1).
 - [ ] V2-3F-9 — no visual implemented-vs-planned channel

@@ -1536,6 +1536,24 @@ the SVG projection reflects the same fields. Native table cells and
 chart internals remain unfitted by this slice, recorded for later
 closure. Chrome emission and broad QA remain V2-3E-2/3E-3.
 
+## V2 comparison capacity (V2-3F-7)
+
+The comparison family measures demand before dividing its region:
+each side resolves its nominal text height at the carrier width
+(insets, cautionary-rail narrowing, and caveat bands included)
+through the fitting layer's `nominalContentHeight`, plus card
+chrome, under a card minimum; support blocks resolve measured text
+demand, real natural height for tables, or the card minimum for
+charts and images whose aspect the compiler must not probe. Sides
+are served first at demand with peer-row alignment (a row takes
+its maximum); support shares the remainder. Headline, verdict, and
+annotation reserves are unchanged, fitting runs after final
+geometry, and genuine overflow still diagnoses honestly — nothing
+shrinks below its floor, nothing is truncated or omitted. Scarce
+space splits proportional to need. Measurement never enters
+mechanisms as copied arithmetic; no free text is parsed; no new
+intent fields, families, or QA policy were added.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
