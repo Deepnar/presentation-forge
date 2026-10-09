@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, type FitStyle, type StyledStackItem } from "../core/fit.ts";
+import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, heightOf, type FitStyle, type StyledStackItem } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -49,6 +49,46 @@ export interface FitBox {
   y: number;
   w: number;
   h: number;
+}
+
+// Fraction of an allocated region below which frameless text
+// recenters instead of top-anchoring. Dense regions keep
+// byte-identical geometry: the threshold only fires on sparse ones.
+const SPARSE_CENTER_THRESHOLD = 0.5;
+// Slack absorbing measurement-heuristic mismatch so a centered box
+// still seats its content at nominal size with no new diagnostics.
+const SPARSE_CENTER_SLACK = 0.25;
+
+// Nominal content height of already-built paragraphs, measured with
+// each paragraph's largest-nominal resolved style (conservative:
+// never smaller than what the fitter sees for single-role content).
+// Measurement only — fitting still owns scale.
+function nominalContentHeight(design: DesignSystem, paras: RoleParagraph[], width: number): number {
+  let total = 0;
+  for (const p of paras) {
+    let best: { size: number; fit: FitStyle } | null = null;
+    for (const r of p.runs) {
+      const { run, fit } = resolveRunStyle(design, r.role, r);
+      if (!best || run.size > best.size) best = { size: run.size, fit };
+    }
+    if (!best) continue;
+    total += heightOf(p.runs.map((r) => r.text).join(""), width, best.fit, best.fit.line ?? 1.35);
+  }
+  return total;
+}
+
+// Center sparse frameless text vertically within its allocated
+// region BEFORE fitting, so measured typography reflects the drawn
+// box. The caller decides which content qualifies; caveat bands,
+// tone rails, and frames are laid out around the returned region by
+// the caller and never move.
+export function centerSparseBox(design: DesignSystem, region: FitBox, paras: RoleParagraph[]): FitBox {
+  const contentH = nominalContentHeight(design, paras, region.w);
+  if (!(contentH > 0) || contentH + SPARSE_CENTER_SLACK >= SPARSE_CENTER_THRESHOLD * region.h) {
+    return region;
+  }
+  const h = contentH + SPARSE_CENTER_SLACK;
+  return { ...region, y: region.y + (region.h - h) / 2, h };
 }
 
 export type FitPolicy = "wrap" | "one-line" | "stat";

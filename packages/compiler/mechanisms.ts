@@ -14,7 +14,7 @@ import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
-import { fittedTextEl, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
+import { fittedTextEl, centerSparseBox, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
 
 interface Box {
@@ -156,6 +156,7 @@ function renderBlockPrimary(
   block: ContentBlock,
   region: Box,
   z: number,
+  opts?: { centerSparse?: boolean },
 ): SceneElement {
   const design = ctx.design;
   const slideId = ctx.slide.id;
@@ -187,7 +188,14 @@ function renderBlockPrimary(
     }
     default: {
       const { paras, policy } = blockParas(block, design);
-      return textEl(id, block.id, region, paras, z, { ...fitBase, policy });
+      // Sparse centering applies only to frameless running text.
+      // Stats keep their tile geometry; images, charts, and tables
+      // never reach this branch. Measurement lives in text-fit.ts so
+      // mechanisms never do height arithmetic for layout.
+      const center = opts?.centerSparse === true &&
+        (block.kind === "text" || block.kind === "list" || block.kind === "quote" || block.kind === "callout");
+      const box = center ? centerSparseBox(design, region, paras as RoleParagraph[]) : region;
+      return textEl(id, block.id, box, paras, z, { ...fitBase, policy });
     }
   }
 }
@@ -240,7 +248,9 @@ interface MechanismCtx {
 // native branches (pass `render` to build a non-default primary, e.g.
 // the chart-to-table fallback, while keeping shared treatments).
 // Caveats own reserved space inside the region; the tone rail occupies
-// a narrow edge band outside the content box, never covering content.
+// a narrow edge band beside the primary carrier, never covering
+// content. The rail follows the carrier's actual box, so it annotates
+// centered content exactly rather than the full allocation.
 function placePrimary(
   ctx: MechanismCtx,
   els: SceneElement[],
@@ -248,6 +258,7 @@ function placePrimary(
   region: Box,
   takeZ: () => number,
   render?: (region: Box, z: number) => SceneElement,
+  opts?: { centerSparse?: boolean },
 ): SceneElement {
   const needsCaveat = block.uncertainty !== undefined;
   const caveatH = needsCaveat ? 0.35 : 0;
@@ -259,15 +270,15 @@ function placePrimary(
     w: Math.max(0.1, region.w - railW),
     h: Math.max(0.2, region.h - (needsCaveat ? caveatH + 0.05 : 0)),
   };
-  if (tone === "cautionary") {
-    els.push(shapeEl(`${ctx.slide.id}:${block.id}:tone`, block.id,
-      { x: region.x, y: region.y, w: 0.08, h: region.h }, "rect",
-      ctx.design.palette.rule.hex, takeZ()));
-  }
   const primary = render
     ? render(contentRegion, takeZ())
-    : renderBlockPrimary(ctx, block, contentRegion, takeZ());
+    : renderBlockPrimary(ctx, block, contentRegion, takeZ(), opts);
   els.push(primary);
+  if (tone === "cautionary") {
+    els.push(shapeEl(`${ctx.slide.id}:${block.id}:tone`, block.id,
+      { x: region.x, y: primary.y, w: 0.08, h: primary.h }, "rect",
+      ctx.design.palette.rule.hex, takeZ()));
+  }
   if (needsCaveat) {
     const el = caveatEl(ctx, block,
       { x: region.x, y: region.y + region.h - caveatH, w: region.w, h: caveatH },
@@ -372,7 +383,7 @@ function dividerScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const heights = distribute(Math.max(0.4, bottom - y), slide.blocks.map(() => 1), 0.4);
   slide.blocks.forEach((block, i) => {
     const h = heights[i];
-    const el = placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.1) }, takeZ);
+    const el = placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.1) }, takeZ, undefined, { centerSparse: true });
     if (el.kind === "text" && el.paragraphs) {
       for (const p of el.paragraphs) p.align = "center";
     }
@@ -398,9 +409,9 @@ function proseListScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
     if (comp.variantKey === "prose-list/evidence") {
       els.push(shapeEl(`${slide.id}:${block.id}:rule`, block.id,
         { x: box.x, y, w: 0.06, h: Math.max(0.2, h - 0.15) }, "rect", design.palette.accent.hex, takeZ()));
-      placePrimary(ctx, els, block, { x: box.x + 0.25, y, w: box.w - 0.25, h: Math.max(0.2, h - 0.15) }, takeZ);
+      placePrimary(ctx, els, block, { x: box.x + 0.25, y, w: box.w - 0.25, h: Math.max(0.2, h - 0.15) }, takeZ, undefined, { centerSparse: true });
     } else {
-      placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.15) }, takeZ);
+      placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h: Math.max(0.2, h - 0.15) }, takeZ, undefined, { centerSparse: true });
     }
     y += h;
   });
@@ -841,7 +852,7 @@ function framedProseScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[
         { x: box.x, y, w: box.w, h: 0.08 }, "rect", design.palette.accent.hex, takeZ()));
       placePrimary(ctx, els, block, { x: box.x + 0.4, y: y + 0.3, w: box.w - 0.8, h: Math.max(0.2, h - 0.5) }, takeZ);
     } else {
-      placePrimary(ctx, els, block, { x: box.x + 0.6, y, w: box.w - 1.2, h }, takeZ);
+      placePrimary(ctx, els, block, { x: box.x + 0.6, y, w: box.w - 1.2, h }, takeZ, undefined, { centerSparse: true });
     }
     y += h + 0.2;
   });
@@ -863,7 +874,7 @@ function escapeScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const heights = distribute(Math.max(0.4, bottom - y) - 0.1 * slide.blocks.length, slide.blocks.map(() => 1), 0.3);
   slide.blocks.forEach((block, i) => {
     const h = heights[i];
-    placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
+    placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ, undefined, { centerSparse: true });
     y += h + 0.1;
   });
   if (ctx.comp.takeawayTreatment === "verdict" || ctx.comp.takeawayTreatment === "annotation") {
