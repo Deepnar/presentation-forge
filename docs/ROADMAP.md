@@ -6932,7 +6932,19 @@ Compiler emits canonical core chrome policy as locked
 compiler-provenance scene elements (title banner, content crest,
 presenter, slide number) from explicit adapter-resolved
 ChromeInput; renderers project scenes only. No ChromeInput means
-byte-identical chrome-free scenes.
+byte-identical chrome-free scenes. Coverage is total: explicit
+chrome must name every slide exactly once, or planning fails
+before emission. Crest reservation follows emission, never bare
+configuration: a disabled or asset-less crest earns zero heading
+width.
+
+> **Learned.** Explicit chrome configuration must have total slide
+> coverage. Silently skipping an unconfigured slide also disables
+> the QA that would have caught missing institutional marks.
+>
+> A layout reservation must correspond to a feature actually
+> emitted, not merely a configured asset ratio. Otherwise disabling
+> a crest can leave an invisible geometry penalty.
 
 ### [ ] V2-3F — theme/plate compatibility + full quality evaluation
 

@@ -141,8 +141,60 @@ export function planSlideChrome(input: SlideChromeInput): SlideChromePlan {
     slideNumber: content.slideNumber
       ? { text: content.slideNumber.text, box: content.slideNumber.box, style: { ...content.slideNumber.style } }
       : null,
-    topRightReserve: branding === "none" ? 0 : reservationForTopRight(input.primaryCrestRatio ?? null),
+    // Reservation follows emission, never configuration alone: only
+    // an actually emitted content mark can earn heading width, so a
+    // disabled or asset-less crest leaves zero geometry penalty.
+    // Fallback-only crests draw while earning zero reservation —
+    // the preserved V2-2 asymmetry.
+    topRightReserve: content.mark.place && input.selectedCrest
+      ? reservationForTopRight(input.primaryCrestRatio ?? null)
+      : 0,
   };
+}
+
+function listedIds(ids: string[]): string {
+  return ids.map((id) => `"${id}"`).join(", ");
+}
+
+// Central coverage validation: one path for every caller. An
+// explicit DeckChromeInput must cover the deck totally and exactly —
+// a silently skipped slide would also disable the QA that catches
+// missing institutional marks. Throws identifying the bad IDs.
+export function assertChromeCoverage(slideIds: string[], inputs: SlideChromeInput[]): void {
+  const counts = new Map<string, number>();
+  for (const s of inputs ?? []) counts.set(s.slideId, (counts.get(s.slideId) ?? 0) + 1);
+  const dupes = [...counts.entries()].filter(([, n]) => n > 1).map(([id]) => id);
+  if (dupes.length) {
+    throw new Error(`DeckChromeInput has duplicate entries for slide(s): ${listedIds(dupes)}`);
+  }
+  const known = new Set(slideIds);
+  const unknown = (inputs ?? []).map((s) => s.slideId).filter((id) => !known.has(id));
+  if (unknown.length) {
+    throw new Error(`DeckChromeInput references unknown slide(s): ${listedIds([...new Set(unknown)])}`);
+  }
+  const have = new Set((inputs ?? []).map((s) => s.slideId));
+  const missing = slideIds.filter((id) => !have.has(id));
+  if (missing.length) {
+    throw new Error(`DeckChromeInput is missing entries for slide(s): ${listedIds(missing)}`);
+  }
+}
+
+// Single-slide lookup for recompileSlide, which reflows one slide
+// without deck context. Same missing/duplicate strictness as deck
+// coverage; unknown extras belong to other slides and are irrelevant
+// here — the deck-level gate already ran at compile/analyze time.
+export function requireSlideChromeInput(
+  inputs: SlideChromeInput[],
+  slideId: string,
+): SlideChromeInput {
+  const matches = (inputs ?? []).filter((s) => s.slideId === slideId);
+  if (matches.length > 1) {
+    throw new Error(`DeckChromeInput has duplicate entries for slide(s): "${slideId}"`);
+  }
+  if (!matches.length) {
+    throw new Error(`DeckChromeInput is missing entries for slide(s): "${slideId}"`);
+  }
+  return matches[0];
 }
 
 // Ephemeral compiler plan, like DeckCompositionPlan: normalized
@@ -154,6 +206,7 @@ export function planDeckChrome(
 ): DeckChromePlan | null {
   if (!chrome) return null;
   const slides = Array.isArray(intent) ? intent : intent.slides;
+  assertChromeCoverage(slides.map((s) => s.id), chrome.slides ?? []);
   const byId = new Map((chrome.slides ?? []).map((s) => [s.slideId, s]));
   const planned: SlideChromePlan[] = [];
   for (const slide of slides) {

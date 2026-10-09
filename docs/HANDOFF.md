@@ -1,4 +1,4 @@
-# Handoff — V2-3E-3 implementation in review, V2-3F NOT started
+# Handoff — V2-3E-3 correction in review, V2-3F NOT started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-3E-1 [x], V2-3E-2 [x]
@@ -7,33 +7,21 @@ at `82dcd44`; V2-3E-3 [~] awaiting review; V2-3F pending).
 ## Current state
 
 On `v2`, to be pushed to `origin/v2` with this handoff. This session
-implements V2-3E-3 against verified baseline `82dcd44` — no 3F work.
-Architecture after this slice:
+is a narrow final-contract correction against `45d5f85` — no 3F work.
+Architecture, schema, emitter, renderers, preservation, and QA are
+otherwise unchanged from the accepted 3E-3 substance.
 
-```text
-adapter-resolved ChromeInput → core chrome policy → compiler
-→ SlideScene (content + locked chrome) → browser/SVG + PPTX
-```
-
-**V2-3E-3 (this session):** new `packages/compiler/chrome.ts`
-seam (ChromeInput types, `planDeckChrome`, `emitChromeElements`
-with stable `:chrome:*` IDs, `locked: true`, compiler provenance,
-no block semanticRef); canonical core policy reused verbatim
-(effectiveBranding, planTitleBanner, planContentChrome,
-reservationForTopRight, footer .45/1 split); `CONTENT_FOOTER_RESERVE`
-canonicalized in core (exact 0.62, daylight derivation); only
-schema addition is element `valign`; titleBox narrows by the
-primary-crest reserve before fitting while divider titles stay
-full-bleed; PPTX projects element opacity→transparency,
-valign, family, and path/data-URI images natively; SVG exposes
-opacity/valign/identity; `recompileSlide` re-emits/drops chrome by
-stable ID with human/orphan/detached preservation intact;
-`analyzeDeck` consumes the same chrome plan
-(`chrome-not-realized`, `chrome-realization-mismatch`,
-`chrome-band-overlap` L1; no generic overlap rule). Legacy
-`src/chrome.js` untouched. New `test/v2-chrome-scene-3e3.test.js`
-(42 tests). No-chrome output byte-identical; all historical
-baselines untouched.
+**Correction (this session):** `planDeckChrome` validates total
+explicit coverage via one central path (`assertChromeCoverage`:
+duplicates → unknown IDs → missing IDs, each naming the bad IDs,
+failing before any scene emits); `recompileSlide` resolves its
+single slide through the same strictness
+(`requireSlideChromeInput`). Crest reservation now follows
+emission: `topRightReserve` is nonzero only when the plan actually
+emits a content mark, so disabled/asset-less crests earn zero
+heading width while fallback-only crests still draw with zero
+reserve (V2-2 asymmetry intact). No-chrome output unchanged and
+byte-identical; all historical baselines untouched.
 
 **Still true:** all prior slices; deferred families untouched;
 free-text/compiler separation tested at scene level; tombstones
@@ -43,18 +31,21 @@ benchmark judgment V2-3F.
 ## Verification
 
 - `npm run typecheck` — exit 0 (see final report).
-- `test/v2-chrome-scene-3e3.test.js` — 42/42.
-- Listed V2 suites (167) + boundary/renderer/matrix (20) — green.
-- Full `npm test` — sole acceptable failure is the known
-  pre-existing `byok-budget` locale expectation.
-- Historical V2-3 baselines byte-identical (scenes untouched
-  without ChromeInput).
-- Legacy `src/chrome.js` behavior intact (file untouched,
-  facade tests green).
+- `test/v2-chrome-scene-3e3.test.js` — 54/54, including 12 new
+  coverage/reservation tests (missing first/middle/last,
+  duplicates, unknown IDs, empty input, analyzeDeck rejection,
+  recompile strictness, minimal-branding reserve parity,
+  disabled-crest full-width + identical fit evidence, absent-asset
+  zero reserve).
+- Listed V2 suites (167) + boundary/renderer/matrix/fit (32) — green.
+- Full `npm test` — 1210 total / 1209 pass; sole failure is the
+  known pre-existing `byok-budget` locale expectation.
+- Historical V2-3 baselines byte-identical (zero fixture changes).
+- Legacy `src/chrome.js` behavior intact (file untouched).
 
 ## Continue from here
 
-1. V2-3E-3 review (pushed implementation + this handoff). On
-   acceptance, flip ROADMAP 3E-3 to [x] and close V2-3E.
+1. V2-3E-3 correction review (pushed implementation + this
+   handoff). On acceptance, flip ROADMAP 3E-3 to [x] and close V2-3E.
 2. V2-3F (theme/plate compatibility + evaluation) — do NOT begin
    until authorized.

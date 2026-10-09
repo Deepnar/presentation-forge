@@ -12,7 +12,7 @@ import { planDeckComposition } from "./composition.ts";
 import { compilePlannedSlide } from "./mechanisms.ts";
 import { fittedTextEl, refitTextEl } from "./text-fit.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
-import { planDeckChrome, chromePlanForSlide } from "./chrome.ts";
+import { planDeckChrome, planSlideChrome, requireSlideChromeInput, chromePlanForSlide } from "./chrome.ts";
 
 function box(design) {
   const m = design.grid.margins;
@@ -264,8 +264,15 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
   if (chrome && !planned) {
     throw new Error("recompileSlide with chrome requires the canonical planned path (pass planned)");
   }
+  // Single-slide chrome: same missing/duplicate strictness as deck
+  // coverage, resolved through the one central lookup. Unknown extras
+  // belong to other slides; the deck-level gate already ran at
+  // compile/analyze time.
+  const slideChromePlan = chrome && planned
+    ? planSlideChrome(requireSlideChromeInput(chrome.slides ?? [], intent.id))
+    : null;
   const fresh = planned
-    ? compilePlannedSlide(intent, planned, design, sink, chromePlanForSlide(planDeckChrome({ slides: [intent] }, chrome), intent.id))
+    ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan)
     : compileSlide(intent, design, undefined, sink);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();

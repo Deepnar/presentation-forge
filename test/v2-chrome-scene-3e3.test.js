@@ -92,7 +92,10 @@ describe("v2-3e3 no-input compatibility", () => {
 
   it("chrome plan lookup resolves per-slide decisions", async () => {
     const design = await warmDesign();
-    const intent = sampleDeckIntent();
+    const intent = {
+      id: "d", title: "D",
+      slides: [contentSlide(), { ...contentSlide(), id: "s2" }],
+    };
     const chrome = {
       slides: [
         slideChrome({ slideId: "s1", surface: "title" }),
@@ -106,6 +109,11 @@ describe("v2-3e3 no-input compatibility", () => {
     assert.equal(chromePlanForSlide(plan, "s3"), null, "slides without input resolve null");
     assert.equal(chromePlanForSlide(null, "s1"), null, "null plan resolves null");
     assert.equal(planDeckChrome(intent.slides, null), null, "no input plans nothing");
+    assert.throws(
+      () => planDeckChrome(intent.slides, { slides: [slideChrome({ slideId: "s1", surface: "title" })] }),
+      /missing entries.*"s2"/,
+      "partial coverage fails instead of skipping",
+    );
     void design;
   });
 
@@ -734,5 +742,171 @@ describe("v2-3e3 themes and purity", () => {
         assert.ok(!text.includes(name), `${f} mentions ${name}`);
       }
     }
+  });
+});
+
+describe("v2-3e3 chrome coverage validation", () => {
+  function threeSlides() {
+    return {
+      id: "d", title: "D",
+      slides: ["s1", "s2", "s3"].map((id) => ({ ...contentSlide(), id })),
+    };
+  }
+
+  function fullChrome(ids) {
+    return { slides: ids.map((slideId, i) => slideChrome({ slideId, index: i + 1, total: ids.length })) };
+  }
+
+  it("exact coverage succeeds", async () => {
+    const design = await warmDesign();
+    const intent = threeSlides();
+    const { scenes, chromePlan } = compileDeckDetailed(intent, design, fullChrome(["s1", "s2", "s3"]));
+    assert.equal(chromePlan?.slides.length, 3);
+    for (const scene of scenes) {
+      assert.deepEqual(chromeIds(scene), [
+        `${scene.id}:chrome:content-mark`,
+        `${scene.id}:chrome:presenter`,
+        `${scene.id}:chrome:slide-number`,
+      ]);
+    }
+  });
+
+  it("one missing slide throws, identifying it", async () => {
+    const design = await warmDesign();
+    const intent = threeSlides();
+    assert.throws(
+      () => compileDeckDetailed(intent, design, fullChrome(["s1", "s3"])),
+      /missing entries.*"s2"/,
+    );
+  });
+
+  it("missing first, middle, and last slides each fail", async () => {
+    const design = await warmDesign();
+    const intent = threeSlides();
+    for (const missing of ["s1", "s2", "s3"]) {
+      const ids = ["s1", "s2", "s3"].filter((id) => id !== missing);
+      assert.throws(
+        () => compileDeckDetailed(intent, design, fullChrome(ids)),
+        new RegExp(`missing entries.*"${missing}"`),
+        `missing ${missing} fails`,
+      );
+    }
+  });
+
+  it("duplicate slide entries throw, identifying the ID", async () => {
+    const design = await warmDesign();
+    const intent = threeSlides();
+    const chrome = fullChrome(["s1", "s2", "s3"]);
+    chrome.slides.push(slideChrome({ slideId: "s2", index: 2, total: 3 }));
+    assert.throws(
+      () => compileDeckDetailed(intent, design, chrome),
+      /duplicate entries.*"s2"/,
+    );
+  });
+
+  it("unknown extra slide entries throw, identifying the ID", async () => {
+    const design = await warmDesign();
+    const intent = threeSlides();
+    const chrome = fullChrome(["s1", "s2", "s3"]);
+    chrome.slides.push(slideChrome({ slideId: "sx", index: 4, total: 4 }));
+    assert.throws(
+      () => compileDeckDetailed(intent, design, chrome),
+      /unknown slide.*"sx"/,
+    );
+  });
+
+  it("empty ChromeInput for a nonempty deck fails", async () => {
+    const design = await warmDesign();
+    assert.throws(
+      () => compileDeckDetailed(threeSlides(), design, { slides: [] }),
+      /missing entries.*"s1"/,
+    );
+  });
+
+  it("no ChromeInput remains valid and chrome-free", async () => {
+    const design = await warmDesign();
+    const { scenes, chromePlan } = compileDeckDetailed(threeSlides(), design);
+    assert.equal(chromePlan, null);
+    for (const scene of scenes) {
+      assert.ok(!scene.elements.some((e) => /:chrome:/.test(e.id)));
+    }
+  });
+
+  it("analyzeDeck cannot stay clean when explicit chrome lacks a slide", async () => {
+    const design = await warmDesign();
+    await assert.rejects(
+      analyzeDeck(threeSlides(), design, fullChrome(["s1", "s2"])),
+      /missing entries.*"s3"/,
+    );
+  });
+
+  it("recompile with chrome missing this slide throws", async () => {
+    const design = await warmDesign();
+    const slide = contentSlide();
+    const intent = { id: "d", title: "D", slides: [slide] };
+    const chrome = { slides: [slideChrome({})] };
+    const { plan } = planDeckComposition(intent, design);
+    const scene = compileDeckDetailed(intent, design, chrome).scenes[0];
+    const other = { slides: [slideChrome({ slideId: "s9", index: 1, total: 1 })] };
+    assert.throws(
+      () => recompileSlide(slide, scene, design, plan.slides[0], [], other),
+      /missing entries.*"s1"/,
+    );
+  });
+});
+
+describe("v2-3e3 reservation follows emission", () => {
+  function reservedTitleWidths(design, crestOpts) {
+    const title = "A title long enough that crest reservation measurably changes its fitted box and size";
+    const slide = { id: "s1", purpose: "p", title, blocks: [{ id: "b1", kind: "text", text: "Body." }] };
+    const intent = { id: "d", title: "D", slides: [slide] };
+    const { scenes } = compileDeckDetailed(intent, design, { slides: [slideChrome(crestOpts)] });
+    const titleEl = scenes[0].elements.find((e) => e.id === "s1:title:heading");
+    return { titleEl, scenes };
+  }
+
+  it("minimal branding reserves exactly like full when the crest draws", async () => {
+    const design = await warmDesign();
+    const expected = reservationForTopRight(1.2);
+    const crest = { primaryCrestRatio: 1.2, selectedCrest: { src: PNG_1X1, ratio: 1.2 } };
+    const full = reservedTitleWidths(design, { ...crest, branding: "full" }).titleEl;
+    const minimal = reservedTitleWidths(design, { ...crest, branding: "minimal" }).titleEl;
+    const plain = compileDeckDetailed(
+      { id: "d", title: "D", slides: [{ id: "s1", purpose: "p", title: full.paragraphs[0].runs[0].text, blocks: [{ id: "b1", kind: "text", text: "Body." }] }] },
+      design,
+    ).scenes[0].elements.find((e) => e.id === "s1:title:heading");
+    assert.ok(Math.abs((plain.w - full.w) - expected) < 1e-9, "full reserve is canonical");
+    assert.ok(Math.abs((plain.w - minimal.w) - expected) < 1e-9, "minimal reserve matches full");
+  });
+
+  it("disabled crest returns to full width with identical fit evidence", async () => {
+    const design = await warmDesign();
+    const title = "A title long enough that crest reservation measurably changes its fitted box and size";
+    const slide = { id: "s1", purpose: "p", title, blocks: [{ id: "b1", kind: "text", text: "Body." }] };
+    const intent = { id: "d", title: "D", slides: [slide] };
+    const disabled = compileDeckDetailed(intent, design, {
+      slides: [slideChrome({ crestOnContentSlides: false, primaryCrestRatio: 1.2, selectedCrest: { src: PNG_1X1, ratio: 1.2 } })],
+    });
+    const plain = compileDeckDetailed(intent, design);
+    const disabledTitle = disabled.scenes[0].elements.find((e) => e.id === "s1:title:heading");
+    const plainTitle = plain.scenes[0].elements.find((e) => e.id === "s1:title:heading");
+    assert.equal(disabledTitle.w, plainTitle.w, "no unused reservation penalty");
+    assert.deepEqual(
+      disabledTitle.paragraphs.map((p) => p.runs.map((r) => r.size)),
+      plainTitle.paragraphs.map((p) => p.runs.map((r) => r.size)),
+      "identical fitted sizes",
+    );
+    assert.deepEqual(disabled.fitDiagnostics, plain.fitDiagnostics, "no artificial floor-hit from a phantom reserve");
+    assert.ok(!disabled.scenes[0].elements.some((e) => e.id === "s1:chrome:content-mark"), "no mark emitted");
+  });
+
+  it("absent crest asset reserves nothing and emits no mark", async () => {
+    const design = await warmDesign();
+    const { scenes, chromePlan } = compileDeckDetailed(
+      { id: "d", title: "D", slides: [contentSlide()] }, design,
+      { slides: [slideChrome({ primaryCrestRatio: 1.2, selectedCrest: null })] },
+    );
+    assert.ok(!scenes[0].elements.some((e) => e.id === "s1:chrome:content-mark"));
+    assert.equal(chromePlan?.slides[0]?.topRightReserve, 0);
   });
 });
