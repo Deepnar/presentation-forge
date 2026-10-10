@@ -159,6 +159,17 @@
                       "values": { "type": "array", "items": { "type": "number" } }
                     }
                   }
+                },
+                "labels": {
+                  "type": "object",
+                  "description": "Compiler-resolved chart label typography (category axis, value axis, legend). Renderers project these sizes rather than guessing; labels never shrink below them.",
+                  "required": ["family", "size", "color"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "family": { "type": "string" },
+                    "size": { "type": "number", "exclusiveMinimum": 0 },
+                    "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+                  }
                 }
               }
             },
@@ -179,6 +190,11 @@
                   "properties": {
                     "rowHeights": {
                       "type": "array",
+                      "items": { "type": "number", "exclusiveMinimum": 0 }
+                    },
+                    "colWidths": {
+                      "type": "array",
+                      "description": "Resolved column widths in inches, summing to the element width. Both renderers divide columns from these numbers so measurement and projection agree.",
                       "items": { "type": "number", "exclusiveMinimum": 0 }
                     },
                     "headerFill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },

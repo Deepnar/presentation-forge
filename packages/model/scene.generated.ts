@@ -79,6 +79,14 @@ export interface SceneElement {
       name: string;
       values: number[];
     }[];
+    /**
+     * Compiler-resolved chart label typography (category axis, value axis, legend). Renderers project these sizes rather than guessing; labels never shrink below them.
+     */
+    labels?: {
+      family: string;
+      size: number;
+      color: string;
+    };
   };
   table?: {
     rows: string[][];
@@ -88,6 +96,10 @@ export interface SceneElement {
      */
     layout?: {
       rowHeights?: number[];
+      /**
+       * Resolved column widths in inches, summing to the element width. Both renderers divide columns from these numbers so measurement and projection agree.
+       */
+      colWidths?: number[];
       headerFill?: string;
       headerColor?: string;
       headerSize?: number;
