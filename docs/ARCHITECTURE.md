@@ -1604,9 +1604,13 @@ driver. No AI, no persistence, no PPTX, no planning, no scene
 mutation in the browser: scenes deep-freeze on mount,
 selection is an id set, locked chrome never selects, and V2-5
 will bind commands to the same stable `data-el` identities.
-Known projection gaps (display-type first baseline, preview
-type scale, chart axes) are recorded in `docs/V2-4A-EVAL.md`
-with owning layers, not corrected by compiler floors.
+The shared projection converts scene points at `pt × 96/72`
+with the first baseline at box top + 0.05in PPTX margin +
+0.8em ascent (V2-4B calibration; the pre-4B fixed `+14px`
+baseline and `×1.1` scale are recorded in `docs/V2-4B-EVAL.md`).
+Known projection gaps (chart axes) are recorded in
+`docs/V2-4A-EVAL.md` with owning layers, not corrected by
+compiler floors.
 
 ## The web shell
 

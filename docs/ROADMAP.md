@@ -7173,7 +7173,7 @@ it with explicit rationale before any renderer code lands.
 Done when: the browser scene visually matches the exported PPTX for the
 golden fixtures without LibreOffice in the loop.
 
-### [~] V2-4A browser renderer foundation and read-only viewer (in review)
+### [x] V2-4A browser renderer foundation and read-only viewer (accepted at `c5b564a`)
 
 Implemented on this branch: ADR (`docs/V2-4A-RENDERER.md`,
 native inline-SVG DOM, no canvas framework), shared-projection
@@ -7189,8 +7189,13 @@ with PPTX; two projection-calibration findings scoped to
 V2-4B (F1 display-type first baseline, F2 preview type
 scale); charts structurally exact without axes (V2-4C).
 
-- [ ] V2-4B projection calibration — size-proportional first
-  baseline + true px type scale, before/after evidence.
+- [~] V2-4B projection calibration — size-proportional first
+  baseline + true px type scale, before/after evidence (in
+  review). Fix landed in `packages/editor/scene-svg.js`
+  (`pt2px`, margin+ascent anchor); 10 new contract tests, 7
+  proven to fail on the V2-4A baseline; eval
+  `docs/V2-4B-EVAL.md` + `docs/v2-4b-evidence/`; PPTX
+  reference unchanged.
 - [ ] V2-4C chart fidelity — per-kind SVG geometry
   (axes, gridlines, ticks), data-exactness tests.
 - [ ] V2-4D browser fonts — bundle the display faces themes
