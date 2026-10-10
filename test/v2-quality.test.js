@@ -80,6 +80,22 @@ describe("v2 quality baseline", () => {
       for (const el of scene.elements) {
         const prev = byId.get(el.id);
         if (JSON.stringify(el) === JSON.stringify(prev)) continue;
+        if (el.kind === "chart") {
+          // V2-3F-8 resolves chart label typography once in Layer C:
+          // the element may gain exactly the labels contract.
+          // Family/size ride this test's stripped typography channel
+          // like all resolved type, so the allowance pins the color
+          // (the full contract is pinned in test/v2-internal-3f8).
+          // Data, geometry, and everything else stay identical.
+          const { labels, ...elRest } = el.chart;
+          const { labels: prevLabels, ...prevRest } = prev.chart ?? {};
+          assert.equal(prevLabels, undefined, `${scene.id}/${el.id}: historical charts carry no labels`);
+          assert.deepEqual(elRest, prevRest, `${scene.id}/${el.id}: only the labels contract is added`);
+          assert.deepEqual(labels, {
+            color: design.palette.inkMuted.hex,
+          }, `${scene.id}/${el.id}: labels resolve muted ink`);
+          continue;
+        }
         if (scene.recipeId === "comparison" && el.kind === "shape" && /:frame$/.test(el.id)) {
           // Capacity-sized card: same position and width, height
           // follows measured demand, carrier contained inside.

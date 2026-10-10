@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, heightOf, type FitStyle, type StyledStackItem } from "../core/fit.ts";
+import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, heightOf, lineCount, measure, type FitStyle, type StyledStackItem } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -58,6 +58,68 @@ const SPARSE_CENTER_THRESHOLD = 0.5;
 // Slack absorbing measurement-heuristic mismatch so a centered box
 // still seats its content at nominal size with no new diagnostics.
 const SPARSE_CENTER_SLACK = 0.25;
+
+export interface TableCellMeasure {
+  lines: number;
+  lineH: number;
+  needH: number;
+  word: string | null;
+  wordW: number;
+}
+
+// Per-cell wrapped-line measurement for table layout planning.
+// PowerPoint breaks \n segments independently and wraps the rest,
+// so each segment is measured on its own and empty segments still
+// own their line. needH adds the caller-supplied cell padding to
+// the wrapped text height. A word wider than the column is reported
+// with its measured width, never silently broken mid-word.
+// Measurement only — row assembly and overflow diagnostics live in
+// the compiler, fitting verifies ordinary text as usual.
+export function measureTableCells(
+  design: DesignSystem,
+  rows: string[][],
+  header: boolean,
+  colWidths: number[],
+  padding: number,
+): TableCellMeasure[][] {
+  const bodySize = design.roles.body?.size ?? 13;
+  const bodyStyle = resolveRunStyle(design, "body", {}).fit;
+  // Headers render bold, so demand measures the bold advance rather
+  // than the regular one it would otherwise underestimate.
+  const headStyle = resolveRunStyle(design, "body", { weight: 700, size: bodySize }).fit;
+  return rows.map((row, ri) => {
+    const isHeader = header && ri === 0;
+    const style = isHeader ? headStyle : bodyStyle;
+    const lineH = style.size / 72 * (style.line ?? 1.35);
+    return colWidths.map((cw, ci) => {
+      const cellW = Math.max(0.1, cw - 2 * padding);
+      let lines = 0;
+      let word: string | null = null;
+      let wordW = 0;
+      for (const segment of String(row[ci] ?? "").split("\n")) {
+        lines += Math.max(1, lineCount(segment, cellW, style));
+        for (const w of segment.split(/\s+/).filter(Boolean)) {
+          const ww = measure(w, style);
+          if (ww > cellW && (word === null || w.length > word.length)) {
+            word = w;
+            wordW = ww;
+          }
+        }
+      }
+      return { lines, lineH, needH: lines * lineH + 2 * padding, word, wordW };
+    });
+  });
+}
+
+// Wrapped line count for chart legend entries at the caption
+// metrics both renderers share. Measurement only; the capacity
+// verdict belongs to the compiler.
+export function measureLegendLines(design: DesignSystem, names: string[], width: number): { lines: number; lineH: number } {
+  const { fit } = resolveRunStyle(design, "caption", {});
+  const lineH = fit.size / 72 * (fit.line ?? 1.35);
+  const lines = names.reduce((n, name) => n + Math.max(1, lineCount(name, Math.max(0.5, width), fit)), 0);
+  return { lines, lineH };
+}
 
 // Nominal content height of already-built paragraphs, measured with
 // each paragraph's largest-nominal resolved style (conservative:

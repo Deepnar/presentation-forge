@@ -14,8 +14,8 @@ import type { SlideScene, SceneElement } from "../model/scene.generated.ts";
 import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
-import { fittedTextEl, centerSparseBox, nominalContentHeight, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
-import { lineCount, measure, type FitStyle } from "../core/fit.ts";
+import { fittedTextEl, centerSparseBox, nominalContentHeight, measureTableCells, measureLegendLines, type FitDiagnostic, type FitPolicy, type RoleParagraph, type TableCellMeasure } from "./text-fit.ts";
+import { measure } from "../core/fit.ts";
 import { maxColumns, splitWidths } from "../core/table.ts";
 import { resolveRunStyle } from "./typography.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
@@ -197,40 +197,12 @@ interface TableLayout {
   gridColor: string;
 }
 
-// Per-cell capacity assessment: wrapped line count at the resolved
-// column width, the height those lines need, and the longest word
-// that cannot fit the column at any height.
-interface CellAssessment {
+// Per-cell capacity assessment, positioned by row and column.
+// Measured facts come from the fitting layer; the compiler only
+// assembles row heights and emits overflow diagnostics.
+interface CellAssessment extends TableCellMeasure {
   row: number;
   col: number;
-  lines: number;
-  lineH: number;
-  needH: number;
-  word: string | null;
-  wordW: number;
-}
-
-// Wrapped line demand of one cell. PowerPoint breaks \n segments
-// independently and wraps the rest, so each segment is measured on
-// its own and empty segments still own their line. A word wider
-// than the column is reported with its measured width, never
-// silently broken mid-word.
-function cellLines(text: string, width: number, style: FitStyle): { lines: number; word: string | null; wordW: number } {
-  const cellW = Math.max(0.1, width);
-  let lines = 0;
-  let word: string | null = null;
-  let wordW = 0;
-  for (const segment of String(text ?? "").split("\n")) {
-    lines += Math.max(1, lineCount(segment, cellW, style));
-    for (const w of segment.split(/\s+/).filter(Boolean)) {
-      const ww = measure(w, style);
-      if (ww > cellW && (word === null || w.length > word.length)) {
-        word = w;
-        wordW = ww;
-      }
-    }
-  }
-  return { lines, word, wordW };
 }
 
 // Deterministic table layout: authored rows + allocated region +
@@ -251,12 +223,6 @@ function tableLayout(
   region: Box,
 ): { height: number; layout: TableLayout; cells: CellAssessment[][]; natural: number } {
   const bodySize = roleSize(design, "body", 13);
-  const bodyStyle = resolveRunStyle(design, "body", {}).fit;
-  // Headers render bold, so demand measures the bold advance rather
-  // than the regular one it would otherwise underestimate.
-  const headStyle = resolveRunStyle(design, "body", { weight: 700, size: bodySize }).fit;
-  const bodyLineH = bodyStyle.size / 72 * (bodyStyle.line ?? 1.35);
-  const headLineH = headStyle.size / 72 * (headStyle.line ?? 1.35);
   const cols = maxColumns(rows);
   const colWidths = splitWidths(region.w, cols);
   const layout: TableLayout = {
@@ -274,15 +240,8 @@ function tableLayout(
   };
   const n = rows.length;
   if (n === 0) return { height: region.h, layout, cells: [], natural: region.h };
-  const cells = rows.map((row, ri) => {
-    const isHeader = header && ri === 0;
-    const style = isHeader ? headStyle : bodyStyle;
-    const lineH = isHeader ? headLineH : bodyLineH;
-    return colWidths.map((cw, ci) => {
-      const { lines, word, wordW } = cellLines(row[ci] ?? "", cw - 2 * TABLE_CELL_PAD, style);
-      return { row: ri, col: ci, lines, lineH, needH: lines * lineH + 2 * TABLE_CELL_PAD, word, wordW };
-    });
-  });
+  const measured = measureTableCells(design, rows, header, colWidths, TABLE_CELL_PAD);
+  const cells = measured.map((mrow, ri) => mrow.map((m, ci) => ({ row: ri, col: ci, ...m })));
   const needRows = cells.map((cs) => Math.max(...cs.map((c) => c.needH)));
   const natural = needRows.reduce((a, b) => a + b, 0);
   if (natural <= region.h) {
@@ -996,9 +955,9 @@ function assessChartCapacity(
     }
   }
   const legend = [...names, ...((kind === "pie" || kind === "doughnut") && names.length <= 1 ? cats : [])];
-  const legendLines = legend.reduce((n, name) => n + Math.max(1, lineCount(name, Math.max(0.5, region.w), fit)), 0);
-  if (legendLines * lineH > region.h) {
-    emit(`chart ${kind} legend needs ${round2(legendLines * lineH)}in in a ${round2(region.h)}in chart — shorten series names`);
+  const { lines: legendLines, lineH: legendLineH } = measureLegendLines(design, legend, region.w);
+  if (legendLines * legendLineH > region.h) {
+    emit(`chart ${kind} legend needs ${round2(legendLines * legendLineH)}in in a ${round2(region.h)}in chart — shorten series names`);
   }
 }
 
