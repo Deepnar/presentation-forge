@@ -7084,9 +7084,9 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > spurious floor-hit defeats the slice), and scarce space splits
 > proportional to need so overflow stays diagnostic, never
 > silent.
-- [~] V2-3F-8 — table-cell fitting and chart-internal typography
-  (carried boundary from 3E-1). Implementation pending review:
-  per-cell capacity evaluation with honest overflow diagnostics;
+- [x] V2-3F-8 — table-cell fitting and chart-internal typography
+  (carried boundary from 3E-1). Accepted head: `e542479`.
+  Per-cell capacity evaluation with honest overflow diagnostics;
   bounded native chart-typography contract shared by PPTX/SVG.
   Evidence: `docs/V2-3F-EVAL-4.md` (50 cells L1/L2 zero,
   stress rasters, OOXML reads).
@@ -7107,8 +7107,10 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > V2-3E-1. Squeeze keeps region discipline as the valid vessel
 > with the diagnostic as the honesty — growing past the region
 > would trade one overlap for another.
-- [ ] V2-3F-9 — no visual implemented-vs-planned channel
-  (verbal distinction only).
+- [~] V2-3F-9 — implemented-vs-planned visual differentiation.
+  Implementation pending review: block-level `status` intent
+  (`implemented`/`planned`/unspecified) with deterministic status
+  treatments emitted as native editable scene elements.
 
 > **Learned.** A shared emitter can be correct locally while its
 > call sites violate cardinality. Takeaway realization requires
