@@ -265,10 +265,19 @@ export function checkFitDiagnostics(
     const isBlock = d.semanticRef !== undefined &&
       slide !== undefined &&
       slide.blocks.some((b) => b.id === d.semanticRef);
+    const code = d.kind === "word-floor-hit" ? "text-word-floor-hit"
+      : d.kind === "table-cell-overflow" ? "table-cell-overflow"
+        : d.kind === "chart-label-overflow" ? "chart-label-overflow"
+          : "text-fit-floor-hit";
+    const message = d.kind === "table-cell-overflow"
+      ? `table element ${d.elementId} cannot seat its cells at readable size`
+      : d.kind === "chart-label-overflow"
+        ? `chart element ${d.elementId} cannot seat its labels at readable size`
+        : `text element ${d.elementId} (${d.role}) cannot fit its box at the readable floor`;
     const finding: QualityFinding = {
       layer: "L1",
-      code: d.kind === "word-floor-hit" ? "text-word-floor-hit" : "text-fit-floor-hit",
-      message: `text element ${d.elementId} (${d.role}) cannot fit its box at the readable floor`,
+      code,
+      message,
       slideId: d.slideId,
       elementIds: [d.elementId],
       ...(isBlock ? { blockIds: [d.semanticRef as string] } : {}),

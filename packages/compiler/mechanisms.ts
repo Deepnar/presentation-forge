@@ -15,6 +15,9 @@ import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { fittedTextEl, centerSparseBox, nominalContentHeight, type FitDiagnostic, type FitPolicy, type RoleParagraph } from "./text-fit.ts";
+import { lineCount, measure, type FitStyle } from "../core/fit.ts";
+import { maxColumns, splitWidths } from "../core/table.ts";
+import { resolveRunStyle } from "./typography.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
 import { cardFillOf, sceneBackground, designForSurface, type SlideBackgrounds } from "./background.ts";
 
@@ -182,6 +185,7 @@ const TABLE_CELL_PAD = 0.05;
 // SceneElement table layout field; renderers project it verbatim.
 interface TableLayout {
   rowHeights: number[];
+  colWidths: number[];
   headerFill: string;
   headerColor: string;
   headerSize: number;
@@ -193,50 +197,107 @@ interface TableLayout {
   gridColor: string;
 }
 
+// Per-cell capacity assessment: wrapped line count at the resolved
+// column width, the height those lines need, and the longest word
+// that cannot fit the column at any height.
+interface CellAssessment {
+  row: number;
+  col: number;
+  lines: number;
+  lineH: number;
+  needH: number;
+  word: string | null;
+  wordW: number;
+}
+
+// Wrapped line demand of one cell. PowerPoint breaks \n segments
+// independently and wraps the rest, so each segment is measured on
+// its own and empty segments still own their line. A word wider
+// than the column is reported with its measured width, never
+// silently broken mid-word.
+function cellLines(text: string, width: number, style: FitStyle): { lines: number; word: string | null; wordW: number } {
+  const cellW = Math.max(0.1, width);
+  let lines = 0;
+  let word: string | null = null;
+  let wordW = 0;
+  for (const segment of String(text ?? "").split("\n")) {
+    lines += Math.max(1, lineCount(segment, cellW, style));
+    for (const w of segment.split(/\s+/).filter(Boolean)) {
+      const ww = measure(w, style);
+      if (ww > cellW && (word === null || w.length > word.length)) {
+        word = w;
+        wordW = ww;
+      }
+    }
+  }
+  return { lines, word, wordW };
+}
+
 // Deterministic table layout: authored rows + allocated region +
 // DesignSystem roles/palette in, resolved Layer-C presentation out.
-// Short tables shrink to their content (compact rows at nominal body
-// metrics); dense tables keep the full region with even rows rather
-// than compressing below readability. Cell values are never read,
-// rounded, reordered, or reformatted here — only measured never;
-// per-cell capacity assessment belongs to V2-3F-8.
+// Every cell is measured at its resolved column width with its
+// header/body metrics, so row heights are true wrapped heights —
+// the shape PowerPoint's own wrapping converges to — rather than
+// one-line guesses. Short tables shrink to their content; dense
+// tables keep the full region with even rows, and the per-cell
+// assessment lets the caller diagnose genuine overflow instead of
+// silently squeezing. Cell values are never read, rounded,
+// reordered, or reformatted here — only measured, never fitted:
+// table text stays nominal and overflow diagnoses.
 function tableLayout(
   design: DesignSystem,
   rows: string[][],
   header: boolean,
   region: Box,
-): { height: number; layout: TableLayout } {
+): { height: number; layout: TableLayout; cells: CellAssessment[][]; natural: number } {
   const bodySize = roleSize(design, "body", 13);
-  const bodyLine = design.roles.body?.line ?? 1.35;
-  const family = design.roles.body?.family ?? "";
-  const bodyRowH = bodySize / 72 * bodyLine + 2 * TABLE_CELL_PAD;
-  const headerRowH = bodySize / 72 * bodyLine + 2 * TABLE_CELL_PAD;
-  const layout = {
-    rowHeights: [] as number[],
+  const bodyStyle = resolveRunStyle(design, "body", {}).fit;
+  // Headers render bold, so demand measures the bold advance rather
+  // than the regular one it would otherwise underestimate.
+  const headStyle = resolveRunStyle(design, "body", { weight: 700, size: bodySize }).fit;
+  const bodyLineH = bodyStyle.size / 72 * (bodyStyle.line ?? 1.35);
+  const headLineH = headStyle.size / 72 * (headStyle.line ?? 1.35);
+  const cols = maxColumns(rows);
+  const colWidths = splitWidths(region.w, cols);
+  const layout: TableLayout = {
+    rowHeights: [],
+    colWidths,
     headerFill: cardFillOf(design).hex,
     headerColor: design.palette.ink.hex,
     headerSize: bodySize,
     headerBold: true,
     bodyColor: design.palette.ink.hex,
     bodySize,
-    fontFamily: family,
+    fontFamily: design.roles.body?.family ?? "",
     padding: TABLE_CELL_PAD,
     gridColor: design.palette.rule.hex,
   };
   const n = rows.length;
-  if (n === 0) return { height: region.h, layout };
-  const natural = (header ? headerRowH : 0) + (n - (header ? 1 : 0)) * bodyRowH;
+  if (n === 0) return { height: region.h, layout, cells: [], natural: region.h };
+  const cells = rows.map((row, ri) => {
+    const isHeader = header && ri === 0;
+    const style = isHeader ? headStyle : bodyStyle;
+    const lineH = isHeader ? headLineH : bodyLineH;
+    return colWidths.map((cw, ci) => {
+      const { lines, word, wordW } = cellLines(row[ci] ?? "", cw - 2 * TABLE_CELL_PAD, style);
+      return { row: ri, col: ci, lines, lineH, needH: lines * lineH + 2 * TABLE_CELL_PAD, word, wordW };
+    });
+  });
+  const needRows = cells.map((cs) => Math.max(...cs.map((c) => c.needH)));
+  const natural = needRows.reduce((a, b) => a + b, 0);
   if (natural <= region.h) {
-    layout.rowHeights = rows.map((_, i) => (header && i === 0 ? headerRowH : bodyRowH));
-    return { height: Math.max(0.05, natural), layout };
+    layout.rowHeights = [...needRows];
+    return { height: Math.max(0.05, natural), layout, cells, natural };
   }
   const each = region.h / n;
   layout.rowHeights = rows.map(() => each);
   // Exact-sum enforcement: fp division must not leave the contract
   // claiming a total the element box does not have.
   layout.rowHeights[n - 1] += region.h - layout.rowHeights.reduce((a, b) => a + b, 0);
-  return { height: region.h, layout };
+  return { height: region.h, layout, cells, natural };
 }
+
+const round2 = (n: number): number => Math.round(n * 100) / 100;
 
 function tableElement(
   id: string,
@@ -246,8 +307,39 @@ function tableElement(
   header: boolean,
   z: number,
   design: DesignSystem,
+  fit: { slideId: string; sink: FitDiagnostic[] },
 ): SceneElement {
-  const { height, layout } = tableLayout(design, rows, header, box);
+  const { height, layout, cells } = tableLayout(design, rows, header, box);
+  const shortToken = (t: string): string => (t.length > 32 ? `${t.slice(0, 32)}…` : t);
+  for (const row of cells) {
+    for (const c of row) {
+      const role = c.row === 0 && header ? "header" : "body";
+      // A word wider than its column breaks mid-word in PowerPoint
+      // with no report from any fitter — every fragment fits. The
+      // finding names the token so the author can shorten it.
+      if (c.word !== null) {
+        fit.sink.push({
+          slideId: fit.slideId, elementId: id, semanticRef,
+          role,
+          kind: "table-cell-overflow",
+          message: `table cell r${c.row + 1}c${c.col + 1} token "${shortToken(c.word)}" needs ${round2(c.wordW)}in in a ${round2(Math.max(0.1, layout.colWidths[c.col] - 2 * TABLE_CELL_PAD))}in column — shorten the token`,
+        });
+        continue;
+      }
+      // Height overflow fires only when the text itself exceeds
+      // the row: padding squeeze is cosmetic (and PowerPoint
+      // reflows wrapped rows regardless), while text past the row
+      // is structural. This keeps dense-but-honest tables quiet.
+      if (c.lines * c.lineH > (layout.rowHeights[c.row] ?? 0) + 1e-9) {
+        fit.sink.push({
+          slideId: fit.slideId, elementId: id, semanticRef,
+          role,
+          kind: "table-cell-overflow",
+          message: `table cell r${c.row + 1}c${c.col + 1} needs ${round2(c.needH)}in for ${c.lines} lines, row has ${round2(layout.rowHeights[c.row] ?? 0)}in — cut cell copy`,
+        });
+      }
+    }
+  }
   return {
     id, kind: "table", x: box.x, y: box.y, w: box.w, h: height, z,
     provenance: "compiler", semanticRef,
@@ -275,7 +367,9 @@ function renderBlockPrimary(
         provenance: "compiler", semanticRef: block.id,
         image: { src: block.src ?? "", alt: block.alt ?? "" },
       };
-    case "chart":
+    case "chart": {
+      const labels = chartLabelStyle(design);
+      assessChartCapacity(design, block, region, { slideId, elementId: id, semanticRef: block.id, sink: ctx.sink });
       return {
         id, kind: "chart", x: region.x, y: region.y, w: region.w, h: region.h, z,
         provenance: "compiler", semanticRef: block.id,
@@ -283,10 +377,12 @@ function renderBlockPrimary(
           chartKind: chartKindFor(block),
           categories: [...(block.categories ?? [])],
           series: (block.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
+          labels,
         },
       };
+    }
     case "table": {
-      return tableElement(id, block.id, region, block.rows ?? [], block.header === true, z, design);
+      return tableElement(id, block.id, region, block.rows ?? [], block.header === true, z, design, { slideId, sink: ctx.sink });
     }
     default: {
       const { paras, policy } = blockParas(block, design);
@@ -755,7 +851,7 @@ function dataTableScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
       const tableRegion = { x: box.x, y, w: box.w, h: Math.max(0.2, h - capH) };
       placePrimary(ctx, els, block, tableRegion, takeZ, (region, z) => tableElement(
         primaryId(slide.id, block.id), block.id, region,
-        [header, ...rows], true, z, design,
+        [header, ...rows], true, z, design, { slideId: slide.id, sink: ctx.sink },
       ));
       if (block.unit !== undefined) {
         els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
@@ -823,6 +919,87 @@ function chartKindFor(block: ContentBlock): "bar" | "hbar" | "line" | "pie" | "d
   if (block.chartKind !== undefined) return block.chartKind;
   if (block.measure !== undefined) return MEASURE_KIND[block.measure] ?? "bar";
   return "bar";
+}
+
+// Resolved chart label typography: the caption role's family and
+// nominal size in the muted ink secondary text deserves. Labels
+// never shrink — the size below is the floor as well as the
+// nominal, so unreadable labels diagnose instead of shrinking.
+function chartLabelStyle(design: DesignSystem): { family: string; size: number; color: string } {
+  const { run } = resolveRunStyle(design, "caption", { color: design.palette.inkMuted.hex });
+  return { family: run.family, size: run.size, color: run.color };
+}
+
+const shortLabel = (t: string): string => (t.length > 40 ? `${t.slice(0, 40)}…` : t);
+
+// Bounded native chart capacity assessment. PowerPoint lays out
+// axes and legends by client rules the scene cannot see, so the
+// compiler checks what it can prove with footprint arithmetic
+// alone: no word wider than the chart itself (impossible
+// everywhere), no category word wider than its slot on cartesian
+// charts (collides at any size), no label line taller than its row
+// on hbar charts, and no legend volume larger than the chart. Full
+// sentences that merely wrap are PowerPoint's own wrapping to
+// absorb — only unbreakable words and exhausted space diagnose.
+function assessChartCapacity(
+  design: DesignSystem,
+  block: ContentBlock,
+  region: Box,
+  report: { slideId: string; elementId: string; semanticRef: string; sink: FitDiagnostic[] },
+): void {
+  const { fit } = resolveRunStyle(design, "caption", {});
+  const lineH = fit.size / 72 * (fit.line ?? 1.35);
+  const emit = (message: string): void => {
+    report.sink.push({
+      slideId: report.slideId, elementId: report.elementId, semanticRef: report.semanticRef,
+      role: "caption", kind: "chart-label-overflow", message,
+    });
+  };
+  const cats = (block.categories ?? []).map((c) => String(c ?? ""));
+  const names = (block.series ?? []).map((s) => String(s.name ?? ""));
+  const kind = chartKindFor(block);
+  const wordsOf = (t: string): string[] => t.split(/\s+/).filter(Boolean);
+  const longest = (t: string): { word: string; w: number } => {
+    let word = "";
+    let w = 0;
+    for (const cand of wordsOf(t)) {
+      const cw = measure(cand, fit);
+      if (cw > w) {
+        word = cand;
+        w = cw;
+      }
+    }
+    return { word, w };
+  };
+  const cartesian = kind === "bar" || kind === "line" || kind === "area";
+  const slotW = region.w / Math.max(1, cats.length);
+  for (const label of cats) {
+    const { word, w } = longest(label);
+    if (word === "") continue;
+    if (w > Math.max(0.1, region.w)) {
+      emit(`chart ${kind} label "${shortLabel(label)}" carries a ${round2(w)}in word in a ${round2(region.w)}in chart — shorten the label`);
+    } else if (cartesian && w > Math.max(0.1, slotW)) {
+      emit(`chart ${kind} category "${shortLabel(label)}" needs ${round2(w)}in in a ${round2(slotW)}in slot — shorten the label or widen the chart`);
+    }
+  }
+  for (const label of names) {
+    const { word, w } = longest(label);
+    if (word === "") continue;
+    if (w > Math.max(0.1, region.w)) {
+      emit(`chart ${kind} series "${shortLabel(label)}" carries a ${round2(w)}in word in a ${round2(region.w)}in chart — shorten the name`);
+    }
+  }
+  if (kind === "hbar") {
+    const slotH = region.h / Math.max(1, cats.length);
+    if (cats.length > 0 && lineH > slotH) {
+      emit(`chart hbar has ${cats.length} rows in ${round2(region.h)}in — labels need ${round2(lineH)}in each; cut categories or grow the chart`);
+    }
+  }
+  const legend = [...names, ...((kind === "pie" || kind === "doughnut") && names.length <= 1 ? cats : [])];
+  const legendLines = legend.reduce((n, name) => n + Math.max(1, lineCount(name, Math.max(0.5, region.w), fit)), 0);
+  if (legendLines * lineH > region.h) {
+    emit(`chart ${kind} legend needs ${round2(legendLines * lineH)}in in a ${round2(region.h)}in chart — shorten series names`);
+  }
 }
 
 function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {

@@ -20,7 +20,7 @@ export interface FitDiagnostic {
   elementId: string;
   semanticRef?: string;
   role: string;
-  kind: "floor-hit" | "word-floor-hit";
+  kind: "floor-hit" | "word-floor-hit" | "table-cell-overflow" | "chart-label-overflow";
   message: string;
 }
 

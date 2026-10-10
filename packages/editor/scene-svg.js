@@ -8,12 +8,48 @@
 // semantics. Point→pixel mapping (96px per inch) is preview-only:
 // V2-4 owns exact browser/PPTX visual parity.
 import { runBold, visibleText } from "../core/text-run.ts";
+import { measure } from "../core/fit.ts";
+import { maxColumns, padTableRows } from "../core/table.ts";
 
 function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 const IN = 96; // svg px per scene inch
+
+// Greedy cell-text wrap mirroring core lineCount: same word order,
+// same break rule, so the preview breaks where the compiler
+// counted. Widths arrive in SVG pixels; measure works in inches at
+// the contract size (the 1.1 preview scale applies to rendering
+// only, as with fitted text). Over-wide words keep their own line
+// and visibly overflow, exactly when the word diagnostic fires.
+function wrapCell(text, widthPx, style) {
+  const widthIn = widthPx / IN;
+  const space = measure(" ", style);
+  const out = [];
+  for (const segment of String(text ?? "").split("\n")) {
+    const words = segment.split(/\s+/).filter(Boolean);
+    if (!words.length) {
+      out.push("");
+      continue;
+    }
+    let cur = "";
+    let curW = 0;
+    for (const word of words) {
+      const ww = measure(word, style);
+      if (curW > 0 && curW + space + ww > widthIn) {
+        out.push(cur);
+        cur = word;
+        curW = ww;
+      } else {
+        curW += (curW > 0 ? space : 0) + ww;
+        cur = cur === "" ? word : `${cur} ${word}`;
+      }
+    }
+    out.push(cur);
+  }
+  return out;
+}
 
 function textSvg(el) {
   const valign = el.valign ?? "top";
@@ -85,14 +121,39 @@ function elementSvg(el) {
     case "line":
       return `<line data-el="${esc(el.id)}" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
     case "chart": {
+      // Structural preview, not a geometric one: bars keep their
+      // historical series[0] treatment (per-kind chart geometry is
+      // V2-4 territory), while category labels and the legend now
+      // project the Layer-C label contract both renderers share —
+      // same family, size, and color PowerPoint receives. Labels
+      // draw in full with no clipping, so strain stays visible and
+      // matches the capacity diagnostic instead of hiding behind it.
+      const labels = el.chart?.labels ?? {};
+      const labelSize = ((labels.size ?? 10) * 1.1).toFixed(1);
+      const labelFill = `#${labels.color ?? "5C5C59"}`;
+      const labelFamily = labels.family ? ` font-family="${esc(labels.family)}"` : "";
+      const cats = el.chart?.categories ?? [];
+      const names = (el.chart?.series ?? []).map((s) => s.name ?? "");
+      const legend = [...names, ...((el.chart?.chartKind === "pie" || el.chart?.chartKind === "doughnut") && names.length <= 1 ? cats : [])];
+      const catStrip = cats.length && el.chart?.chartKind !== "pie" && el.chart?.chartKind !== "doughnut" ? parseFloat(labelSize) * 1.25 + 6 : 0;
+      const legendStrip = legend.length ? legend.length * (parseFloat(labelSize) * 1.25) + 6 : 0;
+      const plotH = Math.max(20, h - catStrip - legendStrip);
       const vals = el.chart?.series?.[0]?.values ?? [];
       const max = Math.max(1, ...vals);
       const bw = w / Math.max(1, vals.length);
       const bars = vals.map((v, i) => {
-        const bh = (v / max) * (h - 20);
-        return `<rect x="${(x + i * bw + 2).toFixed(1)}" y="${(y + h - bh).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="#C05D4E"/>`;
+        const bh = (v / max) * (plotH - 20);
+        return `<rect x="${(x + i * bw + 2).toFixed(1)}" y="${(y + plotH - bh).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="#C05D4E"/>`;
       }).join("");
-      return `<g data-el="${esc(el.id)}">${bars}</g>`;
+      let labelsSvg = "";
+      if (catStrip > 0) {
+        const sw = w / Math.max(1, cats.length);
+        labelsSvg += cats.map((c, i) =>
+          `<text x="${(x + i * sw + sw / 2).toFixed(1)}" y="${(y + plotH + parseFloat(labelSize)).toFixed(1)}" text-anchor="middle" font-size="${labelSize}" fill="${labelFill}"${labelFamily}>${esc(c)}</text>`).join("");
+      }
+      labelsSvg += legend.map((name, i) =>
+        `<text x="${x.toFixed(1)}" y="${(y + plotH + catStrip + 6 + parseFloat(labelSize) * (i + 1) * 1.25).toFixed(1)}" font-size="${labelSize}" fill="${labelFill}"${labelFamily}>■ ${esc(name)}</text>`).join("");
+      return `<g data-el="${esc(el.id)}">${bars}${labelsSvg}</g>`;
     }
     case "table": {
       const rows = el.table?.rows ?? [];
@@ -106,12 +167,27 @@ function elementSvg(el) {
         ).join("");
         return `<g data-el="${esc(el.id)}">${cells}</g>`;
       }
-      const maxCols = Math.max(1, ...rows.map((r) => r.length));
-      const cw = w / maxCols;
+      const maxCols = maxColumns(rows);
+      const widths = layout.colWidths?.length === maxCols
+        ? layout.colWidths.map((cw) => cw * IN)
+        : Array.from({ length: maxCols }, () => w / maxCols);
+      const xs = [];
+      {
+        let cx = x;
+        for (const cw of widths) {
+          xs.push(cx);
+          cx += cw;
+        }
+      }
       const padPx = (layout.padding ?? 0.05) * 96;
       const grid = `#${layout.gridColor ?? "999999"}`;
       let cy = y;
-      const cells = rows.map((row, ri) => {
+      // Ragged rows pad with empty cells at projection time (as in
+      // PPTX); authored data is untouched. Cell text wraps with the
+      // shared measure heuristic at the contract column width, so
+      // crowded cells read crowded here exactly when the capacity
+      // diagnostic fires — never silently comfortable.
+      const cells = padTableRows(rows, maxCols).map((row, ri) => {
         const isHeader = !!el.table?.header && ri === 0;
         const rh = layout.rowHeights?.[ri] ?? h / Math.max(1, rows.length);
         const size = ((isHeader ? layout.headerSize : layout.bodySize) ?? 10) * 1.1;
@@ -119,8 +195,18 @@ function elementSvg(el) {
         const weight = isHeader && layout.headerBold !== false ? ' font-weight="bold"' : "";
         const family = layout.fontFamily ? ` font-family="${esc(layout.fontFamily)}"` : "";
         const color = isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000");
-        const out = row.map((cell, ci) =>
-          `<rect x="${(x + ci * cw).toFixed(1)}" y="${cy.toFixed(1)}" width="${cw.toFixed(1)}" height="${(rh * 96).toFixed(1)}"${fill} stroke="${grid}"/><text x="${(x + ci * cw + padPx).toFixed(1)}" y="${(cy + padPx + size).toFixed(1)}" font-size="${size.toFixed(1)}" fill="#${color}"${family}${weight}>${esc(cell)}</text>`).join("");
+        const style = {
+          family: layout.fontFamily || undefined,
+          size: (isHeader ? layout.headerSize : layout.bodySize) ?? 10,
+          weight: isHeader && layout.headerBold !== false ? 700 : 400,
+        };
+        const out = row.map((cell, ci) => {
+          const cw = widths[ci] - 2 * padPx;
+          const lines = wrapCell(String(cell ?? ""), Math.max(8, cw), style);
+          const texts = lines.map((ln, li) =>
+            `<text x="${(xs[ci] + padPx).toFixed(1)}" y="${(cy + padPx + size * (li + 1)).toFixed(1)}" font-size="${size.toFixed(1)}" fill="#${color}"${family}${weight}>${esc(ln)}</text>`).join("");
+          return `<rect x="${xs[ci].toFixed(1)}" y="${cy.toFixed(1)}" width="${widths[ci].toFixed(1)}" height="${(rh * 96).toFixed(1)}"${fill} stroke="${grid}"/>${texts}`;
+        }).join("");
         cy += rh * 96;
         return out;
       }).join("");

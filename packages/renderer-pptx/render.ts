@@ -15,6 +15,7 @@
 import PptxGenJSModule from "pptxgenjs";
 import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.generated.ts";
 import { runBold, visibleText } from "../core/text-run.ts";
+import { maxColumns, padTableRows } from "../core/table.ts";
 
 // The library's default-export typing does not expose its constructor
 // under nodenext module resolution. This narrow structural interface
@@ -166,13 +167,28 @@ function addChartElement(slide: PptxSlide, el: SceneElement): void {
   if (!c) return;
   const data = (c.series ?? []).map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
   if (!data.length) return;
+  // Label typography resolves once in Layer C and projects here
+  // verbatim; PowerPoint never guesses sizes, and labels never
+  // shrink below the contract. Legend sits right, deterministically.
+  const labels = c.labels;
   slide.addChart(
     CHART_TYPE[c.chartKind] ?? "bar",
     data,
     {
       x: el.x, y: el.y, w: el.w, h: el.h,
       barDir: c.chartKind === "hbar" ? "bar" : "col",
-      showTitle: false, showLegend: true,
+      showTitle: false, showLegend: true, legendPos: "r",
+      ...(labels ? {
+        catAxisLabelFontFace: labels.family || undefined,
+        catAxisLabelFontSize: labels.size,
+        catAxisLabelColor: labels.color,
+        valAxisLabelFontFace: labels.family || undefined,
+        valAxisLabelFontSize: labels.size,
+        valAxisLabelColor: labels.color,
+        legendFontFace: labels.family || undefined,
+        legendFontSize: labels.size,
+        legendColor: labels.color,
+      } : {}),
     },
   );
 }
@@ -183,28 +199,41 @@ function addTableElement(slide: PptxSlide, el: SceneElement): void {
   if (!rows.length) return;
   const layout = table?.layout;
   if (!layout) {
-    // Pre-contract scenes keep their historical rendering exactly.
-    const legacy = rows.map((row) =>
+    // Pre-contract scenes keep their historical rendering exactly,
+    // except ragged rows pad with empty cells: pptxgenjs paints
+    // absent cells solid green, which is never what the author
+    // wrote. Padding is projection-only; scene data is untouched.
+    const cols = maxColumns(rows);
+    const legacy = padTableRows(rows, cols).map((row) =>
       row.map((cell) => ({ text: cell, options: { fontSize: 10 } })),
     );
     slide.addTable(legacy, { x: el.x, y: el.y, w: el.w, h: el.h, border: { pt: 0.5, color: "D8D8D2" } });
     return;
   }
-  const body = rows.map((row, ri) => {
+  // Column widths resolve once in Layer C; ragged rows pad with
+  // empty cells carrying the row's own styling so the grid stays
+  // complete without touching authored data. Cells anchor top like
+  // the SVG projection; full text (including \n breaks) always
+  // rides along — PowerPoint wraps natively and the compiler has
+  // already diagnosed anything that cannot fit.
+  const cols = maxColumns(rows);
+  const colW = layout.colWidths?.length === cols ? layout.colWidths : undefined;
+  const padded = padTableRows(rows, cols);
+  const body = padded.map((row, ri) => {
     const isHeader = !!table?.header && ri === 0;
-    return row.map((cell) => ({
-      text: cell,
-      options: {
-        fontSize: isHeader ? (layout.headerSize ?? 10) : (layout.bodySize ?? 10),
-        ...(layout.fontFamily ? { fontFace: layout.fontFamily } : {}),
-        color: isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000"),
-        bold: isHeader ? (layout.headerBold ?? true) : false,
-        ...(isHeader && layout.headerFill ? { fill: { color: layout.headerFill } } : {}),
-      },
-    }));
+    const style = {
+      fontSize: isHeader ? (layout.headerSize ?? 10) : (layout.bodySize ?? 10),
+      ...(layout.fontFamily ? { fontFace: layout.fontFamily } : {}),
+      color: isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000"),
+      bold: isHeader ? (layout.headerBold ?? true) : false,
+      valign: "top" as const,
+      ...(isHeader && layout.headerFill ? { fill: { color: layout.headerFill } } : {}),
+    };
+    return row.map((cell) => ({ text: cell, options: style }));
   });
   slide.addTable(body, {
     x: el.x, y: el.y, w: el.w, h: el.h,
+    ...(colW ? { colW } : {}),
     ...(layout.rowHeights?.length ? { rowH: layout.rowHeights } : {}),
     border: { pt: 0.5, color: layout.gridColor ?? "D8D8D2" },
     ...(layout.padding !== undefined ? { margin: layout.padding } : {}),
