@@ -1,0 +1,862 @@
+{
+ "name": "source-of-truth-warm-humanist-plain",
+ "theme": "warm-humanist",
+ "variant": "plain",
+ "scenes": [
+  {
+   "id": "st-open",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "st-open:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 2.02,
+     "w": 11.933000000000002,
+     "h": 1.4,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Forge presentation compiler",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-open:st-open-b1:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 4.660069444444444,
+     "w": 11.933000000000002,
+     "h": 0.5298611111111111,
+     "z": 20,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Semantic intent in, editable slides out",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-open-b1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "divider"
+  },
+  {
+   "id": "st-built",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "st-built:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Shipped this term",
+         "size": 30,
+         "color": "2D2D2A",
+         "role": "heading",
+         "family": "Merriweather",
+         "weight": 700,
+         "tracking": -0.3,
+         "line": 1.18,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-built:st-built-b1:status-mark",
+     "kind": "shape",
+     "x": 0.95,
+     "y": 1.86,
+     "w": 0.12,
+     "h": 0.12,
+     "z": 30,
+     "provenance": "compiler",
+     "semanticRef": "st-built-b1",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    },
+    {
+     "id": "st-built:st-built-b1:status",
+     "kind": "text",
+     "x": 1.19,
+     "y": 1.77,
+     "w": 11.443000000000003,
+     "h": 0.3,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Implemented",
+         "size": 10,
+         "color": "2D2D2A",
+         "role": "eyebrow",
+         "family": "Inter",
+         "weight": 700,
+         "tracking": 1.2,
+         "line": 1.2,
+         "transform": "upper"
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-built-b1"
+    },
+    {
+     "id": "st-built:st-built-b1:rule",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 3.165277777777778,
+     "w": 0.06,
+     "h": 1.3694444444444445,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "st-built-b1",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    },
+    {
+     "id": "st-built:st-built-b1:content",
+     "kind": "text",
+     "x": 0.95,
+     "y": 3.165277777777778,
+     "w": 11.683000000000002,
+     "h": 1.3694444444444445,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Six-recipe intent-to-scene compiler",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Byte-identical deterministic recompiles",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Customized geometry preserved on recompile",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Detached slides stay authoritative",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-built-b1"
+    },
+    {
+     "id": "st-built:takeaway:annotation",
+     "kind": "text",
+     "x": 0.7,
+     "y": 5.83,
+     "w": 11.933000000000002,
+     "h": 0.5,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "The pipeline runs end to end today",
+         "size": 10,
+         "color": "5C5C59",
+         "role": "caption",
+         "family": "Inter",
+         "weight": 500,
+         "tracking": 0.2,
+         "line": 1.35,
+         "italic": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "prose-list"
+  },
+  {
+   "id": "st-measured",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "st-measured:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Measured, not claimed",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-measured:st-measured-s1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 7.755333333333334,
+     "h": 2.5080000000000005,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "st-measured-s1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "st-measured:st-measured-s1:status-mark",
+     "kind": "shape",
+     "x": 1,
+     "y": 2.06,
+     "w": 0.12,
+     "h": 0.12,
+     "z": 30,
+     "provenance": "compiler",
+     "semanticRef": "st-measured-s1",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    },
+    {
+     "id": "st-measured:st-measured-s1:status",
+     "kind": "text",
+     "x": 1.2400000000000002,
+     "y": 1.97,
+     "w": 6.915333333333334,
+     "h": 0.3,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Implemented",
+         "size": 10,
+         "color": "2D2D2A",
+         "role": "eyebrow",
+         "family": "Inter",
+         "weight": 700,
+         "tracking": 1.2,
+         "line": 1.2,
+         "transform": "upper"
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-measured-s1"
+    },
+    {
+     "id": "st-measured:st-measured-s1:content",
+     "kind": "text",
+     "x": 1,
+     "y": 2.32,
+     "w": 7.155333333333334,
+     "h": 1.7580000000000005,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "26/26",
+         "size": 54,
+         "color": "2D2D2A",
+         "role": "stat",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -1,
+         "line": 1,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "V2 contract tests green",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "stat",
+     "semanticRef": "st-measured-s1"
+    },
+    {
+     "id": "st-measured:st-measured-s2:frame",
+     "kind": "shape",
+     "x": 8.755333333333333,
+     "y": 1.77,
+     "w": 3.877666666666667,
+     "h": 2.5080000000000005,
+     "z": 60,
+     "provenance": "compiler",
+     "semanticRef": "st-measured-s2",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "st-measured:st-measured-s2:status-mark",
+     "kind": "shape",
+     "x": 9.055333333333333,
+     "y": 2.06,
+     "w": 0.12,
+     "h": 0.12,
+     "z": 70,
+     "provenance": "compiler",
+     "semanticRef": "st-measured-s2",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    },
+    {
+     "id": "st-measured:st-measured-s2:status",
+     "kind": "text",
+     "x": 9.295333333333332,
+     "y": 1.97,
+     "w": 3.0376666666666665,
+     "h": 0.3,
+     "z": 80,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Implemented",
+         "size": 10,
+         "color": "2D2D2A",
+         "role": "eyebrow",
+         "family": "Inter",
+         "weight": 700,
+         "tracking": 1.2,
+         "line": 1.2,
+         "transform": "upper"
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-measured-s2"
+    },
+    {
+     "id": "st-measured:st-measured-s2:content",
+     "kind": "text",
+     "x": 9.055333333333333,
+     "y": 2.32,
+     "w": 3.2776666666666667,
+     "h": 1.7580000000000005,
+     "z": 90,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "877/878",
+         "size": 42.7,
+         "color": "2D2D2A",
+         "role": "stat",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -1,
+         "line": 1,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "full suite, one pre-existing locale failure",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "stat",
+     "semanticRef": "st-measured-s2"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "metric"
+  },
+  {
+   "id": "st-planned",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "st-planned:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Planned, not shipped",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-planned:takeaway:headline",
+     "kind": "text",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 0.7,
+     "z": 20,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "The roadmap is a promise, not a result",
+         "size": 15,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-planned:st-planned-b1:status-mark",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 2.5599999999999996,
+     "w": 0.12,
+     "h": 0.12,
+     "z": 30,
+     "provenance": "compiler",
+     "semanticRef": "st-planned-b1",
+     "shape": {
+      "form": "rect",
+      "fill": "FFFFFF",
+      "fillAlpha": 0,
+      "stroke": "2D2D2A",
+      "strokeWidth": 1
+     }
+    },
+    {
+     "id": "st-planned:st-planned-b1:status",
+     "kind": "text",
+     "x": 0.94,
+     "y": 2.4699999999999998,
+     "w": 11.693000000000003,
+     "h": 0.3,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Planned",
+         "size": 10,
+         "color": "2D2D2A",
+         "role": "eyebrow",
+         "family": "Inter",
+         "weight": 700,
+         "tracking": 1.2,
+         "line": 1.2,
+         "transform": "upper"
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-planned-b1"
+    },
+    {
+     "id": "st-planned:st-planned-b1:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 3.7552083333333335,
+     "w": 11.933000000000002,
+     "h": 1.0895833333333333,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Full recipe families",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Agent runtime",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Browser editor beyond demo",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-planned-b1"
+    },
+    {
+     "id": "st-planned:st-planned-b1:caveat",
+     "kind": "text",
+     "x": 0.7,
+     "y": 4.944791666666666,
+     "w": 11.933000000000002,
+     "h": 0.35,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "QUALIFIED",
+         "size": 10,
+         "color": "5C5C59",
+         "role": "caption",
+         "family": "Inter",
+         "weight": 500,
+         "tracking": 0.2,
+         "line": 1.35,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-planned-b1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "prose-list"
+  },
+  {
+   "id": "st-limit",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "st-limit:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Known rough edge",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "st-limit:st-limit-b1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 4.36,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "st-limit-b1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "st-limit:st-limit-b1:content",
+     "kind": "text",
+     "x": 1.2200000000000002,
+     "y": 1.97,
+     "w": 11.013000000000002,
+     "h": 3.9600000000000004,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Cards",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Process and comparison cards span the full content height.",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "st-limit-b1"
+    },
+    {
+     "id": "st-limit:st-limit-b1:tone",
+     "kind": "shape",
+     "x": 1.1,
+     "y": 1.97,
+     "w": 0.08,
+     "h": 3.9600000000000004,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "st-limit-b1",
+     "shape": {
+      "form": "rect",
+      "fill": "D8D8D2"
+     }
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "framed-prose"
+  }
+ ]
+}

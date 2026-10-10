@@ -1,0 +1,556 @@
+{
+ "name": "decision-warm-humanist-plain",
+ "theme": "warm-humanist",
+ "variant": "plain",
+ "scenes": [
+  {
+   "id": "dr-open",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "dr-open:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 2.02,
+     "w": 11.933000000000002,
+     "h": 1.4,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Which chemistry gets the pilot",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "dr-open:dr-open-b1:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 4.660069444444444,
+     "w": 11.933000000000002,
+     "h": 0.5298611111111111,
+     "z": 20,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Rate against certainty, cost against risk",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-open-b1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "divider"
+  },
+  {
+   "id": "dr-compare",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "dr-compare:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Sulfide vs oxide",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "dr-compare:dr-compare-s:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 5.766500000000001,
+     "h": 1.4895833333333335,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "dr-compare-s",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "dr-compare:dr-compare-s:content",
+     "kind": "text",
+     "x": 1,
+     "y": 1.97,
+     "w": 5.166500000000001,
+     "h": 1.0895833333333336,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Sulfide",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "12.5 mS/cm; moisture-sensitive handling adds 15% facility cost; 200-cycle data only",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-compare-s"
+    },
+    {
+     "id": "dr-compare:dr-compare-o:frame",
+     "kind": "shape",
+     "x": 6.866500000000001,
+     "y": 1.77,
+     "w": 5.766500000000001,
+     "h": 1.4895833333333335,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "dr-compare-o",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "dr-compare:dr-compare-o:content",
+     "kind": "text",
+     "x": 7.166500000000001,
+     "y": 1.97,
+     "w": 5.166500000000001,
+     "h": 1.0895833333333336,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Oxide",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "1.2 mS/cm; air-stable handling; 2000-cycle data",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-compare-o"
+    },
+    {
+     "id": "dr-compare:dr-compare-v:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 3.6595833333333334,
+     "w": 11.933000000000002,
+     "h": 0.5298611111111111,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Sulfide pilots; oxide stays the fallback",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-compare-v"
+    },
+    {
+     "id": "dr-compare:takeaway:verdict",
+     "kind": "text",
+     "x": 0.7,
+     "y": 5.53,
+     "w": 11.933000000000002,
+     "h": 0.8,
+     "z": 70,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Sulfide pilots, oxide waits in reserve",
+         "size": 13,
+         "color": "C05D4E",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "comparison"
+  },
+  {
+   "id": "dr-caveat",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "dr-caveat:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "If moisture control misses budget",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "dr-caveat:dr-caveat-b1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 4.36,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "dr-caveat-b1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "dr-caveat:dr-caveat-b1:content",
+     "kind": "text",
+     "x": 1.1,
+     "y": 1.97,
+     "w": 11.133000000000001,
+     "h": 3.5600000000000005,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Fallback trigger",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Oxide takes the pilot if the moisture-control line exceeds budget.",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-caveat-b1"
+    },
+    {
+     "id": "dr-caveat:dr-caveat-b1:caveat",
+     "kind": "text",
+     "x": 1.1,
+     "y": 5.580000000000001,
+     "w": 11.133000000000001,
+     "h": 0.35,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "QUALIFIED",
+         "size": 10,
+         "color": "5C5C59",
+         "role": "caption",
+         "family": "Inter",
+         "weight": 500,
+         "tracking": 0.2,
+         "line": 1.35,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-caveat-b1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "framed-prose"
+  },
+  {
+   "id": "dr-close",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "dr-close:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Recommendation",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "dr-close:dr-close-b1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 3.7600000000000002,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "dr-close-b1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "dr-close:dr-close-b1:rule",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 0.08,
+     "z": 30,
+     "provenance": "compiler",
+     "semanticRef": "dr-close-b1",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    },
+    {
+     "id": "dr-close:dr-close-b1:content",
+     "kind": "text",
+     "x": 1.1,
+     "y": 2.07,
+     "w": 11.133000000000001,
+     "h": 3.2600000000000002,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Fund the sulfide pilot with the oxide fallback written into the plan.",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "dr-close-b1"
+    },
+    {
+     "id": "dr-close:takeaway:verdict",
+     "kind": "text",
+     "x": 0.7,
+     "y": 5.53,
+     "w": 11.933000000000002,
+     "h": 0.8,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "A recommendation that survives its own caveats",
+         "size": 13,
+         "color": "C05D4E",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "framed-prose"
+  }
+ ]
+}

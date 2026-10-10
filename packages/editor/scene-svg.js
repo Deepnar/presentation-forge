@@ -51,7 +51,7 @@ function wrapCell(text, widthPx, style) {
   return out;
 }
 
-function textSvg(el) {
+function textSvg(el, opts = {}) {
   const valign = el.valign ?? "top";
   const chunks = [];
   for (const p of el.paragraphs ?? []) {
@@ -67,12 +67,27 @@ function textSvg(el) {
     else if (first.weight != null) attrs.push(` font-weight="${first.weight}"`);
     if (first.italic) attrs.push(' font-style="italic"');
     if (first.tracking) attrs.push(` letter-spacing="${((first.tracking * 96) / 72).toFixed(2)}"`);
+    // Interactive viewers need wrapped lines: split long chunks at
+    // the contract width with the same heuristic the compiler
+    // counted, so breaks match intent. The default string path is
+    // unchanged (one line per newline chunk). Bullet prefixes lead
+    // the first wrapped line only.
+    const wrapStyle = {
+      family: first.family || undefined,
+      size: first.size ?? 13,
+      weight: bold ? 700 : (first.weight ?? 400),
+    };
     for (const chunk of words.split("\n")) {
-      const prefix = p.bullet ? "• " : "";
-      chunks.push({
-        tx, anchor, size, attrs, text: prefix + chunk,
-        color: first.color ?? "111111",
-        advance: size * (first.line ?? 1.35),
+      const lines = opts.wrapText
+        ? wrapCell(chunk, Math.max(8, el.w * IN - 8), wrapStyle)
+        : [chunk];
+      lines.forEach((ln, li) => {
+        const prefix = p.bullet && li === 0 ? "• " : "";
+        chunks.push({
+          tx, anchor, size, attrs, text: prefix + ln,
+          color: first.color ?? "111111",
+          advance: size * (first.line ?? 1.35),
+        });
       });
     }
   }
@@ -94,17 +109,25 @@ function textSvg(el) {
     return s;
   });
   const opacity = el.opacity !== undefined && el.opacity < 1 ? ` opacity="${el.opacity}"` : "";
-  return `<g data-el="${esc(el.id)}"${opacity}>${lines.join("")}</g>`;
+  return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}${opacity}>${lines.join("")}</g>`;
 }
 
-function elementSvg(el) {
+function lockedAttr(el) {
+  return el.locked ? ' data-locked="true"' : "";
+}
+
+function refAttr(el) {
+  return el.semanticRef !== undefined ? ` data-semantic-ref="${esc(el.semanticRef)}"` : "";
+}
+
+function elementSvg(el, opts = {}) {
   const x = el.x * IN;
   const y = el.y * IN;
   const w = el.w * IN;
   const h = el.h * IN;
   switch (el.kind) {
     case "text":
-      return textSvg(el);
+      return textSvg(el, opts);
     case "shape": {
       const fill = `#${el.shape?.fill ?? "FFFFFF"}`;
       const fillOp = el.shape?.fillAlpha !== undefined && el.shape.fillAlpha < 1
@@ -118,15 +141,23 @@ function elementSvg(el) {
         ? ` stroke-opacity="${el.shape.strokeAlpha}"`
         : "";
       if (el.shape?.form === "ellipse") {
-        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
+        return `<ellipse data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
       }
       const rx = el.shape?.form === "roundRect" ? 10 : 0;
-      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
+      return `<rect data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
     }
-    case "image":
-      return `<g data-el="${esc(el.id)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
+    case "image": {
+      const src = el.image?.src ?? "";
+      // Embedded and remote images project; anything else (empty,
+      // local paths a browser cannot resolve) keeps the historical
+      // gray seat so missing assets read as missing, never broken.
+      if (/^(data:|https?:)/i.test(src)) {
+        return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><image x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="xMidYMid slice" href="${esc(src)}"><title>${esc(el.image?.alt || "image")}</title></image></g>`;
+      }
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
+    }
     case "line":
-      return `<line data-el="${esc(el.id)}" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
+      return `<line data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
     case "chart": {
       // Structural preview, not a geometric one: bars keep their
       // historical series[0] treatment (per-kind chart geometry is
@@ -160,7 +191,7 @@ function elementSvg(el) {
       }
       labelsSvg += legend.map((name, i) =>
         `<text x="${x.toFixed(1)}" y="${(y + plotH + catStrip + 6 + parseFloat(labelSize) * (i + 1) * 1.25).toFixed(1)}" font-size="${labelSize}" fill="${labelFill}"${labelFamily}>■ ${esc(name)}</text>`).join("");
-      return `<g data-el="${esc(el.id)}">${bars}${labelsSvg}</g>`;
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${bars}${labelsSvg}</g>`;
     }
     case "table": {
       const rows = el.table?.rows ?? [];
@@ -172,7 +203,7 @@ function elementSvg(el) {
         const cells = rows.map((row, ri) =>
           row.map((cell, ci) => `<rect x="${(x + ci * cw).toFixed(1)}" y="${(y + ri * rh).toFixed(1)}" width="${cw.toFixed(1)}" height="${rh.toFixed(1)}" fill="none" stroke="#999"/><text x="${(x + ci * cw + 4).toFixed(1)}" y="${(y + ri * rh + 14).toFixed(1)}" font-size="12">${esc(cell)}</text>`).join(""),
         ).join("");
-        return `<g data-el="${esc(el.id)}">${cells}</g>`;
+        return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${cells}</g>`;
       }
       const maxCols = maxColumns(rows);
       const widths = layout.colWidths?.length === maxCols
@@ -217,10 +248,10 @@ function elementSvg(el) {
         cy += rh * 96;
         return out;
       }).join("");
-      return `<g data-el="${esc(el.id)}">${cells}</g>`;
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${cells}</g>`;
     }
     case "group":
-      return `<g data-el="${esc(el.id)}">${(el.group?.children ?? []).map((c) => elementSvg({ ...c, x: c.x + el.x, y: c.y + el.y })).join("")}</g>`;
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${(el.group?.children ?? []).map((c) => elementSvg({ ...c, x: c.x + el.x, y: c.y + el.y }, opts)).join("")}</g>`;
     default:
       return "";
   }
@@ -254,7 +285,7 @@ function backgroundSvg(scene) {
   return parts.join("");
 }
 
-export function sceneToSvg(scene) {
-  const els = [...scene.elements].sort((a, b) => a.z - b.z).map(elementSvg).join("");
+export function sceneToSvg(scene, opts = {}) {
+  const els = [...scene.elements].sort((a, b) => a.z - b.z).map((el) => elementSvg(el, opts)).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}">${backgroundSvg(scene)}${els}</svg>`;
 }

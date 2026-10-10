@@ -1,0 +1,2037 @@
+{
+ "name": "mech-warm-humanist-plain",
+ "theme": "warm-humanist",
+ "variant": "plain",
+ "scenes": [
+  {
+   "id": "m-divider",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-divider:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 2.02,
+     "w": 11.933000000000002,
+     "h": 1.4,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Opening",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-divider:d1:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 4.660069444444444,
+     "w": 11.933000000000002,
+     "h": 0.5298611111111111,
+     "z": 20,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "A talk about cells",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "center"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "d1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "divider"
+  },
+  {
+   "id": "m-prose",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-prose:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Plain list",
+         "size": 30,
+         "color": "2D2D2A",
+         "role": "heading",
+         "family": "Merriweather",
+         "weight": 700,
+         "tracking": -0.3,
+         "line": 1.18,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-prose:p1:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 3.290277777777778,
+     "w": 11.933000000000002,
+     "h": 1.3694444444444445,
+     "z": 20,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Alpha point",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Beta point",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Gamma point",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Delta point",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "p1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "prose-list"
+  },
+  {
+   "id": "m-cards",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-cards:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Peers",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-cards:c1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 5.8165000000000004,
+     "h": 1.32,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "c1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cards:c1:content",
+     "kind": "text",
+     "x": 0.95,
+     "y": 1.92,
+     "w": 5.3165000000000004,
+     "h": 1.02,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "One",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "First",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "c1"
+    },
+    {
+     "id": "m-cards:c2:frame",
+     "kind": "shape",
+     "x": 6.8165000000000004,
+     "y": 1.77,
+     "w": 5.8165000000000004,
+     "h": 1.32,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "c2",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cards:c2:content",
+     "kind": "text",
+     "x": 7.0665000000000004,
+     "y": 1.92,
+     "w": 5.3165000000000004,
+     "h": 1.02,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Two",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Second",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "c2"
+    },
+    {
+     "id": "m-cards:c3:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 3.39,
+     "w": 5.8165000000000004,
+     "h": 1.32,
+     "z": 60,
+     "provenance": "compiler",
+     "semanticRef": "c3",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cards:c3:content",
+     "kind": "text",
+     "x": 0.95,
+     "y": 3.54,
+     "w": 5.3165000000000004,
+     "h": 1.02,
+     "z": 70,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Three",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Third",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "c3"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "card-grid"
+  },
+  {
+   "id": "m-compare",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-compare:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Sides",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-compare:l:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 5.766500000000001,
+     "h": 1.2097222222222221,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "l",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-compare:l:content",
+     "kind": "text",
+     "x": 1,
+     "y": 1.97,
+     "w": 5.166500000000001,
+     "h": 0.8097222222222221,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Left",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Mature",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "l"
+    },
+    {
+     "id": "m-compare:r:frame",
+     "kind": "shape",
+     "x": 6.866500000000001,
+     "y": 1.77,
+     "w": 5.766500000000001,
+     "h": 1.2097222222222221,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "r",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-compare:r:content",
+     "kind": "text",
+     "x": 7.166500000000001,
+     "y": 1.97,
+     "w": 5.166500000000001,
+     "h": 0.8097222222222221,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Right",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Novel",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "r"
+    },
+    {
+     "id": "m-compare:v:content",
+     "kind": "text",
+     "x": 0.7,
+     "y": 3.379722222222222,
+     "w": 11.933000000000002,
+     "h": 0.5298611111111111,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Novel wins",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "v"
+    },
+    {
+     "id": "m-compare:v:rule",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 3.379722222222222,
+     "w": 11.933000000000002,
+     "h": 0.06,
+     "z": 70,
+     "provenance": "compiler",
+     "semanticRef": "v",
+     "shape": {
+      "form": "rect",
+      "fill": "C05D4E"
+     }
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "comparison"
+  },
+  {
+   "id": "m-table",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-table:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Grid",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-table:t1:content",
+     "kind": "table",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 0.7597222222222222,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "t1",
+     "table": {
+      "rows": [
+       [
+        "a",
+        "b"
+       ],
+       [
+        "c",
+        "d"
+       ]
+      ],
+      "header": true,
+      "layout": {
+       "rowHeights": [
+        0.3798611111111111,
+        0.3798611111111111
+       ],
+       "colWidths": [
+        5.966500000000001,
+        5.966500000000001
+       ],
+       "headerFill": "FFFFFF",
+       "headerColor": "2D2D2A",
+       "headerSize": 13,
+       "headerBold": true,
+       "bodyColor": "2D2D2A",
+       "bodySize": 13,
+       "fontFamily": "Inter",
+       "padding": 0.05,
+       "gridColor": "D8D8D2"
+      }
+     }
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "data-table"
+  },
+  {
+   "id": "m-metric",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-metric:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Figure",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-metric:s1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 7.755333333333334,
+     "h": 2.5080000000000005,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "s1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-metric:s1:content",
+     "kind": "text",
+     "x": 1,
+     "y": 1.97,
+     "w": 7.155333333333334,
+     "h": 2.1080000000000005,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "12.5",
+         "size": 54,
+         "color": "2D2D2A",
+         "role": "stat",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -1,
+         "line": 1,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "mS/cm",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "stat",
+     "semanticRef": "s1"
+    },
+    {
+     "id": "m-metric:s2:frame",
+     "kind": "shape",
+     "x": 8.755333333333333,
+     "y": 1.77,
+     "w": 3.877666666666667,
+     "h": 2.5080000000000005,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "s2",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-metric:s2:content",
+     "kind": "text",
+     "x": 9.055333333333333,
+     "y": 1.97,
+     "w": 3.2776666666666667,
+     "h": 2.1080000000000005,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "1.2",
+         "size": 54,
+         "color": "2D2D2A",
+         "role": "stat",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -1,
+         "line": 1,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "oxide",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "stat",
+     "semanticRef": "s2"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "metric"
+  },
+  {
+   "id": "m-chart",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-chart:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Data",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-chart:ch1:content",
+     "kind": "chart",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 4.260000000000001,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "ch1",
+     "chart": {
+      "chartKind": "bar",
+      "categories": [
+       "A",
+       "B"
+      ],
+      "series": [
+       {
+        "name": "v",
+        "values": [
+         1,
+         2
+        ]
+       }
+      ],
+      "labels": {
+       "family": "Inter",
+       "size": 10,
+       "color": "5C5C59"
+      }
+     }
+    },
+    {
+     "id": "m-chart:ch1:unit",
+     "kind": "text",
+     "x": 0.7,
+     "y": 6.030000000000001,
+     "w": 11.933000000000002,
+     "h": 0.3,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Unit: mS/cm",
+         "size": 10,
+         "color": "5C5C59",
+         "role": "caption",
+         "family": "Inter",
+         "weight": 500,
+         "tracking": 0.2,
+         "line": 1.35
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "ch1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "chart"
+  },
+  {
+   "id": "m-seq",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-seq:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Steps",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-seq:q1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 3.777666666666667,
+     "h": 1.5200000000000002,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "q1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-seq:q1:badge",
+     "kind": "text",
+     "x": 0.8999999999999999,
+     "y": 1.92,
+     "w": 0.4,
+     "h": 0.4,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "1",
+         "size": 15,
+         "color": "C05D4E",
+         "role": "subhead",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.45,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "one-line",
+     "semanticRef": "q1"
+    },
+    {
+     "id": "m-seq:q1:content",
+     "kind": "text",
+     "x": 0.8999999999999999,
+     "y": 2.37,
+     "w": 3.3776666666666673,
+     "h": 0.7200000000000002,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "One",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "First",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "q1"
+    },
+    {
+     "id": "m-seq:q2:frame",
+     "kind": "shape",
+     "x": 4.777666666666668,
+     "y": 1.77,
+     "w": 3.777666666666667,
+     "h": 1.5200000000000002,
+     "z": 50,
+     "provenance": "compiler",
+     "semanticRef": "q2",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-seq:q2:badge",
+     "kind": "text",
+     "x": 4.977666666666668,
+     "y": 1.92,
+     "w": 0.4,
+     "h": 0.4,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "2",
+         "size": 15,
+         "color": "C05D4E",
+         "role": "subhead",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.45,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "one-line",
+     "semanticRef": "q2"
+    },
+    {
+     "id": "m-seq:q2:content",
+     "kind": "text",
+     "x": 4.977666666666668,
+     "y": 2.37,
+     "w": 3.3776666666666673,
+     "h": 0.7200000000000002,
+     "z": 70,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Two",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Second",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "q2"
+    },
+    {
+     "id": "m-seq:q3:frame",
+     "kind": "shape",
+     "x": 8.855333333333334,
+     "y": 1.77,
+     "w": 3.777666666666667,
+     "h": 1.5200000000000002,
+     "z": 80,
+     "provenance": "compiler",
+     "semanticRef": "q3",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-seq:q3:badge",
+     "kind": "text",
+     "x": 9.055333333333333,
+     "y": 1.92,
+     "w": 0.4,
+     "h": 0.4,
+     "z": 90,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "3",
+         "size": 15,
+         "color": "C05D4E",
+         "role": "subhead",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.45,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "one-line",
+     "semanticRef": "q3"
+    },
+    {
+     "id": "m-seq:q3:content",
+     "kind": "text",
+     "x": 9.055333333333333,
+     "y": 2.37,
+     "w": 3.3776666666666673,
+     "h": 0.7200000000000002,
+     "z": 100,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Three",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Third",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "q3"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "sequence"
+  },
+  {
+   "id": "m-cycle",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-cycle:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Loop",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-cycle:y1:frame",
+     "kind": "shape",
+     "x": 5.566500000000001,
+     "y": 2.0199999999999996,
+     "w": 2.2,
+     "h": 1.1,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "y1",
+     "shape": {
+      "form": "ellipse",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cycle:y1:content",
+     "kind": "text",
+     "x": 5.7665000000000015,
+     "y": 2.1699999999999995,
+     "w": 1.8000000000000003,
+     "h": 0.8,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "A",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "First",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "y1"
+    },
+    {
+     "id": "m-cycle:y1:link",
+     "kind": "line",
+     "x": 6.666500000000001,
+     "y": 2.5699999999999994,
+     "w": 0.05,
+     "h": 0.05,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "y1",
+     "line": {
+      "x2": 10.794410087138528,
+      "y2": 4.79,
+      "stroke": "D8D8D2",
+      "strokeWidth": 1.5
+     }
+    },
+    {
+     "id": "m-cycle:y2:frame",
+     "kind": "shape",
+     "x": 9.694410087138529,
+     "y": 4.24,
+     "w": 2.2,
+     "h": 1.1,
+     "z": 50,
+     "provenance": "compiler",
+     "semanticRef": "y2",
+     "shape": {
+      "form": "ellipse",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cycle:y2:content",
+     "kind": "text",
+     "x": 9.894410087138528,
+     "y": 4.390000000000001,
+     "w": 1.8000000000000003,
+     "h": 0.8,
+     "z": 60,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "B",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Second",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "y2"
+    },
+    {
+     "id": "m-cycle:y2:link",
+     "kind": "line",
+     "x": 10.794410087138528,
+     "y": 4.79,
+     "w": 0.05,
+     "h": 0.05,
+     "z": 70,
+     "provenance": "compiler",
+     "semanticRef": "y2",
+     "line": {
+      "x2": 2.5385899128614744,
+      "y2": 4.79,
+      "stroke": "D8D8D2",
+      "strokeWidth": 1.5
+     }
+    },
+    {
+     "id": "m-cycle:y3:frame",
+     "kind": "shape",
+     "x": 1.4385899128614743,
+     "y": 4.24,
+     "w": 2.2,
+     "h": 1.1,
+     "z": 80,
+     "provenance": "compiler",
+     "semanticRef": "y3",
+     "shape": {
+      "form": "ellipse",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-cycle:y3:content",
+     "kind": "text",
+     "x": 1.6385899128614743,
+     "y": 4.390000000000001,
+     "w": 1.8000000000000003,
+     "h": 0.8,
+     "z": 90,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "C",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Third",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "y3"
+    },
+    {
+     "id": "m-cycle:y3:link",
+     "kind": "line",
+     "x": 2.5385899128614744,
+     "y": 4.79,
+     "w": 0.05,
+     "h": 0.05,
+     "z": 100,
+     "provenance": "compiler",
+     "semanticRef": "y3",
+     "line": {
+      "x2": 6.6665,
+      "y2": 2.5699999999999994,
+      "stroke": "D8D8D2",
+      "strokeWidth": 1.5
+     }
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "sequence"
+  },
+  {
+   "id": "m-hier",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-hier:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Ranks",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-hier:h1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 1.4592000000000003,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "h1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-hier:h1:content",
+     "kind": "text",
+     "x": 1,
+     "y": 1.92,
+     "w": 11.333000000000002,
+     "h": 1.1592000000000002,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Top",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Parent",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "h1"
+    },
+    {
+     "id": "m-hier:h2:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 3.6292000000000004,
+     "w": 5.766500000000001,
+     "h": 1.1503999999999999,
+     "z": 40,
+     "provenance": "compiler",
+     "semanticRef": "h2",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-hier:h2:content",
+     "kind": "text",
+     "x": 0.95,
+     "y": 3.7792000000000003,
+     "w": 5.266500000000001,
+     "h": 0.8503999999999998,
+     "z": 50,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Left",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Child one",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "h2"
+    },
+    {
+     "id": "m-hier:h3:frame",
+     "kind": "shape",
+     "x": 6.866500000000001,
+     "y": 3.6292000000000004,
+     "w": 5.766500000000001,
+     "h": 1.1503999999999999,
+     "z": 60,
+     "provenance": "compiler",
+     "semanticRef": "h3",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-hier:h3:content",
+     "kind": "text",
+     "x": 7.116500000000001,
+     "y": 3.7792000000000003,
+     "w": 5.266500000000001,
+     "h": 0.8503999999999998,
+     "z": 70,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Right",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Child two",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "h3"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "hierarchy"
+  },
+  {
+   "id": "m-media",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-media:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Visual",
+         "size": 30,
+         "color": "2D2D2A",
+         "role": "heading",
+         "family": "Merriweather",
+         "weight": 700,
+         "tracking": -0.3,
+         "line": 1.18,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-media:im1:content",
+     "kind": "image",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 7.431450000000002,
+     "h": 4.36,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "im1",
+     "image": {
+      "src": "",
+      "alt": "cells"
+     }
+    },
+    {
+     "id": "m-media:im1:caption",
+     "kind": "text",
+     "x": 0.7,
+     "y": 5.780000000000001,
+     "w": 7.431450000000002,
+     "h": 0.35,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "cells",
+         "size": 10,
+         "color": "5C5C59",
+         "role": "caption",
+         "family": "Inter",
+         "weight": 500,
+         "tracking": 0.2,
+         "line": 1.35
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "im1"
+    },
+    {
+     "id": "m-media:tx1:content",
+     "kind": "text",
+     "x": 8.631450000000001,
+     "y": 1.77,
+     "w": 4.00155,
+     "h": 4.460000000000001,
+     "z": 40,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Point one",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Point two",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Point three",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      },
+      {
+       "runs": [
+        {
+         "text": "Point four",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left",
+       "bullet": true
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "tx1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "media-led"
+  },
+  {
+   "id": "m-frame",
+   "width": 13.333,
+   "height": 7.5,
+   "background": {
+    "fill": "EBEBE6"
+   },
+   "elements": [
+    {
+     "id": "m-frame:title:heading",
+     "kind": "text",
+     "x": 0.7,
+     "y": 0.62,
+     "w": 11.933000000000002,
+     "h": 1,
+     "z": 10,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Caution",
+         "size": 40,
+         "color": "2D2D2A",
+         "role": "display",
+         "family": "Merriweather",
+         "weight": 900,
+         "tracking": -0.5,
+         "line": 1.12,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap"
+    },
+    {
+     "id": "m-frame:f1:frame",
+     "kind": "shape",
+     "x": 0.7,
+     "y": 1.77,
+     "w": 11.933000000000002,
+     "h": 4.36,
+     "z": 20,
+     "provenance": "compiler",
+     "semanticRef": "f1",
+     "shape": {
+      "form": "roundRect",
+      "fill": "FFFFFF"
+     }
+    },
+    {
+     "id": "m-frame:f1:content",
+     "kind": "text",
+     "x": 1.1,
+     "y": 1.97,
+     "w": 11.133000000000001,
+     "h": 3.9600000000000004,
+     "z": 30,
+     "provenance": "compiler",
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Risk",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55,
+         "bold": true
+        }
+       ],
+       "align": "left"
+      },
+      {
+       "runs": [
+        {
+         "text": "Handle with care",
+         "size": 13,
+         "color": "2D2D2A",
+         "role": "body",
+         "family": "Inter",
+         "weight": 400,
+         "tracking": 0,
+         "line": 1.55
+        }
+       ],
+       "align": "left"
+      }
+     ],
+     "fitPolicy": "wrap",
+     "semanticRef": "f1"
+    }
+   ],
+   "layoutState": "managed",
+   "recipeId": "framed-prose"
+  }
+ ]
+}
