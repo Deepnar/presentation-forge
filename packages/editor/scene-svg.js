@@ -5,8 +5,8 @@
 //
 // Emphasis and uppercase handling share packages/core/text-run.ts with
 // the PPTX renderer, so the two projections cannot disagree on those
-// semantics. Point→pixel mapping (96px per inch) is preview-only:
-// V2-4 owns exact browser/PPTX visual parity.
+// semantics. Point→pixel mapping is canonical (96px per inch,
+// pt * 96/72); V2-4B calibrated it against PPTX rasters.
 import { runBold, visibleText } from "../core/text-run.ts";
 import { measure } from "../core/fit.ts";
 import { maxColumns, padTableRows } from "../core/table.ts";
@@ -17,11 +17,26 @@ function esc(s) {
 
 const IN = 96; // svg px per scene inch
 
+// Canonical unit contract: scene geometry is inches, scene type is
+// points, and the browser paints at 96 CSS px per inch — so points
+// convert at 96/72, the same factor tracking already uses below.
+// (The pre-4B 1.1 preview scale understated type ~17% against both
+// geometry and PPTX; V2-4B calibrates all three type paths here.)
+const PT = 96 / 72; // css px per scene point
+const pt2px = (pt) => (pt ?? 13) * PT;
+
+// PPTX text boxes carry a 0.05in inset (see renderer-pptx); the
+// first baseline sits margin + one ascent below the box top, so
+// display type stays inside its geometry instead of overshooting
+// it. Ascent 0.8em is the measured approximation for the theme
+// faces (validated by V2-4B before/after rasters).
+const TEXT_INSET_PX = 0.05 * IN;
+const ASCENT = 0.8;
+
 // Greedy cell-text wrap mirroring core lineCount: same word order,
 // same break rule, so the preview breaks where the compiler
 // counted. Widths arrive in SVG pixels; measure works in inches at
-// the contract size (the 1.1 preview scale applies to rendering
-// only, as with fitted text). Over-wide words keep their own line
+// the contract size. Over-wide words keep their own line
 // and visibly overflow, exactly when the word diagnostic fires.
 function wrapCell(text, widthPx, style) {
   const widthIn = widthPx / IN;
@@ -59,7 +74,7 @@ function textSvg(el, opts = {}) {
     const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
     const words = p.runs.map((r) => visibleText(r)).join("");
     const first = p.runs[0] ?? {};
-    const size = (first.size ?? 13) * 1.1;
+    const size = pt2px(first.size);
     const attrs = [];
     if (first.family) attrs.push(` font-family="${esc(first.family)}"`);
     const bold = runBold(first);
@@ -91,17 +106,20 @@ function textSvg(el, opts = {}) {
       });
     }
   }
-  // Top preserves historical placement exactly. Middle/bottom center
-  // or ground the block in its box — enough for chrome inspection;
-  // V2-4 owns exact visual parity.
+  // Top grounds the first baseline at margin + ascent below the
+  // box top, mirroring the PPTX text-box anchor. Middle/bottom
+  // center or ground the block in its box — enough for chrome
+  // inspection; V2-4 owns exact visual parity.
   let y;
   const total = chunks.reduce((n, c) => n + c.advance, 0);
   if (valign === "middle" && chunks.length) {
     y = (el.y + el.h / 2) * IN - total / 2 + chunks[0].size * 0.35;
   } else if (valign === "bottom" && chunks.length) {
     y = (el.y + el.h) * IN - total + chunks[0].size * 0.35;
+  } else if (chunks.length) {
+    y = el.y * IN + TEXT_INSET_PX + chunks[0].size * ASCENT;
   } else {
-    y = el.y * IN + 14;
+    y = el.y * IN + TEXT_INSET_PX;
   }
   const lines = chunks.map((c) => {
     const s = `<text x="${c.tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${c.anchor}" font-size="${c.size.toFixed(1)}" fill="#${c.color}"${c.attrs.join("")}>${esc(c.text)}</text>`;
@@ -167,7 +185,7 @@ function elementSvg(el, opts = {}) {
       // draw in full with no clipping, so strain stays visible and
       // matches the capacity diagnostic instead of hiding behind it.
       const labels = el.chart?.labels ?? {};
-      const labelSize = ((labels.size ?? 10) * 1.1).toFixed(1);
+      const labelSize = pt2px(labels.size ?? 10).toFixed(1);
       const labelFill = `#${labels.color ?? "5C5C59"}`;
       const labelFamily = labels.family ? ` font-family="${esc(labels.family)}"` : "";
       const cats = el.chart?.categories ?? [];
@@ -228,7 +246,7 @@ function elementSvg(el, opts = {}) {
       const cells = padTableRows(rows, maxCols).map((row, ri) => {
         const isHeader = !!el.table?.header && ri === 0;
         const rh = layout.rowHeights?.[ri] ?? h / Math.max(1, rows.length);
-        const size = ((isHeader ? layout.headerSize : layout.bodySize) ?? 10) * 1.1;
+        const size = pt2px((isHeader ? layout.headerSize : layout.bodySize) ?? 10);
         const fill = isHeader && layout.headerFill ? ` fill="#${layout.headerFill}"` : ` fill="none"`;
         const weight = isHeader && layout.headerBold !== false ? ' font-weight="bold"' : "";
         const family = layout.fontFamily ? ` font-family="${esc(layout.fontFamily)}"` : "";
