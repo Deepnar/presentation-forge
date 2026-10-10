@@ -710,6 +710,14 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   return els;
 }
 
+// Status badge reservation the shared placement path takes for
+// status-bearing blocks, mirroring the caveat band below. Demand
+// models must include it wherever they promise fit, or the badge
+// band silently eats the text budget it was allocated before.
+function statusBand(block: ContentBlock): number {
+  return block.status === "implemented" || block.status === "planned" ? STATUS_H + STATUS_GAP : 0;
+}
+
 // Nominal vertical demand of one block's flowing text at a carrier
 // width: measured paragraphs plus planning slack plus the caveat
 // band the shared placement path reserves for uncertain blocks.
@@ -730,12 +738,12 @@ function supportDemand(ctx: MechanismCtx, block: ContentBlock, width: number): n
   if (block.kind === "table") {
     const { height } = tableLayout(ctx.design, block.rows ?? [], block.header === true,
       { x: 0, y: 0, w: width, h: 1e6 });
-    return height + caveat;
+    return height + caveat + statusBand(block);
   }
   if (block.kind === "chart" || block.kind === "image") {
-    return MIN_SIDE_ROW + caveat;
+    return MIN_SIDE_ROW + caveat + statusBand(block);
   }
-  return textDemand(ctx.design, block, width);
+  return textDemand(ctx.design, block, width) + statusBand(block);
 }
 
 // One side card's outer height: text demand inside the carrier
@@ -745,7 +753,7 @@ function supportDemand(ctx: MechanismCtx, block: ContentBlock, width: number): n
 // measured against.
 function sideDemand(ctx: MechanismCtx, block: ContentBlock, textW: number): number {
   const railW = toneFor(ctx.comp.outcomeTreatments, block) === "cautionary" ? 0.12 : 0;
-  return Math.max(MIN_SIDE_ROW, textDemand(ctx.design, block, Math.max(0.5, textW - railW)) + 0.4);
+  return Math.max(MIN_SIDE_ROW, textDemand(ctx.design, block, Math.max(0.5, textW - railW)) + 0.4 + statusBand(block));
 }
 
 function comparisonScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
