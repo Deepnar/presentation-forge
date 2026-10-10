@@ -387,6 +387,50 @@ function distribute(available: number, weights: number[], floor: number): number
   return shares.map((s) => Math.max(0.2, (s / sum) * available));
 }
 
+// Status badge band: authored implementation status reads as a
+// small filled (implemented) or hollow (planned) square plus an
+// eyebrow word in the block's own ink — distinguishable in
+// monochrome by shape fill, never by color alone, and legible on
+// any ground because word and mark outline use ink while only the
+// implemented fill uses accent. Unspecified blocks get no badge
+// and no reservation. The band is allocated before fitting like
+// the caveat band; tone rails and caveats keep their edges.
+const STATUS_H = 0.3;
+const STATUS_GAP = 0.05;
+const STATUS_MARK = 0.12;
+
+function statusWord(status: "implemented" | "planned"): string {
+  return status === "implemented" ? "Implemented" : "Planned";
+}
+
+function statusEls(
+  ctx: MechanismCtx,
+  block: ContentBlock,
+  band: Box,
+  takeZ: () => number,
+): SceneElement[] {
+  const design = ctx.design;
+  const status = block.status as "implemented" | "planned";
+  const my = band.y + (STATUS_H - STATUS_MARK) / 2;
+  const mark: SceneElement = {
+    id: `${ctx.slide.id}:${block.id}:status-mark`,
+    kind: "shape", x: band.x, y: my, w: STATUS_MARK, h: STATUS_MARK, z: takeZ(),
+    provenance: "compiler", semanticRef: block.id,
+    shape: status === "implemented"
+      ? { form: "rect", fill: design.palette.accent.hex }
+      : { form: "rect", fill: "FFFFFF", fillAlpha: 0, stroke: design.palette.ink.hex, strokeWidth: 1 },
+  };
+  const word = textEl(
+    `${ctx.slide.id}:${block.id}:status`,
+    block.id,
+    { x: band.x + STATUS_MARK + 0.12, y: band.y, w: Math.max(0.5, band.w - STATUS_MARK - 0.12), h: STATUS_H },
+    [{ runs: [{ text: statusWord(status), role: "eyebrow", color: design.palette.ink.hex }], align: "left" as const }],
+    takeZ(),
+    { design, slideId: ctx.slide.id, sink: ctx.sink },
+  );
+  return [mark, word];
+}
+
 // Caveat band height and the gap attaching a caveat to a centered
 // carrier. The gap matches inter-block rhythm; attachment never
 // moves text, only chooses where the reserved band sits.
@@ -437,14 +481,19 @@ function placePrimary(
 ): SceneElement {
   const needsCaveat = block.uncertainty !== undefined;
   const caveatH = needsCaveat ? CAVEAT_H : 0;
+  const needsStatus = block.status === "implemented" || block.status === "planned";
+  const statusH = needsStatus ? STATUS_H + STATUS_GAP : 0;
   const tone = toneFor(ctx.comp.outcomeTreatments, block);
   const railW = tone === "cautionary" ? 0.12 : 0;
   const contentRegion: Box = {
     x: region.x + railW,
-    y: region.y,
+    y: region.y + statusH,
     w: Math.max(0.1, region.w - railW),
-    h: Math.max(0.2, region.h - (needsCaveat ? caveatH + 0.05 : 0)),
+    h: Math.max(0.2, region.h - statusH - (needsCaveat ? caveatH + 0.05 : 0)),
   };
+  if (needsStatus) {
+    els.push(...statusEls(ctx, block, { x: region.x + railW, y: region.y, w: Math.max(0.1, region.w - railW), h: STATUS_H }, takeZ));
+  }
   const primary = render
     ? render(contentRegion, takeZ())
     : renderBlockPrimary(ctx, block, contentRegion, takeZ(), opts);

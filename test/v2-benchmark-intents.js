@@ -81,15 +81,15 @@ export function sourceOfTruthProjectIntent() {
       {
         id: "st-built", purpose: "Report what is implemented", title: "Shipped this term",
         rhetoricalRole: "evidence",
-        blocks: [{ id: "st-built-b1", kind: "list", items: ["Six-recipe intent-to-scene compiler", "Byte-identical deterministic recompiles", "Customized geometry preserved on recompile", "Detached slides stay authoritative"] }],
+        blocks: [{ id: "st-built-b1", kind: "list", items: ["Six-recipe intent-to-scene compiler", "Byte-identical deterministic recompiles", "Customized geometry preserved on recompile", "Detached slides stay authoritative"], status: "implemented" }],
         takeaway: "The pipeline runs end to end today",
       },
       {
         id: "st-measured", purpose: "Report measured results", title: "Measured, not claimed",
         rhetoricalRole: "evidence",
         blocks: [
-          { id: "st-measured-s1", kind: "stat", value: "26/26", label: "V2 contract tests green", emphasis: "primary", outcome: "favorable" },
-          { id: "st-measured-s2", kind: "stat", value: "877/878", label: "full suite, one pre-existing locale failure", outcome: "mixed" },
+          { id: "st-measured-s1", kind: "stat", value: "26/26", label: "V2 contract tests green", emphasis: "primary", outcome: "favorable", status: "implemented" },
+          { id: "st-measured-s2", kind: "stat", value: "877/878", label: "full suite, one pre-existing locale failure", outcome: "mixed", status: "implemented" },
         ],
       },
       {
@@ -97,7 +97,7 @@ export function sourceOfTruthProjectIntent() {
         rhetoricalRole: "limitation",
         blocks: [{
           id: "st-planned-b1", kind: "list", items: ["Full recipe families", "Agent runtime", "Browser editor beyond demo"],
-          uncertainty: "qualified",
+          uncertainty: "qualified", status: "planned",
         }],
         takeaway: "The roadmap is a promise, not a result",
       },

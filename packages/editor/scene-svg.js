@@ -110,11 +110,18 @@ function elementSvg(el) {
       const fillOp = el.shape?.fillAlpha !== undefined && el.shape.fillAlpha < 1
         ? ` fill-opacity="${el.shape.fillAlpha}"`
         : "";
+      // Strokes project verbatim: status marks rely on an ink
+      // outline over a transparent fill, which needs the stroke to
+      // survive projection rather than render as a filled box.
+      const stroke = el.shape?.stroke ? ` stroke="#${el.shape.stroke}" stroke-width="${el.shape.strokeWidth ?? 1}"` : "";
+      const strokeOp = el.shape?.strokeAlpha !== undefined && el.shape.strokeAlpha < 1
+        ? ` stroke-opacity="${el.shape.strokeAlpha}"`
+        : "";
       if (el.shape?.form === "ellipse") {
-        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${fillOp}/>`;
+        return `<ellipse data-el="${esc(el.id)}" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
       }
       const rx = el.shape?.form === "roundRect" ? 10 : 0;
-      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}/>`;
+      return `<rect data-el="${esc(el.id)}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
     }
     case "image":
       return `<g data-el="${esc(el.id)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
