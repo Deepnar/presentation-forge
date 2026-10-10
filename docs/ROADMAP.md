@@ -6951,7 +6951,7 @@ width.
 > emitted, not merely a configured asset ratio. Otherwise disabling
 > a crest can leave an invisible geometry penalty.
 
-### [~] V2-3F — theme/plate compatibility + full quality evaluation (first slice in review)
+### [~] V2-3F — theme/plate compatibility + full quality evaluation (final gate in review)
 
 Purpose: run the completed V2-3 compiler through representative themes
 and compatibility paths, execute the V2-3A benchmark suite against the
@@ -7134,6 +7134,15 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > both exact authored content and exactly one scene element for the
 > selected treatment. Checking only that the expected ID exists is
 > insufficient.
+
+- [~] V2-3F final gate — comprehensive quality evaluation (in
+  review). Evidence: `docs/V2-3F-FINAL-EVAL.md` (~300 slides
+  inspected across 12 families, 8 themes, plain+chromed;
+  semantic fidelity machine-clean; diagnostics probed honest;
+  zero P0s, one P1, six P2s). Recommendation: CONDITIONAL PASS —
+  accept with P1-1 (word-width diagnostic tolerance) as an
+  agreed correction slice or the first post-3F fix. V2-3F stays
+  open pending independent review; V2-4 not started.
 
 ### [ ] V2-4 browser scene renderer
 
