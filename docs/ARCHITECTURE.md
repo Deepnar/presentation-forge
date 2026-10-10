@@ -1589,6 +1589,25 @@ project marks, words, and strokes; SVG gained shape-stroke
 projection for the hollow mark. Status records authorship, never
 proof; verification belongs to a later grounded workflow.
 
+## V2 browser scene viewer (V2-4A)
+
+`packages/editor/` holds two parts sharing one projection:
+`scene-svg.js` (SlideScene → SVG string, also behind
+thumbnails and tests) and `scene-dom.js` (framework-free mount
++ read-only viewer state: slide, zoom, fit, selection). The
+viewer page (`app/web/scenes.html`, `SceneViewer.jsx`) is a
+thin React shell over `scene-dom.js` — React owns no viewer
+logic. Scenes arrive as committed compiler-output fixtures
+(`app/web/src/scenes/`, drift-checked); plate fixtures stay
+out of the bundle for size and round-trip locally in the eval
+driver. No AI, no persistence, no PPTX, no planning, no scene
+mutation in the browser: scenes deep-freeze on mount,
+selection is an id set, locked chrome never selects, and V2-5
+will bind commands to the same stable `data-el` identities.
+Known projection gaps (display-type first baseline, preview
+type scale, chart axes) are recorded in `docs/V2-4A-EVAL.md`
+with owning layers, not corrected by compiler floors.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

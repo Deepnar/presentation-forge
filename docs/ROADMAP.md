@@ -7173,7 +7173,32 @@ it with explicit rationale before any renderer code lands.
 Done when: the browser scene visually matches the exported PPTX for the
 golden fixtures without LibreOffice in the loop.
 
-### [~] V2-4A browser renderer foundation and read-only viewer (in progress)
+### [~] V2-4A browser renderer foundation and read-only viewer (in review)
+
+Implemented on this branch: ADR (`docs/V2-4A-RENDERER.md`,
+native inline-SVG DOM, no canvas framework), shared-projection
+additions (opt-in text wrap, image sources, locked/semantic
+identity, byte-stable defaults), framework-free mount module
+(`packages/editor/scene-dom.js`), standalone viewer page with
+filmstrip/zoom/keyboard/deep-links, four committed fixture
+decks (drift-checked), 25 linkedom contract tests + 3
+real-Chrome smoke tests green. Visual eval
+(`docs/V2-4A-EVAL.md`, `docs/v2-4a-evidence/`, driver
+`tools/v2-4a-eval.mjs`): geometry/chrome/tables/plates agree
+with PPTX; two projection-calibration findings scoped to
+V2-4B (F1 display-type first baseline, F2 preview type
+scale); charts structurally exact without axes (V2-4C).
+
+- [ ] V2-4B projection calibration — size-proportional first
+  baseline + true px type scale, before/after evidence.
+- [ ] V2-4C chart fidelity — per-kind SVG geometry
+  (axes, gridlines, ticks), data-exactness tests.
+- [ ] V2-4D browser fonts — bundle the display faces themes
+  reference; document residual fallback.
+- [ ] V2-4E selection model — multi-select, focus,
+  overlays, bounds inspection; still no mutation.
+- [ ] V2-4F live scenes — server compiles deck scenes on
+  demand; viewer leaves fixtures.
 
 ### [ ] V2-5 real editor, commands, autosave
 
