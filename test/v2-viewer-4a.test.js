@@ -155,7 +155,9 @@ describe("v2-4a scene mapping", () => {
       }],
     }, { wrapText: true });
     assert.match(svg, /font-family="Inter"/);
-    assert.match(svg, /font-size="22\.0"/, "CSS px = pt at 96dpi");
+    // V2-4B calibration: canonical CSS px = pt * 96/72
+    // (20pt -> 26.7px; the pre-4B 1.1 preview scale read 22.0).
+    assert.match(svg, /font-size="26\.7"/);
     assert.match(svg, /font-weight="bold"/);
     assert.match(svg, /fill="#A1B2C3"/);
     assert.match(svg, /text-anchor="middle"/);
