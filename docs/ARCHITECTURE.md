@@ -1571,6 +1571,19 @@ behavior (cell autofit expansion, label staggering, legend corner
 layout) is documented as boundary rather than claimed. No new
 families, no shrinking, no truncation, no splitting.
 
+## V2 status differentiation (V2-3F-9)
+
+Authored block `status` (`implemented`/`planned`/absent) emits a
+native badge from the shared placement path: a filled (accent) or
+hollow (ink outline, transparent fill) square plus an eyebrow word
+in block ink, in a band allocated before fitting. No composition
+change — status is block-intrinsic — and no new QA codes: badges
+fit or diagnose through existing text policy, and demand models
+reserve the band. Unspecified blocks emit nothing. Both renderers
+project marks, words, and strokes; SVG gained shape-stroke
+projection for the hollow mark. Status records authorship, never
+proof; verification belongs to a later grounded workflow.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

@@ -7110,7 +7110,24 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 - [~] V2-3F-9 — implemented-vs-planned visual differentiation.
   Implementation pending review: block-level `status` intent
   (`implemented`/`planned`/unspecified) with deterministic status
-  treatments emitted as native editable scene elements.
+  treatments emitted as native editable scene elements. Evidence:
+  `docs/V2-3F-EVAL-5.md` (50 cells L1/L2 zero, counterfactuals,
+  rasters read on four themes plain+chromed).
+
+> **Learned.** A visual distinction with two independent readings
+> survives every degradation: words need no legend and fill-vs-
+> outline needs no color, so monochrome, color loss, and dark
+> grounds each leave one channel intact — high-contrast-mono is
+> the proof, fully legible in pure black and white. New bands
+> must enter demand models the same slice they land, or the
+> allocation promises fit on a budget the band then eats (caught
+> at 10.4pt vs a 13pt floor, fixed by reserving the band in side
+> and support demand). Closed fixtures stay closed: the
+> structured counterfactual file requires plan-level difference,
+> which status correctly never produces, so status pairs live
+> inline rather than forcing a baseline open. Absence stays
+> meaningful by emitting nothing — no reservation, no element,
+> no claim.
 
 > **Learned.** A shared emitter can be correct locally while its
 > call sites violate cardinality. Takeaway realization requires
