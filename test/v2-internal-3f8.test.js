@@ -132,6 +132,28 @@ describe("v2-3f-8 table fitting", () => {
     assert.deepEqual(checkSceneGeometry(scenes[0]), [], "geometry stays valid");
   });
 
+  it("a table taller than its region diagnoses height overflow", async () => {
+    const design = await themeDesign("warm-humanist");
+    const long = "Wrapped body copy that needs three lines at this column measure. ";
+    const rows = [["H1", "H2"], ...Array.from({ length: 9 }, (_, i) => [`r${i}`, long.repeat(2).trim()])];
+    const slide = {
+      id: "t4b", purpose: "tall", title: "Tall",
+      blocks: [
+        { id: "t", kind: "table", header: true, rows },
+        { id: "x1", kind: "text", text: "Companion one" },
+        { id: "x2", kind: "text", text: "Companion two" },
+      ],
+    };
+    const intent = { id: "d", title: "D", slides: [slide] };
+    const { scenes, fitDiagnostics } = compileDeckDetailed(intent, design);
+    const hits = fitDiagnostics.filter((d) => d.kind === "table-cell-overflow");
+    assert.ok(hits.some((d) => d.message.includes("lines")), "height overflow diagnosed with line evidence");
+    const el = scenes[0].elements.find((e) => e.kind === "table");
+    assert.ok(el.table.rows[1][1].startsWith("Wrapped body copy"), "cell copy preserved exactly");
+    assert.deepEqual(checkSceneGeometry(scenes[0]), [], "squeezed geometry stays valid");
+    assert.equal((await validateScene(scenes[0])).ok, true, "squeezed scene validates");
+  });
+
   it("long headers wrap at bold measure", async () => {
     const design = await themeDesign("warm-humanist");
     const slide = tableSlide("t5", [
