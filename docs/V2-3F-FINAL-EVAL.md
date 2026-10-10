@@ -216,8 +216,9 @@ here.
 
 ## 14. Recommended corrective slices (ordered)
 
-1. P1-1 word tolerance calibration (small, test-first,
-   no geometry change).
+1. ~~P1-1 word tolerance calibration~~ — RESOLVED by V2-3F-G1
+   as reclassification plus hyphen-fragment measurement (see
+   Addendum; no tolerance constant was needed).
 2. P2-4 rule/corner alignment (small, renderer-visible).
 3. P2-2 theme-aware image seat (small, both renderers).
 4. P2-5 empty-table guard (schema or finding, tiny).
@@ -242,7 +243,10 @@ messages already show the margin, so no author is misled about
 facts. A FAIL would overstate a noise issue; an unconditional
 PASS would understate it. The six P2s are polish and deferred
 capabilities, several already documented as boundaries in
-prior slices.
+prior slices. (Update V2-3F-G1: the P1-1 correction landed —
+findings reclassified as true positives plus hyphen-fragment
+measurement; see Addendum. The condition is discharged subject
+to independent review of the addendum evidence.)
 
 ## Appendix: evidence map
 
@@ -255,7 +259,49 @@ prior slices.
   rasters) + `escape/` (escape family, all divider variants).
 - Status sheets: `out/v2-3f9-status/contact-{high-contrast-
   mono,sci-fi-hud,glassmorphism}.png`.
-- Regeneration: benchmark command §1; matrix/stress via the
-  (deleted) scratch drivers — exact deck definitions live in
-  §7 and the committed suites; rerun equivalents with
-  `tools/v2-benchmark.mjs` plus the suite fixtures.
+- Regeneration: benchmark command §1; matrix/stress via
+  `node tools/v2-eval-matrix.mjs --out out/v2-eval`
+  (committed, manifest-recorded); deck definitions in §7 and
+  the committed suites (`test/v2-benchmark-intents.js`,
+  `test/v2-mechanism-fixture.js`,
+  `test/v2-eval-stress-fixture.js`).
+
+## Addendum V2-3F-G1 — P1-1 resolution (2026-10-10)
+
+**Root cause, evidenced.** The six `Head10`–`Head15` findings
+were TRUE positives, not noise: heuristic 0.6600in vs 0.6458in
+cell (+0.0142in), and LibreOffice renders `Head1`/`0` split
+mid-word in those cells while `Head0`–`Head9` (0.5469in) fit.
+Same raster exposed the companion mismatch: `2000-cycle`
+(whole-word 1.02in) breaks cleanly after its hyphen and reads
+fine, but the model called it unbreakable. So P1-1 splits in
+two: (a) the reported excess was correct — reclassified, not
+suppressed; (b) hyphenated tokens were genuinely
+over-diagnosed — corrected by measuring hyphen fragments
+(`wordFragments` in `packages/core/fit.ts`), since renderers
+break after hyphens.
+
+**Correction and safety.** Narrow (table + chart word rules
+only), deterministic, theme-independent; `lineCount` and all
+text fitting untouched. Only diagnostic emission changes — the
+before/after rasters are pixel-identical (SHA-verified), and
+the Head findings are byte-identical across eras. Benchmark
+stays 50 cells L1/L2 zero; full suite green except BYOK.
+
+**Boundary tests.** 16-col `Head` headers fire exactly
+`Head10`–`Head15`; hyphenated cells go quiet; long hyphen
+fragments still fire; hyphenated chart labels stay quiet;
+ordinary benchmark content silent on all five themes.
+
+**Evaluation regeneration.** `tools/v2-eval-matrix.mjs`
+(committed) reproduces the family/stress matrix from committed
+fixtures with a deterministic manifest (`manifest.json`: decks,
+slides, themes, families, fixture sources, tool versions, no
+timestamps). Curated review set: `docs/v2-3f-g1-evidence/`
+(P1-1 pairs, comparison/table/chart/status/chromed/plate
+sheets + README with commands).
+
+**P2 backlog intact.** Caveat collision, theme-aware image
+seating, chart palette, rule/corner alignment, empty-table
+handling, and all accepted renderer/legacy boundaries stand
+exactly as recorded in §12–§13. Nothing silently completed.

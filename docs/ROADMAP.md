@@ -7143,6 +7143,16 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
   accept with P1-1 (word-width diagnostic tolerance) as an
   agreed correction slice or the first post-3F fix. V2-3F stays
   open pending independent review; V2-4 not started.
+- [~] V2-3F-G1 — P1-1 word-width calibration and reproducible
+  evidence (in review). Rendered calibration proved the six
+  Head findings true positives (mid-word splits) and exposed a
+  genuine hyphen mismatch (`2000-cycle` breaks cleanly but
+  measured unbreakable): findings reclassified, word rules now
+  measure hyphen fragments; plus a committed matrix driver
+  (`tools/v2-eval-matrix.mjs`, deterministic manifest) and a
+  curated evidence set (`docs/v2-3f-g1-evidence/`). Benchmark
+  stays 50 cells L1/L2 zero; rasters pixel-identical across
+  eras. P2 backlog intact.
 
 ### [ ] V2-4 browser scene renderer
 

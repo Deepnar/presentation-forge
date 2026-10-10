@@ -1568,8 +1568,13 @@ diagnoses per cell and per label as L1 `table-cell-overflow` /
 tables keep region discipline, ragged rows pad at projection time
 (PowerPoint paints absent cells green), and genuine client
 behavior (cell autofit expansion, label staggering, legend corner
-layout) is documented as boundary rather than claimed. No new
-families, no shrinking, no truncation, no splitting.
+layout) is documented as boundary rather than claimed. Word-width
+checks measure hyphen fragments (`wordFragments` in
+`packages/core/fit.ts`): renderers break words after hyphens, so
+only unbreakable fragments count — calibrated against rasterized
+output in V2-3F-G1, which also reclassified the narrow-header
+findings as true positives. No new families, no shrinking, no
+truncation, no splitting.
 
 ## V2 status differentiation (V2-3F-9)
 
