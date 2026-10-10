@@ -10,7 +10,7 @@
 // FitDiagnostic. V2-3E-2 turns diagnostics into QA policy; this slice
 // only exposes them via compileDeckDetailed.
 
-import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, heightOf, lineCount, measure, type FitStyle, type StyledStackItem } from "../core/fit.ts";
+import { fitOneLine, fitStyledStack, fitLineHeight, uniformFloorBound, heightOf, lineCount, measure, wordFragments, type FitStyle, type StyledStackItem } from "../core/fit.ts";
 import type { SceneElement, Paragraph } from "../model/scene.generated.ts";
 import type { DesignSystem } from "../model/design.generated.ts";
 import { resolveRunStyle } from "./typography.ts";
@@ -99,10 +99,14 @@ export function measureTableCells(
       for (const segment of String(row[ci] ?? "").split("\n")) {
         lines += Math.max(1, lineCount(segment, cellW, style));
         for (const w of segment.split(/\s+/).filter(Boolean)) {
-          const ww = measure(w, style);
-          if (ww > cellW && (word === null || w.length > word.length)) {
-            word = w;
-            wordW = ww;
+          // Fragments, not whole hyphenated tokens: the longest
+          // fragment that cannot fit is the true offender.
+          for (const frag of wordFragments(w)) {
+            const fw = measure(frag, style);
+            if (fw > cellW && (word === null || frag.length > word.length)) {
+              word = frag;
+              wordW = fw;
+            }
           }
         }
       }

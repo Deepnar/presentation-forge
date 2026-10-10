@@ -15,7 +15,7 @@ import type { SlideCompositionPlan } from "./composition.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import { CONTENT_FOOTER_RESERVE } from "../core/chrome.ts";
 import { fittedTextEl, centerSparseBox, nominalContentHeight, measureTableCells, measureLegendLines, type FitDiagnostic, type FitPolicy, type RoleParagraph, type TableCellMeasure } from "./text-fit.ts";
-import { measure } from "../core/fit.ts";
+import { measure, wordFragments } from "../core/fit.ts";
 import { maxColumns, splitWidths } from "../core/table.ts";
 import { resolveRunStyle } from "./typography.ts";
 import { emitChromeElements, type SlideChromePlan } from "./chrome.ts";
@@ -978,7 +978,9 @@ function assessChartCapacity(
   const longest = (t: string): { word: string; w: number } => {
     let word = "";
     let w = 0;
-    for (const cand of wordsOf(t)) {
+    // Hyphen fragments, matching the table word rule: renderers
+    // break after hyphens, so only unbreakable fragments count.
+    for (const cand of wordsOf(t).flatMap(wordFragments)) {
       const cw = measure(cand, fit);
       if (cw > w) {
         word = cand;

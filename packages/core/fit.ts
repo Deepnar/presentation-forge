@@ -157,6 +157,18 @@ function reportFloor(style: FitStyle, neededPt: number, floor: number, events: s
 
 const UPPER_FACTOR = 1.18;
 
+// Hyphen-aware word fragments for width checks. Renderers break
+// words after hyphens ("2000-cycle" renders as "2000-" + "cycle"),
+// so a hyphenated token measures as its fragments rather than one
+// unbreakable word. Mid-word breaks without a hyphen ("Head1" +
+// "0") are degraded rendering the finding must still catch, so
+// only hyphen boundaries split. Observed in rasterized output;
+// PowerPoint breaks identically. Other dashes unobserved: left
+// whole, documented in the V2-3F-G1 calibration record.
+export function wordFragments(word: string): string[] {
+  return String(word ?? "").split(/(?<=-)/).filter(Boolean);
+}
+
 export function measure(
   text: string,
   { family, size, weight, tracking = 0, transform }: FitStyle = { size: 12 },

@@ -132,6 +132,52 @@ describe("v2-3f-8 table fitting", () => {
     assert.deepEqual(checkSceneGeometry(scenes[0]), [], "geometry stays valid");
   });
 
+  it("narrow two-digit headers diagnose exactly Head10-15", async () => {
+    // V2-3F-G1 calibration: rendered output proves Head10-Head15
+    // split mid-word ("Head1"/"0") in 0.65in columns while Head0-9
+    // fit — the findings below are true positives, preserved here.
+    const design = await themeDesign("warm-humanist");
+    const heads = Array.from({ length: 16 }, (_, i) => "Head" + i);
+    const slide = tableSlide("t4c", [heads, Array.from({ length: 16 }, () => "v")]);
+    const { fitDiagnostics } = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design);
+    const hits = fitDiagnostics.filter((d) => d.kind === "table-cell-overflow");
+    assert.equal(hits.length, 6, "exactly the six overflowing headers fire");
+    const joined = hits.map((d) => d.message).join("\n");
+    for (const n of [10, 11, 12, 13, 14, 15]) {
+      assert.ok(joined.includes(`"Head${n}"`), `Head${n} diagnosed`);
+    }
+    for (const n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+      assert.ok(!joined.includes(`"Head${n}"`), `Head${n} stays silent`);
+    }
+  });
+
+  it("hyphenated tokens break cleanly and stay quiet", async () => {
+    // Renderers break words after hyphens ("2000-cycle" renders as
+    // "2000-"/"cycle"), so fragments measure instead of whole
+    // hyphenated tokens.
+    const design = await themeDesign("warm-humanist");
+    const slide = tableSlide("t4d", [
+      ["A", "B"],
+      ["2000-cycle data point", "ok"],
+    ]);
+    const { fitDiagnostics } = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design);
+    assert.deepEqual(fitDiagnostics.filter((d) => d.kind === "table-cell-overflow"), [], "clean hyphen break stays silent");
+  });
+
+  it("long hyphen fragments still diagnose", async () => {
+    const design = await themeDesign("warm-humanist");
+    const token = "Supercalifragilistic-expialidocious";
+    const cols = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    const slide = tableSlide("t4e", [
+      cols,
+      [token, "b", "c", "d", "e", "f", "g", "h"],
+    ]);
+    const { fitDiagnostics } = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design);
+    const hits = fitDiagnostics.filter((d) => d.kind === "table-cell-overflow");
+    assert.ok(hits.length >= 1, "over-wide fragment diagnoses");
+    assert.ok(hits.some((d) => d.message.includes("Supercalifragilistic")), "finding names the offending fragment");
+  });
+
   it("a table taller than its region diagnoses height overflow", async () => {
     const design = await themeDesign("warm-humanist");
     const long = "Wrapped body copy that needs three lines at this column measure. ";
@@ -154,8 +200,7 @@ describe("v2-3f-8 table fitting", () => {
     assert.equal((await validateScene(scenes[0])).ok, true, "squeezed scene validates");
   });
 
-  it("long headers wrap at bold measure", async () => {
-    const design = await themeDesign("warm-humanist");
+  it("long headers wrap at bold measure", async () => {    const design = await themeDesign("warm-humanist");
     const slide = tableSlide("t5", [
       ["Short", "An extremely long header caption that must wrap somewhere"],
       ["a", "b"],
@@ -226,6 +271,17 @@ describe("v2-3f-8 chart typography", () => {
     const el = chartOf(scenes[0]);
     assert.deepEqual(el.chart.categories.length, 12, "categories preserved");
     assert.deepEqual(el.chart.series[0].values, Array(12).fill(1), "values preserved");
+  });
+
+  it("hyphenated chart labels break cleanly and stay quiet", async () => {
+    const design = await themeDesign("warm-humanist");
+    const slide = chartSlide("c2b", {
+      kind: "chart", chartKind: "bar", measure: "comparison",
+      categories: ["Alpha-beta", "Gamma-delta", "Epsilon-zeta"],
+      series: [{ name: "Score", values: [1, 2, 3] }],
+    });
+    const { fitDiagnostics } = compileDeckDetailed({ id: "d", title: "D", slides: [slide] }, design);
+    assert.deepEqual(fitDiagnostics.filter((d) => d.kind === "chart-label-overflow"), [], "hyphen fragments fit their slots");
   });
 
   it("legend volume beyond the chart diagnoses", async () => {
