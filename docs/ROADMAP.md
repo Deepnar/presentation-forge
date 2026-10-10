@@ -7066,8 +7066,8 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > than inventing plate-aware colors: content plates never flip
 > lightness, so dividers are the only family that reads surface
 > ink.
-- [~] V2-3F-7 — comparison side capacity: honest floor-hits on
-  real decision copy. Implementation pending review: sides measured
+- [x] V2-3F-7 — comparison side capacity: honest floor-hits on
+  real decision copy. Accepted head: `2816389`. Sides measured
   first at nominal demand with peer-row alignment, support shares
   the remainder instead of the fixed 1.2in reserve; fitting
   verifies after final geometry. Evidence: `docs/V2-3F-EVAL-3.md`
@@ -7084,8 +7084,10 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > spurious floor-hit defeats the slice), and scarce space splits
 > proportional to need so overflow stays diagnostic, never
 > silent.
-- [ ] V2-3F-8 — table-cell fitting and chart-internal typography
-  (carried boundary from 3E-1).
+- [~] V2-3F-8 — table-cell fitting and chart-internal typography
+  (carried boundary from 3E-1). Implementation pending review:
+  per-cell capacity evaluation with honest overflow diagnostics;
+  bounded native chart-typography contract shared by PPTX/SVG.
 - [ ] V2-3F-9 — no visual implemented-vs-planned channel
   (verbal distinction only).
 
