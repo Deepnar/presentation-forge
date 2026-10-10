@@ -29,5 +29,11 @@ export default defineConfig({
     proxy: {
       "/api": { target: "http://localhost:5174", changeOrigin: true },
     },
+    // The V2 scene viewer imports the shared renderer from
+    // packages/editor (outside the web root): monorepo packages must
+    // be servable. Dev-only; production serves the built bundle.
+    fs: {
+      allow: [path.join(here, "..", "..")],
+    },
   },
 });

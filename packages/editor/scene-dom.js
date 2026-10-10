@@ -136,6 +136,7 @@ export function createViewer(rootEl, scenes, opts = {}) {
   }
 
   const api = {
+    snapshot,
     goTo(i) {
       const next = clampIndex(i, frozen.length);
       if (next !== state.slideIndex) {

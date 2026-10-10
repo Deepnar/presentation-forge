@@ -4,9 +4,9 @@
 // viewer logic: it mounts one viewer per deck, mirrors snapshots,
 // and forwards UI events to the viewer api. Scenes are never
 // mutated here — selection is an id, geometry comes from the DOM.
-import { useEffect, useMemo, useRef, useState } from "react";
-import { createViewer } from "../../../packages/editor/scene-dom.js";
-import { sceneToSvg } from "../../../packages/editor/scene-svg.js";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createViewer } from "../../../../packages/editor/scene-dom.js";
+import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -37,8 +37,9 @@ function selectedInfo(root, snap) {
   return { id: snap.selectedId, locked: node.getAttribute("data-locked") === "true" };
 }
 
-export default function SceneViewer() {
-  const [deckName, setDeckName] = useState(DECKS[0].name);
+export default function SceneViewer({ initial = {} }) {
+  const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
+  const [deckName, setDeckName] = useState(initialDeck);
   const deck = useMemo(() => DECKS.find((d) => d.name === deckName) ?? DECKS[0], [deckName]);
   const mountRef = useRef(null);
   const scrollRef = useRef(null);
@@ -46,7 +47,10 @@ export default function SceneViewer() {
   const [snap, setSnap] = useState(null);
   const [mountError, setMountError] = useState(null);
 
-  useEffect(() => {
+  // Layout effect, not passive: the mounted SVG must exist
+  // before paint (and before headless --dump-dom serializes),
+  // and resize observation must attach before first layout.
+  useLayoutEffect(() => {
     const root = mountRef.current;
     if (!root) return undefined;
     let viewer;
@@ -59,7 +63,16 @@ export default function SceneViewer() {
     setMountError(null);
     viewerRef.current = viewer;
     const off = viewer.onChange(setSnap);
-    setSnap(viewer.api.goTo(0));
+    const startSlide = Number.isFinite(Number(initial.slide)) ? Number(initial.slide) : 0;
+    const startZoom = Number.isFinite(Number(initial.zoom)) ? Number(initial.zoom) : 1;
+    viewer.api.setZoom(startZoom);
+    viewer.api.goTo(startSlide);
+    if (typeof initial.select === "string" && initial.select) viewer.api.select(initial.select);
+    // Eager initial fit: ResizeObserver covers later resizes, but
+    // the first paint must not wait for an observation round-trip.
+    const box = scrollRef.current?.getBoundingClientRect();
+    if (box && box.width > 0 && box.height > 0) viewer.api.refit(box.width, box.height);
+    setSnap(viewer.api.snapshot());
     const ro = typeof ResizeObserver !== "undefined"
       ? new ResizeObserver(() => {
         const box = scrollRef.current?.getBoundingClientRect();
@@ -109,6 +122,17 @@ export default function SceneViewer() {
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
+      <div
+        aria-live="polite"
+        data-viewer-state={JSON.stringify({
+          slideId: snap?.slideId ?? null,
+          slideIndex: snap?.slideIndex ?? 0,
+          slideCount: snap?.slideCount ?? 0,
+          zoom: snap?.zoom ?? 1,
+          selectedId: snap?.selectedId ?? null,
+        })}
+        style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
+      />
       <aside style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }} aria-label="Slides">
         <div style={{ marginBottom: 8, fontSize: 12, opacity: 0.7 }}>
           {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
@@ -151,7 +175,8 @@ export default function SceneViewer() {
             }}
           />
         </div>
-        <style>{`[data-selected] { outline: 3px solid #e0705a !important; outline-offset: -3px; }`}</style>
+        <style>{`[data-selected] { outline: 3px solid #e0705a !important; outline-offset: -3px; }
+        aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; }`}</style>
       </main>
     </div>
   );

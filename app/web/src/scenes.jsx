@@ -9,8 +9,21 @@ import "./styles.css";
 
 startAppearance();
 
+// Deep-link initialization (?deck=&slide=&select=&zoom=): the smoke
+// test drives viewer states through URLs, and V2-5 will reuse slide
+// links. All values are validated inside the viewer contracts.
+function initialFromQuery() {
+  const q = new URLSearchParams(window.location.search);
+  return {
+    deck: q.get("deck") ?? undefined,
+    slide: q.get("slide") ?? undefined,
+    select: q.get("select") ?? undefined,
+    zoom: q.get("zoom") ?? undefined,
+  };
+}
+
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <SceneViewer />
+    <SceneViewer initial={initialFromQuery()} />
   </React.StrictMode>,
 );
