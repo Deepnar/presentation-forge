@@ -6951,7 +6951,7 @@ width.
 > emitted, not merely a configured asset ratio. Otherwise disabling
 > a crest can leave an invisible geometry penalty.
 
-### [~] V2-3F — theme/plate compatibility + full quality evaluation (final gate in review)
+### [x] V2-3F — theme/plate compatibility + full quality evaluation (accepted with G1 correction)
 
 Purpose: run the completed V2-3 compiler through representative themes
 and compatibility paths, execute the V2-3A benchmark suite against the
@@ -7135,16 +7135,15 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > selected treatment. Checking only that the expected ID exists is
 > insufficient.
 
-- [~] V2-3F final gate — comprehensive quality evaluation (in
-  review). Evidence: `docs/V2-3F-FINAL-EVAL.md` (~300 slides
+- [x] V2-3F final gate — comprehensive quality evaluation
+  (accepted). Evidence: `docs/V2-3F-FINAL-EVAL.md` (~300 slides
   inspected across 12 families, 8 themes, plain+chromed;
   semantic fidelity machine-clean; diagnostics probed honest;
-  zero P0s, one P1, six P2s). Recommendation: CONDITIONAL PASS —
-  accept with P1-1 (word-width diagnostic tolerance) as an
-  agreed correction slice or the first post-3F fix. V2-3F stays
-  open pending independent review; V2-4 not started.
-- [~] V2-3F-G1 — P1-1 word-width calibration and reproducible
-  evidence (in review). Rendered calibration proved the six
+  zero P0s, one P1, six P2s). Recommendation was CONDITIONAL
+  PASS with P1-1 as the agreed correction; G1 below discharged
+  it, so the gate stands accepted at `fdc7cf5`.
+- [x] V2-3F-G1 — P1-1 word-width calibration and reproducible
+  evidence (accepted at `fdc7cf5`). Rendered calibration proved the six
   Head findings true positives (mid-word splits) and exposed a
   genuine hyphen mismatch (`2000-cycle` breaks cleanly but
   measured unbreakable): findings reclassified, word rules now
@@ -7154,18 +7153,27 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
   stays 50 cells L1/L2 zero; rasters pixel-identical across
   eras. P2 backlog intact.
 
-### [ ] V2-4 browser scene renderer
+### [~] V2-4 browser scene renderer
 
-*Depends on: V2-3. Blocks: V2-5.*
+*Depends on: V2-3 (accepted at `fdc7cf5`). Blocks: V2-5.*
 
-Render scenes directly in the browser (DOM/SVG + moveable/selecto
-first; Konva fallback only if it represents the real elements). Fixed
-slide viewport in canonical units, zoom, filmstrip from the browser
-renderer, selection — no editing yet, and no PPTX-to-PNG dependency for
-the interactive canvas. LibreOffice/Poppler stay as export QA only.
+Render scenes directly in the browser from the authoritative
+Layer-C scene: a reusable renderer package plus a read-only
+viewer first (V2-4A), then fidelity slices for tables/charts
+and selection/editing affordances (later slices, planned in the
+V2-4A report). Fixed slide viewport in canonical units, zoom,
+filmstrip from the browser renderer, selection — no editing
+yet, and no PPTX-to-PNG dependency for the interactive canvas.
+LibreOffice/Poppler stay as export QA only. The earlier
+"moveable/selecto first, Konva fallback" direction stands or
+falls on the V2-4A architecture audit: the decision record
+(`docs/V2-4A-RENDERER.md`) will confirm, refine, or supersede
+it with explicit rationale before any renderer code lands.
 
 Done when: the browser scene visually matches the exported PPTX for the
 golden fixtures without LibreOffice in the loop.
+
+### [~] V2-4A browser renderer foundation and read-only viewer (in progress)
 
 ### [ ] V2-5 real editor, commands, autosave
 
