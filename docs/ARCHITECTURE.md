@@ -1554,6 +1554,23 @@ space splits proportional to need. Measurement never enters
 mechanisms as copied arithmetic; no free text is parsed; no new
 intent fields, families, or QA policy were added.
 
+## V2 table and chart internals (V2-3F-8)
+
+Tables resolve true per-cell demand: every cell measured at its
+resolved column width (`\n` segments independently, headers at
+bold advance) through the fitting layer, rows taking wrapped
+heights, columns recorded once in the contract so both renderers
+divide from the same numbers. Charts carry resolved label
+typography (caption family, nominal size, muted ink) projected to
+native axis/legend options and the SVG preview alike. Overflow
+diagnoses per cell and per label as L1 `table-cell-overflow` /
+`chart-label-overflow` — text stays nominal and complete, squeezed
+tables keep region discipline, ragged rows pad at projection time
+(PowerPoint paints absent cells green), and genuine client
+behavior (cell autofit expansion, label staggering, legend corner
+layout) is documented as boundary rather than claimed. No new
+families, no shrinking, no truncation, no splitting.
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

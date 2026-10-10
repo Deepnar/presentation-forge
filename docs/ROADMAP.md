@@ -7088,6 +7088,25 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
   (carried boundary from 3E-1). Implementation pending review:
   per-cell capacity evaluation with honest overflow diagnostics;
   bounded native chart-typography contract shared by PPTX/SVG.
+  Evidence: `docs/V2-3F-EVAL-4.md` (50 cells L1/L2 zero,
+  stress rasters, OOXML reads).
+
+> **Learned.** Unmeasured internals fail silently in both
+> directions at once: the scene understates (one-line rows for
+> three-line cells) while PowerPoint overstates (expanding rows
+> past the contract) and the SVG understates differently (first
+> lines only, no chart labels) — with zero diagnostics anywhere.
+> The fix is true demand plus explicit findings, not tighter
+> budgets: rows take wrapped heights, columns are recorded so
+> measurement and projection agree, labels resolve once, and
+> overflow diagnoses per cell and per label. Two subtleties
+> earned their comments: height findings must fire on text past
+> the row, not padding squeeze, or dense-but-honest tables flood
+> (proven on a raster); and cell measurement belongs in the
+> fitting layer because a static guard owns that boundary since
+> V2-3E-1. Squeeze keeps region discipline as the valid vessel
+> with the diagnostic as the honesty — growing past the region
+> would trade one overlap for another.
 - [ ] V2-3F-9 — no visual implemented-vs-planned channel
   (verbal distinction only).
 
