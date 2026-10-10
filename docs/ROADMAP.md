@@ -7107,8 +7107,8 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
 > V2-3E-1. Squeeze keeps region discipline as the valid vessel
 > with the diagnostic as the honesty — growing past the region
 > would trade one overlap for another.
-- [~] V2-3F-9 — implemented-vs-planned visual differentiation.
-  Implementation pending review: block-level `status` intent
+- [x] V2-3F-9 — implemented-vs-planned visual differentiation.
+  Accepted head: `3033193`. Block-level `status` intent
   (`implemented`/`planned`/unspecified) with deterministic status
   treatments emitted as native editable scene elements. Evidence:
   `docs/V2-3F-EVAL-5.md` (50 cells L1/L2 zero, counterfactuals,
