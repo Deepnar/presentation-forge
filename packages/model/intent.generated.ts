@@ -86,6 +86,10 @@ export interface ContentBlock {
   evidenceRefs?: [string, ...string[]];
   outcome?: "favorable" | "unfavorable" | "mixed" | "neutral";
   uncertainty?: "qualified" | "mixed" | "inconclusive" | "contested";
+  /**
+   * Authored implementation status. Absent means unspecified — never defaulted. Orthogonal to outcome, uncertainty, emphasis, and role.
+   */
+  status?: "implemented" | "planned";
   rows?: string[][];
   header?: boolean;
   mediaRole?: "evidence" | "explanatory" | "decorative";

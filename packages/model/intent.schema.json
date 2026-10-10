@@ -107,6 +107,10 @@
         },
         "outcome": { "enum": ["favorable", "unfavorable", "mixed", "neutral"] },
         "uncertainty": { "enum": ["qualified", "mixed", "inconclusive", "contested"] },
+        "status": {
+          "description": "Authored implementation status. Absent means unspecified — never defaulted. Orthogonal to outcome, uncertainty, emphasis, and role.",
+          "enum": ["implemented", "planned"]
+        },
         "rows": {
           "type": "array",
           "items": { "type": "array", "items": { "type": "string", "maxLength": 200 } }
