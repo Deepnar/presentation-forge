@@ -7212,6 +7212,13 @@ scale); charts structurally exact without axes (V2-4C).
   13 tests, 6 proven to fail on the V2-4C baseline; eval
   `docs/V2-4C1-EVAL.md` + `docs/v2-4c1-evidence/`. V2-4C stays
   pending alongside it.
+- [~] V2-4C-2 multi-series pie preservation — Layer-B fallback
+  to editable tables (in review). `renderBlockPrimary` swaps
+  pie/doughnut with 2+ series (same id/ref,
+  `chart-fallback-table` diagnostic + QA code); 11 tests, 7
+  proven to fail on the V2-4C-1 baseline; eval
+  `docs/V2-4C2-EVAL.md` + `docs/v2-4c2-evidence/`. No schema
+  change.
 - [ ] V2-4D browser fonts — bundle the display faces themes
   reference; document residual fallback.
 - [ ] V2-4E selection model — multi-select, focus,

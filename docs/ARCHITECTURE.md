@@ -1612,7 +1612,11 @@ Chart geometry lives in `packages/editor/scene-chart.js`, a
 pure Layer-C-to-SVG projector covering all six scene kinds
 with deterministic nice-tick axes spanning zero, grouped
 multi-series, signed bars, gapped lines, zero-baseline areas,
-and exact-share pies (V2-4C; `docs/V2-4C-EVAL.md`). Series
+and exact-share pies (V2-4C; `docs/V2-4C-EVAL.md`). Multi-series
+pie/doughnut cannot survive native export, so Layer B falls
+back to editable tables with a `chart-fallback-table`
+diagnostic instead of dropping data (V2-4C-2;
+`docs/V2-4C2-EVAL.md`). Series
 colors are an explicitly interim ramp pending the
 theme-resolved contract (`chartSeries` in
 `packages/core/chartpalette.ts` carried as `series[].color`).
