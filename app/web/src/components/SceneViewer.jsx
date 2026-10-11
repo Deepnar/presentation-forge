@@ -191,6 +191,131 @@ function TextFormatRow({ index, paragraph, onCommit }) {
   );
 }
 
+// Chart-data editor: a draft matrix over the chart's authoritative
+// data — kind select, editable category labels and series names,
+// and editable numeric cells kept as RAW STRINGS until Apply.
+// Nothing is coerced: empty or non-numeric cells block Apply with
+// the cell named, and added categories/series start empty so the
+// full-matrix rule cannot be satisfied accidentally. One Apply
+// submits one element.setChartData; Cancel restores the committed
+// values; failures keep the draft for correction. Remounted per
+// element+revision (see key at the call site), so undo/redo and
+// reselection refresh the grid. Switching selection discards an
+// unapplied draft — stated policy: only Apply writes.
+function ChartDataPanel({ element, onCommit }) {
+  const chart = element.chart ?? {};
+  const seed = () => ({
+    kind: chart.chartKind ?? "bar",
+    categories: [...(chart.categories ?? [])],
+    series: (chart.series ?? []).map((s) => ({ name: s.name, values: s.values.map((v) => String(v)) })),
+  });
+  const [draft, setDraft] = useState(seed);
+  const [error, setError] = useState(null);
+  function setCell(si, ci, value) {
+    setDraft((d) => {
+      const series = d.series.map((s, i) => (i === si ? { ...s, values: s.values.map((v, j) => (j === ci ? value : v)) } : s));
+      return { ...d, series };
+    });
+  }
+  function apply() {
+    const categories = draft.categories.map((c) => String(c));
+    const series = [];
+    for (let si = 0; si < draft.series.length; si++) {
+      const row = draft.series[si];
+      const name = String(row.name ?? "").trim();
+      if (!name) {
+        setError(`series ${si + 1} needs a non-empty name`);
+        return;
+      }
+      const values = [];
+      for (let ci = 0; ci < categories.length; ci++) {
+        const raw = String(row.values[ci] ?? "").trim();
+        if (!raw) {
+          setError(`series "${name || si + 1}", category "${categories[ci] || ci + 1}": fill every cell — nothing is zero-filled`);
+          return;
+        }
+        const n = Number(raw);
+        if (!Number.isFinite(n)) {
+          setError(`series "${name}", category "${categories[ci]}": "${raw}" is not a number`);
+          return;
+        }
+        values.push(n);
+      }
+      series.push({ name, values });
+    }
+    if (categories.length === 0) {
+      setError("a chart needs at least one category");
+      return;
+    }
+    if (series.length === 0) {
+      setError("a chart needs at least one series");
+      return;
+    }
+    setError(null);
+    onCommit?.({ chartKind: draft.kind, categories, series });
+  }
+  function cancel() {
+    setDraft(seed());
+    setError(null);
+  }
+  const commitOnEnter = (e) => {
+    if (e.key === "Enter") apply();
+  };
+  const narrow = { width: 64 };
+  return (
+    <div data-chart-editor={element.id} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "4px 12px", fontSize: 12 }}>
+      <span style={{ opacity: 0.8 }}>
+        Chart {element.id} · {draft.series.length} series × {draft.categories.length} categories
+        {(draft.kind === "pie" || draft.kind === "doughnut") && draft.series.length > 1
+          ? " · pie and doughnut keep a single series — remove series or switch kind before applying"
+          : ""}
+      </span>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <label>Type{" "}
+          <select aria-label="Chart type" value={draft.kind} onChange={(e) => setDraft((d) => ({ ...d, kind: e.target.value }))}>
+            {["bar", "hbar", "line", "area", "pie", "doughnut"].map((k) => (
+              <option key={k} value={k}>{k}</option>
+            ))}
+          </select>
+        </label>
+        <button type="button" onClick={() => setDraft((d) => ({ ...d, categories: [...d.categories, `Category ${d.categories.length + 1}`], series: d.series.map((s) => ({ ...s, values: [...s.values, ""] })) }))}>+ Category</button>
+        <button type="button" disabled={draft.categories.length <= 1} onClick={() => setDraft((d) => ({ ...d, categories: d.categories.slice(0, -1), series: d.series.map((s) => ({ ...s, values: s.values.slice(0, -1) })) }))}>− Category</button>
+        <button type="button" onClick={() => setDraft((d) => ({ ...d, series: [...d.series, { name: `Series ${d.series.length + 1}`, values: d.categories.map(() => "") }] }))}>+ Series</button>
+        <button type="button" disabled={draft.series.length <= 1} onClick={() => setDraft((d) => ({ ...d, series: d.series.slice(0, -1) }))}>− Series</button>
+        <button type="button" onClick={apply}>Apply</button>
+        <button type="button" onClick={cancel}>Cancel</button>
+      </div>
+      <table style={{ borderCollapse: "collapse", alignSelf: "flex-start" }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: "left", padding: "2px 6px", opacity: 0.7 }}>Category</th>
+            {draft.series.map((s, si) => (
+              <th key={si} style={{ padding: 2 }}>
+                <input aria-label={`Series ${si + 1} name`} value={s.name} style={{ width: 90 }} onChange={(e) => setDraft((d) => ({ ...d, series: d.series.map((x, i) => (i === si ? { ...x, name: e.target.value } : x)) }))} onKeyDown={commitOnEnter} />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {draft.categories.map((c, ci) => (
+            <tr key={ci}>
+              <td style={{ padding: 2 }}>
+                <input aria-label={`Category ${ci + 1} label`} value={c} style={{ width: 90 }} onChange={(e) => setDraft((d) => ({ ...d, categories: d.categories.map((x, j) => (j === ci ? e.target.value : x)) }))} onKeyDown={commitOnEnter} />
+              </td>
+              {draft.series.map((s, si) => (
+                <td key={si} style={{ padding: 2 }}>
+                  <input aria-label={`Value ${s.name || si + 1} ${c || ci + 1}`} value={s.values[ci] ?? ""} inputMode="decimal" style={narrow} onChange={(e) => setCell(si, ci, e.target.value)} onKeyDown={commitOnEnter} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -476,6 +601,11 @@ export default function SceneViewer({ initial = {} }) {
       return ps.length > 0 && ps.every((p) => Array.isArray(p?.runs) && p.runs.length === 1);
     }) ?? null)
     : null;
+  // Chart-data target: the single selected unlocked chart on the
+  // current slide, read from engine scenes while editing.
+  const chartTarget = editOn && !textState.editing && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
+    ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "chart" && !e.locked) ?? null)
+    : null;
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
@@ -688,7 +818,7 @@ export default function SceneViewer({ initial = {} }) {
         selecting never resizes the scroll area, never retriggers
         refit, and never moves the stage — the double-click target
         stays pixel-stable. Dismissed by deselection. */}
-        {(styledShape || formattedText) && (
+        {(styledShape || formattedText || chartTarget) && (
           <div
             data-format-bar
             style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 6, borderTop: "1px solid #333", background: "#242220", maxHeight: 190, overflowY: "auto" }}
@@ -705,6 +835,13 @@ export default function SceneViewer({ initial = {} }) {
                 key={`${snap.slideId}:${formattedText.id}:${editStatus.rev}`}
                 element={formattedText}
                 onCommit={(i, patch) => adapterRef.current?.setTextStyle(formattedText.id, i, patch)}
+              />
+            )}
+            {chartTarget && (
+              <ChartDataPanel
+                key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
+                element={chartTarget}
+                onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
               />
             )}
           </div>
