@@ -80,11 +80,44 @@ export function niceTicks(lo, hi, target) {
 }
 
 export function fmtTick(step, v) {
-  // Decimals follow the step itself (2.5 -> "2.5", 2 -> "2"): the
-  // label must name its gridline value, never a rounding of it.
-  const frac = (step.toString().split(".")[1] || "").replace(/e.*$/, "");
-  const dec = Math.min(4, frac.length);
-  return Number(v.toFixed(dec)).toString();
+  // The label must name its gridline value, never a rounding of
+  // it: decimals follow the step itself (2.5 -> "2.5", 2 -> "2",
+  // 0.000001 -> "0.000001"). Fixed notation holds to ten step
+  // decimals; beyond that (micro-scale steps past 1e-10)
+  // scientific notation keeps labels short and distinct.
+  if (v === 0) return "0";
+  if (!Number.isFinite(step) || step <= 0 || !Number.isFinite(v)) return "0";
+  const dec = stepDecimals(step);
+  if (dec <= 10) {
+    // Fixed-first: shortest readable form at the snapped
+    // precision ("0.0000003", not "3e-7"; "2.5", not "2.50").
+    // toFixed emits exponential past 1e21 — normalized below.
+    let s = v.toFixed(dec);
+    if (!/[eE]/.test(s)) s = s.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+    if (Number(s) === 0) return "0";
+    return s.replace("e+", "e");
+  }
+  return v.toExponential(2).replace("e+", "e");
+}
+
+// Decimal places needed to name the step exactly, including
+// exponent form (2.5 -> 1, 0.000001 -> 6, 1e-7 -> 7, 2.5e-6 -> 7,
+// 2500000 -> 0).
+function stepDecimals(step) {
+  const m = /^(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/.exec(step.toString());
+  if (!m) return 4;
+  const fracLen = (m[2] || "").length;
+  const exp = m[3] === undefined ? 0 : parseInt(m[3], 10);
+  return Math.max(0, fracLen - exp);
+}
+
+// Normalized data position, clamped finite: values map inside
+// [0, 1] by construction, and extreme domains (fp64 span
+// overflow) collapse to the baseline instead of emitting NaN.
+function normPos(v, lo, hi) {
+  const t = (v - lo) / (hi - lo);
+  if (!Number.isFinite(t)) return 0;
+  return Math.min(1, Math.max(0, t));
 }
 
 function text(x, y, anchor, sizePx, fill, family, str) {
@@ -96,10 +129,14 @@ function legendEntries(series) {
   return (series ?? []).map((s) => s.name ?? "");
 }
 
-function legendSvg(entries, colors, x, yTop, fs, fill, family) {
+function legendSvg(entries, colors, x, yTop, fs, fill, family, hollow = null) {
   const lh = fs * 1.25;
-  return entries.map((name, i) =>
-    `<text x="${x.toFixed(1)}" y="${(yTop + lh * (i + 1)).toFixed(1)}" font-size="${fs.toFixed(1)}" fill="#${fill}"${family ? ` font-family="${esc(family)}"` : ""}><tspan fill="#${colors[i]}">■ </tspan>${esc(name)}</text>`).join("");
+  return entries.map((name, i) => {
+    const swatch = hollow && hollow.has(i)
+      ? `<tspan fill="none" stroke="#${colors[i]}">□ </tspan>${esc(name)} (not shown)`
+      : `<tspan fill="#${colors[i]}">■ </tspan>${esc(name)}`;
+    return `<text x="${x.toFixed(1)}" y="${(yTop + lh * (i + 1)).toFixed(1)}" font-size="${fs.toFixed(1)}" fill="#${fill}"${family ? ` font-family="${esc(family)}"` : ""}>${swatch}</text>`;
+  }).join("");
 }
 
 function cartesianFrame(box, cats, series, style, transpose) {
@@ -141,7 +178,7 @@ function gridSvg(frame, style, transpose) {
   const fs = style.sizePx;
   let out = "";
   if (!transpose) {
-    const yOf = (v) => plot.y + plot.h - ((v - lo) / (hi - lo)) * plot.h;
+    const yOf = (v) => plot.y + plot.h - normPos(v, lo, hi) * plot.h;
     for (const t of ticks) {
       const y = yOf(t);
       const zero = t === 0;
@@ -150,7 +187,7 @@ function gridSvg(frame, style, transpose) {
     }
     out += `<line x1="${plot.x.toFixed(1)}" y1="${plot.y.toFixed(1)}" x2="${plot.x.toFixed(1)}" y2="${(plot.y + plot.h).toFixed(1)}" stroke="#${style.color}" stroke-opacity="0.6" stroke-width="1"/>`;
   } else {
-    const xOf = (v) => plot.x + ((v - lo) / (hi - lo)) * plot.w;
+    const xOf = (v) => plot.x + normPos(v, lo, hi) * plot.w;
     const base = plot.y + plot.h;
     for (const t of ticks) {
       const x = xOf(t);
@@ -171,7 +208,7 @@ function barSvg(box, cats, series, style) {
   const groupW = slotW * 0.7;
   const ns = Math.max(1, (series ?? []).length);
   const bw = groupW / ns;
-  const yOf = (v) => plot.y + plot.h - ((v - lo) / (hi - lo)) * plot.h;
+  const yOf = (v) => plot.y + plot.h - normPos(v, lo, hi) * plot.h;
   let out = gridSvg(f, style, false);
   (series ?? []).forEach((s, si) => {
     (s.values ?? []).forEach((raw, ci) => {
@@ -200,7 +237,7 @@ function hbarSvg(box, cats, series, style) {
   const groupH = slotH * 0.7;
   const ns = Math.max(1, (series ?? []).length);
   const bh = groupH / ns;
-  const xOf = (v) => plot.x + ((v - lo) / (hi - lo)) * plot.w;
+  const xOf = (v) => plot.x + normPos(v, lo, hi) * plot.w;
   const fs = style.sizePx;
   let out = gridSvg(f, style, true);
   (series ?? []).forEach((s, si) => {
@@ -243,7 +280,7 @@ function lineAreaSvg(box, cats, series, style, area) {
   const n = Math.max(1, catsSafe.length);
   const slotW = plot.w / n;
   const cx = (i) => plot.x + i * slotW + slotW / 2;
-  const yOf = (v) => plot.y + plot.h - ((v - lo) / (hi - lo)) * plot.h;
+  const yOf = (v) => plot.y + plot.h - normPos(v, lo, hi) * plot.h;
   const yZero = yOf(0);
   const fs = style.sizePx;
   let out = gridSvg(f, style, false);
@@ -287,18 +324,23 @@ function lineAreaSvg(box, cats, series, style, area) {
 function pieSvg(box, cats, series, style, hole) {
   const catsSafe = cats ?? [];
   const vals = ((series ?? [])[0]?.values ?? []).map(fin);
-  // Slice i belongs to category i; non-positive values take zero
-  // sweep but stay legend-listed — pie cannot honestly show
-  // negatives, and inventing absolute-value normalization would
-  // mislead. Multiple series are outside the supported contract:
-  // series[0] renders (as PowerPoint does), the rest stay in the
-  // data the native export carries.
+  // Slice i belongs to category i of series[0] — the native
+  // renderer plots exactly that series and carries the rest
+  // silently in the file (verified by raster: a two-series pie
+  // draws series[0] with a category legend). The browser matches
+  // the geometry but refuses the silence: unplotted series stay
+  // legend-listed with an explicit hollow "(not shown)" mark, so
+  // no series ever reads as a slice it does not have.
+  // Non-positive values take zero sweep but stay legend-listed —
+  // pie cannot honestly show negatives, and inventing
+  // absolute-value normalization would mislead.
   const shares = vals.map((v, i) => ({ i, v: has(v) && v > 0 ? v : 0 }));
   const total = shares.reduce((n, s) => n + s.v, 0);
   const names = (series ?? []).map((s) => s.name ?? "");
-  const entries = [...names, ...(names.length <= 1 ? catsSafe : [])];
+  const plotted = names.length <= 1 ? [...names, ...catsSafe] : [names[0], ...catsSafe];
+  const unplotted = names.length > 1 ? names.slice(1) : [];
   const fs = style.sizePx;
-  const legendStrip = entries.length ? entries.length * fs * 1.25 + 6 : 0;
+  const legendStrip = (plotted.length + unplotted.length) ? (plotted.length + unplotted.length) * fs * 1.25 + 6 : 0;
   const side = Math.max(20, Math.min(box.w, box.h - legendStrip));
   const cx = box.x + box.w / 2;
   const cy = box.y + (box.h - legendStrip) / 2;
@@ -330,10 +372,15 @@ function pieSvg(box, cats, series, style, hole) {
     }
   }
   // Swatch colors: series-name entries map to their series color;
-  // category entries map to their slice color. Both stay exact.
+  // category entries map to their slice color. Unplotted series
+  // render hollow so the mark cannot read as a slice.
+  const entries = [...plotted, ...unplotted];
+  const hollow = new Set(unplotted.map((_, k) => plotted.length + k));
   const colors = entries.map((e, i) =>
-    i < names.length ? seriesColor(i) : seriesColor(Math.max(0, catsSafe.indexOf(e))));
-  out += legendSvg(entries, colors, box.x, box.y + (box.h - legendStrip) + 6, fs, style.color, style.family);
+    i < plotted.length
+      ? (i < 1 ? seriesColor(0) : seriesColor(Math.max(0, catsSafe.indexOf(e))))
+      : seriesColor(Math.max(0, names.indexOf(e))));
+  out += legendSvg(entries, colors, box.x, box.y + (box.h - legendStrip) + 6, fs, style.color, style.family, hollow);
   return out;
 }
 
