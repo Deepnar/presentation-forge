@@ -4,7 +4,14 @@ Date: 2026-10-11. Baseline `5beba39` (V2-4 accepted).
 Implementation status: **V2-5B implements §§2–8 and §12 of
 this record** in `packages/model/engine.ts` (headless,
 framework-free, import-tested from tests only — no UI
-binding yet). Decided in implementation, against the
+binding yet). **V2-5B-1 corrects two findings without
+changing the architecture:** C1 concurrent stale-base
+acceptance is closed by a per-document FIFO transaction
+boundary with checks inside the turn; C2 incomplete undo
+ownership is closed by snapshot history (per-touched-slide
+or full-array state images beside the retained semantic
+inverses), so undo/redo restore exact metadata.
+Decided in implementation, against the
 proposal: duplicate envelopes are *rejected* (not
 replayed); effective no-ops *succeed without recording*
 (history pollution rejected); undo depth caps at 200 while

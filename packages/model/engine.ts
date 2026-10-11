@@ -6,10 +6,13 @@
 // primitives, slide operations reuse its pure deck functions, and
 // results validate through the scene schema before commit.
 //
-// Guarantees: copy-on-write atomicity (a command lands wholly or not
-// at all), optimistic revision checks (stale envelopes never rebase),
-// inverse history with undo/redo, duplicate-envelope rejection, and
-// input immutability (caller payloads are cloned on entry). See
+// Guarantees: serialized transactions (one turn at a time; revision
+// and duplicate checks run inside the turn, never beforehand),
+// copy-on-write atomicity (a command lands wholly or not at all),
+// snapshot undo/redo restoring exact document state including
+// ownership metadata (semantic inverses retained for audit and
+// replay), duplicate-envelope rejection, and input immutability
+// (caller payloads are cloned on entry). See
 // docs/V2-5A-EDITOR-ARCHITECTURE.md §§2–8 for the design record.
 import {
   applyCommand,
@@ -77,6 +80,11 @@ export interface EngineFailure {
 
 export type EngineResult = EngineOk | EngineFailure;
 
+interface SlideImage {
+  id: string;
+  scene: SlideScene;
+}
+
 interface HistoryEntry {
   envelopeId: string;
   actor: "human" | "agent";
@@ -85,6 +93,17 @@ interface HistoryEntry {
   resultingRevision: number;
   forward: PlacedOp[];
   inverse: PlacedOp[];
+  // Exact state images for faithful undo/redo. Element-only entries
+  // store the touched slides; entries with slide ops store the full
+  // array (deckWide) since membership or order changed. Semantic
+  // forward/inverse ops stay for audit and replay; restoration uses
+  // these images so ownership metadata returns exactly — inverse
+  // primitives would re-mark elements as human-customized.
+  // Memory is O(history × touched slides), capped by MAX_HISTORY;
+  // V2-6 persistence compacts to envelopes + inverses.
+  deckWide: boolean;
+  before: SlideImage[];
+  after: SlideImage[];
 }
 
 interface EngineState {
@@ -384,6 +403,24 @@ export async function createDocument(scenes: SlideScene[]): Promise<EditorHandle
   if (bad) failSeed(`invalid seed scenes: ${bad}`);
   const state: EngineState = { scenes: input, revision: 0, history: [], redo: [], appliedIds: new Set() };
 
+  // One serialized transaction boundary for every revision- or
+  // history-changing operation (apply, batch, undo, redo). Jobs run
+  // strictly FIFO: a job's revision and duplicate checks execute
+  // when its turn starts, against authoritative state — never
+  // beforehand — so two concurrent callers cannot both pass a
+  // stale check. The tail swallows settlements so a failed job
+  // never poisons the queue; domain failures return EngineResult,
+  // and an unexpected throw propagates to its own caller only.
+  let tail: Promise<void> = Promise.resolve();
+  function serialize<T>(job: () => Promise<T>): Promise<T> {
+    const run = tail.then(job, job);
+    tail = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  }
+
   function commit(entry: HistoryEntry): EngineOk {
     state.revision = entry.resultingRevision;
     state.history.push(entry);
@@ -415,15 +452,54 @@ export async function createDocument(scenes: SlideScene[]): Promise<EditorHandle
     }
     const bad = await validateWorking(working);
     if (bad) return fail("invalid-result", bad);
-    const before = JSON.stringify(state.scenes);
-    if (JSON.stringify(working) === before) return { ok: true, revision: state.revision, noop: true };
+    if (JSON.stringify(working) === JSON.stringify(state.scenes)) {
+      return { ok: true, revision: state.revision, noop: true };
+    }
+    const deckWide = effective.some((placed) => SLIDE_TYPES.has((placed.op as { type: string }).type));
+    const imageOf = (source: SlideScene[], id: string | null): SlideImage | null => {
+      if (id === null) return null;
+      const found = source.find((s) => s.id === id);
+      return found ? { id, scene: structuredClone(found) } : null;
+    };
+    const touched = (source: SlideScene[]): SlideImage[] => {
+      if (deckWide) return structuredClone(source).map((scene) => ({ id: scene.id, scene }));
+      const ids = effective.map((placed) => placed.slideId).filter((id, i, all) => id !== null && all.indexOf(id) === i);
+      const out: SlideImage[] = [];
+      for (const id of ids) {
+        const img = imageOf(source, id);
+        if (img) out.push(img);
+      }
+      return out;
+    };
+    const before = touched(state.scenes);
+    const after = touched(working);
     state.scenes = working;
     return commit({
       envelopeId, actor, agentId, baseRevision,
       resultingRevision: state.revision + 1,
       forward: structuredClone(effective),
       inverse: inverses.reverse(),
+      deckWide, before, after,
     });
+  }
+
+  // Restore stored state images onto a working copy: full-array
+  // swap for deck-wide entries, per-slide replacement otherwise.
+  // A missing slide id fails explicitly with history untouched —
+  // reachable only through non-LIFO history surgery, which the
+  // engine never performs, but the boundary stays total.
+  function restoreImages(working: SlideScene[], images: SlideImage[], deckWide: boolean): string | null {
+    if (deckWide) {
+      working.length = 0;
+      working.push(...structuredClone(images.map((img) => img.scene)));
+      return null;
+    }
+    for (const img of images) {
+      const i = working.findIndex((s) => s.id === img.id);
+      if (i < 0) return `slide ${img.id} no longer present`;
+      working[i] = structuredClone(img.scene);
+    }
+    return null;
   }
 
   return {
@@ -446,70 +522,70 @@ export async function createDocument(scenes: SlideScene[]): Promise<EditorHandle
       }));
     },
     async apply(envelope: CommandEnvelope) {
-      const shape = checkEnvelope(envelope);
-      if (shape) return fail("bad-envelope", shape);
-      if (state.appliedIds.has(envelope.id)) {
-        return fail("duplicate-id", `envelope ${envelope.id} already applied`);
-      }
-      if (envelope.baseRevision !== state.revision) {
-        return fail("stale-revision", `base ${envelope.baseRevision} does not match revision ${state.revision}`, {
-          expectedRevision: state.revision, actualRevision: envelope.baseRevision,
-        });
-      }
-      return transact(envelope.id, envelope.actor, envelope.agentId, envelope.baseRevision, [
-        { slideId: envelope.slideId, op: envelope.op },
-      ]);
+      return serialize(async () => {
+        const shape = checkEnvelope(envelope);
+        if (shape) return fail("bad-envelope", shape);
+        if (state.appliedIds.has(envelope.id)) {
+          return fail("duplicate-id", `envelope ${envelope.id} already applied`);
+        }
+        if (envelope.baseRevision !== state.revision) {
+          return fail("stale-revision", `base ${envelope.baseRevision} does not match revision ${state.revision}`, {
+            expectedRevision: state.revision, actualRevision: envelope.baseRevision,
+          });
+        }
+        return transact(envelope.id, envelope.actor, envelope.agentId, envelope.baseRevision, [
+          { slideId: envelope.slideId, op: envelope.op },
+        ]);
+      });
     },
     async applyBatch(batch: BatchEnvelope) {
-      const shape = checkBatch(batch);
-      if (shape) return fail("bad-envelope", shape);
-      if (state.appliedIds.has(batch.id)) {
-        return fail("duplicate-id", `envelope ${batch.id} already applied`);
-      }
-      if (batch.baseRevision !== state.revision) {
-        return fail("stale-revision", `base ${batch.baseRevision} does not match revision ${state.revision}`, {
-          expectedRevision: state.revision, actualRevision: batch.baseRevision,
-        });
-      }
-      if (batch.ops.length === 0) return { ok: true, revision: state.revision, noop: true };
-      return transact(batch.id, batch.actor, batch.agentId, batch.baseRevision, batch.ops.map((o) => ({ slideId: o.slideId, op: o.op })));
+      return serialize(async () => {
+        const shape = checkBatch(batch);
+        if (shape) return fail("bad-envelope", shape);
+        if (state.appliedIds.has(batch.id)) {
+          return fail("duplicate-id", `envelope ${batch.id} already applied`);
+        }
+        if (batch.baseRevision !== state.revision) {
+          return fail("stale-revision", `base ${batch.baseRevision} does not match revision ${state.revision}`, {
+            expectedRevision: state.revision, actualRevision: batch.baseRevision,
+          });
+        }
+        if (batch.ops.length === 0) return { ok: true, revision: state.revision, noop: true };
+        return transact(batch.id, batch.actor, batch.agentId, batch.baseRevision, batch.ops.map((o) => ({ slideId: o.slideId, op: o.op })));
+      });
     },
     async undo() {
-      const entry = state.history[state.history.length - 1];
-      if (!entry) return fail("empty-history", "nothing to undo");
-      const working = structuredClone(state.scenes);
-      try {
-        for (const placed of entry.inverse) runPlaced(working, structuredClone(placed));
-      } catch (err) {
-        const failure = err as EngineFailure;
-        return fail("op-rejected", `undo failed: ${failure.message ?? String(err)}`);
-      }
-      const bad = await validateWorking(working);
-      if (bad) return fail("invalid-result", `undo failed: ${bad}`);
-      state.history.pop();
-      state.scenes = working;
-      state.revision += 1;
-      state.redo.push(entry);
-      return { ok: true, revision: state.revision };
+      return serialize(async () => {
+        const entry = state.history[state.history.length - 1];
+        if (!entry) return fail("empty-history", "nothing to undo");
+        const working = structuredClone(state.scenes);
+        const missing = restoreImages(working, entry.before, entry.deckWide);
+        if (missing) return fail("op-rejected", `undo failed: ${missing}`);
+        const bad = await validateWorking(working);
+        if (bad) return fail("invalid-result", `undo failed: ${bad}`);
+        state.history.pop();
+        state.scenes = working;
+        state.revision += 1;
+        state.redo.push(entry);
+        return { ok: true, revision: state.revision };
+      });
     },
     async redo() {
-      const entry = state.redo[state.redo.length - 1];
-      if (!entry) return fail("empty-history", "nothing to redo");
-      const working = structuredClone(state.scenes);
-      try {
-        for (const placed of entry.forward) runPlaced(working, structuredClone(placed));
-      } catch (err) {
-        const failure = err as EngineFailure;
-        return fail("op-rejected", `redo failed: ${failure.message ?? String(err)}`);
-      }
-      const bad = await validateWorking(working);
-      if (bad) return fail("invalid-result", `redo failed: ${bad}`);
-      state.redo.pop();
-      state.scenes = working;
-      state.revision += 1;
-      state.history.push(entry);
-      if (state.history.length > MAX_HISTORY) state.history.shift();
-      return { ok: true, revision: state.revision };
+      return serialize(async () => {
+        const entry = state.redo[state.redo.length - 1];
+        if (!entry) return fail("empty-history", "nothing to redo");
+        const working = structuredClone(state.scenes);
+        const missing = restoreImages(working, entry.after, entry.deckWide);
+        if (missing) return fail("op-rejected", `redo failed: ${missing}`);
+        const bad = await validateWorking(working);
+        if (bad) return fail("invalid-result", `redo failed: ${bad}`);
+        state.redo.pop();
+        state.scenes = working;
+        state.revision += 1;
+        state.history.push(entry);
+        if (state.history.length > MAX_HISTORY) state.history.shift();
+        return { ok: true, revision: state.revision };
+      });
     },
   };
 }

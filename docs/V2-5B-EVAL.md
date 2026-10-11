@@ -172,3 +172,15 @@ Drag-move, nudge, and delete in the viewer through the
 engine with transient previews; D1 implemented and
 tested; no text editing yet. The viewer keeps owning
 mechanics and selection; every commit crosses the engine.
+
+## 16. V2-5B-1 corrections (accepted baseline `8e863f5`)
+
+Two review findings, fixed without architecture change
+(`docs/V2-5B1-EVAL.md`): C1 concurrent stale-base
+acceptance → per-document FIFO transaction boundary with
+checks inside the turn; C2 incomplete undo ownership →
+snapshot history restoring exact metadata beside retained
+semantic inverses. Correction suite
+`test/v2-engine-5b1.test.js` (21/21; 12 fail on baseline
+including the required race and regeneration cases). No
+base-suite expectations changed.

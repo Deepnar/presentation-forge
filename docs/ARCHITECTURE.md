@@ -1655,7 +1655,11 @@ rejection, and ownership marking over the existing
 and tests with no framework dependency. Text ownership is
 field-explicit (`contentCustomized`, regenerated types);
 regeneration keeps human paragraphs same-kind-only and
-refreshes moved text from the compiler. Live compilation is
+refreshes moved text from the compiler. Transactions
+serialize FIFO per document with checks inside the turn
+(V2-5B-1); undo/redo restore exact state images including
+ownership metadata, with semantic inverses retained for
+audit (`docs/V2-5B1-EVAL.md`). Live compilation is
 stateless and transport-thin (V2-4F; `docs/V2-4F-EVAL.md`):
 `POST /api/v2/scenes` runs the fixture-driver pipeline
 (theme allowlist, plates, planned compile, scene validation)
