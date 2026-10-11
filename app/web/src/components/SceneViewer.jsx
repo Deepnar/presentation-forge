@@ -8,6 +8,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { ensureDeckFonts } from "../fonts.js";
+import { createLiveDeckLoader } from "../lib/liveDeck.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -39,7 +40,83 @@ function useInspector(viewer, snap) {
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
-  const deck = useMemo(() => DECKS.find((d) => d.name === deckName) ?? DECKS[0], [deckName]);
+  const fixture = useMemo(() => DECKS.find((d) => d.name === deckName) ?? DECKS[0], [deckName]);
+  // Live decks compile on the server and swap in on ready: the
+  // displayed fixture stays mounted and interactive while a
+  // request is in flight, so loading never flashes stale fonts
+  // or tears down the stage. A swap remounts the viewer, which
+  // clears selection by construction.
+  const loaderRef = useRef(null);
+  if (!loaderRef.current) {
+    loaderRef.current = createLiveDeckLoader({
+      compile: async ({ intent, theme, variant, signal }) => {
+        const res = await fetch("/api/v2/scenes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ intent, theme, variant }),
+          signal,
+        });
+        const body = await res.json().catch(() => null);
+        if (!res.ok || !body?.ok) {
+          const detail = Array.isArray(body?.errors) && body.errors.length > 0 ? `: ${body.errors[0]}` : "";
+          throw new Error(`${body?.error ?? `request failed (${res.status})`}${detail}`);
+        }
+        return body;
+      },
+    });
+  }
+  const [liveSnap, setLiveSnap] = useState(() => loaderRef.current.snapshot());
+  const [liveDeck, setLiveDeck] = useState(null);
+  const [liveOpen, setLiveOpen] = useState(false);
+  const [liveCatalog, setLiveCatalog] = useState({ examples: [], themes: [] });
+  const [liveForm, setLiveForm] = useState({ example: "", theme: "", variant: "plain" });
+  useLayoutEffect(() => loaderRef.current.subscribe((s) => {
+    setLiveSnap(s);
+    if (s.status === "ready" && s.deck) {
+      setLiveDeck({
+        name: `live:${s.deck.deck.name}:${s.deck.deck.theme}:${s.deck.deck.variant}`,
+        theme: s.deck.deck.theme,
+        variant: s.deck.deck.variant,
+        scenes: s.deck.scenes,
+      });
+    }
+    // Loading and error keep the displayed deck untouched: the
+    // previous scenes stay mounted until a newer compile lands.
+  }), []);
+  // Opening the Live panel loads its catalogs; the fixture-only
+  // paths (smoke, eval) never fetch.
+  useLayoutEffect(() => {
+    if (!liveOpen) return undefined;
+    let cancelled = false;
+    Promise.all([
+      fetch("/api/v2/examples").then((r) => r.json().catch(() => null)),
+      fetch("/api/v2/themes").then((r) => r.json().catch(() => null)),
+    ]).then(([ex, th]) => {
+      if (cancelled) return;
+      const examples = Array.isArray(ex?.examples) ? ex.examples : [];
+      const themes = Array.isArray(th?.themes) ? th.themes : [];
+      setLiveCatalog({ examples, themes });
+      setLiveForm((f) => ({
+        example: f.example || examples[0]?.id || "",
+        theme: f.theme || examples[0]?.theme || themes[0] || "",
+        variant: f.variant || "plain",
+      }));
+    }).catch(() => {
+      if (!cancelled) setLiveCatalog({ examples: [], themes: [] });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [liveOpen]);
+  function pickFixture(name) {
+    loaderRef.current.abort();
+    setLiveDeck(null);
+    setDeckName(name);
+  }
+  // The displayed deck is the live compile when one is ready,
+  // else the chosen fixture. Identity change remounts everything
+  // downstream (fonts, viewer, selection).
+  const deck = liveDeck ?? fixture;
   const mountRef = useRef(null);
   const scrollRef = useRef(null);
   const viewerRef = useRef(null);
@@ -154,8 +231,9 @@ export default function SceneViewer({ initial = {} }) {
       </aside>
       <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #333", flexWrap: "wrap" }}>
-          <select aria-label="Deck" value={deckName} onChange={(e) => setDeckName(e.target.value)}>
+          <select aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)}>
             {DECKS.map((d) => <option key={d.name} value={d.name}>{d.name} ({d.theme}, {d.variant})</option>)}
+            {liveDeck && <option value={liveDeck.name}>{liveDeck.name} (live)</option>}
           </select>
           <button type="button" onClick={() => api?.prev()}>← Prev</button>
           <button type="button" onClick={() => api?.next()}>Next →</button>
@@ -163,10 +241,56 @@ export default function SceneViewer({ initial = {} }) {
           <span aria-live="polite" style={{ minWidth: 56, textAlign: "center" }}>{Math.round((snap?.zoom ?? 1) * 100)}%</span>
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
           <button type="button" onClick={() => api?.resetZoom()}>Fit</button>
+          <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen}>Live</button>
           <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>
             {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
+            {liveSnap.status === "loading" ? " · compiling…" : ""}
           </span>
         </div>
+        {liveOpen && (
+          <div
+            data-live-panel
+            aria-label="Live compilation"
+            style={{
+              display: "flex", gap: 8, alignItems: "center", padding: "6px 12px",
+              borderBottom: "1px solid #333", fontSize: 12, flexWrap: "wrap", background: "#242220",
+            }}
+          >
+            <select
+              aria-label="Live example"
+              value={liveForm.example}
+              onChange={(e) => {
+                const ex = liveCatalog.examples.find((x) => x.id === e.target.value);
+                setLiveForm((f) => ({ ...f, example: e.target.value, theme: ex?.theme ?? f.theme, variant: ex?.variant ?? f.variant }));
+              }}
+            >
+              {liveCatalog.examples.length === 0 && <option value="">(no examples — is the API running?)</option>}
+              {liveCatalog.examples.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
+            </select>
+            <select aria-label="Live theme" value={liveForm.theme} onChange={(e) => setLiveForm((f) => ({ ...f, theme: e.target.value }))}>
+              {liveCatalog.themes.map((t) => <option key={t} value={t}>{t}</option>)}
+              {liveForm.theme && !liveCatalog.themes.includes(liveForm.theme) && <option value={liveForm.theme}>{liveForm.theme}</option>}
+            </select>
+            <select aria-label="Live variant" value={liveForm.variant} onChange={(e) => setLiveForm((f) => ({ ...f, variant: e.target.value }))}>
+              <option value="plain">plain</option>
+              <option value="chromed">chromed</option>
+            </select>
+            <button
+              type="button"
+              disabled={liveSnap.status === "loading" || !liveForm.example}
+              onClick={() => {
+                const ex = liveCatalog.examples.find((x) => x.id === liveForm.example);
+                if (!ex?.intent) return;
+                loaderRef.current.load({ intent: ex.intent, theme: liveForm.theme, variant: liveForm.variant });
+              }}
+            >
+              {liveSnap.status === "loading" ? "Compiling…" : "Compile live"}
+            </button>
+            <span aria-live="polite" role={liveSnap.status === "error" ? "alert" : undefined} style={{ opacity: 0.85 }}>
+              {liveSnap.status === "error" ? `Error: ${liveSnap.error}` : liveDeck ? `Live: ${liveDeck.name}` : ""}
+            </span>
+          </div>
+        )}
         {inspected.length > 0 && (
           <div
             data-inspector
@@ -187,20 +311,28 @@ export default function SceneViewer({ initial = {} }) {
         )}
         <div
           ref={scrollRef}
-          style={{ flex: 1, overflow: "auto", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: 24 }}
+          data-scroll-container
+          style={{ flex: 1, overflow: "auto", display: "flex", alignItems: "flex-start", justifyContent: "flex-start", padding: 24 }}
         >
-          <div
-            ref={mountRef}
-            tabIndex={0}
-            role="application"
-            aria-label={`Slide ${snap?.slideId ?? ""}`}
-            style={{
-              width: slideW, height: slideH, flexShrink: 0,
-              transform: `scale(${scale})`, transformOrigin: "top center",
-              background: "#fff", borderRadius: 4, overflow: "hidden",
-              outline: "none",
-            }}
-          />
+          {/* Zoom-pan spacer: the layout footprint tracks the scaled
+          slide, so zoomed slides scroll instead of overflowing
+          paint-only. Scene coordinates are untouched — the mount
+          keeps SVG px and top-left origin, and overlay boxes ride
+          the same transform. margin auto centers at fit. */}
+          <div style={{ width: slideW * scale, height: slideH * scale, flexShrink: 0, margin: "0 auto" }}>
+            <div
+              ref={mountRef}
+              tabIndex={0}
+              role="application"
+              aria-label={`Slide ${snap?.slideId ?? ""}`}
+              style={{
+                width: slideW, height: slideH, flexShrink: 0,
+                transform: `scale(${scale})`, transformOrigin: "top left",
+                background: "#fff", borderRadius: 4, overflow: "hidden",
+                outline: "none",
+              }}
+            />
+          </div>
         </div>
         {/* Selection rings render as overlay boxes from scene-dom
         (data-overlay); the state attribute below is the DOM contract
