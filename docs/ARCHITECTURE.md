@@ -1359,6 +1359,11 @@ paths yet, `packages/` holds the first agent-native primitive:
   -> Uint8Array` (strict TS, fresh presentation per call, document
   metadata in options) with `node.ts` as the explicit Node-only file
   adapter; generation is in-memory, persistence is the adapter's job.
+  Fail-closed export preflight (V2-5A): `preflightScenes` +
+  `ExportUnsafeError` refuse contract-invalid scenes, multi-series
+  pie/doughnut, and empty chart/table payloads before any byte is
+  generated — the renderer projects valid scenes or refuses, never
+  silently drops data.
 - `packages/renderer-docx/` — `renderDocx(report, donorBytes, options)
   -> Uint8Array` (strict TS): deterministic OOXML body builders,
   donor-bytes surgery preserving package chrome, pure pagination-text
@@ -1650,7 +1655,12 @@ scaled slide gives zoomed content real scrollbars without
 touching scene coordinates. The compile endpoint is public
 for local development and denied on hosted deployments
 unless `FORGE_V2_LIVE=1` (V2-4 gate; `docs/V2-4-FINAL-EVAL.md`
-§6).
+§6). Editor contracts are specified but not implemented
+(V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
+envelope with revision log and history, copy-on-write
+atomicity, (slideId, elementId) addressing, batch entries,
+two-layer provenance, and regeneration-suppression rules
+over the existing `commands.ts` + preservation foundation.
 
 ## The web shell
 

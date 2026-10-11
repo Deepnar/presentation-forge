@@ -1,60 +1,65 @@
-# Handoff — V2-4 gate evaluated, V2-4F accepted; V2-4 [~]; V2-5 NOT started
+# Handoff — V2-5A implemented, in review; V2-4 accepted; V2-5B NOT started
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-3F [x]; V2-4A
-[x] at `c5b564a`; V2-4B [x] at `34a758b`; V2-4 [~] pending
-reviewer acceptance; V2-4C [~]; V2-4C-1 [~]; V2-4C-2 [~];
-V2-4D [x] at `2509968`; V2-4E [x] at `1a52170`; V2-4F [x] at
-`c45a473`; gate report `docs/V2-4-FINAL-EVAL.md` with PASS
-recommendation).
+[x] at `c5b564a`; V2-4B [x] at `34a758b`; V2-4 [x] at
+`5beba39`; V2-4C [~]; V2-4C-1 [~]; V2-4C-2 [~]; V2-4D [x] at
+`2509968`; V2-4E [x] at `1a52170`; V2-4F [x] at `c45a473`;
+V2-5 [~]; V2-5A [~] in review with architecture + eval).
 
 ## Current state
 
-On `v2`, over `c45a473`. This session ran the V2-4 final
-integration gate: clean-environment validation, test-total
-reconciliation, API safety audit, combination probes,
-identical-scene browser/PPTX evidence, export-boundary
-probe, and defect triage — plus one narrowly scoped
-correction (hosted guard on the live endpoint, test-backed)
-and the gate driver/evidence/docs. No features, no V2-5.
+On `v2`, over `5beba39`. This session implemented V2-5A:
+a fail-closed native export boundary plus editor command,
+revision, identity, and ownership contracts — no editing
+operations, no persistence, no UI. One product-code touch
+(`packages/renderer-pptx/render.ts` preflight); the rest is
+contracts, tests, and docs.
 
-**What lands (expect ~3 scoped commits):** hosted guard +
-`liveCompileAllowed` matrix + signal pinning
-(`v2-scenes-routes.js`, live tests, eval driver env);
-gate driver (`tools/v2-4final-eval.mjs`, 16/16 captures
-clean, 8×12 native slides); report
-(`docs/V2-4-FINAL-EVAL.md`) + evidence
-(`docs/v2-4-final-evidence/`, 8 inspected files);
-architecture guard note, roadmap (V2-4F accepted, stale
-plan lines discharged, two P2 follow-ups filed), and this
+**What lands (expect ~4 scoped commits):**
+`preflightScenes` + `ExportUnsafeError` at `renderPptx`
+(baseline-proven refusal, silent loss gone); 10 preflight
+tests (`test/v2-export-preflight-5a.test.js`, incl. OOXML
+value assertions and sentinel-file preservation); 5
+readiness contract tests (`test/v2-readiness-5a.test.js`);
+architecture record
+(`docs/V2-5A-EDITOR-ARCHITECTURE.md`: envelope, revision,
+atomicity, validation, identity, undo/redo, provenance,
+customization/detachment, suppression rules, D1–D5,
+V2-5B/C plan, demo migration); report
+(`docs/V2-5A-EVAL.md`); architecture + roadmap updates
+(V2-4 accepted, V2-5 open, P2-1 audit attached); and this
 handoff.
 
-**Result for the reviewer.** PASS recommended: zero P0/P1,
-tracked P2s, full suite 1533–1534/1536 (sole persistent
-failure the known BYOK locale one; parallel-load browser
-flakes green in isolation), benchmark 50 cells L1 zero,
-browser/PPTX pairs agree with only accepted differences.
-V2-4 parent stays `[~]` for the reviewer's flip; the two
-new follow-ups (export-validation seam, suite parallelism)
-are filed P2-4/P2-1.
+**Result for the reviewer.** Direct unsafe scenes are
+refused naming slide and element; valid exports render
+exactly as before (23/23 existing renderer/fallback tests
+unmodified); the editor's next three slices have specific
+contracts with named files, shapes, and tests instead of
+prose. Open decisions D1–D5 have owners and slices.
+Deferrals: tombstones (V2-5C), text granularity (later),
+parallelism pass (filed P2-1), BYOK (untouched).
 
-## Verification (re-verify before push)
+## Verification (at push)
 
-- Full `npm test` — 1536 tests; expect 1533–1534 pass,
-  BYOK fail, 0 skipped/cancelled.
+- `test/v2-export-preflight-5a.test.js` — 10/10
+  (key refusal fails on `5beba39` by targeted probe:
+  baseline renders 1 `<c:ser>` silently).
+- `test/v2-readiness-5a.test.js` — 5/5.
+- Renderer/fallback/preservation/scene suites — 56/56.
+- One V2-4C-1 test updated to refusal (asserted the old
+  loss); 13/13 in file after.
 - `npm run typecheck` — clean.
-- Production `vite build` — clean.
 - `node tools/v2-benchmark.mjs --raster none` — 50 cells
   L1 zero.
-- Focused: live 16+5, selection 18+5, viewer 25+3,
-  fonts 7+2 — all green.
-- `node tools/v2-4final-eval.mjs` exits 0; tree clean
-  after round-trip; `git status` holds only user files.
+- Full `npm test` — 1552 total · 1550 pass · 2 fail ·
+  0 skipped/cancelled (BYOK + one P2-1 load flake, both
+  separated; live-chrome 5/5 in isolation).
 
 ## Continue from here
 
-1. Independent acceptance: flip V2-4 `[~]` → `[x]` per the
-   gate report, or scope a correction slice for any finding
-   the reviewer rates above P2.
-2. Then plan V2-5 from the §16 prerequisites (export seam
-   first). Do NOT begin V2-5 without authorization.
+1. Independent review of V2-5A (commits + architecture
+   record + `docs/V2-5A-EVAL.md`). Then V2-5B command
+   engine per the arch doc §15.
+2. Do NOT begin V2-5B, editing UI, persistence, or agent
+   integration without authorization.

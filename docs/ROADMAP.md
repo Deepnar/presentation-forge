@@ -7153,7 +7153,7 @@ Ranked backlog (defects first, then weaknesses, then capabilities):
   stays 50 cells L1/L2 zero; rasters pixel-identical across
   eras. P2 backlog intact.
 
-### [~] V2-4 browser scene renderer
+### [x] V2-4 browser scene renderer
 
 *Depends on: V2-3 (accepted at `fdc7cf5`). Blocks: V2-5.*
 
@@ -7247,15 +7247,23 @@ scale); charts structurally exact without axes (V2-4C).
   compiles), but no future caller should reach the file
   without the fallback. Refuse or fallback at `renderPptx*`
   time before editor-driven export exists.
-- [ ] Browser-suite build parallelism (V2-4 gate P2-1) —
-  concurrent `vite build` ×5 plus polling Chromes can time
-  out 60s gates under `node --test`; serial runs are green.
-  Serialize builds or share one dist before the editor
-  multiplies browser suites further.
+- [ ] Browser-suite build parallelism (V2-4 gate P2-1,
+  V2-5A audit) — browser CDP gates can time out under full
+  `node --test` parallelism while serial runs stay green.
+  Measured alibi: `vite build` takes 0.4s solo, 0.5s doubled,
+  so build contention is NOT the mechanism; prime suspects
+  are LibreOffice CPU hunger and Chrome multiplicity.
+  Isolate with process-level measurement before locking the
+  wrong resource, ahead of further browser suites.
 
-### [ ] V2-5 real editor, commands, autosave
+### [~] V2-5 real editor, commands, autosave
 
-*Depends on: V2-4. Blocks: V2-8 (agent edits ride the same commands).*
+*Depends on: V2-4 (accepted at `5beba39`). Blocks: V2-8 (agent edits ride the same commands).*
+
+- [~] V2-5A export safety, editor architecture, command
+  contracts (in review: `docs/V2-5A-EVAL.md` +
+  `docs/V2-5A-EDITOR-ARCHITECTURE.md`; fail-closed PPTX
+  preflight, readiness contracts, demo migration plan).
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,
