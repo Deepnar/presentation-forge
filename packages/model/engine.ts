@@ -20,6 +20,7 @@ import {
   deleteScene,
   duplicateScene,
   reorderScene,
+  setSlideLayoutState,
   type DeckCommand,
 } from "./commands.ts";
 import { validateScene, findElement } from "./scene.ts";
@@ -29,7 +30,8 @@ export type SlideOp =
   | { type: "slide.insert"; scene: SlideScene; index?: number }
   | { type: "slide.delete"; id: string }
   | { type: "slide.duplicate"; id: string }
-  | { type: "slide.reorder"; id: string; toIndex: number };
+  | { type: "slide.reorder"; id: string; toIndex: number }
+  | { type: "slide.setLayoutState"; id: string; layoutState: SlideScene["layoutState"] };
 
 export type EngineOp = DeckCommand | SlideOp;
 
@@ -117,7 +119,7 @@ interface EngineState {
 export const MAX_HISTORY = 200;
 
 const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.updateText", "element.add", "element.delete"]);
-const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder"]);
+const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder", "slide.setLayoutState"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -350,6 +352,12 @@ function checkOp(placed: unknown): string | null {
     case "slide.duplicate":
       if (!idStr(op.id)) return `${op.type} needs id`;
       return null;
+    case "slide.setLayoutState":
+      if (!idStr(op.id)) return "slide.setLayoutState needs id";
+      if (!["managed", "customized", "detached"].includes((op as { layoutState: string }).layoutState)) {
+        return "slide.setLayoutState needs a known layout state";
+      }
+      return null;
     case "slide.reorder":
       if (!idStr(op.id) || !Number.isInteger(op.toIndex) || (op.toIndex as number) < 0) {
         return "slide.reorder needs id and a non-negative toIndex";
@@ -575,11 +583,23 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
     case "slide.duplicate": {
       const { id } = op as { id: string };
       if (!scenes.some((s) => s.id === id)) reject("unknown-slide", `unknown slide ${id}`);
-      if (scenes.some((s) => s.id === `${id}-copy`)) reject("op-rejected", `slide id ${id}-copy already exists`);
-      const next = duplicateScene(scenes, id);
+      // Uniqueness lives in duplicateScene (derooted counter over
+      // the live deck), so repeats never collide — the old
+      // `-copy`-taken rejection is gone with the shallow remap.
+      const { scenes: next, id: newId } = duplicateScene(scenes, id);
       scenes.length = 0;
       scenes.push(...next);
-      return { slideId: null, op: { type: "slide.delete", id: `${id}-copy` } };
+      return { slideId: null, op: { type: "slide.delete", id: newId } };
+    }
+    case "slide.setLayoutState": {
+      const { id, layoutState } = op as { id: string; layoutState: SlideScene["layoutState"] };
+      const i = scenes.findIndex((s) => s.id === id);
+      if (i < 0) reject("unknown-slide", `unknown slide ${id}`);
+      const prev = scenes[i].layoutState;
+      const next = setSlideLayoutState(scenes, id, layoutState);
+      scenes.length = 0;
+      scenes.push(...next);
+      return { slideId: null, op: { type: "slide.setLayoutState", id, layoutState: prev } };
     }
     case "slide.reorder": {
       const { id, toIndex } = op as { id: string; toIndex: number };

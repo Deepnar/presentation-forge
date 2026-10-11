@@ -463,15 +463,96 @@ export function deleteScene(scenes: SlideScene[], id: string): SlideScene[] {
   return scenes.filter((s) => s.id !== id);
 }
 
-export function duplicateScene(scenes: SlideScene[], id: string): SlideScene[] {
+// Every identity in a deck, slides and nested group children
+// alike: the collision domain for duplication.
+function deckIds(scenes: SlideScene[]): Set<string> {
+  const out = new Set<string>();
+  const walk = (els: SceneElement[]): void => {
+    for (const el of els ?? []) {
+      out.add(el.id);
+      walk(el.group?.children ?? []);
+    }
+  };
+  for (const s of scenes) {
+    out.add(s.id);
+    walk(s.elements);
+  }
+  return out;
+}
+
+// Deterministic copy numbering per base slide: `X-copy`,
+// `X-copy-2`, … Derooting first keeps duplicate-of-duplicate on
+// the same readable sequence instead of stacking `-copy-copy`.
+// Pure over the deck, so the adapter can predict the engine's
+// choice on identical state (and retry on divergence).
+export function planDuplicateId(scenes: SlideScene[], id: string): string {
+  const base = id.replace(/-copy(-\d+)?$/, "");
+  const taken = deckIds(scenes);
+  if (!taken.has(`${base}-copy`)) return `${base}-copy`;
+  let n = 2;
+  while (taken.has(`${base}-copy-${n}`)) n++;
+  return `${base}-copy-${n}`;
+}
+
+export function duplicateScene(scenes: SlideScene[], id: string): { scenes: SlideScene[]; id: string } {
   const i = scenes.findIndex((s) => s.id === id);
   if (i < 0) throw new Error(`unknown slide ${id}`);
+  const taken = deckIds(scenes);
+  // Deep independence: structured clone, then EVERY element id —
+  // including nested group children — remapped against the live
+  // deck domain, so no identity survives twice and a second
+  // duplication can never collide with the first.
   const copy: SlideScene = JSON.parse(JSON.stringify(scenes[i]));
-  copy.id = `${id}-copy`;
-  copy.elements = copy.elements.map((e) => ({ ...e, id: `${e.id}-copy` }));
+  const fresh = (oldId: string): string => {
+    const base = oldId.replace(/-copy(-\d+)?$/, "");
+    if (!taken.has(`${base}-copy`)) {
+      taken.add(`${base}-copy`);
+      return `${base}-copy`;
+    }
+    let n = 2;
+    while (taken.has(`${base}-copy-${n}`)) n++;
+    taken.add(`${base}-copy-${n}`);
+    return `${base}-copy-${n}`;
+  };
+  const remap = (els: SceneElement[]): void => {
+    for (const el of els ?? []) {
+      el.id = fresh(el.id);
+      // The copy is human-owned work: compiler provenance would let
+      // a future regeneration reconcile it as the original's
+      // semantic twin. Locked chrome keeps its provenance — it is
+      // institutional marks, not authored content.
+      if (!el.locked && el.provenance === "compiler") el.provenance = "human";
+      remap(el.group?.children ?? []);
+    }
+  };
+  remap(copy.elements);
+  const newId = planDuplicateId(scenes, id);
+  taken.add(newId);
+  copy.id = newId;
+  // A duplicated slide is human-arranged by definition; a managed
+  // source stays managed only when already hands-off.
+  if (copy.layoutState === "managed") copy.layoutState = "customized";
   const next = [...scenes];
   next.splice(i + 1, 0, copy);
-  return next;
+  return { scenes: next, id: newId };
+}
+
+// Narrow layout-ownership transition for the Detach action:
+// managed/customized become hands-off; detached stays detached
+// (a no-op the engine backstop reports). No reattach path is
+// exposed — only undo restores the prior state, through the
+// synthesized inverse below (see the engine's slide handling).
+export function setSlideLayoutState(
+  scenes: SlideScene[],
+  id: string,
+  layoutState: SlideScene["layoutState"],
+): SlideScene[] {
+  if (layoutState !== "managed" && layoutState !== "customized" && layoutState !== "detached") {
+    throw new Error(`unknown layout state ${layoutState}`);
+  }
+  const i = scenes.findIndex((s) => s.id === id);
+  if (i < 0) throw new Error(`unknown slide ${id}`);
+  return scenes.map((s, si) => (si === i ? { ...s, layoutState } : s));
 }
 
 export function reorderScene(scenes: SlideScene[], id: string, toIndex: number): SlideScene[] {
