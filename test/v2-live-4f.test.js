@@ -13,6 +13,7 @@ import { validateScene } from "../packages/model/scene.ts";
 import { renderPptxToFile } from "../packages/renderer-pptx/node.ts";
 import { registerV2ScenesRoutes, compileLiveDeck, liveExamples } from "../app/server/v2-scenes-routes.js";
 import { createLiveDeckLoader } from "../app/web/src/lib/liveDeck.js";
+import { setHostedForTest } from "../src/cloud.js";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -21,6 +22,11 @@ let base = null;
 let server = null;
 
 before(async () => {
+  // The harness exercises the default-allow path: pin the local
+  // signal (this box may carry a hosted flag file) and restore it
+  // afterwards. The guard matrix below mutates the same signal
+  // per case and restores this baseline.
+  setHostedForTest(false);
   const app = express();
   app.use(express.json({ limit: "1mb" }));
   registerV2ScenesRoutes(app);
@@ -31,6 +37,7 @@ before(async () => {
 
 after(async () => {
   await new Promise((resolve) => (server ? server.close(resolve) : resolve()));
+  setHostedForTest(null);
 });
 
 async function post(body) {
@@ -127,6 +134,36 @@ describe("v2-4f live compilation contract", () => {
       body: JSON.stringify({ intent: big, theme: "warm-humanist" }),
     });
     assert.equal(res.status, 413, "megabyte body refused before compiling");
+  });
+
+  it("live compilation is gated off hosted deployments unless enabled", async () => {
+    const { setHostedForTest } = await import("../src/cloud.js");
+    const { liveCompileAllowed } = await import("../app/server/v2-scenes-routes.js");
+    const ex = liveExamples()[0];
+    const savedHosted = process.env.FORGE_HOSTED;
+    const savedFlag = process.env.FORGE_V2_LIVE;
+    try {
+      setHostedForTest(false);
+      delete process.env.FORGE_V2_LIVE;
+      assert.equal(liveCompileAllowed(), true, "local dev allowed");
+      assert.equal((await post({ intent: ex.intent })).status, 200);
+      setHostedForTest(true);
+      assert.equal(liveCompileAllowed(), false, "hosted denied by default");
+      const denied = await post({ intent: ex.intent });
+      assert.equal(denied.status, 403, "hosted POST refused without a trace");
+      process.env.FORGE_V2_LIVE = "1";
+      assert.equal(liveCompileAllowed(), true, "explicit opt-in wins on hosted");
+      assert.equal((await post({ intent: ex.intent })).status, 200);
+      process.env.FORGE_V2_LIVE = "0";
+      setHostedForTest(false);
+      assert.equal(liveCompileAllowed(), false, "explicit opt-out wins locally");
+    } finally {
+      setHostedForTest(false);
+      if (savedHosted === undefined) delete process.env.FORGE_HOSTED;
+      else process.env.FORGE_HOSTED = savedHosted;
+      if (savedFlag === undefined) delete process.env.FORGE_V2_LIVE;
+      else process.env.FORGE_V2_LIVE = savedFlag;
+    }
   });
 
   it("identical inputs compile deterministically", async () => {

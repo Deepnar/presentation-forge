@@ -14,6 +14,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fail, ok } from "./http.js";
+import { isHosted } from "../../src/cloud.js";
 import { validateDeckIntent, normalizeIntent } from "../../packages/model/intent.ts";
 import { validateScene } from "../../packages/model/scene.ts";
 import { loadThemeDocument } from "../../src/theme-loader.js";
@@ -42,6 +43,17 @@ async function v2Themes() {
   return themeCache;
 }
 
+// Deployment exposure: the compile endpoint is public for local
+// development (deterministic, CPU-cheap, tightly bounded). On a
+// hosted deployment it stays off unless explicitly enabled, so no
+// unauthenticated compilation service appears in production by
+// accident. GETs serve static data and stay public like
+// /api/themes. Override: FORGE_V2_LIVE=1 forces on, =0 forces off.
+export function liveCompileAllowed() {
+  if (process.env.FORGE_V2_LIVE === "1") return true;
+  if (process.env.FORGE_V2_LIVE === "0") return false;
+  return !isHosted();
+}
 // Curated deterministic example intents served to the viewer for
 // local evaluation (GET /api/v2/examples): real compiler input,
 // no fixture JSON involved. Small on purpose — each exercises a
@@ -165,6 +177,9 @@ export function registerV2ScenesRoutes(app) {
   });
 
   app.post("/api/v2/scenes", async (req, res) => {
+    if (!liveCompileAllowed()) {
+      return fail(res, 403, "live compilation is disabled on this host");
+    }
     if (req.body && JSON.stringify(req.body).length > MAX_BODY_CHARS) {
       return fail(res, 413, "request too large");
     }

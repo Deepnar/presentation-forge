@@ -32,6 +32,10 @@ before(async () => {
     skipped = "no chrome binary on PATH";
     return;
   }
+  // Pin the local signal so the compile endpoint serves on boxes
+  // carrying a hosted flag file; restored in after().
+  const { setHostedForTest } = await import("../src/cloud.js");
+  setHostedForTest(false);
   try {
     execSync("node_modules/.bin/vite build --config app/web/vite.config.js", { cwd: ROOT, stdio: "pipe", timeout: 300000 });
   } catch (err) {
@@ -57,6 +61,10 @@ before(async () => {
 
 after(async () => {
   await new Promise((resolve) => (server ? server.close(resolve) : resolve()));
+  try {
+    const { setHostedForTest } = await import("../src/cloud.js");
+    setHostedForTest(null);
+  } catch { /* teardown only */ }
 });
 
 const STATE = `JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState)`;
@@ -204,6 +212,7 @@ describe("v2-4f live browser integration", () => {
     try {
       await openLivePanel(page);
       const before = await page.evaluate(`document.querySelector('[aria-label="Deck"] option:checked')?.textContent ?? ''`);
+      await waitFor(page, `(() => { const b = [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === 'Compile live'); return b && !b.disabled; })()`);
       const go = await page.evaluate(clickText("button", "Compile live"));
       await page.click(go[0], go[1]);
       await waitFor(page, `document.body.textContent.includes('compiling')`);

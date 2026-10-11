@@ -23,6 +23,10 @@ const PORT = 5218;
 const { registerV2ScenesRoutes, liveExamples, compileLiveDeck } = await import("../app/server/v2-scenes-routes.js");
 const { openViewer } = await import("./chrome-shot.mjs");
 
+// Dev-only driver: opt into live compilation in case the host
+// carries a hosted flag (the endpoint denies hosted by default).
+if (process.env.FORGE_V2_LIVE === undefined) process.env.FORGE_V2_LIVE = "1";
+
 function build() {
   execSync("node_modules/.bin/vite build --config app/web/vite.config.js", { cwd: ROOT, stdio: "pipe", timeout: 300000 });
 }
