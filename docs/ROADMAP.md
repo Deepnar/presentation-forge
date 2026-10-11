@@ -7289,11 +7289,20 @@ scale); charts structurally exact without axes (V2-4C).
   styling through `element.setStyle` with `styleCustomized`
   preservation, cascaded insertion, in-flight text-commit guard,
   and layout-stable double-click (accepted at `b69472a`).
-- [~] V2-5F multi-paragraph editing and text formatting —
+- [x] V2-5F multi-paragraph editing and text formatting —
   uniform-paragraph drafts with slot-attached styles plus
   paragraph-scoped `element.setTextStyle` under a
-  `formatCustomized` ownership model (pending independent
-  review: `docs/V2-5F-EVAL.md` + `docs/v2-5f-evidence/`).
+  `formatCustomized` ownership model (accepted at `f2d29c9`).
+- [~] V2-5G native chart-data editing — `element.setChartData`
+  with fail-closed pie/doughnut conversion, `dataCustomized`
+  preservation, dock grid inspector, and native OOXML
+  verification (pending independent review:
+  `docs/V2-5G-EVAL.md` + `docs/chart-editor-evidence/`).
+- [ ] Table editing — `element.setTableData` mirroring the chart
+  contract (cell strings, row/column add/remove with full-matrix
+  agreement, header handling), dock grid panel,
+  `tableCustomized` ownership, OOXML `a:t` verification. Sized
+  like the chart slice; no code started.
 
 Future editor capabilities (planning entries only — discussed,
 not scoped, not started; no implementation in any V2-5 slice):

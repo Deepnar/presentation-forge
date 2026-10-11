@@ -1698,7 +1698,12 @@ slot-attached per-paragraph styles, and paragraph-scoped
 `element.setTextStyle` recolors/resizes/emphasizes whole runs
 under a `formatCustomized` rule that keeps human paint over
 fresh compiler wording; multi-run input stays honestly refused
-(`docs/V2-5F-EVAL.md`). Editor contracts are specified but not implemented
+(`docs/V2-5F-EVAL.md`). Chart data edits through atomic
+`element.setChartData` with fail-closed pie/doughnut conversion
+and `dataCustomized` preservation (label typography stays
+compiler-owned), edited in a dock grid panel and verified down
+to the inline OOXML chart caches (`docs/V2-5G-EVAL.md`).
+Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
 atomicity, (slideId, elementId) addressing, batch entries,

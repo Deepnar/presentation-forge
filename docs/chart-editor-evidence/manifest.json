@@ -1,0 +1,16 @@
+{
+  "shots": [
+    "eval-panel.png",
+    "eval-edited.png",
+    "eval-line.png",
+    "eval-chromed.png"
+  ],
+  "notes": [
+    "eval-panel.png: chart editor grid over the bar chart",
+    "eval-edited.png: edited value committed, bars rescaled",
+    "kind after switch: line",
+    "eval-line.png: bar switched to a native line chart, data intact",
+    "chromed rename visible: true",
+    "eval-chromed.png: renamed category on a chromed slide, marks intact"
+  ]
+}

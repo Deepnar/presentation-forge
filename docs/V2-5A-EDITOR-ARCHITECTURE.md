@@ -268,6 +268,11 @@ or filesystem/SQLite adapters.
   per-paragraph style slots; formatting travels separately
   through `element.setTextStyle` under `formatCustomized`, never
   through wording updates (`docs/V2-5F-EVAL.md` §§2–5).
+- Chart-data editing (V2-5G): one `element.setChartData` per
+  Apply over categories/series/kind with length agreement and a
+  fail-closed multi-series pie gate; appearance (label type)
+  never travels with data, and `dataCustomized` carries the
+  payload across recompiles (`docs/V2-5G-EVAL.md` §§1–6).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.
