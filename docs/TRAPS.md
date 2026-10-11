@@ -1522,3 +1522,10 @@ gives a 1.2in label about 0.12in of margin and a 3in label 0.3in — so the
 short labels, which is to say the ones most likely to be a single unbreakable
 word, get almost nothing. Add the inset as a constant and keep the percentage
 for the measurement error it is actually there for.
+
+**Eval temp fixtures must never share names with committed ones.**
+A viewer-eval driver that round-trips temp scenes through
+`app/web/src/scenes/` and reverts them afterwards will
+overwrite committed fixtures of the same name — and the revert
+`rm` then deletes the committed files. Prefix temp decks
+(`v24d-…`) and refuse non-temp paths in the round-trip helper.
