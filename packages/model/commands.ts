@@ -80,6 +80,24 @@ export type ElementSetChartDataInverse = {
   id: string;
   priorChart: { chartKind: ChartKind; categories: string[]; series: ChartSeriesInput[] };
 };
+// Narrow table-data update: the full cell matrix, verbatim strings.
+// Structural edits (add/remove rows and columns) travel as complete
+// replacement matrices — never deltas, never padding — so a short
+// row cannot silently drop populated cells elsewhere. The header
+// flag is preserved, never toggled, by this command; header WORDING
+// edits arrive as first-row cells. Layout, typography, and geometry
+// ride along untouched. The inverse restores prior rows wholesale
+// under a distinct priorRows key, validated like any payload.
+export type ElementSetTableData = {
+  type: "element.setTableData";
+  id: string;
+  table: { rows: string[][] };
+};
+export type ElementSetTableDataInverse = {
+  type: "element.setTableData";
+  id: string;
+  priorRows: string[][];
+};
 export type ElementUpdateText = { type: "element.updateText"; id: string; paragraphs: Paragraph[] };
 // An update inverse restores whatever the element held — including absent
 // paragraphs — so it carries the wider shape rather than weakening the
@@ -88,7 +106,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementSetTableData | ElementSetTableDataInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -127,7 +145,80 @@ function markDataCustomized(scene: SlideScene, el: SceneElement): void {
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
-// Text-appearance ownership is recorded separately from wording:
+// Table-data ownership is recorded separately from geometry: a
+// moved table keeps compiler-refreshed rows on regeneration,
+// while edited cells survive as the human matrix (see
+// recompileSlide). One boolean covering rows (the header flag
+// rides with the matrix verbatim), set only here. Layout and
+// typography stay compiler-owned always.
+function markTableCustomized(scene: SlideScene, el: SceneElement): void {
+  if (el.provenance === "compiler") el.provenance = "human";
+  el.tableCustomized = true;
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+}
+
+// Shared semantic validators, used by forward AND restore paths
+// alike (§11): an inverse-shaped payload submitted directly must
+// face the same rules as an ordinary edit, so restoring can never
+// install data a forward commit would refuse.
+function assertChartPayload(kind: string, cats: unknown, series: unknown, id: string): asserts cats is string[] {
+  const categories = cats as string[];
+  const list = series as ChartSeriesInput[];
+  if (!Array.isArray(categories) || categories.length === 0) {
+    throw new Error(`element ${id}: chart needs at least one category`);
+  }
+  if (!Array.isArray(list) || list.length === 0) {
+    throw new Error(`element ${id}: chart needs at least one series`);
+  }
+  for (const s of list) {
+    if (!s || typeof s.name !== "string" || s.name.trim().length === 0) {
+      throw new Error(`element ${id}: every series needs a non-empty name`);
+    }
+    if (!Array.isArray(s.values) || s.values.length !== categories.length) {
+      throw new Error(`element ${id}: series "${s.name}" holds ${s.values?.length ?? 0} values for ${categories.length} categories`);
+    }
+    for (const v of s.values) {
+      if (typeof v !== "number" || !Number.isFinite(v)) {
+        throw new Error(`element ${id}: series "${s.name}" carries a non-finite value`);
+      }
+    }
+  }
+  for (const c of categories) {
+    if (typeof c !== "string") throw new Error(`element ${id}: every category must be a string`);
+  }
+  // Fail-closed conversion gate (the V2-5A lesson): native
+  // pie/doughnut keeps a single <c:ser>, so a multi-series
+  // payload under those kinds would silently drop data.
+  if ((kind === "pie" || kind === "doughnut") && list.length > 1) {
+    throw new Error(`element ${id}: ${kind} cannot keep ${list.length} series in native output — split the data or pick a cartesian kind`);
+  }
+}
+
+// Full-matrix rule for tables: rectangular, at least one row and
+// one column, every cell a string kept VERBATIM (no numeric
+// parsing — "00123" and "₹1,25,000" are text). Ragged input is
+// rejected rather than padded: padding is a projection concern,
+// and accepting ragged matrices would let a short row silently
+// drop populated cells elsewhere.
+function assertTableMatrix(rows: unknown, id: string): asserts rows is string[][] {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    throw new Error(`element ${id}: a table needs at least one row`);
+  }
+  const width = (rows[0] as unknown[]).length;
+  if (!Array.isArray(rows[0]) || width === 0) {
+    throw new Error(`element ${id}: a table needs at least one column`);
+  }
+  rows.forEach((row, ri) => {
+    if (!Array.isArray(row) || row.length !== width) {
+      throw new Error(`element ${id}: row ${ri + 1} holds ${Array.isArray(row) ? row.length : 0} cells for a ${width}-column table — supply the full matrix`);
+    }
+    row.forEach((cell, ci) => {
+      if (typeof cell !== "string") {
+        throw new Error(`element ${id}: cell r${ri + 1}c${ci + 1} must be a string`);
+      }
+    });
+  });
+}
 // a recolored heading keeps compiler-refreshed wording on
 // regeneration while keeping its human paint, and rewritten wording
 // keeps flowing through the content rule. One boolean, set only
@@ -256,9 +347,11 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       if (el.kind !== "chart") throw new Error(`element ${cmd.id} is not a chart`);
       assertEditable(el);
       // Restore path (the inverse, keyed by priorChart): wholesale
-      // prior chart, validated like any payload below.
+      // prior chart, validated like any payload (§11 — a directly
+      // submitted restore faces the same semantic gate).
       if ("priorChart" in cmd) {
         const restore = (cmd as ElementSetChartDataInverse).priorChart;
+        assertChartPayload(restore.chartKind, restore.categories, restore.series, String(cmd.id));
         const beforeChart = el.chart;
         el.chart = { ...(el.chart ?? {}), chartKind: restore.chartKind, categories: [...restore.categories], series: restore.series.map((s) => ({ name: s.name, values: [...s.values] })) };
         markDataCustomized(scene, el);
@@ -277,30 +370,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       const nextKind = forward.chart.chartKind ?? (cur as { chartKind?: ChartKind }).chartKind ?? "bar";
       const nextCats = forward.chart.categories ?? [...((cur as { categories?: string[] }).categories ?? [])];
       const nextSeries = (forward.chart.series ?? (cur as { series?: ChartSeriesInput[] }).series ?? []).map((s) => ({ name: s.name, values: [...s.values] }));
-      if (nextCats.length === 0) throw new Error(`element ${cmd.id}: chart needs at least one category`);
-      if (nextSeries.length === 0) throw new Error(`element ${cmd.id}: chart needs at least one series`);
-      for (const s of nextSeries) {
-        if (typeof s.name !== "string" || s.name.trim().length === 0) {
-          throw new Error(`element ${cmd.id}: every series needs a non-empty name`);
-        }
-        if (!Array.isArray(s.values) || s.values.length !== nextCats.length) {
-          throw new Error(`element ${cmd.id}: series "${s.name}" holds ${s.values?.length ?? 0} values for ${nextCats.length} categories`);
-        }
-        for (const v of s.values) {
-          if (typeof v !== "number" || !Number.isFinite(v)) {
-            throw new Error(`element ${cmd.id}: series "${s.name}" carries a non-finite value`);
-          }
-        }
-      }
-      for (const c of nextCats) {
-        if (typeof c !== "string") throw new Error(`element ${cmd.id}: every category must be a string`);
-      }
-      // Fail-closed conversion gate (the V2-5A lesson): native
-      // pie/doughnut keeps a single <c:ser>, so a multi-series
-      // payload under those kinds would silently drop data.
-      if ((nextKind === "pie" || nextKind === "doughnut") && nextSeries.length > 1) {
-        throw new Error(`element ${cmd.id}: ${nextKind} cannot keep ${nextSeries.length} series in native output — split the data or pick a cartesian kind`);
-      }
+      assertChartPayload(nextKind, nextCats, nextSeries, String(cmd.id));
       const prevChart = el.chart;
       el.chart = {
         ...(el.chart ?? {}),
@@ -317,6 +387,37 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
           categories: [...(prevChart?.categories ?? [])],
           series: (prevChart?.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
         },
+      };
+    }
+    case "element.setTableData": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      if (el.kind !== "table") throw new Error(`element ${cmd.id} is not a table`);
+      assertEditable(el);
+      // Restore path (the inverse, keyed by priorRows): wholesale
+      // prior matrix, validated like any payload (§11).
+      if ("priorRows" in cmd) {
+        const restore = (cmd as ElementSetTableDataInverse).priorRows;
+        assertTableMatrix(restore, String(cmd.id));
+        const beforeRows = el.table?.rows;
+        el.table = { ...(el.table ?? { rows: [] }), rows: restore.map((r) => [...r]) };
+        markTableCustomized(scene, el);
+        return {
+          type: "element.setTableData",
+          id: cmd.id,
+          priorRows: (beforeRows ?? []).map((r) => [...r]),
+        };
+      }
+      const forward = cmd as ElementSetTableData;
+      const nextRows = (forward.table.rows ?? []).map((r) => [...r]);
+      assertTableMatrix(nextRows, String(cmd.id));
+      const prevRows = el.table?.rows;
+      el.table = { ...(el.table ?? { rows: [] }), rows: nextRows };
+      markTableCustomized(scene, el);
+      return {
+        type: "element.setTableData",
+        id: cmd.id,
+        priorRows: (prevRows ?? []).map((r) => [...r]),
       };
     }
     case "element.updateText": {

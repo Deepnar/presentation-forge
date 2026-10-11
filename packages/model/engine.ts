@@ -116,7 +116,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -227,11 +227,33 @@ function checkOp(placed: unknown): string | null {
     case "element.setChartData": {
       // Restore-shape inverse (audit/replay): priorChart wholesale.
       // Branches before payload validation because the inverse
-      // carries no chart key.
+      // carries no chart key. Shape-validated here; semantic rules
+      // (length agreement, pie gate) run in applyCommand like any
+      // payload (§11).
       if ("priorChart" in (op as Record<string, unknown>)) {
         const prior = (op as { priorChart: unknown }).priorChart;
         if (!idStr(op.id) || !isRecord(prior)) {
           return "element.setChartData restore needs id and a priorChart object";
+        }
+        const pc = prior as Record<string, unknown>;
+        if (typeof pc.chartKind !== "string" || !["bar", "hbar", "line", "pie", "doughnut", "area"].includes(pc.chartKind)) {
+          return "element.setChartData restore needs a supported chartKind";
+        }
+        if (!Array.isArray(pc.categories) || (pc.categories as unknown[]).some((c) => typeof c !== "string")) {
+          return "element.setChartData restore needs string categories";
+        }
+        if (!Array.isArray(pc.series)) {
+          return "element.setChartData restore needs a series array";
+        }
+        for (const s of pc.series as Record<string, unknown>[]) {
+          if (!isRecord(s) || typeof s.name !== "string" || !Array.isArray(s.values)) {
+            return "element.setChartData restore needs named series with values arrays";
+          }
+          for (const v of s.values as unknown[]) {
+            if (typeof v !== "number" || !Number.isFinite(v)) {
+              return "element.setChartData restore carries a non-finite value";
+            }
+          }
         }
         return null;
       }
@@ -265,6 +287,34 @@ function checkOp(placed: unknown): string | null {
               return `element.setChartData series "${s.name}" carries a non-finite value`;
             }
           }
+        }
+      }
+      return null;
+    }
+    case "element.setTableData": {
+      // Restore-shape inverse (audit/replay): priorRows wholesale.
+      // Branches first like the chart restore; rectangularity runs
+      // in applyCommand for both paths (§11).
+      if ("priorRows" in (op as Record<string, unknown>)) {
+        const rows = (op as { priorRows: unknown }).priorRows;
+        if (!idStr(op.id) || !Array.isArray(rows)) {
+          return "element.setTableData restore needs id and a priorRows array";
+        }
+        for (const row of rows) {
+          if (!Array.isArray(row)) return "element.setTableData restore needs row arrays";
+          for (const cell of row) {
+            if (typeof cell !== "string") return "element.setTableData restore needs string cells";
+          }
+        }
+        return null;
+      }
+      if (!idStr(op.id) || !isRecord(op.table) || !Array.isArray(op.table.rows)) {
+        return "element.setTableData needs id and a table object with a rows array";
+      }
+      for (const row of op.table.rows) {
+        if (!Array.isArray(row)) return "element.setTableData rows must be row arrays";
+        for (const cell of row) {
+          if (typeof cell !== "string") return "element.setTableData cells must be strings — nothing is coerced";
         }
       }
       return null;
@@ -415,6 +465,13 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
         if (chart.categories !== undefined && JSON.stringify(cur.categories ?? []) !== JSON.stringify(chart.categories)) return true;
         if (chart.series !== undefined && JSON.stringify(cur.series ?? []) !== JSON.stringify(chart.series)) return true;
         return false;
+      }
+      case "element.setTableData": {
+        // Restore-shape inverses always run (audit/replay path).
+        if ("priorRows" in (op as Record<string, unknown>)) return true;
+        const cur = (el as { table?: { rows?: string[][] } }).table?.rows;
+        const rows = (op as { table?: { rows?: string[][] } }).table?.rows;
+        return JSON.stringify(cur ?? null) !== JSON.stringify(rows ?? null);
       }
       case "element.setTextStyle": {
         // Restore-shape inverses always run (audit/replay path).

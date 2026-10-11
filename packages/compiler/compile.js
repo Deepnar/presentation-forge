@@ -386,6 +386,23 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.dataCustomized = true;
       el.provenance = "human";
     }
+    // Table ownership is orthogonal to geometry: an edited table
+    // keeps its human matrix while geometry follows the rule above
+    // (preserved when customized, fresh otherwise). A merely moved
+    // table (human provenance, no table flag) refreshes its rows
+    // from the compiler. The header flag, layout, and typography
+    // always follow the fresh compile — presentation, not data.
+    // Identity is exact-id first (findPrev above); when the
+    // semantic table disappears or changes identity, there is no
+    // human matrix to carry and the fresh compile stands alone.
+    if (p?.tableCustomized && el.kind === "table" && el.kind === p.kind && p.table) {
+      el.table = {
+        ...(el.table ?? { rows: [] }),
+        rows: p.table.rows.map((r) => [...r]),
+      };
+      el.tableCustomized = true;
+      el.provenance = "human";
+    }
   }
   const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
   if (suppressed.size > 0) {

@@ -75,6 +75,10 @@ export interface SceneElement {
    * Human edited this chart's data (categories, series values/names, chart kind). Geometry ownership stays on `customized`; regeneration keeps the human chart payload when this is set and refreshes it from the compiler when it is not. Label typography stays compiler-owned always.
    */
   dataCustomized?: boolean;
+  /**
+   * Human edited this table's cells (rows content and structure). Geometry ownership stays on `customized`; regeneration keeps the human matrix when this is set and refreshes it from the compiler when it is not. Header flag, layout, and typography stay compiler-owned always.
+   */
+  tableCustomized?: boolean;
   fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {
