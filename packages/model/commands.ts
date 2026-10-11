@@ -30,6 +30,33 @@ export type ElementSetStyle = {
   id: string;
   style: { fill?: StylePatchValue; stroke?: StylePatchValue; strokeWidth?: number | null };
 };
+// Narrow text-appearance update: color, size, bold, and italic over
+// whole addressable runs. Targeting is paragraph-scoped
+// (paragraphIndex) or whole-element (omitted) — never an arbitrary
+// substring, because runs are never split here. Only keys PRESENT
+// in the patch are touched; explicit null REMOVES the key
+// (restoring absence, which matters: bold:false differs from an
+// absent bold when weight >= 600). All other run keys (family,
+// weight, tracking, line, transform, role) ride along untouched.
+// The inverse restores prior paragraphs wholesale, so undo is exact
+// regardless of which keys were mentioned.
+export type TextStylePatch = {
+  color?: string | null;
+  size?: number | null;
+  bold?: boolean | null;
+  italic?: boolean | null;
+};
+export type ElementSetTextStyle = {
+  type: "element.setTextStyle";
+  id: string;
+  paragraphIndex?: number;
+  style: TextStylePatch;
+};
+export type ElementSetTextStyleInverse = {
+  type: "element.setTextStyle";
+  id: string;
+  paragraphs: Paragraph[] | undefined;
+};
 export type ElementUpdateText = { type: "element.updateText"; id: string; paragraphs: Paragraph[] };
 // An update inverse restores whatever the element held — including absent
 // paragraphs — so it carries the wider shape rather than weakening the
@@ -38,7 +65,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -61,6 +88,17 @@ function markCustomized(scene: SlideScene, el: SceneElement, geometry = true): v
 function markContentCustomized(scene: SlideScene, el: SceneElement): void {
   if (el.provenance === "compiler") el.provenance = "human";
   el.contentCustomized = true;
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+}
+
+// Text-appearance ownership is recorded separately from wording:
+// a recolored heading keeps compiler-refreshed wording on
+// regeneration while keeping its human paint, and rewritten wording
+// keeps flowing through the content rule. One boolean, set only
+// here — the narrow formatCustomized extension, mirroring style.
+function markFormatCustomized(scene: SlideScene, el: SceneElement): void {
+  if (el.provenance === "compiler") el.provenance = "human";
+  el.formatCustomized = true;
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
@@ -137,6 +175,44 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       el.shape = next;
       markStyleCustomized(scene, el);
       return { type: "element.setStyle", id: cmd.id, style: prev };
+    }
+    case "element.setTextStyle": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      if (el.kind !== "text") throw new Error(`element ${cmd.id} is not text`);
+      assertEditable(el);
+      // Restore path (the inverse): wholesale prior paragraphs.
+      if ("paragraphs" in cmd) {
+        const before = el.paragraphs;
+        el.paragraphs = (cmd as ElementSetTextStyleInverse).paragraphs;
+        markFormatCustomized(scene, el);
+        return { type: "element.setTextStyle", id: cmd.id, paragraphs: before };
+      }
+      const forward = cmd as ElementSetTextStyle;
+      const paras = el.paragraphs ?? [];
+      const idxs = forward.paragraphIndex !== undefined ? [forward.paragraphIndex] : paras.map((_, i) => i);
+      if (forward.paragraphIndex !== undefined && (idxs[0] < 0 || idxs[0] >= paras.length)) {
+        throw new Error(`paragraph ${forward.paragraphIndex} out of range for element ${cmd.id}`);
+      }
+      const prev = el.paragraphs;
+      el.paragraphs = paras.map((p, i) => {
+        if (!idxs.includes(i)) return p;
+        // Formatting addresses whole runs only: a multi-run
+        // paragraph is refused rather than partially rewritten.
+        if (!Array.isArray(p.runs) || p.runs.length !== 1) {
+          throw new Error(`paragraph ${i} of element ${cmd.id} is not a single run`);
+        }
+        const run = { ...(p.runs[0] ?? {}) };
+        for (const k of ["color", "size", "bold", "italic"] as const) {
+          const v = forward.style[k];
+          if (v === undefined) continue;
+          if (v === null) delete run[k];
+          else (run[k] as unknown) = v;
+        }
+        return { ...p, runs: [run] };
+      });
+      markFormatCustomized(scene, el);
+      return { type: "element.setTextStyle", id: cmd.id, paragraphs: prev };
     }
     case "element.updateText": {
       const el = findElement(scene, cmd.id);

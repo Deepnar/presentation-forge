@@ -116,7 +116,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -189,6 +189,38 @@ function checkOp(placed: unknown): string | null {
       }
       if (strokeWidth !== undefined && strokeWidth !== null && (typeof strokeWidth !== "number" || !Number.isFinite(strokeWidth) || strokeWidth < 0)) {
         return "element.setStyle strokeWidth must be a finite number >= 0 or null";
+      }
+      return null;
+    }
+    case "element.setTextStyle": {
+      // Restore-shape inverse (audit/replay): paragraphs wholesale,
+      // no style patch. Branches before style validation because the
+      // inverse carries no style key.
+      if ("paragraphs" in (op as Record<string, unknown>)) {
+        if (!idStr(op.id) || !Array.isArray((op as { paragraphs: unknown }).paragraphs)) {
+          return "element.setTextStyle restore needs id and a paragraphs array";
+        }
+        return null;
+      }
+      if (!idStr(op.id) || !isRecord(op.style)) return "element.setTextStyle needs id and a style object";
+      const { color, size, bold, italic } = op.style as Record<string, unknown>;
+      if (op.paragraphIndex !== undefined && (!Number.isInteger(op.paragraphIndex) || (op.paragraphIndex as number) < 0)) {
+        return "element.setTextStyle paragraphIndex must be a non-negative integer";
+      }
+      if (color === undefined && size === undefined && bold === undefined && italic === undefined) {
+        return "element.setTextStyle needs at least one of color, size, bold, italic";
+      }
+      const hex = /^[0-9A-Fa-f]{6}$/;
+      if (color !== undefined && color !== null && (typeof color !== "string" || !hex.test(color))) {
+        return "element.setTextStyle color must be a 6-digit hex color or null";
+      }
+      if (size !== undefined && size !== null && (typeof size !== "number" || !Number.isFinite(size) || size <= 0)) {
+        return "element.setTextStyle size must be a positive finite number or null";
+      }
+      for (const [k, v] of [["bold", bold], ["italic", italic]] as const) {
+        if (v !== undefined && v !== null && typeof v !== "boolean") {
+          return `element.setTextStyle ${k} must be a boolean or null`;
+        }
       }
       return null;
     }
@@ -327,6 +359,29 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
       case "element.updateText": {
         const { paragraphs } = op as { paragraphs: unknown };
         return JSON.stringify(el.paragraphs ?? null) !== JSON.stringify(paragraphs ?? null);
+      }
+      case "element.setTextStyle": {
+        // Restore-shape inverses always run (audit/replay path).
+        if ("paragraphs" in (op as Record<string, unknown>)) return true;
+        // Mentioned keys only; null clears, so it is effective
+        // exactly when the key is currently present. Absence vs
+        // explicit false matters (weight >= 600), so compare raw.
+        const { style, paragraphIndex } = op as {
+          style: { color?: string | null; size?: number | null; bold?: boolean | null; italic?: boolean | null };
+          paragraphIndex?: number;
+        };
+        const paras = (el as { paragraphs?: { runs?: { color?: string; size?: number; bold?: boolean; italic?: boolean }[] }[] }).paragraphs ?? [];
+        const idxs = paragraphIndex !== undefined ? [paragraphIndex] : paras.map((_, i) => i);
+        return idxs.some((i) => {
+          const run = paras[i]?.runs?.[0];
+          if (!run) return true;
+          return (["color", "size", "bold", "italic"] as const).some((k) => {
+            const v = style[k];
+            if (v === undefined) return false;
+            if (v === null) return run[k] !== undefined;
+            return run[k] !== v;
+          });
+        });
       }
       default:
         return true;

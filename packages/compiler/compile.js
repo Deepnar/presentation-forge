@@ -348,6 +348,28 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.styleCustomized = true;
       el.provenance = "human";
     }
+    // Format ownership is orthogonal to wording and geometry: a
+    // recolored element keeps its human run appearance while wording
+    // follows the content rule above (human paragraphs when
+    // contentCustomized, fresh compiler wording otherwise). Carried
+    // per paragraph index over single-run paragraphs on both sides —
+    // the documented uniform-paragraph contract. A compiler
+    // restructure (different paragraph count or multi-run sides)
+    // falls back to the fresh compile rather than guessing which
+    // words own which paint.
+    if (p?.formatCustomized && el.kind === "text" && el.kind === p.kind && p.paragraphs) {
+      const prevParas = p.paragraphs;
+      const freshParas = el.paragraphs ?? [];
+      const uniform = (ps) => ps.length > 0 && ps.every((q) => Array.isArray(q.runs) && q.runs.length === 1);
+      if (freshParas.length === prevParas.length && uniform(freshParas) && uniform(prevParas)) {
+        el.paragraphs = freshParas.map((q, i) => {
+          const { text: _drop, ...humanStyle } = prevParas[i].runs[0];
+          return { ...q, runs: [{ ...humanStyle, text: q.runs[0].text }] };
+        });
+        el.formatCustomized = true;
+        el.provenance = "human";
+      }
+    }
   }
   const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
   if (suppressed.size > 0) {
