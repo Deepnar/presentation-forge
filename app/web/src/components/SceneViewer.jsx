@@ -316,6 +316,82 @@ function ChartDataPanel({ element, onCommit }) {
   );
 }
 
+// Table-data editor: a draft grid over the table's authoritative
+// rows — plain strings, never parsed. Cells keep every character
+// verbatim ("00123" stays "00123"), new rows and columns start as
+// empty strings, and structural edits append/remove at the end.
+// One Apply submits one element.setTableData; Cancel restores the
+// committed matrix; failures keep the draft for correction.
+// Removing a populated row or column acts on the draft at once
+// and commits only on Apply — the visible draft change plus the
+// explicit Apply is the confirmation model. Remounted per
+// element+revision (see key at the call site), so undo/redo and
+// reselection refresh the grid. Switching selection discards an
+// unapplied draft — stated policy: only Apply writes.
+function TableDataPanel({ element, onCommit }) {
+  const table = element.table ?? {};
+  const seed = () => (table.rows ?? []).map((r) => [...r]);
+  const [draft, setDraft] = useState(seed);
+  const [error, setError] = useState(null);
+  const cols = draft.reduce((n, r) => Math.max(n, r.length), 0);
+  const header = table.header === true;
+  function setCell(ri, ci, value) {
+    setDraft((d) => d.map((row, i) => (i === ri ? row.map((c, j) => (j === ci ? value : c)) : row)));
+  }
+  function apply() {
+    if (draft.length === 0) {
+      setError("a table needs at least one row");
+      return;
+    }
+    setError(null);
+    onCommit?.(draft.map((r) => [...r]));
+  }
+  function cancel() {
+    setDraft(seed());
+    setError(null);
+  }
+  const commitOnEnter = (e) => {
+    if (e.key === "Enter") apply();
+  };
+  return (
+    <div data-table-editor={element.id} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "4px 12px", fontSize: 12 }}>
+      <span style={{ opacity: 0.8 }}>
+        Table {element.id} · {draft.length} rows × {cols} columns{header ? " · row 1 is the header" : ""}
+      </span>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <button type="button" onClick={() => setDraft((d) => [...d, new Array(d.reduce((n, r) => Math.max(n, r.length), 0)).fill("")])}>+ Row</button>
+        <button type="button" disabled={draft.length <= 1} title="Removes the last row on Apply — populated cells go with it" onClick={() => setDraft((d) => d.slice(0, -1))}>− Row</button>
+        <button type="button" onClick={() => setDraft((d) => d.map((r) => [...r, ""]))}>+ Column</button>
+        <button type="button" disabled={cols <= 1} title="Removes the last column on Apply — populated cells go with it" onClick={() => setDraft((d) => d.map((r) => r.slice(0, -1)))}>− Column</button>
+        <button type="button" onClick={apply}>Apply</button>
+        <button type="button" onClick={cancel}>Cancel</button>
+      </div>
+      <div style={{ overflowX: "auto", alignSelf: "flex-start", maxWidth: "100%" }}>
+        <table style={{ borderCollapse: "collapse" }}>
+          <tbody>
+            {draft.map((row, ri) => (
+              <tr key={ri} style={header && ri === 0 ? { fontWeight: "bold" } : undefined}>
+                {row.map((cell, ci) => (
+                  <td key={ci} style={{ padding: 2 }}>
+                    <input
+                      aria-label={header && ri === 0 ? `Header column ${ci + 1}` : `Row ${ri + 1} column ${ci + 1}`}
+                      value={cell}
+                      style={{ width: 110 }}
+                      onChange={(e) => setCell(ri, ci, e.target.value)}
+                      onKeyDown={commitOnEnter}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -606,6 +682,11 @@ export default function SceneViewer({ initial = {} }) {
   const chartTarget = editOn && !textState.editing && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
     ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "chart" && !e.locked) ?? null)
     : null;
+  // Table-data target: the single selected unlocked table on the
+  // current slide, read from engine scenes while editing.
+  const tableTarget = editOn && !textState.editing && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
+    ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "table" && !e.locked) ?? null)
+    : null;
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
@@ -818,7 +899,7 @@ export default function SceneViewer({ initial = {} }) {
         selecting never resizes the scroll area, never retriggers
         refit, and never moves the stage — the double-click target
         stays pixel-stable. Dismissed by deselection. */}
-        {(styledShape || formattedText || chartTarget) && (
+        {(styledShape || formattedText || chartTarget || tableTarget) && (
           <div
             data-format-bar
             style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 6, borderTop: "1px solid #333", background: "#242220", maxHeight: 190, overflowY: "auto" }}
@@ -842,6 +923,13 @@ export default function SceneViewer({ initial = {} }) {
                 key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
                 element={chartTarget}
                 onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
+              />
+            )}
+            {tableTarget && (
+              <TableDataPanel
+                key={`${snap.slideId}:${tableTarget.id}:${editStatus.rev}`}
+                element={tableTarget}
+                onCommit={(rows) => adapterRef.current?.setTableData(tableTarget.id, rows)}
               />
             )}
           </div>
