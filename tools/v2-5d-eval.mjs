@@ -137,7 +137,10 @@ try {
       await page.click(commit[0], commit[1]);
       await waitFor(page, `(${EDIT}).rev === 1`);
       await shot(page, "eval-committed.png", "committed title with the eval note");
-      // Rich text refusal: the multi-line body on the same slide.
+      // Multi-paragraph body: refused under V2-5D, editable since
+      // V2-5F (uniform single-run paragraphs). Multi-run input stays
+      // refused; fixtures carry none, so the driver records the new
+      // behavior instead of asserting the old refusal.
       const rich = await page.evaluate(`(() => {
         const stage = document.querySelector('[data-stage]');
         const c = [...stage.querySelectorAll('[data-el]')].find((n) => n.querySelectorAll('text').length > 1);
@@ -149,10 +152,14 @@ try {
           await page.click(rc[0], rc[1]);
           await page.evaluate(`document.querySelector('[data-stage]').parentElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))`);
           await new Promise((r) => setTimeout(r, 1200));
+          const opened = await page.evaluate(`document.querySelector('[data-text-edit]') !== null`);
           const err = await page.evaluate(`document.querySelector('[data-edit-error]')?.textContent ?? null`);
-          manifest.notes.push(`rich-text refusal on ${rich}: ${err ?? "(no error shown)"}`);
-          console.log("rich refusal:", err);
-          await shot(page, "eval-rich-refusal.png", "structured text honestly refused, content intact");
+          manifest.notes.push(`multi-paragraph body ${rich}: editing opened=${opened}; refusal=${err ?? "(none — editable since V2-5F)"}`);
+          console.log("multi-paragraph:", opened, err);
+          await shot(page, "eval-rich-refusal.png", "multi-paragraph body now editable, per-paragraph styles kept");
+          if (opened) {
+            await page.evaluate(`document.querySelector('[data-text-edit]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+          }
         }
       }
     } finally {

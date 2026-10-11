@@ -118,7 +118,7 @@ describe("v2-5d text model helpers", () => {
     assert.equal(isSimpleText([]), false);
     assert.equal(isSimpleText(undefined), false);
     const d = describeStructure([{ runs: [{ text: "a" }, { text: "b" }] }]);
-    assert.deepEqual(d, { simple: false, paragraphs: 1, runs: 2 });
+    assert.deepEqual(d, { simple: false, editable: false, paragraphs: 1, runs: 2, multiRun: true });
   });
 
   it("builds updated paragraphs preserving run styling", () => {
