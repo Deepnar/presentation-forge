@@ -260,7 +260,9 @@ or filesystem/SQLite adapters.
   vs per-keystroke. **Decided in V2-5D:** one committed
   text-update command per editing session — typing never touches
   the engine; commit builds a single `element.updateText`
-  (`docs/V2-5D-EVAL.md` §§3–4).
+  (`docs/V2-5D-EVAL.md` §§3–4). **Hardened in V2-5E:** a
+  per-session in-flight guard makes simultaneous triggers share
+  one submission with join semantics (`docs/V2-5E-EVAL.md` §8).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

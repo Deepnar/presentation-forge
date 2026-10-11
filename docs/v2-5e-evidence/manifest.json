@@ -1,0 +1,22 @@
+{
+  "shots": [
+    "eval-handles.png",
+    "eval-resize-preview.png",
+    "eval-resized.png",
+    "eval-styled.png",
+    "eval-undo.png",
+    "eval-cascade.png"
+  ],
+  "notes": [
+    "eval-handles.png: eight handles on m-cards:c1:frame",
+    "resize preview client rect: [311.1548156738281,305.74273681640625,542.3740234375,149.46029663085938]",
+    "eval-resize-preview.png: dashed preview at the candidate geometry",
+    "resize inspector before: m-cards:c1:frame · shape · 5.817×1.32 @ 0.7,1.77 · ref c1 · compiler / after: m-cards:c1:frame · shape · 7.263×2.043 @ 0.7,1.77 · ref c1 · human",
+    "eval-resized.png: committed resize with handles rebuilt",
+    "eval-styled.png: human fill 7A2E1F on the resized card",
+    "after undo inspector: m-cards:c1:frame · shape · 7.263×2.043 @ 0.7,1.77 · ref c1 · human",
+    "eval-undo.png: undo restored geometry and compiler paint",
+    "eval-cascade.png: three inserts stepped diagonally on a chromed narrow slide",
+    "cascade selected: [\"h-73766b7ebd95\"] at rev 3"
+  ]
+}

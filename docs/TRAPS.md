@@ -1546,3 +1546,14 @@ zero output — fixed only by killing the worker. Bound `send()` in
 `tools/chrome-shot.mjs` (fail-fast with the in-flight expression
 attached) before adding more browser suites; serial green runs do
 not prove absence of this wedge.
+
+**A transaction that tracks itself only after `await` resolves early
+for every observer.** Two editor commits (text blur-commit, resize
+release-commit) registered with `pending()` after their engine
+`await`, so an observer awaiting `pending()` resolved before the
+commit landed and read stale state — while a direct caller saw
+success. The suite then asserts 0 history against a commit that
+succeeds milliseconds later, which reads exactly like a dropped
+command. Capture synchronously, track the async tail: any commit
+entry point must register its pending work before its first
+`await`, or no test can deterministically observe it.

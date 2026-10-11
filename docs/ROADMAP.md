@@ -7279,12 +7279,21 @@ scale); charts structurally exact without axes (V2-4C).
 - [x] V2-5C-1 drag coordinate fidelity — divide (not multiply)
   by rendered scale, per-axis scales, corrected scale tests
   plus Chrome displacement matrix (accepted at `b7915aa`).
-- [~] V2-5D inline text editing + native insertion — direct
+- [x] V2-5D inline text editing + native insertion — direct
   text edit through one `element.updateText` per session,
   `element.add` UI for text/rect/roundRect, rich-text refusal,
   conflict preservation, overflow warnings, native export
-  (pending independent review: `docs/V2-5D-EVAL.md` +
-  `docs/v2-5d-evidence/`).
+  (accepted at `73eb531`).
+- [~] V2-5E resize, style, and interaction hardening — eight
+  resize handles through atomic `element.setGeometry`, shape
+  styling through `element.setStyle` with `styleCustomized`
+  preservation, cascaded insertion, in-flight text-commit guard,
+  and layout-stable double-click (pending independent review:
+  `docs/V2-5E-EVAL.md` + `docs/v2-5e-evidence/`).
+- [ ] V2-5F multi-paragraph text editing — per-paragraph draft
+  model over uniform single-run paragraphs (the measured 46/129
+  fixture case; audit in `docs/V2-5E-EVAL.md` §14), then text
+  color runs. Not rich-run formatting beyond that.
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,

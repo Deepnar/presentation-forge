@@ -1684,7 +1684,15 @@ refused rather than flattened. `+ Text` / `+ Rect` / `+ Round`
 insert native human-owned elements at deterministic
 scene-center through `element.add`, reusing the same history,
 tombstone, regeneration-carry, and native PPTX projection
-(`docs/V2-5D-EVAL.md`). Editor contracts are specified but not implemented
+(`docs/V2-5D-EVAL.md`). Resize handles reshape single text,
+shape, image, and chart units through one atomic
+`element.setGeometry` per gesture under a dashed preview, and a
+shape inspector commits fill/stroke/width through
+`element.setStyle` under a `styleCustomized` preservation rule
+mirroring the content-ownership contract; repeated inserts
+cascade diagonally from content-derived indices, and text
+commits share one in-flight submission with layout-stable
+double-click (`docs/V2-5E-EVAL.md`). Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
 atomicity, (slideId, elementId) addressing, batch entries,
