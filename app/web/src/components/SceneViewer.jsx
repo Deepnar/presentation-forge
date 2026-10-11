@@ -76,14 +76,26 @@ export default function SceneViewer({ initial = {} }) {
       // A new live deck discards any unsaved edits: without
       // persistence there is nowhere to keep them, so the reset
       // is explicit navigation, never silent loss mid-session.
-      exitEdit();
-      setEditedScenes(null);
-      setLiveDeck({
-        name: `live:${s.deck.deck.name}:${s.deck.deck.theme}:${s.deck.deck.variant}`,
-        theme: s.deck.deck.theme,
-        variant: s.deck.deck.variant,
-        scenes: s.deck.scenes,
-      });
+      // An open text draft commits first (pending-edit policy);
+      // the swap waits for a successful commit.
+      const pending = adapterRef.current;
+      const swap = () => {
+        exitEdit();
+        setEditedScenes(null);
+        setLiveDeck({
+          name: `live:${s.deck.deck.name}:${s.deck.deck.theme}:${s.deck.deck.variant}`,
+          theme: s.deck.deck.theme,
+          variant: s.deck.deck.variant,
+          scenes: s.deck.scenes,
+        });
+      };
+      if (pending?.hasPendingEdit?.()) {
+        pending.commitPendingEdit().then((r) => {
+          if (r.ok) swap();
+        });
+      } else {
+        swap();
+      }
     }
     // Loading and error keep the displayed deck untouched: the
     // previous scenes stay mounted until a newer compile lands.
@@ -114,11 +126,26 @@ export default function SceneViewer({ initial = {} }) {
     };
   }, [liveOpen]);
   function pickFixture(name) {
-    exitEdit();
-    setEditedScenes(null);
-    loaderRef.current.abort();
-    setLiveDeck(null);
-    setDeckName(name);
+    guardedNav(() => {
+      exitEdit();
+      setEditedScenes(null);
+      loaderRef.current.abort();
+      setLiveDeck(null);
+      setDeckName(name);
+    });
+  }
+  // V2-5D pending-edit policy: filmstrip, deck, and zoom navigation
+  // commit an open text draft first and proceed only on success.
+  // The error stays visible with the draft preserved.
+  function guardedNav(fn) {
+    const adapter = adapterRef.current;
+    if (editOn && adapter?.hasPendingEdit?.()) {
+      adapter.commitPendingEdit().then((r) => {
+        if (r.ok) fn();
+      });
+      return;
+    }
+    fn();
   }
   // V2-5C editing: an engine document over the displayed scenes
   // plus the interaction adapter. Toggling off keeps the edited
@@ -130,13 +157,26 @@ export default function SceneViewer({ initial = {} }) {
   const [editOn, setEditOn] = useState(false);
   const [editedScenes, setEditedScenes] = useState(null);
   const [editStatus, setEditStatus] = useState({ rev: 0, error: null, preparing: false });
+  // V2-5D inline text state, mirrored from the adapter's onTextEdit
+  // callback (the adapter owns the session; React only displays).
+  const [textState, setTextState] = useState({ editing: false, elementId: null, conflict: null, overflow: null });
   function exitEdit() {
+    // Pending-edit policy: leaving edit mode commits the draft
+    // first; a failed commit keeps edit mode open with the error.
+    const adapter = adapterRef.current;
+    if (adapter?.hasPendingEdit?.()) {
+      adapter.commitPendingEdit().then((r) => {
+        if (r.ok) exitEdit();
+      });
+      return;
+    }
     try {
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
     adapterRef.current = null;
     docRef.current = null;
     setEditOn(false);
+    setTextState({ editing: false, elementId: null, conflict: null, overflow: null });
     setEditStatus({ rev: 0, error: null, preparing: false });
   }
   async function enterEdit() {
@@ -153,6 +193,16 @@ export default function SceneViewer({ initial = {} }) {
         onSync: (scenes) => {
           setEditedScenes(scenes);
           setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
+        },
+        onTextEdit: (e) => {
+          setTextState({
+            editing: e.editing,
+            elementId: e.elementId ?? null,
+            conflict: e.conflict ?? null,
+            error: e.error ?? null,
+            overflow: e.overflow ?? null,
+          });
+          if (e.committed) setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
         },
       });
       docRef.current = doc;
@@ -284,7 +334,7 @@ export default function SceneViewer({ initial = {} }) {
         </div>
         <div style={{ display: "grid", gap: 8 }}>
           {shownScenes.map((s, i) => (
-            <Thumb key={s.id} scene={s} active={i === snap?.slideIndex} onPick={() => api?.goTo(i)} />
+            <Thumb key={s.id} scene={s} active={i === snap?.slideIndex} onPick={() => api && guardedNav(() => api.goTo(i))} />
           ))}
         </div>
       </aside>
@@ -294,8 +344,8 @@ export default function SceneViewer({ initial = {} }) {
             {DECKS.map((d) => <option key={d.name} value={d.name}>{d.name} ({d.theme}, {d.variant})</option>)}
             {liveDeck && <option value={liveDeck.name}>{liveDeck.name} (live)</option>}
           </select>
-          <button type="button" onClick={() => api?.prev()}>← Prev</button>
-          <button type="button" onClick={() => api?.next()}>Next →</button>
+          <button type="button" onClick={() => api && guardedNav(() => api.prev())}>← Prev</button>
+          <button type="button" onClick={() => api && guardedNav(() => api.next())}>Next →</button>
           <button type="button" onClick={() => api?.zoomOut()} aria-label="Zoom out">−</button>
           <span aria-live="polite" style={{ minWidth: 56, textAlign: "center" }}>{Math.round((snap?.zoom ?? 1) * 100)}%</span>
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
@@ -310,9 +360,19 @@ export default function SceneViewer({ initial = {} }) {
           </button>
           {editOn && (
             <>
-              <button type="button" aria-label="Undo" onClick={() => adapterRef.current?.undo()}>↩ Undo</button>
-              <button type="button" aria-label="Redo" onClick={() => adapterRef.current?.redo()}>↪ Redo</button>
+              <button type="button" aria-label="Undo" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()}>↩ Undo</button>
+              <button type="button" aria-label="Redo" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()}>↪ Redo</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an editable text box at the slide center"} onClick={() => adapterRef.current?.addTextElement()}>+ Text</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")}>+ Rect</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")}>+ Round</button>
             </>
+          )}
+          {editOn && textState.editing && (
+            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", fontSize: 12 }}>
+              <span style={{ opacity: 0.85 }}>editing text… Ctrl+Enter commits, Esc cancels</span>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { const a = adapterRef.current; if (a?.editingId?.()) a.commitTextEdit(); }}>Commit</button>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => adapterRef.current?.cancelTextEdit()}>Cancel</button>
+            </span>
           )}
           <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>
             {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
@@ -325,6 +385,21 @@ export default function SceneViewer({ initial = {} }) {
           <div role="alert" data-edit-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0a090", background: "#242220" }}>
             Edit failed: {editStatus.error}
           </div>
+        )}
+        {textState.conflict && (
+          <div role="alert" data-text-conflict style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0c090", background: "#242220" }}>
+            {textState.conflict}{" "}
+            <button type="button" onClick={() => adapterRef.current?.commitTextEdit({ force: true })}>Overwrite with my draft</button>{" "}
+            <button type="button" onClick={() => adapterRef.current?.cancelTextEdit()}>Discard draft</button>
+          </div>
+        )}
+        {textState.overflow && (
+          <div role="status" data-text-overflow style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#e8d090", background: "#242220" }}>
+            {textState.overflow}
+          </div>
+        )}
+        {textState.editing && (
+          <div data-text-editing={textState.elementId ?? "true"} style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }} />
         )}
         {liveOpen && (
           <div
