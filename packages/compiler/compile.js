@@ -370,6 +370,22 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
         el.provenance = "human";
       }
     }
+    // Data ownership is orthogonal to geometry: an edited chart keeps
+    // its human payload (kind + categories + series) while geometry
+    // follows the rule above (preserved when customized, fresh
+    // otherwise). A merely moved or resized chart (human provenance,
+    // no data flag) refreshes its data from the compiler. Label
+    // typography always follows the fresh compile — paint, not data.
+    if (p?.dataCustomized && el.kind === "chart" && el.kind === p.kind && p.chart) {
+      el.chart = {
+        ...(el.chart ?? {}),
+        chartKind: p.chart.chartKind,
+        categories: [...p.chart.categories],
+        series: p.chart.series.map((s) => ({ name: s.name, values: [...s.values] })),
+      };
+      el.dataCustomized = true;
+      el.provenance = "human";
+    }
   }
   const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
   if (suppressed.size > 0) {

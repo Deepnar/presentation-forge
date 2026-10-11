@@ -71,6 +71,10 @@ export interface SceneElement {
    * Human restyled this text's appearance (color/size/bold/italic). Wording ownership stays on `contentCustomized`, geometry on `customized`; regeneration keeps the human run appearance when this is set and refreshes wording from the compiler when content is not customized.
    */
   formatCustomized?: boolean;
+  /**
+   * Human edited this chart's data (categories, series values/names, chart kind). Geometry ownership stays on `customized`; regeneration keeps the human chart payload when this is set and refreshes it from the compiler when it is not. Label typography stays compiler-owned always.
+   */
+  dataCustomized?: boolean;
   fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {

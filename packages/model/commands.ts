@@ -57,6 +57,29 @@ export type ElementSetTextStyleInverse = {
   id: string;
   paragraphs: Paragraph[] | undefined;
 };
+// Narrow chart-data update: categories, series (names + numeric
+// values), and chart-kind changes over the SAME data contract the
+// compiler emits. Absent keys ride along untouched. Lengths must
+// agree exactly (every series holds one value per category) —
+// there are no missing cells, no silent zero-fills, and no string
+// coercion. Conversions to pie/doughnut with more than one series
+// are rejected (native OOXML keeps a single <c:ser>; the V2-5A
+// silent-loss bug), as is any payload that would leave the chart
+// empty. Label typography (chart.labels) always rides along —
+// data edits never restyle. The inverse restores the prior chart
+// wholesale, so undo is exact.
+export type ChartKind = "bar" | "hbar" | "line" | "pie" | "doughnut" | "area";
+export type ChartSeriesInput = { name: string; values: number[] };
+export type ElementSetChartData = {
+  type: "element.setChartData";
+  id: string;
+  chart: { chartKind?: ChartKind; categories?: string[]; series?: ChartSeriesInput[] };
+};
+export type ElementSetChartDataInverse = {
+  type: "element.setChartData";
+  id: string;
+  priorChart: { chartKind: ChartKind; categories: string[]; series: ChartSeriesInput[] };
+};
 export type ElementUpdateText = { type: "element.updateText"; id: string; paragraphs: Paragraph[] };
 // An update inverse restores whatever the element held — including absent
 // paragraphs — so it carries the wider shape rather than weakening the
@@ -65,7 +88,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -88,6 +111,19 @@ function markCustomized(scene: SlideScene, el: SceneElement, geometry = true): v
 function markContentCustomized(scene: SlideScene, el: SceneElement): void {
   if (el.provenance === "compiler") el.provenance = "human";
   el.contentCustomized = true;
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+}
+
+// Chart-data ownership is recorded separately from geometry: a
+// moved or resized chart keeps compiler-refreshed data on
+// regeneration, while edited values, labels, and kind survive as
+// the human payload (see recompileSlide). One boolean covering
+// the whole chart content contract (kind + categories + series —
+// a pie's single series and a bar's many are inseparable), set
+// only here. Label typography stays compiler-owned always.
+function markDataCustomized(scene: SlideScene, el: SceneElement): void {
+  if (el.provenance === "compiler") el.provenance = "human";
+  el.dataCustomized = true;
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
@@ -213,6 +249,75 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       });
       markFormatCustomized(scene, el);
       return { type: "element.setTextStyle", id: cmd.id, paragraphs: prev };
+    }
+    case "element.setChartData": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      if (el.kind !== "chart") throw new Error(`element ${cmd.id} is not a chart`);
+      assertEditable(el);
+      // Restore path (the inverse, keyed by priorChart): wholesale
+      // prior chart, validated like any payload below.
+      if ("priorChart" in cmd) {
+        const restore = (cmd as ElementSetChartDataInverse).priorChart;
+        const beforeChart = el.chart;
+        el.chart = { ...(el.chart ?? {}), chartKind: restore.chartKind, categories: [...restore.categories], series: restore.series.map((s) => ({ name: s.name, values: [...s.values] })) };
+        markDataCustomized(scene, el);
+        return {
+          type: "element.setChartData",
+          id: cmd.id,
+          priorChart: {
+            chartKind: (beforeChart?.chartKind ?? "bar") as ChartKind,
+            categories: [...(beforeChart?.categories ?? [])],
+            series: (beforeChart?.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
+          },
+        };
+      }
+      const forward = cmd as ElementSetChartData;
+      const cur = el.chart ?? { chartKind: "bar" as ChartKind, categories: [] as string[], series: [] as ChartSeriesInput[] };
+      const nextKind = forward.chart.chartKind ?? (cur as { chartKind?: ChartKind }).chartKind ?? "bar";
+      const nextCats = forward.chart.categories ?? [...((cur as { categories?: string[] }).categories ?? [])];
+      const nextSeries = (forward.chart.series ?? (cur as { series?: ChartSeriesInput[] }).series ?? []).map((s) => ({ name: s.name, values: [...s.values] }));
+      if (nextCats.length === 0) throw new Error(`element ${cmd.id}: chart needs at least one category`);
+      if (nextSeries.length === 0) throw new Error(`element ${cmd.id}: chart needs at least one series`);
+      for (const s of nextSeries) {
+        if (typeof s.name !== "string" || s.name.trim().length === 0) {
+          throw new Error(`element ${cmd.id}: every series needs a non-empty name`);
+        }
+        if (!Array.isArray(s.values) || s.values.length !== nextCats.length) {
+          throw new Error(`element ${cmd.id}: series "${s.name}" holds ${s.values?.length ?? 0} values for ${nextCats.length} categories`);
+        }
+        for (const v of s.values) {
+          if (typeof v !== "number" || !Number.isFinite(v)) {
+            throw new Error(`element ${cmd.id}: series "${s.name}" carries a non-finite value`);
+          }
+        }
+      }
+      for (const c of nextCats) {
+        if (typeof c !== "string") throw new Error(`element ${cmd.id}: every category must be a string`);
+      }
+      // Fail-closed conversion gate (the V2-5A lesson): native
+      // pie/doughnut keeps a single <c:ser>, so a multi-series
+      // payload under those kinds would silently drop data.
+      if ((nextKind === "pie" || nextKind === "doughnut") && nextSeries.length > 1) {
+        throw new Error(`element ${cmd.id}: ${nextKind} cannot keep ${nextSeries.length} series in native output — split the data or pick a cartesian kind`);
+      }
+      const prevChart = el.chart;
+      el.chart = {
+        ...(el.chart ?? {}),
+        chartKind: nextKind,
+        categories: nextCats,
+        series: nextSeries,
+      };
+      markDataCustomized(scene, el);
+      return {
+        type: "element.setChartData",
+        id: cmd.id,
+        priorChart: {
+          chartKind: (prevChart?.chartKind ?? "bar") as ChartKind,
+          categories: [...(prevChart?.categories ?? [])],
+          series: (prevChart?.series ?? []).map((s) => ({ name: s.name, values: [...s.values] })),
+        },
+      };
     }
     case "element.updateText": {
       const el = findElement(scene, cmd.id);

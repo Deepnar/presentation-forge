@@ -116,7 +116,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -220,6 +220,51 @@ function checkOp(placed: unknown): string | null {
       for (const [k, v] of [["bold", bold], ["italic", italic]] as const) {
         if (v !== undefined && v !== null && typeof v !== "boolean") {
           return `element.setTextStyle ${k} must be a boolean or null`;
+        }
+      }
+      return null;
+    }
+    case "element.setChartData": {
+      // Restore-shape inverse (audit/replay): priorChart wholesale.
+      // Branches before payload validation because the inverse
+      // carries no chart key.
+      if ("priorChart" in (op as Record<string, unknown>)) {
+        const prior = (op as { priorChart: unknown }).priorChart;
+        if (!idStr(op.id) || !isRecord(prior)) {
+          return "element.setChartData restore needs id and a priorChart object";
+        }
+        return null;
+      }
+      if (!idStr(op.id) || !isRecord(op.chart)) return "element.setChartData needs id and a chart object";
+      const { chartKind, categories, series } = op.chart as Record<string, unknown>;
+      if (chartKind === undefined && categories === undefined && series === undefined) {
+        return "element.setChartData needs at least one of chartKind, categories, series";
+      }
+      if (chartKind !== undefined && !["bar", "hbar", "line", "pie", "doughnut", "area"].includes(chartKind as string)) {
+        return "element.setChartData chartKind must be a supported kind";
+      }
+      if (categories !== undefined) {
+        if (!Array.isArray(categories) || categories.length === 0) {
+          return "element.setChartData categories must be a non-empty array";
+        }
+        for (const c of categories) {
+          if (typeof c !== "string") return "element.setChartData categories must be strings";
+        }
+      }
+      if (series !== undefined) {
+        if (!Array.isArray(series) || series.length === 0) {
+          return "element.setChartData series must be a non-empty array";
+        }
+        for (const s of series) {
+          if (!isRecord(s) || typeof s.name !== "string" || s.name.trim().length === 0) {
+            return "element.setChartData every series needs a non-empty name";
+          }
+          if (!Array.isArray(s.values)) return `element.setChartData series "${s.name}" needs a values array`;
+          for (const v of s.values) {
+            if (typeof v !== "number" || !Number.isFinite(v)) {
+              return `element.setChartData series "${s.name}" carries a non-finite value`;
+            }
+          }
         }
       }
       return null;
@@ -359,6 +404,17 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
       case "element.updateText": {
         const { paragraphs } = op as { paragraphs: unknown };
         return JSON.stringify(el.paragraphs ?? null) !== JSON.stringify(paragraphs ?? null);
+      }
+      case "element.setChartData": {
+        // Restore-shape inverses always run (audit/replay path).
+        if ("priorChart" in (op as Record<string, unknown>)) return true;
+        const cur = (el as { chart?: { chartKind?: string; categories?: string[]; series?: { name: string; values: number[] }[] } }).chart;
+        if (!cur) return true;
+        const { chart } = op as { chart: { chartKind?: string; categories?: string[]; series?: { name: string; values: number[] }[] } };
+        if (chart.chartKind !== undefined && cur.chartKind !== chart.chartKind) return true;
+        if (chart.categories !== undefined && JSON.stringify(cur.categories ?? []) !== JSON.stringify(chart.categories)) return true;
+        if (chart.series !== undefined && JSON.stringify(cur.series ?? []) !== JSON.stringify(chart.series)) return true;
+        return false;
       }
       case "element.setTextStyle": {
         // Restore-shape inverses always run (audit/replay path).
