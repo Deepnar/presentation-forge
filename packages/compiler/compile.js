@@ -331,6 +331,23 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.provenance = "human";
       refitTextEl(design, el, intent.id ?? prev.id, sink);
     }
+    // Appearance ownership is orthogonal to geometry and text, same
+    // contract as content: a restyled shape keeps its human fill and
+    // stroke while geometry follows the rule above (preserved when
+    // customized, fresh otherwise). A merely resized shape (human
+    // provenance, no style flag) refreshes its paint from the
+    // compiler. Same-kind only, owned keys only — alphas and form
+    // always follow the fresh compile.
+    if (p?.styleCustomized && el.kind === "shape" && el.kind === p.kind) {
+      const kept = { ...(el.shape ?? {}) };
+      for (const k of ["fill", "stroke", "strokeWidth"]) {
+        if (p.shape?.[k] !== undefined) kept[k] = structuredClone(p.shape[k]);
+        else delete kept[k];
+      }
+      el.shape = kept;
+      el.styleCustomized = true;
+      el.provenance = "human";
+    }
   }
   const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
   if (suppressed.size > 0) {

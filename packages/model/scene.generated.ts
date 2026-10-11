@@ -63,6 +63,10 @@ export interface SceneElement {
    * Human rewrote this element's authored content (text). Geometry ownership stays on `customized`; regeneration keeps human paragraphs when this is set and refreshes them from the compiler when it is not.
    */
   contentCustomized?: boolean;
+  /**
+   * Human restyled this shape's appearance (fill/stroke). Geometry ownership stays on `customized`, text on `contentCustomized`; regeneration keeps the human shape styling when this is set and refreshes it from the compiler when it is not.
+   */
+  styleCustomized?: boolean;
   fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {

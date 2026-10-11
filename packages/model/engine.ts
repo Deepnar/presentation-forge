@@ -116,7 +116,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -166,6 +166,32 @@ function checkOp(placed: unknown): string | null {
         return "element.resize needs id and positive w/h";
       }
       return null;
+    case "element.setGeometry": {
+      if (!idStr(op.id) || !num(op.x) || !num(op.y) || !num(op.w) || !num(op.h)) {
+        return "element.setGeometry needs id and finite x/y/w/h";
+      }
+      if (op.w <= 0 || op.h <= 0) return "element.setGeometry needs positive w/h";
+      return null;
+    }
+    case "element.setStyle": {
+      if (!idStr(op.id) || !isRecord(op.style)) return "element.setStyle needs id and a style object";
+      const { fill, stroke, strokeWidth } = op.style as Record<string, unknown>;
+      if (fill === undefined && stroke === undefined && strokeWidth === undefined) {
+        return "element.setStyle needs at least one of fill, stroke, strokeWidth";
+      }
+      const hex = /^[0-9A-Fa-f]{6}$/;
+      const hexOrNull = (v: unknown): boolean => v === null || (typeof v === "string" && hex.test(v));
+      if (fill !== undefined && !hexOrNull(fill)) {
+        return "element.setStyle fill must be a 6-digit hex color or null";
+      }
+      if (stroke !== undefined && !hexOrNull(stroke)) {
+        return "element.setStyle stroke must be a 6-digit hex color or null";
+      }
+      if (strokeWidth !== undefined && strokeWidth !== null && (typeof strokeWidth !== "number" || !Number.isFinite(strokeWidth) || strokeWidth < 0)) {
+        return "element.setStyle strokeWidth must be a finite number >= 0 or null";
+      }
+      return null;
+    }
     case "element.updateText":
       if (!idStr(op.id) || !Array.isArray(op.paragraphs) || op.paragraphs.length === 0) {
         return "element.updateText needs id and a non-empty paragraphs array";
@@ -280,6 +306,23 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
       case "element.resize": {
         const { w, h } = op as { w: number; h: number };
         return el.w !== w || el.h !== h;
+      }
+      case "element.setGeometry": {
+        const { x, y, w, h } = op as { x: number; y: number; w: number; h: number };
+        return el.x !== x || el.y !== y || el.w !== w || el.h !== h;
+      }
+      case "element.setStyle": {
+        // Only mentioned keys count: unmentioned keys ride along, so
+        // they can never make the op effective. null clears, so it is
+        // effective exactly when the key is currently present.
+        const { style } = op as { style: { fill?: string | null; stroke?: string | null; strokeWidth?: number | null } };
+        const cur = (el as { shape?: { fill?: string; stroke?: string; strokeWidth?: number } }).shape ?? {};
+        return (["fill", "stroke", "strokeWidth"] as const).some((k) => {
+          const v = style[k];
+          if (v === undefined) return false;
+          if (v === null) return cur[k] !== undefined;
+          return cur[k] !== v;
+        });
       }
       case "element.updateText": {
         const { paragraphs } = op as { paragraphs: unknown };

@@ -12,6 +12,24 @@ import type { SlideScene, SceneElement, Paragraph } from "./scene.generated.ts";
 
 export type ElementMove = { type: "element.move"; id: string; x: number; y: number };
 export type ElementResize = { type: "element.resize"; id: string; w: number; h: number };
+// Atomic origin-plus-extent update for resize handles on the top and
+// left edges, which move x/y as well as w/h. One command, one
+// inverse, one history entry — never a move+resize pair that could
+// half-land. element.resize stays for extent-only callers.
+export type ElementSetGeometry = { type: "element.setGeometry"; id: string; x: number; y: number; w: number; h: number };
+// Narrow shape-appearance update: fill, stroke, and stroke width are
+// the owned keys. Only keys PRESENT in the command are touched, so a
+// partial update never wipes an unmentioned key; an explicit null
+// REMOVES the key (restoring absence). fillAlpha/strokeAlpha/form
+// ride along untouched. The inverse applyCommand returns uses the
+// same representation, so undo restores exact prior appearance —
+// including a previously absent stroke — rather than layering over it.
+export type StylePatchValue = string | null;
+export type ElementSetStyle = {
+  type: "element.setStyle";
+  id: string;
+  style: { fill?: StylePatchValue; stroke?: StylePatchValue; strokeWidth?: number | null };
+};
 export type ElementUpdateText = { type: "element.updateText"; id: string; paragraphs: Paragraph[] };
 // An update inverse restores whatever the element held — including absent
 // paragraphs — so it carries the wider shape rather than weakening the
@@ -20,7 +38,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -46,6 +64,17 @@ function markContentCustomized(scene: SlideScene, el: SceneElement): void {
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
+// Appearance ownership is recorded separately from geometry and
+// text for the same reason content is: a resized compiler shape
+// must keep its theme fill on regeneration, while a restyled one
+// keeps its human fill (see recompileSlide). One boolean, set only
+// here — the narrow styleCustomized extension.
+function markStyleCustomized(scene: SlideScene, el: SceneElement): void {
+  if (el.provenance === "compiler") el.provenance = "human";
+  el.styleCustomized = true;
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+}
+
 export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
   switch (cmd.type) {
     case "element.move": {
@@ -67,6 +96,47 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       el.h = cmd.h;
       markCustomized(scene, el);
       return { type: "element.resize", id: cmd.id, ...prev };
+    }
+    case "element.setGeometry": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      assertEditable(el);
+      const prev = { x: el.x, y: el.y, w: el.w, h: el.h };
+      el.x = cmd.x;
+      el.y = cmd.y;
+      el.w = cmd.w;
+      el.h = cmd.h;
+      markCustomized(scene, el);
+      return { type: "element.setGeometry", id: cmd.id, ...prev };
+    }
+    case "element.setStyle": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      if (el.kind !== "shape") throw new Error(`element ${cmd.id} is not a shape`);
+      assertEditable(el);
+      const prev: { fill?: StylePatchValue; stroke?: StylePatchValue; strokeWidth?: number | null } = {};
+      const curShape = el.shape ?? {};
+      const next: Record<string, string | number> = { ...curShape };
+      // Unmentioned keys ride along untouched (LIFO undo needs no
+      // pin: nothing can change them between forward and inverse).
+      if (cmd.style.fill !== undefined) {
+        prev.fill = curShape.fill ?? null;
+        if (cmd.style.fill === null) delete next.fill;
+        else next.fill = cmd.style.fill;
+      }
+      if (cmd.style.stroke !== undefined) {
+        prev.stroke = curShape.stroke ?? null;
+        if (cmd.style.stroke === null) delete next.stroke;
+        else next.stroke = cmd.style.stroke;
+      }
+      if (cmd.style.strokeWidth !== undefined) {
+        prev.strokeWidth = curShape.strokeWidth ?? null;
+        if (cmd.style.strokeWidth === null) delete next.strokeWidth;
+        else next.strokeWidth = cmd.style.strokeWidth;
+      }
+      el.shape = next;
+      markStyleCustomized(scene, el);
+      return { type: "element.setStyle", id: cmd.id, style: prev };
     }
     case "element.updateText": {
       const el = findElement(scene, cmd.id);
