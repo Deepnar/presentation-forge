@@ -1176,6 +1176,90 @@ export function attachEditor(viewer, doc, opts = {}) {
     })());
   }
 
+  // ——— Chart-data editing ———
+  //
+  // Bounded native edits over the compiler's own chart contract:
+  // categories, series names/values, and kind changes. The draft
+  // lives in the inspector panel (never in the scene); one Apply
+  // submits one element.setChartData envelope. Length agreement is
+  // enforced before commit — changing the category count without
+  // supplying matching values is rejected, never zero-filled.
+  // Conversions that native OOXML cannot keep (multi-series pie /
+  // doughnut) are rejected here with an explanation, ahead of the
+  // export preflight that remains the last line of defense.
+  const CHART_KINDS = ["bar", "hbar", "line", "pie", "doughnut", "area"];
+
+  function setChartData(id, payload) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return report({ ok: false, code: "unknown-element", message: `unknown element ${id}` });
+    if (el.locked) return report({ ok: false, code: "locked", message: `element ${id} is locked` });
+    if (el.kind !== "chart") return report({ ok: false, code: "op-rejected", message: `element ${id} is not a chart` });
+    if (!payload || typeof payload !== "object") {
+      return report({ ok: false, code: "bad-envelope", message: "element.setChartData needs a chart payload" });
+    }
+    const cur = el.chart ?? {};
+    const nextKind = payload.chartKind ?? cur.chartKind ?? "bar";
+    const nextCats = payload.categories ?? [...(cur.categories ?? [])];
+    const nextSeries = (payload.series ?? cur.series ?? []).map((s) => ({ name: s.name, values: [...s.values] }));
+    if (payload.chartKind !== undefined && !CHART_KINDS.includes(payload.chartKind)) {
+      return report({ ok: false, code: "bad-envelope", message: "chartKind must be a supported kind" });
+    }
+    if (payload.chartKind === undefined && payload.categories === undefined && payload.series === undefined) {
+      return report({ ok: false, code: "bad-envelope", message: "element.setChartData needs at least one of chartKind, categories, series" });
+    }
+    if (nextCats.length === 0) {
+      return report({ ok: false, code: "op-rejected", message: "a chart needs at least one category — deletion of the last one is refused" });
+    }
+    if (nextSeries.length === 0) {
+      return report({ ok: false, code: "op-rejected", message: "a chart needs at least one series — deletion of the last one is refused" });
+    }
+    for (const c of nextCats) {
+      if (typeof c !== "string") {
+        return report({ ok: false, code: "bad-envelope", message: "every category must be a string" });
+      }
+    }
+    for (const s of nextSeries) {
+      if (!s || typeof s.name !== "string" || s.name.trim().length === 0) {
+        return report({ ok: false, code: "bad-envelope", message: "every series needs a non-empty name" });
+      }
+      if (!Array.isArray(s.values) || s.values.length !== nextCats.length) {
+        return report({ ok: false, code: "op-rejected", message: `series "${s.name}" holds ${s.values?.length ?? 0} values for ${nextCats.length} categories — supply the full matrix` });
+      }
+      for (const v of s.values) {
+        if (typeof v !== "number" || !Number.isFinite(v)) {
+          return report({ ok: false, code: "bad-envelope", message: `series "${s.name}" carries a non-numeric value — nothing was coerced` });
+        }
+      }
+    }
+    if ((nextKind === "pie" || nextKind === "doughnut") && nextSeries.length > 1) {
+      return report({ ok: false, code: "op-rejected", message: `${nextKind} cannot keep ${nextSeries.length} series in native PowerPoint output — remove series first or pick a bar, line, or area kind` });
+    }
+    const sameKind = (cur.chartKind ?? "bar") === nextKind;
+    const sameCats = JSON.stringify(cur.categories ?? []) === JSON.stringify(nextCats);
+    const sameSeries = JSON.stringify(cur.series ?? []) === JSON.stringify(nextSeries);
+    if (sameKind && sameCats && sameSeries) {
+      return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    }
+    return track((async () => {
+      const result = await doc.apply({
+        id: newEditId(),
+        slideId: snap.slideId,
+        op: { type: "element.setChartData", id, chart: { chartKind: nextKind, categories: nextCats, series: nextSeries } },
+        baseRevision: doc.snapshot().revision,
+        actor: "human",
+      });
+      if (result.ok) sync();
+      return report(result);
+    })());
+  }
+
   async function onEditAction(action) {
     // Interaction precedence: an open text edit outranks every canvas
     // shortcut. Arrows/Backspace belong to the caret (scene-dom never
@@ -1269,6 +1353,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     handlesVisible: () => (handleLayer ? handleLayer.querySelectorAll("[data-resize-handle]").length : 0),
     setElementStyle: (id, patch) => setElementStyle(id, patch),
     setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
+    setChartData: (id, payload) => setChartData(id, payload),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();
