@@ -7205,6 +7205,13 @@ scale); charts structurally exact without axes (V2-4C).
   `docs/V2-4C-EVAL.md` + `docs/v2-4c-evidence/`. Series colors
   explicitly interim; theme-resolved `series[].color`
   carriage tracked as follow-up.
+- [~] V2-4C-1 chart-integrity correction — truthful micro-scale
+  tick labels and explicit multi-series pie marking (in
+  review). Step-exact decimals with scientific fallback,
+  finite-mapping guard, hollow "(not shown)" legend entries;
+  13 tests, 6 proven to fail on the V2-4C baseline; eval
+  `docs/V2-4C1-EVAL.md` + `docs/v2-4c1-evidence/`. V2-4C stays
+  pending alongside it.
 - [ ] V2-4D browser fonts — bundle the display faces themes
   reference; document residual fallback.
 - [ ] V2-4E selection model — multi-select, focus,
