@@ -1,0 +1,17 @@
+{
+  "shots": [
+    "eval-multi-editing.png",
+    "eval-multi-committed.png",
+    "eval-formatted.png",
+    "eval-format-undone.png",
+    "eval-mixed-committed.png"
+  ],
+  "notes": [
+    "multi overlay-vs-element px: {\"dx\":-0.01324462890625,\"dy\":0.018585205078125}",
+    "eval-multi-editing.png: four-bullet draft plus appended fifth line",
+    "eval-multi-committed.png: five bullets committed in one revision",
+    "eval-formatted.png: second bullet native blue, siblings untouched",
+    "eval-format-undone.png: undo restored the compiler bullet color",
+    "eval-mixed-committed.png: mixed label+body reworded, per-paragraph paint intact on chrome"
+  ]
+}

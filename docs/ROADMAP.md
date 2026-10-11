@@ -7284,16 +7284,32 @@ scale); charts structurally exact without axes (V2-4C).
   `element.add` UI for text/rect/roundRect, rich-text refusal,
   conflict preservation, overflow warnings, native export
   (accepted at `73eb531`).
-- [~] V2-5E resize, style, and interaction hardening — eight
+- [x] V2-5E resize, style, and interaction hardening — eight
   resize handles through atomic `element.setGeometry`, shape
   styling through `element.setStyle` with `styleCustomized`
   preservation, cascaded insertion, in-flight text-commit guard,
-  and layout-stable double-click (pending independent review:
-  `docs/V2-5E-EVAL.md` + `docs/v2-5e-evidence/`).
-- [ ] V2-5F multi-paragraph text editing — per-paragraph draft
-  model over uniform single-run paragraphs (the measured 46/129
-  fixture case; audit in `docs/V2-5E-EVAL.md` §14), then text
-  color runs. Not rich-run formatting beyond that.
+  and layout-stable double-click (accepted at `b69472a`).
+- [~] V2-5F multi-paragraph editing and text formatting —
+  uniform-paragraph drafts with slot-attached styles plus
+  paragraph-scoped `element.setTextStyle` under a
+  `formatCustomized` ownership model (pending independent
+  review: `docs/V2-5F-EVAL.md` + `docs/v2-5f-evidence/`).
+
+Future editor capabilities (planning entries only — discussed,
+not scoped, not started; no implementation in any V2-5 slice):
+
+- **Layers panel** — object tree, reordering, bring forward/back,
+  hide/lock, grouping, and transparent overlap management over
+  authoritative Layer-C scenes.
+- **New slide from layout library** — a gallery of editable slide
+  skeletons, including the legacy 75 slide-type vocabulary where
+  practical. AI generation must NOT be rigidly constrained to
+  those 75 types: the flexible composition architecture remains
+  the generation path. Both systems produce Layer-C scenes.
+- **Frontend consolidation** — a coherent PowerPoint/Canva-like
+  editing workspace, saved projects, and an integrated AI
+  assistant, not a pile of unrelated developer tools. Related to
+  (not a duplicate of) V2-7, which covers the hosted shell.
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,

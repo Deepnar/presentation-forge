@@ -263,6 +263,11 @@ or filesystem/SQLite adapters.
   (`docs/V2-5D-EVAL.md` §§3–4). **Hardened in V2-5E:** a
   per-session in-flight guard makes simultaneous triggers share
   one submission with join semantics (`docs/V2-5E-EVAL.md` §8).
+- Multi-paragraph editing (V2-5F): the session draft joins
+  paragraphs with newlines and the commit maps lines back onto
+  per-paragraph style slots; formatting travels separately
+  through `element.setTextStyle` under `formatCustomized`, never
+  through wording updates (`docs/V2-5F-EVAL.md` §§2–5).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

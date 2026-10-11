@@ -1692,7 +1692,13 @@ shape inspector commits fill/stroke/width through
 mirroring the content-ownership contract; repeated inserts
 cascade diagonally from content-derived indices, and text
 commits share one in-flight submission with layout-stable
-double-click (`docs/V2-5E-EVAL.md`). Editor contracts are specified but not implemented
+double-click (`docs/V2-5E-EVAL.md`). Uniform multi-paragraph
+text (every paragraph exactly one run) edits in place with
+slot-attached per-paragraph styles, and paragraph-scoped
+`element.setTextStyle` recolors/resizes/emphasizes whole runs
+under a `formatCustomized` rule that keeps human paint over
+fresh compiler wording; multi-run input stays honestly refused
+(`docs/V2-5F-EVAL.md`). Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
 atomicity, (slideId, elementId) addressing, batch entries,
