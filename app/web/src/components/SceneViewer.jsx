@@ -151,7 +151,7 @@ export default function SceneViewer({ initial = {} }) {
           zoom: snap?.zoom ?? 1,
           selectedId: snap?.selectedId ?? null,
         })}
-        data-fonts-ready={fonts.ready ? "true" : "false"}
+        data-fonts-ready={fonts.settled ? (fonts.ready ? "true" : "false") : "pending"}
         data-missing-fonts={fonts.missing.join(",")}
         style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
       />

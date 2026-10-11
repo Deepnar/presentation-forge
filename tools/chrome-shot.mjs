@@ -98,12 +98,16 @@ async function gatedPage(url, w, h, timeoutMs) {
     const t0 = Date.now();
     for (;;) {
       const ready = await evaluate(ws, id++, `document.querySelector("[data-fonts-ready]")?.dataset?.fontsReady ?? null`);
+      // "pending" is still loading — keep polling. Only a settled
+      // "true"/"false" completes the gate: stopping on the initial
+      // "false" raced slow font loads and failed captures that would
+      // have succeeded a moment later.
       if (ready === "true" || ready === "false") {
         const missing = await evaluate(ws, id++, `document.querySelector("[data-missing-fonts]")?.dataset?.missingFonts ?? ""`);
         return { ws, id, kill, ready, missing: missing ? missing.split(",") : [] };
       }
       if (Date.now() - t0 > timeoutMs) throw new Error(`font readiness never reported at ${url}`);
-      await sleep(1000);
+      await sleep(500);
     }
   } catch (err) {
     await kill();
