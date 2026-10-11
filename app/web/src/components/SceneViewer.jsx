@@ -32,8 +32,8 @@ function Thumb({ scene, active, onPick }) {
 }
 
 function useInspector(viewer, snap) {
-  if (!viewer || !snap || !Array.isArray(snap.selectedIds)) return [];
-  return snap.selectedIds.map((id) => viewer.inspect(id)).filter(Boolean);
+  if (!viewer?.api || !snap || !Array.isArray(snap.selectedIds)) return [];
+  return snap.selectedIds.map((id) => viewer.api.inspect(id)).filter(Boolean);
 }
 
 export default function SceneViewer({ initial = {} }) {
