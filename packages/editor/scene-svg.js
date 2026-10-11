@@ -10,6 +10,7 @@
 import { runBold, visibleText } from "../core/text-run.ts";
 import { measure } from "../core/fit.ts";
 import { maxColumns, padTableRows } from "../core/table.ts";
+import { chartInner } from "./scene-chart.js";
 
 function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -177,39 +178,16 @@ function elementSvg(el, opts = {}) {
     case "line":
       return `<line data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
     case "chart": {
-      // Structural preview, not a geometric one: bars keep their
-      // historical series[0] treatment (per-kind chart geometry is
-      // V2-4 territory), while category labels and the legend now
-      // project the Layer-C label contract both renderers share —
-      // same family, size, and color PowerPoint receives. Labels
-      // draw in full with no clipping, so strain stays visible and
-      // matches the capacity diagnostic instead of hiding behind it.
+      // Per-kind deterministic geometry lives in scene-chart.js
+      // (all six scene kinds, shared with the viewer); this branch
+      // keeps element wiring only: identity, lock, ref, opacity.
       const labels = el.chart?.labels ?? {};
-      const labelSize = pt2px(labels.size ?? 10).toFixed(1);
-      const labelFill = `#${labels.color ?? "5C5C59"}`;
-      const labelFamily = labels.family ? ` font-family="${esc(labels.family)}"` : "";
-      const cats = el.chart?.categories ?? [];
-      const names = (el.chart?.series ?? []).map((s) => s.name ?? "");
-      const legend = [...names, ...((el.chart?.chartKind === "pie" || el.chart?.chartKind === "doughnut") && names.length <= 1 ? cats : [])];
-      const catStrip = cats.length && el.chart?.chartKind !== "pie" && el.chart?.chartKind !== "doughnut" ? parseFloat(labelSize) * 1.25 + 6 : 0;
-      const legendStrip = legend.length ? legend.length * (parseFloat(labelSize) * 1.25) + 6 : 0;
-      const plotH = Math.max(20, h - catStrip - legendStrip);
-      const vals = el.chart?.series?.[0]?.values ?? [];
-      const max = Math.max(1, ...vals);
-      const bw = w / Math.max(1, vals.length);
-      const bars = vals.map((v, i) => {
-        const bh = (v / max) * (plotH - 20);
-        return `<rect x="${(x + i * bw + 2).toFixed(1)}" y="${(y + plotH - bh).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="#C05D4E"/>`;
-      }).join("");
-      let labelsSvg = "";
-      if (catStrip > 0) {
-        const sw = w / Math.max(1, cats.length);
-        labelsSvg += cats.map((c, i) =>
-          `<text x="${(x + i * sw + sw / 2).toFixed(1)}" y="${(y + plotH + parseFloat(labelSize)).toFixed(1)}" text-anchor="middle" font-size="${labelSize}" fill="${labelFill}"${labelFamily}>${esc(c)}</text>`).join("");
-      }
-      labelsSvg += legend.map((name, i) =>
-        `<text x="${x.toFixed(1)}" y="${(y + plotH + catStrip + 6 + parseFloat(labelSize) * (i + 1) * 1.25).toFixed(1)}" font-size="${labelSize}" fill="${labelFill}"${labelFamily}>■ ${esc(name)}</text>`).join("");
-      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${bars}${labelsSvg}</g>`;
+      const sizePt = labels.size ?? 10;
+      const inner = chartInner(el, { x, y, w, h }, {
+        family: labels.family, sizePt, sizePx: pt2px(sizePt), color: labels.color ?? "5C5C59",
+      });
+      const opacity = el.opacity !== undefined && el.opacity < 1 ? ` opacity="${el.opacity}"` : "";
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}${opacity}>${inner}</g>`;
     }
     case "table": {
       const rows = el.table?.rows ?? [];
