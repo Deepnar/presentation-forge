@@ -118,7 +118,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.reorder", "element.setLocked", "element.setVisibility", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder", "slide.setLayoutState"]);
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -166,6 +166,21 @@ function checkOp(placed: unknown): string | null {
     case "element.resize":
       if (!idStr(op.id) || !num(op.w) || !num(op.h) || op.w <= 0 || op.h <= 0) {
         return "element.resize needs id and positive w/h";
+      }
+      return null;
+    case "element.reorder":
+      if (!idStr(op.id) || !Number.isInteger(op.toIndex) || (op.toIndex as number) < 0) {
+        return "element.reorder needs id and a non-negative toIndex";
+      }
+      return null;
+    case "element.setLocked":
+      if (!idStr(op.id) || typeof op.locked !== "boolean") {
+        return "element.setLocked needs id and a locked boolean";
+      }
+      return null;
+    case "element.setVisibility":
+      if (!idStr(op.id) || typeof op.hidden !== "boolean") {
+        return "element.setVisibility needs id and a hidden boolean";
       }
       return null;
     case "element.setGeometry": {
@@ -442,6 +457,23 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
         const { w, h } = op as { w: number; h: number };
         return el.w !== w || el.h !== h;
       }
+      case "element.reorder": {
+        // Effective unless already parked at the clamped target.
+        // Nested targets always run so apply can refuse them
+        // explicitly instead of vanishing as no-ops.
+        const { toIndex } = op as { toIndex: number };
+        const from = slide.elements.findIndex((e) => e.id === (op as { id: string }).id);
+        if (from < 0) return true;
+        return from !== Math.max(0, Math.min(toIndex, slide.elements.length - 1));
+      }
+      case "element.setLocked": {
+        const { locked } = op as { locked: boolean };
+        return (el.locked === true) !== locked;
+      }
+      case "element.setVisibility": {
+        const { hidden } = op as { hidden: boolean };
+        return (el.hidden === true) !== hidden;
+      }
       case "element.setGeometry": {
         const { x, y, w, h } = op as { x: number; y: number; w: number; h: number };
         return el.x !== x || el.y !== y || el.w !== w || el.h !== h;
@@ -525,7 +557,12 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
     if (i < 0) reject("unknown-slide", `unknown slide ${slideId}`);
     const el = findElement(scenes[i], (op as { id: string }).id);
     if (!el && (op as { type: string }).type !== "element.add") reject("unknown-element", `unknown element ${(op as { id: string }).id}`);
-    if (el?.locked) reject("locked", `element ${el.id} is locked`);
+    // The lock toggle is the escape hatch and stays reachable on
+    // locked elements; system-chrome refusal lives at the adapter
+    // user-command boundary. Every other element op freezes.
+    if (el?.locked && (op as { type: string }).type !== "element.setLocked") {
+      reject("locked", `element ${el.id} is locked`);
+    }
     if ((op as { type: string }).type === "element.add") {
       const input = (op as { element: SceneElement }).element;
       if (input.id && walkIds(scenes[i].elements).includes(input.id)) {

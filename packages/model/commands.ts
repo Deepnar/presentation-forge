@@ -98,6 +98,26 @@ export type ElementSetTableDataInverse = {
   id: string;
   priorRows: string[][];
 };
+// Draw-order move for a top-level element: remove from the array,
+// insert at the clamped index, then rewrite z as the rank
+// (z := array position for every top-level element). z IS the
+// order both projections sort by, so the rewrite is what makes
+// the move visible — array order mirrors it for readability.
+// Nested group children are refused (re-boxing a child would
+// silently cross its parent's coordinate frame); reorder the
+// group unit instead. Locked elements refuse; locked neighbors
+// are simply passed over.
+export type ElementReorder = { type: "element.reorder"; id: string; toIndex: number };
+export type ElementReorderInverse = { type: "element.reorder"; id: string; toIndex: number };
+// User lock toggle. Only the boolean travels; absence and false
+// are behaviorally identical everywhere the flag is read, so the
+// inverse normalizes to a boolean. System chrome (locked +
+// compiler provenance + no semantic ref) is rejected at the
+// adapter — the engine enforces kind/lock-unknown checks only.
+export type ElementSetLocked = { type: "element.setLocked"; id: string; locked: boolean };
+// Visibility toggle. Hidden elements stay in the scene verbatim
+// and vanish from both projections (omitted, never rasterized).
+export type ElementSetVisibility = { type: "element.setVisibility"; id: string; hidden: boolean };
 export type ElementUpdateText = { type: "element.updateText"; id: string; paragraphs: Paragraph[] };
 // An update inverse restores whatever the element held — including absent
 // paragraphs — so it carries the wider shape rather than weakening the
@@ -106,7 +126,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementSetTableData | ElementSetTableDataInverse | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementSetTableData | ElementSetTableDataInverse | ElementReorder | ElementReorderInverse | ElementSetLocked | ElementSetVisibility | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -446,6 +466,46 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       const [removed] = scene.elements.splice(i, 1);
       if (scene.layoutState === "managed") scene.layoutState = "customized";
       return { type: "element.add", element: removed, index: i };
+    }
+    case "element.reorder": {
+      const i = scene.elements.findIndex((e) => e.id === cmd.id);
+      if (i < 0) {
+        if (!findElement(scene, cmd.id)) throw new Error(`unknown element ${cmd.id}`);
+        throw new Error(`element ${cmd.id} lives inside a group — reorder the group unit instead`);
+      }
+      const el = scene.elements[i];
+      assertEditable(el);
+      const [removed] = scene.elements.splice(i, 1);
+      const at = Math.max(0, Math.min(cmd.toIndex, scene.elements.length));
+      scene.elements.splice(at, 0, removed);
+      // z is the rank both projections sort by: rewrite the whole
+      // top level so the array and the ranks say the same thing.
+      scene.elements.forEach((e, zi) => {
+        e.z = zi;
+      });
+      markCustomized(scene, removed);
+      return { type: "element.reorder", id: cmd.id, toIndex: i };
+    }
+    case "element.setLocked": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      const prev = el.locked === true;
+      // Absence and false read identically everywhere; normalize to
+      // absence so undo and re-show comparisons stay byte-exact.
+      if (cmd.locked) el.locked = true;
+      else delete el.locked;
+      markCustomized(scene, el, false);
+      return { type: "element.setLocked", id: cmd.id, locked: prev };
+    }
+    case "element.setVisibility": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      assertEditable(el);
+      const prev = el.hidden === true;
+      if (cmd.hidden) el.hidden = true;
+      else delete el.hidden;
+      markCustomized(scene, el, false);
+      return { type: "element.setVisibility", id: cmd.id, hidden: prev };
     }
   }
 }

@@ -79,6 +79,10 @@ export interface SceneElement {
    * Human edited this table's cells (rows content and structure). Geometry ownership stays on `customized`; regeneration keeps the human matrix when this is set and refreshes it from the compiler when it is not. Header flag, layout, and typography stay compiler-owned always.
    */
   tableCustomized?: boolean;
+  /**
+   * Human hid this element in the editor. Hidden elements are preserved verbatim in the scene but omitted from browser and PowerPoint projections (never deleted, never rasterized); re-showing restores content, geometry, and draw order exactly.
+   */
+  hidden?: boolean;
   fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {

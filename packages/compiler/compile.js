@@ -386,6 +386,21 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.dataCustomized = true;
       el.provenance = "human";
     }
+    // Layer decisions survive regeneration: draw order (z is the
+    // rank both projections sort by — carried on exact-id matches,
+    // so a human reorder is never silently unstacked), user locks
+    // and visibility (carried on any lineage match: they attach to
+    // the content, not the geometry). The compiler never emits
+    // hidden, so any defined value is human-made; system chrome
+    // re-locks itself from the fresh compile.
+    if (p) {
+      if (el.id === p.id && typeof p.z === "number" && Number.isFinite(p.z)) el.z = p.z;
+      if (p.locked === true && (p.provenance !== "compiler" || p.semanticRef !== undefined)) {
+        el.locked = true;
+        if (el.provenance === "compiler") el.provenance = "human";
+      }
+      if (p.hidden !== undefined) el.hidden = p.hidden;
+    }
     // Table ownership is orthogonal to geometry: an edited table
     // keeps its human matrix while geometry follows the rule above
     // (preserved when customized, fresh otherwise). A merely moved
@@ -403,6 +418,22 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.tableCustomized = true;
       el.provenance = "human";
     }
+  }
+  // Draw order follows the human arrangement on customized slides:
+  // shared ids take the previous relative sequence (fresh-only ids
+  // keep fresh relative order at the end), so a human reorder is
+  // never silently unstacked. Managed slides keep the compiler
+  // sequence; content-only or lock-only edits leave identical
+  // sequences, making this a no-op for them. z ranks were carried
+  // per element above, so both projections agree either way.
+  if (prev.layoutState === "customized") {
+    const shared = new Set(fresh.elements.map((e) => e.id));
+    const rank = new Map(prev.elements.map((e) => e.id).filter((id) => shared.has(id)).map((id, i) => [id, i]));
+    fresh.elements.sort((a, b) => {
+      const ra = rank.has(a.id) ? rank.get(a.id) : Number.MAX_SAFE_INTEGER;
+      const rb = rank.has(b.id) ? rank.get(b.id) : Number.MAX_SAFE_INTEGER;
+      return ra - rb;
+    });
   }
   const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
   if (suppressed.size > 0) {
