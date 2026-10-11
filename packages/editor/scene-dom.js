@@ -510,6 +510,12 @@ export function createViewer(rootEl, scenes, opts = {}) {
   rootEl.addEventListener("keydown", (ev) => {
     const k = ev.key;
     const inField = ev.target && ev.target.closest?.("input, textarea, select, [contenteditable='true'], [contenteditable='']");
+    // V2-5D: while a text editor is focused, every key belongs to
+    // the field — arrows move the caret, Backspace deletes text,
+    // Escape cancels through the edit adapter. No canvas shortcut
+    // (navigation, zoom, selection, nudge, delete, undo) may hijack
+    // text entry, so navigation below never runs from a field.
+    if (inField) return;
     if (editable && !inField && editAction) {
       const mod = ev.ctrlKey || ev.metaKey;
       if ((k === "ArrowRight" || k === "ArrowLeft" || k === "ArrowUp" || k === "ArrowDown") && state.selectedIds.length > 0) {
