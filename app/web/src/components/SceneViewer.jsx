@@ -6,6 +6,7 @@
 // mutated here — selection is an id, geometry comes from the DOM.
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
+import { flattenLayers, elementLabel, applyCollapse } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
@@ -459,6 +460,153 @@ function TableDataPanel({ element, onCommit }) {
   );
 }
 
+// Layers panel: the slide's real element tree as rows — no
+// parallel ids, every row IS the authoritative element id.
+// Selection is the viewer's (canvas and panel share it);
+// group children resolve to their parent per the viewer rules,
+// and the panel says so instead of pretending otherwise.
+// Top-level rows carry ↑/↓ reorder buttons; nested rows name
+// their group and reorder through it. Lock and eye buttons act
+// by id (the eye works on hidden rows, which have no canvas
+// node to select). Hidden rows are dimmed and never selected —
+// re-show first. Collapsed groups persist in a ref map keyed by
+// slide, so switching slides keeps each tree's shape.
+function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange, onReorder, onLock, onHide }) {
+  const [collapsed, setCollapsed] = useState(() => new Set());
+  const rowRefs = useRef(new Map());
+  // One row implementation shared with tests: draw order from the
+  // authoritative z ranks, stable element references looked up by
+  // id, collapsed subtrees filtered here (never from the scene).
+  const byId = useMemo(() => {
+    const map = new Map();
+    const walk = (els) => {
+      for (const el of els ?? []) {
+        map.set(el.id, el);
+        walk(el.group?.children);
+      }
+    };
+    walk(slide?.elements);
+    return map;
+  }, [slide]);
+  const rows = useMemo(() => applyCollapse(flattenLayers(slide?.elements), collapsed), [slide, collapsed]);
+  const selectedSet = useMemo(() => new Set(selectedIds ?? []), [selectedIds]);
+  // Scroll the first selected row into view on selection change.
+  useLayoutEffect(() => {
+    if (!selectedIds || selectedIds.length === 0) return;
+    const node = rowRefs.current.get(selectedIds[0]);
+    node?.scrollIntoView?.({ block: "nearest" });
+  }, [selectedIds, slide?.id]);
+  if (!slide || (slide.elements ?? []).length === 0) {
+    return <div data-layers-empty style={{ padding: "4px 0", fontSize: 12, opacity: 0.7 }}>No objects on this slide.</div>;
+  }
+  const toggleCollapse = (id) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  return (
+    <div data-layers role="listbox" aria-label="Layers" aria-multiselectable="true" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {rows.map((row) => {
+        const el = byId.get(row.id);
+        if (!el) return null;
+        const parent = row.parentId ? byId.get(row.parentId) : null;
+        const selected = selectedSet.has(row.id);
+        const parentSelected = parent && selectedSet.has(parent.id);
+        const refCb = (n) => {
+          if (n) rowRefs.current.set(row.id, n);
+          else rowRefs.current.delete(row.id);
+        };
+        const onRowKey = (e) => {
+          if (e.altKey && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+            e.preventDefault();
+            onReorder?.(row.id, e.key === "ArrowUp" ? -1 : 1);
+          } else if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && row.kind === "group") {
+            e.preventDefault();
+            const wantCollapsed = e.key === "ArrowLeft";
+            setCollapsed((prev) => {
+              const next = new Set(prev);
+              if (wantCollapsed !== next.has(row.id)) toggleCollapse(row.id);
+              return next;
+            });
+          }
+        };
+        return (
+          <div
+            key={row.id}
+            ref={refCb}
+            role="option"
+            aria-selected={selected ? "true" : "false"}
+            data-layer={row.id}
+            data-layer-selected={selected ? "true" : undefined}
+            data-layer-kind={row.kind}
+            onKeyDown={onRowKey}
+            style={{
+              display: "flex", gap: 4, alignItems: "center", padding: "3px 4px 3px 4px",
+              paddingLeft: 4 + row.depth * 14, borderRadius: 4, fontSize: 11,
+              background: selected ? "#3a2c26" : parentSelected ? "#2c2622" : "transparent",
+              border: selected ? "1px solid #e0705a" : "1px solid transparent",
+              opacity: row.hidden ? 0.55 : 1,
+            }}
+          >
+            {row.kind === "group" && (
+              <button
+                type="button"
+                aria-label={collapsed.has(row.id) ? `Expand ${row.id}` : `Collapse ${row.id}`}
+                aria-expanded={collapsed.has(row.id) ? "false" : "true"}
+                onClick={() => toggleCollapse(row.id)}
+                style={{ padding: "0 4px", background: "transparent", border: "none", color: "#eee", cursor: "pointer" }}
+              >
+                {collapsed.has(row.id) ? "▸" : "▾"}
+              </button>
+            )}
+            <button
+              type="button"
+              title={row.hidden ? "Hidden — re-show to select" : parent ? `In group ${parent.id} — selects the group` : `Select ${row.id}`}
+              onClick={(e) => {
+                if (row.hidden) return;
+                if (e.shiftKey) onRange?.(row.id);
+                else if (e.ctrlKey || e.metaKey) onToggle?.(row.id);
+                else onSelect?.(row.id);
+              }}
+              style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", color: "#eee", cursor: row.hidden ? "default" : "pointer", textAlign: "left", padding: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+            >
+              {row.label}{row.locked ? " · locked" : ""}{row.hidden ? " · hidden" : ""}{parentSelected && !selected ? " · via parent" : ""}
+            </button>
+            {row.depth === 0 && (
+              <>
+                <button type="button" aria-label={`Bring ${row.id} forward`} title="Bring forward" onClick={() => onReorder?.(row.id, 1)}>↑</button>
+                <button type="button" aria-label={`Send ${row.id} backward`} title="Send backward" onClick={() => onReorder?.(row.id, -1)}>↓</button>
+              </>
+            )}
+            <button
+              type="button"
+              aria-label={row.locked ? `Unlock ${row.id}` : `Lock ${row.id}`}
+              title={row.locked ? "Unlock" : "Lock"}
+              onClick={() => onLock?.(row.id, !row.locked)}
+              style={{ padding: "0 3px", background: "transparent", border: "1px solid #555", borderRadius: 3, color: "#eee", cursor: "pointer", fontSize: 10 }}
+            >
+              {row.locked ? "▪" : "▫"}
+            </button>
+            <button
+              type="button"
+              aria-label={row.hidden ? `Show ${row.id}` : `Hide ${row.id}`}
+              title={row.hidden ? "Show" : "Hide"}
+              onClick={() => onHide?.(row.id, !row.hidden)}
+              style={{ padding: "0 3px", background: "transparent", border: "1px solid #555", borderRadius: 3, color: "#eee", cursor: "pointer", fontSize: 10 }}
+            >
+              {row.hidden ? "○" : "●"}
+            </button>
+          </div>
+        );
+      })}
+      <span style={{ fontSize: 10, opacity: 0.6 }}>top {topCount} · Alt+↑/↓ reorders the focused row</span>
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -573,6 +721,7 @@ export default function SceneViewer({ initial = {} }) {
   // React owns filmstrip selection (ids), menus, drag previews, and
   // confirmations — never a mutable slide collection.
   const [slideSel, setSlideSel] = useState([]);
+  const [railTab, setRailTab] = useState("slides");
   const [slideAnchor, setSlideAnchor] = useState(null);
   const [menuFor, setMenuFor] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -954,6 +1103,44 @@ export default function SceneViewer({ initial = {} }) {
           {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
         </div>
         {editOn && (
+          <div role="tablist" aria-label="Sidebar" style={{ display: "flex", gap: 4, marginBottom: 8 }}>
+            <button type="button" role="tab" aria-selected={railTab === "slides" ? "true" : "false"} onClick={() => setRailTab("slides")} style={{ flex: 1, padding: "3px 0", cursor: "pointer", background: railTab === "slides" ? "#3a2c26" : "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", fontSize: 11 }}>Slides</button>
+            <button type="button" role="tab" aria-selected={railTab === "layers" ? "true" : "false"} onClick={() => setRailTab("layers")} style={{ flex: 1, padding: "3px 0", cursor: "pointer", background: railTab === "layers" ? "#3a2c26" : "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", fontSize: 11 }}>Layers</button>
+          </div>
+        )}
+        {editOn && railTab === "layers" ? (
+          <LayersPanel
+            slide={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0] ?? null}
+            selectedIds={snap?.selectedIds ?? []}
+            topCount={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0]?.elements.length ?? 0}
+            onSelect={(id) => api?.select(id)}
+            onToggle={(id) => api?.toggle(id)}
+            onRange={(id) => {
+              const v = viewerRef.current;
+              if (!v?.api) return;
+              const rows = [...(asideRef.current?.querySelectorAll("[data-layer]") ?? [])].map((n) => n.getAttribute("data-layer"));
+              const anchor = [...(snap?.selectedIds ?? [])].reverse().find((x) => rows.includes(x)) ?? rows[0];
+              if (!anchor) return;
+              const lo = Math.min(rows.indexOf(anchor), rows.indexOf(id));
+              const hi = Math.max(rows.indexOf(anchor), rows.indexOf(id));
+              if (lo >= 0) v.api.selectMany(rows.slice(lo, hi + 1));
+            }}
+            onReorder={(id, delta) => {
+              const a = adapterRef.current;
+              if (!a) return;
+              const slide = (docRef.current?.snapshot().scenes ?? [])[snap?.slideIndex ?? -1];
+              if (!slide) return;
+              const order = slide.elements.map((e) => e.id);
+              const from = order.indexOf(id);
+              if (from < 0) return;
+              a.reorderElement(id, Math.max(0, Math.min(order.length - 1, from + delta)));
+            }}
+            onLock={(id, locked) => adapterRef.current?.setElementLocked(id, locked)}
+            onHide={(id, hidden) => adapterRef.current?.setElementHidden(id, hidden)}
+          />
+        ) : (
+        <>
+        {editOn && (
           <button
             type="button"
             onClick={doInsertSlide}
@@ -1031,6 +1218,8 @@ export default function SceneViewer({ initial = {} }) {
             />
           ))}
         </div>
+        </>
+        )}
       </aside>
       <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative" }}>
         <div data-toolbar style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #333", flexWrap: "nowrap", overflowX: "auto", overflowY: "hidden" }}>
