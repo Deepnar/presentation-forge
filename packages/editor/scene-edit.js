@@ -18,6 +18,7 @@ import {
   defaultTextElement,
   defaultShapeElement,
   overflowEstimate,
+  tableOverflowEstimate,
   mintHumanId,
   cascadeBox,
   cascadeIndex,
@@ -1260,6 +1261,73 @@ export function attachEditor(viewer, doc, opts = {}) {
     })());
   }
 
+  // ——— Table-data editing ———
+  //
+  // Bounded native edits over the compiler's own table contract:
+  // the full cell matrix, verbatim strings. Structural edits
+  // travel as complete replacement matrices — a short row is
+  // rejected, never padded, so populated cells elsewhere cannot
+  // silently vanish. The header flag, layout, typography, and
+  // geometry ride along untouched. One Apply submits one
+  // element.setTableData envelope; density warnings reuse the
+  // compiler's line-count heuristic without resizing anything.
+  function setTableData(id, rows) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return report({ ok: false, code: "unknown-element", message: `unknown element ${id}` });
+    if (el.locked) return report({ ok: false, code: "locked", message: `element ${id} is locked` });
+    if (el.kind !== "table") return report({ ok: false, code: "op-rejected", message: `element ${id} is not a table` });
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return report({ ok: false, code: "bad-envelope", message: "element.setTableData needs a non-empty rows array" });
+    }
+    const width = Array.isArray(rows[0]) ? rows[0].length : 0;
+    if (width === 0) {
+      return report({ ok: false, code: "bad-envelope", message: "a table needs at least one column" });
+    }
+    for (let ri = 0; ri < rows.length; ri++) {
+      const row = rows[ri];
+      if (!Array.isArray(row) || row.length !== width) {
+        return report({ ok: false, code: "op-rejected", message: `row ${ri + 1} holds ${Array.isArray(row) ? row.length : 0} cells for a ${width}-column table — supply the full matrix` });
+      }
+      for (let ci = 0; ci < row.length; ci++) {
+        if (typeof row[ci] !== "string") {
+          return report({ ok: false, code: "bad-envelope", message: `cell r${ri + 1}c${ci + 1} must be a string — nothing is coerced` });
+        }
+      }
+    }
+    const cur = el.table?.rows ?? null;
+    if (JSON.stringify(cur) === JSON.stringify(rows)) {
+      return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    }
+    const matrix = rows.map((r) => [...r]);
+    return track((async () => {
+      const result = await doc.apply({
+        id: newEditId(),
+        slideId: snap.slideId,
+        op: { type: "element.setTableData", id, table: { rows: matrix } },
+        baseRevision: doc.snapshot().revision,
+        actor: "human",
+      });
+      if (result.ok) {
+        sync();
+        const fresh = findIn(doc.snapshot().scenes, snap.slideId, id);
+        if (fresh?.kind === "table") {
+          const overflow = tableOverflowEstimate(fresh);
+          if (overflow && !overflow.fits && onError) {
+            onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
+          }
+        }
+      }
+      return report(result);
+    })());
+  }
+
   async function onEditAction(action) {
     // Interaction precedence: an open text edit outranks every canvas
     // shortcut. Arrows/Backspace belong to the caret (scene-dom never
@@ -1354,6 +1422,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     setElementStyle: (id, patch) => setElementStyle(id, patch),
     setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
     setChartData: (id, payload) => setChartData(id, payload),
+    setTableData: (id, rows) => setTableData(id, rows),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();

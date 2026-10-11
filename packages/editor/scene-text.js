@@ -263,6 +263,55 @@ export function defaultShapeElement(slide, form = "rect", opts = {}) {
   };
 }
 
+// Honest density visibility for tables WITHOUT a layout engine:
+// reuse the compiler's own lineCount heuristic against the
+// element's resolved column widths and row heights. Advisory only
+// — authored rows are always kept; geometry never changes here.
+// Column widths and row heights resolve exactly like both
+// renderers (declared layout entry, else even split), so the
+// estimate agrees with what the projections draw.
+export function tableOverflowEstimate(el) {
+  const table = el?.table;
+  if (!el || el.kind !== "table" || !table) return null;
+  const rows = table.rows ?? [];
+  if (rows.length === 0) return null;
+  const layout = table.layout ?? {};
+  const cols = rows.reduce((n, r) => Math.max(n, (r ?? []).length), 0);
+  if (cols === 0) return null;
+  const colWidths = layout.colWidths?.length === cols
+    ? layout.colWidths
+    : Array.from({ length: cols }, () => el.w / cols);
+  const pad = layout.padding ?? 0.05;
+  const header = table.header === true;
+  const messages = [];
+  rows.forEach((row, ri) => {
+    const isHeader = header && ri === 0;
+    const size = isHeader ? (layout.headerSize ?? 10) : (layout.bodySize ?? 10);
+    const style = {
+      family: layout.fontFamily || undefined,
+      size,
+      weight: isHeader && layout.headerBold !== false ? 700 : 400,
+    };
+    const rowH = layout.rowHeights?.[ri] ?? el.h / rows.length;
+    (row ?? []).forEach((cell, ci) => {
+      const cw = Math.max(0.1, (colWidths[ci] ?? el.w / cols) - 2 * pad);
+      let lines = 0;
+      for (const segment of String(cell ?? "").split("\n")) {
+        lines += Math.max(1, lineCount(segment, cw, style));
+      }
+      const needH = lines * ((size / 72) * 1.35) + 2 * pad;
+      if (needH > rowH + 1e-9) {
+        messages.push(`row ${ri + 1} needs ~${needH.toFixed(2)}in, has ${rowH.toFixed(2)}in — widen the table or cut cell copy (geometry unchanged)`);
+      }
+    });
+  });
+  return {
+    fits: messages.length === 0,
+    rows: rows.length,
+    cols,
+    message: messages.length === 0 ? null : messages[0] + (messages.length > 1 ? ` (+${messages.length - 1} more)` : ""),
+  };
+}
 // Honest overflow visibility WITHOUT a new layout planner: reuse the
 // compiler's own lineCount heuristic against the element's box to
 // estimate whether committed paragraphs still fit. Advisory only —
