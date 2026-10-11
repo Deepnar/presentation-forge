@@ -158,8 +158,10 @@ export function registerV2ScenesRoutes(app) {
     ok(res, { themes: [...(await v2Themes())] });
   });
 
+  // Full intents ride the list response: examples are tiny by
+  // design (a few KB), and one fetch keeps the panel simple.
   app.get("/api/v2/examples", async (_req, res) => {
-    ok(res, { examples: liveExamples().map(({ intent, ...rest }) => rest) });
+    ok(res, { examples: liveExamples() });
   });
 
   app.post("/api/v2/scenes", async (req, res) => {

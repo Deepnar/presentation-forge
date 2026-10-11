@@ -71,6 +71,7 @@ describe("v2-4f live compilation contract", () => {
     assert.ok(parche.examples.length >= 4, "covers technical/decision/data/status");
     for (const ex of parche.examples) {
       assert.ok(ex.id && ex.title && ex.theme && ex.variant, `${ex.id} described`);
+      assert.ok(ex.intent && Array.isArray(ex.intent.slides), `${ex.id} carries its intent`);
     }
     for (const full of liveExamples()) {
       const v = await validateDeckIntent(full.intent);
