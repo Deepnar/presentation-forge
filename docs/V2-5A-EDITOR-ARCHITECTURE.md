@@ -1,9 +1,22 @@
 # V2-5A Editor Architecture — command, revision, and ownership contracts
 
-Date: 2026-10-11. Baseline `5beba39` (V2-4 accepted). Status:
-design accepted for implementation in later V2-5 slices; no
-editing operations are implemented here. Every claim below
-names the file that already carries it or the slice that will.
+Date: 2026-10-11. Baseline `5beba39` (V2-4 accepted).
+Implementation status: **V2-5B implements §§2–8 and §12 of
+this record** in `packages/model/engine.ts` (headless,
+framework-free, import-tested from tests only — no UI
+binding yet). Decided in implementation, against the
+proposal: duplicate envelopes are *rejected* (not
+replayed); effective no-ops *succeed without recording*
+(history pollution rejected); undo depth caps at 200 while
+the applied-id set stays unbounded (replay protection
+outlives undo depth; V2-6 compacts); delete inverts to an
+*indexed* add (new optional `element.add` index) so undo
+restores exact z-order. Text-vs-geometry ownership is
+implemented, not just specified: optional schema field
+`contentCustomized`, set only by `element.updateText`,
+merged in `recompileSlide` same-kind-only with refit, proven
+by Cases A–E (`test/v2-ownership-5b.test.js`, B/C fail on
+the V2-5A baseline). D1–D5 remain open as written.
 
 ## 1. Existing contracts and reusable foundations
 

@@ -338,6 +338,9 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
     default:
       reject("bad-envelope", `unknown op type ${(op as { type: string }).type}`);
   }
+  // Unreachable: every branch above returns or rejects (never).
+  // Present so strict TS accepts the function shape.
+  throw { ok: false, code: "bad-envelope", message: "unreachable" } as EngineFailure;
 }
 
 async function validateWorking(scenes: SlideScene[]): Promise<string | null> {

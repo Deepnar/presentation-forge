@@ -1645,7 +1645,17 @@ descendants never resolve), pointer-transparent overlay rings
 positioned from measured rects with scene-geometry fallback,
 Tab/Escape/arrows bound beside the mount, and a grounded
 `inspect()` record behind a small React panel — no dragging,
-no mutation, no projection changes. Live compilation is
+no mutation, no projection changes. The command engine
+(V2-5B; `packages/model/engine.ts`) is the single headless
+path for every mutation: envelope validation, optimistic
+revision with stale rejection, touched-slide copy-on-write
+atomicity, inverse history with undo/redo, duplicate
+rejection, and ownership marking over the existing
+`commands.ts` primitives — importable from browser, server,
+and tests with no framework dependency. Text ownership is
+field-explicit (`contentCustomized`, regenerated types);
+regeneration keeps human paragraphs same-kind-only and
+refreshes moved text from the compiler. Live compilation is
 stateless and transport-thin (V2-4F; `docs/V2-4F-EVAL.md`):
 `POST /api/v2/scenes` runs the fixture-driver pipeline
 (theme allowlist, plates, planned compile, scene validation)

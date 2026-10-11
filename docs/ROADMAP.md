@@ -7260,10 +7260,11 @@ scale); charts structurally exact without axes (V2-4C).
 
 *Depends on: V2-4 (accepted at `5beba39`). Blocks: V2-8 (agent edits ride the same commands).*
 
-- [~] V2-5A export safety, editor architecture, command
-  contracts (in review: `docs/V2-5A-EVAL.md` +
-  `docs/V2-5A-EDITOR-ARCHITECTURE.md`; fail-closed PPTX
-  preflight, readiness contracts, demo migration plan).
+- [x] V2-5A export safety, editor architecture, command
+  contracts (accepted at `06a0211`).
+- [~] V2-5B atomic command engine & revisioned history (in
+  review: `docs/V2-5B-EVAL.md`; engine, ownership
+  counterfactuals, 27 engine tests).
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,
