@@ -35,6 +35,17 @@ function markCustomized(scene: SlideScene, el: SceneElement, geometry = true): v
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
+// Text ownership is recorded separately from geometry: a moved
+// element keeps compiler-refreshed text on regeneration, while a
+// rewritten element keeps its human paragraphs (see recompileSlide
+// and docs/V2-5A-EDITOR-ARCHITECTURE.md §10). One boolean, set only
+// here, is the whole extension — no field-level CRDT.
+function markContentCustomized(scene: SlideScene, el: SceneElement): void {
+  if (el.provenance === "compiler") el.provenance = "human";
+  el.contentCustomized = true;
+  if (scene.layoutState === "managed") scene.layoutState = "customized";
+}
+
 export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
   switch (cmd.type) {
     case "element.move": {
@@ -64,7 +75,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       assertEditable(el);
       const prev = { paragraphs: el.paragraphs };
       el.paragraphs = cmd.paragraphs;
-      markCustomized(scene, el, false);
+      markContentCustomized(scene, el);
       return { type: "element.updateText", id: cmd.id, ...prev };
     }
     case "element.add": {

@@ -52,6 +52,10 @@ export interface SceneElement {
   provenance: "compiler" | "agent" | "human" | "import";
   semanticRef?: string;
   customized?: boolean;
+  /**
+   * Human rewrote this element's authored content (text). Geometry ownership stays on `customized`; regeneration keeps human paragraphs when this is set and refreshes them from the compiler when it is not.
+   */
+  contentCustomized?: boolean;
   fitPolicy?: "wrap" | "one-line" | "stat";
   paragraphs?: Paragraph[];
   shape?: {

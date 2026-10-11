@@ -319,6 +319,18 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       // smaller box (or longer text) shrinks further or diagnoses.
       if (el.kind === "text") refitTextEl(design, el, intent.id ?? prev.id, sink);
     }
+    // Content ownership is orthogonal to geometry: a rewritten
+    // element keeps its human paragraphs while geometry follows the
+    // rule above (preserved when customized, fresh otherwise). A
+    // merely moved element (provenance human, no content flag)
+    // refreshes its text from the compiler. Same-kind only: a block
+    // whose kind changed is a new content contract.
+    if (p?.contentCustomized && el.kind === "text" && el.kind === p.kind && p.paragraphs) {
+      el.paragraphs = structuredClone(p.paragraphs);
+      el.contentCustomized = true;
+      el.provenance = "human";
+      refitTextEl(design, el, intent.id ?? prev.id, sink);
+    }
   }
   const freshIds = new Set(fresh.elements.map((e) => e.id));
   const orphans = prev.elements.filter(
