@@ -133,24 +133,24 @@ describe("v2-4c1 multi-series pie boundary", () => {
     assert.ok(xml.includes("<c:v>30</c:v>") && xml.includes("<c:v>40</c:v>"), "both series intact in OOXML");
   });
 
-  it("native pie keeps series[0], so the browser note is the only trace of the rest", async () => {
-    // pptxgenjs collapses multi-series pies to a single <c:ser>:
-    // the file drops series B without a trace. The scene still
-    // carries it, and the browser legend marks it explicitly.
-    const dir = mkdtempSync(path.join(tmpdir(), "v24c1-"));
-    const pptx = path.join(dir, "p.pptx");
-    await renderPptxToFile([{
+  it("native pie refuses multi-series input instead of silently keeping series[0]", async () => {
+    // V2-5A fail-closed boundary: pptxgenjs would collapse this to
+    // a single <c:ser> and drop series B without a trace, so the
+    // exporter refuses with slide and element identity. Route the
+    // scene through the compiler chart-to-table fallback (V2-4C-2)
+    // before exporting; the browser hollow legend marks it meanwhile.
+    const { ExportUnsafeError } = await import("../packages/renderer-pptx/render.ts");
+    await assert.rejects(renderPptxToFile([{
       id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
       elements: [{
         id: "s:c", kind: "chart", x: 1, y: 1, w: 6, h: 4, z: 10, provenance: "compiler",
         chart: { chartKind: "pie", categories: ["x", "y"], series: [{ name: "A", values: [1, 2] }, { name: "B", values: [30, 40] }], labels: LABELS },
       }],
-    }], pptx);
-    const zip = await JSZip.loadAsync(readFileSync(pptx));
-    const part = Object.keys(zip.files).find((n) => /^ppt\/charts\/chart\d+\.xml$/.test(n));
-    const xml = await zip.files[part].async("string");
-    assert.equal([...xml.matchAll(/<c:ser>/g)].length, 1, "native pie carries one series");
-    assert.ok(!xml.includes("<c:v>30</c:v>"), "dropped series absent from the file");
+    }], path.join(mkdtempSync(path.join(tmpdir(), "v24c1-")), "p.pptx")), (err) => {
+      assert.ok(err instanceof ExportUnsafeError, "typed refusal");
+      assert.match(err.message, /s:c/);
+      return true;
+    });
   });
 
   it("chart stays one selectable unit with the new legend", () => {
