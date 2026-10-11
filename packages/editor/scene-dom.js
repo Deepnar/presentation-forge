@@ -95,7 +95,7 @@ export function createViewer(rootEl, scenes, opts = {}) {
   if (!Array.isArray(scenes) || scenes.length === 0) {
     return { state: { status: "empty" }, api: {}, onChange() {}, destroy() {} };
   }
-  const frozen = freezeScenes(scenes);
+  let frozen = freezeScenes(scenes);
   const doc = rootEl.ownerDocument;
   rootEl.style.position = "relative";
   const listeners = new Set();
@@ -106,6 +106,12 @@ export function createViewer(rootEl, scenes, opts = {}) {
     fit: 1,
     selectedIds: [],
   };
+  // V2-5 editing seams: the frozen set is replaced wholesale by
+  // replaceScenes (never mutated in place); selection, overlays,
+  // and keyboard stay viewer-owned while commits cross the engine.
+  let editable = false;
+  let editAction = null;
+  let suppressClick = false;
   let overlayLayer = null;
   const emit = () => {
     const snap = snapshot();
@@ -431,17 +437,60 @@ export function createViewer(rootEl, scenes, opts = {}) {
       positionOverlays();
       return snapshot();
     },
+    // Resolve a DOM event target to its authoritative unit id, or
+    // null for background and locked hits. Shared by the click
+    // handler and editing adapters so hit testing has one path.
+    resolveNode(node) {
+      const t = node?.closest?.("[data-el]");
+      if (!t || !rootEl.contains(t)) return null;
+      let n = t;
+      while (n && rootEl.contains(n)) {
+        if (typeof n.getAttribute === "function" && n.getAttribute("data-locked") === "true") return null;
+        n = n.parentElement;
+      }
+      return authoritativeId(t);
+    },
+    // Replace the frozen scene set wholesale after an engine
+    // commit (never mutated in place). Selection reconciles by
+    // dropping ids that no longer resolve; slide, zoom, and fit
+    // are preserved.
+    replaceScenes(scenes) {
+      if (!Array.isArray(scenes) || scenes.length === 0) return snapshot();
+      frozen = freezeScenes(scenes);
+      state.slideIndex = clampIndex(state.slideIndex, frozen.length);
+      render();
+      state.selectedIds = state.selectedIds.filter((id) => resolveId(id) !== null);
+      applySelection();
+      emit();
+      return snapshot();
+    },
+    // Editable mode for V2-5 interaction adapters. Read-only
+    // behavior is unchanged while off; edit keys ignore when off.
+    setEditable(on) {
+      editable = !!on;
+      return snapshot();
+    },
+    // Editing adapters register one callback receiving
+    // { type: "nudge", key, shift } | { type: "delete" } |
+    // { type: "undo" } | { type: "redo" }. The viewer never
+    // interprets commands — it forwards and re-renders.
+    onEditAction(fn) {
+      editAction = typeof fn === "function" ? fn : null;
+    },
+    // Suppress the next click's selection handling (used after a
+    // pointerdown already applied click-equivalent selection, so a
+    // trailing click cannot double-apply a shift-toggle).
+    suppressNextClick() {
+      suppressClick = true;
+    },
   };
 
   rootEl.addEventListener("click", (ev) => {
-    const t = ev.target?.closest?.("[data-el]");
-    if (!t || !rootEl.contains(t)) {
-      api.clearSelection();
+    if (suppressClick) {
+      suppressClick = false;
       return;
     }
-    // Locked hits count as background: locked chrome is never
-    // selectable, so clicking it clears rather than sticking.
-    const id = resolveId(t.getAttribute("data-el"));
+    const id = api.resolveNode(ev.target);
     if (id === null) {
       api.clearSelection();
       return;
@@ -454,9 +503,36 @@ export function createViewer(rootEl, scenes, opts = {}) {
   // zoom, selection clearing, and Tab-order focus. Bound here —
   // not per shell — so headless tests drive the same path as
   // Chrome. The listener lives on the mount root, so inputs and
-  // filmstrip controls outside it are never hijacked.
+  // filmstrip controls outside it are never hijacked. In editable
+  // mode with a selection, arrows nudge and Delete removes via the
+  // registered edit action instead of navigating; Ctrl/Cmd+Z/Y
+  // undo and redo. Edit keys never fire from form fields.
   rootEl.addEventListener("keydown", (ev) => {
     const k = ev.key;
+    const inField = ev.target && ev.target.closest?.("input, textarea, select, [contenteditable='true'], [contenteditable='']");
+    if (editable && !inField && editAction) {
+      const mod = ev.ctrlKey || ev.metaKey;
+      if ((k === "ArrowRight" || k === "ArrowLeft" || k === "ArrowUp" || k === "ArrowDown") && state.selectedIds.length > 0) {
+        editAction({ type: "nudge", key: k, shift: !!ev.shiftKey });
+        ev.preventDefault();
+        return;
+      }
+      if ((k === "Delete" || k === "Backspace") && state.selectedIds.length > 0) {
+        editAction({ type: "delete" });
+        ev.preventDefault();
+        return;
+      }
+      if (mod && (k === "z" || k === "Z")) {
+        editAction({ type: ev.shiftKey ? "redo" : "undo" });
+        ev.preventDefault();
+        return;
+      }
+      if (mod && (k === "y" || k === "Y")) {
+        editAction({ type: "redo" });
+        ev.preventDefault();
+        return;
+      }
+    }
     if (k === "ArrowRight") api.next();
     else if (k === "ArrowLeft") api.prev();
     else if (k === "Home") api.goTo(0);
