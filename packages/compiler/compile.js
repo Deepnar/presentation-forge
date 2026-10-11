@@ -332,11 +332,24 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       refitTextEl(design, el, intent.id ?? prev.id, sink);
     }
   }
+  const suppressed = new Set((prev.suppressed ?? []).map((t) => t.id));
+  if (suppressed.size > 0) {
+    fresh.elements = fresh.elements.filter((e) => !suppressed.has(e.id));
+  }
   const freshIds = new Set(fresh.elements.map((e) => e.id));
   const orphans = prev.elements.filter(
     (e) => !freshIds.has(e.id) && e.provenance !== "compiler" && !e.semanticRef,
   );
   fresh.elements.push(...orphans.map((e) => ({ ...e, z: fresh.elements.length })));
+  // The tombstone list carries forward so suppression survives
+  // ordinary managed/customized recompilation; detached slides
+  // returned untouched above keep theirs as-is. Human orphans
+  // (appended above) are exempt by construction: suppression
+  // targets regenerated content only, matched by exact ID, so
+  // renamed or genuinely new elements are never suppressed.
+  if (prev.suppressed !== undefined) {
+    fresh.suppressed = prev.suppressed.map((t) => ({ ...t }));
+  }
   const anyCustom = fresh.elements.some((e) => e.customized) || orphans.length > 0;
   fresh.layoutState = prev.layoutState === "customized" || anyCustom ? "customized" : "managed";
   if (prev.recipeId !== fresh.recipeId && prev.layoutState === "customized") {

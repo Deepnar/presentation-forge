@@ -242,6 +242,21 @@ function walkIds(els: SceneElement[], out: string[] = []): string[] {
   return out;
 }
 
+// D1 regeneration tombstone for a deleted element: compiler-owned
+// deletions record suppression intent (id + ref for audit);
+// human-added deletions (human provenance, no semantic ref) record
+// nothing — there is no compiler content to resurrect. Moved or
+// reworded compiler elements keep their semanticRef, so they
+// suppress correctly. Matching at regeneration is by exact element
+// ID only. Locked elements never reach here (rejected earlier).
+function deletionTombstone(el: SceneElement | null): { id: string; semanticRef?: string } | null {
+  if (!el) return null;
+  if (el.provenance === "human" && !el.semanticRef) return null;
+  const tombstone: { id: string; semanticRef?: string } = { id: el.id };
+  if (el.semanticRef) tombstone.semanticRef = el.semanticRef;
+  return tombstone;
+}
+
 function fail(code: EngineCode, message: string, extra: Partial<EngineFailure> = {}): EngineFailure {
   return { ok: false, code, message, ...extra };
 }
@@ -300,6 +315,16 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
     }
     try {
       const inverse = applyCommand(scenes[i], structuredClone(op) as DeckCommand);
+      // Tombstone recording rides the same working clone, so batch
+      // atomicity covers it: a rolled-back batch leaves neither the
+      // deletion nor its suppression behind. Undo/redo restore the
+      // recorded slide images, which include the tombstone list.
+      if ((op as { type: string }).type === "element.delete") {
+        const tombstone = deletionTombstone(el);
+        if (tombstone && !scenes[i].suppressed?.some((t) => t.id === tombstone.id)) {
+          scenes[i].suppressed = [...(scenes[i].suppressed ?? []), tombstone];
+        }
+      }
       return { slideId, op: inverse };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

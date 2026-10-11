@@ -17,6 +17,13 @@ export interface SlideScene {
     image?: BackgroundImage;
   };
   layoutState: "managed" | "customized" | "detached";
+  /**
+   * Slide-scoped regeneration tombstones: compiler element IDs deleted by human command. Regeneration skips fresh elements with these IDs instead of resurrecting them; matching is by exact element ID only, so renamed or genuinely new elements are never suppressed. Human-added deletions record nothing here.
+   */
+  suppressed?: {
+    id: string;
+    semanticRef?: string;
+  }[];
   recipeId?: string;
   elements: SceneElement[];
 }

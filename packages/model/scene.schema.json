@@ -25,6 +25,19 @@
       }
     },
     "layoutState": { "enum": ["managed", "customized", "detached"] },
+        "suppressed": {
+          "type": "array",
+          "description": "Slide-scoped regeneration tombstones: compiler element IDs deleted by human command. Regeneration skips fresh elements with these IDs instead of resurrecting them; matching is by exact element ID only, so renamed or genuinely new elements are never suppressed. Human-added deletions record nothing here.",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "semanticRef": { "type": "string" }
+            }
+          }
+        },
     "recipeId": { "type": "string" },
     "elements": {
       "type": "array",
