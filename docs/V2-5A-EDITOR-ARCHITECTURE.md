@@ -257,7 +257,10 @@ or filesystem/SQLite adapters.
   in V2-5C** (per-slide `suppressed`, exact-ID match;
   `docs/V2-5C-EVAL.md` §§6–7).
 - D2 text-edit granularity: per-commit (recommended)
-  vs per-keystroke.
+  vs per-keystroke. **Decided in V2-5D:** one committed
+  text-update command per editing session — typing never touches
+  the engine; commit builds a single `element.updateText`
+  (`docs/V2-5D-EVAL.md` §§3–4).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

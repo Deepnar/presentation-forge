@@ -1675,7 +1675,16 @@ preview by node transform and commit single moves or atomic
 batches, arrows nudge by documented increments, Delete
 removes with slide-scoped tombstones, and Ctrl/Cmd+Z/Y walk
 snapshot history — the viewer re-renders from engine
-snapshots without remounting (`docs/V2-5C-EVAL.md`). Editor contracts are specified but not implemented
+snapshots without remounting (`docs/V2-5C-EVAL.md`). Inline
+text editing opens from double-click or Enter into a textarea
+overlay over the text box; typing stays draft-only and each
+session commits exactly one `element.updateText` (D2 per
+commit), with rich multi-paragraph/multi-run text honestly
+refused rather than flattened. `+ Text` / `+ Rect` / `+ Round`
+insert native human-owned elements at deterministic
+scene-center through `element.add`, reusing the same history,
+tombstone, regeneration-carry, and native PPTX projection
+(`docs/V2-5D-EVAL.md`). Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
 atomicity, (slideId, elementId) addressing, batch entries,

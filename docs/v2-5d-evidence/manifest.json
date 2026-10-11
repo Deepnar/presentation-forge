@@ -1,0 +1,17 @@
+{
+  "shots": [
+    "eval-overlay.png",
+    "eval-committed.png",
+    "eval-rich-refusal.png",
+    "eval-chromed-inserts.png"
+  ],
+  "notes": [
+    "overlay-vs-element px: {\"dx\":-0.012725830078125,\"dy\":-0.0239410400390625,\"dw\":-0.20965576171875,\"dh\":0.1667022705078125}",
+    "eval-overlay.png: editing overlay positioned over the title box",
+    "eval-committed.png: committed title with the eval note",
+    "rich-text refusal on m-prose:p1:content: Edit failed: op-rejected: rich text is read-only in this slice (4 paragraph(s), 4 run(s)) — editing would flatten its formatting",
+    "eval-rich-refusal.png: structured text honestly refused, content intact",
+    "eval-chromed-inserts.png: inserted text + rect centered on a chromed slide",
+    "chromed insert selected: [\"h-9414380e662c\"]"
+  ]
+}
