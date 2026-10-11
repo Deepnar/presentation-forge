@@ -7225,10 +7225,14 @@ scale); charts structurally exact without axes (V2-4C).
   7 inventory tests + 3 gated Chrome smoke tests green, 48/48
   gated captures with no missing faces, full suite 1489/1490
   with only the known BYOK locale failure).
-- [~] V2-4E selection model — read-only multiselect,
-  hit-testing, overlays, keyboard focus, inspector (in
-  review: `docs/V2-4E-EVAL.md` + `docs/v2-4e-evidence/`;
+- [x] V2-4E selection model — read-only multiselect,
+  hit-testing, overlays, keyboard focus, inspector (accepted
+  at `1a52170`: `docs/V2-4E-EVAL.md` + `docs/v2-4e-evidence/`;
   includes the pending/failed font-gate race correction).
+- [~] V2-4F live scenes — stateless DeckIntent compilation
+  over the accepted pipeline, viewer Live panel over the
+  shared mount path, zoom-pan spacer (in review:
+  `docs/V2-4F-EVAL.md` + `docs/v2-4f-evidence/`).
 - [ ] V2-4E selection model — multi-select, focus,
   overlays, bounds inspection; still no mutation.
 - [ ] V2-4F live scenes — server compiles deck scenes on

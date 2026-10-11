@@ -1640,7 +1640,14 @@ descendants never resolve), pointer-transparent overlay rings
 positioned from measured rects with scene-geometry fallback,
 Tab/Escape/arrows bound beside the mount, and a grounded
 `inspect()` record behind a small React panel — no dragging,
-no mutation, no projection changes.
+no mutation, no projection changes. Live compilation is
+stateless and transport-thin (V2-4F; `docs/V2-4F-EVAL.md`):
+`POST /api/v2/scenes` runs the fixture-driver pipeline
+(theme allowlist, plates, planned compile, scene validation)
+and the viewer swaps returned scenes through the same mount
+— fixtures stay first-class, and a spacer div sized to the
+scaled slide gives zoomed content real scrollbars without
+touching scene coordinates.
 
 ## The web shell
 
