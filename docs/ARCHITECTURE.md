@@ -1706,7 +1706,11 @@ to the inline OOXML chart caches (`docs/V2-5G-EVAL.md`). Table
 cells edit through atomic `element.setTableData` as verbatim
 full matrices with `tableCustomized` preservation, ragged input
 refused before commit, and native `<a:tbl>` verification
-(`docs/V2-5H-EVAL.md`).
+(`docs/V2-5H-EVAL.md`). Slides manage through the same engine:
+blank insert, deep duplication with deck-wide identity, atomic
+delete, id-based reorder, multiselect, and a revisioned detach
+transition, all behind a filmstrip that owns no slide
+collection (`docs/V2-5I-EVAL.md`).
 Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write

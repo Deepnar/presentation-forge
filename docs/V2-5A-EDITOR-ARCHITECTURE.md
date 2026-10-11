@@ -278,6 +278,12 @@ or filesystem/SQLite adapters.
   forward and restore paths; header/layout/typography never
   travel with cells, and `tableCustomized` carries the matrix
   across recompiles (`docs/V2-5H-EVAL.md` §§2–7).
+- Slide management (V2-5I): slide ops ride the existing
+  revisioned path with deckWide snapshot history; duplication
+  remaps every identity (nested included) with compiler→human
+  provenance on copies; detach is a one-way revisioned
+  transition with inverse restore (`docs/V2-5I-EVAL.md`
+  §§1–8).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

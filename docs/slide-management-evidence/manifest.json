@@ -1,0 +1,19 @@
+{
+  "shots": [
+    "eval-blank.png",
+    "eval-keyboard-reorder.png",
+    "eval-delete-confirm.png",
+    "eval-detached.png",
+    "eval-undone.png"
+  ],
+  "notes": [
+    "starting order: m-divider,m-prose,m-cards,m-compare,m-table,m-metric,m-chart,m-seq,m-cycle,m-hier,m-media,m-frame",
+    "blank slide id: s-e0fd377c12f7",
+    "eval-blank.png: new blank slide, navigated, empty stage",
+    "after keyboard move: m-divider,m-prose,s-e0fd377c12f7,m-cards,m-compare,m-table,m-metric,m-chart,m-seq,m-cycle,m-hier,m-media,m-frame",
+    "eval-keyboard-reorder.png: blank moved down by keyboard, identity followed",
+    "eval-delete-confirm.png: two-step delete confirmation, no native dialog",
+    "eval-detached.png: manual badge on the detached thumb",
+    "eval-undone.png: order, identities, and states restored"
+  ]
+}
