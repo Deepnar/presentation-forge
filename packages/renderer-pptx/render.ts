@@ -90,6 +90,10 @@ export async function preflightScenes(scenes: readonly SlideScene[]): Promise<Ex
       continue;
     }
     for (const el of walkElements(scene.elements)) {
+      // Hidden elements are omitted from output, so their payloads
+      // cannot fail preflight — unhiding re-arms the checks at the
+      // next export.
+      if (el.hidden === true) continue;
       if (el.kind === "chart") {
         const c = el.chart;
         if (!c) {
@@ -324,6 +328,9 @@ function addLineElement(slide: PptxSlide, el: SceneElement): void {
 }
 
 function drawElement(slide: PptxSlide, el: SceneElement, dx = 0, dy = 0): void {
+  // Hidden elements stay in the scene and vanish from output —
+  // omitted, never rasterized, restorable by re-showing.
+  if (el.hidden === true) return;
   const at = { ...el, x: el.x + dx, y: el.y + dy };
   switch (el.kind) {
     case "text": addTextElement(slide, at); break;

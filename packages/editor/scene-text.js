@@ -155,6 +155,78 @@ export function paragraphStylesDiffer(paragraphs) {
   return new Set(ps.map(sig)).size > 1;
 }
 
+// System chrome: locked, compiler-owned, with no authored block
+// behind it (branding, headers, footers, structural marks). The
+// Layers panel may show it but no normal user command may unlock
+// it — unlocking is refused at the adapter with an explanation.
+export function isSystemChrome(el) {
+  return el?.locked === true && el?.provenance === "compiler" && el?.semanticRef === undefined;
+}
+
+// Readable layer labels. Text leads with its role and opening
+// words; shapes name their form; charts name their first series;
+// tables name their dimensions; groups count their objects.
+// Unnamed content degrades to its kind, never to a blank row.
+export function elementLabel(el) {
+  const kids = el?.group?.children ?? [];
+  switch (el?.kind) {
+    case "text": {
+      const runs = el.paragraphs ?? [];
+      const first = runs[0]?.runs?.[0] ?? {};
+      const words = runs.map((p) => (p.runs ?? []).map((r) => r.text ?? "").join("")).join(" ").trim().replace(/\s+/g, " ");
+      const role = first.role ?? "";
+      const kind = role === "heading" || role === "display" ? "Heading" : role === "subhead" ? "Subhead" : "Text";
+      return words ? `${kind} — ${words.slice(0, 32)}${words.length > 32 ? "…" : ""}` : kind;
+    }
+    case "shape": {
+      const form = el.shape?.form ?? "rect";
+      return form === "roundRect" ? "Rounded rectangle" : form === "ellipse" ? "Ellipse" : "Rectangle";
+    }
+    case "chart":
+      return `${el.chart?.series?.[0]?.name ?? "Chart"} chart`;
+    case "table": {
+      const rows = el.table?.rows ?? [];
+      const cols = rows.reduce((n, r) => Math.max(n, (r ?? []).length), 0);
+      return `Table ${cols}×${rows.length}`;
+    }
+    case "image":
+      return el.image?.alt ? `Image — ${String(el.image.alt).slice(0, 28)}` : "Image";
+    case "line":
+      return "Line";
+    case "group":
+      return `Group — ${kids.length} object${kids.length === 1 ? "" : "s"}`;
+    default:
+      return el?.kind ?? "Object";
+  }
+}
+
+// Visible-row filter over flattened layers: drops every row with
+// a collapsed ancestor. Pure, so the collapse contract is
+// unit-testable without a browser; the panel only holds the id
+// set. Collapsed groups themselves stay visible.
+export function applyCollapse(rows, collapsed) {
+  const hidden = new Set(Array.isArray(collapsed) ? collapsed : [...(collapsed ?? [])]);
+  return (rows ?? []).filter((row) => {
+    let p = row.parentId;
+    while (p) {
+      if (hidden.has(p)) return false;
+      p = (rows ?? []).find((r) => r.id === p)?.parentId ?? null;
+    }
+    return true;
+  });
+}
+// Flat layer rows for the panel, parents before children, in draw
+// order (z rank). Each row carries its depth and parent id; the
+// panel renders indentation and expand/collapse from that. No
+// parallel ids — every row IS the authoritative element id.
+export function flattenLayers(elements, depth = 0, parentId = null, out = []) {
+  const ordered = [...(elements ?? [])].sort((a, b) => (a.z ?? 0) - (b.z ?? 0));
+  for (const el of ordered) {
+    out.push({ id: el.id, kind: el.kind, depth, parentId, locked: el.locked === true, hidden: el.hidden === true, label: elementLabel(el) });
+    if (el.kind === "group") flattenLayers(el.group?.children, depth + 1, el.id, out);
+  }
+  return out;
+}
 // Draft colors for inserted text sampled from the slide when a
 // sibling text run exists, else contrasted against the slide ground.
 // Gap (documented in V2-5D-EVAL): scenes carry resolved runs but no

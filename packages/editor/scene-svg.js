@@ -140,6 +140,9 @@ function refAttr(el) {
 }
 
 function elementSvg(el, opts = {}) {
+  // Hidden elements are preserved in the scene and omitted from
+  // every projection path — top level and group children alike.
+  if (el.hidden === true) return "";
   const x = el.x * IN;
   const y = el.y * IN;
   const w = el.w * IN;
@@ -282,6 +285,8 @@ function backgroundSvg(scene) {
 }
 
 export function sceneToSvg(scene, opts = {}) {
-  const els = [...scene.elements].sort((a, b) => a.z - b.z).map((el) => elementSvg(el, opts)).join("");
+  // Hidden elements are preserved in the scene and omitted from
+  // the projection — never deleted, never rasterized.
+  const els = [...scene.elements].filter((el) => el.hidden !== true).sort((a, b) => a.z - b.z).map((el) => elementSvg(el, opts)).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}">${backgroundSvg(scene)}${els}</svg>`;
 }

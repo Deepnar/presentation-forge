@@ -19,6 +19,7 @@ import {
   defaultShapeElement,
   overflowEstimate,
   tableOverflowEstimate,
+  isSystemChrome,
   blankSlide,
   mintHumanId,
   cascadeBox,
@@ -540,6 +541,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (el.kind !== "text") {
       return report({ ok: false, code: "op-rejected", message: `element ${target} is not text` });
     }
+    if (el.hidden === true) {
+      return report({ ok: false, code: "op-rejected", message: `element ${target} is hidden — re-show it first` });
+    }
     if (!isEditableText(el.paragraphs)) {
       const d = describeStructure(el.paragraphs);
       return report({
@@ -785,6 +789,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     const el = findIn(doc.snapshot().scenes, snap.slideId, id);
     if (!el) return { ok: false, code: "unknown-element", message: `unknown element ${id}` };
     if (el.locked) return { ok: false, code: "locked", message: `element ${id} is locked` };
+    if (el.hidden === true) return { ok: false, code: "op-rejected", message: `element ${id} is hidden — re-show it first` };
     if (!RESIZABLE_KINDS.has(el.kind)) {
       return { ok: false, code: "op-rejected", message: `element ${id} (${el.kind}) is not resizable in this slice` };
     }
@@ -1488,6 +1493,133 @@ export function attachEditor(viewer, doc, opts = {}) {
     return track(result);
   }
 
+  // ——— V2-5J layer operations ———
+  //
+  // Draw order, user locks, and visibility over authoritative
+  // element ids. Reorder rewrites the top-level array and the z
+  // ranks together (z is the rank both projections sort by);
+  // nested children refuse with the group unit named. Lock and
+  // visibility toggles are explicit booleans, revisioned and
+  // undoable like every other command.
+
+  function layerTarget(id, kinds = null) {
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return { ok: false, code: "unknown-element", message: `unknown element ${id}` };
+    if (kinds && !kinds.has(el.kind)) {
+      return { ok: false, code: "op-rejected", message: `element ${id} (${el.kind}) is out of scope here` };
+    }
+    return { ok: true, snap, el };
+  }
+
+  // Top-down ancestor chain for a nested id, outermost first.
+  // Locks inherit downward: an element under a locked group is
+  // treated as locked for every modifying panel action, even
+  // when the element itself carries no lock.
+  function lockedAncestor(id) {
+    const snap = api.snapshot();
+    const slide = doc.snapshot().scenes.find((s) => s.id === snap.slideId);
+    if (!slide) return null;
+    const walk = (els, chain) => {
+      for (const el of els ?? []) {
+        if (el.id === id) return chain;
+        const found = walk(el.group?.children, [...chain, el]);
+        if (found) return found;
+      }
+      return null;
+    };
+    const chain = walk(slide.elements, []);
+    if (!chain) return null;
+    return chain.find((a) => a.locked === true) ?? null;
+  }
+
+  async function reorderElement(id, toIndex) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    if (!Number.isInteger(toIndex) || toIndex < 0) {
+      return report({ ok: false, code: "bad-envelope", message: "reorder needs a non-negative index" });
+    }
+    const target = layerTarget(id);
+    if (!target.ok) return report(target);
+    const result = await doc.apply({
+      id: newEditId(), slideId: target.snap.slideId,
+      op: { type: "element.reorder", id, toIndex },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return track(report(result));
+    if (result.noop) return track(result);
+    sync();
+    return track(result);
+  }
+
+  async function setElementLocked(id, locked) {
+    if (typeof locked !== "boolean") {
+      return report({ ok: false, code: "bad-envelope", message: "locked must be a boolean" });
+    }
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const target = layerTarget(id);
+    if (!target.ok) return report(target);
+    // System chrome stays locked: branding and structural marks
+    // are institutional, and the panel must never bypass that.
+    if (target.el.locked === true && locked === false && isSystemChrome(target.el)) {
+      return report({ ok: false, code: "locked", message: `element ${id} is system chrome — it cannot be unlocked` });
+    }
+    if ((target.el.locked === true) === locked) {
+      return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    }
+    const result = await doc.apply({
+      id: newEditId(), slideId: target.snap.slideId,
+      op: { type: "element.setLocked", id, locked },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return track(report(result));
+    if (result.noop) return track(result);
+    sync();
+    return track(result);
+  }
+
+  async function setElementHidden(id, hidden) {
+    if (typeof hidden !== "boolean") {
+      return report({ ok: false, code: "bad-envelope", message: "hidden must be a boolean" });
+    }
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const target = layerTarget(id);
+    if (!target.ok) return report(target);
+    if (target.el.locked === true) {
+      return report({ ok: false, code: "locked", message: `element ${id} is locked` });
+    }
+    const ancestor = lockedAncestor(id);
+    if (ancestor) {
+      return report({ ok: false, code: "locked", message: `element ${id} sits in locked group ${ancestor.id}` });
+    }
+    if ((target.el.hidden === true) === hidden) {
+      return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    }
+    const result = await doc.apply({
+      id: newEditId(), slideId: target.snap.slideId,
+      op: { type: "element.setVisibility", id, hidden },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return track(report(result));
+    if (result.noop) return track(result);
+    sync();
+    return track(result);
+  }
+
   async function onEditAction(action) {
     // Interaction precedence: an open text edit outranks every canvas
     // shortcut. Arrows/Backspace belong to the caret (scene-dom never
@@ -1583,6 +1715,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
     setChartData: (id, payload) => setChartData(id, payload),
     setTableData: (id, rows) => setTableData(id, rows),
+    reorderElement: (id, toIndex) => track(reorderElement(id, toIndex)),
+    setElementLocked: (id, locked) => track(setElementLocked(id, locked)),
+    setElementHidden: (id, hidden) => track(setElementHidden(id, hidden)),
     insertSlide: (index = null) => track(insertSlide(index)),
     duplicateSlide: (id = null) => track(duplicateSlide(id)),
     duplicateSlides: (ids) => track(duplicateSlides(ids ?? [])),
