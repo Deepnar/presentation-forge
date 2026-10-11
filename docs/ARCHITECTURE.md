@@ -1608,9 +1608,16 @@ The shared projection converts scene points at `pt × 96/72`
 with the first baseline at box top + 0.05in PPTX margin +
 0.8em ascent (V2-4B calibration; the pre-4B fixed `+14px`
 baseline and `×1.1` scale are recorded in `docs/V2-4B-EVAL.md`).
-Known projection gaps (chart axes) are recorded in
-`docs/V2-4A-EVAL.md` with owning layers, not corrected by
-compiler floors.
+Chart geometry lives in `packages/editor/scene-chart.js`, a
+pure Layer-C-to-SVG projector covering all six scene kinds
+with deterministic nice-tick axes spanning zero, grouped
+multi-series, signed bars, gapped lines, zero-baseline areas,
+and exact-share pies (V2-4C; `docs/V2-4C-EVAL.md`). Series
+colors are an explicitly interim ramp pending the
+theme-resolved contract (`chartSeries` in
+`packages/core/chartpalette.ts` carried as `series[].color`).
+Known projection gaps are recorded in the eval docs with
+owning layers, not corrected by compiler floors.
 
 ## The web shell
 

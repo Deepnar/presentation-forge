@@ -7189,15 +7189,22 @@ with PPTX; two projection-calibration findings scoped to
 V2-4B (F1 display-type first baseline, F2 preview type
 scale); charts structurally exact without axes (V2-4C).
 
-- [~] V2-4B projection calibration — size-proportional first
-  baseline + true px type scale, before/after evidence (in
-  review). Fix landed in `packages/editor/scene-svg.js`
+- [x] V2-4B projection calibration — size-proportional first
+  baseline + true px type scale, before/after evidence
+  (accepted at `34a758b`). Fix landed in
+  `packages/editor/scene-svg.js`
   (`pt2px`, margin+ascent anchor); 10 new contract tests, 7
   proven to fail on the V2-4A baseline; eval
   `docs/V2-4B-EVAL.md` + `docs/v2-4b-evidence/`; PPTX
   reference unchanged.
-- [ ] V2-4C chart fidelity — per-kind SVG geometry
-  (axes, gridlines, ticks), data-exactness tests.
+- [~] V2-4C chart fidelity — per-kind SVG geometry, axes,
+  signed/multi-series/pie honesty, data-exactness tests (in
+  review). Pure projector `packages/editor/scene-chart.js`
+  over the unchanged scene contract; 24 invariant tests, kind
+  cases proven to fail on the V2-4B baseline; eval
+  `docs/V2-4C-EVAL.md` + `docs/v2-4c-evidence/`. Series colors
+  explicitly interim; theme-resolved `series[].color`
+  carriage tracked as follow-up.
 - [ ] V2-4D browser fonts — bundle the display faces themes
   reference; document residual fallback.
 - [ ] V2-4E selection model — multi-select, focus,
