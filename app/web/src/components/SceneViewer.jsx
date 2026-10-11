@@ -31,11 +31,9 @@ function Thumb({ scene, active, onPick }) {
   );
 }
 
-function selectedInfo(root, snap) {
-  if (!snap || !snap.selectedId || !root?.querySelector) return null;
-  const node = root.querySelector(`[data-el="${snap.selectedId}"]`);
-  if (!node) return { id: snap.selectedId, locked: false };
-  return { id: snap.selectedId, locked: node.getAttribute("data-locked") === "true" };
+function useInspector(viewer, snap) {
+  if (!viewer || !snap || !Array.isArray(snap.selectedIds)) return [];
+  return snap.selectedIds.map((id) => viewer.inspect(id)).filter(Boolean);
 }
 
 export default function SceneViewer({ initial = {} }) {
@@ -100,21 +98,9 @@ export default function SceneViewer({ initial = {} }) {
       })
       : null;
     ro?.observe?.(scrollRef.current);
-    const onKey = (ev) => {
-      if (ev.key === "ArrowRight") viewer.api.next();
-      else if (ev.key === "ArrowLeft") viewer.api.prev();
-      else if (ev.key === "Home") viewer.api.goTo(0);
-      else if (ev.key === "End") viewer.api.goTo(viewer.scenes.length - 1);
-      else if (ev.key === "Escape") viewer.api.clearSelection();
-      else if (ev.key === "+" || ev.key === "=") viewer.api.zoomIn();
-      else if (ev.key === "-") viewer.api.zoomOut();
-      else if (ev.key === "0") viewer.api.resetZoom();
-      else return;
-      ev.preventDefault();
-    };
-    root.addEventListener("keydown", onKey);
+    // Keyboard lives in scene-dom (one behavior for every shell);
+    // only teardown here.
     return () => {
-      root.removeEventListener("keydown", onKey);
       ro?.disconnect?.();
       off();
       viewer.destroy();
@@ -136,7 +122,7 @@ export default function SceneViewer({ initial = {} }) {
 
   const api = viewerRef.current?.api;
   const scale = snap ? snap.fit * snap.zoom : 1;
-  const info = selectedInfo(mountRef.current, snap);
+  const inspected = useInspector(viewerRef.current, snap);
   const slideW = 13.333 * 96;
   const slideH = 7.5 * 96;
 
@@ -150,6 +136,7 @@ export default function SceneViewer({ initial = {} }) {
           slideCount: snap?.slideCount ?? 0,
           zoom: snap?.zoom ?? 1,
           selectedId: snap?.selectedId ?? null,
+          selectedIds: snap?.selectedIds ?? [],
         })}
         data-fonts-ready={fonts.settled ? (fonts.ready ? "true" : "false") : "pending"}
         data-missing-fonts={fonts.missing.join(",")}
@@ -177,9 +164,27 @@ export default function SceneViewer({ initial = {} }) {
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
           <button type="button" onClick={() => api?.resetZoom()}>Fit</button>
           <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>
-            {snap?.slideId ?? ""}{info ? ` · selected ${info.id}${info.locked ? " (locked)" : ""}` : ""}
+            {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
           </span>
         </div>
+        {inspected.length > 0 && (
+          <div
+            data-inspector
+            aria-label="Selection inspector"
+            style={{
+              padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 11,
+              fontFamily: "ui-monospace, monospace", background: "#242220",
+              maxHeight: 88, overflowY: "auto",
+            }}
+          >
+            {inspected.map((r) => (
+              <div key={r.id} data-inspected={r.id}>
+                {r.id} · {r.kind} · {r.w}×{r.h} @ {r.x},{r.y}
+                {r.locked ? " · locked" : ""}{r.semanticRef ? ` · ref ${r.semanticRef}` : ""} · {r.provenance ?? "scene"}
+              </div>
+            ))}
+          </div>
+        )}
         <div
           ref={scrollRef}
           style={{ flex: 1, overflow: "auto", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: 24 }}
@@ -197,8 +202,10 @@ export default function SceneViewer({ initial = {} }) {
             }}
           />
         </div>
-        <style>{`[data-selected] { outline: 3px solid #e0705a !important; outline-offset: -3px; }
-        aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; }`}</style>
+        {/* Selection rings render as overlay boxes from scene-dom
+        (data-overlay); the state attribute below is the DOM contract
+        tests assert, not a visual. */}
+        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; }`}</style>
       </main>
     </div>
   );
