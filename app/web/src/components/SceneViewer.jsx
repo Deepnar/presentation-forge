@@ -102,6 +102,95 @@ function StylePanel({ element, onCommit }) {
   );
 }
 
+// V2-5F text-format panel: one row per paragraph of a supported
+// (uniform single-run) text element — color, size, bold, italic —
+// each committing explicitly to that paragraph only. Rows display
+// their own values, so mixed paragraph styles can never read as a
+// false uniform format; a "mixed styles" note names the case.
+// Remounted per element+revision (see key at the call site), so
+// undo/redo and reselection refresh every row. Multi-run elements
+// get no panel: formatting addresses whole runs only.
+function TextFormatPanel({ element, onCommit }) {
+  const paras = element.paragraphs ?? [];
+  const sigs = paras.map((p) => {
+    const r = p?.runs?.[0] ?? {};
+    return JSON.stringify([p?.align ?? null, p?.bullet ?? null, r.color ?? null, r.size ?? null, r.bold ?? null, r.italic ?? null]);
+  });
+  const mixed = new Set(sigs).size > 1;
+  const [error, setError] = useState(null);
+  function commitRow(i, draft) {
+    const run = paras[i]?.runs?.[0] ?? {};
+    const patch = {};
+    const bare = (v) => String(v).replace(/^#/, "");
+    if (draft.color !== undefined && bare(draft.color).toUpperCase() !== String(run.color ?? "").toUpperCase()) {
+      if (!/^[0-9A-Fa-f]{6}$/.test(bare(draft.color))) {
+        setError(`paragraph ${i + 1}: color must be a 6-digit hex color`);
+        return;
+      }
+      patch.color = bare(draft.color).toUpperCase();
+    }
+    if (draft.size !== undefined && draft.size !== "") {
+      const n = Number(draft.size);
+      if (!Number.isFinite(n) || n < 6 || n > 144) {
+        setError(`paragraph ${i + 1}: size must be a number from 6 to 144`);
+        return;
+      }
+      if (n !== (run.size ?? null)) patch.size = n;
+    }
+    if (draft.bold !== undefined && draft.bold !== (run.bold ?? null)) patch.bold = draft.bold;
+    if (draft.italic !== undefined && draft.italic !== (run.italic ?? null)) patch.italic = draft.italic;
+    if (Object.keys(patch).length === 0) {
+      setError(null);
+      return;
+    }
+    setError(null);
+    onCommit?.(i, patch);
+  }
+  return (
+    <div data-text-format-panel={element.id} style={{ display: "flex", flexDirection: "column", gap: 2, padding: "4px 12px", fontSize: 12 }}>
+      <span style={{ opacity: 0.8 }}>
+        Text {element.id}{mixed ? " · mixed paragraph styles (per-paragraph controls)" : ""}
+      </span>
+      {paras.map((p, i) => (
+        <TextFormatRow
+          key={i}
+          index={i}
+          paragraph={p}
+          onCommit={(draft) => commitRow(i, draft)}
+        />
+      ))}
+      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+    </div>
+  );
+}
+
+function TextFormatRow({ index, paragraph, onCommit }) {
+  const run = paragraph?.runs?.[0] ?? {};
+  const [color, setColor] = useState(run.color ? `#${run.color}` : "#000000");
+  const [size, setSize] = useState(run.size !== undefined ? String(run.size) : "");
+  const [bold, setBold] = useState(run.bold === true);
+  const [italic, setItalic] = useState(run.italic === true);
+  const label = `${paragraph?.bullet ? "• " : ""}¶${index + 1}${paragraph?.align ? ` ${paragraph.align}` : ""}`;
+  function commit() {
+    onCommit({ color, size, bold: bold ? true : run.bold === true ? false : undefined, italic: italic ? true : run.italic === true ? false : undefined });
+  }
+  // Toggles express tri-state honestly: checked means true; clearing
+  // a set true sends explicit false (never silent absence).
+  const commitOnEnter = (e) => {
+    if (e.key === "Enter") commit();
+  };
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+      <span style={{ opacity: 0.7, minWidth: 64 }}>{label}</span>
+      <label>Color <input aria-label={`Paragraph ${index + 1} color`} type="color" value={/^#[0-9A-Fa-f]{6}$/.test(color) ? color : "#000000"} onChange={(e) => setColor(e.target.value)} onBlur={commit} /></label>
+      <label>Size <input aria-label={`Paragraph ${index + 1} size`} value={size} inputMode="decimal" placeholder={run.size !== undefined ? undefined : "—"} style={{ width: 44 }} onChange={(e) => setSize(e.target.value)} onBlur={commit} onKeyDown={commitOnEnter} /></label>
+      <label>B <input aria-label={`Paragraph ${index + 1} bold`} type="checkbox" checked={bold} onChange={(e) => setBold(e.target.checked)} onBlur={commit} /></label>
+      <label>I <input aria-label={`Paragraph ${index + 1} italic`} type="checkbox" checked={italic} onChange={(e) => setItalic(e.target.checked)} onBlur={commit} /></label>
+      <button type="button" onClick={commit}>Apply</button>
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -224,7 +313,7 @@ export default function SceneViewer({ initial = {} }) {
   const [editStatus, setEditStatus] = useState({ rev: 0, error: null, preparing: false });
   // V2-5D inline text state, mirrored from the adapter's onTextEdit
   // callback (the adapter owns the session; React only displays).
-  const [textState, setTextState] = useState({ editing: false, elementId: null, conflict: null, overflow: null });
+  const [textState, setTextState] = useState({ editing: false, elementId: null, conflict: null, overflow: null, paragraphs: null });
   function exitEdit() {
     // Pending-edit policy: leaving edit mode commits the draft
     // first; a failed commit keeps edit mode open with the error.
@@ -241,7 +330,7 @@ export default function SceneViewer({ initial = {} }) {
     adapterRef.current = null;
     docRef.current = null;
     setEditOn(false);
-    setTextState({ editing: false, elementId: null, conflict: null, overflow: null });
+    setTextState({ editing: false, elementId: null, conflict: null, overflow: null, paragraphs: null });
     setEditStatus({ rev: 0, error: null, preparing: false });
   }
   async function enterEdit() {
@@ -266,6 +355,7 @@ export default function SceneViewer({ initial = {} }) {
             conflict: e.conflict ?? null,
             error: e.error ?? null,
             overflow: e.overflow ?? null,
+            paragraphs: e.paragraphs ?? null,
           });
           if (e.committed) setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
         },
@@ -376,6 +466,16 @@ export default function SceneViewer({ initial = {} }) {
   const styledShape = editOn && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
     ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "shape" && !e.locked) ?? null)
     : null;
+  // V2-5F text-format target: the single selected unlocked text
+  // element whose paragraphs are all single-run. Multi-run bodies
+  // get no panel (whole-run addressing only).
+  const formattedText = editOn && !textState.editing && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
+    ? (shownScenes[snap.slideIndex]?.elements.find((e) => {
+      if (e.id !== snap.selectedIds[0] || e.kind !== "text" || e.locked) return false;
+      const ps = e.paragraphs ?? [];
+      return ps.length > 0 && ps.every((p) => Array.isArray(p?.runs) && p.runs.length === 1);
+    }) ?? null)
+    : null;
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
@@ -410,8 +510,8 @@ export default function SceneViewer({ initial = {} }) {
           ))}
         </div>
       </aside>
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #333", flexWrap: "wrap" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative" }}>
+        <div data-toolbar style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #333", flexWrap: "nowrap", overflowX: "auto", overflowY: "hidden" }}>
           <select aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)}>
             {DECKS.map((d) => <option key={d.name} value={d.name}>{d.name} ({d.theme}, {d.variant})</option>)}
             {liveDeck && <option value={liveDeck.name}>{liveDeck.name} (live)</option>}
@@ -443,6 +543,9 @@ export default function SceneViewer({ initial = {} }) {
           {editOn && textState.editing && (
             <span style={{ display: "inline-flex", gap: 6, alignItems: "center", fontSize: 12 }}>
               <span style={{ opacity: 0.85 }}>editing text… Ctrl+Enter commits, Esc cancels</span>
+              {textState.paragraphs > 1 && (
+                <span style={{ opacity: 0.7 }}>{textState.paragraphs} paragraphs · each keeps its own style</span>
+              )}
               <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { const a = adapterRef.current; if (a?.editingId?.()) a.commitTextEdit(); }}>Commit</button>
               <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => adapterRef.current?.cancelTextEdit()}>Cancel</button>
             </span>
@@ -518,14 +621,16 @@ export default function SceneViewer({ initial = {} }) {
             </span>
           </div>
         )}
-        {/* Inspector reserve: the wrapper always holds one line of
-        space (transparent border when empty) so selecting never
-        reflows the stage — the V2-5D double-click shift is fixed by
-        layout, with the 600ms selection hold as backstop for
-        multi-line inspectors. */}
+        {/* Inspector reserve: the wrapper always holds one inspector
+        line (transparent border when empty) so single-line selection
+        never reflows the stage — the V2-5D double-click shift is
+        fixed by layout, with the 600ms selection hold as backstop
+        for multi-line inspectors. Format panels dock below the
+        scroll viewport (absolute, outside flow) and the toolbar
+        never wraps, for the same reason. */}
         <div
           data-inspector-wrap
-          style={{ minHeight: 30, boxSizing: "border-box", background: "#242220", borderBottom: (inspected.length > 0 || styledShape) ? "1px solid #333" : "1px solid transparent" }}
+          style={{ minHeight: 31, boxSizing: "border-box", background: "#242220", borderBottom: inspected.length > 0 ? "1px solid #333" : "1px solid transparent" }}
         >
         {inspected.length > 0 && (
           <div
@@ -544,13 +649,6 @@ export default function SceneViewer({ initial = {} }) {
               </div>
             ))}
           </div>
-        )}
-        {styledShape && (
-          <StylePanel
-            key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
-            element={styledShape}
-            onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
-          />
         )}
         </div>
         <div
@@ -581,7 +679,36 @@ export default function SceneViewer({ initial = {} }) {
         {/* Selection rings render as overlay boxes from scene-dom
         (data-overlay); the state attribute below is the DOM contract
         tests assert, not a visual. */}
-        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; }`}</style>
+        {/* Toolbar items never shrink (shrinking wraps button text
+        and grows the row, moving the stage): the row scrolls
+        horizontally instead, at a constant height. */}
+        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; } [data-toolbar] > * { flex-shrink: 0; white-space: nowrap; }`}</style>
+        {/* Format dock: shape and text panels float above the
+        scroll viewport bottom (absolute, outside layout flow), so
+        selecting never resizes the scroll area, never retriggers
+        refit, and never moves the stage — the double-click target
+        stays pixel-stable. Dismissed by deselection. */}
+        {(styledShape || formattedText) && (
+          <div
+            data-format-bar
+            style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 6, borderTop: "1px solid #333", background: "#242220", maxHeight: 190, overflowY: "auto" }}
+          >
+            {styledShape && (
+              <StylePanel
+                key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
+                element={styledShape}
+                onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
+              />
+            )}
+            {formattedText && (
+              <TextFormatPanel
+                key={`${snap.slideId}:${formattedText.id}:${editStatus.rev}`}
+                element={formattedText}
+                onCommit={(i, patch) => adapterRef.current?.setTextStyle(formattedText.id, i, patch)}
+              />
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
