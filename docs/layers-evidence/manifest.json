@@ -1,0 +1,15 @@
+{
+  "shots": [
+    "eval-tree.png",
+    "eval-restacked.png",
+    "eval-locked.png",
+    "eval-hidden.png"
+  ],
+  "notes": [
+    "cards tree: m-cards:title:heading,m-cards:c1:frame,m-cards:c1:content,m-cards:c2:frame,m-cards:c2:content,m-cards:c3:frame,m-cards:c3:content",
+    "eval-tree.png: layer tree with readable labels over the cards slide",
+    "eval-restacked.png: card body sent behind its frame, text covered",
+    "eval-locked.png: locked row with chrome marks intact",
+    "eval-hidden.png: hidden row dimmed, projection without it, chrome intact"
+  ]
+}

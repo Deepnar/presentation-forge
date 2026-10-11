@@ -7301,11 +7301,16 @@ scale); charts structurally exact without axes (V2-4C).
   full-matrix validation, `tableCustomized` preservation, dock
   grid panel, verbatim text fidelity, and native `<a:tbl>`
   verification (accepted at `cd7d069`).
-- [~] V2-5I visual slide management — blank insert, deep
+- [x] V2-5I visual slide management — blank insert, deep
   duplication with deck-wide identity, atomic delete, drag and
   keyboard reorder, filmstrip multiselect, and revisioned
-  detach, all through the engine (pending independent review:
-  `docs/V2-5I-EVAL.md` + `docs/slide-management-evidence/`).
+  detach, all through the engine (accepted at `7068972`).
+- [~] V2-5J Layers panel and object arrangement — authoritative
+  layer tree with selection sync, `element.reorder` under a
+  z-is-the-rank contract, user locks with system-chrome
+  protection, truthful hide/show, and native PPTX parity
+  (pending independent review: `docs/V2-5J-EVAL.md` +
+  `docs/layers-evidence/`).
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

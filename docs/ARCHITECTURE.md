@@ -1710,7 +1710,11 @@ refused before commit, and native `<a:tbl>` verification
 blank insert, deep duplication with deck-wide identity, atomic
 delete, id-based reorder, multiselect, and a revisioned detach
 transition, all behind a filmstrip that owns no slide
-collection (`docs/V2-5I-EVAL.md`).
+collection (`docs/V2-5I-EVAL.md`). Layers arrange through the
+same engine: an authoritative panel tree, `element.reorder`
+under a z-is-the-rank contract both projections share, user
+locks with system-chrome protection, and truthful hide/show
+with native PPTX parity (`docs/V2-5J-EVAL.md`).
 Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
