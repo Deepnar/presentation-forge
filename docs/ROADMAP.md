@@ -7248,13 +7248,21 @@ scale); charts structurally exact without axes (V2-4C).
   without the fallback. Refuse or fallback at `renderPptx*`
   time before editor-driven export exists.
 - [ ] Browser-suite build parallelism (V2-4 gate P2-1,
-  V2-5A audit) — browser CDP gates can time out under full
-  `node --test` parallelism while serial runs stay green.
-  Measured alibi: `vite build` takes 0.4s solo, 0.5s doubled,
-  so build contention is NOT the mechanism; prime suspects
-  are LibreOffice CPU hunger and Chrome multiplicity.
-  Isolate with process-level measurement before locking the
-  wrong resource, ahead of further browser suites.
+  V2-5A audit, V2-5C hang data) — browser CDP gates can time
+  out under full `node --test` parallelism while serial runs
+  stay green. Measured alibi: `vite build` takes 0.4s solo,
+  0.5s doubled, so build contention is NOT the mechanism;
+  prime suspects are LibreOffice CPU hunger and Chrome
+  multiplicity. New signature in V2-5C: a Chrome file wedged
+  75 minutes with a live browser and zero output — every CDP
+  wait has a timeout except `send()` itself, which awaits a
+  matching message id forever; a never-answered dispatch
+  under load hangs the file, not just the test. Fix
+  direction: bound `send()` in `tools/chrome-shot.mjs`
+  (fail-fast with the in-flight expression attached) and/or
+  serialize browser files. Isolate with process-level
+  measurement before locking the wrong resource, ahead of
+  further browser suites.
 
 ### [~] V2-5 real editor, commands, autosave
 
@@ -7262,12 +7270,13 @@ scale); charts structurally exact without axes (V2-4C).
 
 - [x] V2-5A export safety, editor architecture, command
   contracts (accepted at `06a0211`).
-- [~] V2-5B atomic command engine & revisioned history (in
-  review: `docs/V2-5B-EVAL.md`; engine, ownership
-  counterfactuals, 27 engine tests).
-- [~] V2-5B-1 concurrent safety + exact undo restoration
-  (in review: `docs/V2-5B1-EVAL.md`; serialized transaction
-  boundary, snapshot history, 21 correction tests).
+- [x] V2-5B atomic command engine & revisioned history (accepted
+  at `4d16a2f`).
+- [x] V2-5B-1 concurrent safety + exact undo restoration
+  (accepted at `4d16a2f`).
+- [~] V2-5C native canvas editing — drag/nudge/delete, undo/redo,
+  tombstone suppression (in review: `docs/V2-5C-EVAL.md` +
+  `docs/v2-5c-evidence/`).
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,

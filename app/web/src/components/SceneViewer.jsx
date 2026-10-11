@@ -115,6 +115,7 @@ export default function SceneViewer({ initial = {} }) {
   }, [liveOpen]);
   function pickFixture(name) {
     exitEdit();
+    setEditedScenes(null);
     loaderRef.current.abort();
     setLiveDeck(null);
     setDeckName(name);
@@ -320,7 +321,7 @@ export default function SceneViewer({ initial = {} }) {
             {editedScenes && !editOn ? " · unsaved edits (read-only)" : ""}
           </span>
         </div>
-        {editOn && editStatus.error && (
+        {editStatus.error && (
           <div role="alert" data-edit-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0a090", background: "#242220" }}>
             Edit failed: {editStatus.error}
           </div>

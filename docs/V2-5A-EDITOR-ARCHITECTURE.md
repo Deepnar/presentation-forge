@@ -202,6 +202,12 @@ explicit keep/deleted choice at delete time. Deferred to
 the slice that implements delete in the UI (V2-5C),
 decided there with a test, not here.
 
+> **D1 decided in V2-5C:** per-slide `suppressed`
+> (`{ id, semanticRef? }[]`, exact-ID matching, inert when
+> renamed, retained, carried across managed/customized
+> recompiles, detached untouched). See `docs/V2-5C-EVAL.md`
+> §§6–7 and `test/v2-tombstone-5c.test.js` (Cases A–I).
+
 ## 11. Interaction-to-command flow
 
 scene-dom keeps owning mechanics and ephemeral state
@@ -247,8 +253,9 @@ or filesystem/SQLite adapters.
 
 ## 14. Known risks and unresolved decisions
 
-- D1 tombstones for deleted compiler elements (decide in
-  V2-5C).
+- D1 tombstones for deleted compiler elements — **decided
+  in V2-5C** (per-slide `suppressed`, exact-ID match;
+  `docs/V2-5C-EVAL.md` §§6–7).
 - D2 text-edit granularity: per-commit (recommended)
   vs per-keystroke.
 - D3 concurrency: stale-base rejection is specified;

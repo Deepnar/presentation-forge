@@ -1529,3 +1529,20 @@ A viewer-eval driver that round-trips temp scenes through
 overwrite committed fixtures of the same name — and the revert
 `rm` then deletes the committed files. Prefix temp decks
 (`v24d-…`) and refuse non-temp paths in the round-trip helper.
+
+**Verify screenshots by measurement, never by eyeballing alone.**
+A ~100px shift on a 1440px capture is easy to misread in either
+direction, and same-session layout churn (inspector rows, refits)
+moves baselines between captures. Assert with accent-color ring
+detection or PIL pixel-diffs across a controlled pair from one
+session; treat a single full-page glance as unreviewed.
+
+**CDP `send()` without a timeout hangs the file, not just the test.**
+Every gated wait in the Chrome tooling has a timeout except the
+WebSocket round-trip itself, which awaits a matching message id
+forever. Under full-suite load a never-answered dispatch wedged one
+entire test file for 75 minutes with a live browser attached and
+zero output — fixed only by killing the worker. Bound `send()` in
+`tools/chrome-shot.mjs` (fail-fast with the in-flight expression
+attached) before adding more browser suites; serial green runs do
+not prove absence of this wedge.

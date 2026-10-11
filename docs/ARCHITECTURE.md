@@ -1669,7 +1669,13 @@ scaled slide gives zoomed content real scrollbars without
 touching scene coordinates. The compile endpoint is public
 for local development and denied on hosted deployments
 unless `FORGE_V2_LIVE=1` (V2-4 gate; `docs/V2-4-FINAL-EVAL.md`
-§6). Editor contracts are specified but not implemented
+§6). Editing runs through one adapter (`packages/editor/
+scene-edit.js`) over the revisioned engine: pointer drags
+preview by node transform and commit single moves or atomic
+batches, arrows nudge by documented increments, Delete
+removes with slide-scoped tombstones, and Ctrl/Cmd+Z/Y walk
+snapshot history — the viewer re-renders from engine
+snapshots without remounting (`docs/V2-5C-EVAL.md`). Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write
 atomicity, (slideId, elementId) addressing, batch entries,
