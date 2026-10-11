@@ -228,6 +228,37 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
       const shot = await send(g.ws, seq++, "Page.captureScreenshot", { format: "png" });
       await writeFile(pngPath, Buffer.from(shot.data, "base64"));
     },
+    // Double-click: two press/release pairs, the second with
+    // clickCount 2 so the page sees a real dblclick (single
+    // clicks only select; dblclick opens text-edit mode).
+    async dblclick(x, y) {
+      for (const clickCount of [1, 2]) {
+        await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+          type: "mousePressed", x: Math.round(x), y: Math.round(y),
+          button: "left", clickCount,
+        });
+        await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+          type: "mouseReleased", x: Math.round(x), y: Math.round(y),
+          button: "left", clickCount,
+        });
+      }
+    },
+    // Real committed-text path: inserts at the focused caret like
+    // a trusted keystroke (the editing overlay must be focused).
+    async insertText(text) {
+      await send(g.ws, seq++, "Input.insertText", { text });
+    },
+    // Trusted key press against the focused element (keydown +
+    // keyup). Windows key codes: Enter 13, Escape 27, Left 37,
+    // Up 38, Right 39, Down 40.
+    async key(code, keyName) {
+      await send(g.ws, seq++, "Input.dispatchKeyEvent", {
+        type: "rawKeyDown", windowsVirtualKeyCode: code, key: keyName,
+      });
+      await send(g.ws, seq++, "Input.dispatchKeyEvent", {
+        type: "keyUp", windowsVirtualKeyCode: code, key: keyName,
+      });
+    },
     close,
   };
 }
