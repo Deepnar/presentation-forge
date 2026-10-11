@@ -155,18 +155,30 @@ after(async () => {
   await new Promise((resolve) => (server ? server.close(resolve) : resolve()));
 });
 
-// Layout effects commit before serialization, so the first dump
-// normally catches the mounted viewer; polling covers cold caches.
-// (An earlier passive-effect version never appeared in dumps at
-// all — serialization raced the effect.)
-async function dumpReady(url, w = 1440, h = 900, tries = 6) {
-  let last = "";
+// Evaluation never snapshots before scene faces settle: CDP
+// navigates and polls the in-page font gate (data-fonts-ready),
+// because `--dump-dom` serializes on load and cannot wait out
+// font loading. Throws on missing faces instead of silently
+// accepting substitutions.
+async function dumpReady(url, w = 1440, h = 900, tries = 3) {
+  const { fontGatedDom } = await import("../tools/chrome-shot.mjs");
+  let lastErr = null;
   for (let i = 0; i < tries; i++) {
-    last = await chrome([...shotSize(w, h), "--dump-dom", url], 45000) ?? "";
-    if (last.includes("data-slide=")) return last;
-    await sleep(2000);
+    try {
+      return await fontGatedDom(url, { w, h });
+    } catch (err) {
+      lastErr = err;
+      await sleep(2000);
+    }
   }
-  throw new Error(`viewer never mounted at ${url} (last dump ${last.length} bytes)`);
+  throw new Error(`viewer never font-ready at ${url} (${String(lastErr?.message ?? lastErr).slice(0, 200)})`);
+}
+
+function fontsOf(dom, label) {
+  const ready = /data-fonts-ready="true"/.test(dom);
+  const m = dom.match(/data-missing-fonts="([^"]*)"/);
+  assert.ok(m, `${label}: font readout present`);
+  return { ready, missing: m[1] ? m[1].split(",") : [] };
 }
 
 function stateOf(dom, label) {
@@ -203,6 +215,11 @@ describe("v2-4a browser smoke", () => {
     assert.equal(st.slideCount, 12);
     assert.equal(st.zoom, 1);
     assert.match(dom, /<svg[^>]*width="1280"/, "canonical 1280-wide stage");
+    // Font gate: the dump only returns font-ready, and every
+    // warm-humanist face must resolve to shipped files.
+    const fonts = fontsOf(dom, "initial");
+    assert.equal(fonts.ready, true, "scene faces loaded before assertions");
+    assert.deepEqual(fonts.missing, [], "no system substitutions");
   });
 
   it("deep links drive slide, zoom, and selection", async (t) => {
@@ -224,9 +241,18 @@ describe("v2-4a browser smoke", () => {
       t.skip(skipped);
       return;
     }
-    await chrome([...shotSize(1440, 900), `--screenshot=${path.join(OUT, "viewer-1440.png")}`, PAGE_URL]);
-    await chrome([...shotSize(1440, 900), `--screenshot=${path.join(OUT, "viewer-zoomed.png")}`, `${PAGE_URL}?slide=4&zoom=2`]);
-    await chrome([...shotSize(900, 1400), `--screenshot=${path.join(OUT, "viewer-narrow.png")}`, `${PAGE_URL}?slide=1`]);
+    // Font-gated captures: CDP waits for data-fonts-ready, so
+    // screenshots never race system substitutions. Throws on
+    // missing faces instead of silently accepting them.
+    const { fontGatedScreenshot } = await import("../tools/chrome-shot.mjs");
+    for (const [f, url, w, h] of [
+      ["viewer-1440.png", PAGE_URL, 1440, 900],
+      ["viewer-zoomed.png", `${PAGE_URL}?slide=4&zoom=2`, 1440, 900],
+      ["viewer-narrow.png", `${PAGE_URL}?slide=1`, 900, 1400],
+    ]) {
+      const r = await fontGatedScreenshot(url, path.join(OUT, f), { w, h });
+      assert.deepEqual(r.missing, [], `${f}: no missing faces at capture`);
+    }
     for (const f of ["viewer-1440.png", "viewer-zoomed.png", "viewer-narrow.png"]) {
       assert.ok((await stat(path.join(OUT, f))).size > 20000, `${f} has substance`);
     }
