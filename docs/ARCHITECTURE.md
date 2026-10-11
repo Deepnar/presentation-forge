@@ -1647,7 +1647,10 @@ stateless and transport-thin (V2-4F; `docs/V2-4F-EVAL.md`):
 and the viewer swaps returned scenes through the same mount
 — fixtures stay first-class, and a spacer div sized to the
 scaled slide gives zoomed content real scrollbars without
-touching scene coordinates.
+touching scene coordinates. The compile endpoint is public
+for local development and denied on hosted deployments
+unless `FORGE_V2_LIVE=1` (V2-4 gate; `docs/V2-4-FINAL-EVAL.md`
+§6).
 
 ## The web shell
 

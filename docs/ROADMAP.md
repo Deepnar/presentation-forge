@@ -7229,14 +7229,29 @@ scale); charts structurally exact without axes (V2-4C).
   hit-testing, overlays, keyboard focus, inspector (accepted
   at `1a52170`: `docs/V2-4E-EVAL.md` + `docs/v2-4e-evidence/`;
   includes the pending/failed font-gate race correction).
-- [~] V2-4F live scenes — stateless DeckIntent compilation
+- [x] V2-4F live scenes — stateless DeckIntent compilation
   over the accepted pipeline, viewer Live panel over the
-  shared mount path, zoom-pan spacer (in review:
-  `docs/V2-4F-EVAL.md` + `docs/v2-4f-evidence/`).
-- [ ] V2-4E selection model — multi-select, focus,
-  overlays, bounds inspection; still no mutation.
-- [ ] V2-4F live scenes — server compiles deck scenes on
-  demand; viewer leaves fixtures.
+  shared mount path, zoom-pan spacer (accepted at `c45a473`:
+  `docs/V2-4F-EVAL.md` + `docs/v2-4f-evidence/`; gate report
+  `docs/V2-4-FINAL-EVAL.md` + `docs/v2-4-final-evidence/`).
+- [x] V2-4E selection model — multi-select, focus,
+  overlays, bounds inspection; still no mutation. (Landed as
+  the V2-4E slice entry above.)
+- [x] V2-4F live scenes — server compiles deck scenes on
+  demand; viewer leaves fixtures. (Landed as the V2-4F slice
+  and gate entries above.)
+- [ ] Export-validation seam at the PPTX boundary (V2-4 gate
+  P2-4, V2-5 prerequisite) — hand-authored Layer-C scenes
+  sent straight to the raw renderer still drop multi-series
+  pie data silently; the live API is safe (it always
+  compiles), but no future caller should reach the file
+  without the fallback. Refuse or fallback at `renderPptx*`
+  time before editor-driven export exists.
+- [ ] Browser-suite build parallelism (V2-4 gate P2-1) —
+  concurrent `vite build` ×5 plus polling Chromes can time
+  out 60s gates under `node --test`; serial runs are green.
+  Serialize builds or share one dist before the editor
+  multiplies browser suites further.
 
 ### [ ] V2-5 real editor, commands, autosave
 
