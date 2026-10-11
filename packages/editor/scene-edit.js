@@ -19,6 +19,10 @@ import {
   defaultShapeElement,
   overflowEstimate,
   mintHumanId,
+  cascadeBox,
+  cascadeIndex,
+  CASCADE_STEP,
+  CASCADE_CYCLE,
 } from "./scene-text.js";
 
 // Documented keybinding contract (see the viewer toolbar hint and
@@ -29,6 +33,20 @@ import {
 export const NUDGE_STEP = 0.05; // inches per arrow press
 export const NUDGE_LARGE_STEP = 0.25; // inches with Shift held
 export const DRAG_THRESHOLD_PX = 4; // client px before a press becomes a drag
+export const MIN_RESIZE_IN = 0.1; // floor for resized extents, in scene inches
+// Resize-handle vocabulary: eight anchors with per-handle cursors.
+// Only the full set is ever rendered — every handle below has a
+// correct implementation through element.setGeometry (§4).
+export const RESIZE_HANDLES = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
+export const HANDLE_CURSORS = {
+  nw: "nwse-resize", n: "ns-resize", ne: "nesw-resize", e: "ew-resize",
+  se: "nwse-resize", s: "ns-resize", sw: "nesw-resize", w: "ew-resize",
+};
+// Kinds a resize box may model safely: the box owns x/y/w/h and the
+// renderers project it verbatim. Groups (children would need
+// rescaling, not re-boxing), lines (absolute x2/y2 endpoints), and
+// tables (absolute colWidths summing to w) are explicitly refused.
+export const RESIZABLE_KINDS = new Set(["text", "shape", "image", "chart"]);
 
 const IN = 96; // svg px per scene inch, matching scene-svg.js
 
@@ -78,6 +96,44 @@ export function clientToSvgDelta(dxClient, dyClient, scales) {
   return { dx: dxClient / scales.kx, dy: dyClient / scales.ky };
 }
 
+// Pure resize math, shared by preview and commit so the two can
+// never drift: an origin box plus a handle plus a scene-inch delta
+// yields the new box. Corner handles move the origin and shrink the
+// extent; edge handles move one axis. Extents clamp at MIN_RESIZE_IN
+// holding the opposite edge, so a west drag past the east edge parks
+// at the floor instead of inverting or NaN-ing.
+export function resizeGeometry(origin, handle, dxIn, dyIn) {
+  for (const v of [origin.x, origin.y, origin.w, origin.h, dxIn, dyIn]) {
+    if (!Number.isFinite(v)) throw new Error("scene-edit: non-finite resize geometry");
+  }
+  let x = origin.x;
+  let y = origin.y;
+  let w = origin.w;
+  let h = origin.h;
+  if (handle.includes("e")) w = origin.w + dxIn;
+  if (handle.includes("s")) h = origin.h + dyIn;
+  if (handle.includes("w")) {
+    x = origin.x + dxIn;
+    w = origin.w - dxIn;
+  }
+  if (handle.includes("n")) {
+    y = origin.y + dyIn;
+    h = origin.h - dyIn;
+  }
+  if (!(w >= MIN_RESIZE_IN)) {
+    if (handle.includes("w")) x = origin.x + origin.w - MIN_RESIZE_IN;
+    w = MIN_RESIZE_IN;
+  }
+  if (!(h >= MIN_RESIZE_IN)) {
+    if (handle.includes("n")) y = origin.y + origin.h - MIN_RESIZE_IN;
+    h = MIN_RESIZE_IN;
+  }
+  if (![x, y, w, h].every(Number.isFinite)) {
+    throw new Error("scene-edit: non-finite resize geometry");
+  }
+  return { x: r3(x), y: r3(y), w: r3(w), h: r3(h) };
+}
+
 export function attachEditor(viewer, doc, opts = {}) {
   const root = opts.root ?? null;
   if (!viewer?.api || !doc || !root) throw new Error("scene-edit: viewer, engine document, and root required");
@@ -93,7 +149,8 @@ export function attachEditor(viewer, doc, opts = {}) {
   // dblclick still reaches it. Time-bounded (600ms) and selection-
   // checked, so a later background dblclick never edits stale state.
   let lastSingleSelect = null;
-  const SINGLE_SELECT_WINDOW_MS = 600;  let pending = Promise.resolve(null);
+  const SINGLE_SELECT_WINDOW_MS = 600;
+  let pending = Promise.resolve(null);
   const track = (p) => {
     pending = Promise.resolve(p);
     return pending;
@@ -189,6 +246,20 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (textSession) return;
     if (drag) return;
     if (ev.button !== undefined && ev.button !== 0) return;
+    // Resize handles own their press: starting a move here would
+    // drag the whole element instead of reshaping it.
+    const handleNode = ev.target?.closest?.("[data-resize-handle]");
+    if (handleNode) {
+      if (resize) return;
+      ev.preventDefault();
+      beginResize(
+        handleNode.getAttribute("data-resize-handle"),
+        handleNode.getAttribute("data-handle-for"),
+        ev,
+      );
+      return;
+    }
+    if (resize) return;
     // Fast double-click on an unselected element selects on the first
     // press — which reveals the inspector and shifts the stage — so
     // the second press can land on the background. Hold the freshly
@@ -203,7 +274,6 @@ export function attachEditor(viewer, doc, opts = {}) {
       }
     }
     const id = api.resolveNode(ev.target);
-    if (id === null) return;
     if (id === null) return;
     const snap = api.snapshot();
     if (ev.shiftKey) api.toggle(id);
@@ -229,6 +299,10 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   async function onPointerUp(ev) {
+    if (resize) {
+      if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return null;
+      return commitResize(ev);
+    }
     if (!drag || (ev.pointerId !== undefined && ev.pointerId !== drag.pointerId)) return;
     const d = drag;
     drag = null;
@@ -257,12 +331,22 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   function onPointerMove(ev) {
+    if (resize) {
+      if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return;
+      previewResizeTo(ev.clientX, ev.clientY);
+      return;
+    }
     if (!drag) return;
     if (ev.pointerId !== undefined && ev.pointerId !== drag.pointerId) return;
     previewTo(ev.clientX, ev.clientY);
   }
 
   function onPointerCancel(ev) {
+    if (resize) {
+      if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return;
+      cancelResize();
+      return;
+    }
     if (!drag || (ev.pointerId !== undefined && ev.pointerId !== drag.pointerId)) return;
     clearPreview();
   }
@@ -271,6 +355,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     // scene-dom's own listener (registered first) already cleared
     // selection on Escape; here only the drag preview is cancelled.
     if (ev.key === "Escape" && drag) clearPreview();
+    // Escape abandons a resize gesture with no history entry (the
+    // selection clear above stands — documented §4 behavior).
+    if (ev.key === "Escape" && resize) cancelResize();
     // Enter on a single selected text element opens text-edit mode
     // (double-click is the pointer equivalent). Never from form
     // fields or buttons — those own the key.
@@ -289,6 +376,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   async function nudgeSelected(key, shift) {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
     }
     const snap = api.snapshot();
     if (snap.selectedIds.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
@@ -312,6 +402,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   async function deleteSelected() {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
     }
     const snap = api.snapshot();
     if (snap.selectedIds.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
@@ -427,6 +520,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "a text edit is already open — commit or cancel it first" });
     }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
     const snap = api.snapshot();
     const target = id ?? (snap.selectedIds.length === 1 ? snap.selectedIds[0] : null);
     if (!target) {
@@ -475,9 +571,29 @@ export function attachEditor(viewer, doc, opts = {}) {
     return track(commitTextEditInner(opts));
   }
 
+  // Per-session in-flight commit guard (§10.1): two nearly
+  // simultaneous triggers (blur + Commit, double Commit clicks,
+  // Ctrl+Enter + blur, commit + navigation) share one engine
+  // submission. A late trigger JOINS the in-flight commit and
+  // resolves with its outcome — never a second envelope, never a
+  // second history entry. A failed first commit resets the flag, so
+  // retry stays possible; the draft is never discarded first.
   async function commitTextEditInner(opts = {}) {
     const s = textSession;
     if (!s) return report({ ok: false, code: "op-rejected", message: "no text edit in progress" });
+    if (s.committing) {
+      notifyText({ duplicate: true });
+      return track(s.commitPromise);
+    }
+    s.committing = true;
+    const run = commitTextApply(s, opts).finally(() => {
+      s.committing = false;
+    });
+    s.commitPromise = run;
+    return track(run);
+  }
+
+  async function commitTextApply(s, opts = {}) {
     if (s.box) {
       try {
         s.draft = s.box.value;
@@ -559,6 +675,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   // before api.goTo / deck switches.
   async function commitPendingEdit(opts = {}) {
     if (!textSession) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    // Navigation during a commit waits for the in-flight submission
+    // instead of starting a second one.
+    if (textSession.committing && textSession.commitPromise) return track(textSession.commitPromise);
     return commitTextEdit(opts);
   }
 
@@ -626,6 +745,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" });
     }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
     const result = await doc.undo();
     if (result.ok) sync();
     return track(report(result));
@@ -635,9 +757,319 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" });
     }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
     const result = await doc.redo();
     if (result.ok) sync();
     return track(report(result));
+  }
+
+  // ——— V2-5E resize handles ———
+  //
+  // Handles live in their own pointer-transparent layer over the
+  // stage (never in the scene, never in the export): eight white
+  // squares with accent borders, one per anchor, with directional
+  // cursors. A press on a handle starts a resize session, never a
+  // drag; moves redraw a dashed preview box at the candidate
+  // geometry (the element itself is never transform-distorted);
+  // release commits exactly one element.setGeometry. Escape and
+  // pointer cancellation discard the preview with no history.
+  let resize = null;
+  let handleLayer = null;
+
+  function resizeTarget(id) {
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return { ok: false, code: "unknown-element", message: `unknown element ${id}` };
+    if (el.locked) return { ok: false, code: "locked", message: `element ${id} is locked` };
+    if (!RESIZABLE_KINDS.has(el.kind)) {
+      return { ok: false, code: "op-rejected", message: `element ${id} (${el.kind}) is not resizable in this slice` };
+    }
+    if (snap.selectedIds.length !== 1 || snap.selectedIds[0] !== id) {
+      return { ok: false, code: "op-rejected", message: "resize needs its target singly selected" };
+    }
+    return { ok: true, snap, el };
+  }
+
+  // Authoritative scene geometry first: the resize box IS the
+  // element box, so interaction targets never depend on font settle
+  // or layout state. Measured rects back it up where available.
+  function handleRect(id) {
+    return api.bounds?.(id) ?? api.measuredBounds?.(id);
+  }
+
+  function anchorOf(rect, handle) {
+    const x = rect.x;
+    const y = rect.y;
+    const mx = rect.x + rect.w / 2;
+    const my = rect.y + rect.h / 2;
+    const ex = rect.x + rect.w;
+    const ey = rect.y + rect.h;
+    switch (handle) {
+      case "nw": return [x, y];
+      case "n": return [mx, y];
+      case "ne": return [ex, y];
+      case "e": return [ex, my];
+      case "se": return [ex, ey];
+      case "s": return [mx, ey];
+      case "sw": return [x, ey];
+      case "w": return [x, my];
+      default: return [ex, ey];
+    }
+  }
+
+  // Handles render only for a single selectable unit of a resizable
+  // kind — never for locked units, groups, lines, tables, multisets,
+  // text sessions, or read-only viewers (this module never loads
+  // there). The layer is rebuilt on every viewer change, so zoom,
+  // scroll, selection, and commits reposition for free.
+  function canShowHandles() {
+    if (textSession || !api) return null;
+    const snap = api.snapshot();
+    if (snap.selectedIds.length !== 1) return null;
+    const id = snap.selectedIds[0];
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el || el.locked || !RESIZABLE_KINDS.has(el.kind)) return null;
+    return { slideId: snap.slideId, id };
+  }
+
+  // The viewer's render clears the mount root on every committed
+  // scene swap, which destroys this layer with it — so reconcile
+  // re-attaches whenever it finds itself detached, then rebuilds.
+  function ensureHandleLayer() {
+    if (handleLayer && handleLayer.isConnected !== false && root.contains(handleLayer)) return;
+    try {
+      handleLayer?.remove();
+    } catch { /* teardown only */ }
+    handleLayer = root.ownerDocument.createElement("div");
+    handleLayer.setAttribute("data-handle-layer", "");
+    handleLayer.style.position = "absolute";
+    handleLayer.style.inset = "0";
+    handleLayer.style.pointerEvents = "none";
+    handleLayer.style.zIndex = "4";
+    root.appendChild(handleLayer);
+  }
+
+  function reconcileHandles() {
+    ensureHandleLayer();
+    if (handleLayer) {
+      while (handleLayer.firstChild) handleLayer.removeChild(handleLayer.firstChild);
+    }
+    const target = canShowHandles();
+    if (!target || !handleLayer) return;
+    const rect = handleRect(target.id);
+    if (!rect) return;
+    const docEl = root.ownerDocument;
+    for (const handle of RESIZE_HANDLES) {
+      const [ax, ay] = anchorOf(rect, handle);
+      const node = docEl.createElement("div");
+      node.setAttribute("data-resize-handle", handle);
+      node.setAttribute("data-handle-for", target.id);
+      node.setAttribute("role", "presentation");
+      node.style.position = "absolute";
+      node.style.left = `${ax.toFixed(1)}px`;
+      node.style.top = `${ay.toFixed(1)}px`;
+      node.style.width = "12px";
+      node.style.height = "12px";
+      node.style.transform = "translate(-50%, -50%)";
+      node.style.boxSizing = "border-box";
+      node.style.background = "#ffffff";
+      node.style.border = "2px solid #e0705a";
+      node.style.borderRadius = "3px";
+      node.style.boxShadow = "0 1px 3px rgba(0,0,0,0.45)";
+      node.style.cursor = HANDLE_CURSORS[handle];
+      node.style.pointerEvents = "auto";
+      handleLayer.appendChild(node);
+    }
+  }
+
+  function drawResizePreview(geom) {
+    if (!handleLayer) return;
+    let preview = handleLayer.querySelector("[data-resize-preview]");
+    const docEl = root.ownerDocument;
+    if (!preview) {
+      preview = docEl.createElement("div");
+      preview.setAttribute("data-resize-preview", "");
+      preview.style.position = "absolute";
+      preview.style.boxSizing = "border-box";
+      preview.style.border = "2px dashed #e0705a";
+      preview.style.background = "rgba(224,112,90,0.08)";
+      preview.style.pointerEvents = "none";
+      handleLayer.appendChild(preview);
+    }
+    preview.style.left = `${(geom.x * IN).toFixed(1)}px`;
+    preview.style.top = `${(geom.y * IN).toFixed(1)}px`;
+    preview.style.width = `${Math.max(1, geom.w * IN).toFixed(1)}px`;
+    preview.style.height = `${Math.max(1, geom.h * IN).toFixed(1)}px`;
+  }
+
+  function clearResizePreview() {
+    handleLayer?.querySelector("[data-resize-preview]")?.remove();
+  }
+
+  function beginResize(handle, id, ev) {
+    if (!RESIZE_HANDLES.includes(handle)) {
+      return report({ ok: false, code: "bad-envelope", message: `unknown resize handle ${handle}` });
+    }
+    const target = resizeTarget(id);
+    if (!target.ok) return report(target);
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    api.suppressNextClick();
+    if (ev.pointerId !== undefined) {
+      try {
+        root.setPointerCapture?.(ev.pointerId);
+      } catch { /* linkedom and some browsers lack capture */ }
+    }
+    resize = {
+      pointerId: ev.pointerId,
+      startX: ev.clientX,
+      startY: ev.clientY,
+      slideId: target.snap.slideId,
+      id,
+      handle,
+      origin: { x: target.el.x, y: target.el.y, w: target.el.w, h: target.el.h },
+      moved: false,
+    };
+    return { ok: true, revision: doc.snapshot().revision, resizing: true };
+  }
+
+  function previewResizeTo(clientX, clientY) {
+    if (!resize) return null;
+    const scales = svgScales(root);
+    if (!scales) return null;
+    if (!resize.moved && Math.hypot(clientX - resize.startX, clientY - resize.startY) < DRAG_THRESHOLD_PX) {
+      return null;
+    }
+    resize.moved = true;
+    const { dx, dy } = clientToSvgDelta(clientX - resize.startX, clientY - resize.startY, scales);
+    const geom = resizeGeometry(resize.origin, resize.handle, dx / IN, dy / IN);
+    drawResizePreview(geom);
+    return geom;
+  }
+
+  // Release coordinates decide the commit (not the last move event),
+  // through the same conversion as the preview — one function, no
+  // parallel formulas. Exactly one element.setGeometry per gesture.
+  // Tracking is eager (like text commits): the transaction registers
+  // with pending() synchronously, so observers never resolve early.
+  function commitResize(ev) {
+    const s = resize;
+    resize = null;
+    clearResizePreview();
+    if (!s) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    if (!s.moved) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    return track(commitResizeApply(s, ev));
+  }
+
+  async function commitResizeApply(s, ev) {
+    const scales = svgScales(root);
+    if (!scales) return report({ ok: false, code: "op-rejected", message: "no layout to project the resize through" });
+    let geom;
+    try {
+      const { dx, dy } = clientToSvgDelta(ev.clientX - s.startX, ev.clientY - s.startY, scales);
+      geom = resizeGeometry(s.origin, s.handle, dx / IN, dy / IN);
+    } catch (err) {
+      return track(Promise.resolve(report({ ok: false, code: "op-rejected", message: String(err?.message ?? err) })));
+    }
+    const result = await doc.apply({
+      id: newEditId(),
+      slideId: s.slideId,
+      op: { type: "element.setGeometry", id: s.id, ...geom },
+      baseRevision: doc.snapshot().revision,
+      actor: "human",
+    });
+    if (result.ok) {
+      sync();
+      const fresh = findIn(doc.snapshot().scenes, s.slideId, s.id);
+      if (fresh?.kind === "text") {
+        const overflow = overflowEstimate(fresh);
+        if (overflow && !overflow.fits && onError) {
+          onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
+        }
+      }
+      return track({ ...result, geometry: geom });
+    }
+    return track(report(result));
+  }
+
+  function cancelResize() {
+    if (!resize) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    resize = null;
+    clearResizePreview();
+    api.reposition();
+    return { ok: true, revision: doc.snapshot().revision, noop: true };
+  }
+
+  // ——— V2-5E shape styling ———
+  //
+  // Small explicit appearance edits through element.setStyle: fill,
+  // stroke, and stroke width with hex validation up front. Partial
+  // patches touch only mentioned keys; null clears a key. Genuine
+  // no-ops return without contacting the engine.
+
+  function setElementStyle(id, patch) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return report({ ok: false, code: "unknown-element", message: `unknown element ${id}` });
+    if (el.locked) return report({ ok: false, code: "locked", message: `element ${id} is locked` });
+    if (el.kind !== "shape") return report({ ok: false, code: "op-rejected", message: `element ${id} is not a shape` });
+    if (!patch || typeof patch !== "object") {
+      return report({ ok: false, code: "bad-envelope", message: "element.setStyle needs a style patch" });
+    }
+    const style = {};
+    const hex = /^[0-9A-Fa-f]{6}$/;
+    for (const k of ["fill", "stroke", "strokeWidth"]) {
+      let v = patch[k];
+      if (v === undefined) continue;
+      if (v === null) {
+        style[k] = null;
+        continue;
+      }
+      if (k === "strokeWidth") {
+        const n = typeof v === "string" ? Number(v) : v;
+        if (typeof n !== "number" || !Number.isFinite(n) || n < 0 || n > 24) {
+          return report({ ok: false, code: "bad-envelope", message: "strokeWidth must be a number from 0 to 24" });
+        }
+        style[k] = n;
+        continue;
+      }
+      const s = String(v).replace(/^#/, "");
+      if (!hex.test(s)) {
+        return report({ ok: false, code: "bad-envelope", message: `${k} must be a 6-digit hex color` });
+      }
+      style[k] = s.toUpperCase();
+    }
+    if (Object.keys(style).length === 0) {
+      return report({ ok: false, code: "bad-envelope", message: "element.setStyle needs at least one changed key" });
+    }
+    const cur = el.shape ?? {};
+    const norm = (k) => (style[k] === null ? null : (style[k] ?? null));
+    const same = Object.keys(style).every((k) => {
+      const have = cur[k] === undefined ? null : cur[k];
+      const want = norm(k);
+      return k === "strokeWidth" ? have === want : String(have ?? "").toUpperCase() === String(want ?? "").toUpperCase();
+    });
+    if (same) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    return track((async () => {
+      const result = await doc.apply({
+        id: newEditId(),
+        slideId: snap.slideId,
+        op: { type: "element.setStyle", id, style },
+        baseRevision: doc.snapshot().revision,
+        actor: "human",
+      });
+      if (result.ok) sync();
+      return report(result);
+    })());
   }
 
   async function onEditAction(action) {
@@ -648,6 +1080,9 @@ export function attachEditor(viewer, doc, opts = {}) {
     // document rewind. Each rejection is explicit, never silent.
     if (textSession && (action.type === "nudge" || action.type === "delete" || action.type === "undo" || action.type === "redo")) {
       return track(report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" }));
+    }
+    if (resize && (action.type === "nudge" || action.type === "delete" || action.type === "undo" || action.type === "redo")) {
+      return track(report({ ok: false, code: "op-rejected", message: "finish resizing first" }));
     }
     if (action.type === "nudge") return track(nudgeSelected(action.key, !!action.shift));
     if (action.type === "delete") return track(deleteSelected());
@@ -695,6 +1130,14 @@ export function attachEditor(viewer, doc, opts = {}) {
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("dblclick", onDblClick);
   root.addEventListener("focusout", onFocusOut);
+  // Resize handles live in their own layer beside the selection
+  // overlay layer: pointer-transparent except the handles
+  // themselves, rebuilt on every viewer change (selection, zoom,
+  // refit, commit) so alignment is never stale. See
+  // ensureHandleLayer: viewer re-renders destroy the layer, so it
+  // re-attaches itself on every reconcile.
+  const offChange = viewer.onChange ? viewer.onChange(() => reconcileHandles()) : null;
+  reconcileHandles();
   api.setEditable(true);
   api.onEditAction(onEditAction);
 
@@ -714,13 +1157,28 @@ export function attachEditor(viewer, doc, opts = {}) {
     editingId: () => textSession?.elementId ?? null,
     addTextElement: (opts = {}) => addTextElement(opts),
     addShapeElement: (form = "rect", opts = {}) => addShapeElement(form, opts),
+    beginResize: (handle, id) => beginResize(handle, id, { pointerId: undefined, clientX: 0, clientY: 0 }),
+    previewResize: (clientX, clientY) => previewResizeTo(clientX, clientY),
+    commitResizeNow: (clientX, clientY) => commitResize({ clientX, clientY, pointerId: resize?.pointerId }),
+    cancelResize: () => cancelResize(),
+    resizingId: () => resize?.id ?? null,
+    handlesVisible: () => (handleLayer ? handleLayer.querySelectorAll("[data-resize-handle]").length : 0),
+    setElementStyle: (id, patch) => setElementStyle(id, patch),
     detach() {
       if (drag) clearPreview();
+      if (resize) cancelResize();
       lastSingleSelect = null;
       if (textSession) {
         closeTextarea(textSession);
         textSession = null;
       }
+      try {
+        offChange?.();
+      } catch { /* teardown only */ }
+      try {
+        handleLayer?.remove();
+      } catch { /* teardown only */ }
+      handleLayer = null;
       root.removeEventListener("pointerdown", onPointerDown);
       root.removeEventListener("pointermove", onPointerMove);
       root.removeEventListener("pointerup", onPointerUp);

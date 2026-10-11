@@ -130,11 +130,43 @@ export function defaultShapeBox() {
   return centerBox(NEW_SHAPE_W, NEW_SHAPE_H);
 }
 
+// Deterministic bounded cascade for repeated inserts (V2-5E): the
+// nth human element on a slide steps 0.4in right and down from
+// center, cycling every 6, clamped back on-canvas. Scene inches,
+// zoom-independent, no composition planner — and undo/redo preserve
+// the exact committed geometry, so the cascade never fights history.
+export const CASCADE_STEP = 0.4;
+export const CASCADE_CYCLE = 6;
+
+export function cascadeBox(box, n) {
+  const k = ((Math.floor(n) % CASCADE_CYCLE) + CASCADE_CYCLE) % CASCADE_CYCLE;
+  let x = box.x + CASCADE_STEP * k;
+  let y = box.y + CASCADE_STEP * k;
+  if (x + box.w > SCENE_W) x = Math.max(0, SCENE_W - box.w);
+  if (y + box.h > SCENE_H) y = Math.max(0, SCENE_H - box.h);
+  return {
+    x: Math.round(x * 1000) / 1000,
+    y: Math.round(y * 1000) / 1000,
+    w: box.w,
+    h: box.h,
+  };
+}
+
+// Cascade index derived from content, not session state: the count
+// of human-provenance top-level elements on the slide. Stable across
+// zoom, reload, and Edit toggles; deletions may reuse a step, which
+// is harmless (positions are suggestions, identity is exact).
+export function cascadeIndex(slide) {
+  return (slide?.elements ?? []).filter((e) => e.provenance === "human").length;
+}
+
 // Canonical text-element input for `element.add`: kind text,
 // valid geometry, human provenance (the engine stamps provenance
 // and z), wrap policy, and theme-aware-by-sampling styling.
 export function defaultTextElement(slide, opts = {}) {
-  const box = { ...defaultTextBox(), ...(opts.box ?? {}) };
+  // Explicit boxes win; default placement cascades so repeated
+  // inserts stop stacking directly atop each other (§9).
+  const box = opts.box ?? cascadeBox(defaultTextBox(), cascadeIndex(slide));
   const run = sampleRun(slide);
   const bg = slide?.background?.fill;
   const first = {
@@ -168,7 +200,7 @@ export function defaultShapeElement(slide, form = "rect", opts = {}) {
   if (!["rect", "roundRect", "ellipse"].includes(form)) {
     throw new Error(`scene-text: unsupported shape form ${form}`);
   }
-  const box = { ...defaultShapeBox(), ...(opts.box ?? {}) };
+  const box = opts.box ?? cascadeBox(defaultShapeBox(), cascadeIndex(slide));
   return {
     id: opts.id ?? mintHumanId(),
     kind: "shape",
