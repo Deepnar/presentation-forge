@@ -116,47 +116,75 @@ async function gatedPage(url, w, h, timeoutMs) {
 }
 
 export async function fontGatedScreenshot(url, pngPath, { w = 1440, h = 900, timeoutMs = 90000 } = {}) {
-  const g = await gatedPage(url, w, h, timeoutMs);
+  const page = await openViewer(url, { w, h, timeoutMs });
   try {
-    if (g.ready !== "true") throw new Error(`fonts not ready at ${url} (missing: ${g.missing})`);
-    const shot = await send(g.ws, g.id++, "Page.captureScreenshot", { format: "png" });
-    await writeFile(pngPath, Buffer.from(shot.data, "base64"));
-    g.ws.close();
-    return { missing: g.missing };
+    await page.screenshot(pngPath);
+    return { missing: page.missing };
   } finally {
-    try {
-      g.ws.close();
-    } catch { /* already closed */ }
-    await g.kill();
+    await page.close();
   }
 }
 
 export async function fontGatedDom(url, { w = 1440, h = 900, timeoutMs = 90000 } = {}) {
-  const g = await gatedPage(url, w, h, timeoutMs);
+  const page = await openViewer(url, { w, h, timeoutMs });
   try {
-    if (g.ready !== "true") throw new Error(`fonts not ready at ${url} (missing: ${g.missing})`);
-    const dom = await evaluate(g.ws, g.id++, `document.documentElement.outerHTML`);
-    g.ws.close();
-    return dom;
+    return await page.evaluate(`document.documentElement.outerHTML`);
   } finally {
-    try {
-      g.ws.close();
-    } catch { /* already closed */ }
-    await g.kill();
+    await page.close();
   }
 }
 
 // Gated page plus one evaluated expression (for geometry reads
 // dumps cannot express). Returns the expression's value.
 export async function fontGatedEvaluate(url, expression, { w = 1440, h = 900, timeoutMs = 90000 } = {}) {
-  const g = await gatedPage(url, w, h, timeoutMs);
+  const page = await openViewer(url, { w, h, timeoutMs });
   try {
-    if (g.ready !== "true") throw new Error(`fonts not ready at ${url} (missing: ${g.missing})`);
-    return await evaluate(g.ws, g.id++, expression);
+    return await page.evaluate(expression);
   } finally {
+    await page.close();
+  }
+}
+
+// Interactive session: one Chrome, many steps. Selection tests
+// and eval captures click, keypress, read, and screenshot against
+// the same mounted viewer — single-shot helpers cannot hold a
+// multiselect across calls. Clicks go through trusted CDP input
+// dispatch at viewport coordinates, so overlay transparency and
+// real hit testing are exercised, not bypassed.
+export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } = {}) {
+  const g = await gatedPage(url, w, h, timeoutMs);
+  if (g.ready !== "true") {
     try {
       g.ws.close();
     } catch { /* already closed */ }
     await g.kill();
+    throw new Error(`fonts not ready at ${url} (missing: ${g.missing})`);
   }
+  let seq = g.id;
+  const close = async () => {
+    try {
+      g.ws.close();
+    } catch { /* already closed */ }
+    await g.kill();
+  };
+  return {
+    missing: g.missing,
+    async evaluate(expression) {
+      return evaluate(g.ws, seq++, expression);
+    },
+    async click(x, y, { shift = false } = {}) {
+      const modifiers = shift ? 8 : 0;
+      for (const type of ["mousePressed", "mouseReleased"]) {
+        await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+          type, x: Math.round(x), y: Math.round(y),
+          button: "left", clickCount: 1, modifiers,
+        });
+      }
+    },
+    async screenshot(pngPath) {
+      const shot = await send(g.ws, seq++, "Page.captureScreenshot", { format: "png" });
+      await writeFile(pngPath, Buffer.from(shot.data, "base64"));
+    },
+    close,
+  };
 }
