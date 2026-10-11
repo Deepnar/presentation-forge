@@ -1,0 +1,18 @@
+{
+  "shots": [
+    "eval-grid.png",
+    "eval-committed.png",
+    "eval-overflow.png",
+    "eval-undone.png",
+    "eval-chromed.png"
+  ],
+  "notes": [
+    "eval-grid.png: table editor grid with header note",
+    "eval-committed.png: edited cell committed in one revision",
+    "density warning: Edit failed: op-rejected: overflow: row 3 needs ~0.83in, has 0.19in — widen the table or cut cell copy (geometry unchanged) (+5 more)",
+    "eval-overflow.png: grown table kept whole with an explicit density warning",
+    "eval-undone.png: undo restored the prior matrix exactly",
+    "chromed header edit visible: true",
+    "eval-chromed.png: header wording edited on a chromed slide, marks intact"
+  ]
+}

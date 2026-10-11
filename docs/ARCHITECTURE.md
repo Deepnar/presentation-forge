@@ -1702,7 +1702,11 @@ fresh compiler wording; multi-run input stays honestly refused
 `element.setChartData` with fail-closed pie/doughnut conversion
 and `dataCustomized` preservation (label typography stays
 compiler-owned), edited in a dock grid panel and verified down
-to the inline OOXML chart caches (`docs/V2-5G-EVAL.md`).
+to the inline OOXML chart caches (`docs/V2-5G-EVAL.md`). Table
+cells edit through atomic `element.setTableData` as verbatim
+full matrices with `tableCustomized` preservation, ragged input
+refused before commit, and native `<a:tbl>` verification
+(`docs/V2-5H-EVAL.md`).
 Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write

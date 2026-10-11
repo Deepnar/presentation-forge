@@ -273,6 +273,11 @@ or filesystem/SQLite adapters.
   fail-closed multi-series pie gate; appearance (label type)
   never travels with data, and `dataCustomized` carries the
   payload across recompiles (`docs/V2-5G-EVAL.md` §§1–6).
+- Table-data editing (V2-5H): one `element.setTableData` per
+  Apply over verbatim full matrices with rectangularity on both
+  forward and restore paths; header/layout/typography never
+  travel with cells, and `tableCustomized` carries the matrix
+  across recompiles (`docs/V2-5H-EVAL.md` §§2–7).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

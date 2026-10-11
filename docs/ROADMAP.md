@@ -7293,16 +7293,19 @@ scale); charts structurally exact without axes (V2-4C).
   uniform-paragraph drafts with slot-attached styles plus
   paragraph-scoped `element.setTextStyle` under a
   `formatCustomized` ownership model (accepted at `f2d29c9`).
-- [~] V2-5G native chart-data editing — `element.setChartData`
+- [x] V2-5G native chart-data editing — `element.setChartData`
   with fail-closed pie/doughnut conversion, `dataCustomized`
   preservation, dock grid inspector, and native OOXML
+  verification (accepted at `9d2b660`).
+- [~] V2-5H native table editing — `element.setTableData` with
+  full-matrix validation, `tableCustomized` preservation, dock
+  grid panel, verbatim text fidelity, and native `<a:tbl>`
   verification (pending independent review:
-  `docs/V2-5G-EVAL.md` + `docs/chart-editor-evidence/`).
-- [ ] Table editing — `element.setTableData` mirroring the chart
-  contract (cell strings, row/column add/remove with full-matrix
-  agreement, header handling), dock grid panel,
-  `tableCustomized` ownership, OOXML `a:t` verification. Sized
-  like the chart slice; no code started.
+  `docs/V2-5H-EVAL.md` + `docs/table-editor-evidence/`).
+- [ ] Slide management UI — slide add/duplicate/delete/reorder
+  over the existing revisioned engine slide ops, filmstrip
+  multi-select, and detach/relayout affordances. Then V2-6
+  persistence. Sized after the table slice; no code started.
 
 Future editor capabilities (planning entries only — discussed,
 not scoped, not started; no implementation in any V2-5 slice):
