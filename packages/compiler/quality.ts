@@ -268,12 +268,15 @@ export function checkFitDiagnostics(
     const code = d.kind === "word-floor-hit" ? "text-word-floor-hit"
       : d.kind === "table-cell-overflow" ? "table-cell-overflow"
         : d.kind === "chart-label-overflow" ? "chart-label-overflow"
-          : "text-fit-floor-hit";
+          : d.kind === "chart-fallback-table" ? "chart-fallback-table"
+            : "text-fit-floor-hit";
     const message = d.kind === "table-cell-overflow"
       ? `table element ${d.elementId} cannot seat its cells at readable size`
       : d.kind === "chart-label-overflow"
         ? `chart element ${d.elementId} cannot seat its labels at readable size`
-        : `text element ${d.elementId} (${d.role}) cannot fit its box at the readable floor`;
+        : d.kind === "chart-fallback-table"
+          ? `chart element ${d.elementId} fell back to a table so every series stays editable`
+          : `text element ${d.elementId} (${d.role}) cannot fit its box at the readable floor`;
     const finding: QualityFinding = {
       layer: "L1",
       code,

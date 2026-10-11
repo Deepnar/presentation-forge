@@ -327,6 +327,27 @@ function renderBlockPrimary(
         image: { src: block.src ?? "", alt: block.alt ?? "" },
       };
     case "chart": {
+      const kind = chartKindFor(block);
+      const series = block.series ?? [];
+      if ((kind === "pie" || kind === "doughnut") && series.length > 1) {
+        // Preservation fallback: native pie/doughnut charts carry a
+        // single series (verified: multi-series pies collapse to one
+        // <c:ser> in OOXML), so emitting a chart would silently drop
+        // data in export. Emit the exact values as an editable table
+        // instead — the same honest-fallback policy as data-table
+        // scenes. Identity is unchanged (same id/semanticRef the
+        // chart would carry); the diagnostic explains the swap.
+        // Chart capacity rules do not apply to the table; its own
+        // cell fitting diagnoses instead.
+        fitBase.sink.push({
+          slideId, elementId: id, semanticRef: block.id, role: "table",
+          kind: "chart-fallback-table",
+          message: `${kind} with ${series.length} series cannot keep every series in a native chart — exact values as an editable table`,
+        });
+        const header = ["", ...series.map((s) => s.name)];
+        const rows = (block.categories ?? []).map((c, ci) => [c, ...series.map((s) => String(s.values[ci] ?? ""))]);
+        return tableElement(id, block.id, region, [header, ...rows], true, z, design, fitBase);
+      }
       const labels = chartLabelStyle(design);
       assessChartCapacity(design, block, region, { slideId, elementId: id, semanticRef: block.id, sink: ctx.sink });
       return {
