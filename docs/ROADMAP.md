@@ -7219,8 +7219,12 @@ scale); charts structurally exact without axes (V2-4C).
   proven to fail on the V2-4C-1 baseline; eval
   `docs/V2-4C2-EVAL.md` + `docs/v2-4c2-evidence/`. No schema
   change.
-- [ ] V2-4D browser fonts — bundle the display faces themes
-  reference; document residual fallback.
+- [~] V2-4D browser fonts — bundle the display faces themes
+  reference; document residual fallback (in review:
+  `docs/V2-4D-EVAL.md` + `docs/v2-4d-evidence/`, 7 inventory
+  tests + 3 gated Chrome smoke tests green, 48/48 gated
+  captures with no missing faces, full suite 1489/1490 with
+  only the known BYOK locale failure).
 - [ ] V2-4E selection model — multi-select, focus,
   overlays, bounds inspection; still no mutation.
 - [ ] V2-4F live scenes — server compiles deck scenes on

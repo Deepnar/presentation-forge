@@ -1621,7 +1621,18 @@ colors are an explicitly interim ramp pending the
 theme-resolved contract (`chartSeries` in
 `packages/core/chartpalette.ts` carried as `series[].color`).
 Known projection gaps are recorded in the eval docs with
-owning layers, not corrected by compiler floors.
+owning layers, not corrected by compiler floors. Browser
+fonts are local and scene-driven (V2-4D; `docs/V2-4D-EVAL.md`):
+`app/web/src/fonts.js` loads only the faces compiled scenes
+reference (Fontsource woff2, code-split per face; Inter and
+IBM Plex Mono ride static imports), the viewer mounts after
+the Font Loading API settles (`data-fonts-ready` /
+`data-missing-fonts`), and evaluation screenshots gate on
+readiness — so the browser renders intended display faces
+with no network dependency and no scene mutation. The ~4.8px
+left-text difference against PPTX is the native 0.05in
+text-box margin against box-exact SVG, accepted as a
+documented renderer difference.
 
 ## The web shell
 
