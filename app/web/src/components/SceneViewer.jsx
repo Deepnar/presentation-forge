@@ -37,6 +37,71 @@ function useInspector(viewer, snap) {
   return snap.selectedIds.map((id) => viewer.api.inspect(id)).filter(Boolean);
 }
 
+// V2-5E shape-style panel: fill color, stroke color (or none), and
+// stroke width for one selected shape. Local draft state commits
+// explicitly (Apply, blur, or Enter) as a single element.setStyle —
+// a color picker's drag never spams history. Remounted per
+// element+revision (see key at the call site), so undo/redo and
+// reselection always refresh values. Genuine no-ops commit nothing.
+function StylePanel({ element, onCommit }) {
+  const shape = element.shape ?? {};
+  const [fill, setFill] = useState(`#${shape.fill ?? "FFFFFF"}`);
+  const [stroke, setStroke] = useState(shape.stroke ? `#${shape.stroke}` : "");
+  const [noStroke, setNoStroke] = useState(shape.stroke === undefined);
+  const [width, setWidth] = useState(String(shape.strokeWidth ?? 1));
+  const [error, setError] = useState(null);
+  function commit() {
+    const patch = {};
+    const bare = (v) => v.replace(/^#/, "");
+    if (bare(fill).toUpperCase() !== String(shape.fill ?? "FFFFFF").toUpperCase()) {
+      if (!/^[0-9A-Fa-f]{6}$/.test(bare(fill))) {
+        setError("fill must be a 6-digit hex color");
+        return;
+      }
+      patch.fill = bare(fill).toUpperCase();
+    }
+    if (noStroke) {
+      if (shape.stroke !== undefined) patch.stroke = null;
+    } else if (stroke) {
+      if (!/^[0-9A-Fa-f]{6}$/.test(bare(stroke))) {
+        setError("stroke must be a 6-digit hex color or none");
+        return;
+      }
+      if (bare(stroke).toUpperCase() !== String(shape.stroke ?? "").toUpperCase()) {
+        patch.stroke = bare(stroke).toUpperCase();
+      }
+    }
+    const n = Number(width);
+    if (!Number.isFinite(n) || n < 0 || n > 24) {
+      setError("stroke width must be a number from 0 to 24");
+      return;
+    }
+    if (n !== (shape.strokeWidth ?? 1)) patch.strokeWidth = n;
+    if (Object.keys(patch).length === 0) {
+      setError(null);
+      return;
+    }
+    setError(null);
+    onCommit?.(patch);
+  }
+  const commitOnEnter = (e) => {
+    if (e.key === "Enter") commit();
+  };
+  return (
+    <div data-style-panel={element.id} style={{ display: "flex", gap: 8, alignItems: "center", padding: "4px 12px", fontSize: 12, flexWrap: "wrap" }}>
+      <span style={{ opacity: 0.8 }}>Style {element.id}</span>
+      <label>Fill <input aria-label="Shape fill" type="color" value={/^#[0-9A-Fa-f]{6}$/.test(fill) ? fill : "#ffffff"} onChange={(e) => setFill(e.target.value)} onBlur={commit} /></label>
+      <label>No stroke <input aria-label="Remove stroke" type="checkbox" checked={noStroke} onChange={(e) => setNoStroke(e.target.checked)} onBlur={commit} /></label>
+      {!noStroke && (
+        <label>Stroke <input aria-label="Shape stroke" type="color" value={/^#[0-9A-Fa-f]{6}$/.test(stroke) ? stroke : "#000000"} onChange={(e) => { setStroke(e.target.value); }} onBlur={commit} /></label>
+      )}
+      <label>Width <input aria-label="Stroke width" value={width} inputMode="decimal" style={{ width: 44 }} onChange={(e) => setWidth(e.target.value)} onBlur={commit} onKeyDown={commitOnEnter} /></label>
+      <button type="button" onClick={commit}>Apply style</button>
+      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -304,6 +369,13 @@ export default function SceneViewer({ initial = {} }) {
   const slideH = 7.5 * 96;
   // Filmstrip follows engine edits while editing; fixtures otherwise.
   const shownScenes = editedScenes ?? deck.scenes;
+  // V2-5E style target: the single selected unlocked shape on the
+  // current slide, read from engine scenes while editing. Text and
+  // multi selections get no style panel (explicit scope, not a
+  // half-wired toolbar).
+  const styledShape = editOn && snap?.selectedIds?.length === 1 && snap.slideIndex < shownScenes.length
+    ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "shape" && !e.locked) ?? null)
+    : null;
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
@@ -365,6 +437,7 @@ export default function SceneViewer({ initial = {} }) {
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an editable text box at the slide center"} onClick={() => adapterRef.current?.addTextElement()}>+ Text</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")}>+ Rect</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")}>+ Round</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an ellipse"} onClick={() => adapterRef.current?.addShapeElement("ellipse")}>+ Ellipse</button>
             </>
           )}
           {editOn && textState.editing && (
@@ -445,13 +518,22 @@ export default function SceneViewer({ initial = {} }) {
             </span>
           </div>
         )}
+        {/* Inspector reserve: the wrapper always holds one line of
+        space (transparent border when empty) so selecting never
+        reflows the stage — the V2-5D double-click shift is fixed by
+        layout, with the 600ms selection hold as backstop for
+        multi-line inspectors. */}
+        <div
+          data-inspector-wrap
+          style={{ minHeight: 30, boxSizing: "border-box", background: "#242220", borderBottom: (inspected.length > 0 || styledShape) ? "1px solid #333" : "1px solid transparent" }}
+        >
         {inspected.length > 0 && (
           <div
             data-inspector
             aria-label="Selection inspector"
             style={{
-              padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 11,
-              fontFamily: "ui-monospace, monospace", background: "#242220",
+              padding: "6px 12px", fontSize: 11,
+              fontFamily: "ui-monospace, monospace",
               maxHeight: 88, overflowY: "auto",
             }}
           >
@@ -463,6 +545,14 @@ export default function SceneViewer({ initial = {} }) {
             ))}
           </div>
         )}
+        {styledShape && (
+          <StylePanel
+            key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
+            element={styledShape}
+            onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
+          />
+        )}
+        </div>
         <div
           ref={scrollRef}
           data-scroll-container
