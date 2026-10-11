@@ -1632,7 +1632,15 @@ readiness — so the browser renders intended display faces
 with no network dependency and no scene mutation. The ~4.8px
 left-text difference against PPTX is the native 0.05in
 text-box margin against box-exact SVG, accepted as a
-documented renderer difference.
+documented renderer difference. Selection is read-only and
+scene-driven (V2-4E; `docs/V2-4E-EVAL.md`): `selectedIds` in
+`scene-dom.js` with outermost-unit resolution (group children
+resolve to their parent; locked elements and locked
+descendants never resolve), pointer-transparent overlay rings
+positioned from measured rects with scene-geometry fallback,
+Tab/Escape/arrows bound beside the mount, and a grounded
+`inspect()` record behind a small React panel — no dragging,
+no mutation, no projection changes.
 
 ## The web shell
 
