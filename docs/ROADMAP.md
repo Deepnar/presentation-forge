@@ -7277,6 +7277,10 @@ scale); charts structurally exact without axes (V2-4C).
 - [~] V2-5C native canvas editing — drag/nudge/delete, undo/redo,
   tombstone suppression (in review: `docs/V2-5C-EVAL.md` +
   `docs/v2-5c-evidence/`).
+- [~] V2-5C-1 drag coordinate fidelity — divide (not multiply)
+  by rendered scale, per-axis scales, corrected scale tests
+  plus Chrome displacement matrix (in review:
+  `docs/V2-5C1-EVAL.md` + `docs/v2-5c1-evidence/`).
 
 Direct manipulation of real scene elements (the `demo.html` primitive
 grown up): inline text, drag/resize/rotate, nudge, multi-select,

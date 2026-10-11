@@ -305,4 +305,126 @@ describe("v2-5c chrome editing", () => {
       await page.close();
     }
   });
+
+  it("pointer displacement converts to scene displacement at every scale", async (t) => {
+    if (skipped) {
+      t.skip(skipped);
+      return;
+    }
+    // For each viewport/zoom: record scene x/y (inspector), record
+    // the rendered client box, drag a known client delta, then
+    // assert the scene delta equals client delta divided by the
+    // live rendered scale — and the visual displacement equals the
+    // pointer displacement within 4px. k is always read live, never
+    // assumed, so fit and zoomed paths prove the same equation.
+    const cases = [
+      { name: "fit-1440", url: PROSE, opts: { w: 1440, h: 900 } },
+      { name: "zoom-200", url: `${PROSE}&zoom=2`, opts: { w: 1440, h: 900 } },
+      { name: "narrow", url: PROSE, opts: { w: 900, h: 1400 } },
+    ];
+    for (const c of cases) {
+      const page = await open(c.url, c.opts);
+      try {
+        await enterEdit(page);
+        const ids = await page.evaluate(IDS);
+        const id = ids[0];
+        const c0 = await page.evaluate(centerOf(id));
+        assert.ok(c0, `${c.name}: hittable unit`);
+        await page.click(c0[0], c0[1]);
+        const d0 = await page.evaluate(centerOf(id));
+        const before = await page.evaluate(`(() => {
+          const m = (document.querySelector('[data-inspector]')?.textContent ?? '').match(/@ ([\\d.]+),([\\d.]+)/);
+          const svg = document.querySelector('[data-stage] svg').getBoundingClientRect();
+          const r = document.querySelector('[data-stage] [data-el="${id}"]').getBoundingClientRect();
+          return m ? { x: Number(m[1]), y: Number(m[2]), k: svg.width / 1280, left: r.left, top: r.top } : null;
+        })()`);
+        assert.ok(before, `${c.name}: inspector reports scene position`);
+        const dx = d0[0] + 140 < (c.opts.w - 40) ? 120 : -120;
+        const dy = 60;
+        await page.drag(d0[0], d0[1], d0[0] + dx, d0[1] + dy);
+        await waitFor(page, `(${EDIT}).rev === 1`, 60000);
+        const after = await page.evaluate(`(() => {
+          const m = (document.querySelector('[data-inspector]')?.textContent ?? '').match(/@ ([\\d.]+),([\\d.]+)/);
+          const r = document.querySelector('[data-stage] [data-el="${id}"]').getBoundingClientRect();
+          return m ? { x: Number(m[1]), y: Number(m[2]), left: r.left, top: r.top } : null;
+        })()`);
+        assert.ok(Math.abs((after.x - before.x) - dx / before.k / 96) < 0.003, `${c.name}: scene dx follows the equation (got ${after.x - before.x}, want ${dx / before.k / 96})`);
+        assert.ok(Math.abs((after.y - before.y) - dy / before.k / 96) < 0.003, `${c.name}: scene dy follows the equation`);
+        assert.ok(Math.abs((after.left - before.left) - dx) < 4, `${c.name}: visual dx matches pointer dx`);
+        assert.ok(Math.abs((after.top - before.top) - dy) < 4, `${c.name}: visual dy matches pointer dy`);
+      } finally {
+        await page.close();
+      }
+    }
+  });
+
+  it("chart elements displace by the pointer delta on both axes", async (t) => {
+    if (skipped) {
+      t.skip(skipped);
+      return;
+    }
+    const page = await open(`http://127.0.0.1:${PORT}/scenes.html?deck=mech-warm-humanist-plain&slide=6`);
+    try {
+      await enterEdit(page);
+      const id = await page.evaluate(`(() => {
+        const stage = document.querySelector('[data-stage]');
+        const units = [...stage.querySelectorAll('svg > g[data-el]')].filter((n) => n.getAttribute('data-locked') !== 'true');
+        units.sort((a, b) => b.querySelectorAll('rect').length - a.querySelectorAll('rect').length);
+        return units[0]?.getAttribute('data-el') ?? null;
+      })()`);
+      assert.ok(id, "chart unit identified by geometry");
+      // Click a bar body, not a hairline axis: zero-height line
+      // rects round-trip unreliably through CDP integer
+      // coordinates, while bars are stable area targets.
+      const c0 = await page.evaluate(`(() => {
+        const stage = document.querySelector('[data-stage]');
+        const unit = stage.querySelector('[data-el="${id}"]');
+        const bars = [...unit.querySelectorAll('rect')].filter((r) => { const b = r.getBoundingClientRect(); return b.width > 10 && b.height > 10; });
+        if (!bars.length) return null;
+        const r = bars[0].getBoundingClientRect();
+        const x = r.left + r.width / 2, y = r.top + r.height / 2;
+        const t = document.elementFromPoint(x, y);
+        if (!t || !stage.contains(t)) return null;
+        let top = t.closest('[data-el]');
+        if (!top) return null;
+        let p = top.parentElement, topId = top.getAttribute('data-el');
+        while (p && stage.contains(p)) {
+          const g = p.closest('[data-el]');
+          if (!g) break;
+          top = g; topId = top.getAttribute('data-el'); p = top.parentElement;
+        }
+        return topId === '${id}' ? [x, y] : null;
+      })()`);
+      assert.ok(c0, "bar body hittable");
+      await page.click(c0[0], c0[1]);
+      const d0 = await page.evaluate(`(() => {
+        const stage = document.querySelector('[data-stage]');
+        const unit = stage.querySelector('[data-el="${id}"]');
+        const bars = [...unit.querySelectorAll('rect')].filter((r) => { const b = r.getBoundingClientRect(); return b.width > 10 && b.height > 10; });
+        if (!bars.length) return null;
+        const r = bars[0].getBoundingClientRect();
+        return [r.left + r.width / 2, r.top + r.height / 2];
+      })()`);
+      assert.ok(d0, "bar body hittable after selection");
+      const before = await page.evaluate(`(() => {
+        const m = (document.querySelector('[data-inspector]')?.textContent ?? '').match(/@ ([\\d.]+),([\\d.]+)/);
+        const svg = document.querySelector('[data-stage] svg').getBoundingClientRect();
+        const r = document.querySelector('[data-stage] [data-el="${id}"]').getBoundingClientRect();
+        return m ? { x: Number(m[1]), y: Number(m[2]), k: svg.width / 1280, left: r.left, top: r.top } : null;
+      })()`);
+      await page.drag(d0[0], d0[1], d0[0] + 80, d0[1] + 40);
+      await waitFor(page, `(${EDIT}).rev === 1`, 60000);
+      const after = await page.evaluate(`(() => {
+        const m = (document.querySelector('[data-inspector]')?.textContent ?? '').match(/@ ([\\d.]+),([\\d.]+)/);
+        const r = document.querySelector('[data-stage] [data-el="${id}"]').getBoundingClientRect();
+        return m ? { x: Number(m[1]), y: Number(m[2]), left: r.left, top: r.top } : null;
+      })()`);
+      assert.ok(Math.abs((after.x - before.x) - 80 / before.k / 96) < 0.003, "chart scene dx follows the equation");
+      assert.ok(Math.abs((after.y - before.y) - 40 / before.k / 96) < 0.003, "chart scene dy follows the equation");
+      assert.ok(Math.abs((after.left - before.left) - 80) < 4, "chart visual dx matches pointer");
+      assert.ok(Math.abs((after.top - before.top) - 40) < 4, "chart visual dy matches pointer");
+    } finally {
+      await page.close();
+    }
+  });
 });

@@ -174,3 +174,14 @@ V2-5D: inline text editing through `element.updateText`
 already wired, plus `element.add` UI for text/shape.
 Then style/chart-data commands, slide management UI,
 persistence binding, agent turns.
+
+## 13. V2-5C-1 correction (accepted baseline `a10ea2c`)
+
+Review found drag preview and commit multiplying client
+deltas by the rendered scale instead of dividing (4x error
+at 200%, invisible at fit). Fixed centrally in
+`clientToSvgDelta` with per-axis scales; the scale-two
+test asserted the error and now asserts the equation, plus
+division/matrix/non-uniform/release-position regressions
+and two Chrome displacement suites. Full detail:
+`docs/V2-5C1-EVAL.md`.
