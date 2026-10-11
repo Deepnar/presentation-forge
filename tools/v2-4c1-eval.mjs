@@ -54,6 +54,15 @@ function intent() {
           emphasis: "primary",
         }],
       },
+      {
+        id: "mc-ring2", purpose: "Show two datasets in one doughnut", title: "Ring and spare",
+        rhetoricalRole: "evidence",
+        blocks: [{
+          id: "mc-ring2-c1", kind: "chart", chartKind: "doughnut",
+          categories: ["x", "y"], series: [{ name: "A", values: [1, 2] }, { name: "B", values: [30, 40] }],
+          emphasis: "primary",
+        }],
+      },
     ],
   };
 }
