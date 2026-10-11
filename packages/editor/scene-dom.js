@@ -305,6 +305,16 @@ export function createViewer(rootEl, scenes, opts = {}) {
 
   const api = {
     snapshot,
+    // Identity lookup for slide management: command boundaries and
+    // filmstrip selection speak slide ids, navigation speaks
+    // indices. Read-only; never mutates or records history.
+    indexOf(id) {
+      return frozen.findIndex((s) => s.id === id);
+    },
+    slideIdAt(i) {
+      const scene = frozen[clampIndex(i, frozen.length)];
+      return scene?.id ?? null;
+    },
     goTo(i) {
       const next = clampIndex(i, frozen.length);
       if (next !== state.slideIndex) {

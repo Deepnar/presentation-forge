@@ -19,6 +19,7 @@ import {
   defaultShapeElement,
   overflowEstimate,
   tableOverflowEstimate,
+  blankSlide,
   mintHumanId,
   cascadeBox,
   cascadeIndex,
@@ -1328,6 +1329,165 @@ export function attachEditor(viewer, doc, opts = {}) {
     })());
   }
 
+  // ——— V2-5I slide management ———
+  //
+  // The engine's ordered SlideScene collection stays the sole
+  // source of truth: React owns active-slide identity, filmstrip
+  // selection, and drag previews, while every committed slide
+  // mutation crosses the engine as a slide.* envelope (single or
+  // atomic batch) and the viewer re-renders from snapshots.
+  // Navigation (goTo by index) never touches history.
+
+  function activeSlideId() {
+    return api.snapshot().slideId;
+  }
+
+  // Pending-draft gate for slide mutations: an open text session
+  // on a slide about to disappear is cancelled with its overlay
+  // (committing to a deleted slide is pointless); anywhere else
+  // the draft commits first and a failed commit blocks the
+  // mutation — drafts are never lost silently. Chart/table panels
+  // are explicit-Apply and unmount with navigation by design.
+  async function gateTextForSlides(deleteIds = []) {
+    if (!textSession) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    if (deleteIds.includes(textSession.slideId)) {
+      cancelTextEdit();
+      return { ok: true, revision: doc.snapshot().revision, noop: true };
+    }
+    return commitPendingEdit();
+  }
+
+  async function insertSlide(index = null) {
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    const cur = doc.snapshot();
+    const at = index ?? api.snapshot().slideIndex + 1;
+    const sibling = cur.scenes[api.snapshot().slideIndex] ?? cur.scenes[0];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const scene = blankSlide(sibling);
+      const result = await doc.apply({
+        id: newEditId(), slideId: null,
+        op: { type: "slide.insert", scene, index: Math.max(0, at) },
+        baseRevision: doc.snapshot().revision, actor: "human",
+      });
+      if (result.ok) {
+        sync();
+        return track({ ...result, id: scene.id, index: Math.min(Math.max(0, at), doc.snapshot().scenes.length - 1) });
+      }
+      if (!(result.code === "op-rejected" && /already exists/.test(result.message)) || attempt === 2) {
+        return track(report(result));
+      }
+    }
+    return track(report({ ok: false, code: "op-rejected", message: "could not mint a fresh slide id" }));
+  }
+
+  async function duplicateSlides(ids) {
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    // Duplication copies committed content only — drafts live
+    // outside the scene and never leak into the copy.
+    const before = new Set(doc.snapshot().scenes.map((s) => s.id));
+    let result;
+    if (ids.length === 1) {
+      result = await doc.apply({
+        id: newEditId(), slideId: null,
+        op: { type: "slide.duplicate", id: ids[0] },
+        baseRevision: doc.snapshot().revision, actor: "human",
+      });
+    } else if (ids.length === 0) {
+      return track({ ok: true, revision: doc.snapshot().revision, noop: true });
+    } else {
+      result = await doc.applyBatch({
+        id: newEditId(),
+        baseRevision: doc.snapshot().revision, actor: "human",
+        ops: ids.map((id) => ({ slideId: null, op: { type: "slide.duplicate", id } })),
+      });
+    }
+    if (!result.ok) return track(report(result));
+    sync();
+    const added = doc.snapshot().scenes.map((s) => s.id).filter((id) => !before.has(id));
+    return track({ ...result, ids: added });
+  }
+
+  async function duplicateSlide(id = null) {
+    const target = id ?? activeSlideId();
+    if (!target) return report({ ok: false, code: "op-rejected", message: "no active slide to duplicate" });
+    const result = await duplicateSlides([target]);
+    if (!result.ok) return result;
+    return { ...result, id: result.ids[0] ?? null };
+  }
+
+  async function deleteSlides(ids) {
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides(ids);
+    if (!gated.ok) return track(gated);
+    if (ids.length === 0) return track({ ok: true, revision: doc.snapshot().revision, noop: true });
+    let result;
+    if (ids.length === 1) {
+      result = await doc.apply({
+        id: newEditId(), slideId: null,
+        op: { type: "slide.delete", id: ids[0] },
+        baseRevision: doc.snapshot().revision, actor: "human",
+      });
+    } else {
+      result = await doc.applyBatch({
+        id: newEditId(),
+        baseRevision: doc.snapshot().revision, actor: "human",
+        ops: ids.map((id) => ({ slideId: null, op: { type: "slide.delete", id } })),
+      });
+    }
+    if (!result.ok) return track(report(result));
+    sync();
+    return track({ ...result, deletedIds: [...ids] });
+  }
+
+  async function reorderSlide(id, toIndex) {
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    if (!Number.isInteger(toIndex) || toIndex < 0) {
+      return report({ ok: false, code: "bad-envelope", message: "reorder needs a non-negative index" });
+    }
+    const result = await doc.apply({
+      id: newEditId(), slideId: null,
+      op: { type: "slide.reorder", id, toIndex },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return track(report(result));
+    if (result.noop) return track(result);
+    sync();
+    return track(result);
+  }
+
+  async function detachSlide(id = null) {
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    const target = id ?? activeSlideId();
+    if (!target) return report({ ok: false, code: "op-rejected", message: "no active slide to detach" });
+    const result = await doc.apply({
+      id: newEditId(), slideId: null,
+      op: { type: "slide.setLayoutState", id: target, layoutState: "detached" },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return track(report(result));
+    if (result.noop) return track(result);
+    sync();
+    return track(result);
+  }
+
   async function onEditAction(action) {
     // Interaction precedence: an open text edit outranks every canvas
     // shortcut. Arrows/Backspace belong to the caret (scene-dom never
@@ -1423,6 +1583,12 @@ export function attachEditor(viewer, doc, opts = {}) {
     setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
     setChartData: (id, payload) => setChartData(id, payload),
     setTableData: (id, rows) => setTableData(id, rows),
+    insertSlide: (index = null) => track(insertSlide(index)),
+    duplicateSlide: (id = null) => track(duplicateSlide(id)),
+    duplicateSlides: (ids) => track(duplicateSlides(ids ?? [])),
+    deleteSlides: (ids) => track(deleteSlides(ids ?? [])),
+    reorderSlide: (id, toIndex) => track(reorderSlide(id, toIndex)),
+    detachSlide: (id = null) => track(detachSlide(id)),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();

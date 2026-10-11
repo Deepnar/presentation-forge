@@ -30,6 +30,35 @@ export function mintHumanId() {
   return `h-${[...bytes].map((b) => b.toString(16).padStart(2, "0")).join("")}`;
 }
 
+// Collision-safe slide ids in the same shape. Uniqueness against
+// the live deck is enforced by the engine (duplicate slide ids
+// reject); callers retry with a fresh mint on the rare collision.
+export function mintSlideId() {
+  const bytes = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(bytes);
+  return `s-${[...bytes].map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+}
+
+// A genuinely blank editable slide: valid dimensions, the sibling
+// slide's background as the theme baseline (never a white guess),
+// zero elements, managed layout state. No placeholder title, no
+// copied chrome — locked institutional marks belong to compiler
+// emission, and freezing stale marks into a human slide would lie
+// about what regeneration owns. The renderer draws background-only
+// slides and the preflight accepts them; an empty elements array
+// is an intentional blank, not a malformed scene (which would be
+// missing required fields and fail validation).
+export function blankSlide(sibling) {
+  return {
+    id: mintSlideId(),
+    width: SCENE_W,
+    height: SCENE_H,
+    background: structuredClone(sibling?.background ?? { fill: "FFFFFF" }),
+    elements: [],
+    layoutState: "managed",
+  };
+}
+
 // Editable iff one paragraph with one run. Zero-run paragraphs,
 // multi-run paragraphs, and multi-paragraph elements are all
 // structured: an honest boundary, not a flattening.
