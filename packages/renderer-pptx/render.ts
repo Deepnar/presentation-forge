@@ -14,6 +14,7 @@
 
 import PptxGenJSModule from "pptxgenjs";
 import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.generated.ts";
+import { validateScene } from "../model/scene.ts";
 import { runBold, visibleText } from "../core/text-run.ts";
 import { maxColumns, padTableRows } from "../core/table.ts";
 
@@ -44,6 +45,74 @@ interface PptxPresentation {
 }
 
 const PptxGenJS = PptxGenJSModule as unknown as new () => PptxPresentation;
+
+export interface ExportPreflightIssue {
+  slideId: string;
+  elementId: string | null;
+  reason: string;
+}
+
+// Fail-closed export preflight: the renderer faithfully projects
+// valid scenes or refuses unsafe ones — it never silently drops
+// authored data and never rewrites scenes to pass. Every rule
+// below is a demonstrated loss, not a hypothesis: the native
+// chart library keeps only the first pie/doughnut series, and
+// empty chart/table payloads historically rendered nothing with
+// no error. Callers holding a multi-series pie route it through
+// the compiler's chart-to-table fallback (or the V2-5 command
+// system) before exporting; the filesystem adapter inherits this
+// boundary because rejection precedes any byte generation.
+export class ExportUnsafeError extends Error {
+  readonly code = "export-unsafe";
+  readonly issues: ExportPreflightIssue[];
+  constructor(issues: ExportPreflightIssue[]) {
+    super(`pptx export refused (${issues.length} problem(s)): ${issues.map((i) => `slide '${i.slideId}'${i.elementId ? ` element '${i.elementId}'` : ""}: ${i.reason}`).join("; ")}`);
+    this.name = "ExportUnsafeError";
+    this.issues = issues;
+  }
+}
+
+function walkElements(els: SceneElement[], out: SceneElement[] = []): SceneElement[] {
+  for (const el of els ?? []) {
+    out.push(el);
+    walkElements(el.group?.children ?? [], out);
+  }
+  return out;
+}
+
+export async function preflightScenes(scenes: readonly SlideScene[]): Promise<ExportPreflightIssue[]> {
+  const issues: ExportPreflightIssue[] = [];
+  for (const scene of scenes ?? []) {
+    const slideId = (scene as SlideScene)?.id ?? "(unknown slide)";
+    const verdict = await validateScene(scene);
+    if (!verdict.ok) {
+      issues.push({ slideId, elementId: null, reason: `scene contract invalid: ${verdict.errors.join("; ")}` });
+      continue;
+    }
+    for (const el of walkElements(scene.elements)) {
+      if (el.kind === "chart") {
+        const c = el.chart;
+        if (!c) {
+          issues.push({ slideId, elementId: el.id, reason: "chart element carries no chart payload — nothing would render" });
+        } else if ((c.series ?? []).length > 1 && (c.chartKind === "pie" || c.chartKind === "doughnut")) {
+          issues.push({
+            slideId,
+            elementId: el.id,
+            reason: `${c.chartKind} with ${(c.series ?? []).length} series would keep only the first in native output — route through the compiler chart-to-table fallback before exporting`,
+          });
+        } else if ((c.series ?? []).length === 0) {
+          issues.push({ slideId, elementId: el.id, reason: "chart has no series — nothing would render" });
+        }
+      } else if (el.kind === "table") {
+        const rows = el.table?.rows ?? [];
+        if (!el.table || rows.length === 0) {
+          issues.push({ slideId, elementId: el.id, reason: "table has no rows — nothing would render" });
+        }
+      }
+    }
+  }
+  return issues;
+}
 
 export interface PptxRenderOptions {
   title?: string;
@@ -275,6 +344,8 @@ export async function renderPptx(
   options: PptxRenderOptions = {},
 ): Promise<Uint8Array> {
   if (!scenes.length) throw new Error("renderPptx requires at least one scene");
+  const unsafe = await preflightScenes(scenes);
+  if (unsafe.length > 0) throw new ExportUnsafeError(unsafe);
   const pres = new PptxGenJS();
   pres.defineLayout({ name: "V2", width: scenes[0].width, height: scenes[0].height });
   pres.layout = "V2";
