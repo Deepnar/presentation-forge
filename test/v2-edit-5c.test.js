@@ -337,7 +337,65 @@ describe("v2-5c editor adapter", () => {
     ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 300, y: 200 });
     ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 300, y: 200 });
     await r.editor.pending();
-    assert.equal(r.doc.snapshot().scenes[0].elements.find((e) => e.id === id).x, Math.round((origin.x + 200 / 96) * 1000) / 1000, "100 client px at 2x is 200 svg px");
+    // 100 client px at 2x device scale is 50 SVG px (division, not
+    // multiplication), i.e. 50/96 inches — the V2-5C-1 correction.
+    assert.equal(r.doc.snapshot().scenes[0].elements.find((e) => e.id === id).x, Math.round((origin.x + 50 / 96) * 1000) / 1000, "100 client px at 2x is 50 svg px");
+  });
+
+  it("conversion is division by scale at 50, 100, 150, and 200 percent", async () => {
+    const { clientToSvgDelta } = await import("../packages/editor/scene-edit.js");
+    for (const [k, wantSvg] of [[0.5, 200], [1, 100], [1.5, 100 / 1.5], [2, 50]]) {
+      const got = clientToSvgDelta(100, 60, { kx: k, ky: k });
+      assert.ok(Math.abs(got.dx - wantSvg) < 1e-9, `100 client px at ${k}x is ${wantSvg} svg px`);
+      assert.ok(Math.abs(got.dy - 60 / k) < 1e-9, `vertical divides by the same scale`);
+    }
+  });
+
+  it("drag distance follows the rendered scale, not its inverse", async () => {
+    for (const k of [0.5, 1, 1.5, 2]) {
+      const r = await fixtureRig();
+      stubLayout(r.root, k);
+      const id = r.viewer.api.selectableIds()[0];
+      const origin = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
+      click(r.root, nodeFor(r.root, id));
+      ptr(r.root, "pointerdown", nodeFor(r.root, id), { x: 200, y: 200 });
+      ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 300, y: 260 });
+      ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 300, y: 260 });
+      await r.editor.pending();
+      const moved = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
+      assert.equal(moved.x, Math.round((origin.x + 100 / k / 96) * 1000) / 1000, `x at ${k}x`);
+      assert.equal(moved.y, Math.round((origin.y + 60 / k / 96) * 1000) / 1000, `y at ${k}x`);
+      assert.equal(r.doc.status().historyLength, 1, `one entry at ${k}x`);
+    }
+  });
+
+  it("non-uniform rendering derives each axis separately", async () => {
+    const r = await fixtureRig();
+    const svg = r.root.querySelector("svg");
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 1280 * 2, height: 720 * 0.5, right: 2560, bottom: 360 });
+    const id = r.viewer.api.selectableIds()[0];
+    const origin = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
+    click(r.root, nodeFor(r.root, id));
+    ptr(r.root, "pointerdown", nodeFor(r.root, id), { x: 200, y: 200 });
+    ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 300, y: 260 });
+    ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 300, y: 260 });
+    await r.editor.pending();
+    const moved = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
+    assert.equal(moved.x, Math.round((origin.x + 100 / 2 / 96) * 1000) / 1000, "x divides by kx");
+    assert.equal(moved.y, Math.round((origin.y + 60 / 0.5 / 96) * 1000) / 1000, "y divides by ky");
+  });
+
+  it("release coordinates decide the commit, not the last move", async () => {
+    const r = await fixtureRig();
+    stubLayout(r.root);
+    const id = r.viewer.api.selectableIds()[0];
+    const origin = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
+    click(r.root, nodeFor(r.root, id));
+    ptr(r.root, "pointerdown", nodeFor(r.root, id), { x: 200, y: 200 });
+    ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 260, y: 200 });
+    ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 340, y: 200 });
+    await r.editor.pending();
+    assert.equal(r.doc.snapshot().scenes[0].elements.find((e) => e.id === id).x, Math.round((origin.x + 140 / 96) * 1000) / 1000, "140 client px from press to release");
   });
 
   it("adapter reads fresh revisions so external commits never go stale", async () => {

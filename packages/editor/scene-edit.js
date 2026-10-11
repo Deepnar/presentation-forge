@@ -9,7 +9,7 @@
 //
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
-import { SCENE_W } from "../model/scene-constants.ts";
+import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 
 // Documented keybinding contract (see the viewer toolbar hint and
 // docs/V2-5C-EVAL.md): arrows move selection, Shift+arrows move
@@ -38,15 +38,34 @@ function findIn(docScenes, slideId, id) {
   return walk(slide.elements);
 }
 
-// SVG px per client px from live layout; null without layout
-// (linkedom) so drag commits degrade to an explicit error there
-// instead of guessing geometry.
-function unitScale(root) {
+// Coordinate spaces: client (screen) px → rendered SVG bounding-box
+// px → SVG viewBox units → authoritative scene inches. For a slide
+// W×H inches rendered R×S client px, client px per inch is R/W
+// (and S/H). Equivalently with the SVG-unit model (96 px per inch):
+// client px per SVG px kx = R/(W·96), ky = S/(H·96), so device
+// deltas DIVIDE by k. Multiplying inflates movement by k² at zoom
+// k — the V2-5C-1 correction (100 client px at 200% is 50 SVG px,
+// not 200). Scales derive per axis so non-uniform rendering can
+// never silently shear a drag; today's stage is exactly 16:9, so
+// kx and ky agree in practice.
+//
+// Rendered SVG px per client px from live layout; null without
+// layout (linkedom) so drag commits degrade to an explicit error
+// there instead of guessing geometry.
+export function svgScales(root) {
   const svg = root.querySelector("svg");
   const rect = svg?.getBoundingClientRect?.();
-  if (!rect || !(rect.width > 0)) return null;
-  const k = rect.width / (SCENE_W * IN);
-  return k > 0 ? k : null;
+  if (!rect || !(rect.width > 0) || !(rect.height > 0)) return null;
+  const kx = rect.width / (SCENE_W * IN);
+  const ky = rect.height / (SCENE_H * IN);
+  if (!(kx > 0) || !(ky > 0)) return null;
+  return { kx, ky };
+}
+
+// One central conversion used by preview and commit alike, so the
+// two can never drift: client-pixel deltas to SVG-unit deltas.
+export function clientToSvgDelta(dxClient, dyClient, scales) {
+  return { dx: dxClient / scales.kx, dy: dyClient / scales.ky };
 }
 
 export function attachEditor(viewer, doc, opts = {}) {
@@ -111,10 +130,9 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   function previewTo(clientX, clientY) {
     if (!drag) return;
-    const k = unitScale(root);
-    if (!k) return;
-    const dx = (clientX - drag.startX) * k;
-    const dy = (clientY - drag.startY) * k;
+    const scales = svgScales(root);
+    if (!scales) return;
+    const { dx, dy } = clientToSvgDelta(clientX - drag.startX, clientY - drag.startY, scales);
     if (!drag.moved && Math.hypot(clientX - drag.startX, clientY - drag.startY) < DRAG_THRESHOLD_PX) return;
     drag.moved = true;
     for (const node of drag.nodes) {
@@ -161,14 +179,17 @@ export function attachEditor(viewer, doc, opts = {}) {
       if (d.collapseTo) api.select(d.collapseTo);
       return { ok: true, revision: doc.snapshot().revision, noop: true };
     }
-    const k = unitScale(root);
-    if (!k) return report({ ok: false, code: "op-rejected", message: "no layout to project the drag through" });
+    const scales = svgScales(root);
+    if (!scales) return report({ ok: false, code: "op-rejected", message: "no layout to project the drag through" });
+    // Release coordinates decide the commit (not the last move
+    // event), through the same conversion as the preview.
+    const { dx, dy } = clientToSvgDelta(ev.clientX - d.startX, ev.clientY - d.startY, scales);
     const ops = d.origins.map((o) => ({
       slideId: d.slideId,
       op: {
         type: "element.move", id: o.id,
-        x: r3(o.x + ((ev.clientX - d.startX) * k) / IN),
-        y: r3(o.y + ((ev.clientY - d.startY) * k) / IN),
+        x: r3(o.x + dx / IN),
+        y: r3(o.y + dy / IN),
       },
     }));
     return track(submitMoveLike(ops, doc.snapshot().revision));
