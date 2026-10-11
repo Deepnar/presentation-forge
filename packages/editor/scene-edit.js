@@ -11,7 +11,7 @@
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 import {
-  isSimpleText,
+  isEditableText,
   describeStructure,
   paragraphsToDraft,
   buildUpdatedParagraphs,
@@ -538,12 +538,12 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (el.kind !== "text") {
       return report({ ok: false, code: "op-rejected", message: `element ${target} is not text` });
     }
-    if (!isSimpleText(el.paragraphs)) {
+    if (!isEditableText(el.paragraphs)) {
       const d = describeStructure(el.paragraphs);
       return report({
         ok: false,
         code: "op-rejected",
-        message: `rich text is read-only in this slice (${d.paragraphs} paragraph(s), ${d.runs} run(s)) — editing would flatten its formatting`,
+        message: `rich runs are read-only in this slice (${d.paragraphs} paragraph(s), ${d.runs} run(s)) — editing would flatten their formatting`,
       });
     }
     const origParagraphs = structuredClone(el.paragraphs);
@@ -557,8 +557,8 @@ export function attachEditor(viewer, doc, opts = {}) {
       node: null,
     };
     openTextarea(textSession);
-    notifyText({ elementId: target, slideId: snap.slideId, draft: textSession.draft });
-    return { ok: true, revision: textSession.baseRevision, elementId: target, draft: textSession.draft };
+    notifyText({ elementId: target, slideId: snap.slideId, draft: textSession.draft, paragraphs: origParagraphs.length });
+    return { ok: true, revision: textSession.baseRevision, elementId: target, draft: textSession.draft, paragraphs: origParagraphs.length };
   }
 
   // One committed text-update command per editing session (D2):
@@ -1072,6 +1072,110 @@ export function attachEditor(viewer, doc, opts = {}) {
     })());
   }
 
+  // ——— V2-5F text formatting ———
+  //
+  // Narrow appearance edits over whole addressable runs:
+  // paragraph-scoped (paragraphIndex) or whole-element. Partial
+  // patches touch only mentioned keys; null clears a key back to
+  // absence (bold:false differs from absent bold under weight >=
+  // 600). Multi-run paragraphs are refused — formatting never
+  // splits runs here. Genuine no-ops return without engine contact.
+  function setTextStyle(id, paragraphIndex, patch) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    if (!el) return report({ ok: false, code: "unknown-element", message: `unknown element ${id}` });
+    if (el.locked) return report({ ok: false, code: "locked", message: `element ${id} is locked` });
+    if (el.kind !== "text") return report({ ok: false, code: "op-rejected", message: `element ${id} is not text` });
+    if (!patch || typeof patch !== "object") {
+      return report({ ok: false, code: "bad-envelope", message: "element.setTextStyle needs a style patch" });
+    }
+    const paras = el.paragraphs ?? [];
+    let idxs;
+    if (paragraphIndex === undefined || paragraphIndex === null) {
+      idxs = paras.map((_, i) => i);
+    } else {
+      if (!Number.isInteger(paragraphIndex) || paragraphIndex < 0 || paragraphIndex >= paras.length) {
+        return report({ ok: false, code: "bad-envelope", message: `paragraph ${paragraphIndex} out of range for element ${id}` });
+      }
+      idxs = [paragraphIndex];
+    }
+    for (const i of idxs) {
+      const runs = paras[i]?.runs;
+      if (!Array.isArray(runs) || runs.length !== 1) {
+        return report({ ok: false, code: "op-rejected", message: `paragraph ${i} of element ${id} is not a single run` });
+      }
+    }
+    const style = {};
+    const hex = /^[0-9A-Fa-f]{6}$/;
+    if (patch.color !== undefined) {
+      if (patch.color === null) style.color = null;
+      else {
+        const s = String(patch.color).replace(/^#/, "");
+        if (!hex.test(s)) return report({ ok: false, code: "bad-envelope", message: "color must be a 6-digit hex color" });
+        style.color = s.toUpperCase();
+      }
+    }
+    if (patch.size !== undefined) {
+      if (patch.size === null) style.size = null;
+      else {
+        const n = typeof patch.size === "string" ? Number(patch.size) : patch.size;
+        if (typeof n !== "number" || !Number.isFinite(n) || n < 6 || n > 144) {
+          return report({ ok: false, code: "bad-envelope", message: "size must be a number from 6 to 144" });
+        }
+        style.size = n;
+      }
+    }
+    for (const k of ["bold", "italic"]) {
+      if (patch[k] === undefined) continue;
+      if (patch[k] === null) style[k] = null;
+      else if (typeof patch[k] !== "boolean") {
+        return report({ ok: false, code: "bad-envelope", message: `${k} must be a boolean` });
+      } else style[k] = patch[k];
+    }
+    if (Object.keys(style).length === 0) {
+      return report({ ok: false, code: "bad-envelope", message: "element.setTextStyle needs at least one changed key" });
+    }
+    const same = idxs.every((i) => {
+      const run = paras[i].runs[0] ?? {};
+      return Object.keys(style).every((k) => {
+        const have = run[k] === undefined ? null : run[k];
+        const want = style[k];
+        return k === "color" && typeof have === "string" && typeof want === "string"
+          ? have.toUpperCase() === want.toUpperCase()
+          : have === want;
+      });
+    });
+    if (same) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
+    const op = { type: "element.setTextStyle", id, style };
+    if (paragraphIndex !== undefined && paragraphIndex !== null) op.paragraphIndex = paragraphIndex;
+    return track((async () => {
+      const result = await doc.apply({
+        id: newEditId(),
+        slideId: snap.slideId,
+        op,
+        baseRevision: doc.snapshot().revision,
+        actor: "human",
+      });
+      if (result.ok) {
+        sync();
+        const fresh = findIn(doc.snapshot().scenes, snap.slideId, id);
+        if (fresh?.kind === "text") {
+          const overflow = overflowEstimate(fresh);
+          if (overflow && !overflow.fits && onError) {
+            onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
+          }
+        }
+      }
+      return report(result);
+    })());
+  }
+
   async function onEditAction(action) {
     // Interaction precedence: an open text edit outranks every canvas
     // shortcut. Arrows/Backspace belong to the caret (scene-dom never
@@ -1164,6 +1268,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     resizingId: () => resize?.id ?? null,
     handlesVisible: () => (handleLayer ? handleLayer.querySelectorAll("[data-resize-handle]").length : 0),
     setElementStyle: (id, patch) => setElementStyle(id, patch),
+    setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();

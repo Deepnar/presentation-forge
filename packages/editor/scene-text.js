@@ -42,10 +42,26 @@ export function isSimpleText(paragraphs) {
   );
 }
 
+// Editable iff every paragraph holds exactly one run (one or more
+// paragraphs). Single-paragraph elements keep working exactly as
+// before; multi-paragraph single-run bodies (lists, comparisons,
+// process steps — the measured 46/129 fixture case) become
+// editable with per-paragraph styling. Anything with a multi-run
+// (or zero-run) paragraph stays structured and refused: formatting
+// addresses whole runs only, never substrings.
+export function isEditableText(paragraphs) {
+  return (
+    Array.isArray(paragraphs) &&
+    paragraphs.length > 0 &&
+    paragraphs.every((p) => Array.isArray(p?.runs) && p.runs.length === 1)
+  );
+}
+
 export function describeStructure(paragraphs) {
   const ps = Array.isArray(paragraphs) ? paragraphs : [];
   const runs = ps.reduce((n, p) => n + (Array.isArray(p?.runs) ? p.runs.length : 0), 0);
-  return { simple: isSimpleText(paragraphs), paragraphs: ps.length, runs };
+  const multiRun = ps.some((p) => !Array.isArray(p?.runs) || p.runs.length !== 1);
+  return { simple: isSimpleText(paragraphs), editable: isEditableText(paragraphs), paragraphs: ps.length, runs, multiRun };
 }
 
 // Draft text for the editing surface: each paragraph's runs joined,
@@ -55,22 +71,59 @@ export function paragraphsToDraft(paragraphs) {
 }
 
 // Build the committed paragraphs from an edited draft WITHOUT
-// touching the template's styling: the run's family/size/weight/
-// color/role/tracking/line/transform/bold/italic and the
-// paragraph's align/bullet carry over verbatim; only text changes.
-// Newlines in the draft become paragraph boundaries, each carrying
-// the template paragraph's alignment. Never called on structured
-// input — callers gate on isSimpleText first.
+// touching per-paragraph styling: each draft line takes the style,
+// alignment, and bullet of its template SLOT (same index), and only
+// the text changes. Styles stick to slots, never to words:
+//
+// - Same line count: wording-only edit, each line keeps its style.
+// - Appended lines: clone the LAST slot's style (adding a bullet
+//   copies the bullet style — the common list case, always right
+//   for uniformly styled bodies).
+// - Inserted lines: the new line takes the pushed-down slot's
+//   style; following lines keep their slots by index.
+// - Removed lines: their slots vanish with their style; the rest
+//   keep theirs by index.
+// - Empty lines: empty-text runs (schema-valid); trailing newlines
+//   round-trip back to trailing empty paragraphs.
+//
+// The rule is deterministic, order-preserving, and undo-exact —
+// but it IS positional: for mixed-style bodies a mid-list insert
+// reassigns which words sit in which styled slot. Uniform bodies
+// (the measured majority) cannot observe any difference. Callers
+// gate on isEditableText first; multi-run input stays refused.
 export function buildUpdatedParagraphs(template, draftText) {
-  const src = template[0];
-  const style = { ...(src.runs[0] ?? { text: "" }) };
-  const { align, bullet } = src;
-  return String(draftText ?? "").split("\n").map((line) => {
+  const lines = String(draftText ?? "").split("\n");
+  return lines.map((line, i) => {
+    const src = template[Math.min(i, template.length - 1)] ?? { runs: [{ text: "" }] };
+    const style = { ...(src.runs[0] ?? { text: "" }) };
     const para = { runs: [{ ...style, text: line }] };
-    if (align !== undefined) para.align = align;
-    if (bullet !== undefined) para.bullet = bullet;
+    if (src.align !== undefined) para.align = src.align;
+    if (src.bullet !== undefined) para.bullet = src.bullet;
     return para;
   });
+}
+
+// True when paragraphs carry visibly different styling — the
+// inspector's cue to show per-paragraph rows instead of a false
+// uniform display. Compares the appearance keys a user can change
+// plus the structural ones they can see.
+export function paragraphStylesDiffer(paragraphs) {
+  const ps = Array.isArray(paragraphs) ? paragraphs : [];
+  if (ps.length < 2) return false;
+  const sig = (p) => {
+    const r = p?.runs?.[0] ?? {};
+    return JSON.stringify({
+      align: p?.align ?? null,
+      bullet: p?.bullet ?? null,
+      color: r.color ?? null,
+      size: r.size ?? null,
+      bold: r.bold ?? null,
+      italic: r.italic ?? null,
+      family: r.family ?? null,
+      weight: r.weight ?? null,
+    });
+  };
+  return new Set(ps.map(sig)).size > 1;
 }
 
 // Draft colors for inserted text sampled from the slide when a
