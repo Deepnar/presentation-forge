@@ -16,19 +16,86 @@ import decision from "../scenes/decision-warm-humanist-plain.json";
 
 const DECKS = [mechPlain, mechChromed, sourceOfTruth, decision];
 
-function Thumb({ scene, active, onPick }) {
+function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOver, onDrop, onDragEnd, onMoveKey, menu }) {
   return (
-    <button
-      type="button"
-      onClick={onPick}
-      aria-current={active ? "true" : undefined}
-      style={{
-        display: "block", width: "100%", padding: 0, cursor: "pointer",
-        border: active ? "2px solid #e0705a" : "1px solid #444",
-        borderRadius: 6, overflow: "hidden", background: "#fff",
-      }}
-      dangerouslySetInnerHTML={{ __html: sceneToSvg(scene, { wrapText: true }) }}
-    />
+    <div style={{ position: "relative" }}>
+      <button
+        type="button"
+        draggable={onDragStart ? true : undefined}
+        onClick={onPick}
+        onContextMenu={(e) => { e.preventDefault(); onMenu?.(); }}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        onDragEnd={onDragEnd}
+        onKeyDown={onMoveKey}
+        aria-current={active ? "true" : undefined}
+        aria-label={`Slide ${scene.id}${active ? " (active)" : ""}${selected ? " (selected)" : ""}`}
+        data-thumb={scene.id}
+        data-thumb-selected={selected ? "true" : undefined}
+        style={{
+          display: "block", width: "100%", padding: 0, cursor: "pointer",
+          border: active ? "2px solid #e0705a" : "1px solid #444",
+          borderRadius: 6, overflow: "hidden", background: "#fff",
+          outline: "none",
+          boxShadow: selected && !active ? "0 0 0 2px #e0705a" : undefined,
+        }}
+        dangerouslySetInnerHTML={{ __html: sceneToSvg(scene, { wrapText: true }) }}
+      />
+      <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
+        <span style={{ fontSize: 10, opacity: 0.65, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+          {scene.id}
+          {scene.layoutState === "detached" ? " · Manual" : scene.layoutState === "customized" ? " · Custom" : ""}
+        </span>
+        {onMenu && (
+          <button
+            type="button"
+            aria-label={`Slide ${scene.id} menu`}
+            data-thumb-menu={scene.id}
+            onClick={(e) => { e.stopPropagation(); onMenu(); }}
+            style={{ fontSize: 11, padding: "0 5px", lineHeight: 1.4, background: "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", cursor: "pointer" }}
+          >
+            ⋯
+          </button>
+        )}
+      </div>
+      {menu}
+    </div>
+  );
+}
+
+// Compact contextual slide menu: duplicate, two-step delete, and
+// detach with its consequence stated. No native dialogs (untestable
+// headless); the inline confirm is the confirmation policy.
+function SlideMenu({ scene, isLast, confirming, onDuplicate, onDelete, onConfirmDelete, onCancelDelete, onDetach, onClose }) {
+  const state = scene.layoutState === "detached" ? "Manual — regeneration will not rearrange this slide"
+    : scene.layoutState === "customized" ? "Customized — your edits are kept on recompile"
+    : "Managed by the layout engine";
+  return (
+    <div
+      data-slide-menu={scene.id}
+      style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, marginTop: 2, background: "#242220", border: "1px solid #555", borderRadius: 6, padding: 8, fontSize: 12, display: "flex", flexDirection: "column", gap: 6 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <span style={{ opacity: 0.75 }}>{state}</span>
+      <button type="button" onClick={onDuplicate}>Duplicate slide</button>
+      {confirming ? (
+        <>
+          <span>{isLast ? "This is the only slide — it cannot be deleted." : "Delete this slide? Undo restores it."}</span>
+          {!isLast && <button type="button" onClick={onConfirmDelete}>Confirm delete</button>}
+          <button type="button" onClick={onCancelDelete}>Keep</button>
+        </>
+      ) : (
+        <button type="button" onClick={onDelete}>Delete…</button>
+      )}
+      {scene.layoutState !== "detached" && (
+        <>
+          <button type="button" onClick={onDetach}>Detach from AI layout</button>
+          <span style={{ opacity: 0.7, fontSize: 11 }}>The current scene becomes authoritative. Undo restores. There is no reattach.</span>
+        </>
+      )}
+      <button type="button" onClick={onClose}>Close</button>
+    </div>
   );
 }
 
@@ -502,6 +569,140 @@ export default function SceneViewer({ initial = {} }) {
     }
     fn();
   }
+  // V2-5I slide management: the engine deck stays the sole truth;
+  // React owns filmstrip selection (ids), menus, drag previews, and
+  // confirmations — never a mutable slide collection.
+  const [slideSel, setSlideSel] = useState([]);
+  const [slideAnchor, setSlideAnchor] = useState(null);
+  const [menuFor, setMenuFor] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [confirmBulk, setConfirmBulk] = useState(false);
+  // Drag state lives in refs, never in render state: re-rendering
+  // mid-gesture replaces the drag-source node and Chrome cancels
+  // the drop. The insertion marker is drawn by direct DOM edits
+  // for the same reason — previews stay out of authoritative and
+  // rendered state alike.
+  const dragRef = useRef(null);
+  const asideRef = useRef(null);
+  function clearDropMarker() {
+    const aside = asideRef.current;
+    if (!aside) return;
+    for (const m of aside.querySelectorAll("[data-drop-marker]")) m.remove();
+  }
+  function showDropMarker(thumbId, pos) {
+    const aside = asideRef.current;
+    if (!aside) return;
+    const btn = aside.querySelector(`[data-thumb="${CSS.escape(thumbId)}"]`);
+    const wrap = btn?.parentElement;
+    if (!btn || !wrap || !wrap.parentElement) return;
+    const existing = aside.querySelector("[data-drop-marker]");
+    if (existing && existing.dataset.dropMarker === pos && (pos === "before" ? existing.nextSibling === wrap : existing.previousSibling === wrap)) return;
+    clearDropMarker();
+    const marker = document.createElement("div");
+    marker.setAttribute("data-drop-marker", pos);
+    marker.style.height = "3px";
+    marker.style.background = "#e0705a";
+    marker.style.borderRadius = "2px";
+    if (pos === "before") {
+      marker.style.marginBottom = "2px";
+      wrap.parentElement.insertBefore(marker, wrap);
+    } else {
+      marker.style.marginTop = "2px";
+      wrap.parentElement.insertBefore(marker, wrap.nextSibling);
+    }
+  }
+  function followSlideId(id) {
+    const v = viewerRef.current;
+    if (!v?.api || id == null) return;
+    const i = v.api.indexOf(id);
+    if (i >= 0) v.api.goTo(i);
+  }
+  async function doInsertSlide() {
+    const a = adapterRef.current;
+    if (!a) return;
+    const r = await a.insertSlide();
+    if (!r.ok) return;
+    followSlideId(r.id);
+    setSlideSel([r.id]);
+    setSlideAnchor(r.id);
+    setMenuFor(null);
+  }
+  async function doDuplicateSlides(ids) {
+    const a = adapterRef.current;
+    if (!a || ids.length === 0) return;
+    const ordered = (docRef.current?.snapshot().scenes ?? []).map((s) => s.id).filter((id) => ids.includes(id));
+    const r = await a.duplicateSlides(ordered);
+    if (!r.ok) return;
+    setSlideSel(r.ids);
+    setSlideAnchor(r.ids[0] ?? null);
+    if (r.ids[0]) followSlideId(r.ids[0]);
+    setMenuFor(null);
+  }
+  async function doDeleteSlides(ids) {
+    const a = adapterRef.current;
+    if (!a || ids.length === 0) return;
+    const v = viewerRef.current;
+    const oldIndex = v?.api ? v.api.snapshot().slideIndex : 0;
+    const r = await a.deleteSlides(ids);
+    if (!r.ok) return;
+    const scenes = docRef.current?.snapshot().scenes ?? [];
+    const idx = Math.min(oldIndex, scenes.length - 1);
+    if (v?.api) v.api.goTo(idx);
+    const neighbor = scenes[idx]?.id ?? null;
+    setSlideSel(neighbor ? [neighbor] : []);
+    setSlideAnchor(neighbor);
+    setMenuFor(null);
+    setConfirmDelete(null);
+    setConfirmBulk(false);
+  }
+  async function doReorderSlide(id, toIndex) {
+    const a = adapterRef.current;
+    if (!a) return;
+    const activeId = viewerRef.current?.api?.snapshot().slideId ?? null;
+    const r = await a.reorderSlide(id, toIndex);
+    if (!r.ok) return;
+    if (activeId) followSlideId(activeId);
+  }
+  async function doDetachSlide(id) {
+    const a = adapterRef.current;
+    if (!a) return;
+    const r = await a.detachSlide(id);
+    if (!r.ok) return;
+    setMenuFor(null);
+  }
+  // Filmstrip picking: click navigates (committing text first),
+  // Ctrl/Cmd toggles, Shift extends a contiguous range. Outside
+  // edit mode the filmstrip stays navigation-only.
+  function thumbPick(e, id, index) {
+    setMenuFor(null);
+    if (!editOn || !api) {
+      api?.goTo(index);
+      return;
+    }
+    if (e.shiftKey) {
+      const order = (docRef.current?.snapshot().scenes ?? shownScenes).map((s) => s.id);
+      const anchor = slideAnchor && order.includes(slideAnchor) ? slideAnchor : (api.snapshot().slideId ?? order[index]);
+      const a = order.indexOf(anchor);
+      const lo = Math.min(a, index);
+      const hi = Math.max(a, index);
+      const range = order.slice(lo, hi + 1);
+      guardedNav(() => {
+        api.goTo(index);
+        setSlideSel(range);
+      });
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      setSlideSel((sel) => (sel.includes(id) ? sel.filter((s) => s !== id) : [...sel, id]));
+      setSlideAnchor(id);
+      return;
+    }
+    guardedNav(() => {
+      api.goTo(index);
+      setSlideSel([id]);
+      setSlideAnchor(id);
+    });
+  }
   // V2-5C editing: an engine document over the displayed scenes
   // plus the interaction adapter. Toggling off keeps the edited
   // scenes on screen read-only (nothing is silently discarded);
@@ -660,6 +861,15 @@ export default function SceneViewer({ initial = {} }) {
   const slideH = 7.5 * 96;
   // Filmstrip follows engine edits while editing; fixtures otherwise.
   const shownScenes = editedScenes ?? deck.scenes;
+  // Effective filmstrip selection: tracked ids filtered to the live
+  // deck, falling back to the active slide. No separate slide
+  // collection anywhere — ids resolve against shownScenes.
+  const activeSlideId = snap?.slideId ?? shownScenes[snap?.slideIndex ?? 0]?.id ?? null;
+  const effSlideSel = (() => {
+    const valid = slideSel.filter((id) => shownScenes.some((s) => s.id === id));
+    if (valid.length > 0) return valid;
+    return activeSlideId ? [activeSlideId] : [];
+  })();
   // V2-5E style target: the single selected unlocked shape on the
   // current slide, read from engine scenes while editing. Text and
   // multi selections get no style panel (explicit scope, not a
@@ -711,13 +921,114 @@ export default function SceneViewer({ initial = {} }) {
           style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
         />
       )}
-      <aside style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }} aria-label="Slides">
+      <aside
+        ref={asideRef}
+        style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }}
+        aria-label="Slides"
+        onKeyDown={(e) => {
+          // Filmstrip-local keys only: Escape settles bulk selection
+          // back to the active slide. Canvas keys live on the mount
+          // root and never fire here.
+          if (e.key === "Escape" && editOn) {
+            const activeId = api?.snapshot().slideId ?? null;
+            setSlideSel(activeId ? [activeId] : []);
+            setMenuFor(null);
+            setConfirmDelete(null);
+            setConfirmBulk(false);
+          }
+        }}
+        onDragOver={(e) => {
+          if (!editOn || !dragRef.current) return;
+          e.preventDefault();
+        }}
+        onDrop={(e) => {
+          if (!editOn || !dragRef.current) return;
+          e.preventDefault();
+          const order = (docRef.current?.snapshot().scenes ?? []).map((s) => s.id).filter((id) => id !== dragRef.current);
+          doReorderSlide(dragRef.current, order.length);
+          dragRef.current = null;
+          clearDropMarker();
+        }}
+      >
         <div style={{ marginBottom: 8, fontSize: 12, opacity: 0.7 }}>
           {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
         </div>
+        {editOn && (
+          <button
+            type="button"
+            onClick={doInsertSlide}
+            title="Add a blank slide after the active one"
+            style={{ display: "block", width: "100%", marginBottom: 8, padding: "4px 0", cursor: "pointer", background: "transparent", border: "1px dashed #666", borderRadius: 6, color: "#eee" }}
+          >
+            + Slide
+          </button>
+        )}
+        {editOn && effSlideSel.length > 1 && (
+          <div data-bulk-bar style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8, fontSize: 11, flexWrap: "wrap" }}>
+            <span style={{ opacity: 0.8 }}>{effSlideSel.length} selected</span>
+            <button type="button" title="Duplicate every selected slide in order" onClick={() => doDuplicateSlides(effSlideSel)}>Duplicate</button>
+            {confirmBulk ? (
+              <>
+                <span>Delete {effSlideSel.length} slides?</span>
+                <button type="button" onClick={() => doDeleteSlides(effSlideSel)}>Confirm</button>
+                <button type="button" onClick={() => setConfirmBulk(false)}>Keep</button>
+              </>
+            ) : (
+              <button type="button" onClick={() => setConfirmBulk(true)}>Delete…</button>
+            )}
+            <button type="button" onClick={() => { const a = api?.snapshot().slideId ?? null; setSlideSel(a ? [a] : []); setConfirmBulk(false); }}>Clear</button>
+          </div>
+        )}
         <div style={{ display: "grid", gap: 8 }}>
           {shownScenes.map((s, i) => (
-            <Thumb key={s.id} scene={s} active={i === snap?.slideIndex} onPick={() => api && guardedNav(() => api.goTo(i))} />
+            <Thumb
+              key={s.id}
+              scene={s}
+              active={i === snap?.slideIndex}
+              selected={editOn && effSlideSel.includes(s.id)}
+              onPick={(e) => thumbPick(e, s.id, i)}
+              onMenu={editOn ? () => { setMenuFor((m) => (m === s.id ? null : s.id)); setConfirmDelete(null); } : undefined}
+              onDragStart={editOn ? (e) => { dragRef.current = s.id; setMenuFor(null); try { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", s.id); } catch { /* drag still tracks locally */ } } : undefined}
+              onDragOver={editOn ? (e) => {
+                if (!dragRef.current || dragRef.current === s.id) return;
+                e.preventDefault();
+                const r = e.currentTarget.getBoundingClientRect();
+                showDropMarker(s.id, (e.clientY - r.top) < r.height / 2 ? "before" : "after");
+              } : undefined}
+              onDrop={editOn ? (e) => {
+                e.preventDefault();
+                if (!dragRef.current) return;
+                const marker = asideRef.current?.querySelector("[data-drop-marker]");
+                const pos = marker?.dataset.dropMarker === "after" ? "after" : "before";
+                const order = (docRef.current?.snapshot().scenes ?? []).map((x) => x.id).filter((id) => id !== dragRef.current);
+                const at = order.indexOf(s.id) + (pos === "after" ? 1 : 0);
+                doReorderSlide(dragRef.current, Math.max(0, at));
+                dragRef.current = null;
+                clearDropMarker();
+              } : undefined}
+              onDragEnd={editOn ? () => { dragRef.current = null; clearDropMarker(); } : undefined}
+              onMoveKey={editOn ? (e) => {
+                if (!e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+                e.preventDefault();
+                const order = (docRef.current?.snapshot().scenes ?? []).map((x) => x.id);
+                const from = order.indexOf(s.id);
+                if (from < 0) return;
+                doReorderSlide(s.id, e.key === "ArrowUp" ? Math.max(0, from - 1) : Math.min(order.length - 1, from + 1));
+              } : undefined}
+              menu={menuFor === s.id ? (
+                <SlideMenu
+                  scene={s}
+                  isLast={shownScenes.length <= 1}
+                  confirming={confirmDelete === s.id}
+                  onDuplicate={() => doDuplicateSlides([s.id])}
+                  onDelete={() => setConfirmDelete(s.id)}
+                  onConfirmDelete={() => doDeleteSlides([s.id])}
+                  onCancelDelete={() => setConfirmDelete(null)}
+                  onDetach={() => doDetachSlide(s.id)}
+                  onClose={() => { setMenuFor(null); setConfirmDelete(null); }}
+                />
+              ) : null}
+            />
           ))}
         </div>
       </aside>
@@ -766,6 +1077,10 @@ export default function SceneViewer({ initial = {} }) {
             {liveSnap.status === "loading" ? " · compiling…" : ""}
             {editOn ? ` · editing rev ${editStatus.rev}` : ""}
             {editedScenes && !editOn ? " · unsaved edits (read-only)" : ""}
+            {(() => {
+              const st = (editedScenes ?? deck.scenes)[snap?.slideIndex ?? -1]?.layoutState;
+              return st === "detached" ? " · Manual slide" : st === "customized" ? " · Custom slide" : "";
+            })()}
           </span>
         </div>
         {editStatus.error && (
