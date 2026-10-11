@@ -18,7 +18,7 @@ export type ElementUpdateText = { type: "element.updateText"; id: string; paragr
 // forward command.
 export type ElementUpdateTextInverse = { type: "element.updateText"; id: string; paragraphs: Paragraph[] | undefined };
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
-export type ElementAdd = { type: "element.add"; element: SceneElementInput };
+export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
 export type DeckCommand = ElementMove | ElementResize | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
@@ -80,7 +80,10 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
     }
     case "element.add": {
       const el: SceneElement = { id: cmd.element.id ?? humanId(), provenance: "human", z: scene.elements.length, ...cmd.element };
-      scene.elements.push(el);
+      // Explicit index restores exact position on undo-delete; the
+      // default appends. Out-of-range indices clamp to the end.
+      const at = cmd.index === undefined ? scene.elements.length : Math.max(0, Math.min(cmd.index, scene.elements.length));
+      scene.elements.splice(at, 0, el);
       if (scene.layoutState === "managed") scene.layoutState = "customized";
       return { type: "element.delete", id: el.id };
     }
@@ -90,7 +93,7 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       if (scene.elements[i].locked) throw new Error(`element ${cmd.id} is locked`);
       const [removed] = scene.elements.splice(i, 1);
       if (scene.layoutState === "managed") scene.layoutState = "customized";
-      return { type: "element.add", element: removed };
+      return { type: "element.add", element: removed, index: i };
     }
   }
 }
