@@ -6,8 +6,7 @@
 // compiler geometry and pptxgenjs agree without conversion. Never store
 // screen pixels here.
 
-import { readFile } from "node:fs/promises";
-import { randomBytes } from "node:crypto";
+import schemaJson from "./scene.schema.json" with { type: "json" };
 import { Ajv, type ValidateFunction } from "ajv";
 import type { SlideScene, SceneElement } from "./scene.generated.ts";
 
@@ -19,10 +18,8 @@ let _validate: ValidateFunction | null = null;
 
 async function validator(): Promise<ValidateFunction> {
   if (!_validate) {
-    const url = new URL("./scene.schema.json", import.meta.url);
-    const schema = JSON.parse(await readFile(url, "utf8"));
     const ajv = new Ajv({ allErrors: true, strict: false });
-    _validate = ajv.compile(schema);
+    _validate = ajv.compile(schemaJson);
   }
   return _validate;
 }
@@ -45,7 +42,13 @@ export function compilerId(slideId: string, blockId: string, role: string): stri
 }
 
 export function humanId(): string {
-  return `h-${randomBytes(6).toString("hex")}`;
+  // WebCrypto both sides of the browser/server boundary: Node 19+
+  // and every browser ship getRandomValues, so human ids mint
+  // identically without node:crypto (which the web bundle cannot
+  // resolve). Same `h-` + 12 hex shape as before.
+  const bytes = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(bytes);
+  return `h-${[...bytes].map((b) => b.toString(16).padStart(2, "0")).join("")}`;
 }
 
 // Geometry invariant shared by the compiler and the editor: every element

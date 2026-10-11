@@ -73,6 +73,11 @@ export default function SceneViewer({ initial = {} }) {
   useLayoutEffect(() => loaderRef.current.subscribe((s) => {
     setLiveSnap(s);
     if (s.status === "ready" && s.deck) {
+      // A new live deck discards any unsaved edits: without
+      // persistence there is nowhere to keep them, so the reset
+      // is explicit navigation, never silent loss mid-session.
+      exitEdit();
+      setEditedScenes(null);
       setLiveDeck({
         name: `live:${s.deck.deck.name}:${s.deck.deck.theme}:${s.deck.deck.variant}`,
         theme: s.deck.deck.theme,
@@ -109,9 +114,53 @@ export default function SceneViewer({ initial = {} }) {
     };
   }, [liveOpen]);
   function pickFixture(name) {
+    exitEdit();
     loaderRef.current.abort();
     setLiveDeck(null);
     setDeckName(name);
+  }
+  // V2-5C editing: an engine document over the displayed scenes
+  // plus the interaction adapter. Toggling off keeps the edited
+  // scenes on screen read-only (nothing is silently discarded);
+  // only explicit deck navigation resets to fixtures — there is
+  // no persistence yet, and the status line says so.
+  const docRef = useRef(null);
+  const adapterRef = useRef(null);
+  const [editOn, setEditOn] = useState(false);
+  const [editedScenes, setEditedScenes] = useState(null);
+  const [editStatus, setEditStatus] = useState({ rev: 0, error: null, preparing: false });
+  function exitEdit() {
+    try {
+      adapterRef.current?.detach();
+    } catch { /* teardown only */ }
+    adapterRef.current = null;
+    docRef.current = null;
+    setEditOn(false);
+    setEditStatus({ rev: 0, error: null, preparing: false });
+  }
+  async function enterEdit() {
+    if (editOn || !viewerRef.current) return;
+    setEditStatus({ rev: 0, error: null, preparing: true });
+    try {
+      const { createDocument } = await import("../../../../packages/model/engine.ts");
+      const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
+      const source = editedScenes ?? deck.scenes;
+      const doc = await createDocument(structuredClone(source));
+      const adapter = attachEditor(viewerRef.current, doc, {
+        root: mountRef.current,
+        onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
+        onSync: (scenes) => {
+          setEditedScenes(scenes);
+          setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
+        },
+      });
+      docRef.current = doc;
+      adapterRef.current = adapter;
+      setEditStatus({ rev: 0, error: null, preparing: false });
+      setEditOn(true);
+    } catch (err) {
+      setEditStatus({ rev: 0, error: String(err?.message ?? err), preparing: false });
+    }
   }
   // The displayed deck is the live compile when one is ready,
   // else the chosen fixture. Identity change remounts everything
@@ -202,6 +251,8 @@ export default function SceneViewer({ initial = {} }) {
   const inspected = useInspector(viewerRef.current, snap);
   const slideW = 13.333 * 96;
   const slideH = 7.5 * 96;
+  // Filmstrip follows engine edits while editing; fixtures otherwise.
+  const shownScenes = editedScenes ?? deck.scenes;
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
@@ -219,12 +270,19 @@ export default function SceneViewer({ initial = {} }) {
         data-missing-fonts={fonts.missing.join(",")}
         style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
       />
+      {editOn && (
+        <div
+          data-edit-state={JSON.stringify({ rev: editStatus.rev, error: editStatus.error, preparing: editStatus.preparing })}
+          data-editing="true"
+          style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
+        />
+      )}
       <aside style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }} aria-label="Slides">
         <div style={{ marginBottom: 8, fontSize: 12, opacity: 0.7 }}>
           {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
         </div>
         <div style={{ display: "grid", gap: 8 }}>
-          {deck.scenes.map((s, i) => (
+          {shownScenes.map((s, i) => (
             <Thumb key={s.id} scene={s} active={i === snap?.slideIndex} onPick={() => api?.goTo(i)} />
           ))}
         </div>
@@ -242,11 +300,31 @@ export default function SceneViewer({ initial = {} }) {
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
           <button type="button" onClick={() => api?.resetZoom()}>Fit</button>
           <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen}>Live</button>
+          <button
+            type="button"
+            title={editOn ? "Leave edit mode (unsaved edits stay visible until you switch decks)" : "Edit this deck: drag, nudge, delete with undo"}
+            onClick={() => (editOn ? exitEdit() : enterEdit())}
+          >
+            {editStatus.preparing ? "Preparing…" : editOn ? "Done" : "Edit"}
+          </button>
+          {editOn && (
+            <>
+              <button type="button" aria-label="Undo" onClick={() => adapterRef.current?.undo()}>↩ Undo</button>
+              <button type="button" aria-label="Redo" onClick={() => adapterRef.current?.redo()}>↪ Redo</button>
+            </>
+          )}
           <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>
             {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
             {liveSnap.status === "loading" ? " · compiling…" : ""}
+            {editOn ? ` · editing rev ${editStatus.rev}` : ""}
+            {editedScenes && !editOn ? " · unsaved edits (read-only)" : ""}
           </span>
         </div>
+        {editOn && editStatus.error && (
+          <div role="alert" data-edit-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0a090", background: "#242220" }}>
+            Edit failed: {editStatus.error}
+          </div>
+        )}
         {liveOpen && (
           <div
             data-live-panel

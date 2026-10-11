@@ -181,6 +181,49 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
         });
       }
     },
+    // Raw trusted pointer primitives. drag() below composes them;
+    // drivers needing a mid-gesture pause (preview screenshots)
+    // sequence them directly instead.
+    async mouseDown(x, y) {
+      await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+        type: "mousePressed", x: Math.round(x), y: Math.round(y),
+        button: "left", clickCount: 1,
+      });
+    },
+    async mouseMove(x, y) {
+      await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+        type: "mouseMoved", x: Math.round(x), y: Math.round(y),
+        button: "left",
+      });
+    },
+    async mouseUp(x, y, { shift = false } = {}) {
+      const modifiers = shift ? 8 : 0;
+      await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+        type: "mouseReleased", x: Math.round(x), y: Math.round(y),
+        button: "left", clickCount: 1, modifiers,
+      });
+    },
+    // Trusted drag: press, move in steps, release. Exercises the
+    // real pointer path including hit testing, capture, threshold,
+    // and coordinate projection — never bypassed.
+    async drag(x1, y1, x2, y2, { steps = 8 } = {}) {
+      await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+        type: "mousePressed", x: Math.round(x1), y: Math.round(y1),
+        button: "left", clickCount: 1,
+      });
+      for (let i = 1; i <= steps; i++) {
+        await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: Math.round(x1 + ((x2 - x1) * i) / steps),
+          y: Math.round(y1 + ((y2 - y1) * i) / steps),
+          button: "left",
+        });
+      }
+      await send(g.ws, seq++, "Input.dispatchMouseEvent", {
+        type: "mouseReleased", x: Math.round(x2), y: Math.round(y2),
+        button: "left", clickCount: 1,
+      });
+    },
     async screenshot(pngPath) {
       const shot = await send(g.ws, seq++, "Page.captureScreenshot", { format: "png" });
       await writeFile(pngPath, Buffer.from(shot.data, "base64"));
