@@ -7,6 +7,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
+import { ensureDeckFonts } from "../fonts.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -46,11 +47,30 @@ export default function SceneViewer({ initial = {} }) {
   const viewerRef = useRef(null);
   const [snap, setSnap] = useState(null);
   const [mountError, setMountError] = useState(null);
-
-  // Layout effect, not passive: the mounted SVG must exist
-  // before paint (and before headless --dump-dom serializes),
-  // and resize observation must attach before first layout.
+  // Font readiness gates the entire mount: the viewer (stage +
+  // filmstrip) renders only after scene faces resolve, so neither
+  // users nor screenshots ever see system-substitution flashes,
+  // and evaluation never races them. Scenes are never recompiled
+  // or mutated for fonts. A failed load still mounts and reports
+  // via data-missing-fonts instead of hanging.
+  const [fonts, setFonts] = useState({ settled: false, ready: false, missing: [] });
   useLayoutEffect(() => {
+    let cancelled = false;
+    setFonts({ settled: false, ready: false, missing: [] });
+    ensureDeckFonts(deck.scenes).then((r) => {
+      if (!cancelled) setFonts({ settled: true, ready: r.ready, missing: r.missing });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [deck]);
+
+  // The mount runs only after scene faces settle (see above):
+  // layout effect, not passive, so the mounted SVG exists before
+  // paint (and before headless --dump-dom serializes), with final
+  // faces — never a substitution flash.
+  useLayoutEffect(() => {
+    if (!fonts.settled) return undefined;
     const root = mountRef.current;
     if (!root) return undefined;
     let viewer;
@@ -100,7 +120,7 @@ export default function SceneViewer({ initial = {} }) {
       viewer.destroy();
       viewerRef.current = null;
     };
-  }, [deck]);
+  }, [deck, fonts.settled]);
 
   if (DECKS.length === 0) {
     return <div style={{ padding: 24 }}>No scene fixtures available.</div>;
@@ -131,6 +151,8 @@ export default function SceneViewer({ initial = {} }) {
           zoom: snap?.zoom ?? 1,
           selectedId: snap?.selectedId ?? null,
         })}
+        data-fonts-ready={fonts.ready ? "true" : "false"}
+        data-missing-fonts={fonts.missing.join(",")}
         style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
       />
       <aside style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }} aria-label="Slides">
