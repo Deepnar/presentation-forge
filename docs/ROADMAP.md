@@ -7329,27 +7329,52 @@ scale); charts structurally exact without axes (V2-4C).
   legacy audit `docs/V2-LAYOUT-CATALOG-MAP.md` (74 types counted
   from the schema: 17 direct, 27 alias, 5 partial, 25 omitted
   with mechanics recorded).
-- [~] V2-6A durable project storage and revision-safe save/load —
-  phase one of V2-6 (this branch, pending independent review):
-  versioned project documents (`packages/projects/`) over the
-  existing SQLite database (`ProjectStore` seam), explicit
-  save/load/list/rename/delete with optimistic concurrency,
-  engine-revision vs durable-revision binding, confirmed-save UI
-  with refresh recovery and a coalesced autosave lane, hosted
-  session gating, and native export from stored documents
-  (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`,
-  `docs/v2-6a-evidence/`; headless 17/17, Chrome 5/5, fail-first
-  proven on `fa557c4`). Durable undo history explicitly deferred;
-  next slice is the command-audit log, then hosted-DB replacement
-  of the adapter.
-- [~] V2-6A-1 ownership isolation and revision-safe renaming —
-  correction to V2-6A (this branch, pending independent review):
-  exact-match ownership through one canonical predicate (ownerless
-  rows are never public, no silent claiming), and renames gated on
+- [x] V2-6A durable project storage and revision-safe save/load —
+  accepted at `af812ad` (independent review clean; V2-6A-1
+  correction included): versioned project documents
+  (`packages/projects/`) over the existing SQLite database
+  (`ProjectStore` seam), explicit save/load/list/rename/delete with
+  optimistic concurrency, engine-revision vs durable-revision
+  binding, confirmed-save UI with refresh recovery and a coalesced
+  autosave lane, hosted session gating, and native export from
+  stored documents (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`,
+  `docs/V2-6A-EVAL.md`, `docs/v2-6a-evidence/`; headless 17/17,
+  Chrome 5/5, fail-first proven on `fa557c4`).
+- [x] V2-6A-1 ownership isolation and revision-safe renaming —
+  accepted at `af812ad` (independent review clean): exact-match
+  ownership through one canonical predicate (ownerless rows are
+  never public, no silent claiming), and renames gated on
   `baseRevision` with transactional stale/noop outcomes carried
   through HTTP, client, and dialog (`docs/V2-6A1-EVAL.md`;
   `test/v2-projects-6a1.test.js` 18/18, fail-first proven on
-  `a5fa83b`). V2-6A stays pending acceptance; V2-6B not started.
+  `a5fa83b`).
+- [~] V2-6B durable project history, audit trail, and recovery —
+  phase two of V2-6 (this branch, pending independent review):
+  bounded recoverable snapshots (newest 20 per project, older rows
+  audit-only) plus command-provenance audit records committed
+  atomically with every save, revision-safe restore-as-new (stale
+  refuses, pruned answers 410), baseline migration for pre-history
+  projects, owner-scoped history endpoints, and a restrained
+  Version History dialog with preview and guarded restore
+  (`docs/V2-6B-EVAL.md`, `docs/v2-6b-evidence/`;
+  `test/v2-projects-6b.test.js` 29/29,
+  `test/v2-edit-chrome-6b.test.js` 4/4, fail-first proven on
+  `af812ad`). Durable undo stays deferred by design; the attach
+  fix (viewer seats scenes silently on editor attach) is included.
+
+  > **Learned.** The stage going stale after restore exposed that
+  > `attachEditor` only ever pushed scenes to the viewer on commits:
+  > opening a project whose scenes differ from the fixture left the
+  > viewer behind while the engine and filmstrip moved on — invisible
+  > whenever fixture equals saved state, which is why two slices
+  > never saw it. Seating viewer scenes at attach (without firing a
+  > commit sync, so the one-sync-per-commit contract stands) is the
+  > kind of seam that only a real content-changing open can verify;
+  > the 6b Chrome restore assertion is now its guard. Also:
+  > coalesced autosaves stay attributable by sending the envelope
+  > ids committed since the last confirmed save, and audit rows must
+  > structurally exclude op payloads (asserted per row) rather than
+  > merely promise not to execute them.
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6
@@ -7418,12 +7443,13 @@ deletion; generated exports/previews/temp files get TTLs with an
 Vercel Cron over an idempotent metadata-driven cleanup endpoint replaces
 the in-process sweep. No SMTP dependency for retention.
 
-Phase one (V2-6A, this branch, pending review) binds the durable
+Phase one (V2-6A, accepted at `af812ad`) binds the durable
 project locally first: versioned scene documents over the existing
 SQLite database behind the `ProjectStore` seam, with revision-safe
-save/load already proven — see the V2-6A entry under V2-5 above and
-`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`. The cloud replacement swaps
-the adapter, never the model.
+save/load proven — see the V2-6A entry under V2-5 above and
+`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`. Phase two (V2-6B, this
+branch, pending review) adds bounded history tables behind the same
+seam. The cloud replacement swaps the adapter, never the model.
 
 Done when: no hosted project depends on local disk, and an expired
 export regenerates from intact project state.

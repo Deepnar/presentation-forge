@@ -1,40 +1,53 @@
-# Handoff — V2-6A-1 ownership and rename corrections implemented, pending review
+# Handoff — V2-6B durable history implemented, pending review
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-4 [x];
-V2-5 [~]; V2-5A through V2-5K [x] at `fa557c4`; V2-6A [~]
-with `docs/V2-6A-EVAL.md`; V2-6A-1 [~] pending independent
-review with `docs/V2-6A1-EVAL.md`; V2-6 parent stays `[ ]`).
+V2-5 [~]; V2-5A through V2-5K [x] at `fa557c4`; V2-6A [x] and
+V2-6A-1 [x] accepted at `af812ad`; V2-6B [~] pending independent
+review with `docs/V2-6B-EVAL.md`; V2-6 parent stays `[ ]`).
 
 ## Current state
 
-On `v2`, over `a5fa83b`. This session fixed the two V2-6A review
-findings without touching the project model, engine, or autosave
-architecture: C1 exact-match ownership (`canAccessProject` shared by
-get/list/save/rename/delete/export — ownerless rows never public, no
-silent claiming) and C2 revision-gated renames (`baseRevision`
-required, transactional stale/noop, carried through PATCH, client,
-and dialog with drafts preserved). Driver:
-`test/v2-projects-6a1.test.js` (18/18, fail-first 3/3 on isolated
-`a5fa83b`).
+On `v2`, over `af812ad`. This session built durable, bounded
+project revision history with safe restore:
 
-**Result for the reviewer.** Cross-owner reads/writes refuse with
-404s that leak nothing; same-base renames serialize to one winner +
-one stale; the rename dialog keeps drafts and never marks scenes
-saved. No accounts, hosted-DB, or redesign work started.
+- Storage (`src/projects/history.js`, extended `store.js`):
+  `v2_project_revisions` holding full validated snapshots plus
+  audit-only JSON (envelope ids/summaries, never op payloads);
+  newest 20 payloads recoverable, older rows audit-only, audit
+  rows beyond 100 dropped. Every create/save/rename/restore
+  commits project row + history row + pruning in one
+  lane-serialized transaction. Pre-history projects capture a
+  baseline on first touch; unknown versions still refuse.
+- HTTP: `GET :id/revisions`, `GET :id/revisions/:rev`,
+  `POST :id/restore` — same owner policy, shapes, and caps as
+  CRUD (409 stale, 410 pruned, 404/401/403 preserved).
+- Client: saves attach envelope ids since the last confirmed save;
+  Version History dialog lists/previews (headlines)/restores with
+  Save-Discard-Cancel for unsaved edits; restore states it creates
+  a new revision and clears session undo.
+- Found and fixed live: `attachEditor` never seated the viewer on
+  attach, so restores left the stage stale (silent seat, no
+  commit sync — v2-5c contract intact, `docs/TRAPS.md` entry).
+
+**Result for the reviewer.** Restoring rev 5 at rev 9 creates rev
+10 with rev-5 scenes; history survives restarts; stale restores
+refuse; audit cannot execute. Drivers: `test/v2-projects-6b.test.js`
+(29/29, fail-first `ERR_MODULE_NOT_FOUND` on isolated `af812ad`)
+and `test/v2-edit-chrome-6b.test.js` (4/4 incl. stale conflict)
+with evidence in `docs/v2-6b-evidence/`.
 
 ## Verification (at push)
 
-- New `test/v2-projects-6a1.test.js` 18/18 (store matrices, rename
-  races, hosted/local HTTP with seeded sessions).
-- Existing V2-6A headless 17/17 (updated to the rename contract);
-  typecheck clean; production build green.
-- Full validation (bulk + bounded serial Chrome incl. the 6a browser
-  suite against the new client) — exact totals in
-  `docs/V2-6A1-EVAL.md` §10 at close; BYOK locale out of scope.
+- Focused 6b headless 29/29 + Chrome 4/4; regressions 6a 17/17,
+  6a1 18/18, 6a Chrome 5/5, 5c headless+Chrome 30/30.
+- Typecheck clean; production build green (vite build in suite).
+- Full validation (bulk + bounded serial Chrome + 50-cell
+  benchmark) — exact totals in `docs/V2-6B-EVAL.md` §15 at close;
+  BYOK locale failure out of scope.
 
 ## Continue from here
 
-1. Independent review of V2-6A-1, then V2-6A acceptance.
-2. Do NOT begin durable history, hosted storage, or further frontend
-   work without authorization.
+1. Independent review of V2-6B, then V2-6B acceptance.
+2. Do NOT begin hosted storage, frontend consolidation, or AI
+   integration without authorization.

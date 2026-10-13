@@ -1752,6 +1752,29 @@ the viewer binds Save/list/rename/delete, refresh recovery, and a
 coalesced autosave lane behind confirmed-save states
 (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`).
 
+## V2 durable history (V2-6B)
+
+History is three contracts, not one array: **recoverable
+revisions** (full validated documents per durable revision in
+`v2_project_revisions`), **audit records** (the `audit` JSON beside
+each row — kind, save origin, actor hint, envelope ids, summaries;
+structurally no op payloads, so audit data can never execute), and
+**interactive undo/redo** (still session-scoped engine snapshots;
+reload and restore start empty). Every create/save/rename/restore
+commits its project row, history row, and pruning in one
+lane-serialized transaction; retention keeps the newest 20 payloads
+recoverable, compacts older rows to audit-only, and drops
+audit-only rows beyond 100. Saves carry validated client
+provenance (envelope ids since the last confirmed save);
+restore (`POST :id/restore`) advances the counter with historical
+scenes under the current identity and refuses stale bases with 409.
+Pre-history projects capture a baseline on first history touch;
+history routes reuse the session owner and `canAccessProject`; the
+viewer adds a Version History dialog (list, headline preview,
+guarded restore) and `attachEditor` seats viewer scenes silently on
+attach so reopened and restored documents paint immediately
+(`docs/V2-6B-EVAL.md`).
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a

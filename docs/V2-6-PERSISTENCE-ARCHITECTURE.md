@@ -157,3 +157,44 @@ No user accounts (reuses the existing session gate), no collaboration
 or real-time editing, no sharing links, no file import, no dashboard
 redesign, no new layout templates, no renderer changes, no agent
 runtime. The persistence layer stores what the editor owns.
+
+## 10. Durable revision history (V2-6B)
+
+Three separate contracts, one transaction:
+
+- **Recoverable revision** — the full validated document per
+  durable revision (`v2_project_revisions.payload`). Recovery
+  reopens these bytes; nothing is ever regenerated.
+- **Audit record** — the `audit` JSON beside each row (kind,
+  save origin, actor hint, envelope ids, engine revision, history
+  length, summary). Ids and summaries only: nothing executable is
+  stored, so audit entries cannot be replayed as commands.
+- **Interactive undo/redo** — still session-scoped engine
+  snapshots. Reload and restore start empty, stated in the UI.
+
+Every create/save/rename/restore writes its project row, history
+row, and pruning in one lane-serialized `BEGIN IMMEDIATE`
+transaction. Retention: newest 20 payloads recoverable, older rows
+audit-only, audit-only rows beyond 100 dropped; the current
+document is never pruned and a restore exempts its source.
+Measured snapshots (~10 KB per 6 slides) need no compression.
+
+Saves carry optional validated provenance (envelope ids since the
+last confirmed save, so coalesced autosaves stay attributable);
+unknown-origin changes store empty lists, never invented history.
+Restore (`POST :id/restore`) advances the counter with the
+historical scenes under the current identity — history is never
+rewritten, stale bases refuse with 409, pruned targets answer 410.
+
+Pre-history projects capture a `baseline` row on first history
+touch (`INSERT OR IGNORE`); unknown future versions still refuse.
+History endpoints reuse `canAccessProject` and session identity;
+delete cascades to revision rows. The browser dialog lists,
+previews (headlines), and restores with Save/Discard/Cancel for
+unsaved edits. `attachEditor` seats viewer scenes silently on
+attach so reopened and restored documents paint immediately
+without firing a commit sync.
+
+Limits carried forward: history is not persistent undo; SQLite is
+local disk; retention is bounded (newest 20 restore); no visual
+diff, no claim workflow, no agent execution over audit records.

@@ -736,6 +736,17 @@ was correct and unit-tested throughout — only its caller was wrong, so no test
 of the function could see it. Advance from the index actually shown, and test
 the *walk* rather than the step function.
 
+**A viewer bound at creation stays on creation content until something
+pushes it.** `attachEditor` synced the viewer back to the engine on
+every commit but never at attach, so opening or restoring a project
+left the stage on stale scenes while the filmstrip (React state) and
+the engine moved on. Invisible whenever the opened content equals the
+fixture — which is every save/reopen test that saves unmodified
+content first — so two slices never saw it; only a restore that
+changes content exposes it. Seat the bound view silently at attach
+(no commit notification: attach is not a commit and the
+one-sync-per-commit contract is pinned by a test that counts).
+
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)
