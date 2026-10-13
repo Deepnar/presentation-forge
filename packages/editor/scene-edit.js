@@ -1735,6 +1735,13 @@ export function attachEditor(viewer, doc, opts = {}) {
   reconcileHandles();
   api.setEditable(true);
   api.onEditAction(onEditAction);
+  // The viewer keeps whatever scenes it was created with; every
+  // commit path syncs it back to the document, so the attach must
+  // seat it too — otherwise opening (or restoring) a project whose
+  // scenes differ from the fixture leaves the stage stale while the
+  // filmstrip and engine already moved on. This is a silent seat,
+  // not a commit: onSync stays per-commit, so attach fires none.
+  api.replaceScenes(doc.snapshot().scenes);
 
   return {
     nudgeSelected: (key, shift = false) => nudgeSelected(key, shift),
