@@ -3,14 +3,18 @@
 // Interface (ProjectStore) so a future hosted database replaces this
 // module without touching the project model, the engine, or the routes:
 //
-//   create({ owner, title, scenes, theme, origin }) -> { doc }
+//   create({ owner, title, scenes, theme, origin, provenance? }) -> { doc }
 //   get({ owner, id, admin }) -> { doc | null }
 //   list({ owner, admin }) -> [summary]
-//   save({ owner, id, admin, baseRevision, title?, scenes, theme?, origin? })
+//   save({ owner, id, admin, baseRevision, title?, scenes, theme?, origin?, provenance? })
 //     -> { status: "saved"|"noop", doc } | { status: "stale", expected, actual }
-//   rename({ owner, id, admin, baseRevision, title })
+//   rename({ owner, id, admin, baseRevision, title, provenance? })
 //     -> { status: "saved"|"noop", doc } | { status: "stale", expected, actual }
 //   remove({ owner, id, admin }) -> { removed: boolean }
+//   listRevisions({ owner, id, admin }) -> { currentRevision, retention, revisions }
+//   getRevision({ owner, id, admin, revision }) -> { found, pruned, meta, doc }
+//   restoreRevision({ owner, id, admin, targetRevision, baseRevision, provenance? })
+//     -> { status: "restored", doc, restoredFrom } | { status: "stale", expected, actual }
 //
 // Durability: node:sqlite file at CONFIG/forge.db (FORGE_DB_PATH
 // override), WAL journal, one row per project holding the full versioned
@@ -33,6 +37,14 @@ import {
   validProjectId,
   PROJECT_SCHEMA_VERSION,
 } from "../../packages/projects/document.js";
+import {
+  ensureHistorySchema,
+  insertRevisionRow,
+  pruneHistory,
+  ensureBaselineRow,
+  revisionMeta,
+  validateProvenance,
+} from "./history.js";
 
 function ensureSchema() {
   const db = getDb();
@@ -48,6 +60,7 @@ function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_v2_projects_owner ON v2_projects(owner);
   `);
+  ensureHistorySchema(db);
   return db;
 }
 
@@ -86,8 +99,15 @@ export function canAccessProject(row, { owner, admin }) {
   return (row.owner ?? null) === (owner ?? null);
 }
 
-async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null }) {
+async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null }) {
   const db = ensureSchema();
+  const prov = validateProvenance(provenance ?? undefined);
+  if (!prov.ok) {
+    const err = new Error(prov.errors[0]);
+    err.code = "invalid-document";
+    err.details = prov.errors;
+    throw err;
+  }
   const doc = buildProjectDocument({ title, scenes, theme, origin });
   const verdict = await validateProjectDocument(doc);
   if (!verdict.ok) {
@@ -97,11 +117,34 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
     throw err;
   }
   const now = doc.updatedAt;
+  // The project row and its first history entry commit together:
+  // a created project always has a recoverable rev-0 baseline.
+  db.exec("BEGIN IMMEDIATE");
   try {
-    db.prepare(
-      "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
-    ).run(doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, now);
+    try {
+      db.prepare(
+        "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
+      ).run(doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, now);
+    } catch (err) {
+      db.exec("ROLLBACK");
+      const e = new Error(`storage unavailable: ${err.message}`);
+      e.code = "storage-unavailable";
+      throw e;
+    }
+    try {
+      insertRevisionRow(db, { projectId: doc.id, doc, kind: "create", provenance: prov.provenance });
+    } catch (err) {
+      db.exec("ROLLBACK");
+      const e = new Error(`storage unavailable: ${err.message}`);
+      e.code = "storage-unavailable";
+      throw e;
+    }
+    db.exec("COMMIT");
   } catch (err) {
+    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable")) throw err;
+    try {
+      db.exec("ROLLBACK");
+    } catch { /* already rolled back */ }
     const e = new Error(`storage unavailable: ${err.message}`);
     e.code = "storage-unavailable";
     throw e;
@@ -158,7 +201,7 @@ export async function listProjects({ owner = null, admin = false }) {
 // Optimistic-concurrency save. Validation precedes the transaction;
 // the revision check and write share one IMMEDIATE transaction so
 // concurrent savers serialize with exactly one winner.
-async function saveProjectInner({ owner = null, id, admin = false, baseRevision, title, scenes, theme, origin }) {
+async function saveProjectInner({ owner = null, id, admin = false, baseRevision, title, scenes, theme, origin, provenance = null }) {
   if (!validProjectId(id)) {
     const err = new Error(`invalid project id ${id}`);
     err.code = "invalid-id";
@@ -169,6 +212,13 @@ async function saveProjectInner({ owner = null, id, admin = false, baseRevision,
     const err = new Error(payloadVerdict.errors[0]);
     err.code = "invalid-document";
     err.details = payloadVerdict.errors;
+    throw err;
+  }
+  const prov = validateProvenance(provenance ?? undefined);
+  if (!prov.ok) {
+    const err = new Error(prov.errors[0]);
+    err.code = "invalid-document";
+    err.details = prov.errors;
     throw err;
   }
   const db = ensureSchema();
@@ -243,6 +293,10 @@ async function saveProjectInner({ owner = null, id, admin = false, baseRevision,
       const fresh = db.prepare("SELECT revision FROM v2_projects WHERE id=?").get(id);
       return { status: "stale", expected: fresh?.revision ?? stored.revision + 1, actual: baseRevision };
     }
+    // The new document and its history entry commit atomically with
+    // the same transaction; pruning compacts inside it as well.
+    insertRevisionRow(db, { projectId: id, doc: next, kind: "save", provenance: prov.provenance });
+    pruneHistory(db, id);
     db.exec("COMMIT");
     return { status: "saved", doc: structuredClone(next) };
   } catch (err) {
@@ -256,7 +310,7 @@ async function saveProjectInner({ owner = null, id, admin = false, baseRevision,
   }
 }
 
-async function renameProjectInner({ owner = null, id, admin = false, baseRevision, title }) {
+async function renameProjectInner({ owner = null, id, admin = false, baseRevision, title, provenance = null }) {
   if (!validProjectId(id)) {
     const err = new Error(`invalid project id ${id}`);
     err.code = "invalid-id";
@@ -271,6 +325,13 @@ async function renameProjectInner({ owner = null, id, admin = false, baseRevisio
   if (!clean || clean.length > 200) {
     const err = new Error("title must be a non-empty string up to 200 chars");
     err.code = "invalid-document";
+    throw err;
+  }
+  const prov = validateProvenance(provenance ?? undefined);
+  if (!prov.ok) {
+    const err = new Error(prov.errors[0]);
+    err.code = "invalid-document";
+    err.details = prov.errors;
     throw err;
   }
   const db = ensureSchema();
@@ -312,6 +373,8 @@ async function renameProjectInner({ owner = null, id, admin = false, baseRevisio
       const fresh = db.prepare("SELECT revision FROM v2_projects WHERE id=?").get(id);
       return { status: "stale", expected: fresh?.revision ?? stored.revision + 1, actual: baseRevision };
     }
+    insertRevisionRow(db, { projectId: id, doc: next, kind: "rename", provenance: prov.provenance });
+    pruneHistory(db, id);
     db.exec("COMMIT");
     return { status: "saved", doc: structuredClone(next) };
   } catch (err) {
@@ -335,9 +398,249 @@ async function deleteProjectInner({ owner = null, id, admin = false }) {
   try {
     const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
     if (!row || !canAccessProject(row, { owner, admin })) return { removed: false };
-    const res = db.prepare("DELETE FROM v2_projects WHERE id=?").run(id);
-    return { removed: res.changes === 1 };
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      db.prepare("DELETE FROM v2_project_revisions WHERE project_id=?").run(id);
+      const res = db.prepare("DELETE FROM v2_projects WHERE id=?").run(id);
+      db.exec("COMMIT");
+      return { removed: res.changes === 1 };
+    } catch (err) {
+      try {
+        db.exec("ROLLBACK");
+      } catch { /* already rolled back */ }
+      throw err;
+    }
   } catch (err) {
+    const e = new Error(`storage unavailable: ${err.message}`);
+    e.code = "storage-unavailable";
+    throw e;
+  }
+}
+
+// Read the project row with the caller's access applied. Returns the
+// parsed stored document, or throws not-found / invalid-document.
+function readAccessibleProject(db, id, owner, admin) {
+  const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(id);
+  if (!row || !canAccessProject(row, { owner, admin })) {
+    const err = new Error(`no such project ${id}`);
+    err.code = "not-found";
+    throw err;
+  }
+  const stored = rowToDoc(row);
+  if (!stored) {
+    const err = new Error("stored project is corrupt");
+    err.code = "invalid-document";
+    throw err;
+  }
+  return stored;
+}
+
+// List durable revisions (audit metadata, never scene bytes),
+// newest first. Pre-history projects capture a baseline from the
+// stored document on first touch — no earlier rows fabricated.
+export async function listRevisions({ owner = null, id, admin = false }) {
+  if (!validProjectId(id)) {
+    const err = new Error(`invalid project id ${id}`);
+    err.code = "invalid-id";
+    throw err;
+  }
+  const db = ensureSchema();
+  let stored = null;
+  try {
+    stored = readAccessibleProject(db, id, owner, admin);
+  } catch (err) {
+    if (err && (err.code === "not-found" || err.code === "invalid-document")) throw err;
+    const e = new Error(`storage unavailable: ${err.message}`);
+    e.code = "storage-unavailable";
+    throw e;
+  }
+  // INSERT OR IGNORE is synchronous and idempotent, so concurrent
+  // first-touches cannot duplicate or interleave the baseline.
+  ensureBaselineRow(db, id, stored);
+  let rows = [];
+  try {
+    rows = db.prepare("SELECT * FROM v2_project_revisions WHERE project_id=? ORDER BY revision DESC").all(id);
+  } catch (err) {
+    const e = new Error(`storage unavailable: ${err.message}`);
+    e.code = "storage-unavailable";
+    throw e;
+  }
+  const { MAX_RECOVERABLE_REVISIONS, MAX_AUDIT_ROWS } = await import("./history.js");
+  return {
+    currentRevision: stored.revision,
+    retention: { maxRecoverable: MAX_RECOVERABLE_REVISIONS, maxAudit: MAX_AUDIT_ROWS },
+    revisions: rows.map(revisionMeta),
+  };
+}
+
+// Read one recoverable revision: the full validated document as it
+// was saved. Never executes stored data — the payload re-validates
+// through the project + scene contracts like any load.
+export async function getRevision({ owner = null, id, admin = false, revision }) {
+  if (!validProjectId(id)) {
+    const err = new Error(`invalid project id ${id}`);
+    err.code = "invalid-id";
+    throw err;
+  }
+  if (!Number.isInteger(revision) || revision < 0) {
+    const err = new Error("revision must be a non-negative integer");
+    err.code = "invalid-document";
+    throw err;
+  }
+  const db = ensureSchema();
+  let stored = null;
+  try {
+    stored = readAccessibleProject(db, id, owner, admin);
+  } catch (err) {
+    if (err && (err.code === "not-found" || err.code === "invalid-document")) throw err;
+    const e = new Error(`storage unavailable: ${err.message}`);
+    e.code = "storage-unavailable";
+    throw e;
+  }
+  let row = null;
+  try {
+    ensureBaselineRow(db, id, stored);
+    row = db.prepare("SELECT * FROM v2_project_revisions WHERE project_id=? AND revision=?").get(id, revision);
+  } catch (err) {
+    const e = new Error(`storage unavailable: ${err.message}`);
+    e.code = "storage-unavailable";
+    throw e;
+  }
+  if (!row) {
+    const err = new Error(`no such revision ${revision} for project ${id}`);
+    err.code = "not-found";
+    throw err;
+  }
+  const meta = revisionMeta(row);
+  if (row.payload === null || row.payload === undefined) return { found: true, pruned: true, meta, doc: null };
+  let doc = null;
+  try {
+    doc = JSON.parse(row.payload);
+  } catch {
+    doc = null;
+  }
+  if (!doc) {
+    const err = new Error(`stored revision ${revision} is corrupt`);
+    err.code = "invalid-document";
+    throw err;
+  }
+  const verdict = await validateProjectDocument(doc);
+  if (!verdict.ok) {
+    const err = new Error(`stored revision ${revision} is invalid: ${verdict.errors[0]}`);
+    err.code = "invalid-document";
+    err.details = verdict.errors;
+    throw err;
+  }
+  return { found: true, pruned: false, meta, doc };
+}
+
+// Restore a prior revision as a NEW current revision: the counter
+// advances, the target row is preserved, and later rows are kept.
+// A stale base refuses with 409 and changes nothing.
+async function restoreRevisionInner({ owner = null, id, admin = false, targetRevision, baseRevision, provenance = null }) {
+  if (!validProjectId(id)) {
+    const err = new Error(`invalid project id ${id}`);
+    err.code = "invalid-id";
+    throw err;
+  }
+  if (!Number.isInteger(targetRevision) || targetRevision < 0) {
+    const err = new Error("target revision must be a non-negative integer");
+    err.code = "invalid-document";
+    throw err;
+  }
+  if (!Number.isInteger(baseRevision) || baseRevision < 0) {
+    const err = new Error("baseRevision must be a non-negative integer");
+    err.code = "invalid-document";
+    throw err;
+  }
+  const prov = validateProvenance(provenance ?? undefined);
+  if (!prov.ok) {
+    const err = new Error(prov.errors[0]);
+    err.code = "invalid-document";
+    err.details = prov.errors;
+    throw err;
+  }
+  const db = ensureSchema();
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    let stored = null;
+    try {
+      stored = readAccessibleProject(db, id, owner, admin);
+    } catch (err) {
+      db.exec("ROLLBACK");
+      throw err;
+    }
+    if (stored.schemaVersion !== PROJECT_SCHEMA_VERSION) {
+      db.exec("ROLLBACK");
+      const err = new Error(`stored project uses schemaVersion ${stored.schemaVersion}, this build reads ${PROJECT_SCHEMA_VERSION}`);
+      err.code = "invalid-document";
+      throw err;
+    }
+    if (baseRevision !== stored.revision) {
+      db.exec("ROLLBACK");
+      return { status: "stale", expected: stored.revision, actual: baseRevision };
+    }
+    ensureBaselineRow(db, id, stored);
+    const row = db.prepare("SELECT * FROM v2_project_revisions WHERE project_id=? AND revision=?").get(id, targetRevision);
+    if (!row) {
+      db.exec("ROLLBACK");
+      const err = new Error(`no such revision ${targetRevision} for project ${id}`);
+      err.code = "not-found";
+      throw err;
+    }
+    if (row.payload === null || row.payload === undefined) {
+      db.exec("ROLLBACK");
+      const err = new Error(`revision ${targetRevision} has been pruned to audit-only and can no longer be restored`);
+      err.code = "revision-pruned";
+      throw err;
+    }
+    let target = null;
+    try {
+      target = JSON.parse(row.payload);
+    } catch {
+      target = null;
+    }
+    if (!target) {
+      db.exec("ROLLBACK");
+      const err = new Error(`stored revision ${targetRevision} is corrupt`);
+      err.code = "invalid-document";
+      throw err;
+    }
+    // The restored document carries the historical SCENES; identity
+    // (title/theme/origin) stays current — a restore recovers content,
+    // it does not clobber renames made since.
+    const now = new Date().toISOString();
+    const next = {
+      ...structuredClone(stored),
+      scenes: structuredClone(target.scenes),
+      updatedAt: now,
+      revision: stored.revision + 1,
+    };
+    const verdict = await validateProjectDocument(next);
+    if (!verdict.ok) {
+      db.exec("ROLLBACK");
+      const err = new Error(verdict.errors[0]);
+      err.code = "invalid-document";
+      err.details = verdict.errors;
+      throw err;
+    }
+    const res = db
+      .prepare("UPDATE v2_projects SET title=?, payload=?, revision=?, updated_at=? WHERE id=? AND revision=?")
+      .run(next.title, JSON.stringify(next), next.revision, now, id, stored.revision);
+    if (res.changes !== 1) {
+      db.exec("ROLLBACK");
+      const fresh = db.prepare("SELECT revision FROM v2_projects WHERE id=?").get(id);
+      return { status: "stale", expected: fresh?.revision ?? stored.revision + 1, actual: baseRevision };
+    }
+    insertRevisionRow(db, { projectId: id, doc: next, kind: "restore", provenance: prov.provenance, restoredFrom: targetRevision });
+    pruneHistory(db, id, targetRevision);
+    db.exec("COMMIT");
+    return { status: "restored", doc: structuredClone(next), restoredFrom: targetRevision };
+  } catch (err) {
+    try {
+      db.exec("ROLLBACK");
+    } catch { /* path already rolled back */ }
+    if (err && (err.code === "not-found" || err.code === "invalid-document" || err.code === "invalid-id" || err.code === "revision-pruned")) throw err;
     const e = new Error(`storage unavailable: ${err.message}`);
     e.code = "storage-unavailable";
     throw e;
@@ -346,6 +649,8 @@ async function deleteProjectInner({ owner = null, id, admin = false }) {
 
 // Serialized writers: see the lane above. Reads (get/list) stay
 // concurrent; every mutation runs inside its acquired turn.
+// History reads (list/getRevision) stay concurrent; restore is a
+// revision-changing op and serializes like save/rename.
 export function createProject(args) {
   return serializeWrite(() => createProjectInner(args));
 }
@@ -357,4 +662,7 @@ export function renameProject(args) {
 }
 export function deleteProject(args) {
   return serializeWrite(() => deleteProjectInner(args));
+}
+export function restoreRevision(args) {
+  return serializeWrite(() => restoreRevisionInner(args));
 }
