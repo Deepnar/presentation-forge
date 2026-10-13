@@ -39,6 +39,8 @@ import {
 } from "./history.js";
 import { canAccessProject } from "./store.js";
 
+export { canAccessProject };
+
 const pools = new Map();
 
 function poolConfig() {
@@ -139,6 +141,17 @@ const PROJECT_DDL = `
 
 async function ensureSchema(clientOrPool) {
   await clientOrPool.query(PROJECT_DDL);
+}
+
+// Schema is idempotent DDL and must never run inside a write
+// transaction: two concurrent writers both creating-if-missing
+// deadlock on the table/index locks. Ensure once per pool outside
+// every transaction instead.
+const ensuredPools = new WeakSet();
+async function ensureSchemaPool(p) {
+  if (ensuredPools.has(p)) return;
+  await ensureSchema(p);
+  ensuredPools.add(p);
 }
 
 async function withTxn(fn) {
@@ -243,8 +256,8 @@ export async function createProject({ owner = null, title, scenes, theme = null,
   }
   const now = doc.updatedAt;
   try {
+    await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
-      await ensureSchema(client);
       try {
         await client.query(
           "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7)",
@@ -273,7 +286,7 @@ export async function getProject({ owner = null, id, admin = false }) {
   const p = await pool().catch((err) => { throw storageUnavailable(err); });
   let row = null;
   try {
-    await ensureSchema(p);
+    await ensureSchemaPool(p);
     row = (await p.query("SELECT * FROM v2_projects WHERE id=$1", [id])).rows[0] ?? null;
   } catch (err) {
     if (err && err.code === "store-misconfigured") throw err;
@@ -294,7 +307,7 @@ export async function listProjects({ owner = null, admin = false }) {
   const p = await pool().catch((err) => { throw storageUnavailable(err); });
   let rows = [];
   try {
-    await ensureSchema(p);
+    await ensureSchemaPool(p);
     // Same observable contract as SQLite (full scan + JS filter +
     // corrupt-row skip); filtering in SQL would change nothing
     // observable and would risk drifting the skip semantics.
@@ -342,8 +355,8 @@ export async function saveProject({ owner = null, id, admin = false, baseRevisio
     throw err;
   }
   try {
+    await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
-      await ensureSchema(client);
       const row = (await client.query("SELECT * FROM v2_projects WHERE id=$1 FOR UPDATE", [id])).rows[0] ?? null;
       const stored = readAccessibleProjectRow(row, id, owner, admin);
       checkSchemaVersion(stored);
@@ -419,8 +432,8 @@ export async function renameProject({ owner = null, id, admin = false, baseRevis
     throw err;
   }
   try {
+    await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
-      await ensureSchema(client);
       const row = (await client.query("SELECT * FROM v2_projects WHERE id=$1 FOR UPDATE", [id])).rows[0] ?? null;
       const stored = readAccessibleProjectRow(row, id, owner, admin);
       const stale = await checkStale(client, id, baseRevision, stored.revision);
@@ -453,8 +466,8 @@ export async function deleteProject({ owner = null, id, admin = false }) {
     throw err;
   }
   try {
+    await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
-      await ensureSchema(client);
       const row = (await client.query("SELECT owner FROM v2_projects WHERE id=$1 FOR UPDATE", [id])).rows[0] ?? null;
       if (!row || !canAccessProject(row, { owner, admin })) return { removed: false };
       await client.query("DELETE FROM v2_project_revisions WHERE project_id=$1", [id]);
@@ -480,7 +493,7 @@ export async function listRevisions({ owner = null, id, admin = false }) {
   }
   const p = await pool().catch((err) => { throw storageUnavailable(err); });
   try {
-    await ensureSchema(p);
+    await ensureSchemaPool(p);
     const stored = await readStoredForHistory(p, id, owner, admin);
     // ON CONFLICT DO NOTHING: concurrent first-touches are safe
     // without any lock, on every backend alike.
@@ -510,7 +523,7 @@ export async function getRevision({ owner = null, id, admin = false, revision })
   }
   const p = await pool().catch((err) => { throw storageUnavailable(err); });
   try {
-    await ensureSchema(p);
+    await ensureSchemaPool(p);
     const stored = await readStoredForHistory(p, id, owner, admin);
     await ensureBaselineRow(p, id, stored);
     const row = (await p.query("SELECT * FROM v2_project_revisions WHERE project_id=$1 AND revision=$2", [id, revision])).rows[0] ?? null;
@@ -570,8 +583,8 @@ export async function restoreRevision({ owner = null, id, admin = false, targetR
     throw err;
   }
   try {
+    await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
-      await ensureSchema(client);
       const row = (await client.query("SELECT * FROM v2_projects WHERE id=$1 FOR UPDATE", [id])).rows[0] ?? null;
       const stored = readAccessibleProjectRow(row, id, owner, admin);
       checkSchemaVersion(stored);
