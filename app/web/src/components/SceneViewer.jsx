@@ -11,6 +11,7 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
+import { apiList, apiCreate, apiLoad, apiSave, apiRename, apiRemove, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -974,6 +975,33 @@ export default function SceneViewer({ initial = {} }) {
   const [editOn, setEditOn] = useState(false);
   const [editedScenes, setEditedScenes] = useState(null);
   const [editStatus, setEditStatus] = useState({ rev: 0, error: null, preparing: false });
+  // V2-6A durable projects: the bound project (id/title/durable
+  // revision) plus the save-state machine. savedEngineRev is the
+  // engine revision confirmed by the last successful PUT; dirty means
+  // the engine moved past it. Refs mirror state for async callbacks.
+  const [project, setProject] = useState(null);
+  const [saveState, setSaveState] = useState("idle");
+  const [saveError, setSaveError] = useState(null);
+  const [projectsOpen, setProjectsOpen] = useState(false);
+  const [projectList, setProjectList] = useState([]);
+  const [projectListError, setProjectListError] = useState(null);
+  const [renamingId, setRenamingId] = useState(null);
+  const [renameDraft, setRenameDraft] = useState("");
+  const [confirmRemoveId, setConfirmRemoveId] = useState(null);
+  const [pendingSwitchId, setPendingSwitchId] = useState(null);
+  const projectRef = useRef(null);
+  const savedEngineRevRef = useRef(0);
+  const pendingSaveRef = useRef(false);
+  const autosaveRef = useRef(null);
+  if (!autosaveRef.current) {
+    autosaveRef.current = createAutosave({
+      saveNow: () => saveNowRef.current?.(),
+      onState: (e) => {
+        if (e?.type === "autosave-failed") setSaveState((s) => (s === "saving" ? "error" : s));
+      },
+    });
+  }
+  const saveNowRef = useRef(null);
   // V2-5D inline text state, mirrored from the adapter's onTextEdit
   // callback (the adapter owns the session; React only displays).
   const [textState, setTextState] = useState({ editing: false, elementId: null, conflict: null, overflow: null, paragraphs: null });
@@ -1010,6 +1038,7 @@ export default function SceneViewer({ initial = {} }) {
         onSync: (scenes) => {
           setEditedScenes(scenes);
           setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
+          markDirtyFromEngine();
         },
         onTextEdit: (e) => {
           setTextState({
@@ -1020,7 +1049,10 @@ export default function SceneViewer({ initial = {} }) {
             overflow: e.overflow ?? null,
             paragraphs: e.paragraphs ?? null,
           });
-          if (e.committed) setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
+          if (e.committed) {
+            setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
+            markDirtyFromEngine();
+          }
         },
       });
       docRef.current = doc;
@@ -1031,6 +1063,227 @@ export default function SceneViewer({ initial = {} }) {
       setEditStatus({ rev: 0, error: String(err?.message ?? err), preparing: false });
     }
   }
+  // V2-6A save: captures a known authoritative revision (the
+  // engine snapshot plus its revision at submit) and confirms
+  // against the durable project revision. Chart/table grids and
+  // open text drafts never enter here — callers commit pending
+  // text first and unapplied drafts stay local by policy.
+  async function saveNow() {
+    const adapter = adapterRef.current;
+    const doc = docRef.current;
+    const proj = projectRef.current;
+    if (!editOn || !doc || !proj) return { ok: false, code: "op-rejected", message: "no project bound — save as a new project first" };
+    if (adapter?.hasPendingEdit?.()) {
+      const r = await adapter.commitPendingEdit();
+      if (!r.ok) return r;
+    }
+    if (pendingSaveRef.current) return { ok: true, revision: doc.snapshot().revision, pending: true };
+    const snapNow = doc.snapshot();
+    const atEngineRev = snapNow.revision;
+    if (atEngineRev === savedEngineRevRef.current && saveState !== "error" && saveState !== "stale") {
+      setSaveState("saved");
+      return { ok: true, revision: atEngineRev, noop: true };
+    }
+    pendingSaveRef.current = true;
+    setSaveState("saving");
+    setSaveError(null);
+    try {
+      const scenes = structuredClone(snapNow.scenes);
+      const updated = await apiSave(proj.id, {
+        baseRevision: proj.revision,
+        title: proj.title,
+        scenes,
+      });
+      projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
+      setProject(projectRef.current);
+      writeLastProject(proj.id);
+      // Only the submitted revision counts as saved: edits that
+      // landed mid-flight keep the document dirty and reschedule.
+      if (doc.snapshot().revision === atEngineRev) {
+        savedEngineRevRef.current = atEngineRev;
+        setSaveState("saved");
+      } else {
+        setSaveState("dirty");
+        autosaveRef.current?.schedule();
+      }
+      return { ok: true, revision: updated.revision };
+    } catch (err) {
+      if (err?.code === "stale-revision") {
+        setSaveState("stale");
+        setSaveError(err.message);
+      } else if (err?.status === 503 || /unavailable|network|fetch|failed/i.test(err?.message ?? "")) {
+        setSaveState("unavailable");
+        setSaveError(err.message);
+      } else {
+        setSaveState("error");
+        setSaveError(err.message);
+      }
+      return { ok: false, code: "op-rejected", message: err.message };
+    } finally {
+      pendingSaveRef.current = false;
+    }
+  }
+  saveNowRef.current = saveNow;
+
+  function markDirtyFromEngine() {
+    if (!projectRef.current) {
+      setSaveState((s) => (editOn ? "dirty" : s));
+      return;
+    }
+    const rev = docRef.current?.snapshot().revision ?? 0;
+    setSaveState(rev === savedEngineRevRef.current ? "saved" : "dirty");
+    if (rev !== savedEngineRevRef.current) autosaveRef.current?.schedule();
+  }
+
+  async function saveAsNewProject() {
+    const doc = docRef.current;
+    if (!editOn || !doc) return;
+    if (adapterRef.current?.hasPendingEdit?.()) {
+      const r = await adapterRef.current.commitPendingEdit();
+      if (!r.ok) return;
+    }
+    const snapNow = doc.snapshot();
+    setSaveState("saving");
+    setSaveError(null);
+    try {
+      const created = await apiCreate({
+        title: projectRef.current?.title ?? `Project ${new Date().toLocaleString()}`,
+        scenes: structuredClone(snapNow.scenes),
+        origin: { kind: "mixed" },
+      });
+      projectRef.current = { id: created.id, title: created.title, revision: created.revision, updatedAt: created.updatedAt };
+      setProject(projectRef.current);
+      savedEngineRevRef.current = snapNow.revision;
+      setSaveState("saved");
+      writeLastProject(created.id);
+      try {
+        const q = new URLSearchParams(window.location.search);
+        q.set("project", created.id);
+        window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
+      } catch { /* deep link is a hint only */ }
+      refreshProjectList();
+    } catch (err) {
+      setSaveState(/unavailable|network|fetch/i.test(err?.message ?? "") ? "unavailable" : "error");
+      setSaveError(err.message);
+    }
+  }
+
+  async function refreshProjectList() {
+    try {
+      setProjectListError(null);
+      setProjectList(await apiList());
+    } catch (err) {
+      setProjectListError(err.message);
+    }
+  }
+
+  // Open a stored project: commits pending text first (block on
+  // failure), then swaps the engine document to the stored scenes.
+  // Unsaved edits on the current project require an explicit choice
+  // (save-and-switch, discard-and-switch, cancel) — never silent loss.
+  async function openProject(id) {
+    if (adapterRef.current?.hasPendingEdit?.()) {
+      const r = await adapterRef.current.commitPendingEdit();
+      if (!r.ok) return;
+    }
+    if (projectRef.current && saveState === "dirty" && projectRef.current.id !== id && !pendingSwitchId) {
+      setPendingSwitchId(id);
+      return;
+    }
+    setPendingSwitchId(null);
+    setSaveState("saving");
+    setSaveError(null);
+    try {
+      const loaded = await apiLoad(id);
+      const { createDocument } = await import("../../../../packages/model/engine.ts");
+      const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
+      try {
+        adapterRef.current?.detach();
+      } catch { /* teardown only */ }
+      const fresh = await createDocument(structuredClone(loaded.scenes));
+      const adapter = attachEditor(viewerRef.current, fresh, {
+        root: mountRef.current,
+        onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
+        onSync: (scenes) => {
+          setEditedScenes(scenes);
+          setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
+          markDirtyFromEngine();
+        },
+        onTextEdit: (e) => {
+          setTextState({
+            editing: e.editing,
+            elementId: e.elementId ?? null,
+            conflict: e.conflict ?? null,
+            error: e.error ?? null,
+            overflow: e.overflow ?? null,
+            paragraphs: e.paragraphs ?? null,
+          });
+          if (e.committed) {
+            setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
+            markDirtyFromEngine();
+          }
+        },
+      });
+      docRef.current = fresh;
+      adapterRef.current = adapter;
+      setEditedScenes(structuredClone(loaded.scenes));
+      projectRef.current = { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt };
+      setProject(projectRef.current);
+      savedEngineRevRef.current = 0;
+      setSaveState("saved");
+      setEditStatus({ rev: 0, error: null, preparing: false });
+      setEditOn(true);
+      setProjectsOpen(false);
+      writeLastProject(loaded.id);
+      try {
+        const q = new URLSearchParams(window.location.search);
+        q.set("project", loaded.id);
+        window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
+      } catch { /* hint only */ }
+      const first = loaded.scenes[0]?.id ?? null;
+      if (first) followSlideId(first);
+      setSlideSel(first ? [first] : []);
+    } catch (err) {
+      setSaveState("error");
+      setSaveError(err.message);
+    }
+  }
+
+  // Refresh recovery: offer the last-opened project without forcing
+  // navigation. The ?project= deep link wins over localStorage.
+  useLayoutEffect(() => {
+    let cancelled = false;
+    const q = (() => {
+      try {
+        return new URLSearchParams(window.location.search).get("project");
+      } catch {
+        return null;
+      }
+    })();
+    const last = q ?? readLastProject();
+    if (!last) return undefined;
+    apiLoad(last)
+      .then((loaded) => {
+        if (cancelled) return;
+        setProject((p) => p ?? { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt, recoverable: true });
+      })
+      .catch(() => { /* no recovery offer when storage is down */ });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Unsaved-changes guard: refresh/close warns while dirty or saving.
+  useLayoutEffect(() => {
+    const onBeforeUnload = (e) => {
+      if (saveState === "dirty" || saveState === "saving") {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [saveState]);
   // The displayed deck is the live compile when one is ready,
   // else the chosen fixture. Identity change remounts everything
   // downstream (fonts, viewer, selection).
@@ -1362,6 +1615,7 @@ export default function SceneViewer({ initial = {} }) {
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
           <button type="button" onClick={() => api?.resetZoom()}>Fit</button>
           <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen}>Live</button>
+          <button type="button" onClick={() => { refreshProjectList(); setProjectsOpen(true); }} aria-expanded={projectsOpen}>Projects</button>
           <button
             type="button"
             title={editOn ? "Leave edit mode (unsaved edits stay visible until you switch decks)" : "Edit this deck: drag, nudge, delete with undo"}
@@ -1369,6 +1623,14 @@ export default function SceneViewer({ initial = {} }) {
           >
             {editStatus.preparing ? "Preparing…" : editOn ? "Done" : "Edit"}
           </button>
+          {editOn && (
+            <>
+              <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())}>Save</button>
+              <span data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} style={{ fontSize: 12, opacity: 0.9, border: "1px solid #555", borderRadius: 10, padding: "1px 8px" }} title={saveError ?? project?.title ?? "no project"}>
+                {saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project"}
+              </span>
+            </>
+          )}
           {editOn && (
             <>
               <button type="button" aria-label="Undo" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()}>↩ Undo</button>
@@ -1403,6 +1665,33 @@ export default function SceneViewer({ initial = {} }) {
         {editStatus.error && (
           <div role="alert" data-edit-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0a090", background: "#242220" }}>
             Edit failed: {editStatus.error}
+          </div>
+        )}
+        {project?.recoverable && !projectsOpen && (
+          <div role="status" data-recover-banner style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, background: "#242220" }}>
+            Last project “{project.title}” is saved on this machine.{" "}
+            <button type="button" onClick={() => openProject(project.id)}>Reopen it</button>{" "}
+            <button type="button" onClick={() => { setProject((p) => (p ? { ...p, recoverable: false } : p)); }}>Dismiss</button>
+          </div>
+        )}
+        {(saveState === "stale" || saveState === "error" || saveState === "unavailable") && saveError && (
+          <div role="alert" data-save-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0c090", background: "#242220" }}>
+            {saveState === "stale" ? `Save conflict: ${saveError} Your edits are intact — reload the newer version or save as a new project.` : `Save failed: ${saveError} Your edits are intact.`}{" "}
+            {saveState === "stale" && (
+              <>
+                <button type="button" onClick={() => openProject(project.id)}>Load newer version</button>{" "}
+                <button type="button" onClick={saveAsNewProject}>Save as new project</button>{" "}
+              </>
+            )}
+            <button type="button" onClick={() => saveNow()}>Retry save</button>
+          </div>
+        )}
+        {pendingSwitchId && (
+          <div role="alert" data-switch-guard style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, background: "#242220" }}>
+            You have unsaved changes. Switching projects without saving loses them.{" "}
+            <button type="button" onClick={async () => { await saveNow(); if (saveState !== "dirty") openProject(pendingSwitchId); }}>Save & switch</button>{" "}
+            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); savedEngineRevRef.current = docRef.current?.snapshot().revision ?? 0; setSaveState("saved"); openProject(id); }}>Discard & switch</button>{" "}
+            <button type="button" onClick={() => setPendingSwitchId(null)}>Cancel</button>
           </div>
         )}
         {textState.conflict && (
@@ -1573,6 +1862,58 @@ export default function SceneViewer({ initial = {} }) {
           onInsert={doInsertLayout}
           onClose={() => setGalleryOpen(false)}
         />
+      )}
+      {projectsOpen && (
+        <div
+          data-projects-panel
+          style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setProjectsOpen(false); }}
+          onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setProjectsOpen(false); } }}
+        >
+          <div role="dialog" aria-label="Saved projects" style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(560px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444" }}>
+              <strong style={{ fontSize: 13 }}>Saved projects</strong>
+              <span data-projects-count style={{ fontSize: 11, opacity: 0.7 }}>{projectList.length} stored on this machine</span>
+              <button type="button" aria-label="Close projects" onClick={() => setProjectsOpen(false)} style={{ marginLeft: "auto", background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+            </div>
+            <div style={{ padding: "8px 12px", display: "flex", gap: 8, flexWrap: "wrap", borderBottom: "1px solid #444" }}>
+              <button type="button" data-project-save-current disabled={!editOn} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject}>Save current deck as project</button>
+              {project && !project.recoverable && (
+                <a data-project-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} style={{ fontSize: 12, color: "#e0705a" }}>Export {project.title} (.pptx)</a>
+              )}
+            </div>
+            <div data-project-list style={{ overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+              {projectListError && <span role="alert" style={{ fontSize: 12, color: "#f0a090" }}>Could not list projects: {projectListError} — editing continues, nothing is saved.</span>}
+              {projectList.length === 0 && !projectListError && <span style={{ fontSize: 12, opacity: 0.7 }}>No saved projects yet. Edit a deck, then “Save current deck as project”.</span>}
+              {projectList.map((p) => (
+                <div key={p.id} data-project-row={p.id} style={{ border: project?.id === p.id ? "1px solid #e0705a" : "1px solid #444", borderRadius: 6, padding: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                  {renamingId === p.id ? (
+                    <>
+                      <input aria-label={`Rename ${p.id}`} value={renameDraft} onChange={(e) => setRenameDraft(e.target.value)} style={{ flex: 1, minWidth: 120, background: "#111", color: "#eee", border: "1px solid #555", borderRadius: 4, padding: "3px 6px", fontSize: 12 }} />
+                      <button type="button" onClick={async () => { try { const u = await apiRename(p.id, renameDraft); setProjectList((l) => l.map((x) => (x.id === p.id ? { ...x, title: u.title } : x))); if (project?.id === p.id) { projectRef.current = { ...project, title: u.title }; setProject(projectRef.current); } setRenamingId(null); } catch (err) { setProjectListError(err.message); } }}>Apply</button>
+                      <button type="button" onClick={() => setRenamingId(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ flex: 1, minWidth: 140, fontSize: 12 }}><strong>{p.title}</strong> <span style={{ opacity: 0.65 }}>· {p.slideCount} slides · rev {p.revision}</span></span>
+                      <button type="button" data-project-open={p.id} onClick={() => openProject(p.id)}>Open</button>
+                      <button type="button" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</button>
+                      {confirmRemoveId === p.id ? (
+                        <>
+                          <span style={{ fontSize: 11 }}>Delete “{p.title}”? This cannot be undone.</span>
+                          <button type="button" data-project-delete-confirm={p.id} onClick={async () => { try { await apiRemove(p.id); setProjectList((l) => l.filter((x) => x.id !== p.id)); if (project?.id === p.id) { projectRef.current = null; setProject(null); setSaveState("idle"); writeLastProject(null); } setConfirmRemoveId(null); } catch (err) { setProjectListError(err.message); } }}>Confirm delete</button>
+                          <button type="button" onClick={() => setConfirmRemoveId(null)}>Keep</button>
+                        </>
+                      ) : (
+                        <button type="button" onClick={() => setConfirmRemoveId(p.id)}>Delete…</button>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
