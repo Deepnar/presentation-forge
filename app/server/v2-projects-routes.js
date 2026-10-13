@@ -25,6 +25,10 @@ export function projectsAllowed() {
 // Hosted policy: anonymous reads/writes are refused with 401; local
 // boxes pass through with owner null. Authenticated callers scope to
 // their own email; admins see everything (same rule as decks).
+export async function resolveProjectOwner(req) {
+  return projectOwner(req);
+}
+
 async function projectOwner(req) {
   if (!isHosted()) {
     try {
