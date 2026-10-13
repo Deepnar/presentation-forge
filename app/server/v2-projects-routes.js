@@ -63,6 +63,7 @@ function mapStoreError(res, err) {
     return res.status(503).json({ ok: false, error: err.message, code: "storage-unavailable" });
   }
   if (code === "stale") return res.status(409).json({ ok: false, error: err.message, code: "stale" });
+  if (code === "revision-pruned") return res.status(410).json({ ok: false, error: err.message, code: "revision-pruned" });
   return fail(res, 500, err?.message ?? "project request failed");
 }
 
@@ -126,7 +127,7 @@ export function registerV2ProjectRoutes(app) {
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
     if (bodyTooLarge(req)) return fail(res, 413, "request too large");
-    const { baseRevision, title, scenes, theme, origin } = req.body ?? {};
+    const { baseRevision, title, scenes, theme, origin, provenance } = req.body ?? {};
     const verdict = await validateSavePayload({ baseRevision, title, scenes, theme, origin });
     if (!verdict.ok) {
       return res.status(422).json({ ok: false, error: verdict.errors[0], errors: verdict.errors, code: "invalid-document" });
@@ -136,7 +137,7 @@ export function registerV2ProjectRoutes(app) {
       const out = await saveProject({
         owner: who.owner, id: req.params.id, admin: who.admin,
         baseRevision, title: title !== undefined ? String(title).trim() : undefined,
-        scenes, theme, origin,
+        scenes, theme, origin, provenance,
       });
       if (out.status === "stale") {
         return res.status(409).json({ ok: false, error: `stale project revision: based on ${out.actual}, stored is ${out.expected}`, code: "stale-revision", expectedRevision: out.expected, actualRevision: out.actual });
@@ -183,6 +184,72 @@ export function registerV2ProjectRoutes(app) {
       const { removed } = await deleteProject({ owner: who.owner, id: req.params.id, admin: who.admin });
       if (!removed) return fail(res, 404, "no such project");
       ok(res, {});
+    } catch (err) {
+      mapStoreError(res, err);
+    }
+  }));
+
+  // Durable revision history (V2-6B): audit metadata without scene
+  // bytes, one recoverable snapshot at a time, and restore-as-new.
+  // Same owner policy as project CRUD — no weaker path.
+  app.get("/api/v2/projects/:id/revisions", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const { listRevisions } = await import("../../src/projects/store.js");
+    try {
+      const out = await listRevisions({ owner: who.owner, id: req.params.id, admin: who.admin });
+      ok(res, { currentRevision: out.currentRevision, retention: out.retention, revisions: out.revisions });
+    } catch (err) {
+      mapStoreError(res, err);
+    }
+  }));
+
+  app.get("/api/v2/projects/:id/revisions/:rev", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const rev = Number(req.params.rev);
+    if (!Number.isInteger(rev) || rev < 0) {
+      return res.status(422).json({ ok: false, error: "revision must be a non-negative integer", code: "invalid-document" });
+    }
+    const { getRevision } = await import("../../src/projects/store.js");
+    try {
+      const out = await getRevision({ owner: who.owner, id: req.params.id, admin: who.admin, revision: rev });
+      if (out.pruned) {
+        return res.status(410).json({ ok: false, error: `revision ${rev} has been pruned to audit-only and can no longer be restored`, code: "revision-pruned", revision: out.meta });
+      }
+      ok(res, { revision: out.meta, project: out.doc });
+    } catch (err) {
+      mapStoreError(res, err);
+    }
+  }));
+
+  app.post("/api/v2/projects/:id/restore", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    if (bodyTooLarge(req)) return fail(res, 413, "request too large");
+    const { revision, baseRevision, provenance } = req.body ?? {};
+    if (!Number.isInteger(revision) || revision < 0) {
+      return res.status(422).json({ ok: false, error: "revision must be a non-negative integer", code: "invalid-document" });
+    }
+    if (!Number.isInteger(baseRevision) || baseRevision < 0) {
+      return res.status(422).json({ ok: false, error: "baseRevision must be a non-negative integer", code: "invalid-document" });
+    }
+    const { restoreRevision } = await import("../../src/projects/store.js");
+    try {
+      const out = await restoreRevision({
+        owner: who.owner, id: req.params.id, admin: who.admin,
+        targetRevision: revision, baseRevision, provenance,
+      });
+      if (out.status === "stale") {
+        return res.status(409).json({ ok: false, error: `stale project revision: based on ${out.actual}, stored is ${out.expected}`, code: "stale-revision", expectedRevision: out.expected, actualRevision: out.actual });
+      }
+      ok(res, { project: out.doc, restoredFrom: out.restoredFrom });
     } catch (err) {
       mapStoreError(res, err);
     }
