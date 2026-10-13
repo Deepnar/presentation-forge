@@ -8,7 +8,8 @@
 //   list({ owner, admin }) -> [summary]
 //   save({ owner, id, admin, baseRevision, title?, scenes, theme?, origin? })
 //     -> { status: "saved"|"noop", doc } | { status: "stale", expected, actual }
-//   rename({ owner, id, admin, title }) -> { doc }
+//   rename({ owner, id, admin, baseRevision, title })
+//     -> { status: "saved"|"noop", doc } | { status: "stale", expected, actual }
 //   remove({ owner, id, admin }) -> { removed: boolean }
 //
 // Durability: node:sqlite file at CONFIG/forge.db (FORGE_DB_PATH
@@ -74,10 +75,15 @@ function serializeWrite(job) {
   return run;
 }
 
-function canRead(row, { owner, admin }) {
+// Canonical authorization predicate for every operation. Ownership
+// must match EXACTLY: an authenticated caller (owner Alice) sees only
+// Alice's rows, an anonymous local caller (owner null) sees only
+// ownerless local rows, and nobody treats ownerless rows as public.
+// Admins keep the established full-access policy. Every read and every
+// write funnels through this one function — no ad hoc checks.
+export function canAccessProject(row, { owner, admin }) {
   if (admin) return true;
-  if (row.owner === null || row.owner === undefined) return true;
-  return row.owner === (owner ?? null);
+  return (row.owner ?? null) === (owner ?? null);
 }
 
 async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null }) {
@@ -119,7 +125,7 @@ export async function getProject({ owner = null, id, admin = false }) {
     throw e;
   }
   if (!row) return { doc: null };
-  if (!canRead(row, { owner, admin })) return { doc: null };
+  if (!canAccessProject(row, { owner, admin })) return { doc: null };
   const doc = rowToDoc(row);
   if (!doc) {
     const err = new Error("stored project is corrupt");
@@ -141,7 +147,7 @@ export async function listProjects({ owner = null, admin = false }) {
   }
   const out = [];
   for (const row of rows) {
-    if (!canRead(row, { owner, admin })) continue;
+    if (!canAccessProject(row, { owner, admin })) continue;
     const doc = rowToDoc(row);
     if (!doc) continue;
     out.push(projectSummary(doc));
@@ -175,7 +181,7 @@ async function saveProjectInner({ owner = null, id, admin = false, baseRevision,
       err.code = "not-found";
       throw err;
     }
-    if (!canRead(row, { owner, admin })) {
+    if (!canAccessProject(row, { owner, admin })) {
       db.exec("ROLLBACK");
       const err = new Error(`no such project ${id}`);
       err.code = "not-found";
@@ -250,10 +256,15 @@ async function saveProjectInner({ owner = null, id, admin = false, baseRevision,
   }
 }
 
-async function renameProjectInner({ owner = null, id, admin = false, title }) {
+async function renameProjectInner({ owner = null, id, admin = false, baseRevision, title }) {
   if (!validProjectId(id)) {
     const err = new Error(`invalid project id ${id}`);
     err.code = "invalid-id";
+    throw err;
+  }
+  if (!Number.isInteger(baseRevision) || baseRevision < 0) {
+    const err = new Error("baseRevision must be a non-negative integer");
+    err.code = "invalid-document";
     throw err;
   }
   const clean = String(title ?? "").trim();
@@ -266,7 +277,7 @@ async function renameProjectInner({ owner = null, id, admin = false, title }) {
   db.exec("BEGIN IMMEDIATE");
   try {
     const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(id);
-    if (!row || !canRead(row, { owner, admin })) {
+    if (!row || !canAccessProject(row, { owner, admin })) {
       db.exec("ROLLBACK");
       const err = new Error(`no such project ${id}`);
       err.code = "not-found";
@@ -279,6 +290,18 @@ async function renameProjectInner({ owner = null, id, admin = false, title }) {
       err.code = "invalid-document";
       throw err;
     }
+    // The expected-revision check shares the transaction with the
+    // write, so two same-base renames serialize to one winner and one
+    // stale conflict — the same no-lost-update principle as scene
+    // saves, without retransmitting the presentation.
+    if (baseRevision !== stored.revision) {
+      db.exec("ROLLBACK");
+      return { status: "stale", expected: stored.revision, actual: baseRevision };
+    }
+    if (clean === stored.title) {
+      db.exec("ROLLBACK");
+      return { status: "noop", doc: structuredClone(stored) };
+    }
     const now = new Date().toISOString();
     const next = { ...structuredClone(stored), title: clean, updatedAt: now, revision: stored.revision + 1 };
     const res = db
@@ -286,17 +309,16 @@ async function renameProjectInner({ owner = null, id, admin = false, title }) {
       .run(next.title, JSON.stringify(next), next.revision, now, id, stored.revision);
     if (res.changes !== 1) {
       db.exec("ROLLBACK");
-      const err = new Error("concurrent rename conflict — reload and retry");
-      err.code = "stale";
-      throw err;
+      const fresh = db.prepare("SELECT revision FROM v2_projects WHERE id=?").get(id);
+      return { status: "stale", expected: fresh?.revision ?? stored.revision + 1, actual: baseRevision };
     }
     db.exec("COMMIT");
-    return { doc: structuredClone(next) };
+    return { status: "saved", doc: structuredClone(next) };
   } catch (err) {
     try {
       db.exec("ROLLBACK");
     } catch { /* path already rolled back */ }
-    if (err && (err.code === "not-found" || err.code === "invalid-document" || err.code === "invalid-id" || err.code === "stale")) throw err;
+    if (err && (err.code === "not-found" || err.code === "invalid-document" || err.code === "invalid-id")) throw err;
     const e = new Error(`storage unavailable: ${err.message}`);
     e.code = "storage-unavailable";
     throw e;
@@ -312,7 +334,7 @@ async function deleteProjectInner({ owner = null, id, admin = false }) {
   const db = ensureSchema();
   try {
     const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
-    if (!row || !canRead(row, { owner, admin })) return { removed: false };
+    if (!row || !canAccessProject(row, { owner, admin })) return { removed: false };
     const res = db.prepare("DELETE FROM v2_projects WHERE id=?").run(id);
     return { removed: res.changes === 1 };
   } catch (err) {
