@@ -157,6 +157,11 @@ async function ensureSchemaPool(p) {
 async function withTxn(fn) {
   const p = await pool();
   const client = await p.connect().catch((err) => { throw storageUnavailable(err); });
+  // A backend terminated mid-transaction emits 'error' on the
+  // checked-out client; without a listener that event crashes the
+  // process. The failure itself still rejects the pending query and
+  // is mapped below — this only keeps the crash from doubling it.
+  client.on("error", () => { /* mapped at the pending query */ });
   try {
     await client.query("BEGIN");
     try {
