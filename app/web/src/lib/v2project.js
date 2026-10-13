@@ -1,0 +1,186 @@
+// V2 project client: fetch wrappers plus the save-state machine the
+// SceneViewer drives. Framework-free except for fetch/localStorage
+// injection points (tests drive it headless with fakes).
+//
+// Save-state contract (never "Saved" on engine success alone):
+//   idle — no project bound yet
+//   dirty — engine revision moved past the last confirmed save
+//   saving — one PUT in flight (no overlapping saves per project)
+//   saved — server confirmed; savedEngineRev === engine rev at submit
+//   stale — server reported a newer stored revision; edits kept
+//   error — validation failure; edits kept, draft preserved
+//   unavailable — network/store failure; editing continues, warned
+//
+// A save captures a known authoritative revision: the scenes snapshot
+// plus the engine revision at submit time. If further edits land while
+// the PUT is in flight, the older response never marks them saved —
+// savedEngineRev advances only when it still equals the submitted rev.
+export const LAST_PROJECT_KEY = "forge.v2.lastProject";
+export const AUTOSAVE_DELAY_MS = 2000;
+
+export async function apiList(fetchFn = fetch) {
+  const res = await fetchFn("/api/v2/projects");
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) throw new Error(body?.error ?? `list failed (${res.status})`);
+  return body.projects ?? [];
+}
+
+export async function apiCreate({ title, scenes, theme, origin }, fetchFn = fetch) {
+  const res = await fetchFn("/api/v2/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, scenes, theme, origin }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `create failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return body.project;
+}
+
+export async function apiLoad(id, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`);
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `load failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return body.project;
+}
+
+export async function apiSave(id, { baseRevision, title, scenes, theme, origin }, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ baseRevision, title, scenes, theme, origin }),
+  });
+  const body = await res.json().catch(() => null);
+  if (res.status === 409 || body?.code === "stale-revision") {
+    const err = new Error(body?.error ?? "stale project revision");
+    err.code = "stale-revision";
+    err.expectedRevision = body?.expectedRevision ?? null;
+    err.actualRevision = body?.actualRevision ?? null;
+    throw err;
+  }
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `save failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return body.project;
+}
+
+export async function apiRename(id, title, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `rename failed (${res.status})`);
+    err.code = body?.code ?? null;
+    throw err;
+  }
+  return body.project;
+}
+
+export async function apiRemove(id, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { method: "DELETE" });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) throw new Error(body?.error ?? `delete failed (${res.status})`);
+  return true;
+}
+
+export function readLastProject(storage = null) {
+  try {
+    const s = storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
+    return s?.getItem(LAST_PROJECT_KEY) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function writeLastProject(id, storage = null) {
+  try {
+    const s = storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
+    if (id) s?.setItem(LAST_PROJECT_KEY, id);
+    else s?.removeItem(LAST_PROJECT_KEY);
+  } catch { /* persistence hint only — never blocks editing */ }
+}
+
+// One autosave lane per project session: coalesces rapid edits into a
+// single PUT after a quiet period, never overlaps saves, retries one
+// transient failure, and reports persistent failure without losing
+// edits. The caller supplies authoritative snapshots; drafts
+// (open text sessions, unapplied chart/table grids) never enter here.
+export function createAutosave({ delayMs = AUTOSAVE_DELAY_MS, saveNow, onState }) {
+  let timer = null;
+  let running = false;
+  let queued = false;
+  let failures = 0;
+  let disposed = false;
+
+  async function run() {
+    if (disposed || running) {
+      queued = true;
+      return;
+    }
+    running = true;
+    try {
+      await saveNow();
+      failures = 0;
+    } catch (err) {
+      failures += 1;
+      // One retry for a transient failure; a second consecutive
+      // failure surfaces and waits for the next edit or manual save.
+      if (failures === 1 && !disposed) {
+        await new Promise((r) => setTimeout(r, 1500));
+        if (!disposed) {
+          try {
+            await saveNow();
+            failures = 0;
+          } catch (err2) {
+            onState?.({ type: "autosave-failed", error: err2 });
+          }
+        }
+      } else {
+        onState?.({ type: "autosave-failed", error: err });
+      }
+    } finally {
+      running = false;
+      if (queued && !disposed) {
+        queued = false;
+        schedule();
+      }
+    }
+  }
+
+  function schedule() {
+    if (disposed) return;
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      run();
+    }, delayMs);
+  }
+
+  function cancel() {
+    if (timer) clearTimeout(timer);
+    timer = null;
+    queued = false;
+  }
+
+  function dispose() {
+    disposed = true;
+    cancel();
+  }
+
+  return { schedule, cancel, dispose };
+}
