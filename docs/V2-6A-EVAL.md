@@ -136,7 +136,11 @@ the Projects dialog links the stored export.
 ## 12. Test results
 
 - `test/v2-projects-6a.test.js` — 17/17 (fail-first: `ERR_MODULE_NOT_FOUND`
-  for `packages/projects/document.js` on isolated `fa557c4`).
+  for `packages/projects/document.js` on isolated `fa557c4`; rename
+  call updated to the V2-6A-1 `baseRevision` contract).
+- `test/v2-projects-6a1.test.js` — 18/18 correction suite
+  (`docs/V2-6A1-EVAL.md`): ownership matrices, rename races, and
+  hosted/local HTTP isolation.
 - `test/v2-edit-chrome-6a.test.js` — 5/5 (same baseline fails at
   import; hosted-mode 401/400/413 and local 200 verified by live curl).
 - Focused regression family (engine, ownership, tombstones, text,

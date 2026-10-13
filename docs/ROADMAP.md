@@ -7342,6 +7342,14 @@ scale); charts structurally exact without axes (V2-4C).
   proven on `fa557c4`). Durable undo history explicitly deferred;
   next slice is the command-audit log, then hosted-DB replacement
   of the adapter.
+- [~] V2-6A-1 ownership isolation and revision-safe renaming —
+  correction to V2-6A (this branch, pending independent review):
+  exact-match ownership through one canonical predicate (ownerless
+  rows are never public, no silent claiming), and renames gated on
+  `baseRevision` with transactional stale/noop outcomes carried
+  through HTTP, client, and dialog (`docs/V2-6A1-EVAL.md`;
+  `test/v2-projects-6a1.test.js` 18/18, fail-first proven on
+  `a5fa83b`). V2-6A stays pending acceptance; V2-6B not started.
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

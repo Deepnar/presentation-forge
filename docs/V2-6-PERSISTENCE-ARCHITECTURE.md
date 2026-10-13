@@ -77,7 +77,10 @@ cannot reset.
 Save outcomes are explicit: `saved`, `noop` (identical state, no
 advance), `stale-revision` (409 with expected/actual, edits kept),
 `invalid-document` (422, edits kept), `storage-unavailable` (503,
-editing continues with a warning).
+editing continues with a warning). Renames (`PATCH` with
+`{ title, baseRevision }`) obey the same contract on the same
+counter: stale bases refuse, identical titles no-op, success advances
+exactly once — see the V2-6A-1 correction record.
 
 ## 5. Concurrency without merging
 
@@ -113,6 +116,13 @@ standing as ownerless legacy decks); hosted deployments require a
 session on every project route (401 otherwise — verified live), owners
 scope to their own email, admins see all. `FORGE_V2_PROJECTS=0`
 disables the surface entirely.
+
+Ownership is exact-match everywhere through one canonical predicate
+(`canAccessProject`, corrected in V2-6A-1): an authenticated caller
+sees only its own rows, an anonymous local caller sees only ownerless
+rows, and ownerless rows are never public — no silent claiming for
+the first authenticated visitor. Denied lookups answer 404 without
+leaking scenes, metadata, or existence.
 
 `app/web/src/lib/v2project.js` owns the client contract: the saved
 pill reflects confirmed PUTs only; a save captures the scenes snapshot

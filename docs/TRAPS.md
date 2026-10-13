@@ -543,6 +543,21 @@ separates the two cases already existed one file away, in `meta.status`. Before
 trusting a derived boolean as a fault detector, ask what it reads on a
 completely healthy object.
 
+**"No owner recorded" is not "public".** An authorization helper
+that returns true for ownerless rows hands every authenticated caller
+— and every anonymous one where the route admits them — the whole
+local store, across reads AND writes through the same helper. Match
+ownership exactly (null equals null, nothing else), keep one
+canonical predicate for all operations, and never let the first
+authenticated visitor silently claim what has no owner.
+
+**A `WHERE id=? AND revision=?` clause that compares a value to
+itself checks nothing.** Reading the revision, then writing `WHERE
+revision=<just read>`, admits every same-base racer: both commits
+land and the second title silently wins. The expected revision must
+arrive from the caller (the base it actually saw) and be checked
+inside the transaction — for renames exactly as for saves.
+
 **One SQLite connection holds one open transaction, and an `await`
 inside it is an open door.** A save that validates (async AJV) between
 `BEGIN IMMEDIATE` and `COMMIT` works alone and throws "cannot start a

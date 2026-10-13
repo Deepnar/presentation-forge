@@ -1,46 +1,40 @@
-# Handoff — V2-6A durable projects implemented, pending review
+# Handoff — V2-6A-1 ownership and rename corrections implemented, pending review
 
 Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
 `docs/ROADMAP.md` → **§12 V2.1 program** (V2-4 [x];
-V2-5 [~]; V2-5A through V2-5J1 [x]; V2-5K [x] at `fa557c4`;
-V2-6A [~] pending independent review with `docs/V2-6A-EVAL.md`;
-V2-6 parent stays `[ ]` — cloud replacement is a later slice).
+V2-5 [~]; V2-5A through V2-5K [x] at `fa557c4`; V2-6A [~]
+with `docs/V2-6A-EVAL.md`; V2-6A-1 [~] pending independent
+review with `docs/V2-6A1-EVAL.md`; V2-6 parent stays `[ ]`).
 
 ## Current state
 
-On `v2`, over `fa557c4`. This session built V2-6A end to end:
-a versioned project document (`packages/projects/` — id, title,
-schemaVersion 1, durable revision, timestamps, theme ref, origin,
-ordered scenes), a SQLite `ProjectStore` seam (`src/projects/store.js`,
-serialized `BEGIN IMMEDIATE` saves, optimistic concurrency, noop
-detection), thin HTTP routes (`app/server/v2-projects-routes.js` —
-CRUD + stored-document PPTX export, local-anon/hosted-session gating),
-a client save-state machine with autosave lane
-(`app/web/src/lib/v2project.js`), and viewer workflow
-(`SceneViewer.jsx` — Save pill, Projects dialog, refresh recovery,
-switch guards, draft policy).
+On `v2`, over `a5fa83b`. This session fixed the two V2-6A review
+findings without touching the project model, engine, or autosave
+architecture: C1 exact-match ownership (`canAccessProject` shared by
+get/list/save/rename/delete/export — ownerless rows never public, no
+silent claiming) and C2 revision-gated renames (`baseRevision`
+required, transactional stale/noop, carried through PATCH, client,
+and dialog with drafts preserved). Driver:
+`test/v2-projects-6a1.test.js` (18/18, fail-first 3/3 on isolated
+`a5fa83b`).
 
-**Result for the reviewer.** Save → refresh → reopen → edit → save
-works with byte-identical scenes and no silent overwrites; stale
-writers get 409 with edits intact. Undo history does not survive
-reload (deferred by design, asserted). No accounts, sharing,
-collaboration, imports, renderers, templates, or agent runtime.
+**Result for the reviewer.** Cross-owner reads/writes refuse with
+404s that leak nothing; same-base renames serialize to one winner +
+one stale; the rename dialog keeps drafts and never marks scenes
+saved. No accounts, hosted-DB, or redesign work started.
 
 ## Verification (at push)
 
-- Headless `test/v2-projects-6a.test.js` 15/15; fail-first
-  `ERR_MODULE_NOT_FOUND` on isolated `fa557c4`.
-- Chrome `test/v2-edit-chrome-6a.test.js` 5/5 (isolated API+dist);
-  hosted 401 / traversal 400 / oversize 413 / local 200 by live curl.
-- Focused regression family 368/368 (engine through 5k + new).
-- `npm run typecheck` clean; production build green; benchmark 50
-  cells L1 zero.
-- Full `npm test` — exact totals in `docs/V2-6A-EVAL.md` §15
-  (background run at close; BYOK locale out of scope).
+- New `test/v2-projects-6a1.test.js` 18/18 (store matrices, rename
+  races, hosted/local HTTP with seeded sessions).
+- Existing V2-6A headless 17/17 (updated to the rename contract);
+  typecheck clean; production build green.
+- Full validation (bulk + bounded serial Chrome incl. the 6a browser
+  suite against the new client) — exact totals in
+  `docs/V2-6A1-EVAL.md` §10 at close; BYOK locale out of scope.
 
 ## Continue from here
 
-1. Independent review of V2-6A (commits, eval doc, architecture doc,
-   evidence, both suites, PPTX bytes).
-2. Do NOT begin V2-6B (audit log), hosted-DB replacement, layout
-   switching, or AI integration without authorization.
+1. Independent review of V2-6A-1, then V2-6A acceptance.
+2. Do NOT begin durable history, hosted storage, or further frontend
+   work without authorization.

@@ -1745,8 +1745,11 @@ the document and the engine's in-memory revision, bound client-side so
 a reload at engine 0 can never bypass the conflict contract. Undo
 history is in-memory only (deferred explicitly). Routes
 (`app/server/v2-projects-routes.js`) are a thin transport with hosted
-session gating; the viewer binds Save/list/rename/delete, refresh
-recovery, and a coalesced autosave lane behind confirmed-save states
+session gating and exact-match ownership (`canAccessProject` —
+ownerless rows are never public); renames carry `baseRevision` under
+the same no-lost-update contract as saves (`docs/V2-6A1-EVAL.md`);
+the viewer binds Save/list/rename/delete, refresh recovery, and a
+coalesced autosave lane behind confirmed-save states
 (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`).
 
 ## The web shell
