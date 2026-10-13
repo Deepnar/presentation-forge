@@ -170,3 +170,14 @@ zero, production build green, real Chrome green. Full
 `npm test`: exact totals at close (BYOK locale out of scope;
 bounded-concurrency browser isolation, nothing counted on
 kill/timeout).
+
+## 14. V2-5J1 correction (accepted baseline `015835d`)
+
+Review found the chrome boundary enforced only in the
+adapter: a direct engine envelope unlocked system chrome
+(`{ok: true, revision: 1}`, lock removed — reproduced live).
+Fixed at the canonical primitive (`applyCommand` refuses over
+one shared predicate in `scene-constants.ts`; actor strings
+confer nothing), with duplicate copies inheriting protection
+and ordinary lock/unlock untouched. Full detail:
+`docs/V2-5J1-EVAL.md`.

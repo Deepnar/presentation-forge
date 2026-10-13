@@ -287,7 +287,10 @@ or filesystem/SQLite adapters.
 - Layer arrangement (V2-5J): `element.reorder` rewrites ranks
   both projections sort by; `element.setLocked`/`setVisibility`
   toggle explicit booleans with system-chrome refusal at the
-  user-command boundary; recompile carries z, user locks, and
+  user-command boundary — enforced at the canonical primitive
+  over one shared predicate, so direct engine and batch
+  callers cannot unlock protected chrome either (V2-5J1;
+  `docs/V2-5J1-EVAL.md`); recompile carries z, user locks, and
   defined hidden values (`docs/V2-5J-EVAL.md` §§2–6).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase

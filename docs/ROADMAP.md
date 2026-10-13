@@ -7310,7 +7310,8 @@ scale); charts structurally exact without axes (V2-4C).
   z-is-the-rank contract, user locks with system-chrome
   protection, truthful hide/show, and native PPTX parity
   (pending independent review: `docs/V2-5J-EVAL.md` +
-  `docs/layers-evidence/`).
+  `docs/layers-evidence/`; lock-boundary correction in
+  `docs/V2-5J1-EVAL.md`).
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

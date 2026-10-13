@@ -1557,3 +1557,16 @@ succeeds milliseconds later, which reads exactly like a dropped
 command. Capture synchronously, track the async tail: any commit
 entry point must register its pending work before its first
 `await`, or no test can deterministically observe it.
+
+**A check enforced only in the UI is not enforced.** V2-5J
+refused unlocking system chrome in the browser adapter while
+the shared engine accepted the identical envelope — `{ok:
+true, revision: 1}` with the lock removed, reproduced live
+against the accepted baseline. Every future agent, batch, or
+headless caller rides the engine, never the adapter, so a
+UI-side guard reads as a boundary and protects nothing. Put
+ownership and safety checks in the canonical primitive
+(`applyCommand`), keep the UI refusal as a fast-path message,
+and prove the bypass directly: one test submitting the
+forbidden envelope without the UI, asserting rejection plus
+untouched scene, revision, and history.
