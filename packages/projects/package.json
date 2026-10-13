@@ -1,0 +1,6 @@
+{
+  "name": "@forge/projects",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "V2 durable project document: versioned envelope around authoritative SlideScenes. Pure helpers only; durability lives in src/projects/store.js."
+}
