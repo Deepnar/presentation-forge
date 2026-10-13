@@ -135,13 +135,15 @@ the Projects dialog links the stored export.
 
 ## 12. Test results
 
-- `test/v2-projects-6a.test.js` — 15/15 (fail-first: `ERR_MODULE_NOT_FOUND`
+- `test/v2-projects-6a.test.js` — 17/17 (fail-first: `ERR_MODULE_NOT_FOUND`
   for `packages/projects/document.js` on isolated `fa557c4`).
 - `test/v2-edit-chrome-6a.test.js` — 5/5 (same baseline fails at
   import; hosted-mode 401/400/413 and local 200 verified by live curl).
 - Focused regression family (engine, ownership, tombstones, text,
   style, resize, format, chart, table, slides, layers, 5k layouts,
-  preservation + new): 368/368.
+  preservation): 368/368, plus the 5k gallery/headless suites
+  re-verified green against the modified viewer (31/31 headless,
+  9/9 + 5i blank/narrow Chrome).
 - `npm run typecheck` clean; production build green; benchmark 50
   cells L1 zero.
 - Full `npm test` totals recorded in §15 (background run at close).

@@ -7338,7 +7338,7 @@ scale); charts structurally exact without axes (V2-4C).
   with refresh recovery and a coalesced autosave lane, hosted
   session gating, and native export from stored documents
   (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`,
-  `docs/v2-6a-evidence/`; headless 15/15, Chrome 5/5, fail-first
+  `docs/v2-6a-evidence/`; headless 17/17, Chrome 5/5, fail-first
   proven on `fa557c4`). Durable undo history explicitly deferred;
   next slice is the command-audit log, then hosted-DB replacement
   of the adapter.
