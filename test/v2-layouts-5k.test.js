@@ -232,6 +232,74 @@ describe("v2-5k theme fallback", () => {
     assert.ok(chart.chart.labels.family, "chart inherits sibling label face");
   });
 
+  it("a dark run sampled off a card never becomes ink on a dark ground", () => {
+    const ctx = layoutContextFromSibling({
+      background: { fill: "101418" },
+      elements: [
+        { id: "a", kind: "text", x: 1, y: 1, w: 4, h: 1, z: 0, provenance: "compiler", paragraphs: [{ runs: [{ text: "dark on card", size: 16, color: "1A1A1A" }] }] },
+      ],
+    });
+    assert.equal(ctx.style.ink, "FFFFFF", "guard falls back to the legible pole");
+  });
+
+  it("every placeholder holds at least 3:1 against its effective ground", () => {
+    const lum = (hex) => {
+      const f = (c) => {
+        const v = (parseInt(c, 16) || 0) / 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      };
+      const h = String(hex || "FFFFFF");
+      return 0.2126 * f(h.slice(0, 2)) + 0.7152 * f(h.slice(2, 4)) + 0.0722 * f(h.slice(4, 6));
+    };
+    const ratio = (a, b) => {
+      const [hi, lo] = lum(a) >= lum(b) ? [lum(a), lum(b)] : [lum(b), lum(a)];
+      return (hi + 0.05) / (lo + 0.05);
+    };
+    const darkRun = [
+      { id: "a", kind: "text", x: 1, y: 1, w: 4, h: 1, z: 0, provenance: "compiler", paragraphs: [{ runs: [{ text: "dark on card", size: 16, color: "1A1A1A" }] }] },
+    ];
+    const mkSib = (fill, elements = []) => ({ id: "s", width: 13.333, height: 7.5, background: { fill }, layoutState: "managed", elements });
+    const hostile = mkSib("101418", darkRun);
+    // Effective ground for a text box: the topmost opaque shape
+    // beneath its center (band labels and step numbers sit on
+    // accent fills, not the slide ground); translucent card tints
+    // read as the ground showing through them.
+    const backingFill = (scene, el) => {
+      const cx = el.x + el.w / 2;
+      const cy = el.y + el.h / 2;
+      let best = null;
+      for (const s of scene.elements) {
+        if (s.kind !== "shape" || !(s.z < el.z)) continue;
+        if (s.shape.fillAlpha !== undefined && s.shape.fillAlpha < 0.99) continue;
+        if (cx >= s.x && cx <= s.x + s.w && cy >= s.y && cy <= s.y + s.h) {
+          if (!best || s.z > best.z) best = s;
+        }
+      }
+      return best ? best.shape.fill : scene.background.fill;
+    };
+    for (const sib of [mkSib("FFFFFF"), mkSib("101418"), mkSib("000000"), hostile]) {
+      for (const t of LAYOUT_TEMPLATES) {
+        const scene = buildLayoutScene(t.id, sib, { slideId: "s-contrast", newId: counter() });
+        const ground = scene.background.fill;
+        for (const el of scene.elements) {
+          if (el.kind === "text") {
+            const backing = backingFill(scene, el);
+            for (const p of el.paragraphs) {
+              for (const r of p.runs) {
+                assert.ok(ratio(r.color, backing) >= 3, `${t.id}/${el.id} ${r.color} on ${backing} reads ${ratio(r.color, backing).toFixed(2)}:1`);
+              }
+            }
+          }
+          if (el.kind === "table") {
+            const lo = el.table.layout;
+            assert.ok(ratio(lo.headerColor, lo.headerFill) >= 3, `${t.id} header pair legible`);
+            assert.ok(ratio(lo.bodyColor, ground) >= 3, `${t.id} body pair legible`);
+          }
+        }
+      }
+    }
+  });
+
   it("translucent and ground-matching fills never become the accent", () => {
     const sibling = {
       id: "sib", width: 13.333, height: 7.5,

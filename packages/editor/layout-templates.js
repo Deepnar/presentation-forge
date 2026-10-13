@@ -60,6 +60,32 @@ export function layoutInk(bgFill) {
   return lum < 0.45 ? "FFFFFF" : "1A1A1A";
 }
 
+// Relative luminance and contrast ratio (WCAG definition), kept
+// local so this module stays dependency-free. The sampler below
+// uses them as a legibility guard, never as a design tool.
+function luminance(bareHex) {
+  const f = (c) => {
+    const v = (parseInt(c, 16) || 0) / 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  };
+  const hex = String(bareHex || "FFFFFF");
+  return 0.2126 * f(hex.slice(0, 2)) + 0.7152 * f(hex.slice(2, 4)) + 0.0722 * f(hex.slice(4, 6));
+}
+
+function contrastRatio(a, b) {
+  const l1 = luminance(bare(a));
+  const l2 = luminance(bare(b));
+  const [hi, lo] = l1 >= l2 ? [l1, l2] : [l2, l1];
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+// Ink with the stronger contrast of the two readable poles —
+// strictly safer than a luminance threshold on mid-grey grounds.
+function bestInk(bgFill) {
+  const bg = bare(bgFill || "FFFFFF");
+  return contrastRatio("FFFFFF", bg) >= contrastRatio("1A1A1A", bg) ? "FFFFFF" : "1A1A1A";
+}
+
 function walkElements(els, visit) {
   for (const el of els ?? []) {
     visit(el);
@@ -125,15 +151,21 @@ export function layoutContextFromSibling(sibling) {
   const runs = siblingRuns(sibling);
   const headingRun = runs.find((r) => (r?.size ?? 0) >= 22 && (r?.text ?? "").trim() !== "") ?? null;
   const bodyRun = runs.find((r) => (r?.size ?? 0) < 22 && (r?.text ?? "").trim() !== "") ?? headingRun;
-  const ink = isHex6(bodyRun?.color) ? bare(bodyRun.color).toUpperCase()
+  // A sampled run may sit on a light card rather than the ground —
+  // dark text sampled off a card is unreadable on a dark slide.
+  // Below a 3:1 ratio against the ground the sample is discarded
+  // for the higher-contrast pole, so placeholders stay visible on
+  // light, dark, and high-contrast grounds alike.
+  let ink = isHex6(bodyRun?.color) ? bare(bodyRun.color).toUpperCase()
     : isHex6(headingRun?.color) ? bare(headingRun.color).toUpperCase()
     : layoutInk(bgFill);
+  if (contrastRatio(ink, bgFill) < 3) ink = bestInk(bgFill);
   const accent = sampleAccent(sibling, bgFill);
   const family = bodyRun?.family ?? headingRun?.family;
   const style = {
     ink,
     accent,
-    onAccent: layoutInk(accent),
+    onAccent: bestInk(accent),
     family: typeof family === "string" && family !== "" ? family : undefined,
     displaySize: headingRun?.size ? clamp(Math.round(headingRun.size * 1.25), 30, 44) : SIZE.display,
     headingSize: headingRun?.size ? clamp(Math.round(headingRun.size), 24, 40) : SIZE.heading,
