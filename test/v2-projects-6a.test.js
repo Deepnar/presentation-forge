@@ -280,6 +280,51 @@ describe("v2-6a complete scene round-trip", () => {
   });
 });
 
+describe("v2-6a autosave lane", () => {
+  it("coalesces rapid edits into one save without overlapping", async () => {
+    const { createAutosave } = await import("../app/web/src/lib/v2project.js");
+    let calls = 0;
+    let release = null;
+    const gate = new Promise((r) => { release = r; });
+    const lane = createAutosave({
+      delayMs: 10,
+      saveNow: async () => {
+        calls += 1;
+        if (calls === 1) await gate;
+      },
+      onState: () => {},
+    });
+    lane.schedule();
+    lane.schedule();
+    lane.schedule();
+    await new Promise((r) => setTimeout(r, 60));
+    assert.equal(calls, 1, "one flight despite three schedules");
+    release();
+    await new Promise((r) => setTimeout(r, 60));
+    assert.ok(calls <= 2, "no pile-up after release");
+    lane.dispose();
+  });
+
+  it("retries one transient failure, then surfaces persistent failure", async () => {
+    const { createAutosave } = await import("../app/web/src/lib/v2project.js");
+    let calls = 0;
+    const seen = [];
+    const lane = createAutosave({
+      delayMs: 10,
+      saveNow: async () => {
+        calls += 1;
+        if (calls === 1) throw new Error("transient down");
+      },
+      onState: (e) => seen.push(e),
+    });
+    lane.schedule();
+    await new Promise((r) => setTimeout(r, 2500));
+    assert.equal(calls, 2, "initial plus exactly one retry");
+    assert.equal(seen.length, 0, "recovered failure never surfaces");
+    lane.dispose();
+  });
+});
+
 describe("v2-6a revision conflicts and atomicity", () => {
   it("second writer on a stale base loses without overwriting", async () => {
     const store = await import("../src/projects/store.js");
