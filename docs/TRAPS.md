@@ -543,6 +543,28 @@ separates the two cases already existed one file away, in `meta.status`. Before
 trusting a derived boolean as a fault detector, ask what it reads on a
 completely healthy object.
 
+**One SQLite connection holds one open transaction, and an `await`
+inside it is an open door.** A save that validates (async AJV) between
+`BEGIN IMMEDIATE` and `COMMIT` works alone and throws "cannot start a
+transaction within a transaction" the moment two saves overlap — the
+second `BEGIN`s inside the first's yielded transaction. The fix is the
+engine's own shape: one FIFO lane so a job's check and write share its
+acquired turn, with reads staying concurrent. Any store on a
+single-connection driver needs this lane before its first
+concurrent-save test, not after.
+
+**Assigning `obj["__proto__"] = x` sets the prototype — it does not
+create a key.** A pollution test built that way passes vacuously:
+`Object.keys` never shows it and the guard has nothing to refuse. Build
+the evil object through `JSON.parse` (which mints a real own property)
+if the test is meant to prove the refusal path.
+
+**Compiler z ranks step by 10, not by 1.** Real decks carry
+`[10, 20, …]`; only the gallery templates mirror array order. A test
+asserting `z === index` passes on skeletons and fails on every
+generated deck. Assert rank-sorted uniqueness for compiler scenes and
+mirror-order only where the builder promises it.
+
 **Prefer a denylist when the allowlist is the long half.** Classifying image
 sources as citable looked like a job for a list of the institutions to trust.
 Openverse carries 52 providers and 42 are museums, archives, government agencies
@@ -671,6 +693,13 @@ expression are just characters, and React escapes them on the way out. The
 footer read "The only thing that starts research &amp; planning." on screen.
 Grep for `&amp;` and check whether each hit is JSX text or a string literal;
 they look identical in the diff and behave oppositely.
+
+**`??` cannot share an expression with `&&` or `||` without
+parentheses.** `a ?? b === 'x' && c` is a SyntaxError, not a
+precedence surprise — the grammar refuses to parse it. Composing CDP
+poll expressions from `??`-based reader snippets trips this every
+time; parenthesise each reader at its definition so every composition
+is already safe.
 
 **Sizing a box to its content and placing the box are the same decision, and
 only the first half tends to get made.** `framework`'s grid takes the SMALLER

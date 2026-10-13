@@ -1729,6 +1729,26 @@ atomicity, (slideId, elementId) addressing, batch entries,
 two-layer provenance, and regeneration-suppression rules
 over the existing `commands.ts` + preservation foundation.
 
+## V2 durable projects (V2-6A)
+
+The editor's scenes persist as a versioned **project document**
+(`packages/projects/`): stable id, title, format version, durable
+save revision, timestamps, theme reference, origin record, and the
+ordered authoritative scenes — validated envelope-first, then each
+scene through the Layer-C contract on every write and read. The
+`ProjectStore` interface (`src/projects/store.js`) is the durability
+seam, implemented over the existing SQLite database (`v2_projects`
+table, serialized `BEGIN IMMEDIATE` saves with optimistic
+concurrency); a future hosted database replaces the module, never the
+model. Two counters stay separate by design: the durable revision on
+the document and the engine's in-memory revision, bound client-side so
+a reload at engine 0 can never bypass the conflict contract. Undo
+history is in-memory only (deferred explicitly). Routes
+(`app/server/v2-projects-routes.js`) are a thin transport with hosted
+session gating; the viewer binds Save/list/rename/delete, refresh
+recovery, and a coalesced autosave lane behind confirmed-save states
+(`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`).
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
@@ -2438,7 +2458,7 @@ is no second account to leak to and `decks/<topic>` is the name every sweep and
 | `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it. `identityStatus()` reports it as missing / template / incomplete / ok at boot and in Admin, because an unset default is wrong silently — the deck renders, under the wrong institution |
 | `config/identities/<hash>.yaml` | no | one account's identity overrides — institution, guide, brand paths |
 | `config/local.yaml` | no | the install-wide provider key + the fallback `routing.default`; per-account keys live encrypted in the DB |
-| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), routing, Auto usage, BYOK budgets/usage and cost-acceptance timestamps |
+| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), routing, Auto usage, BYOK budgets/usage and cost-acceptance timestamps — and since V2-6A the `v2_projects` table: durable V2 project documents (versioned scene envelopes + save revision), the one store the editor persists through |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `config/presets/` | no | saved briefing formats, one file per user |
 | `config/uploads/` | no | staged briefing documents — upload-only research mode; short-lived (swept after the TTL), resolved by token at planning |

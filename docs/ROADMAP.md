@@ -7312,7 +7312,7 @@ scale); charts structurally exact without axes (V2-4C).
   primitive, truthful hide/show, and native PPTX parity
   (`docs/V2-5J-EVAL.md` + `docs/layers-evidence/`;
   lock-boundary correction `docs/V2-5J1-EVAL.md`, same head).
-- [~] V2-5K new-slide layout gallery — manual slide creation
+- [x] V2-5K new-slide layout gallery — manual slide creation
   from editable Layer-C skeletons, independent of the AI
   composition selector. Small deterministic template registry
   (stable id, name, category, description, use case, preview,
@@ -7322,13 +7322,26 @@ scale); charts structurally exact without axes (V2-4C).
   with truthful same-scene SVG previews, human provenance +
   `customized` ownership, sibling-sampled theme fallback, and
   native PPTX export. Layout switching on existing slides is
-  explicitly out of scope (future item below). Landed on this
-  branch, pending independent review: `docs/V2-5K-EVAL.md` +
+  explicitly out of scope (future item below). Accepted at
+  `fa557c4`: `docs/V2-5K-EVAL.md` +
   `docs/layout-gallery-evidence/` (headless 31/31, Chrome 9/9,
   fail-first proven on `dd4ab9b`, benchmark 50 cells L1 zero);
   legacy audit `docs/V2-LAYOUT-CATALOG-MAP.md` (74 types counted
   from the schema: 17 direct, 27 alias, 5 partial, 25 omitted
   with mechanics recorded).
+- [~] V2-6A durable project storage and revision-safe save/load —
+  phase one of V2-6 (this branch, pending independent review):
+  versioned project documents (`packages/projects/`) over the
+  existing SQLite database (`ProjectStore` seam), explicit
+  save/load/list/rename/delete with optimistic concurrency,
+  engine-revision vs durable-revision binding, confirmed-save UI
+  with refresh recovery and a coalesced autosave lane, hosted
+  session gating, and native export from stored documents
+  (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`, `docs/V2-6A-EVAL.md`,
+  `docs/v2-6a-evidence/`; headless 15/15, Chrome 5/5, fail-first
+  proven on `fa557c4`). Durable undo history explicitly deferred;
+  next slice is the command-audit log, then hosted-DB replacement
+  of the adapter.
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6
@@ -7396,6 +7409,13 @@ deletion; generated exports/previews/temp files get TTLs with an
 "Export expired / Generate again" state, never whole-project deletion.
 Vercel Cron over an idempotent metadata-driven cleanup endpoint replaces
 the in-process sweep. No SMTP dependency for retention.
+
+Phase one (V2-6A, this branch, pending review) binds the durable
+project locally first: versioned scene documents over the existing
+SQLite database behind the `ProjectStore` seam, with revision-safe
+save/load already proven — see the V2-6A entry under V2-5 above and
+`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`. The cloud replacement swaps
+the adapter, never the model.
 
 Done when: no hosted project depends on local disk, and an expired
 export regenerates from intact project state.

@@ -251,6 +251,15 @@ revision integer beside the snapshot, tombstones if D1
 lands that way. Nothing in §§2–8 contradicts Neon/JSONB
 or filesystem/SQLite adapters.
 
+> **Bound in V2-6A** (`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`):
+> the durable shape is a versioned project document (scenes +
+> save revision, `packages/projects/`), stored through the
+> `ProjectStore` interface over SQLite. Snapshot history stays
+> in-memory by explicit policy; envelopes + inverses remain
+> recorded in-session for a future audit log. No platform fork:
+> browser and server execute the same engine, and the routes
+> carry scenes, never reinterpret them.
+
 ## 14. Known risks and unresolved decisions
 
 - D1 tombstones for deleted compiler elements — **decided
