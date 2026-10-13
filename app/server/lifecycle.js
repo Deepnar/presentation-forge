@@ -136,5 +136,20 @@ export async function configureLifecycle(app) {
   await seedOperator();
   scheduleDeckSweep();
   scheduleUsagePrune();
+  reportProjectsBackend();
   await serveBuiltUi(app);
+}
+
+// One honest boot line naming the active project store. Never
+// prints URLs, credentials, or content — selection only.
+async function reportProjectsBackend() {
+  try {
+    const { describeProjectsBackend } = await import("../../src/projects/backend.js");
+    const d = describeProjectsBackend();
+    if (d.backend === "postgres") console.log(`  projects store: postgres (pool max ${d.poolMax})`);
+    else if (d.backend === "sqlite") console.log("  projects store: sqlite (local file)");
+    else console.warn(`  WARNING: ${d.reason} — project routes answer 503 until it is set`);
+  } catch (err) {
+    console.warn(`  WARNING: could not resolve project store backend (${err?.message ?? err})`);
+  }
 }

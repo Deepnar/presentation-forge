@@ -1,8 +1,9 @@
-// V2 projects over HTTP: thin transport over src/projects/store.js.
-// No scene logic here — validation lives in the project model, durability
-// in the store, revision authority in the save transaction. This module
-// owns HTTP concerns only: body size caps, id shape, auth gating, and
-// status-code mapping.
+// V2 projects over HTTP: thin transport over the selected project
+// store (src/projects/backend.js — SQLite by default, PostgreSQL
+// when configured). No scene logic here — validation lives in the
+// project model, durability in the store, revision authority in the
+// save transaction. This module owns HTTP concerns only: body size
+// caps, id shape, auth gating, and status-code mapping.
 //
 // Exposure: local development allows unauthenticated use (single-user
 // box, same as the legacy ownerless decks). On a hosted deployment the
@@ -15,6 +16,7 @@ import { resolveUser } from "./auth-routes.js";
 import { isAdmin } from "../../src/auth.js";
 import { validateProjectDocument, validateSavePayload, validProjectId } from "../../packages/projects/document.js";
 import { renderPptx, preflightScenes } from "../../packages/renderer-pptx/render.ts";
+import { projectStore } from "../../src/projects/backend.js";
 
 export function projectsAllowed() {
   if (process.env.FORGE_V2_PROJECTS === "1") return true;
@@ -62,6 +64,9 @@ function mapStoreError(res, err) {
   if (code === "storage-unavailable") {
     return res.status(503).json({ ok: false, error: err.message, code: "storage-unavailable" });
   }
+  if (code === "store-misconfigured") {
+    return res.status(503).json({ ok: false, error: err.message, code: "store-misconfigured" });
+  }
   if (code === "stale") return res.status(409).json({ ok: false, error: err.message, code: "stale" });
   if (code === "revision-pruned") return res.status(410).json({ ok: false, error: err.message, code: "revision-pruned" });
   return fail(res, 500, err?.message ?? "project request failed");
@@ -72,7 +77,7 @@ export function registerV2ProjectRoutes(app) {
     if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { listProjects } = await import("../../src/projects/store.js");
+    const { listProjects } = await projectStore();
     try {
       const { projects } = await listProjects({ owner: who.owner, admin: who.admin });
       ok(res, { projects });
@@ -97,7 +102,7 @@ export function registerV2ProjectRoutes(app) {
     if (!payloadVerdict.ok) {
       return res.status(422).json({ ok: false, error: payloadVerdict.errors[0], errors: payloadVerdict.errors, code: "invalid-document" });
     }
-    const { createProject } = await import("../../src/projects/store.js");
+    const { createProject } = await projectStore();
     try {
       const { doc } = await createProject({ owner: who.owner, title: title.trim(), scenes, theme, origin });
       ok(res, { project: doc });
@@ -111,7 +116,7 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { getProject } = await import("../../src/projects/store.js");
+    const { getProject } = await projectStore();
     try {
       const { doc } = await getProject({ owner: who.owner, id: req.params.id, admin: who.admin });
       if (!doc) return fail(res, 404, "no such project");
@@ -132,7 +137,7 @@ export function registerV2ProjectRoutes(app) {
     if (!verdict.ok) {
       return res.status(422).json({ ok: false, error: verdict.errors[0], errors: verdict.errors, code: "invalid-document" });
     }
-    const { saveProject } = await import("../../src/projects/store.js");
+    const { saveProject } = await projectStore();
     try {
       const out = await saveProject({
         owner: who.owner, id: req.params.id, admin: who.admin,
@@ -161,7 +166,7 @@ export function registerV2ProjectRoutes(app) {
     if (!Number.isInteger(baseRevision) || baseRevision < 0) {
       return res.status(422).json({ ok: false, error: "baseRevision must be a non-negative integer", code: "invalid-document" });
     }
-    const { renameProject } = await import("../../src/projects/store.js");
+    const { renameProject } = await projectStore();
     try {
       const out = await renameProject({ owner: who.owner, id: req.params.id, admin: who.admin, baseRevision, title });
       if (out.status === "stale") {
@@ -179,7 +184,7 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { deleteProject } = await import("../../src/projects/store.js");
+    const { deleteProject } = await projectStore();
     try {
       const { removed } = await deleteProject({ owner: who.owner, id: req.params.id, admin: who.admin });
       if (!removed) return fail(res, 404, "no such project");
@@ -197,7 +202,7 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { listRevisions } = await import("../../src/projects/store.js");
+    const { listRevisions } = await projectStore();
     try {
       const out = await listRevisions({ owner: who.owner, id: req.params.id, admin: who.admin });
       ok(res, { currentRevision: out.currentRevision, retention: out.retention, revisions: out.revisions });
@@ -215,7 +220,7 @@ export function registerV2ProjectRoutes(app) {
     if (!Number.isInteger(rev) || rev < 0) {
       return res.status(422).json({ ok: false, error: "revision must be a non-negative integer", code: "invalid-document" });
     }
-    const { getRevision } = await import("../../src/projects/store.js");
+    const { getRevision } = await projectStore();
     try {
       const out = await getRevision({ owner: who.owner, id: req.params.id, admin: who.admin, revision: rev });
       if (out.pruned) {
@@ -240,7 +245,7 @@ export function registerV2ProjectRoutes(app) {
     if (!Number.isInteger(baseRevision) || baseRevision < 0) {
       return res.status(422).json({ ok: false, error: "baseRevision must be a non-negative integer", code: "invalid-document" });
     }
-    const { restoreRevision } = await import("../../src/projects/store.js");
+    const { restoreRevision } = await projectStore();
     try {
       const out = await restoreRevision({
         owner: who.owner, id: req.params.id, admin: who.admin,
@@ -263,7 +268,7 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { getProject } = await import("../../src/projects/store.js");
+    const { getProject } = await projectStore();
     try {
       const { doc } = await getProject({ owner: who.owner, id: req.params.id, admin: who.admin });
       if (!doc) return fail(res, 404, "no such project");

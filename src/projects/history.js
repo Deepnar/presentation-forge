@@ -129,12 +129,12 @@ export function ensureHistorySchema(db) {
   `);
 }
 
-// Insert one history row for an already-validated document. Must be
-// called inside the caller's write transaction so the project row
-// and its history commit atomically — never one without the other.
-export function insertRevisionRow(db, { projectId, doc, kind, provenance, restoredFrom = null }) {
+// Pure audit builder shared by every backend: the audit JSON for
+// one history row. Ids and summaries only — never executable ops —
+// so both stores record the same description for the same write.
+export function buildAudit({ doc, kind, provenance, restoredFrom = null }) {
   const prov = provenance ?? { actor: null, agentId: null, envelopeIds: [], summary: null, engineRevision: null, historyLength: null, saveOrigin: "unknown" };
-  const audit = {
+  return {
     kind,
     saveOrigin: kind === "save" ? (prov.saveOrigin ?? "unknown") : undefined,
     actor: prov.actor ?? null,
@@ -155,9 +155,39 @@ export function insertRevisionRow(db, { projectId, doc, kind, provenance, restor
       title: doc.title,
     }),
   };
+}
+
+// Insert one history row for an already-validated document. Must be
+// called inside the caller's write transaction so the project row
+// and its history commit atomically — never one without the other.
+export function insertRevisionRow(db, { projectId, doc, kind, provenance, restoredFrom = null }) {
+  const audit = buildAudit({ doc, kind, provenance, restoredFrom });
   db.prepare(
     "INSERT INTO v2_project_revisions (project_id, revision, created_at, kind, audit, payload) VALUES (?,?,?,?,?,?)",
   ).run(projectId, doc.revision, doc.updatedAt, kind, JSON.stringify(audit), JSON.stringify(doc));
+}
+
+// Pure retention planner shared by every backend. Input: all known
+// revisions newest-first as { revision, hasPayload }. Output: which
+// to compact to audit-only (payload NULL) and which audit-only rows
+// to drop. keepRevision (a restore source) is exempt.
+export function computePrunePlan(allNewestFirst, keepRevision = null) {
+  const keepSet = new Set();
+  for (const { revision, hasPayload } of allNewestFirst) {
+    if (keepSet.size >= MAX_RECOVERABLE_REVISIONS) break;
+    if (hasPayload) keepSet.add(revision);
+  }
+  if (keepRevision !== null) keepSet.add(keepRevision);
+  const nullPayload = [];
+  const remove = [];
+  let auditCount = 0;
+  for (const { revision } of allNewestFirst) {
+    if (keepSet.has(revision)) continue;
+    auditCount += 1;
+    if (auditCount > MAX_AUDIT_ROWS) remove.push(revision);
+    else nullPayload.push(revision);
+  }
+  return { nullPayload, remove };
 }
 
 // Compact old rows inside the same transaction as the triggering
@@ -165,23 +195,15 @@ export function insertRevisionRow(db, { projectId, doc, kind, provenance, restor
 // their audit (payload NULL). Drops audit-only rows beyond
 // MAX_AUDIT_ROWS. keepRevision (a restore source) is exempt.
 export function pruneHistory(db, projectId, keepRevision = null) {
-  const keep = db.prepare(
-    `SELECT revision FROM v2_project_revisions WHERE project_id=? AND payload IS NOT NULL ORDER BY revision DESC LIMIT ${MAX_RECOVERABLE_REVISIONS}`,
-  ).all(projectId).map((r) => r.revision);
-  const keepSet = new Set(keep);
-  if (keepRevision !== null) keepSet.add(keepRevision);
   const all = db.prepare(
-    "SELECT revision FROM v2_project_revisions WHERE project_id=? ORDER BY revision DESC",
-  ).all(projectId);
-  let auditCount = 0;
-  for (const { revision } of all) {
-    if (keepSet.has(revision)) continue;
-    auditCount += 1;
-    if (auditCount > MAX_AUDIT_ROWS) {
-      db.prepare("DELETE FROM v2_project_revisions WHERE project_id=? AND revision=?").run(projectId, revision);
-    } else {
-      db.prepare("UPDATE v2_project_revisions SET payload=NULL WHERE project_id=? AND revision=?").run(projectId, revision);
-    }
+    "SELECT revision, payload FROM v2_project_revisions WHERE project_id=? ORDER BY revision DESC",
+  ).all(projectId).map((r) => ({ revision: r.revision, hasPayload: r.payload !== null && r.payload !== undefined }));
+  const plan = computePrunePlan(all, keepRevision);
+  for (const revision of plan.remove) {
+    db.prepare("DELETE FROM v2_project_revisions WHERE project_id=? AND revision=?").run(projectId, revision);
+  }
+  for (const revision of plan.nullPayload) {
+    db.prepare("UPDATE v2_project_revisions SET payload=NULL WHERE project_id=? AND revision=?").run(projectId, revision);
   }
 }
 
