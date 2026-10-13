@@ -30,6 +30,7 @@ import { userForToken, bearerToken, isAdmin, canAccessDeck, getUserId, verificat
 import { reserveAuto, settleAuto, limitConfig } from "../../src/limits.js";
 import { registerAuthRoutes, resolveUser } from "./auth-routes.js";
 import { registerV2ScenesRoutes } from "./v2-scenes-routes.js";
+import { registerV2ProjectRoutes } from "./v2-projects-routes.js";
 import { fail, ok, wrap } from "./http.js";
 import { registerAccountRoutes } from "./account-routes.js";
 import { configureLifecycle, reportBootGaps } from "./lifecycle.js";
@@ -484,6 +485,8 @@ registerWorkspaceSettingsRoutes(app, { sniffImage });
 registerAuthRoutes(app);
 
 registerV2ScenesRoutes(app);
+
+registerV2ProjectRoutes(app);
 
 registerAccountRoutes(app);
 
