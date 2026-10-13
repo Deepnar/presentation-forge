@@ -21,11 +21,17 @@ import {
   tableOverflowEstimate,
   blankSlide,
   mintHumanId,
+  mintSlideId,
   cascadeBox,
   cascadeIndex,
   CASCADE_STEP,
   CASCADE_CYCLE,
 } from "./scene-text.js";
+import {
+  buildLayoutScene,
+  getLayoutTemplate,
+  collectSceneIds,
+} from "./layout-templates.js";
 
 // Documented keybinding contract (see the viewer toolbar hint and
 // docs/V2-5C-EVAL.md): arrows move selection, Shift+arrows move
@@ -1388,8 +1394,50 @@ export function attachEditor(viewer, doc, opts = {}) {
     return track(report({ ok: false, code: "op-rejected", message: "could not mint a fresh slide id" }));
   }
 
-  async function duplicateSlides(ids) {
+  // V2-5K layout-gallery insertion: one template skeleton through
+  // the accepted slide.insert path — one envelope, one revision, one
+  // undo entry, navigation by the caller. Unknown template ids refuse
+  // before touching state; the text gate commits pending drafts
+  // exactly like blank insertion. Element ids are minted per build,
+  // and slide.insert guards slide ids only, so each attempt rebuilds
+  // and checks the new scene against the live deck domain before
+  // submitting — repeated uses of one template can never collide.
+  async function insertLayoutSlide(templateId, index = null) {
     if (resize) {
+      return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    }
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    if (!getLayoutTemplate(templateId)) {
+      return track(report({ ok: false, code: "op-rejected", message: `unknown layout template ${templateId}` }));
+    }
+    const cur = doc.snapshot();
+    const at = index ?? api.snapshot().slideIndex + 1;
+    const sibling = cur.scenes[api.snapshot().slideIndex] ?? cur.scenes[0];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const scene = buildLayoutScene(templateId, sibling, { slideId: mintSlideId(), newId: () => mintHumanId() });
+      const domain = new Set();
+      for (const s of doc.snapshot().scenes) {
+        for (const id of collectSceneIds(s)) domain.add(id);
+      }
+      if (collectSceneIds(scene).some((id) => domain.has(id))) continue;
+      const result = await doc.apply({
+        id: newEditId(), slideId: null,
+        op: { type: "slide.insert", scene, index: Math.max(0, at) },
+        baseRevision: doc.snapshot().revision, actor: "human",
+      });
+      if (result.ok) {
+        sync();
+        return track({ ...result, id: scene.id, templateId, index: Math.min(Math.max(0, at), doc.snapshot().scenes.length - 1) });
+      }
+      if (!(result.code === "op-rejected" && /already exists/.test(result.message)) || attempt === 2) {
+        return track(report(result));
+      }
+    }
+    return track(report({ ok: false, code: "op-rejected", message: "could not mint fresh layout ids" }));
+  }
+
+  async function duplicateSlides(ids) {    if (resize) {
       return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
     }
     const gated = await gateTextForSlides();
@@ -1718,6 +1766,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     setElementLocked: (id, locked) => track(setElementLocked(id, locked)),
     setElementHidden: (id, hidden) => track(setElementHidden(id, hidden)),
     insertSlide: (index = null) => track(insertSlide(index)),
+    insertLayoutSlide: (templateId, index = null) => track(insertLayoutSlide(templateId, index)),
     duplicateSlide: (id = null) => track(duplicateSlide(id)),
     duplicateSlides: (ids) => track(duplicateSlides(ids ?? [])),
     deleteSlides: (ids) => track(deleteSlides(ids ?? [])),
