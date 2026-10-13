@@ -8,6 +8,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { flattenLayers, elementLabel, applyCollapse } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
+import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
@@ -607,6 +608,99 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
   );
 }
 
+// V2-5K layout gallery: a compact chooser over the deterministic
+// template registry. Previews render the SAME scene builder the
+// insertion path commits (built against the live sibling for theme
+// sampling), so a card can never promise what the slide will not
+// be. Click inserts after the active slide; Esc, the backdrop, or
+// the close button cancels with no mutation. Narrow-safe: the panel
+// caps at 94vw and the card grid reflows.
+function LayoutGallery({ sibling, onInsert, onClose }) {
+  const [query, setQuery] = useState("");
+  const [cat, setCat] = useState("all");
+  const cards = useMemo(() => {
+    let n = 0;
+    return listLayoutTemplates().map((t) => {
+      const scene = buildLayoutScene(t.id, sibling, { newId: () => `h-preview-${++n}` });
+      return { template: t, svg: sceneToSvg(scene, { wrapText: true }) };
+    });
+  }, [sibling]);
+  const catName = (id) => LAYOUT_CATEGORIES.find((c) => c.id === id)?.name ?? id;
+  const q = query.trim().toLowerCase();
+  const visible = cards.filter(({ template: t }) => {
+    if (cat !== "all" && t.category !== cat) return false;
+    if (!q) return true;
+    const hay = [t.name, t.description, t.useCase, catName(t.category), ...(t.legacyAliases ?? [])].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+  return (
+    <div
+      data-gallery
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}
+    >
+      <div
+        role="dialog"
+        aria-label="Choose a slide layout"
+        style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(880px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}
+      >
+        <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444", flexWrap: "wrap" }}>
+          <strong style={{ fontSize: 13 }}>Choose layout</strong>
+          <input
+            data-gallery-search
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search layouts…"
+            aria-label="Search layouts"
+            style={{ flex: 1, minWidth: 140, background: "#111", color: "#eee", border: "1px solid #555", borderRadius: 5, padding: "4px 8px", fontSize: 12 }}
+          />
+          <button type="button" aria-label="Close gallery" onClick={onClose} style={{ background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+        </div>
+        <div style={{ display: "flex", gap: 6, padding: "8px 12px 0", flexWrap: "wrap" }}>
+          {[{ id: "all", name: "All" }, ...LAYOUT_CATEGORIES].map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              data-gallery-cat={c.id}
+              aria-pressed={cat === c.id ? "true" : "false"}
+              onClick={() => setCat(c.id)}
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", background: cat === c.id ? "#e0705a" : "transparent", color: cat === c.id ? "#111" : "#eee", border: "1px solid #666" }}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+        <div data-gallery-grid style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 10, padding: 12, overflowY: "auto" }}>
+          {visible.map(({ template: t, svg }) => (
+            <button
+              key={t.id}
+              type="button"
+              data-gallery-card={t.id}
+              onClick={() => onInsert(t.id)}
+              title={`${t.name} — ${t.useCase}`}
+              style={{ textAlign: "left", background: "#262422", border: "1px solid #555", borderRadius: 8, padding: 8, cursor: "pointer", color: "#eee", display: "flex", flexDirection: "column", gap: 5 }}
+            >
+              <span data-gallery-preview={t.id} dangerouslySetInnerHTML={{ __html: svg }} style={{ display: "block", borderRadius: 4, overflow: "hidden", background: "#fff" }} />
+              <span style={{ fontSize: 12, fontWeight: 700 }}>{t.name}</span>
+              <span style={{ fontSize: 10, opacity: 0.65 }}>{catName(t.category)}</span>
+              <span style={{ fontSize: 11, opacity: 0.85 }}>{t.description}</span>
+              <span style={{ fontSize: 10, opacity: 0.6, fontStyle: "italic" }}>{t.useCase}</span>
+            </button>
+          ))}
+          {visible.length === 0 && (
+            <span style={{ fontSize: 12, opacity: 0.7, padding: 12 }}>No layouts match “{query}”.</span>
+          )}
+        </div>
+        <div style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 11, opacity: 0.7 }}>
+          Click a layout to insert it after the current slide. Esc cancels with no change.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SceneViewer({ initial = {} }) {
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
@@ -726,6 +820,8 @@ export default function SceneViewer({ initial = {} }) {
   const [menuFor, setMenuFor] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
+  const [chooserOpen, setChooserOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   // Drag state lives in refs, never in render state: re-rendering
   // mid-gesture replaces the drag-source node and Chrome cancels
   // the drop. The insertion marker is drawn by direct DOM edits
@@ -776,8 +872,24 @@ export default function SceneViewer({ initial = {} }) {
     setSlideAnchor(r.id);
     setMenuFor(null);
   }
-  async function doDuplicateSlides(ids) {
+  async function doInsertLayout(templateId) {
     const a = adapterRef.current;
+    if (!a) return;
+    const r = await a.insertLayoutSlide(templateId);
+    if (!r.ok) return;
+    setGalleryOpen(false);
+    followSlideId(r.id);
+    setSlideSel([r.id]);
+    setSlideAnchor(r.id);
+    setMenuFor(null);
+  }
+  async function doDuplicateActive() {
+    const id = viewerRef.current?.api?.snapshot().slideId ?? null;
+    if (!id) return;
+    setChooserOpen(false);
+    await doDuplicateSlides([id]);
+  }
+  async function doDuplicateSlides(ids) {    const a = adapterRef.current;
     if (!a || ids.length === 0) return;
     const ordered = (docRef.current?.snapshot().scenes ?? []).map((s) => s.id).filter((id) => ids.includes(id));
     const r = await a.duplicateSlides(ordered);
@@ -1141,14 +1253,30 @@ export default function SceneViewer({ initial = {} }) {
         ) : (
         <>
         {editOn && (
-          <button
-            type="button"
-            onClick={doInsertSlide}
-            title="Add a blank slide after the active one"
-            style={{ display: "block", width: "100%", marginBottom: 8, padding: "4px 0", cursor: "pointer", background: "transparent", border: "1px dashed #666", borderRadius: 6, color: "#eee" }}
-          >
-            + Slide
-          </button>
+          <div style={{ position: "relative", marginBottom: 8 }}>
+            <button
+              type="button"
+              onClick={() => { setChooserOpen((v) => !v); setMenuFor(null); }}
+              title="Add a slide: blank, layout, or duplicate"
+              aria-expanded={chooserOpen ? "true" : "false"}
+              data-new-slide
+              style={{ display: "block", width: "100%", padding: "4px 0", cursor: "pointer", background: "transparent", border: "1px dashed #666", borderRadius: 6, color: "#eee" }}
+            >
+              + Slide ▾
+            </button>
+            {chooserOpen && (
+              <div
+                data-new-slide-chooser
+                style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 12, marginTop: 3, background: "#242220", border: "1px solid #555", borderRadius: 6, padding: 8, fontSize: 12, display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <button type="button" data-new-slide-blank onClick={async () => { setChooserOpen(false); await doInsertSlide(); }}>Blank slide</button>
+                <span style={{ opacity: 0.65, fontSize: 11 }}>An empty slide in the current theme</span>
+                <button type="button" data-new-slide-layout onClick={() => { setChooserOpen(false); setGalleryOpen(true); }}>Choose layout…</button>
+                <span style={{ opacity: 0.65, fontSize: 11 }}>Insert an editable skeleton from the gallery</span>
+                <button type="button" data-new-slide-duplicate onClick={doDuplicateActive}>Duplicate current slide</button>
+              </div>
+            )}
+          </div>
         )}
         {editOn && effSlideSel.length > 1 && (
           <div data-bulk-bar style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8, fontSize: 11, flexWrap: "wrap" }}>
@@ -1397,7 +1525,7 @@ export default function SceneViewer({ initial = {} }) {
         {/* Toolbar items never shrink (shrinking wraps button text
         and grows the row, moving the stage): the row scrolls
         horizontally instead, at a constant height. */}
-        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; } [data-toolbar] > * { flex-shrink: 0; white-space: nowrap; }`}</style>
+        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; } [data-gallery] svg { width: 100% !important; height: auto !important; display: block; } [data-toolbar] > * { flex-shrink: 0; white-space: nowrap; }`}</style>
         {/* Format dock: shape and text panels float above the
         scroll viewport bottom (absolute, outside layout flow), so
         selecting never resizes the scroll area, never retriggers
@@ -1439,6 +1567,13 @@ export default function SceneViewer({ initial = {} }) {
           </div>
         )}
       </main>
+      {galleryOpen && editOn && (
+        <LayoutGallery
+          sibling={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0] ?? null}
+          onInsert={doInsertLayout}
+          onClose={() => setGalleryOpen(false)}
+        />
+      )}
     </div>
   );
 }

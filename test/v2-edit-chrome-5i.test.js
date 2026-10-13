@@ -125,9 +125,13 @@ describe("slide management in real chrome", () => {
     try {
       await enterEdit(page);
       const before = await slideOrder(page);
-      const add = await page.evaluate(clickText("+ Slide"));
+      const add = await page.evaluate(clickText("+ Slide ▾"));
       assert.ok(add, "+ Slide present");
       await page.click(add[0], add[1]);
+      await waitFor(page, `document.querySelector('[data-new-slide-chooser]') !== null`, 60000);
+      const blank = await page.evaluate(clickText("Blank slide"));
+      assert.ok(blank, "Blank slide action present");
+      await page.click(blank[0], blank[1]);
       await waitFor(page, `(${EDIT}).rev === 1`, 60000);
       const after = await slideOrder(page);
       assert.equal(after.length, before.length + 1, "filmstrip grew by one");
@@ -266,9 +270,12 @@ describe("slide management in real chrome", () => {
       await enterEdit(page);
       const before = await slideOrder(page);
       await clickThumb(page, before[0]);
-      const add = await page.evaluate(clickText("+ Slide"));
+      const add = await page.evaluate(clickText("+ Slide ▾"));
       assert.ok(add, "+ Slide reachable narrow");
       await page.click(add[0], add[1]);
+      await waitFor(page, `document.querySelector('[data-new-slide-chooser]') !== null`, 60000);
+      const blank = await page.evaluate(clickText("Blank slide"));
+      await page.click(blank[0], blank[1]);
       await waitFor(page, `(${EDIT}).rev === 1`, 60000);
       assert.equal((await slideOrder(page)).length, before.length + 1);
       await page.screenshot(`${OUT}/narrow.png`);
