@@ -153,11 +153,21 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { title } = req.body ?? {};
+    // Renames obey the same no-lost-update principle as saves: the
+    // caller names the durable revision it based the rename on, and a
+    // stale base is refused rather than overwriting a newer title.
+    const { title, baseRevision } = req.body ?? {};
+    if (!Number.isInteger(baseRevision) || baseRevision < 0) {
+      return res.status(422).json({ ok: false, error: "baseRevision must be a non-negative integer", code: "invalid-document" });
+    }
     const { renameProject } = await import("../../src/projects/store.js");
     try {
-      const { doc } = await renameProject({ owner: who.owner, id: req.params.id, admin: who.admin, title });
-      ok(res, { project: doc });
+      const out = await renameProject({ owner: who.owner, id: req.params.id, admin: who.admin, baseRevision, title });
+      if (out.status === "stale") {
+        return res.status(409).json({ ok: false, error: `stale project revision: based on ${out.actual}, stored is ${out.expected}`, code: "stale-revision", expectedRevision: out.expected, actualRevision: out.actual });
+      }
+      if (out.status === "noop") return ok(res, { project: out.doc, noop: true });
+      ok(res, { project: out.doc });
     } catch (err) {
       mapStoreError(res, err);
     }

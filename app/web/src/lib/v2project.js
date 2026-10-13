@@ -76,13 +76,20 @@ export async function apiSave(id, { baseRevision, title, scenes, theme, origin }
   return body.project;
 }
 
-export async function apiRename(id, title, fetchFn = fetch) {
+export async function apiRename(id, { title, baseRevision }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title }),
+    body: JSON.stringify({ title, baseRevision }),
   });
   const body = await res.json().catch(() => null);
+  if (res.status === 409 || body?.code === "stale-revision") {
+    const err = new Error(body?.error ?? "stale project revision");
+    err.code = "stale-revision";
+    err.expectedRevision = body?.expectedRevision ?? null;
+    err.actualRevision = body?.actualRevision ?? null;
+    throw err;
+  }
   if (!res.ok || !body?.ok) {
     const err = new Error(body?.error ?? `rename failed (${res.status})`);
     err.code = body?.code ?? null;

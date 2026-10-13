@@ -987,6 +987,7 @@ export default function SceneViewer({ initial = {} }) {
   const [projectListError, setProjectListError] = useState(null);
   const [renamingId, setRenamingId] = useState(null);
   const [renameDraft, setRenameDraft] = useState("");
+  const [renameConflict, setRenameConflict] = useState(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState(null);
   const [pendingSwitchId, setPendingSwitchId] = useState(null);
   const projectRef = useRef(null);
@@ -1890,8 +1891,42 @@ export default function SceneViewer({ initial = {} }) {
                   {renamingId === p.id ? (
                     <>
                       <input aria-label={`Rename ${p.id}`} value={renameDraft} onChange={(e) => setRenameDraft(e.target.value)} style={{ flex: 1, minWidth: 120, background: "#111", color: "#eee", border: "1px solid #555", borderRadius: 4, padding: "3px 6px", fontSize: 12 }} />
-                      <button type="button" onClick={async () => { try { const u = await apiRename(p.id, renameDraft); setProjectList((l) => l.map((x) => (x.id === p.id ? { ...x, title: u.title } : x))); if (project?.id === p.id) { projectRef.current = { ...project, title: u.title }; setProject(projectRef.current); } setRenamingId(null); } catch (err) { setProjectListError(err.message); } }}>Apply</button>
-                      <button type="button" onClick={() => setRenamingId(null)}>Cancel</button>
+                      <button type="button" onClick={async () => {
+                        // The rename carries the durable revision this
+                        // client based it on — the same contract as
+                        // saves. The bound project's revision wins over
+                        // the possibly-older list row.
+                        const base = project?.id === p.id ? project.revision : p.revision;
+                        try {
+                          const u = await apiRename(p.id, { title: renameDraft, baseRevision: base });
+                          setProjectList((l) => l.map((x) => (x.id === p.id ? { ...x, title: u.title, revision: u.revision } : x)));
+                          if (project?.id === p.id) {
+                            // Metadata only: scenes, engine history, and
+                            // the dirty/saved bookkeeping stand — a
+                            // rename never marks scene edits saved.
+                            projectRef.current = { ...project, title: u.title, revision: u.revision, updatedAt: u.updatedAt };
+                            setProject(projectRef.current);
+                          }
+                          setRenameConflict(null);
+                          setRenamingId(null);
+                        } catch (err) {
+                          if (err?.code === "stale-revision") {
+                            // Keep the draft open with the attempted
+                            // title intact for copy-out or retry; never
+                            // overwrite the newer title, never auto-retry.
+                            setRenameConflict({ id: p.id, message: err.message, expected: err.expectedRevision ?? null });
+                          } else {
+                            setProjectListError(err.message);
+                          }
+                        }
+                      }}>Apply</button>
+                      <button type="button" onClick={() => { setRenamingId(null); setRenameConflict(null); }}>Cancel</button>
+                      {renameConflict?.id === p.id && (
+                        <span role="alert" data-rename-conflict={p.id} style={{ fontSize: 11, color: "#f0c090", flexBasis: "100%" }}>
+                          Rename conflict: {renameConflict.message} Your “{renameDraft}” draft is kept.{" "}
+                          <button type="button" onClick={async () => { setRenameConflict(null); await refreshProjectList(); }}>Reload list</button>
+                        </span>
+                      )}
                     </>
                   ) : (
                     <>
