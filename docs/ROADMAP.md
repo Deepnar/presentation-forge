@@ -7322,7 +7322,13 @@ scale); charts structurally exact without axes (V2-4C).
   with truthful same-scene SVG previews, human provenance +
   `customized` ownership, sibling-sampled theme fallback, and
   native PPTX export. Layout switching on existing slides is
-  explicitly out of scope (future item below).
+  explicitly out of scope (future item below). Landed on this
+  branch, pending independent review: `docs/V2-5K-EVAL.md` +
+  `docs/layout-gallery-evidence/` (headless 31/31, Chrome 9/9,
+  fail-first proven on `dd4ab9b`, benchmark 50 cells L1 zero);
+  legacy audit `docs/V2-LAYOUT-CATALOG-MAP.md` (74 types counted
+  from the schema: 17 direct, 27 alias, 5 partial, 25 omitted
+  with mechanics recorded).
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

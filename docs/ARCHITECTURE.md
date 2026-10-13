@@ -1714,7 +1714,14 @@ collection (`docs/V2-5I-EVAL.md`). Layers arrange through the
 same engine: an authoritative panel tree, `element.reorder`
 under a z-is-the-rank contract both projections share, user
 locks with system-chrome protection, and truthful hide/show
-with native PPTX parity (`docs/V2-5J-EVAL.md`).
+with native PPTX parity (`docs/V2-5J-EVAL.md`). New slides come
+from a manual gallery independent of the composition selector: a
+deterministic registry of 15 editable skeletons
+(`packages/editor/layout-templates.js`) built against the live
+sibling for theme sampling, previewed as the same scene they
+insert, and committed through the accepted `slide.insert` path
+with `customized` + human ownership (`docs/V2-5K-EVAL.md`; the
+legacy 74-type audit in `docs/V2-LAYOUT-CATALOG-MAP.md`).
 Editor contracts are specified but not implemented
 (V2-5A; `docs/V2-5A-EDITOR-ARCHITECTURE.md`): command
 envelope with revision log and history, copy-on-write

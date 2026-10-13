@@ -292,6 +292,15 @@ or filesystem/SQLite adapters.
   callers cannot unlock protected chrome either (V2-5J1;
   `docs/V2-5J1-EVAL.md`); recompile carries z, user locks, and
   defined hidden values (`docs/V2-5J-EVAL.md` §§2–6).
+- Manual layout gallery (V2-5K): a deterministic template
+  registry independent of the composition selector builds
+  human-owned `customized` skeletons against the live sibling
+  (bounded theme fallback with a 3:1 contrast guard, no second
+  theme engine); insertion rides the accepted `slide.insert`
+  path with per-build ids checked against the deck domain;
+  previews render the same builder output; legacy names survive
+  as searchable aliases (`docs/V2-5K-EVAL.md`,
+  `docs/V2-LAYOUT-CATALOG-MAP.md`).
 - D3 concurrency: stale-base rejection is specified;
   the UX for surfacing it (banner vs silent rebase
   offer) belongs to the slice that wires agent turns.

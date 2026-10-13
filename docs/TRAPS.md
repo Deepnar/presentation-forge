@@ -76,6 +76,27 @@ text running off the canvas, invisible-on-invisible colour pairs, and empty
 charts. The only real check is `src/preview.js` plus actually looking at the
 image. Treat "the render succeeded" as meaning the file parsed, nothing more.
 
+**pptxgenjs ships boilerplate in every file.** `ppt/media/`,
+`ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx`, and chart
+scaffolding exist even in decks with no images and one chart —
+so an export-purity check that looks for the directory, or that
+counts parts by prefix, fails on a clean file. Assert on image
+file entries (extensions, not directories) and on numeric slide
+order, and remember chart categories live in the chart part, not
+the slide XML.
+
+**A sampled style is a claim about someone else's ground.** A
+text run borrowed from a sibling slide may sit on a light card
+while the new slide's ground is near-black — sampling its colour
+as the new ink paints invisible-on-invisible placeholders that
+validate, fit, and preview "clean" at thumbnail scale. Found live
+on a dark theme (near-black ink on a near-black ground across
+the gallery). Any sampler must check its picks against the ground
+they will actually sit on (3:1 floor with fallback to the
+higher-contrast pole), and the check must know which texts sit on
+solid fills versus the ground — band labels pair against their
+band, not the slide.
+
 **A schema-valid slide can still be visually broken.** The placeholder fallback
 for a failed model write ships a headline that *passes* `validateDeck` — and a
 hard 60-char `slice` of the purpose rendered as a headline clipped mid-word at
