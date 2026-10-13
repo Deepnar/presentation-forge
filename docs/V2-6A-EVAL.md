@@ -166,7 +166,24 @@ Neither started here.
 
 ## 15. Full-suite totals
 
-(Filled at close from the background run.)
+Method: bare `npm test` runs the 14 Chrome files in parallel and each
+`before()` rebuilds `dist/` — the wreckage showed `ENOTEMPTY` build
+collisions plus the roadmap's known un-bounded-CDP-`send()` wedge (two
+files parked ~1h with zero CPU). Totals below come from the reliable
+split instead: 166 non-browser files in one parallel run, then each
+Chrome file serially with a 15-minute watchdog (no watchdog fired).
+
+- Non-browser bulk: **1893 tests — 1892 pass, 1 fail**, 0 skipped.
+  The single failure is `test/byok-budget.test.js` ("between 10,000
+  and 50,00,000" vs "5,000,000") — the standing BYOK locale failure
+  named in the mission, in `src/byok-budget.js`, untouched by this
+  slice.
+- Chrome serial (14 files): **66 tests — 66 pass, 0 fail**,
+  0 skipped, 0 timeouts (5c 7, 5d 4, 5e 5, 5f 5, 5i 6, 5j 5, 5k 9,
+  6a 5, chart 2, table 3, fontgate 2, live-chrome 5,
+  selection 5, smoke 3).
+- **Grand total: 1959 tests — 1958 pass, 1 known fail**, 0 skipped,
+  0 cancelled, 0 unexecuted. No incomplete run is counted as passing.
 
 ## 16. Roadmap status
 
