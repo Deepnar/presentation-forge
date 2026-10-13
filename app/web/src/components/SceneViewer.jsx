@@ -11,7 +11,7 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiList, apiCreate, apiLoad, apiSave, apiRename, apiRemove, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiList, apiCreate, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -990,13 +990,29 @@ export default function SceneViewer({ initial = {} }) {
   const [renameConflict, setRenameConflict] = useState(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState(null);
   const [pendingSwitchId, setPendingSwitchId] = useState(null);
+  // V2-6B durable version history: the project being inspected, its
+  // revision list (audit metadata only), the selected revision's
+  // preview document, and the guarded restore flow.
+  const [historyFor, setHistoryFor] = useState(null);
+  const [historyList, setHistoryList] = useState([]);
+  const [historyMeta, setHistoryMeta] = useState(null);
+  const [historyError, setHistoryError] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [selectedRev, setSelectedRev] = useState(null);
+  const [selectedMeta, setSelectedMeta] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedLoading, setSelectedLoading] = useState(false);
+  const [restoreConfirm, setRestoreConfirm] = useState(false);
+  const [restoreBusy, setRestoreBusy] = useState(false);
+  const [restoreError, setRestoreError] = useState(null);
+  const [restoreDone, setRestoreDone] = useState(null);
   const projectRef = useRef(null);
   const savedEngineRevRef = useRef(0);
   const pendingSaveRef = useRef(false);
   const autosaveRef = useRef(null);
   if (!autosaveRef.current) {
     autosaveRef.current = createAutosave({
-      saveNow: () => saveNowRef.current?.(),
+      saveNow: () => saveNowRef.current?.("autosave"),
       onState: (e) => {
         if (e?.type === "autosave-failed") setSaveState((s) => (s === "saving" ? "error" : s));
       },
@@ -1069,7 +1085,28 @@ export default function SceneViewer({ initial = {} }) {
   // against the durable project revision. Chart/table grids and
   // open text drafts never enter here — callers commit pending
   // text first and unapplied drafts stay local by policy.
-  async function saveNow() {
+  // V2-6B: attaches command provenance (envelope ids committed
+  // since the last confirmed save) as descriptive audit metadata.
+  function collectProvenance(saveOrigin) {
+    const doc = docRef.current;
+    try {
+      const engineRevision = doc?.snapshot().revision ?? null;
+      let historyLength = null;
+      try {
+        historyLength = doc?.status?.()?.historyLength ?? null;
+      } catch { /* status is best-effort audit metadata */ }
+      const log = typeof doc?.log === "function" ? doc.log() : [];
+      const envelopeIds = (Array.isArray(log) ? log : [])
+        .filter((e) => e && Number.isInteger(e.resultingRevision) && e.resultingRevision > savedEngineRevRef.current)
+        .map((e) => e.envelopeId)
+        .filter((id) => typeof id === "string" && id.length > 0)
+        .slice(-50);
+      return { actor: "human", saveOrigin, envelopeIds, engineRevision, historyLength };
+    } catch {
+      return { actor: "human", saveOrigin, envelopeIds: [], engineRevision: null, historyLength: null };
+    }
+  }
+  async function saveNow(saveOrigin = "manual") {
     const adapter = adapterRef.current;
     const doc = docRef.current;
     const proj = projectRef.current;
@@ -1094,6 +1131,7 @@ export default function SceneViewer({ initial = {} }) {
         baseRevision: proj.revision,
         title: proj.title,
         scenes,
+        provenance: collectProvenance(saveOrigin),
       });
       projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
       setProject(projectRef.current);
@@ -1178,6 +1216,60 @@ export default function SceneViewer({ initial = {} }) {
     }
   }
 
+  // Swap the engine document to a loaded project document and
+  // bind it: fresh session revision, empty undo/redo, saved state.
+  // Shared by open and post-restore reload.
+  async function attachLoadedProject(loaded) {
+    const { createDocument } = await import("../../../../packages/model/engine.ts");
+    const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
+    try {
+      adapterRef.current?.detach();
+    } catch { /* teardown only */ }
+    const fresh = await createDocument(structuredClone(loaded.scenes));
+    const adapter = attachEditor(viewerRef.current, fresh, {
+      root: mountRef.current,
+      onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
+      onSync: (scenes) => {
+        setEditedScenes(scenes);
+        setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
+        markDirtyFromEngine();
+      },
+      onTextEdit: (e) => {
+        setTextState({
+          editing: e.editing,
+          elementId: e.elementId ?? null,
+          conflict: e.conflict ?? null,
+          error: e.error ?? null,
+          overflow: e.overflow ?? null,
+          paragraphs: e.paragraphs ?? null,
+        });
+        if (e.committed) {
+          setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
+          markDirtyFromEngine();
+        }
+      },
+    });
+    docRef.current = fresh;
+    adapterRef.current = adapter;
+    setEditedScenes(structuredClone(loaded.scenes));
+    projectRef.current = { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt };
+    setProject(projectRef.current);
+    savedEngineRevRef.current = 0;
+    setSaveState("saved");
+    setEditStatus({ rev: 0, error: null, preparing: false });
+    setEditOn(true);
+    setProjectsOpen(false);
+    writeLastProject(loaded.id);
+    try {
+      const q = new URLSearchParams(window.location.search);
+      q.set("project", loaded.id);
+      window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
+    } catch { /* hint only */ }
+    const first = loaded.scenes[0]?.id ?? null;
+    if (first) followSlideId(first);
+    setSlideSel(first ? [first] : []);
+  }
+
   // Open a stored project: commits pending text first (block on
   // failure), then swaps the engine document to the stored scenes.
   // Unsaved edits on the current project require an explicit choice
@@ -1196,64 +1288,148 @@ export default function SceneViewer({ initial = {} }) {
     setSaveError(null);
     try {
       const loaded = await apiLoad(id);
-      const { createDocument } = await import("../../../../packages/model/engine.ts");
-      const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
-      try {
-        adapterRef.current?.detach();
-      } catch { /* teardown only */ }
-      const fresh = await createDocument(structuredClone(loaded.scenes));
-      const adapter = attachEditor(viewerRef.current, fresh, {
-        root: mountRef.current,
-        onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
-        onSync: (scenes) => {
-          setEditedScenes(scenes);
-          setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
-          markDirtyFromEngine();
-        },
-        onTextEdit: (e) => {
-          setTextState({
-            editing: e.editing,
-            elementId: e.elementId ?? null,
-            conflict: e.conflict ?? null,
-            error: e.error ?? null,
-            overflow: e.overflow ?? null,
-            paragraphs: e.paragraphs ?? null,
-          });
-          if (e.committed) {
-            setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
-            markDirtyFromEngine();
-          }
-        },
-      });
-      docRef.current = fresh;
-      adapterRef.current = adapter;
-      setEditedScenes(structuredClone(loaded.scenes));
-      projectRef.current = { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt };
-      setProject(projectRef.current);
-      savedEngineRevRef.current = 0;
-      setSaveState("saved");
-      setEditStatus({ rev: 0, error: null, preparing: false });
-      setEditOn(true);
-      setProjectsOpen(false);
-      writeLastProject(loaded.id);
-      try {
-        const q = new URLSearchParams(window.location.search);
-        q.set("project", loaded.id);
-        window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
-      } catch { /* hint only */ }
-      const first = loaded.scenes[0]?.id ?? null;
-      if (first) followSlideId(first);
-      setSlideSel(first ? [first] : []);
+      await attachLoadedProject(loaded);
     } catch (err) {
       setSaveState("error");
       setSaveError(err.message);
     }
   }
 
+  function historyKindLabel(m) {
+    if (!m) return "";
+    if (m.kind === "create") return "Created";
+    if (m.kind === "rename") return "Renamed";
+    if (m.kind === "restore") return `Restored from rev ${m.restoredFrom}`;
+    if (m.kind === "baseline") return "Baseline";
+    if (m.kind === "save") return m.saveOrigin === "autosave" ? "Autosaved" : "Saved";
+    return m.kind;
+  }
+
+  function sceneHeadline(s) {
+    if (typeof s?.headline === "string" && s.headline.trim()) return s.headline.trim().slice(0, 80);
+    for (const el of s?.elements ?? []) {
+      const t = (el?.paragraphs ?? []).flatMap((p) => (p?.runs ?? []).map((r) => r?.text ?? "")).join("");
+      if (t && t.trim()) return t.trim().slice(0, 80);
+    }
+    return s?.id ?? "slide";
+  }
+
+  function historyNeedsChoice() {
+    return historyFor && projectRef.current?.id === historyFor.id && (saveState === "dirty" || saveState === "saving");
+  }
+
+  // Open the version-history panel for a project and load its
+  // revision list (audit metadata, never scene bytes).
+  async function openHistory(p) {
+    setHistoryFor({ id: p.id, title: p.title });
+    setHistoryList([]);
+    setHistoryMeta(null);
+    setHistoryError(null);
+    setSelectedRev(null);
+    setSelectedMeta(null);
+    setSelectedDoc(null);
+    setRestoreConfirm(false);
+    setRestoreError(null);
+    setRestoreDone(null);
+    setHistoryLoading(true);
+    try {
+      const out = await apiListRevisions(p.id);
+      setHistoryList(out.revisions);
+      setHistoryMeta({ currentRevision: out.currentRevision, retention: out.retention });
+    } catch (err) {
+      setHistoryError(err.message);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }
+
+  // Preview one revision: full validated document, shown as a
+  // slide-count + headline summary (no visual diff in this slice).
+  async function selectHistoryRevision(rev) {
+    if (!historyFor) return;
+    setSelectedRev(rev);
+    setSelectedMeta(historyList.find((m) => m.revision === rev) ?? null);
+    setSelectedDoc(null);
+    setRestoreConfirm(false);
+    setRestoreError(null);
+    setRestoreDone(null);
+    const meta = historyList.find((m) => m.revision === rev);
+    if (meta && !meta.recoverable) return;
+    setSelectedLoading(true);
+    try {
+      const out = await apiGetRevision(historyFor.id, rev);
+      setSelectedMeta(out.revision);
+      setSelectedDoc(out.project);
+    } catch (err) {
+      setHistoryError(err.message);
+      setSelectedRev(null);
+    } finally {
+      setSelectedLoading(false);
+    }
+  }
+
+  // Restore the selected revision as a NEW current revision. Never
+  // rewrites history: the counter advances and the source row is
+  // preserved. Unsaved current edits require Save / Discard / Cancel.
+  async function doRestore(how) {
+    if (!historyFor || selectedRev === null || selectedRev === undefined) return;
+    if (adapterRef.current?.hasPendingEdit?.()) {
+      const r = await adapterRef.current.commitPendingEdit();
+      if (!r.ok) {
+        setRestoreError("Could not commit the open text draft — resolve it first, then restore again.");
+        return;
+      }
+    }
+    const sameProject = projectRef.current?.id === historyFor.id;
+    if (sameProject && historyNeedsChoice() && how !== "save" && how !== "discard") {
+      setRestoreConfirm(true);
+      return;
+    }
+    setRestoreConfirm(false);
+    setRestoreBusy(true);
+    setRestoreError(null);
+    setRestoreDone(null);
+    try {
+      let base = historyMeta?.currentRevision ?? null;
+      if (sameProject) {
+        if (how === "save") {
+          const r = await saveNow("manual");
+          if (!r.ok) {
+            setRestoreError(`Could not save current edits (${r.message ?? "save failed"}) — nothing was restored.`);
+            return;
+          }
+        }
+        base = projectRef.current.revision;
+      }
+      const out = await apiRestore(historyFor.id, { revision: selectedRev, baseRevision: base, provenance: { actor: "human" } });
+      if (sameProject) {
+        await attachLoadedProject(out.project);
+      } else {
+        refreshProjectList();
+      }
+      const refreshed = await apiListRevisions(historyFor.id);
+      setHistoryList(refreshed.revisions);
+      setHistoryMeta({ currentRevision: refreshed.currentRevision, retention: refreshed.retention });
+      setRestoreDone(`Restored rev ${out.restoredFrom} as rev ${out.project.revision}. History is preserved; session undo was cleared.`);
+    } catch (err) {
+      if (err?.code === "stale-revision") {
+        setRestoreError(`Someone saved first (${err.message}). Reload the version list and try again — nothing was restored.`);
+        try {
+          const refreshed = await apiListRevisions(historyFor.id);
+          setHistoryList(refreshed.revisions);
+          setHistoryMeta({ currentRevision: refreshed.currentRevision, retention: refreshed.retention });
+        } catch { /* list refresh is best-effort */ }
+      } else {
+        setRestoreError(err.message);
+      }
+    } finally {
+      setRestoreBusy(false);
+    }
+  }
+
   // Refresh recovery: offer the last-opened project without forcing
   // navigation. The ?project= deep link wins over localStorage.
-  useLayoutEffect(() => {
-    let cancelled = false;
+  useLayoutEffect(() => {    let cancelled = false;
     const q = (() => {
       try {
         return new URLSearchParams(window.location.search).get("project");
@@ -1627,6 +1803,9 @@ export default function SceneViewer({ initial = {} }) {
           {editOn && (
             <>
               <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())}>Save</button>
+              {project && !project.recoverable && (
+                <button type="button" aria-label="Version history" title={`Version history for ${project.title}`} onClick={() => openHistory(project)}>History</button>
+              )}
               <span data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} style={{ fontSize: 12, opacity: 0.9, border: "1px solid #555", borderRadius: 10, padding: "1px 8px" }} title={saveError ?? project?.title ?? "no project"}>
                 {saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project"}
               </span>
@@ -1932,6 +2111,7 @@ export default function SceneViewer({ initial = {} }) {
                     <>
                       <span style={{ flex: 1, minWidth: 140, fontSize: 12 }}><strong>{p.title}</strong> <span style={{ opacity: 0.65 }}>· {p.slideCount} slides · rev {p.revision}</span></span>
                       <button type="button" data-project-open={p.id} onClick={() => openProject(p.id)}>Open</button>
+                      <button type="button" data-project-history={p.id} onClick={() => openHistory(p)}>History</button>
                       <button type="button" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</button>
                       {confirmRemoveId === p.id ? (
                         <>
@@ -1947,6 +2127,74 @@ export default function SceneViewer({ initial = {} }) {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+      {historyFor && (
+        <div
+          data-history-panel
+          style={{ position: "fixed", inset: 0, zIndex: 70, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setHistoryFor(null); }}
+          onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setHistoryFor(null); } }}
+        >
+          <div role="dialog" aria-label={`Version history for ${historyFor.title}`} style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(620px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444" }}>
+              <strong style={{ fontSize: 13 }}>Version history — {historyFor.title}</strong>
+              <button type="button" aria-label="Close version history" onClick={() => setHistoryFor(null)} style={{ marginLeft: "auto", background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+            </div>
+            <div style={{ padding: "6px 12px", fontSize: 11, opacity: 0.7, borderBottom: "1px solid #444" }}>
+              Restoring creates a <em>new</em> saved revision from the older content — history is never rewritten. Undo history is cleared by a restore.
+              {historyMeta && ` Keeps the last ${historyMeta.retention.maxRecoverable} saved versions with full content; older versions keep their descriptions only.`}
+            </div>
+            <div data-history-list style={{ overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 6, maxHeight: "30vh" }}>
+              {historyLoading && <span style={{ fontSize: 12, opacity: 0.7 }}>Loading versions…</span>}
+              {historyError && <span role="alert" style={{ fontSize: 12, color: "#f0a090" }}>Could not load history: {historyError}</span>}
+              {!historyLoading && !historyError && historyList.length === 0 && <span style={{ fontSize: 12, opacity: 0.7 }}>No saved versions yet.</span>}
+              {historyList.map((m) => (
+                <div key={m.revision} data-history-row={m.revision} style={{ border: selectedRev === m.revision ? "1px solid #e0705a" : "1px solid #444", borderRadius: 6, padding: "6px 8px", display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", fontSize: 12 }}>
+                  <span style={{ minWidth: 46 }}><strong>rev {m.revision}</strong>{historyMeta && m.revision === historyMeta.currentRevision && <span style={{ opacity: 0.65 }}> (current)</span>}</span>
+                  <span style={{ opacity: 0.85 }}>{historyKindLabel(m)}</span>
+                  <span style={{ opacity: 0.6 }}>{(() => { try { return new Date(m.createdAt).toLocaleString(); } catch { return m.createdAt; } })()}</span>
+                  <span style={{ opacity: 0.6, flexBasis: "100%" }}>{m.summary}</span>
+                  {!m.recoverable && <span style={{ opacity: 0.6, fontSize: 11 }}>compacted — description only, cannot restore</span>}
+                  {m.recoverable && <button type="button" data-history-select={m.revision} onClick={() => selectHistoryRevision(m.revision)}>Preview</button>}
+                </div>
+              ))}
+            </div>
+            {selectedRev !== null && selectedRev !== undefined && (
+              <div data-history-preview style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 12 }}>
+                {selectedLoading && <span style={{ opacity: 0.7 }}>Loading rev {selectedRev}…</span>}
+                {!selectedLoading && selectedDoc && (
+                  <>
+                    <div><strong>rev {selectedRev}</strong> · {selectedDoc.scenes.length} slides · saved {(() => { try { return new Date(selectedMeta?.createdAt ?? selectedDoc.updatedAt).toLocaleString(); } catch { return selectedDoc.updatedAt; } })()}</div>
+                    <div style={{ opacity: 0.75 }}>{selectedMeta?.summary}</div>
+                    <ol style={{ margin: "6px 0", paddingLeft: 20, maxHeight: "16vh", overflowY: "auto" }}>
+                      {selectedDoc.scenes.slice(0, 12).map((s) => <li key={s.id}>{sceneHeadline(s)}</li>)}
+                    </ol>
+                    {selectedDoc.scenes.length > 12 && <div style={{ opacity: 0.6 }}>…and {selectedDoc.scenes.length - 12} more slides</div>}
+                    {!restoreConfirm && (
+                      <button type="button" data-history-restore={selectedRev} disabled={restoreBusy || (historyMeta && selectedRev === historyMeta.currentRevision)} title={historyMeta && selectedRev === historyMeta.currentRevision ? "This is already the current version" : "Restore this version as a new saved revision"} onClick={() => doRestore()}>
+                        {restoreBusy ? "Restoring…" : `Restore rev ${selectedRev} as a new revision`}
+                      </button>
+                    )}
+                  </>
+                )}
+                {!selectedLoading && !selectedDoc && selectedMeta && !selectedMeta.recoverable && (
+                  <span style={{ opacity: 0.7 }}>rev {selectedRev} is compacted to its description and cannot be restored.</span>
+                )}
+              </div>
+            )}
+            {restoreConfirm && (
+              <div role="alert" data-restore-confirm style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 12, background: "#242220" }}>
+                You have unsaved changes. Restoring rev {selectedRev} will replace the current editor content with a new saved revision.
+                Unsaved edits are lost unless you save them first.{" "}
+                <button type="button" data-restore-save onClick={() => doRestore("save")} disabled={restoreBusy}>Save & restore</button>{" "}
+                <button type="button" data-restore-discard onClick={() => doRestore("discard")} disabled={restoreBusy}>Discard & restore</button>{" "}
+                <button type="button" onClick={() => setRestoreConfirm(false)} disabled={restoreBusy}>Cancel</button>
+              </div>
+            )}
+            {restoreError && <div role="alert" data-restore-error style={{ padding: "6px 12px", fontSize: 12, color: "#f0c090" }}>{restoreError}</div>}
+            {restoreDone && <div role="status" data-restore-done style={{ padding: "6px 12px", fontSize: 12, color: "#a8e0a0" }}>{restoreDone}</div>}
           </div>
         </div>
       )}

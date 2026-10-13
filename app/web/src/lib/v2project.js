@@ -105,6 +105,64 @@ export async function apiRemove(id, fetchFn = fetch) {
   return true;
 }
 
+export async function apiListRevisions(id, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions`);
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `history failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return { currentRevision: body.currentRevision, retention: body.retention, revisions: body.revisions ?? [] };
+}
+
+export async function apiGetRevision(id, revision, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(String(revision))}`);
+  const body = await res.json().catch(() => null);
+  if (res.status === 410 || body?.code === "revision-pruned") {
+    const err = new Error(body?.error ?? "revision pruned");
+    err.code = "revision-pruned";
+    err.revision = body?.revision ?? null;
+    throw err;
+  }
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `revision failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return { revision: body.revision, project: body.project };
+}
+
+export async function apiRestore(id, { revision, baseRevision, provenance }, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/restore`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ revision, baseRevision, provenance }),
+  });
+  const body = await res.json().catch(() => null);
+  if (res.status === 409 || body?.code === "stale-revision") {
+    const err = new Error(body?.error ?? "stale project revision");
+    err.code = "stale-revision";
+    err.expectedRevision = body?.expectedRevision ?? null;
+    err.actualRevision = body?.actualRevision ?? null;
+    throw err;
+  }
+  if (res.status === 410 || body?.code === "revision-pruned") {
+    const err = new Error(body?.error ?? "revision pruned");
+    err.code = "revision-pruned";
+    throw err;
+  }
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `restore failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
+  return { project: body.project, restoredFrom: body.restoredFrom };
+}
+
 export function readLastProject(storage = null) {
   try {
     const s = storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
