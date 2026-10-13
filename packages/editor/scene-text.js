@@ -155,14 +155,6 @@ export function paragraphStylesDiffer(paragraphs) {
   return new Set(ps.map(sig)).size > 1;
 }
 
-// System chrome: locked, compiler-owned, with no authored block
-// behind it (branding, headers, footers, structural marks). The
-// Layers panel may show it but no normal user command may unlock
-// it — unlocking is refused at the adapter with an explanation.
-export function isSystemChrome(el) {
-  return el?.locked === true && el?.provenance === "compiler" && el?.semanticRef === undefined;
-}
-
 // Readable layer labels. Text leads with its role and opening
 // words; shapes name their form; charts name their first series;
 // tables name their dimensions; groups count their objects.

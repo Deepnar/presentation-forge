@@ -17,8 +17,8 @@ import {
   elementLabel,
   flattenLayers,
   applyCollapse,
-  isSystemChrome,
 } from "../packages/editor/scene-text.js";
+import { isSystemChrome } from "../packages/model/scene-constants.ts";
 
 import { renderPptx, preflightScenes } from "../packages/renderer-pptx/render.ts";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";

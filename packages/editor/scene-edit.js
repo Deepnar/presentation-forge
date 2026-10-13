@@ -9,7 +9,7 @@
 //
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
-import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
+import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
 import {
   isEditableText,
   describeStructure,
@@ -19,7 +19,6 @@ import {
   defaultShapeElement,
   overflowEstimate,
   tableOverflowEstimate,
-  isSystemChrome,
   blankSlide,
   mintHumanId,
   cascadeBox,

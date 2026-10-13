@@ -8,6 +8,7 @@
 // no schema is created purely for ceremony before then.
 
 import { findElement, humanId } from "./scene.ts";
+import { isSystemChrome } from "./scene-constants.ts";
 import type { SlideScene, SceneElement, Paragraph } from "./scene.generated.ts";
 
 export type ElementMove = { type: "element.move"; id: string; x: number; y: number };
@@ -489,6 +490,14 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
     case "element.setLocked": {
       const el = findElement(scene, cmd.id);
       if (!el) throw new Error(`unknown element ${cmd.id}`);
+      // Authoritative boundary: system chrome stays locked no
+      // matter which path submits the envelope — adapter, batch,
+      // or a future agent. The actor field is audit metadata, never
+      // a capability, so it cannot exempt this check. Ordinary
+      // locked elements keep the intentional escape hatch below.
+      if (!cmd.locked && isSystemChrome(el)) {
+        throw new Error(`element ${cmd.id} is system chrome — it cannot be unlocked`);
+      }
       const prev = el.locked === true;
       // Absence and false read identically everywhere; normalize to
       // absence so undo and re-show comparisons stay byte-exact.
