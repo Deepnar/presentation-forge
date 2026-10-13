@@ -132,4 +132,23 @@ logging for conflict forensics.
 
 ## 10. Full-suite totals
 
-(Filled at close.)
+Method: bare `npm test` runs the 14 Chrome files in parallel and each
+`before()` rebuilds `dist/` — observed `ENOTEMPTY` build collisions
+plus the roadmap's known un-bounded-CDP-`send()` wedge. Totals come
+from the reliable split instead: 167 non-browser files in one
+parallel run, then each Chrome file serially with a 15-minute
+watchdog (no watchdog fired).
+
+- Non-browser bulk: **1911 tests — 1910 pass, 1 fail**, 0 skipped.
+  The single failure is `test/byok-budget.test.js` ("between 10,000
+  and 50,00,000" vs "5,000,000") — the standing BYOK locale failure,
+  out of scope, in code this slice does not touch.
+- Chrome serial (14 files): **66 tests — 66 pass, 0 fail**,
+  0 skipped (5c 7, 5d 4, 5e 5, 5f 5, 5i 6, 5j 5, 5k 9, 6a 5,
+  chart 2, table 3, fontgate 2, live-chrome 5, selection 5,
+  smoke 3).
+- **Grand total: 1977 tests — 1976 pass, 1 known fail**, 0 skipped,
+  0 cancelled, 0 unexecuted.
+- Focused: correction suite 18/18, V2-6A headless 17/17, related
+  engine/editor/gallery/PPTX family 400/400. Typecheck clean,
+  production build green, canonical benchmark 50 cells L1 zero.
