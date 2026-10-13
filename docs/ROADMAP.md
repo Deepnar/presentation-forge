@@ -7305,13 +7305,24 @@ scale); charts structurally exact without axes (V2-4C).
   duplication with deck-wide identity, atomic delete, drag and
   keyboard reorder, filmstrip multiselect, and revisioned
   detach, all through the engine (accepted at `7068972`).
-- [~] V2-5J Layers panel and object arrangement — authoritative
-  layer tree with selection sync, `element.reorder` under a
-  z-is-the-rank contract, user locks with system-chrome
-  protection, truthful hide/show, and native PPTX parity
-  (pending independent review: `docs/V2-5J-EVAL.md` +
-  `docs/layers-evidence/`; lock-boundary correction in
-  `docs/V2-5J1-EVAL.md`).
+- [x] V2-5J Layers panel and object arrangement (accepted at
+  `dd4ab9b`) — authoritative layer tree with selection sync,
+  `element.reorder` under a z-is-the-rank contract, user locks
+  with system-chrome protection enforced at the canonical
+  primitive, truthful hide/show, and native PPTX parity
+  (`docs/V2-5J-EVAL.md` + `docs/layers-evidence/`;
+  lock-boundary correction `docs/V2-5J1-EVAL.md`, same head).
+- [~] V2-5K new-slide layout gallery — manual slide creation
+  from editable Layer-C skeletons, independent of the AI
+  composition selector. Small deterministic template registry
+  (stable id, name, category, description, use case, preview,
+  scene builder) producing valid scenes through the accepted
+  `slide.insert` engine path: blank / layout / duplicate
+  chooser over `+ Slide`, searchable category-filtered gallery
+  with truthful same-scene SVG previews, human provenance +
+  `customized` ownership, sibling-sampled theme fallback, and
+  native PPTX export. Layout switching on existing slides is
+  explicitly out of scope (future item below).
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6
@@ -7323,11 +7334,18 @@ not scoped, not started; no implementation in any V2-5 slice):
 - **Layers panel** — object tree, reordering, bring forward/back,
   hide/lock, grouping, and transparent overlap management over
   authoritative Layer-C scenes.
-- **New slide from layout library** — a gallery of editable slide
-  skeletons, including the legacy 75 slide-type vocabulary where
-  practical. AI generation must NOT be rigidly constrained to
-  those 75 types: the flexible composition architecture remains
-  the generation path. Both systems produce Layer-C scenes.
+- **New slide from layout library** — now the V2-5K slice
+  above (gallery of editable slide skeletons; the legacy 75
+  slide-type vocabulary maps to it via
+  `docs/V2-LAYOUT-CATALOG-MAP.md`). AI generation must NOT be
+  rigidly constrained to those 75 types: the flexible
+  composition architecture remains the generation path. Both
+  systems produce Layer-C scenes.
+- **Layout switching on existing slides** — changing a
+  populated slide's composition after creation. Needs semantic
+  content mapping, preservation of human edits, and explicit
+  treatment of unmatched objects; never discard existing
+  content to fit another template. Future slice after V2-5K.
 - **Frontend consolidation** — a coherent PowerPoint/Canva-like
   editing workspace, saved projects, and an integrated AI
   assistant, not a pile of unrelated developer tools. Related to
