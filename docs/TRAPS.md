@@ -747,6 +747,31 @@ changes content exposes it. Seat the bound view silently at attach
 (no commit notification: attach is not a commit and the
 one-sync-per-commit contract is pinned by a test that counts).
 
+**Idempotent DDL inside a write transaction deadlocks under
+concurrency.** Two Postgres writers both running CREATE TABLE/INDEX
+IF NOT EXISTS take the table and index locks in opposite orders and
+wait on each other forever. SQLite never shows it: one connection,
+one open transaction, JS-serialized. Schema provisioning belongs
+outside transactions (memoized per pool), and any "harmless"
+ensure-on-every-op must be re-examined the day a second writer can
+reach it — the lane that made it safe on SQLite is exactly what
+made it invisible.
+
+**A dead database client fails twice, and the loud failure wins.**
+`pg` delivers a terminated backend to the pending query's rejection
+AND to an `error` event on the checked-out client; with no listener
+the event crashes the process, masking the mapped rejection the
+test actually asserts. Attach the swallow handler at checkout —
+the query error still maps to `storage-unavailable` exactly once.
+Any pooled driver needs this audit: search for bare `connect()`
+without an `error` listener before trusting a fault test.
+
+**A store resolved outside the route's try block throws past the
+status mapper.** `await projectStore()` before `try` turned a
+coded `store-misconfigured` into a generic 500 — the honest-503
+contract held everywhere except the path that needed it most.
+Resolve fallible dependencies inside the try, not above it.
+
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)

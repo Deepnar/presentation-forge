@@ -7348,9 +7348,9 @@ scale); charts structurally exact without axes (V2-4C).
   through HTTP, client, and dialog (`docs/V2-6A1-EVAL.md`;
   `test/v2-projects-6a1.test.js` 18/18, fail-first proven on
   `a5fa83b`).
-- [~] V2-6B durable project history, audit trail, and recovery —
-  phase two of V2-6 (this branch, pending independent review):
-  bounded recoverable snapshots (newest 20 per project, older rows
+- [x] V2-6B durable project history, audit trail, and recovery —
+  accepted at `0ec8aa4` (independent review clean): bounded
+  recoverable snapshots (newest 20 per project, older rows
   audit-only) plus command-provenance audit records committed
   atomically with every save, revision-safe restore-as-new (stale
   refuses, pruned answers 410), baseline migration for pre-history
@@ -7359,8 +7359,7 @@ scale); charts structurally exact without axes (V2-4C).
   (`docs/V2-6B-EVAL.md`, `docs/v2-6b-evidence/`;
   `test/v2-projects-6b.test.js` 29/29,
   `test/v2-edit-chrome-6b.test.js` 4/4, fail-first proven on
-  `af812ad`). Durable undo stays deferred by design; the attach
-  fix (viewer seats scenes silently on editor attach) is included.
+  `af812ad`).
 
   > **Learned.** The stage going stale after restore exposed that
   > `attachEditor` only ever pushed scenes to the viewer on commits:
@@ -7375,6 +7374,39 @@ scale); charts structurally exact without axes (V2-4C).
   > ids committed since the last confirmed save, and audit rows must
   > structurally exclude op payloads (asserted per row) rather than
   > merely promise not to execute them.
+- [~] V2-6C hosted persistence and multi-instance safety —
+  phase three of V2-6 (this branch, pending independent review):
+  one ProjectStore interface over two adapters — SQLite unchanged
+  by default, PostgreSQL 16 opt-in via `FORGE_PROJECTS_BACKEND`
+  with an explicit URL — with DB-level transactions (row lock +
+  compare-and-swap, no per-process mutex), honest 503 on
+  misconfiguration (never silent fallback), a shared contract
+  suite run unmodified on both backends, multi-process races,
+  fault injection, and browser flows against Postgres
+  (`docs/V2-6C-EVAL.md`, `docs/V2-6C-HOSTED-STORAGE.md`,
+  `docs/v2-6c-evidence/`; contract 17/17 × 2, concurrency 11/11,
+  faults 8/8, Chrome 3/3, fail-first proven on `0ec8aa4`).
+  V2-6 parent stays `[ ]` until hosted readiness is verified.
+
+  > **Learned.** Three things were not obvious beforehand.
+  >
+  > Idempotent DDL inside write transactions deadlocks in
+  > Postgres: two concurrent writers both running
+  > CREATE-IF-MISSING take the table/index locks in opposite
+  > orders. The SQLite lane had masked this completely (one open
+  > transaction per process, serialized in JS). Schema ensure
+  > belongs outside transactions, memoized per pool.
+  >
+  > A dead checked-out `pg` client emits `error` with no listener
+  > and crashes the process — separately from the pending query's
+  > own rejection, so the failure arrives twice and the loud one
+  > wins. Attach the swallow handler at checkout; the query error
+  > still maps to `storage-unavailable` exactly once.
+  >
+  > Store resolution must sit inside each route's try block. At
+  > module scope of the handler it throws past `mapStoreError`,
+  > turning an honest 503 into a generic 500 — the misconfigured
+  > fault test caught it, not review.
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

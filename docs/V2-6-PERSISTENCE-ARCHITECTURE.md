@@ -198,3 +198,40 @@ without firing a commit sync.
 Limits carried forward: history is not persistent undo; SQLite is
 local disk; retention is bounded (newest 20 restore); no visual
 diff, no claim workflow, no agent execution over audit records.
+
+## 11. Hosted shared storage (V2-6C)
+
+One interface, two adapters, one selection boundary:
+
+- `src/projects/backend.js` selects SQLite (default, everywhere)
+  or PostgreSQL (`FORGE_PROJECTS_BACKEND=postgres` with an
+  explicit `FORGE_PROJECTS_DATABASE_URL`). Misconfiguration
+  answers 503 (`store-misconfigured`) on every project route —
+  never a silent fallback to an ephemeral file. Boot logs the
+  selection without secrets.
+- `src/projects/store-postgres.js` implements the full surface
+  over `pg` with the same shapes and codes. Correctness comes
+  from the database: `SELECT ... FOR UPDATE` + compare-and-swap
+  `UPDATE ... WHERE id AND revision` + history INSERT + prune in
+  one READ COMMITTED transaction, so two processes racing one
+  base produce exactly one winner. Provenance, audit, retention,
+  and ownership logic are shared by import with SQLite
+  (`validateProvenance`, `buildAudit`, `computePrunePlan`,
+  `canAccessProject`) — policy cannot drift; only SQL and
+  transaction plumbing differ.
+- Payloads are TEXT holding identical JSON bytes (no JSONB
+  normalization); retention stays 20/100; baselines use
+  `ON CONFLICT DO NOTHING`; DDL is idempotent and runs outside
+  write transactions (concurrent DDL inside transactions
+  deadlocks in Postgres).
+- Pooling is bounded per process (default 10, cap 50, 5s
+  connection timeout → loud failure, never an unbounded queue).
+  Routes resolve the store inside their try blocks so every
+  failure maps honestly; the browser protocol is byte-unchanged.
+
+Limits carried forward: default hosted installs stay
+single-instance SQLite-on-volume (restart-durable, not
+volume-loss-proof); multi-instance needs the pg compose profile;
+no read replicas or failover; backups are operator `pg_dump`;
+filesystem state (decks, previews, brand) is not covered by the
+database. See `docs/V2-6C-HOSTED-STORAGE.md`.

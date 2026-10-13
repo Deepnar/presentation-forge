@@ -1,10 +1,10 @@
 {
-  "project": "p-b66ff97e8bd58d2dda38b81d",
+  "project": "p-c03721807ebc586d39fe5f22",
   "revisions": [
     {
-      "projectId": "p-b66ff97e8bd58d2dda38b81d",
+      "projectId": "p-c03721807ebc586d39fe5f22",
       "revision": 2,
-      "createdAt": "2026-10-13T17:25:31.145Z",
+      "createdAt": "2026-10-13T17:54:16.985Z",
       "kind": "save",
       "saveOrigin": "unknown",
       "actor": null,
@@ -12,14 +12,14 @@
       "envelopeIds": [],
       "summary": "saved rev 2 · 13 slides",
       "sceneCount": 13,
-      "title": "Project 13/10/2026, 22:55:30",
+      "title": "Project 13/10/2026, 23:24:16",
       "restoredFrom": null,
       "recoverable": true
     },
     {
-      "projectId": "p-b66ff97e8bd58d2dda38b81d",
+      "projectId": "p-c03721807ebc586d39fe5f22",
       "revision": 1,
-      "createdAt": "2026-10-13T17:25:30.713Z",
+      "createdAt": "2026-10-13T17:54:16.553Z",
       "kind": "save",
       "saveOrigin": "unknown",
       "actor": null,
@@ -27,21 +27,21 @@
       "envelopeIds": [],
       "summary": "saved rev 1 · 12 slides",
       "sceneCount": 12,
-      "title": "Project 13/10/2026, 22:55:30",
+      "title": "Project 13/10/2026, 23:24:16",
       "restoredFrom": null,
       "recoverable": true
     },
     {
-      "projectId": "p-b66ff97e8bd58d2dda38b81d",
+      "projectId": "p-c03721807ebc586d39fe5f22",
       "revision": 0,
-      "createdAt": "2026-10-13T17:25:30.300Z",
+      "createdAt": "2026-10-13T17:54:16.136Z",
       "kind": "create",
       "actor": null,
       "agentId": null,
       "envelopeIds": [],
       "summary": "created with 12 slides",
       "sceneCount": 12,
-      "title": "Project 13/10/2026, 22:55:30",
+      "title": "Project 13/10/2026, 23:24:16",
       "restoredFrom": null,
       "recoverable": true
     }

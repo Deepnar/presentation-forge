@@ -1775,6 +1775,21 @@ guarded restore) and `attachEditor` seats viewer scenes silently on
 attach so reopened and restored documents paint immediately
 (`docs/V2-6B-EVAL.md`).
 
+## V2 hosted persistence (V2-6C)
+
+One `ProjectStore` interface, two adapters, one selection
+boundary (`src/projects/backend.js`): SQLite by default
+everywhere, PostgreSQL 16 opt-in via `FORGE_PROJECTS_BACKEND`
+plus an explicit URL. Multi-instance safety comes from the
+database — row lock plus compare-and-swap in one transaction —
+never a per-process queue; misconfiguration answers an honest
+503 instead of a silent fallback. The adapters share provenance,
+audit, retention, and ownership logic by import and satisfy one
+contract suite unmodified; DDL stays outside write transactions
+and checked-out pg clients carry an error handler so backend
+death maps instead of crashing (`docs/V2-6C-EVAL.md`,
+`docs/V2-6C-HOSTED-STORAGE.md`).
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
