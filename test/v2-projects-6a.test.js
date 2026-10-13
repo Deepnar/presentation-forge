@@ -113,7 +113,9 @@ describe("v2-6a create/save/load/list/rename/delete", () => {
     const { projects } = await store.listProjects({ owner: null });
     assert.ok(projects.some((p) => p.id === created.id && p.title === "First"));
     assert.ok(!("scenes" in projects.find((p) => p.id === created.id)), "list carries summaries, never scene bytes");
-    const { doc: renamed } = await store.renameProject({ owner: null, id: created.id, title: "Second" });
+    const out = await store.renameProject({ owner: null, id: created.id, baseRevision: 0, title: "Second" });
+    assert.equal(out.status, "saved");
+    const renamed = out.doc;
     assert.equal(renamed.title, "Second");
     assert.equal(renamed.revision, created.revision + 1);
     const { removed } = await store.deleteProject({ owner: null, id: created.id });
