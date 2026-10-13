@@ -42,6 +42,13 @@ services:
       # Required in hosted mode — per-user API keys are encrypted under it, and
       # the app refuses to start rather than fall back to the published default.
       FORGE_KEY_PEPPER: "${FORGE_KEY_PEPPER:?set FORGE_KEY_PEPPER to a long random string}"
+      # Project durability: "sqlite" (default) keeps the local file on the
+      # /data volume; "postgres" shares one database across instances (see
+      # the profile-gated db service below and docs/V2-6C-HOSTED-STORAGE.md).
+      # A postgres selection without a URL answers 503 — never a silent
+      # fallback to an ephemeral file.
+      FORGE_PROJECTS_BACKEND: "${FORGE_PROJECTS_BACKEND:-sqlite}"
+      FORGE_PROJECTS_DATABASE_URL: "${FORGE_PROJECTS_DATABASE_URL:-}"
       # Behind Caddy, so honour X-Forwarded-For and mark cookies Secure.
       FORGE_TRUST_PROXY: "1"
       FORGE_UI_ORIGIN: "${FORGE_UI_ORIGIN:-}"
@@ -116,6 +123,35 @@ services:
       retries: 5
       start_period: 20s
 
+  # Shared project database for multi-instance deployments. Opt-in via
+  # the pg profile so single-instance installs never pay for it:
+  #   docker compose -f docker/docker-compose.app.yml --profile pg up -d
+  # Internal only (no published ports); state lives in pg_data. Point
+  # the app at it with FORGE_PROJECTS_BACKEND=postgres plus
+  # FORGE_PROJECTS_DATABASE_URL (see .env.example). Back up with
+  # pg_dump against the volume, not by copying the data directory.
+  db:
+    image: docker.io/library/postgres:16
+    container_name: forge_pg
+    restart: unless-stopped
+    profiles: ["pg"]
+    environment:
+      - POSTGRES_DB=forge
+      - POSTGRES_USER=forge
+      # Compose interpolates this even when the pg profile is
+      # inactive, so it cannot be :?required (see the caddy note
+      # above). With the profile enabled, set a real password —
+      # postgres refuses an empty one at startup, loudly.
+      - POSTGRES_PASSWORD=${FORGE_POSTGRES_PASSWORD:-}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forge -d forge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
   # TLS and the public listener. Caddy gets a certificate from Let's Encrypt
   # automatically for FORGE_DOMAIN. The session cookie is only marked Secure on
   # an HTTPS request, so this is what makes deck downloads authenticate in a
@@ -143,5 +179,6 @@ services:
 
 volumes:
   forge_data:
+  pg_data:
   caddy_data:
   caddy_config:
