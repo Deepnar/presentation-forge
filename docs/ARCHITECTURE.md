@@ -1298,6 +1298,11 @@ leaves no note for this pass to find.
 
 ## The V2 slice — intent, scene, and two consumers
 
+This introduction records the original V2-0 slice. Later V2 sections below and
+linked editor/persistence/workspace records supersede its original deferrals:
+commands, editing ownership, locked chrome, fitting and durable projects now
+exist. Do not interpret the seed slice's limitations as current missing work.
+
 On branch `v2`, beside the legacy pipeline and sharing none of its code
 paths yet, `packages/` holds the first agent-native primitive:
 
@@ -2533,3 +2538,22 @@ is no second account to leak to and `decks/<topic>` is the name every sweep and
 | `decks/<slug>/report.yaml` | yes | the report content (sibling of deck.yaml) |
 | `templates/` | yes | reusable partial slides the "+ Add slide" menu inserts |
 | `reference/` | no | the report donor `.docx`; gitignored because it carries third-party names, and `FORGE_REFERENCE_DIR` points it at the volume on a hosted box where an admin uploads it. `reference/users/<hash>/` holds an account's own template, which overrides it |
+
+## Repository development continuity
+
+`AGENTS.md` and `docs/CONTINUATION.md` are the entrypoints; no external master
+prompt or mandatory relay tool is required. `docs/DEVELOPMENT-PROTOCOL.md` defines
+planning, implementation, verification, separate review, acceptance/hold and
+handoff. The roadmap is the sole work registry. Product direction, common gates
+and recovered decisions have distinct linked documents rather than competing
+work lists.
+
+`docs/development-state.json` is a small schema-validated index to the accepted
+baseline, code implementation under evaluation, active task, required validation,
+blockers and unauthorized next candidate. The code SHA may precede subsequent
+documentation-only commits. `tools/dev-protocol-check.mjs` validates required
+files/references, JSON schema, local commit ancestry, evidence identity/output
+counts and review consistency. It runs via `npm run dev:protocol` and CI; negative
+cases are in `test/dev-protocol.test.js`. The checker never runs application tests,
+changes state or grants acceptance. It cannot authenticate reviewer identity or
+context independence; the committed review/human decision remains the authority.

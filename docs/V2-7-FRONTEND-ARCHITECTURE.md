@@ -99,7 +99,10 @@ instead. No second router: the hash router gains two routes.
 - Tailwind v4 tokens (`styles.css`) for all shell chrome; canvas
   SVG internals untouched. Dark follows `data-theme`; the
   existing reduced-motion query covers shell transitions.
-- Desktop-first: canvas flex-1; rails fixed width. Narrow
+- Desktop-first: canvas flex-1; rails fixed width. Final validation records
+  unresolved narrow top-bar clipping/inspector access in `V2-7A-EVAL.md` §4;
+  the toggles below describe implemented structure, not a verified responsive pass.
+  Narrow
   (`useNarrow`, 767px): rails collapse to top-bar toggles and
   reopen as overlays; toolbar scrolls horizontally; zoom/fit and
   editing keep working; dashboard reflows by grid.

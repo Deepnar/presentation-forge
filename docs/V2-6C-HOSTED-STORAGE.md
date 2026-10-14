@@ -4,10 +4,10 @@ Date: 2026-10-13. Baseline `0ec8aa4`.
 
 ## 1. Decision: PostgreSQL 16 for shared state, SQLite stays local
 
-The repository supports exactly one database driver (`node:sqlite`,
-built into Node; `package.json` carries no `pg`, `neon`, `libsql`,
-`better-sqlite3`, or ORM — verified by grep over dependencies,
-lockfile, `node_modules`, and imports). Deployment is one
+At baseline `0ec8aa4`, the repository supported only `node:sqlite`, built into
+Node; no network database driver was installed. V2-6C added the pure-JS `pg`
+dependency and PostgreSQL adapter described below; SQLite remains the default.
+The deployment evaluated for that decision is one
 long-running container on a persistent volume (`docker-compose.app.yml`
 `forge_data:/data`); serverless is explicitly out (`docs/DEPLOY.md`).
 

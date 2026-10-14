@@ -6446,10 +6446,10 @@ the Research tab only.
 The V2.1 program turns the pipeline-plus-wizard into an agent-native
 workspace: the model orchestrates, a deterministic compiler turns semantic
 intent into an editable scene, and the browser editor and the PPTX exporter
-consume the same scene. Design input:
-`PRESENTATION_FORGE_V2_1_ARCHITECTURE_WORKDOC.md` (external, not a second
-roadmap); the master prompt
-`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` (session procedure).
+consume the same scene. Historical external design inputs informed this program; they are not required
+to continue development. The repository-native procedure is
+`docs/DEVELOPMENT-PROTOCOL.md`, entered through `AGENTS.md` and
+`docs/CONTINUATION.md`. The roadmap remains the sole work registry.
 
 Rules that govern this section: `docs/ARCHITECTURE.md` describes only what
 is actually built; platform assumptions (MCP/OAuth/SIWC, Vercel
@@ -7374,8 +7374,10 @@ scale); charts structurally exact without axes (V2-4C).
   > ids committed since the last confirmed save, and audit rows must
   > structurally exclude op payloads (asserted per row) rather than
   > merely promise not to execute them.
-- [~] V2-6C hosted persistence and multi-instance safety —
-  phase three of V2-6 (this branch, pending independent review):
+<a id="v2-6c-acceptance"></a>
+
+- [x] V2-6C hosted persistence and multi-instance safety —
+  accepted at `97a12de` (phase three of V2-6):
   one ProjectStore interface over two adapters — SQLite unchanged
   by default, PostgreSQL 16 opt-in via `FORGE_PROJECTS_BACKEND`
   with an explicit URL — with DB-level transactions (row lock +
@@ -7407,13 +7409,8 @@ scale); charts structurally exact without axes (V2-4C).
   > module scope of the handler it throws past `mapStoreError`,
   > turning an honest 503 into a generic 500 — the misconfigured
   > fault test caught it, not review.
-- [x] V2-6C hosted persistence and multi-instance safety —
-  accepted at `97a12de` (independent review clean): one
-  ProjectStore interface over SQLite and PostgreSQL 16 with
-  DB-level transactions, honest 503 on misconfiguration, shared
-  contract 17/17 × 2, concurrency 11/11, faults 8/8, Chrome 3/3
-  (`docs/V2-6C-EVAL.md`, `docs/V2-6C-HOSTED-STORAGE.md`).
-  V2-6 parent stays `[ ]` until hosted readiness is verified.
+<a id="v2-7a-validation"></a>
+
 - [~] V2-7A unified workspace foundation — phase one of V2-7
   (this branch, pending independent review): Workspace dashboard
   over the real project API with AI/layout/blank creation,
@@ -7426,23 +7423,52 @@ scale); charts structurally exact without axes (V2-4C).
   final pass, see the eval). No engine, adapter, or command
   changes; generation-to-project handoff explicitly scoped as
   the V2-7B blocker below.
+
+  Final-validation scope also covers the missing shell chart/table, redo/discard,
+  pending-draft and narrow-inspector evidence named in the eval/runbook. Existing
+  narrow screenshots show top-bar controls outside the captured viewport; confirm
+  reachability and correct narrowly during validation. No final-session product
+  run or opening-performance measurement is claimed while the machine is busy.
+<a id="v2-7b-candidate"></a>
+
 - [ ] V2-7B generation-to-project handoff — the one missing
   end-to-end link: a translator from generated `deck.yaml`
   content to validated Layer-C scenes plus the UI handoff that
   loads them into a persisted project. Nothing exists today (no
   translator, route, or entry point); "Create with AI" opens the
   existing chat workflow and stops there, labeled as such.
-- [ ] Slide management UI — slide add/duplicate/delete/reorder
-  over the existing revisioned engine slide ops, filmstrip
-  multi-select, and detach/relayout affordances. Then V2-6
-  persistence. Sized after the table slice; no code started.
+- [~] Repository-native development continuity — direct repository workflow,
+  source-backed product/decision records, planner/implementer/reviewer roles,
+  acceptance gates and schema-validated state. Implements the approved continuity
+  protocol alongside final V2-7A validation; see `docs/DEVELOPMENT-PROTOCOL.md`
+  and `docs/CONTINUATION.md`. Implemented, pending review: 15/15 lightweight
+  governance tests and a separate cold-start documentation audit, with findings
+  corrected (`docs/v2-7a-evidence/CONTINUITY-VALIDATION.md`). This does not accept V2-7A or
+  authorize V2-7B. Look-ahead: roles retain the existing engine/storage boundaries
+  and work across future milestones without a provider-specific relay.
 
-Future editor capabilities (planning entries only — discussed,
-not scoped, not started; no implementation in any V2-5 slice):
+  > **Learned.** Accepted-baseline pointers must distinguish historical eval
+  > recommendations from later acceptance. Documentation commits cannot embed
+  > their own future SHA, so state names the code being evaluated. Browser
+  > isolation must include build-only and indirect plate-render test owners,
+  > and evidence reruns need unique
+  > log paths. A cold-start read exposed contradictions green unit tests missed.
+<a id="workspace-followups"></a>
 
-- **Layers panel** — object tree, reordering, bring forward/back,
-  hide/lock, grouping, and transparent overlap management over
-  authoritative Layer-C scenes.
+- [ ] Workspace followups after the generation handoff — project cover
+  thumbnails, then consolidation of V1/V2 project lists; remove or relocate
+  fixture/developer controls from the production editor toolbar as part of
+  frontend polish. These are findings from V2-7A, not scope for its validation.
+  Agree surface direction before implementation; AI editing remains V2-8.
+- [ ] Remaining slide-management direction — explicit relayout/reset policy
+  beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
+  surface. Agree preservation rules before implementation; persistence is already
+  provided by V2-6A/B/C, not a prerequisite still to build.
+
+Future editor capabilities (planning only for the remaining scope):
+
+- **Layers beyond V2-5J** — grouping and overlap-management affordances;
+  tree, selection sync, reorder, lock and visibility already shipped in V2-5J.
 - **New slide from layout library** — now the V2-5K slice
   above (gallery of editable slide skeletons; the legacy 75
   slide-type vocabulary maps to it via
@@ -7504,9 +7530,12 @@ Phase one (V2-6A, accepted at `af812ad`) binds the durable
 project locally first: versioned scene documents over the existing
 SQLite database behind the `ProjectStore` seam, with revision-safe
 save/load proven — see the V2-6A entry under V2-5 above and
-`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`. Phase two (V2-6B, this
-branch, pending review) adds bounded history tables behind the same
-seam. The cloud replacement swaps the adapter, never the model.
+`docs/V2-6-PERSISTENCE-ARCHITECTURE.md`. Phase two (V2-6B, accepted
+at `0ec8aa4`) adds bounded history and restore. Phase three (V2-6C,
+accepted at `97a12de`) supplies PostgreSQL behind the same seam.
+The remaining cloud lifecycle work concerns other metadata/artifacts, migration
+and deployment operations; preserve the existing TEXT document fidelity rather
+than assuming the earlier JSONB proposal is the implemented project store.
 
 Done when: no hosted project depends on local disk, and an expired
 export regenerates from intact project state.
@@ -7636,3 +7665,12 @@ migrate safely. No test is deleted to make migration pass; every phase
 keeps behavioural tests before old code is removed.
 
 Done when: the legacy paths are gone and old projects still open.
+
+<a id="byok-locale-standing-failure"></a>
+
+### [ ] Standing BYOK locale assertion
+
+`test/byok-budget.test.js` expects `5,000,000` while the response uses Indian
+number grouping (`50,00,000`). Recorded before V2-7A in `docs/V2-6C-EVAL.md`
+§14. Preserve it as a separate known failure during this validation; changing
+locale behaviour or weakening its assertion is outside this task.

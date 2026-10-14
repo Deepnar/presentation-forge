@@ -6,6 +6,10 @@ for one of the reasons below, and each names **who or what can unblock it**.
 Nothing here is a to-do list — `docs/ROADMAP.md` is. This file answers only
 *"why can this not be worked on right now?"*
 
+The following counts describe the original gateway/launch audit. Active V2
+resource/service constraints are recorded in §4 and the current evaluation;
+this table is not an exhaustive classification of the later V2 roadmap.
+
 Three kinds of blocker, and they are not equally bad:
 
 | kind | meaning | how many |
@@ -14,9 +18,8 @@ Three kinds of blocker, and they are not equally bad:
 | **Operator** | one person, one account, usually under an hour | 5 |
 | **Decision** | needs a judgement nobody should make unilaterally | 2 |
 
-Every open item in `docs/ROADMAP.md` now states which of these it waits on, in
-its own header — so the two files cannot drift into disagreeing about what is
-stuck.
+Consult each active `docs/ROADMAP.md` entry for its actual dependencies rather
+than assuming every engineering item is covered by those historical blockers.
 
 ---
 
@@ -170,10 +173,10 @@ what it says depends on whether a purchase is credits or a subscription, and on
 there being a checkout to point at. The half that needed neither — the usage
 panel showing the trial and how much of it is spent — is built.
 
-## 4. Nothing is available right now
+## 4. Historical closed audit (before the V2 program)
 
-Everything that could be done without a key, a model or a decision **has been
-done.** The list this section used to hold is closed:
+The following older audit work was completed; this is not a statement that all
+current roadmap work is blocked:
 
 - Housekeeping found during the audit — every item struck through
 - The coherence pass's repetition blindness — it was never looking; now computed
@@ -185,8 +188,12 @@ done.** The list this section used to hold is closed:
 - `feature-grid`'s note debt, *diagnosed* — a 1pt gap on a deliberately compact
   theme rather than the 2pt a misreported floor claimed
 
-**Every remaining roadmap item is blocked on §1, §2 or §3 of this file.** That
-is unusual and worth stating plainly: the next move is not an engineering one.
+The active V2 task is recorded in `docs/development-state.json` and
+`docs/ROADMAP.md` §12. V2-7A final validation waits on a quiet shared-machine
+window; PostgreSQL-backed checks additionally need the isolated Forge test
+service. See `docs/V2-7A-EVAL.md` §12 for current measurements and availability.
+Documentation and lightweight continuity checks can proceed. Those constraints
+do not authorize starting a different milestone.
 
 Two are worth naming because they look like engineering and are not:
 
