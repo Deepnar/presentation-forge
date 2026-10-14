@@ -1,23 +1,53 @@
 # Presentation Forge — working agreement
 
-Generator for academic presentations and reports. Node + pptxgenjs. The product
-is **hosted**, and the model behind it is the TCET CoE gateway (the "Auto"
-tier) — see *Which model to judge the product by*, below. Local Ollama still
-works and is still supported; it is no longer the thing being aimed at.
+Presentation Forge is becoming a unified presentation workspace: topic or raw
+material → themed, editable deck → human and AI editing → native PowerPoint.
+The active program is V2 on branch `v2`; the legacy generation/report pipeline
+remains supported. The hosted Auto tier is the reference for generated-content
+quality; local Ollama remains supported for local use and pipeline exercises.
+
+## Start here
+
+Read this file, `docs/CONTINUATION.md`, `docs/HANDOFF.md`, `docs/TRAPS.md`,
+`docs/BLOCKED.md`, and the active `docs/ROADMAP.md` entry before changing code.
+Inspect branch, HEAD, tracked changes and untracked files. Preserve unrelated
+work. Never assume a branch or overwrite an existing checkout to match a prompt.
+
+`docs/DEVELOPMENT-PROTOCOL.md` defines the development cycle and authority order;
+`docs/development-state.json` records the accepted baseline, implementation under
+review and validation state. `docs/PRODUCT-VISION.md` records product direction;
+`docs/ACCEPTANCE-CRITERIA.md` defines common gates. Architecture records describe
+what is built; evaluation reports supply evidence, not automatic acceptance.
+
+The active task and accepted baseline are recorded in the state file and handoff.
+A candidate milestone is not authorized work. Never promote a milestone merely
+because its implementation exists.
 
 ## The one rule that governs everything
 
-**The model never writes layout code.** Three layers, strictly separated:
+**The model never writes layout code.** V2 separates semantic intent,
+deterministic compilation and authoritative editable scenes:
 
 | Layer | Owns | Written by |
 |---|---|---|
-| chrome | banner, crest, presenter, slide number | `src/chrome.js`, locked |
-| theme | palette, type, spacing, shape | `themes/*.yaml`, human |
-| content | what the slides say | the model, as validated YAML |
+| A — intent | meaning, content, semantic relationships | model-authored, schema-validated `DeckIntent` |
+| B — compiler | composition, geometry, typography, fit | deterministic `packages/compiler/` + normalized theme tokens |
+| C — scene | exact editable slide objects | validated `SlideScene`, mutated through the revisioned command engine |
 
-A change that lets content specify a coordinate, a hex colour, or a font name is
-wrong regardless of how convenient it looks. If a slide needs a layout that does
-not exist, add a slide *type* — do not add an escape hatch to the schema.
+A change that lets model-authored content specify coordinates, hex colours or
+font names is wrong. Layer C necessarily contains resolved geometry and styling;
+that is compiler output or validated human editing, never an intent escape hatch.
+Browser SVG and native PPTX consume the same scene. Do not introduce screenshot
+backgrounds with proxy editing boxes, renderer-owned layouts or a second document.
+
+Keep the legacy chrome/theme/content boundary too: locked institutional furniture
+is in `src/chrome.js` with shared policy in `packages/core/chrome.ts`; themes are
+in `themes/*.yaml`; legacy model content is validated YAML. Extend the appropriate
+semantic/compiler vocabulary when a composition is missing. Manual layout
+templates are editable scene skeletons, separate from AI composition families.
+Preserve human modifications, ownership flags, tombstones and detached scenes
+during regeneration. Human and future agent changes share validated commands,
+stale-revision checks and history. Agent runtime integration is not yet shipped.
 
 Themes are split into `tokens` (exact machine values, read only by the renderer)
 and `voice` (tone guidance, read only by the model). These must never overlap:
@@ -26,14 +56,15 @@ the moment a model can see a hex value it will start inventing them.
 ## Repository layout
 
 ```
-src/            renderer, validator, fitter, chrome, preview      (CLI + API share this)
+packages/       V2 model, core, compiler, editor, projects, native renderers
+src/            pipeline, compatibility adapters, stores, preview (CLI/API share this)
 themes/         one YAML per design language
 schema/         deck.schema.json — the content contract
 config/         identity.yaml — remembered defaults, user-editable
 brand/logos/    raw source marks (any format)
 brand/generated/ normalised marks — produced, never hand-edited
-app/server/     Express; a transport over src/, holds no logic
-app/web/        Vite + React UI
+app/server/     Express; thin transport over shared domain logic
+app/web/        Vite + React workspace and legacy surfaces
 decks/<slug>/   deck.yaml, meta.yaml, out/
 reference/      the institutional templates output is checked against
 docs/           ROADMAP.md (all work), PRODUCTION, ECONOMICS, ARCHITECTURE, TRAPS
@@ -130,32 +161,29 @@ becomes an archive, and an archive is not a plan.
   section; a reworked one gets its existing section updated. The architecture
   doc must keep describing the system as built, not as designed.
 
-## Orchestration — who drives what
+## Development workflow
 
-Hermes (the CLI agent) drives opencode for this repo. The human does not babysit
-the TUI: they state intent, Hermes launches, monitors, and rotates sessions.
+The active coding agent works directly in this repository with its available
+tools. There is no required Hermes/opencode relay, TUI workflow, model-provider
+allowlist or dependency on an earlier conversation. Optional delegation must
+follow the current task's authorization; it does not make self-review independent.
 
-- **Only two models, ever.** Code: `opencode-go/deepseek-v4-flash`. Vision:
-  `opencode-go/mimo-v2.5` (via the opencode-vision plugin's subagents). Nothing
-  else, even when it looks convenient. The user pays for a Go subscription and
-  that is the budget.
-- **Session rotation.** Start a fresh `opencode run` for new work — clean
-  context by construction. When an interactive session's input tokens pass
-  ~1M (check `~/.hermes/scripts/opencode-sessions.sh <dir>`), do not push it:
-  note what it achieved and start a new session with a carry-forward summary
-  ("Previously completed: X. Continue with Y.").
-- **Push discipline.** Push to `origin/main` regularly — after each logical
-  commit or small group of commits, never hoard work locally. The remote is
-  the safety net and the user's visibility into progress.
-- **Self-contained prompts.** A fresh opencode session has no memory. Every
-  prompt must point at `AGENTS.md`, `docs/HANDOFF.md`, `docs/TRAPS.md` and the
-  relevant `docs/ROADMAP.md` item, and restate the task concretely.
-- **Product vision — Gamma-like.** The end state is: the user drops in a topic
-  or a pile of raw info, and a complete themed deck comes out — no follow-up
-  questions, no manual fixes. Every feature decision should move toward
-  "topic in → deck out" with zero hand-holding. The chat panel is the first
-  real surface of this: it is where the user talks to a deck the way they
-  would talk to Gamma.
+Follow **PLAN → IMPLEMENT → VERIFY → INDEPENDENT REVIEW → ACCEPT/HOLD → HANDOFF**
+in `docs/DEVELOPMENT-PROTOCOL.md`, with role instructions in `docs/agents/`.
+Each task names its accepted baseline, bounded scope, invariants, non-goals,
+required tests/evidence, acceptance criteria, standing failures and stop point.
+An implementer cannot accept its own work. A separate reviewer or explicit human
+approval supplies acceptance; without either, record pending review and stop.
+
+Commit focused changes and push regularly to the explicitly authorized branch
+(`origin/v2` for this task). Never push to `main` by habit. Do not deploy or run
+irreversible migrations as a side effect of implementation acceptance.
+
+Work autonomously within approved scope. Obtain human direction for major
+product/architecture changes, new paid infrastructure, security-policy or user
+data-handling changes, removal of accepted functionality, destructive Git
+operations and production deployment. Prepare a concrete reviewable result first.
+Do not re-ask for actions already authorized by the current task.
 
 ## Which model to judge the product by
 
@@ -200,7 +228,10 @@ preserves previous handoffs. The next session is told to read it first.
 
 ## Conventions
 
-- ES modules throughout, Node 24. No TypeScript.
+- ES modules throughout, Node 24. Existing V2 packages use strict TypeScript,
+  executed natively by Node; legacy code and React use JavaScript/JSX. Follow
+  the subsystem's language and package import boundaries. Generated schema types
+  are checked in and drift-tested; use `npm run types:generate` when appropriate.
 - Comments explain *why*, never *what*. No comment that restates the next line.
 - Never hardcode institution details in `src/` — they belong in `config/identity.yaml`.
 - Generated artefacts (`decks/*/out/`, `brand/generated/`, `brand/fonts/`) are
@@ -217,3 +248,17 @@ npm run dev                                # API :5174 + UI :5173
 ```
 
 `src/preview.js` exists so output can be *seen*. Use it.
+
+Run browser files in bounded serial isolation: each may rebuild the same Vite
+`dist`, so never run the bulk browser set concurrently or overlap it with a build.
+Use a process watchdog; a timed-out or cancelled file is not a pass. Count leaf
+tests, skips, cancellations and unexecuted cases explicitly, preserving the
+standing BYOK locale failure separately. If PostgreSQL is unavailable, its
+contract/concurrency/fault/browser checks are unexecuted, not green.
+
+Respect quiet-window constraints on shared machines. Inspect CPU, memory, I/O
+pressure and competing work before expensive validation; do documentation and
+lightweight checks while busy. Never stop unrelated processes or reuse another
+project's database. Identify the actual backend and implementation commit in
+every evidence report. Inspect screenshots for clipping/overlap and measure canvas
+stability; a written PPTX or a syntax check is insufficient.
