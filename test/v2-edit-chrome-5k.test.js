@@ -81,13 +81,18 @@ const centerOf = (id) => `(() => {
   const stage = document.querySelector('[data-stage]');
   const svg = stage.querySelector('svg');
   const s = svg.getBoundingClientRect();
-  const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-  const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+  const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+  const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+  const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
   if (hiX <= loX || hiY <= loY) return null;
   const n = stage.querySelector('[data-el="${id}"]');
   if (!n) return null;
   n.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
-  const inner = n.querySelector('text, rect, ellipse, line, image') ?? n;
+  // Prefer a painted descendant with real area: the first match can
+  // be a zero-height axis line whose center rounds onto background
+  // at some scales, and CDP clicks rounded coordinates.
+  const cands = [...n.querySelectorAll('text, rect, ellipse, line, image')];
+  const inner = cands.find((c) => { const r = c.getBoundingClientRect(); return r.width > 4 && r.height > 4; }) ?? n;
   const r = inner.getBoundingClientRect();
   if (r.right < loX || r.bottom < loY || r.left > hiX || r.top > hiY) return null;
   const cx = Math.min(Math.max(r.left + r.width / 2, loX), hiX);
@@ -415,6 +420,10 @@ describe("layout gallery in real chrome", () => {
     const page = await open(DECK, { w: 480, h: 900 });
     try {
       await enterEdit(page);
+      // Narrow viewports collapse the slides rail into a toggleable
+      // overlay; open it before using rail controls.
+      const rail = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Show slides rail'); if (!b) return null; const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+      if (rail) await page.click(rail[0], rail[1]);
       await openGallery(page);
       const box = await page.evaluate(`(() => { const p = document.querySelector('[data-gallery-panel], [role="dialog"]'); const r = p.getBoundingClientRect(); return { w: r.width, vw: window.innerWidth }; })()`);
       assert.ok(box.w <= box.vw, `panel ${box.w}px fits ${box.vw}px viewport`);

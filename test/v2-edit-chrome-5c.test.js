@@ -81,8 +81,9 @@ const centerOf = (id) => `(() => {
   const stage = document.querySelector('[data-stage]');
   const svg = stage.querySelector('svg');
   const s = svg.getBoundingClientRect();
-  const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-  const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+  const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+  const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+  const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
   if (hiX <= loX || hiY <= loY) return null;
   const n = stage.querySelector('[data-el="${id}"]');
   if (!n) return null;
@@ -179,8 +180,9 @@ describe("v2-5c chrome editing", () => {
         const stage = document.querySelector('[data-stage]');
         const svg = stage.querySelector('svg');
         const s = svg.getBoundingClientRect();
-        const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-        const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+        const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+        const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+        const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
         const units = [...stage.querySelectorAll('[data-el]')].filter((n) => !(n.parentElement && n.parentElement.closest('[data-el]')) && n.getAttribute('data-locked') !== 'true');
         for (const u of units) {
           const id = u.getAttribute('data-el');

@@ -84,10 +84,12 @@ const centerOf = (id) => `(() => {
   const n = document.querySelector('[data-stage] [data-el="${id}"]');
   if (!n) return null;
   n.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+  const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
   const inner = n.querySelector('text, rect, ellipse, line, image') ?? n;
   const r = inner.getBoundingClientRect();
   const pts = [[r.left + r.width / 2, r.top + r.height / 2], [r.left + 4, r.top + r.height / 2]];
   for (const [x, y] of pts) {
+    if (x < sc.left + 2 || x > sc.right - 2 || y < sc.top + 2 || y > sc.bottom - 2) continue;
     const t = document.elementFromPoint(x, y);
     if (t && t.closest('[data-el]') && t.closest('[data-el]').getAttribute('data-el') === '${id}') return [x, y];
   }
@@ -173,8 +175,9 @@ describe("v2-4e chrome selection", () => {
         const stage = document.querySelector('[data-stage]');
         const svg = stage.querySelector('svg');
         const s = svg.getBoundingClientRect();
-        const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-        const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+        const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+        const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+        const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
         if (hiX <= loX || hiY <= loY) return null;
         const units = [...stage.querySelectorAll('[data-el]')].filter((n) => !(n.parentElement && n.parentElement.closest('[data-el]')) && n.getAttribute('data-locked') !== 'true');
         const topId = (t) => {

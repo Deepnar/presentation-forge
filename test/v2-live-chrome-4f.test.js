@@ -69,7 +69,7 @@ after(async () => {
 
 const STATE = `JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState)`;
 const THUMBS = `document.querySelectorAll('aside[aria-label="Slides"] button').length`;
-const clickText = (tag, text) => `(() => { const b = [...document.querySelectorAll('${tag}')].find((n) => n.textContent.trim() === '${text}'); if (!b) return null; const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`;
+const clickText = (tag, text) => `(() => { const b = [...document.querySelectorAll('${tag}')].find((n) => n.textContent.trim() === '${text}'); if (!b || b.disabled) return null; b.scrollIntoView({ block: 'nearest', inline: 'nearest' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`;
 const overlayDelta = (id) => `(() => { const o = document.querySelector('[data-overlay="${id}"]'); const t = document.querySelector('[data-stage] [data-el="${id}"]'); if (!o || !t) return null; const a = o.getBoundingClientRect(), b = t.getBoundingClientRect(); return [Math.abs(a.left - b.left), Math.abs(a.top - b.top), Math.abs(a.right - b.right), Math.abs(a.bottom - b.bottom)]; })()`;
 // Verified hittable point for a stage unit (stage-scoped,
 // viewport-clamped; null when genuinely unreachable).
@@ -77,8 +77,9 @@ const POINT = (id) => `(() => {
   const stage = document.querySelector('[data-stage]');
   const svg = stage.querySelector('svg');
   const s = svg.getBoundingClientRect();
-  const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-  const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+  const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+  const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+  const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
   if (hiX <= loX || hiY <= loY) return null;
   const n = stage.querySelector('[data-el="${id}"]');
   if (!n) return null;
@@ -241,8 +242,9 @@ describe("v2-4f live browser integration", () => {
         const stage = document.querySelector('[data-stage]');
         const svg = stage.querySelector('svg');
         const s = svg.getBoundingClientRect();
-        const loX = Math.max(s.left, 0) + 2, hiX = Math.min(s.right, window.innerWidth) - 2;
-        const loY = Math.max(s.top, 0) + 2, hiY = Math.min(s.bottom, window.innerHeight) - 2;
+        const sc = document.querySelector('[data-scroll-container]').getBoundingClientRect();
+        const loX = Math.max(s.left, sc.left, 0) + 2, hiX = Math.min(s.right, sc.right, window.innerWidth) - 2;
+        const loY = Math.max(s.top, sc.top, 0) + 2, hiY = Math.min(s.bottom, sc.bottom, window.innerHeight) - 2;
         const units = [...stage.querySelectorAll('[data-el]')].filter((n) => !(n.parentElement && n.parentElement.closest('[data-el]')) && n.getAttribute('data-locked') !== 'true');
         for (const u of units) {
           const id = u.getAttribute('data-el');
