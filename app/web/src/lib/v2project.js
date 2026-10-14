@@ -35,7 +35,12 @@ export const AUTOSAVE_DELAY_MS = 2000;
 export async function apiList(fetchFn = fetch) {
   const res = await fetchFn("/api/v2/projects", { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
-  if (!res.ok || !body?.ok) throw new Error(body?.error ?? `list failed (${res.status})`);
+  if (!res.ok || !body?.ok) {
+    const err = new Error(body?.error ?? `list failed (${res.status})`);
+    err.code = body?.code ?? null;
+    err.status = res.status;
+    throw err;
+  }
   return body.projects ?? [];
 }
 
