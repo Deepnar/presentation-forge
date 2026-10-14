@@ -772,6 +772,31 @@ coded `store-misconfigured` into a generic 500 — the honest-503
 contract held everywhere except the path that needed it most.
 Resolve fallible dependencies inside the try, not above it.
 
+**An API client that never sends the session token works exactly
+until ownership matters.** The V2 wrappers used bare fetch, so
+anonymous-local flows (ownerless rows) passed every suite while
+signed-in owners listed an empty dashboard and wrote ownerless
+rows. Any client that grows an authenticated caller needs the
+bearer from day one — audit headers, not just shapes, when a new
+surface arrives.
+
+**A dialog overlay swallows the banner that guards its own
+action.** The unsaved-changes guard renders in flow beneath the
+still-open dialog; clicks land on the backdrop (closing the
+dialog) instead of the guard. When a guard takes over a flow,
+close the overlay that triggered it.
+
+**A standalone deep link must never rewrite the URL of its host.**
+`?project=` replaceState was the scenes-page identity mechanism;
+run inside the hash-routed workspace it wiped the route on every
+open and save. Gate URL writes on standalone mode.
+
+**Dialog Escape must work from anywhere, not just from inside.**
+Per-dialog key handlers only see keys dispatched within; a
+toolbar-opened dialog with focus still outside never closes.
+Follow the ConfirmModal pattern: a window-level Escape handler
+while any dialog is open, topmost first.
+
 ---
 
 ## Constrained decoding (Ollama `format`, and structured output generally)

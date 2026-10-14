@@ -7407,6 +7407,31 @@ scale); charts structurally exact without axes (V2-4C).
   > module scope of the handler it throws past `mapStoreError`,
   > turning an honest 503 into a generic 500 — the misconfigured
   > fault test caught it, not review.
+- [x] V2-6C hosted persistence and multi-instance safety —
+  accepted at `97a12de` (independent review clean): one
+  ProjectStore interface over SQLite and PostgreSQL 16 with
+  DB-level transactions, honest 503 on misconfiguration, shared
+  contract 17/17 × 2, concurrency 11/11, faults 8/8, Chrome 3/3
+  (`docs/V2-6C-EVAL.md`, `docs/V2-6C-HOSTED-STORAGE.md`).
+  V2-6 parent stays `[ ]` until hosted readiness is verified.
+- [~] V2-7A unified workspace foundation — phase one of V2-7
+  (this branch, pending independent review): Workspace dashboard
+  over the real project API with AI/layout/blank creation,
+  `#/projects` + `#/project/:id[/history]` routes, and the editor
+  unified into a top-bar / rails / contextual-inspector shell with
+  present mode, leave guards, and an honest assistant placeholder
+  (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`,
+  `docs/v2-7a-evidence/`; creation builders 4/4 headless, focused
+  browser suites in progress — full validation deferred to one
+  final pass, see the eval). No engine, adapter, or command
+  changes; generation-to-project handoff explicitly scoped as
+  the V2-7B blocker below.
+- [ ] V2-7B generation-to-project handoff — the one missing
+  end-to-end link: a translator from generated `deck.yaml`
+  content to validated Layer-C scenes plus the UI handoff that
+  loads them into a persisted project. Nothing exists today (no
+  translator, route, or entry point); "Create with AI" opens the
+  existing chat workflow and stops there, labeled as such.
 - [ ] Slide management UI — slide add/duplicate/delete/reorder
   over the existing revisioned engine slide ops, filmstrip
   multi-select, and detach/relayout affordances. Then V2-6

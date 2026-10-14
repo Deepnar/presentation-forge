@@ -1790,6 +1790,21 @@ and checked-out pg clients carry an error handler so backend
 death maps instead of crashing (`docs/V2-6C-EVAL.md`,
 `docs/V2-6C-HOSTED-STORAGE.md`).
 
+## V2 unified workspace (V2-7A)
+
+Workspace → Project → Editor over one representation
+(ProjectStore documents through the revisioned engine):
+`#/projects` dashboard (`views/Workspace.jsx`, real API only,
+AI/layout/blank creation via validated `lib/v2create.js`
+builders), `#/project/:id[/history]` editor mounting one
+`SceneViewer` per project with detach-on-unmount, and the
+standalone `scenes.html` viewer unchanged. The shell is top
+bar, collapsible left rail, fixed-width contextual right rail
+(inspector + honest assistant placeholder), and present
+overlay; state ownership keeps authoritative content in the
+engine alone, and every V2 call carries the session bearer
+(`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
+
 ## The web shell
 
 The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
