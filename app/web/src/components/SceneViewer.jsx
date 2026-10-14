@@ -4,7 +4,7 @@
 // viewer logic: it mounts one viewer per deck, mirrors snapshots,
 // and forwards UI events to the viewer api. Scenes are never
 // mutated here — selection is an id, geometry comes from the DOM.
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { flattenLayers, elementLabel, applyCollapse } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
@@ -12,6 +12,28 @@ import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
 import { apiList, apiCreate, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { useNarrow } from "../lib/viewport.js";
+
+// Restores focus to the opener when a dialog closes. Dialogs trap
+// nothing; they only borrow focus, and the opener (often a toolbar
+// button that unmounted nothing) gets it back.
+function useFocusReturn(open) {
+  const saved = useRef(null);
+  useEffect(() => {
+    if (open) {
+      saved.current = document.activeElement;
+      return undefined;
+    }
+    const el = saved.current;
+    saved.current = null;
+    if (el && document.contains(el) && typeof el.focus === "function") {
+      try {
+        el.focus({ preventScroll: true });
+      } catch { /* focus return is best-effort */ }
+    }
+    return undefined;
+  }, [open]);
+}
 import mechPlain from "../scenes/mech-warm-humanist-plain.json";
 import mechChromed from "../scenes/mech-warm-humanist-chromed.json";
 import sourceOfTruth from "../scenes/source-of-truth-warm-humanist-plain.json";
@@ -38,10 +60,10 @@ function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOve
         data-thumb-selected={selected ? "true" : undefined}
         style={{
           display: "block", width: "100%", padding: 0, cursor: "pointer",
-          border: active ? "2px solid #e0705a" : "1px solid #444",
+          border: active ? "2px solid var(--color-accent)" : "1px solid var(--color-line)",
           borderRadius: 6, overflow: "hidden", background: "#fff",
           outline: "none",
-          boxShadow: selected && !active ? "0 0 0 2px #e0705a" : undefined,
+          boxShadow: selected && !active ? "0 0 0 2px var(--color-accent)" : undefined,
         }}
         dangerouslySetInnerHTML={{ __html: sceneToSvg(scene, { wrapText: true }) }}
       />
@@ -56,7 +78,7 @@ function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOve
             aria-label={`Slide ${scene.id} menu`}
             data-thumb-menu={scene.id}
             onClick={(e) => { e.stopPropagation(); onMenu(); }}
-            style={{ fontSize: 11, padding: "0 5px", lineHeight: 1.4, background: "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", cursor: "pointer" }}
+            className="rounded border border-line bg-transparent px-1 text-[11px] leading-[1.4] text-fg-muted"
           >
             ⋯
           </button>
@@ -71,33 +93,31 @@ function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOve
 // detach with its consequence stated. No native dialogs (untestable
 // headless); the inline confirm is the confirmation policy.
 function SlideMenu({ scene, isLast, confirming, onDuplicate, onDelete, onConfirmDelete, onCancelDelete, onDetach, onClose }) {
-  const state = scene.layoutState === "detached" ? "Manual — regeneration will not rearrange this slide"
-    : scene.layoutState === "customized" ? "Customized — your edits are kept on recompile"
-    : "Managed by the layout engine";
+  const state = isLast ? "Only slide" : scene.layoutState === "detached" ? "Manual slide" : "Slide menu";
   return (
     <div
       data-slide-menu={scene.id}
-      style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, marginTop: 2, background: "#242220", border: "1px solid #555", borderRadius: 6, padding: 8, fontSize: 12, display: "flex", flexDirection: "column", gap: 6 }}
+      className="absolute inset-x-0 top-full z-10 mt-0.5 flex flex-col gap-1.5 rounded-md border border-line bg-raised p-2 text-[12px] text-fg shadow-[var(--shadow-float)]"
       onClick={(e) => e.stopPropagation()}
     >
-      <span style={{ opacity: 0.75 }}>{state}</span>
-      <button type="button" onClick={onDuplicate}>Duplicate slide</button>
+      <span className="text-fg-faint">{state}</span>
+      <button type="button" onClick={onDuplicate} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Duplicate slide</button>
       {confirming ? (
         <>
           <span>{isLast ? "This is the only slide — it cannot be deleted." : "Delete this slide? Undo restores it."}</span>
-          {!isLast && <button type="button" onClick={onConfirmDelete}>Confirm delete</button>}
-          <button type="button" onClick={onCancelDelete}>Keep</button>
+          {!isLast && <button type="button" onClick={onConfirmDelete} className="rounded-md px-2 py-1 text-left text-danger transition hover:bg-hover">Confirm delete</button>}
+          <button type="button" onClick={onCancelDelete} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Keep</button>
         </>
       ) : (
-        <button type="button" onClick={onDelete}>Delete…</button>
+        <button type="button" onClick={onDelete} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Delete…</button>
       )}
       {scene.layoutState !== "detached" && (
         <>
-          <button type="button" onClick={onDetach}>Detach from AI layout</button>
-          <span style={{ opacity: 0.7, fontSize: 11 }}>The current scene becomes authoritative. Undo restores. There is no reattach.</span>
+          <button type="button" onClick={onDetach} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Detach from AI layout</button>
+          <span className="text-[11px] text-fg-faint">The current scene becomes authoritative. Undo restores. There is no reattach.</span>
         </>
       )}
-      <button type="button" onClick={onClose}>Close</button>
+      <button type="button" onClick={onClose} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Close</button>
     </div>
   );
 }
@@ -167,7 +187,7 @@ function StylePanel({ element, onCommit }) {
       )}
       <label>Width <input aria-label="Stroke width" value={width} inputMode="decimal" style={{ width: 44 }} onChange={(e) => setWidth(e.target.value)} onBlur={commit} onKeyDown={commitOnEnter} /></label>
       <button type="button" onClick={commit}>Apply style</button>
-      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+      {error && <span role="alert" className="text-danger">{error}</span>}
     </div>
   );
 }
@@ -229,7 +249,7 @@ function TextFormatPanel({ element, onCommit }) {
           onCommit={(draft) => commitRow(i, draft)}
         />
       ))}
-      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+      {error && <span role="alert" className="text-danger">{error}</span>}
     </div>
   );
 }
@@ -381,7 +401,7 @@ function ChartDataPanel({ element, onCommit }) {
           ))}
         </tbody>
       </table>
-      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+      {error && <span role="alert" className="text-danger">{error}</span>}
     </div>
   );
 }
@@ -457,7 +477,7 @@ function TableDataPanel({ element, onCommit }) {
           </tbody>
         </table>
       </div>
-      {error && <span role="alert" style={{ color: "#f0a090" }}>{error}</span>}
+      {error && <span role="alert" className="text-danger">{error}</span>}
     </div>
   );
 }
@@ -548,8 +568,8 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
             style={{
               display: "flex", gap: 4, alignItems: "center", padding: "3px 4px 3px 4px",
               paddingLeft: 4 + row.depth * 14, borderRadius: 4, fontSize: 11,
-              background: selected ? "#3a2c26" : parentSelected ? "#2c2622" : "transparent",
-              border: selected ? "1px solid #e0705a" : "1px solid transparent",
+              background: selected ? "var(--color-raised)" : parentSelected ? "var(--color-prompt)" : "transparent",
+              border: selected ? "1px solid var(--color-accent)" : "1px solid transparent",
               opacity: row.hidden ? 0.55 : 1,
             }}
           >
@@ -573,7 +593,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
                 else if (e.ctrlKey || e.metaKey) onToggle?.(row.id);
                 else onSelect?.(row.id);
               }}
-              style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", color: "#eee", cursor: row.hidden ? "default" : "pointer", textAlign: "left", padding: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+              style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", color: "var(--color-fg)", cursor: row.hidden ? "default" : "pointer", textAlign: "left", padding: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
             >
               {row.label}{row.locked ? " · locked" : ""}{row.hidden ? " · hidden" : ""}{parentSelected && !selected ? " · via parent" : ""}
             </button>
@@ -588,7 +608,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
               aria-label={row.locked ? `Unlock ${row.id}` : `Lock ${row.id}`}
               title={row.locked ? "Unlock" : "Lock"}
               onClick={() => onLock?.(row.id, !row.locked)}
-              style={{ padding: "0 3px", background: "transparent", border: "1px solid #555", borderRadius: 3, color: "#eee", cursor: "pointer", fontSize: 10 }}
+              style={{ padding: "0 3px", background: "transparent", border: "1px solid var(--color-line)", borderRadius: 3, color: "var(--color-fg)", cursor: "pointer", fontSize: 10 }}
             >
               {row.locked ? "▪" : "▫"}
             </button>
@@ -597,7 +617,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
               aria-label={row.hidden ? `Show ${row.id}` : `Hide ${row.id}`}
               title={row.hidden ? "Show" : "Hide"}
               onClick={() => onHide?.(row.id, !row.hidden)}
-              style={{ padding: "0 3px", background: "transparent", border: "1px solid #555", borderRadius: 3, color: "#eee", cursor: "pointer", fontSize: 10 }}
+              style={{ padding: "0 3px", background: "transparent", border: "1px solid var(--color-line)", borderRadius: 3, color: "var(--color-fg)", cursor: "pointer", fontSize: 10 }}
             >
               {row.hidden ? "○" : "●"}
             </button>
@@ -637,17 +657,17 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
   return (
     <div
       data-gallery
-      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-3"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}
     >
       <div
         role="dialog"
         aria-label="Choose a slide layout"
-        style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(880px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}
+        className="flex max-h-[86vh] w-[min(880px,94vw)] flex-col overflow-hidden rounded-card border border-line bg-panel text-fg shadow-[var(--shadow-float)]"
       >
-        <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444", flexWrap: "wrap" }}>
-          <strong style={{ fontSize: 13 }}>Choose layout</strong>
+        <div className="flex flex-wrap items-center gap-2 border-b border-line px-3 py-2.5">
+          <strong className="text-[13px]">Choose layout</strong>
           <input
             data-gallery-search
             autoFocus
@@ -655,11 +675,11 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search layouts…"
             aria-label="Search layouts"
-            style={{ flex: 1, minWidth: 140, background: "#111", color: "#eee", border: "1px solid #555", borderRadius: 5, padding: "4px 8px", fontSize: 12 }}
+            className="min-w-[140px] flex-1 rounded-md border border-line bg-field px-2 py-1 text-[12px] text-fg"
           />
-          <button type="button" aria-label="Close gallery" onClick={onClose} style={{ background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+          <button type="button" aria-label="Close gallery" onClick={onClose} className="ml-auto rounded-md border border-line px-2 py-0.5 text-fg-muted transition hover:bg-hover hover:text-fg">✕</button>
         </div>
-        <div style={{ display: "flex", gap: 6, padding: "8px 12px 0", flexWrap: "wrap" }}>
+        <div className="flex flex-wrap gap-1.5 px-3 pt-2">
           {[{ id: "all", name: "All" }, ...LAYOUT_CATEGORIES].map((c) => (
             <button
               key={c.id}
@@ -667,13 +687,13 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
               data-gallery-cat={c.id}
               aria-pressed={cat === c.id ? "true" : "false"}
               onClick={() => setCat(c.id)}
-              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", background: cat === c.id ? "#e0705a" : "transparent", color: cat === c.id ? "#111" : "#eee", border: "1px solid #666" }}
+              className={`rounded-full border px-2.5 py-0.5 text-[11px] transition ${cat === c.id ? "border-accent bg-accent text-on-accent" : "border-line text-fg-muted hover:bg-hover hover:text-fg"}`}
             >
               {c.name}
             </button>
           ))}
         </div>
-        <div data-gallery-grid style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 10, padding: 12, overflowY: "auto" }}>
+        <div data-gallery-grid className="grid gap-2.5 overflow-y-auto p-3 [grid-template-columns:repeat(auto-fill,minmax(210px,1fr))]">
           {visible.map(({ template: t, svg }) => (
             <button
               key={t.id}
@@ -681,20 +701,20 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
               data-gallery-card={t.id}
               onClick={() => onInsert(t.id)}
               title={`${t.name} — ${t.useCase}`}
-              style={{ textAlign: "left", background: "#262422", border: "1px solid #555", borderRadius: 8, padding: 8, cursor: "pointer", color: "#eee", display: "flex", flexDirection: "column", gap: 5 }}
+              className="flex flex-col gap-1 rounded-lg border border-line bg-raised p-2 text-left transition hover:border-accent"
             >
-              <span data-gallery-preview={t.id} dangerouslySetInnerHTML={{ __html: svg }} style={{ display: "block", borderRadius: 4, overflow: "hidden", background: "#fff" }} />
-              <span style={{ fontSize: 12, fontWeight: 700 }}>{t.name}</span>
-              <span style={{ fontSize: 10, opacity: 0.65 }}>{catName(t.category)}</span>
-              <span style={{ fontSize: 11, opacity: 0.85 }}>{t.description}</span>
-              <span style={{ fontSize: 10, opacity: 0.6, fontStyle: "italic" }}>{t.useCase}</span>
+              <span data-gallery-preview={t.id} dangerouslySetInnerHTML={{ __html: svg }} className="block overflow-hidden rounded bg-white" />
+              <span className="text-[12px] font-bold">{t.name}</span>
+              <span className="text-[10px] text-fg-faint">{catName(t.category)}</span>
+              <span className="text-[11px] text-fg-muted">{t.description}</span>
+              <span className="text-[10px] italic text-fg-faint">{t.useCase}</span>
             </button>
           ))}
           {visible.length === 0 && (
-            <span style={{ fontSize: 12, opacity: 0.7, padding: 12 }}>No layouts match “{query}”.</span>
+            <span className="p-3 text-[12px] text-fg-faint">No layouts match “{query}”.</span>
           )}
         </div>
-        <div style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 11, opacity: 0.7 }}>
+        <div className="border-t border-line px-3 py-2 text-[11px] text-fg-faint">
           Click a layout to insert it after the current slide. Esc cancels with no change.
         </div>
       </div>
@@ -702,7 +722,11 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
   );
 }
 
-export default function SceneViewer({ initial = {} }) {
+export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, onBack = null, onOpenProject = null, onProjectDeleted = null }) {
+  // Embedded (workspace) mode binds a persisted project by id and
+  // offers back-navigation; standalone (scenes.html) mode drives
+  // everything from the query string and localStorage instead.
+  const embedded = projectId != null;
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
   const fixture = useMemo(() => DECKS.find((d) => d.name === deckName) ?? DECKS[0], [deckName]);
@@ -847,7 +871,7 @@ export default function SceneViewer({ initial = {} }) {
     const marker = document.createElement("div");
     marker.setAttribute("data-drop-marker", pos);
     marker.style.height = "3px";
-    marker.style.background = "#e0705a";
+    marker.style.background = "var(--color-accent)";
     marker.style.borderRadius = "2px";
     if (pos === "before") {
       marker.style.marginBottom = "2px";
@@ -990,6 +1014,17 @@ export default function SceneViewer({ initial = {} }) {
   const [renameConflict, setRenameConflict] = useState(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState(null);
   const [pendingSwitchId, setPendingSwitchId] = useState(null);
+  // V2-7A unified shell: collapsible rails, right-rail tabs
+  // (inspector vs assistant placeholder), present overlay, and an
+  // explicit leave guard for workspace navigation. All editing
+  // behavior underneath is unchanged.
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightTab, setRightTab] = useState("inspector");
+  const [rightOpen, setRightOpen] = useState(true);
+  const [presenting, setPresenting] = useState(null); // slide index or null
+  const [pendingLeave, setPendingLeave] = useState(null); // { label, run } or null
+  const [titleDraft, setTitleDraft] = useState(null); // null = not renaming
+  const [titleError, setTitleError] = useState(null);
   // V2-6B durable version history: the project being inspected, its
   // revision list (audit metadata only), the selected revision's
   // preview document, and the guarded restore flow.
@@ -1274,6 +1309,8 @@ export default function SceneViewer({ initial = {} }) {
   // failure), then swaps the engine document to the stored scenes.
   // Unsaved edits on the current project require an explicit choice
   // (save-and-switch, discard-and-switch, cancel) — never silent loss.
+  // In embedded workspace mode a different id navigates (the router
+  // remounts one editor per project) instead of swapping in place.
   async function openProject(id) {
     if (adapterRef.current?.hasPendingEdit?.()) {
       const r = await adapterRef.current.commitPendingEdit();
@@ -1281,6 +1318,11 @@ export default function SceneViewer({ initial = {} }) {
     }
     if (projectRef.current && saveState === "dirty" && projectRef.current.id !== id && !pendingSwitchId) {
       setPendingSwitchId(id);
+      return;
+    }
+    if (embedded && onOpenProject && projectRef.current && projectRef.current.id !== id) {
+      setPendingSwitchId(null);
+      onOpenProject(id);
       return;
     }
     setPendingSwitchId(null);
@@ -1427,9 +1469,90 @@ export default function SceneViewer({ initial = {} }) {
     }
   }
 
+  // V2-7A shell helpers: title rename, workspace leave guard,
+  // present mode, and dialog focus return. Editing behavior below
+  // is untouched — these only arrange committed state.
+  const narrow = useNarrow();
+  useEffect(() => {
+    if (narrow) {
+      setLeftCollapsed(true);
+      setRightOpen(false);
+    }
+  }, [narrow]);
+  useFocusReturn(projectsOpen);
+  useFocusReturn(historyFor != null);
+  useFocusReturn(galleryOpen);
+  useFocusReturn(presenting != null);
+  const shellBtn = "rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40";
+  const shellTab = (active) => `rounded-md px-2.5 py-1 text-[12px] font-medium transition ${active ? "bg-raised text-fg" : "text-fg-faint hover:bg-hover hover:text-fg-muted"}`;
+
+  // Top-bar title rename: metadata only — scenes, engine history,
+  // and dirty/saved bookkeeping stand, exactly like the dialog
+  // rename. Enter commits, Escape or blur cancels.
+  async function doRenameTitle() {
+    const proj = projectRef.current;
+    const title = (titleDraft ?? "").trim();
+    if (!proj || !title || title === proj.title) {
+      setTitleDraft(null);
+      return;
+    }
+    setTitleError(null);
+    try {
+      const u = await apiRename(proj.id, { title, baseRevision: proj.revision });
+      projectRef.current = { ...proj, title: u.title, revision: u.revision, updatedAt: u.updatedAt };
+      setProject(projectRef.current);
+      setTitleDraft(null);
+    } catch (err) {
+      if (err?.code === "stale-revision") {
+        setTitleError(`Changed elsewhere (${err.message}). Reload it from Projects and rename again — nothing was overwritten.`);
+      } else {
+        setTitleError(err.message);
+      }
+    }
+  }
+
+  // Workspace leave guard: back-navigation honors the same policy
+  // as project switching. Save & leave is offered only when a
+  // project is bound; otherwise Discard & leave / Cancel.
+  function leaveGuardNeeded() {
+    if (adapterRef.current?.hasPendingEdit?.()) return true;
+    return saveState === "dirty" || saveState === "saving";
+  }
+  async function requestLeave(label, run) {
+    if (adapterRef.current?.hasPendingEdit?.()) {
+      const r = await adapterRef.current.commitPendingEdit();
+      if (!r.ok) return;
+    }
+    if (leaveGuardNeeded() && !pendingLeave) {
+      setPendingLeave({ label, run });
+      return;
+    }
+    setPendingLeave(null);
+    run();
+  }
+  async function leaveWithChoice(how) {
+    const target = pendingLeave;
+    if (!target) return;
+    if (how === "save") {
+      const r = await saveNow();
+      if (!r.ok) return;
+    }
+    setPendingLeave(null);
+    target.run();
+  }
+
+  function openPresent() {
+    const count = (editedScenes ?? deck.scenes).length;
+    if (count === 0) return;
+    setPresenting(Math.min(Math.max(0, snap?.slideIndex ?? 0), count - 1));
+  }
+
   // Refresh recovery: offer the last-opened project without forcing
   // navigation. The ?project= deep link wins over localStorage.
-  useLayoutEffect(() => {    let cancelled = false;
+  // Standalone only — the workspace mounts with an explicit id.
+  useLayoutEffect(() => {
+    if (embedded) return undefined;
+    let cancelled = false;
     const q = (() => {
       try {
         return new URLSearchParams(window.location.search).get("project");
@@ -1449,6 +1572,35 @@ export default function SceneViewer({ initial = {} }) {
       cancelled = true;
     };
   }, []);
+
+  // Embedded workspace mode: bind the routed project on mount and
+  // detach the adapter on unmount, so one mounted editor owns
+  // exactly one engine document and navigation never stacks them.
+  // The history route flag is consumed once, on the first bind.
+  const autoHistoryRef = useRef(autoOpenHistory);
+  useEffect(() => {
+    if (!embedded) return undefined;
+    let cancelled = false;
+    openProject(projectId).then(() => {
+      if (!cancelled && autoHistoryRef.current && projectRef.current) {
+        autoHistoryRef.current = false;
+        openHistory({ id: projectRef.current.id, title: projectRef.current.title });
+      }
+    });
+    return () => {
+      cancelled = true;
+      try {
+        adapterRef.current?.detach();
+      } catch { /* teardown only */ }
+      adapterRef.current = null;
+      docRef.current = null;
+    };
+  }, [projectId]);
+  useEffect(() => {
+    if (embedded && autoOpenHistory && projectRef.current && !historyFor) {
+      openHistory({ id: projectRef.current.id, title: projectRef.current.title });
+    }
+  }, [autoOpenHistory]);
 
   // Unsaved-changes guard: refresh/close warns while dirty or saving.
   useLayoutEffect(() => {
@@ -1589,8 +1741,67 @@ export default function SceneViewer({ initial = {} }) {
     ? (shownScenes[snap.slideIndex]?.elements.find((e) => e.id === snap.selectedIds[0] && e.kind === "table" && !e.locked) ?? null)
     : null;
 
+  const hasFormatTarget = Boolean(styledShape || formattedText || chartTarget || tableTarget);
+  const currentSlide = shownScenes[snap?.slideIndex ?? 0] ?? null;
+  const slideProps = currentSlide ? {
+    elements: currentSlide.elements.length,
+    hidden: currentSlide.elements.filter((e) => e.hidden).length,
+    locked: currentSlide.elements.filter((e) => e.locked).length,
+  } : null;
+
   return (
-    <div style={{ display: "flex", height: "100vh", background: "#1c1a18", color: "#eee", fontFamily: "system-ui, sans-serif" }}>
+    <div className="flex h-screen flex-col bg-base text-fg" data-workspace-editor={project?.id ?? "unbound"}>
+      {/* Top bar: project identity, back-navigation, save state,
+          undo/redo, history, export, present, assistant. The row
+          below keeps every view/edit control it always had. */}
+      <div data-topbar className="flex min-h-[44px] flex-none items-center gap-1.5 border-b border-line bg-panel px-3 py-1.5">
+        {embedded && onBack && (
+          <button type="button" aria-label="Back to workspace" title="Back to presentations" onClick={() => requestLeave("presentations", onBack)} className={shellBtn}>← Workspace</button>
+        )}
+        <button type="button" aria-label={leftCollapsed ? "Show slides rail" : "Hide slides rail"} title={leftCollapsed ? "Show slides rail" : "Hide slides rail"} aria-pressed={!leftCollapsed} onClick={() => setLeftCollapsed((v) => !v)} className={shellBtn}>Slides</button>
+        {project ? (
+          <input
+            aria-label="Project title"
+            data-project-title
+            value={titleDraft ?? project.title}
+            onChange={(e) => { setTitleDraft(e.target.value); setTitleError(null); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") doRenameTitle();
+              else if (e.key === "Escape") { setTitleDraft(null); setTitleError(null); }
+            }}
+            onBlur={() => { if (titleDraft !== null) setTitleDraft(null); }}
+            title="Project title — Enter renames, Escape cancels"
+            className="min-w-0 max-w-[280px] flex-none rounded-md bg-transparent px-2 py-1 text-[14px] font-semibold tracking-tight transition hover:bg-hover focus:bg-field focus:outline-none"
+          />
+        ) : (
+          <span className="flex-none px-1 text-[14px] font-semibold tracking-tight">Presentation Forge</span>
+        )}
+        {titleError && <span role="alert" className="max-w-[300px] truncate text-[11px] text-danger" title={titleError}>{titleError}</span>}
+        {editOn && (
+          <>
+            <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())} className={shellBtn}>Save</button>
+            <span data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={saveError ?? project?.title ?? "no project"} className="flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
+              {saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project"}
+            </span>
+            <button type="button" aria-label="Undo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()} className={shellBtn}>↩ Undo</button>
+            <button type="button" aria-label="Redo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()} className={shellBtn}>↪ Redo</button>
+          </>
+        )}
+        <span className="min-w-2 flex-1" />
+        {project && !project.recoverable && (
+          <button type="button" aria-label="Version history" title={`Version history for ${project.title}`} onClick={() => openHistory(project)} className={shellBtn}>History</button>
+        )}
+        {project && !project.recoverable && (
+          <a data-topbar-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} title={`Export ${project.title} (.pptx)`} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</a>
+        )}
+        <button type="button" aria-label="Present" title="Present from the current slide" onClick={openPresent} className={shellBtn}>Present</button>
+        <button type="button" aria-label="Assistant" title="AI assistant (not available yet)" aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => { setRightTab("assistant"); setRightOpen(true); }} className={shellBtn}>Assistant</button>
+        <button type="button" aria-label={rightOpen ? "Hide inspector rail" : "Show inspector rail"} title={rightOpen ? "Hide inspector rail" : "Show inspector rail"} aria-pressed={rightOpen} onClick={() => setRightOpen((v) => !v)} className={shellBtn}>Inspector</button>
+      </div>
+      <div className="relative flex min-h-0 flex-1">
+      {narrow && !leftCollapsed && (
+        <div aria-hidden data-rail-backdrop className="absolute inset-0 z-30 bg-[var(--color-overlay)]" onClick={() => setLeftCollapsed(true)} />
+      )}
       <div
         aria-live="polite"
         data-viewer-state={JSON.stringify({
@@ -1614,8 +1825,8 @@ export default function SceneViewer({ initial = {} }) {
       )}
       <aside
         ref={asideRef}
-        style={{ width: 172, overflowY: "auto", padding: 12, borderRight: "1px solid #333" }}
         aria-label="Slides"
+        className={`min-h-0 flex-none overflow-y-auto border-line bg-panel p-3 ${leftCollapsed ? "hidden" : narrow ? "absolute inset-y-0 left-0 z-40 w-72 border-r shadow-[var(--shadow-float)]" : "relative w-44 border-r"}`}
         onKeyDown={(e) => {
           // Filmstrip-local keys only: Escape settles bulk selection
           // back to the active slide. Canvas keys live on the mount
@@ -1641,13 +1852,13 @@ export default function SceneViewer({ initial = {} }) {
           clearDropMarker();
         }}
       >
-        <div style={{ marginBottom: 8, fontSize: 12, opacity: 0.7 }}>
+        <div className="mb-2 text-[12px] text-fg-faint">
           {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
         </div>
         {editOn && (
-          <div role="tablist" aria-label="Sidebar" style={{ display: "flex", gap: 4, marginBottom: 8 }}>
-            <button type="button" role="tab" aria-selected={railTab === "slides" ? "true" : "false"} onClick={() => setRailTab("slides")} style={{ flex: 1, padding: "3px 0", cursor: "pointer", background: railTab === "slides" ? "#3a2c26" : "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", fontSize: 11 }}>Slides</button>
-            <button type="button" role="tab" aria-selected={railTab === "layers" ? "true" : "false"} onClick={() => setRailTab("layers")} style={{ flex: 1, padding: "3px 0", cursor: "pointer", background: railTab === "layers" ? "#3a2c26" : "transparent", border: "1px solid #555", borderRadius: 4, color: "#eee", fontSize: 11 }}>Layers</button>
+          <div role="tablist" aria-label="Sidebar" className="mb-2 flex gap-1">
+            <button type="button" role="tab" aria-selected={railTab === "slides" ? "true" : "false"} onClick={() => setRailTab("slides")} className={shellTab(railTab === "slides") + " flex-1"}>Slides</button>
+            <button type="button" role="tab" aria-selected={railTab === "layers" ? "true" : "false"} onClick={() => setRailTab("layers")} className={shellTab(railTab === "layers") + " flex-1"}>Layers</button>
           </div>
         )}
         {editOn && railTab === "layers" ? (
@@ -1683,48 +1894,48 @@ export default function SceneViewer({ initial = {} }) {
         ) : (
         <>
         {editOn && (
-          <div style={{ position: "relative", marginBottom: 8 }}>
+          <div className="relative mb-2">
             <button
               type="button"
               onClick={() => { setChooserOpen((v) => !v); setMenuFor(null); }}
               title="Add a slide: blank, layout, or duplicate"
               aria-expanded={chooserOpen ? "true" : "false"}
               data-new-slide
-              style={{ display: "block", width: "100%", padding: "4px 0", cursor: "pointer", background: "transparent", border: "1px dashed #666", borderRadius: 6, color: "#eee" }}
+              className="block w-full rounded-md border border-dashed border-line py-1 text-fg-muted transition hover:bg-hover hover:text-fg"
             >
               + Slide ▾
             </button>
             {chooserOpen && (
               <div
                 data-new-slide-chooser
-                style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 12, marginTop: 3, background: "#242220", border: "1px solid #555", borderRadius: 6, padding: 8, fontSize: 12, display: "flex", flexDirection: "column", gap: 6 }}
+                className="absolute inset-x-0 top-full z-[12] mt-1 flex flex-col gap-1.5 rounded-md border border-line bg-raised p-2 text-[12px] shadow-[var(--shadow-float)]"
               >
-                <button type="button" data-new-slide-blank onClick={async () => { setChooserOpen(false); await doInsertSlide(); }}>Blank slide</button>
-                <span style={{ opacity: 0.65, fontSize: 11 }}>An empty slide in the current theme</span>
-                <button type="button" data-new-slide-layout onClick={() => { setChooserOpen(false); setGalleryOpen(true); }}>Choose layout…</button>
-                <span style={{ opacity: 0.65, fontSize: 11 }}>Insert an editable skeleton from the gallery</span>
-                <button type="button" data-new-slide-duplicate onClick={doDuplicateActive}>Duplicate current slide</button>
+                <button type="button" data-new-slide-blank onClick={async () => { setChooserOpen(false); await doInsertSlide(); }} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Blank slide</button>
+                <span className="text-[11px] text-fg-faint">An empty slide in the current theme</span>
+                <button type="button" data-new-slide-layout onClick={() => { setChooserOpen(false); setGalleryOpen(true); }} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Choose layout…</button>
+                <span className="text-[11px] text-fg-faint">Insert an editable skeleton from the gallery</span>
+                <button type="button" data-new-slide-duplicate onClick={doDuplicateActive} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Duplicate current slide</button>
               </div>
             )}
           </div>
         )}
         {editOn && effSlideSel.length > 1 && (
-          <div data-bulk-bar style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8, fontSize: 11, flexWrap: "wrap" }}>
-            <span style={{ opacity: 0.8 }}>{effSlideSel.length} selected</span>
-            <button type="button" title="Duplicate every selected slide in order" onClick={() => doDuplicateSlides(effSlideSel)}>Duplicate</button>
+          <div data-bulk-bar className="mb-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="text-fg-muted">{effSlideSel.length} selected</span>
+            <button type="button" title="Duplicate every selected slide in order" onClick={() => doDuplicateSlides(effSlideSel)} className={shellBtn}>Duplicate</button>
             {confirmBulk ? (
               <>
                 <span>Delete {effSlideSel.length} slides?</span>
-                <button type="button" onClick={() => doDeleteSlides(effSlideSel)}>Confirm</button>
-                <button type="button" onClick={() => setConfirmBulk(false)}>Keep</button>
+                <button type="button" onClick={() => doDeleteSlides(effSlideSel)} className={shellBtn}>Confirm</button>
+                <button type="button" onClick={() => setConfirmBulk(false)} className={shellBtn}>Keep</button>
               </>
             ) : (
-              <button type="button" onClick={() => setConfirmBulk(true)}>Delete…</button>
+              <button type="button" onClick={() => setConfirmBulk(true)} className={shellBtn}>Delete…</button>
             )}
-            <button type="button" onClick={() => { const a = api?.snapshot().slideId ?? null; setSlideSel(a ? [a] : []); setConfirmBulk(false); }}>Clear</button>
+            <button type="button" onClick={() => { const a = api?.snapshot().slideId ?? null; setSlideSel(a ? [a] : []); setConfirmBulk(false); }} className={shellBtn}>Clear</button>
           </div>
         )}
-        <div style={{ display: "grid", gap: 8 }}>
+        <div className="grid gap-2">
           {shownScenes.map((s, i) => (
             <Thumb
               key={s.id}
@@ -1779,59 +1990,47 @@ export default function SceneViewer({ initial = {} }) {
         </>
         )}
       </aside>
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative" }}>
-        <div data-toolbar style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #333", flexWrap: "nowrap", overflowX: "auto", overflowY: "hidden" }}>
-          <select aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)}>
+      <main className="relative flex min-w-0 flex-1 flex-col bg-sunken">
+        <div data-toolbar className="flex flex-none items-center gap-1.5 overflow-x-auto overflow-y-hidden border-b border-line bg-panel px-3 py-1.5 text-[12px] [&>*]:flex-none [&>*]:whitespace-nowrap">
+          <select aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)} className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg">
             {DECKS.map((d) => <option key={d.name} value={d.name}>{d.name} ({d.theme}, {d.variant})</option>)}
             {liveDeck && <option value={liveDeck.name}>{liveDeck.name} (live)</option>}
           </select>
-          <button type="button" onClick={() => api && guardedNav(() => api.prev())}>← Prev</button>
-          <button type="button" onClick={() => api && guardedNav(() => api.next())}>Next →</button>
-          <button type="button" onClick={() => api?.zoomOut()} aria-label="Zoom out">−</button>
-          <span aria-live="polite" style={{ minWidth: 56, textAlign: "center" }}>{Math.round((snap?.zoom ?? 1) * 100)}%</span>
-          <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in">+</button>
-          <button type="button" onClick={() => api?.resetZoom()}>Fit</button>
-          <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen}>Live</button>
-          <button type="button" onClick={() => { refreshProjectList(); setProjectsOpen(true); }} aria-expanded={projectsOpen}>Projects</button>
+          <button type="button" onClick={() => api && guardedNav(() => api.prev())} className={shellBtn}>← Prev</button>
+          <button type="button" onClick={() => api && guardedNav(() => api.next())} className={shellBtn}>Next →</button>
+          <button type="button" onClick={() => api?.zoomOut()} aria-label="Zoom out" className={shellBtn}>−</button>
+          <span aria-live="polite" className="min-w-[56px] text-center">{Math.round((snap?.zoom ?? 1) * 100)}%</span>
+          <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in" className={shellBtn}>+</button>
+          <button type="button" onClick={() => api?.resetZoom()} className={shellBtn}>Fit</button>
+          <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen} className={shellBtn}>Live</button>
+          <button type="button" onClick={() => { refreshProjectList(); setProjectsOpen(true); }} aria-expanded={projectsOpen} className={shellBtn}>Projects</button>
           <button
             type="button"
             title={editOn ? "Leave edit mode (unsaved edits stay visible until you switch decks)" : "Edit this deck: drag, nudge, delete with undo"}
             onClick={() => (editOn ? exitEdit() : enterEdit())}
+            className={shellBtn}
           >
             {editStatus.preparing ? "Preparing…" : editOn ? "Done" : "Edit"}
           </button>
           {editOn && (
             <>
-              <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())}>Save</button>
-              {project && !project.recoverable && (
-                <button type="button" aria-label="Version history" title={`Version history for ${project.title}`} onClick={() => openHistory(project)}>History</button>
-              )}
-              <span data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} style={{ fontSize: 12, opacity: 0.9, border: "1px solid #555", borderRadius: 10, padding: "1px 8px" }} title={saveError ?? project?.title ?? "no project"}>
-                {saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project"}
-              </span>
-            </>
-          )}
-          {editOn && (
-            <>
-              <button type="button" aria-label="Undo" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()}>↩ Undo</button>
-              <button type="button" aria-label="Redo" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()}>↪ Redo</button>
-              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an editable text box at the slide center"} onClick={() => adapterRef.current?.addTextElement()}>+ Text</button>
-              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")}>+ Rect</button>
-              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")}>+ Round</button>
-              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an ellipse"} onClick={() => adapterRef.current?.addShapeElement("ellipse")}>+ Ellipse</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an editable text box at the slide center"} onClick={() => adapterRef.current?.addTextElement()} className={shellBtn}>+ Text</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")} className={shellBtn}>+ Rect</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")} className={shellBtn}>+ Round</button>
+              <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an ellipse"} onClick={() => adapterRef.current?.addShapeElement("ellipse")} className={shellBtn}>+ Ellipse</button>
             </>
           )}
           {editOn && textState.editing && (
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", fontSize: 12 }}>
-              <span style={{ opacity: 0.85 }}>editing text… Ctrl+Enter commits, Esc cancels</span>
+            <span className="inline-flex items-center gap-1.5 text-[12px]">
+              <span className="text-fg-muted">editing text… Ctrl+Enter commits, Esc cancels</span>
               {textState.paragraphs > 1 && (
-                <span style={{ opacity: 0.7 }}>{textState.paragraphs} paragraphs · each keeps its own style</span>
+                <span className="text-fg-faint">{textState.paragraphs} paragraphs · each keeps its own style</span>
               )}
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { const a = adapterRef.current; if (a?.editingId?.()) a.commitTextEdit(); }}>Commit</button>
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => adapterRef.current?.cancelTextEdit()}>Cancel</button>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { const a = adapterRef.current; if (a?.editingId?.()) a.commitTextEdit(); }} className={shellBtn}>Commit</button>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => adapterRef.current?.cancelTextEdit()} className={shellBtn}>Cancel</button>
             </span>
           )}
-          <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>
+          <span className="ml-auto text-[12px] text-fg-faint">
             {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
             {liveSnap.status === "loading" ? " · compiling…" : ""}
             {editOn ? ` · editing rev ${editStatus.rev}` : ""}
@@ -1843,46 +2042,46 @@ export default function SceneViewer({ initial = {} }) {
           </span>
         </div>
         {editStatus.error && (
-          <div role="alert" data-edit-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0a090", background: "#242220" }}>
+          <div role="alert" data-edit-error className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-danger">
             Edit failed: {editStatus.error}
           </div>
         )}
         {project?.recoverable && !projectsOpen && (
-          <div role="status" data-recover-banner style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, background: "#242220" }}>
+          <div role="status" data-recover-banner className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
             Last project “{project.title}” is saved on this machine.{" "}
-            <button type="button" onClick={() => openProject(project.id)}>Reopen it</button>{" "}
-            <button type="button" onClick={() => { setProject((p) => (p ? { ...p, recoverable: false } : p)); }}>Dismiss</button>
+            <button type="button" onClick={() => openProject(project.id)} className={shellBtn}>Reopen it</button>{" "}
+            <button type="button" onClick={() => { setProject((p) => (p ? { ...p, recoverable: false } : p)); }} className={shellBtn}>Dismiss</button>
           </div>
         )}
         {(saveState === "stale" || saveState === "error" || saveState === "unavailable") && saveError && (
-          <div role="alert" data-save-error style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0c090", background: "#242220" }}>
+          <div role="alert" data-save-error className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-amber">
             {saveState === "stale" ? `Save conflict: ${saveError} Your edits are intact — reload the newer version or save as a new project.` : `Save failed: ${saveError} Your edits are intact.`}{" "}
             {saveState === "stale" && (
               <>
-                <button type="button" onClick={() => openProject(project.id)}>Load newer version</button>{" "}
-                <button type="button" onClick={saveAsNewProject}>Save as new project</button>{" "}
+                <button type="button" onClick={() => openProject(project.id)} className={shellBtn}>Load newer version</button>{" "}
+                <button type="button" onClick={saveAsNewProject} className={shellBtn}>Save as new project</button>{" "}
               </>
             )}
-            <button type="button" onClick={() => saveNow()}>Retry save</button>
+            <button type="button" onClick={() => saveNow()} className={shellBtn}>Retry save</button>
           </div>
         )}
         {pendingSwitchId && (
-          <div role="alert" data-switch-guard style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, background: "#242220" }}>
+          <div role="alert" data-switch-guard className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
             You have unsaved changes. Switching projects without saving loses them.{" "}
-            <button type="button" onClick={async () => { await saveNow(); if (saveState !== "dirty") openProject(pendingSwitchId); }}>Save & switch</button>{" "}
-            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); savedEngineRevRef.current = docRef.current?.snapshot().revision ?? 0; setSaveState("saved"); openProject(id); }}>Discard & switch</button>{" "}
-            <button type="button" onClick={() => setPendingSwitchId(null)}>Cancel</button>
+            <button type="button" onClick={async () => { await saveNow(); if (saveState !== "dirty") openProject(pendingSwitchId); }} className={shellBtn}>Save & switch</button>{" "}
+            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); savedEngineRevRef.current = docRef.current?.snapshot().revision ?? 0; setSaveState("saved"); openProject(id); }} className={shellBtn}>Discard & switch</button>{" "}
+            <button type="button" onClick={() => setPendingSwitchId(null)} className={shellBtn}>Cancel</button>
           </div>
         )}
         {textState.conflict && (
-          <div role="alert" data-text-conflict style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#f0c090", background: "#242220" }}>
+          <div role="alert" data-text-conflict className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-amber">
             {textState.conflict}{" "}
-            <button type="button" onClick={() => adapterRef.current?.commitTextEdit({ force: true })}>Overwrite with my draft</button>{" "}
-            <button type="button" onClick={() => adapterRef.current?.cancelTextEdit()}>Discard draft</button>
+            <button type="button" onClick={() => adapterRef.current?.commitTextEdit({ force: true })} className={shellBtn}>Overwrite with my draft</button>{" "}
+            <button type="button" onClick={() => adapterRef.current?.cancelTextEdit()} className={shellBtn}>Discard draft</button>
           </div>
         )}
         {textState.overflow && (
-          <div role="status" data-text-overflow style={{ padding: "6px 12px", borderBottom: "1px solid #333", fontSize: 12, color: "#e8d090", background: "#242220" }}>
+          <div role="status" data-text-overflow className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-amber">
             {textState.overflow}
           </div>
         )}
@@ -1893,14 +2092,12 @@ export default function SceneViewer({ initial = {} }) {
           <div
             data-live-panel
             aria-label="Live compilation"
-            style={{
-              display: "flex", gap: 8, alignItems: "center", padding: "6px 12px",
-              borderBottom: "1px solid #333", fontSize: 12, flexWrap: "wrap", background: "#242220",
-            }}
+            className="flex flex-none flex-wrap items-center gap-2 border-b border-line bg-raised px-3 py-1.5 text-[12px]"
           >
             <select
               aria-label="Live example"
               value={liveForm.example}
+              className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg"
               onChange={(e) => {
                 const ex = liveCatalog.examples.find((x) => x.id === e.target.value);
                 setLiveForm((f) => ({ ...f, example: e.target.value, theme: ex?.theme ?? f.theme, variant: ex?.variant ?? f.variant }));
@@ -1909,17 +2106,18 @@ export default function SceneViewer({ initial = {} }) {
               {liveCatalog.examples.length === 0 && <option value="">(no examples — is the API running?)</option>}
               {liveCatalog.examples.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
             </select>
-            <select aria-label="Live theme" value={liveForm.theme} onChange={(e) => setLiveForm((f) => ({ ...f, theme: e.target.value }))}>
+            <select aria-label="Live theme" value={liveForm.theme} onChange={(e) => setLiveForm((f) => ({ ...f, theme: e.target.value }))} className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg">
               {liveCatalog.themes.map((t) => <option key={t} value={t}>{t}</option>)}
               {liveForm.theme && !liveCatalog.themes.includes(liveForm.theme) && <option value={liveForm.theme}>{liveForm.theme}</option>}
             </select>
-            <select aria-label="Live variant" value={liveForm.variant} onChange={(e) => setLiveForm((f) => ({ ...f, variant: e.target.value }))}>
+            <select aria-label="Live variant" value={liveForm.variant} onChange={(e) => setLiveForm((f) => ({ ...f, variant: e.target.value }))} className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg">
               <option value="plain">plain</option>
               <option value="chromed">chromed</option>
             </select>
             <button
               type="button"
               disabled={liveSnap.status === "loading" || !liveForm.example}
+              className={`${shellBtn} disabled:opacity-40`}
               onClick={() => {
                 const ex = liveCatalog.examples.find((x) => x.id === liveForm.example);
                 if (!ex?.intent) return;
@@ -1928,41 +2126,11 @@ export default function SceneViewer({ initial = {} }) {
             >
               {liveSnap.status === "loading" ? "Compiling…" : "Compile live"}
             </button>
-            <span aria-live="polite" role={liveSnap.status === "error" ? "alert" : undefined} style={{ opacity: 0.85 }}>
+            <span aria-live="polite" role={liveSnap.status === "error" ? "alert" : undefined} className="text-fg-muted">
               {liveSnap.status === "error" ? `Error: ${liveSnap.error}` : liveDeck ? `Live: ${liveDeck.name}` : ""}
             </span>
           </div>
         )}
-        {/* Inspector reserve: the wrapper always holds one inspector
-        line (transparent border when empty) so single-line selection
-        never reflows the stage — the V2-5D double-click shift is
-        fixed by layout, with the 600ms selection hold as backstop
-        for multi-line inspectors. Format panels dock below the
-        scroll viewport (absolute, outside flow) and the toolbar
-        never wraps, for the same reason. */}
-        <div
-          data-inspector-wrap
-          style={{ minHeight: 31, boxSizing: "border-box", background: "#242220", borderBottom: inspected.length > 0 ? "1px solid #333" : "1px solid transparent" }}
-        >
-        {inspected.length > 0 && (
-          <div
-            data-inspector
-            aria-label="Selection inspector"
-            style={{
-              padding: "6px 12px", fontSize: 11,
-              fontFamily: "ui-monospace, monospace",
-              maxHeight: 88, overflowY: "auto",
-            }}
-          >
-            {inspected.map((r) => (
-              <div key={r.id} data-inspected={r.id}>
-                {r.id} · {r.kind} · {r.w}×{r.h} @ {r.x},{r.y}
-                {r.locked ? " · locked" : ""}{r.semanticRef ? ` · ref ${r.semanticRef}` : ""} · {r.provenance ?? "scene"}
-              </div>
-            ))}
-          </div>
-        )}
-        </div>
         <div
           ref={scrollRef}
           data-scroll-container
@@ -1994,48 +2162,123 @@ export default function SceneViewer({ initial = {} }) {
         {/* Toolbar items never shrink (shrinking wraps button text
         and grows the row, moving the stage): the row scrolls
         horizontally instead, at a constant height. */}
-        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; } [data-gallery] svg { width: 100% !important; height: auto !important; display: block; } [data-toolbar] > * { flex-shrink: 0; white-space: nowrap; }`}</style>
-        {/* Format dock: shape and text panels float above the
-        scroll viewport bottom (absolute, outside layout flow), so
-        selecting never resizes the scroll area, never retriggers
-        refit, and never moves the stage — the double-click target
-        stays pixel-stable. Dismissed by deselection. */}
-        {(styledShape || formattedText || chartTarget || tableTarget) && (
-          <div
-            data-format-bar
-            style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 6, borderTop: "1px solid #333", background: "#242220", maxHeight: 190, overflowY: "auto" }}
-          >
-            {styledShape && (
-              <StylePanel
-                key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
-                element={styledShape}
-                onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
-              />
-            )}
-            {formattedText && (
-              <TextFormatPanel
-                key={`${snap.slideId}:${formattedText.id}:${editStatus.rev}`}
-                element={formattedText}
-                onCommit={(i, patch) => adapterRef.current?.setTextStyle(formattedText.id, i, patch)}
-              />
-            )}
-            {chartTarget && (
-              <ChartDataPanel
-                key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
-                element={chartTarget}
-                onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
-              />
-            )}
-            {tableTarget && (
-              <TableDataPanel
-                key={`${snap.slideId}:${tableTarget.id}:${editStatus.rev}`}
-                element={tableTarget}
-                onCommit={(rows) => adapterRef.current?.setTableData(tableTarget.id, rows)}
-              />
-            )}
-          </div>
-        )}
+        <style>{`aside[aria-label="Slides"] svg { width: 100% !important; height: auto !important; display: block; } [data-gallery] svg { width: 100% !important; height: auto !important; display: block; } [data-toolbar] > * { flex-shrink: 0; white-space: nowrap; } [data-present-slide] svg { width: 100% !important; height: auto !important; display: block; }`}</style>
       </main>
+      {/* Right rail: fixed width, so swapping contextual panels on
+          selection never moves the stage. Inspector tab holds the
+          selection readout, the contextual format panel (same
+          components and commit paths as the old bottom dock), and
+          slide properties when nothing is selected. The Assistant
+          tab is a reserved, honest placeholder. */}
+      <aside
+        aria-label="Inspector"
+        className={`min-h-0 flex-none flex-col overflow-hidden border-line bg-panel ${rightOpen ? "flex" : "hidden"} ${narrow ? "absolute inset-y-0 right-0 z-40 w-72 border-l shadow-[var(--shadow-float)]" : "relative w-72 border-l"}`}
+      >
+        <div role="tablist" aria-label="Right rail" className="flex flex-none gap-1 border-b border-line p-2">
+          <button type="button" role="tab" aria-selected={rightTab === "inspector" ? "true" : "false"} onClick={() => setRightTab("inspector")} className={shellTab(rightTab === "inspector") + " flex-1"}>Inspector</button>
+          <button type="button" role="tab" aria-selected={rightTab === "assistant" ? "true" : "false"} onClick={() => setRightTab("assistant")} className={shellTab(rightTab === "assistant") + " flex-1"}>Assistant</button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-3">
+          {rightTab === "assistant" ? (
+            <div data-assistant-panel className="flex flex-col gap-2 text-[13px]">
+              <strong className="text-[14px]">Assistant</strong>
+              <p className="text-fg-muted">AI slide editing is not available in this workspace yet.</p>
+              <p className="text-fg-faint text-[12.5px]">
+                When it lands, it will operate through the same revisioned command engine
+                and project permissions as manual edits — one authoritative document,
+                optimistic conflicts, and an audit trail. Nothing here edits slides today.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div data-inspector-wrap>
+                {inspected.length > 0 ? (
+                  <div data-inspector aria-label="Selection inspector" className="max-h-24 overflow-y-auto font-mono text-[11px] text-fg-muted">
+                    {inspected.map((r) => (
+                      <div key={r.id} data-inspected={r.id}>
+                        {r.id} · {r.kind} · {r.w}×{r.h} @ {r.x},{r.y}
+                        {r.locked ? " · locked" : ""}{r.semanticRef ? ` · ref ${r.semanticRef}` : ""} · {r.provenance ?? "scene"}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-[12px] text-fg-faint">Nothing selected. Click the slide to select an object, or double-click text to edit it.</div>
+                )}
+              </div>
+              {styledShape && (
+                <StylePanel
+                  key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
+                  element={styledShape}
+                  onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
+                />
+              )}
+              {formattedText && (
+                <TextFormatPanel
+                  key={`${snap.slideId}:${formattedText.id}:${editStatus.rev}`}
+                  element={formattedText}
+                  onCommit={(i, patch) => adapterRef.current?.setTextStyle(formattedText.id, i, patch)}
+                />
+              )}
+              {chartTarget && (
+                <ChartDataPanel
+                  key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
+                  element={chartTarget}
+                  onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
+                />
+              )}
+              {tableTarget && (
+                <TableDataPanel
+                  key={`${snap.slideId}:${tableTarget.id}:${editStatus.rev}`}
+                  element={tableTarget}
+                  onCommit={(rows) => adapterRef.current?.setTableData(tableTarget.id, rows)}
+                />
+              )}
+              {!hasFormatTarget && currentSlide && (
+                <div data-slide-props className="flex flex-col gap-1 border-t border-line pt-2 text-[12.5px] text-fg-muted">
+                  <div><span className="text-fg-faint">Slide </span><span className="font-mono text-[11.5px]">{currentSlide.id}</span></div>
+                  <div><span className="text-fg-faint">Layout </span>{currentSlide.layoutState === "detached" ? "Manual slide" : currentSlide.layoutState === "customized" ? "Custom slide" : "Managed by AI layout"}</div>
+                  <div><span className="text-fg-faint">Objects </span>{slideProps.elements}{slideProps.hidden > 0 ? ` (${slideProps.hidden} hidden)` : ""}{slideProps.locked > 0 ? ` (${slideProps.locked} locked)` : ""}</div>
+                  {!editOn && <div className="text-fg-faint">Read-only — press Edit in the toolbar to change this slide.</div>}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </aside>
+      </div>
+      {presenting != null && shownScenes[presenting] && (
+        <div
+          data-present
+          role="dialog"
+          aria-label={`Presenting slide ${presenting + 1} of ${shownScenes.length}`}
+          tabIndex={0}
+          ref={(el) => { if (el) el.focus({ preventScroll: true }); }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setPresenting(null);
+            else if (e.key === "ArrowRight" || e.key === "PageDown") setPresenting((i) => Math.min(shownScenes.length - 1, (i ?? 0) + 1));
+            else if (e.key === "ArrowLeft" || e.key === "PageUp") setPresenting((i) => Math.max(0, (i ?? 0) - 1));
+            else if (e.key === "Home") setPresenting(0);
+            else if (e.key === "End") setPresenting(shownScenes.length - 1);
+          }}
+          className="fixed inset-0 z-[80] flex flex-col items-center justify-center gap-3 bg-black/90 p-6"
+        >
+          <div data-present-slide className="w-[min(1100px,92vw)] overflow-hidden rounded bg-white" dangerouslySetInnerHTML={{ __html: sceneToSvg(shownScenes[presenting], { wrapText: true }) }} />
+          <div className="flex items-center gap-2 text-[13px] text-white">
+            <button type="button" aria-label="Previous slide" onClick={() => setPresenting((i) => Math.max(0, (i ?? 0) - 1))} className="rounded-md border border-white/30 px-2 py-1">← Prev</button>
+            <span aria-live="polite" data-present-count>{presenting + 1} / {shownScenes.length}</span>
+            <button type="button" aria-label="Next slide" onClick={() => setPresenting((i) => Math.min(shownScenes.length - 1, (i ?? 0) + 1))} className="rounded-md border border-white/30 px-2 py-1">Next →</button>
+            <button type="button" aria-label="Exit presentation" onClick={() => setPresenting(null)} className="rounded-md border border-white/30 px-2 py-1">Exit (Esc)</button>
+          </div>
+        </div>
+      )}
+      {pendingLeave && (
+        <div role="alert" data-leave-guard className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
+          You have unsaved changes. Leaving for {pendingLeave.label} without saving loses them.{" "}
+          {projectRef.current && <button type="button" data-leave-save onClick={() => leaveWithChoice("save")} className={shellBtn}>Save & leave</button>}{" "}
+          <button type="button" data-leave-discard onClick={() => leaveWithChoice("discard")} className={shellBtn}>Discard & leave</button>{" "}
+          <button type="button" onClick={() => setPendingLeave(null)} className={shellBtn}>Cancel</button>
+        </div>
+      )}
       {galleryOpen && editOn && (
         <LayoutGallery
           sibling={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0] ?? null}
@@ -2046,30 +2289,30 @@ export default function SceneViewer({ initial = {} }) {
       {projectsOpen && (
         <div
           data-projects-panel
-          style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-3"
           onClick={(e) => { if (e.target === e.currentTarget) setProjectsOpen(false); }}
           onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setProjectsOpen(false); } }}
         >
-          <div role="dialog" aria-label="Saved projects" style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(560px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444" }}>
-              <strong style={{ fontSize: 13 }}>Saved projects</strong>
-              <span data-projects-count style={{ fontSize: 11, opacity: 0.7 }}>{projectList.length} stored on this machine</span>
-              <button type="button" aria-label="Close projects" onClick={() => setProjectsOpen(false)} style={{ marginLeft: "auto", background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+          <div role="dialog" aria-label="Saved projects" className="flex max-h-[86vh] w-[min(560px,94vw)] flex-col overflow-hidden rounded-card border border-line bg-panel text-fg shadow-[var(--shadow-float)]">
+            <div className="flex items-center gap-2 border-b border-line px-3 py-2.5">
+              <strong className="text-[13px]">Saved projects</strong>
+              <span data-projects-count className="text-[11px] text-fg-faint">{projectList.length} stored</span>
+              <button type="button" aria-label="Close projects" onClick={() => setProjectsOpen(false)} className={`${shellBtn} ml-auto`}>✕</button>
             </div>
-            <div style={{ padding: "8px 12px", display: "flex", gap: 8, flexWrap: "wrap", borderBottom: "1px solid #444" }}>
-              <button type="button" data-project-save-current disabled={!editOn} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject}>Save current deck as project</button>
+            <div className="flex flex-wrap gap-2 border-b border-line px-3 py-2">
+              <button type="button" data-project-save-current disabled={!editOn} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
               {project && !project.recoverable && (
-                <a data-project-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} style={{ fontSize: 12, color: "#e0705a" }}>Export {project.title} (.pptx)</a>
+                <a data-project-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</a>
               )}
             </div>
-            <div data-project-list style={{ overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-              {projectListError && <span role="alert" style={{ fontSize: 12, color: "#f0a090" }}>Could not list projects: {projectListError} — editing continues, nothing is saved.</span>}
-              {projectList.length === 0 && !projectListError && <span style={{ fontSize: 12, opacity: 0.7 }}>No saved projects yet. Edit a deck, then “Save current deck as project”.</span>}
+            <div data-project-list className="flex flex-col gap-2 overflow-y-auto p-3">
+              {projectListError && <span role="alert" className="text-[12px] text-danger">Could not list projects: {projectListError} — editing continues, nothing is saved.</span>}
+              {projectList.length === 0 && !projectListError && <span className="text-[12px] text-fg-faint">No saved projects yet. Edit a deck, then “Save current deck as project”.</span>}
               {projectList.map((p) => (
-                <div key={p.id} data-project-row={p.id} style={{ border: project?.id === p.id ? "1px solid #e0705a" : "1px solid #444", borderRadius: 6, padding: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                <div key={p.id} data-project-row={p.id} className={`flex flex-wrap items-center gap-2 rounded-md border p-2 ${project?.id === p.id ? "border-accent" : "border-line"}`}>
                   {renamingId === p.id ? (
                     <>
-                      <input aria-label={`Rename ${p.id}`} value={renameDraft} onChange={(e) => setRenameDraft(e.target.value)} style={{ flex: 1, minWidth: 120, background: "#111", color: "#eee", border: "1px solid #555", borderRadius: 4, padding: "3px 6px", fontSize: 12 }} />
+                      <input aria-label={`Rename ${p.id}`} value={renameDraft} onChange={(e) => setRenameDraft(e.target.value)} className="min-w-[120px] flex-1 rounded border border-line bg-field px-1.5 py-1 text-[12px] text-fg" />
                       <button type="button" onClick={async () => {
                         // The rename carries the durable revision this
                         // client based it on — the same contract as
@@ -2098,29 +2341,29 @@ export default function SceneViewer({ initial = {} }) {
                             setProjectListError(err.message);
                           }
                         }
-                      }}>Apply</button>
-                      <button type="button" onClick={() => { setRenamingId(null); setRenameConflict(null); }}>Cancel</button>
+                      }} className={shellBtn}>Apply</button>
+                      <button type="button" onClick={() => { setRenamingId(null); setRenameConflict(null); }} className={shellBtn}>Cancel</button>
                       {renameConflict?.id === p.id && (
-                        <span role="alert" data-rename-conflict={p.id} style={{ fontSize: 11, color: "#f0c090", flexBasis: "100%" }}>
+                        <span role="alert" data-rename-conflict={p.id} className="basis-full text-[11px] text-amber">
                           Rename conflict: {renameConflict.message} Your “{renameDraft}” draft is kept.{" "}
-                          <button type="button" onClick={async () => { setRenameConflict(null); await refreshProjectList(); }}>Reload list</button>
+                          <button type="button" onClick={async () => { setRenameConflict(null); await refreshProjectList(); }} className={shellBtn}>Reload list</button>
                         </span>
                       )}
                     </>
                   ) : (
                     <>
-                      <span style={{ flex: 1, minWidth: 140, fontSize: 12 }}><strong>{p.title}</strong> <span style={{ opacity: 0.65 }}>· {p.slideCount} slides · rev {p.revision}</span></span>
-                      <button type="button" data-project-open={p.id} onClick={() => openProject(p.id)}>Open</button>
-                      <button type="button" data-project-history={p.id} onClick={() => openHistory(p)}>History</button>
-                      <button type="button" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</button>
+                      <span className="min-w-[140px] flex-1 text-[12px]"><strong>{p.title}</strong> <span className="text-fg-faint">· {p.slideCount} slides · rev {p.revision}</span></span>
+                      <button type="button" data-project-open={p.id} onClick={() => openProject(p.id)} className={shellBtn}>Open</button>
+                      <button type="button" data-project-history={p.id} onClick={() => openHistory(p)} className={shellBtn}>History</button>
+                      <button type="button" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }} className={shellBtn}>Rename</button>
                       {confirmRemoveId === p.id ? (
                         <>
-                          <span style={{ fontSize: 11 }}>Delete “{p.title}”? This cannot be undone.</span>
-                          <button type="button" data-project-delete-confirm={p.id} onClick={async () => { try { await apiRemove(p.id); setProjectList((l) => l.filter((x) => x.id !== p.id)); if (project?.id === p.id) { projectRef.current = null; setProject(null); setSaveState("idle"); writeLastProject(null); } setConfirmRemoveId(null); } catch (err) { setProjectListError(err.message); } }}>Confirm delete</button>
-                          <button type="button" onClick={() => setConfirmRemoveId(null)}>Keep</button>
+                          <span className="text-[11px]">Delete “{p.title}”? This cannot be undone.</span>
+                          <button type="button" data-project-delete-confirm={p.id} onClick={async () => { try { await apiRemove(p.id); setProjectList((l) => l.filter((x) => x.id !== p.id)); if (project?.id === p.id) { projectRef.current = null; setProject(null); setSaveState("idle"); writeLastProject(null); if (embedded && onProjectDeleted) onProjectDeleted(p.id); } setConfirmRemoveId(null); } catch (err) { setProjectListError(err.message); } }} className={shellBtn}>Confirm delete</button>
+                          <button type="button" onClick={() => setConfirmRemoveId(null)} className={shellBtn}>Keep</button>
                         </>
                       ) : (
-                        <button type="button" onClick={() => setConfirmRemoveId(p.id)}>Delete…</button>
+                        <button type="button" onClick={() => setConfirmRemoveId(p.id)} className={shellBtn}>Delete…</button>
                       )}
                     </>
                   )}
@@ -2133,68 +2376,68 @@ export default function SceneViewer({ initial = {} }) {
       {historyFor && (
         <div
           data-history-panel
-          style={{ position: "fixed", inset: 0, zIndex: 70, background: "rgba(8,8,8,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-3"
           onClick={(e) => { if (e.target === e.currentTarget) setHistoryFor(null); }}
           onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setHistoryFor(null); } }}
         >
-          <div role="dialog" aria-label={`Version history for ${historyFor.title}`} style={{ background: "#1e1c1a", color: "#eee", border: "1px solid #555", borderRadius: 10, width: "min(620px, 94vw)", maxHeight: "86vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderBottom: "1px solid #444" }}>
-              <strong style={{ fontSize: 13 }}>Version history — {historyFor.title}</strong>
-              <button type="button" aria-label="Close version history" onClick={() => setHistoryFor(null)} style={{ marginLeft: "auto", background: "transparent", border: "1px solid #555", borderRadius: 5, color: "#eee", cursor: "pointer", padding: "3px 9px" }}>✕</button>
+          <div role="dialog" aria-label={`Version history for ${historyFor.title}`} className="flex max-h-[86vh] w-[min(620px,94vw)] flex-col overflow-hidden rounded-card border border-line bg-panel text-fg shadow-[var(--shadow-float)]">
+            <div className="flex items-center gap-2 border-b border-line px-3 py-2.5">
+              <strong className="text-[13px]">Version history — {historyFor.title}</strong>
+              <button type="button" aria-label="Close version history" onClick={() => setHistoryFor(null)} className={`${shellBtn} ml-auto`}>✕</button>
             </div>
-            <div style={{ padding: "6px 12px", fontSize: 11, opacity: 0.7, borderBottom: "1px solid #444" }}>
+            <div className="border-b border-line px-3 py-1.5 text-[11px] text-fg-faint">
               Restoring creates a <em>new</em> saved revision from the older content — history is never rewritten. Undo history is cleared by a restore.
               {historyMeta && ` Keeps the last ${historyMeta.retention.maxRecoverable} saved versions with full content; older versions keep their descriptions only.`}
             </div>
-            <div data-history-list style={{ overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 6, maxHeight: "30vh" }}>
-              {historyLoading && <span style={{ fontSize: 12, opacity: 0.7 }}>Loading versions…</span>}
-              {historyError && <span role="alert" style={{ fontSize: 12, color: "#f0a090" }}>Could not load history: {historyError}</span>}
-              {!historyLoading && !historyError && historyList.length === 0 && <span style={{ fontSize: 12, opacity: 0.7 }}>No saved versions yet.</span>}
+            <div data-history-list className="flex max-h-[30vh] flex-col gap-1.5 overflow-y-auto p-3">
+              {historyLoading && <span className="text-[12px] text-fg-faint">Loading versions…</span>}
+              {historyError && <span role="alert" className="text-[12px] text-danger">Could not load history: {historyError}</span>}
+              {!historyLoading && !historyError && historyList.length === 0 && <span className="text-[12px] text-fg-faint">No saved versions yet.</span>}
               {historyList.map((m) => (
-                <div key={m.revision} data-history-row={m.revision} style={{ border: selectedRev === m.revision ? "1px solid #e0705a" : "1px solid #444", borderRadius: 6, padding: "6px 8px", display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", fontSize: 12 }}>
-                  <span style={{ minWidth: 46 }}><strong>rev {m.revision}</strong>{historyMeta && m.revision === historyMeta.currentRevision && <span style={{ opacity: 0.65 }}> (current)</span>}</span>
-                  <span style={{ opacity: 0.85 }}>{historyKindLabel(m)}</span>
-                  <span style={{ opacity: 0.6 }}>{(() => { try { return new Date(m.createdAt).toLocaleString(); } catch { return m.createdAt; } })()}</span>
-                  <span style={{ opacity: 0.6, flexBasis: "100%" }}>{m.summary}</span>
-                  {!m.recoverable && <span style={{ opacity: 0.6, fontSize: 11 }}>compacted — description only, cannot restore</span>}
-                  {m.recoverable && <button type="button" data-history-select={m.revision} onClick={() => selectHistoryRevision(m.revision)}>Preview</button>}
+                <div key={m.revision} data-history-row={m.revision} className={`flex flex-wrap items-center gap-2 rounded-md border p-1.5 text-[12px] ${selectedRev === m.revision ? "border-accent" : "border-line"}`}>
+                  <span className="min-w-[46px]"><strong>rev {m.revision}</strong>{historyMeta && m.revision === historyMeta.currentRevision && <span className="text-fg-faint"> (current)</span>}</span>
+                  <span className="text-fg-muted">{historyKindLabel(m)}</span>
+                  <span className="text-fg-faint">{(() => { try { return new Date(m.createdAt).toLocaleString(); } catch { return m.createdAt; } })()}</span>
+                  <span className="basis-full text-fg-faint">{m.summary}</span>
+                  {!m.recoverable && <span className="text-[11px] text-fg-faint">compacted — description only, cannot restore</span>}
+                  {m.recoverable && <button type="button" data-history-select={m.revision} onClick={() => selectHistoryRevision(m.revision)} className={shellBtn}>Preview</button>}
                 </div>
               ))}
             </div>
             {selectedRev !== null && selectedRev !== undefined && (
-              <div data-history-preview style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 12 }}>
-                {selectedLoading && <span style={{ opacity: 0.7 }}>Loading rev {selectedRev}…</span>}
+              <div data-history-preview className="border-t border-line px-3 py-2 text-[12px]">
+                {selectedLoading && <span className="text-fg-faint">Loading rev {selectedRev}…</span>}
                 {!selectedLoading && selectedDoc && (
                   <>
                     <div><strong>rev {selectedRev}</strong> · {selectedDoc.scenes.length} slides · saved {(() => { try { return new Date(selectedMeta?.createdAt ?? selectedDoc.updatedAt).toLocaleString(); } catch { return selectedDoc.updatedAt; } })()}</div>
-                    <div style={{ opacity: 0.75 }}>{selectedMeta?.summary}</div>
-                    <ol style={{ margin: "6px 0", paddingLeft: 20, maxHeight: "16vh", overflowY: "auto" }}>
+                    <div className="text-fg-muted">{selectedMeta?.summary}</div>
+                    <ol className="my-1.5 max-h-[16vh] overflow-y-auto pl-5">
                       {selectedDoc.scenes.slice(0, 12).map((s) => <li key={s.id}>{sceneHeadline(s)}</li>)}
                     </ol>
-                    {selectedDoc.scenes.length > 12 && <div style={{ opacity: 0.6 }}>…and {selectedDoc.scenes.length - 12} more slides</div>}
+                    {selectedDoc.scenes.length > 12 && <div className="text-fg-faint">…and {selectedDoc.scenes.length - 12} more slides</div>}
                     {!restoreConfirm && (
-                      <button type="button" data-history-restore={selectedRev} disabled={restoreBusy || (historyMeta && selectedRev === historyMeta.currentRevision)} title={historyMeta && selectedRev === historyMeta.currentRevision ? "This is already the current version" : "Restore this version as a new saved revision"} onClick={() => doRestore()}>
+                      <button type="button" data-history-restore={selectedRev} disabled={restoreBusy || (historyMeta && selectedRev === historyMeta.currentRevision)} title={historyMeta && selectedRev === historyMeta.currentRevision ? "This is already the current version" : "Restore this version as a new saved revision"} onClick={() => doRestore()} className={`${shellBtn} mt-1 disabled:opacity-40`}>
                         {restoreBusy ? "Restoring…" : `Restore rev ${selectedRev} as a new revision`}
                       </button>
                     )}
                   </>
                 )}
                 {!selectedLoading && !selectedDoc && selectedMeta && !selectedMeta.recoverable && (
-                  <span style={{ opacity: 0.7 }}>rev {selectedRev} is compacted to its description and cannot be restored.</span>
+                  <span className="text-fg-faint">rev {selectedRev} is compacted to its description and cannot be restored.</span>
                 )}
               </div>
             )}
             {restoreConfirm && (
-              <div role="alert" data-restore-confirm style={{ padding: "8px 12px", borderTop: "1px solid #444", fontSize: 12, background: "#242220" }}>
+              <div role="alert" data-restore-confirm className="border-t border-line bg-raised px-3 py-2 text-[12px]">
                 You have unsaved changes. Restoring rev {selectedRev} will replace the current editor content with a new saved revision.
                 Unsaved edits are lost unless you save them first.{" "}
-                <button type="button" data-restore-save onClick={() => doRestore("save")} disabled={restoreBusy}>Save & restore</button>{" "}
-                <button type="button" data-restore-discard onClick={() => doRestore("discard")} disabled={restoreBusy}>Discard & restore</button>{" "}
-                <button type="button" onClick={() => setRestoreConfirm(false)} disabled={restoreBusy}>Cancel</button>
+                <button type="button" data-restore-save onClick={() => doRestore("save")} disabled={restoreBusy} className={shellBtn}>Save & restore</button>{" "}
+                <button type="button" data-restore-discard onClick={() => doRestore("discard")} disabled={restoreBusy} className={shellBtn}>Discard & restore</button>{" "}
+                <button type="button" onClick={() => setRestoreConfirm(false)} disabled={restoreBusy} className={shellBtn}>Cancel</button>
               </div>
             )}
-            {restoreError && <div role="alert" data-restore-error style={{ padding: "6px 12px", fontSize: 12, color: "#f0c090" }}>{restoreError}</div>}
-            {restoreDone && <div role="status" data-restore-done style={{ padding: "6px 12px", fontSize: 12, color: "#a8e0a0" }}>{restoreDone}</div>}
+            {restoreError && <div role="alert" data-restore-error className="px-3 py-1.5 text-[12px] text-amber">{restoreError}</div>}
+            {restoreDone && <div role="status" data-restore-done className="px-3 py-1.5 text-[12px] text-success">{restoreDone}</div>}
           </div>
         </div>
       )}
