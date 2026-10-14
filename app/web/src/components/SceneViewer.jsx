@@ -1230,11 +1230,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       savedEngineRevRef.current = snapNow.revision;
       setSaveState("saved");
       writeLastProject(created.id);
-      try {
-        const q = new URLSearchParams(window.location.search);
-        q.set("project", created.id);
-        window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
-      } catch { /* deep link is a hint only */ }
+      // Standalone deep link only: embedded mode is routed by hash
+      // and must never rewrite the URL out from under the router.
+      if (!embedded) {
+        try {
+          const q = new URLSearchParams(window.location.search);
+          q.set("project", created.id);
+          window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
+        } catch { /* deep link is a hint only */ }
+      }
       refreshProjectList();
     } catch (err) {
       setSaveState(/unavailable|network|fetch/i.test(err?.message ?? "") ? "unavailable" : "error");
@@ -1295,11 +1299,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     setEditOn(true);
     setProjectsOpen(false);
     writeLastProject(loaded.id);
-    try {
-      const q = new URLSearchParams(window.location.search);
-      q.set("project", loaded.id);
-      window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
-    } catch { /* hint only */ }
+    // Standalone deep link only (see saveAsNewProject): the
+    // workspace route owns identity in embedded mode.
+    if (!embedded) {
+      try {
+        const q = new URLSearchParams(window.location.search);
+        q.set("project", loaded.id);
+        window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
+      } catch { /* hint only */ }
+    }
     const first = loaded.scenes[0]?.id ?? null;
     if (first) followSlideId(first);
     setSlideSel(first ? [first] : []);
@@ -1317,6 +1325,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       if (!r.ok) return;
     }
     if (projectRef.current && saveState === "dirty" && projectRef.current.id !== id && !pendingSwitchId) {
+      // The guard takes over the flow: close the dialog whose action
+      // triggered it, or its overlay would keep swallowing the
+      // guard's own buttons (backdrop sits above in-flow banners).
+      setProjectsOpen(false);
       setPendingSwitchId(id);
       return;
     }
