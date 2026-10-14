@@ -1495,6 +1495,21 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   useFocusReturn(historyFor != null);
   useFocusReturn(galleryOpen);
   useFocusReturn(presenting != null);
+  // Escape closes dialogs even when focus never entered them (the
+  // per-dialog handlers only see keys dispatched inside). Topmost
+  // first; each setter is idempotent so a focused-dialog handler
+  // that already stopped propagation never double-fires here.
+  useEffect(() => {
+    if (!projectsOpen && !historyFor && !galleryOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      if (galleryOpen) setGalleryOpen(false);
+      else if (historyFor) setHistoryFor(null);
+      else if (projectsOpen) setProjectsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [projectsOpen, historyFor, galleryOpen]);
   const shellBtn = "rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40";
   const shellTab = (active) => `rounded-md px-2.5 py-1 text-[12px] font-medium transition ${active ? "bg-raised text-fg" : "text-fg-faint hover:bg-hover hover:text-fg-muted"}`;
 

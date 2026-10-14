@@ -408,7 +408,7 @@ function AppContent() {
       setAuthOpen(true);
     };
     const tourView = parseHash(window.location.hash).view;
-    const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes"].includes(tourView) ? tourView : null;
+    const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes","projects"].includes(tourView) ? tourView : null;
     return (
       <div className="relative min-h-screen bg-base">
         <ParticleField boost={2.6} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-50" />
@@ -424,7 +424,14 @@ function AppContent() {
             onAuthClick={(mode) => openAuth(mode === "register" ? "register" : "login")}
           />
           <div className="flex-1">
-            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "themes" ? <TourThemes onAuth={() => openAuth("register")} /> : (
+            {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "projects" ? (
+              <Workspace
+                onOpen={() => openAuth("login")}
+                onHistory={() => openAuth("login")}
+                onCreateAI={() => openAuth("register")}
+                onAuth={() => openAuth("login")}
+              />
+            ) : (
               <Home
                 user={null}
                 authConfig={authConfig}
