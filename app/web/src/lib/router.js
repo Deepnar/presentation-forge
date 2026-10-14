@@ -32,6 +32,10 @@ export function parseHash(hash) {
       return { view: "usage" };
     case "chat":
       return { view: "chat", chatId: rest[0] || null };
+    case "projects":
+      return { view: "projects" };
+    case "project":
+      return rest[0] ? { view: "project", projectId: rest[0], history: rest[1] === "history" } : { view: "projects" };
     case "admin":
       return { view: "admin" };
     default:
@@ -39,8 +43,13 @@ export function parseHash(hash) {
   }
 }
 
-export function hashFor(view, { slug, chatId, token } = {}) {
+export function hashFor(view, { slug, chatId, token, projectId, history } = {}) {
   switch (view) {
+    case "projects":
+      return "#/projects";
+    case "project":
+      if (!projectId) return "#/projects";
+      return history ? `#/project/${projectId}/history` : `#/project/${projectId}`;
     case "deck":
       return slug ? `#/deck/${slug}` : "#/chat";
     case "report":

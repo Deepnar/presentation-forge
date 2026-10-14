@@ -22,6 +22,8 @@ const ReportView = lazy(() => import("./views/ReportView.jsx"));
 const ResearchView = lazy(() => import("./views/ResearchView.jsx"));
 const ScriptView = lazy(() => import("./views/ScriptView.jsx"));
 const Themes = lazy(() => import("./views/Themes.jsx"));
+const Workspace = lazy(() => import("./views/Workspace.jsx"));
+const SceneViewer = lazy(() => import("./components/SceneViewer.jsx"));
 const TourThemes = lazy(() => import("./views/TourThemes.jsx"));
 const Admin = lazy(() => import("./views/Admin.jsx"));
 const legalView = (name) => lazy(() => import("./views/Legal.jsx").then((module) => ({ default: module[name] })));
@@ -45,6 +47,8 @@ function AppContent() {
   const [activeChatId, setActiveChatId] = useState(null);
   const [pendingChat, setPendingChat] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
+  const [activeProjectId, setActiveProjectId] = useState(null);
+  const [projectHistoryOpen, setProjectHistoryOpen] = useState(false);
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
@@ -234,9 +238,19 @@ function AppContent() {
           setView("chat");
         }
         break;
+      case "project":
+        if (r.projectId) {
+          setActiveProjectId(r.projectId);
+          setProjectHistoryOpen(r.history === true);
+          setView("project");
+        } else {
+          setView("projects");
+        }
+        break;
       case "themes":
       case "tour-themes":
       case "home":
+      case "projects":
       case "privacy":
       case "terms":
       case "contact":
@@ -581,6 +595,28 @@ function AppContent() {
               </ErrorBoundary>
             )}
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
+            {view === "projects" && (
+              <ErrorBoundary key="workspace-err">
+                <Workspace
+                  onOpen={(id) => navigate("project", { projectId: id })}
+                  onHistory={(id) => navigate("project", { projectId: id, history: true })}
+                  onCreateAI={() => newChat("deck")}
+                  onAuth={() => { setAuthMode("login"); setAuthOpen(true); }}
+                />
+              </ErrorBoundary>
+            )}
+            {view === "project" && activeProjectId && (
+              <ErrorBoundary key={`project-err-${activeProjectId}`}>
+                <SceneViewer
+                  key={activeProjectId}
+                  projectId={activeProjectId}
+                  autoOpenHistory={projectHistoryOpen}
+                  onBack={() => navigate("projects")}
+                  onOpenProject={(id) => navigate("project", { projectId: id })}
+                  onProjectDeleted={() => navigate("projects")}
+                />
+              </ErrorBoundary>
+            )}
             {view === "tour-themes" && <TourThemes onAuth={() => navigate("themes")} authed />}
             {view === "home" && (
               <Home

@@ -295,6 +295,7 @@ export default function Sidebar({
 
           <div className="mt-auto border-t border-line p-2.5">
             <div className="mb-2 space-y-0.5">
+              <NavRow active={view === "projects" || view === "project"} icon={DocIcon} label="Presentations" href="#/projects" />
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
               <SettingsRow icon={GearIcon} label="Settings" onClick={onOpenSettings} />
               {isAdmin && <NavRow active={view === "admin"} icon={ShieldIcon} label="Admin" href="#/admin" />}
@@ -330,6 +331,7 @@ export default function Sidebar({
         <div className="flex h-full flex-col items-center gap-1 py-3">
           <IconButton icon={PanelLeftOpen} title="Expand navigation" onClick={onToggleLeft} />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => { onNewChat("deck"); onNavigate?.(); }} />
+          <IconButton active={view === "projects" || view === "project"} icon={DocIcon} title="Presentations" href="#/projects" />
           <IconButton
             icon={LayersIcon}
             title="Projects"
