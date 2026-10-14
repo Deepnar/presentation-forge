@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "acceptedBaseline": {
+    "sha": "97a12de92e1b691a8ebab26f524ddc0afd9bf111",
+    "provenance": "human-supplied-baseline",
+    "source": "docs/ROADMAP.md#v2-6c-acceptance"
+  },
+  "implementationHead": {
+    "sha": "a298767ce32df1a0023ada4a1e8d0bda506a1ca9",
+    "note": "V2-7A application code/evidence entry commit. Later continuity documentation commits do not replace the code-under-validation pointer."
+  },
+  "activeMilestone": {
+    "id": "V2-7A",
+    "roadmapRef": "docs/ROADMAP.md#v2-7a-validation",
+    "evalDoc": "docs/V2-7A-EVAL.md",
+    "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
+    "implementationStatus": "implemented-pending-validation",
+    "reviewStatus": "pending",
+    "implementedBy": "V2-7A-implementation",
+    "reviewRecord": null,
+    "accepted": false
+  },
+  "validation": [
+    {
+      "id": "7a-chrome",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "non-browser-bulk",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "serial-browser",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "postgres-contract",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Isolated Forge PostgreSQL unavailable; real suite not executed."
+    },
+    {
+      "id": "cross-process-faults",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Isolated Forge PostgreSQL unavailable; real suite not executed."
+    },
+    {
+      "id": "production-build",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "typecheck",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "benchmark-50",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+    },
+    {
+      "id": "frontend-visual",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Existing-image inspection only; final interactions and narrow-control confirmation remain unexecuted."
+    }
+  ],
+  "knownBlockers": [
+    "Shared-machine quiet window required; see docs/V2-7A-EVAL.md#final-validation-environment.",
+    "Forge test PostgreSQL port 5544 unavailable; no substitute database authorized."
+  ],
+  "standingFailures": [
+    {
+      "id": "byok-locale",
+      "source": "docs/ROADMAP.md#byok-locale-standing-failure"
+    }
+  ],
+  "nextCandidate": {
+    "id": "V2-7B",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate"
+  },
+  "docs": {
+    "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
+    "vision": "docs/PRODUCT-VISION.md",
+    "acceptance": "docs/ACCEPTANCE-CRITERIA.md",
+    "decisions": "docs/DECISIONS.md",
+    "continuation": "docs/CONTINUATION.md",
+    "planner": "docs/agents/PLANNER.md",
+    "implementer": "docs/agents/IMPLEMENTER.md",
+    "reviewer": "docs/agents/REVIEWER.md",
+    "roadmap": "docs/ROADMAP.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "handoff": "docs/HANDOFF.md",
+    "blockers": "docs/BLOCKED.md",
+    "traps": "docs/TRAPS.md"
+  },
+  "updated": "2026-10-14"
+}

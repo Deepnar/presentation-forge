@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repository development state",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "acceptedBaseline": {
+      "type": "object",
+      "properties": {
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "provenance": {
+          "enum": [
+            "human-supplied-baseline",
+            "independent-review",
+            "human-approval"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "sha",
+        "provenance",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "implementationHead": {
+      "type": "object",
+      "properties": {
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "sha",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "activeMilestone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roadmapRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evalDoc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architectureDoc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementationStatus": {
+          "enum": [
+            "not-started",
+            "in-progress",
+            "implemented-pending-validation",
+            "validated"
+          ]
+        },
+        "reviewStatus": {
+          "enum": [
+            "pending",
+            "accepted",
+            "held"
+          ]
+        },
+        "implementedBy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewRecord": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "accepted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "roadmapRef",
+        "evalDoc",
+        "architectureDoc",
+        "implementationStatus",
+        "reviewStatus",
+        "implementedBy",
+        "reviewRecord",
+        "accepted"
+      ],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "array",
+      "minItems": 9,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "7a-chrome",
+              "non-browser-bulk",
+              "serial-browser",
+              "postgres-contract",
+              "cross-process-faults",
+              "production-build",
+              "typecheck",
+              "benchmark-50",
+              "frontend-visual"
+            ]
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "passed",
+              "failed",
+              "unexecuted",
+              "skipped",
+              "cancelled"
+            ]
+          },
+          "evidence": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "evidence",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 9
+    },
+    "knownBlockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "standingFailures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "nextCandidate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorized": {
+          "type": "boolean"
+        },
+        "roadmapRef": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "authorized",
+        "roadmapRef"
+      ],
+      "additionalProperties": false
+    },
+    "docs": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "continuation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "planner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roadmap": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architecture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoff": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blockers": {
+          "type": "string",
+          "minLength": 1
+        },
+        "traps": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "vision",
+        "acceptance",
+        "decisions",
+        "continuation",
+        "planner",
+        "implementer",
+        "reviewer",
+        "roadmap",
+        "architecture",
+        "handoff",
+        "blockers",
+        "traps"
+      ],
+      "additionalProperties": false
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    }
+  },
+  "required": [
+    "version",
+    "acceptedBaseline",
+    "implementationHead",
+    "activeMilestone",
+    "validation",
+    "knownBlockers",
+    "standingFailures",
+    "nextCandidate",
+    "docs",
+    "updated"
+  ],
+  "additionalProperties": false
+}
