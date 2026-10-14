@@ -16,10 +16,24 @@
 // the PUT is in flight, the older response never marks them saved —
 // savedEngineRev advances only when it still equals the submitted rev.
 export const LAST_PROJECT_KEY = "forge.v2.lastProject";
+// Session token for hosted accounts, same key and header shape as
+// the V1 api client: without it every project call runs anonymous,
+// so a signed-in owner's dashboard would list nobody's projects
+// and saves would land on ownerless rows. Anonymous local boxes
+// send nothing, exactly as before.
+const TOKEN_KEY = "forge.token";
+function authHeaders() {
+  try {
+    const t = typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+    return t ? { Authorization: `Bearer ${t}` } : {};
+  } catch {
+    return {};
+  }
+}
 export const AUTOSAVE_DELAY_MS = 2000;
 
 export async function apiList(fetchFn = fetch) {
-  const res = await fetchFn("/api/v2/projects");
+  const res = await fetchFn("/api/v2/projects", { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) throw new Error(body?.error ?? `list failed (${res.status})`);
   return body.projects ?? [];
@@ -28,7 +42,7 @@ export async function apiList(fetchFn = fetch) {
 export async function apiCreate({ title, scenes, theme, origin }, fetchFn = fetch) {
   const res = await fetchFn("/api/v2/projects", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ title, scenes, theme, origin }),
   });
   const body = await res.json().catch(() => null);
@@ -42,7 +56,7 @@ export async function apiCreate({ title, scenes, theme, origin }, fetchFn = fetc
 }
 
 export async function apiLoad(id, fetchFn = fetch) {
-  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`);
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) {
     const err = new Error(body?.error ?? `load failed (${res.status})`);
@@ -56,7 +70,7 @@ export async function apiLoad(id, fetchFn = fetch) {
 export async function apiSave(id, { baseRevision, title, scenes, theme, origin }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ baseRevision, title, scenes, theme, origin }),
   });
   const body = await res.json().catch(() => null);
@@ -79,7 +93,7 @@ export async function apiSave(id, { baseRevision, title, scenes, theme, origin }
 export async function apiRename(id, { title, baseRevision }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ title, baseRevision }),
   });
   const body = await res.json().catch(() => null);
@@ -99,14 +113,14 @@ export async function apiRename(id, { title, baseRevision }, fetchFn = fetch) {
 }
 
 export async function apiRemove(id, fetchFn = fetch) {
-  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { method: "DELETE" });
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { method: "DELETE", headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) throw new Error(body?.error ?? `delete failed (${res.status})`);
   return true;
 }
 
 export async function apiListRevisions(id, fetchFn = fetch) {
-  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions`);
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions`, { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) {
     const err = new Error(body?.error ?? `history failed (${res.status})`);
@@ -118,7 +132,7 @@ export async function apiListRevisions(id, fetchFn = fetch) {
 }
 
 export async function apiGetRevision(id, revision, fetchFn = fetch) {
-  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(String(revision))}`);
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(String(revision))}`, { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);
   if (res.status === 410 || body?.code === "revision-pruned") {
     const err = new Error(body?.error ?? "revision pruned");
@@ -138,7 +152,7 @@ export async function apiGetRevision(id, revision, fetchFn = fetch) {
 export async function apiRestore(id, { revision, baseRevision, provenance }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/restore`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ revision, baseRevision, provenance }),
   });
   const body = await res.json().catch(() => null);
