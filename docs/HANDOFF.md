@@ -1,51 +1,63 @@
-# Handoff — V2-7A workspace implemented, validation partly deferred
+# Handoff — V2-7A validation held, continuity implemented
 
-Read `AGENTS.md`, `docs/TRAPS.md`, `docs/BLOCKED.md`, then
-`docs/ROADMAP.md` → **§12 V2.1 program** (V2-4 [x];
-V2-5 [~]; V2-5A through V2-5K [x] at `fa557c4`; V2-6A [x],
-V2-6A-1 [x], V2-6B [x] and V2-6C [x] accepted at `97a12de`;
-V2-7A [~] pending independent review **and** a final validation
-pass with `docs/V2-7A-EVAL.md`; V2-6 parent stays `[ ]`; V2-7B
-generation handoff recorded as next slice).
+Start with `AGENTS.md` and [CONTINUATION.md](CONTINUATION.md), then
+[development-state.json](development-state.json), [the protocol](DEVELOPMENT-PROTOCOL.md),
+TRAPS.md, BLOCKED.md and ROADMAP.md §12. These records replace dependence on an
+external master prompt, Hermes/opencode relay or earlier chat history.
 
-## Current state
+## Git and acceptance
 
-On `v2`, over `97a12de`. This session built the unified workspace
-foundation without touching engine, adapters, or commands:
+Branch `v2`. Accepted baseline: V2-6C
+`97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Application implementation under
+validation: `a298767ce32df1a0023ada4a1e8d0bda506a1ca9`. Later scoped continuity,
+test and evidence commits descend from it; use `git log` for the current HEAD.
+No application source, browser assertions, compiler or database logic changed
+in this session. V2-7A remains unaccepted, with independent review pending and
+HOLD recommended because final product validation is incomplete.
 
-- Workspace dashboard (`views/Workspace.jsx`, `#/projects`) over
-  the real project API, with AI/layout/blank creation
-  (`lib/v2create.js`, headless-tested) and honest states.
-- Routes `#/project/:id[/history]`, sidebar entry, unchanged
-  chat default. Signed-out shell renders the dashboard door.
-- Editor shell: top bar, collapsible rails, fixed-width
-  contextual right rail, present overlay, leave/switch guards,
-  focus return, token styling. Standalone `scenes.html` intact.
-- Four product defects fixed live: V2 bearer never sent (owners
-  saw empty dashboards), `?project=` rewrites wiping the SPA
-  hash, switch guard trapped under the dialog overlay, dialog
-  Escape dead unless focus was inside.
-- Old suites re-verified green (5c–5k, chart/table, fontgate,
-  selection, smoke, live-chrome, 6a, 6b); 6c skipped (no pg).
-  Test maintenance only: viewport clamps, toolbar scrolling,
-  narrow rail toggle, painted-target preference.
+Pre-existing untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
+and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` were preserved. Do not stage,
+remove or overwrite them as part of the continuation.
 
-## Verification — read this first
+## What this session completed
 
-Full validation is **deliberately deferred to one final pass**:
-this session shares its machine with higher-priority work, and
-browser cycles cost real load — agreed to batch instead of six
-disruptive partial runs. Exact state in `docs/V2-7A-EVAL.md` §9:
-dashboard 5/5, navigation 3/3, editor shell 6/10 green by direct
-run; locks (rewritten, inspected), large-deck, keyboard, hosted
-await green runs; bulk/serial/pg/benchmark unexecuted. Nothing
-unexecuted is claimed. Typecheck clean; build green.
+Refreshed AGENTS for direct work and current V2 architecture/TypeScript/branch
+rules. Added source-of-truth/product/decision/protocol/gate/role documents,
+strict JSON development state, a read-only consistency/evidence validator and
+negative tests, plus npm/CI integration. A separate cold-start documentation
+audit recovered the baseline, scope, validation and review procedure; its
+findings were corrected. It was not V2-7A implementation acceptance.
 
-## Continue from here
+Exact lightweight totals and audit notes are in
+[v2-7a-evidence/CONTINUITY-VALIDATION.md](v2-7a-evidence/CONTINUITY-VALIDATION.md).
+The roadmap's continuity item remains implemented/pending review; tests do not
+self-accept it. The roadmap also removes duplicate/stale accepted-editor entries.
 
-1. When the machine is free: run the 4 remaining 7a tests,
-   then bulk + bounded serial Chrome (+ pg if available) +
-   benchmark; fill eval §10; commit evidence.
-2. Then independent review of V2-7A.
-3. Do NOT begin V2-7B, AI runtime, or imports without
-   authorization.
+## Product validation still outstanding
+
+The complete current ledger and gate matrix are in [V2-7A-EVAL.md](V2-7A-EVAL.md)
+§§10–15. **Run the full 18-case 7A suite, not merely its four deferred cases.**
+Use the exact [runbook](v2-7a-evidence/RUNBOOK.md) and disjoint 190-file manifest
+for bulk, bounded serial browser/build and PostgreSQL groups. All required
+product tests/build/typecheck/50-cell benchmark remain unexecuted in this final
+session; prior-session results are labeled historical in the evaluation.
+
+No quiet window occurred: repeated I/O pressure stayed high while unrelated
+work ran. The isolated Forge PostgreSQL endpoint at 127.0.0.1:5544 refused
+connections. Do not use other projects' databases or stop their processes.
+Lightweight governance checks can proceed; expensive validation must wait.
+
+Existing six screenshots were inspected and hashed, not regenerated. Actual
+narrow capture is 500px wide despite a 480px request; later top-bar controls
+are outside its visible region. Confirm/correct that finding in the approved
+validation scope and capture narrow inspector access. Missing shell interaction
+and performance evidence is enumerated in the eval/runbook. The known BYOK
+locale failure remains untouched and separate.
+
+## Continuation and stop boundary
+
+Finish authorized validation/corrections when resources permit, preserve all
+attempt logs, update exact results/state, push only scoped work to `origin/v2`
+and prepare independent review. Follow the role documents for a committed
+ACCEPT/HOLD decision on an exact SHA. Do not accept the implementation yourself.
+V2-7B, AI runtime, imports and other feature/deployment work are not authorized.

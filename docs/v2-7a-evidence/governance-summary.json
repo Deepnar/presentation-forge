@@ -1,0 +1,22 @@
+{
+  "scope": "continuity-governance-only",
+  "applicationImplementationSha": "a298767ce32df1a0023ada4a1e8d0bda506a1ca9",
+  "workingTreeGovernanceChangesTested": true,
+  "command": "node --test --test-reporter=tap test/dev-protocol.test.js",
+  "exitCode": 0,
+  "tests": {
+    "total": 15,
+    "pass": 15,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-7a-evidence/governance-tests.tap",
+  "protocolCheck": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "coldStartAudit": "separate-context documentation audit; not product acceptance",
+  "productValidation": "unexecuted; see docs/V2-7A-EVAL.md",
+  "governanceImplementationSha": "23cad9cbadcb4a046e5f9945bdf83babdc49d600"
+}

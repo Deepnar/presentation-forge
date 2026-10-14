@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-14",
+  "timezone": "Asia/Kolkata",
+  "node": "24.16.0",
+  "chromeAvailable": true,
+  "forgePostgres": {
+    "endpoint": "127.0.0.1:5544",
+    "result": "ECONNREFUSED",
+    "realSuitesExecuted": false
+  },
+  "quietWindowObserved": false,
+  "unrelatedWorkInterrupted": false,
+  "samples": [
+    {
+      "localTime": "18:40:26",
+      "ioSomeAvg10Percent": 52.57,
+      "ioFullAvg10Percent": 51.03
+    },
+    {
+      "localTime": "18:42:03",
+      "ioSomeAvg10Percent": 49.11,
+      "ioFullAvg10Percent": 47.81,
+      "gpuPercent": 0
+    },
+    {
+      "localTime": "18:47:14",
+      "ioSomeAvg10Percent": 50.69,
+      "ioFullAvg10Percent": 48.42,
+      "gpuPercent": 91
+    },
+    {
+      "localTime": "18:51:03",
+      "ioSomeAvg10Percent": 50.09,
+      "ioFullAvg10Percent": 48.16,
+      "gpuPercent": 0
+    },
+    {
+      "localTime": "18:52:51",
+      "ioSomeAvg10Percent": 46.24,
+      "ioFullAvg10Percent": 43.43
+    },
+    {
+      "localTime": "18:56:39",
+      "ioSomeAvg10Percent": 44.59,
+      "ioFullAvg10Percent": 42.72,
+      "gpuPercent": 93
+    },
+    {
+      "localTime": "18:57:12",
+      "ioSomeAvg10Percent": 41.45,
+      "ioFullAvg10Percent": 38.63,
+      "gpuPercent": 90
+    },
+    {
+      "localTime": "19:04:04",
+      "ioSomeAvg10Percent": 62.4,
+      "ioFullAvg10Percent": 60.58,
+      "gpuPercent": 94
+    }
+  ],
+  "note": "Observed samples during documentation work, not a continuous profiler. Low CPU/load and intermittent GPU idle were not a sustained quiet I/O window. PostgreSQL probe was SELECT 1/version with bounded connection timeout only."
+}
