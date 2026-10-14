@@ -10,11 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: npm
       - run: npm ci
+      - name: Check development protocol
+        run: npm run dev:protocol
       # The renderer's preview path shells out to these; without them the
       # export and report tests skip the half that matters.
       - name: Install LibreOffice and Poppler

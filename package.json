@@ -32,7 +32,8 @@
     "deckscore": "node --env-file-if-exists=.env tools/deckscore.mjs",
     "local:check": "node tools/local-check.mjs",
     "typecheck": "tsc --noEmit",
-    "types:generate": "node tools/v2-types.mjs"
+    "types:generate": "node tools/v2-types.mjs",
+    "dev:protocol": "node tools/dev-protocol-check.mjs"
   },
   "keywords": [],
   "author": "",
