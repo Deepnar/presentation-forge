@@ -1,0 +1,40 @@
+TAP version 13
+# node:internal/modules/esm/resolve:271
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/deepnar/Programs/tools/chrome-shot.mjs' imported from /home/deepnar/Programs/presentations/docs/v2-7a-evidence/hosted-auth-check.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:865:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:992:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:691:20)
+#     at \#resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:708:38)
+#     at ModuleLoader.resolveSync (node:internal/modules/esm/loader:740:52)
+#     at \#resolve (node:internal/modules/esm/loader:673:17)
+#     at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:593:35)
+#     at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+#     at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///home/deepnar/Programs/tools/chrome-shot.mjs'
+# }
+# Node.js v24.16.0
+# Subtest: docs/v2-7a-evidence/hosted-auth-check.mjs
+not ok 1 - docs/v2-7a-evidence/hosted-auth-check.mjs
+  ---
+  duration_ms: 52.411583
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/docs/v2-7a-evidence/hosted-auth-check.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 57.146746

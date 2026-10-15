@@ -1,9 +1,12 @@
 # Continuity validation — 2026-10-14
 
 This evidence covers the repository-development subsystem, not product acceptance.
-Application under validation remains `a298767`; these governance additions were
+Application then under validation was `a298767`; these governance additions were
 tested in the working tree and then committed as scoped changes. Final Git HEAD
-is reported separately. No application behaviour changed.
+is reported separately. No application behaviour changed in that earlier documentation phase.
+Current corrections and full execution supersede its pending product status; see
+[the current evaluation](../V2-7A-EVAL.md). This historical15-case audit is not
+added to the final unique test totals.
 
 ## Executed checks
 

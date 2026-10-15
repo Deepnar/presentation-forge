@@ -1,0 +1,38 @@
+{
+  "id": "serial-browser",
+  "kind": "tests",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-7a.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/freeform.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/plate.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5c.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5d.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5e.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5f.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5i.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5j.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-5k.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-6a.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-6b.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-6c.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-chart.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-edit-chrome-table.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-fontgate-4e.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-fonts-4d.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-live-chrome-4f.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-plate-3f5.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-selection-chrome.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-viewer-smoke.test.js",
+  "log": "docs/v2-7a-evidence/logs/serial-all.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 155,
+    "pass": 155,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-edit-chrome-7a.test.js",
+    "test/freeform.test.js",
+    "test/plate.test.js",
+    "test/v2-edit-chrome-5c.test.js",
+    "test/v2-edit-chrome-5d.test.js",
+    "test/v2-edit-chrome-5e.test.js",
+    "test/v2-edit-chrome-5f.test.js",
+    "test/v2-edit-chrome-5i.test.js",
+    "test/v2-edit-chrome-5j.test.js",
+    "test/v2-edit-chrome-5k.test.js",
+    "test/v2-edit-chrome-6a.test.js",
+    "test/v2-edit-chrome-6b.test.js",
+    "test/v2-edit-chrome-6c.test.js",
+    "test/v2-edit-chrome-chart.test.js",
+    "test/v2-edit-chrome-table.test.js",
+    "test/v2-fontgate-4e.test.js",
+    "test/v2-fonts-4d.test.js",
+    "test/v2-live-chrome-4f.test.js",
+    "test/v2-plate-3f5.test.js",
+    "test/v2-selection-chrome.test.js",
+    "test/v2-viewer-smoke.test.js"
+  ]
+}

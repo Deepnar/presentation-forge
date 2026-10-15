@@ -1,0 +1,43 @@
+{
+  "baseHead": "2adbc11da6d1a31d3a6d10cff5427b5e8fbb27af",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-edit-chrome-5d.test.js"
+  ],
+  "sourceSha256": {
+    "app/web/src/components/SceneViewer.jsx": "29c26b4b31c3a632449c94f998625acb4ec214d3be96177c249b1e93b5e2e99c",
+    "docs/ROADMAP.md": "7087ac6151f47c654db60f6de93258b0aa552ecec91c7a78d7ba246da7b9b51d",
+    "docs/V2-7-FRONTEND-ARCHITECTURE.md": "e768c872fe0c76a825f95ead6e12fcaf5f1ed1097effe9a7d68c8f048c1a122c",
+    "docs/development-state.json": "e5c2e7a6941cc3225e48b823211b59acc25987009720879d0676d1c1522fa1cd",
+    "docs/v2-7a-evidence/RUNBOOK.md": "cb292564a8395a91fe4a0cc29e06bb22d4115ad3c3f63f83698ec31eafea94ef",
+    "docs/v2-7a-evidence/dashboard-empty.png": "fa6fe357b8beef3a7aaeedfed69c4c904e5114f38a0718e24b990353225b5003",
+    "docs/v2-7a-evidence/dashboard.png": "b646c23bf44cdd6c254d66037b2ca0b623ee7e3cce151bbb5cf0d173129a79bf",
+    "docs/v2-7a-evidence/editor-blank.png": "23a2f92b167481c9807d0b99f35f7180719c937a70c9a773889798b5f654af4a",
+    "docs/v2-7a-evidence/editor-narrow.png": "26be9e81ad6127f23099ab9b8bd2c613500e59daa60fb4c87a84dbe3c831e9cc",
+    "docs/v2-7a-evidence/editor-readonly.png": "41e3a9aee4d0d527e4a0cfbaf5a314fcec2a42599019fe7b0cd9effbc6fb8713",
+    "docs/v2-7a-evidence/editor-shell.png": "be15a2145008e3e6581f20aee27f8b5d86d93f1af15dfd57667669c9931a2961",
+    "test/dev-protocol.test.js": "aec949c164951b5d309c607443025b11a2c710c1b735cce0f9f77ad440fafd78",
+    "test/v2-edit-chrome-5d.test.js": "2f9a2a9ba571c37488097ca579dbb622b287519846449ae557481cbeb3066afe",
+    "test/v2-edit-chrome-7a.test.js": "ec30b53fdf70ec79f706441ec6bc834f5c23f396562094aca2a8ea6d5ace295c",
+    "tools/chrome-shot.mjs": "d8a1b578183cfc9928f216109706d280ed6626b3a268c95578774bf6a831dd0c",
+    "tools/dev-protocol-check.mjs": "069b55d4e7bad0f8f5bcdd436e23af33a4fa8cbc48802baae81f9f3601a31c03",
+    "app/web/src/lib/guarded-hash-router.js": "09a0243ffaec3c967b81ef9f45a57ed14e9512eedc27267cc2f79d1f05e6f3c8",
+    "tools/validated-tap.mjs": "4ad419e831f72cdaa693c143ce654ac81ef42a94dbd6799cce421a6083f57ae1"
+  },
+  "exitCode": 0
+}

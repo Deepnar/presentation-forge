@@ -1,0 +1,107 @@
+[
+  {
+    "file": "docs/v2-7a-evidence/dashboard-empty.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "bd20bde8fc056f2408ce7e59efae33a8976eff2b34aa1d891e459f15deb07db0",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "4f08402354bad48f6ad1f04a95c9ab336c515e75c09aaa046ba9daba79d38350",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/dashboard-hosted-signedin.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "e2f81fe9ecc9ed64d5f3b07295e00198104505606f53437028e29dacec77ce8e",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/dashboard.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "279fb599e76ab3eae84a63599aa6bb2d574b5eb6a570cf1b06a8ad5a9963b4a2",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-blank.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "c644e228f4af9341b7af30300d5aa2177e42b9283b2701d147c705b6c44763f8",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-chart.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "43385f4334c80e2db24823878f1e4268a178bb3301d9fd5f077f2a8ed0d5a471",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-history.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "a5d1939a3583cf69879fa8ebadfa6cb7773302b64fc3837b38310b1fffb8d67c",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-hosted-signedin.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "5a78f09cf5b29fc5839e6fc60422598d080e7a30fd038c517c19eecb2aac0f3c",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "width": 500,
+    "height": 757,
+    "sha256": "6e9ebc322b44584df7c6a45f069d3a5c7fa7fdca8e5db6fb3b4227b845b3fcb1",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-narrow.png",
+    "width": 500,
+    "height": 757,
+    "sha256": "456c5b9a5e8135f17bb55d72f4b2c14dcced94bc0f870dd624d4d9b28dd731a7",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-readonly.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "dca42e0e8a3410e0d51f789420bfd11098858c1aa38e271a7f10e2d48976c41c",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-shell.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "5e0dd1d12e361b2b8dbca3b7aa46794707cf3d15cbd20161f82218bbfecdb3a3",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/editor-table.png",
+    "width": 1440,
+    "height": 757,
+    "sha256": "8a001fa9001d1c5b1a0b49deb9d1ade34691b7e49b7beb61986a1fae23a41c4a",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/export-chart.png",
+    "width": 1467,
+    "height": 825,
+    "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  },
+  {
+    "file": "docs/v2-7a-evidence/export-table.png",
+    "width": 1467,
+    "height": 825,
+    "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27",
+    "sourceImplementation": "fe749fb41e744961df156e8b9dcf80f0155b4e0b"
+  }
+]

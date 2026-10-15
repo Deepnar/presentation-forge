@@ -1,3 +1,1 @@
-npm notice run presentation-forge@0.1.0 dev:protocol
-npm notice run node tools/dev-protocol-check.mjs
 dev-protocol-check: 0 error(s), 0 warning(s)

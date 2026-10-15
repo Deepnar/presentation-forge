@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: v2-4e font-gate pending state
+    # Subtest: a delayed successful gate does not fail prematurely
+    ok 1 - a delayed successful gate does not fail prematurely
+      ---
+      duration_ms: 2574.755617
+      type: 'test'
+      ...
+    # Subtest: the viewer with slow fonts still reaches ready, not failure
+    ok 2 - the viewer with slow fonts still reaches ready, not failure
+      ---
+      duration_ms: 4562.185213
+      type: 'test'
+      ...
+    1..2
+ok 1 - v2-4e font-gate pending state
+  ---
+  duration_ms: 7141.560096
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7550.698218
+# forge-test-file "test/v2-fontgate-4e.test.js"

@@ -1,0 +1,16 @@
+{
+  "head": "3037faff74a822519647d519ed6ce14b1f02c353",
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "90s",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/v2-create-7a.test.js",
+    "test/v2-projects-6c-sqlite.test.js"
+  ],
+  "exitCode": 0
+}

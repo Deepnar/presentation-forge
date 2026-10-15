@@ -1,0 +1,39 @@
+TAP version 13
+# Subtest: v2-7a workspace dashboard
+    # Subtest: shows the empty state first, then real projects
+    ok 1 - shows the empty state first, then real projects
+      ---
+      duration_ms: 2241.573028
+      type: 'test'
+      ...
+    # Subtest: creates a blank presentation that opens in the editor
+    ok 2 - creates a blank presentation that opens in the editor
+      ---
+      duration_ms: 2086.881343
+      type: 'test'
+      ...
+    # Subtest: creates from a layout with editable content
+    ok 3 - creates from a layout with editable content
+      ---
+      duration_ms: 2526.492312
+      type: 'test'
+      ...
+    # Subtest: renames from the top bar and returns to the dashboard
+    ok 4 - renames from the top bar and returns to the dashboard
+      ---
+      duration_ms: 2883.594455
+      type: 'test'
+      ...
+    # Subtest: deletes with confirmation from the dashboard
+    ok 5 - deletes with confirmation from the dashboard
+      ---
+      duration_ms: 1976.969954
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-7a workspace dashboard
+  ---
+  duration_ms: 12332.428353
+  type: 'suite'
+  ...
+# Interrupted while running: test/v2-edit-chrome-7a.test.js at /home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:1:1

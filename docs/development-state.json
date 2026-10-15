@@ -6,79 +6,78 @@
     "source": "docs/ROADMAP.md#v2-6c-acceptance"
   },
   "implementationHead": {
-    "sha": "a298767ce32df1a0023ada4a1e8d0bda506a1ca9",
-    "note": "V2-7A application code/evidence entry commit. Later continuity documentation commits do not replace the code-under-validation pointer."
+    "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+    "note": "Frozen V2-7A review corrections and test infrastructure; complete regression run underway."
   },
   "activeMilestone": {
     "id": "V2-7A",
     "roadmapRef": "docs/ROADMAP.md#v2-7a-validation",
     "evalDoc": "docs/V2-7A-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
-    "implementedBy": "V2-7A-implementation",
+    "implementedBy": "/root",
     "reviewRecord": null,
     "accepted": false
   },
   "validation": [
     {
       "id": "7a-chrome",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/7a-chrome.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/non-browser-bulk.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/serial-browser.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "postgres-contract",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Isolated Forge PostgreSQL unavailable; real suite not executed."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/postgres-contract.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "cross-process-faults",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Isolated Forge PostgreSQL unavailable; real suite not executed."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/cross-process-faults.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "production-build",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/production-build.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/typecheck.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "benchmark-50",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "No appropriate shared-machine quiet window during final-validation session; see eval \u00a712."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/benchmark-50.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Existing-image inspection only; final interactions and narrow-control confirmation remain unexecuted."
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/frontend-visual.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     }
   ],
   "knownBlockers": [
-    "Shared-machine quiet window required; see docs/V2-7A-EVAL.md#final-validation-environment.",
-    "Forge test PostgreSQL port 5544 unavailable; no substitute database authorized."
+    "Independent review of the corrected source and complete retained evidence is pending."
   ],
   "standingFailures": [
     {
@@ -106,5 +105,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-14"
+  "updated": "2026-10-15"
 }

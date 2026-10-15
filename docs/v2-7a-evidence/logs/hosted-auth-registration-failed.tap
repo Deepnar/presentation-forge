@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: hosted sign-in opens, edits, exports and reopens an owned PostgreSQL project
+not ok 1 - hosted sign-in opens, edits, exports and reopens an owned PostgreSQL project
+  ---
+  duration_ms: 305.528443
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/docs/v2-7a-evidence/hosted-auth-check.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: 'test account registered'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-7a-evidence/hosted-auth-check.mjs:64:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 412.79378

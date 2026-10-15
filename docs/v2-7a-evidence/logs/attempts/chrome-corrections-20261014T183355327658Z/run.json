@@ -1,0 +1,30 @@
+{
+  "baseHead": "3037faff74a822519647d519ed6ce14b1f02c353",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/v2-edit-chrome-7a.test.js"
+  ],
+  "sourceSha256": {
+    "app/web/src/App.jsx": "592216c699b5cbdfa7f1b9aab6885e2db70dbde5c6c828cbbd9f81fb7f3c0cb2",
+    "app/web/src/components/SceneViewer.jsx": "da60573baa08405a9682e565f0712b76214a3e23a0ebb617435d71d7f0eb2839",
+    "app/web/src/lib/v2project.js": "41ade6d1683ac974933893255968a7950c2901b2ddda0a8798876c13178b9872",
+    "app/web/src/lib/guarded-hash-router.js": "09a0243ffaec3c967b81ef9f45a57ed14e9512eedc27267cc2f79d1f05e6f3c8",
+    "test/v2-edit-chrome-7a.test.js": "8cebd8949c528c736dbc49eae5905388f83c49881c31d8a826b7a4a6467e2770"
+  },
+  "exitCode": 1
+}

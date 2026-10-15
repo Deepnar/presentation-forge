@@ -1,0 +1,37 @@
+{
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "uniqueManifest": {
+    "files": 192,
+    "total": 2127,
+    "pass": 2127,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalHosted": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalByokIndianLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "requiredUnexecuted": [],
+  "build": "passed",
+  "typecheck": "passed",
+  "benchmarkCells": 50,
+  "benchmarkL1": 0,
+  "benchmarkL2": 0,
+  "performance": {
+    "largeDeckOpenMs": 1542,
+    "slides": 120,
+    "thumbs": 120,
+    "benchmarkMs": 491
+  }
+}

@@ -1,0 +1,62 @@
+TAP version 13
+# Subtest: v2-5d chrome text editing
+    # Subtest: double-click opens the overlay and typed text commits once
+    ok 1 - double-click opens the overlay and typed text commits once
+      ---
+      duration_ms: 1633.187721
+      type: 'test'
+      ...
+    # Subtest: Escape cancels without mutation
+    ok 2 - Escape cancels without mutation
+      ---
+      duration_ms: 2045.603547
+      type: 'test'
+      ...
+    # Subtest: caret keys never navigate while editing; Ctrl+Enter commits
+    not ok 3 - caret keys never navigate while editing; Ctrl+Enter commits
+      ---
+      duration_ms: 2303.093841
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:202:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        caret focus stays in the draft before typing: {"active":"<body>\n    <div id=\"root\"><div class=\"flex h-screen flex-col bg-base text-fg\" data-workspace-editor=\"unbound\"><div data-topbar=\"true\" class=\"flex min-h-[44px] flex-none items-center gap-1.5 overflow-x-auto [&amp;&gt;*]:shrink-0 border-b border-line b","state":{"rev":0,"error":null,"preparing":false},"trace":[{"type":"focusout","target":"BUTTON","related":"TEXTAREA"},{"type":"focusin","target":"TEXTAREA","related":"BUTTON"},{"type":"keydown","key":"ArrowRight","target":"TEXTAREA"},{"type":"keydown","key":"ArrowLeft","target":"TEXTAREA"},{"type":"focusout","target":"TEXTAREA"},{"method":"remove","target":"<textarea data-text-edit=\"m-prose:title:heading\" style=\"position: absolute; left: 67.2px; top: 57px; width: 170.8px; height: 49.8px; box-sizing: borde","stack":"Error\n    at Element.<computed> [as remove] (<anonymous>:1:566)\n    at W (http://127.0.0.1:5238/assets/scene-edit-BOU243hI.js:1:8023)\n    at fe (http://127.0.0.1:5238/assets/scene-edit-BOU243hI.js:1:10454)\n    at de (http://127.0.0.1:5238/assets/scene-edit-BOU243hI.js:1:9624)\n    at K (http://127.0.0.1:5238/assets/scene-edit-BOU243hI.js:1:9425)\n    at HTMLDivElement.Je (http://127.0.0.1:5238/assets/scene-edit-BOU243hI.js:1:33392)"}]}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:222:14)
+        async Test.run (node:internal/test_runner/test:1313:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)
+      ...
+    # Subtest: inserted text and shapes select, drag, undo, and redo
+    ok 4 - inserted text and shapes select, drag, undo, and redo
+      ---
+      duration_ms: 1845.793505
+      type: 'test'
+      ...
+    1..4
+not ok 1 - v2-5d chrome text editing
+  ---
+  duration_ms: 7833.081194
+  type: 'suite'
+  location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:145:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8236.127456
+# forge-test-file "test/v2-edit-chrome-5d.test.js"

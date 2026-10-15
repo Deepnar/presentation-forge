@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: hosted sign-in opens, edits, exports and reopens an owned PostgreSQL project
+ok 1 - hosted sign-in opens, edits, exports and reopens an owned PostgreSQL project
+  ---
+  duration_ms: 5130.877959
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5229.733259

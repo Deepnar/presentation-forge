@@ -1,63 +1,57 @@
-# Handoff — V2-7A validation held, continuity implemented
+# Handoff — V2-7A validation complete, independent decision pending
 
-Start with `AGENTS.md` and [CONTINUATION.md](CONTINUATION.md), then
-[development-state.json](development-state.json), [the protocol](DEVELOPMENT-PROTOCOL.md),
-TRAPS.md, BLOCKED.md and ROADMAP.md §12. These records replace dependence on an
-external master prompt, Hermes/opencode relay or earlier chat history.
+Read AGENTS.md, CONTINUATION.md, DEVELOPMENT-PROTOCOL.md and development-state.json
+first, then the active ROADMAP.md entry, V2-7A-EVAL.md and evidence summary.
+The direct repository workflow replaces the old relay/model restrictions.
 
-## Git and acceptance
+Branch `v2`; accepted baseline remains `97a12de92e1b691a8ebab26f524ddc0afd9bf111`.
+Corrected application/test source: `fe749fb41e744961df156e8b9dcf80f0155b4e0b`.
+Later documentation/evidence commits descend from it without changing application
+bytes. Use git log for current HEAD. Do not self-accept V2-7A or start V2-7B.
 
-Branch `v2`. Accepted baseline: V2-6C
-`97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Application implementation under
-validation: `a298767ce32df1a0023ada4a1e8d0bda506a1ca9`. Later scoped continuity,
-test and evidence commits descend from it; use `git log` for the current HEAD.
-No application source, browser assertions, compiler or database logic changed
-in this session. V2-7A remains unaccepted, with independent review pending and
-HOLD recommended because final product validation is incomplete.
+Final disjoint192-file inventory:2127 pass,0 fail/skip/cancelled. Bulk1936,
+serial155 (includes full28-case7A and 3 PG browser), PG contract17 and
+cross-process/fault19. Supplemental real hosted form login → owned PostgreSQL
+project → edit/save → authenticated export → reopen: 1/1. Production build,
+typecheck and canonical50-cell benchmark pass;0 L1/L2, fit/representation/takeaway/
+chart-data findings, all five theme-invariance records agree. Fifteen screenshots
+and two actual-export rasters inspected.120 slides/120 thumbs opened in1542ms;
+chart/table selection changes stage y by less than0.1px, x/width unchanged.
+
+The separate en-IN locale probe remains 9 pass / 1 known BYOK grouping failure;
+it passes under this run's C.UTF-8/en-US. No assertion or product fix masks it.
+Final inspection measured a pre-existing Fit padding defect (720px scroller,
+768px scroll width, approximately 24px initially offscreen), also present at
+accepted 97a12de. Both remain separate roadmap issues. Actual narrow capture is
+500×757, not requested480×900. LibreOffice raster inspection does not establish
+Microsoft PowerPoint interactive viewer behavior.
+
+Narrow corrections cover guarded history/link/navigation, real save completion,
+failed/readonly/unbound dirty ownership, discard suppression and failed-load
+rollback, async confirmation identity, font-gated viewer binding, hosted client
+metadata/downloads, narrow topbar reachability, monotonic undo/content assertions,
+complete evidence scope and deterministic headless focus/history waits. Engine,
+compiler, schemas, renderer and stores are unchanged. All attempts, exact final
+commands/totals, source SHA and known limitations are retained in docs/v2-7a-evidence.
+
+Independent review of3037faf issued HOLD (committed transcription under
+reviews/); a second separate source/probe review caught correction races and
+confirmed fixes. No final independent acceptance decision has yet been recorded.
+One final review must compare corrected sourcefe749fb with baseline97a12de and
+inspect the complete pushed evidence, issuing ACCEPT/HOLD for that exact source.
+User preference: avoid routine subagents; if one is needed for the mandatory
+independent gate, use high reasoning effort, never xhigh. No other agent work.
+
+The dedicated disposable test service `forge_v27a_validation_pg` on localhost5544
+is owned by this validation. Test-specific databases are dropped; the service is
+retained temporarily for independent checks and must be stopped/removed after
+review. Do not touch unrelated Docker services/processes. Shared-machine samples
+showed adequate CPU/memory/disk headroom; all heavy validation ran low-priority
+with bounded process groups and serial Vite build owners.
 
 Pre-existing untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
-and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` were preserved. Do not stage,
-remove or overwrite them as part of the continuation.
-
-## What this session completed
-
-Refreshed AGENTS for direct work and current V2 architecture/TypeScript/branch
-rules. Added source-of-truth/product/decision/protocol/gate/role documents,
-strict JSON development state, a read-only consistency/evidence validator and
-negative tests, plus npm/CI integration. A separate cold-start documentation
-audit recovered the baseline, scope, validation and review procedure; its
-findings were corrected. It was not V2-7A implementation acceptance.
-
-Exact lightweight totals and audit notes are in
-[v2-7a-evidence/CONTINUITY-VALIDATION.md](v2-7a-evidence/CONTINUITY-VALIDATION.md).
-The roadmap's continuity item remains implemented/pending review; tests do not
-self-accept it. The roadmap also removes duplicate/stale accepted-editor entries.
-
-## Product validation still outstanding
-
-The complete current ledger and gate matrix are in [V2-7A-EVAL.md](V2-7A-EVAL.md)
-§§10–15. **Run the full 18-case 7A suite, not merely its four deferred cases.**
-Use the exact [runbook](v2-7a-evidence/RUNBOOK.md) and disjoint 190-file manifest
-for bulk, bounded serial browser/build and PostgreSQL groups. All required
-product tests/build/typecheck/50-cell benchmark remain unexecuted in this final
-session; prior-session results are labeled historical in the evaluation.
-
-No quiet window occurred: repeated I/O pressure stayed high while unrelated
-work ran. The isolated Forge PostgreSQL endpoint at 127.0.0.1:5544 refused
-connections. Do not use other projects' databases or stop their processes.
-Lightweight governance checks can proceed; expensive validation must wait.
-
-Existing six screenshots were inspected and hashed, not regenerated. Actual
-narrow capture is 500px wide despite a 480px request; later top-bar controls
-are outside its visible region. Confirm/correct that finding in the approved
-validation scope and capture narrow inspector access. Missing shell interaction
-and performance evidence is enumerated in the eval/runbook. The known BYOK
-locale failure remains untouched and separate.
-
-## Continuation and stop boundary
-
-Finish authorized validation/corrections when resources permit, preserve all
-attempt logs, update exact results/state, push only scoped work to `origin/v2`
-and prepare independent review. Follow the role documents for a committed
-ACCEPT/HOLD decision on an exact SHA. Do not accept the implementation yourself.
-V2-7B, AI runtime, imports and other feature/deployment work are not authorized.
+and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Stage only
+scoped paths. Push only origin/v2. After the independent decision, update state,
+roadmap and this handoff, run dev:protocol and affected governance checks, commit
+and push. Acceptance permits a concrete next-slice plan; V2-7B implementation
+still needs explicit approval. No feature/deployment work is authorized here.

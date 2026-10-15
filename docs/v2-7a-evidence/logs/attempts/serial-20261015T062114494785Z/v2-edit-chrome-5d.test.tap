@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: v2-5d chrome text editing
+    # Subtest: double-click opens the overlay and typed text commits once
+    ok 1 - double-click opens the overlay and typed text commits once
+      ---
+      duration_ms: 1667.674197
+      type: 'test'
+      ...
+    # Subtest: Escape cancels without mutation
+    ok 2 - Escape cancels without mutation
+      ---
+      duration_ms: 1530.779217
+      type: 'test'
+      ...
+    # Subtest: caret keys never navigate while editing; Ctrl+Enter commits
+    not ok 3 - caret keys never navigate while editing; Ctrl+Enter commits
+      ---
+      duration_ms: 2794.590625
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:202:3'
+      failureType: 'testCodeFailure'
+      error: 'page JS failed: {"exceptionId":1,"text":"Uncaught","lineNumber":0,"columnNumber":66,"scriptId":"29","exception":{"type":"object","subtype":"error","className":"TypeError","description":"TypeError: Cannot read propert'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        evaluate (file:///home/deepnar/Programs/presentations/tools/chrome-shot.mjs:33:34)
+        async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:223:7)
+        async Test.run (node:internal/test_runner/test:1313:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)
+      ...
+    # Subtest: inserted text and shapes select, drag, undo, and redo
+    ok 4 - inserted text and shapes select, drag, undo, and redo
+      ---
+      duration_ms: 1817.972723
+      type: 'test'
+      ...
+    1..4
+not ok 1 - v2-5d chrome text editing
+  ---
+  duration_ms: 7816.861283
+  type: 'suite'
+  location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:145:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8210.388418
+# forge-test-file "test/v2-edit-chrome-5d.test.js"

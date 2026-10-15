@@ -1,0 +1,10 @@
+{
+  "id": "benchmark-50",
+  "kind": "benchmark",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node tools/v2-benchmark.mjs --out out/v2-7a-benchmark --raster none",
+  "log": "docs/v2-7a-evidence/logs/benchmark-50.log",
+  "exitCode": 0,
+  "durationSeconds": 0.669223,
+  "cells": 50
+}

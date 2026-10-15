@@ -1,0 +1,217 @@
+[
+  {
+    "attempt": "chrome-20261014T182200647705Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/chrome-20261014T182200647705Z/chrome.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 18,
+      "pass": 14,
+      "fail": 4,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "chrome-corrections-20261014T183355327658Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/chrome-corrections-20261014T183355327658Z/chrome.tap",
+    "completeTapTotals": false,
+    "tests": null,
+    "note": "Superseded diagnostic run; source/delta in adjacent metadata where retained. Incomplete attempt:5 dashboard leaves completed; one interrupted file and18 unfinished leaves."
+  },
+  {
+    "attempt": "chrome-final-corrections-20261015T061556316984Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/chrome-final-corrections-20261015T061556316984Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 25,
+      "pass": 25,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "chrome-ready-20261014T183742720323Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/chrome-ready-20261014T183742720323Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 23,
+      "pass": 21,
+      "fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "focused-20261014T182023528768Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/focused-20261014T182023528768Z/focused.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 21,
+      "pass": 21,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T061905100310Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T061905100310Z/v2-edit-chrome-7a.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 25,
+      "pass": 24,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T062114494785Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T062114494785Z/v2-edit-chrome-7a.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 26,
+      "pass": 26,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T062114494785Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T062114494785Z/freeform.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T062114494785Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T062114494785Z/plate.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T062114494785Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T062114494785Z/v2-edit-chrome-5c.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "serial-20261015T062114494785Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/serial-20261015T062114494785Z/v2-edit-chrome-5d.test.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-blur-origin-20261015T062747267586Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-blur-origin-20261015T062747267586Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-focus-ancestor-20261015T062711733374Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-focus-ancestor-20261015T062711733374Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-focus-details-20261015T062518883717Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-focus-details-20261015T062518883717Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-focus-diagnosis-20261015T062457404708Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-focus-diagnosis-20261015T062457404708Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-focus-emulation-20261015T062834541457Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-focus-emulation-20261015T062834541457Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  },
+  {
+    "attempt": "text-focus-trace-20261015T062621242145Z",
+    "log": "docs/v2-7a-evidence/logs/attempts/text-focus-trace-20261015T062621242145Z/tests.tap",
+    "completeTapTotals": true,
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "note": "Not added to unique final inventory."
+  }
+]

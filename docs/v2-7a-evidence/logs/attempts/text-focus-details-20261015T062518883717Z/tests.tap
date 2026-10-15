@@ -1,0 +1,62 @@
+TAP version 13
+# Subtest: v2-5d chrome text editing
+    # Subtest: double-click opens the overlay and typed text commits once
+    ok 1 - double-click opens the overlay and typed text commits once
+      ---
+      duration_ms: 1644.19011
+      type: 'test'
+      ...
+    # Subtest: Escape cancels without mutation
+    ok 2 - Escape cancels without mutation
+      ---
+      duration_ms: 1560.110296
+      type: 'test'
+      ...
+    # Subtest: caret keys never navigate while editing; Ctrl+Enter commits
+    not ok 3 - caret keys never navigate while editing; Ctrl+Enter commits
+      ---
+      duration_ms: 2297.075437
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:202:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        caret focus stays in the draft before typing: {"active":"<body>\n    <div id=\"root\"><div class=\"flex h-screen flex-col bg-base text-fg\" data-workspace-editor=\"unbound\"><div data-topbar=\"true\" class=\"flex min-h-[44px] flex-none items-center gap-1.5 overflow-x-auto [&amp;&gt;*]:shrink-0 border-b border-line b","state":{"rev":0,"error":null,"preparing":false}}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:221:14)
+        async Test.run (node:internal/test_runner/test:1313:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)
+      ...
+    # Subtest: inserted text and shapes select, drag, undo, and redo
+    ok 4 - inserted text and shapes select, drag, undo, and redo
+      ---
+      duration_ms: 1834.43492
+      type: 'test'
+      ...
+    1..4
+not ok 1 - v2-5d chrome text editing
+  ---
+  duration_ms: 7340.698879
+  type: 'suite'
+  location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5d.test.js:145:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7739.024191
+# forge-test-file "test/v2-edit-chrome-5d.test.js"

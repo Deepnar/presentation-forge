@@ -1,6 +1,6 @@
 {
-  "implementationSha": "a298767ce32df1a0023ada4a1e8d0bda506a1ca9",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "Top-level test/*.test.js; isolate any file referencing chrome-shot, fontGated, google-chrome, vite build or openViewer; isolate three PG suites. Reinspect new files before changing inventory. Also isolate renderPlate/resolvePlateBackgrounds owners, which launch Chrome indirectly.",
   "bulk": [
     "test/account-cleanup.test.js",

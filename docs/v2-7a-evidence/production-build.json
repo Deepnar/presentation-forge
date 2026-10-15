@@ -1,0 +1,9 @@
+{
+  "id": "production-build",
+  "kind": "command",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node_modules/.bin/vite build --config app/web/vite.config.js",
+  "log": "docs/v2-7a-evidence/logs/production-build.log",
+  "exitCode": 0,
+  "durationSeconds": 0.401644
+}

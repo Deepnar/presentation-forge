@@ -1,0 +1,21 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "command": "Full 7A Chrome pass; node --test --test-reporter=tap docs/v2-7a-evidence/hosted-auth-check.mjs; src/preview.js preview() on actual saved-project chart/table PPTX; all15 PNGs opened and inspected",
+  "log": "docs/v2-7a-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "supplementalHostedTests": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "knownLimitations": [
+    "Pre-existing border-box Fit padding overflow",
+    "Microsoft PowerPoint interactive viewer unavailable",
+    "Actual narrow CSS viewport500px, not480px"
+  ]
+}

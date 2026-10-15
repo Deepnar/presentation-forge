@@ -1,0 +1,20 @@
+{
+  "viewport": [
+    1440,
+    757
+  ],
+  "scrollContainer": {
+    "x": 432,
+    "right": 1152,
+    "width": 720,
+    "clientWidth": 720,
+    "scrollWidth": 768,
+    "paddingLeft": "24px",
+    "paddingRight": "24px"
+  },
+  "stage": {
+    "x": 456,
+    "right": 1175.99169921875,
+    "width": 719.99169921875
+  }
+}

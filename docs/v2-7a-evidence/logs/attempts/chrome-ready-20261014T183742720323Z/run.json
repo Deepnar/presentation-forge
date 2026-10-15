@@ -1,0 +1,35 @@
+{
+  "baseHead": "3037faff74a822519647d519ed6ce14b1f02c353",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-edit-chrome-7a.test.js"
+  ],
+  "sourceSha256": {
+    "app/web/src/App.jsx": "592216c699b5cbdfa7f1b9aab6885e2db70dbde5c6c828cbbd9f81fb7f3c0cb2",
+    "app/web/src/components/SceneViewer.jsx": "31a17e6faf6e0dabad3719eb5db20b1977b4433f70643d3082430343304ac74d",
+    "app/web/src/lib/v2project.js": "41ade6d1683ac974933893255968a7950c2901b2ddda0a8798876c13178b9872",
+    "docs/v2-7a-evidence/dashboard-empty.png": "5ad3fa29d43b5cc942246a9734c773d891fb79b73f205418010e43fab16b7fb1",
+    "docs/v2-7a-evidence/dashboard.png": "b0719def8c77ee4f0e9f294d3f59e097efa5f511645e8f11248923c03654a9a3",
+    "docs/v2-7a-evidence/editor-blank.png": "b7796c384622e22b2a00b298afb2ad9a475d36d1a469e027788e882090a3acb7",
+    "docs/v2-7a-evidence/editor-shell.png": "a2457e47dbfa365b5da4e97e94e81855e549ad6d491ea54d9771141b2a83bc80",
+    "test/v2-edit-chrome-7a.test.js": "8cebd8949c528c736dbc49eae5905388f83c49881c31d8a826b7a4a6467e2770",
+    "app/web/src/lib/guarded-hash-router.js": "09a0243ffaec3c967b81ef9f45a57ed14e9512eedc27267cc2f79d1f05e6f3c8",
+    "tools/validated-tap.mjs": "8c4b900cba936af9a1ae78a9fb120a52069c59db5f42fa4943d4662593b31808"
+  },
+  "exitCode": 1
+}

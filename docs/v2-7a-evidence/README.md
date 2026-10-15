@@ -1,23 +1,28 @@
-# V2-7A evidence
+# V2-7A final evidence
 
-Application implementation: `a298767`; see [the eval](../V2-7A-EVAL.md) for the
-historical/current execution split. Six PNGs below are existing committed
-captures; this final session inspected them but did not regenerate them.
+Corrected source: `fe749fb41e744961df156e8b9dcf80f0155b4e0b`.
+[Evaluation](../V2-7A-EVAL.md), [summary](summary.json),
+[visual inspection](VISUAL-REVIEW.md), [image hashes](image-manifest.json).
 
-- `dashboard-empty.png`: first-run empty state.
-- `dashboard.png`: saved project cards.
-- `editor-blank.png`: blank saved project in the shell.
-- `editor-shell.png`: history dialog over text/layers.
-- `editor-readonly.png`: read-only/assistant view.
-- `editor-narrow.png`: actual **500×757** capture (requested 480×900);
-  does not prove inspector reachability.
+The disjoint [192-file manifest](validation-plan.json) executed **2127/2127**:
+1936 bulk, 155 serial build/browser (includes 28-case7A and 3 PG browser), 36 backend
+contract/concurrency/fault cases. No skip, cancellation or unexecuted required
+case. Supplemental hosted login/save/export/reopen: 1/1. Build/typecheck pass;
+canonical benchmark 50 cells has 0 L1/L2 findings. The separate Indian-locale BYOK
+probe remains 9 pass / 1 known failure; it is not folded into unique coverage.
 
-`dashboard-hosted-anon.png` and `large-deck.json` do not yet exist. No hosted
-capture or opening-performance measurement is claimed from missing files.
+Per-gate JSON files link exact commands, raw TAP/logs and source SHA.
+`logs/attempts/` preserves superseded failures and the interrupted attempt;
+[attempt-history.json](attempt-history.json) distinguishes them from final totals.
+`logs/byok-en-IN.tap` retains the standing locale issue.
+[RUNBOOK.md](RUNBOOK.md), `run-group.py` and `run-final-steps.py` reproduce the
+bounded isolated strategy. Run `hosted-auth-check.mjs` after all build owners
+finish; it starts only disposable local hosted/API/database fixtures and serves
+existing dist. Generated exports stay ignored under out/; inspected rasters are
+`export-chart.png` and `export-table.png`.
 
-[VISUAL-REVIEW.md](VISUAL-REVIEW.md) gives observations, limitations and hashes.
-[environment.json](environment.json) records resource samples/PG unavailability.
-[RUNBOOK.md](RUNBOOK.md) and [validation-plan.json](validation-plan.json) provide
-the complete bounded reproduction procedure and disjoint 190-file inventory.
-[CONTINUITY-VALIDATION.md](CONTINUITY-VALIDATION.md) records governance/cold-start
-checks only. That work does not substitute for product validation or acceptance.
+All15 images were regenerated and inspected. The known pre-existing Fit padding
+limitation and actual viewport sizes are explicit in the visual report.
+[Historical continuity audit](CONTINUITY-VALIDATION.md) concerns the earlier
+15-case governance/cold-start pass; current governance is 18 cases within bulk.
+Acceptance is a separate reviewer/human decision, never implied by this evidence.

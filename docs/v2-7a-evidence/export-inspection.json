@@ -1,0 +1,20 @@
+{
+  "chart": {
+    "sha256": "795cedf216bdac641a500cccb305ba188aba20c2a1d29a5920168381b7d146e6",
+    "bytes": 70668,
+    "slides": 1,
+    "chartParts": 1,
+    "nativeTablePresent": false,
+    "editedTextInNativeXml": true,
+    "raster": "docs/v2-7a-evidence/export-chart.png"
+  },
+  "table": {
+    "sha256": "be9534dfb9bf806d8563d338475c9918e761becb6c79538781808fca6e2db13b",
+    "bytes": 72451,
+    "slides": 1,
+    "chartParts": 0,
+    "nativeTablePresent": true,
+    "editedTextInNativeXml": true,
+    "raster": "docs/v2-7a-evidence/export-table.png"
+  }
+}

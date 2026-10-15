@@ -1,0 +1,137 @@
+[
+  {
+    "name": "v2-edit-chrome-7a.test",
+    "implementationSha": "19ace2f946bd55158173d3e0fbe06d3d496053b7",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-7a.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-7a.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "freeform.test",
+    "implementationSha": "19ace2f946bd55158173d3e0fbe06d3d496053b7",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/freeform.test.js"
+    ],
+    "files": [
+      "test/freeform.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "plate.test",
+    "implementationSha": "19ace2f946bd55158173d3e0fbe06d3d496053b7",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/plate.test.js"
+    ],
+    "files": [
+      "test/plate.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "v2-edit-chrome-5c.test",
+    "implementationSha": "19ace2f946bd55158173d3e0fbe06d3d496053b7",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5c.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5c.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "v2-edit-chrome-5d.test",
+    "implementationSha": "19ace2f946bd55158173d3e0fbe06d3d496053b7",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5d.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5d.test.js"
+    ],
+    "exitCode": 1
+  }
+]

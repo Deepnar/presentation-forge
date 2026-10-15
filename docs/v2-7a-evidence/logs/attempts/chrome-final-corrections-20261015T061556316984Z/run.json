@@ -1,0 +1,39 @@
+{
+  "baseHead": "55c5e95d802c3fc7b3340a21a94365522c203b48",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-edit-chrome-7a.test.js"
+  ],
+  "sourceSha256": {
+    "app/web/src/App.jsx": "592216c699b5cbdfa7f1b9aab6885e2db70dbde5c6c828cbbd9f81fb7f3c0cb2",
+    "app/web/src/components/SceneViewer.jsx": "803df68934486925909b3a73bf1adc86d9a43e3e966c3dfed5a68167e40f10eb",
+    "docs/v2-7a-evidence/dashboard-empty.png": "1e4e9adafba418b5a250458e903e90287284e4f93e5c681e31ae8b2fb25ef188",
+    "docs/v2-7a-evidence/dashboard.png": "bd5adbc88029dd9afcb65e19f8f9f7dd7d52c0ca9aec3e43b55daf0ebb53031e",
+    "docs/v2-7a-evidence/editor-blank.png": "d5a609349c48ed46f4ea1faddc727e6e09796783efba16cb0b9708f1b6714914",
+    "docs/v2-7a-evidence/editor-narrow.png": "3e41d309af21805e65f9d6fc712dc30e87b13b93b24da6c96703c9bde6410b96",
+    "docs/v2-7a-evidence/editor-readonly.png": "fa553230be9eb52318e396a115f42a2ad9320ae51c7891bf07bf3d40a14cfc5d",
+    "docs/v2-7a-evidence/editor-shell.png": "6a0ddd30bb4ab8875b0298f5ab57a4721609415142500862f618db08547bf3e9",
+    "docs/v2-7a-evidence/validation-plan.json": "7476d77e19da958bf88f346d2767687eb4aa474fabcdc38346514f9a455853a6",
+    "test/dev-protocol.test.js": "596454a541554937a6556b3bc00e148bd1148b15c670f33056bc245a03bf55df",
+    "test/v2-edit-chrome-7a.test.js": "af2c97289dc4715e257c9fba6ba3fb7a3caee406e4512d82676a6e8be6da134a",
+    "tools/dev-protocol-check.mjs": "2770b253ddf371e208aefaac28c747a8583641731938003741878af899034bf8",
+    "app/web/src/lib/guarded-hash-router.js": "09a0243ffaec3c967b81ef9f45a57ed14e9512eedc27267cc2f79d1f05e6f3c8",
+    "tools/validated-tap.mjs": "8c4b900cba936af9a1ae78a9fb120a52069c59db5f42fa4943d4662593b31808"
+  },
+  "exitCode": 0
+}

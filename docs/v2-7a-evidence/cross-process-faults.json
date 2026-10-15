@@ -1,0 +1,15 @@
+{
+  "id": "cross-process-faults",
+  "kind": "tests",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-projects-6c-concurrency.test.js\nnice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-projects-6c-faults.test.js",
+  "log": "docs/v2-7a-evidence/logs/cross-process-faults.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 19,
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  }
+}

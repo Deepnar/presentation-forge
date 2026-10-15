@@ -1,219 +1,178 @@
-# V2-7A evaluation — unified workspace foundation
+# V2-7A final validation and acceptance evidence
 
-Updated 2026-10-14. Accepted baseline: V2-6C
-`97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Application implementation under
-validation: `a298767ce32df1a0023ada4a1e8d0bda506a1ca9`, branch `v2`.
-Later continuity/documentation commits do not change that application SHA.
+Updated 2026-10-15 (Asia/Kolkata). Branch `v2`. Accepted baseline:
+`97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Original implementation:
+`a298767ce32df1a0023ada4a1e8d0bda506a1ca9`. Corrected source under final validation:
+`fe749fb41e744961df156e8b9dcf80f0155b4e0b`. Later documentation/evidence commits
+do not change those application bytes. **V2-7A is not accepted by this report.**
 
-## Verdict
+## Scope and invariants
 
-**HOLD recommended. V2-7A is not accepted.** Full final validation remains
-unexecuted because the required quiet shared-machine window has not occurred;
-Forge PostgreSQL is unavailable. This session updates continuity/governance and
-reviews existing evidence without claiming those activities finish product
-validation. No V2-7B or other feature implementation is authorized.
+Finish the deferred workspace/dashboard/routing/editor-shell validation; correct
+reproduced regressions narrowly. No V2-7B, generation handoff, AI runtime,
+compiler, schema, renderer, theme, store or command feature work. Layer-C scenes
+and the revisioned engine remain authoritative for human editing/native PPTX;
+model-authored intent gains no geometry/style escape hatch. Existing untracked
+`.agents/` and both `PRESENTATION_FORGE_*` documents remain untouched.
 
-## 1. Implemented scope
+## Independent review and corrections
 
-Workspace dashboard (`#/projects`, `views/Workspace.jsx`) over the real project
-API: project cards, open/rename/delete/export/history, blank/layout creation and
-honest loading/empty/permission/unavailable states. Project routes
-`#/project/:id[/history]` mount the shared `SceneViewer` editor with top bar,
-collapsible slide/layer rail, contextual inspector, present overlay, save state
-and navigation guards. The standalone scenes entry remains supported.
+The separate review of `3037faf` issued [HOLD](reviews/V2-7A-3037faf.json), with
+[the findings and execution limits](reviews/V2-7A-3037faf.md). Subsequent separate
+source/probe review challenged asynchronous correction paths; its final exact-SHA
+acceptance decision is pending review of the now-complete evidence.
 
-Creation builders are in `lib/v2create.js`; engine, schema, command and store
-contracts remain the accepted shared foundations. Architecture:
-[V2-7 frontend record](V2-7-FRONTEND-ARCHITECTURE.md). UI changes must not become
-layout escape hatches or introduce a second authoritative document.
+| Finding | Classification | Narrow correction / evidence |
+|---|---|---|
+| Sidebar/hash/Back bypassed leave policy | Product regression | Central indexed hash routing restores history before choice; Cancel preserves entry/document |
+| Failed/conflicted saves and just-committed drafts appeared clean | Product regression | Dirty policy reads engine/draft/pending-save ownership, including Done/read-only |
+| Save & leave returned before an older PUT or newer edits persisted | Product regression | Await real PUT promise and drain newest revision before departure |
+| Cancelled Save & switch could navigate when PUT completed | Product regression | Confirmation target identity rechecked after await |
+| Discarded edits could be saved by an older PUT follow-up | Product regression | Per-document save suppression, post-await identity checks and autosave cancellation |
+| Failed discard/reload left editing permanently unsaveable | Correction regression | Roll suppression back on load failure; preserve old adapter until new document validates |
+| Unbound Done/re-enter lost unsaved ownership | Correction regression | Keep authoritative document through interaction detachment; explicit fixture/live swaps reset unbound ownership |
+| Fast project load preceded font-gated viewer mount | Product regression | Gate binding on viewer readiness and recheck viewer after asynchronous document creation |
+| Project listing lost HTTP status/code | Product regression | Preserve recovery metadata for 401/403/503 states |
+| Plain project export URL returned404 for signed-in owner | Product regression | Download via existing bearer identity; legacy `/api/decks` cookie scope is unchanged |
+| Narrow top bar hid late controls | Product regression | Horizontal overflow with nonshrinking controls; actual inspector/dialog checks |
+| Undo test expected revision decrement | Incorrect test expectation | Monotonic revision plus persisted hidden content and redo assertions |
+| New chart/table layer selector targeted a nonexistent span | Test error | Select the real labeled layer button; retain data/content/geometry assertions |
+| Headless caret test lost desktop focus after a delay | Environmental test limitation | Trace showed document.hasFocus false, then expected blur commit; CDP focus emulation, stronger focus assertions preserved |
+| Guard test assumed confirmation within 5ms | Test timing issue | Wait for confirmation callback and expected history state |
+| Passing subsets could satisfy full evidence gates | Governance defect | Retain observed entry files, compare manifest scope, reject filtered runs; negative scope tests |
+| Imported contract helper polluted file markers | Test reporter defect | Inventory `.test.js` entries; real imported-helper reporter regression |
 
-## 2. Contract claims and evidence boundaries
+Corrections are focused commits from `55c5e95` through `fe749fb`; changes are in
+App, SceneViewer, shared project download/client/router helpers, scoped tests and
+continuity validation. No assertions were relaxed to obtain a pass.
 
-One keyed editor per project, detach on unmount, revision-safe autosave,
-conflict refusal, history/restore and native export use existing paths. The
-original implementation session reports the covered interactions in §9.
-This session has not rerun them. Source inspection confirms fixed-width rails
-and shared format panels, but does not measure canvas stability or establish
-shell chart/table parity through interaction.
+## Final validation ledger
 
-## 3. Generation entry and limit
+Final execution is complete. Count leaf tests, not suite containers. The disjoint
+[192-file inventory](v2-7a-evidence/validation-plan.json) contains 168 bulk,
+21 serial build/browser and 3 PostgreSQL files. 7A is a subset of serial; SQLite
+contracts are in bulk; PostgreSQL browser is in serial. Do not add overlapping
+rows as separate tests.
 
-“Create with AI” opens legacy chat. No generated-deck-to-Layer-C saved-project
-translator is wired. The next candidate is [V2-7B](ROADMAP.md#v2-7b-candidate),
-not authorized scope. The Assistant tab is a labeled placeholder.
+| Gate | Pass | Fail | Skip | Cancelled | Status |
+|---|---:|---:|---:|---:|---|
+| Non-browser bulk, 168 files |1936|0|0|0|Complete at frozen source; 18.238s |
+| Full 7A Chrome, 28 cases |28|0|0|0|Complete; subset of serial |
+| Serial 21 files including PG browser |155|0|0|0|Complete, bounded one file at a time |
+| PostgreSQL contract |17|0|0|0|Real PostgreSQL 16 |
+| Cross-process persistence 11 + faults 8 |19|0|0|0|10 PG + 1 SQLite persistence; 8 real PG fault cases |
+| Production build |—|—|—|—|Passed, exit 0; 0.402s |
+| Typecheck |—|—|—|—|Passed, exit 0; 1.145s |
+| Canonical benchmark, 50 cells |—|—|—|—|Passed; 0 L1/L2; 491ms compiler runner |
+| Final frontend/export visual inspection |1|0|0|0|Supplemental hosted flow passed; 15 PNGs inspected, 2 native-export rasters |
 
-## 4. Existing design evidence, inspected 2026-10-14
+Disjoint final inventory: **2127 tests, 2127 pass, 0 fail, 0 skip, 0 cancelled**
+across all 192 files. The supplemental hosted browser check adds **1 pass**
+(2128 distinct final cases including it). **Required unexecuted cases: none.**
+The 28-case 7A row is already included in the 155 serial count. Build/typecheck
+and benchmark are command/cell gates, not extra tests. Later 18-case governance
+reverification passed after evidence population; it repeats bulk coverage.
 
-Six committed PNGs at `a298767` were opened and inspected. Desktop captures are
-1440×757; `editor-narrow.png` is **500×757**, despite the driver requesting
-480×900 (Chrome headless viewport clamp). Dashboard cards and empty-state
-controls are readable without overlap. The history modal bounds are inside the
-viewport with a scrolling revision list. The read-only/assistant image shows
-its placeholder and no edit tools in the visible region.
+[Summary JSON](v2-7a-evidence/summary.json), per-gate JSON, exact commands and raw
+TAP/logs are retained under `v2-7a-evidence/`. The [attempt history](v2-7a-evidence/attempt-history.json)
+preserves superseded runs and the interrupted file separately. Supplemental
+hosted check setup initially failed before UI execution (one import-path error,
+two fixture-registration expectation errors); corrected setup then passed twice,
+with the final run retaining geometry. These are test setup errors, not product
+failures. Node reports each setup attempt as 0 pass / 1 fail; no skips/cancellations.
+The bulk run's `LC_ALL=C.UTF-8` resolves Intl to en-US. The standing BYOK assertion
+passes there, but a separate untouched `LC_ALL=en_IN.UTF-8` run reproduces the
+known failure: **10 total, 9 pass, 1 fail, 0 skip/cancelled**, `5,000,000` versus
+`50,00,000`. This is separate from the disjoint final inventory and remains
+[an existing issue](ROADMAP.md#byok-locale-standing-failure); no fix or implicit
+waiver is claimed.
 
-The narrow image shows only part of the top bar; inspector/history/other controls
-are outside the capture. It does not prove inspector access or narrow dialog
-usability. Source inspection shows the top bar lacks the secondary toolbar's
-horizontal-overflow treatment, while the host clips horizontal overflow. This is
-a **narrow-control clipping finding requiring behavioural confirmation and a
-scoped correction** in the final browser pass, not evidence of responsive success.
+## Attempts before the frozen-source run
 
-The desktop center column is approximately 721px of 1440px (~50% of the full
-viewport); the earlier ~68% claim excluded other shell space without saying so.
-No controlled same-scene before/after pair exists here to prove selection never
-shifts the canvas. Details and image hashes: [visual review](v2-7a-evidence/VISUAL-REVIEW.md).
-These are existing-image observations, not new frontend execution.
+These are diagnostic attempts, not extra unique passing tests:
 
-## 5. Interaction claims still requiring final execution
+- Original full 18-case 7A: 14 pass, 4 fail, 0 skip/cancelled; project readiness,
+  monotonic undo expectation and hosted listing failures triaged above.
+- Superseded correction attempt stopped deliberately after diagnosis of the
+  viewer-readiness race: incomplete/cancelled, never counted as a pass.
+- 23-case correction run: 21 pass, 2 test-selector failures, 0 skip/cancelled.
+- 25-case correction run: 25 pass, 0 fail/skip/cancelled.
+- 25-case run with actual export action: 24 pass, 1 product failure 404;
+  a proxy teardown rejection was also diagnosed and corrected in test code.
+- 26-case correction run: 26 pass, 0 fail/skip/cancelled. Its continued serial
+  attempt reached freeform, plate and 5C green, then 5D 3/4 due desktop focus loss.
+- Focus diagnosis repeated the 4-case 5D suite (3 pass/1 fail) while tracing;
+  focus emulation then produced 4/4 with stronger assertions.
+- A separate lightweight reviewer observed one route timing failure; 6 isolated
+  reruns passed. The fixed 5ms assumption was subsequently removed.
 
-Locks/visibility through the new shell and undo/redo; keyboard shortcuts, Escape
-and focus; hosted sign-in/dashboard; navigation/switch guards and pending edits;
-chart/table editing in the embedded shell; history restore, slide management,
-read-only and cleanup; narrow inspector reachability and geometry stability.
-The existing keyboard case exercises read-only arrows and Projects Escape/focus,
-not the entire shortcut matrix. The save/discard-named case actually executes
-save-and-leave; discard needs explicit verification. Existing chart/table suites
-drive the standalone entry, so those alone cannot prove embedded-shell parity.
+Earlier implementation-session results and the old six images are historical,
+not substitutes for the current final pass. Original evidence claims were
+corrected during the repository continuity audit; Git preserves those reports.
 
-## 6. Performance
+## Frontend evidence and performance
 
-**No final-session opening measurement exists.** The 120-slide case remains
-unexecuted; there is no `large-deck.json` to cite. Its existing threshold is
-<120000ms, including Chrome startup, font-gated fixture boot and route navigation.
-Record the observed time and 120 rendered thumbs after a successful real run.
-Do not call that broad measurement isolated editor-render latency.
+Final inspection and per-scenario evidence are recorded in
+[v2-7a-evidence/VISUAL-REVIEW.md](v2-7a-evidence/VISUAL-REVIEW.md). Required coverage:
+dashboard creation/reopen/rename/delete, save states, text/chart/table, undo/redo,
+slides/layers/locks/visibility, history restore, read-only, narrow inspector and
+dialog reachability, shortcuts/Escape/focus, route/switch guards, pending drafts
+and saves, repeated mounts/cleanup, and an actual authenticated export action.
 
-## 7. Known product limitations
+The 120-slide case measured **1542ms** and all **120 thumbs**. It includes Chrome
+launch, fixture font gate and project route/open, not isolated render latency.
+The original 120000ms threshold was retained. Controlled chart/table selection
+left x/width unchanged; y changed less than 0.1px while entrance animation settled.
 
-Legacy chat/deck lists coexist with saved projects; no cover thumbnails; fixture
-controls remain in the production editor toolbar; Assistant is a placeholder;
-generation handoff is missing. Preserve these as roadmap work rather than a
-second work list: [workspace followups](ROADMAP.md#workspace-followups),
-[V2-7B](ROADMAP.md#v2-7b-candidate), and V2-8 in roadmap §12.
+The canonical 50 cells have 0 L1/L2, fit, representation, takeaway or chart-data
+findings; all five theme-invariance records agree. All six current semantic
+counterfactuals are sensitive; three older purpose-only/audience controls remain
+insensitive, unchanged by this work. Full results are committed; raster-none is
+not a visual verdict for all 50 cells.
 
-## 8. Next-slice boundary
+## Known limitations and next boundary
 
-[V2-7B](ROADMAP.md#v2-7b-candidate) remains a candidate. Frontend findings and
-ordering are in [the roadmap](ROADMAP.md#workspace-followups). Independent
-acceptance of V2-7A must precede dependent planning; no new feature is started
-by this validation/continuity task.
+Legacy chat/deck lists coexist with saved projects; cover thumbnails are absent;
+fixture controls remain in the production editor toolbar; Assistant is a labeled
+placeholder; generation handoff is missing. Future work is recorded only in
+[workspace followups](ROADMAP.md#workspace-followups),
+[V2-7B](ROADMAP.md#v2-7b-candidate) and V2-8 in the roadmap. BYOK locale remains
+separate. Final inspection also measured the accepted viewer's existing Fit
+padding defect: a 720px scroller has 768px scroll width and initially hides about
+24px of the canvas. The same padding/refit code exists at 97a12de; no new
+selection shift was found. The roadmap's Viewer Fit entry records that separate
+pre-existing defect rather than expanding this slice. Rasterization can establish LibreOffice output only; native Microsoft
+PowerPoint remains an external viewer check. No generated-content quality
+judgment is made; these are deterministic fixtures and local/hosted API plumbing.
 
-## 9. Historical validation at the implementation entry
+Implementation recommendation: submit for independent acceptance with the
+standing BYOK locale and pre-existing Fit limitations explicit. No new failing
+product regression remains in the executed scope. This is a recommendation only.
 
-These are the prior implementation session's recorded results, **not reruns**:
-
-- `test/v2-create-7a.test.js`: 4/4.
-- 7A dashboard: 5/5; navigation: 3/3; editor shell: 6/10. Locks/hide/undo,
-  large-deck, keyboard and hosted cases await successful execution.
-- Earlier Chrome suites reported green: 5c 7, 5d 4, 5e 5, 5f 5, 5i 6, 5j 5,
-  5k 9, chart 2, table 3, fontgate 2, selection 5, smoke 3, live 5, 6a 5, 6b 4.
-  Those historical numbers do not complete this task's full regression set.
-- Typecheck and production build were previously green; PostgreSQL absent.
-- Full bulk, serial browser, PostgreSQL and 50-cell benchmark final pass deferred.
-
-The original evaluation's references to §§15–18 were dangling. This revision
-replaces them with actual sections/evidence and separates claims from execution.
-
-## 10. Current final-validation ledger
-
-Application checks newly executed: **0**. No pass, failure, skip or cancellation
-is claimed for tests that were not started. This is not a zero-test product pass.
-
-Required but **unexecuted**:
-
-| Group | Inventory / reason |
-|---|---|
-| Full 7A Chrome | 18 existing leaf cases; quiet window absent |
-| Non-browser bulk | 166 files including governance suite; complete bulk not started |
-| Serial build/browser | 21 files including full 7A and the font-assets Vite-build suite; not started |
-| PostgreSQL contract | 17 real cases, unavailable service |
-| Cross-process persistence | 11 cases (10 PG + 1 shared SQLite file); containing suite not executed |
-| PostgreSQL faults | 8 real cases, unavailable service |
-| PostgreSQL browser | 3 cases, included in serial inventory; unavailable service |
-| Production build / typecheck | Each unexecuted in this final pass |
-| Canonical benchmark | All 50 cells unexecuted; 12 assertion tests are not a substitute |
-| Frontend final execution | Existing image inspection only; required interactions remain pending |
-
-Inventories overlap only where explicitly stated: 7A and PG browser are subsets
-of the serial inventory; SQLite contract is in bulk; PostgreSQL contract,
-concurrency and faults are three separate files. Do not add these rows as if
-each were disjoint. [The runbook](v2-7a-evidence/RUNBOOK.md) and
-[190-file manifest](v2-7a-evidence/validation-plan.json) provide exact commands,
-file lists and watchdog policy. Governance checks are recorded separately in §15.
-
-Standing failure remains separate: `test/byok-budget.test.js`, `5,000,000` versus
-Indian grouping `50,00,000`, recorded before V2-7A in V2-6C eval §14. It was not
-rerun, altered or waived in this session.
-
-## 11. Roadmap/acceptance status
-
-V2-6C is the supplied accepted baseline at `97a12de`. V2-7A stays `[~]`, pending
-validation and independent acceptance. V2-6/V2-7 parents stay open. Duplicate
-V2-6C pending/accepted roadmap entries were consolidated without revoking its
-accepted baseline. State: [development-state.json](development-state.json).
+No V2-7A self-acceptance, deployment, migrations, main push or V2-7B implementation.
+A separate final review must name the exact corrected source and complete
+retained evidence. Acceptance permits planning; implementation still needs the
+next slice's explicit authorization.
 
 <a id="final-validation-environment"></a>
 
-## 12. Final-validation environment
+## Final-validation environment and isolation
 
-Entry: `v2`, HEAD `a298767`, matching origin/v2, no tracked changes. Pre-existing
-untracked `.agents/` and the two `PRESENTATION_FORGE_*` files are untouched.
-Node 24.16.0 and Chrome are available. Forge test PostgreSQL on 127.0.0.1:5544
-returns ECONNREFUSED. Other projects' PostgreSQL services were not reused.
+Initial attempts waited while unrelated work saturated the shared machine.
+Later direct samples showed ample headroom despite high system I/O PSI:
+2026-10-15T06:16Z CPU 86.05% idle, available memory~49GiB, disk utilization 0.13%;
+13:16Z CPU 74.84% idle, available memory~30.8GiB, disk utilization 9.8%, reads 0MB/s,
+writes 5.72MB/s, no in-flight disk operations. Low-priority bounded validation was
+then appropriate. No unrelated process was stopped. Historical pressure samples
+remain in `v2-7a-evidence/environment.json`; final samples will be retained too.
 
-Repeated shared-machine samples during documentation work showed approximately
-40–62.4% I/O pressure, GPU utilization ranging from idle gaps to 94%, and an
-unrelated long-running workload. Low average CPU load did not mean a quiet I/O
-window. No expensive validation or unrelated-process interruption was performed.
-[Environment evidence](v2-7a-evidence/environment.json) records measured samples.
-The busy-machine fallback in the approved continuity task permits documentation
-and lightweight checks while retaining pending product validation.
+A dedicated ephemeral PostgreSQL 16 container uses localhost 5544, one CPU,
+512MiB memory and RAM-backed 192MiB data. It was created from a locally cached
+image for this validation; it does not reuse another project's database. Test
+suites create/drop isolated databases. Stop/remove only this owned service after independent review; record cleanup
+in the handoff. PostgreSQL checks count only if real cases execute, never setup skips.
 
-## 13. Regressions and corrections
-
-No new application regression was reproduced by test execution; no application
-source or browser assertion changed in this session. The narrow-control clipping
-finding in §4 is preserved as an unresolved validation/correction task. Historical
-product fixes already in the code: V2 bearer (`4dfcc65`), host-route preservation
-(`c786333`), switch-dialog guard visibility (`ab3119b`), signed-out dashboard and
-Escape (`8c99540`). These are not presented as newly applied fixes.
-
-This session corrects stale AGENTS orchestration/model/language/branch guidance,
-dangling eval references, misleading measured/performance claims, duplicate
-roadmap state, external-procedure dependence and historical blocker/architecture
-wording. Governance tests and state consistency checks are separate from editor
-regression tests. Assertions were not weakened.
-
-## 14. Task-specific acceptance gates
-
-Scope: final validation, narrow regression corrections if reproduced, repository
-continuity; no compiler/layout/engine/storage redesign, new features or deployment.
-The final implementer report recommends only; it cannot accept V2-7A.
-
-| Common gate | Applicability / required evidence |
-|---|---|
-| Correctness | Full 18-case 7A suite plus missing shell interaction checks in §5 |
-| Data integrity | Bulk SQLite contracts; PG contract, concurrency/fault and pending-save navigation paths |
-| Security/authorization | Signed-out hosted dashboard, authenticated ownership and read-only checks; no new auth policy |
-| Undo/redo | Exact scene/ownership/order after both operations, including locks/visibility and slide changes |
-| Ownership/regeneration | Existing preservation/engine regression suites; no new regeneration behaviour |
-| Native PPTX | Export restored/edited scenes, inspect native OOXML/text/chart/table data; raster/inspect representative exports |
-| Browser interaction | All §5 flows, guarded exits, no duplicate commits/listeners after remount |
-| Accessibility | Shortcut/region/Escape/focus behaviour, labeled controls and usable narrow dialogs |
-| Responsive | Reachable narrow inspector/top-bar controls, no overlapping/clipped controls; controlled same-scene canvas bounds before/after selection |
-| Regression | Complete manifest, serial build/browser isolation, exact totals, standing BYOK issue separate |
-| Performance | Real 120-slide open with all 120 thumbs and <120000ms; record broad measurement components |
-| Documentation/evidence | Final logs, tested SHA/delta, inspected final captures, state/handoff/architecture consistent; cold-start continuity audit |
-| Backward compatibility | Existing standalone browser/engine/persistence/export suites retained |
-| Deployment safety | No deployment/migration in scope; build/config compatibility checked; no production readiness claim |
-
-## 15. Continuity-system verification
-
-A separate agent context started from the repository, AGENTS.md and
-CONTINUATION.md. It recovered the accepted baseline, active task, forbidden
-follow-on work, standing failure and review procedure. It found missing exact
-reproduction commands, dangling eval references, stale blocker/external-procedure
-claims and absent gate applicability; those findings were corrected here.
-This was a documentation cold-start audit, **not independent V2-7A acceptance**.
-Final lightweight check totals and the audit follow-up are recorded in
-[continuity evidence](v2-7a-evidence/CONTINUITY-VALIDATION.md).
+The [runbook](v2-7a-evidence/RUNBOOK.md) uses `nice`, `ionice`, process-group GNU
+`timeout`, 15-minute per-file bounds (30-minute bulk) and 10-second KILL fallback.
+Browser/build-owning files run strictly serially, with no overlapping Vite build.
+Logs retain exact exit status and runner-observed file scope.

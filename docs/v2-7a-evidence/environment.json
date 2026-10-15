@@ -5,10 +5,10 @@
   "chromeAvailable": true,
   "forgePostgres": {
     "endpoint": "127.0.0.1:5544",
-    "result": "ECONNREFUSED",
-    "realSuitesExecuted": false
+    "result": "Dedicated ephemeral PostgreSQL16 accepting connections",
+    "realSuitesExecuted": true
   },
-  "quietWindowObserved": false,
+  "quietWindowObserved": true,
   "unrelatedWorkInterrupted": false,
   "samples": [
     {
@@ -58,5 +58,36 @@
       "gpuPercent": 94
     }
   ],
-  "note": "Observed samples during documentation work, not a continuous profiler. Low CPU/load and intermittent GPU idle were not a sustained quiet I/O window. PostgreSQL probe was SELECT 1/version with bounded connection timeout only."
+  "note": "Earlier pressure samples retained as history. Final direct CPU/memory/disk measurements support low-priority bounded validation despite high system PSI. No unrelated work stopped.",
+  "historical": true,
+  "currentSamples": [
+    {
+      "at": "2026-10-15T06:16:10.858568+00:00",
+      "cpuIdlePercent": 86.05,
+      "availableMemKB": "MemAvailable:   51518768 kB",
+      "ioPressure": "some avg10=64.05 avg60=65.59 avg300=28.00 total=104589725\nfull avg10=61.04 avg60=64.18 avg300=27.46 total=102501775\n",
+      "disks": {
+        "nvme0n1": {
+          "readMBps": 0.22,
+          "writeMBps": 0.04,
+          "busyPercent": 0.13,
+          "inFlight": 0
+        }
+      }
+    },
+    {
+      "at": "2026-10-15T13:16:11.571098+00:00",
+      "cpuIdlePercent": 74.84,
+      "availableMemory": "MemAvailable:   32280820 kB",
+      "ioPressure": "some avg10=36.51 avg60=45.53 avg300=53.91 total=16963335004\nfull avg10=31.20 avg60=40.55 avg300=49.58 total=16197026499\n",
+      "disks": {
+        "nvme0n1": {
+          "readMBps": 0.0,
+          "writeMBps": 5.72,
+          "busyPercent": 9.8,
+          "inFlight": 0
+        }
+      }
+    }
+  ]
 }

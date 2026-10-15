@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: layers panel in real chrome
+    # Subtest: lists the tree and syncs selection both ways
+    ok 1 - lists the tree and syncs selection both ways
+      ---
+      duration_ms: 1548.510243
+      type: 'test'
+      ...
+    # Subtest: restacks overlapping text behind its card
+    ok 2 - restacks overlapping text behind its card
+      ---
+      duration_ms: 1535.42512
+      type: 'test'
+      ...
+    # Subtest: locks against drags and hides from projection
+    ok 3 - locks against drags and hides from projection
+      ---
+      duration_ms: 3204.499562
+      type: 'test'
+      ...
+    # Subtest: reorders from the keyboard without touching arrows
+    ok 4 - reorders from the keyboard without touching arrows
+      ---
+      duration_ms: 1952.943706
+      type: 'test'
+      ...
+    # Subtest: stays usable narrow and absent when read-only
+    ok 5 - stays usable narrow and absent when read-only
+      ---
+      duration_ms: 3050.392892
+      type: 'test'
+      ...
+    1..5
+ok 1 - layers panel in real chrome
+  ---
+  duration_ms: 11298.576664
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11753.932998
+# forge-test-file "test/v2-edit-chrome-5j.test.js"
