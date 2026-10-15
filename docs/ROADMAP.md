@@ -7454,7 +7454,8 @@ scale); charts structurally exact without axes (V2-4C).
 
 - [ ] V2-7B generation-to-project handoff — connect generated `deck.yaml`
   content to persisted, editable Layer-C projects. Planning recovered on
-  2026-10-15; **implementation is not authorized**. "Create with AI" currently
+  2026-10-15; **V2-7B-1 implementation approved on 2026-10-15**. V2-7B-2 remains
+  a candidate; its browser direction is not approved. "Create with AI" currently
   opens legacy chat, whose completion action opens the legacy deck. There is
   no generation-to-V2-project route or UI handoff. A partial converter already
   exists in `packages/model/legacy.ts`; it maps six original families plus
@@ -7472,7 +7473,7 @@ scale); charts structurally exact without axes (V2-4C).
   until the approved generation → project → edit → save/reopen → native-export
   workflow has browser evidence; a working headless seam alone cannot complete it.
 
-  **V2-7B-1 proposed task contract — conversion and durable creation boundary.**
+  **V2-7B-1 approved task contract — conversion and durable creation boundary.**
 
   - **Baseline/dependencies:** accepted source
     `fe749fb41e744961df156e8b9dcf80f0155b4e0b`, branch `v2`; documentation recovery
@@ -7558,7 +7559,7 @@ scale); charts structurally exact without axes (V2-4C).
     native/visual findings, timings, corrections and residual risks in a linked
     evaluation after authorization. Commit focused changes to `origin/v2`;
     require independent ACCEPT/HOLD for the exact source, without self-acceptance.
-    Stop before implementation until this contract is approved, on any required
+    Implementation approval covers this contract; stop on any required
     scope/security-policy change, or after the bounded slice's review/handoff.
     Acceptance permits planning V2-7B-2, not automatic coding of that next slice.
 - [x] Repository-native development continuity — direct repository workflow,

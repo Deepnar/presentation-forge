@@ -128,7 +128,8 @@
               "production-build",
               "typecheck",
               "benchmark-50",
-              "frontend-visual"
+              "frontend-visual",
+              "conversion-import"
             ]
           },
           "status": {

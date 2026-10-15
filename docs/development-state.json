@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-7A-fe749fb.json"
   },
   "implementationHead": {
-    "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
-    "note": "Corrected source independently accepted; later commits record evidence and the sourced decision. V2-7B remains unauthorized."
+    "sha": "222ab025e7d2babbcdcdea6dc61fe9072a241544",
+    "note": "V2-7B-1 authorized on 2026-10-15; implementation starts from this documentation HEAD. Evidence will name the frozen implementation commit after source changes."
   },
   "activeMilestone": {
-    "id": "V2-7A",
-    "roadmapRef": "docs/ROADMAP.md#v2-7a-validation",
-    "evalDoc": "docs/V2-7A-EVAL.md",
+    "id": "V2-7B-1",
+    "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate",
+    "evalDoc": "docs/V2-7B-1-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-7A-fe749fb.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "7a-chrome",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/7a-chrome.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "id": "conversion-import",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/non-browser-bulk.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/serial-browser.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/postgres-contract.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/cross-process-faults.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/production-build.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/typecheck.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/benchmark-50.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-7a-evidence/frontend-visual.json",
-      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
     }
   ],
   "knownBlockers": [],
@@ -84,7 +84,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-7B",
+    "id": "V2-7B-2",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate"
   },

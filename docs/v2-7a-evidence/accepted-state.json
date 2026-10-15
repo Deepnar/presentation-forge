@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "acceptedBaseline": {
+    "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+    "provenance": "independent-review",
+    "source": "docs/reviews/V2-7A-fe749fb.json"
+  },
+  "implementationHead": {
+    "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+    "note": "Corrected source independently accepted; later commits record evidence and the sourced decision. V2-7B remains unauthorized."
+  },
+  "activeMilestone": {
+    "id": "V2-7A",
+    "roadmapRef": "docs/ROADMAP.md#v2-7a-validation",
+    "evalDoc": "docs/V2-7A-EVAL.md",
+    "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
+    "implementationStatus": "validated",
+    "reviewStatus": "accepted",
+    "implementedBy": "/root",
+    "reviewRecord": "docs/reviews/V2-7A-fe749fb.json",
+    "accepted": true
+  },
+  "validation": [
+    {
+      "id": "7a-chrome",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/7a-chrome.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "non-browser-bulk",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/non-browser-bulk.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "serial-browser",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/serial-browser.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "postgres-contract",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/postgres-contract.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "cross-process-faults",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/cross-process-faults.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "production-build",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/production-build.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "typecheck",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/typecheck.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "benchmark-50",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/benchmark-50.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    },
+    {
+      "id": "frontend-visual",
+      "status": "passed",
+      "evidence": "docs/v2-7a-evidence/frontend-visual.json",
+      "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
+    }
+  ],
+  "knownBlockers": [],
+  "standingFailures": [
+    {
+      "id": "byok-locale",
+      "source": "docs/ROADMAP.md#byok-locale-standing-failure"
+    }
+  ],
+  "nextCandidate": {
+    "id": "V2-7B",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate"
+  },
+  "docs": {
+    "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
+    "vision": "docs/PRODUCT-VISION.md",
+    "acceptance": "docs/ACCEPTANCE-CRITERIA.md",
+    "decisions": "docs/DECISIONS.md",
+    "continuation": "docs/CONTINUATION.md",
+    "planner": "docs/agents/PLANNER.md",
+    "implementer": "docs/agents/IMPLEMENTER.md",
+    "reviewer": "docs/agents/REVIEWER.md",
+    "roadmap": "docs/ROADMAP.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "handoff": "docs/HANDOFF.md",
+    "blockers": "docs/BLOCKED.md",
+    "traps": "docs/TRAPS.md"
+  },
+  "updated": "2026-10-15"
+}

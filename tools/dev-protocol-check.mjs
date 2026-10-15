@@ -16,19 +16,36 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
-export function requiredTestFiles(root, id) {
-  const plan = readJson(path.join(root, 'docs/v2-7a-evidence/validation-plan.json'));
+const MILESTONES = {
+  'V2-7A': {
+    plan: 'docs/v2-7a-evidence/validation-plan.json',
+    focused: '7a-chrome',
+    files: ['test/v2-edit-chrome-7a.test.js'],
+  },
+  'V2-7B-1': {
+    plan: 'docs/v2-7b-1-evidence/validation-plan.json',
+    focused: 'conversion-import',
+    files: ['test/v2-import-conversion-7b.test.js', 'test/v2-import-service-7b.test.js', 'test/v2-import-http-7b.test.js'],
+  },
+};
+
+export function requiredTestFiles(root, id, milestoneId = 'V2-7A') {
+  const milestone = MILESTONES[milestoneId];
+  if (!milestone) throw new Error('unknown milestone validation contract');
+  const plan = readJson(path.join(root, milestone.plan));
   const groups = {
-    '7a-chrome': ['test/v2-edit-chrome-7a.test.js'],
+    [milestone.focused]: milestone.files,
     'non-browser-bulk': plan.bulk,
     'serial-browser': plan.serial,
-    'postgres-contract': ['test/v2-projects-6c-postgres.test.js'],
+    'postgres-contract': milestoneId === 'V2-7A'
+      ? ['test/v2-projects-6c-postgres.test.js']
+      : ['test/v2-projects-6c-postgres.test.js', 'test/v2-import-postgres-7b.test.js'],
     'cross-process-faults': ['test/v2-projects-6c-concurrency.test.js', 'test/v2-projects-6c-faults.test.js'],
   };
   return groups[id];
@@ -109,7 +126,7 @@ function checkEvidence(root, state, item, errors) {
       }
       const output = readFileSync(log, 'utf8');
       const observed = [...output.matchAll(/^# forge-test-file (.+)$/gm)].map(match => JSON.parse(match[1]));
-      const required = requiredTestFiles(root, item.id);
+      const required = requiredTestFiles(root, item.id, state.activeMilestone.id);
       if (required.some(file => !observed.includes(file)) || observed.some(file => !required.includes(file))) {
         throw new Error('executed test files do not cover the complete required scope');
       }
@@ -143,6 +160,15 @@ export function checkSemantics(root, state) {
   const ids = state.validation.map(item => item.id);
   if (new Set(ids).size !== ids.length) errors.push('duplicate validation id');
   const milestone = state.activeMilestone;
+  const contract = MILESTONES[milestone.id];
+  if (!contract) errors.push('unknown milestone validation contract');
+  else {
+    reference(root, contract.plan, errors, 'validation plan');
+    const requiredIds = Object.keys(KINDS).filter(id => !['7a-chrome', 'conversion-import'].includes(id)).concat(contract.focused);
+    if (requiredIds.some(id => !ids.includes(id)) || ids.some(id => !requiredIds.includes(id))) {
+      errors.push('validation inventory does not match the milestone contract');
+    }
+  }
   for (const [name, ref] of Object.entries(state.docs)) reference(root, ref, errors, `docs.${name}`);
   for (const key of ['roadmapRef', 'evalDoc', 'architectureDoc']) {
     reference(root, milestone[key], errors, `activeMilestone.${key}`);

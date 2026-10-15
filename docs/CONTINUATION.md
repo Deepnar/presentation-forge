@@ -32,12 +32,14 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7A-EVAL.md](V2-7A-EVAL.md) is the active validation contract and exact result
-ledger. Required V2-7A validation and independent acceptance are complete. The
-next candidate is V2-7B; planning may proceed when requested, but implementation
-still needs its explicit bounded authorization. Do not repeat the full validation
-matrix unless source changes, a failure or new evidence requires it. V2-7B,
-AI runtime, imports and other features are forbidden until separately authorized.
+[V2-7B-1-EVAL.md](V2-7B-1-EVAL.md) indexes the active, human-approved conversion
+and durable creation slice. Its roadmap contract defines the bounded scope;
+implementation and validation are in progress. V2-7A remains independently
+accepted, with its complete historical evidence and accepted-state snapshot
+under `v2-7a-evidence/`. The new inventory under `v2-7b-1-evidence/` adds import
+coverage and preserves serial browser/build isolation. V2-7B-2, AI runtime and
+other features still require their own scope authorization. Do not self-accept
+or start dependent work before the active slice's separate review.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

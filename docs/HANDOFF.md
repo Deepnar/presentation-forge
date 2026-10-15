@@ -1,14 +1,15 @@
-# Handoff — V2-7A accepted; V2-7B-1 proposed
+# Handoff — V2-7A accepted; V2-7B-1 in progress
 
 Read AGENTS.md, CONTINUATION.md and development-state.json, then the protocol,
 active roadmap entry and V2-7A-EVAL.md. Development now works directly from the
 repository; no relay, provider restriction or prior chat is required.
 
-2026-10-15 continuation: recovered the accepted state and prepared the next
-bounded task using the planner role. There is no pending V2-7A validation or
-review. The proposed V2-7B-1 contract and subsequent handoff direction are in
-[the sole roadmap entry](ROADMAP.md#v2-7b-candidate). Approval has been requested;
-no implementation authorization was received when writing this snapshot.
+2026-10-15 continuation: the human approved the bounded V2-7B-1 contract and
+separate high-effort review. Implementation is in progress; V2-7B-2 remains
+unauthorized. The active scope is [the roadmap contract](ROADMAP.md#v2-7b-candidate)
+and `V2-7B-1-EVAL.md`; the state file now indexes new pending checks without
+relabeling the accepted V2-7A evidence. A retained accepted-state snapshot keeps
+the earlier gate inventory independently reproducible.
 
 Branch: `v2`. Accepted implementation/baseline:
 `fe749fb41e744961df156e8b9dcf80f0155b4e0b`, accepted against task-entry baseline
@@ -67,10 +68,11 @@ or cancelled (`node --test test/v2-legacy.test.js test/v2-create-7a.test.js`);
 the proposed feature. The accepted full validation matrix was not rerun because
 its source is unchanged.
 
-V2-7B remains a candidate, **not authorized implementation**; the state file
-retains `nextCandidate.authorized: false`. Resume with the human's response to
-the concrete roadmap contract, then follow the protocol's implementation/state
-and independent-review gates. No V2-7B or other feature code was started. Do not
-repeat complete validation without a source change, failure or new concern.
+V2-7B-1 is approved and in progress; its validation and independent acceptance
+remain pending. No browser handoff or other feature is authorized. Continue the
+approved roadmap contract, preserve current implementation changes, and obtain
+an independent exact-SHA review after validation. The preflight reviewer found
+no reason to change the approved scope; it identified lossless field auditing,
+source readiness, immutable retry identity and exact owner checks as key seams.
 User preference: avoid routine subagents; required separate review uses high
-effort, never xhigh. This planning continuation used no subagents.
+effort, never xhigh. The separate reviewer is read-only during implementation.

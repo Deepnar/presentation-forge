@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { REQUIRED_FILES, checkGit, requiredTestFiles, run } from '../tools/dev-protocol-check.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const shipped = JSON.parse(readFileSync(path.join(ROOT, 'docs/development-state.json'), 'utf8'));
+const shipped = JSON.parse(readFileSync(path.join(ROOT, 'docs/v2-7a-evidence/accepted-state.json'), 'utf8'));
 
 function fixture(t) {
   const dir = mkdtempSync(path.join(tmpdir(), 'forge-protocol-'));
@@ -34,7 +34,7 @@ function fixture(t) {
   const evidence = (overrides = {}) => {
     const item = state.validation[0];
     item.status = 'passed'; item.evidence = 'docs/result.json';
-    const files = requiredTestFiles(dir, item.id) ?? [];
+    const files = requiredTestFiles(dir, item.id, state.activeMilestone.id) ?? [];
     writeFileSync(path.join(dir, 'docs/output.tap'), '# tests 28\n# pass 28\n# fail 0\n# skipped 0\n# cancelled 0\n' + files.map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
     const data = { id: item.id, implementationSha: state.implementationHead.sha, command: 'node --test fixture.test.js',
       kind: 'tests', log: 'docs/output.tap', exitCode: 0,
@@ -176,4 +176,16 @@ test('the TAP inventory records entry files without imported contract helpers', 
   assert.match(output,/# pass 1/);
   assert.match(output,/# forge-test-file "entry.test.js"/);
   assert.doesNotMatch(output,/# forge-test-file "contract.js"/);
+});
+
+ test('new milestone keeps its own focused gate and rejects old evidence inventory', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-7b-1-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-7b-1-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-7b-1-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-7B-1';
+  hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'conversion-import';
+  assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  f.state.activeMilestone.id = 'unknown'; hasError(f.check(), /unknown milestone/);
 });
