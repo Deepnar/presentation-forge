@@ -13,6 +13,14 @@ function fixture(t) {
   const dir = mkdtempSync(path.join(tmpdir(), 'forge-protocol-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const state = structuredClone(shipped);
+  // Each negative starts from pending fixture state, independent of whether the
+  // repository currently has retained evidence or an acceptance decision.
+  state.acceptedBaseline.sha = '1'.repeat(40);
+  state.acceptedBaseline.provenance = 'human-supplied-baseline';
+  state.implementationHead.sha = '2'.repeat(40);
+  Object.assign(state.activeMilestone, { accepted: false, reviewStatus: 'pending', reviewRecord: null,
+    implementationStatus: 'implemented-pending-validation' });
+  for (const item of state.validation) Object.assign(item, { status: 'unexecuted', evidence: null, reason: 'Fixture pending' });
   const refs = [...REQUIRED_FILES, ...Object.values(state.docs), state.activeMilestone.evalDoc,
     state.activeMilestone.architectureDoc, state.acceptedBaseline.source.split('#')[0]];
   for (const ref of new Set(refs)) {
