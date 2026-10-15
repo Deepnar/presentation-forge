@@ -43,7 +43,7 @@ PY
 ```
 
 Repeat the same block with `FORGE_VALIDATION_GROUP=serial`, then `postgres`.
-The serial list begins with the FULL V2-7A suite (27 leaf tests, including regression additions); never
+The serial list begins with the FULL V2-7A suite (28 leaf tests, including regression additions); never
 replace it with only the four deferred cases. Classify and correct failures,
 rerun affected files, then resume remaining files explicitly and preserve every
 attempt. Aggregate only the final complete inventory, not repeated attempts.

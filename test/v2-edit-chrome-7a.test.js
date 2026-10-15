@@ -990,6 +990,26 @@ describe("v2-7a editor shell", () => {
     } finally {await page.close();}
   });
 
+  it("unbound standalone edits remain guarded through Done and re-entering Edit", async t => {
+    if (skipped) return t.skip(skipped);
+    const page=await open(`${APP}scenes.html?deck=mech-warm-humanist-plain`);
+    const guarded=`(() => {const event=new Event('beforeunload',{cancelable:true});window.dispatchEvent(event);return event.defaultPrevented;})()`;
+    try {
+      const edit=await page.evaluate(byText('Edit'));await page.click(...edit);
+      await waitFor(page, `document.querySelector('[data-editing="true"]') !== null`);
+      const add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev === 1`);
+      assert.equal(await page.evaluate(guarded),true);
+      const done=await page.evaluate(byText('Done'));await page.click(...done);
+      await waitFor(page, `document.querySelector('[data-editing="true"]') === null`);
+      assert.equal(await page.evaluate(guarded),true,'Done retains unsaved ownership');
+      const again=await page.evaluate(byText('Edit'));await page.click(...again);
+      await waitFor(page, `document.querySelector('[data-editing="true"]') !== null`);
+      assert.equal(await page.evaluate(`JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev`),1,'re-entering keeps the authoritative document');
+      assert.equal(await page.evaluate(guarded),true);
+    } finally {await page.close();}
+  });
+
   for (const [kind, template] of [['chart','chart-insight'],['table','data-table']]) {
     it(`edits native ${kind} data in the shell without moving the canvas`, async t => {
       if (skipped) return t.skip(skipped);

@@ -772,6 +772,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const pending = adapterRef.current;
       const swap = () => {
         exitEdit();
+        if (!projectRef.current) docRef.current = null;
         setEditedScenes(null);
         setLiveDeck({
           name: `live:${s.deck.deck.name}:${s.deck.deck.theme}:${s.deck.deck.variant}`,
@@ -819,6 +820,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   function pickFixture(name) {
     guardedNav(() => {
       exitEdit();
+      if (!projectRef.current) docRef.current = null;
       setEditedScenes(null);
       loaderRef.current.abort();
       setLiveDeck(null);
@@ -1077,20 +1079,21 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
     adapterRef.current = null;
-    if (!projectRef.current) docRef.current = null;
     setEditOn(false);
     setTextState({ editing: false, elementId: null, conflict: null, overflow: null, paragraphs: null });
     setEditStatus({ rev: 0, error: null, preparing: false });
   }
   async function enterEdit() {
     if (editOn || !viewerRef.current) return;
+    const targetViewer = viewerRef.current;
     setEditStatus({ rev: 0, error: null, preparing: true });
     try {
       const { createDocument } = await import("../../../../packages/model/engine.ts");
       const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
       const source = editedScenes ?? deck.scenes;
-      const doc = (projectRef.current && docRef.current) || await createDocument(structuredClone(source));
-      const adapter = attachEditor(viewerRef.current, doc, {
+      const doc = docRef.current || await createDocument(structuredClone(source));
+      if (viewerRef.current !== targetViewer) return;
+      const adapter = attachEditor(targetViewer, doc, {
         root: mountRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
         onSync: (scenes) => {
