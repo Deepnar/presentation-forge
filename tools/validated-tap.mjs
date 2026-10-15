@@ -7,7 +7,7 @@ export default async function* validatedTap(source) {
   const files = new Set();
   async function* observed() {
     for await (const event of source) {
-      if (event.type === 'test:enqueue' && event.data.file) {
+      if (event.type === 'test:enqueue' && event.data.file?.endsWith('.test.js')) {
         files.add(path.relative(process.cwd(), event.data.file));
       }
       yield event;

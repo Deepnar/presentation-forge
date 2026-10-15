@@ -1157,9 +1157,11 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const r = await adapter.commitPendingEdit();
       if (!r.ok) return r;
     }
+    if (docRef.current !== doc || projectRef.current?.id !== proj.id || abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
     if (pendingSaveRef.current) {
       const result = await pendingSaveRef.current;
       if (!result.ok) return result;
+      if (docRef.current !== doc || projectRef.current?.id !== proj.id || abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
       return saveNow(saveOrigin);
     }
     proj = projectRef.current;
@@ -1280,11 +1282,11 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const targetViewer = viewerRef.current;
     const { createDocument } = await import("../../../../packages/model/engine.ts");
     const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
+    const fresh = await createDocument(structuredClone(loaded.scenes));
+    if (!targetViewer || viewerRef.current !== targetViewer) return;
     try {
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
-    const fresh = await createDocument(structuredClone(loaded.scenes));
-    if (!targetViewer || viewerRef.current !== targetViewer) return;
     const adapter = attachEditor(targetViewer, fresh, {
       root: mountRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
@@ -1363,10 +1365,12 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     setPendingSwitchId(null);
     setSaveState("saving");
     setSaveError(null);
+    const previousDocument = docRef.current;
     try {
       const loaded = await apiLoad(id);
       await attachLoadedProject(loaded);
     } catch (err) {
+      if (previousDocument && docRef.current === previousDocument) abandonedDocumentsRef.current.delete(previousDocument);
       setSaveState("error");
       setSaveError(err.message);
     }

@@ -966,6 +966,30 @@ describe("v2-7a editor shell", () => {
     } finally {await page.close();}
   });
 
+  it("a failed discard-and-reload keeps the original document saveable", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import('../packages/editor/scene-text.js');
+    const made=await apiAuthed('POST','/api/v2/projects',{title:'Failed reload recovery',scenes:[blankSlide()]});
+    const id=made.body.project.id;
+    const page=await openSignedIn(`#/project/${id}`);
+    try {
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => {window.realForgeFetch=window.fetch.bind(window);window.fetch=(url,opts)=>opts?.method==='PUT'?Promise.resolve(new Response(JSON.stringify({ok:false,code:'stale-revision',error:'Changed elsewhere'}),{status:409})):window.realForgeFetch(url,opts);})()`);
+      let add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `${SAVE} === 'stale'`);
+      const reload=await page.evaluate(byText('Load newer version'));await page.click(...reload);
+      await waitFor(page, `document.querySelector('[data-switch-guard]') !== null`);
+      await page.evaluate(`(() => {window.fetch=(url,opts)=>String(url).endsWith('/api/v2/projects/${id}') && (!opts?.method || opts.method==='GET')?Promise.resolve(new Response(JSON.stringify({ok:false,error:'Storage unavailable'}),{status:503})):window.realForgeFetch(url,opts);})()`);
+      const discard=await page.evaluate(byText('Discard & switch'));await page.click(...discard);
+      await waitFor(page, `${SAVE} === 'error'`);
+      await page.evaluate('window.fetch=window.realForgeFetch;true');
+      add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.revision === 1`);
+      const stored=await apiAuthed('GET',`/api/v2/projects/${id}`);
+      assert.equal(stored.body.project.scenes[0].elements.filter(e=>e.kind==='text').length,2,'failed reload retains and can save original edits');
+    } finally {await page.close();}
+  });
+
   for (const [kind, template] of [['chart','chart-insight'],['table','data-table']]) {
     it(`edits native ${kind} data in the shell without moving the canvas`, async t => {
       if (skipped) return t.skip(skipped);

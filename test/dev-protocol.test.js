@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
@@ -34,10 +35,10 @@ function fixture(t) {
     const item = state.validation[0];
     item.status = 'passed'; item.evidence = 'docs/result.json';
     const files = requiredTestFiles(dir, item.id) ?? [];
-    writeFileSync(path.join(dir, 'docs/output.tap'), '# tests 26\n# pass 26\n# fail 0\n# skipped 0\n# cancelled 0\n' + files.map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
+    writeFileSync(path.join(dir, 'docs/output.tap'), '# tests 27\n# pass 27\n# fail 0\n# skipped 0\n# cancelled 0\n' + files.map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
     const data = { id: item.id, implementationSha: state.implementationHead.sha, command: 'node --test fixture.test.js',
       kind: 'tests', log: 'docs/output.tap', exitCode: 0,
-      tests: { total: 26, pass: 26, fail: 0, skip: 0, cancelled: 0 }, ...overrides };
+      tests: { total: 27, pass: 27, fail: 0, skip: 0, cancelled: 0 }, ...overrides };
     writeFileSync(path.join(dir, 'docs/result.json'), JSON.stringify(data));
   };
   return { dir, state, save, check, evidence };
@@ -80,7 +81,7 @@ test('stale evidence from another implementation SHA is refused', t => {
   hasError(f.check(), /SHA/);
 });
 test('self-reported totals must match the retained test output', t => {
-  const f = fixture(t); f.evidence({ tests: { total: 27, pass: 27, fail: 0, skip: 0, cancelled: 0 } });
+  const f = fixture(t); f.evidence({ tests: { total: 28, pass: 28, fail: 0, skip: 0, cancelled: 0 } });
   hasError(f.check(), /disagree with output log/);
 });
 test('nonzero, cancelled, skipped and inconsistent totals never become passes', t => {
@@ -118,7 +119,7 @@ test('legitimate recorded acceptance can advance the baseline after completed va
     const kind = item.id === 'benchmark-50' ? 'benchmark' : item.id === 'frontend-visual' ? 'visual' :
       ['typecheck', 'production-build'].includes(item.id) ? 'command' : 'tests';
     const log = `docs/${item.id}.tap`;
-    writeFileSync(path.join(f.dir, log), '# tests 26\n# pass 26\n# fail 0\n# skipped 0\n# cancelled 0\n' + (kind === 'tests' ? requiredTestFiles(f.dir, item.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join('') : ''));
+    writeFileSync(path.join(f.dir, log), '# tests 27\n# pass 27\n# fail 0\n# skipped 0\n# cancelled 0\n' + (kind === 'tests' ? requiredTestFiles(f.dir, item.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join('') : ''));
     writeFileSync(path.join(f.dir, item.evidence), JSON.stringify({ ...source, id: item.id, kind, log, cells: 50, inspected: true }));
   }
   f.state.activeMilestone.reviewStatus = 'accepted'; f.state.activeMilestone.accepted = true;
@@ -130,9 +131,9 @@ test('legitimate recorded acceptance can advance the baseline after completed va
   f.state.validation[0].status = 'unexecuted'; hasError(f.check(), /completed validation/);
   const failed = f.state.validation[0];
   failed.status = 'failed';
-  writeFileSync(path.join(f.dir, 'docs/failed.tap'), '# tests 26\n# pass 25\n# fail 1\n# skipped 0\n# cancelled 0\n' + requiredTestFiles(f.dir, failed.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
+  writeFileSync(path.join(f.dir, 'docs/failed.tap'), '# tests 27\n# pass 26\n# fail 1\n# skipped 0\n# cancelled 0\n' + requiredTestFiles(f.dir, failed.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
   writeFileSync(path.join(f.dir, failed.evidence), JSON.stringify({ ...source, id: failed.id,
-    exitCode: 1, log: 'docs/failed.tap', tests: { total: 26, pass: 25, fail: 1, skip: 0, cancelled: 0 } }));
+    exitCode: 1, log: 'docs/failed.tap', tests: { total: 27, pass: 26, fail: 1, skip: 0, cancelled: 0 } }));
   hasError(f.check(), /completed validation/);
   const reviewFile = path.join(f.dir, 'docs/review.json');
   const review = JSON.parse(readFileSync(reviewFile, 'utf8'));
@@ -165,4 +166,14 @@ test('name-filtered runs and implausibly small suite counts fail closed', t => {
   hasError(f.check(), /filtered test runs/);
   f.evidence({ tests: { total: 1, pass: 1, fail: 0, skip: 0, cancelled: 0 } });
   hasError(f.check(), /below required suite inventory/);
+});
+
+test('the TAP inventory records entry files without imported contract helpers', t => {
+  const f=fixture(t);
+  writeFileSync(path.join(f.dir,'contract.js'), "import {test} from 'node:test';test('helper contract',()=>{});\n");
+  writeFileSync(path.join(f.dir,'entry.test.js'), "import './contract.js';\n");
+  const output=execFileSync(process.execPath,['--test',`--test-reporter=${path.join(ROOT,'tools/validated-tap.mjs')}`,'entry.test.js'],{cwd:f.dir,encoding:'utf8',env:{...process.env,NODE_TEST_CONTEXT:undefined}});
+  assert.match(output,/# pass 1/);
+  assert.match(output,/# forge-test-file "entry.test.js"/);
+  assert.doesNotMatch(output,/# forge-test-file "contract.js"/);
 });
