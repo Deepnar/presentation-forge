@@ -218,7 +218,9 @@ describe("v2-5d chrome text editing", () => {
       await new Promise((r) => setTimeout(r, 800));
       assert.equal((await page.evaluate(STATE)).slideIndex, slideBefore, "arrows move the caret, not the slide");
       assert.equal((await page.evaluate(EDIT)).rev, 0, "no commit from navigation keys");
+      assert.equal(await page.evaluate(`document.activeElement === document.querySelector('[data-text-edit="${ids[0]}"]')`),true,'caret focus stays in the draft before typing');
       await page.insertText(" ⌘");
+      assert.equal(await page.evaluate(`document.querySelector('[data-text-edit="${ids[0]}"]') !== null`),true,'typing preserves the draft until commit');
       // Ctrl+Enter commits through the overlay key handler.
       await page.evaluate(`document.querySelector('[data-text-edit="${ids[0]}"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true, bubbles: true }))`);
       await waitFor(page, `(${EDIT}).rev === 1`, 60000);

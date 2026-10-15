@@ -94,6 +94,9 @@ async function gatedPage(url, w, h, timeoutMs) {
     });
     let id = 1;
     await send(ws, id++, "Page.enable");
+    // Headless desktop focus can disappear independently of page input and
+    // spuriously commit inline drafts during keyboard tests.
+    await send(ws, id++, "Emulation.setFocusEmulationEnabled", { enabled: true });
     await send(ws, id++, "Page.navigate", { url });
     const t0 = Date.now();
     for (;;) {
