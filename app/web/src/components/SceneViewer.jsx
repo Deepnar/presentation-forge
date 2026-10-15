@@ -1,3 +1,4 @@
+import ProjectExportButton from "./ProjectExportButton.jsx";
 // SceneViewer — read-only V2 scene viewer. Thin React shell over
 // packages/editor/scene-dom.js (the single viewer implementation;
 // the headless smoke page drives the same module). React owns no
@@ -1015,6 +1016,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [renameConflict, setRenameConflict] = useState(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState(null);
   const [pendingSwitchId, setPendingSwitchId] = useState(null);
+  const pendingSwitchRef = useRef(null);
   // V2-7A unified shell: collapsible rails, right-rail tabs
   // (inspector vs assistant placeholder), present overlay, and an
   // explicit leave guard for workspace navigation. All editing
@@ -1347,14 +1349,17 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       // triggered it, or its overlay would keep swallowing the
       // guard's own buttons (backdrop sits above in-flow banners).
       setProjectsOpen(false);
+      pendingSwitchRef.current = { id };
       setPendingSwitchId(id);
       return;
     }
     if (embedded && onOpenProject && projectRef.current && projectRef.current.id !== id) {
+      pendingSwitchRef.current = null;
       setPendingSwitchId(null);
       onOpenProject(id);
       return;
     }
+    pendingSwitchRef.current = null;
     setPendingSwitchId(null);
     setSaveState("saving");
     setSaveError(null);
@@ -1874,7 +1879,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           <button type="button" aria-label="Version history" title={`Version history for ${project.title}`} onClick={() => openHistory(project)} className={shellBtn}>History</button>
         )}
         {project && !project.recoverable && (
-          <a data-topbar-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} title={`Export ${project.title} (.pptx)`} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</a>
+          <ProjectExportButton data-topbar-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</ProjectExportButton>
         )}
         <button type="button" aria-label="Present" title="Present from the current slide" onClick={openPresent} className={shellBtn}>Present</button>
         <button type="button" aria-label="Assistant" title="AI assistant (not available yet)" aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => { setRightTab("assistant"); setRightOpen(true); }} className={shellBtn}>Assistant</button>
@@ -2150,9 +2155,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {pendingSwitchId && (
           <div role="alert" data-switch-guard className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
             You have unsaved changes. Switching projects without saving loses them.{" "}
-            <button type="button" onClick={async () => { const result = await saveNow(); if (result.ok && !leaveGuardNeeded()) openProject(pendingSwitchId); }} className={shellBtn}>Save & switch</button>{" "}
-            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); discardDocument(); openProject(id); }} className={shellBtn}>Discard & switch</button>{" "}
-            <button type="button" onClick={() => setPendingSwitchId(null)} className={shellBtn}>Cancel</button>
+            <button type="button" onClick={async () => { const target = pendingSwitchRef.current; const result = await saveNow(); if (target && pendingSwitchRef.current === target && result.ok && !leaveGuardNeeded()) openProject(target.id); }} className={shellBtn}>Save & switch</button>{" "}
+            <button type="button" onClick={() => { const id = pendingSwitchId; pendingSwitchRef.current = null; setPendingSwitchId(null); discardDocument(); openProject(id); }} className={shellBtn}>Discard & switch</button>{" "}
+            <button type="button" onClick={() => { pendingSwitchRef.current = null; setPendingSwitchId(null); }} className={shellBtn}>Cancel</button>
           </div>
         )}
         {textState.conflict && (
@@ -2384,7 +2389,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             <div className="flex flex-wrap gap-2 border-b border-line px-3 py-2">
               <button type="button" data-project-save-current disabled={!editOn} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
               {project && !project.recoverable && (
-                <a data-project-export href={`/api/v2/projects/${encodeURIComponent(project.id)}/export.pptx`} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</a>
+                <ProjectExportButton data-project-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</ProjectExportButton>
               )}
             </div>
             <div data-project-list className="flex flex-col gap-2 overflow-y-auto p-3">

@@ -116,7 +116,7 @@ function checkEvidence(root, state, item, errors) {
       if (/--test-(?:name-pattern|skip-pattern|only|shard)\b/.test(data.command)) {
         throw new Error('filtered test runs cannot satisfy a complete regression gate');
       }
-      const minimum = { '7a-chrome': 25, 'postgres-contract': 17, 'cross-process-faults': 19 }[item.id] ?? 1;
+      const minimum = { '7a-chrome': 26, 'postgres-contract': 17, 'cross-process-faults': 19 }[item.id] ?? 1;
       if (data.tests.total < minimum) throw new Error('test count below required suite inventory');
       for (const [key, label] of [['total', 'tests'], ['pass', 'pass'], ['fail', 'fail'], ['skip', 'skipped'], ['cancelled', 'cancelled']]) {
         const matches = [...output.matchAll(new RegExp(`^(?:#|ℹ) ${label} (\\d+)\\s*$`, 'gm'))];

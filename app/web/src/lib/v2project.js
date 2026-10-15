@@ -32,6 +32,15 @@ function authHeaders() {
 }
 export const AUTOSAVE_DELAY_MS = 2000;
 
+export async function apiExport(id, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/export.pptx`, { headers: { ...authHeaders() } });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error ?? `export failed (${res.status})`);
+  }
+  return res.blob();
+}
+
 export async function apiList(fetchFn = fetch) {
   const res = await fetchFn("/api/v2/projects", { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);

@@ -4,6 +4,7 @@
 // paths: AI (existing generation), layout skeleton, or blank — all
 // landing in real persisted projects through apiCreate.
 import { useCallback, useEffect, useState } from "react";
+import ProjectExportButton from "../components/ProjectExportButton.jsx";
 import { apiList, apiCreate, apiRename, apiRemove } from "../lib/v2project.js";
 import { buildBlankScenes, buildLayoutScenes, layoutTemplateList, defaultProjectTitle } from "../lib/v2create.js";
 import { relative } from "../lib/time.js";
@@ -246,13 +247,13 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
                       <Button size="sm" variant="primary" data-project-open={p.id} onClick={() => onOpen(p.id)}>Open</Button>
                       <Button size="sm" data-project-history={p.id} title="Version history" onClick={() => onHistory(p.id)}>History</Button>
                       <Button size="sm" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</Button>
-                      <a
+                      <ProjectExportButton
                         data-project-export={p.id}
-                        href={`/api/v2/projects/${encodeURIComponent(p.id)}/export.pptx`}
+                        projectId={p.id} title={p.title}
                         className="rounded px-2.5 py-1.5 text-xs text-fg-muted transition hover:bg-hover hover:text-fg"
                       >
                         Export
-                      </a>
+                      </ProjectExportButton>
                       <Button size="sm" onClick={() => setConfirmDelete(p)}>Delete…</Button>
                     </div>
                   </>

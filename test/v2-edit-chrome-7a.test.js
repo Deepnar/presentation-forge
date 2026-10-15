@@ -56,13 +56,13 @@ function proxyTo(port) {
           headers: { ...headers, "content-length": String(Buffer.concat(chunks).length) },
           body: ["GET", "HEAD"].includes(req.method) ? undefined : Buffer.concat(chunks),
         });
-        res.writeHead(r.status, Object.fromEntries([...r.headers.entries()].filter(([k]) => !["content-encoding", "content-length", "transfer-encoding"].includes(k.toLowerCase()))));
         const bytes = Buffer.from(await r.arrayBuffer());
-        if (req.url?.endsWith('/export.pptx')) exportResponses.push({ path: req.url, status: r.status, bytes: bytes.length, cookie: Boolean(req.headers.cookie), disposition: r.headers.get('content-disposition') });
+        res.writeHead(r.status, Object.fromEntries([...r.headers.entries()].filter(([k]) => !["content-encoding", "content-length", "transfer-encoding"].includes(k.toLowerCase()))));
+        if (req.url?.endsWith('/export.pptx')) exportResponses.push({ path: req.url, status: r.status, bytes: bytes.length, cookie: Boolean(req.headers.cookie), bearer: Boolean(req.headers.authorization), disposition: r.headers.get('content-disposition') });
         res.end(bytes);
       } catch (err) {
-        res.writeHead(502);
-        res.end(`proxy failed: ${err.message}`);
+        if (res.headersSent) res.destroy(err);
+        else { res.writeHead(502); res.end(`proxy failed: ${err.message}`); }
       }
     });
   };
@@ -488,8 +488,8 @@ describe("v2-7a editor shell", () => {
       const exportDeadline = Date.now() + 15000;
       while (exportResponses.length === exportStart && Date.now() < exportDeadline) await new Promise(resolve => setTimeout(resolve,100));
       const exported = exportResponses[exportStart];
-      assert.equal(exported?.status,200,'actual export anchor authenticates with the session cookie');
-      assert.equal(exported.cookie,true);
+      assert.equal(exported?.status,200,'actual export action authenticates with the session bearer');
+      assert.equal(exported.bearer,true);
       assert.match(exported.disposition,/attachment/);
       assert.ok(exported.bytes > 1000);
       assert.equal(await page.evaluate('location.hash'),`#/project/${id}`);
@@ -937,6 +937,32 @@ describe("v2-7a editor shell", () => {
       const stored=await apiAuthed('GET',`/api/v2/projects/${id}`);
       assert.equal(stored.body.project.revision,1);
       assert.equal(stored.body.project.scenes[0].elements.filter(e=>e.kind==='text').length,1);
+    } finally {await page.close();}
+  });
+
+  it("cancelling Save and switch prevents a delayed request from navigating", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import('../packages/editor/scene-text.js');
+    const made=await apiAuthed('POST','/api/v2/projects',{title:'Switch origin',scenes:[blankSlide()]});
+    const other=await apiAuthed('POST','/api/v2/projects',{title:'Switch destination',scenes:[blankSlide()]});
+    const id=made.body.project.id;
+    const page=await openSignedIn(`#/project/${id}`);
+    try {
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => {const real=window.fetch.bind(window);window.fetch=(url,opts)=>opts?.method==='PUT'?new Promise(resolve=>{window.releaseForgeSave=()=>resolve(real(url,opts));}):real(url,opts);})()`);
+      const add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `${SAVE} === 'saving' && typeof window.releaseForgeSave === 'function'`);
+      const projects=await page.evaluate(byText('Projects'));await page.click(...projects);
+      await waitFor(page, `document.querySelector('[data-project-open="${other.body.project.id}"]') !== null`);
+      await clickSelector(page,`[data-project-open="${other.body.project.id}"]`);
+      await waitFor(page, `document.querySelector('[data-switch-guard]') !== null`);
+      const save=await page.evaluate(byText('Save & switch'));await page.click(...save);
+      await clickSelector(page,'[data-switch-guard] button:last-child');
+      await page.evaluate('window.releaseForgeSave();true');
+      await waitFor(page, `${SAVE} === 'saved'`);
+      assert.equal(await page.evaluate('location.hash'),`#/project/${id}`);
+      assert.equal(await page.evaluate(`${PROJ}?.id`),id);
+      assert.equal(await page.evaluate(`document.querySelector('[data-switch-guard]') === null`),true);
     } finally {await page.close();}
   });
 
