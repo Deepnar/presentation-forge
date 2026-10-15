@@ -4,7 +4,7 @@ import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writ
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { REQUIRED_FILES, checkGit, run } from '../tools/dev-protocol-check.mjs';
+import { REQUIRED_FILES, checkGit, requiredTestFiles, run } from '../tools/dev-protocol-check.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const shipped = JSON.parse(readFileSync(path.join(ROOT, 'docs/development-state.json'), 'utf8'));
@@ -25,10 +25,11 @@ function fixture(t) {
   const evidence = (overrides = {}) => {
     const item = state.validation[0];
     item.status = 'passed'; item.evidence = 'docs/result.json';
-    writeFileSync(path.join(dir, 'docs/output.tap'), '# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n');
+    const files = requiredTestFiles(dir, item.id) ?? [];
+    writeFileSync(path.join(dir, 'docs/output.tap'), '# tests 25\n# pass 25\n# fail 0\n# skipped 0\n# cancelled 0\n' + files.map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
     const data = { id: item.id, implementationSha: state.implementationHead.sha, command: 'node --test fixture.test.js',
       kind: 'tests', log: 'docs/output.tap', exitCode: 0,
-      tests: { total: 1, pass: 1, fail: 0, skip: 0, cancelled: 0 }, ...overrides };
+      tests: { total: 25, pass: 25, fail: 0, skip: 0, cancelled: 0 }, ...overrides };
     writeFileSync(path.join(dir, 'docs/result.json'), JSON.stringify(data));
   };
   return { dir, state, save, check, evidence };
@@ -71,7 +72,7 @@ test('stale evidence from another implementation SHA is refused', t => {
   hasError(f.check(), /SHA/);
 });
 test('self-reported totals must match the retained test output', t => {
-  const f = fixture(t); f.evidence({ tests: { total: 2, pass: 2, fail: 0, skip: 0, cancelled: 0 } });
+  const f = fixture(t); f.evidence({ tests: { total: 26, pass: 26, fail: 0, skip: 0, cancelled: 0 } });
   hasError(f.check(), /disagree with output log/);
 });
 test('nonzero, cancelled, skipped and inconsistent totals never become passes', t => {
@@ -108,7 +109,9 @@ test('legitimate recorded acceptance can advance the baseline after completed va
     item.status = 'passed'; item.evidence = `docs/${item.id}.json`;
     const kind = item.id === 'benchmark-50' ? 'benchmark' : item.id === 'frontend-visual' ? 'visual' :
       ['typecheck', 'production-build'].includes(item.id) ? 'command' : 'tests';
-    writeFileSync(path.join(f.dir, item.evidence), JSON.stringify({ ...source, id: item.id, kind, cells: 50, inspected: true }));
+    const log = `docs/${item.id}.tap`;
+    writeFileSync(path.join(f.dir, log), '# tests 25\n# pass 25\n# fail 0\n# skipped 0\n# cancelled 0\n' + (kind === 'tests' ? requiredTestFiles(f.dir, item.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join('') : ''));
+    writeFileSync(path.join(f.dir, item.evidence), JSON.stringify({ ...source, id: item.id, kind, log, cells: 50, inspected: true }));
   }
   f.state.activeMilestone.reviewStatus = 'accepted'; f.state.activeMilestone.accepted = true;
   f.state.activeMilestone.implementationStatus = 'validated'; f.state.activeMilestone.reviewRecord = 'docs/review.json';
@@ -119,9 +122,9 @@ test('legitimate recorded acceptance can advance the baseline after completed va
   f.state.validation[0].status = 'unexecuted'; hasError(f.check(), /completed validation/);
   const failed = f.state.validation[0];
   failed.status = 'failed';
-  writeFileSync(path.join(f.dir, 'docs/failed.tap'), '# tests 1\n# pass 0\n# fail 1\n# skipped 0\n# cancelled 0\n');
+  writeFileSync(path.join(f.dir, 'docs/failed.tap'), '# tests 25\n# pass 24\n# fail 1\n# skipped 0\n# cancelled 0\n' + requiredTestFiles(f.dir, failed.id).map(file => `# forge-test-file ${JSON.stringify(file)}\n`).join(''));
   writeFileSync(path.join(f.dir, failed.evidence), JSON.stringify({ ...source, id: failed.id,
-    exitCode: 1, log: 'docs/failed.tap', tests: { total: 1, pass: 0, fail: 1, skip: 0, cancelled: 0 } }));
+    exitCode: 1, log: 'docs/failed.tap', tests: { total: 25, pass: 24, fail: 1, skip: 0, cancelled: 0 } }));
   hasError(f.check(), /completed validation/);
   const reviewFile = path.join(f.dir, 'docs/review.json');
   const review = JSON.parse(readFileSync(reviewFile, 'utf8'));
@@ -140,4 +143,18 @@ test('document paths, anchors and symlinks cannot leave the repository or point 
 test('Git verification rejects well-shaped nonexistent commits', () => {
   const state = structuredClone(shipped); state.implementationHead.sha = '0'.repeat(40);
   hasError(checkGit(ROOT, state), /not a local commit/);
+});
+
+test('a passing subset cannot substitute for the full required file scope', t => {
+  const f = fixture(t); f.evidence();
+  f.state.validation[1].status = 'passed'; f.state.validation[1].evidence = 'docs/subset.json';
+  const source = JSON.parse(readFileSync(path.join(f.dir, 'docs/result.json'), 'utf8'));
+  writeFileSync(path.join(f.dir, 'docs/subset.json'), JSON.stringify({ ...source, id: 'non-browser-bulk' }));
+  hasError(f.check(), /complete required scope/);
+});
+test('name-filtered runs and implausibly small suite counts fail closed', t => {
+  const f = fixture(t); f.evidence({ command: 'node --test --test-name-pattern=one test/v2-edit-chrome-7a.test.js' });
+  hasError(f.check(), /filtered test runs/);
+  f.evidence({ tests: { total: 1, pass: 1, fail: 0, skip: 0, cancelled: 0 } });
+  hasError(f.check(), /below required suite inventory/);
 });

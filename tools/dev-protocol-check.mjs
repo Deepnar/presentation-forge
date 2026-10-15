@@ -11,6 +11,7 @@ export const REQUIRED_FILES = [
   'docs/agents/PLANNER.md', 'docs/agents/IMPLEMENTER.md', 'docs/agents/REVIEWER.md',
   'docs/development-state.json', 'docs/development-state.schema.json',
   'docs/ROADMAP.md', 'docs/HANDOFF.md', 'docs/ARCHITECTURE.md',
+  'docs/v2-7a-evidence/validation-plan.json',
 ];
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
@@ -20,6 +21,18 @@ const KINDS = {
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
+
+export function requiredTestFiles(root, id) {
+  const plan = readJson(path.join(root, 'docs/v2-7a-evidence/validation-plan.json'));
+  const groups = {
+    '7a-chrome': ['test/v2-edit-chrome-7a.test.js'],
+    'non-browser-bulk': plan.bulk,
+    'serial-browser': plan.serial,
+    'postgres-contract': ['test/v2-projects-6c-postgres.test.js'],
+    'cross-process-faults': ['test/v2-projects-6c-concurrency.test.js', 'test/v2-projects-6c-faults.test.js'],
+  };
+  return groups[id];
+}
 
 function readJson(file) {
   return JSON.parse(readFileSync(file, 'utf8'));
@@ -95,6 +108,16 @@ function checkEvidence(root, state, item, errors) {
         throw new Error('failed, cancelled or skipped tests cannot be marked passed');
       }
       const output = readFileSync(log, 'utf8');
+      const observed = [...output.matchAll(/^# forge-test-file (.+)$/gm)].map(match => JSON.parse(match[1]));
+      const required = requiredTestFiles(root, item.id);
+      if (required.some(file => !observed.includes(file)) || observed.some(file => !required.includes(file))) {
+        throw new Error('executed test files do not cover the complete required scope');
+      }
+      if (/--test-(?:name-pattern|skip-pattern|only|shard)\b/.test(data.command)) {
+        throw new Error('filtered test runs cannot satisfy a complete regression gate');
+      }
+      const minimum = { '7a-chrome': 25, 'postgres-contract': 17, 'cross-process-faults': 19 }[item.id] ?? 1;
+      if (data.tests.total < minimum) throw new Error('test count below required suite inventory');
       for (const [key, label] of [['total', 'tests'], ['pass', 'pass'], ['fail', 'fail'], ['skip', 'skipped'], ['cancelled', 'cancelled']]) {
         const matches = [...output.matchAll(new RegExp(`^(?:#|ℹ) ${label} (\\d+)\\s*$`, 'gm'))];
         if (!matches.length || matches.reduce((sum, match) => sum + Number(match[1]), 0) !== data.tests[key]) {
