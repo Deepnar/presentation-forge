@@ -83,9 +83,11 @@ part of the same App route hierarchy.
   (blank, 15 layout skeletons with minted ids); `apiCreate`
   persists them; the router opens the result. No template engine,
   no fake projects.
-- Generation (chat → deck.yaml) has NO bridge into V2 projects:
-  no translator, route, or UI path exists. Recorded as the V2-7B
-  blocker — see §6.
+- Generation (chat → deck.yaml) has no end-to-end bridge into V2 projects.
+  `packages/model/legacy.ts` has a partial legacy-to-intent converter, but no
+  generation-to-project service, route or UI handoff uses it. Unsupported slides
+  are reported separately as `unmapped`; other fields are not fully preserved.
+  It is not a lossless whole-deck import. See §7 and the V2-7B roadmap entry.
 
 ## 4. Navigation and guards
 
@@ -131,9 +133,12 @@ model, no second permission system.
 ## 7. Generation handoff (V2-7B blocker)
 
 "Create with AI" opens the existing chat generation workflow
-(`#/chat` deck briefing). What is missing end-to-end: a
-translator from generated `deck.yaml` content to validated
-Layer-C scenes plus the UI handoff that loads them into a
-persisted project. Until that slice, generated decks and saved
+(`#/chat` deck briefing). Completion still opens the legacy deck. The existing
+partial converter covers the original six families and aliases, not the full
+74-type schema or every content field; the stateless live-compile endpoint
+accepts validated DeckIntent but does not persist it. The missing link is a
+validated whole-deck conversion/creation boundary and a UI handoff into the
+persisted project. The existing `GET /api/decks/:slug/project` is legacy artifact
+metadata, not a V2 scene document. Until that slice, generated decks and saved
 presentations are neighboring worlds with a labeled door between
 them — never presented as one thing.

@@ -7452,12 +7452,115 @@ scale); charts structurally exact without axes (V2-4C).
   > A real export click caught authentication that a bearer-only API probe missed.
 <a id="v2-7b-candidate"></a>
 
-- [ ] V2-7B generation-to-project handoff — the one missing
-  end-to-end link: a translator from generated `deck.yaml`
-  content to validated Layer-C scenes plus the UI handoff that
-  loads them into a persisted project. Nothing exists today (no
-  translator, route, or entry point); "Create with AI" opens the
-  existing chat workflow and stops there, labeled as such.
+- [ ] V2-7B generation-to-project handoff — connect generated `deck.yaml`
+  content to persisted, editable Layer-C projects. Planning recovered on
+  2026-10-15; **implementation is not authorized**. "Create with AI" currently
+  opens legacy chat, whose completion action opens the legacy deck. There is
+  no generation-to-V2-project route or UI handoff. A partial converter already
+  exists in `packages/model/legacy.ts`; it maps six original families plus
+  aliases, returns unsupported slides in `unmapped`, and omits other content
+  fields. It must not be treated as a lossless whole-deck conversion. The
+  current legacy schema has 74 type names, not 73 or 75.
+
+  **Proposed sequence.** First agree and implement the bounded V2-7B-1 below;
+  after its independent acceptance, plan V2-7B-2's browser handoff. Proposed
+  V2-7B-2 direction is an explicit **Open in editor** action on a completed
+  presentation, which creates/reopens its saved project before navigation.
+  Retain access to the legacy deck; never regenerate over human edits. Automatic
+  navigation is an alternative requiring a surface-direction decision. Neither
+  UI choice is implemented or approved by this plan. The parent stays unchecked
+  until the approved generation → project → edit → save/reopen → native-export
+  workflow has browser evidence; a working headless seam alone cannot complete it.
+
+  **V2-7B-1 proposed task contract — conversion and durable creation boundary.**
+
+  - **Baseline/dependencies:** accepted source
+    `fe749fb41e744961df156e8b9dcf80f0155b4e0b`, branch `v2`; documentation recovery
+    starts at `10bb104a1e3125fc69bbef5c64987bb4a34134ef`. V2-3 compiler, V2-4
+    scene renderer, V2-5 commands, V2-6A/B/C stores/history and V2-7A shell are
+    accepted prerequisites. Fresh planning spot checks: legacy bridge 3/3 and
+    all-layout/manual-creation builders 4/4; protocol validator 0 errors/warnings.
+    These are recovery checks, not validation of the proposed feature.
+  - **Scope/rationale:** one shared, headless conversion-and-create service over
+    the existing model/compiler and ProjectStore, with thin authenticated HTTP
+    and CLI entry points. Inspect all 74 schema types and their content fields;
+    record exact conversion coverage, including theme/style/mode, section and
+    presenter metadata, visible `speaker_note` versus actual `notes`, citations,
+    images, native chart/table data and semantic relationships. Implement
+    faithful conversions supported by existing semantic/compiler primitives.
+    Every remaining type/field must produce a specific refusal before any
+    project is written; do not drop slides, truncate facts, flatten content,
+    substitute a generic text dump or pretend partial coverage is full parity.
+    New semantic/compiler mechanisms need a separately agreed scope extension.
+  - **Creation semantics:** convert a validated, completed source snapshot;
+    reject incomplete generation, invalid input, unsupported content and unsafe
+    asset references before persistence. Both source access and target creation
+    obey existing authorization; no cross-owner import or silent claiming.
+    Source files remain intact. Repeating the same creation request, including
+    simultaneous requests and retries after an ambiguous response, returns the
+    same owned project rather than duplicates. A later edit to that project
+    never triggers automatic recompilation or replacement. A changed source
+    snapshot is a conflict requiring an explicit new import, not an overwrite.
+    Keep source identity/provenance sufficient to diagnose that decision.
+  - **Invariants/look-ahead:** generated content → validated semantic intent →
+    deterministic compile → validated scenes → atomic project/history creation.
+    The model receives no coordinates, fonts or palette values. Reuse theme
+    normalization, plate/chrome policy, native renderer and owner-scoped store;
+    any compilation orchestration shared with `compileLiveDeck` belongs below
+    HTTP so the CLI uses it too. Retry identity must be durable on SQLite and
+    PostgreSQL, not a process-local map. Do not repurpose the existing legacy
+    `GET /api/decks/:slug/project` metadata response as a V2 document. The seam
+    returns project identity and structured diagnostics so V2-7B-2 can navigate
+    through the accepted guards and V2-8/V2-9 can reuse creation/asset boundaries
+    without acquiring a second document or editing path.
+  - **Non-goals:** chat/briefing redesign, browser handoff, AI editing/runtime,
+    full legacy visual parity, new layout families, arbitrary PPTX import,
+    general uploads/asset lifecycle, list consolidation/thumbnails, Fit or BYOK
+    fixes, framework migration, paid infrastructure, deployment or production
+    data migration. If existing assets cannot be represented safely through
+    accepted primitives, refuse with diagnostics and record the dependency here.
+  - **Acceptance:** supported content survives source → intent → scenes → store
+    → reload → native export with stable order/identity and exact chart/table
+    data, citations and the correct visible/notes distinction. Every audited
+    unsupported case refuses atomically, leaving source and projects unchanged.
+    Real HTTP and CLI calls share behavior. Retry/concurrency, storage failure,
+    restart recovery, ownership and unchanged human-edited-project cases pass
+    on both backends. Publish the precise supported/blocked matrix; leave the
+    parent and browser-handoff entry incomplete.
+  - **Common gates:** correctness, integrity, authorization, native PPTX,
+    regression testing, evidence and backward compatibility apply directly.
+    Ownership/undo apply to reopening and editing the created document: accepted
+    commands must retain ownership and undo/redo; no regeneration is introduced.
+    Browser interaction applies to opening the service-created project in the
+    existing editor and guard/cleanup regression checks, not a new chat action.
+    Accessibility/responsive checks protect that existing surface; there is no
+    redesigned UI. Deployment-safety gate is limited to isolated test services
+    and no production operations.
+  - **Required evidence:** fail-first field/coverage and atomic-refusal tests;
+    real CLI/HTTP source-owner and target-owner tests; duplicate-request races,
+    response-loss retries, restart/fault cases on SQLite and owned PostgreSQL;
+    edit/save/reopen, undo/redo and navigation checks using converted projects;
+    native OOXML data assertions plus inspected slide rasters and screenshots.
+    Measure conversion, persistence and existing-editor opening time at ordinary
+    deck size and valid boundary sizes; report refused over-limit inputs too.
+    Run non-browser bulk, all browser/build owners in bounded serial isolation,
+    both store contracts and persistence/fault checks, production build,
+    typecheck and canonical 50-cell benchmark. Freeze a new exact inventory and
+    watchdog commands before expensive execution; extend the state schema and
+    validator's milestone/check mapping together rather than relabeling 7A
+    evidence as 7B evidence. Wait for a shared-machine quiet window. Unavailable
+    PostgreSQL is unexecuted. Model-free fixtures prove conversion only; any
+    live writing-quality claim requires a named hosted Auto run and economical
+    budget use, never an Ollama substitute.
+  - **Standing limits/report/stop:** preserve the separate BYOK locale failure
+    and measured Fit padding defect. Report exact tested SHA/delta, backend,
+    commands, leaf pass/fail/skip/cancelled/unexecuted totals, coverage/refusals,
+    native/visual findings, timings, corrections and residual risks in a linked
+    evaluation after authorization. Commit focused changes to `origin/v2`;
+    require independent ACCEPT/HOLD for the exact source, without self-acceptance.
+    Stop before implementation until this contract is approved, on any required
+    scope/security-policy change, or after the bounded slice's review/handoff.
+    Acceptance permits planning V2-7B-2, not automatic coding of that next slice.
 - [x] Repository-native development continuity — direct repository workflow,
   source-backed product/decision records, planner/implementer/reviewer roles,
   acceptance gates and schema-validated state. Implements the approved continuity
@@ -7498,12 +7601,12 @@ scale); charts structurally exact without axes (V2-4C).
   surface. Agree preservation rules before implementation; persistence is already
   provided by V2-6A/B/C, not a prerequisite still to build.
 
-Future editor capabilities (planning only for the remaining scope):
+Editor capability boundaries (planning only for the remaining scope):
 
 - **Layers beyond V2-5J** — grouping and overlap-management affordances;
   tree, selection sync, reorder, lock and visibility already shipped in V2-5J.
-- **New slide from layout library** — now the V2-5K slice
-  above (gallery of editable slide skeletons; the legacy 75
+- **New slide from layout library** — accepted in V2-5K
+  above (gallery of editable slide skeletons; the legacy 74
   slide-type vocabulary maps to it via
   `docs/V2-LAYOUT-CATALOG-MAP.md`). AI generation must NOT be
   rigidly constrained to those 75 types: the flexible

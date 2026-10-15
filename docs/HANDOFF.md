@@ -1,8 +1,14 @@
-# Handoff — V2-7A independently accepted
+# Handoff — V2-7A accepted; V2-7B-1 proposed
 
 Read AGENTS.md, CONTINUATION.md and development-state.json, then the protocol,
 active roadmap entry and V2-7A-EVAL.md. Development now works directly from the
 repository; no relay, provider restriction or prior chat is required.
+
+2026-10-15 continuation: recovered the accepted state and prepared the next
+bounded task using the planner role. There is no pending V2-7A validation or
+review. The proposed V2-7B-1 contract and subsequent handoff direction are in
+[the sole roadmap entry](ROADMAP.md#v2-7b-candidate). Approval has been requested;
+no implementation authorization was received when writing this snapshot.
 
 Branch: `v2`. Accepted implementation/baseline:
 `fe749fb41e744961df156e8b9dcf80f0155b4e0b`, accepted against task-entry baseline
@@ -50,9 +56,21 @@ avoid replacing accepted evidence. No unrelated process/database was touched.
 Pre-existing untracked `.agents/` and both `PRESENTATION_FORGE_*` documents remain
 untouched; do not stage/remove them. Push destination remains origin/v2.
 
-V2-7B is a candidate, **not authorized implementation**. No V2-7B or other feature
-work was started. A future planning task may propose its bounded scope using the
-planner instructions; product direction and implementation approval remain human
-choices. Do not repeat complete validation without a source change, failure or
-new concern. User preference: avoid routine subagents; required separate review
-uses high effort, never xhigh.
+The planning audit corrected the claim that no translator exists: the partial
+legacy-to-intent converter covers six original families plus aliases, not all
+74 schema type names or all fields. No conversion-to-project service or UI
+handoff exists. Architecture wording and the protocol's historical-baseline
+wording now reflect that source-backed state. No application, tests or state
+schema changed. Lightweight recovery checks: 7 tests passed, 0 failed, skipped
+or cancelled (`node --test test/v2-legacy.test.js test/v2-create-7a.test.js`);
+`npm run dev:protocol` reported 0 errors/warnings. These checks do not establish
+the proposed feature. The accepted full validation matrix was not rerun because
+its source is unchanged.
+
+V2-7B remains a candidate, **not authorized implementation**; the state file
+retains `nextCandidate.authorized: false`. Resume with the human's response to
+the concrete roadmap contract, then follow the protocol's implementation/state
+and independent-review gates. No V2-7B or other feature code was started. Do not
+repeat complete validation without a source change, failure or new concern.
+User preference: avoid routine subagents; required separate review uses high
+effort, never xhigh. This planning continuation used no subagents.

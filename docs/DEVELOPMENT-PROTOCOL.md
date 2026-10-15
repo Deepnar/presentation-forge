@@ -25,10 +25,12 @@ old instruction or an evaluation recommendation as human approval.
 
 The state file is an index, not an approval authority. A checkmark, green tests,
 or an implementer's recommendation cannot override missing independent acceptance.
-The accepted baseline supplied for this task is `97a12de` (V2-6C). Older evals
-retain their historical pending-review wording; the roadmap's later acceptance
-record and the task baseline resolve that chronology. Do not reopen accepted
-work merely because its original evaluation predates its acceptance.
+V2-7A entered from the supplied `97a12de` baseline (V2-6C); its corrected source
+`fe749fb` is now independently accepted. Resolve the current full accepted SHA
+and its separate decision through `development-state.json`, not a historical
+task-entry SHA in an evaluation. Older evals retain their historical
+pending-review wording; later acceptance records resolve that chronology. Do not
+reopen accepted work merely because its original evaluation predates acceptance.
 
 ## PLAN → IMPLEMENT → VERIFY → INDEPENDENT REVIEW → ACCEPT/HOLD → HANDOFF
 
