@@ -1696,3 +1696,25 @@ ownership and safety checks in the canonical primitive
 and prove the bypass directly: one test submitting the
 forbidden envelope without the UI, asserting rejection plus
 untouched scene, revision, and history.
+
+
+**Headless focus loss is different from an editor key regression.** A deferred
+keyboard check can lose its textarea when the headless desktop deactivates the
+page: `document.hasFocus()` becomes false, the real blur handler commits, and
+an unchanged draft closes without advancing the engine. Trace focusout, document
+focus and DOM removal before changing product code. `chrome-shot.mjs` uses CDP
+focus emulation for deterministic input; actual click-away/Escape paths remain
+exercised. Fixed sleeps also cannot prove an async history prompt is ready:
+wait for the confirmation callback and the expected history state.
+
+**Discard is a departure decision, not a saved revision.** An older PUT can
+complete while history restoration is pending and enqueue a newer discarded
+revision. Suppress follow-up saves per document, recheck identity/discard after
+awaited draft commits, and roll suppression back when replacement loading fails.
+Done/read-only mode must retain authoritative unsaved document ownership even
+without a bound project. Font-gated viewer creation must precede project binding.
+
+**Legacy download cookies do not cover project URLs.** The session cookie is
+scoped to `/api/decks`; a plain V2 project export link can appear authenticated
+but return404/401. Use the existing bearer identity for downloads and exercise
+an actual trusted export action. Do not widen cookie scope to fix a UI link.

@@ -18,9 +18,10 @@ npm run dev:protocol
 under evaluation, active task/eval and validation evidence/statuses. The code SHA
 may precede later documentation commits. Validate ancestry and inspect the diff;
 do not silently replace that pointer with the documentation commit running now.
-The accepted baseline for this validation task is V2-6C `97a12de`; V2-7A code at
-`a298767` awaits final validation and independent acceptance. Any subsequent narrow
-corrections and their tested SHAs must be recorded in the active evaluation.
+This task entered from accepted V2-6C `97a12de` and V2-7A implementation `a298767`.
+Narrow corrections through `fe749fb` now have complete retained validation.
+The state file records the current review decision/baseline; never infer acceptance
+from a green report. Tested code and subsequent evidence commits are distinct.
 
 Read ARCHITECTURE.md's V2 sections, V2-5A-EDITOR-ARCHITECTURE.md with later editor
 evaluations, V2-6-PERSISTENCE-ARCHITECTURE.md, V2-6C-HOSTED-STORAGE.md and
@@ -31,8 +32,8 @@ because old eval wording predates review.
 ## Active task and reproduction
 
 [V2-7A-EVAL.md](V2-7A-EVAL.md) is the active validation contract and exact result
-ledger. Finish V2-7A tests and frontend evidence, fixing only narrow regressions;
-complete the continuity documents/validator in the linked roadmap entry. V2-7B,
+ledger. Required V2-7A tests and frontend/export evidence are complete; recover
+and finish the independent review decision before any dependent planning. V2-7B,
 AI runtime, imports and other features are forbidden until separately authorized.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for

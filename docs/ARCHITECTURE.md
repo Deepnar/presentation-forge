@@ -1807,8 +1807,13 @@ standalone `scenes.html` viewer unchanged. The shell is top
 bar, collapsible left rail, fixed-width contextual right rail
 (inspector + honest assistant placeholder), and present
 overlay; state ownership keeps authoritative content in the
-engine alone, and every V2 call carries the session bearer
-(`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
+engine alone. V2 API calls and project downloads carry the session bearer.
+`guarded-hash-router.js` coordinates App routes, hash links and Back/Forward
+with the editor's authoritative leave policy; Done retains unsaved documents.
+Save & leave awaits all confirmed revisions, discard suppresses follow-up saves,
+and failed replacement loading restores editing/guard ownership. Embedded
+binding waits for the font-gated viewer. The top bar scrolls to keep narrow
+controls reachable (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
 
 ## The web shell
 

@@ -189,11 +189,12 @@ current roadmap work is blocked:
   theme rather than the 2pt a misreported floor claimed
 
 The active V2 task is recorded in `docs/development-state.json` and
-`docs/ROADMAP.md` §12. V2-7A final validation waits on a quiet shared-machine
-window; PostgreSQL-backed checks additionally need the isolated Forge test
-service. See `docs/V2-7A-EVAL.md` §12 for current measurements and availability.
-Documentation and lightweight continuity checks can proceed. Those constraints
-do not authorize starting a different milestone.
+`docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine
+window was obtained and all required validation executed against the isolated
+Forge service. The remaining gate is the independent decision for corrected
+source `fe749fb`; see `docs/V2-7A-EVAL.md` for execution, measurements and known
+limits. Review status/baseline are indexed in development-state.json. No
+constraint or green test authorizes starting a different milestone.
 
 Two are worth naming because they look like engineering and are not:
 

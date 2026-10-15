@@ -7424,11 +7424,24 @@ scale); charts structurally exact without axes (V2-4C).
   changes; generation-to-project handoff explicitly scoped as
   the V2-7B blocker below.
 
-  Final-validation scope also covers the missing shell chart/table, redo/discard,
-  pending-draft and narrow-inspector evidence named in the eval/runbook. Existing
-  narrow screenshots show top-bar controls outside the captured viewport; confirm
-  reachability and correct narrowly during validation. No final-session product
-  run or opening-performance measurement is claimed while the machine is busy.
+  Final validation completed at `fe749fb` with 2127/2127 disjoint regression cases,
+  a supplemental hosted login/save/export/reopen pass, build, typecheck and all 50
+  benchmark cells. Bounded serial Chrome/build isolation and an ephemeral
+  Forge-only PostgreSQL service were retained. Independent review of `3037faf`
+  issued HOLD (`docs/reviews/V2-7A-3037faf.json`). Narrow corrections cover central
+  route guards, authoritative dirty/save completion, failed-save retention through
+  Done, discarded-document follow-up suppression, font-gated viewer readiness,
+  hosted error metadata, narrow control reachability, monotonic undo expectations
+  and complete-suite evidence coverage. No assertions are relaxed. Shell
+  chart/table, redo/discard, pending drafts and narrow inspector behavior receive
+  actual browser checks. Exact attempts and measurements are retained in
+  `docs/V2-7A-EVAL.md`; independent acceptance remains pending. The separate BYOK
+  locale probe still fails under en-IN; the existing Fit padding issue below is
+  measured and recorded, without expanding the slice.
+
+  Look-ahead: a shared route guard and the existing engine/project primitives also
+  support a future generation handoff without adding another document or router.
+  No generation, AI runtime, compiler, renderer or persistence feature is added.
 <a id="v2-7b-candidate"></a>
 
 - [ ] V2-7B generation-to-project handoff — the one missing
@@ -7441,9 +7454,10 @@ scale); charts structurally exact without axes (V2-4C).
   source-backed product/decision records, planner/implementer/reviewer roles,
   acceptance gates and schema-validated state. Implements the approved continuity
   protocol alongside final V2-7A validation; see `docs/DEVELOPMENT-PROTOCOL.md`
-  and `docs/CONTINUATION.md`. Implemented, pending review: 15/15 lightweight
-  governance tests and a separate cold-start documentation audit, with findings
-  corrected (`docs/v2-7a-evidence/CONTINUITY-VALIDATION.md`). This does not accept V2-7A or
+  and `docs/CONTINUATION.md`. Implemented, pending review: 18/18 current governance
+  tests and a separate earlier cold-start audit, with findings corrected
+  (`docs/v2-7a-evidence/CONTINUITY-VALIDATION.md`). Full evidence scope and retained
+  output consistency now have negative coverage. This does not accept V2-7A or
   authorize V2-7B. Look-ahead: roles retain the existing engine/storage boundaries
   and work across future milestones without a provider-specific relay.
 
@@ -7453,6 +7467,10 @@ scale); charts structurally exact without axes (V2-4C).
   > isolation must include build-only and indirect plate-render test owners,
   > and evidence reruns need unique
   > log paths. A cold-start read exposed contradictions green unit tests missed.
+  > Per-document save suppression needs rollback on failed replacement, and
+  > read-only mode must retain unsaved ownership. Direct disk samples can show
+  > usable headroom despite high system PSI; headless desktop focus loss needs
+  > tracing before it is classified as a product key-handler defect.
 <a id="workspace-followups"></a>
 
 - [ ] Workspace followups after the generation handoff — project cover
@@ -7460,6 +7478,13 @@ scale); charts structurally exact without axes (V2-4C).
   fixture/developer controls from the production editor toolbar as part of
   frontend polish. These are findings from V2-7A, not scope for its validation.
   Agree surface direction before implementation; AI editing remains V2-8.
+- [ ] Viewer Fit content-box accounting — the scroller's 24px padding on
+  each side is currently included in the fit input, so a 720px stage lives in a
+  720px border box with 768px scroll width; the last24px are initially offscreen.
+  The same calculation/padding exists at accepted `97a12de`, so this is a
+  pre-existing viewer defect, not a V2-7A selection shift. Validate content-box
+  fit while preserving zoom/pan and the no-reflow editing contract. Measurement:
+  `docs/v2-7a-evidence/canvas-hosted.json` and final visual review.
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already

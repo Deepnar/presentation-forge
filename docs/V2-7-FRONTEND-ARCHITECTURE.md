@@ -22,7 +22,9 @@ documents of Layer-C scenes through the revisioned engine):
 The legacy scenes page (`scenes.html`, fixture/deck query params)
 stays as the standalone viewer all headless and browser suites
 drive; the workspace mounts the same component with a project id
-instead. No second router: the hash router gains two routes.
+instead. The existing hash router uses `lib/guarded-hash-router.js` for central leave
+policy, link interception and indexed history restoration; project routes remain
+part of the same App route hierarchy.
 
 ## 2. Editor shell layout
 
@@ -68,9 +70,14 @@ instead. No second router: the hash router gains two routes.
 - Authoritative slide content lives in the engine document only.
   React holds navigation state (`projectId`, rails, tabs, dialogs,
   drafts-in-form) and never mutates scenes outside the adapter.
-- Save state follows `lib/v2project.js` unchanged: the pill
-  reflects confirmed PUTs; mid-flight edits stay dirty;
-  rename/scene revisions share the durable counter.
+- Save state reflects confirmed PUTs; mid-flight edits stay dirty. A save
+  promise is awaited before departure and newer engine revisions are drained
+  before Save & leave succeeds. Dirty detection reads the document and pending
+  inline draft, including failed saves and Done/read-only mode. Explicit discard
+  suppresses further saves for that document. Rename/scene revisions share the
+  durable counter. API errors retain status/code for hosted recovery.
+- Embedded binding waits for the font-gated viewer and checks its identity after
+  asynchronous document creation; teardown detaches one adapter/document.
 - Creation builders (`lib/v2create.js`) produce validated scenes
   (blank, 15 layout skeletons with minted ids); `apiCreate`
   persists them; the router opens the result. No template engine,
@@ -83,7 +90,9 @@ instead. No second router: the hash router gains two routes.
 
 - Dashboard ↔ editor over hash history: back/forward remount
   cleanly; refresh reopens the routed project; deletion
-  navigates home to the workspace.
+  navigates home to the workspace. App navigation, same-page hash links and
+  browser Back/Forward share the editor guard. Indexed history is restored before
+  an asynchronous choice; Cancel retains the original entry and document.
 - Unsaved work is guarded at every exit: project switching reuses
   the switch guard; workspace leave uses the same policy (Save &
   leave only when a project is bound, else Discard/Cancel);
@@ -99,10 +108,9 @@ instead. No second router: the hash router gains two routes.
 - Tailwind v4 tokens (`styles.css`) for all shell chrome; canvas
   SVG internals untouched. Dark follows `data-theme`; the
   existing reduced-motion query covers shell transitions.
-- Desktop-first: canvas flex-1; rails fixed width. Final validation records
-  unresolved narrow top-bar clipping/inspector access in `V2-7A-EVAL.md` §4;
-  the toggles below describe implemented structure, not a verified responsive pass.
-  Narrow
+- Desktop-first: canvas flex-1; rails fixed width. The top bar and view toolbar
+  scroll horizontally without shrinking controls, making late controls reachable.
+  Final evidence is recorded in `V2-7A-EVAL.md`. Narrow
   (`useNarrow`, 767px): rails collapse to top-bar toggles and
   reopen as overlays; toolbar scrolls horizontally; zoom/fit and
   editing keep working; dashboard reflows by grid.
