@@ -1,0 +1,19 @@
+{
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "canonicalTestSha256": "ec30b53fdf70ec79f706441ec6bc834f5c23f396562094aca2a8ea6d5ace295c",
+  "independentCopySha256": "8673f9717c559f47e994b5a174c81d5f7aaaea6d86a7dc57607d48bcc30e7c2c",
+  "onlyDiff": [
+    "--- canonical\n",
+    "+++ independent output redirection\n",
+    "@@ -14,7 +14,7 @@\n",
+    " ",
+    " const ROOT = new URL(\"..\", import.meta.url).pathname;",
+    " const DIST = path.join(ROOT, \"app\", \"web\", \"dist\");",
+    "-const OUT = path.join(ROOT, \"docs\", \"v2-7a-evidence\");",
+    "+const OUT = path.join(ROOT, \"out\", \"reviewer-v27a-artifacts\");",
+    " const STATIC_PORT = 5263;",
+    " const API_PORT = 5276;",
+    " const HOSTED_PORT = 5277;"
+  ],
+  "reviewRecord": "docs/reviews/V2-7A-fe749fb.json"
+}

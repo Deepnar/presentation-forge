@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "97a12de92e1b691a8ebab26f524ddc0afd9bf111",
-    "provenance": "human-supplied-baseline",
-    "source": "docs/ROADMAP.md#v2-6c-acceptance"
+    "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+    "provenance": "independent-review",
+    "source": "docs/reviews/V2-7A-fe749fb.json"
   },
   "implementationHead": {
     "sha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
-    "note": "Frozen V2-7A review corrections and test infrastructure; complete regression run underway."
+    "note": "Corrected source independently accepted; later commits record evidence and the sourced decision. V2-7B remains unauthorized."
   },
   "activeMilestone": {
     "id": "V2-7A",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-7A-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-7A-fe749fb.json",
+    "accepted": true
   },
   "validation": [
     {
@@ -76,9 +76,7 @@
       "reason": "Complete final execution/inspection retained; known BYOK locale probe is separate."
     }
   ],
-  "knownBlockers": [
-    "Independent review of the corrected source and complete retained evidence is pending."
-  ],
+  "knownBlockers": [],
   "standingFailures": [
     {
       "id": "byok-locale",

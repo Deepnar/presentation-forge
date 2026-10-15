@@ -6,7 +6,13 @@
   "forgePostgres": {
     "endpoint": "127.0.0.1:5544",
     "result": "Dedicated ephemeral PostgreSQL16 accepting connections",
-    "realSuitesExecuted": true
+    "realSuitesExecuted": true,
+    "cleanup": {
+      "container": "forge_v27a_validation_pg",
+      "stoppedAndRemoved": true,
+      "at": "2026-10-15T13:39:33.744791+00:00",
+      "note": "Only the owned disposable validation service was stopped after independent review."
+    }
   },
   "quietWindowObserved": true,
   "unrelatedWorkInterrupted": false,
@@ -89,5 +95,13 @@
         }
       }
     }
-  ]
+  ],
+  "ownedValidationPortsAfterCleanup": {
+    "5263": "closed",
+    "5276": "closed",
+    "5277": "closed",
+    "5286": "closed",
+    "5287": "closed",
+    "5544": "closed"
+  }
 }

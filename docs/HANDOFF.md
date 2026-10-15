@@ -1,57 +1,58 @@
-# Handoff — V2-7A validation complete, independent decision pending
+# Handoff — V2-7A independently accepted
 
-Read AGENTS.md, CONTINUATION.md, DEVELOPMENT-PROTOCOL.md and development-state.json
-first, then the active ROADMAP.md entry, V2-7A-EVAL.md and evidence summary.
-The direct repository workflow replaces the old relay/model restrictions.
+Read AGENTS.md, CONTINUATION.md and development-state.json, then the protocol,
+active roadmap entry and V2-7A-EVAL.md. Development now works directly from the
+repository; no relay, provider restriction or prior chat is required.
 
-Branch `v2`; accepted baseline remains `97a12de92e1b691a8ebab26f524ddc0afd9bf111`.
-Corrected application/test source: `fe749fb41e744961df156e8b9dcf80f0155b4e0b`.
-Later documentation/evidence commits descend from it without changing application
-bytes. Use git log for current HEAD. Do not self-accept V2-7A or start V2-7B.
+Branch: `v2`. Accepted implementation/baseline:
+`fe749fb41e744961df156e8b9dcf80f0155b4e0b`, accepted against task-entry baseline
+`97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Subsequent commits contain documentation
+and evidence only. Use git log for final HEAD. The separate decision is
+[reviews/V2-7A-fe749fb.json](reviews/V2-7A-fe749fb.json), with its report alongside.
+It reviewed pushed evidence `1888c6b`; acceptance was not supplied by the implementer.
 
-Final disjoint192-file inventory:2127 pass,0 fail/skip/cancelled. Bulk1936,
-serial155 (includes full28-case7A and 3 PG browser), PG contract17 and
-cross-process/fault19. Supplemental real hosted form login → owned PostgreSQL
-project → edit/save → authenticated export → reopen: 1/1. Production build,
-typecheck and canonical50-cell benchmark pass;0 L1/L2, fit/representation/takeaway/
-chart-data findings, all five theme-invariance records agree. Fifteen screenshots
-and two actual-export rasters inspected.120 slides/120 thumbs opened in1542ms;
-chart/table selection changes stage y by less than0.1px, x/width unchanged.
+Final disjoint 192-file inventory: **2127 pass, 0 fail, 0 skip, 0 cancelled**.
+Bulk 1936; serial 155 (includes full 28-case 7A and 3 PG browser); PostgreSQL
+contract 17; cross-process/fault 19. Supplemental actual hosted login → owned
+PostgreSQL project → edit/save → bearer export → reopen: **1/1**. Total distinct
+final cases including it: **2128 passing**. Build, typecheck and all 50 benchmark
+cells pass, with zero L1/L2, fit/representation/takeaway/chart-data findings.
+All 15 images and two actual native-export rasters were inspected. A 120-slide /
+120-thumb opening took 1542ms; selection left x/width unchanged and y within 0.1px.
 
-The separate en-IN locale probe remains 9 pass / 1 known BYOK grouping failure;
-it passes under this run's C.UTF-8/en-US. No assertion or product fix masks it.
-Final inspection measured a pre-existing Fit padding defect (720px scroller,
-768px scroll width, approximately 24px initially offscreen), also present at
-accepted 97a12de. Both remain separate roadmap issues. Actual narrow capture is
-500×757, not requested480×900. LibreOffice raster inspection does not establish
-Microsoft PowerPoint interactive viewer behavior.
+The final independent reviewer ran **81 primary cases**, typecheck, browser-setup
+production build, protocol validator and 50-cell benchmark; all passed. It opened
+all 15 retained images and fresh independent captures. Its unchanged en-IN locale
+probe reproduced **9 pass / 1 known BYOK failure**. Independent checks repeat
+coverage and are not added to unique totals. Independent Chrome/benchmark raw
+results and output-redirection proof are retained under evidence/logs/independent.
 
-Narrow corrections cover guarded history/link/navigation, real save completion,
-failed/readonly/unbound dirty ownership, discard suppression and failed-load
-rollback, async confirmation identity, font-gated viewer binding, hosted client
-metadata/downloads, narrow topbar reachability, monotonic undo/content assertions,
-complete evidence scope and deterministic headless focus/history waits. Engine,
-compiler, schemas, renderer and stores are unchanged. All attempts, exact final
-commands/totals, source SHA and known limitations are retained in docs/v2-7a-evidence.
+Known limits remain explicit: the BYOK grouping assertion differs by locale;
+pre-existing Fit padding initially leaves about 24px offscreen; actual narrow
+viewport was 500×757 rather than 480×900; LibreOffice rasters do not establish
+interactive Microsoft PowerPoint behavior, and accessibility was not exhaustive.
+These limits were accepted as nonblocking for this bounded slice and remain in
+the roadmap/evaluation. No new failing regression remains in executed scope.
 
-Independent review of3037faf issued HOLD (committed transcription under
-reviews/); a second separate source/probe review caught correction races and
-confirmed fixes. No final independent acceptance decision has yet been recorded.
-One final review must compare corrected sourcefe749fb with baseline97a12de and
-inspect the complete pushed evidence, issuing ACCEPT/HOLD for that exact source.
-User preference: avoid routine subagents; if one is needed for the mandatory
-independent gate, use high reasoning effort, never xhigh. No other agent work.
+Narrow fixes address route/save/discard races, authoritative dirty ownership
+through Done/unbound mode, failed-load recovery, font-ready binding, hosted
+metadata/downloads, narrow controls and scoped test/evidence correctness.
+Engine, compiler, schema, renderer, themes and stores remain unchanged. Architecture,
+roadmap, traps and continuity records reflect the shipped behavior. The validator
+checks retained evidence consistency and separate decision metadata; it never
+accepts implementation by itself. The earlier cold-start documentation audit
+and historical HOLD are preserved separately.
 
-The dedicated disposable test service `forge_v27a_validation_pg` on localhost5544
-is owned by this validation. Test-specific databases are dropped; the service is
-retained temporarily for independent checks and must be stopped/removed after
-review. Do not touch unrelated Docker services/processes. Shared-machine samples
-showed adequate CPU/memory/disk headroom; all heavy validation ran low-priority
-with bounded process groups and serial Vite build owners.
+The owned disposable PostgreSQL service `forge_v27a_validation_pg` was stopped
+and automatically removed after review. Test databases were dropped; historical
+6A/B/C test-output rewrites were preserved under ignored out/ and restored to
+avoid replacing accepted evidence. No unrelated process/database was touched.
+Pre-existing untracked `.agents/` and both `PRESENTATION_FORGE_*` documents remain
+untouched; do not stage/remove them. Push destination remains origin/v2.
 
-Pre-existing untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
-and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Stage only
-scoped paths. Push only origin/v2. After the independent decision, update state,
-roadmap and this handoff, run dev:protocol and affected governance checks, commit
-and push. Acceptance permits a concrete next-slice plan; V2-7B implementation
-still needs explicit approval. No feature/deployment work is authorized here.
+V2-7B is a candidate, **not authorized implementation**. No V2-7B or other feature
+work was started. A future planning task may propose its bounded scope using the
+planner instructions; product direction and implementation approval remain human
+choices. Do not repeat complete validation without a source change, failure or
+new concern. User preference: avoid routine subagents; required separate review
+uses high effort, never xhigh.

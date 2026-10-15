@@ -1,0 +1,39 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "reviewedEvidenceCommit": "1888c6b6782e29c052a390432fb2822421811d74",
+  "acceptedBaselineCompared": "97a12de92e1b691a8ebab26f524ddc0afd9bf111",
+  "reviewer": "V2-7A final acceptance reviewer",
+  "context": "/root/v27a_final_acceptance",
+  "evidence": "docs/reviews/V2-7A-fe749fb.md",
+  "date": "2026-10-15",
+  "independentPrimaryTests": {
+    "total": 81,
+    "pass": 81,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentStandingLocaleProbe": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "classification": "unchanged supplemental BYOK en-IN standing failure; nonblocking for bounded V2-7A"
+  },
+  "independentCommands": {
+    "typecheck": "passed",
+    "benchmark50": "passed",
+    "browserSetupProductionBuild": "passed",
+    "protocolValidator": "0 errors, 0 warnings",
+    "diffCheck": "passed"
+  },
+  "residuals": [
+    "Unchanged BYOK en-IN assertion remains failed separately",
+    "Baseline Fit padding overflow remains a separate roadmap issue",
+    "Actual narrow viewport 500x757; exact480px not tested",
+    "Microsoft PowerPoint interactive viewer and exhaustive accessibility paths not executed"
+  ]
+}

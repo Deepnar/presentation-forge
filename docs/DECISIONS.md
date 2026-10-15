@@ -88,6 +88,6 @@ main-branch pushes; that workflow no longer matches current development.
 self-review does not establish independence. **Consequences:** state/evidence
 checks validate consistency, never auto-accept; `origin/v2` is this task's push
 destination. **Revisit:** workflow tooling may change without weakening acceptance
-or scope gates. Accepted baseline `97a12de` is supplied by the human task and
+or scope gates. Task-entry baseline `97a12de` was supplied by the human task and
 corroborated by the later roadmap entry; historical eval recommendations are not
 new acceptance decisions.

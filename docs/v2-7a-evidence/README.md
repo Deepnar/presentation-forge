@@ -25,4 +25,9 @@ All15 images were regenerated and inspected. The known pre-existing Fit padding
 limitation and actual viewport sizes are explicit in the visual report.
 [Historical continuity audit](CONTINUITY-VALIDATION.md) concerns the earlier
 15-case governance/cold-start pass; current governance is 18 cases within bulk.
-Acceptance is a separate reviewer/human decision, never implied by this evidence.
+Independent [ACCEPT](../reviews/V2-7A-fe749fb.json) is recorded separately from
+this evidence. The reviewer independently ran 81 primary cases, command gates
+and a separate known locale failure, and inspected the retained images/logs.
+
+Independent raw Chrome/benchmark results and the assertion-preserving OUT-only
+copy diff are retained in `logs/independent/`.

@@ -1,10 +1,11 @@
 # V2-7A final validation and acceptance evidence
 
-Updated 2026-10-15 (Asia/Kolkata). Branch `v2`. Accepted baseline:
+Updated 2026-10-15 (Asia/Kolkata). Branch `v2`. Task-entry accepted baseline:
 `97a12de92e1b691a8ebab26f524ddc0afd9bf111`. Original implementation:
 `a298767ce32df1a0023ada4a1e8d0bda506a1ca9`. Corrected source under final validation:
 `fe749fb41e744961df156e8b9dcf80f0155b4e0b`. Later documentation/evidence commits
-do not change those application bytes. **V2-7A is not accepted by this report.**
+do not change those application bytes. **Independent review accepted this exact corrected source; this report does not
+supply self-acceptance.** Decision: [V2-7A-fe749fb.json](reviews/V2-7A-fe749fb.json).
 
 ## Scope and invariants
 
@@ -19,8 +20,13 @@ model-authored intent gains no geometry/style escape hatch. Existing untracked
 
 The separate review of `3037faf` issued [HOLD](reviews/V2-7A-3037faf.json), with
 [the findings and execution limits](reviews/V2-7A-3037faf.md). Subsequent separate
-source/probe review challenged asynchronous correction paths; its final exact-SHA
-acceptance decision is pending review of the now-complete evidence.
+source/probe review challenged asynchronous correction paths; the final separate [review](reviews/V2-7A-fe749fb.md) issued **ACCEPT** for
+`fe749fb`, based on pushed evidence `1888c6b`. The reviewer independently ran
+81 primary tests (53 focused/real-PG + full 28-case Chrome), all passing;
+typecheck, production build through browser setup, validator and 50-cell benchmark
+also passed. It reproduced the separate 9-pass/1-fail locale issue and inspected
+all 15 committed images. Independent cases repeat final inventory coverage and
+are not added as extra unique tests.
 
 | Finding | Classification | Narrow correction / evidence |
 |---|---|---|
@@ -145,12 +151,13 @@ pre-existing defect rather than expanding this slice. Rasterization can establis
 PowerPoint remains an external viewer check. No generated-content quality
 judgment is made; these are deterministic fixtures and local/hosted API plumbing.
 
-Implementation recommendation: submit for independent acceptance with the
-standing BYOK locale and pre-existing Fit limitations explicit. No new failing
-product regression remains in the executed scope. This is a recommendation only.
+Final recommendation: acceptance is supported and has been independently issued
+for `fe749fb`, with the standing locale and pre-existing Fit limitations explicit.
+No new failing product regression remains in the executed scope. The accepted
+baseline now points to that source via the independent decision record.
 
 No V2-7A self-acceptance, deployment, migrations, main push or V2-7B implementation.
-A separate final review must name the exact corrected source and complete
+The committed independent decision names the exact corrected source and complete
 retained evidence. Acceptance permits planning; implementation still needs the
 next slice's explicit authorization.
 
@@ -169,8 +176,8 @@ remain in `v2-7a-evidence/environment.json`; final samples will be retained too.
 A dedicated ephemeral PostgreSQL 16 container uses localhost 5544, one CPU,
 512MiB memory and RAM-backed 192MiB data. It was created from a locally cached
 image for this validation; it does not reuse another project's database. Test
-suites create/drop isolated databases. Stop/remove only this owned service after independent review; record cleanup
-in the handoff. PostgreSQL checks count only if real cases execute, never setup skips.
+suites create/drop isolated databases. The owned service was stopped and automatically removed after independent review;
+cleanup is recorded in environment.json and the handoff. PostgreSQL checks count only if real cases execute, never setup skips.
 
 The [runbook](v2-7a-evidence/RUNBOOK.md) uses `nice`, `ionice`, process-group GNU
 `timeout`, 15-minute per-file bounds (30-minute bulk) and 10-second KILL fallback.

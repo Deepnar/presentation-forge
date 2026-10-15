@@ -1,0 +1,42 @@
+▶ v2-7a workspace dashboard
+  ✔ shows the empty state first, then real projects (2194.762037ms)
+  ✔ creates a blank presentation that opens in the editor (2576.2045ms)
+  ✔ creates from a layout with editable content (2523.770875ms)
+  ✔ renames from the top bar and returns to the dashboard (2402.097885ms)
+  ✔ deletes with confirmation from the dashboard (1981.853161ms)
+✔ v2-7a workspace dashboard (12153.753753ms)
+▶ v2-7a navigation and guards
+  ✔ back/forward and refresh keep the project (3228.279985ms)
+  ✔ unsaved changes guard the trip back with save and discard paths (2497.683819ms)
+  ✔ switching projects from the dialog respects unsaved work (2436.7867ms)
+✔ v2-7a navigation and guards (8163.05354ms)
+▶ v2-7a editor shell
+  ✔ edits text, autosaves, and shows history access (6119.754915ms)
+  ✔ restores an older revision and exports native PowerPoint (5037.685052ms)
+  ✔ conflicts across sessions refuse instead of overwriting (7683.002642ms)
+  ✔ locks, hides, multi-selects, and undoes (15743.297412ms)
+  ✔ presents, assists honestly, and reads without editing (2171.839865ms)
+  ✔ survives narrow viewports with usable rails (3777.601607ms)
+  ✔ opens a large deck with a full filmstrip (2060.346028ms)
+  ✔ remounts cleanly with single-commit semantics (6088.042087ms)
+  ✔ keyboard regions, shortcuts, dialogs, and focus return (2095.166884ms)
+  ✔ hosted anonymous users get a sign-in state, not an error (2281.732062ms)
+  ✔ failed saves remain guarded after Done, sidebar navigation, and browser Back (5337.004331ms)
+  ✔ save and leave waits for the in-flight request and the newest engine revision (4026.616855ms)
+  ✔ committing a pending text draft still guards and saves the new revision (4034.958677ms)
+  ✔ discard suppresses newer autosaves while history departure is delayed (7143.516313ms)
+  ✔ Done preserves failed edits for a later save and leave (4031.413601ms)
+  ✔ cancelling Save and switch prevents a delayed request from navigating (4938.476183ms)
+  ✔ a failed discard-and-reload keeps the original document saveable (6535.047486ms)
+  ✔ unbound standalone edits remain guarded through Done and re-entering Edit (1887.876796ms)
+  ✔ edits native chart data in the shell without moving the canvas (3734.209398ms)
+  ✔ edits native table data in the shell without moving the canvas (3661.28971ms)
+✔ v2-7a editor shell (98389.992483ms)
+ℹ tests 28
+ℹ suites 3
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120724.847404

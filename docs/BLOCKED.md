@@ -191,9 +191,10 @@ current roadmap work is blocked:
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine
 window was obtained and all required validation executed against the isolated
-Forge service. The remaining gate is the independent decision for corrected
-source `fe749fb`; see `docs/V2-7A-EVAL.md` for execution, measurements and known
-limits. Review status/baseline are indexed in development-state.json. No
+Forge service. Independent review accepted corrected source `fe749fb`; the owned
+service was stopped after review. See `docs/V2-7A-EVAL.md` for execution,
+measurements and known limits. V2-7B remains a candidate requiring a separately
+agreed scope before implementation. Review status/baseline are indexed in development-state.json. No
 constraint or green test authorizes starting a different milestone.
 
 Two are worth naming because they look like engineering and are not:

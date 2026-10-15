@@ -1,6 +1,7 @@
 # V2-7 Frontend Architecture — unified workspace
 
-Date: 2026-10-14. Baseline `97a12de`. Parent V2-7 in progress.
+Updated: 2026-10-15. Task-entry baseline `97a12de`; V2-7A independently accepted
+at `fe749fb`. Parent V2-7 remains in progress.
 
 ## 1. Product model: Workspace → Project → Editor
 

@@ -1817,19 +1817,16 @@ controls reachable (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
 
 ## The web shell
 
-The browser UI is a shell around the same `src/` pipeline; `app/server` stays a
-thin transport and every control maps to a real endpoint. `App.jsx` owns the
-deck list (fetched once, re-fetched on a version bump) and routes between
-`chat`, `deck`, `report`, `research`, `themes` and `home`. **View
-routing is hash-based** (`lib/router.js`): every navigation pushes a
-`#/chat[/<id>]`, `#/deck/<slug>`, `#/report/<slug>`, `#/research/<slug>`,
-`#/themes` or `#/home` entry, and a single `hashchange` listener
-is the only consumer of the URL — so the browser back button walks the same
-route the user walked forward (chat → deck → home) instead of exiting the
-site, and a deep link like `#/deck/<slug>` reopens that view on reload (per-user
-auth still gates it, and a route's hash survives logout, so logging back in
-restores where the user was). Settings is deliberately NOT a route — it is a
-modal over whatever view is open (an old `#/identity` hash resolves to chat).
+The browser UI is a shell around the shared pipeline; `app/server` stays a thin
+transport. `App.jsx` owns legacy deck/chat navigation and mounts the saved-project
+workspace/editor. View routes remain hash-based: `lib/router.js` parses legacy
+content, tour/legal/admin and `#/projects` / `#/project/:id[/history]` routes.
+`lib/guarded-hash-router.js` coordinates `popstate` and `hashchange`, explicit App
+navigation and same-page links through one leave policy. Browser Back/Forward
+walk existing history entries; refresh reopens the explicit route behind its
+normal authentication gate. Logout first requests guarded navigation to `#/home`
+and only clears the session when departure is allowed. Settings remains a modal
+over the active view; the old `#/identity` hash resolves to chat.
 
 Route views are loaded through React `lazy`, so the shell does not download the
 chat, deck, admin, legal and tour surfaces at startup. Large surfaces keep their
@@ -1837,7 +1834,7 @@ state machines in the route module and move independently reusable panels into
 `ChatPanels`, `DeckDetailControls`, `AdminPanels` and `SettingsSections`.
 `SlideEditor` reads its schema-shaped descriptors from `slideEditorFields.js`.
 
-**Entry flow — landing-first.** The `#/home` landing page is the front door, now with a pinned scroll tour (GSAP `ScrollTrigger` pin `2000%`, `scrub 1.2`) and a `fixed` header that auto-hides on scroll down and reappears at the footer. An unauthenticated visitor lands on it whatever the hash; the landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the rest as quiet links. The `AuthModal` is split screen. After login the landing is a **pending New chat** (lazy, not in sidebar until first prompt) — `pendingChat` in `App.jsx` holds it, `handleChatChanged` saves on `topic`.
+**Entry flow — landing-first.** The `#/home` landing page is the front door, now with a pinned scroll tour (GSAP `ScrollTrigger` pin `2000%`, `scrub 1.2`) and a `fixed` header that auto-hides on scroll down and reappears at the footer. An unauthenticated visitor normally sees it; explicit `#/projects` exposes the signed-out workspace/sign-in state. The landing carries ONE strong CTA — "Start a chat" leads to sign-up — with the rest as quiet links. The `AuthModal` is split screen. Login retains explicit routes such as projects; the default chat entry is a **pending New chat** (lazy, not in sidebar until first prompt) — `pendingChat` in `App.jsx` holds it, `handleChatChanged` saves on `topic`.
 
 - **`HeaderBar` / `LandingHeader`** — `fixed` on `isTourView` (`home`, `tour-themes`, legal) with auto-hide on scroll down (reappear on up or footer `IntersectionObserver`), `sticky` elsewhere. Wordmark `href="#/home"` vs `"#/chat"`, `AUTO/CLOUD` toggle hidden on tour (now in `Sidebar` top bar and `ChatView` composer), GitHub link, auth buttons. `isTourView` drives `pt-14` offset and `ParticleField` boost. For `view==="chat"` the global header is hidden and `ChatView`'s own header carries the left-nav `PanelLeft` and slides-panel toggle.
 - **`Home`** — the landing tour at `#/home`, the front door. For a visitor it

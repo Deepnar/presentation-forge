@@ -7411,16 +7411,16 @@ scale); charts structurally exact without axes (V2-4C).
   > fault test caught it, not review.
 <a id="v2-7a-validation"></a>
 
-- [~] V2-7A unified workspace foundation — phase one of V2-7
-  (this branch, pending independent review): Workspace dashboard
+- [x] V2-7A unified workspace foundation — phase one of V2-7
+  (independently accepted at `fe749fb`, 2026-10-15): Workspace dashboard
   over the real project API with AI/layout/blank creation,
   `#/projects` + `#/project/:id[/history]` routes, and the editor
   unified into a top-bar / rails / contextual-inspector shell with
   present mode, leave guards, and an honest assistant placeholder
   (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`,
-  `docs/v2-7a-evidence/`; creation builders 4/4 headless, focused
-  browser suites in progress — full validation deferred to one
-  final pass, see the eval). No engine, adapter, or command
+  `docs/v2-7a-evidence/`; creation builders 4/4 headless and complete
+  final validation recorded below; independent decision in
+  `docs/reviews/V2-7A-fe749fb.json`). No engine, adapter, or command
   changes; generation-to-project handoff explicitly scoped as
   the V2-7B blocker below.
 
@@ -7435,13 +7435,21 @@ scale); charts structurally exact without axes (V2-4C).
   and complete-suite evidence coverage. No assertions are relaxed. Shell
   chart/table, redo/discard, pending drafts and narrow inspector behavior receive
   actual browser checks. Exact attempts and measurements are retained in
-  `docs/V2-7A-EVAL.md`; independent acceptance remains pending. The separate BYOK
+  `docs/V2-7A-EVAL.md`; the separate final review accepted `fe749fb` against
+  pushed evidence `1888c6b`, independently rerunning 81 primary cases plus command
+  gates and inspecting all 15 images. The prior HOLD is preserved as history. The separate BYOK
   locale probe still fails under en-IN; the existing Fit padding issue below is
   measured and recorded, without expanding the slice.
 
   Look-ahead: a shared route guard and the existing engine/project primitives also
   support a future generation handoff without adding another document or router.
   No generation, AI runtime, compiler, renderer or persistence feature is added.
+
+  > **Learned.** UI status is not durable ownership: Done must preserve an
+  > unsaved document, Save & leave must await newer edits, and Discard must
+  > suppress writes without stranding the old document if replacement fails.
+  > Binding can race font readiness; navigation can race browser history.
+  > A real export click caught authentication that a bearer-only API probe missed.
 <a id="v2-7b-candidate"></a>
 
 - [ ] V2-7B generation-to-project handoff — the one missing
@@ -7450,15 +7458,15 @@ scale); charts structurally exact without axes (V2-4C).
   loads them into a persisted project. Nothing exists today (no
   translator, route, or entry point); "Create with AI" opens the
   existing chat workflow and stops there, labeled as such.
-- [~] Repository-native development continuity — direct repository workflow,
+- [x] Repository-native development continuity — direct repository workflow,
   source-backed product/decision records, planner/implementer/reviewer roles,
   acceptance gates and schema-validated state. Implements the approved continuity
   protocol alongside final V2-7A validation; see `docs/DEVELOPMENT-PROTOCOL.md`
-  and `docs/CONTINUATION.md`. Implemented, pending review: 18/18 current governance
+  and `docs/CONTINUATION.md`. Independently accepted with `fe749fb`: 18/18 current governance
   tests and a separate earlier cold-start audit, with findings corrected
   (`docs/v2-7a-evidence/CONTINUITY-VALIDATION.md`). Full evidence scope and retained
-  output consistency now have negative coverage. This does not accept V2-7A or
-  authorize V2-7B. Look-ahead: roles retain the existing engine/storage boundaries
+  output consistency now have negative coverage. V2-7A acceptance is sourced to
+  the separate final decision; it does not authorize V2-7B implementation. Look-ahead: roles retain the existing engine/storage boundaries
   and work across future milestones without a provider-specific relay.
 
   > **Learned.** Accepted-baseline pointers must distinguish historical eval
