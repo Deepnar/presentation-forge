@@ -722,11 +722,12 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
   );
 }
 
-export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, onBack = null, onOpenProject = null, onProjectDeleted = null }) {
+export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, registerNavigationGuard = null, onBack = null, onOpenProject = null, onProjectDeleted = null }) {
   // Embedded (workspace) mode binds a persisted project by id and
   // offers back-navigation; standalone (scenes.html) mode drives
   // everything from the query string and localStorage instead.
   const embedded = projectId != null;
+  const [viewerReady, setViewerReady] = useState(null);
   const initialDeck = DECKS.some((d) => d.name === initial.deck) ? initial.deck : DECKS[0].name;
   const [deckName, setDeckName] = useState(initialDeck);
   const fixture = useMemo(() => DECKS.find((d) => d.name === deckName) ?? DECKS[0], [deckName]);
@@ -1043,7 +1044,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [restoreDone, setRestoreDone] = useState(null);
   const projectRef = useRef(null);
   const savedEngineRevRef = useRef(0);
-  const pendingSaveRef = useRef(false);
+  const pendingSaveRef = useRef(null);
+  const abandonedDocumentsRef = useRef(new WeakSet());
+  const pendingLeaveRef = useRef(null);
+  const leavePolicyRef = useRef(null);
   const autosaveRef = useRef(null);
   if (!autosaveRef.current) {
     autosaveRef.current = createAutosave({
@@ -1071,7 +1075,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
     adapterRef.current = null;
-    docRef.current = null;
+    if (!projectRef.current) docRef.current = null;
     setEditOn(false);
     setTextState({ editing: false, elementId: null, conflict: null, overflow: null, paragraphs: null });
     setEditStatus({ rev: 0, error: null, preparing: false });
@@ -1083,7 +1087,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const { createDocument } = await import("../../../../packages/model/engine.ts");
       const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
       const source = editedScenes ?? deck.scenes;
-      const doc = await createDocument(structuredClone(source));
+      const doc = (projectRef.current && docRef.current) || await createDocument(structuredClone(source));
       const adapter = attachEditor(viewerRef.current, doc, {
         root: mountRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
@@ -1109,7 +1113,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       });
       docRef.current = doc;
       adapterRef.current = adapter;
-      setEditStatus({ rev: 0, error: null, preparing: false });
+      setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
       setEditOn(true);
     } catch (err) {
       setEditStatus({ rev: 0, error: String(err?.message ?? err), preparing: false });
@@ -1144,58 +1148,70 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   async function saveNow(saveOrigin = "manual") {
     const adapter = adapterRef.current;
     const doc = docRef.current;
-    const proj = projectRef.current;
-    if (!editOn || !doc || !proj) return { ok: false, code: "op-rejected", message: "no project bound — save as a new project first" };
+    let proj = projectRef.current;
+    if (!doc || !proj) return { ok: false, code: "op-rejected", message: "no project bound — save as a new project first" };
+    if (abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "document discarded" };
     if (adapter?.hasPendingEdit?.()) {
       const r = await adapter.commitPendingEdit();
       if (!r.ok) return r;
     }
-    if (pendingSaveRef.current) return { ok: true, revision: doc.snapshot().revision, pending: true };
+    if (pendingSaveRef.current) {
+      const result = await pendingSaveRef.current;
+      if (!result.ok) return result;
+      return saveNow(saveOrigin);
+    }
+    proj = projectRef.current;
+    if (docRef.current !== doc || !proj) return { ok: false, code: "op-rejected", message: "project changed during save" };
     const snapNow = doc.snapshot();
     const atEngineRev = snapNow.revision;
     if (atEngineRev === savedEngineRevRef.current && saveState !== "error" && saveState !== "stale") {
       setSaveState("saved");
       return { ok: true, revision: atEngineRev, noop: true };
     }
-    pendingSaveRef.current = true;
     setSaveState("saving");
     setSaveError(null);
-    try {
-      const scenes = structuredClone(snapNow.scenes);
-      const updated = await apiSave(proj.id, {
-        baseRevision: proj.revision,
-        title: proj.title,
-        scenes,
-        provenance: collectProvenance(saveOrigin),
-      });
-      projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
-      setProject(projectRef.current);
-      writeLastProject(proj.id);
-      // Only the submitted revision counts as saved: edits that
-      // landed mid-flight keep the document dirty and reschedule.
-      if (doc.snapshot().revision === atEngineRev) {
+    const task = (async () => {
+      try {
+        const scenes = structuredClone(snapNow.scenes);
+        const updated = await apiSave(proj.id, {
+          baseRevision: proj.revision,
+          title: proj.title,
+          scenes,
+          provenance: collectProvenance(saveOrigin),
+        });
+        if (docRef.current !== doc || projectRef.current?.id !== proj.id) return { ok: false, code: "op-rejected", message: "project changed during save" };
         savedEngineRevRef.current = atEngineRev;
-        setSaveState("saved");
-      } else {
-        setSaveState("dirty");
-        autosaveRef.current?.schedule();
+        projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
+        setProject(projectRef.current);
+        writeLastProject(proj.id);
+        // Only the submitted revision counts as saved: edits that
+        // landed mid-flight keep the document dirty and reschedule.
+        if (doc.snapshot().revision === atEngineRev) {
+          setSaveState("saved");
+        } else {
+          setSaveState("dirty");
+          autosaveRef.current?.schedule();
+        }
+        return { ok: true, revision: updated.revision };
+      } catch (err) {
+        if (err?.code === "stale-revision") {
+          setSaveState("stale");
+          setSaveError(err.message);
+        } else if (err?.status === 503 || /unavailable|network|fetch|failed/i.test(err?.message ?? "")) {
+          setSaveState("unavailable");
+          setSaveError(err.message);
+        } else {
+          setSaveState("error");
+          setSaveError(err.message);
+        }
+        return { ok: false, code: "op-rejected", message: err.message };
       }
-      return { ok: true, revision: updated.revision };
-    } catch (err) {
-      if (err?.code === "stale-revision") {
-        setSaveState("stale");
-        setSaveError(err.message);
-      } else if (err?.status === 503 || /unavailable|network|fetch|failed/i.test(err?.message ?? "")) {
-        setSaveState("unavailable");
-        setSaveError(err.message);
-      } else {
-        setSaveState("error");
-        setSaveError(err.message);
-      }
-      return { ok: false, code: "op-rejected", message: err.message };
-    } finally {
-      pendingSaveRef.current = false;
-    }
+    })();
+    pendingSaveRef.current = task;
+    let result;
+    try { result = await task; } finally { if (pendingSaveRef.current === task) pendingSaveRef.current = null; }
+    if (result.ok && docRef.current === doc && !abandonedDocumentsRef.current.has(doc) && doc.snapshot().revision !== savedEngineRevRef.current) return saveNow(saveOrigin);
+    return result;
   }
   saveNowRef.current = saveNow;
 
@@ -1259,13 +1275,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // bind it: fresh session revision, empty undo/redo, saved state.
   // Shared by open and post-restore reload.
   async function attachLoadedProject(loaded) {
+    const targetViewer = viewerRef.current;
     const { createDocument } = await import("../../../../packages/model/engine.ts");
     const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
     try {
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
     const fresh = await createDocument(structuredClone(loaded.scenes));
-    const adapter = attachEditor(viewerRef.current, fresh, {
+    if (!targetViewer || viewerRef.current !== targetViewer) return;
+    const adapter = attachEditor(targetViewer, fresh, {
       root: mountRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
       onSync: (scenes) => {
@@ -1324,7 +1342,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const r = await adapterRef.current.commitPendingEdit();
       if (!r.ok) return;
     }
-    if (projectRef.current && saveState === "dirty" && projectRef.current.id !== id && !pendingSwitchId) {
+    if (projectRef.current && leaveGuardNeeded() && !pendingSwitchId) {
       // The guard takes over the flow: close the dialog whose action
       // triggered it, or its overlay would keep swallowing the
       // guard's own buttons (backdrop sits above in-flow banners).
@@ -1369,7 +1387,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   }
 
   function historyNeedsChoice() {
-    return historyFor && projectRef.current?.id === historyFor.id && (saveState === "dirty" || saveState === "saving");
+    return historyFor && projectRef.current?.id === historyFor.id && leaveGuardNeeded();
   }
 
   // Open the version-history panel for a project and load its
@@ -1443,6 +1461,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     setRestoreBusy(true);
     setRestoreError(null);
     setRestoreDone(null);
+    let discarded = null;
     try {
       let base = historyMeta?.currentRevision ?? null;
       if (sameProject) {
@@ -1452,6 +1471,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             setRestoreError(`Could not save current edits (${r.message ?? "save failed"}) — nothing was restored.`);
             return;
           }
+        } else if (how === "discard") {
+          discarded = docRef.current;
+          discardDocument();
+          if (pendingSaveRef.current) await pendingSaveRef.current;
         }
         base = projectRef.current.revision;
       }
@@ -1466,6 +1489,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       setHistoryMeta({ currentRevision: refreshed.currentRevision, retention: refreshed.retention });
       setRestoreDone(`Restored rev ${out.restoredFrom} as rev ${out.project.revision}. History is preserved; session undo was cleared.`);
     } catch (err) {
+      if (discarded) abandonedDocumentsRef.current.delete(discarded);
       if (err?.code === "stale-revision") {
         setRestoreError(`Someone saved first (${err.message}). Reload the version list and try again — nothing was restored.`);
         try {
@@ -1542,31 +1566,60 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // as project switching. Save & leave is offered only when a
   // project is bound; otherwise Discard & leave / Cancel.
   function leaveGuardNeeded() {
-    if (adapterRef.current?.hasPendingEdit?.()) return true;
-    return saveState === "dirty" || saveState === "saving";
+    if (docRef.current && abandonedDocumentsRef.current.has(docRef.current)) return false;
+    if (adapterRef.current?.hasPendingEdit?.() || pendingSaveRef.current) return true;
+    const doc = docRef.current;
+    return Boolean(doc && doc.snapshot().revision !== savedEngineRevRef.current);
   }
-  async function requestLeave(label, run) {
+  function discardDocument() {
+    if (docRef.current) abandonedDocumentsRef.current.add(docRef.current);
+    autosaveRef.current?.cancel();
+  }
+  async function requestLeave(label, run, cancel = () => {}) {
+    if (pendingLeaveRef.current) { cancel(); return; }
     if (adapterRef.current?.hasPendingEdit?.()) {
-      const r = await adapterRef.current.commitPendingEdit();
-      if (!r.ok) return;
+      const result = await adapterRef.current.commitPendingEdit();
+      if (!result.ok) { cancel(); return; }
     }
-    if (leaveGuardNeeded() && !pendingLeave) {
-      setPendingLeave({ label, run });
+    if (leaveGuardNeeded()) {
+      const target = { label, run, cancel };
+      pendingLeaveRef.current = target;
+      setPendingLeave(target);
       return;
     }
-    setPendingLeave(null);
     run();
   }
+  function cancelLeave() {
+    const target = pendingLeaveRef.current;
+    pendingLeaveRef.current = null;
+    setPendingLeave(null);
+    target?.cancel();
+  }
   async function leaveWithChoice(how) {
-    const target = pendingLeave;
+    const target = pendingLeaveRef.current;
     if (!target) return;
     if (how === "save") {
-      const r = await saveNow();
-      if (!r.ok) return;
+      const result = await saveNow();
+      if (pendingLeaveRef.current !== target || !result.ok || leaveGuardNeeded()) return;
+    } else {
+      discardDocument();
     }
+    pendingLeaveRef.current = null;
     setPendingLeave(null);
     target.run();
   }
+  leavePolicyRef.current = { isDirty: leaveGuardNeeded, request: requestLeave };
+  useEffect(() => {
+    if (!registerNavigationGuard) return undefined;
+    const detach = registerNavigationGuard({
+      projectId,
+      isDirty: () => leavePolicyRef.current.isDirty(),
+      confirm: () => new Promise(resolve => {
+        leavePolicyRef.current.request("another page", () => resolve(true), () => resolve(false)).catch(() => resolve(false));
+      }),
+    });
+    return () => { detach(); pendingLeaveRef.current?.cancel(); pendingLeaveRef.current = null; };
+  }, [registerNavigationGuard, projectId]);
 
   function openPresent() {
     const count = (editedScenes ?? deck.scenes).length;
@@ -1606,7 +1659,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // The history route flag is consumed once, on the first bind.
   const autoHistoryRef = useRef(autoOpenHistory);
   useEffect(() => {
-    if (!embedded) return undefined;
+    if (!embedded || !viewerReady) return undefined;
     let cancelled = false;
     openProject(projectId).then(() => {
       if (!cancelled && autoHistoryRef.current && projectRef.current) {
@@ -1622,7 +1675,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       adapterRef.current = null;
       docRef.current = null;
     };
-  }, [projectId]);
+  }, [projectId, viewerReady]);
   useEffect(() => {
     if (embedded && autoOpenHistory && projectRef.current && !historyFor) {
       openHistory({ id: projectRef.current.id, title: projectRef.current.title });
@@ -1632,14 +1685,14 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // Unsaved-changes guard: refresh/close warns while dirty or saving.
   useLayoutEffect(() => {
     const onBeforeUnload = (e) => {
-      if (saveState === "dirty" || saveState === "saving") {
+      if (leavePolicyRef.current?.isDirty()) {
         e.preventDefault();
         e.returnValue = "";
       }
     };
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [saveState]);
+  }, []);
   // The displayed deck is the live compile when one is ready,
   // else the chosen fixture. Identity change remounts everything
   // downstream (fonts, viewer, selection).
@@ -1684,6 +1737,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     }
     setMountError(null);
     viewerRef.current = viewer;
+    setViewerReady(viewer);
     const off = viewer.onChange(setSnap);
     const startSlide = Number.isFinite(Number(initial.slide)) ? Number(initial.slide) : 0;
     const startZoom = Number.isFinite(Number(initial.zoom)) ? Number(initial.zoom) : 1;
@@ -1709,6 +1763,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       off();
       viewer.destroy();
       viewerRef.current = null;
+      setViewerReady(null);
     };
   }, [deck, fonts.settled]);
 
@@ -1781,9 +1836,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       {/* Top bar: project identity, back-navigation, save state,
           undo/redo, history, export, present, assistant. The row
           below keeps every view/edit control it always had. */}
-      <div data-topbar className="flex min-h-[44px] flex-none items-center gap-1.5 border-b border-line bg-panel px-3 py-1.5">
+      <div data-topbar className="flex min-h-[44px] flex-none items-center gap-1.5 overflow-x-auto [&>*]:shrink-0 border-b border-line bg-panel px-3 py-1.5">
         {embedded && onBack && (
-          <button type="button" aria-label="Back to workspace" title="Back to presentations" onClick={() => requestLeave("presentations", onBack)} className={shellBtn}>← Workspace</button>
+          <button type="button" aria-label="Back to workspace" title="Back to presentations" onClick={onBack} className={shellBtn}>← Workspace</button>
         )}
         <button type="button" aria-label={leftCollapsed ? "Show slides rail" : "Hide slides rail"} title={leftCollapsed ? "Show slides rail" : "Hide slides rail"} aria-pressed={!leftCollapsed} onClick={() => setLeftCollapsed((v) => !v)} className={shellBtn}>Slides</button>
         {project ? (
@@ -2095,8 +2150,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {pendingSwitchId && (
           <div role="alert" data-switch-guard className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
             You have unsaved changes. Switching projects without saving loses them.{" "}
-            <button type="button" onClick={async () => { await saveNow(); if (saveState !== "dirty") openProject(pendingSwitchId); }} className={shellBtn}>Save & switch</button>{" "}
-            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); savedEngineRevRef.current = docRef.current?.snapshot().revision ?? 0; setSaveState("saved"); openProject(id); }} className={shellBtn}>Discard & switch</button>{" "}
+            <button type="button" onClick={async () => { const result = await saveNow(); if (result.ok && !leaveGuardNeeded()) openProject(pendingSwitchId); }} className={shellBtn}>Save & switch</button>{" "}
+            <button type="button" onClick={() => { const id = pendingSwitchId; setPendingSwitchId(null); discardDocument(); openProject(id); }} className={shellBtn}>Discard & switch</button>{" "}
             <button type="button" onClick={() => setPendingSwitchId(null)} className={shellBtn}>Cancel</button>
           </div>
         )}
@@ -2303,7 +2358,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           You have unsaved changes. Leaving for {pendingLeave.label} without saving loses them.{" "}
           {projectRef.current && <button type="button" data-leave-save onClick={() => leaveWithChoice("save")} className={shellBtn}>Save & leave</button>}{" "}
           <button type="button" data-leave-discard onClick={() => leaveWithChoice("discard")} className={shellBtn}>Discard & leave</button>{" "}
-          <button type="button" onClick={() => setPendingLeave(null)} className={shellBtn}>Cancel</button>
+          <button type="button" onClick={cancelLeave} className={shellBtn}>Cancel</button>
         </div>
       )}
       {galleryOpen && editOn && (

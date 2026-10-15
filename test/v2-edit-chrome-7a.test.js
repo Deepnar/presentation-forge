@@ -40,6 +40,7 @@ let hostedApi = null;
 let scratch = null;
 let skipped = "";
 let userToken = null;
+const exportResponses = [];
 
 function proxyTo(port) {
   return (req, res) => {
@@ -56,7 +57,9 @@ function proxyTo(port) {
           body: ["GET", "HEAD"].includes(req.method) ? undefined : Buffer.concat(chunks),
         });
         res.writeHead(r.status, Object.fromEntries([...r.headers.entries()].filter(([k]) => !["content-encoding", "content-length", "transfer-encoding"].includes(k.toLowerCase()))));
-        res.end(Buffer.from(await r.arrayBuffer()));
+        const bytes = Buffer.from(await r.arrayBuffer());
+        if (req.url?.endsWith('/export.pptx')) exportResponses.push({ path: req.url, status: r.status, bytes: bytes.length, cookie: Boolean(req.headers.cookie), disposition: r.headers.get('content-disposition') });
+        res.end(bytes);
       } catch (err) {
         res.writeHead(502);
         res.end(`proxy failed: ${err.message}`);
@@ -159,7 +162,10 @@ async function waitFor(page, expr, timeoutMs = 60000) {
   for (;;) {
     const v = await page.evaluate(expr);
     if (v) return v;
-    if (Date.now() - t0 > timeoutMs) throw new Error(`wait timed out: ${expr.slice(0, 100)}`);
+    if (Date.now() - t0 > timeoutMs) {
+      const detail = await page.evaluate(`JSON.stringify({url:location.href,save:document.querySelector('[data-save-state]')?.dataset.saveState,body:document.body.innerText.slice(-1800)})`).catch(() => 'no diagnostic context');
+      throw new Error(`wait timed out: ${expr.slice(0, 100)}; ${detail}`);
+    }
     await new Promise((r) => setTimeout(r, 400));
   }
 }
@@ -175,7 +181,7 @@ async function openSignedIn(hash, opts, token = userToken, base = APP) {
   const t0 = Date.now();
   for (;;) {
     try {
-      const ok = await page.evaluate(`document.getElementById('root') !== null && document.querySelector('[data-workspace-create],[data-topbar],[data-project-grid]') !== null`);
+      const ok = await page.evaluate(`location.hash === ${JSON.stringify(hash)} && !location.pathname.endsWith('scenes.html') && document.getElementById('root') !== null && document.querySelector('[data-workspace-create],[data-topbar],[data-project-grid]') !== null`);
       if (ok) return page;
     } catch { /* mid-navigation */ }
     if (Date.now() - t0 > 90000) throw new Error("signed-in app never settled");
@@ -194,6 +200,12 @@ async function apiAuthed(method, p, body = undefined) {
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
   return { status: res.status, body: await res.json().catch(() => null) };
+}
+
+async function clickSelector(page, selector) {
+  const point = await page.evaluate(`(() => { const n=document.querySelector(${JSON.stringify(selector)}); if(!n) return null; n.scrollIntoView({block:'nearest',inline:'nearest'}); const r=n.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2]; })()`);
+  assert.ok(point, `missing control ${selector}`);
+  await page.click(point[0], point[1]);
 }
 
 describe("v2-7a workspace dashboard", () => {
@@ -331,7 +343,7 @@ describe("v2-7a navigation and guards", () => {
     const page = await openSignedIn("#/projects");
     try {
       await waitFor(page, `document.querySelector('[data-project-card="${id}"]') !== null`, 60000);
-      const openBtn = await page.evaluate(`(() => { const b = document.querySelector('[data-project-open="${id}"]'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+      const openBtn = await page.evaluate(`(() => { const b = document.querySelector('[data-project-open="${id}"]'); b.scrollIntoView({block:"nearest"}); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
       await page.click(openBtn[0], openBtn[1]);
       await waitFor(page, `(${SAVE} === 'saved' && ${PROJ}?.id === '${id}')`, 90000);
       await page.evaluate(`window.history.back()`);
@@ -469,6 +481,18 @@ describe("v2-7a editor shell", () => {
       await waitFor(page, `document.querySelector('[data-restore-done]') !== null`, 60000);
       const after = await page.evaluate(PROJ);
       assert.equal(after.revision, 2);
+      await page.screenshot(`${OUT}/editor-history.png`);
+      await clickSelector(page, '[aria-label="Close version history"]');
+      const exportStart = exportResponses.length;
+      await clickSelector(page, '[data-topbar-export]');
+      const exportDeadline = Date.now() + 15000;
+      while (exportResponses.length === exportStart && Date.now() < exportDeadline) await new Promise(resolve => setTimeout(resolve,100));
+      const exported = exportResponses[exportStart];
+      assert.equal(exported?.status,200,'actual export anchor authenticates with the session cookie');
+      assert.equal(exported.cookie,true);
+      assert.match(exported.disposition,/attachment/);
+      assert.ok(exported.bytes > 1000);
+      assert.equal(await page.evaluate('location.hash'),`#/project/${id}`);
       const bytes = await fetch(`http://127.0.0.1:${API_PORT}/api/v2/projects/${id}/export.pptx`, { headers: { Authorization: `Bearer ${userToken}` } }).then(async (r) => {
         assert.equal(r.status, 200);
         return r.arrayBuffer();
@@ -562,11 +586,21 @@ describe("v2-7a editor shell", () => {
       const show = await page.evaluate(`(() => { const b = [...document.querySelectorAll('[data-layer] button')].find((n) => n.title === 'Show'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
       await page.click(show[0], show[1]);
       await waitFor(page, `${SAVE} === 'saved'`, 90000);
-      // Undo via the top bar steps the engine back one revision.
+      // Undo and redo restore exact state while revisions remain monotonic.
       const revBefore = await page.evaluate(`JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev`);
       const undo = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Undo'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
       await page.click(undo[0], undo[1]);
-      await waitFor(page, `JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev === ${revBefore - 1}`, 60000);
+      await waitFor(page, `JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev === ${revBefore + 1}`, 60000);
+      await waitFor(page, `${SAVE} === 'saved'`, 90000);
+      const undone = await apiAuthed("GET", `/api/v2/projects/${id}`);
+      assert.equal(undone.body.project.scenes.flatMap(x => x.elements).find(e => e.kind === "text").hidden, true);
+      const redo = await page.evaluate(`(() => { const b = document.querySelector('[aria-label="Redo"]'); const r = b.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2]; })()`);
+      await page.click(redo[0], redo[1]);
+      await waitFor(page, `JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev === ${revBefore + 2}`, 60000);
+      await waitFor(page, `${SAVE} === 'saved'`, 90000);
+      const redone = await apiAuthed("GET", `/api/v2/projects/${id}`);
+      assert.equal(Boolean(redone.body.project.scenes.flatMap(x => x.elements).find(e => e.kind === "text").hidden), false);
+
     } finally {
       await page.close();
     }
@@ -621,10 +655,23 @@ describe("v2-7a editor shell", () => {
       const slides = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Show slides rail'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
       await page.click(slides[0], slides[1]);
       await waitFor(page, `document.querySelector('aside[aria-label="Slides"]').offsetParent !== null`, 60000);
+      await clickSelector(page, '[aria-label="Hide slides rail"]');
       const add = await page.evaluate(byText("+ Text"));
       await page.click(add[0], add[1]);
-      await waitFor(page, `${SAVE} === 'saved'`, 90000);
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.revision === 1`, 90000);
+      const inspector = await page.evaluate(`(() => { const b = document.querySelector('[aria-label="Show inspector rail"]'); b.scrollIntoView({block:'nearest',inline:'nearest'}); const r=b.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2]; })()`);
+      assert.ok(inspector[0] >= 0 && inspector[0] < 500, "inspector toggle is reachable in the viewport");
+      await page.click(inspector[0], inspector[1]);
+      await waitFor(page, `document.querySelector('aside[aria-label="Inspector"]').offsetParent !== null`);
       await page.screenshot(`${OUT}/editor-narrow.png`);
+      await clickSelector(page, '[aria-label="Hide inspector rail"]');
+      const projects = await page.evaluate(byText('Projects')); await page.click(...projects);
+      await waitFor(page, `document.querySelector('[data-projects-panel] [role="dialog"]') !== null`);
+      const dialog = await page.evaluate(`(() => {const r=document.querySelector('[data-projects-panel] [role="dialog"]').getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:innerWidth,h:innerHeight};})()`);
+      assert.ok(dialog.x>=0 && dialog.y>=0 && dialog.right<=dialog.w && dialog.bottom<=dialog.h,'narrow dialog stays inside viewport');
+      await page.screenshot(`${OUT}/editor-narrow-projects.png`);
+      await page.key(27,'Escape');
+      await waitFor(page, `document.querySelector('[data-projects-panel]') === null`);
     } finally {
       await page.close();
     }
@@ -669,7 +716,7 @@ describe("v2-7a editor shell", () => {
         const back = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Back to workspace'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
         await page.click(back[0], back[1]);
         await waitFor(page, `document.querySelector('[data-project-grid]') !== null`, 60000);
-        const openBtn = await page.evaluate(`(() => { const b = document.querySelector('[data-project-open="${id}"]'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+        const openBtn = await page.evaluate(`(() => { const b = document.querySelector('[data-project-open="${id}"]'); b.scrollIntoView({block:"nearest"}); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
         await page.click(openBtn[0], openBtn[1]);
         await waitFor(page, `(${SAVE} === 'saved' && ${PROJ}?.id === '${id}')`, 90000);
       }
@@ -758,4 +805,171 @@ describe("v2-7a editor shell", () => {
       await new Promise((resolve) => hostedStatic.close(resolve));
     }
   });
+
+  it("failed saves remain guarded after Done, sidebar navigation, and browser Back", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import("../packages/editor/scene-text.js");
+    const made = await apiAuthed("POST", "/api/v2/projects", { title: "Failed guard", scenes: [blankSlide()] });
+    const id = made.body.project.id;
+    const page = await openSignedIn("#/projects");
+    try {
+      await waitFor(page, `document.querySelector('[data-project-open="${id}"]') !== null`);
+      await clickSelector(page, `[data-project-open="${id}"]`);
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => { const real=window.fetch.bind(window); window.fetch=(url,opts)=>opts?.method==='PUT' && String(url).includes('/api/v2/projects/') ? Promise.resolve(new Response(JSON.stringify({ok:false,error:'Storage unavailable',code:'storage-unavailable'}),{status:503,headers:{'Content-Type':'application/json'}})) : real(url,opts); })()`);
+      const add = await page.evaluate(byText("+ Text")); await page.click(...add);
+      await waitFor(page, `${SAVE} === 'unavailable'`);
+      const done = await page.evaluate(byText("Done")); await page.click(...done);
+      await clickSelector(page, 'a[href="#/projects"]');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      const cancel = await page.evaluate(byText("Cancel")); await page.click(...cancel);
+      await waitFor(page, `document.querySelector('[data-leave-guard]') === null`);
+      assert.equal(await page.evaluate('location.hash'), `#/project/${id}`);
+      await page.evaluate('history.back()');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      await clickSelector(page, '[data-leave-discard]');
+      await waitFor(page, `document.querySelector('[data-project-grid]') !== null`);
+      const stored = await apiAuthed('GET', `/api/v2/projects/${id}`);
+      assert.equal(stored.body.project.revision, 0);
+      assert.equal(stored.body.project.scenes[0].elements.length, 0);
+    } finally { await page.close(); }
+  });
+
+  it("save and leave waits for the in-flight request and the newest engine revision", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import("../packages/editor/scene-text.js");
+    const made = await apiAuthed('POST', '/api/v2/projects', { title:'Pending save guard',scenes:[blankSlide()] });
+    const id = made.body.project.id;
+    const page = await openSignedIn(`#/project/${id}`);
+    try {
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => { const real=window.fetch.bind(window); let first=true; window.fetch=(url,opts)=> { if(first && opts?.method==='PUT' && String(url).includes('/api/v2/projects/')) {first=false;return new Promise(resolve=>{window.releaseForgeSave=()=>resolve(real(url,opts));});} return real(url,opts); }; })()`);
+      let add = await page.evaluate(byText('+ Text')); await page.click(...add);
+      await waitFor(page, `${SAVE} === 'saving' && typeof window.releaseForgeSave === 'function'`);
+      add = await page.evaluate(byText('+ Text')); await page.click(...add);
+      await waitFor(page, `JSON.parse(document.querySelector('[data-edit-state]').dataset.editState).rev === 2`);
+      await clickSelector(page, '[aria-label="Back to workspace"]');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      await clickSelector(page, '[data-leave-save]');
+      assert.equal(await page.evaluate('location.hash'), `#/project/${id}`, 'pending save cannot authorize departure');
+      assert.ok(await page.evaluate(`document.querySelector('[data-workspace-editor]') !== null`));
+      await page.evaluate('window.releaseForgeSave(); true');
+      await waitFor(page, `document.querySelector('[data-project-grid]') !== null`);
+      const stored = await apiAuthed('GET', `/api/v2/projects/${id}`);
+      assert.equal(stored.body.project.scenes[0].elements.filter(e=>e.kind==='text').length,2);
+      assert.equal(stored.body.project.revision,2);
+    } finally { await page.close(); }
+  });
+
+  it("committing a pending text draft still guards and saves the new revision", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import("../packages/editor/scene-text.js");
+    const made = await apiAuthed('POST','/api/v2/projects',{title:'Draft guard',scenes:[blankSlide()]});
+    const id = made.body.project.id;
+    const page = await openSignedIn(`#/project/${id}`);
+    try {
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      const add = await page.evaluate(byText('+ Text')); await page.click(...add);
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.revision === 1`);
+      const point = await page.evaluate(`(() => {const r=document.querySelector('[data-stage] [data-el]').getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];})()`);
+      await page.dblclick(...point);
+      await waitFor(page, `document.querySelector('[data-text-edit]') !== null`);
+      await page.insertText('pending guarded text');
+      await clickSelector(page, '[aria-label="Back to workspace"]');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      await clickSelector(page, '[data-leave-save]');
+      await waitFor(page, `document.querySelector('[data-project-grid]') !== null`);
+      const stored = await apiAuthed('GET', `/api/v2/projects/${id}`);
+      assert.ok(JSON.stringify(stored.body.project.scenes).includes('pending guarded text'));
+      assert.equal(stored.body.project.revision,2);
+    } finally { await page.close(); }
+  });
+
+  it("discard suppresses newer autosaves while history departure is delayed", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import('../packages/editor/scene-text.js');
+    const made = await apiAuthed('POST','/api/v2/projects',{title:'Discard in flight',scenes:[blankSlide()]});
+    const id = made.body.project.id;
+    const page = await openSignedIn('#/projects');
+    try {
+      await waitFor(page, `document.querySelector('[data-project-open="${id}"]') !== null`);
+      await clickSelector(page, `[data-project-open="${id}"]`);
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => { const real=window.fetch.bind(window);window.forgePuts=0;window.fetch=(url,opts)=> { if(opts?.method==='PUT' && String(url).includes('/api/v2/projects/')) {window.forgePuts++;if(window.forgePuts===1)return new Promise(resolve=>{window.releaseForgeSave=()=>real(url,opts).then(r=>{window.forgePutFinished=true;resolve(r);});});}return real(url,opts);};})()`);
+      let add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `${SAVE} === 'saving' && typeof window.releaseForgeSave === 'function'`);
+      add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await page.evaluate('history.back()');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      await page.evaluate(`(() => {const go=history.go.bind(history);history.go=delta=>{window.releaseForgeTravel=()=>go(delta);};})()`);
+      await clickSelector(page,'[data-leave-discard]');
+      await waitFor(page, `typeof window.releaseForgeTravel === 'function'`);
+      await page.evaluate('window.releaseForgeSave();true');
+      await waitFor(page, `window.forgePutFinished === true`);
+      await new Promise(resolve=>setTimeout(resolve,2300));
+      assert.equal(await page.evaluate('window.forgePuts'),1,'discard must suppress the newer revision, including queued autosave');
+      await page.evaluate('window.releaseForgeTravel();true');
+      await waitFor(page, `document.querySelector('[data-project-grid]') !== null`);
+      const stored=await apiAuthed('GET',`/api/v2/projects/${id}`);
+      assert.equal(stored.body.project.revision,1);
+      assert.equal(stored.body.project.scenes[0].elements.filter(e=>e.kind==='text').length,1);
+    } finally {await page.close();}
+  });
+
+  it("Done preserves failed edits for a later save and leave", async t => {
+    if (skipped) return t.skip(skipped);
+    const { blankSlide } = await import('../packages/editor/scene-text.js');
+    const made=await apiAuthed('POST','/api/v2/projects',{title:'Read-only save recovery',scenes:[blankSlide()]});
+    const id=made.body.project.id;
+    const page=await openSignedIn(`#/project/${id}`);
+    try {
+      await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+      await page.evaluate(`(() => {window.realForgeFetch=window.fetch.bind(window);window.fetch=(url,opts)=>opts?.method==='PUT'?Promise.resolve(new Response(JSON.stringify({ok:false,error:'Storage unavailable'}),{status:503})):window.realForgeFetch(url,opts);})()`);
+      const add=await page.evaluate(byText('+ Text'));await page.click(...add);
+      await waitFor(page, `${SAVE} === 'unavailable'`);
+      const done=await page.evaluate(byText('Done'));await page.click(...done);
+      await waitFor(page, `document.querySelector('[data-editing="true"]') === null`);
+      await page.evaluate('window.fetch=window.realForgeFetch;true');
+      await clickSelector(page,'[aria-label="Back to workspace"]');
+      await waitFor(page, `document.querySelector('[data-leave-guard]') !== null`);
+      await clickSelector(page,'[data-leave-save]');
+      await waitFor(page, `document.querySelector('[data-project-grid]') !== null`);
+      const stored=await apiAuthed('GET',`/api/v2/projects/${id}`);
+      assert.equal(stored.body.project.revision,1);
+      assert.equal(stored.body.project.scenes[0].elements.filter(e=>e.kind==='text').length,1);
+    } finally {await page.close();}
+  });
+
+  for (const [kind, template] of [['chart','chart-insight'],['table','data-table']]) {
+    it(`edits native ${kind} data in the shell without moving the canvas`, async t => {
+      if (skipped) return t.skip(skipped);
+      const { buildLayoutScenes } = await import('../app/web/src/lib/v2create.js');
+      const scenes = await buildLayoutScenes(template);
+      const element = scenes[0].elements.find(e=>e.kind===kind);
+      const made = await apiAuthed('POST','/api/v2/projects',{title:`Shell ${kind}`,scenes});
+      const id = made.body.project.id;
+      const page = await openSignedIn(`#/project/${id}`);
+      try {
+        await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+        const bounds = await page.evaluate(`(() => {const r=document.querySelector('[data-stage]').getBoundingClientRect();return [r.x,r.y,r.width,r.height];})()`);
+        const layers = await page.evaluate(byText('Layers')); await page.click(...layers);
+        await clickSelector(page, `[data-layer="${element.id}"] button[title^="Select"]`);
+        await waitFor(page, `document.querySelector('[data-${kind}-editor]') !== null`);
+        const after = await page.evaluate(`(() => {const r=document.querySelector('[data-stage]').getBoundingClientRect();return [r.x,r.y,r.width,r.height];})()`);
+        bounds.forEach((value,i)=>assert.ok(Math.abs(value-after[i])<1,'selection keeps canvas bounds'));
+        await writeFile(`${OUT}/canvas-${kind}.json`,JSON.stringify({before:bounds,after,delta:bounds.map((value,i)=>after[i]-value)},null,2)+'\n');
+        await page.evaluate(`(() => {const n=document.querySelector('[data-${kind}-editor] input${kind==='chart'?'[aria-label="Category 1 label"]':''}'); n.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(n,'Shell edited');n.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+        const apply = await page.evaluate(byText('Apply')); await page.click(...apply);
+        await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.revision === 1`);
+        const stored = await apiAuthed('GET', `/api/v2/projects/${id}`);
+        assert.ok(JSON.stringify(stored.body.project.scenes.find(s=>s.id===scenes[0].id).elements.find(e=>e.id===element.id)).includes('Shell edited'));
+        await page.screenshot(`${OUT}/editor-${kind}.png`);
+        const exported=await fetch(`http://127.0.0.1:${API_PORT}/api/v2/projects/${id}/export.pptx`,{headers:{Authorization:`Bearer ${userToken}`}});
+        assert.equal(exported.status,200);
+        await mkdir(path.join(ROOT,'out/v2-7a-validation'),{recursive:true});
+        await writeFile(path.join(ROOT,`out/v2-7a-validation/shell-${kind}.pptx`),Buffer.from(await exported.arrayBuffer()));
+      } finally { await page.close(); }
+    });
+  }
+
 });

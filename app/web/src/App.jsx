@@ -1,6 +1,7 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
+import { createGuardedHashRouter } from "./lib/guarded-hash-router.js";
 import { useNarrow } from "./lib/viewport.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import ParticleField from "./components/ParticleField.jsx";
@@ -49,6 +50,12 @@ function AppContent() {
   const [activeSlug, setActiveSlug] = useState(null);
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [projectHistoryOpen, setProjectHistoryOpen] = useState(false);
+  const routerRef = useRef(null);
+  const editorGuardRef = useRef(null);
+  const registerNavigationGuard = useCallback((guard) => {
+    editorGuardRef.current = guard;
+    return () => { if (editorGuardRef.current === guard) editorGuardRef.current = null; };
+  }, []);
   const [decks, setDecks] = useState([]);
   const [deckVersion, setDeckVersion] = useState(0);
   const [leftOpen, setLeftOpen] = useState(() => localStorage.getItem("forge.leftNav") !== "0");
@@ -219,13 +226,13 @@ function AppContent() {
   }
 
   function navigate(view, opts = {}) {
-    const h = hashFor(view, opts);
-    if (window.location.hash === h) return applyHash();
-    window.location.hash = h; // pushes a history entry and fires hashchange
+    const hash = hashFor(view, opts);
+    return routerRef.current?.navigate(hash);
   }
 
-  function applyHash() {
-    const r = parseHash(window.location.hash);
+  function applyHash(hash = window.location.hash) {
+    setHash(hash);
+    const r = parseHash(hash);
     switch (r.view) {
       case "deck":
       case "report":
@@ -275,29 +282,34 @@ function AppContent() {
   const applyHashRef = useRef(applyHash);
   applyHashRef.current = applyHash;
   useEffect(() => {
-    const onHash = () => applyHashRef.current();
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
-
-  useEffect(() => {
-    const onHash = () => setHash(window.location.hash);
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    const router = createGuardedHashRouter({
+      window,
+      apply: (hash) => applyHashRef.current(hash),
+      getGuard: (hash) => {
+        const guard = editorGuardRef.current;
+        const target = parseHash(hash);
+        return target.view === "project" && target.projectId === guard?.projectId ? null : guard;
+      },
+    });
+    routerRef.current = router;
+    return () => { router.dispose(); routerRef.current = null; };
   }, []);
 
   useEffect(() => {
     if (!user) return;
     const r = parseHash(window.location.hash);
     const explicit = r.view !== "chat";
-    if (explicit) { applyHash(); return; }
-    window.history.replaceState(null, "", "#/chat");
-    applyHash();
+    if (explicit) { routerRef.current?.sync(); return; }
+    window.history.replaceState(window.history.state, "", "#/chat");
+    routerRef.current?.sync();
   }, [user?.email]);
 
   useEffect(() => {
     if (user) return;
-    if (!window.location.hash) window.history.replaceState(null, "", "#/home");
+    if (!window.location.hash) {
+      window.history.replaceState(window.history.state, "", "#/home");
+      routerRef.current?.sync();
+    }
   }, [user]);
 
   const rawActiveChat = chats.find((c) => c.id === activeChatId) ?? (pendingChat?.id === activeChatId ? pendingChat : null);
@@ -306,8 +318,8 @@ function AppContent() {
   const openProjectPage = (page) => navigate(page, { slug: activeSlug });
 
   async function doLogout() {
+    if (!await navigate("home")) return;
     try { await api.logout(); } catch { /* token already gone */ }
-    window.history.replaceState(null, "", "#/home");
     setUser(null);
   }
 
@@ -618,6 +630,7 @@ function AppContent() {
                   key={activeProjectId}
                   projectId={activeProjectId}
                   autoOpenHistory={projectHistoryOpen}
+                  registerNavigationGuard={registerNavigationGuard}
                   onBack={() => navigate("projects")}
                   onOpenProject={(id) => navigate("project", { projectId: id })}
                   onProjectDeleted={() => navigate("projects")}
