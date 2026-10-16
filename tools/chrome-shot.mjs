@@ -10,6 +10,9 @@ import path from "node:path";
 
 function send(ws, id, method, params = {}) {
   return new Promise((resolve, reject) => {
+    const cleanup = () => { clearTimeout(timer); ws.removeEventListener("message", onMsg); ws.removeEventListener("close", onClose); };
+    const timer = setTimeout(() => { cleanup(); reject(new Error(`CDP ${method} timed out`)); }, 30000);
+    const onClose = () => { cleanup(); reject(new Error(`CDP connection closed during ${method}`)); };
     const onMsg = (ev) => {
       let msg;
       try {
@@ -18,13 +21,14 @@ function send(ws, id, method, params = {}) {
         return;
       }
       if (msg.id === id) {
-        ws.removeEventListener("message", onMsg);
+        cleanup();
         if (msg.error) reject(new Error(`CDP ${method}: ${JSON.stringify(msg.error).slice(0, 200)}`));
         else resolve(msg.result);
       }
     };
     ws.addEventListener("message", onMsg);
-    ws.send(JSON.stringify({ id, method, params }));
+    ws.addEventListener("close", onClose, { once: true });
+    try { ws.send(JSON.stringify({ id, method, params })); } catch (error) { cleanup(); reject(error); }
   });
 }
 
@@ -230,6 +234,12 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
     async screenshot(pngPath) {
       const shot = await send(g.ws, seq++, "Page.captureScreenshot", { format: "png" });
       await writeFile(pngPath, Buffer.from(shot.data, "base64"));
+    },
+    async viewport(width, height) {
+      await send(g.ws, seq++, "Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: false });
+    },
+    async onNewDocument(source) {
+      await send(g.ws, seq++, "Page.addScriptToEvaluateOnNewDocument", { source });
     },
     // Double-click: two press/release pairs, the second with
     // clickCount 2 so the page sees a real dblclick (single
