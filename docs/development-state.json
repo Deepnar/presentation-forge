@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-7B-1-662f7d6.json"
   },
   "implementationHead": {
-    "sha": "924f157cad244d0c3888627e8f3ee5c97e51058a",
-    "note": "Task-entry checkout plus the current V2-7B-2 working-tree delta; exact source will be frozen before retained final validation."
+    "sha": "c015f3fc2a4fe402927a9158542360fd4d1786db",
+    "note": "Frozen V2-7B-2 implementation and test/governance source. Subsequent documentation/evidence commits do not change product code."
   },
   "activeMilestone": {
     "id": "V2-7B-2",
     "roadmapRef": "docs/ROADMAP.md#v2-7b-2-plan",
     "evalDoc": "docs/V2-7B-2-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,

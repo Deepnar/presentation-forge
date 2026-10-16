@@ -1,6 +1,6 @@
 {
-  "implementationSha": "924f157cad244d0c3888627e8f3ee5c97e51058a",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
+  "implementationSha": "c015f3fc2a4fe402927a9158542360fd4d1786db",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "Complete top-level test/*.test.js inventory: 172 non-browser files, 23 serial browser/build/plate owners, four isolated PostgreSQL files. Shared dist builds never overlap.",
   "bulk": [
     "test/account-cleanup.test.js",
