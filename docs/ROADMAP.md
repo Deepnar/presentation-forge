@@ -7454,24 +7454,94 @@ scale); charts structurally exact without axes (V2-4C).
 
 - [ ] V2-7B generation-to-project handoff — connect generated `deck.yaml`
   content to persisted, editable Layer-C projects. Planning recovered on
-  2026-10-15; **V2-7B-1 implementation approved on 2026-10-15**. V2-7B-2 remains
-  a candidate; its browser direction is not approved. "Create with AI" currently
+  2026-10-15; **V2-7B-1 implementation approved on 2026-10-15**. V2-7B-2 explicit-action implementation is approved on 2026-10-16. "Create with AI" currently
   opens legacy chat, whose completion action opens the legacy deck. The new
-  shared conversion/creation service, HTTP route and CLI are implemented at
-  `662f7d6` and under validation/review; there is no browser handoff yet. The
+  shared conversion/creation service, HTTP route and CLI are independently
+  accepted at `662f7d6`; there is no browser handoff yet. The
   historical partial converter in `packages/model/legacy.ts` remains separate.
   The new boundary audits all 74 current schema types with whole-deck refusal
   for unsupported content, rather than persisting the partial bridge output.
 
-  **Sequence.** Finish validation and independent review of V2-7B-1 below;
-  after its independent acceptance, plan V2-7B-2's browser handoff. Proposed
+  **Sequence.** V2-7B-1 validation and independent acceptance are complete.
+  V2-7B-2 browser-handoff planning started on 2026-10-16. Proposed
   V2-7B-2 direction is an explicit **Open in editor** action on a completed
   presentation, which creates/reopens its saved project before navigation.
   Retain access to the legacy deck; never regenerate over human edits. Automatic
-  navigation is an alternative requiring a surface-direction decision. Neither
-  UI choice is implemented or approved by this plan. The parent stays unchecked
+  navigation is an alternative requiring a surface-direction decision. The explicit action was approved on 2026-10-16; automatic navigation is
+  not part of this slice. The parent stays unchecked
   until the approved generation → project → edit → save/reopen → native-export
   workflow has browser evidence; a working headless seam alone cannot complete it.
+
+  <a id="v2-7b-2-plan"></a>
+
+  **V2-7B-2 approved task contract — explicit browser handoff.**
+  Human direction on 2026-10-16 approved the explicit **Open in editor** action
+  on completion cards and the existing deck page, with safe create/reopen,
+  preservation, diagnostics and original-deck access as described below.
+  Implementation is authorized; independent acceptance remains required.
+
+  - **Baseline/dependencies:** independently accepted source
+    `662f7d6a08647d431eded1ea17c5d13e7ca1c591`, separate decision
+    [V2-7B-1-662f7d6](reviews/V2-7B-1-662f7d6.json); planning checkout
+    `924f157cad244d0c3888627e8f3ee5c97e51058a` on `v2`. Accepted imports,
+    project stores/history, editor commands, authenticated downloads and guarded
+    router are prerequisites to reuse, not replacements to build.
+  - **Surface/scope:** add the same explicit action to completed deck
+    chats (including threads with later turns) and the existing deck page.
+    Preserve report actions and access to the original deck. Show progress,
+    prevent duplicate submissions, create/reopen through the accepted HTTP
+    service and navigate only after a successful response using the existing
+    guarded router. An expired view, logout or changed source selection must
+    not navigate when an older request completes. Cancelling departure leaves
+    the created project available from Projects.
+  - **Retry/data contract:** both entry points use one deterministic, versioned
+    browser request identity per owner/source (the service supplies owner/slug
+    scoping), stable across reloads, tabs and ambiguous network responses.
+    Use the existing atomic receipts, never mutable `origin`, chat-local
+    storage or an in-memory map as durable truth. Reopen the current human-edited
+    project, never recompile it on retry. Source-change/deleted-target conflicts
+    remain actionable refusals with access to Projects and the original deck;
+    do not silently rotate identity, replace edits or resurrect deletion.
+    Creating a second imported copy is outside this slice.
+  - **Refusal/accessibility contract:** display structured conversion diagnostics
+    for unsupported content/identity/fit, distinguish incomplete/changing source,
+    auth/verification, unavailable storage and network errors, and keep the
+    original deck usable. Controls have accessible names, keyboard activation,
+    announced progress/errors and reliable focus after refusal. No successful
+    import or saved state is claimed before server confirmation.
+  - **Invariants/non-goals:** semantic intent → canonical compiler → editable
+    scene; unchanged model/layout boundary, conversion coverage, ownership,
+    security policy and revision checks. No new content mappings, portable
+    assets/notes/source storage, automatic regeneration, project-list merger,
+    cover thumbnails, agent runtime, framework migration or deployment.
+  - **Evidence/gates:** correctness, data integrity, authorization, human-edit
+    preservation and backward compatibility through the actual HTTP service;
+    browser completion/deck-page entry, double click, reload/retry after an
+    ambiguous response, cross-tab identity, owner switch and late-response
+    cleanup; unsupported/incomplete source and deleted/changed imports;
+    edit text/chart/table → undo/redo → save → dashboard reopen → history and
+    authenticated native export. Verify keyboard/focus/Escape, desktop and
+    narrow screenshots, unclipped diagnostics, inspector visibility and measured
+    canvas stability. Inspect native OOXML and rasterized output. Deployment
+    safety is limited to proving no deployment/migration is introduced.
+  - **Regression/measurement:** extend the accepted complete test inventory;
+    non-browser bulk, browser/build/plate owners in bounded serial isolation,
+    isolated PostgreSQL contracts plus concurrency/fault tests, production build,
+    typecheck and all 50 canonical benchmark cells. Measure cold/warm handoff
+    and opening a 60-slide imported deck; record implementation SHA/backend,
+    exact leaf pass/fail/skip/cancelled/unexecuted totals and visual evidence.
+    Wait for a quiet shared-machine window before expensive checks. Unavailable
+    PostgreSQL is unexecuted. Keep BYOK locale and pre-existing Fit overflow
+    separate; do not absorb either into this feature.
+  - **Look-ahead:** V2-8 can replace legacy generation while retaining the same
+    saved project/command boundary. File/asset support belongs to V2-9 or a
+    separately approved converter extension. Later list consolidation must
+    consume durable identity rather than infer links from editable metadata.
+  - **Acceptance/stop:** surface direction and bounded scope are approved;
+    implement/verify and obtain a separate exact-commit ACCEPT/HOLD.
+    Push focused source, tests, documentation and evidence only to `origin/v2`.
+    Do not check off the parent before its full browser workflow is proven;
+    stop after review/handoff without starting V2-8 or other feature work.
 
   **V2-7B-1 approved task contract — conversion and durable creation boundary.**
 
@@ -7571,7 +7641,7 @@ scale); charts structurally exact without axes (V2-4C).
   benchmark cells pass. All 23 final images were inspected; exact 480×900 narrow
   geometry and native relationship preservation are retained in
   [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). The parent stays unchecked and the next slice
-  remains unauthorized pending its direction/scope gate.
+  has its separately approved explicit-action contract above.
 
   > **Learned.** Field/string survival is weaker than meaning preservation:
   > stat qualifiers must remain attached, context cannot become a fake step,

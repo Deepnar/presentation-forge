@@ -1,4 +1,4 @@
-# Handoff — V2-7B-1 independently accepted; stop point reached
+# Handoff — V2-7B-2 explicit browser handoff in progress
 
 2026-10-16. Branch `v2`. Frozen source:
 `662f7d6a08647d431eded1ea17c5d13e7ca1c591`. Accepted baseline is now that exact source. Task-entry accepted baseline was
@@ -41,9 +41,9 @@ All 74 source types are audited. Fifty have conditional mappings; 24 refuse enti
 Canonical specimens: 46 semantic conversions, 37 durable creations, 37 atomic refusals
 (24 family, 4 field, 9 fit/capacity). Notes/citations, portable assets/institutional
 identity and unsupported encodings refuse explicitly. See COVERAGE.md; do not
-advertise full legacy parity. Chat still opens the legacy deck. The sole future
-work/direction record is [the roadmap](ROADMAP.md#v2-7b-candidate); V2-7B-2 is not
-coding authorization. Stop after this slice's review/handoff.
+advertise full legacy parity. The accepted baseline chat opens the legacy deck; the new explicit browser action
+is in progress. The sole future
+work/direction record is [the roadmap](ROADMAP.md#v2-7b-candidate); V2-7B-2 now has separate human scope/direction authorization.
 
 The owned disposable PostgreSQL 15.18 service `forge_v27b_validation_pg` was
 stopped and automatically removed after independent review. No test-owned database
@@ -58,5 +58,11 @@ The three original untracked paths `.agents/`,
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Never stage/remove
 them. Push destination is origin/v2. User preference: few subagents, only high
 effort; the separate `/root/v27b_review` context supplied this acceptance.
-The next authorized action is planning/direction for the roadmap candidate; no
-V2-7B-2 feature, deployment or production migration was begun.
+Human direction on 2026-10-16 approved V2-7B-2 with an explicit Open in editor
+action on completed deck chats and the existing deck page. Its approved bounded
+contract is in ROADMAP.md#v2-7b-2-plan. Current code is unfrozen and in progress;
+V2-7B-2-EVAL.md records preliminary checks and early independent review findings.
+Use the separate 199-file v2-7b-2-evidence manifest for its final validation.
+Earlier accepted totals above are historical, not validation of this new source.
+No deployment or production migration is authorized. Stop after independent
+review/handoff of this slice.
