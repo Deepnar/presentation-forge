@@ -1,0 +1,16 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "command": "Final serial Chrome inventory (full 28-case 7A and 5-case actual-server import suite); node docs/v2-7b-1-evidence/native-review.mjs; all 23 final PNGs opened and inspected",
+  "log": "docs/v2-7b-1-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": 23,
+  "knownLimitations": [
+    "Pre-existing Fit padding overflow",
+    "Narrow inspector intentionally overlays canvas; wide controls/grids scroll",
+    "LibreOffice does not establish interactive Microsoft PowerPoint behavior",
+    "Accessibility coverage is bounded to existing suites"
+  ]
+}

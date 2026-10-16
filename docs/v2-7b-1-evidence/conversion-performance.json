@@ -1,0 +1,35 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "method": "Five sequential pure semantic conversions per fixture in one fresh process; first ordinary sample includes cold legacy/intent validator initialization. Excludes source IO, compilation and persistence. Observations, not another Node test suite.",
+  "results": [
+    {
+      "name": "ordinary",
+      "slides": 3,
+      "semanticConversionMs": [
+        105.789904,
+        0.3644180000000006,
+        0.41855300000000284,
+        0.23113899999998466,
+        0.1822390000000098
+      ],
+      "medianMs": 0.3644180000000006
+    },
+    {
+      "name": "boundary",
+      "slides": 60,
+      "semanticConversionMs": [
+        2.386143000000004,
+        3.464449000000002,
+        1.1961169999999868,
+        1.0778970000000072,
+        1.1290340000000185
+      ],
+      "medianMs": 1.1961169999999868
+    }
+  ],
+  "oversized": {
+    "slides": 61,
+    "refused": true,
+    "elapsedMs": 0.46212900000000445
+  }
+}

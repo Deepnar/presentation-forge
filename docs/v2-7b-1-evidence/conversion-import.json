@@ -1,0 +1,20 @@
+{
+  "id": "conversion-import",
+  "kind": "tests",
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "command": "LC_ALL=C.UTF-8 timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=./tools/validated-tap.mjs test/v2-import-conversion-7b.test.js test/v2-import-service-7b.test.js test/v2-import-http-7b.test.js",
+  "log": "docs/v2-7b-1-evidence/logs/conversion-import.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 68,
+    "pass": 68,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-import-conversion-7b.test.js",
+    "test/v2-import-service-7b.test.js",
+    "test/v2-import-http-7b.test.js"
+  ]
+}

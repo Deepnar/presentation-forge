@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: v2-4e chrome selection
+    # Subtest: trusted clicks select, shift-click multi-selects, background clears
+    ok 1 - trusted clicks select, shift-click multi-selects, background clears
+      ---
+      duration_ms: 1155.736798
+      type: 'test'
+      ...
+    # Subtest: Escape clears and locked chrome never selects
+    ok 2 - Escape clears and locked chrome never selects
+      ---
+      duration_ms: 1592.423845
+      type: 'test'
+      ...
+    # Subtest: hit testing and overlays hold at 200% zoom
+    ok 3 - hit testing and overlays hold at 200% zoom
+      ---
+      duration_ms: 1560.037093
+      type: 'test'
+      ...
+    # Subtest: overlays align without displacing content, inspector reports ground truth
+    ok 4 - overlays align without displacing content, inspector reports ground truth
+      ---
+      duration_ms: 1057.751572
+      type: 'test'
+      ...
+    # Subtest: deep-link selection and narrow viewports keep working
+    ok 5 - deep-link selection and narrow viewports keep working
+      ---
+      duration_ms: 4151.89182
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-4e chrome selection
+  ---
+  duration_ms: 9526.439955
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11587.728686
+# forge-test-file "test/v2-selection-chrome.test.js"

@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: v2-5f chrome paragraphs and formatting
+    # Subtest: bullet list edits with an appended bullet in one revision
+    ok 1 - bullet list edits with an appended bullet in one revision
+      ---
+      duration_ms: 1654.922633
+      type: 'test'
+      ...
+    # Subtest: mixed-style body keeps per-paragraph paint through a wording edit
+    ok 2 - mixed-style body keeps per-paragraph paint through a wording edit
+      ---
+      duration_ms: 2064.95717
+      type: 'test'
+      ...
+    # Subtest: format panel recolors one paragraph and undo refreshes it
+    ok 3 - format panel recolors one paragraph and undo refreshes it
+      ---
+      duration_ms: 2177.930986
+      type: 'test'
+      ...
+    # Subtest: caret keys stay in multi-line drafts and Escape cancels whole
+    ok 4 - caret keys stay in multi-line drafts and Escape cancels whole
+      ---
+      duration_ms: 2316.050211
+      type: 'test'
+      ...
+    # Subtest: double-click needs no stage jump with the format bar below
+    ok 5 - double-click needs no stage jump with the format bar below
+      ---
+      duration_ms: 2323.059686
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-5f chrome paragraphs and formatting
+  ---
+  duration_ms: 10544.072263
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11058.10115
+# forge-test-file "test/v2-edit-chrome-5f.test.js"

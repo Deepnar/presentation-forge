@@ -1,0 +1,27 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "inventoryFiles": 197,
+  "uniqueTests": {
+    "total": 2207,
+    "pass": 2207,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalHosted": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedRepeated": {
+    "total": 68,
+    "pass": 68,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unexecuted": 0,
+  "note": "Focused checks, earlier attempts, locale probe and independent reruns are not added to unique final matrix totals."
+}

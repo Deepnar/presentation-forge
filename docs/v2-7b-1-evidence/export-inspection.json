@@ -1,0 +1,47 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "renderer": "Actual authenticated exports; src/preview.js via LibreOffice/Poppler",
+  "records": [
+    {
+      "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+      "sha256": "cbba4e8b44bbdd220c8b6c2589370bc1623615b66c37f54a55cccd9e8a32315e",
+      "bytes": 92783,
+      "slideCount": 3,
+      "chartParts": 1,
+      "nativeTable": true,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-1-evidence/native/chart-2.png"
+      ]
+    },
+    {
+      "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+      "sha256": "8428fda795c07e2f5076e827b5850fa2261caea7d505a276794ec0702ccf1061",
+      "bytes": 92770,
+      "slideCount": 3,
+      "chartParts": 1,
+      "nativeTable": true,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-1-evidence/native/table-3.png"
+      ]
+    },
+    {
+      "source": "out/v2-7b-1-validation/section-ordinals.pptx",
+      "sha256": "e9ffb56dcf32a68470da21c540165c1785eedf6ef61115f41d6f2938acd4c2c8",
+      "bytes": 91443,
+      "slideCount": 5,
+      "chartParts": 0,
+      "nativeTable": false,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-1-evidence/native/relationships-1.png",
+        "docs/v2-7b-1-evidence/native/relationships-2.png",
+        "docs/v2-7b-1-evidence/native/relationships-3.png",
+        "docs/v2-7b-1-evidence/native/relationships-4.png",
+        "docs/v2-7b-1-evidence/native/relationships-5.png"
+      ]
+    }
+  ],
+  "limitation": "LibreOffice rasters do not establish interactive Microsoft PowerPoint behavior."
+}

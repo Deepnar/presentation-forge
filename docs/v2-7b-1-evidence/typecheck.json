@@ -1,0 +1,9 @@
+{
+  "id": "typecheck",
+  "kind": "command",
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m npm run typecheck",
+  "log": "docs/v2-7b-1-evidence/logs/typecheck.log",
+  "exitCode": 0,
+  "durationSeconds": 0.955449
+}

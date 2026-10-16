@@ -1,0 +1,12 @@
+{
+  "id": "benchmark-50",
+  "kind": "benchmark",
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node tools/v2-benchmark.mjs --out out/v2-7b-1-benchmark --raster none",
+  "log": "docs/v2-7b-1-evidence/logs/benchmark-50.log",
+  "exitCode": 0,
+  "durationSeconds": 0.611094,
+  "cells": 50,
+  "rawCheckoutHead": "b59949e",
+  "sourceDelta": "No runtime/test/tool source delta from frozen implementation; later checkout changes are documentation/evidence."
+}

@@ -1,0 +1,2 @@
+npm notice run presentation-forge@0.1.0 typecheck
+npm notice run tsc --noEmit

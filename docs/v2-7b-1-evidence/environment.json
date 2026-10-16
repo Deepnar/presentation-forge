@@ -36,5 +36,6 @@
     "tmpfsMiB": 192,
     "cleanup": "pending independent review; only owned service will be stopped"
   },
-  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591"
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "validationCheckoutNote": "Runners identify frozen implementation 662f7d6. Documentation/evidence commits advanced while source remained unchanged; raw benchmark records documentation HEAD b59949e. git diff 662f7d6 -- src app packages test tools package.json is empty."
 }
