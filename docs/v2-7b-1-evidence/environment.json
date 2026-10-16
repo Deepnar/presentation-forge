@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Asia/Kolkata",
+  "node": "24.16.0",
+  "chrome": "151.0.7922.173",
+  "quietWindowObserved": true,
+  "unrelatedWorkInterrupted": false,
+  "sample": {
+    "load": [
+      1.78,
+      1.57,
+      0.93
+    ],
+    "availableMemoryMiB": 41651,
+    "cpuIdlePercent": [
+      94,
+      92
+    ],
+    "cpuWaitPercent": [
+      1,
+      2
+    ],
+    "cpuPressureAvg10": 0,
+    "memoryPressureAvg10": 0,
+    "ioPressureAvg10": 5.19
+  },
+  "competingWork": "Existing model server, desktop browsers and other project services left running. CPU and memory headroom supported low-priority bounded execution.",
+  "ownedPostgres": {
+    "container": "forge_v27b_validation_pg",
+    "id": "105493636c815dce6ec9b3d8a09ae3b53a88121a6cf7310c2078d5dd81880ce8",
+    "endpoint": "127.0.0.1:5544",
+    "version": "15.18",
+    "image": "postgres:15-alpine (already cached; no image pull)",
+    "cpuLimit": 1,
+    "memoryMiB": 512,
+    "tmpfsMiB": 192,
+    "cleanup": "pending independent review; only owned service will be stopped"
+  },
+  "implementationSha": "f52d193c0de56c95c9b191a53c10d4e0ea4bebaf"
+}
