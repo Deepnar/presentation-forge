@@ -131,3 +131,21 @@ test("the 60-slide import boundary opens all thumbnails; oversized input refuses
   const after = await fixture.request("/api/v2/projects", { token: fixture.token }).then(r => r.json());
   assert.deepEqual(after.projects, before.projects);
 });
+
+test("imported stat qualifiers remain attached to their values in the real editor", async () => {
+  const { slug } = await fixture.source({ deck: { title: "Qualified values", slides: [{ type: "stats", headline: "Groups", stats: [{ value: "10", label: "Treatment", sub: "Only adults" }, { value: "20", label: "Control", sub: "Only children" }] }, { type: "before-after", headline: "Change", before: { title: "Enrollment", body: "10" }, after: { title: "Enrollment", body: "20" } }] } });
+  const response = await fixture.create(slug); assert.equal(response.status, 200); const { project } = await response.json();
+  const carriers = project.scenes[0].elements.filter(element => element.kind === "text" && element.semanticRef);
+  for (const [qualifier, label, value] of [["Only adults", "Treatment", "10"], ["Only children", "Control", "20"]]) {
+    const carrier = carriers.find(element => JSON.stringify(element.paragraphs).includes(qualifier));
+    assert.ok(carrier && JSON.stringify(carrier.paragraphs).includes(label) && JSON.stringify(carrier.paragraphs).includes(`"${value}"`));
+  }
+  const page = await openProject(project.id);
+  try {
+    for (const text of ["Treatment", "Only adults", "Control", "Only children"]) assert.ok(await page.evaluate(`document.querySelector('[data-stage]')?.textContent.includes(${JSON.stringify(text)})`));
+    await page.screenshot(path.join(EVIDENCE, "imported-stats.png"));
+    await click(page, '[data-thumb="legacy-s2"]');
+    for (const text of ["Before: Enrollment", "After: Enrollment"]) assert.ok(await page.evaluate(`document.querySelector('[data-stage]')?.textContent.includes(${JSON.stringify(text)})`));
+    await page.screenshot(path.join(EVIDENCE, "imported-transition.png"));
+  } finally { await page.close(); }
+});
