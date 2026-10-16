@@ -25,7 +25,7 @@ export default function OpenInEditor({ slug, mode, accountKey, onOpenProject, or
     setState({ status: "idle" });
     return () => { window.removeEventListener("storage", onStorage); handoff.dispose(); action.current = null; };
   }, [slug, mode, accountKey]);
-  useEffect(() => { if (state.status === "error") error.current?.focus(); }, [state]);
+  useEffect(() => { if (state.status === "error" || state.status === "expired") error.current?.focus(); }, [state]);
   const opening = state.status === "opening";
   return (
     <div data-editor-handoff className="min-w-0 space-y-2">
@@ -36,13 +36,12 @@ export default function OpenInEditor({ slug, mode, accountKey, onOpenProject, or
         {originalLink && <a className="rounded px-2 py-1 text-sm text-fg-muted underline underline-offset-4" href={`#/deck/${encodeURIComponent(slug)}`}>Open original deck</a>}
       </div>
       <p className="text-xs leading-relaxed text-fg-muted">Opens a saved editable copy. Changes to either copy stay separate.</p>
-      <p role="status" className="text-xs text-fg-muted">{opening ? "Creating or reopening your saved project…" : state.status === "error" ? "" : state.message || (disabled ? disabledReason : "")}</p>
-      {state.status === "expired" && <Button variant="outline" onClick={() => location.reload()}>Reload page</Button>}
-      {state.status === "error" && (
+      <p role="status" className="text-xs text-fg-muted">{opening ? "Creating or reopening your saved project…" : state.status === "error" || state.status === "expired" ? "" : state.message || (disabled ? disabledReason : "")}</p>
+      {(state.status === "error" || state.status === "expired") && (
         <div ref={error} role="alert" tabIndex={-1} className="rounded-lg border border-line bg-panel p-3 text-sm text-fg outline-offset-2">
           <p>{state.message}</p>
           {state.details?.length > 0 && <ul className="mt-2 max-h-48 list-disc space-y-1 overflow-y-auto break-words pl-5 text-xs">{state.details.map((detail, i) => <li key={i}>{detail}</li>)}</ul>}
-          <a href="#/projects" className="mt-2 inline-block underline underline-offset-4">View saved projects</a>
+          {state.status === "expired" ? <Button variant="outline" className="mt-2" onClick={() => location.reload()}>Reload page</Button> : <a href="#/projects" className="mt-2 inline-block underline underline-offset-4">View saved projects</a>}
         </div>
       )}
     </div>

@@ -179,6 +179,9 @@ test("a real second document's token storage event invalidates pending work with
     await wait(page, "window.__storageKeys.includes('forge.token')");
     await wait(page, "document.querySelector('[data-editor-handoff]')?.textContent.includes('Your sign-in changed')");
     assert.equal(await page.evaluate(`document.querySelector(${JSON.stringify(BUTTON)}).disabled`), true);
+    assert.equal(await page.evaluate("document.activeElement===document.querySelector('[data-editor-handoff] [role=alert]')"), true);
+    const recovery = await page.evaluate("(() => {const r=document.querySelector('[data-editor-handoff] [role=alert]').getBoundingClientRect();return [r.top,r.bottom,document.querySelector('footer').getBoundingClientRect().top]})()");
+    assert.ok(recovery[0] >= 0 && recovery[1] <= recovery[2], 'sign-in recovery is visible above the composer');
     assert.ok(await page.evaluate("[...document.querySelectorAll('[data-editor-handoff] button')].some(b=>b.textContent==='Reload page')"));
     await page.evaluate("window.__releaseImport();window.__peer.close()"); await wait(page, "window.__releasedImport");
     assert.ok(await page.evaluate("location.hash.startsWith('#/chat/')"));
