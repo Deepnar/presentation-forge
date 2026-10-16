@@ -34,8 +34,24 @@
     "cpuLimit": 1,
     "memoryMiB": 512,
     "tmpfsMiB": 192,
-    "cleanup": "pending independent review; only owned service will be stopped"
+    "cleanup": {
+      "stoppedAndRemoved": true,
+      "at": "2026-10-16T11:59:27.912364+00:00",
+      "ownedDatabasesRemainingBeforeStop": 0,
+      "note": "Stopped only exact owned container id after independent acceptance; --rm removed it and its tmpfs."
+    }
   },
   "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
-  "validationCheckoutNote": "Runners identify frozen implementation 662f7d6. Documentation/evidence commits advanced while source remained unchanged; raw benchmark records documentation HEAD b59949e. git diff 662f7d6 -- src app packages test tools package.json is empty."
+  "validationCheckoutNote": "Runners identify frozen implementation 662f7d6. Documentation/evidence commits advanced while source remained unchanged; raw benchmark records documentation HEAD b59949e. git diff 662f7d6 -- src app packages test tools package.json is empty.",
+  "ownedValidationPortsAfterCleanup": {
+    "5261": "closed",
+    "5263": "closed",
+    "5274": "closed",
+    "5276": "closed",
+    "5277": "closed",
+    "5398": "closed",
+    "5399": "closed",
+    "5403": "closed",
+    "5544": "closed"
+  }
 }

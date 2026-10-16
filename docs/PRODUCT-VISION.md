@@ -51,8 +51,8 @@ The Assistant tab is a labeled placeholder. “Create with AI” enters legacy c
 and completion still opens the legacy deck. A shared HTTP/headless conversion
 boundary creates saved Layer-C projects with explicit coverage/refusal gates;
 there is no browser handoff action yet. The sole work registry is
-[ROADMAP.md](ROADMAP.md): V2-7B-1 is the approved conversion/creation slice under
-validation and review; V2-7B-2 remains a candidate, without coding authorization.
+[ROADMAP.md](ROADMAP.md): V2-7B-1 is independently accepted for conversion/creation; V2-7B-2 remains a
+candidate, without coding authorization.
 AI editing integration, native assets/imports,
 frontend polish and deployment operations retain their roadmap dependencies.
 

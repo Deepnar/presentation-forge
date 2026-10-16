@@ -7562,7 +7562,10 @@ scale); charts structurally exact without axes (V2-4C).
     Implementation approval covers this contract; stop on any required
     scope/security-policy change, or after the bounded slice's review/handoff.
     Acceptance permits planning V2-7B-2, not automatic coding of that next slice.
-  **V2-7B-1 validation complete; independent decision pending.** Exact source
+  **V2-7B-1 independently accepted (2026-10-16).** Exact source
+  Decision: [V2-7B-1-662f7d6](reviews/V2-7B-1-662f7d6.json), supplied by a
+  separate reviewer context. Independent execution: 80/80 plus build, typecheck,
+  protocol, 50-cell benchmark and native checks.
   `662f7d6`: all 197 required files / 2207 leaf cases pass, plus one distinct actual
   hosted PostgreSQL HTTP/CLI replay/export check. Build, typecheck and all 50
   benchmark cells pass. All 23 final images were inspected; exact 480×900 narrow

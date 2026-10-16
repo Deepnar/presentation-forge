@@ -1,10 +1,12 @@
 # V2-7B-1 conversion and durable creation evaluation
 
-Updated 2026-10-16. Branch `v2`. Accepted source baseline:
+Updated 2026-10-16. Branch `v2`. Accepted source baseline at task entry:
 `fe749fb41e744961df156e8b9dcf80f0155b4e0b`. Final frozen implementation:
 `662f7d6a08647d431eded1ea17c5d13e7ca1c591`. Later commits record documentation
-and evidence only. Independent acceptance remains pending; this report is an
-implementer recommendation, not a decision.
+and evidence only. Independent acceptance is recorded in
+[the separate decision](reviews/V2-7B-1-662f7d6.json), reviewing pushed evidence
+`9e9c51d`. This evaluation remains evidence and an implementer recommendation,
+not the approval authority.
 
 The human approved the bounded contract on 2026-10-15 and authorized a separate
 high-effort reviewer. Scope/common-gate applicability:
@@ -165,8 +167,17 @@ establish interactive Microsoft PowerPoint behavior; accessibility coverage is
 bounded to the suites. The browser handoff, agent runtime, full asset/notes/source
 storage and production operations remain outside this slice.
 
-**Recommendation: accept the bounded V2-7B-1 implementation**, subject to the
-separate review of exact source/evidence. All required execution is complete and
-no new failing regression remains. The implementer has not supplied acceptance.
+**Recommendation: accept the bounded V2-7B-1 implementation.** The independent
+reviewer confirmed ACCEPT for exact source `662f7d6`, with 80/80 fresh tests,
+build/typecheck/protocol/50-cell benchmark and native verification. It audited
+all 197 file markers/totals and 23 image hashes and inspected the committed and
+fresh captures. Independent reruns are repeats, not additions to the unique
+2208-case final total. All required execution is complete, and no new failing
+regression remains. Acceptance was supplied by the separate reviewer.
 V2-7B-2 is a candidate for planning/direction after review, without automatic coding
 authorization. Parent V2-7B stays unchecked.
+
+The owned PostgreSQL service was stopped and automatically removed after review;
+no test database remained. Historical evidence rewrites were preserved in ignored
+out/ and restored; original unrelated untracked files remain intact. No production
+deployment, migration or subsequent feature was performed.

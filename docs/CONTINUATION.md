@@ -20,8 +20,9 @@ may precede later documentation commits. Validate ancestry and inspect the diff;
 do not silently replace that pointer with the documentation commit running now.
 This task entered from accepted V2-6C `97a12de` and V2-7A implementation `a298767`.
 Narrow corrections through `fe749fb` have complete retained validation and a
-separate ACCEPT decision in reviews/V2-7A-fe749fb.json. That is the current
-accepted source. The state file indexes the decision; never infer acceptance
+separate ACCEPT decision in reviews/V2-7A-fe749fb.json. V2-7B-1 source `662f7d6`
+is now independently accepted in reviews/V2-7B-1-662f7d6.json. The state file
+indexes the current full source and decision; never infer acceptance
 from a green report. Tested code and subsequent evidence commits are distinct.
 
 Read ARCHITECTURE.md's V2 sections, V2-5A-EDITOR-ARCHITECTURE.md with later editor
@@ -34,12 +35,15 @@ because old eval wording predates review.
 
 [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md) indexes the active, human-approved conversion
 and durable creation slice. Its roadmap contract defines the bounded scope;
-implementation and validation are in progress. V2-7A remains independently
+implementation, complete validation and independent acceptance are finished.
+All 197 required files / 2207 unique cases and one distinct hosted PostgreSQL
+case pass; the standing locale probe remains separate. V2-7A remains independently
 accepted, with its complete historical evidence and accepted-state snapshot
 under `v2-7a-evidence/`. The new inventory under `v2-7b-1-evidence/` adds import
 coverage and preserves serial browser/build isolation. V2-7B-2, AI runtime and
-other features still require their own scope authorization. Do not self-accept
-or start dependent work before the active slice's separate review.
+other features still require their own scope authorization. This slice stops at
+review/handoff. V2-7B-2 permits planning and a direction decision, not automatic
+implementation. Do not self-accept or treat a candidate as coding authorization.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
