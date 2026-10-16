@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { Button, Panel, Empty, Spinner, SlideSkeleton, Tooltip } from "../components/ui.jsx";
 import Lightbox from "../components/Lightbox.jsx";
+import OpenInEditor from "../components/OpenInEditor.jsx";
 import SlideEditor from "../components/SlideEditor.jsx";
 import { moveSlide, duplicateSlide, deleteSlide, setPresenter } from "../lib/slides.js";
 import { blankSlideForType, blankSlideTypes } from "../lib/blankSlides.js";
@@ -14,7 +15,7 @@ import ThemeMiniCard from "../components/ThemeMiniCard.jsx";
 import { ProjectHeader, useProject } from "../components/ProjectNav.jsx";
 import { TypeSwapModal, CardBtn, CardMenu, ActionBtn, MenuBtn, EditIcon, BoltIcon } from "../components/DeckDetailControls.jsx";
 
-export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, onOpenDeck, onNavigate }) {
+export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, onOpenDeck, onNavigate, accountKey, onOpenProject }) {
   const project = useProject(slug, refreshToken);
   const [loadErr, setLoadErr] = useState(null);
   const [data, setData] = useState(null);
@@ -692,6 +693,11 @@ export default function DeckDetail({ slug, refreshToken, onBack, onDeckChanged, 
           navigation, not above the title: these are the Deck page's controls,
           not the project's, and putting them in the header is what made
           arriving at a deck mean reading eight buttons before any content. */}
+      {data.meta?.status === "ready" && !deckRun?.active && (
+        <div className="mt-5">
+          <OpenInEditor key={slug} slug={slug} mode={data.meta?.mode} accountKey={accountKey} onOpenProject={onOpenProject} originalLink={false} disabled={busy || syncing} />
+        </div>
+      )}
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <div className="flex flex-wrap items-center gap-2">
             <button

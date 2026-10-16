@@ -245,6 +245,9 @@ export const api = {
     call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
   searchDecks: (q) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }) }),
   project: (slug) => call(`/api/decks/${slug}/project`),
+  importProject: (slug, body) => call(`/api/decks/${encodeURIComponent(slug)}/v2-project`, {
+    method: "POST", body: JSON.stringify(body), signal: AbortSignal.timeout(60000),
+  }),
   presets: () => call("/api/presets"),
   savePreset: (preset) => call("/api/presets", { method: "POST", body: JSON.stringify(preset) }),
   updatePreset: (id, preset) => call(`/api/presets/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(preset) }),

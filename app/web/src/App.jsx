@@ -555,6 +555,8 @@ function AppContent() {
                   leftOpen={leftOpen}
                   onToggleLeft={() => setLeftOpen((o) => !o)}
                   onOpenDeck={openDeck}
+                  onOpenProject={(id) => navigate("project", { projectId: id })}
+                  accountKey={user.email}
                   onOpenReport={openReport}
                   onDeckChanged={bumpDeck}
                   onOpenSettings={() => setSettingsOpen(true)}
@@ -578,6 +580,8 @@ function AppContent() {
                   onDeckChanged={bumpDeck}
                   onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
                   onNavigate={openProjectPage}
+                  onOpenProject={(id) => navigate("project", { projectId: id })}
+                  accountKey={user.email}
                 />
               </ErrorBoundary>
             )}

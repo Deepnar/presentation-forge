@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { Button, Panel, Spinner, Badge, inputCls } from "../components/ui.jsx";
 import SlideSelectPanel from "../components/SlideSelectPanel.jsx";
 import Lightbox from "../components/Lightbox.jsx";
+import OpenInEditor from "../components/OpenInEditor.jsx";
 import { ChevronDown, DocIcon, LayersIcon, PanelRightOpen, SparkleIcon } from "../components/icons.jsx";
 import { useModels, anonymizeModel } from "../lib/useModels.js";
 import { progressLabel } from "../lib/progress.js";
@@ -36,7 +37,7 @@ function chatName(title, topic) {
 
 export default function ChatView({
   chat, identity, onChatChanged, onOpenDeck, onOpenReport, onDeckChanged,
-  leftOpen, onToggleLeft, onOpenSettings, unverified = false,
+  leftOpen, onToggleLeft, onOpenSettings, unverified = false, accountKey, onOpenProject,
 }) {
   const [themes, setThemes] = useState([]);
   const [types, setTypes] = useState({});
@@ -63,6 +64,8 @@ export default function ChatView({
   }
   const [model, setModel] = useState(chat.model ?? "");
   const [deckData, setDeckData] = useState(null); // { slides:[{type,headline}], thumbs:[] }
+  const [deckLoadError, setDeckLoadError] = useState(false);
+  const [deckReload, setDeckReload] = useState(0);
   const [selected, setSelected] = useState(() => new Set(chat.selectedSlides ?? []));
   const [openIndex, setOpenIndex] = useState(null); // enlarged slide in the panel
   const [punching, setPunching] = useState(false);
@@ -131,22 +134,25 @@ export default function ChatView({
   useEffect(() => {
     if (!chat.produced || !chat.deckSlug) return;
     let live = true;
+    setDeckData(null); setDeckLoadError(false);
     api.deck(chat.deckSlug)
       .then((r) => {
         if (!live) return;
         const stamp = Date.now();
         setDeckData({
+          slug: chat.deckSlug,
           slides: r.deck?.slides ?? [],
           plates: (r.slides ?? []).map((s) => `${s}?t=${stamp}`),
           thumbs: (r.thumbs ?? []).map((s) => `${s}?t=${stamp}`),
+          mode: r.meta?.mode,
         });
         const f = deckContext.focusedSlide(chat.deckSlug);
         if (f != null && selected.size === 0) setOpenIndex(f.index);
       })
-      .catch(() => {});
+      .catch(() => { if (live) setDeckLoadError(true); });
     return () => { live = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat.produced, chat.deckSlug, chat.turns?.length]);
+  }, [chat.produced, chat.deckSlug, chat.turns?.length, deckReload]);
 
   useEffect(() => {
     const saved = chatRef.current.selectedSlides ?? [];
@@ -1183,10 +1189,16 @@ export default function ChatView({
                 </div>
               )}
               <div className="mt-4">
-                <Button variant="primary" onClick={() => (chat.kind === "report" ? onOpenReport(chat.deckSlug) : onOpenDeck(chat.deckSlug))}>
+                <Button variant={chat.kind === "report" ? "primary" : "outline"} onClick={() => (chat.kind === "report" ? onOpenReport(chat.deckSlug) : onOpenDeck(chat.deckSlug))}>
                   Open the {chat.kind === "report" ? "report" : "deck"}
                 </Button>
               </div>
+            </Panel>
+          )}
+          {phase === "editing" && chat.deckSlug && (
+            <Panel className="p-5">
+              {deckLoadError && <p role="alert" className="mb-2 text-sm text-fg">Deck details could not be loaded. <button className="underline" onClick={() => setDeckReload(n => n + 1)}>Retry loading deck</button></p>}
+              <OpenInEditor key={chat.deckSlug} slug={chat.deckSlug} mode={deckData?.mode} accountKey={accountKey} onOpenProject={onOpenProject} disabled={busy || unverified || deckData?.slug !== chat.deckSlug} disabledReason={unverified ? "Confirm your email before opening the editor." : busy ? "Wait for the current deck changes to finish." : "Waiting for deck details."} />
             </Panel>
           )}
         </div>
