@@ -23,15 +23,15 @@
   "validation": [
     {
       "id": "browser-handoff",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "status": "passed",
+      "evidence": "docs/v2-7b-2-evidence/browser-handoff.json",
+      "reason": "Executed on frozen source; exact leaf totals and complete file inventory retained."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "status": "passed",
+      "evidence": "docs/v2-7b-2-evidence/non-browser-bulk.json",
+      "reason": "Executed on frozen source; exact leaf totals and complete file inventory retained."
     },
     {
       "id": "serial-browser",
