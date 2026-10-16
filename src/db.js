@@ -14,6 +14,9 @@ function getDb() {
   const file = dbPath();
   mkdirSync(path.dirname(file), { recursive: true });
   db = new DatabaseSync(file);
+  // Separate headless writers may initialize or import concurrently. Bound lock
+  // contention before WAL/schema setup as well as later project transactions.
+  db.exec("PRAGMA busy_timeout=5000;");
   db.exec("PRAGMA journal_mode=WAL;");
   db.exec("PRAGMA foreign_keys=ON;");
   ensureSchema(db);

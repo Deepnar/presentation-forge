@@ -39,6 +39,8 @@ import {
 } from "./history.js";
 import { canAccessProject } from "./store.js";
 
+import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+
 export { canAccessProject };
 
 const pools = new Map();
@@ -81,7 +83,7 @@ async function pool() {
 
 // Test-only: close every pool and forget them, so suites can switch
 // databases by changing the env var. Never used outside tests.
-export async function __testReset() {
+export async function closeProjectStore() {
   for (const p of pools.values()) {
     try {
       await p.end();
@@ -89,6 +91,8 @@ export async function __testReset() {
   }
   pools.clear();
 }
+
+export async function __testReset() { await closeProjectStore(); }
 
 // Test-only: raw access for corruption/legacy-row fixtures. The
 // adapter itself never exposes this to routes.
@@ -102,7 +106,7 @@ function storageUnavailable(err) {
   // untouched; only raw driver failures become storage-unavailable.
   // pg driver codes ('23505', 'ECONNREFUSED', …) are never in this
   // set, so they can never leak through as domain codes.
-  if (err && (err.code === "store-misconfigured" || err.code === "invalid-id" || err.code === "invalid-document" || err.code === "not-found" || err.code === "revision-pruned")) return err;
+  if (err && (err.code === "store-misconfigured" || err.code === "invalid-id" || err.code === "invalid-document" || err.code === "not-found" || err.code === "revision-pruned" || err.code === "import-source-changed" || err.code === "import-target-deleted")) return err;
   const e = new Error(`storage unavailable: ${err?.message ?? String(err)}`);
   e.code = "storage-unavailable";
   return e;
@@ -127,6 +131,11 @@ const PROJECT_DDL = `
     updated_at TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_v2_projects_owner ON v2_projects(owner);
+  CREATE TABLE IF NOT EXISTS v2_project_imports (
+    request_key TEXT PRIMARY KEY,
+    source_digest TEXT NOT NULL,
+    project_id TEXT NOT NULL
+  );
   CREATE TABLE IF NOT EXISTS v2_project_revisions (
     project_id TEXT NOT NULL,
     revision INTEGER NOT NULL,
@@ -147,11 +156,26 @@ async function ensureSchema(clientOrPool) {
 // transaction: two concurrent writers both creating-if-missing
 // deadlock on the table/index locks. Ensure once per pool outside
 // every transaction instead.
-const ensuredPools = new WeakSet();
+const ensuredPools = new WeakMap();
 async function ensureSchemaPool(p) {
-  if (ensuredPools.has(p)) return;
-  await ensureSchema(p);
-  ensuredPools.add(p);
+  if (ensuredPools.has(p)) return ensuredPools.get(p);
+  const ready = (async () => {
+    const client = await p.connect();
+    client.on("error", () => { /* initialization query reports the failure */ });
+    try {
+      await client.query("BEGIN");
+      // DDL has its own short transaction. The shared lock also covers cold
+      // initialization in a different process, before any document transaction.
+      await client.query("SELECT pg_advisory_xact_lock(21441, 7)");
+      await ensureSchema(client);
+      await client.query("COMMIT");
+    } catch (error) {
+      try { await client.query("ROLLBACK"); } catch { /* connection may be gone */ }
+      throw error;
+    } finally { client.release(); }
+  })();
+  ensuredPools.set(p, ready);
+  try { await ready; } catch (error) { ensuredPools.delete(p); throw error; }
 }
 
 async function withTxn(fn) {
@@ -243,7 +267,8 @@ function checkSchemaVersion(stored) {
   }
 }
 
-export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null }) {
+export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
+  const request = validateImportRequest(importRequest, owner);
   const prov = validateProvenance(provenance ?? undefined);
   if (!prov.ok) {
     const err = new Error(prov.errors[0]);
@@ -263,6 +288,20 @@ export async function createProject({ owner = null, title, scenes, theme = null,
   try {
     await ensureSchemaPool(await pool());
     return await withTxn(async (client) => {
+      if (request) {
+        // The unique insertion waits for a competing transaction. Its reservation,
+        // project and baseline history either all commit or all roll back.
+        const reserved = await client.query(
+          "INSERT INTO v2_project_imports (request_key,source_digest,project_id) VALUES ($1,$2,$3) ON CONFLICT (request_key) DO NOTHING RETURNING project_id",
+          [request.key, request.digest, doc.id],
+        );
+        if (!reserved.rowCount) {
+          const link = (await client.query("SELECT * FROM v2_project_imports WHERE request_key=$1", [request.key])).rows[0];
+          const row = (await client.query("SELECT * FROM v2_projects WHERE id=$1", [link.project_id])).rows[0];
+          return replayImportedProject(link, request, row, owner);
+        }
+      }
+
       try {
         await client.query(
           "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7)",
@@ -274,12 +313,25 @@ export async function createProject({ owner = null, title, scenes, theme = null,
         throw storageUnavailable(err);
       }
       await insertRevisionRow(client, { projectId: doc.id, doc, kind: "create", provenance: prov.provenance });
-      return { doc: structuredClone(doc) };
+      return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
     });
   } catch (err) {
     if (err && (err.code === "invalid-document" || err.code === "storage-unavailable")) throw err;
     throw storageUnavailable(err);
   }
+}
+
+export async function lookupImportedProject({ owner = null, importRequest }) {
+  const request = validateImportRequest(importRequest, owner);
+  if (!request) throw Object.assign(new Error("import identity required"), { code: "invalid-document" });
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const link = (await p.query("SELECT * FROM v2_project_imports WHERE request_key=$1", [request.key])).rows[0];
+    if (!link) return null;
+    const row = (await p.query("SELECT * FROM v2_projects WHERE id=$1", [link.project_id])).rows[0];
+    return await replayImportedProject(link, request, row, owner);
+  } catch (err) { throw storageUnavailable(err); }
 }
 
 export async function getProject({ owner = null, id, admin = false }) {

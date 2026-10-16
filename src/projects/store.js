@@ -28,7 +28,7 @@
 // volume, but not volume loss, image rebuilds without the mount, or
 // multi-host deployments. Hosted mode still requires a session (see the
 // routes); the store itself enforces owner scoping but not HTTP auth.
-import { getDb } from "../db.js";
+import { getDb, closeDb } from "../db.js";
 import {
   buildProjectDocument,
   validateProjectDocument,
@@ -46,6 +46,15 @@ import {
   validateProvenance,
 } from "./history.js";
 
+import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+
+function storageFailure(error) {
+  if (error?.code?.startsWith("ERR_SQLITE") || ["EACCES", "EPERM", "EROFS", "ENOSPC"].includes(error?.code)) {
+    return Object.assign(new Error("project storage unavailable"), { code: "storage-unavailable" });
+  }
+  return error;
+}
+
 function ensureSchema() {
   const db = getDb();
   db.exec(`
@@ -59,6 +68,11 @@ function ensureSchema() {
       updated_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_v2_projects_owner ON v2_projects(owner);
+    CREATE TABLE IF NOT EXISTS v2_project_imports (
+      request_key TEXT PRIMARY KEY,
+      source_digest TEXT NOT NULL,
+      project_id TEXT NOT NULL
+    );
   `);
   ensureHistorySchema(db);
   return db;
@@ -99,7 +113,8 @@ export function canAccessProject(row, { owner, admin }) {
   return (row.owner ?? null) === (owner ?? null);
 }
 
-async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null }) {
+async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
+  const request = validateImportRequest(importRequest, owner);
   const db = ensureSchema();
   const prov = validateProvenance(provenance ?? undefined);
   if (!prov.ok) {
@@ -121,6 +136,15 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
   // a created project always has a recoverable rev-0 baseline.
   db.exec("BEGIN IMMEDIATE");
   try {
+    if (request) {
+      const link = db.prepare("SELECT * FROM v2_project_imports WHERE request_key=?").get(request.key);
+      if (link) {
+        const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(link.project_id);
+        const result = await replayImportedProject(link, request, row, owner);
+        db.exec("COMMIT");
+        return result;
+      }
+    }
     try {
       db.prepare(
         "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
@@ -139,17 +163,30 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
       e.code = "storage-unavailable";
       throw e;
     }
+    if (request) db.prepare("INSERT INTO v2_project_imports (request_key,source_digest,project_id) VALUES (?,?,?)").run(request.key, request.digest, doc.id);
     db.exec("COMMIT");
   } catch (err) {
-    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable")) throw err;
     try {
       db.exec("ROLLBACK");
     } catch { /* already rolled back */ }
+    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable" || err.code === "import-source-changed" || err.code === "import-target-deleted" || err.code === "not-found")) throw err;
     const e = new Error(`storage unavailable: ${err.message}`);
     e.code = "storage-unavailable";
     throw e;
   }
-  return { doc: structuredClone(doc) };
+  return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
+}
+
+export async function lookupImportedProject({ owner = null, importRequest }) {
+  const request = validateImportRequest(importRequest, owner);
+  if (!request) throw Object.assign(new Error("import identity required"), { code: "invalid-document" });
+  try {
+    const db = ensureSchema();
+    const link = db.prepare("SELECT * FROM v2_project_imports WHERE request_key=?").get(request.key);
+    if (!link) return null;
+    const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(link.project_id);
+    return await replayImportedProject(link, request, row, owner);
+  } catch (error) { throw storageFailure(error); }
 }
 
 export async function getProject({ owner = null, id, admin = false }) {
@@ -652,7 +689,7 @@ async function restoreRevisionInner({ owner = null, id, admin = false, targetRev
 // History reads (list/getRevision) stay concurrent; restore is a
 // revision-changing op and serializes like save/rename.
 export function createProject(args) {
-  return serializeWrite(() => createProjectInner(args));
+  return serializeWrite(() => createProjectInner(args)).catch(error => { throw storageFailure(error); });
 }
 export function saveProject(args) {
   return serializeWrite(() => saveProjectInner(args));
@@ -666,3 +703,5 @@ export function deleteProject(args) {
 export function restoreRevision(args) {
   return serializeWrite(() => restoreRevisionInner(args));
 }
+
+export function closeProjectStore() { closeDb(); }
