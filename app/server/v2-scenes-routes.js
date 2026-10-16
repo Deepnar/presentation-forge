@@ -15,13 +15,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fail, ok } from "./http.js";
 import { isHosted } from "../../src/cloud.js";
-import { validateDeckIntent, normalizeIntent } from "../../packages/model/intent.ts";
-import { validateScene } from "../../packages/model/scene.ts";
-import { loadThemeDocument } from "../../src/theme-loader.js";
-import { normalizeDesign } from "../../packages/core/design.ts";
-import { planDeckComposition } from "../../packages/compiler/composition.ts";
-import { compileDeckDetailed } from "../../packages/compiler/compile.js";
-import { resolvePlateBackgrounds, slideBackgrounds } from "../../src/v2-plates.js";
+import { compileSceneDeck } from "../../src/v2-compile.js";
 import { benchmarkChrome } from "../../tools/v2-benchmark.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -122,47 +116,13 @@ export function liveExamples() {
 // fixture drivers exactly (plates included), so live decks and
 // fixture decks can never disagree about what the compiler does.
 export async function compileLiveDeck({ intent, theme = "warm-humanist", variant = "plain" }) {
-  const themes = await v2Themes();
-  if (!themes.has(theme)) {
-    const err = new Error(`unsupported theme "${theme}"`);
-    err.code = "bad-theme";
-    throw err;
-  }
   if (!VARIANTS.has(variant)) {
-    const err = new Error(`unsupported variant "${variant}"`);
-    err.code = "bad-variant";
-    throw err;
+    throw Object.assign(new Error(`unsupported variant "${variant}"`), { code: "bad-variant" });
   }
-  const verdict = await validateDeckIntent(intent);
-  if (!verdict.ok) {
-    const err = new Error("deck intent invalid");
-    err.code = "bad-intent";
-    err.details = verdict.errors;
-    throw err;
-  }
-  const clean = normalizeIntent(intent);
-  const design = normalizeDesign({ theme: await loadThemeDocument(theme), mode: "light" });
-  const backgrounds = await resolvePlateBackgrounds({ themeName: theme, mode: "light", design });
-  const { plan } = planDeckComposition(clean, design);
-  const chrome = variant === "chromed" ? benchmarkChrome(clean, design, { backgrounds, plan }) : null;
-  const { scenes, findings, fitDiagnostics } = compileDeckDetailed(clean, design, chrome, slideBackgrounds(backgrounds));
-  // A scene that fails its own contract is a compiler failure,
-  // never a response: 500 with a sanitized message, details logged.
-  for (const scene of scenes) {
-    const sv = await validateScene(scene);
-    if (!sv.ok) {
-      console.error(`live compile scene failed validation: ${sv.errors.join("; ")}`);
-      const err = new Error("compiler produced an invalid scene");
-      err.code = "compile-failed";
-      throw err;
-    }
-  }
-  return {
-    deck: { name: clean.id, title: clean.title, theme, variant, slideCount: scenes.length },
-    scenes,
-    findings,
-    fitDiagnostics,
-  };
+  const { scenes, findings, fitDiagnostics, intent: clean } = await compileSceneDeck({
+    intent, theme, chromeForDeck: variant === "chromed" ? benchmarkChrome : null,
+  });
+  return { deck: { name: clean.id, title: clean.title, theme, variant, slideCount: scenes.length }, scenes, findings, fitDiagnostics };
 }
 
 export function registerV2ScenesRoutes(app) {

@@ -7,11 +7,12 @@ import { ROOT } from "./paths.js";
 const ajv = new Ajv({ allErrors: true, strict: false, allowUnionTypes: true });
 
 let _validate;
-async function compiled() {
-  if (!_validate) {
-    const schema = JSON.parse(await readFile(path.join(ROOT, "schema", "deck.schema.json"), "utf8"));
-    _validate = ajv.compile(schema);
-  }
+function compiled() {
+  // Concurrent first imports share schema compilation. Publishing the cache
+  // only after readFile would register the same $id several times in this AJV.
+  if (!_validate) _validate = readFile(path.join(ROOT, "schema", "deck.schema.json"), "utf8")
+    .then(text => ajv.compile(JSON.parse(text)))
+    .catch(error => { _validate = null; throw error; });
   return _validate;
 }
 

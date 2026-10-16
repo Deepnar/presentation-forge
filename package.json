@@ -33,7 +33,8 @@
     "local:check": "node tools/local-check.mjs",
     "typecheck": "tsc --noEmit",
     "types:generate": "node tools/v2-types.mjs",
-    "dev:protocol": "node tools/dev-protocol-check.mjs"
+    "dev:protocol": "node tools/dev-protocol-check.mjs",
+    "import-project": "node --env-file-if-exists=.env src/projects/import-cli.js"
   },
   "keywords": [],
   "author": "",
