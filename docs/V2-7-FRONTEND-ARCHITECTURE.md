@@ -1,7 +1,8 @@
 # V2-7 Frontend Architecture — unified workspace
 
-Updated: 2026-10-15. Task-entry baseline `97a12de`; V2-7A independently accepted
-at `fe749fb`. Parent V2-7 remains in progress.
+Updated: 2026-10-16. V2-7A independently accepted at `fe749fb`; V2-7B-1
+source `f52d193` is under validation and independent review. Parent V2-7 remains
+in progress.
 
 ## 1. Product model: Workspace → Project → Editor
 
@@ -83,11 +84,10 @@ part of the same App route hierarchy.
   (blank, 15 layout skeletons with minted ids); `apiCreate`
   persists them; the router opens the result. No template engine,
   no fake projects.
-- Generation (chat → deck.yaml) has no end-to-end bridge into V2 projects.
-  `packages/model/legacy.ts` has a partial legacy-to-intent converter, but no
-  generation-to-project service, route or UI handoff uses it. Unsupported slides
-  are reported separately as `unmapped`; other fields are not fully preserved.
-  It is not a lossless whole-deck import. See §7 and the V2-7B roadmap entry.
+- Generation has a shared conversion/creation service, authenticated route and
+  headless command, described in §7. Chat still opens the legacy deck; there is
+  no browser handoff action. The historical partial bridge in
+  `packages/model/legacy.ts` remains separate and is not used for durable imports.
 
 ## 4. Navigation and guards
 
@@ -130,15 +130,54 @@ obey the stale-base conflict path, and record provenance —
 exactly the path manual edits already take. No new document
 model, no second permission system.
 
-## 7. Generation handoff (V2-7B blocker)
+## 7. Generated-source conversion and creation (V2-7B-1)
 
-"Create with AI" opens the existing chat generation workflow
-(`#/chat` deck briefing). Completion still opens the legacy deck. The existing
-partial converter covers the original six families and aliases, not the full
-74-type schema or every content field; the stateless live-compile endpoint
-accepts validated DeckIntent but does not persist it. The missing link is a
-validated whole-deck conversion/creation boundary and a UI handoff into the
-persisted project. The existing `GET /api/decks/:slug/project` is legacy artifact
-metadata, not a V2 scene document. Until that slice, generated decks and saved
-presentations are neighboring worlds with a labeled door between
-them — never presented as one thing.
+`src/projects/import-generated.js` orchestrates source snapshot → typed intent →
+shared deterministic compilation → scene validation/content/fit/native-export
+gates → atomic ProjectStore creation. `src/v2-compile.js` is also used by the
+stateless live compiler. It resolves canonical theme/style/mode, plates and
+adapter-supplied chrome below HTTP. There is no new semantic vocabulary,
+renderer layout or parallel editing representation.
+
+`legacy-conversion.js` audits all 74 schema type names. Fifty have field-gated
+mappings; the remaining 24 refuse. Each family's declared typed fields are
+checked recursively before conversion, including nested objects and arrays.
+Unsupported fields/types, media, true speaker notes, citations, authored flow
+orientation, unsupported chart kinds and capacity/fit failures refuse the entire
+deck. Visible `speaker_note` becomes visible semantic content. Presenter text
+uses canonical locked chrome; default slide numbers and boolean chrome policy
+are preserved. Nonempty effective institutional identity/brand/roster content
+(base → operator → owner → source metadata) refuses until its adapter is audited.
+See the evaluation's exact field matrix; a type name is not blanket support.
+
+`import-source.js` admits only ready, bounded, alias-free regular source files
+without active checkpoints or incomplete plans. Source and target require exact
+owner identity, including administrators; a local headless operator may import
+only ownerless decks. Source bytes and effective identity are rechecked before
+persistence. The digest covers raw source/plan, theme/style/mode and normalized
+chrome policy. Source files are not modified.
+
+`POST /api/decks/:slug/v2-project` accepts `{requestId, mode?}` through existing
+authentication/verification and project-enabled gates. `npm run import-project --
+<slug> --request-id <stable-id> [--mode light|dark]` uses the same service; hosted
+calls require an existing session via `FORGE_IMPORT_TOKEN`. The legacy
+`GET /api/decks/:slug/project` keeps its artifact metadata contract.
+
+Both stores keep `v2_project_imports` receipts keyed by a hash of owner + stable
+request identity. Receipt, project and revision zero commit atomically. A retry
+returns the current edited project without recompiling, rejects changed source
+with 409 and a deleted target with 410. Receipts intentionally outlive target
+deletion to prevent silent resurrection. SQLite serializes writes and bounds
+cold-process contention; PostgreSQL uses a unique reservation inside the creation
+transaction and a separate advisory-locked initialization transaction. No process
+local map supplies durability.
+
+The browser scene validator is generated from the canonical scene schema by a
+Vite plugin. The Node path keeps runtime AJV validation; the browser receives
+equivalent standalone code, avoiding runtime code generation under the unchanged
+server CSP. There is no checked-in validator/schema fork. Actual-server browser
+checks exercise this policy rather than bypassing it through a static proxy.
+
+"Create with AI" still opens the existing chat briefing, whose completion opens
+the legacy deck. The remaining browser action is tracked only in
+[V2-7B-2](ROADMAP.md#v2-7b-candidate); it is not implemented or authorized here.

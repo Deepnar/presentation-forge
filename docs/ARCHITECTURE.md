@@ -1815,6 +1815,32 @@ and failed replacement loading restores editing/guard ownership. Embedded
 binding waits for the font-gated viewer. The top bar scrolls to keep narrow
 controls reachable (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
 
+### V2-7B-1 generated-source creation
+
+`src/projects/import-generated.js` provides the headless conversion/creation
+boundary, exposed by `POST /api/decks/:slug/v2-project` and `import-project`.
+The bounded source reader checks exact ownership, finalized snapshots and
+effective identity. Strict per-family field auditing precedes semantic mapping;
+the shared `src/v2-compile.js` orchestrates existing intent validation, canonical
+theme/style/mode normalization, plate/chrome resolution and deterministic compile.
+Unsupported or unrepresentable content refuses before persistence. Native chart
+and table data remain native, and supported presenter/footer chrome stays locked.
+The historical six-family bridge is unchanged and is not the import boundary.
+
+SQLite and PostgreSQL atomically persist the project, revision-zero history and
+an owner-scoped import receipt. Durable retries return the current edited
+document without compilation; changed sources conflict and deleted targets
+cannot resurrect through the same request. PostgreSQL cold schema setup uses a
+short advisory-locked DDL transaction outside document transactions. The full
+contracts, audited limits and current review status are in
+`docs/V2-7-FRONTEND-ARCHITECTURE.md` §7 and `docs/V2-7B-1-EVAL.md`.
+
+Browser scene validation is standalone code generated from the same canonical
+schema at Vite build/dev time, through a narrowly targeted module boundary.
+Node keeps AJV compilation; served project loading now works under the existing
+CSP without runtime code generation. Chat still opens the legacy deck; its
+editor handoff remains the separate roadmap V2-7B-2 candidate.
+
 ## The web shell
 
 The browser UI is a shell around the shared pipeline; `app/server` stays a thin

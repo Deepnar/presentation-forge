@@ -7456,14 +7456,14 @@ scale); charts structurally exact without axes (V2-4C).
   content to persisted, editable Layer-C projects. Planning recovered on
   2026-10-15; **V2-7B-1 implementation approved on 2026-10-15**. V2-7B-2 remains
   a candidate; its browser direction is not approved. "Create with AI" currently
-  opens legacy chat, whose completion action opens the legacy deck. There is
-  no generation-to-V2-project route or UI handoff. A partial converter already
-  exists in `packages/model/legacy.ts`; it maps six original families plus
-  aliases, returns unsupported slides in `unmapped`, and omits other content
-  fields. It must not be treated as a lossless whole-deck conversion. The
-  current legacy schema has 74 type names, not 73 or 75.
+  opens legacy chat, whose completion action opens the legacy deck. The new
+  shared conversion/creation service, HTTP route and CLI are implemented at
+  `f52d193` and under validation/review; there is no browser handoff yet. The
+  historical partial converter in `packages/model/legacy.ts` remains separate.
+  The new boundary audits all 74 current schema types with whole-deck refusal
+  for unsupported content, rather than persisting the partial bridge output.
 
-  **Proposed sequence.** First agree and implement the bounded V2-7B-1 below;
+  **Sequence.** Finish validation and independent review of V2-7B-1 below;
   after its independent acceptance, plan V2-7B-2's browser handoff. Proposed
   V2-7B-2 direction is an explicit **Open in editor** action on a completed
   presentation, which creates/reopens its saved project before navigation.
@@ -7562,6 +7562,18 @@ scale); charts structurally exact without axes (V2-4C).
     Implementation approval covers this contract; stop on any required
     scope/security-policy change, or after the bounded slice's review/handoff.
     Acceptance permits planning V2-7B-2, not automatic coding of that next slice.
+  **Audited dependencies / limits (2026-10-16).** Fifty type names have
+  field-gated converters; 24 refuse entirely. Supported names still refuse
+  unaudited fields, capacity/fit failures and unsupported chart/table/flow
+  semantics. Actual speaker notes and claim citations need accepted scene/source
+  storage; media/freeform and institutional brand/identity need an audited
+  portable asset/chrome adapter. These dependencies belong to the later
+  V2-8/V2-9 or separately agreed conversion scope, not the V2-7B-2 UI action.
+  Inherited operator/owner identity is included in refusal, preventing blank
+  metadata from silently dropping institutional furniture. V2-7B-2 must surface
+  these diagnostics and retain the legacy deck when import refuses; it cannot
+  advertise full legacy parity. See the linked evaluation for the exact matrix.
+
 - [x] Repository-native development continuity — direct repository workflow,
   source-backed product/decision records, planner/implementer/reviewer roles,
   acceptance gates and schema-validated state. Implements the approved continuity
