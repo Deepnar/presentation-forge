@@ -1,6 +1,6 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { writeFile } from "node:fs/promises";
+import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -25,6 +25,23 @@ test("real authenticated HTTP import creates, reopens and exports native chart/t
   assert.ok(chart.includes("1.25") && chart.includes("12.5"));
   const table = await zip.file("ppt/slides/slide3.xml").async("string");
   assert.ok(table.includes("<a:tbl>") && table.includes("12.5"));
+});
+
+test("section ordinals survive HTTP creation, reload and native export with repeated labels", async () => {
+  const deck = { title: "Repeated sections", sections: ["Results", "Results"], slides: [0, 1].map(section => ({ type: "bullets", headline: `Evidence ${section + 1}`, section, bullets: ["Measured first claim", "Measured second claim", "Measured third claim", "Measured fourth claim"] })) };
+  const { slug } = await fixture.source({ deck }); const response = await fixture.create(slug); assert.equal(response.status, 200);
+  const { project } = await response.json();
+  const reopened = await fixture.request(`/api/v2/projects/${project.id}`, { token: fixture.token }).then(r => r.json());
+  const output = await fixture.request(`/api/v2/projects/${project.id}/export.pptx`, { token: fixture.token }); assert.equal(output.status, 200);
+  const bytes = Buffer.from(await output.arrayBuffer()), zip = await JSZip.loadAsync(bytes);
+  for (const index of [0, 1]) {
+    const ordinal = `Section 0${index + 1}`;
+    assert.ok(JSON.stringify(reopened.project.scenes[index]).includes(ordinal));
+    const xml = await zip.file(`ppt/slides/slide${index + 1}.xml`).async("string");
+    assert.ok(xml.includes(ordinal) && xml.includes("Results"));
+  }
+  await mkdir("out/v2-7b-1-validation", { recursive: true });
+  await writeFile("out/v2-7b-1-validation/section-ordinals.pptx", bytes);
 });
 
 test("HTTP retries and an owned CLI call share identity and retain a human rename", async () => {

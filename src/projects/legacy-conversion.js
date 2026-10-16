@@ -267,7 +267,7 @@ export async function convertGeneratedDeck(deck) {
     if (source.cites?.length) refuse(`${path}.cites`, "claim citations require a source registry absent from the accepted scene contract");
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
-      else { usedSections.add(source.section); text(deck.sections[source.section], "Section"); }
+      else { usedSections.add(source.section); text(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`); }
     }
     text(source.standfirst);
     rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse });

@@ -79,6 +79,14 @@ test("native chart series, units and table cells survive semantic conversion exa
   assert.deepEqual(intent.slides[1].blocks.find(b => b.kind === "table").rows, [["Sample", "Score"], ["A", "-1.25"], ["B", "0"]]);
 });
 
+test("repeated section labels retain their distinct authored ordinal", async () => {
+  const { intent } = await convertGeneratedDeck(deck([{ ...bullets, section: 0 }, { ...bullets, section: 1 }], { sections: ["Results", "Results"] }));
+  assert.deepEqual(intent.slides.map(slide => slide.blocks[0]), [
+    { id: "legacy-s1-b1", kind: "text", label: "Section 01", text: "Results" },
+    { id: "legacy-s2-b1", kind: "text", label: "Section 02", text: "Results" },
+  ]);
+});
+
 for (const [label, slide, pointer] of [
   ["real speaker notes", { ...bullets, notes: "Private speaker instructions" }, "notes"],
   ["citations", { ...bullets, cites: [{ url: "https://example.test/source", title: "Evidence" }] }, "cites"],
