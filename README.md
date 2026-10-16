@@ -257,9 +257,13 @@ current project and preserves later edits. Hosted calls require an existing
 session in `FORGE_IMPORT_TOKEN`; local operator calls admit ownerless sources
 only. A changed source requires an explicit new request. Unsupported content,
 identity/assets or readable-fit failures refuse the entire import with diagnostics.
-The chat completion action still opens the legacy deck. See the exact
+Completed presentation chats and the legacy deck page also offer **Open in
+editor**. It creates or reopens the saved editable copy through the same service,
+keeps human edits on retry and retains access to the original deck. Unsupported
+content refuses visibly; changed-source or deleted-target retries never replace
+edits or recreate a deleted project. See the exact
 [coverage and limits](docs/v2-7b-1-evidence/COVERAGE.md) and
-[validation/review status](docs/V2-7B-1-EVAL.md).
+[browser validation/review status](docs/V2-7B-2-EVAL.md).
 
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour

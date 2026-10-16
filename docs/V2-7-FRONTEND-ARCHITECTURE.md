@@ -85,9 +85,11 @@ part of the same App route hierarchy.
   persists them; the router opens the result. No template engine,
   no fake projects.
 - Generation has a shared conversion/creation service, authenticated route and
-  headless command, described in §7. Chat still opens the legacy deck; there is
-  no browser handoff action. The historical partial bridge in
-  `packages/model/legacy.ts` remains separate and is not used for durable imports.
+  headless command, described in §7. Completed chats and the legacy deck page
+  offer the explicit browser action described in §8, preserving original-deck
+  access and human edits through stable durable receipt identity. The historical
+  partial bridge in `packages/model/legacy.ts` remains separate and is not used
+  for durable imports.
 
 ## 4. Navigation and guards
 
