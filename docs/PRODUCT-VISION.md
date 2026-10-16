@@ -52,8 +52,8 @@ completed presentations and the legacy deck page offer an explicit **Open in
 editor** action through the shared HTTP/headless conversion boundary. It creates
 or reopens a saved Layer-C project, preserves human edits on retry and retains
 original-deck access with explicit coverage/refusal gates. V2-7B-1 is independently
-accepted; V2-7B-2 implementation and validation are complete, with its exact
-review state indexed in [development-state.json](development-state.json).
+accepted; V2-7B-2 is independently accepted for the bounded handoff, with its
+exact decision and validation state indexed in [development-state.json](development-state.json).
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.

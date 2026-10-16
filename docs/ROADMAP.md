@@ -7452,27 +7452,29 @@ scale); charts structurally exact without axes (V2-4C).
   > A real export click caught authentication that a bearer-only API probe missed.
 <a id="v2-7b-candidate"></a>
 
-- [ ] V2-7B generation-to-project handoff — connect generated `deck.yaml`
+- [x] V2-7B generation-to-project handoff — connect generated `deck.yaml`
   content to persisted, editable Layer-C projects. V2-7B-1 conversion/creation
   was independently accepted at `662f7d6`. Human direction approved the V2-7B-2
   explicit **Open in editor** action on 2026-10-16. That browser implementation
-  is complete at `03cc89e` with full validation; independent acceptance is pending.
+  is independently accepted at `03cc89e` with complete validation and a separate
+  [decision](reviews/V2-7B-2-03cc89e.json), for conversions admitted by B1.
   "Create with AI" opens legacy chat, whose completed presentations now offer
   the editor action while retaining legacy access. Conditional conversion and
   whole-deck refusals remain the B1 boundary; no full legacy parity is claimed.
 
-  **Sequence.** Both approved slices are implemented. B2's final199-file matrix
-  passes2233 cases plus a distinct hosted PostgreSQL browser/CLI/export case;
+  **Sequence.** Both approved slices are implemented. B2's final 199-file matrix
+  passes 2233 cases plus a distinct hosted PostgreSQL browser/CLI/export case;
   full details and limitations are in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).
-  The parent remains unchecked pending a separate exact-source decision on the
-  generation → project → edit → save/reopen → native-export evidence.
+  The separate reviewer accepted generation → project → edit → save/reopen →
+  native-export for supported source decks. Broader V2-7 hosted/Vercel readiness
+  and full legacy conversion parity remain outside this checkmark.
   Automatic navigation is outside the approved explicit-action slice.
 
   <a id="v2-7b-2-plan"></a>
 
   **V2-7B-2 approved task contract — explicit browser handoff.**
   Final validation (2026-10-16): corrected expired-session focus above the
-  composer and reran all gates on source `03cc89e`; independent review is pending.
+  composer and reran all gates on source `03cc89e`; independently accepted below.
   Human direction on 2026-10-16 approved the explicit **Open in editor** action
   on completion cards and the existing deck page, with safe create/reopen,
   preservation, diagnostics and original-deck access as described below.
@@ -7540,6 +7542,28 @@ scale); charts structurally exact without axes (V2-4C).
     Push focused source, tests, documentation and evidence only to `origin/v2`.
     Do not check off the parent before its full browser workflow is proven;
     stop after review/handoff without starting V2-8 or other feature work.
+
+  **V2-7B-2 independently accepted (2026-10-16).** Exact source `03cc89e`,
+  [separate decision/report](reviews/V2-7B-2-03cc89e.md). Final 199-file matrix:
+  2233 passing plus distinct hosted PostgreSQL double-click/CLI/export 1; no
+  required skips/cancellations/unexecuted cases. Build/typecheck/50 cells pass;
+  30 final images inspected. Independent 57/57 successful primary reruns and
+  fresh native inspection support acceptance. The earlier independent 10 pass/1 fail
+  restore timeout is explicitly unresolved, not green; its bounded investigation
+  is [registered separately](#v2-7b-2-restore-timeout). BYOK locale, Fit and B1
+  conditional coverage/refusals remain. Evidence-only capture settling corrected
+  an offscreen chat-action image; original and replacement are retained.
+  See [evaluation](V2-7B-2-EVAL.md) for exact totals and measurement boundaries.
+  This closes the approved handoff; next-candidate implementation is not authorized.
+
+  > **Learned.** Stable identity must outlive both UI entry points and ambiguous
+  > responses; it belongs in server receipts, never editable origin metadata.
+  > Invalidating stale work also needs visible recovery. A DOM-present action
+  > may still be below a fixed composer, so evidence must wait for settled bounds.
+  > A later passing run cannot explain an earlier untraced timeout: retain both
+  > outcomes, inspect actual trusted events/requests and state uncertainty.
+  > Look-ahead: future AI/runtime and project-list work can reuse the saved project,
+  > command and durable receipt boundaries without synchronizing legacy copies.
 
   **V2-7B-1 approved task contract — conversion and durable creation boundary.**
 
@@ -7638,8 +7662,8 @@ scale); charts structurally exact without axes (V2-4C).
   hosted PostgreSQL HTTP/CLI replay/export check. Build, typecheck and all 50
   benchmark cells pass. All 23 final images were inspected; exact 480×900 narrow
   geometry and native relationship preservation are retained in
-  [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). The parent stays unchecked and the next slice
-  has its separately approved explicit-action contract above.
+  [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). B2 now completes the separately approved
+  explicit-action workflow above; the B1 evidence remains its historical prerequisite.
 
   > **Learned.** Field/string survival is weaker than meaning preservation:
   > stat qualifiers must remain attached, context cannot become a fake step,
@@ -7695,6 +7719,16 @@ scale); charts structurally exact without axes (V2-4C).
   pre-existing viewer defect, not a V2-7A selection shift. Validate content-box
   fit while preserving zoom/pan and the no-reflow editing contract. Measurement:
   `docs/v2-7a-evidence/canvas-hosted.json` and final visual review.
+<a id="v2-7b-2-restore-timeout"></a>
+
+- [ ] Investigate the isolated V2-7B-2 history-restore browser timeout.
+  Preserve the independent 10-pass/1-timeout attempt and compare trusted event
+  targets, settled control geometry and restore request/response traces on a
+  bounded reproduction; determine product failure versus harness dispatch/timing
+  before changing either. Successful canonical PostgreSQL 11 and instrumented
+  reruns do not establish the first timeout's cause. Evidence is retained in the
+  [independent B2 review](reviews/V2-7B-2-03cc89e.md); no product regression has
+  been established. This is a validation followup, not conversion/feature scope.
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already

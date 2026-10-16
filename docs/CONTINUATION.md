@@ -21,7 +21,8 @@ do not silently replace that pointer with the documentation commit running now.
 This task entered from accepted V2-6C `97a12de` and V2-7A implementation `a298767`.
 Narrow corrections through `fe749fb` have complete retained validation and a
 separate ACCEPT decision in reviews/V2-7A-fe749fb.json. V2-7B-1 source `662f7d6`
-is now independently accepted in reviews/V2-7B-1-662f7d6.json. The state file
+is independently accepted in reviews/V2-7B-1-662f7d6.json. V2-7B-2 source
+`03cc89e` is independently accepted in reviews/V2-7B-2-03cc89e.json. The state file
 indexes the current full source and decision; never infer acceptance
 from a green report. Tested code and subsequent evidence commits are distinct.
 
@@ -39,9 +40,10 @@ slice, approved by human direction on 2026-10-16. Its bounded contract is in
 independently accepted prerequisite at `662f7d6`; its 197-file/2208-case evidence
 is historical and cannot stand in for validation of newer source. The new
 199-file inventory is under `v2-7b-2-evidence/`; browser/build/plate owners still
-run serially with watchdogs. The final source `03cc89e` has complete 199-file/2233-case validation plus one
+run serially with watchdogs. The accepted source `03cc89e` has complete 199-file/2233-case validation plus one
 distinct hosted PostgreSQL browser/CLI/export case and 30 inspected images.
-State records the actual frozen source and pending independent review. Do not self-accept or start another feature merely
+State records the frozen accepted source and separate decision; its review
+retains an isolated earlier restore-test timeout with the roadmap followup. Do not self-accept or start another feature merely
 because this implementation exists. Stop at this slice's review/handoff.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
