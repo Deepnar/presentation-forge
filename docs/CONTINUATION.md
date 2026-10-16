@@ -39,8 +39,9 @@ slice, approved by human direction on 2026-10-16. Its bounded contract is in
 independently accepted prerequisite at `662f7d6`; its 197-file/2208-case evidence
 is historical and cannot stand in for validation of newer source. The new
 199-file inventory is under `v2-7b-2-evidence/`; browser/build/plate owners still
-run serially with watchdogs. State records the actual frozen source and current
-validation/review status. Do not self-accept or start another feature merely
+run serially with watchdogs. The final source `03cc89e` has complete 199-file/2233-case validation plus one
+distinct hosted PostgreSQL browser/CLI/export case and 30 inspected images.
+State records the actual frozen source and pending independent review. Do not self-accept or start another feature merely
 because this implementation exists. Stop at this slice's review/handoff.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for

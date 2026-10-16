@@ -1,68 +1,68 @@
-# Handoff — V2-7B-2 explicit browser handoff in progress
+# Handoff — V2-7B-2 validated, pending independent review
 
-2026-10-16. Branch `v2`. Frozen source:
-`662f7d6a08647d431eded1ea17c5d13e7ca1c591`. Accepted baseline is now that exact source. Task-entry accepted baseline was
-`fe749fb41e744961df156e8b9dcf80f0155b4e0b`. The separate decision is
-[reviews/V2-7B-1-662f7d6.json](reviews/V2-7B-1-662f7d6.json), reviewing pushed
-evidence HEAD `9e9c51d`.
-Read AGENTS.md, DEVELOPMENT-PROTOCOL.md, development-state.json and
-[V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). No relay/provider workflow is required.
+2026-10-16, branch `v2`. Frozen implementation/test/tool source:
+`03cc89ef233db5469066599391cbaac68c2fc646`. Accepted task-entry baseline remains
+`662f7d6a08647d431eded1ea17c5d13e7ca1c591`, separate B1 decision
+[reviews/V2-7B-1-662f7d6.json](reviews/V2-7B-1-662f7d6.json). Later commits contain
+documentation/evidence only. State is indexed in development-state.json; read
+AGENTS.md, DEVELOPMENT-PROTOCOL.md, CONTINUATION.md, the approved
+[roadmap task](ROADMAP.md#v2-7b-2-plan) and [evaluation](V2-7B-2-EVAL.md).
 
-The approved shared source conversion/creation service, authenticated HTTP route,
-headless command, durable retry receipts on both stores and real-server CSP
-validator correction are implemented and pushed. Independent review found and
-prompted narrow field, effective-identity, ordinal and relationship corrections.
-The reviewer has audited every implemented converter's per-item associations;
-final exact-source/evidence acceptance is complete. The separate reviewer ran
-80/80 fresh tests, build/typecheck/protocol/50-cell benchmark and native checks;
-it audited all 197 markers/totals, verified 23 image hashes and inspected committed
-and fresh browser/native views. Its report and owned logs are retained. These
-reruns are not added to the distinct total. Source has remained
-unchanged through the final complete matrix and later documentation commits.
+The human-approved explicit **Open in editor** action is implemented on completed
+deck chats and the legacy deck page. Stable server-scoped browser identity
+creates/reopens a durable project while preserving human edits. Refusals preserve
+original-deck access. Guarded navigation, stale response disposal, cross-tab
+identity invalidation, focused session recovery and source-read retry are tested.
+No conversion/engine/store expansion, policy change or deployment is included.
+The existing direct repository workflow applies; there is no relay/model allowlist.
 
-Final disjoint 197-file inventory: **2207 pass, 0 fail,0 skip,0 cancelled**.
-Bulk 2005; serial 160 (full 28-case 7A and 5 new import cases, including real-server
-CSP); PostgreSQL contracts/import 23; cross-process/fault 19. Supplemental actual
-hosted PostgreSQL HTTP → human edit → authenticated CLI replay → native export:
-**1/1**. Total distinct final cases: **2208 passing**. Focused 68/68 repeats bulk.
-No required test is unexecuted. Build/typecheck/50-cell benchmark pass with zero
-L1/L2/fit/representation/takeaway/chart-data findings. Separate en-IN probe is
-9 pass /1 standing BYOK locale failure; it is not counted as green regression.
+All required final-source gates pass. Disjoint inventory:199 files, **2233 pass,
+0 fail/skip/cancelled**. Bulk2020, serial171, PG contracts/import23,
+cross-process/fault19. Distinct supplemental actual hosted PostgreSQL trusted
+double-click → human edit → authenticated CLI receipt replay → native export:
+**1/1**; **2234 distinct final cases**. Focused25/25 and repeated PostgreSQL
+browser11/11 are not added again. No required case unexecuted. Build/typecheck
+and50-cell benchmark pass with zero findings; all five invariance checks agree.
+Separate en_IN.UTF-8 BYOK probe remains9 pass/1 standing locale failure.
 
-All 23 final screenshots/native rasters were inspected. Chart/table selection
-movement is under 0.047px; exact 480×900 inspector fits [192,44,288,856]. Imported
-60-slide/60-thumb opening 1555ms; existing120-slide opening 1543ms. The standing
-approximately 24px Fit overflow remains. Native exports preserve ordinals, stat
-qualifiers, two real flow steps and explicit temporal roles. LibreOffice is not
-interactive Microsoft PowerPoint evidence. Model-free fixtures make no writing
-quality claim and spend no gateway budget.
+All30 final browser/native images were opened and inspected, with matching
+hashes; five are actual native rasters. Exact OOXML chart/table values survive.
+First three-slide handoff397ms SQLite/417ms PG; receipt replay398/400ms;
+60-slide handoff415/483ms with page already ready. Fresh60-slide imported opening
+including browser/fonts1568ms; existing120-slide opening1537ms. Chart/table
+selection bounding-coordinate shifts at most0.115891px/0.018929px. See the
+measurement boundaries in the evaluation; these are individual observations.
 
-All 74 source types are audited. Fifty have conditional mappings; 24 refuse entirely.
-Canonical specimens: 46 semantic conversions, 37 durable creations, 37 atomic refusals
-(24 family, 4 field, 9 fit/capacity). Notes/citations, portable assets/institutional
-identity and unsupported encodings refuse explicitly. See COVERAGE.md; do not
-advertise full legacy parity. The accepted baseline chat opens the legacy deck; the new explicit browser action
-is in progress. The sole future
-work/direction record is [the roadmap](ROADMAP.md#v2-7b-candidate); V2-7B-2 now has separate human scope/direction authorization.
+Initial review and visual inspection prompted narrow corrections; the full matrix
+was rerun after the final focused sign-in notice correction. Preliminary cancelled
+fixture runs and earlier-source passes remain explicitly separate in logs/attempts
+and logs/superseded-22047f7. They never count as final passing validation.
 
-The owned disposable PostgreSQL 15.18 service `forge_v27b_validation_pg` was
-stopped and automatically removed after independent review. No test-owned database
-remained; its tmpfs was removed. All owned fixed validation ports, including 5544,
-are closed. No unrelated process, service or database was stopped. Cleanup is
-recorded in the evidence environment file. Reproduction requires a fresh isolated
-PostgreSQL service; do not substitute another project's database.
+Review remains pending, not accepted by the implementer. Reuse the separate
+`/root/v27b_review` context for source/evidence audit and meaningful independent
+checks, then its exact-source ACCEPT/HOLD. No additional feature is authorized.
+The user prefers few agents and high effort only. The reviewer must have exclusive
+use of browser/build validation; do not overlap shared Vite dist rebuilds.
 
-Historical 6A/B/C/7A test-output rewrites were copied to ignored out/ and restored.
-The three original untracked paths `.agents/`,
-`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Never stage/remove
-them. Push destination is origin/v2. User preference: few subagents, only high
-effort; the separate `/root/v27b_review` context supplied this acceptance.
-Human direction on 2026-10-16 approved V2-7B-2 with an explicit Open in editor
-action on completed deck chats and the existing deck page. Its approved bounded
-contract is in ROADMAP.md#v2-7b-2-plan. Current code is unfrozen and in progress;
-V2-7B-2-EVAL.md records preliminary checks and early independent review findings.
-Use the separate 199-file v2-7b-2-evidence manifest for its final validation.
-Earlier accepted totals above are historical, not validation of this new source.
-No deployment or production migration is authorized. Stop after independent
-review/handoff of this slice.
+Owned disposable PostgreSQL15.18 is retained solely for the independent review:
+container `forge_v27b2_validation_pg`, exact ID
+`42af77abf617c5f2ad9b0821566e0fe8c28aa68fed39712408e22e7199a30229`, localhost5544,
+limited to1CPU/512MB/192MB tmpfs. Reproduction commands use TEST_PG_URL in the
+[evidence runbook](v2-7b-2-evidence/RUNBOOK.md). Never use other projects' ports5432/5433.
+After review, confirm no forge-owned databases remain, stop this exact owned
+container (automatic removal), check owned ports and record cleanup. No unrelated
+work may be stopped.
+
+Historical tracked test-output rewrites were copied to ignored out/ and restored;
+final fresh evidence is in v2-7b-2-evidence/. The three original untracked paths
+`.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` are untouched; never stage/remove
+them. Scoped [changed files](v2-7b-2-evidence/changed-files.txt) are relative to
+planning checkout924f157. Push destination remains origin/v2.
+
+Known limitations: accepted conditional conversion/refusals, standing BYOK locale
+and approximately24px Viewer Fit padding issue. Narrow inspector overlay and
+horizontal scrolling remain accepted; LibreOffice is not interactive Microsoft
+PowerPoint proof. No live provider/writing-quality run was made. Future work lives
+only in [ROADMAP.md](ROADMAP.md#workspace-followups). Stop after independent
+review/accept-or-hold, cleanup and pushed handoff; do not start another slice.

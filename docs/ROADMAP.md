@@ -7453,30 +7453,26 @@ scale); charts structurally exact without axes (V2-4C).
 <a id="v2-7b-candidate"></a>
 
 - [ ] V2-7B generation-to-project handoff — connect generated `deck.yaml`
-  content to persisted, editable Layer-C projects. Planning recovered on
-  2026-10-15; **V2-7B-1 implementation approved on 2026-10-15**. V2-7B-2 explicit-action implementation is approved on 2026-10-16. "Create with AI" currently
-  opens legacy chat, whose completion action opens the legacy deck. The new
-  shared conversion/creation service, HTTP route and CLI are independently
-  accepted at `662f7d6`; there is no browser handoff yet. The
-  historical partial converter in `packages/model/legacy.ts` remains separate.
-  The new boundary audits all 74 current schema types with whole-deck refusal
-  for unsupported content, rather than persisting the partial bridge output.
+  content to persisted, editable Layer-C projects. V2-7B-1 conversion/creation
+  was independently accepted at `662f7d6`. Human direction approved the V2-7B-2
+  explicit **Open in editor** action on 2026-10-16. That browser implementation
+  is complete at `03cc89e` with full validation; independent acceptance is pending.
+  "Create with AI" opens legacy chat, whose completed presentations now offer
+  the editor action while retaining legacy access. Conditional conversion and
+  whole-deck refusals remain the B1 boundary; no full legacy parity is claimed.
 
-  **Sequence.** V2-7B-1 validation and independent acceptance are complete.
-  V2-7B-2 browser-handoff planning started on 2026-10-16. Proposed
-  V2-7B-2 direction is an explicit **Open in editor** action on a completed
-  presentation, which creates/reopens its saved project before navigation.
-  Retain access to the legacy deck; never regenerate over human edits. Automatic
-  navigation is an alternative requiring a surface-direction decision. The explicit action was approved on 2026-10-16; automatic navigation is
-  not part of this slice. The parent stays unchecked
-  until the approved generation → project → edit → save/reopen → native-export
-  workflow has browser evidence; a working headless seam alone cannot complete it.
+  **Sequence.** Both approved slices are implemented. B2's final199-file matrix
+  passes2233 cases plus a distinct hosted PostgreSQL browser/CLI/export case;
+  full details and limitations are in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).
+  The parent remains unchecked pending a separate exact-source decision on the
+  generation → project → edit → save/reopen → native-export evidence.
+  Automatic navigation is outside the approved explicit-action slice.
 
   <a id="v2-7b-2-plan"></a>
 
   **V2-7B-2 approved task contract — explicit browser handoff.**
-  Pre-acceptance visual correction (2026-10-16): focus expired-session recovery
-  above the chat composer; revalidate the corrected exact source.
+  Final validation (2026-10-16): corrected expired-session focus above the
+  composer and reran all gates on source `03cc89e`; independent review is pending.
   Human direction on 2026-10-16 approved the explicit **Open in editor** action
   on completion cards and the existing deck page, with safe create/reopen,
   preservation, diagnostics and original-deck access as described below.
@@ -7660,8 +7656,8 @@ scale); charts structurally exact without axes (V2-4C).
   portable asset/chrome adapter. These dependencies belong to the later
   V2-8/V2-9 or separately agreed conversion scope, not the V2-7B-2 UI action.
   Inherited operator/owner identity is included in refusal, preventing blank
-  metadata from silently dropping institutional furniture. V2-7B-2 must surface
-  these diagnostics and retain the legacy deck when import refuses; it cannot
+  metadata from silently dropping institutional furniture. V2-7B-2 surfaces
+  these diagnostics and retains the legacy deck when import refuses; it cannot
   advertise full legacy parity. See the linked evaluation for the exact matrix.
 
 - [x] Repository-native development continuity — direct repository workflow,

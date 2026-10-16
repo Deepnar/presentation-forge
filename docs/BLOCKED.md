@@ -194,8 +194,8 @@ window was obtained and all required validation executed against the isolated
 Forge service. Independent review accepted corrected source `fe749fb`; the owned
 service was stopped after review. See `docs/V2-7A-EVAL.md` for execution,
 measurements and known limits. V2-7B-1 conversion/creation was approved on
-2026-10-15 and independently accepted on 2026-10-16; the browser handoff remains a candidate
-in [the roadmap](ROADMAP.md#v2-7b-candidate). Review status/baseline are indexed in development-state.json. No
+2026-10-15 and independently accepted on 2026-10-16; the approved explicit browser handoff is fully validated and pending independent
+review in [the roadmap](ROADMAP.md#v2-7b-2-plan). Review status/baseline are indexed in development-state.json. No
 constraint or green test authorizes starting a different milestone.
 
 Two are worth naming because they look like engineering and are not:

@@ -1752,3 +1752,5 @@ prevents cross-account navigation but can leave a mounted control opening foreve
 Observe token storage events, invalidate old work and offer reload guidance;
 never silently start a write with a new token while the account view is stale.
 Likewise, a prerequisite read that disables a control must expose retry on failure.
+An announced recovery can still sit below a fixed composer. Focus its notice and
+measure the full notice against the content viewport, not just the window bounds.
