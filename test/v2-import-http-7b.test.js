@@ -29,6 +29,9 @@ test("real authenticated HTTP import creates, reopens and exports native chart/t
 
 test("section ordinals survive HTTP creation, reload and native export with repeated labels", async () => {
   const deck = { title: "Repeated sections", sections: ["Results", "Results"], slides: [0, 1].map(section => ({ type: "bullets", headline: `Evidence ${section + 1}`, section, bullets: ["Measured first claim", "Measured second claim", "Measured third claim", "Measured fourth claim"] })) };
+  deck.slides.push({ type: "stats", headline: "Groups", stats: [{ value: "10", label: "Treatment", sub: "Only adults" }, { value: "20", label: "Control", sub: "Only children" }] });
+  deck.slides.push({ type: "flow", headline: "Method", section: 0, steps: [{ title: "Start" }, { title: "Finish" }] });
+  deck.slides.push({ type: "before-after", headline: "Change", before: { title: "Enrollment", body: "10" }, after: { title: "Enrollment", body: "20" } });
   const { slug } = await fixture.source({ deck }); const response = await fixture.create(slug); assert.equal(response.status, 200);
   const { project } = await response.json();
   const reopened = await fixture.request(`/api/v2/projects/${project.id}`, { token: fixture.token }).then(r => r.json());
@@ -40,8 +43,31 @@ test("section ordinals survive HTTP creation, reload and native export with repe
     const xml = await zip.file(`ppt/slides/slide${index + 1}.xml`).async("string");
     assert.ok(xml.includes(ordinal) && xml.includes("Results"));
   }
+  const stats = reopened.project.scenes[2].elements.filter(e => e.kind === "text" && e.semanticRef);
+  const treatment = stats.find(e => JSON.stringify(e.paragraphs).includes("Only adults"));
+  const control = stats.find(e => JSON.stringify(e.paragraphs).includes("Only children"));
+  assert.ok(treatment && control && treatment.semanticRef !== control.semanticRef);
+  assert.ok(JSON.stringify(treatment.paragraphs).includes("Treatment") && JSON.stringify(treatment.paragraphs).includes('"10"'));
+  assert.ok(JSON.stringify(control.paragraphs).includes("Control") && JSON.stringify(control.paragraphs).includes('"20"'));
+  assert.equal(reopened.project.scenes[3].elements.filter(e => e.id.endsWith(":badge")).length, 2);
+  const statsXml = await zip.file("ppt/slides/slide3.xml").async("string");
+  for (const value of ["Only adults", "Only children", "Treatment", "Control"]) assert.ok(statsXml.includes(value));
+  const transitionXml = await zip.file("ppt/slides/slide5.xml").async("string");
+  for (const value of ["Before: Enrollment", "After: Enrollment"]) {
+    assert.ok(transitionXml.includes(value)); assert.ok(JSON.stringify(reopened.project.scenes[4]).includes(value));
+  }
   await mkdir("out/v2-7b-1-validation", { recursive: true });
   await writeFile("out/v2-7b-1-validation/section-ordinals.pptx", bytes);
+});
+
+test("malformed source shapes return an explicit 422 without creating projects", async () => {
+  const before = await fixture.request("/api/v2/projects", { token: fixture.token }).then(r => r.json());
+  for (const deck of [{ title: "Bad", slides: "wrong" }, { title: "Bad", slides: {} }, { title: "Bad", slides: [null] }, { title: "Bad", slides: [["nested"]] }]) {
+    const { slug } = await fixture.source({ deck }); const response = await fixture.create(slug);
+    assert.equal(response.status, 422); assert.equal((await response.json()).code, "invalid-source");
+  }
+  const after = await fixture.request("/api/v2/projects", { token: fixture.token }).then(r => r.json());
+  assert.deepEqual(after.projects, before.projects);
 });
 
 test("HTTP retries and an owned CLI call share identity and retain a human rename", async () => {

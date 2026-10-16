@@ -99,6 +99,9 @@ export async function readImportSource({ slug, requestId, principal = null, loca
   try {
     deck = parse(bytes.deckText); plan = bytes.planText === null ? null : parse(bytes.planText);
   } catch { throw importError("invalid-source", "source YAML is invalid or contains aliases"); }
+  if (!deck || typeof deck !== "object" || Array.isArray(deck) || !Array.isArray(deck.slides) || deck.slides.some(slide => !slide || typeof slide !== "object" || Array.isArray(slide))) {
+    throw importError("invalid-source", "source must be a deck object containing slide objects");
+  }
   // Source ownership and target ownership are independent. Even an administrator
   // must not turn somebody else's or an ownerless legacy deck into their project.
   if (bytes.metaText !== authorizedMetaText) throw importError("source-changed", "source ownership changed during import");

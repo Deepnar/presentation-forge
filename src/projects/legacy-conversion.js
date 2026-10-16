@@ -63,7 +63,8 @@ const comparison = (s, c) => {
   for (const name of names) {
     const side = s[name];
     c.keys(side, s.type === "vs" ? ["title"] : s.type === "before-after" ? ["title", "body"] : ["title", "kicker", "body", "points"], `${c.path}.${name}`);
-    c.text([side.kicker, side.body, s[`${name}_body`], ...(side.points ?? [])].filter(Boolean).join("\n"), side.title);
+    const label = s.type === "before-after" ? `${name === "before" ? "Before" : "After"}: ${side.title}` : side.title;
+    c.text([side.kicker, side.body, s[`${name}_body`], ...(side.points ?? [])].filter(Boolean).join("\n"), label);
   }
   if (s.verdict) c.add("callout", { text: s.verdict });
 };
@@ -77,7 +78,7 @@ rule("pros-cons", ["pros", "cons"], (s, c) => {
 rule("stats", ["stats"], (s, c) => {
   s.stats.forEach((stat, i) => {
     c.keys(stat, ["value", "label", "sub"], `${c.path}.stats[${i}]`);
-    c.add("stat", { value: stat.value, label: stat.label }); c.text(stat.sub);
+    c.add("stat", { value: stat.value, label: [stat.label, stat.sub].filter(Boolean).join("\n") });
   });
 });
 rule("big-number", ["value", "label", "body", "sub"], (s, c) => {
@@ -160,7 +161,6 @@ rule("data-table", ["columns", "rows", "row_labels"], (s, c) => {
   c.add("table", { rows, header: true });
 });
 rule("metric-comparison", ["left", "right", "delta", "body"], (s, c) => {
-  c.slide.relationship = "comparison";
   for (const side of ["left", "right"]) { c.keys(s[side], ["value", "label"], `${c.path}.${side}`); c.add("stat", s[side]); }
   c.text(s.delta, "Difference"); c.text(s.body);
 });
@@ -260,6 +260,7 @@ export async function convertGeneratedDeck(deck) {
     const slide = { id, purpose: `Preserve the meaning of the ${source.type} slide`, ...(source.headline ? { title: source.headline } : source.type === "title" ? { title: deck.title } : {}), blocks: [] };
     const add = (kind, values) => slide.blocks.push({ id: `${id}-b${slide.blocks.length + 1}`, kind, ...structuredClone(values) });
     const text = (value, label) => { if (value !== undefined && value !== null) add("text", { text: value, ...(label ? { label } : {}) }); };
+    const contextText = (value, label) => { if (value !== undefined && value !== null) add("callout", { text: value, label, emphasis: "context" }); };
     const rule = RULES[source.type];
     if (!rule) { refuse(`${path}.${source.type}`, refusalFor(source.type)); return slide; }
     keys(source, rule.fields, path);
@@ -267,11 +268,11 @@ export async function convertGeneratedDeck(deck) {
     if (source.cites?.length) refuse(`${path}.cites`, "claim citations require a source registry absent from the accepted scene contract");
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
-      else { usedSections.add(source.section); text(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`); }
+      else { usedSections.add(source.section); contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`); }
     }
-    text(source.standfirst);
+    contextText(source.standfirst, "Context");
     rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse });
-    if (source.type !== "title" && index === 0) text(deck.subtitle);
+    if (source.type !== "title" && index === 0) contextText(deck.subtitle, "Deck context");
     if (source.speaker_note) add("callout", { label: "Audience note", text: source.speaker_note });
     if (!slide.blocks.length) text(source.headline ?? deck.title);
     return slide;

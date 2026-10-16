@@ -82,8 +82,37 @@ test("native chart series, units and table cells survive semantic conversion exa
 test("repeated section labels retain their distinct authored ordinal", async () => {
   const { intent } = await convertGeneratedDeck(deck([{ ...bullets, section: 0 }, { ...bullets, section: 1 }], { sections: ["Results", "Results"] }));
   assert.deepEqual(intent.slides.map(slide => slide.blocks[0]), [
-    { id: "legacy-s1-b1", kind: "text", label: "Section 01", text: "Results" },
-    { id: "legacy-s2-b1", kind: "text", label: "Section 02", text: "Results" },
+    { id: "legacy-s1-b1", kind: "callout", emphasis: "context", label: "Section 01", text: "Results" },
+    { id: "legacy-s2-b1", kind: "callout", emphasis: "context", label: "Section 02", text: "Results" },
+  ]);
+});
+
+test("each statistic retains its own qualifier in the same semantic carrier", async () => {
+  const { intent } = await convertGeneratedDeck(deck([{ type: "stats", headline: "Groups", stats: [{ value: "10", label: "Treatment", sub: "Only adults" }, { value: "20", label: "Control", sub: "Only children" }] }]));
+  assert.deepEqual(intent.slides[0].blocks.map(({ value, label }) => ({ value, label })), [
+    { value: "10", label: "Treatment\nOnly adults" }, { value: "20", label: "Control\nOnly children" },
+  ]);
+});
+
+test("sequence and comparison context never becomes an extra step or peer", async () => {
+  for (const slide of [
+    { type: "flow", headline: "Method", steps: [{ title: "Start" }, { title: "Finish" }] },
+    { type: "compare", headline: "Options", left: { title: "A", body: "First" }, right: { title: "B", body: "Second" } },
+  ]) {
+    const { intent } = await convertGeneratedDeck(deck([{ ...slide, section: 0, standfirst: "Caveat" }], { sections: ["Method"], subtitle: "Deck context" }));
+    const members = intent.slides[0].blocks.filter(block => block.kind === "text");
+    assert.equal(members.length, 2);
+    for (const value of ["Method", "Caveat", "Deck context"]) {
+      const block = intent.slides[0].blocks.find(block => block.text === value);
+      assert.equal(block.kind, "callout"); assert.equal(block.emphasis, "context");
+    }
+  }
+});
+
+test("before and after retain temporal roles when their authored titles repeat", async () => {
+  const { intent } = await convertGeneratedDeck(deck([{ type: "before-after", headline: "Change", before: { title: "Enrollment", body: "10" }, after: { title: "Enrollment", body: "20" } }]));
+  assert.deepEqual(intent.slides[0].blocks.map(({ label, text }) => ({ label, text })), [
+    { label: "Before: Enrollment", text: "10" }, { label: "After: Enrollment", text: "20" },
   ]);
 });
 
