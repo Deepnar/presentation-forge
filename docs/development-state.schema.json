@@ -129,7 +129,8 @@
               "typecheck",
               "benchmark-50",
               "frontend-visual",
-              "conversion-import"
+              "conversion-import",
+              "browser-handoff"
             ]
           },
           "status": {

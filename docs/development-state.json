@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-7B-1-662f7d6.json"
   },
   "implementationHead": {
-    "sha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
-    "note": "Final frozen source after independent field, identity, ordinal and relationship corrections. Later commits record documentation/evidence only."
+    "sha": "924f157cad244d0c3888627e8f3ee5c97e51058a",
+    "note": "Task-entry checkout plus the current V2-7B-2 working-tree delta; exact source will be frozen before retained final validation."
   },
   "activeMilestone": {
-    "id": "V2-7B-1",
-    "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate",
-    "evalDoc": "docs/V2-7B-1-EVAL.md",
+    "id": "V2-7B-2",
+    "roadmapRef": "docs/ROADMAP.md#v2-7b-2-plan",
+    "evalDoc": "docs/V2-7B-2-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-7B-1-662f7d6.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "conversion-import",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/conversion-import.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "id": "browser-handoff",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/non-browser-bulk.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/serial-browser.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/postgres-contract.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/cross-process-faults.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/production-build.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/typecheck.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/benchmark-50.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-7b-1-evidence/frontend-visual.json",
-      "reason": "Inspected all 23 final screenshots/native rasters; dimensions, hashes and measured geometry retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-7B-2",
+    "id": "Workspace followups",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate"
+    "roadmapRef": "docs/ROADMAP.md#workspace-followups"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

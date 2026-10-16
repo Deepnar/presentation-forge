@@ -189,3 +189,16 @@ test('the TAP inventory records entry files without imported contract helpers', 
   f.evidence(); assert.deepEqual(f.check().errors, []);
   f.state.activeMilestone.id = 'unknown'; hasError(f.check(), /unknown milestone/);
 });
+
+test('browser handoff requires its own complete focused evidence', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-7b-2-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-7b-2-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-7b-2-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-7B-2'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'browser-handoff'; assert.deepEqual(f.check().errors, []);
+  assert.deepEqual(requiredTestFiles(f.dir, 'browser-handoff', 'V2-7B-2'), ['test/v2-handoff-7b.test.js', 'test/v2-handoff-chrome-7b.test.js']);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-handoff-chrome-7b.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

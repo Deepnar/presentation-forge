@@ -16,7 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
@@ -32,6 +32,11 @@ const MILESTONES = {
     plan: 'docs/v2-7b-1-evidence/validation-plan.json',
     focused: 'conversion-import',
     files: ['test/v2-import-conversion-7b.test.js', 'test/v2-import-service-7b.test.js', 'test/v2-import-http-7b.test.js'],
+  },
+  'V2-7B-2': {
+    plan: 'docs/v2-7b-2-evidence/validation-plan.json',
+    focused: 'browser-handoff',
+    files: ['test/v2-handoff-7b.test.js', 'test/v2-handoff-chrome-7b.test.js'],
   },
 };
 
@@ -164,7 +169,8 @@ export function checkSemantics(root, state) {
   if (!contract) errors.push('unknown milestone validation contract');
   else {
     reference(root, contract.plan, errors, 'validation plan');
-    const requiredIds = Object.keys(KINDS).filter(id => !['7a-chrome', 'conversion-import'].includes(id)).concat(contract.focused);
+    const focusedIds = Object.values(MILESTONES).map(value => value.focused);
+    const requiredIds = Object.keys(KINDS).filter(id => !focusedIds.includes(id)).concat(contract.focused);
     if (requiredIds.some(id => !ids.includes(id)) || ids.some(id => !requiredIds.includes(id))) {
       errors.push('validation inventory does not match the milestone contract');
     }
