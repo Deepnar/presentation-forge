@@ -6,26 +6,15 @@
 // compiler geometry and pptxgenjs agree without conversion. Never store
 // screen pixels here.
 
-import schemaJson from "./scene.schema.json" with { type: "json" };
-import { Ajv, type ValidateFunction } from "ajv";
+import { sceneValidator } from "./scene-validator.ts";
 import type { SlideScene, SceneElement } from "./scene.generated.ts";
 
 export type { SlideScene, SceneElement, Paragraph, TextRun } from "./scene.generated.ts";
 
 export { SCENE_W, SCENE_H } from "./scene-constants.ts";
 
-let _validate: ValidateFunction | null = null;
-
-async function validator(): Promise<ValidateFunction> {
-  if (!_validate) {
-    const ajv = new Ajv({ allErrors: true, strict: false });
-    _validate = ajv.compile(schemaJson);
-  }
-  return _validate;
-}
-
 export async function validateScene(scene: unknown): Promise<{ ok: boolean; errors: string[] }> {
-  const validate = await validator();
+  const validate = sceneValidator();
   const ok = validate(scene);
   if (ok) return { ok: true, errors: [] };
   return {
