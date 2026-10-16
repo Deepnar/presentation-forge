@@ -1,20 +1,19 @@
 # V2-7B-2 — explicit browser handoff
 
 Implementation frozen on `v2`, 2026-10-16. Source under validation:
-`22047f7dd89eab46876dfe4a51296be95aeb844a`. Accepted baseline:
+`03cc89ef233db5469066599391cbaac68c2fc646`. Accepted baseline:
 `662f7d6a08647d431eded1ea17c5d13e7ca1c591`, independently accepted in
 [the separate decision](reviews/V2-7B-1-662f7d6.json). Human direction approved
 the explicit **Open in editor** action on completed chats and the deck page.
 The bounded contract, non-goals, gates and stop point are in
 [ROADMAP.md](ROADMAP.md#v2-7b-2-plan).
 
-No acceptance is claimed. Final focused actual-server/client tests: **25 pass,
-0 fail, 0 skip, 0 cancelled**. Non-browser bulk: **2020 pass, 0 fail, 0 skip,
-0 cancelled**, all 172 files. The complete 199-file inventory matches disk;
-23 browser/build/plate owners are running serially. Four PostgreSQL files and
-the remaining command/native/visual gates are pending, not passing. Focused
-cases repeat the matrix and are not added again. Earlier accepted evidence is
-historical, not execution against this source. See v2-7b-2-evidence/RUNBOOK.md.
+No acceptance is claimed. Complete final-source gates are being rerun after
+visual review found that expired-session recovery could sit below the composer.
+The focused alert now receives focus and is geometrically checked above it.
+Superseded `22047f7` had all199files/2233 matrix cases, hosted double-click1,
+PostgreSQL browser11 and command/native checks passing; those results do not
+satisfy the corrected source's gates. The 199-file inventory remains unchanged.
 
 Independent early read-only review found two recovery gaps: a cross-tab token
 change could leave the action opening indefinitely, and a failed chat source read

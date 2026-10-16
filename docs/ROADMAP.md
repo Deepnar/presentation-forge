@@ -7475,6 +7475,8 @@ scale); charts structurally exact without axes (V2-4C).
   <a id="v2-7b-2-plan"></a>
 
   **V2-7B-2 approved task contract — explicit browser handoff.**
+  Pre-acceptance visual correction (2026-10-16): focus expired-session recovery
+  above the chat composer; revalidate the corrected exact source.
   Human direction on 2026-10-16 approved the explicit **Open in editor** action
   on completion cards and the existing deck page, with safe create/reopen,
   preservation, diagnostics and original-deck access as described below.

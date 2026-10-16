@@ -6,7 +6,7 @@
     "source": "docs/reviews/V2-7B-1-662f7d6.json"
   },
   "implementationHead": {
-    "sha": "22047f7dd89eab46876dfe4a51296be95aeb844a",
+    "sha": "03cc89ef233db5469066599391cbaac68c2fc646",
     "note": "Frozen V2-7B-2 implementation and test/governance source. Subsequent documentation/evidence commits do not change product code."
   },
   "activeMilestone": {
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "browser-handoff",
-      "status": "passed",
-      "evidence": "docs/v2-7b-2-evidence/browser-handoff.json",
-      "reason": "Executed on frozen source; exact leaf totals and complete file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-7b-2-evidence/non-browser-bulk.json",
-      "reason": "Executed on frozen source; exact leaf totals and complete file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "serial-browser",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "postgres-contract",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "cross-process-faults",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "production-build",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "typecheck",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "benchmark-50",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     },
     {
       "id": "frontend-visual",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved browser handoff in progress; earlier accepted evidence is not a pass for this source."
+      "reason": "Final source includes focused visible sign-in recovery; complete gates are rerun. Prior-source results are superseded, not passes for this source."
     }
   ],
   "knownBlockers": [],
