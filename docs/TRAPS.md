@@ -1718,3 +1718,31 @@ without a bound project. Font-gated viewer creation must precede project binding
 scoped to `/api/decks`; a plain V2 project export link can appear authenticated
 but return404/401. Use the existing bearer identity for downloads and exercise
 an actual trusted export action. Do not widen cookie scope to fix a UI link.
+
+**Surviving strings do not prove surviving relationships.** A stat's qualifier
+can survive as an unlabeled paragraph while losing which value it qualifies.
+Generic section/context text can become an invented sequence step or comparison
+peer. Before/after field names can carry temporal meaning that identical titles
+do not. Assert carrier membership and implicit roles through scene/native export,
+not only that every string occurs somewhere. Canonical compiler primitives choose
+members by kind; supporting metadata needs an actual supporting carrier.
+
+**Permissive source schemas do not type undeclared extensions.** A shared
+comparison converter admitted another family's object-valued body/kicker and
+coerced it to text. Audit each source family's declared fields recursively before
+conversion; successful legacy validation alone cannot authorize consuming an
+undeclared value. Refuse the whole import before persistence when no audited
+representation exists.
+
+**Static-proxy browser tests can bypass the server policy that ships.** Runtime
+AJV compilation uses generated functions and failed behind the actual server CSP,
+although proxy-served suites passed. Generate browser validation from the same
+canonical schema at build/dev time, check parity with Node and exercise the real
+server's headers. Changing the security policy is not required to validate data.
+
+**Cold initialization is concurrent work too.** Publishing an async schema cache
+only after its file read registered one AJV schema multiple times. PostgreSQL
+create-if-missing DDL also races across fresh processes. Publish the shared promise
+before awaiting and keep cross-process-serialized initialization outside document
+transactions. Durable import identity belongs in an atomic receipt with project
+and baseline history, not mutable origin metadata or an in-memory map.

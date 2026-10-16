@@ -7562,6 +7562,21 @@ scale); charts structurally exact without axes (V2-4C).
     Implementation approval covers this contract; stop on any required
     scope/security-policy change, or after the bounded slice's review/handoff.
     Acceptance permits planning V2-7B-2, not automatic coding of that next slice.
+  **V2-7B-1 validation complete; independent decision pending.** Exact source
+  `662f7d6`: all 197 required files / 2207 leaf cases pass, plus one distinct actual
+  hosted PostgreSQL HTTP/CLI replay/export check. Build, typecheck and all 50
+  benchmark cells pass. All 23 final images were inspected; exact 480×900 narrow
+  geometry and native relationship preservation are retained in
+  [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). The parent stays unchecked and the next slice
+  remains unauthorized pending its direction/scope gate.
+
+  > **Learned.** Field/string survival is weaker than meaning preservation:
+  > stat qualifiers must remain attached, context cannot become a fake step,
+  > repeated section titles need their ordinal, and Before/After roles are
+  > content. Real-server policy and cold-process races need direct checks;
+  > static proxies and warm caches concealed both. Durable request identity
+  > must survive edited metadata, deletion, restart and ambiguous responses.
+
   **Audited dependencies / limits (2026-10-16).** Fifty type names have
   field-gated converters; 24 refuse entirely. Supported names still refuse
   unaudited fields, capacity/fit failures and unsupported chart/table/flow

@@ -14,7 +14,7 @@
     "roadmapRef": "docs/ROADMAP.md#v2-7b-candidate",
     "evalDoc": "docs/V2-7B-1-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "conversion-import",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/conversion-import.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/non-browser-bulk.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/serial-browser.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/postgres-contract.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/cross-process-faults.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/production-build.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/typecheck.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/benchmark-50.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required for the approved V2-7B-1 scope; not yet executed on the new implementation."
+      "status": "passed",
+      "evidence": "docs/v2-7b-1-evidence/frontend-visual.json",
+      "reason": "Inspected all 23 final screenshots/native rasters; dimensions, hashes and measured geometry retained."
     }
   ],
   "knownBlockers": [],
