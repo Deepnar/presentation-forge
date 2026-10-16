@@ -1838,8 +1838,12 @@ contracts, audited limits and current review status are in
 Browser scene validation is standalone code generated from the same canonical
 schema at Vite build/dev time, through a narrowly targeted module boundary.
 Node keeps AJV compilation; served project loading now works under the existing
-CSP without runtime code generation. Chat still opens the legacy deck; its
-editor handoff remains the separate roadmap V2-7B-2 candidate.
+CSP without runtime code generation. The V2-7B-2 explicit browser action now
+uses the accepted import route from completed deck chats and finalized deck
+pages, with one stable owner/source retry identity, structured refusal recovery
+and guarded navigation. It preserves original-deck access and current human-edited
+projects. It does not synchronize the two copies or extend converter coverage.
+See frontend architecture §8 and `docs/V2-7B-2-EVAL.md` for validation/review state.
 
 ## The web shell
 

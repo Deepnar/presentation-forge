@@ -178,6 +178,30 @@ equivalent standalone code, avoiding runtime code generation under the unchanged
 server CSP. There is no checked-in validator/schema fork. Actual-server browser
 checks exercise this policy rather than bypassing it through a static proxy.
 
-"Create with AI" still opens the existing chat briefing, whose completion opens
-the legacy deck. The remaining browser action is tracked only in
-[V2-7B-2](ROADMAP.md#v2-7b-candidate); it is not implemented or authorized here.
+"Create with AI" opens the existing chat briefing. The browser handoff below
+uses the accepted creation service without changing that generation pipeline.
+
+## 8. Explicit generated-deck handoff (V2-7B-2)
+
+`OpenInEditor` appears in completed presentation chats, including threads with
+later turns, and on finalized legacy deck pages. Report actions are unchanged.
+The shared `editorHandoff` controller sends the versioned `browser-editor-v1`
+request identity to the existing authenticated import route. The service scopes
+it by owner/source, so both entry points and reloads replay one durable receipt.
+This browser identity is independent of any explicitly requested CLI import.
+Remembered source mode is resolved before enabling the action. A failed chat
+source read exposes retry rather than silently keeping the action disabled.
+
+The controller coalesces clicks, waits for server confirmation and navigates
+through the existing guarded router. Unmount disposes view ownership; hash/token
+checks prevent late navigation after context changes. Token storage events and
+same-document context changes expose reload guidance without enabling writes
+under stale account state. Refusals retain structured diagnostics and focus the
+error region; the original deck and saved-project dashboard remain accessible.
+
+Changed source and deleted-target receipts remain refusals. The action never
+rotates identity to replace edits, creates another copy implicitly, regenerates a
+saved scene or resurrects deletion. It opens a saved editable copy with separate
+subsequent edits; it does not synchronize changes back into legacy YAML. No new
+conversion types, assets, notes, database tables or security policy are added.
+Implementation validation/review status is in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).

@@ -33,17 +33,15 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7B-1-EVAL.md](V2-7B-1-EVAL.md) indexes the active, human-approved conversion
-and durable creation slice. Its roadmap contract defines the bounded scope;
-implementation, complete validation and independent acceptance are finished.
-All 197 required files / 2207 unique cases and one distinct hosted PostgreSQL
-case pass; the standing locale probe remains separate. V2-7A remains independently
-accepted, with its complete historical evidence and accepted-state snapshot
-under `v2-7a-evidence/`. The new inventory under `v2-7b-1-evidence/` adds import
-coverage and preserves serial browser/build isolation. V2-7B-2, AI runtime and
-other features still require their own scope authorization. This slice stops at
-review/handoff. V2-7B-2 permits planning and a direction decision, not automatic
-implementation. Do not self-accept or treat a candidate as coding authorization.
+[V2-7B-2-EVAL.md](V2-7B-2-EVAL.md) indexes the active explicit browser-handoff
+slice, approved by human direction on 2026-10-16. Its bounded contract is in
+[the roadmap](ROADMAP.md#v2-7b-2-plan). V2-7B-1 conversion/creation remains the
+independently accepted prerequisite at `662f7d6`; its 197-file/2208-case evidence
+is historical and cannot stand in for validation of newer source. The new
+199-file inventory is under `v2-7b-2-evidence/`; browser/build/plate owners still
+run serially with watchdogs. State records the actual frozen source and current
+validation/review status. Do not self-accept or start another feature merely
+because this implementation exists. Stop at this slice's review/handoff.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -62,12 +60,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-7b-1-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-7b-2-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the active validation runbook](v2-7b-1-evidence/RUNBOOK.md) and its linked
+commands are in [the active validation runbook](v2-7b-2-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

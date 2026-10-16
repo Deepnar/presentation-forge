@@ -1746,3 +1746,9 @@ create-if-missing DDL also races across fresh processes. Publish the shared prom
 before awaiting and keep cross-process-serialized initialization outside document
 transactions. Durable import identity belongs in an atomic receipt with project
 and baseline history, not mutable origin metadata or an in-memory map.
+
+**A stale sign-in guard also needs a recovery state.** Ignoring a late response
+prevents cross-account navigation but can leave a mounted control opening forever.
+Observe token storage events, invalidate old work and offer reload guidance;
+never silently start a write with a new token while the account view is stale.
+Likewise, a prerequisite read that disables a control must expose retry on failure.
