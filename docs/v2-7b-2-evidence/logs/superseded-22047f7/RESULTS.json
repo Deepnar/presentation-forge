@@ -1,0 +1,19 @@
+{
+  "implementationSha": "22047f7dd89eab46876dfe4a51296be95aeb844a",
+  "inventoryFiles": 199,
+  "matrix": {
+    "pass": 2233,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalHostedPass": 1,
+  "postgresBrowserRepeatedPass": 11,
+  "commands": "build/typecheck/50 cells/native OOXML and raster production passed",
+  "visualStatus": "Review found session recovery below composer; corrected before acceptance. No complete visual or acceptance pass is claimed.",
+  "rawGroups": [
+    "out/v2-7b-2-validation/bulk-20261016T163317688192Z",
+    "out/v2-7b-2-validation/serial-20261016T163405266267Z",
+    "out/v2-7b-2-validation/postgres-20261016T164116323462Z"
+  ]
+}

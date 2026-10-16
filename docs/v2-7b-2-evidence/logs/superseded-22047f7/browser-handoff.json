@@ -1,0 +1,19 @@
+{
+  "id": "browser-handoff",
+  "kind": "tests",
+  "implementationSha": "22047f7dd89eab46876dfe4a51296be95aeb844a",
+  "command": "LC_ALL=C.UTF-8 nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-handoff-7b.test.js test/v2-handoff-chrome-7b.test.js",
+  "log": "docs/v2-7b-2-evidence/logs/browser-handoff.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 25,
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-handoff-7b.test.js",
+    "test/v2-handoff-chrome-7b.test.js"
+  ]
+}

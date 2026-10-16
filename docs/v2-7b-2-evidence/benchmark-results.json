@@ -1,0 +1,2840 @@
+{
+  "commit": "2802f4d",
+  "generatedAt": "2026-10-16T16:57:51.450Z",
+  "cells": {
+    "research-defense/warm-humanist/plain": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 109983
+    },
+    "research-defense/warm-humanist/chromed": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 122935
+    },
+    "research-defense/swiss-international/plain": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 120362
+    },
+    "research-defense/swiss-international/chromed": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 133333
+    },
+    "research-defense/editorial-magazine/plain": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 110068
+    },
+    "research-defense/editorial-magazine/chromed": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 123020
+    },
+    "research-defense/high-contrast-mono/plain": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 11,
+      "pptxBytes": 110094
+    },
+    "research-defense/high-contrast-mono/chromed": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 123286
+    },
+    "research-defense/sci-fi-hud/plain": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 120890
+    },
+    "research-defense/sci-fi-hud/chromed": {
+      "slides": 6,
+      "plan": [
+        {
+          "slide": "rd-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-problem",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "rd-evidence",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-negative",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "rd-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "rd-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 134275
+    },
+    "source-of-truth-project/warm-humanist/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 85588
+    },
+    "source-of-truth-project/warm-humanist/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 96110
+    },
+    "source-of-truth-project/swiss-international/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 94223
+    },
+    "source-of-truth-project/swiss-international/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 104758
+    },
+    "source-of-truth-project/editorial-magazine/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 85673
+    },
+    "source-of-truth-project/editorial-magazine/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 96195
+    },
+    "source-of-truth-project/high-contrast-mono/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 11,
+      "pptxBytes": 85764
+    },
+    "source-of-truth-project/high-contrast-mono/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 96478
+    },
+    "source-of-truth-project/sci-fi-hud/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 94798
+    },
+    "source-of-truth-project/sci-fi-hud/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "st-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "st-built",
+          "family": "prose-list",
+          "variant": "prose-list/evidence",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-measured",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "st-planned",
+          "family": "prose-list",
+          "variant": "prose-list/standard",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "content-shape"
+        },
+        {
+          "slide": "st-limit",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 105657
+    },
+    "technical-explainer/warm-humanist/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 84249
+    },
+    "technical-explainer/warm-humanist/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 94770
+    },
+    "technical-explainer/swiss-international/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 92903
+    },
+    "technical-explainer/swiss-international/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 103438
+    },
+    "technical-explainer/editorial-magazine/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 84321
+    },
+    "technical-explainer/editorial-magazine/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 94842
+    },
+    "technical-explainer/high-contrast-mono/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 11,
+      "pptxBytes": 84464
+    },
+    "technical-explainer/high-contrast-mono/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 95177
+    },
+    "technical-explainer/sci-fi-hud/plain": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 93473
+    },
+    "technical-explainer/sci-fi-hud/chromed": {
+      "slides": 5,
+      "plan": [
+        {
+          "slide": "te-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "te-compare",
+          "family": "comparison",
+          "variant": "comparison/balanced",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-rate",
+          "family": "metric",
+          "variant": "metric/standard",
+          "density": "sparse",
+          "takeaway": "annotation",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "te-build",
+          "family": "sequence",
+          "variant": "sequence/linear",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "relationship"
+        },
+        {
+          "slide": "te-hard",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "headline",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 104332
+    },
+    "decision-recommendation/warm-humanist/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 72555
+    },
+    "decision-recommendation/warm-humanist/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 80640
+    },
+    "decision-recommendation/swiss-international/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 79492
+    },
+    "decision-recommendation/swiss-international/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 87589
+    },
+    "decision-recommendation/editorial-magazine/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 72605
+    },
+    "decision-recommendation/editorial-magazine/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 80690
+    },
+    "decision-recommendation/high-contrast-mono/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 11,
+      "pptxBytes": 72683
+    },
+    "decision-recommendation/high-contrast-mono/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 80912
+    },
+    "decision-recommendation/sci-fi-hud/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 79868
+    },
+    "decision-recommendation/sci-fi-hud/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "dr-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-compare",
+          "family": "comparison",
+          "variant": "comparison/decision",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "relationship"
+        },
+        {
+          "slide": "dr-caveat",
+          "family": "framed-prose",
+          "variant": "framed-prose/limitation",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "dr-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/recommendation",
+          "density": "sparse",
+          "takeaway": "verdict",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 88208
+    },
+    "data-heavy-analytical/warm-humanist/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 117053
+    },
+    "data-heavy-analytical/warm-humanist/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 125136
+    },
+    "data-heavy-analytical/swiss-international/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 123983
+    },
+    "data-heavy-analytical/swiss-international/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 132077
+    },
+    "data-heavy-analytical/editorial-magazine/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 117101
+    },
+    "data-heavy-analytical/editorial-magazine/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 125184
+    },
+    "data-heavy-analytical/high-contrast-mono/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 11,
+      "pptxBytes": 117835
+    },
+    "data-heavy-analytical/high-contrast-mono/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 126062
+    },
+    "data-heavy-analytical/sci-fi-hud/plain": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 10,
+      "pptxBytes": 125016
+    },
+    "data-heavy-analytical/sci-fi-hud/chromed": {
+      "slides": 4,
+      "plan": [
+        {
+          "slide": "da-open",
+          "family": "divider",
+          "variant": "divider/opening",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-chart",
+          "family": "chart",
+          "variant": "chart/standard",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "primary-carrier"
+        },
+        {
+          "slide": "da-table",
+          "family": "data-table",
+          "variant": "data-table/standard",
+          "density": "standard",
+          "takeaway": "annotation",
+          "basis": "rhetorical-role"
+        },
+        {
+          "slide": "da-close",
+          "family": "framed-prose",
+          "variant": "framed-prose/conclusion",
+          "density": "sparse",
+          "takeaway": "none",
+          "basis": "rhetorical-role"
+        }
+      ],
+      "l1": [],
+      "l2": [],
+      "fitDiagnostics": [],
+      "representation": {
+        "missing": []
+      },
+      "takeawayFindings": [],
+      "charts": {
+        "mismatches": []
+      },
+      "minFittedSize": 9,
+      "pptxBytes": 133353
+    }
+  },
+  "counterfactuals": {
+    "strong-vs-misses-target": {
+      "sensitive": true,
+      "note": "Same numbers and blocks; only semantic framing differs. No resultStatus exists yet, so framing travels in takeaway/purpose."
+    },
+    "compare-vs-sequence": {
+      "sensitive": false,
+      "note": "Same three text blocks; peer alternatives versus ordered stages, expressed in purpose only."
+    },
+    "primary-vs-minor": {
+      "sensitive": true,
+      "note": "Same chart data; central finding versus supporting observation, expressed in takeaway only."
+    },
+    "evidence-vs-illustration": {
+      "sensitive": false,
+      "note": "Same image and list; evidence versus decorative context, expressed in visualDirection only."
+    },
+    "novice-vs-expert": {
+      "sensitive": false,
+      "note": "Same content; audience changes materially. Audience is not consumed, so indifference is expected."
+    },
+    "s-outcome": {
+      "sensitive": true,
+      "note": "Same chart; favorable vs unfavorable outcome. No takeaway/outcome rendering exists yet."
+    },
+    "s-relationship": {
+      "sensitive": true,
+      "note": "Same three blocks; comparison vs sequence relationship."
+    },
+    "s-emphasis": {
+      "sensitive": true,
+      "note": "Same blocks; result primary vs supporting."
+    },
+    "s-media-role": {
+      "sensitive": true,
+      "note": "Same image and list; evidence vs decorative role."
+    },
+    "s-uncertainty": {
+      "sensitive": true,
+      "note": "Same factual block; no uncertainty asserted vs inconclusive."
+    },
+    "s-rhetorical-role": {
+      "sensitive": true,
+      "note": "Same content; context vs evidence role."
+    }
+  },
+  "invariance": {
+    "research-defense": {
+      "agree": true
+    },
+    "source-of-truth-project": {
+      "agree": true
+    },
+    "technical-explainer": {
+      "agree": true
+    },
+    "decision-recommendation": {
+      "agree": true
+    },
+    "data-heavy-analytical": {
+      "agree": true
+    }
+  },
+  "ms": 456
+}

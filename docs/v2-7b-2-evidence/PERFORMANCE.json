@@ -1,0 +1,106 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "units": "milliseconds except bounds and shifts in CSS pixels",
+  "sqliteHandoff": {
+    "backend": "sqlite",
+    "cold": {
+      "handoffMs": 397,
+      "timings": {
+        "compileMs": 4.91184500000054,
+        "persistMs": 0.7147589999985939,
+        "totalMs": 11.673694000000978
+      }
+    },
+    "warm": {
+      "handoffMs": 398,
+      "timings": {
+        "totalMs": 2.833469999999579
+      }
+    }
+  },
+  "postgresHandoff": {
+    "backend": "postgres",
+    "cold": {
+      "handoffMs": 417,
+      "timings": {
+        "compileMs": 5.317473999999493,
+        "persistMs": 2.2539429999997083,
+        "totalMs": 13.743398999999044
+      }
+    },
+    "warm": {
+      "handoffMs": 400,
+      "timings": {
+        "totalMs": 7.077239000000191
+      }
+    }
+  },
+  "sqlite60Handoff": {
+    "handoffMs": 415,
+    "bounds": [
+      192,
+      44.014137268066406,
+      288,
+      856
+    ],
+    "timings": {
+      "compileMs": 11.239102999999886,
+      "persistMs": 4.100267000001622,
+      "totalMs": 23.545952000000398
+    }
+  },
+  "postgres60Handoff": {
+    "handoffMs": 483,
+    "bounds": [
+      192,
+      44,
+      288,
+      856
+    ],
+    "timings": {
+      "compileMs": 13.748437000002014,
+      "persistMs": 7.129650000002584,
+      "totalMs": 33.6406530000022
+    }
+  },
+  "imported60Opening": {
+    "slides": 60,
+    "openingMs": 1568,
+    "timings": {
+      "compileMs": 22.90424300000086,
+      "persistMs": 5.692866000001231,
+      "totalMs": 40.89697199999864
+    }
+  },
+  "existing120Opening": {
+    "project": "p-dbf6f716d89e567cf5a52cfe",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1537
+  },
+  "chartSelectionMaxAbsDelta": 0.1158905029296875,
+  "tableSelectionMaxAbsDelta": 0.01892852783203125,
+  "hostedDoubleClick": {
+    "backend": "PostgreSQL 15.18",
+    "slides": 3,
+    "trustedClicks": 2,
+    "importPosts": 1,
+    "timings": {
+      "compileMs": 27.438931999999795,
+      "persistMs": 13.098606999999902,
+      "totalMs": 163.29215099999988
+    },
+    "browserBootAndHandoffMs": 2855.1067049999997,
+    "replayTotalMs": 73.54724,
+    "persistedRevision": 1,
+    "nativeChartValues": [
+      1.25,
+      12.5
+    ]
+  },
+  "notes": [
+    "cold in raw handoff files means first source import in a warmed process, not process-cold startup. warm means receipt replay from another entrypoint/fresh browser.",
+    "60-slide handoff starts with the legacy page already ready; imported60Opening includes browser/font boot.",
+    "These are individual observations, not statistical latency guarantees."
+  ]
+}

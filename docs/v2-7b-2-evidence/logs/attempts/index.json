@@ -1,0 +1,95 @@
+[
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/initial-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "cancelled deliberately after fixture setup failure",
+    "observedLeafPass": 0,
+    "observedLeafFail": 3,
+    "plannedLeafTests": 9,
+    "cancelledFile": true,
+    "casesWithoutCompletedResult": 6,
+    "note": "Process group deliberately stopped after a fixture failure; incomplete TAP cannot distinguish an in-flight cancelled case from cases not started. No unresolved case counts as passed."
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/second-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "cancelled deliberately after fixture setup failure",
+    "observedLeafPass": 0,
+    "observedLeafFail": 1,
+    "plannedLeafTests": 11,
+    "cancelledFile": true,
+    "casesWithoutCompletedResult": 10,
+    "note": "Process group deliberately stopped after a fixture failure; incomplete TAP cannot distinguish an in-flight cancelled case from cases not started. No unresolved case counts as passed."
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/third-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "cancelled deliberately after fixture setup failure",
+    "observedLeafPass": 0,
+    "observedLeafFail": 1,
+    "plannedLeafTests": 11,
+    "cancelledFile": true,
+    "casesWithoutCompletedResult": 10,
+    "note": "Process group deliberately stopped after a fixture failure; incomplete TAP cannot distinguish an in-flight cancelled case from cases not started. No unresolved case counts as passed."
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/fourth-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "completed with fixture expectation failures",
+    "observedLeafPass": 6,
+    "observedLeafFail": 5,
+    "plannedLeafTests": 11,
+    "cancelledFile": false,
+    "casesWithoutCompletedResult": 0
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/fifth-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "completed with fixture expectation failures",
+    "observedLeafPass": 8,
+    "observedLeafFail": 3,
+    "plannedLeafTests": 11,
+    "cancelledFile": false,
+    "casesWithoutCompletedResult": 0
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/sixth-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "completed with fixture expectation failures",
+    "observedLeafPass": 9,
+    "observedLeafFail": 2,
+    "plannedLeafTests": 11,
+    "cancelledFile": false,
+    "casesWithoutCompletedResult": 0
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/seventh-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "completed with fixture expectation failures",
+    "observedLeafPass": 9,
+    "observedLeafFail": 2,
+    "plannedLeafTests": 11,
+    "cancelledFile": false,
+    "casesWithoutCompletedResult": 0
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/eighth-chrome.tap",
+    "source": "unfrozen working-tree setup; not final acceptance evidence",
+    "fileStatus": "completed with fixture expectation failures",
+    "observedLeafPass": 10,
+    "observedLeafFail": 1,
+    "plannedLeafTests": 11,
+    "cancelledFile": false,
+    "casesWithoutCompletedResult": 0
+  },
+  {
+    "log": "docs/v2-7b-2-evidence/logs/attempts/focused-c015f3f.tap",
+    "source": "c015f3f prior to narrow visual correction",
+    "leafTests": 25,
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "includedInFinalTotals": false
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "backend": "PostgreSQL 15.18",
+  "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_HANDOFF_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-reporter=./tools/validated-tap.mjs test/v2-handoff-chrome-7b.test.js",
+  "log": "docs/v2-7b-2-evidence/logs/postgres-handoff-final.tap",
+  "tests": {
+    "total": 11,
+    "pass": 11,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "exitCode": 0,
+  "note": "Repeated browser cases against PostgreSQL; not added to distinct inventory cases."
+}

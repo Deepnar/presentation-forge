@@ -1,0 +1,158 @@
+TAP version 13
+# Subtest: completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+not ok 1 - completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+  ---
+  duration_ms: 3187.746053
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:72:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: both entry points and fresh tabs reopen the same human-edited dark project
+ok 2 - both entry points and fresh tabs reopen the same human-edited dark project
+  ---
+  duration_ms: 4934.092129
+  type: 'test'
+  ...
+# Subtest: a lost response after real creation retries safely after reload without a duplicate
+ok 3 - a lost response after real creation retries safely after reload without a duplicate
+  ---
+  duration_ms: 3172.700425
+  type: 'test'
+  ...
+# Subtest: a held successful response cannot navigate after leaving its source view
+ok 4 - a held successful response cannot navigate after leaving its source view
+  ---
+  duration_ms: 2508.892233
+  type: 'test'
+  ...
+# Subtest: an account change during a held response cannot open another account's project
+ok 5 - an account change during a held response cannot open another account's project
+  ---
+  duration_ms: 2442.157099
+  type: 'test'
+  ...
+# Subtest: a real second document's token storage event invalidates pending work with reload recovery
+ok 6 - a real second document's token storage event invalidates pending work with reload recovery
+  ---
+  duration_ms: 2573.30532
+  type: 'test'
+  ...
+# Subtest: a transient completed-chat source read can retry without losing dark mode
+ok 7 - a transient completed-chat source read can retry without losing dark mode
+  ---
+  duration_ms: 2248.151574
+  type: 'test'
+  ...
+# Subtest: unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+not ok 8 - unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+  ---
+  duration_ms: 31883.107727
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:175:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector('[aria-label="Open the menu"]'); Forge
+    Chats
+    1
+    Projects
+    8
+    New chat
+    TODAY
+    Imported results
+    deck · ready · 16 h ago
+    ⋯
+    Presentations
+    Themes
+    Settings
+    I
+    Import test
+    Privacy
+    ·
+    Terms
+    ·
+    Report an issue
+    Imported results
+    Slides, a written report and a speaker script
+    READY
+    ON THIS MACHINE
+    Topic: Measured results
+    HOW MANY CONTENT SLIDES?
+    auto
+    change
+    HOW MUCH TEXT PER SLIDE?
+    balanced
+    change
+    RUN A RESEARCH PASS OVER THE TOPIC?
+    web search
+    change
+    HOW MUCH INSTITUTIONAL BRANDING SHOULD THE SLIDES CARRY?
+    full branding
+    change
+    DECK BRIEFING
+    Imported results · auto content slides · Default (warm-humanist) · balanced density · full branding
+    Imported results is ready.
+    This thread keeps working — type below to edit the deck, and its slides update here after every turn.
+    Open the deck
+    Open in editor
+    Open original deck
+    
+    Opens a saved editable copy. Changes to either copy stay separate.
+    
+    Auto
+    Send
+    Select slides on the right, then type — the AI knows exactly which you mean.
+    Slides
+    1 slide
+    Title
+    1
+    Select slides, then tell the AI what to do with them — it will know exactly which you mean.
+    Punch up
+    Swap type
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:22:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:180:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: changed and deleted imports refuse without replacing or resurrecting their projects
+ok 9 - changed and deleted imports refuse without replacing or resurrecting their projects
+  ---
+  duration_ms: 3751.684362
+  type: 'test'
+  ...
+# Subtest: incomplete generation and unavailable storage keep the original flow usable
+ok 10 - incomplete generation and unavailable storage keep the original flow usable
+  ---
+  duration_ms: 2024.068361
+  type: 'test'
+  ...
+# Subtest: 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+ok 11 - 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+  ---
+  duration_ms: 2433.001224
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 61709.121094

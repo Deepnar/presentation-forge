@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-16",
+  "quietWindowObserved": true,
+  "unrelatedWorkInterrupted": false,
+  "node": "v24.16.0",
+  "chrome": "Google Chrome 151.0.7922.173",
+  "sample": {
+    "load": "1.70 0.85 0.49 1/2571 326877",
+    "cpuIdlePercent": 93.04,
+    "cpuWaitPercent": 1.71,
+    "availableMemoryKiB": 49765408,
+    "cpuPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=40113673\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2172708\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2060766",
+    "ioPressure": "some avg10=5.42 avg60=2.83 avg300=0.88 total=2442358482\nfull avg10=5.26 avg60=2.71 avg300=0.83 total=2339297252"
+  },
+  "competingWork": "Existing desktop/model and unrelated project services left running; quiet CPU/memory and low I/O pressure support bounded low-priority execution.",
+  "ownedPostgres": {
+    "container": "forge_v27b2_validation_pg",
+    "id": "42af77abf617c5f2ad9b0821566e0fe8c28aa68fed39712408e22e7199a30229",
+    "endpoint": "127.0.0.1:5544",
+    "version": "15.18",
+    "image": "postgres:15-alpine (already cached; no image pull)",
+    "cpuLimit": 1,
+    "memoryMiB": 512,
+    "tmpfsMiB": 192,
+    "cleanup": {
+      "stoppedAndRemoved": false
+    }
+  },
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "revalidationSample": {
+    "source": "03cc89ef233db5469066599391cbaac68c2fc646",
+    "localTime": "2026-10-16 22:19 Asia/Kolkata",
+    "load": [
+      4.67,
+      3.85,
+      2.85
+    ],
+    "availableMemoryMiB": 48129,
+    "cpuPressureAvg10": 0.4,
+    "memoryPressureAvg10": 0.0,
+    "ioPressureAvg10": 3.55,
+    "note": "Owned Chrome dominated CPU list during focused run; bounded four-worker bulk and serial validation retained ample CPU/memory headroom. No unrelated process interrupted."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "command": "Actual final serial browser suites + PostgreSQL handoff + hosted-import-check.mjs; node docs/v2-7b-2-evidence/native-review.mjs; open all 30 final images and verify hashes",
+  "log": "docs/v2-7b-2-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-7b-2-evidence/images.json",
+  "imageCount": 30,
+  "nativeRasters": 5
+}

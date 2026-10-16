@@ -1,0 +1,19 @@
+{
+  "id": "cross-process-faults",
+  "kind": "tests",
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> python3 docs/v2-7b-2-evidence/run-group.py postgres (concurrency/fault files; exact commands in logs/postgres/runs.json)",
+  "log": "docs/v2-7b-2-evidence/logs/cross-process-faults.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 19,
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js"
+  ]
+}

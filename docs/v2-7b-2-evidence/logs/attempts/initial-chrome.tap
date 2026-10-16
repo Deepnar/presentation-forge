@@ -1,0 +1,149 @@
+TAP version 13
+# Subtest: completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+not ok 1 - completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+  ---
+  duration_ms: 31582.39194
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector("[data-editor-handoff] button") && !document.querySelector("[data-editor-handoff] button").disabled; Forge
+    Chats
+    1
+    Projects
+    1
+    New chat
+    TODAY
+    Imported results
+    deck · ready · 12 h ago
+    ⋯
+    Presentations
+    Themes
+    Settings
+    I
+    Import test
+    Privacy
+    ·
+    Terms
+    ·
+    Report an issue
+    New chat
+    Slides, a written report and a speaker script
+    ON THIS MACHINE
+    What would you like to present today?
+    
+    Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise. The app drafts it; you do the final touches.
+    
+    Green hydrogen: how electrolysis technologies compare
+    Real-time ray tracing and the future of rasterisation
+    Mechanical keyboards: ergonomics of typing
+    PPT
+    Report
+    Auto
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:22:9)
+    async openSource (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:35:5)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:51:16)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: both entry points and fresh tabs reopen the same human-edited dark project
+not ok 2 - both entry points and fresh tabs reopen the same human-edited dark project
+  ---
+  duration_ms: 33888.492426
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:83:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector("[data-editor-handoff] button") && !document.querySelector("[data-editor-handoff] button").disabled; Forge
+    Chats
+    1
+    Projects
+    2
+    New chat
+    TODAY
+    Imported results
+    deck · ready · 12 h ago
+    ⋯
+    Presentations
+    Themes
+    Settings
+    I
+    Import test
+    Privacy
+    ·
+    Terms
+    ·
+    Report an issue
+    New chat
+    Slides, a written report and a speaker script
+    ON THIS MACHINE
+    What would you like to present today?
+    
+    Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise. The app drafts it; you do the final touches.
+    
+    Green hydrogen: how electrolysis technologies compare
+    Real-time ray tracing and the future of rasterisation
+    Mechanical keyboards: ergonomics of typing
+    PPT
+    Report
+    Auto
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:22:9)
+    async openSource (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:35:5)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:91:16)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: a lost response after real creation retries safely after reload without a duplicate
+not ok 3 - a lost response after real creation retries safely after reload without a duplicate
+  ---
+  duration_ms: 31072.898919
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:100:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector("[data-editor-handoff] button") && !document.querySelector("[data-editor-handoff] button").disabled; Forge
+    Chats
+    1
+    Projects
+    3
+    New chat
+    TODAY
+    Imported results
+    deck · ready · 12 h ago
+    ⋯
+    Presentations
+    Themes
+    Settings
+    I
+    Import test
+    Privacy
+    ·
+    Terms
+    ·
+    Report an issue
+    New chat
+    Slides, a written report and a speaker script
+    ON THIS MACHINE
+    What would you like to present today?
+    
+    Send a topic and a themed deck comes out — I'll ask a few questions first, everything defaults unless you say otherwise. The app drafts it; you do the final touches.
+    
+    Green hydrogen: how electrolysis technologies compare
+    Real-time ray tracing and the future of rasterisation
+    Mechanical keyboards: ergonomics of typing
+    PPT
+    Report
+    Auto
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:22:9)
+    async openSource (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:35:5)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:101:94)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Interrupted while running: test/v2-handoff-chrome-7b.test.js at /home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:1:1

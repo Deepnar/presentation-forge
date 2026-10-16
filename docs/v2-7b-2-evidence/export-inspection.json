@@ -1,0 +1,45 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "renderer": "Actual authenticated exports; src/preview.js via LibreOffice/Poppler",
+  "records": [
+    {
+      "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+      "sha256": "49e58beaf8ffa00149946dbbbdb16b375a994abf824c5206aa160798a210ec88",
+      "bytes": 92783,
+      "slideCount": 3,
+      "chartParts": 1,
+      "nativeTable": true,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-2-evidence/native/chart-2.png"
+      ]
+    },
+    {
+      "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+      "sha256": "379934acfc12f41d8ccda60749cdca2341feab69a30a90c5bed82890ee6212fd",
+      "bytes": 92770,
+      "slideCount": 3,
+      "chartParts": 1,
+      "nativeTable": true,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-2-evidence/native/table-3.png"
+      ]
+    },
+    {
+      "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+      "sha256": "40080623de58a9464ab4bb22eb77de294d76b78774217efe016e0cac4cc79a8d",
+      "bytes": 92763,
+      "slideCount": 3,
+      "chartParts": 1,
+      "nativeTable": true,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-7b-2-evidence/native/handoff-1.png",
+        "docs/v2-7b-2-evidence/native/handoff-2.png",
+        "docs/v2-7b-2-evidence/native/handoff-3.png"
+      ]
+    }
+  ],
+  "limitation": "LibreOffice rasters do not establish interactive Microsoft PowerPoint behavior."
+}

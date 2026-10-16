@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+not ok 1 - completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+  ---
+  duration_ms: 31591.400466
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector('[data-project-grid]'); Forge
+    Chats
+    1
+    Projects
+    1
+    New chat
+    TODAY
+    Imported results
+    deck · ready · 12 h ago
+    ⋯
+    Presentations
+    Themes
+    Settings
+    I
+    Import test
+    Privacy
+    ·
+    Terms
+    ·
+    Report an issue
+    Presentations
+    
+    Saved presentations live here. Open one to edit, or start a new one below.
+    
+    Refresh
+    Create presentation
+    No presentations yet
+    Create one above — blank, from a layout, or with AI — and it will appear here.
+    Create presentation
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:22:9)
+    async openSource (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:37:7)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:56:16)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Interrupted while running: test/v2-handoff-chrome-7b.test.js at /home/deepnar/Programs/presentations/test/v2-handoff-chrome-7b.test.js:1:1

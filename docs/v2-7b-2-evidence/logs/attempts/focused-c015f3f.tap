@@ -1,0 +1,163 @@
+TAP version 13
+# Subtest: one pending click owns creation and navigation; a fresh view reuses the durable identity
+ok 1 - one pending click owns creation and navigation; a fresh view reuses the durable identity
+  ---
+  duration_ms: 1.865013
+  type: 'test'
+  ...
+# Subtest: an ambiguous response retries with the same identity, preserving a server-created project
+ok 2 - an ambiguous response retries with the same identity, preserving a server-created project
+  ---
+  duration_ms: 0.269295
+  type: 'test'
+  ...
+# Subtest: navigation waits for confirmed creation and uses the returned current project
+ok 3 - navigation waits for confirmed creation and uses the returned current project
+  ---
+  duration_ms: 3.561523
+  type: 'test'
+  ...
+# Subtest: a late response cannot navigate or update an unmounted view
+ok 4 - a late response cannot navigate or update an unmounted view
+  ---
+  duration_ms: 0.229526
+  type: 'test'
+  ...
+# Subtest: a late response cannot navigate or update an account or route changed
+ok 5 - a late response cannot navigate or update an account or route changed
+  ---
+  duration_ms: 0.116852
+  type: 'test'
+  ...
+# Subtest: disposing before the deferred request starts performs no write
+ok 6 - disposing before the deferred request starts performs no write
+  ---
+  duration_ms: 0.099246
+  type: 'test'
+  ...
+# Subtest: an expired view cannot initiate work
+ok 7 - an expired view cannot initiate work
+  ---
+  duration_ms: 0.101174
+  type: 'test'
+  ...
+# Subtest: a changed sign-in invalidates once and exposes recovery without any new write
+ok 8 - a changed sign-in invalidates once and exposes recovery without any new write
+  ---
+  duration_ms: 0.145041
+  type: 'test'
+  ...
+# Subtest: a late failed response does not focus an error in a departed view
+ok 9 - a late failed response does not focus an error in a departed view
+  ---
+  duration_ms: 0.157168
+  type: 'test'
+  ...
+# Subtest: malformed success cannot navigate or claim a saved project
+ok 10 - malformed success cannot navigate or claim a saved project
+  ---
+  duration_ms: 3.296272
+  type: 'test'
+  ...
+# Subtest: dark source mode is consistent across string and remembered boolean
+ok 11 - dark source mode is consistent across string and remembered boolean
+  ---
+  duration_ms: 0.168531
+  type: 'test'
+  ...
+# Subtest: source conflicts and deleted copies refuse rather than rotating identity or replacing edits
+ok 12 - source conflicts and deleted copies refuse rather than rotating identity or replacing edits
+  ---
+  duration_ms: 0.270453
+  type: 'test'
+  ...
+# Subtest: refusals retain structured diagnostics and distinguish recovery paths
+ok 13 - refusals retain structured diagnostics and distinguish recovery paths
+  ---
+  duration_ms: 0.161393
+  type: 'test'
+  ...
+# Subtest: HTTP handoff sends bearer identity and preserves service diagnostics
+ok 14 - HTTP handoff sends bearer identity and preserves service diagnostics
+  ---
+  duration_ms: 15.629998
+  type: 'test'
+  ...
+# handoff backend: sqlite; actual authenticated production server
+# Subtest: completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+ok 15 - completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+  ---
+  duration_ms: 10732.472776
+  type: 'test'
+  ...
+# Subtest: both entry points and fresh tabs reopen the same human-edited dark project
+ok 16 - both entry points and fresh tabs reopen the same human-edited dark project
+  ---
+  duration_ms: 4875.303685
+  type: 'test'
+  ...
+# Subtest: a lost response after real creation retries safely after reload without a duplicate
+ok 17 - a lost response after real creation retries safely after reload without a duplicate
+  ---
+  duration_ms: 3046.790165
+  type: 'test'
+  ...
+# Subtest: a held successful response cannot navigate after leaving its source view
+ok 18 - a held successful response cannot navigate after leaving its source view
+  ---
+  duration_ms: 2584.824895
+  type: 'test'
+  ...
+# Subtest: an account change during a held response cannot open another account's project
+ok 19 - an account change during a held response cannot open another account's project
+  ---
+  duration_ms: 2442.043415
+  type: 'test'
+  ...
+# Subtest: a real second document's token storage event invalidates pending work with reload recovery
+ok 20 - a real second document's token storage event invalidates pending work with reload recovery
+  ---
+  duration_ms: 2610.337692
+  type: 'test'
+  ...
+# Subtest: a transient completed-chat source read can retry without losing dark mode
+ok 21 - a transient completed-chat source read can retry without losing dark mode
+  ---
+  duration_ms: 2256.479136
+  type: 'test'
+  ...
+# Subtest: unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+ok 22 - unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+  ---
+  duration_ms: 2505.984312
+  type: 'test'
+  ...
+# Subtest: changed and deleted imports refuse without replacing or resurrecting their projects
+ok 23 - changed and deleted imports refuse without replacing or resurrecting their projects
+  ---
+  duration_ms: 4254.291551
+  type: 'test'
+  ...
+# Subtest: incomplete generation and unavailable storage keep the original flow usable
+ok 24 - incomplete generation and unavailable storage keep the original flow usable
+  ---
+  duration_ms: 2506.168281
+  type: 'test'
+  ...
+# Subtest: 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+ok 25 - 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+  ---
+  duration_ms: 3044.479333
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41472.239972
+# forge-test-file "test/v2-handoff-7b.test.js"
+# forge-test-file "test/v2-handoff-chrome-7b.test.js"

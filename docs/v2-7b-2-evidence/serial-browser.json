@@ -1,0 +1,40 @@
+{
+  "id": "serial-browser",
+  "kind": "tests",
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> python3 docs/v2-7b-2-evidence/run-group.py serial (23 separate bounded owners; exact commands in logs/serial/runs.json)",
+  "log": "docs/v2-7b-2-evidence/logs/serial-browser.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 171,
+    "pass": 171,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-edit-chrome-7a.test.js",
+    "test/freeform.test.js",
+    "test/plate.test.js",
+    "test/v2-edit-chrome-5c.test.js",
+    "test/v2-edit-chrome-5d.test.js",
+    "test/v2-edit-chrome-5e.test.js",
+    "test/v2-edit-chrome-5f.test.js",
+    "test/v2-edit-chrome-5i.test.js",
+    "test/v2-edit-chrome-5j.test.js",
+    "test/v2-edit-chrome-5k.test.js",
+    "test/v2-edit-chrome-6a.test.js",
+    "test/v2-edit-chrome-6b.test.js",
+    "test/v2-edit-chrome-6c.test.js",
+    "test/v2-edit-chrome-chart.test.js",
+    "test/v2-edit-chrome-table.test.js",
+    "test/v2-fontgate-4e.test.js",
+    "test/v2-fonts-4d.test.js",
+    "test/v2-live-chrome-4f.test.js",
+    "test/v2-plate-3f5.test.js",
+    "test/v2-selection-chrome.test.js",
+    "test/v2-viewer-smoke.test.js",
+    "test/v2-import-chrome-7b.test.js",
+    "test/v2-handoff-chrome-7b.test.js"
+  ]
+}
