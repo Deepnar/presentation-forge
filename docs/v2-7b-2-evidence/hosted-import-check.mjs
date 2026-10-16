@@ -47,7 +47,8 @@ test('actual hosted PostgreSQL double-click creates once; CLI replay retains hum
     const chatKey = `forge.chats.${fixture.owner}`;
     await page.evaluate(`localStorage.setItem(${JSON.stringify(chatKey)},${JSON.stringify(JSON.stringify([chat]))});dispatchEvent(new StorageEvent('storage',{key:${JSON.stringify(chatKey)}}));location.hash='#/chat/hosted-handoff-proof'`);
     await wait(page, "document.querySelector('[data-editor-handoff] button') && !document.querySelector('[data-editor-handoff] button').disabled");
-    await page.evaluate("document.querySelector('[data-editor-handoff]').scrollIntoView({block:'center'})");
+    await page.evaluate("document.querySelector('[data-editor-handoff]').scrollIntoView({block:'center',behavior:'instant'})");
+    await wait(page, "(() => {const action=document.querySelector('[data-editor-handoff]'),footer=document.querySelector('footer');if(!action||!footer)return false;const r=action.getBoundingClientRect();return r.top>=0&&r.bottom<=footer.getBoundingClientRect().top})()");
     await page.screenshot('docs/v2-7b-2-evidence/completed-chat.png');
     await page.close(); page = null;
     const httpMs = performance.now() - start;
