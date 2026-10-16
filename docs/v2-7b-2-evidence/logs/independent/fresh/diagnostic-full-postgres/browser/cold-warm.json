@@ -1,0 +1,17 @@
+{
+  "backend": "postgres",
+  "cold": {
+    "handoffMs": 400,
+    "timings": {
+      "compileMs": 4.890016999999716,
+      "persistMs": 2.895393000000695,
+      "totalMs": 12.312408000001597
+    }
+  },
+  "warm": {
+    "handoffMs": 419,
+    "timings": {
+      "totalMs": 5.593162999999549
+    }
+  }
+}

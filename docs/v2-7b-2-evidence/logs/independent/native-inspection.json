@@ -1,0 +1,19 @@
+{
+  "source": "independent/fresh/handoff-postgres/browser/handoff.pptx",
+  "sha256": "6746079645c2ab6047296f2a4793a48a6741a11482d16519d18527391c757ef8",
+  "slides": 3,
+  "nativeCharts": 1,
+  "nativeTables": 1,
+  "chartAndTableValues": [
+    1.25,
+    12.5
+  ],
+  "previewExitCode": 0,
+  "rasterizedPages": 3,
+  "inspectedPages": [
+    1,
+    2,
+    3
+  ],
+  "visualFindings": "No clipping or overlap in title, numeric chart, unit or editable table. Native OOXML values and table retained."
+}

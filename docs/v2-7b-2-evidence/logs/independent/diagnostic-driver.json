@@ -1,0 +1,5 @@
+{
+  "source": "test/v2-handoff-chrome-7b.test.js",
+  "sourceSha256": "7dd1b16a09dbe248922a28144852734b553a63836cbf1871e43331a1582907c8",
+  "changes": "Evidence-only copy rewrites relative imports and adds capture-phase trusted pointer/click targets, restore HTTP request/response tracing, before/after geometry and final state/screenshot; original assertions and click behavior unchanged. Name filter runs first restore case; ten other cases are not executed by this diagnostic name filter."
+}

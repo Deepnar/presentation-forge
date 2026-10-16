@@ -1,0 +1,30 @@
+{
+  "non-browser-bulk": {
+    "tests": 2020,
+    "pass": 2020,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "serial-browser": {
+    "tests": 171,
+    "pass": 171,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "postgres-contract": {
+    "tests": 23,
+    "pass": 23,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "cross-process-faults": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  }
+}

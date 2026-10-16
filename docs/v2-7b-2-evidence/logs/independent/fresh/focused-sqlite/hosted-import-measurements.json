@@ -1,0 +1,18 @@
+{
+  "backend": "PostgreSQL 15.18",
+  "slides": 3,
+  "trustedClicks": 2,
+  "importPosts": 1,
+  "timings": {
+    "compileMs": 27.438931999999795,
+    "persistMs": 13.098606999999902,
+    "totalMs": 163.29215099999988
+  },
+  "browserBootAndHandoffMs": 2855.1067049999997,
+  "replayTotalMs": 73.54724,
+  "persistedRevision": 1,
+  "nativeChartValues": [
+    1.25,
+    12.5
+  ]
+}

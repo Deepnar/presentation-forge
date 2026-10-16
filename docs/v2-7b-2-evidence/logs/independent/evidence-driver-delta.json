@@ -1,0 +1,7 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "baseEvidenceCommit": "7042bec4eea299bddfe59dbca8eea46df1614236",
+  "file": "docs/v2-7b-2-evidence/hosted-import-check.mjs",
+  "sha256": "3e4dddb3b89ea75bcc6eacc7602b4e468aede2a131f358654281e376bceee173",
+  "change": "Evidence-only capture: instant scroll, then full action bounds above composer before screenshot. Frozen runtime/test/tool source unchanged."
+}

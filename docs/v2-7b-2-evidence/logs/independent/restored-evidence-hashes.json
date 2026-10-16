@@ -1,0 +1,12 @@
+{
+  "docs/v2-7b-2-evidence/ambiguous-response.png": "57869a9373301a0f29f1d25e103f8f31c439574c152f07a69c1b2ba02a510953",
+  "docs/v2-7b-2-evidence/boundary-narrow.png": "a0fec48ca50b66586de49216f5aac9924e4cf88175d9bbccee01515260ab3985",
+  "docs/v2-7b-2-evidence/completed-chat.png": "d8d7a592e821661da20bc684f49c44cbd528e2e520f2e11d0c7661a3748f9bbc",
+  "docs/v2-7b-2-evidence/deck-page-action.png": "3ebd4feda18090b7be7e1bf15322a4168f372496acde9935ef669e243aff8dbe",
+  "docs/v2-7b-2-evidence/handoff-history.png": "e6469b0be4b09aebcde4bb1a886c83a99e1908169e9ed5f24d5673efce6484a7",
+  "docs/v2-7b-2-evidence/opening-project.png": "0154cf1143779d7a5a96fd01711f30400a3d3da231a4cf0a1d4a8573a7243abd",
+  "docs/v2-7b-2-evidence/postgres-double-click.png": "8bca918a90300e37c03d409965cdf82cec577c569af41ea169453cdcae422137",
+  "docs/v2-7b-2-evidence/refusal-narrow.png": "bd5943ac400b3724d6c3263c088d51a6b58947af8c9706c9dbeb37a2a32a31e9",
+  "docs/v2-7b-2-evidence/session-changed.png": "972d3f4c457686d4727975df6946b3d798978f56438f6f74b54d8dd6e2285fa0",
+  "out/v2-7b-2-validation/hosted-import-measurements.json": "7653194ee775f3df29a82b4e7f502152f8fea86a6ace5a8bb3faaa6fde9e3e61"
+}

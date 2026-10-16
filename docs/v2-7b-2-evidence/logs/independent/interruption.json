@@ -1,0 +1,8 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "driverExitCode": 143,
+  "observed": "Outer reviewer driver terminated after focused25 exit0 and during governance run. Governance TAP reports20 passed, but no independently recorded exit; excluded until rerun. Cause not established.",
+  "focusedCompleted": 25,
+  "governanceCounted": false,
+  "recovery": "Copied focused fresh results before termination. Restored all fixed-output evidence from task-owned temporary backup; next child processes use separate sessions."
+}

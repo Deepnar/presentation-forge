@@ -1,0 +1,170 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "reviewerContext": "/root/v27b_review",
+  "primarySuccessfulExecutions": {
+    "focusedSqlite": 25,
+    "governance": 20,
+    "canonicalPostgresBrowser": 11,
+    "supplementalHostedPostgres": 1,
+    "total": 57,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "primaryRuns": {
+    "focused-sqlite": {
+      "id": "focused-sqlite",
+      "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+      "checkoutHead": "7042bec4eea299bddfe59dbca8eea46df1614236",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "5m",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "test/v2-handoff-7b.test.js",
+        "test/v2-handoff-chrome-7b.test.js"
+      ],
+      "environmentDelta": {},
+      "exitCode": 0,
+      "seconds": 42.993710595001176,
+      "log": "docs/v2-7b-2-evidence/logs/independent/focused-sqlite.log"
+    },
+    "governance": {
+      "id": "governance",
+      "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+      "checkoutHead": "7042bec4eea299bddfe59dbca8eea46df1614236",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "5m",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "test/dev-protocol.test.js"
+      ],
+      "environmentDelta": {},
+      "exitCode": 0,
+      "seconds": 0.8675646949996008,
+      "log": "docs/v2-7b-2-evidence/logs/independent/governance.log"
+    },
+    "handoff-postgres": {
+      "id": "handoff-postgres",
+      "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+      "checkoutHead": "bc7305f75f2ee40dddd4784f2af79be188e2edd3",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "5m",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "test/v2-handoff-chrome-7b.test.js"
+      ],
+      "environmentDelta": {
+        "FORGE_HANDOFF_TEST_BACKEND": "postgres"
+      },
+      "exitCode": 0,
+      "seconds": 43.33738898400043,
+      "log": "docs/v2-7b-2-evidence/logs/independent/handoff-postgres.log"
+    },
+    "hosted-double-click": {
+      "id": "hosted-double-click",
+      "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+      "checkoutHead": "bc7305f75f2ee40dddd4784f2af79be188e2edd3",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "5m",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "docs/v2-7b-2-evidence/hosted-import-check.mjs"
+      ],
+      "environmentDelta": {},
+      "exitCode": 0,
+      "seconds": 4.220953355998063,
+      "log": "docs/v2-7b-2-evidence/logs/independent/hosted-double-click.log"
+    }
+  },
+  "allAttempts": "runs.json",
+  "preservedEarlierProductAttempt": {
+    "log": "handoff-postgres-failed.log",
+    "pass": 10,
+    "fail": 1,
+    "exitCode": 1,
+    "classification": "Unexplained isolated timeout waiting for restore confirmation; initial trusted event target and restore request were not captured. Not proven product defect, missed click or scroll race."
+  },
+  "diagnostics": {
+    "singleInstrumentedCase": {
+      "pass": 1,
+      "fail": 0,
+      "remainingCases": "not executed by name filter"
+    },
+    "fullMinimallyInstrumentedPg": {
+      "pass": 11,
+      "fail": 0
+    },
+    "trace": "restore-diagnostic-full.json",
+    "observation": "Trusted Restore revision 0 pointer/click events hit the expected button; POST revision 0/baseRevision 4 returned 200 and persisted revision 5. This subsequent success does not identify original failure cause."
+  },
+  "excludedAttempts": [
+    "Unrecorded-exit governance attempt after outer wrapper exit 143; complete recorded rerun used instead",
+    "Reviewer diagnostic relative-import setup error before product cases ran",
+    "Superseded implementation22047f7 evidence; complete03 packet used",
+    "Copied fixed-output snapshots may contain files inherited from preceding suites; only files actually emitted by the named suite support freshness claims"
+  ],
+  "commands": {
+    "typecheck": "exit0",
+    "protocol": "exit0,0 errors/0 warnings",
+    "benchmark50": "exit0,totalL1=0;raster none",
+    "nativePreview": "exit0,3 raster pages inspected"
+  },
+  "hashes": "audited-image-hashes.json",
+  "sourceDelta": "No app/src/packages/test/tools/schema/themes delta from frozen03 source",
+  "service": "Owned disposable PostgreSQL15.18 localhost5544 only; temporary suite DBs removed by fixtures; service left running and released to implementer",
+  "visualCorrection": {
+    "old": "superseded-completed-chat.png",
+    "new": "fresh/hosted-double-click/completed-chat.png",
+    "sha256": "ffa3ba9268aa816ba09b377144dc382ed30f40cb4096da4b504ed9836248f4f5",
+    "driver": "evidence-driver-delta.json"
+  },
+  "native": "native-inspection.json"
+}
