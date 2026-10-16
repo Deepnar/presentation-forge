@@ -1,4 +1,4 @@
-# Handoff — V2-7B-2 independently accepted
+# Handoff — V2-7C-1 first-slide covers approved
 
 2026-10-16, branch `v2`. Accepted implementation/test/tool source:
 `03cc89ef233db5469066599391cbaac68c2fc646`. Task-entry accepted baseline was
@@ -72,11 +72,13 @@ them. The scoped [changed-files manifest](v2-7b-2-evidence/changed-files.txt) is
 relative to planning checkout 924f157. Authorized push destination is origin/v2.
 The user prefers few agents, with high effort only.
 
-Known limits: isolated unexplained restore-test timeout, accepted conditional B1
-conversion/refusals, standing BYOK locale and approximately 24px Viewer Fit padding
-overflow, narrow inspector overlay and horizontal toolbar/grid scrolling. This
-closes the bounded supported generation-to-editor workflow; V2-7 hosted/Vercel
-readiness and full legacy parity remain distinct. The sole future-work registry
-is [ROADMAP.md](ROADMAP.md#workspace-followups). Next candidate is not authorized
-for implementation. Stop after this slice's pushed handoff; no later feature,
-production deployment or migration was started.
+Known limits from B2 remain recorded in its evaluation and review, including the
+isolated restore timeout, BYOK locale, Fit padding and conditional import coverage.
+
+The next slice V2-7C-1 is now approved: human direction selected first-slide
+preview cards above the existing title/actions. Its sole task contract is in
+[ROADMAP.md](ROADMAP.md#v2-7c-1-plan). Implementation has not begun at this planning
+snapshot. Accepted source/state remains B2 until a new committed implementation
+is indexed; nextCandidate marks the approved C1 task. No other feature, deployment
+or migration is authorized. The machine has ample CPU/memory but high I/O pressure;
+continue lightweight work and obtain a quiet window before expensive validation.

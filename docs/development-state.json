@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Workspace followups",
-    "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#workspace-followups"
+    "id": "V2-7C-1",
+    "authorized": true,
+    "roadmapRef": "docs/ROADMAP.md#v2-7c-1-plan"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

@@ -7712,6 +7712,73 @@ scale); charts structurally exact without axes (V2-4C).
   fixture/developer controls from the production editor toolbar as part of
   frontend polish. These are findings from V2-7A, not scope for its validation.
   Agree surface direction before implementation; AI editing remains V2-8.
+<a id="v2-7c-1-plan"></a>
+
+- [ ] V2-7C-1 saved-project first-slide covers — **approved on 2026-10-16**.
+  Human direction selected real first-slide previews above the existing card
+  title/actions in the current Projects grid. This is the first bounded workspace
+  polish slice; list consolidation and toolbar changes remain separate below.
+
+  - **Baseline/task entry:** accepted source
+    `03cc89ef233db5469066599391cbaac68c2fc646`, separate
+    [B2 decision](reviews/V2-7B-2-03cc89e.json); planning checkout
+    `b8dc42504d28eec63269cffa55a86ec1fca003c1` on `v2`. Existing project API,
+    stores/history, saved scene SVG projection and font loader are prerequisites.
+  - **Scope/behavior:** a real first-saved-slide preview above each saved-project
+    card's title and current actions. Clicking its labeled preview opens the same
+    project. Preserve the slide's proportions inside a fixed 16:9 preview region;
+    loading, blank slides and unavailable previews retain that space and leave
+    Open/History/Rename/Export/Delete available. Saved edits, first-slide reorder,
+    deletion and history restoration must be reflected on dashboard reopening.
+  - **Data boundary:** shared headless first-slide projection over canonical
+    ProjectStore reads, exposed through a thin authenticated JSON cover route.
+    List metadata remains small; never fetch every full deck for thumbnails.
+    Return only requested identity/revision and first scene, with no persistent
+    thumbnail files or schema migration. Existing owner/admin/local access policy
+    applies, with private no-store responses and version mismatch refusal.
+  - **Browser lifecycle/performance:** near-viewport loading with bounded parallel
+    work, cancellation on departure, bounded memory-only revision cache and
+    sign-in invalidation. Render only after canonical scene validation and the
+    existing font gate, using the existing sceneToSvg renderer. Late/stale results
+    cannot replace a newer preview or survive an account change. Preview failure
+    is local to that card, with retry and no false saved/render-success claim.
+    Bound oversized preview responses and stalled work; don't introduce a worker
+    fleet, background rendering service, browser screenshot cache or paid storage.
+  - **Invariants/non-goals:** no scene/intent/engine/native-export mutation,
+    compiler/layout changes, model calls, data/security-policy changes, project
+    list merger, cover picker, uploaded cover, editor toolbar work, Fit fix,
+    restore-timeout investigation, AI runtime, deployment or migration. These
+    existing roadmap tasks are not silently absorbed or reordered.
+  - **Gate applicability:** correctness, authorization, read-only integrity,
+    browser/accessibility/responsiveness, compatibility and evidence all apply.
+    Undo/redo, regeneration and native exports are regression invariants; covers
+    do not introduce mutations. Deployment safety means proving no deployment,
+    migration or new retained artifacts, not claiming hosted launch readiness.
+  - **Verification:** pure projection/cache/cancellation tests; actual authenticated
+    HTTP on SQLite and isolated PostgreSQL; browser real production server/CSP
+    covering grid cards, blank/layout/imported/detached/hidden/content variants,
+    saved edits/reorder/restore/reopen, keyboard, narrow/dark views, failure/retry,
+    deleted/stale targets, account switch, loading bounds and cleanup. Measure
+    response bytes, many-project request concurrency, first-visible-preview time
+    and card bounds before/after loading. Compare SVG to the same saved scene and
+    inspect final desktop/narrow screenshots. Existing render/native regression
+    suites preserve fidelity; no new live writing-quality claim is needed.
+  - **Complete regression:** extend the full current inventory with focused cover
+    unit/HTTP/Chrome files, then run non-browser bulk, bounded serial browser/
+    build/plate owners, isolated PostgreSQL contracts/import/concurrency/faults,
+    production build, typecheck and all 50 canonical benchmark cells. Retain the
+    unchanged BYOK locale failure separately. PostgreSQL unavailable means
+    unexecuted, never passing. Inspect quiet-window CPU/memory/I/O before expensive
+    checks; never stop unrelated work or use another project's database.
+  - **Acceptance/report/stop:** retain baseline and exact implementation SHA,
+    executed pass/fail/skip/cancel/unexecuted totals, corrections, measurements,
+    screenshots, limitations and separate exact-source ACCEPT/HOLD. Push focused
+    changes/evidence to origin/v2; no self-acceptance. Stop after this slice's
+    independent review and handoff, before list consolidation or other features.
+  - **Look-ahead:** covers are a disposable read projection of saved scenes, not
+    new project truth. Later unified lists can consume the same identity/revision
+    resource; cloud artifact lifecycle and asset adapters remain independent.
+
 - [ ] Viewer Fit content-box accounting — the scroller's 24px padding on
   each side is currently included in the fit input, so a 720px stage lives in a
   720px border box with 768px scroll width; the last24px are initially offscreen.
