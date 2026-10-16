@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7A-fe749fb.json"
   },
   "implementationHead": {
-    "sha": "222ab025e7d2babbcdcdea6dc61fe9072a241544",
-    "note": "V2-7B-1 authorized on 2026-10-15; implementation starts from this documentation HEAD. Evidence will name the frozen implementation commit after source changes."
+    "sha": "f52d193c0de56c95c9b191a53c10d4e0ea4bebaf",
+    "note": "Frozen conversion, creation, CSP validation and test implementation. Subsequent evidence/documentation commits descend from this exact source."
   },
   "activeMilestone": {
     "id": "V2-7B-1",
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-15"
+  "updated": "2026-10-16"
 }

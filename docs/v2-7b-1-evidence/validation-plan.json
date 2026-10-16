@@ -1,7 +1,7 @@
 {
-  "implementationSha": "fe749fb41e744961df156e8b9dcf80f0155b4e0b",
+  "implementationSha": "f52d193c0de56c95c9b191a53c10d4e0ea4bebaf",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
-  "inventoryMethod": "Top-level test/*.test.js; isolate any file referencing chrome-shot, fontGated, google-chrome, vite build or openViewer; isolate three PG suites. Reinspect new files before changing inventory. Also isolate renderPlate/resolvePlateBackgrounds owners, which launch Chrome indirectly.",
+  "inventoryMethod": "Complete top-level test/*.test.js inventory (197 files): 171 non-browser files, 22 serial browser/build/plate owners, four owned PostgreSQL files. Shared dist builds never overlap.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
