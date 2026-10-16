@@ -6,7 +6,7 @@
     "source": "docs/reviews/V2-7B-1-662f7d6.json"
   },
   "implementationHead": {
-    "sha": "c015f3fc2a4fe402927a9158542360fd4d1786db",
+    "sha": "22047f7dd89eab46876dfe4a51296be95aeb844a",
     "note": "Frozen V2-7B-2 implementation and test/governance source. Subsequent documentation/evidence commits do not change product code."
   },
   "activeMilestone": {
