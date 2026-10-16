@@ -101,6 +101,7 @@
   "notes": [
     "cold in raw handoff files means first source import in a warmed process, not process-cold startup. warm means receipt replay from another entrypoint/fresh browser.",
     "60-slide handoff starts with the legacy page already ready; imported60Opening includes browser/font boot.",
-    "These are individual observations, not statistical latency guarantees."
+    "These are individual observations, not statistical latency guarantees.",
+    "hostedDoubleClick.browserBootAndHandoffMs is the entire diagnostic browser segment: Chrome/font boot, double-click handoff, editor screenshot, return to chat, chat screenshot and browser teardown. It is not pure handoff latency. Raw field name is preserved."
   ]
 }

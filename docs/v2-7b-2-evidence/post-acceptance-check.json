@@ -1,0 +1,30 @@
+{
+  "implementationSha": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "test/dev-protocol.test.js"
+  ],
+  "exitCode": 0,
+  "tests": {
+    "total": 20,
+    "pass": 20,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-7b-2-evidence/logs/protocol-accepted.log",
+  "note": "Post-acceptance state/governance verification, repeated and excluded from distinct matrix totals. Prior local copy wrapper expected TAP but received spec-formatted footer; not counted as a recorded successful check. This run explicitly records child exit and uses TAP.",
+  "actualStateProtocol": {
+    "command": [
+      "npm",
+      "run",
+      "dev:protocol"
+    ],
+    "exitCode": 0,
+    "log": "docs/v2-7b-2-evidence/logs/post-acceptance-protocol.log",
+    "errors": 0,
+    "warnings": 0
+  }
+}

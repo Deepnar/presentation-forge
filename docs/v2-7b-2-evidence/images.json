@@ -131,11 +131,12 @@
     },
     {
       "path": "completed-chat.png",
-      "sha256": "d8d7a592e821661da20bc684f49c44cbd528e2e520f2e11d0c7661a3748f9bbc",
+      "sha256": "ffa3ba9268aa816ba09b377144dc382ed30f40cb4096da4b504ed9836248f4f5",
       "width": 1440,
       "height": 757,
       "backend": "PostgreSQL 15.18",
-      "inspected": true
+      "inspected": true,
+      "provenance": "Independent settled actual-server/PostgreSQL later-turn capture, evidence-only driver correction; original retained in logs/independent/superseded-completed-chat.png"
     },
     {
       "path": "deck-page-action.png",

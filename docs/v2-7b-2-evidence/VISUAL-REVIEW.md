@@ -3,7 +3,12 @@
 Implementation `03cc89ef233db5469066599391cbaac68c2fc646`, branch `v2`.
 All 30 final images in [images.json](images.json) were opened and inspected.
 Each hash was recorded at inspection and compared again with the final copied
-file. The pre-correction recovery screenshot under logs/attempts is excluded.
+file. The completed-chat image was replaced after independent review found that
+the first capture left its action below view: the evidence-only driver now uses
+instant scrolling and waits for the full handoff bounds above the composer.
+Both the independent reviewer and implementer opened the settled replacement.
+The original is retained as logs/independent/superseded-completed-chat.png.
+The pre-correction recovery screenshot under logs/attempts is also excluded.
 These are synthetic fixtures; no private presentation or live model output.
 
 | Capture group | Count | Provenance and observations |
