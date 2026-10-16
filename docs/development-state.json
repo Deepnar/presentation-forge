@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7A-fe749fb.json"
   },
   "implementationHead": {
-    "sha": "f52d193c0de56c95c9b191a53c10d4e0ea4bebaf",
-    "note": "Frozen conversion, creation, CSP validation and test implementation. Subsequent evidence/documentation commits descend from this exact source."
+    "sha": "90faf8140c76d6bf95f72aff6baa6147df20ee2c",
+    "note": "Frozen source including independent-review section-ordinal correction; final complete validation will run after this freeze."
   },
   "activeMilestone": {
     "id": "V2-7B-1",

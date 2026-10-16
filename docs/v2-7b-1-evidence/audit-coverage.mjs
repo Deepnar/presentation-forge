@@ -41,7 +41,7 @@ try {
     observations.push(record);
   }
   const result = {
-    implementationSha: process.env.FORGE_AUDIT_SHA ?? 'f52d193c0de56c95c9b191a53c10d4e0ea4bebaf',
+    implementationSha: process.env.FORGE_AUDIT_SHA ?? '90faf8140c76d6bf95f72aff6baa6147df20ee2c',
     method: 'One untouched canonical specimen slide per each of 74 types; original section labels retained; real bounded source reader, shared conversion/compiler and atomic SQLite store. Refused specimens do not imply the whole family is refused.',
     coverage, observations,
     totals: {

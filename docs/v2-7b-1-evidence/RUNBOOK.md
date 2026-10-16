@@ -1,6 +1,6 @@
 # V2-7B-1 exact-source validation
 
-Source: `f52d193c0de56c95c9b191a53c10d4e0ea4bebaf`, accepted baseline
+Source: `90faf8140c76d6bf95f72aff6baa6147df20ee2c`, accepted baseline
 `fe749fb41e744961df156e8b9dcf80f0155b4e0b`. Run from repository root with Node 24.
 The frozen manifest partitions **197 files** without overlap: **171 bulk**, **22
 serial browser/build/plate owners**, **4 PostgreSQL**. The observed file markers
