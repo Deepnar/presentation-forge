@@ -1,0 +1,43 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "records": [
+    {
+      "name": "chart",
+      "source": "docs/v2-7b-1-evidence/logs/independent/fresh/browser/imported-chart.pptx",
+      "sha256": "cdc8f8cfc52c210bbea16de3373b6c110f326ad7ee99d0e8e299e78f7e4eb461",
+      "slides": 3,
+      "assertions": "passed",
+      "pages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-chart/slide-1.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-chart/slide-2.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-chart/slide-3.png"
+      ]
+    },
+    {
+      "name": "table",
+      "source": "docs/v2-7b-1-evidence/logs/independent/fresh/browser/imported-table.pptx",
+      "sha256": "153e00aef0dc824a044b2599d99307335773c9ef536cbf1fa0d1af5eb0d180e2",
+      "slides": 3,
+      "assertions": "passed",
+      "pages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-table/slide-1.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-table/slide-2.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-table/slide-3.png"
+      ]
+    },
+    {
+      "name": "relationships",
+      "source": "docs/v2-7b-1-evidence/logs/independent/fresh/section-ordinals.pptx",
+      "sha256": "06570c0a82c2476a598a2376c0bf36cf4dac98a3fb021b2f15862f6a16cda82d",
+      "slides": 5,
+      "assertions": "passed",
+      "pages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-relationships/slide-1.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-relationships/slide-2.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-relationships/slide-3.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-relationships/slide-4.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7b-1-evidence/logs/independent/native-relationships/slide-5.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "inventoryFiles": 197,
+  "observedImplementerGates": {
+    "non-browser-bulk": {
+      "tests": 2005,
+      "pass": 2005,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "serial-browser": {
+      "tests": 160,
+      "pass": 160,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "postgres-contract": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "cross-process-faults": {
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  },
+  "independentlyExecuted": {
+    "focused": {
+      "tests": 68,
+      "pass": 68,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "postgres-import": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "hosted-postgres": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "actual-server-browser": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  },
+  "independentTests": 80,
+  "imageHashChecks": 23,
+  "historicalEvidenceRestored": true
+}
