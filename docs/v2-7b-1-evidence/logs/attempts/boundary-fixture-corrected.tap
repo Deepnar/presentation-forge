@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: imported native chart edits, undo/redo, saves and reopens without moving the canvas
+ok 1 - imported native chart edits, undo/redo, saves and reopens without moving the canvas
+  ---
+  duration_ms: 8890.143024
+  type: 'test'
+  ...
+# Subtest: imported native table edits, undo/redo, saves and reopens without moving the canvas
+ok 2 - imported native table edits, undo/redo, saves and reopens without moving the canvas
+  ---
+  duration_ms: 8291.399359
+  type: 'test'
+  ...
+# Subtest: an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions
+ok 3 - an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions
+  ---
+  duration_ms: 2750.241358
+  type: 'test'
+  ...
+# Subtest: the 60-slide import boundary opens all thumbnails; oversized input refuses atomically
+ok 4 - the 60-slide import boundary opens all thumbnails; oversized input refuses atomically
+  ---
+  duration_ms: 2102.648803
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22577.332618
+# forge-test-file "test/v2-import-chrome-7b.test.js"

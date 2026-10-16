@@ -47,10 +47,13 @@ must not become a rigid limit on AI generation. See [V2-5K](V2-5K-EVAL.md).
 V2-7A implements Workspace → Project → Editor, saved project cards, blank/layout
 creation, a shared editor shell, contextual inspector and history. Its validation
 and acceptance status are in [development-state.json](development-state.json).
-The Assistant tab is a labeled placeholder. “Create with AI” enters legacy chat;
-a generated deck is not yet translated into a saved Layer-C project. The sole
-work registry is [ROADMAP.md](ROADMAP.md): V2-7B is the next candidate and is not
-authorized by its existence. AI editing integration, native assets/imports,
+The Assistant tab is a labeled placeholder. “Create with AI” enters legacy chat
+and completion still opens the legacy deck. A shared HTTP/headless conversion
+boundary creates saved Layer-C projects with explicit coverage/refusal gates;
+there is no browser handoff action yet. The sole work registry is
+[ROADMAP.md](ROADMAP.md): V2-7B-1 is the approved conversion/creation slice under
+validation and review; V2-7B-2 remains a candidate, without coding authorization.
+AI editing integration, native assets/imports,
 frontend polish and deployment operations retain their roadmap dependencies.
 
 SQLite remains the default single-instance store; PostgreSQL is the shared-state

@@ -1,0 +1,28 @@
+✔ imported native chart edits, undo/redo, saves and reopens without moving the canvas (8821.77673ms)
+✔ imported native table edits, undo/redo, saves and reopens without moving the canvas (8240.456416ms)
+✖ an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions (1962.220557ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19527.121689
+
+✖ failing tests:
+
+test at test/v2-import-chrome-7b.test.js:89:1
+✖ an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions (1962.220557ms)
+  AssertionError [ERR_ASSERTION]: control exists: [aria-label="Show inspector rail"]
+      at click (file:///home/deepnar/Programs/presentations/test/v2-import-chrome-7b.test.js:26:10)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-chrome-7b.test.js:101:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

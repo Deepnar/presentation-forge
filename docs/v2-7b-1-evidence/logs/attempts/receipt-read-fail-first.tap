@@ -1,0 +1,49 @@
+✔ creates a real project and recoverable revision zero without changing source (138.850081ms)
+✔ simultaneous requests return one project and baseline; retries retain later human edits (34.438729ms)
+✔ a changed source conflicts until an explicit new request is used (14.42891ms)
+✔ deleted imports cannot silently resurrect on retry (7.856109ms)
+✔ source and target owner checks prevent cross-owner and silent ownerless claiming (6.226547ms)
+✔ incomplete, checkpointed and shorter-than-plan sources refuse before writing (4.055143ms)
+✔ unrepresentable content and institutional chrome refuse atomically (5.232646ms)
+✔ filesystem symlinks, traversal and YAML alias inputs cannot bypass the source boundary (3.671057ms)
+✔ history failure rolls back the project and request reservation so retry succeeds (14.913303ms)
+✖ a receipt read failure is storage-unavailable, leaves state intact and permits retry after recovery (9.246107ms)
+✔ separate CLI processes share durable retry identity across restart (528.942299ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 910.234712
+
+✖ failing tests:
+
+test at test/v2-import-service-7b.test.js:132:1
+✖ a receipt read failure is storage-unavailable, leaves state intact and permits retry after recovery (9.246107ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Comparison {
+  +   code: 'ERR_SQLITE_ERROR'
+  -   code: 'storage-unavailable'
+    }
+  
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-service-7b.test.js:135:9)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: no such table: main.missing_import_receipts
+        at Module.lookupImportedProject (file:///home/deepnar/Programs/presentations/src/projects/store.js:177:19)
+        at importGeneratedProject (file:///home/deepnar/Programs/presentations/src/projects/import-generated.js:41:30)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-service-7b.test.js:135:9)
+        at async Test.run (node:internal/test_runner/test:1313:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:897:7),
+    expected: { code: 'storage-unavailable' },
+    operator: 'rejects',
+    diff: 'simple'
+  }

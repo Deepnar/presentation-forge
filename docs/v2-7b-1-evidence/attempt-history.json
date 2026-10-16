@@ -1,0 +1,272 @@
+[
+  {
+    "attempt": "conversion-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/conversion-fail-first.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "untyped-fields-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/untyped-fields-fail-first.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 4,
+      "pass": 0,
+      "fail": 4,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "receipt-read-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/receipt-read-fail-first.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 11,
+      "pass": 10,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "receipt-read-corrected.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/receipt-read-corrected.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "browser-attempt-2.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/browser-attempt-2.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 3,
+      "pass": 2,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "browser-attempt-3.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/browser-attempt-3.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "section-ordinal-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/section-ordinal-fail-first.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "section-ordinal-corrected.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/section-ordinal-corrected.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 64,
+      "pass": 63,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "section-ordinal-corrected-2.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/section-ordinal-corrected-2.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 64,
+      "pass": 64,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "boundary-fixture-corrected.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/boundary-fixture-corrected.tap",
+    "source": "pre-freeze working tree; not added to unique final totals",
+    "tests": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  {
+    "attempt": "boundary-invalid-fixture",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/boundary-invalid-fixture.tap",
+    "tests": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Test fixture had two bullets; canonical minimum is four. Corrected fixture, schema/assertions unchanged."
+  },
+  {
+    "attempt": "initial-service-setup",
+    "tests": {
+      "total": 10,
+      "pass": 7,
+      "fail": 3,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Fixture config isolation and unintended YAML aliases; CLI not implemented yet. Console observation; no raw log retained."
+  },
+  {
+    "attempt": "initial-http-setup",
+    "tests": {
+      "total": 7,
+      "pass": 0,
+      "fail": 7,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Hosted registration does not issue a token; fixture corrected to explicit login. Console observation; no raw log retained."
+  },
+  {
+    "attempt": "cold-postgres-validation",
+    "tests": {
+      "total": 6,
+      "pass": 5,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Actual shared AJV cold-cache race; fixed by synchronously caching compilation promise. Later 6/6. Console observation; no raw log retained."
+  },
+  {
+    "attempt": "actual-server-csp",
+    "tests": null,
+    "classification": "Three failed browser leaves observed, then incomplete run terminated with owned process group after leaked pages. Runtime scene validation violated existing CSP; static schema validator fixed product path and page-on-failure cleanup fixed harness. No aggregate totals/raw log retained; never counted as passing."
+  },
+  {
+    "attempt": "caption-family-wiring",
+    "tests": {
+      "total": 51,
+      "pass": 43,
+      "fail": 8,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Interim chrome adapter referenced design.type rather than canonical design.roles; corrected before source freeze, then 54/54. Raw interim log overwritten by corrected run; console observation retained in report."
+  },
+  {
+    "attempt": "stat-shape-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/stat-shape-fail-first.tap",
+    "tests": {
+      "total": 2,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "stat-shape-corrected.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/stat-shape-corrected.tap",
+    "tests": {
+      "total": 66,
+      "pass": 65,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "relationship-context-fail-first.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/relationship-context-fail-first.tap",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "relationships-corrected.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/relationships-corrected.tap",
+    "tests": {
+      "total": 67,
+      "pass": 67,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "relationships-corrected-2.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/relationships-corrected-2.tap",
+    "tests": {
+      "total": 68,
+      "pass": 68,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "relationships-browser-preflight.tap",
+    "log": "docs/v2-7b-1-evidence/logs/attempts/relationships-browser-preflight.tap",
+    "tests": {
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "working-tree preservation corrections before final source freeze; excluded from unique totals"
+  },
+  {
+    "attempt": "90faf81 broad rerun",
+    "source": "90faf814 with relationship corrections introduced before final import browser file; not a final exact-source gate",
+    "tests": {
+      "total": 160,
+      "pass": 160,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "classification": "Superseded by complete unchanged-source rerun after final freeze. The first 21 files exercised existing behavior; the final import file included in-progress fixes."
+  },
+  {
+    "attempt": "historical preservation probes",
+    "log": "docs/v2-7b-1-evidence/preservation-regressions.json",
+    "classification": "Valid canonical fixtures reproduce statistic association, false context membership and before/after-role defects on exact earlier source 90faf814; current corrected assertions pass. Separate audit, not Node totals. Initial stat test omitted required headline and was corrected; no assertion was relaxed."
+  }
+]

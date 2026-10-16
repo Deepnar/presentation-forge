@@ -1,0 +1,3525 @@
+{
+  "implementationSha": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "method": "One untouched canonical specimen slide per each of 74 types; original section labels retained; real bounded source reader, shared conversion/compiler and atomic SQLite store. Refused specimens do not imply the whole family is refused.",
+  "coverage": {
+    "title": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "section": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "chapter": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "closing": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "body",
+        "cta"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "cta",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "agenda": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "bullets": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "bullets"
+      ],
+      "schemaFields": [
+        "bullets",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "numbered-list": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "checklist": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "feature-grid": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "grid-items": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "icon-list": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "icon-list has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "stacked-list": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "cards": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "cards"
+      ],
+      "schemaFields": [
+        "cards",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "compare": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "left",
+        "right",
+        "verdict"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "left",
+        "notes",
+        "presenter",
+        "right",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type",
+        "verdict"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "pros-cons": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "pros",
+        "cons"
+      ],
+      "schemaFields": [
+        "cites",
+        "cons",
+        "headline",
+        "notes",
+        "presenter",
+        "pros",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "before-after": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "before",
+        "after"
+      ],
+      "schemaFields": [
+        "after",
+        "after_image",
+        "before",
+        "before_image",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "after_image",
+        "before_image",
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "framework": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "concept",
+        "elements",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "concept",
+        "elements",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "framework has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "matrix": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "axes",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "quadrants",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "axes",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "quadrants",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "matrix has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "scorecard": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "criteria",
+        "options"
+      ],
+      "schemaFields": [
+        "cites",
+        "criteria",
+        "headline",
+        "notes",
+        "options",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "vs": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "left",
+        "right",
+        "left_body",
+        "right_body"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "left",
+        "left_body",
+        "notes",
+        "presenter",
+        "right",
+        "right_body",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "side-by-side": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "left",
+        "notes",
+        "presenter",
+        "right",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "left",
+        "notes",
+        "presenter",
+        "right",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "side-by-side requires the separately approved portable asset boundary"
+    },
+    "stats": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "stats"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "stats",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "big-number": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "value",
+        "label",
+        "body",
+        "sub"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "sub",
+        "type",
+        "value"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "kpi-dashboard": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "kpis"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "kpis",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "data-cards": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "cards"
+      ],
+      "schemaFields": [
+        "cards",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "progress-bars": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "bars",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "bars",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "progress-bars has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "ranking-list": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "metric-comparison": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "left",
+        "right",
+        "delta",
+        "body"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "delta",
+        "headline",
+        "left",
+        "notes",
+        "presenter",
+        "right",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "sparklines": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "sparklines has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "quote": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "quote",
+        "attribution"
+      ],
+      "schemaFields": [
+        "attribution",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "quote",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "testimonial": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "image",
+        "name",
+        "notes",
+        "presenter",
+        "quote",
+        "role",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "image",
+        "name",
+        "notes",
+        "presenter",
+        "quote",
+        "role",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "testimonial requires the separately approved portable asset boundary"
+    },
+    "pull-quote": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "quote",
+        "attribution"
+      ],
+      "schemaFields": [
+        "attribution",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "quote",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "epigraph": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "quote",
+        "attribution",
+        "source"
+      ],
+      "schemaFields": [
+        "attribution",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "quote",
+        "section",
+        "source",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "callout": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "label",
+        "body"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "emphasis": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "label",
+        "body"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "warning": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "label",
+        "body"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "tip": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "label",
+        "body"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "takeaway": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "label",
+        "body",
+        "points"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "headline",
+        "label",
+        "notes",
+        "points",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "table": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "columns",
+        "rows"
+      ],
+      "schemaFields": [
+        "cites",
+        "columns",
+        "headline",
+        "notes",
+        "presenter",
+        "rows",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "data-table": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "columns",
+        "rows",
+        "row_labels"
+      ],
+      "schemaFields": [
+        "cites",
+        "columns",
+        "headline",
+        "notes",
+        "presenter",
+        "row_labels",
+        "rows",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "decision-matrix": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "criteria",
+        "options"
+      ],
+      "schemaFields": [
+        "cites",
+        "criteria",
+        "headline",
+        "notes",
+        "options",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "chart": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "chart",
+        "aside"
+      ],
+      "schemaFields": [
+        "aside",
+        "chart",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "flow": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "steps",
+        "direction"
+      ],
+      "schemaFields": [
+        "cites",
+        "direction",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "steps",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "funnel": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "stages",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "stages",
+        "standfirst",
+        "type"
+      ],
+      "reason": "funnel has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "pipeline": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "stages"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "stages",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "dependencies": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "nodes",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "nodes",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "dependencies has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "branching-flow": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "branches",
+        "cites",
+        "decision",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "steps",
+        "type"
+      ],
+      "refusedFields": [
+        "branches",
+        "cites",
+        "decision",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "steps",
+        "type"
+      ],
+      "reason": "branching-flow has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "layered-architecture": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "layers",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "layers",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "layered-architecture has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "image": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "caption",
+        "cites",
+        "fit",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "caption",
+        "cites",
+        "fit",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "image requires the separately approved portable asset boundary"
+    },
+    "image-text": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "body",
+        "caption",
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "side",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "body",
+        "caption",
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "side",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "image-text requires the separately approved portable asset boundary"
+    },
+    "illustrated-points": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "caption",
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "points",
+        "presenter",
+        "section",
+        "side",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "caption",
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "points",
+        "presenter",
+        "section",
+        "side",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "illustrated-points requires the separately approved portable asset boundary"
+    },
+    "image-grid": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "images",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "images",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "image-grid requires the separately approved portable asset boundary"
+    },
+    "hero-image": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "subtitle",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "image",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "subtitle",
+        "type"
+      ],
+      "reason": "hero-image requires the separately approved portable asset boundary"
+    },
+    "split-screen": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "left",
+        "left_caption",
+        "notes",
+        "presenter",
+        "right",
+        "right_caption",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "left",
+        "left_caption",
+        "notes",
+        "presenter",
+        "right",
+        "right_caption",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "split-screen requires the separately approved portable asset boundary"
+    },
+    "timeline": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "events"
+      ],
+      "schemaFields": [
+        "cites",
+        "events",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "milestone": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "milestones"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "milestones",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "roadmap": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "phases",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "time_labels",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "notes",
+        "phases",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "time_labels",
+        "type"
+      ],
+      "reason": "roadmap has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "journey": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "stages",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "stages",
+        "standfirst",
+        "type"
+      ],
+      "reason": "journey has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "chronology": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "events"
+      ],
+      "schemaFields": [
+        "cites",
+        "events",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "references": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "diagram": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "edges",
+        "headline",
+        "layout",
+        "nodes",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "edges",
+        "headline",
+        "layout",
+        "nodes",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "diagram has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "pyramid": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "levels",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "levels",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "pyramid has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "venn": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "sets",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "sets",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "venn has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "hierarchy": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "children",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "root",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "children",
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "root",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "hierarchy has no audited, faithful conversion using the accepted semantic/compiler primitives"
+    },
+    "definition": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "term",
+        "definition",
+        "example"
+      ],
+      "schemaFields": [
+        "cites",
+        "definition",
+        "example",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "term",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "glossary": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "entries"
+      ],
+      "schemaFields": [
+        "cites",
+        "entries",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "faq": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "team-grid": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "members"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "members",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "attribution": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "contact": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "items"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "items",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "equation": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "formula",
+        "body",
+        "variables"
+      ],
+      "schemaFields": [
+        "body",
+        "cites",
+        "formula",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type",
+        "variables"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "bibliography": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "entries"
+      ],
+      "schemaFields": [
+        "cites",
+        "entries",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "data-source": {
+      "status": "supported-with-field-gates",
+      "fields": [
+        "type",
+        "headline",
+        "standfirst",
+        "presenter",
+        "speaker_note",
+        "notes",
+        "cites",
+        "section",
+        "sources"
+      ],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "notes",
+        "presenter",
+        "section",
+        "sources",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "notes"
+      ],
+      "reason": "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck."
+    },
+    "freeform": {
+      "status": "refused",
+      "fields": [],
+      "schemaFields": [
+        "cites",
+        "headline",
+        "html",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "refusedFields": [
+        "cites",
+        "headline",
+        "html",
+        "notes",
+        "presenter",
+        "section",
+        "speaker_note",
+        "standfirst",
+        "type"
+      ],
+      "reason": "freeform HTML is raster-only and cannot become native editable content"
+    }
+  },
+  "observations": [
+    {
+      "type": "title",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 2,
+      "timings": {
+        "compileMs": 31.400046999999972,
+        "persistMs": 8.59501499999999,
+        "totalMs": 50.81860599999999
+      }
+    },
+    {
+      "type": "section",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 6.782325000000014,
+        "persistMs": 0.7905969999999911,
+        "totalMs": 11.12583699999999
+      }
+    },
+    {
+      "type": "chapter",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 4,
+      "timings": {
+        "compileMs": 5.56764400000003,
+        "persistMs": 0.7391650000000141,
+        "totalMs": 9.003827999999999
+      }
+    },
+    {
+      "type": "closing",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 11,
+      "timings": {
+        "compileMs": 5.801397999999949,
+        "persistMs": 0.8880350000000021,
+        "totalMs": 9.280522000000019
+      }
+    },
+    {
+      "type": "agenda",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b1:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "bullets",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 4,
+      "timings": {
+        "compileMs": 5.964669000000015,
+        "persistMs": 0.9117729999999824,
+        "totalMs": 9.32385099999999
+      }
+    },
+    {
+      "type": "numbered-list",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 5.510489000000007,
+        "persistMs": 0.8152309999999829,
+        "totalMs": 10.001700000000028
+      }
+    },
+    {
+      "type": "checklist",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 5.610813000000007,
+        "persistMs": 0.8534429999999702,
+        "totalMs": 10.396577000000036
+      }
+    },
+    {
+      "type": "feature-grid",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].items[0].icon",
+          "reason": "field has no audited semantic conversion"
+        },
+        {
+          "path": "slides[0].items[1].icon",
+          "reason": "field has no audited semantic conversion"
+        },
+        {
+          "path": "slides[0].items[2].icon",
+          "reason": "field has no audited semantic conversion"
+        },
+        {
+          "path": "slides[0].items[3].icon",
+          "reason": "field has no audited semantic conversion"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "grid-items",
+      "semantic": "converted",
+      "blocks": 6,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b1:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b5:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b6:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "icon-list",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].icon-list",
+          "reason": "icon-list has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "stacked-list",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.9pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "cards",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 12pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "compare",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 10,
+      "timings": {
+        "compileMs": 6.4945299999999975,
+        "persistMs": 1.0393320000000017,
+        "totalMs": 11.137186999999983
+      }
+    },
+    {
+      "type": "pros-cons",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 4.8409110000000055,
+        "persistMs": 0.7071439999999711,
+        "totalMs": 8.14067
+      }
+    },
+    {
+      "type": "before-after",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 8,
+      "timings": {
+        "compileMs": 5.21624300000002,
+        "persistMs": 0.7307380000000308,
+        "totalMs": 8.64335699999998
+      }
+    },
+    {
+      "type": "framework",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].framework",
+          "reason": "framework has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "matrix",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].matrix",
+          "reason": "matrix has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "scorecard",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 5,
+      "timings": {
+        "compileMs": 5.786651000000006,
+        "persistMs": 0.7165189999999484,
+        "totalMs": 9.65244400000006
+      }
+    },
+    {
+      "type": "vs",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 8,
+      "timings": {
+        "compileMs": 4.298680000000104,
+        "persistMs": 0.6711500000000115,
+        "totalMs": 7.464933000000087
+      }
+    },
+    {
+      "type": "side-by-side",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].side-by-side",
+          "reason": "side-by-side requires the separately approved portable asset boundary"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "stats",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.4pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.4pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "big-number",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 4.234958000000006,
+        "persistMs": 0.6068410000000313,
+        "totalMs": 7.4070050000000265
+      }
+    },
+    {
+      "type": "kpi-dashboard",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 10,
+      "timings": {
+        "compileMs": 4.841878999999949,
+        "persistMs": 0.9015369999999621,
+        "totalMs": 11.01984200000004
+      }
+    },
+    {
+      "type": "data-cards",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 10,
+      "timings": {
+        "compileMs": 4.6756390000000465,
+        "persistMs": 0.7689110000000028,
+        "totalMs": 8.170386000000008
+      }
+    },
+    {
+      "type": "progress-bars",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].progress-bars",
+          "reason": "progress-bars has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "ranking-list",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 10,
+      "timings": {
+        "compileMs": 4.977518000000032,
+        "persistMs": 0.8261870000000044,
+        "totalMs": 8.340063999999984
+      }
+    },
+    {
+      "type": "metric-comparison",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 8,
+      "timings": {
+        "compileMs": 4.7987399999999525,
+        "persistMs": 0.7977339999999913,
+        "totalMs": 8.666146000000026
+      }
+    },
+    {
+      "type": "sparklines",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].sparklines",
+          "reason": "sparklines has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "quote",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 4,
+      "timings": {
+        "compileMs": 4.865648999999962,
+        "persistMs": 0.709699999999998,
+        "totalMs": 7.868695000000002
+      }
+    },
+    {
+      "type": "testimonial",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].testimonial",
+          "reason": "testimonial requires the separately approved portable asset boundary"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "pull-quote",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 5,
+      "timings": {
+        "compileMs": 4.924025000000029,
+        "persistMs": 0.7643279999999777,
+        "totalMs": 8.250659999999925
+      }
+    },
+    {
+      "type": "epigraph",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 4.144240999999965,
+        "persistMs": 0.59518300000002,
+        "totalMs": 8.059030000000007
+      }
+    },
+    {
+      "type": "callout",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 3.652011000000016,
+        "persistMs": 0.49733600000001843,
+        "totalMs": 6.402622999999949
+      }
+    },
+    {
+      "type": "emphasis",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 3.6818779999999833,
+        "persistMs": 0.45783800000003794,
+        "totalMs": 5.7431170000000975
+      }
+    },
+    {
+      "type": "warning",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 4,
+      "timings": {
+        "compileMs": 3.6088720000000194,
+        "persistMs": 0.5137240000000247,
+        "totalMs": 5.743671999999947
+      }
+    },
+    {
+      "type": "tip",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 4,
+      "timings": {
+        "compileMs": 3.6135309999999663,
+        "persistMs": 0.5332469999999603,
+        "totalMs": 7.349179000000049
+      }
+    },
+    {
+      "type": "takeaway",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 5,
+      "timings": {
+        "compileMs": 3.5562219999999343,
+        "persistMs": 0.5070060000000467,
+        "totalMs": 7.113426000000004
+      }
+    },
+    {
+      "type": "table",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 3.5297180000000026,
+        "persistMs": 0.4779649999999265,
+        "totalMs": 7.536374000000023
+      }
+    },
+    {
+      "type": "data-table",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].columns[1].align",
+          "reason": "authored cell alignment is not represented in accepted semantic tables"
+        },
+        {
+          "path": "slides[0].columns[2].align",
+          "reason": "authored cell alignment is not represented in accepted semantic tables"
+        },
+        {
+          "path": "slides[0].rows[0].highlight",
+          "reason": "authored row emphasis is not represented in accepted semantic tables"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "decision-matrix",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "created",
+      "elements": 5,
+      "timings": {
+        "compileMs": 3.3244439999999713,
+        "persistMs": 0.5365050000000338,
+        "totalMs": 5.733391999999981
+      }
+    },
+    {
+      "type": "chart",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].chart.kind",
+          "reason": "chart kind scatter has no faithful accepted primitive"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "flow",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].direction",
+          "reason": "authored flow orientation cannot be preserved by the accepted semantic compiler"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "funnel",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].funnel",
+          "reason": "funnel has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "pipeline",
+      "semantic": "converted",
+      "blocks": 5,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b5:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "dependencies",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].dependencies",
+          "reason": "dependencies has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "branching-flow",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].branching-flow",
+          "reason": "branching-flow has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "layered-architecture",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].layered-architecture",
+          "reason": "layered-architecture has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "image",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].image",
+          "reason": "image requires the separately approved portable asset boundary"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "image-text",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].image-text",
+          "reason": "image-text requires the separately approved portable asset boundary"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "illustrated-points",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].illustrated-points",
+          "reason": "illustrated-points requires the separately approved portable asset boundary"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "image-grid",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].image-grid",
+          "reason": "image-grid requires the separately approved portable asset boundary"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "hero-image",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].hero-image",
+          "reason": "hero-image requires the separately approved portable asset boundary"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "split-screen",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].split-screen",
+          "reason": "split-screen requires the separately approved portable asset boundary"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "timeline",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b1:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.9pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.9pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.9pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "milestone",
+      "semantic": "converted",
+      "blocks": 3,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b1:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 9.9pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.4pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 10.9pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "roadmap",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].roadmap",
+          "reason": "roadmap has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "journey",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].journey",
+          "reason": "journey has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "chronology",
+      "semantic": "converted",
+      "blocks": 6,
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b2:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b3:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b4:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b5:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "text element legacy-s1:legacy-s1-b6:content (body) cannot fit its box at the readable floor"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        },
+        {
+          "path": "legacy-s1",
+          "reason": "body would need 8.1pt — floor 13pt (cut text, don't shrink)"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "references",
+      "semantic": "converted",
+      "blocks": 1,
+      "creation": "created",
+      "elements": 3,
+      "timings": {
+        "compileMs": 2.7082490000000234,
+        "persistMs": 0.417536000000041,
+        "totalMs": 4.728486000000089
+      }
+    },
+    {
+      "type": "diagram",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].diagram",
+          "reason": "diagram has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "pyramid",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].pyramid",
+          "reason": "pyramid has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "venn",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].venn",
+          "reason": "venn has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "hierarchy",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].hierarchy",
+          "reason": "hierarchy has no audited, faithful conversion using the accepted semantic/compiler primitives"
+        },
+        {
+          "path": "sections[0]",
+          "reason": "unreferenced section metadata cannot be silently discarded"
+        }
+      ],
+      "atomicRefusal": true
+    },
+    {
+      "type": "definition",
+      "semantic": "converted",
+      "blocks": 2,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 2.9020639999999958,
+        "persistMs": 0.4362970000000814,
+        "totalMs": 4.499932999999942
+      }
+    },
+    {
+      "type": "glossary",
+      "semantic": "converted",
+      "blocks": 5,
+      "creation": "created",
+      "elements": 7,
+      "timings": {
+        "compileMs": 2.8167519999999513,
+        "persistMs": 0.4511499999999842,
+        "totalMs": 4.910089999999968
+      }
+    },
+    {
+      "type": "faq",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 3.0558190000000423,
+        "persistMs": 0.42335700000001,
+        "totalMs": 5.7703559999999925
+      }
+    },
+    {
+      "type": "team-grid",
+      "semantic": "converted",
+      "blocks": 6,
+      "creation": "created",
+      "elements": 8,
+      "timings": {
+        "compileMs": 2.98098600000003,
+        "persistMs": 0.45467900000005557,
+        "totalMs": 5.099556000000007
+      }
+    },
+    {
+      "type": "attribution",
+      "semantic": "converted",
+      "blocks": 5,
+      "creation": "created",
+      "elements": 7,
+      "timings": {
+        "compileMs": 2.8291770000000724,
+        "persistMs": 0.47406499999999596,
+        "totalMs": 4.9728020000000015
+      }
+    },
+    {
+      "type": "contact",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 2.716003999999998,
+        "persistMs": 0.42838800000004085,
+        "totalMs": 4.951071999999954
+      }
+    },
+    {
+      "type": "equation",
+      "semantic": "converted",
+      "blocks": 6,
+      "creation": "created",
+      "elements": 8,
+      "timings": {
+        "compileMs": 2.8358779999999797,
+        "persistMs": 0.43496799999991254,
+        "totalMs": 4.617146000000048
+      }
+    },
+    {
+      "type": "bibliography",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 2.815906000000041,
+        "persistMs": 0.4845540000000028,
+        "totalMs": 4.65124400000002
+      }
+    },
+    {
+      "type": "data-source",
+      "semantic": "converted",
+      "blocks": 4,
+      "creation": "created",
+      "elements": 6,
+      "timings": {
+        "compileMs": 2.9493760000000293,
+        "persistMs": 0.42797700000005534,
+        "totalMs": 5.4483889999999064
+      }
+    },
+    {
+      "type": "freeform",
+      "semantic": "refused",
+      "semanticCode": "unsupported-content",
+      "creation": "refused",
+      "code": "unsupported-content",
+      "details": [
+        {
+          "path": "slides[0].freeform",
+          "reason": "freeform HTML is raster-only and cannot become native editable content"
+        }
+      ],
+      "atomicRefusal": true
+    }
+  ],
+  "totals": {
+    "types": 74,
+    "fieldGatedFamilies": 50,
+    "semanticConverted": 46,
+    "created": 37,
+    "refused": 37
+  }
+}

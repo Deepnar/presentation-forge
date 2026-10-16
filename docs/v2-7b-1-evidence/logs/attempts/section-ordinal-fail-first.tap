@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: repeated section labels retain their distinct authored ordinal
+not ok 1 - repeated section labels retain their distinct authored ordinal
+  ---
+  duration_ms: 124.20694
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:82:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          id: 'legacy-s1-b1',
+          kind: 'text',
+    +     label: 'Section',
+    -     label: 'Section 01',
+          text: 'Results'
+        },
+        {
+          id: 'legacy-s2-b1',
+          kind: 'text',
+    +     label: 'Section',
+    -     label: 'Section 02',
+          text: 'Results'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'legacy-s1-b1'
+      kind: 'text'
+      label: 'Section 01'
+      text: 'Results'
+    1:
+      id: 'legacy-s2-b1'
+      kind: 'text'
+      label: 'Section 02'
+      text: 'Results'
+  actual:
+    0:
+      id: 'legacy-s1-b1'
+      kind: 'text'
+      text: 'Results'
+      label: 'Section'
+    1:
+      id: 'legacy-s2-b1'
+      kind: 'text'
+      text: 'Results'
+      label: 'Section'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:84:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 242.398444

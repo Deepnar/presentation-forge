@@ -1,0 +1,88 @@
+✖ untyped vs body refuse the whole deck with a field-specific diagnosis (131.470067ms)
+✖ untyped before-after kicker refuse the whole deck with a field-specific diagnosis (0.734826ms)
+✖ untyped quote source refuse the whole deck with a field-specific diagnosis (0.576479ms)
+✖ untyped callout points refuse the whole deck with a field-specific diagnosis (0.438497ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 267.897665
+
+✖ failing tests:
+
+test at test/v2-import-conversion-7b.test.js:92:4
+✖ untyped vs body refuse the whole deck with a field-specific diagnosis (131.470067ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at test/v2-import-conversion-7b.test.js:92:4
+✖ untyped before-after kicker refuse the whole deck with a field-specific diagnosis (0.734826ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at test/v2-import-conversion-7b.test.js:92:4
+✖ untyped quote source refuse the whole deck with a field-specific diagnosis (0.576479ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: source exceeds the accepted semantic contract
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: source exceeds the accepted semantic contract
+        at importError (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:10:24)
+        at convertGeneratedDeck (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:270:26)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+        at async Test.run (node:internal/test_runner/test:1313:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:897:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at test/v2-import-conversion-7b.test.js:92:4
+✖ untyped callout points refuse the whole deck with a field-specific diagnosis (0.438497ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: source deck is invalid
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: source deck is invalid
+        at importError (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:10:24)
+        at convertGeneratedDeck (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:234:29)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:93:3)
+        at async Test.run (node:internal/test_runner/test:1313:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:897:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

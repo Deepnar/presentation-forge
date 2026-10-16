@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: sequence and comparison context never becomes an extra step or peer
+not ok 1 - sequence and comparison context never becomes an extra step or peer
+  ---
+  duration_ms: 134.2512
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    5 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 5
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:104:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 261.730807

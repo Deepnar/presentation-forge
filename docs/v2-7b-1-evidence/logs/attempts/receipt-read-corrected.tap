@@ -1,0 +1,19 @@
+✔ creates a real project and recoverable revision zero without changing source (169.372621ms)
+✔ simultaneous requests return one project and baseline; retries retain later human edits (38.038763ms)
+✔ a changed source conflicts until an explicit new request is used (12.673853ms)
+✔ deleted imports cannot silently resurrect on retry (8.262536ms)
+✔ source and target owner checks prevent cross-owner and silent ownerless claiming (6.8616ms)
+✔ incomplete, checkpointed and shorter-than-plan sources refuse before writing (4.446594ms)
+✔ unrepresentable content and institutional chrome refuse atomically (4.980028ms)
+✔ filesystem symlinks, traversal and YAML alias inputs cannot bypass the source boundary (3.033084ms)
+✔ history failure rolls back the project and request reservation so retry succeeds (12.246638ms)
+✔ a receipt read failure is storage-unavailable, leaves state intact and permits retry after recovery (9.952278ms)
+✔ separate CLI processes share durable retry identity across restart (537.457938ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 971.430858

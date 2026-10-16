@@ -1,0 +1,49 @@
+TAP version 13
+# Subtest: each statistic retains its own qualifier in the same semantic carrier
+not ok 1 - each statistic retains its own qualifier in the same semantic carrier
+  ---
+  duration_ms: 158.543949
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:90:1'
+  failureType: 'testCodeFailure'
+  error: 'source deck is invalid'
+  code: 'invalid-source'
+  stack: |-
+    importError (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:10:24)
+    convertGeneratedDeck (file:///home/deepnar/Programs/presentations/src/projects/legacy-conversion.js:246:29)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-conversion-7b.test.js:91:22)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: malformed source shapes return an explicit 422 without creating projects
+not ok 2 - malformed source shapes return an explicit 422 without creating projects
+  ---
+  duration_ms: 605.657877
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-import-http-7b.test.js:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 422
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 422
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-import-http-7b.test.js:51:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 737.575551

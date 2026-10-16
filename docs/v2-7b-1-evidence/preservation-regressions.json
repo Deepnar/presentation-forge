@@ -1,0 +1,128 @@
+{
+  "historicalSource": "90faf8140c76d6bf95f72aff6baa6147df20ee2c",
+  "currentSource": "662f7d6a08647d431eded1ea17c5d13e7ca1c591",
+  "records": [
+    {
+      "name": "stat association",
+      "historicalDefectReproduced": true,
+      "correctedAssertionsPass": true,
+      "before": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "stat",
+          "value": "10",
+          "label": "Treatment"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "text",
+          "text": "Only adults"
+        },
+        {
+          "id": "legacy-s1-b3",
+          "kind": "stat",
+          "value": "20",
+          "label": "Control"
+        },
+        {
+          "id": "legacy-s1-b4",
+          "kind": "text",
+          "text": "Only children"
+        }
+      ],
+      "after": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "stat",
+          "value": "10",
+          "label": "Treatment\nOnly adults"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "stat",
+          "value": "20",
+          "label": "Control\nOnly children"
+        }
+      ]
+    },
+    {
+      "name": "context membership",
+      "historicalDefectReproduced": true,
+      "correctedAssertionsPass": true,
+      "before": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "text",
+          "text": "Method",
+          "label": "Section 01"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "text",
+          "text": "",
+          "label": "Start"
+        },
+        {
+          "id": "legacy-s1-b3",
+          "kind": "text",
+          "text": "",
+          "label": "Finish"
+        }
+      ],
+      "after": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "callout",
+          "text": "Method",
+          "label": "Section 01",
+          "emphasis": "context"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "text",
+          "text": "",
+          "label": "Start"
+        },
+        {
+          "id": "legacy-s1-b3",
+          "kind": "text",
+          "text": "",
+          "label": "Finish"
+        }
+      ]
+    },
+    {
+      "name": "before/after identity",
+      "historicalDefectReproduced": true,
+      "correctedAssertionsPass": true,
+      "before": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "text",
+          "text": "10",
+          "label": "Enrollment"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "text",
+          "text": "20",
+          "label": "Enrollment"
+        }
+      ],
+      "after": [
+        {
+          "id": "legacy-s1-b1",
+          "kind": "text",
+          "text": "10",
+          "label": "Before: Enrollment"
+        },
+        {
+          "id": "legacy-s1-b2",
+          "kind": "text",
+          "text": "20",
+          "label": "After: Enrollment"
+        }
+      ]
+    }
+  ]
+}

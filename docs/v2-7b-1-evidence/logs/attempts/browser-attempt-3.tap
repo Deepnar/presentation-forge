@@ -1,0 +1,11 @@
+✔ imported native chart edits, undo/redo, saves and reopens without moving the canvas (8827.114691ms)
+✔ imported native table edits, undo/redo, saves and reopens without moving the canvas (8247.639464ms)
+✔ an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions (2648.564381ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20244.932248

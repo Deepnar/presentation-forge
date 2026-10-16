@@ -245,6 +245,22 @@ layer holds no presentation logic, because the pipeline has to run headless.
 
 ## Verification that proves something
 
+On branch `v2`, a completed source deck can be converted into a saved editable
+project through the shared import boundary:
+
+```sh
+npm run import-project -- <slug> --request-id <stable-request-id>
+```
+
+Use the same 8–64 character request id for retries; the service returns the
+current project and preserves later edits. Hosted calls require an existing
+session in `FORGE_IMPORT_TOKEN`; local operator calls admit ownerless sources
+only. A changed source requires an explicit new request. Unsupported content,
+identity/assets or readable-fit failures refuse the entire import with diagnostics.
+The chat completion action still opens the legacy deck. See the exact
+[coverage and limits](docs/v2-7b-1-evidence/COVERAGE.md) and
+[validation/review status](docs/V2-7B-1-EVAL.md).
+
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour
 pairs. So the checks ask four different questions, and each was added because

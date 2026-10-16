@@ -1,0 +1,421 @@
+TAP version 13
+# Subtest: concurrent cold source validation accepts every caller without duplicate schema registration
+ok 1 - concurrent cold source validation accepts every caller without duplicate schema registration
+  ---
+  duration_ms: 158.838847
+  type: 'test'
+  ...
+# Subtest: static browser scene validation matches Node for nested, malformed and Unicode scenes without runtime generation
+ok 2 - static browser scene validation matches Node for nested, malformed and Unicode scenes without runtime generation
+  ---
+  duration_ms: 75.563945
+  type: 'test'
+  ...
+# Subtest: coverage accounts for every current legacy type and its field gates
+ok 3 - coverage accounts for every current legacy type and its field gates
+  ---
+  duration_ms: 6.140208
+  type: 'test'
+  ...
+# Subtest: conversion preserves slide order, section context, visible notes and both comparison bodies and points
+ok 4 - conversion preserves slide order, section context, visible notes and both comparison bodies and points
+  ---
+  duration_ms: 23.14696
+  type: 'test'
+  ...
+# Subtest: native chart series, units and table cells survive semantic conversion exactly
+ok 5 - native chart series, units and table cells survive semantic conversion exactly
+  ---
+  duration_ms: 1.023848
+  type: 'test'
+  ...
+# Subtest: repeated section labels retain their distinct authored ordinal
+ok 6 - repeated section labels retain their distinct authored ordinal
+  ---
+  duration_ms: 0.529974
+  type: 'test'
+  ...
+# Subtest: each statistic retains its own qualifier in the same semantic carrier
+ok 7 - each statistic retains its own qualifier in the same semantic carrier
+  ---
+  duration_ms: 0.508399
+  type: 'test'
+  ...
+# Subtest: sequence and comparison context never becomes an extra step or peer
+ok 8 - sequence and comparison context never becomes an extra step or peer
+  ---
+  duration_ms: 0.855808
+  type: 'test'
+  ...
+# Subtest: before and after retain temporal roles when their authored titles repeat
+ok 9 - before and after retain temporal roles when their authored titles repeat
+  ---
+  duration_ms: 0.587243
+  type: 'test'
+  ...
+# Subtest: real speaker notes refuse the whole deck with a field-specific diagnosis
+ok 10 - real speaker notes refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.927035
+  type: 'test'
+  ...
+# Subtest: citations refuse the whole deck with a field-specific diagnosis
+ok 11 - citations refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.289873
+  type: 'test'
+  ...
+# Subtest: unknown populated fields refuse the whole deck with a field-specific diagnosis
+ok 12 - unknown populated fields refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.202543
+  type: 'test'
+  ...
+# Subtest: nested unknown fields refuse the whole deck with a field-specific diagnosis
+ok 13 - nested unknown fields refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.185747
+  type: 'test'
+  ...
+# Subtest: untyped vs body refuse the whole deck with a field-specific diagnosis
+ok 14 - untyped vs body refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.2688
+  type: 'test'
+  ...
+# Subtest: untyped before-after kicker refuse the whole deck with a field-specific diagnosis
+ok 15 - untyped before-after kicker refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.214402
+  type: 'test'
+  ...
+# Subtest: untyped quote source refuse the whole deck with a field-specific diagnosis
+ok 16 - untyped quote source refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.165852
+  type: 'test'
+  ...
+# Subtest: untyped callout points refuse the whole deck with a field-specific diagnosis
+ok 17 - untyped callout points refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.147943
+  type: 'test'
+  ...
+# Subtest: unsupported chart kinds refuse the whole deck with a field-specific diagnosis
+ok 18 - unsupported chart kinds refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.261131
+  type: 'test'
+  ...
+# Subtest: image references refuse the whole deck with a field-specific diagnosis
+ok 19 - image references refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.205615
+  type: 'test'
+  ...
+# Subtest: raster-only freeform refuse the whole deck with a field-specific diagnosis
+ok 20 - raster-only freeform refuse the whole deck with a field-specific diagnosis
+  ---
+  duration_ms: 0.168352
+  type: 'test'
+  ...
+# Subtest: strict validation refuses invalid lengths, empty decks and excessive slide counts
+ok 21 - strict validation refuses invalid lengths, empty decks and excessive slide counts
+  ---
+  duration_ms: 3.236706
+  type: 'test'
+  ...
+# Subtest: chart cardinality, inconsistent table rows and invalid section references refuse rather than repair
+ok 22 - chart cardinality, inconsistent table rows and invalid section references refuse rather than repair
+  ---
+  duration_ms: 0.634967
+  type: 'test'
+  ...
+# Subtest: agenda preserves every authored text fact using typed semantic carriers
+ok 23 - agenda preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 7.168192
+  type: 'test'
+  ...
+# Subtest: cards preserves every authored text fact using typed semantic carriers
+ok 24 - cards preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.691174
+  type: 'test'
+  ...
+# Subtest: stats preserves every authored text fact using typed semantic carriers
+ok 25 - stats preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.368598
+  type: 'test'
+  ...
+# Subtest: kpi-dashboard preserves every authored text fact using typed semantic carriers
+ok 26 - kpi-dashboard preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.408915
+  type: 'test'
+  ...
+# Subtest: data-cards preserves every authored text fact using typed semantic carriers
+ok 27 - data-cards preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.347309
+  type: 'test'
+  ...
+# Subtest: ranking-list preserves every authored text fact using typed semantic carriers
+ok 28 - ranking-list preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.346118
+  type: 'test'
+  ...
+# Subtest: metric-comparison preserves every authored text fact using typed semantic carriers
+ok 29 - metric-comparison preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.322552
+  type: 'test'
+  ...
+# Subtest: scorecard preserves every authored text fact using typed semantic carriers
+ok 30 - scorecard preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.491257
+  type: 'test'
+  ...
+# Subtest: decision-matrix preserves every authored text fact using typed semantic carriers
+ok 31 - decision-matrix preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.303853
+  type: 'test'
+  ...
+# Subtest: pipeline preserves every authored text fact using typed semantic carriers
+ok 32 - pipeline preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.36094
+  type: 'test'
+  ...
+# Subtest: timeline preserves every authored text fact using typed semantic carriers
+ok 33 - timeline preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.338503
+  type: 'test'
+  ...
+# Subtest: milestone preserves every authored text fact using typed semantic carriers
+ok 34 - milestone preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.314199
+  type: 'test'
+  ...
+# Subtest: chronology preserves every authored text fact using typed semantic carriers
+ok 35 - chronology preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.298312
+  type: 'test'
+  ...
+# Subtest: definition preserves every authored text fact using typed semantic carriers
+ok 36 - definition preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.248586
+  type: 'test'
+  ...
+# Subtest: glossary preserves every authored text fact using typed semantic carriers
+ok 37 - glossary preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.3564
+  type: 'test'
+  ...
+# Subtest: faq preserves every authored text fact using typed semantic carriers
+ok 38 - faq preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.339001
+  type: 'test'
+  ...
+# Subtest: team-grid preserves every authored text fact using typed semantic carriers
+ok 39 - team-grid preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.36188
+  type: 'test'
+  ...
+# Subtest: attribution preserves every authored text fact using typed semantic carriers
+ok 40 - attribution preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.294946
+  type: 'test'
+  ...
+# Subtest: contact preserves every authored text fact using typed semantic carriers
+ok 41 - contact preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.264171
+  type: 'test'
+  ...
+# Subtest: equation preserves every authored text fact using typed semantic carriers
+ok 42 - equation preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.517471
+  type: 'test'
+  ...
+# Subtest: bibliography preserves every authored text fact using typed semantic carriers
+ok 43 - bibliography preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.282019
+  type: 'test'
+  ...
+# Subtest: data-source preserves every authored text fact using typed semantic carriers
+ok 44 - data-source preserves every authored text fact using typed semantic carriers
+  ---
+  duration_ms: 0.326253
+  type: 'test'
+  ...
+# Subtest: real authenticated HTTP import creates, reopens and exports native chart/table objects
+ok 45 - real authenticated HTTP import creates, reopens and exports native chart/table objects
+  ---
+  duration_ms: 1055.606099
+  type: 'test'
+  ...
+# Subtest: section ordinals survive HTTP creation, reload and native export with repeated labels
+ok 46 - section ordinals survive HTTP creation, reload and native export with repeated labels
+  ---
+  duration_ms: 72.927934
+  type: 'test'
+  ...
+# Subtest: malformed source shapes return an explicit 422 without creating projects
+ok 47 - malformed source shapes return an explicit 422 without creating projects
+  ---
+  duration_ms: 41.937253
+  type: 'test'
+  ...
+# Subtest: HTTP retries and an owned CLI call share identity and retain a human rename
+ok 48 - HTTP retries and an owned CLI call share identity and retain a human rename
+  ---
+  duration_ms: 404.062311
+  type: 'test'
+  ...
+# Subtest: signed-out, cross-owner and malformed-source requests disclose no project
+ok 49 - signed-out, cross-owner and malformed-source requests disclose no project
+  ---
+  duration_ms: 12.439603
+  type: 'test'
+  ...
+# Subtest: owner spoofing, missing request identity and unknown options are refused
+ok 50 - owner spoofing, missing request identity and unknown options are refused
+  ---
+  duration_ms: 9.358465
+  type: 'test'
+  ...
+# Subtest: pending or unsupported generation reports an actionable refusal without a saved project
+ok 51 - pending or unsupported generation reports an actionable refusal without a saved project
+  ---
+  duration_ms: 10.528883
+  type: 'test'
+  ...
+# Subtest: legacy project metadata endpoint keeps its original response contract
+ok 52 - legacy project metadata endpoint keeps its original response contract
+  ---
+  duration_ms: 8.054311
+  type: 'test'
+  ...
+# Subtest: misconfigured PostgreSQL is an honest 503 and never a SQLite fallback
+ok 53 - misconfigured PostgreSQL is an honest 503 and never a SQLite fallback
+  ---
+  duration_ms: 523.147135
+  type: 'test'
+  ...
+# Subtest: creates a real project and recoverable revision zero without changing source
+ok 54 - creates a real project and recoverable revision zero without changing source
+  ---
+  duration_ms: 261.087384
+  type: 'test'
+  ...
+# Subtest: simultaneous requests return one project and baseline; retries retain later human edits
+ok 55 - simultaneous requests return one project and baseline; retries retain later human edits
+  ---
+  duration_ms: 67.880405
+  type: 'test'
+  ...
+# Subtest: a changed source conflicts until an explicit new request is used
+ok 56 - a changed source conflicts until an explicit new request is used
+  ---
+  duration_ms: 27.33621
+  type: 'test'
+  ...
+# Subtest: deleted imports cannot silently resurrect on retry
+ok 57 - deleted imports cannot silently resurrect on retry
+  ---
+  duration_ms: 13.608022
+  type: 'test'
+  ...
+# Subtest: theme, style and explicit dark appearance reach the shared compiler and retry fingerprint
+ok 58 - theme, style and explicit dark appearance reach the shared compiler and retry fingerprint
+  ---
+  duration_ms: 37.590246
+  type: 'test'
+  ...
+# Subtest: source and target owner checks prevent cross-owner and silent ownerless claiming
+ok 59 - source and target owner checks prevent cross-owner and silent ownerless claiming
+  ---
+  duration_ms: 11.872987
+  type: 'test'
+  ...
+# Subtest: incomplete, checkpointed and shorter-than-plan sources refuse before writing
+ok 60 - incomplete, checkpointed and shorter-than-plan sources refuse before writing
+  ---
+  duration_ms: 8.253262
+  type: 'test'
+  ...
+# Subtest: unrepresentable content and institutional chrome refuse atomically
+ok 61 - unrepresentable content and institutional chrome refuse atomically
+  ---
+  duration_ms: 6.570399
+  type: 'test'
+  ...
+# Subtest: untyped comparison extensions refuse before creating a project, history or receipt
+ok 62 - untyped comparison extensions refuse before creating a project, history or receipt
+  ---
+  duration_ms: 2.922196
+  type: 'test'
+  ...
+# Subtest: effective identity includes inherited operator and per-owner settings and refuses their loss
+ok 63 - effective identity includes inherited operator and per-owner settings and refuses their loss
+  ---
+  duration_ms: 6.074467
+  type: 'test'
+  ...
+# Subtest: presenter remains locked furniture; effective chrome changes conflict and suppressed metadata refuses
+ok 64 - presenter remains locked furniture; effective chrome changes conflict and suppressed metadata refuses
+  ---
+  duration_ms: 31.511893
+  type: 'test'
+  ...
+# Subtest: filesystem symlinks, traversal and YAML alias inputs cannot bypass the source boundary
+ok 65 - filesystem symlinks, traversal and YAML alias inputs cannot bypass the source boundary
+  ---
+  duration_ms: 4.553278
+  type: 'test'
+  ...
+# Subtest: history failure rolls back the project and request reservation so retry succeeds
+ok 66 - history failure rolls back the project and request reservation so retry succeeds
+  ---
+  duration_ms: 21.70607
+  type: 'test'
+  ...
+# Subtest: a receipt read failure is storage-unavailable, leaves state intact and permits retry after recovery
+ok 67 - a receipt read failure is storage-unavailable, leaves state intact and permits retry after recovery
+  ---
+  duration_ms: 15.829984
+  type: 'test'
+  ...
+# Subtest: separate CLI processes share durable retry identity across restart
+ok 68 - separate CLI processes share durable retry identity across restart
+  ---
+  duration_ms: 925.321139
+  type: 'test'
+  ...
+1..68
+# tests 68
+# suites 0
+# pass 68
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2251.48303
+# forge-test-file "test/v2-import-conversion-7b.test.js"
+# forge-test-file "test/v2-import-http-7b.test.js"
+# forge-test-file "test/v2-import-service-7b.test.js"

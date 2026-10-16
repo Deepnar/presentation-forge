@@ -12,6 +12,7 @@ const { specimenDeck } = await import('../../src/specimens.js');
 const { importCoverage, convertGeneratedDeck } = await import('../../src/projects/legacy-conversion.js');
 const { importGeneratedProject } = await import('../../src/projects/import-generated.js');
 const store = await import('../../src/projects/store.js');
+const { getDb } = await import('../../src/db.js');
 const coverage = await importCoverage(), specimen = await specimenDeck();
 const observations = [];
 try {
@@ -25,6 +26,11 @@ try {
     await writeFile(path.join(dir, 'meta.yaml'), 'status: ready\n');
     let intent;
     const record = { type };
+    const counts = () => ['v2_projects', 'v2_project_revisions', 'v2_project_imports'].map(table => {
+      const exists = getDb().prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(table);
+      return exists ? getDb().prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n : 0;
+    });
+    const before = counts();
     try {
       intent = (await convertGeneratedDeck(deck)).intent;
       record.semantic = 'converted'; record.blocks = intent.slides[0].blocks.length;
@@ -37,6 +43,8 @@ try {
     } catch (error) {
       record.creation = 'refused'; record.code = error.code; record.details = error.details;
       if (!['unsupported-content', 'invalid-source'].includes(error.code)) throw error;
+      if (JSON.stringify(counts()) !== JSON.stringify(before)) throw new Error(`refusal persisted state for ${type}`);
+      record.atomicRefusal = true;
     }
     observations.push(record);
   }
