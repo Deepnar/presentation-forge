@@ -36,7 +36,7 @@ export default function OpenInEditor({ slug, mode, accountKey, onOpenProject, or
         {originalLink && <a className="rounded px-2 py-1 text-sm text-fg-muted underline underline-offset-4" href={`#/deck/${encodeURIComponent(slug)}`}>Open original deck</a>}
       </div>
       <p className="text-xs leading-relaxed text-fg-muted">Opens a saved editable copy. Changes to either copy stay separate.</p>
-      <p role="status" className="text-xs text-fg-muted">{opening ? "Creating or reopening your saved project…" : state.message || (disabled ? disabledReason : "")}</p>
+      <p role="status" className="text-xs text-fg-muted">{opening ? "Creating or reopening your saved project…" : state.status === "error" ? "" : state.message || (disabled ? disabledReason : "")}</p>
       {state.status === "expired" && <Button variant="outline" onClick={() => location.reload()}>Reload page</Button>}
       {state.status === "error" && (
         <div ref={error} role="alert" tabIndex={-1} className="rounded-lg border border-line bg-panel p-3 text-sm text-fg outline-offset-2">

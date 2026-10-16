@@ -917,6 +917,12 @@ export default function ChatView({
   );
 
   const greeting = !chat.topic && !chat.produced;
+  const editableAction = phase === "editing" && chat.deckSlug ? (
+    <>
+      {deckLoadError && <p role="alert" className="mb-2 text-sm text-fg">Deck details could not be loaded. <button className="underline" onClick={() => setDeckReload(n => n + 1)}>Retry loading deck</button></p>}
+      <OpenInEditor key={chat.deckSlug} slug={chat.deckSlug} mode={deckData?.mode} accountKey={accountKey} onOpenProject={onOpenProject} disabled={busy || unverified || deckData?.slug !== chat.deckSlug} disabledReason={unverified ? "Confirm your email before opening the editor." : busy ? "Wait for the current deck changes to finish." : "Waiting for deck details."} />
+    </>
+  ) : null;
 
     return (
     <div className="flex h-full min-h-0 flex-col">
@@ -1189,16 +1195,13 @@ export default function ChatView({
                 </div>
               )}
               <div className="mt-4">
-                <Button variant={chat.kind === "report" ? "primary" : "outline"} onClick={() => (chat.kind === "report" ? onOpenReport(chat.deckSlug) : onOpenDeck(chat.deckSlug))}>
-                  Open the {chat.kind === "report" ? "report" : "deck"}
-                </Button>
+                {chat.kind === "report" ? <Button variant="primary" onClick={() => onOpenReport(chat.deckSlug)}>Open the report</Button> : editableAction}
               </div>
             </Panel>
           )}
-          {phase === "editing" && chat.deckSlug && (
+          {editableAction && chat.turns?.length > 0 && (
             <Panel className="p-5">
-              {deckLoadError && <p role="alert" className="mb-2 text-sm text-fg">Deck details could not be loaded. <button className="underline" onClick={() => setDeckReload(n => n + 1)}>Retry loading deck</button></p>}
-              <OpenInEditor key={chat.deckSlug} slug={chat.deckSlug} mode={deckData?.mode} accountKey={accountKey} onOpenProject={onOpenProject} disabled={busy || unverified || deckData?.slug !== chat.deckSlug} disabledReason={unverified ? "Confirm your email before opening the editor." : busy ? "Wait for the current deck changes to finish." : "Waiting for deck details."} />
+              {editableAction}
             </Panel>
           )}
         </div>
