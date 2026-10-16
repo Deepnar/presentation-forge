@@ -7458,7 +7458,7 @@ scale); charts structurally exact without axes (V2-4C).
   a candidate; its browser direction is not approved. "Create with AI" currently
   opens legacy chat, whose completion action opens the legacy deck. The new
   shared conversion/creation service, HTTP route and CLI are implemented at
-  `f52d193` and under validation/review; there is no browser handoff yet. The
+  `662f7d6` and under validation/review; there is no browser handoff yet. The
   historical partial converter in `packages/model/legacy.ts` remains separate.
   The new boundary audits all 74 current schema types with whole-deck refusal
   for unsupported content, rather than persisting the partial bridge output.

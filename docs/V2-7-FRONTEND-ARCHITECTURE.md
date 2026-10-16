@@ -1,7 +1,7 @@
 # V2-7 Frontend Architecture — unified workspace
 
 Updated: 2026-10-16. V2-7A independently accepted at `fe749fb`; V2-7B-1
-source `f52d193` is under validation and independent review. Parent V2-7 remains
+source `662f7d6` is under validation and independent review. Parent V2-7 remains
 in progress.
 
 ## 1. Product model: Workspace → Project → Editor
