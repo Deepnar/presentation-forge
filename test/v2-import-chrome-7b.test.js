@@ -112,15 +112,17 @@ test("an imported project keeps pending text guarded and is reachable at exact n
 });
 
 test("the 60-slide import boundary opens all thumbnails; oversized input refuses atomically", async () => {
-  const deck = { title: "Boundary deck", theme: "warm-humanist", slides: Array.from({ length: 60 }, (_, index) => ({ type: "bullets", headline: `Evidence ${index + 1}`, bullets: ["Measured first claim", "Measured second claim"] })) };
+  const deck = { title: "Boundary deck", theme: "warm-humanist", sections: ["Results", "Results"], slides: Array.from({ length: 60 }, (_, index) => ({ type: "bullets", headline: `Evidence ${index + 1}`, section: index < 30 ? 0 : 1, bullets: ["Measured first claim", "Measured second claim", "Measured third claim", "Measured fourth claim"] })) };
   const { slug } = await fixture.source({ deck });
   const response = await fixture.create(slug); assert.equal(response.status, 200);
   const { project, timings } = await response.json(); assert.equal(project.scenes.length, 60);
   const start = Date.now(); const page = await openProject(project.id); const openingMs = Date.now() - start;
   try {
     assert.equal(await page.evaluate("document.querySelectorAll('[data-thumb]').length"), 60);
+    assert.ok(await page.evaluate("document.querySelector('[data-stage]')?.textContent.includes('Section 01')"));
     await click(page, '[data-thumb="legacy-s60"]');
     await wait(page, "document.querySelector('[data-stage]')?.textContent.includes('Evidence 60')");
+    assert.ok(await page.evaluate("document.querySelector('[data-stage]')?.textContent.includes('Section 02')"));
     await writeFile(path.join(OUT, "boundary-60.json"), JSON.stringify({ slides: 60, openingMs, timings }, null, 2));
   } finally { await page.close(); }
   const before = await fixture.request("/api/v2/projects", { token: fixture.token }).then(r => r.json());
