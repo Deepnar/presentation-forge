@@ -77,17 +77,8 @@ Known BYOK locale, Fit, isolated B2 restore timeout and conditional font/content
 coverage remain in the evaluation/review and linked roadmap entries. Passing
 current restore flows does not identify the earlier timeout's cause.
 
-The 2026-10-17 continuation request started planning the next immediate item,
-[V2-7C-2 list consolidation](ROADMAP.md#v2-7c-2-plan). Repository recovery confirms
-the recovery checkout aa30935 with no tracked changes and the three preserved
-untracked paths; protocol
-and the accepted decision/39-image hash check pass. The source audit confirmed
-that legacy Projects includes report-only artifacts as well as decks, so their
-discovery and existing routes must survive consolidation.
-
-The product-direction question is pending: one mixed Projects grid (recommended)
-or one Projects page with Saved/Generated tabs. The sole proposal/task contract
-is in the linked roadmap entry. No product/tests have changed, no expensive
-validation or subagent work has started, and accepted state still names C1.
-Wait for the human's surface choice before implementation; do not substitute
-another feature. No deployment, migration or paid infrastructure is authorized.
+The human approved the recommended single Projects grid and authorized C2 on
+2026-10-17. Its sole contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
+Implementation starts from5190887; state now records C2 in progress, with C1 as
+accepted baseline and every new gate pending. Original untracked files remain
+untouched. Stop after C2 independent review/handoff, before toolbar or agent work.

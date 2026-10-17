@@ -131,7 +131,8 @@
               "frontend-visual",
               "conversion-import",
               "browser-handoff",
-              "project-covers"
+              "project-covers",
+              "project-catalog"
             ]
           },
           "status": {

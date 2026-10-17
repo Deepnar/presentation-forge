@@ -7716,8 +7716,7 @@ scale); charts structurally exact without axes (V2-4C).
 
 <a id="v2-7c-2-plan"></a>
 
-- [ ] V2-7C-2 project-list consolidation — **planning started 2026-10-17;
-  surface direction pending**. The current sidebar's Projects tab lists legacy
+- [ ] V2-7C-2 project-list consolidation — **approved 2026-10-17**. The current sidebar's Projects tab lists legacy
   generated decks/reports, while Presentations lists saved editable projects.
   One discovery destination should make both accessible without confusing an
   original generated project with its independently editable saved copy.
@@ -7728,14 +7727,13 @@ scale); charts structurally exact without axes (V2-4C).
     `aa309357166e091eb008643eef2134e43964d2d1` on `v2`. Runtime/tests are
     unchanged from that accepted source. C1 cover lifecycle and B2 explicit
     conversion/reopening are prerequisites, not work to recreate.
-  - **Direction decision:** proposed **one Projects grid** containing both saved
-    editable presentations and generated decks/reports, with search/type filters
-    and clear type labels. Keep originals and saved copies as distinct entries;
-    the sidebar Projects shortcut opens this page. Alternative: one Projects
-    page with Saved/Generated tabs. The human has been asked to choose; neither
-    option is approved by the continuation request alone. Do not implement or
-    reorder to a different feature while that answer is pending.
-  - **Bounded behavior after direction:** consolidate discovery/navigation and
+  - **Approved direction:** **one Projects grid** containing both saved editable
+    presentations and generated decks/reports, with search/type filters and clear
+    type labels. Keep originals and saved copies as distinct entries; the sidebar
+    Projects shortcut opens this page. The human's “ok start” follows the explicit
+    recommended-grid proposal and authorizes this bounded slice. Implementation
+    starts from checkout `519088738ce4ea5d0162ba81d54e4db5282f31fd`.
+  - **Bounded behavior:** consolidate discovery/navigation and
     duplicated list affordances, preserving chats, keyboard search, legacy
     content-search access, report-only projects and report/research/script routes.
     Each entry opens its existing destination. Generated content retains the

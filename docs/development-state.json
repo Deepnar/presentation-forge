@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-7C-1-f79ae07.json"
   },
   "implementationHead": {
-    "sha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
-    "note": "Frozen V2-7C-1 product/test/governance source; subsequent documentation/evidence commits do not alter runtime/tests/tools."
+    "sha": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
+    "note": "Task-entry planning checkout; C2 implementation in progress. Freeze corrected runtime/test/tool source before final validation."
   },
   "activeMilestone": {
-    "id": "V2-7C-1",
-    "roadmapRef": "docs/ROADMAP.md#v2-7c-1-plan",
-    "evalDoc": "docs/V2-7C-1-EVAL.md",
+    "id": "V2-7C-2",
+    "roadmapRef": "docs/ROADMAP.md#v2-7c-2-plan",
+    "evalDoc": "docs/V2-7C-2-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-7C-1-f79ae07.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "project-covers",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/project-covers.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "id": "project-catalog",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/non-browser-bulk.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/serial-browser.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/postgres-contract.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/cross-process-faults.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/production-build.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/typecheck.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/benchmark-50.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-7c-1-evidence/frontend-visual.json",
-      "reason": "All 39 final browser/native images inspected; hashes retained and unchanged from inspection."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C2 implementation in progress; C1 evidence does not validate newer source."
     }
   ],
   "knownBlockers": [],
@@ -84,7 +84,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "Workspace list consolidation",
+    "id": "Production editor toolbar polish",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#workspace-followups"
   },
