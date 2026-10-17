@@ -1,0 +1,66 @@
+TAP version 13
+# cover HTTP backend: postgres
+# Subtest: cover returns only the first saved scene at the requested revision
+ok 1 - cover returns only the first saved scene at the requested revision
+  ---
+  duration_ms: 993.227423
+  type: 'test'
+  ...
+# Subtest: cover denies signed-out hosted access
+ok 2 - cover denies signed-out hosted access
+  ---
+  duration_ms: 1.813838
+  type: 'test'
+  ...
+# Subtest: cover hides another owner and nonexistent projects with the same status
+ok 3 - cover hides another owner and nonexistent projects with the same status
+  ---
+  duration_ms: 5.273445
+  type: 'test'
+  ...
+# Subtest: cover rejects invalid identities and revision query shapes
+ok 4 - cover rejects invalid identities and revision query shapes
+  ---
+  duration_ms: 9.86231
+  type: 'test'
+  ...
+# Subtest: cover reads do not advance the document or history
+ok 5 - cover reads do not advance the document or history
+  ---
+  duration_ms: 13.441059
+  type: 'test'
+  ...
+# Subtest: saved first-slide edits invalidate an old revision instead of serving mismatched content
+ok 6 - saved first-slide edits invalidate an old revision instead of serving mismatched content
+  ---
+  duration_ms: 11.048232
+  type: 'test'
+  ...
+# Subtest: reordering changes the cover to the actual first saved slide
+ok 7 - reordering changes the cover to the actual first saved slide
+  ---
+  duration_ms: 7.246754
+  type: 'test'
+  ...
+# Subtest: restoration changes the cover without reviving an older revision identity
+ok 8 - restoration changes the cover without reviving an older revision identity
+  ---
+  duration_ms: 11.206043
+  type: 'test'
+  ...
+# Subtest: deleted projects do not remain accessible through their cover
+ok 9 - deleted projects do not remain accessible through their cover
+  ---
+  duration_ms: 4.400218
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1180.090153
+# forge-test-file "test/v2-project-covers-http-7c.test.js"

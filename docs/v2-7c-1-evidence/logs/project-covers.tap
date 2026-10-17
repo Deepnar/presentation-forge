@@ -1,0 +1,279 @@
+TAP version 13
+# Subtest: headless projection preserves authority and isolates its returned first scene
+ok 1 - headless projection preserves authority and isolates its returned first scene
+  ---
+  duration_ms: 1.8888
+  type: 'test'
+  ...
+# Subtest: headless projection rejects invalid revisions before reading private documents
+ok 2 - headless projection rejects invalid revisions before reading private documents
+  ---
+  duration_ms: 0.785125
+  type: 'test'
+  ...
+# Subtest: headless projection refuses inaccessible and mismatched saved revisions
+ok 3 - headless projection refuses inaccessible and mismatched saved revisions
+  ---
+  duration_ms: 0.26008
+  type: 'test'
+  ...
+# Subtest: cover size is bounded in UTF-8 bytes without altering a saved scene
+ok 4 - cover size is bounded in UTF-8 bytes without altering a saved scene
+  ---
+  duration_ms: 7.948233
+  type: 'test'
+  ...
+# Subtest: queue coalesces identical requests and never exceeds two active jobs
+ok 5 - queue coalesces identical requests and never exceeds two active jobs
+  ---
+  duration_ms: 5.793612
+  type: 'test'
+  ...
+# Subtest: an offscreen queued subscription is removed without starting its request
+ok 6 - an offscreen queued subscription is removed without starting its request
+  ---
+  duration_ms: 0.672298
+  type: 'test'
+  ...
+# Subtest: cancelling the last visible lease aborts work and ignores a late result
+ok 7 - cancelling the last visible lease aborts work and ignores a late result
+  ---
+  duration_ms: 0.650588
+  type: 'test'
+  ...
+# Subtest: one subscriber leaving does not cancel another visible subscriber
+ok 8 - one subscriber leaving does not cancel another visible subscriber
+  ---
+  duration_ms: 0.617354
+  type: 'test'
+  ...
+# Subtest: mismatched response identity/revision is refused rather than cached
+ok 9 - mismatched response identity/revision is refused rather than cached
+  ---
+  duration_ms: 0.491121
+  type: 'test'
+  ...
+# Subtest: revision cache reuses only the same saved identity and revision
+ok 10 - revision cache reuses only the same saved identity and revision
+  ---
+  duration_ms: 0.355895
+  type: 'test'
+  ...
+# Subtest: cache evicts by entry and byte budget and refetches an evicted preview
+ok 11 - cache evicts by entry and byte budget and refetches an evicted preview
+  ---
+  duration_ms: 0.65164
+  type: 'test'
+  ...
+# Subtest: failures can be retried without poisoning the revision cache
+ok 12 - failures can be retried without poisoning the revision cache
+  ---
+  duration_ms: 0.270299
+  type: 'test'
+  ...
+# Subtest: queued and active stalled jobs have a bounded deadline
+ok 13 - queued and active stalled jobs have a bounded deadline
+  ---
+  duration_ms: 15.40783
+  type: 'test'
+  ...
+# Subtest: the deadline also bounds font preparation and ignores its late completion
+ok 14 - the deadline also bounds font preparation and ignores its late completion
+  ---
+  duration_ms: 16.292395
+  type: 'test'
+  ...
+# Subtest: account changes purge ready previews and stop new reads in the stale view
+ok 15 - account changes purge ready previews and stop new reads in the stale view
+  ---
+  duration_ms: 0.752135
+  type: 'test'
+  ...
+# Subtest: account changes during a read cannot publish its old-account response
+ok 16 - account changes during a read cannot publish its old-account response
+  ---
+  duration_ms: 0.568139
+  type: 'test'
+  ...
+# Subtest: disposing a workspace aborts active work, clears cache and prevents queued work
+ok 17 - disposing a workspace aborts active work, clears cache and prevents queued work
+  ---
+  duration_ms: 0.719461
+  type: 'test'
+  ...
+# Subtest: cover transport uses the existing bearer identity and prevents HTTP cache reuse
+ok 18 - cover transport uses the existing bearer identity and prevents HTTP cache reuse
+  ---
+  duration_ms: 20.630711
+  type: 'test'
+  ...
+# Subtest: cover transport preserves actionable errors without treating an HTTP failure as ready
+ok 19 - cover transport preserves actionable errors without treating an HTTP failure as ready
+  ---
+  duration_ms: 0.330666
+  type: 'test'
+  ...
+# Subtest: cancelled font-gated preparation never renders abandoned scene content
+ok 20 - cancelled font-gated preparation never renders abandoned scene content
+  ---
+  duration_ms: 2.887652
+  type: 'test'
+  ...
+# Subtest: cancelled scene validation never starts subsequent font work
+ok 21 - cancelled scene validation never starts subsequent font work
+  ---
+  duration_ms: 0.359079
+  type: 'test'
+  ...
+# Subtest: font coverage refusal and a transient load failure remain distinct
+ok 22 - font coverage refusal and a transient load failure remain distinct
+  ---
+  duration_ms: 0.30924
+  type: 'test'
+  ...
+# Subtest: a failed shipped-font load can succeed on explicit preview retry
+ok 23 - a failed shipped-font load can succeed on explicit preview retry
+  ---
+  duration_ms: 1.949167
+  type: 'test'
+  ...
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: saved first-slide cover matches the canonical SVG and opens by keyboard
+ok 24 - saved first-slide cover matches the canonical SVG and opens by keyboard
+  ---
+  duration_ms: 2867.910165
+  type: 'test'
+  ...
+# Subtest: human edits, first-slide reorder and history restoration refresh the saved cover
+ok 25 - human edits, first-slide reorder and history restoration refresh the saved cover
+  ---
+  duration_ms: 3029.48922
+  type: 'test'
+  ...
+# Subtest: blank, detached, hidden, chart and table content remain honest read-only previews
+ok 26 - blank, detached, hidden, chart and table content remain honest read-only previews
+  ---
+  duration_ms: 2192.561256
+  type: 'test'
+  ...
+# Subtest: dark narrow cards retain usable preview and action bounds
+ok 27 - dark narrow cards retain usable preview and action bounds
+  ---
+  duration_ms: 2477.362311
+  type: 'test'
+  ...
+# Subtest: near-viewport work stays bounded and loading never shifts the cards
+ok 28 - near-viewport work stays bounded and loading never shifts the cards
+  ---
+  duration_ms: 2234.975499
+  type: 'test'
+  ...
+# Subtest: network and transient shipped-font failures have stable local recovery
+ok 29 - network and transient shipped-font failures have stable local recovery
+  ---
+  duration_ms: 4389.522183
+  type: 'test'
+  ...
+# Subtest: actual shipped font HTTP failure recovers on retry
+ok 30 - actual shipped font HTTP failure recovers on retry
+  ---
+  duration_ms: 2320.35801
+  type: 'test'
+  ...
+# Subtest: static font source outage recovers on retry
+ok 31 - static font source outage recovers on retry
+  ---
+  duration_ms: 2313.796835
+  type: 'test'
+  ...
+# Subtest: refresh rejects old revision work and deletion cannot resurrect a card
+ok 32 - refresh rejects old revision work and deletion cannot resurrect a card
+  ---
+  duration_ms: 1793.103574
+  type: 'test'
+  ...
+# Subtest: pending and settled account changes clear previews and guard navigation
+ok 33 - pending and settled account changes clear previews and guard navigation
+  ---
+  duration_ms: 6385.273584
+  type: 'test'
+  ...
+# Subtest: departure cancels preview work and timeout leaves Open usable
+ok 34 - departure cancels preview work and timeout leaves Open usable
+  ---
+  duration_ms: 19900.037815
+  type: 'test'
+  ...
+# Subtest: development StrictMode effect replay creates a fresh live cover loader
+ok 35 - development StrictMode effect replay creates a fresh live cover loader
+  ---
+  duration_ms: 2346.432738
+  type: 'test'
+  ...
+# cover HTTP backend: sqlite
+# Subtest: cover returns only the first saved scene at the requested revision
+ok 36 - cover returns only the first saved scene at the requested revision
+  ---
+  duration_ms: 751.17755
+  type: 'test'
+  ...
+# Subtest: cover denies signed-out hosted access
+ok 37 - cover denies signed-out hosted access
+  ---
+  duration_ms: 1.996658
+  type: 'test'
+  ...
+# Subtest: cover hides another owner and nonexistent projects with the same status
+ok 38 - cover hides another owner and nonexistent projects with the same status
+  ---
+  duration_ms: 6.787597
+  type: 'test'
+  ...
+# Subtest: cover rejects invalid identities and revision query shapes
+ok 39 - cover rejects invalid identities and revision query shapes
+  ---
+  duration_ms: 9.312137
+  type: 'test'
+  ...
+# Subtest: cover reads do not advance the document or history
+ok 40 - cover reads do not advance the document or history
+  ---
+  duration_ms: 8.91584
+  type: 'test'
+  ...
+# Subtest: saved first-slide edits invalidate an old revision instead of serving mismatched content
+ok 41 - saved first-slide edits invalidate an old revision instead of serving mismatched content
+  ---
+  duration_ms: 7.434797
+  type: 'test'
+  ...
+# Subtest: reordering changes the cover to the actual first saved slide
+ok 42 - reordering changes the cover to the actual first saved slide
+  ---
+  duration_ms: 4.398167
+  type: 'test'
+  ...
+# Subtest: restoration changes the cover without reviving an older revision identity
+ok 43 - restoration changes the cover without reviving an older revision identity
+  ---
+  duration_ms: 5.303032
+  type: 'test'
+  ...
+# Subtest: deleted projects do not remain accessible through their cover
+ok 44 - deleted projects do not remain accessible through their cover
+  ---
+  duration_ms: 3.096333
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54273.761578
+# forge-test-file "test/v2-project-covers-7c.test.js"
+# forge-test-file "test/v2-project-covers-chrome-7c.test.js"
+# forge-test-file "test/v2-project-covers-http-7c.test.js"

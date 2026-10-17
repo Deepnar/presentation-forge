@@ -1,0 +1,200 @@
+[
+  {
+    "name": "focused",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-project-covers-7c.test.js",
+      "test/v2-project-covers-http-7c.test.js",
+      "test/v2-project-covers-chrome-7c.test.js"
+    ],
+    "log": "out/v2-7c-1-validation/focused-final.tap",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "bulk",
+    "command": [
+      "python3",
+      "docs/v2-7c-1-evidence/run-group.py",
+      "bulk"
+    ],
+    "log": "out/v2-7c-1-validation/bulk-driver.log",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "serial",
+    "command": [
+      "python3",
+      "docs/v2-7c-1-evidence/run-group.py",
+      "serial"
+    ],
+    "log": "out/v2-7c-1-validation/serial-driver.log",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "postgres",
+    "command": [
+      "python3",
+      "docs/v2-7c-1-evidence/run-group.py",
+      "postgres"
+    ],
+    "log": "out/v2-7c-1-validation/postgres-driver.log",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "commands",
+    "command": [
+      "python3",
+      "docs/v2-7c-1-evidence/run-final-steps.py"
+    ],
+    "log": "out/v2-7c-1-validation/command-driver.log",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "postgres-covers",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-project-covers-chrome-7c.test.js"
+    ],
+    "log": "out/v2-7c-1-validation/postgres-covers-final.tap",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "postgres-cover-http",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "5m",
+      "node",
+      "--test",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-project-covers-http-7c.test.js"
+    ],
+    "log": "out/v2-7c-1-validation/postgres-http-final.tap",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "hosted-double-click-cli",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "5m",
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "docs/v2-7c-1-evidence/hosted-import-check.mjs"
+    ],
+    "log": "out/v2-7c-1-validation/hosted-import-final.tap",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "standing-locale",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "5m",
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "test/byok-budget.test.js"
+    ],
+    "log": "out/v2-7c-1-validation/byok-locale-final.tap",
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  },
+  {
+    "name": "native",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "docs/v2-7c-1-evidence/native-review.mjs"
+    ],
+    "log": "out/v2-7c-1-validation/native-review.log",
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51"
+  }
+]

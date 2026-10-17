@@ -1,0 +1,28 @@
+{
+  "requests": [
+    {
+      "url": "/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "status": 503
+    },
+    {
+      "url": "/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff",
+      "status": 503
+    },
+    {
+      "url": "/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "status": 200
+    }
+  ],
+  "before": [
+    0,
+    0,
+    346.65625,
+    341.875
+  ],
+  "after": [
+    0,
+    0,
+    346.65625,
+    341.875
+  ]
+}

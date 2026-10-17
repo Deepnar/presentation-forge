@@ -1,0 +1,317 @@
+{
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "images": [
+    {
+      "path": "completed-chat.png",
+      "sha256": "91489c8c3399154f80e11687a05a7ab0094e0fc9ac606b13c4c30f01233c3305",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-content.png",
+      "sha256": "56297abca99d1cb57a93636d2b8bfbafc96e5ea38a460202405a3816a8ad0fdb",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-desktop.png",
+      "sha256": "b216f860d87cdfb0468259541c3ef20adff6bd45f8769deea834cb75e7d3f18f",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-development.png",
+      "sha256": "084557859b5fbba5ddbf714aa26ce1d7a613f1232e76c78495a3e97a218cf6dd",
+      "width": 1440,
+      "height": 757,
+      "backend": "Vite development + PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-font-failure.png",
+      "sha256": "238249c3adaccf8ee200d2f14cbf2e722059c951dec06c774c39046cc29c56a1",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-font-http-failure.png",
+      "sha256": "00928829b33fe4d1c2d9074fc10a6f5e25bcb6cbddccbc4ea402bd4905813b81",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-font-http-recovered.png",
+      "sha256": "a035cf90dd4cb96194c6673fac93291ab1ec319feed2424e9d06478fa8ce1778",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-font-static-failure.png",
+      "sha256": "a3535a55f471a8c999675bee7654aec9cebaf2f89ce37f3ff6ccf5b7ab5aa85a",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-font-static-recovered.png",
+      "sha256": "8d820d5cc46b5c63766257617ea536be36492e99eef6bc136f236a049a7092a0",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-loading.png",
+      "sha256": "b1e682c1a7697ec10c3fad2bbe69370aa6573670b676f7e49db67ed4a1f799dc",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-narrow-dark.png",
+      "sha256": "edfa080540dd703338e90ba501515d270bfd7e22eb621fdeef4ac9fb47f8ffc4",
+      "width": 480,
+      "height": 900,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-network-failure.png",
+      "sha256": "7d5e142dcd2499476b344a74ef5881e86973e72fe9b2388840ffbcaab74214f4",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-restored.png",
+      "sha256": "d199dd6d0ab5c2076569cbc0d9249d5c7e7e67130341f4e839eb88389c931a8b",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-session-cross-tab.png",
+      "sha256": "f7cc968b21ecee80e3d519fbb0d34d92b513cfa8f7363d844942395bbff008e8",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-session-pending.png",
+      "sha256": "5fd2a3e87d5cf03d92741934bc29dd62e0e448be5783ec45bf67a56f97cae1c3",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-session-settled.png",
+      "sha256": "da8fe433a879962df1d77b7a053776266fed9def0060b1c374951fc7f5c1181f",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "covers-timeout.png",
+      "sha256": "81709d653a19a7aeb7411a498f09574ae87c69cebbf57438d52b1939ce9e36b2",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "imported/imported-chart.png",
+      "sha256": "a217769e10c901ef3f5609324806e775b1c4e4b93c687cb23f8e467ad1b14583",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "imported/imported-narrow.png",
+      "sha256": "8333412591fa79e871dc5157485de38f1013308fb518e676c3958f4ab5e8bd68",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "imported/imported-stats.png",
+      "sha256": "33b5f56bb0eb46939cbf0807dbe9b0b14e045ce901f19ab009d204faa3961b73",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "imported/imported-table.png",
+      "sha256": "f47aeeceea5861ca91e22975f98b480ad3a9950f4027106876f320d4bc06b37e",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "imported/imported-transition.png",
+      "sha256": "e5500c973fd0955a177986422af23c4670217a2ce44bb1e11005b8a4cd7dd5f3",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "native/chart-2.png",
+      "sha256": "7b885b1303026d117743b6c978e502b05b8ba0b624a0d0960b751ae0bf6c60c2",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite actual authenticated native export",
+      "inspected": true
+    },
+    {
+      "path": "native/handoff-1.png",
+      "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite actual authenticated native export",
+      "inspected": true
+    },
+    {
+      "path": "native/handoff-2.png",
+      "sha256": "5d349386404d0660dcbc1bf02c055fdbc9f5675c24928b10e2579b48fa026ad1",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite actual authenticated native export",
+      "inspected": true
+    },
+    {
+      "path": "native/handoff-3.png",
+      "sha256": "4ed100494d7b5ea9894b11ba2e14c033360d9c713dfbb9cfa703cf9db79dd76d",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite actual authenticated native export",
+      "inspected": true
+    },
+    {
+      "path": "native/table-3.png",
+      "sha256": "1d46d4fe9d25573ed1ed1acec42299b37faacb07af3f35c66c80f2617cbb6a83",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite actual authenticated native export",
+      "inspected": true
+    },
+    {
+      "path": "postgres-double-click.png",
+      "sha256": "3552c15f58a13bfb1801f59c40239862c4293b51f0c689eaeb2e843ad0613d8d",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/dashboard-empty.png",
+      "sha256": "f3dc588fd4f5f5f16d186f419da700d413215b3fe9b0346bcaa17ea628841117",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/dashboard-hosted-anon.png",
+      "sha256": "13aca8d799889c922fbab2138bcb33356f4809b817e0faeb8cb5d814595ab0b0",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/dashboard.png",
+      "sha256": "1d60aa8d0cafdc2c735bf9a729f22c7aae5e6186b0b89d95f03478a6c908db2f",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-blank.png",
+      "sha256": "5a93148e4f7a789c3f2cf3684ad35b045755096b396b80f99c77ef9c43ef9cc3",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-chart.png",
+      "sha256": "b83c7bfb7bc7030a626b18f9a3eb5457c035480c2eb2fbcdd59cd0e4a3fb4065",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-history.png",
+      "sha256": "64e831cc49fa4c77456c567648ff104b6ab85e9b92190a04c69cc4054eced0af",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-narrow-projects.png",
+      "sha256": "6e9ebc322b44584df7c6a45f069d3a5c7fa7fdca8e5db6fb3b4227b845b3fcb1",
+      "width": 500,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-narrow.png",
+      "sha256": "9802f37e4bbed69e199dfeea8a9e382c2f1a798140eda5a1d9185ebd4b3958b1",
+      "width": 500,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-readonly.png",
+      "sha256": "13f2b0f849a016d2e5b0d7ae78a3ff9e11206752f28d8ebc1fafea5e74a731e4",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-shell.png",
+      "sha256": "8118428eeac96aada020f238a1432a7fbb8ba996f22493792cdf3fd382b9006f",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    },
+    {
+      "path": "regression-shell/editor-table.png",
+      "sha256": "9946a46d3c4df9c52d8081319c77cc06cbc74b0d60753e05ffd8f0e6f48265c7",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite",
+      "inspected": true
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "command": "Final serial suites + repeated PostgreSQL covers + hosted-import-check.mjs; native-review.mjs; inspect all39 final images and verify hashes",
+  "log": "docs/v2-7c-1-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-7c-1-evidence/images.json",
+  "imageCount": 39,
+  "nativeRasters": 5
+}

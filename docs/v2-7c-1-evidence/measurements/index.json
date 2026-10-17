@@ -1,0 +1,33 @@
+{
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "source": "Final serial browser files, repeated PostgreSQL cover file and supplemental hosted driver. No model calls.",
+  "files": [
+    "measurements/hosted-import.json",
+    "measurements/postgres-covers/covers-font-http.json",
+    "measurements/postgres-covers/covers-font-static.json",
+    "measurements/postgres-covers/first-visible.json",
+    "measurements/postgres-covers/many-projects.json",
+    "measurements/postgres-covers/narrow.json",
+    "measurements/postgres-covers/retry-font.json",
+    "measurements/postgres-covers/retry-network.json",
+    "measurements/shared-shell/canvas-chart.json",
+    "measurements/shared-shell/canvas-table.json",
+    "measurements/shared-shell/large-deck.json",
+    "measurements/sqlite-covers/covers-font-http.json",
+    "measurements/sqlite-covers/covers-font-static.json",
+    "measurements/sqlite-covers/first-visible.json",
+    "measurements/sqlite-covers/many-projects.json",
+    "measurements/sqlite-covers/narrow.json",
+    "measurements/sqlite-covers/retry-font.json",
+    "measurements/sqlite-covers/retry-network.json",
+    "measurements/sqlite-handoff/boundary-60.json",
+    "measurements/sqlite-handoff/cold-warm.json",
+    "measurements/sqlite-handoff/refusal-narrow.json",
+    "measurements/sqlite-handoff/save-states.json",
+    "measurements/sqlite-import/boundary-60.json",
+    "measurements/sqlite-import/canvas-chart.json",
+    "measurements/sqlite-import/canvas-table.json",
+    "measurements/sqlite-import/narrow.json"
+  ],
+  "excluded": "Earlier scratch retry-font-http.json predates the final canonical measurement name; excluded from both backend directories. Final actual resource results are covers-font-http.json and covers-font-static.json."
+}
