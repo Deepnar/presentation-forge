@@ -1,0 +1,31 @@
+{
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "command": "node --test --test-reporter=tap test/dev-protocol.test.js",
+  "runs": [
+    {
+      "phase": "packet",
+      "log": "docs/v2-7c-1-evidence/logs/governance-packet.tap",
+      "exitCode": 0,
+      "tests": {
+        "total": 21,
+        "pass": 21,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "phase": "closeout",
+      "log": "docs/v2-7c-1-evidence/logs/governance-closeout.tap",
+      "exitCode": 0,
+      "tests": {
+        "total": 21,
+        "pass": 21,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  ],
+  "note": "Repeated governance after packet metadata and acceptance propagation. Included cases already occur in bulk; these42 executions are excluded from distinct totals."
+}

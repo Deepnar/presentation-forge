@@ -83,11 +83,12 @@
     },
     {
       "path": "covers-narrow-dark.png",
-      "sha256": "edfa080540dd703338e90ba501515d270bfd7e22eb621fdeef4ac9fb47f8ffc4",
+      "sha256": "087d44f08284e489297a7b47e3797ab6b8932c364bd916ad5883eb6d10d6ae2d",
       "width": 480,
       "height": 900,
-      "backend": "PostgreSQL",
-      "inspected": true
+      "backend": "SQLite independent settled-resize diagnostic",
+      "inspected": true,
+      "source": "logs/independent/narrow-diagnostic/narrow-settled.png"
     },
     {
       "path": "covers-network-failure.png",
