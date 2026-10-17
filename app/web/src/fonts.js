@@ -115,6 +115,25 @@ function releaseFailedFace(family, weight, sheet) {
   injected.delete(key);
 }
 
+function retryFailedStaticFaces(doc, family) {
+  const name = value => value.replace(/^["']|["']$/g, "");
+  const failed = Array.from(doc.fonts).filter(face => face.status === "error" && name(face.family) === family);
+  if (!failed.length) return;
+  for (const sheet of doc.styleSheets) {
+    try {
+      for (let i = 0; i < sheet.cssRules.length; i++) {
+        const rule = sheet.cssRules[i];
+        if (rule.type !== CSSRule.FONT_FACE_RULE || name(rule.style.fontFamily) !== family) continue;
+        if (!failed.some(face => face.weight === rule.style.fontWeight && face.style === rule.style.fontStyle && face.unicodeRange === rule.style.unicodeRange)) continue;
+        // Recreate only failed faces, keeping the original source/subset policy
+        // and every successfully loaded face in the shared static stylesheet.
+        const css = rule.cssText;
+        sheet.deleteRule(i); sheet.insertRule(css, i);
+      }
+    } catch { /* Stylesheets outside this origin cannot be repaired here. */ }
+  }
+}
+
 function collectRuns(scenes) {
   const out = [];
   const walk = (els) => {
@@ -190,7 +209,7 @@ async function loadFaces(key) {
       if (loader) {
         const mod = await loader();
         sheet = injectFace(n.family, n.weight, mod.default);
-      }
+      } else if (doc.styleSheets) retryFailedStaticFaces(doc, n.family);
       // Inter / IBM Plex Mono ride static imports; everything else
       // was just injected above. Either way, verify truthfully.
       const spec = `${n.style} ${n.want} 16px "${n.family}"`;

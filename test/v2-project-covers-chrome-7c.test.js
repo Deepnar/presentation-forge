@@ -163,16 +163,16 @@ test('network and transient shipped-font failures have stable local recovery', a
     } finally { await page.close(); }
   }
 });
-test('actual shipped font HTTP failure recovers on retry', async () => {
+async function fontOutage({ family, weight, stem, failures, captureName }) {
   const original = await make(), scene = structuredClone(original.scenes[0]);
-  for (const el of scene.elements) for (const para of el.paragraphs ?? []) for (const run of para.runs) { run.family = 'Merriweather'; run.weight = 700; }
+  for (const el of scene.elements) for (const para of el.paragraphs ?? []) for (const run of para.runs) { run.family = family; run.weight = weight; }
   const p = await make({ scenes: [scene], title: 'Font transport recovery' });
   const requests = [];
   const proxy = httpServer((req, res) => {
     let fontRequest;
-    if (/merriweather-latin-700-normal.*\.woff2/.test(req.url)) {
+    if (req.url.includes(stem) && /\.woff2?$/.test(req.url)) {
       fontRequest = { url: req.url }; requests.push(fontRequest);
-      if (requests.length === 1) { fontRequest.status = 503; res.writeHead(503, { 'Cache-Control': 'no-store' }); res.end('temporary fixture font outage'); return; }
+      if (requests.length <= failures) { fontRequest.status = 503; res.writeHead(503, { 'Cache-Control': 'no-store' }); res.end('temporary fixture font outage'); return; }
     }
     const upstream = httpRequest(new URL(req.url, fixture.base), { method: req.method, headers: { ...req.headers, host: new URL(fixture.base).host } }, response => { if (fontRequest) fontRequest.status = response.statusCode; res.writeHead(response.statusCode, response.headers); response.pipe(res); });
     upstream.on('error', error => { res.writeHead(502); res.end(error.message); }); req.pipe(upstream);
@@ -185,17 +185,19 @@ test('actual shipped font HTTP failure recovers on retry', async () => {
     await page.onNewDocument(`${trace}localStorage.setItem('forge.token',${JSON.stringify(fixture.token)});localStorage.setItem('forge.leftNav','0');`);
     await page.evaluate(`location.href=${JSON.stringify(`${base}/#/projects`)}`);
     await wait(page, `document.querySelector('${selector(p)}')?.dataset.coverState==='error'`);
-    assert.equal(requests.length, 1, 'the actual font request failed');
-    const before = await bounds(page, p); await capture(page, 'covers-font-http-failure');
+    assert.equal(requests.length, failures, 'the actual font sources failed');
+    const before = await bounds(page, p); await capture(page, `${captureName}-failure`);
     await click(page, `${selector(p)} button:not([data-project-cover-open])`);
     await ready(page, p); const after = await bounds(page, p);
     for (let i = 0; i < 4; i++) assert.ok(Math.abs(before[i] - after[i]) < .2);
-    await capture(page, 'covers-font-http-recovered');
-    await data('retry-font-http', { requests, before, after });
-    assert.deepEqual(requests.map(request => request.status), [503, 200], 'retry downloads the failed font again');
-    assert.equal(await page.evaluate("Array.from(document.fonts).filter(face=>face.family.includes('Merriweather')&&face.status==='error').length"), 0);
+    await capture(page, `${captureName}-recovered`);
+    await data(captureName, { requests, before, after });
+    assert.deepEqual(requests.map(request => request.status), [...Array(failures).fill(503), 200], 'retry downloads the failed font again');
+    assert.equal(await page.evaluate(`Array.from(document.fonts).filter(face=>face.family.includes(${JSON.stringify(family)})&&face.status==='error').length`), 0);
   } finally { await page?.close(); await new Promise(resolve => proxy.close(resolve)); }
-});
+}
+test('actual shipped font HTTP failure recovers on retry', () => fontOutage({ family: 'Merriweather', weight: 700, stem: 'merriweather-latin-700-normal', failures: 1, captureName: 'covers-font-http' }));
+test('static font source outage recovers on retry', () => fontOutage({ family: 'IBM Plex Mono', weight: 400, stem: 'ibm-plex-mono-latin-400-normal', failures: 2, captureName: 'covers-font-static' }));
 test('refresh rejects old revision work and deletion cannot resurrect a card', async () => {
   const p = await make(), page = await open({ inject: 'window.__holdCovers=true;' });
   try {
