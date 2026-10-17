@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-17",
+  "atUtc": "2026-10-17T14:13:22.610140+00:00",
+  "quietWindowObserved": true,
+  "sample": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1965709\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "io": "some avg10=3.30 avg60=1.93 avg300=1.51 total=18712160\nfull avg10=3.13 avg60=1.83 avg300=1.42 total=17826751\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2069\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2055\n"
+  },
+  "node": "v24.16.0",
+  "unrelatedWorkInterrupted": false,
+  "ownedPostgres": {
+    "container": "forge_v27c2_validation_pg",
+    "id": "918c9f75feb1bbe29e28c049ae025849c80b06f739481c75c1dfe41ac12c051d",
+    "image": "postgres:15-alpine (cached; no pull)",
+    "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+    "endpoint": "127.0.0.1:5544",
+    "cpuLimit": 1,
+    "memoryMiB": 512,
+    "tmpfsMiB": 192,
+    "cleanup": null
+  },
+  "implementationSha": "e49f74a79edbd4ef8bd722bbae6938b2509ebe50",
+  "finalPreflight": {
+    "cpu": "some avg10=0.00 avg60=0.04 avg300=0.01 total=2599417\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "io": "some avg10=3.57 avg60=3.62 avg300=2.54 total=26090126\nfull avg10=3.37 avg60=3.42 avg300=2.40 total=24787436\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2282\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2267\n"
+  },
+  "availableMemory": "MemAvailable:   50913444 kB"
+}

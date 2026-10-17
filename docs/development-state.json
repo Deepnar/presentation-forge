@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-7C-1-f79ae07.json"
   },
   "implementationHead": {
-    "sha": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
-    "note": "Task-entry planning checkout; C2 implementation in progress. Freeze corrected runtime/test/tool source before final validation."
+    "sha": "e49f74a79edbd4ef8bd722bbae6938b2509ebe50",
+    "note": "Frozen C2 runtime/test/validation source after scoped review corrections. Final exact-source validation in progress; later commits contain evidence and continuity records."
   },
   "activeMilestone": {
     "id": "V2-7C-2",
     "roadmapRef": "docs/ROADMAP.md#v2-7c-2-plan",
     "evalDoc": "docs/V2-7C-2-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
