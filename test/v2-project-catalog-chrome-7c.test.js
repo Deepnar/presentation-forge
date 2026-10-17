@@ -19,6 +19,8 @@ async function wait(page, expression, timeout = 30000) {
   throw new Error(`timed out: ${expression}; ${await page.evaluate('document.body.innerText.slice(-1400)').catch(() => 'closed context')}`);
 }
 async function click(page, selector) {
+  // Ending an ancestor transform changes the containing block of fixed dialogs.
+  await wait(page, "document.getAnimations().filter(a=>['view-in','fade-in'].some(name=>a.effect?.target?.classList?.contains(name))).every(a=>a.playState!=='running')", 6000);
   await wait(page, `document.querySelector(${JSON.stringify(selector)}) && !document.querySelector(${JSON.stringify(selector)}).disabled`);
   await page.evaluate(`(() => {const n=document.querySelector(${JSON.stringify(selector)});n.scrollIntoView({block:'center',behavior:'instant'});window.__catalogPoint=null;window.__catalogPointTrace=[];let previous=null;const end=performance.now()+5000;function frame(){if(!n.isConnected)return;const r=n.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);window.__catalogPointTrace.push({rect:[r.x,r.y,r.width,r.height],hit:hit?.tagName});if(previous&&Math.abs(previous.x-r.x)<.1&&Math.abs(previous.y-r.y)<.1&&(hit===n||n.contains(hit))){window.__catalogPoint=[x,y];return}previous={x:r.x,y:r.y};if(performance.now()<end)requestAnimationFrame(frame)}requestAnimationFrame(frame)})()`);
   try { await wait(page, 'window.__catalogPoint', 6000); }
