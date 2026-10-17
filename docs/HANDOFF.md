@@ -1,84 +1,52 @@
-# Handoff — V2-7C-1 accepted; V2-7C-2 direction pending
+# Handoff — V2-7C-2 final validation in progress
 
-2026-10-17, branch `v2`. Accepted product/test/governance source:
-**f79ae07d6ad1696da3106a2a1148ae0ce7f58f51**. Task-entry accepted baseline was
-**03cc89ef233db5469066599391cbaac68c2fc646**, planning checkout b8dc425.
-The separate [ACCEPT decision](reviews/V2-7C-1-f79ae07.json) and
-[review report](reviews/V2-7C-1-f79ae07.md) come from `/root/v27b_review`, a
-separate context from implementer `/root`; review/evidence commit 87b324d.
-Later commits contain documentation/evidence only. Read AGENTS.md, DEVELOPMENT-
-PROTOCOL.md, CONTINUATION.md, state, the [completed contract](ROADMAP.md#v2-7c-1-plan)
-and [evaluation](V2-7C-1-EVAL.md). No previous chat or relay is required.
+2026-10-17, branch `v2`. Accepted baseline remains independently accepted C1
+`f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`. Frozen C2 implementation:
+`e49f74a79edbd4ef8bd722bbae6938b2509ebe50`; later commits are evidence/docs.
+Read AGENTS.md, CONTINUATION.md, DEVELOPMENT-PROTOCOL.md, development-state.json,
+the [contract](ROADMAP.md#v2-7c-2-plan), [evaluation](V2-7C-2-EVAL.md) and
+[runbook](v2-7c-2-evidence/RUNBOOK.md). C2 is not accepted.
 
-The human-approved first-slide covers are implemented above existing project-card
-metadata/actions. They use the canonical saved scene/SVG renderer through an
-owner-checked revision-scoped read. The workspace owns bounded near-viewport work
-and a memory-only cache. Saved edits/reorder/restore refresh the cover. Failure
-keeps Open usable; account changes clear stale cards into focused reload recovery.
-StrictMode lifetime, settled token invalidation, cancelled preparation and actual
-dynamic/static font-download retry defects were corrected narrowly before review.
-No engine/store schema, AI layout, security policy, asset store or other feature
-scope was added.
+Human direction approved one mixed Projects grid with distinct generated
+originals/saved editable copies and search/type filters. Implementation preserves
+canonical authorization, C1 saved covers, report-only/report/research/script
+routes, B2 explicit conversion and copy-scoped deletion. Source-qualified metadata
+projection and independent cancellable read lifetimes do not merge/migrate stores.
+Independent read-only review found modal shortcut/focus escape, hidden deletion
+errors and StrictMode invoker restoration. Narrow fixes and regression cases are
+in the frozen source; no later feature work is authorized.
 
-The complete **202-file matrix passes 2278/2278**: bulk 2053, serial 183,
-PG contract/import 23, cross-process/fault 19. The distinct hosted PostgreSQL trusted
-double-click→human edit→authenticated CLI receipt replay→native export supplement
-passes 1/1, giving **2279 distinct final cases**, zero required fail/skip/cancelled/
-unexecuted. Focused 44, PG Chrome 12 and PG HTTP 9 repeat existing cases and are not
-added again. Build/typecheck/50 benchmark cells pass with zero findings and five
-agreeing invariance checks. Separate en_IN.UTF-8 BYOK remains 9 pass / 1 standing
-locale failure, with its original assertion.
+Preliminary complete Chrome16, catalog units17, actual HTTP8 and governance22 all
+pass. Final exact-source205-file matrix, PostgreSQL repeats, build/typecheck,
+50-cell benchmark and native/visual checks are running in strict serial order.
+Do not claim their preliminary or older C1 totals as final. Current ignored
+`out/v2-7c-2-validation/coordinator-driver.log` and `coordinator.json` identify
+completed commands and any failure. The process running `run-final.py` owns the
+shared Vite dist; never overlap another browser/build process with it.
 
-Independent review audited every file marker/leaf total and all 39 final image
-hashes, then ran 87/87 primary executions (focused 44, governance 21, PG Chrome 12,
-PG HTTP 9, hosted 1), plus one passing narrow diagnostic and fresh PG native three-
-page export/inspection, typecheck/protocol/50-cell benchmark. These are repeated
-checks, not additional unique matrix cases. The diagnostic's other 11 cases were
-unexecuted by its filter; no required matrix case is unexecuted.
+A single separate reviewer `/root/catalog_review` performed read-only review and
+awaits an exclusive runtime validation slot and finalized evidence. Use its
+separate ACCEPT/HOLD for the exact pushed source; implementer `/root` cannot
+accept itself. If unavailable, leave pending with evidence. No dependent feature.
 
-A fresh narrow capture caught the navigation rail during resize. The reviewer
-traced RAF geometry and preview/button hit targets: by 356–373ms all targets are
-unobscured across stable frames. This established capture timing, not persistent
-occlusion. Both contexts opened the settled SQLite capture, now the main narrow
-image with corrected provenance/hash. The transient frame and former main PG
-capture are retained separately. Canonical assertions/product/tests were not
-changed to make a capture green; the harness followup is recorded only in
-[the roadmap](ROADMAP.md#v2-7c-1-narrow-capture).
+Owned disposable PostgreSQL service: `forge_v27c2_validation_pg`, container
+`918c9f75feb1bbe29e28c049ae025849c80b06f739481c75c1dfe41ac12c051d`, localhost5544,
+cached postgres:15-alpine, one CPU/512MiB/192MiB tmpfs. Its environment record
+tracks cleanup, currently pending. Keep until independent verification, then check
+owned test DBs are gone, stop only this exact container and record removal. Never
+reuse/stop other projects' 5432/5433 services or the existing Forge8090 app.
 
-All 39 final browser/native images were inspected. Five main native rasters from
-three actual authenticated exports retain real text/chart/table values 1.25/12.5.
-Desktop/narrow card controls and dialogs remain usable; no new persistent overlap,
-clipped dialog or unexpected canvas movement was found. Existing narrow inspector
-overlay and toolbar/table scrolling remain. No interactive Microsoft PowerPoint,
-exhaustive accessibility, live Auto writing quality or hosted deployment claim.
+Full suites rewrite historical evidence: fresh captures are preserved in ignored
+scratch by the coordinator and must be copied into C2 evidence with exact source,
+backend and hashes before restoring only historical paths. Inspect final images
+and real native PPTX rasters. Leave the standing BYOK locale failure separate.
+Fit, B2 isolated restore timeout and C1 canonical narrow capture timing remain
+linked roadmap items, outside this slice. No Auto output-quality or deployment
+claim. After final evidence and separate review, update roadmap/state/handoff,
+commit scoped work and push origin/v2, then stop before toolbar or agent work.
 
-First visible preview after grid readiness: 168ms SQLite/136ms PG, 932 bytes.
-Thirty projects use at most two active reads; card bounds are unchanged by loading.
-120-slide opening 1559ms; fresh 60-slide imported opening 1534ms. Shared-shell
-chart/table selection shifts at most 0.049691px/0.018990px. Other timings have
-different boundaries; read the evaluation and measurement provenance.
-
-The owned PostgreSQL 15.18 service `forge_v27c1_validation_pg`, exact container
-17f1955c89b993ffe636cafee07cca8ea1913739155ddb43d374ba7c0ae9e668, was stopped and
-automatically removed with its tmpfs after review. Zero test databases remained
-before stop; all 29 checked fixed validation ports, including 5544, are closed.
-[Environment evidence](v2-7c-1-evidence/environment.json) records exact cleanup.
-No unrelated process/database/service was used or stopped. Reproduction requires
-a new isolated service; never reuse other projects' 5432/5433 databases.
-
-Historical suite rewrites were preserved in ignored scratch/current evidence and
-restored. Final evidence is under `v2-7c-1-evidence/`; the changed-files manifest is
-relative to b8dc425. Preserve unrelated untracked `.agents/`,
+Preserve the unrelated untracked `.agents/`,
 `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. Authorized push is `origin/v2`.
-The user prefers few agents, with high effort only; one existing reviewer was reused.
-
-Known BYOK locale, Fit, isolated B2 restore timeout and conditional font/content
-coverage remain in the evaluation/review and linked roadmap entries. Passing
-current restore flows does not identify the earlier timeout's cause.
-
-The human approved the recommended single Projects grid and authorized C2 on
-2026-10-17. Its sole contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
-Implementation starts from5190887; state now records C2 in progress, with C1 as
-accepted baseline and every new gate pending. Original untracked files remain
-untouched. Stop after C2 independent review/handoff, before toolbar or agent work.
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. The user prefers few agents,
+with high effort only. See the roadmap for all remaining work; no second future
+work list belongs in this handoff.

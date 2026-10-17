@@ -34,23 +34,25 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7C-1-EVAL.md](V2-7C-1-EVAL.md) indexes the approved first-slide project
-cover slice. Human direction selected previews above existing project-card
-metadata/actions; the bounded contract is in [the roadmap](ROADMAP.md#v2-7c-1-plan).
-The accepted baseline is now V2-7C-1 source `f79ae07`, with its separate
-[decision/report](reviews/V2-7C-1-f79ae07.md). Task entry used B2 `03cc89e`.
-Do not infer acceptance from passing tests or advance beyond the stopped slice.
-The frozen implementation is recorded in state and the evidence plan; later
-commits may contain documentation/evidence only. The current inventory has
-202 files: 174 bulk, 24 serial browser/build owners and four PostgreSQL files.
-The focused cover gate repeats 23 unit, nine HTTP and 12 Chrome cases. Repeated
-backend runs are not added to the distinct matrix total.
+[V2-7C-2-EVAL.md](V2-7C-2-EVAL.md) indexes the approved unified Projects
+slice. Human direction selected one mixed grid containing distinct saved editable
+presentations and generated decks/reports, with search/type filters and one
+sidebar destination; the contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
+The accepted baseline remains C1 source `f79ae07`; implementation `e49f74a` is
+frozen for final validation, pending a separate ACCEPT/HOLD. Later checkout
+commits can contain documentation/evidence only; inspect the diff and state.
 
-Read the active evaluation and [runbook](v2-7c-1-evidence/RUNBOOK.md) for execution
-status, commands, attempts and limitations. The current slice is complete and
-stops at its review/handoff. List consolidation, toolbar polish, agent runtime
-and deployment require their own task contracts; next-candidate status is not
-authorization. Preserve the separate BYOK locale and B2 restore-timeout records.
+The complete inventory has 205 entry files: 176 bulk, 25 serial browser/build
+owners and four PostgreSQL files. The focused catalog gate repeats 17 units,
+eight HTTP and 16 Chrome cases. Repeated backend executions are not additional
+distinct cases. Read [the current runbook](v2-7c-2-evidence/RUNBOOK.md), evaluation
+and state for final status; never substitute C1 results for newer source.
+
+Discovery retains both canonical APIs, owner policies, report-only access, saved
+covers and explicit conversion receipts. It never merges/imports on reads. Stop
+after C2 independent review/handoff. Toolbar polish and agent runtime require
+their own approved contracts; a next candidate is not coding authorization.
+Preserve the separate BYOK locale and B2 restore-timeout records.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -62,7 +64,7 @@ The canonical test entrypoints are:
 
 ```sh
 node --test test/dev-protocol.test.js
-node --test --test-concurrency=1 test/v2-project-covers-7c.test.js test/v2-project-covers-http-7c.test.js test/v2-project-covers-chrome-7c.test.js
+node --test --test-concurrency=1 test/v2-project-catalog-7c.test.js test/v2-project-catalog-http-7c.test.js test/v2-project-catalog-chrome-7c.test.js
 node --test test/v2-edit-chrome-7a.test.js
 node --test test/v2-projects-6c-sqlite.test.js
 node --test test/v2-projects-6c-postgres.test.js
@@ -70,12 +72,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-7c-1-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-7c-2-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the active validation runbook](v2-7c-1-evidence/RUNBOOK.md) and its linked
+commands are in [the active validation runbook](v2-7c-2-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect
