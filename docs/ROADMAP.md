@@ -7713,6 +7713,72 @@ scale); charts structurally exact without axes (V2-4C).
   fixture/developer controls from the production editor toolbar. Agree each
   surface direction before implementation; AI editing remains V2-8. Covers reuse
   the existing grid and revision-scoped scene resource, without a new asset store.
+
+<a id="v2-7c-2-plan"></a>
+
+- [ ] V2-7C-2 project-list consolidation — **planning started 2026-10-17;
+  surface direction pending**. The current sidebar's Projects tab lists legacy
+  generated decks/reports, while Presentations lists saved editable projects.
+  One discovery destination should make both accessible without confusing an
+  original generated project with its independently editable saved copy.
+
+  - **Baseline/task entry:** independently accepted source
+    `f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`,
+    [C1 decision](reviews/V2-7C-1-f79ae07.json); planning checkout
+    `aa309357166e091eb008643eef2134e43964d2d1` on `v2`. Runtime/tests are
+    unchanged from that accepted source. C1 cover lifecycle and B2 explicit
+    conversion/reopening are prerequisites, not work to recreate.
+  - **Direction decision:** proposed **one Projects grid** containing both saved
+    editable presentations and generated decks/reports, with search/type filters
+    and clear type labels. Keep originals and saved copies as distinct entries;
+    the sidebar Projects shortcut opens this page. Alternative: one Projects
+    page with Saved/Generated tabs. The human has been asked to choose; neither
+    option is approved by the continuation request alone. Do not implement or
+    reorder to a different feature while that answer is pending.
+  - **Bounded behavior after direction:** consolidate discovery/navigation and
+    duplicated list affordances, preserving chats, keyboard search, legacy
+    content-search access, report-only projects and report/research/script routes.
+    Each entry opens its existing destination. Generated content retains the
+    explicit Open in editor action, conversion refusals and original access;
+    list reads never create or migrate a project. Existing creation, rename,
+    deletion, history, export and saved-cover behavior remain available in the
+    applicable entry context. Deletion targets must identify the selected copy.
+  - **Data/lifecycle invariants:** reuse canonical authorized metadata reads and
+    typed, source-qualified identities rather than matching titles/slugs across
+    stores. Do not invent durable lineage from mutable origin metadata, hide
+    copies, merge documents, change ownership or delete both copies together.
+    Preserve C1 near-viewport work/cache bounds and scene authority. Isolate
+    source loading/errors with truthful partial-result and retry states; stale
+    query/account responses cannot publish or silently act under a new session.
+  - **Non-goals:** artifact/document/store unification, schema migration,
+    automatic conversion, new report/file/agent capability, cover redesign,
+    toolbar polish, Fit, the older restore-timeout investigation, unrelated
+    canonical capture cleanup, deployment and paid infrastructure. These remain
+    separate roadmap items. No framework migration or new security policy.
+  - **Look-ahead:** V2-8 project tools and V2-10 artifact unification can consume
+    a typed read projection without mistaking this discovery catalog for a new
+    persisted project model. Preserve canonical document IDs, command paths,
+    routes and import receipts so later artifact work does not need to undo an
+    inferred merge. Toolbar polish follows this list slice separately.
+  - **Gates/evidence:** correctness, authorization, compatibility, read-only data
+    integrity, browser/accessibility/responsiveness and evidence apply. History,
+    undo/redo, regeneration and native export are regression invariants. Test
+    both entry kinds, report-only sources, colliding names/identifiers, search,
+    type selection, partial failures/retry, stale queries, identity changes,
+    navigation guards and correctly scoped destructive actions. Prove real
+    owner/admin/local behavior on SQLite and isolated PostgreSQL as applicable.
+    Inspect desktop/narrow/dark/empty/error views after settled rail transitions
+    and verify hit targets and preview/card bounds. Extend the complete test
+    inventory; run bounded serial browser/build owners, PG contracts/faults,
+    build, typecheck, 50-cell benchmark and native regressions. Wait for a quiet
+    shared-machine window before expensive checks. Preserve BYOK locale and
+    other standing limitations separately; unavailable services are unexecuted.
+  - **Acceptance/stop:** once direction is supplied, record it and the final
+    bounded contract before coding. Retain exact source, counts, commands,
+    visuals, performance and corrections; separate independent ACCEPT/HOLD is
+    required. Push scoped work to `origin/v2`; preserve unrelated files. Stop
+    after this slice's review/handoff without starting toolbar or agent work.
+
 <a id="v2-7c-1-plan"></a>
 
 - [x] V2-7C-1 saved-project first-slide covers — **independently accepted on 2026-10-17**.

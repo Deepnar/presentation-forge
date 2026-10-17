@@ -1,4 +1,4 @@
-# Handoff — V2-7C-1 accepted; stopped
+# Handoff — V2-7C-1 accepted; V2-7C-2 direction pending
 
 2026-10-17, branch `v2`. Accepted product/test/governance source:
 **f79ae07d6ad1696da3106a2a1148ae0ce7f58f51**. Task-entry accepted baseline was
@@ -77,7 +77,17 @@ Known BYOK locale, Fit, isolated B2 restore timeout and conditional font/content
 coverage remain in the evaluation/review and linked roadmap entries. Passing
 current restore flows does not identify the earlier timeout's cause.
 
-**Stop here.** State points to independent acceptance of C1. The next candidate is
-V1/V2 list consolidation, followed by toolbar polish, with surface direction and
-a bounded task required before implementation. No new feature, deployment,
-production migration or paid infrastructure is authorized by this acceptance.
+The 2026-10-17 continuation request started planning the next immediate item,
+[V2-7C-2 list consolidation](ROADMAP.md#v2-7c-2-plan). Repository recovery confirms
+the recovery checkout aa30935 with no tracked changes and the three preserved
+untracked paths; protocol
+and the accepted decision/39-image hash check pass. The source audit confirmed
+that legacy Projects includes report-only artifacts as well as decks, so their
+discovery and existing routes must survive consolidation.
+
+The product-direction question is pending: one mixed Projects grid (recommended)
+or one Projects page with Saved/Generated tabs. The sole proposal/task contract
+is in the linked roadmap entry. No product/tests have changed, no expensive
+validation or subagent work has started, and accepted state still names C1.
+Wait for the human's surface choice before implementation; do not substitute
+another feature. No deployment, migration or paid infrastructure is authorized.
