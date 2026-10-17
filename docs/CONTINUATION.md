@@ -37,8 +37,9 @@ because old eval wording predates review.
 [V2-7C-1-EVAL.md](V2-7C-1-EVAL.md) indexes the approved first-slide project
 cover slice. Human direction selected previews above existing project-card
 metadata/actions; the bounded contract is in [the roadmap](ROADMAP.md#v2-7c-1-plan).
-The accepted baseline remains V2-7B-2 source `03cc89e` until a separate exact-source
-review accepts this implementation. Do not infer acceptance from passing tests.
+The accepted baseline is now V2-7C-1 source `f79ae07`, with its separate
+[decision/report](reviews/V2-7C-1-f79ae07.md). Task entry used B2 `03cc89e`.
+Do not infer acceptance from passing tests or advance beyond the stopped slice.
 The frozen implementation is recorded in state and the evidence plan; later
 commits may contain documentation/evidence only. The current inventory has
 202 files: 174 bulk, 24 serial browser/build owners and four PostgreSQL files.
@@ -46,8 +47,8 @@ The focused cover gate repeats 23 unit, nine HTTP and 12 Chrome cases. Repeated
 backend runs are not added to the distinct matrix total.
 
 Read the active evaluation and [runbook](v2-7c-1-evidence/RUNBOOK.md) for execution
-status, commands, attempts and limitations. The current slice stops after its
-independent review and handoff. List consolidation, toolbar polish, agent runtime
+status, commands, attempts and limitations. The current slice is complete and
+stops at its review/handoff. List consolidation, toolbar polish, agent runtime
 and deployment require their own task contracts; next-candidate status is not
 authorization. Preserve the separate BYOK locale and B2 restore-timeout records.
 

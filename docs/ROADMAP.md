@@ -7707,14 +7707,15 @@ scale); charts structurally exact without axes (V2-4C).
   > tracing before it is classified as a product key-handler defect.
 <a id="workspace-followups"></a>
 
-- [ ] Workspace followups after the generation handoff — project cover
-  thumbnails, then consolidation of V1/V2 project lists; remove or relocate
-  fixture/developer controls from the production editor toolbar as part of
-  frontend polish. These are findings from V2-7A, not scope for its validation.
-  Agree surface direction before implementation; AI editing remains V2-8.
+- [ ] Workspace followups after the generation handoff — saved first-slide
+  covers are independently accepted in [V2-7C-1](#v2-7c-1-plan). Next is
+  consolidation of V1/V2 project lists, followed by removing or relocating
+  fixture/developer controls from the production editor toolbar. Agree each
+  surface direction before implementation; AI editing remains V2-8. Covers reuse
+  the existing grid and revision-scoped scene resource, without a new asset store.
 <a id="v2-7c-1-plan"></a>
 
-- [ ] V2-7C-1 saved-project first-slide covers — **approved on 2026-10-16**.
+- [x] V2-7C-1 saved-project first-slide covers — **independently accepted on 2026-10-17**.
   Human direction selected real first-slide previews above the existing card
   title/actions in the current Projects grid. This is the first bounded workspace
   polish slice; list consolidation and toolbar changes remain separate below.
@@ -7779,6 +7780,31 @@ scale); charts structurally exact without axes (V2-4C).
     new project truth. Later unified lists can consume the same identity/revision
     resource; cloud artifact lifecycle and asset adapters remain independent.
 
+  **Completed and independently accepted.** Exact source `f79ae07`, compared
+  with accepted B2 `03cc89e`; [decision/report](reviews/V2-7C-1-f79ae07.md).
+  The approved surface, bounded read/cache lifecycle, real saved revision updates,
+  failure recovery, account invalidation and actual dev StrictMode are implemented.
+  The complete 202-file matrix passes 2278/2278 plus one distinct hosted supplement
+  (2279 total), with zero fail/skip/cancel/unexecuted required cases. Focused 44,
+  repeated PG Chrome 12/HTTP 9, build/typecheck/50 cells and 39 inspected images pass.
+  Independent review reran 87 primary cases plus one narrow diagnostic, native
+  three-page export, type/protocol/50 cells; all passed. See
+  [evaluation](V2-7C-1-EVAL.md) for exact counts and performance boundaries.
+
+  > **Learned.** A preview is a disposable saved-scene read, but its view, account,
+  > asynchronous preparation and browser font faces each have a lifetime. Clearing
+  > a failed promise does not reset a failed FontFace; static WOFF fallback can
+  > mask a WOFF2 outage. Actual resource failures exposed both retry defects.
+  > Responsive screenshots can precede a rail transition even after fonts/cover
+  > readiness; settled geometry/hit targets distinguish capture timing from a
+  > persistent layout defect. Cross-cutting guidance is in TRAPS.md.
+  > **Look-ahead/completion propagation.** List consolidation can reuse the same
+  > project identity/revision cover resource. No schema, asset store, editing
+  > authority or renderer fork needs removal. The parent followup now starts
+  > with consolidation; Fit, toolbar, prior restore timeout and AI remain separate.
+
+<a id="viewer-fit-content-box"></a>
+
 - [ ] Viewer Fit content-box accounting — the scroller's 24px padding on
   each side is currently included in the fit input, so a 720px stage lives in a
   720px border box with 768px scroll width; the last24px are initially offscreen.
@@ -7796,6 +7822,16 @@ scale); charts structurally exact without axes (V2-4C).
   reruns do not establish the first timeout's cause. Evidence is retained in the
   [independent B2 review](reviews/V2-7B-2-03cc89e.md); no product regression has
   been established. This is a validation followup, not conversion/feature scope.
+<a id="v2-7c-1-narrow-capture"></a>
+
+- [ ] Settle responsive rail geometry before canonical narrow screenshot capture.
+  Preserve existing assertions and wait for the relevant transition plus stable,
+  unobscured preview edges and action hit targets. C1 review established transient
+  resize occlusion, not persistent layout failure, and supplied a separate passing
+  RAF/hit-target diagnostic and settled main capture. Consolidate that evidence
+  gate into the canonical harness without a fixed sleep or weakened bounds.
+  [Exact review/provenance](reviews/V2-7C-1-f79ae07.md#narrow-capture-timing-investigation).
+
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already

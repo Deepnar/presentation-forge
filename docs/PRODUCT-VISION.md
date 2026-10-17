@@ -57,7 +57,8 @@ exact decision and validation state indexed in [development-state.json](developm
 V2-7C-1 adds first-saved-slide previews to the existing project grid, using the
 authoritative scene and canonical SVG renderer. Previews are disposable reads;
 their loading, failure or retry never creates another project document. Its
-validation and separate review are indexed in [V2-7C-1-EVAL.md](V2-7C-1-EVAL.md).
+independently accepted source `f79ae07`, validation and review are indexed in
+[V2-7C-1-EVAL.md](V2-7C-1-EVAL.md).
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.

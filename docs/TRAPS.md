@@ -1769,3 +1769,12 @@ recreated with its original source and unicode subset too; exercise both WOFF2
 and WOFF sources because the latter may mask a WOFF2-only outage. CDP
 return-by-value probes must return scalars: a Window assignment
 can fail serialization even though opening the real second document succeeded.
+
+
+**Font readiness does not settle responsive geometry.** A viewport resize can
+change a navigation rail's width and translation while the cover is already
+ready. A screenshot can catch real transient occlusion even when the next trusted
+click correctly waits for its hit target. Preserve the first frame, trace RAF
+bounds and edge/button hit targets, and capture after the relevant transition
+settles. An arbitrary delay or window-only bounds cannot establish unobscured
+controls. Keep that capture timing result distinct from a persistent layout defect.

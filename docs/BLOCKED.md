@@ -199,8 +199,10 @@ handoff is independently accepted at `03cc89e` in
 [the roadmap](ROADMAP.md#v2-7b-2-plan). Its isolated restore-test timeout remains
 a recorded validation followup, not a proven product regression; the owned
 review service has been removed after checks. Review status/baseline are indexed
-in development-state.json. No
-constraint or green test authorizes starting a different milestone.
+in development-state.json. V2-7C-1 covers are independently accepted at `f79ae07`;
+all required validation executed and its isolated service was removed after
+review. See [the evaluation](V2-7C-1-EVAL.md) and current state. No constraint
+or green test authorizes starting a different milestone.
 
 Two are worth naming because they look like engineering and are not:
 
