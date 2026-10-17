@@ -1,0 +1,134 @@
+TAP version 13
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+ok 1 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3437.938445
+  type: 'test'
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+ok 2 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 3187.185585
+  type: 'test'
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 3 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2011.393531
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 4 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 4268.746128
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 5 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2207.694174
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 6 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 2592.606478
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 7 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 1609.934775
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 8 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2924.971164
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+ok 9 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 2138.889198
+  type: 'test'
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 10 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 2449.63765
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 11 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 3963.513431
+  type: 'test'
+  ...
+# Subtest: content-search failure preserves title matches and has an independent retry
+not ok 12 - content-search failure preserves title matches and has an independent retry
+  ---
+  duration_ms: 8386.415803
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:236:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__catalogPoint; I
+    Projects
+    
+    Saved presentations, generated decks and reports. Open a project or create a new presentation.
+    
+    Refresh
+    Create presentation
+    Search projects
+    Project type
+    All projects
+    Saved presentations
+    Generated decks & reports
+    Reports
+    
+    1 project matching your search
+    
+    I
+    WARM-HUMANIST
+    Generated deck
+    Imported results
+    3 slides · just now
+    Open
+    Delete…; pointer trace:[{"rect":[808.1875,287.796875,139.59375,28],"hit":"BUTTON"}]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    click (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:24:25)
+    async button (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:51:42)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:242:55)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: leaving discovery aborts pending search and remounting starts a fresh lifetime
+ok 13 - leaving discovery aborts pending search and remounting starts a fresh lifetime
+  ---
+  duration_ms: 2735.014865
+  type: 'test'
+  ...
+# Subtest: pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+ok 14 - pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+  ---
+  duration_ms: 2435.668064
+  type: 'test'
+  ...
+# Subtest: failed deletions show a focused visible error within the selected-copy dialog and retry safely
+ok 15 - failed deletions show a focused visible error within the selected-copy dialog and retry safely
+  ---
+  duration_ms: 5029.482036
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 14
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 49945.957225

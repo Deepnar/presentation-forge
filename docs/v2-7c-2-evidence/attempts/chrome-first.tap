@@ -1,0 +1,201 @@
+TAP version 13
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+not ok 1 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3542.994589
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:83:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'p-64cb384dfed8eb012372ca40'
+    - 'p-bc9b3c2e90b59bc3f294cb73'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'p-bc9b3c2e90b59bc3f294cb73'
+  actual: 'p-64cb384dfed8eb012372ca40'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:96:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+not ok 2 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 32047.767717
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.body.innerText.includes('A report without a deck.'); I
+    All projects
+    Report only
+    The written companion — the same argument at length, on the institutional template.
+    Deck
+    Report
+    Research
+    Script
+    REPORT
+    Report only
+    source-2
+    Render .docx
+    Generate companion deck
+    Full depth
+    Brief
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:18:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:104:66)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 3 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2489.806051
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 4 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 3783.452109
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 5 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2195.636824
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 6 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 1881.141817
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 7 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 2156.928835
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 8 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2439.03433
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+not ok 9 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 32500.242104
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector('[data-leave-cancel]'); I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 1
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 3
+    Slides
+    Layers
+    + Slide ▾
+    Pending catalog navigation
+    Imported results
+    legacy-s1 · Custom
+    ⋯
+    Conductivity
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Unit: mS/cm
+    2 / 3
+    legacy-s2
+    ⋯
+    Measurements
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    3 / 3
+    legacy-s3
+    ⋯
+    mech-warm-humanist-plain (warm-humanist, plain)
+    mech-warm-humanist-chromed (warm-humanist, chromed)
+    source-of-truth-warm-humanist-plain (warm-humanist, plain)
+    decision-warm-humanist-plain (warm-humanist, plain)
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Live
+    Projects
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    legacy-s1 · 1 selected · editing rev 1 · Custom slide
+    Pending catalog navigation
+    Imported results
+    Inspector
+    Assistant
+    legacy-s1:title:heading · text · 11.933×1.4 @ 0.7,2.02 · human
+    Text legacy-s1:title:heading
+    ¶1 center
+    Color 
+    Size 
+    B 
+    I 
+    Apply
+    You have unsaved changes. Leaving for another page without saving loses them. Save & leave Discard & leave Cancel
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:18:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:198:36)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 10 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 2253.58366
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 11 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 3508.029945
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 8
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 89444.899084

@@ -1,0 +1,157 @@
+{
+  "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+  "records": [
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/unit-before.tap",
+      "classification": "Expected missing module before implementation",
+      "counts": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/unit-expanded.tap",
+      "classification": "Product: undefined list was wrongly accepted as ready empty; explicit array validation fixes it",
+      "counts": {
+        "total": 17,
+        "pass": 16,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/http-first.tap",
+      "classification": "Test setup: invalid import mode; dependent admin case lacked saved copy",
+      "counts": {
+        "total": 8,
+        "pass": 6,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/chrome-first.tap",
+      "classification": "Test expectations: distinct receipt ID, report content field, missing cancel selector",
+      "counts": {
+        "total": 11,
+        "pass": 8,
+        "fail": 3,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/chrome-second.tap",
+      "classification": "Test readiness: route DOM replacement and debounced error query",
+      "counts": {
+        "total": 13,
+        "pass": 11,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/chrome-third.tap",
+      "classification": "Test readiness: retry clicked while next debounced query was completing",
+      "counts": {
+        "total": 15,
+        "pass": 14,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/strict-modal-before.tap",
+      "classification": "Product: development StrictMode cancellation failed invoker focus restoration; 15 other cases unexecuted by diagnostic filter",
+      "counts": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 15
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/chrome-corrected.tap",
+      "classification": "Corrected pre-freeze full browser file, 16 passes",
+      "counts": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/unit-http-governance.tap",
+      "classification": "Pre-freeze 47 passes across catalog unit/HTTP and governance",
+      "counts": {
+        "total": 47,
+        "pass": 47,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/build-first.log",
+      "classification": "Implementation syntax error: extra sidebar closing brace, corrected before freeze",
+      "counts": null,
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/build-corrected.log",
+      "classification": "Corrected implementation production build",
+      "counts": null,
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/build-ui.log",
+      "classification": "Production build after shell/dialog wiring corrections",
+      "counts": null,
+      "source": "Preliminary working-tree implementation before frozen e49f74a; not final gate evidence",
+      "filteredUnexecuted": 0
+    },
+    {
+      "classification": "Canonical7A fixture/readiness: generated catalog exposed real repository decks and coordinates were taken before both source reads settled. Each server now isolates its deck directory and Projects helper waits for read/animation readiness; leaf assertions unchanged.",
+      "counts": {
+        "total": 28,
+        "pass": 26,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "implementationSha": "e49f74a79edbd4ef8bd722bbae6938b2509ebe50",
+      "localRawLog": "out/v2-7c-2-validation/superseded-e49f74a/serial-20261017T141749390639Z/v2-edit-chrome-7a.test.tap",
+      "note": "Raw failure body includes names from the leaked real deck directory, so retain it locally rather than publish private material. The remaining24 serial files were unexecuted in this superseded attempt."
+    }
+  ],
+  "note": "Attempt totals are not added to final distinct cases. The diagnostic filter leaves 15 cases unexecuted only in that earlier diagnostic; the corrected complete browser file executes all16."
+}

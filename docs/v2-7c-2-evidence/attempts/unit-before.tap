@@ -1,0 +1,31 @@
+TAP version 13
+# Subtest: saved and generated identities remain distinct even with identical names and ids
+not ok 1 - saved and generated identities remain distinct even with identical names and ids
+  ---
+  duration_ms: 0.885439
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-7c.test.js:4:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/home/deepnar/Programs/presentations/app/web/src/lib/projectCatalog.js' imported from /home/deepnar/Programs/presentations/test/v2-project-catalog-7c.test.js"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    moduleResolve (node:internal/modules/esm/resolve:865:10)
+    defaultResolve (node:internal/modules/esm/resolve:992:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:691:20)
+    #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:708:38)
+    ModuleLoader.resolveSync (node:internal/modules/esm/loader:740:52)
+    #resolve (node:internal/modules/esm/loader:673:17)
+    ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:593:35)
+    node:internal/modules/esm/loader:622:32
+    TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.374965

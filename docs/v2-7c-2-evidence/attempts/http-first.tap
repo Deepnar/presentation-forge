@@ -1,0 +1,93 @@
+TAP version 13
+# catalog HTTP backend: sqlite
+# Subtest: canonical metadata exposes generated originals, saved copies and report-only sources
+ok 1 - canonical metadata exposes generated originals, saved copies and report-only sources
+  ---
+  duration_ms: 775.270566
+  type: 'test'
+  ...
+# Subtest: discovery and content search neither convert nor change scenes, revisions or history
+ok 2 - discovery and content search neither convert nor change scenes, revisions or history
+  ---
+  duration_ms: 17.033252
+  type: 'test'
+  ...
+# Subtest: both hosted catalogs and search refuse signed-out access
+ok 3 - both hosted catalogs and search refuse signed-out access
+  ---
+  duration_ms: 2.483687
+  type: 'test'
+  ...
+# Subtest: owner-scoped catalogs and content hits never disclose foreign or ownerless sources
+ok 4 - owner-scoped catalogs and content hits never disclose foreign or ownerless sources
+  ---
+  duration_ms: 15.679288
+  type: 'test'
+  ...
+# Subtest: deleting a saved copy retains the generated original and report
+ok 5 - deleting a saved copy retains the generated original and report
+  ---
+  duration_ms: 6.389198
+  type: 'test'
+  ...
+# Subtest: deleting a generated original retains its independent saved editable copy
+not ok 6 - deleting a generated original retains its independent saved editable copy
+  ---
+  duration_ms: 3.20094
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-http-7c.test.js:82:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    400 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 400
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-http-7c.test.js:84:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: admin discovery retains the existing cross-owner policy in both canonical reads
+not ok 7 - admin discovery retains the existing cross-owner policy in both canonical reads
+  ---
+  duration_ms: 44.075423
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-http-7c.test.js:90:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(rows.some(row => row.kind === 'saved'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-http-7c.test.js:93:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: local anonymous saved projects retain their existing policy without exposing legacy ownerless data
+ok 8 - local anonymous saved projects retain their existing policy without exposing legacy ownerless data
+  ---
+  duration_ms: 537.001553
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1497.737887

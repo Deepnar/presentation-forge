@@ -1,0 +1,155 @@
+TAP version 13
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+ok 1 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3553.686176
+  type: 'test'
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+not ok 2 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 8071.929844
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__catalogPoint; I
+    All projects
+    Report only
+    What the writer draws from — the ground truth the deck and report are built on.
+    Deck
+    Report
+    Research
+    Script
+    This deck hasn't been researched yet
+    Turn research on and regenerate, or create it with sources — the notes the model writes from appear here.; pointer trace:[{"rect":[0,0,0,0],"hit":"DIV"},{"rect":[0,0,0,0],"hit":"DIV"},{"rect":[0,0,0,0],"hit":"DIV"},{"rect":[0,0,0,0],"hit":"DIV"}]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    click (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:24:25)
+    async button (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:51:42)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:106:67)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 3 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2538.667483
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 4 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 4274.112737
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 5 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2212.169062
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 6 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 1852.967509
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 7 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 2168.333874
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 8 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2432.208607
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+ok 9 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 2653.785689
+  type: 'test'
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 10 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 2230.595727
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 11 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 3972.654708
+  type: 'test'
+  ...
+# Subtest: content-search failure preserves title matches and has an independent retry
+not ok 12 - content-search failure preserves title matches and has an independent retry
+  ---
+  duration_ms: 31579.973767
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:233:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.body.innerText.includes('Content search is unavailable'); I
+    Projects
+    
+    Saved presentations, generated decks and reports. Open a project or create a new presentation.
+    
+    Refresh
+    Create presentation
+    Search projects
+    Project type
+    All projects
+    Saved presentations
+    Generated decks & reports
+    Reports
+    
+    2 projects matching your search
+    
+    Generated content search is unavailable. Title, theme and identifier matches are shown. Retry content search
+    Imported results
+    Imported results
+    
+    First slide preview
+    
+    Saved presentation
+    Imported results
+    3 slides · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+    I
+    WARM-HUMANIST
+    Generated deck
+    Imported results
+    3 slides · just now
+    Open
+    Delete…
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:18:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-catalog-chrome-7c.test.js:236:43)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: leaving discovery aborts pending search and remounting starts a fresh lifetime
+ok 13 - leaving discovery aborts pending search and remounting starts a fresh lifetime
+  ---
+  duration_ms: 2232.489369
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 11
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70411.46792
