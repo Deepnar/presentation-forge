@@ -1,0 +1,16 @@
+[
+  {
+    "source": "out/v2-7c-2-validation/browser/discovery.json",
+    "path": "docs/v2-7c-2-evidence/measurements/postgres-catalog/v2-7c-2-validation--discovery.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "PostgreSQL projects; legacy filesystem catalog",
+    "sha256": "39cf28c98a32e097794d7a596991b56879227e9a11405266fa28a7cbf8bfbc13"
+  },
+  {
+    "source": "out/v2-7c-2-validation/browser/narrow.json",
+    "path": "docs/v2-7c-2-evidence/measurements/postgres-catalog/v2-7c-2-validation--narrow.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "PostgreSQL projects; legacy filesystem catalog",
+    "sha256": "aeecd815c53583113f4cb5a16ce3dadc262ad62ea61db3f2a612e28c31478bae"
+  }
+]

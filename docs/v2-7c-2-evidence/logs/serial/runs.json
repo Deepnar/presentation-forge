@@ -1,0 +1,708 @@
+[
+  {
+    "name": "v2-edit-chrome-7a.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-7a.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-7a.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-7a.test.tap"
+  },
+  {
+    "name": "freeform.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/freeform.test.js"
+    ],
+    "files": [
+      "test/freeform.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/freeform.test.tap"
+  },
+  {
+    "name": "plate.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/plate.test.js"
+    ],
+    "files": [
+      "test/plate.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/plate.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5c.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5c.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5c.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5c.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5d.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5d.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5d.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5d.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5e.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5e.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5e.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5e.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5f.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5f.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5f.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5f.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5i.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5i.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5i.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5i.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5j.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5j.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5j.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5j.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-5k.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5k.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5k.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-5k.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-6a.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-6a.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-6a.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-6a.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-6b.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-6b.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-6b.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-6b.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-6c.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-6c.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-6c.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-6c.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-chart.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-chart.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-chart.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-chart.test.tap"
+  },
+  {
+    "name": "v2-edit-chrome-table.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-table.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-table.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-edit-chrome-table.test.tap"
+  },
+  {
+    "name": "v2-fontgate-4e.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-fontgate-4e.test.js"
+    ],
+    "files": [
+      "test/v2-fontgate-4e.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-fontgate-4e.test.tap"
+  },
+  {
+    "name": "v2-fonts-4d.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-fonts-4d.test.js"
+    ],
+    "files": [
+      "test/v2-fonts-4d.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-fonts-4d.test.tap"
+  },
+  {
+    "name": "v2-live-chrome-4f.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-live-chrome-4f.test.js"
+    ],
+    "files": [
+      "test/v2-live-chrome-4f.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-live-chrome-4f.test.tap"
+  },
+  {
+    "name": "v2-plate-3f5.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-plate-3f5.test.js"
+    ],
+    "files": [
+      "test/v2-plate-3f5.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-plate-3f5.test.tap"
+  },
+  {
+    "name": "v2-selection-chrome.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-selection-chrome.test.js"
+    ],
+    "files": [
+      "test/v2-selection-chrome.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-selection-chrome.test.tap"
+  },
+  {
+    "name": "v2-viewer-smoke.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-viewer-smoke.test.js"
+    ],
+    "files": [
+      "test/v2-viewer-smoke.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-viewer-smoke.test.tap"
+  },
+  {
+    "name": "v2-import-chrome-7b.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-import-chrome-7b.test.js"
+    ],
+    "files": [
+      "test/v2-import-chrome-7b.test.js"
+    ],
+    "exitCode": 0,
+    "selectedFrom": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-import-chrome-7b.test.tap"
+  },
+  {
+    "name": "v2-handoff-chrome-7b.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-handoff-chrome-7b.test.js"
+    ],
+    "files": [
+      "test/v2-handoff-chrome-7b.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-17T14:56:05.803358+00:00",
+    "durationSeconds": 40.091637,
+    "selectedFrom": "bounded unchanged serial recovery"
+  },
+  {
+    "name": "v2-project-covers-chrome-7c.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-project-covers-chrome-7c.test.js"
+    ],
+    "files": [
+      "test/v2-project-covers-chrome-7c.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-17T14:56:45.895389+00:00",
+    "durationSeconds": 52.540975,
+    "selectedFrom": "bounded unchanged serial recovery"
+  },
+  {
+    "name": "v2-project-catalog-chrome-7c.test",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-project-catalog-chrome-7c.test.js"
+    ],
+    "files": [
+      "test/v2-project-catalog-chrome-7c.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-17T14:57:38.436739+00:00",
+    "durationSeconds": 49.652267,
+    "selectedFrom": "bounded unchanged serial recovery"
+  }
+]

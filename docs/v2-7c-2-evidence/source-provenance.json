@@ -1,0 +1,188 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "acceptedBaseline": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "taskEntry": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
+  "runtimeSourceDirectories": [
+    "app",
+    "packages",
+    "src",
+    "test",
+    "tools"
+  ],
+  "postFreezeDelta": "",
+  "implementationChangedFiles": [
+    {
+      "status": "M",
+      "path": "app/web/src/App.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/api.js"
+    },
+    {
+      "status": "A",
+      "path": "app/web/src/components/GeneratedProjectCard.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/components/Sidebar.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/components/ui.jsx"
+    },
+    {
+      "status": "A",
+      "path": "app/web/src/lib/projectCatalog.js"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/lib/v2project.js"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/views/Workspace.jsx"
+    },
+    {
+      "status": "M",
+      "path": "docs/ARCHITECTURE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/CONTINUATION.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/HANDOFF.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/ROADMAP.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/V2-7-FRONTEND-ARCHITECTURE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-7C-2-EVAL.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.json"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/RUNBOOK.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-ui.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-corrected.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-second.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-third.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/http-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/strict-modal-before.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-before.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-expanded.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-http-governance.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/environment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/finalize-evidence.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/hosted-import-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native-review.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/run-final-steps.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/run-group.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/validation-plan.json"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js"
+    },
+    {
+      "status": "M",
+      "path": "test/v2-edit-chrome-7a.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-7c.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-chrome-7c.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-http-7c.test.js"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs"
+    }
+  ],
+  "note": "Implementation source is frozen. Validation collection/inspection scripts and evidence under docs may change; no later app/package/src/test/tools delta. Changed source paths are this task entry to implementation; later evidence paths are reported separately."
+}

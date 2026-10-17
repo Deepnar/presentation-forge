@@ -1,0 +1,128 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--canvas-chart.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "4f9b9987e79ee17ec36bbb8ff2aeb1ef403abfa711eb47a49490572469f9b842"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--canvas-table.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "a3706c5d7803a12845cd4edb6ea41853e67ae9d70c31c9026d07694ed1b690cc"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--large-deck.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "595bbe4238a1c7e998998660fcfb19d8c07f453d7c8d9ed2478b92e7e0079001"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/boundary-60.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--boundary-60.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "9a1bed32bc4e2c5b2823a0707d5f1392ff8f2d1e3326a9cc0adbebfe5de09a29"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/narrow.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--narrow.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "6f2dd62953c53def7bebb9a19b259ade36225a33850da5edc3fbca92d35bc0fd"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-table.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--canvas-table.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "f5c3c8f8266e8cb78ce7673b2f2323941fbd979afd3a5d8e3dd921f7025ed798"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-chart.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--canvas-chart.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "1ca47ef4453bf4f61f1c244b14297b286cb752db8e6360b05f5f4cef3657ec73"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/boundary-60.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--boundary-60.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "7e46198df5a74b93361f6bae8ef50348da417f156922542dd7c45a1b7b6be3f4"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/save-states.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--save-states.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "0fa6aa1ca35c5ad65840b8d183573bbc117d42108808be911ee41787e14cec3a"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--refusal-narrow.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "45ec228c98632572dde6cdce92cff4b4f06d7d1813706a07527e3025a451e6bd"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/cold-warm.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--cold-warm.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "82cc3ec4b34522214f0d6ae94ff44833e17e1a963cff20a89efa22def6b55e94"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-static.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--covers-font-static.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "d9fd34df0144720dda2621f8de45094e6debe93605a83b3efd64e4a2aed223d3"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-http.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--covers-font-http.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "25dca8f450847b68eed4f40818021437bd9ee707e949c297c0b4ea30678458dc"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-font.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--retry-font.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "07f7942154acf8940282ce0e682e254e6694996f8a59c8c7821ae8a999fd5571"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-network.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--retry-network.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "07f7942154acf8940282ce0e682e254e6694996f8a59c8c7821ae8a999fd5571"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/many-projects.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--many-projects.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "4868dd8c5d2354fc4d9035f9c27994147f0451bcd2a22e8e2ec1c04d896dfe3b"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/first-visible.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--first-visible.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "75d13440d072f514ed5ff224cc2bb1d5da04c6a6ae0f8ec13bce1b8acb63dc6c"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/narrow.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--narrow.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite",
+    "sha256": "ffe93286f4ad04c4568836329b0083ff1ad5f86b10267782994ebffd15a89e98"
+  }
+]

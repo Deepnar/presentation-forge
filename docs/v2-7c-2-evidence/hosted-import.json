@@ -1,0 +1,13 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs docs/v2-7c-2-evidence/hosted-import-check.mjs",
+  "log": "docs/v2-7c-2-evidence/logs/hosted-import.tap",
+  "tests": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "exitCode": 0
+}

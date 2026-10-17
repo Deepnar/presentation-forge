@@ -45,7 +45,13 @@ for group, directory in [('bulk', bulk_dir), ('serial', serial_dir), ('postgres'
         shutil.copy2(file, target / file.name)
 
 bulk = test_record('non-browser-bulk', [bulk_dir / 'bulk.tap'], 'LC_ALL=C.UTF-8 python3 docs/v2-7c-2-evidence/run-group.py bulk (exact bounded command in logs/bulk/runs.json)', plan['bulk'])
-serial = test_record('serial-browser', [serial_dir / (pathlib.Path(file).stem + '.tap') for file in plan['serial']], 'LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> python3 docs/v2-7c-2-evidence/run-group.py serial (25 separate bounded owners; exact commands in logs/serial/runs.json)', plan['serial'])
+recovery = json.loads((scratch / 'serial-recovery.json').read_text())
+assert recovery['status'] == 'completed' and recovery['implementationSha'] == sha and pathlib.Path(recovery['finalDirectory']) == serial_dir
+initial_dir = pathlib.Path(recovery['initialDirectory'])
+shutil.copytree(initial_dir, root / 'logs' / 'serial-initial', dirs_exist_ok=True)
+shutil.copy2(scratch / 'serial-recovery.json', root / 'serial-recovery.json')
+shutil.copy2(scratch / 'coordinator.json', root / 'coordinator.json')
+serial = test_record('serial-browser', [serial_dir / (pathlib.Path(file).stem + '.tap') for file in plan['serial']], 'Same-source per-file selection: original 22 successful bounded owners plus one unchanged handoff rerun and remaining two files; exact commands/provenance in logs/serial/runs.json, initial 10-pass/1-timeout handoff in logs/serial-initial; see serial-recovery.json', plan['serial'])
 pg_files = [plan['postgres'][0], plan['postgres'][3]]
 pg = test_record('postgres-contract', [pg_dir / (pathlib.Path(file).stem + '.tap') for file in pg_files], 'LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> python3 docs/v2-7c-2-evidence/run-group.py postgres (contract/import files; exact commands in logs/postgres/runs.json)', pg_files)
 fault_files = plan['postgres'][1:3]
@@ -76,7 +82,7 @@ for source, name in [(scratch / 'hosted-import-final.tap', 'hosted-import.tap'),
     shutil.copy2(source, root / 'logs' / name)
 hosted = totals((root / 'logs' / 'hosted-import.tap').read_text())
 assert hosted['total'] == hosted['pass'] == 1
-write('hosted-import.json', dict(implementationSha=sha, command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=tap docs/v2-7c-2-evidence/hosted-import-check.mjs', log=str(root / 'logs' / 'hosted-import.tap'), tests=hosted, exitCode=0))
+write('hosted-import.json', dict(implementationSha=sha, command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs docs/v2-7c-2-evidence/hosted-import-check.mjs', log=str(root / 'logs' / 'hosted-import.tap'), tests=hosted, exitCode=0))
 pg_handoff_source = scratch / 'postgres-catalog-final.tap'
 pg_handoff_log = root / 'logs' / pg_handoff_source.name
 shutil.copy2(pg_handoff_source, pg_handoff_log)
@@ -88,7 +94,7 @@ pg_http_log = root / 'logs' / pg_http_source.name
 shutil.copy2(pg_http_source, pg_http_log)
 pg_http = totals(pg_http_source.read_text())
 assert pg_http['total'] == pg_http['pass'] == 8
-write('postgres-catalog-http.json', dict(implementationSha=sha, backend='PostgreSQL', command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_CATALOG_TEST_BACKEND=postgres timeout 5m node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-http-7c.test.js', log=str(pg_http_log), tests=pg_http, exitCode=0, note='Repeated actual catalog HTTP cases on isolated PostgreSQL; excluded from distinct totals.'))
+write('postgres-catalog-http.json', dict(implementationSha=sha, backend='PostgreSQL', command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_CATALOG_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-http-7c.test.js', log=str(pg_http_log), tests=pg_http, exitCode=0, note='Repeated actual catalog HTTP cases on isolated PostgreSQL; excluded from distinct totals.'))
 write('summary.json', dict(implementationSha=sha, inventoryFiles=sum(len(plan[g]) for g in ['bulk', 'serial', 'postgres']), uniqueTests={k: sum(r['tests'][k] for r in [bulk, serial, pg, faults]) for k in bulk['tests']}, supplementalHosted=hosted, focusedRepeated=focused['tests'], postgresCatalogRepeated=pg_handoff, postgresCatalogHttpRepeated=pg_http, unexecuted=0, note='The supplemental hosted double-click/CLI/export case is distinct. Focused checks, repeated PostgreSQL browser cases, earlier attempts, locale probe and independent reruns are not added again to unique matrix totals.'))
 
 state_file = pathlib.Path('docs/development-state.json')

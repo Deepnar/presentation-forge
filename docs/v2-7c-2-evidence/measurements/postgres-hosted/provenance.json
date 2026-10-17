@@ -1,0 +1,9 @@
+[
+  {
+    "source": "out/v2-7c-2-validation/hosted-import-measurements.json",
+    "path": "docs/v2-7c-2-evidence/measurements/postgres-hosted/v2-7c-2-validation--hosted-import-measurements.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "PostgreSQL",
+    "sha256": "d9d6ec35c69f7d8c855c03571f5b2786144496a0eb9a44a089ff161f9b86673e"
+  }
+]

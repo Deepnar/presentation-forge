@@ -1,0 +1,17 @@
+TAP version 13
+# catalog browser backend: postgres; actual production server/CSP
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 1 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2981.323072
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3708.396865

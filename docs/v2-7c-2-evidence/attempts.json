@@ -207,6 +207,34 @@
       "filteredUnexecuted": 15,
       "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
       "sourceDelta": "Only the last diagnostic adds the proposed test-helper animation wait; runtime is unchanged."
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/bf1-handoff-initial.tap",
+      "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+      "counts": {
+        "total": 11,
+        "pass": 10,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Existing B2 history-restore wait timeout recurred. Runtime and this file unchanged from accepted source. One unchanged bounded complete-file rerun is retained separately; no cause established and no C2 helper attribution.",
+      "standingIssue": "docs/ROADMAP.md#v2-7b-2-restore-timeout",
+      "remainingSerialFilesUnexecutedAtStop": 2
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/search-capture-first.tap",
+      "image": "docs/v2-7c-2-evidence/attempts/search-capture-first.png",
+      "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+      "counts": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "filteredUnexecuted": 15,
+      "classification": "Evidence readiness: absence of Searching before debounce was insufficient. Browser assertions pass but screenshot is interim; final diagnostic waits for completed exact query and settled message before capture."
     }
   ],
   "note": "Attempt totals are not added to final distinct cases. The diagnostic filter leaves 15 cases unexecuted only in that earlier diagnostic; the corrected complete browser file executes all16."

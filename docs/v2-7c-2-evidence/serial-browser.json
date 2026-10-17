@@ -1,0 +1,42 @@
+{
+  "id": "serial-browser",
+  "kind": "tests",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "command": "Same-source per-file selection: original 22 successful bounded owners plus one unchanged handoff rerun and remaining two files; exact commands/provenance in logs/serial/runs.json, initial 10-pass/1-timeout handoff in logs/serial-initial; see serial-recovery.json",
+  "log": "docs/v2-7c-2-evidence/logs/serial-browser.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 199,
+    "pass": 199,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-edit-chrome-7a.test.js",
+    "test/freeform.test.js",
+    "test/plate.test.js",
+    "test/v2-edit-chrome-5c.test.js",
+    "test/v2-edit-chrome-5d.test.js",
+    "test/v2-edit-chrome-5e.test.js",
+    "test/v2-edit-chrome-5f.test.js",
+    "test/v2-edit-chrome-5i.test.js",
+    "test/v2-edit-chrome-5j.test.js",
+    "test/v2-edit-chrome-5k.test.js",
+    "test/v2-edit-chrome-6a.test.js",
+    "test/v2-edit-chrome-6b.test.js",
+    "test/v2-edit-chrome-6c.test.js",
+    "test/v2-edit-chrome-chart.test.js",
+    "test/v2-edit-chrome-table.test.js",
+    "test/v2-fontgate-4e.test.js",
+    "test/v2-fonts-4d.test.js",
+    "test/v2-live-chrome-4f.test.js",
+    "test/v2-plate-3f5.test.js",
+    "test/v2-selection-chrome.test.js",
+    "test/v2-viewer-smoke.test.js",
+    "test/v2-import-chrome-7b.test.js",
+    "test/v2-handoff-chrome-7b.test.js",
+    "test/v2-project-covers-chrome-7c.test.js",
+    "test/v2-project-catalog-chrome-7c.test.js"
+  ]
+}

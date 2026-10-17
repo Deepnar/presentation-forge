@@ -1,0 +1,16 @@
+[
+  {
+    "source": "out/v2-7c-2-validation/sqlite-catalog-measurements/discovery.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-catalog/v2-7c-2-validation--discovery.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite projects; legacy filesystem catalog",
+    "sha256": "e0816fa0170f46ae40044e324d397a69f561ec80550125f731d092df9cfc4874"
+  },
+  {
+    "source": "out/v2-7c-2-validation/sqlite-catalog-measurements/narrow.json",
+    "path": "docs/v2-7c-2-evidence/measurements/sqlite-catalog/v2-7c-2-validation--narrow.json",
+    "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "backend": "SQLite projects; legacy filesystem catalog",
+    "sha256": "567287d70d6c131b1043cc31a95ea66768d46befba3b901c7bb7cfc729c7231a"
+  }
+]

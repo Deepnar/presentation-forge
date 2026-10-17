@@ -1,0 +1,14 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "initialDirectory": "out/v2-7c-2-validation/serial-20261017T144242023166Z",
+  "initialFailedFile": "test/v2-handoff-chrome-7b.test.js",
+  "initialFailedLog": "out/v2-7c-2-validation/serial-20261017T144242023166Z/v2-handoff-chrome-7b.test.tap",
+  "finalDirectory": "out/v2-7c-2-validation/serial-final-20261017T145605801777Z",
+  "reusedPassedFiles": 22,
+  "replacementFiles": [
+    "test/v2-handoff-chrome-7b.test.js",
+    "test/v2-project-covers-chrome-7c.test.js",
+    "test/v2-project-catalog-chrome-7c.test.js"
+  ],
+  "status": "completed"
+}

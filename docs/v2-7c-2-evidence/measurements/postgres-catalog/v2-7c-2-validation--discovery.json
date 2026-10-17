@@ -1,0 +1,34 @@
+{
+  "backend": "postgres",
+  "msAfterRoot": 389,
+  "requests": [
+    {
+      "route": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "route": "/api/auth/registration",
+      "method": "GET"
+    },
+    {
+      "route": "/api/identity",
+      "method": "GET"
+    },
+    {
+      "route": "/api/decks",
+      "method": "GET"
+    },
+    {
+      "route": "/api/v2/projects",
+      "method": "GET"
+    },
+    {
+      "route": "/api/decks",
+      "method": "GET"
+    },
+    {
+      "route": "/api/v2/projects/p-15cfbe32dba6a97c688678db/cover",
+      "method": "GET"
+    }
+  ]
+}

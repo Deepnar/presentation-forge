@@ -1,0 +1,9 @@
+{
+  "slides": 60,
+  "openingMs": 1499,
+  "timings": {
+    "compileMs": 20.473926999999094,
+    "persistMs": 4.94025899999906,
+    "totalMs": 33.874330999999074
+  }
+}

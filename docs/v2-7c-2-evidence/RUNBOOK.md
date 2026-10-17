@@ -42,9 +42,9 @@ three-file run precedes the disjoint matrix; every browser/build owner is serial
 
 ```sh
 LC_ALL=C.UTF-8 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-7c.test.js test/v2-project-catalog-http-7c.test.js test/v2-project-catalog-chrome-7c.test.js
-LC_ALL=C.UTF-8 TEST_PG_URL=postgres://postgres:probe@127.0.0.1:5544/postgres FORGE_CATALOG_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-http-7c.test.js
-LC_ALL=C.UTF-8 TEST_PG_URL=postgres://postgres:probe@127.0.0.1:5544/postgres timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=tap docs/v2-7c-2-evidence/hosted-import-check.mjs
-LC_ALL=en_IN.UTF-8 timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=tap test/byok-budget.test.js
+LC_ALL=C.UTF-8 TEST_PG_URL=postgres://postgres:probe@127.0.0.1:5544/postgres FORGE_CATALOG_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-http-7c.test.js
+LC_ALL=C.UTF-8 TEST_PG_URL=postgres://postgres:probe@127.0.0.1:5544/postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs docs/v2-7c-2-evidence/hosted-import-check.mjs
+LC_ALL=en_IN.UTF-8 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/byok-budget.test.js
 LC_ALL=C.UTF-8 timeout --signal=TERM --kill-after=10s 15m node docs/v2-7c-2-evidence/native-review.mjs
 ```
 
@@ -55,7 +55,14 @@ serial B1 suite and the handoff export copied from the current B2 suite into
 five selected native pages. The supplemental hosted driver uses its own unique
 PostgreSQL database and records browser/CLI/native behavior without calling a
 model. Copy current captures/measurements into this namespace before restoring
-historical tracked suite outputs. `logs/coordinator.json` records execution order,
+historical tracked suite outputs. `coordinator.json` records execution order,
 exit codes and source; group/final-command records retain exact child commands.
 Use `finalize-evidence.py <bulk-dir> <serial-dir> <postgres-dir>` only after every
 required command completes, then separately record actual image inspection.
+
+The final serial inventory preserves a stopped initial attempt plus a same-source
+selection: first22 successful files, one complete unchanged B2 retry, then the
+remaining C1/C2 files. `serial-recovery.json` and `logs/serial/runs.json` identify
+each selected log; `logs/serial-initial` retains the original10-pass/1-timeout
+B2 result. A successful retry does not diagnose or resolve that registered timeout.
+No original assertion or source was changed between these attempts.

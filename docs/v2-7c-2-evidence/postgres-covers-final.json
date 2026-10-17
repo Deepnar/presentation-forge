@@ -1,0 +1,36 @@
+{
+  "name": "postgres-covers-final",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-project-covers-chrome-7c.test.js"
+  ],
+  "exitCode": 0,
+  "atUtc": "2026-10-17T14:59:41.446249+00:00",
+  "durationSeconds": 50.92375,
+  "tests": {
+    "total": 12,
+    "pass": 12,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "backend": "PostgreSQL15.18; isolated test database",
+  "log": "docs/v2-7c-2-evidence/logs/postgres-covers-final.tap",
+  "note": "Repeated accepted C1 cases; excluded from distinct matrix totals."
+}

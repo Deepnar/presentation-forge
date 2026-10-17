@@ -1,0 +1,36 @@
+TAP version 13
+# Subtest: v2-6c browser against postgres
+    # Subtest: saves, renames, versions, restores, and exports on the hosted backend
+    ok 1 - saves, renames, versions, restores, and exports on the hosted backend
+      ---
+      duration_ms: 4139.648779
+      type: 'test'
+      ...
+    # Subtest: reopens across a server restart with state intact
+    ok 2 - reopens across a server restart with state intact
+      ---
+      duration_ms: 5867.010617
+      type: 'test'
+      ...
+    # Subtest: two sessions on one project conflict instead of overwriting
+    ok 3 - two sessions on one project conflict instead of overwriting
+      ---
+      duration_ms: 5311.645369
+      type: 'test'
+      ...
+    1..3
+ok 1 - v2-6c browser against postgres
+  ---
+  duration_ms: 16206.738775
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17106.367842
+# forge-test-file "test/v2-edit-chrome-6c.test.js"
