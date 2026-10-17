@@ -1,0 +1,17 @@
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: actual shipped font HTTP failure recovers on retry
+ok 1 - actual shipped font HTTP failure recovers on retry
+  ---
+  duration_ms: 2352.836998
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2941.40727

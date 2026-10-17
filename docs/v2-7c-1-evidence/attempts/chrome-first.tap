@@ -1,0 +1,216 @@
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: saved first-slide cover matches the canonical SVG and opens by keyboard
+not ok 1 - saved first-slide cover matches the canonical SVG and opens by keyboard
+  ---
+  duration_ms: 2307.654328
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:73:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><rect width="100%" height="100%" fill="#EBEBE6"></rect><g data-el="legacy-s1:title:heading"><text x="640.0" y="241.4" text-anchor="middle" font-size="53.3" fill="#2D2D2A" font-family="Merriweather" font-weight="bold" letter-spacing="-0.67">Imported results</text></g><g data-el="legacy-s1:legacy-s1-b1:content" data-semantic-ref="legacy-s1-b1"><text x="640.0" y="466.0" text-anchor="middle" font-size="17.3" fill="#2D2D2A" font-family="Inter" font-weight="400">Imported results</text></g></svg>'
+    - '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><rect width="100%" height="100%" fill="#EBEBE6"/><g data-el="legacy-s1:title:heading"><text x="640.0" y="241.4" text-anchor="middle" font-size="53.3" fill="#2D2D2A" font-family="Merriweather" font-weight="bold" letter-spacing="-0.67">Imported results</text></g><g data-el="legacy-s1:legacy-s1-b1:content" data-semantic-ref="legacy-s1-b1"><text x="640.0" y="466.0" text-anchor="middle" font-size="17.3" fill="#2D2D2A" font-family="Inter" font-weight="400">Imported results</text></g></svg>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><rect width="100%" height="100%" fill="#EBEBE6"/><g data-el="legacy-s1:title:heading"><text x="640.0" y="241.4" text-anchor="middle" font-size="53.3" fill="#2D2D2A" font-family="Merriweather" font-weight="bold" letter-spacing="-0.67">Imported results</text></g><g data-el="legacy-s1:legacy-s1-b1:content" data-semantic-ref="legacy-s1-b1"><text x="640.0" y="466.0" text-anchor="middle" font-size="17.3" fill="#2D2D2A" font-family="Inter" font-weight="400">Imported results</text></g></svg>'
+  actual: '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><rect width="100%" height="100%" fill="#EBEBE6"></rect><g data-el="legacy-s1:title:heading"><text x="640.0" y="241.4" text-anchor="middle" font-size="53.3" fill="#2D2D2A" font-family="Merriweather" font-weight="bold" letter-spacing="-0.67">Imported results</text></g><g data-el="legacy-s1:legacy-s1-b1:content" data-semantic-ref="legacy-s1-b1"><text x="640.0" y="466.0" text-anchor="middle" font-size="17.3" fill="#2D2D2A" font-family="Inter" font-weight="400">Imported results</text></g></svg>'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:79:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: human edits, first-slide reorder and history restoration refresh the saved cover
+not ok 2 - human edits, first-slide reorder and history restoration refresh the saved cover
+  ---
+  duration_ms: 31461.121819
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:87:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__coverPoint; I
+    Presentations
+    
+    Saved presentations live here. Open one to edit, or start a new one below.
+    
+    Refresh
+    Create presentation
+    Imported results
+    Imported results
+    
+    First slide preview
+    
+    Imported results
+    3 slides · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:21:9)
+    async click (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:26:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:90:27)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: blank, detached, hidden, chart and table content remain honest read-only previews
+ok 3 - blank, detached, hidden, chart and table content remain honest read-only previews
+  ---
+  duration_ms: 2141.519964
+  type: 'test'
+  ...
+# Subtest: dark narrow cards retain usable preview and action bounds
+ok 4 - dark narrow cards retain usable preview and action bounds
+  ---
+  duration_ms: 1903.476071
+  type: 'test'
+  ...
+# Subtest: near-viewport work stays bounded and loading never shifts the cards
+not ok 5 - near-viewport work stays bounded and loading never shifts the cards
+  ---
+  duration_ms: 2152.151
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:135:1'
+  failureType: 'testCodeFailure'
+  error: 'bounds coordinate1'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:144:40)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: network and transient shipped-font failures have stable local recovery
+not ok 6 - network and transient shipped-font failures have stable local recovery
+  ---
+  duration_ms: 2115.948761
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:150:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(Math.abs(before[i] - after[i]) < .2)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:158:42)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: refresh rejects old revision work and deletion cannot resurrect a card
+not ok 7 - refresh rejects old revision work and deletion cannot resurrect a card
+  ---
+  duration_ms: 31454.008632
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:163:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__coverPoint; I
+    Presentations
+    
+    Saved presentations live here. Open one to edit, or start a new one below.
+    
+    Refresh
+    Create presentation
+    Preview unavailable
+    
+    Preview unavailable
+    
+    Retry preview
+    Imported results
+    3 slides · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:21:9)
+    async click (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:26:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:169:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: pending and settled account changes clear previews and guard navigation
+not ok 8 - pending and settled account changes clear previews and guard navigation
+  ---
+  duration_ms: 34072.661854
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:176:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__coverPoint; I
+    Your sign-in changed. Reload before viewing presentations. Reload page
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:21:9)
+    async click (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:26:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:188:33)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: departure cancels preview work and timeout leaves Open usable
+not ok 9 - departure cancels preview work and timeout leaves Open usable
+  ---
+  duration_ms: 31499.606341
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:196:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__coverPoint; I
+    Presentations
+    
+    Saved presentations live here. Open one to edit, or start a new one below.
+    
+    Refresh
+    Create presentation
+    Preview unavailable
+    
+    Preview unavailable
+    
+    Retry preview
+    Imported results
+    3 slides · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:21:9)
+    async click (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:26:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-chrome-7c.test.js:203:7)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: development StrictMode effect replay creates a fresh live cover loader
+ok 10 - development StrictMode effect replay creates a fresh live cover loader
+  ---
+  duration_ms: 2373.909142
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 142311.39059

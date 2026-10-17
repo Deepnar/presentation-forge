@@ -1,0 +1,82 @@
+TAP version 13
+# cover HTTP backend: sqlite
+# Subtest: cover returns only the first saved scene at the requested revision
+ok 1 - cover returns only the first saved scene at the requested revision
+  ---
+  duration_ms: 644.556782
+  type: 'test'
+  ...
+# Subtest: cover denies signed-out hosted access
+ok 2 - cover denies signed-out hosted access
+  ---
+  duration_ms: 1.507676
+  type: 'test'
+  ...
+# Subtest: cover hides another owner and nonexistent projects with the same status
+ok 3 - cover hides another owner and nonexistent projects with the same status
+  ---
+  duration_ms: 3.567293
+  type: 'test'
+  ...
+# Subtest: cover rejects invalid identities and revision query shapes
+not ok 4 - cover rejects invalid identities and revision query shapes
+  ---
+  duration_ms: 2.195729
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-covers-http-7c.test.js:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    404 !== 400
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 400
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-covers-http-7c.test.js:47:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: cover reads do not advance the document or history
+ok 5 - cover reads do not advance the document or history
+  ---
+  duration_ms: 7.225349
+  type: 'test'
+  ...
+# Subtest: saved first-slide edits invalidate an old revision instead of serving mismatched content
+ok 6 - saved first-slide edits invalidate an old revision instead of serving mismatched content
+  ---
+  duration_ms: 5.617188
+  type: 'test'
+  ...
+# Subtest: reordering changes the cover to the actual first saved slide
+ok 7 - reordering changes the cover to the actual first saved slide
+  ---
+  duration_ms: 3.625475
+  type: 'test'
+  ...
+# Subtest: restoration changes the cover without reviving an older revision identity
+ok 8 - restoration changes the cover without reviving an older revision identity
+  ---
+  duration_ms: 4.730825
+  type: 'test'
+  ...
+# Subtest: deleted projects do not remain accessible through their cover
+ok 9 - deleted projects do not remain accessible through their cover
+  ---
+  duration_ms: 2.387996
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 760.027234

@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: headless projection preserves authority and isolates its returned first scene
+ok 1 - headless projection preserves authority and isolates its returned first scene
+  ---
+  duration_ms: 1.494412
+  type: 'test'
+  ...
+# Subtest: headless projection rejects invalid revisions before reading private documents
+ok 2 - headless projection rejects invalid revisions before reading private documents
+  ---
+  duration_ms: 0.628613
+  type: 'test'
+  ...
+# Subtest: headless projection refuses inaccessible and mismatched saved revisions
+ok 3 - headless projection refuses inaccessible and mismatched saved revisions
+  ---
+  duration_ms: 0.198871
+  type: 'test'
+  ...
+# Subtest: cover size is bounded in UTF-8 bytes without altering a saved scene
+ok 4 - cover size is bounded in UTF-8 bytes without altering a saved scene
+  ---
+  duration_ms: 6.745292
+  type: 'test'
+  ...
+# Subtest: queue coalesces identical requests and never exceeds two active jobs
+ok 5 - queue coalesces identical requests and never exceeds two active jobs
+  ---
+  duration_ms: 4.470578
+  type: 'test'
+  ...
+# Subtest: an offscreen queued subscription is removed without starting its request
+ok 6 - an offscreen queued subscription is removed without starting its request
+  ---
+  duration_ms: 0.628826
+  type: 'test'
+  ...
+# Subtest: cancelling the last visible lease aborts work and ignores a late result
+ok 7 - cancelling the last visible lease aborts work and ignores a late result
+  ---
+  duration_ms: 0.645862
+  type: 'test'
+  ...
+# Subtest: one subscriber leaving does not cancel another visible subscriber
+ok 8 - one subscriber leaving does not cancel another visible subscriber
+  ---
+  duration_ms: 0.509896
+  type: 'test'
+  ...
+# Subtest: mismatched response identity/revision is refused rather than cached
+ok 9 - mismatched response identity/revision is refused rather than cached
+  ---
+  duration_ms: 0.497604
+  type: 'test'
+  ...
+# Subtest: revision cache reuses only the same saved identity and revision
+ok 10 - revision cache reuses only the same saved identity and revision
+  ---
+  duration_ms: 0.279088
+  type: 'test'
+  ...
+# Subtest: cache evicts by entry and byte budget and refetches an evicted preview
+ok 11 - cache evicts by entry and byte budget and refetches an evicted preview
+  ---
+  duration_ms: 0.534527
+  type: 'test'
+  ...
+# Subtest: failures can be retried without poisoning the revision cache
+ok 12 - failures can be retried without poisoning the revision cache
+  ---
+  duration_ms: 0.231317
+  type: 'test'
+  ...
+# Subtest: queued and active stalled jobs have a bounded deadline
+ok 13 - queued and active stalled jobs have a bounded deadline
+  ---
+  duration_ms: 15.047712
+  type: 'test'
+  ...
+# Subtest: the deadline also bounds font preparation and ignores its late completion
+ok 14 - the deadline also bounds font preparation and ignores its late completion
+  ---
+  duration_ms: 15.682381
+  type: 'test'
+  ...
+# Subtest: account changes purge ready previews and stop new reads in the stale view
+ok 15 - account changes purge ready previews and stop new reads in the stale view
+  ---
+  duration_ms: 0.572253
+  type: 'test'
+  ...
+# Subtest: account changes during a read cannot publish its old-account response
+ok 16 - account changes during a read cannot publish its old-account response
+  ---
+  duration_ms: 0.415279
+  type: 'test'
+  ...
+# Subtest: disposing a workspace aborts active work, clears cache and prevents queued work
+ok 17 - disposing a workspace aborts active work, clears cache and prevents queued work
+  ---
+  duration_ms: 0.455136
+  type: 'test'
+  ...
+# Subtest: cover transport uses the existing bearer identity and prevents HTTP cache reuse
+ok 18 - cover transport uses the existing bearer identity and prevents HTTP cache reuse
+  ---
+  duration_ms: 17.58915
+  type: 'test'
+  ...
+# Subtest: cover transport preserves actionable errors without treating an HTTP failure as ready
+ok 19 - cover transport preserves actionable errors without treating an HTTP failure as ready
+  ---
+  duration_ms: 0.303856
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151.821668

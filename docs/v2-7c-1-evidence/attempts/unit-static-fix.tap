@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: headless projection preserves authority and isolates its returned first scene
+ok 1 - headless projection preserves authority and isolates its returned first scene
+  ---
+  duration_ms: 1.547459
+  type: 'test'
+  ...
+# Subtest: headless projection rejects invalid revisions before reading private documents
+ok 2 - headless projection rejects invalid revisions before reading private documents
+  ---
+  duration_ms: 0.626181
+  type: 'test'
+  ...
+# Subtest: headless projection refuses inaccessible and mismatched saved revisions
+ok 3 - headless projection refuses inaccessible and mismatched saved revisions
+  ---
+  duration_ms: 0.197866
+  type: 'test'
+  ...
+# Subtest: cover size is bounded in UTF-8 bytes without altering a saved scene
+ok 4 - cover size is bounded in UTF-8 bytes without altering a saved scene
+  ---
+  duration_ms: 8.338232
+  type: 'test'
+  ...
+# Subtest: queue coalesces identical requests and never exceeds two active jobs
+ok 5 - queue coalesces identical requests and never exceeds two active jobs
+  ---
+  duration_ms: 8.428309
+  type: 'test'
+  ...
+# Subtest: an offscreen queued subscription is removed without starting its request
+ok 6 - an offscreen queued subscription is removed without starting its request
+  ---
+  duration_ms: 0.606721
+  type: 'test'
+  ...
+# Subtest: cancelling the last visible lease aborts work and ignores a late result
+ok 7 - cancelling the last visible lease aborts work and ignores a late result
+  ---
+  duration_ms: 0.579546
+  type: 'test'
+  ...
+# Subtest: one subscriber leaving does not cancel another visible subscriber
+ok 8 - one subscriber leaving does not cancel another visible subscriber
+  ---
+  duration_ms: 0.596211
+  type: 'test'
+  ...
+# Subtest: mismatched response identity/revision is refused rather than cached
+ok 9 - mismatched response identity/revision is refused rather than cached
+  ---
+  duration_ms: 0.475054
+  type: 'test'
+  ...
+# Subtest: revision cache reuses only the same saved identity and revision
+ok 10 - revision cache reuses only the same saved identity and revision
+  ---
+  duration_ms: 0.340836
+  type: 'test'
+  ...
+# Subtest: cache evicts by entry and byte budget and refetches an evicted preview
+ok 11 - cache evicts by entry and byte budget and refetches an evicted preview
+  ---
+  duration_ms: 0.587382
+  type: 'test'
+  ...
+# Subtest: failures can be retried without poisoning the revision cache
+ok 12 - failures can be retried without poisoning the revision cache
+  ---
+  duration_ms: 0.236643
+  type: 'test'
+  ...
+# Subtest: queued and active stalled jobs have a bounded deadline
+ok 13 - queued and active stalled jobs have a bounded deadline
+  ---
+  duration_ms: 15.004248
+  type: 'test'
+  ...
+# Subtest: the deadline also bounds font preparation and ignores its late completion
+ok 14 - the deadline also bounds font preparation and ignores its late completion
+  ---
+  duration_ms: 15.801599
+  type: 'test'
+  ...
+# Subtest: account changes purge ready previews and stop new reads in the stale view
+ok 15 - account changes purge ready previews and stop new reads in the stale view
+  ---
+  duration_ms: 0.596893
+  type: 'test'
+  ...
+# Subtest: account changes during a read cannot publish its old-account response
+ok 16 - account changes during a read cannot publish its old-account response
+  ---
+  duration_ms: 0.560427
+  type: 'test'
+  ...
+# Subtest: disposing a workspace aborts active work, clears cache and prevents queued work
+ok 17 - disposing a workspace aborts active work, clears cache and prevents queued work
+  ---
+  duration_ms: 0.425047
+  type: 'test'
+  ...
+# Subtest: cover transport uses the existing bearer identity and prevents HTTP cache reuse
+ok 18 - cover transport uses the existing bearer identity and prevents HTTP cache reuse
+  ---
+  duration_ms: 17.785361
+  type: 'test'
+  ...
+# Subtest: cover transport preserves actionable errors without treating an HTTP failure as ready
+ok 19 - cover transport preserves actionable errors without treating an HTTP failure as ready
+  ---
+  duration_ms: 0.312985
+  type: 'test'
+  ...
+# Subtest: cancelled font-gated preparation never renders abandoned scene content
+ok 20 - cancelled font-gated preparation never renders abandoned scene content
+  ---
+  duration_ms: 2.46204
+  type: 'test'
+  ...
+# Subtest: cancelled scene validation never starts subsequent font work
+ok 21 - cancelled scene validation never starts subsequent font work
+  ---
+  duration_ms: 0.315744
+  type: 'test'
+  ...
+# Subtest: font coverage refusal and a transient load failure remain distinct
+ok 22 - font coverage refusal and a transient load failure remain distinct
+  ---
+  duration_ms: 0.23752
+  type: 'test'
+  ...
+# Subtest: a failed shipped-font load can succeed on explicit preview retry
+ok 23 - a failed shipped-font load can succeed on explicit preview retry
+  ---
+  duration_ms: 1.526793
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 145.118771

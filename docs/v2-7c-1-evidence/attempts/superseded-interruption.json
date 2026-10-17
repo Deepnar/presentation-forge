@@ -1,0 +1,8 @@
+{
+  "implementationSha": "0f6276ac635ff75cbfee76762d9707ac7e55680e",
+  "reason": "Deliberate coordinator stop between files for actual font HTTP challenge. Focused and bulk completed; five serial files completed before the probe (52 leaf cases), remaining19 files unexecuted. No browser case was interrupted and no Vite/browser runs overlapped.",
+  "stoppedOwnedRunnerPids": [
+    695631,
+    678284
+  ]
+}

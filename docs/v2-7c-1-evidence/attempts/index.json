@@ -1,0 +1,248 @@
+{
+  "note": "Preliminary/superseded attempts; none added to final distinct totals. Filters leave other cases unexecuted, not skipped. Driver copies retain their original ignored-out location imports and are archival, not current entrypoints.",
+  "attempts": [
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/chrome-first.tap",
+      "tests": {
+        "total": 10,
+        "pass": 3,
+        "fail": 7,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/chrome-second.tap",
+      "tests": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/chrome-third.tap",
+      "tests": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/chrome-account-corrected.tap",
+      "tests": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-http-probe-setup-error.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-http-before.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-http-after.tap",
+      "tests": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-http-after-final.tap",
+      "tests": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-static-before.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-static-outage-before.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/font-all-after.tap",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/unit-font-fix.tap",
+      "tests": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/unit-static-fix.tap",
+      "tests": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/before-cover-route.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/http-first.tap",
+      "tests": {
+        "total": 9,
+        "pass": 8,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/http-corrected.tap",
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/unit-first.tap",
+      "tests": {
+        "total": 19,
+        "pass": 19,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/unit-reviewed.tap",
+      "tests": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/unit-http-final-candidate.tap",
+      "tests": {
+        "total": 32,
+        "pass": 32,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "log": "docs/v2-7c-1-evidence/attempts/governance-initial.tap",
+      "tests": {
+        "total": 21,
+        "pass": 21,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  ],
+  "supersededSerialCompleted": [
+    {
+      "file": "v2-edit-chrome-7a.test",
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    {
+      "file": "freeform.test",
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    {
+      "file": "plate.test",
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    {
+      "file": "v2-edit-chrome-5c.test",
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    {
+      "file": "v2-edit-chrome-5d.test",
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    }
+  ],
+  "supersededSerialRemainingUnexecuted": 19
+}

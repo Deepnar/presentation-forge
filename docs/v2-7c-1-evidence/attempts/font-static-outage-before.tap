@@ -1,0 +1,81 @@
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# actual font failure observed [
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'error' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' }
+# ]
+# actual font requests after retry 2 [
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'error' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' },
+#   { family: 'IBM Plex Mono', status: 'unloaded' }
+# ]
+# Subtest: actual shipped font HTTP failure recovers on retry
+not ok 1 - actual shipped font HTTP failure recovers on retry
+  ---
+  duration_ms: 32381.944352
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/out/v2-7c-1-validation/font-static-probe.mjs:153:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector("[data-project-cover=\"p-39f67ba3a4260da0e69781a6\"]")?.dataset.coverState==='ready' && document.querySelector("[data-project-cover=\"p-39f67ba3a4260da0e69781a6\"]")?.dataset.coverRevision==="0"; I
+    Presentations
+    
+    Saved presentations live here. Open one to edit, or start a new one below.
+    
+    Refresh
+    Create presentation
+    Preview unavailable
+    
+    Preview unavailable
+    
+    Retry preview
+    Font transport recovery
+    1 slide · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+    Imported results
+    Imported results
+    
+    First slide preview
+    
+    Imported results
+    3 slides · rev 0 · just now
+    Open
+    History
+    Rename
+    Export
+    Delete…
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/out/v2-7c-1-validation/font-static-probe.mjs:22:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/out/v2-7c-1-validation/font-static-probe.mjs:176:11)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 32543.25483
