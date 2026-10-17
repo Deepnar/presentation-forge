@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-17",
+  "atUtc": "2026-10-17T06:04:41.371394+00:00",
+  "quietWindowObserved": true,
+  "sample": {
+    "cpu": "some avg10=0.19 avg60=0.09 avg300=0.06 total=4151388\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1429\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1422\n",
+    "io": "some avg10=0.24 avg60=0.15 avg300=0.27 total=27934306\nfull avg10=0.24 avg60=0.15 avg300=0.26 total=27251537\n"
+  },
+  "unrelatedWorkInterrupted": false,
+  "note": "Initial high I/O window used for planning/implementation/lightweight tests only. Chrome began after CPU/memory/I/O pressure returned low."
+}

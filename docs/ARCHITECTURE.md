@@ -1845,6 +1845,15 @@ and guarded navigation. It preserves original-deck access and current human-edit
 projects. It does not synchronize the two copies or extend converter coverage.
 See frontend architecture §8 and `docs/V2-7B-2-EVAL.md` for validation/review state.
 
+### V2-7C-1 saved-project cover projection
+
+The workspace projects a revision-matched first saved scene into a disposable
+cover using the canonical SVG renderer/font gate. A shared headless read helper
+and thin authenticated cover route preserve both stores' ownership and revision
+contracts without adding document fields or persistent thumbnails. Near-visible
+requests and memory caching are bounded and canceled on view/account departure.
+See frontend architecture§9 and V2-7C-1-EVAL.md for exact behavior/evidence.
+
 ## The web shell
 
 The browser UI is a shell around the shared pipeline; `app/server` stays a thin

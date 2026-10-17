@@ -77,8 +77,8 @@ isolated restore timeout, BYOK locale, Fit padding and conditional import covera
 
 The next slice V2-7C-1 is now approved: human direction selected first-slide
 preview cards above the existing title/actions. Its sole task contract is in
-[ROADMAP.md](ROADMAP.md#v2-7c-1-plan). Implementation has not begun at this planning
-snapshot. Accepted source/state remains B2 until a new committed implementation
-is indexed; nextCandidate marks the approved C1 task. No other feature, deployment
+[ROADMAP.md](ROADMAP.md#v2-7c-1-plan). The implementation is frozen at 0f6276ac635ff75cbfee76762d9707ac7e55680e
+and indexed as pending validation/review; accepted baseline remains B2.
+The next candidate is list consolidation, not authorized. No other feature, deployment
 or migration is authorized. The machine has ample CPU/memory but high I/O pressure;
 continue lightweight work and obtain a quiet window before expensive validation.

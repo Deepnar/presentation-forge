@@ -1754,3 +1754,13 @@ never silently start a write with a new token while the account view is stale.
 Likewise, a prerequisite read that disables a control must expose retry on failure.
 An announced recovery can still sit below a fixed composer. Focus its notice and
 measure the full notice against the content viewport, not just the window bounds.
+
+
+**Effect replay is a resource lifetime, not a memoization key.** StrictMode can
+run setup → cleanup → setup while keeping a memoized object. Permanently disposing
+that object in cleanup strands the replay. Allocate lifetime-owned queues in the
+effect setup and verify actual development mode. Guard cancelled preparation after
+each await, not only when publishing; a font promise can otherwise resume renderer
+work after its view has gone. Cache successful font readiness, not a transient
+network failure. CDP return-by-value probes must return scalars: a Window assignment
+can fail serialization even though opening the real second document succeeded.

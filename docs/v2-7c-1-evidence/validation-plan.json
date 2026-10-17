@@ -1,7 +1,7 @@
 {
-  "implementationSha": "ca81dd4e32928b917451b99b56ce342fbda257ff",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "202-file planned/current top-level inventory:174 bulk,24 strict serial browser/build/plate owners,4 isolated PostgreSQL files. Unfrozen implementation; final source SHA will replace this interim pointer before final validation.",
+  "implementationSha": "0f6276ac635ff75cbfee76762d9707ac7e55680e",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "Complete current top-level202-file inventory:174 non-browser files,24 serial browser/build/plate owners,4 isolated PostgreSQL files. Strict serial shared-dist owners with watchdogs.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

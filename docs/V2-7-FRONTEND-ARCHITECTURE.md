@@ -207,3 +207,35 @@ saved scene or resurrects deletion. It opens a saved editable copy with separate
 subsequent edits; it does not synchronize changes back into legacy YAML. No new
 conversion types, assets, notes, database tables or security policy are added.
 Implementation validation/review status is in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).
+
+## 9. Saved-project cover cards (V2-7C-1)
+
+Workspace cards project the first persisted scene through the same sceneToSvg
+and scene-driven font loader used by the editor. They add no editor document,
+command or mutable layout state. A fixed 16:9 media region contains the slide at
+its native proportions, including blank/detached/hidden-element behavior. The
+existing title/actions remain below; the cover itself is a labeled Open button.
+
+The thin GET /api/v2/projects/:id/cover?revision=n transport calls
+src/projects/cover.js over the selected ProjectStore's canonical getProject.
+It reuses exact owner/admin/local policy; foreign/missing projects return 404,
+revision mismatch 409, invalid query 400 and oversized preview 413. Responses are
+private/no-store and contain only projectId,revision and first scene. The first
+scene's serialized UTF-8 payload is limited to 2MiB. Metadata lists never include
+scene bytes; no cache table, filesystem artifact, migration or retained image
+is introduced. The projection is directly callable headlessly with either store.
+
+Each mounted workspace effect owns a fresh loader, including StrictMode replay.
+Near-viewport cards subscribe to a two-job queue; jobs have a 15s deadline including
+queue/font work. Offscreen/departed leases cancel; late results cannot render or
+publish. The memory-only revision LRU holds at most 24 entries/8MiB and clears with
+the view/account. Canonical validation and font readiness precede rendering;
+cancellation is checked after both awaits. Failed font loads are evicted from
+the shared font-promise cache, while unsupported font families are identified
+separately. A transient error can retry without disabling the other card actions.
+
+Token storage events, focus/visibility checks, a one-second same-document check
+and action capture invalidate a stale account view into focused Reload recovery.
+No previews from a new token are silently loaded into an old account's list.
+Implementation and exact validation/review status live in V2-7C-1-EVAL.md and
+state; later list consolidation can reuse the same revision-scoped resource.
