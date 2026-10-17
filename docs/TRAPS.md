@@ -1764,5 +1764,8 @@ each await, not only when publishing; a font promise can otherwise resume render
 work after its view has gone. Cache successful font readiness, not a transient
 network failure. Evicting the promise alone is insufficient: Chrome retains an
 error on the failed FontFace, so release that failed injected rule too and test an
-actual .woff2 request outage followed by recovery. CDP return-by-value probes must return scalars: a Window assignment
+actual resource outage followed by recovery. Static faces need their failed rule
+recreated with its original source and unicode subset too; exercise both WOFF2
+and WOFF sources because the latter may mask a WOFF2-only outage. CDP
+return-by-value probes must return scalars: a Window assignment
 can fail serialization even though opening the real second document succeeded.

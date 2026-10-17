@@ -34,17 +34,22 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7B-2-EVAL.md](V2-7B-2-EVAL.md) indexes the active explicit browser-handoff
-slice, approved by human direction on 2026-10-16. Its bounded contract is in
-[the roadmap](ROADMAP.md#v2-7b-2-plan). V2-7B-1 conversion/creation remains the
-independently accepted prerequisite at `662f7d6`; its 197-file/2208-case evidence
-is historical and cannot stand in for validation of newer source. The new
-199-file inventory is under `v2-7b-2-evidence/`; browser/build/plate owners still
-run serially with watchdogs. The accepted source `03cc89e` has complete 199-file/2233-case validation plus one
-distinct hosted PostgreSQL browser/CLI/export case and 30 inspected images.
-State records the frozen accepted source and separate decision; its review
-retains an isolated earlier restore-test timeout with the roadmap followup. Do not self-accept or start another feature merely
-because this implementation exists. Stop at this slice's review/handoff.
+[V2-7C-1-EVAL.md](V2-7C-1-EVAL.md) indexes the approved first-slide project
+cover slice. Human direction selected previews above existing project-card
+metadata/actions; the bounded contract is in [the roadmap](ROADMAP.md#v2-7c-1-plan).
+The accepted baseline remains V2-7B-2 source `03cc89e` until a separate exact-source
+review accepts this implementation. Do not infer acceptance from passing tests.
+The frozen implementation is recorded in state and the evidence plan; later
+commits may contain documentation/evidence only. The current inventory has
+202 files: 174 bulk, 24 serial browser/build owners and four PostgreSQL files.
+The focused cover gate repeats 23 unit, nine HTTP and 12 Chrome cases. Repeated
+backend runs are not added to the distinct matrix total.
+
+Read the active evaluation and [runbook](v2-7c-1-evidence/RUNBOOK.md) for execution
+status, commands, attempts and limitations. The current slice stops after its
+independent review and handoff. List consolidation, toolbar polish, agent runtime
+and deployment require their own task contracts; next-candidate status is not
+authorization. Preserve the separate BYOK locale and B2 restore-timeout records.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -63,12 +68,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-7b-2-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-7c-1-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the active validation runbook](v2-7b-2-evidence/RUNBOOK.md) and its linked
+commands are in [the active validation runbook](v2-7c-1-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

@@ -265,6 +265,12 @@ edits or recreate a deleted project. See the exact
 [coverage and limits](docs/v2-7b-1-evidence/COVERAGE.md) and
 [browser validation/review status](docs/V2-7B-2-EVAL.md).
 
+Saved project cards show the first saved slide above their title and actions.
+Previews use the same scene renderer as the editor, refresh with saved revisions
+and remain optional: Open is available while a preview loads or fails. The
+[cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
+implementation and its acceptance status.
+
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour
 pairs. So the checks ask four different questions, and each was added because

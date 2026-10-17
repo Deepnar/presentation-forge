@@ -54,6 +54,10 @@ or reopens a saved Layer-C project, preserves human edits on retry and retains
 original-deck access with explicit coverage/refusal gates. V2-7B-1 is independently
 accepted; V2-7B-2 is independently accepted for the bounded handoff, with its
 exact decision and validation state indexed in [development-state.json](development-state.json).
+V2-7C-1 adds first-saved-slide previews to the existing project grid, using the
+authoritative scene and canonical SVG renderer. Previews are disposable reads;
+their loading, failure or retry never creates another project document. Its
+validation and separate review are indexed in [V2-7C-1-EVAL.md](V2-7C-1-EVAL.md).
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.
