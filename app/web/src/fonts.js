@@ -147,7 +147,12 @@ export async function ensureDeckFonts(scenes) {
   const key = JSON.stringify(
     [...new Set(collectRuns(scenes).map((r) => `${r.family ?? ""}|${r.weight ?? 400}|${r.italic ? "i" : ""}`))].sort(),
   );
-  if (!cache.has(key)) cache.set(key, loadFaces(key));
+  if (!cache.has(key)) {
+    const pending = loadFaces(key);
+    cache.set(key, pending);
+    // A network failure is a failed attempt, not permanent font coverage.
+    pending.then(result => { if (!result.ready && cache.get(key) === pending) cache.delete(key); }, () => { if (cache.get(key) === pending) cache.delete(key); });
+  }
   return cache.get(key);
 }
 
@@ -168,10 +173,10 @@ async function loadFaces(key) {
     needs.set(`${family}|${ship}|${style}`, { family, weight: ship, want: w, style });
   }
   const loaded = [];
-  const missing = [];
+  const missing = [], unsupported = [];
   await Promise.all([...needs.values()].map(async (n) => {
     if (n.missing) {
-      missing.push(n.family);
+      missing.push(n.family); unsupported.push(n.family);
       return;
     }
     try {
@@ -193,5 +198,5 @@ async function loadFaces(key) {
   try {
     await doc.fonts.ready;
   } catch { /* readiness is best-effort past the per-face checks */ }
-  return { ready: missing.length === 0, loaded: [...new Set(loaded)].sort(), missing: [...new Set(missing)].sort() };
+  return { ready: missing.length === 0, loaded: [...new Set(loaded)].sort(), missing: [...new Set(missing)].sort(), unsupported: [...new Set(unsupported)].sort() };
 }

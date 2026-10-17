@@ -22,15 +22,30 @@ export const LAST_PROJECT_KEY = "forge.v2.lastProject";
 // and saves would land on ownerless rows. Anonymous local boxes
 // send nothing, exactly as before.
 const TOKEN_KEY = "forge.token";
+export function projectSessionKey() {
+  try { return typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null; }
+  catch { return null; }
+}
 function authHeaders() {
   try {
-    const t = typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+    const t = projectSessionKey();
     return t ? { Authorization: `Bearer ${t}` } : {};
   } catch {
     return {};
   }
 }
 export const AUTOSAVE_DELAY_MS = 2000;
+
+export async function apiCover(project, { signal } = {}, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(project.id)}/cover?revision=${project.revision}`, {
+    headers: authHeaders(), signal, cache: "no-store",
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok || !body.cover) {
+    throw Object.assign(new Error(body?.error ?? "preview unavailable"), { status: res.status, code: body?.code });
+  }
+  return body.cover;
+}
 
 export async function apiExport(id, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/export.pptx`, { headers: { ...authHeaders() } });

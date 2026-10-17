@@ -620,7 +620,7 @@ function AppContent() {
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
             {view === "projects" && (
               <ErrorBoundary key="workspace-err">
-                <Workspace
+                <Workspace key={user.email} accountKey={user.email}
                   onOpen={(id) => navigate("project", { projectId: id })}
                   onHistory={(id) => navigate("project", { projectId: id, history: true })}
                   onCreateAI={() => newChat("deck")}

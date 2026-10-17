@@ -3,12 +3,19 @@
 // from GET /api/v2/projects — no frontend-only list. Creation
 // paths: AI (existing generation), layout skeleton, or blank — all
 // landing in real persisted projects through apiCreate.
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ProjectCover from "../components/ProjectCover.jsx";
+import { createCoverLoader, createCoverPreparer } from "../lib/projectCovers.js";
+import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
+import { validateScene } from "../../../../packages/model/scene.ts";
+import { ensureDeckFonts } from "../fonts.js";
 import ProjectExportButton from "../components/ProjectExportButton.jsx";
-import { apiList, apiCreate, apiRename, apiRemove } from "../lib/v2project.js";
+import { apiList, apiCreate, apiRename, apiRemove, apiCover, projectSessionKey } from "../lib/v2project.js";
 import { buildBlankScenes, buildLayoutScenes, layoutTemplateList, defaultProjectTitle } from "../lib/v2create.js";
 import { relative } from "../lib/time.js";
 import { Button, Panel, Empty, Spinner, Field, ConfirmModal } from "../components/ui.jsx";
+
+const prepareCover = createCoverPreparer({ validate: validateScene, fonts: ensureDeckFonts, render: sceneToSvg });
 
 function metaLine(p) {
   const bits = [];
@@ -22,7 +29,7 @@ function metaLine(p) {
   return bits.join(" · ");
 }
 
-export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
+export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accountKey = null }) {
   const [projects, setProjects] = useState(null); // null = loading
   const [error, setError] = useState(null);
   const [creating, setCreating] = useState(null); // null | "chooser" | "layout"
@@ -32,16 +39,36 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
   const [renameDraft, setRenameDraft] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
 
+  const [sessionChanged, setSessionChanged] = useState(false);
+  const recovery = useRef(null);
+  useEffect(() => { if (sessionChanged) recovery.current?.focus(); }, [sessionChanged]);
+  const [covers, setCovers] = useState(null);
+  useEffect(() => {
+    const loader = createCoverLoader({ request: apiCover, current: projectSessionKey, prepare: prepareCover,
+      onExpired: () => { setSessionChanged(true); setProjects([]); } });
+    setCovers(loader);
+    const changed = event => { if (event.key === "forge.token" || event.key === null) loader.checkSession(); };
+    const check = () => loader.checkSession();
+    const timer = setInterval(check, 1000);
+    window.addEventListener("storage", changed);
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      clearInterval(timer); window.removeEventListener("storage", changed);
+      window.removeEventListener("focus", check); document.removeEventListener("visibilitychange", check); loader.dispose();
+    };
+  }, [accountKey]);
+
   const refresh = useCallback(async () => {
+    if (!covers?.checkSession()) return;
     setError(null);
     try {
       const list = await apiList();
-      setProjects(list);
+      if (covers.checkSession()) setProjects(list);
     } catch (err) {
-      setError(err);
-      setProjects([]);
+      if (covers.checkSession()) { setError(err); setProjects([]); }
     }
-  }, []);
+  }, [covers]);
 
   useEffect(() => {
     refresh();
@@ -98,8 +125,12 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
     }
   }
 
+  if (sessionChanged) return <div ref={recovery} role="alert" tabIndex={-1} className="m-6 rounded-card border border-line bg-panel p-4 text-sm">Your sign-in changed. Reload before viewing presentations. <Button onClick={() => location.reload()}>Reload page</Button></div>;
+
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto" onClickCapture={event => {
+      if (covers && !covers.checkSession()) { event.preventDefault(); event.stopPropagation(); }
+    }}>
       <div className="mx-auto w-full max-w-6xl px-10 py-10">
         <div className="mb-7 flex flex-wrap items-end gap-4">
           <div className="min-w-0 flex-1">
@@ -217,7 +248,7 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
           </div>
         )}
 
-        {projects !== null && !error && projects.length === 0 && (
+        {projects !== null && !error && !sessionChanged && projects.length === 0 && (
           <Empty
             title="No presentations yet"
             hint="Create one above — blank, from a layout, or with AI — and it will appear here."
@@ -229,6 +260,7 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth }) {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-project-grid>
             {projects.map((p) => (
               <Panel key={p.id} className="flex flex-col p-4" data-project-card={p.id}>
+                {covers && <ProjectCover key={p.revision} project={p} loader={covers} onOpen={onOpen} onRefresh={refresh} disabled={renamingId === p.id} />}
                 {renamingId === p.id ? (
                   <div className="flex flex-col gap-2">
                     <Field label="Title" value={renameDraft} onChange={setRenameDraft} />
