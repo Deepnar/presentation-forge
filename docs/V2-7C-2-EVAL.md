@@ -42,3 +42,14 @@ remain separate roadmap items. No Auto writing-quality, hosted deployment or
 interactive Microsoft PowerPoint claim. Preserve C1 cover bounds, original
 report/research/script access, B2 explicit conversion and canonical authorization.
 No deployment, migration, toolbar, agent runtime or other feature scope.
+
+The first exact-source matrix stopped on the canonical7A file:26 pass /2 fail,
+zero skip/cancelled. Its servers isolated config/DB but inherited the real legacy
+deck directory; unified discovery correctly exposed it. The helper also measured
+click coordinates before generated loading settled, reaching Delete in place of
+Open. Separate scratch deck roots and read/animation readiness correct the test
+fixture without weakening leaf assertions. The independent reviewer confirmed
+this classification. Raw failure output stays in ignored scratch because it
+contains real deck titles. The other24 serial files and later groups were
+unexecuted in that superseded attempt. The frozen source is now
+`9fd8b92c84876de92f6713cb2b513876f9036a83`; every final gate is being rerun.

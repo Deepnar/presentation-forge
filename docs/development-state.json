@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7C-1-f79ae07.json"
   },
   "implementationHead": {
-    "sha": "e49f74a79edbd4ef8bd722bbae6938b2509ebe50",
-    "note": "Frozen C2 runtime/test/validation source after scoped review corrections. Final exact-source validation in progress; later commits contain evidence and continuity records."
+    "sha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+    "note": "Frozen C2 source including isolated7A catalog fixture/readiness correction. All final gates rerun on this exact source; no runtime change after modal fixes."
   },
   "activeMilestone": {
     "id": "V2-7C-2",

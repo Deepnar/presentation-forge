@@ -2,7 +2,7 @@
 
 2026-10-17, branch `v2`. Accepted baseline remains independently accepted C1
 `f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`. Frozen C2 implementation:
-`e49f74a79edbd4ef8bd722bbae6938b2509ebe50`; later commits are evidence/docs.
+`9fd8b92c84876de92f6713cb2b513876f9036a83`; later commits are evidence/docs.
 Read AGENTS.md, CONTINUATION.md, DEVELOPMENT-PROTOCOL.md, development-state.json,
 the [contract](ROADMAP.md#v2-7c-2-plan), [evaluation](V2-7C-2-EVAL.md) and
 [runbook](v2-7c-2-evidence/RUNBOOK.md). C2 is not accepted.

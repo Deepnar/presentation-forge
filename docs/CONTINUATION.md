@@ -38,7 +38,7 @@ because old eval wording predates review.
 slice. Human direction selected one mixed grid containing distinct saved editable
 presentations and generated decks/reports, with search/type filters and one
 sidebar destination; the contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
-The accepted baseline remains C1 source `f79ae07`; implementation `e49f74a` is
+The accepted baseline remains C1 source `f79ae07`; implementation `9fd8b92` is
 frozen for final validation, pending a separate ACCEPT/HOLD. Later checkout
 commits can contain documentation/evidence only; inspect the diff and state.
 
