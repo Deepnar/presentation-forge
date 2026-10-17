@@ -9,7 +9,7 @@
   },
   "unrelatedWorkInterrupted": false,
   "note": "Initial high I/O window used for planning/implementation/lightweight tests only. Chrome began after CPU/memory/I/O pressure returned low.",
-  "implementationSha": "01ba3a37432a0350530fba65eb7931d41a6fd42e",
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
   "node": "v24.16.0",
   "chrome": "Google Chrome 151.0.7922.173",
   "finalPreflight": {
@@ -31,8 +31,8 @@
     "version": "15.18"
   },
   "correctedSourcePreflight": {
-    "cpu": "some avg10=0.00 avg60=0.03 avg300=0.00 total=6061859\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
-    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=62286\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=60017\n",
-    "io": "some avg10=0.00 avg60=0.05 avg300=0.30 total=33568667\nfull avg10=0.00 avg60=0.05 avg300=0.28 total=32563188\n"
+    "cpu": "some avg10=0.05 avg60=0.07 avg300=0.01 total=6519234\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=83585\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=79608\n",
+    "io": "some avg10=4.73 avg60=3.55 avg300=1.48 total=38721767\nfull avg10=4.66 avg60=3.37 avg300=1.39 total=37431235\n"
   }
 }

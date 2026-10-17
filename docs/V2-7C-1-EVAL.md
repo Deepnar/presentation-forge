@@ -4,7 +4,7 @@ Implementation frozen on v2,2026-10-17. Task-entry checkout b8dc425;
 accepted baseline03cc89ef233db5469066599391cbaac68c2fc646, separate B2 decision.
 Human direction selected first-slide previews above existing card title/actions.
 The approved contract and non-goals are in [ROADMAP.md](ROADMAP.md#v2-7c-1-plan).
-State identifies frozen source `01ba3a37432a0350530fba65eb7931d41a6fd42e`; full gates remain pending.
+State identifies frozen source `f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`; full gates remain pending.
 No acceptance is claimed and no previous milestone pass is reused for this slice.
 
 Preliminary lightweight results:23 unit and9 actual SQLite HTTP cases pass.
@@ -28,3 +28,7 @@ successful/newer faces. Actual HTTP503→200 retry now passes with stable bounds
 the canonical Chrome file has11 cases. Complete validation restarts on this source.
 The superseded focused42 and bulk passes are not final-source acceptance evidence;
 its serial coordinator was stopped between files, without interrupting a browser case.
+
+Static IBM Plex Mono outage also reproduced after bothwoff2/woff sources failed.
+Correctionf79ae07 recreates only its failed static rule with original source and
+unicode policy. Both actual HTTP recovery cases pass; Chrome now has12 cases.
