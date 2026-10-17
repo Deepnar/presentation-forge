@@ -1,0 +1,74 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "acceptedBaselineCompared": "03cc89ef233db5469066599391cbaac68c2fc646",
+  "reviewedEvidenceCommit": "6da1377c2e202d6dff6caad69d5a9abb74b8e399",
+  "reviewer": "V2-7C-1 independent acceptance reviewer",
+  "context": "/root/v27b_review",
+  "date": "2026-10-17",
+  "evidence": "docs/reviews/V2-7C-1-f79ae07.md",
+  "independentEvidence": "docs/v2-7c-1-evidence/logs/independent/reproduction.json",
+  "independentPrimaryExecutions": {
+    "total": 87,
+    "pass": 87,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "focusedSqlite": 44,
+    "governance": 21,
+    "postgresChrome": 12,
+    "postgresHttp": 9,
+    "hostedPostgres": 1
+  },
+  "separateNarrowDiagnostic": {
+    "pass": 1,
+    "fail": 0,
+    "unexecutedByFilter": 11,
+    "classification": "RAF trace observes transient resize rail occlusion, followed by stable unobstructed preview and action hit targets",
+    "image": "docs/v2-7c-1-evidence/logs/independent/narrow-diagnostic/narrow-settled.png",
+    "sha256": "087d44f08284e489297a7b47e3797ab6b8932c364bd916ad5883eb6d10d6ae2d"
+  },
+  "inspectedImplementerMatrix": {
+    "files": 202,
+    "total": 2278,
+    "pass": 2278,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "requiredUnexecuted": 0,
+    "distinctSupplementalHostedPass": 1
+  },
+  "commands": {
+    "typecheck": "passed",
+    "protocol": "passed; zero errors/warnings",
+    "benchmark50": "passed; total L1=0; findings/invariance inspected; raster none",
+    "browserProductionBuildAndDevStrictMode": "passed during canonical browser setup/cases",
+    "native": "fresh PG saved first-scene cover/history equality plus authenticated native text/chart/table; three raster pages inspected",
+    "diffCheck": "passed"
+  },
+  "visuals": {
+    "suppliedImagesHashedAndInspected": 39,
+    "mainImagesRestoredAndHashesRechecked": true,
+    "freshNarrowTimingFramePreserved": true,
+    "mainNarrowEvidenceOnlyReplacement": {
+      "sha256": "087d44f08284e489297a7b47e3797ab6b8932c364bd916ad5883eb6d10d6ae2d",
+      "backend": "SQLite independent settled resize diagnostic",
+      "currentAll39HashesRechecked": true,
+      "formerMainPgPreserved": "docs/v2-7c-1-evidence/logs/independent/superseded-main-narrow-postgres.png"
+    }
+  },
+  "residuals": [
+    "Canonical narrow screenshot can precede settled rail animation; preserved transient frame and separate geometry/hit-target settled capture distinguish this from persistent occlusion",
+    "Full 2278 matrix audited, not independently duplicated; repeated/backend executions are not additional unique cases",
+    "Separate BYOK locale9pass/1standing failure remains failed; not independently rerun",
+    "Existing Fit, narrow inspector overlay and horizontal toolbar/table scrolling remain",
+    "Server cover projection still uses canonical complete-project store read",
+    "Same-document token changes observed by one-second timer/focus/visibility and guarded actions",
+    "Same-origin shipped font recovery only; existing coverage/refusals retained",
+    "No interactive Microsoft PowerPoint, exhaustive accessibility, live Auto writing-quality or deployment claim",
+    "Earlier isolated B2 restore timeout remains unexplained under its existing roadmap followup"
+  ],
+  "implementationTestsStateEdited": false,
+  "heavySlotAndOwnedServiceReleased": true
+}

@@ -1,0 +1,98 @@
+{
+  "implementationSha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "reviewedPacket": "6da1377c2e202d6dff6caad69d5a9abb74b8e399",
+  "primaryIndependentExecutions": {
+    "focused-sqlite": {
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "governance": {
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "postgres-covers": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "postgres-http": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "hosted": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "total": 87,
+  "runs": "runs.json",
+  "matrixAudit": "inventory-audit.json",
+  "imageHashes": "image-audit.json",
+  "all39FinalImagesInspected": true,
+  "native": {
+    "command": "TEST_PG_URL=<ownedlocalhost5544> nice -n10 ionice -c2 -n7 timeout3m node docs/v2-7c-1-evidence/logs/independent/native-check.mjs",
+    "exitCode": 0,
+    "details": "native-inspection.json"
+  },
+  "narrowDiagnostic": {
+    "command": "LC_ALL=C.UTF-8 nice -n10 ionice -c2 -n7 timeout3m node --test --test-reporter=tap --test-name-pattern=^dark narrow docs/v2-7c-1-evidence/logs/independent/narrow-diagnostic.test.mjs",
+    "exitCode": 0,
+    "tests": 1,
+    "pass": 1,
+    "unexecutedByFilter": 11,
+    "sourceDelta": "Evidence-only relocated copy with added RAF geometry/hit-target observations and separate settled capture; no product/test source edits",
+    "transientOcclusionObservedMs": [
+      39.8,
+      56.2
+    ],
+    "settledFramesMs": [
+      356.2,
+      372.6
+    ],
+    "settledPreviewRect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "settledAsideRect": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "settledAllPreviewSamplesAndCardActionsHit": true,
+    "image": "narrow-diagnostic/narrow-settled.png",
+    "sha256": "087d44f08284e489297a7b47e3797ab6b8932c364bd916ad5883eb6d10d6ae2d",
+    "classification": "Observed transient resize rail occlusion; fresh initial screenshot not accepted as settled geometry. No persistent product occlusion observed."
+  },
+  "commands": {
+    "typecheck": "exit0",
+    "protocol": "exit0,0errors/0warnings",
+    "benchmark50": "exit0,totalL1=0;raster none",
+    "productionBuild": "Production bundle rebuilt by each canonical browser file; actual Vite dev/StrictMode also independently exercised"
+  },
+  "excluded": [
+    "Reviewer audit first assumed concatenated serial TAP had one aggregate footer; corrected to sum all file footers and verify all202 file markers before conclusions",
+    "Eleven unexecuted diagnostic cases are not skips or primary passes",
+    "Superseded candidate/font-fault attempts retained by implementer are not final-source passes",
+    "No duplicate full2278 run, BYOK locale run or live Auto generation; exact final records audited"
+  ],
+  "resources": "24CPUs,load~5,40GiBavailable; initialI/O full~5% declined to0.03%; low-priority serial bounded runs, no unrelated work stopped",
+  "service": "Exact owned PostgreSQL15.18 container17f1955c89b993ffe636cafee07cca8ea1913739155ddb43d374ba7c0ae9e668 verified running only127.0.0.1:5544; private fixture DBs cleaned by finally; service unchanged and released to root",
+  "historicalEvidenceRestored": "restored-hashes.json: original main images/artifacts restored; root then replaced only main narrow image with verified independent settled capture. All39 updated manifest hashes checked in final-image-audit.json; former mainPG frame committed separately."
+}

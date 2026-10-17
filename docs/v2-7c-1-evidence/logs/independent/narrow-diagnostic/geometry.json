@@ -1,0 +1,1198 @@
+[
+  {
+    "ms": 18.5,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      230.8691864013672,
+      366,
+      205.87498474121094
+    ],
+    "aside": [
+      0,
+      0,
+      56,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 22.899999999906868,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      230.47412109375,
+      366,
+      205.875
+    ],
+    "aside": [
+      0,
+      0,
+      56,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 39.799999999813735,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      230.23422241210938,
+      366,
+      205.875
+    ],
+    "aside": [
+      -35.455509185791016,
+      0,
+      116.734375,
+      900
+    ],
+    "hits": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 56.1999999997206,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      230.07843017578125,
+      366,
+      205.875
+    ],
+    "aside": [
+      -95.62757873535156,
+      0,
+      169.09375,
+      900
+    ],
+    "hits": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 72.60000000009313,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.976318359375,
+      366,
+      205.875
+    ],
+    "aside": [
+      -148.22409057617188,
+      0,
+      202.4375,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 89.60000000009313,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.90699768066406,
+      366,
+      205.87498474121094
+    ],
+    "aside": [
+      -184.57861328125,
+      0,
+      222.15625,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 106.29999999981374,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.86062622070312,
+      366,
+      205.875
+    ],
+    "aside": [
+      -208.56423950195312,
+      0,
+      234.140625,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 122.89999999990687,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.8299560546875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -224.8349151611328,
+      0,
+      241.890625,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 139.6999999997206,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.81105041503906,
+      366,
+      205.87501525878906
+    ],
+    "aside": [
+      -235.8996124267578,
+      0,
+      247,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 156.29999999981374,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.80072021484375,
+      366,
+      205.875
+    ],
+    "aside": [
+      -243.55963134765625,
+      0,
+      250.46875,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 172.89999999990687,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.79696655273438,
+      366,
+      205.875
+    ],
+    "aside": [
+      -248.7884979248047,
+      0,
+      252.8125,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 189.89999999990687,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -252.24310302734375,
+      0,
+      254.34375,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 206.1999999997206,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -254.3780517578125,
+      0,
+      255.28125,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 223,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -255.55238342285156,
+      0,
+      255.796875,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 239.29999999981374,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -255.9779052734375,
+      0,
+      255.984375,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 256.5,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 272.6999999997206,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 289.29999999981374,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 306.10000000009313,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 322.5,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 339.5,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 356.1999999997206,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  },
+  {
+    "ms": 372.60000000009313,
+    "viewport": [
+      480,
+      900
+    ],
+    "rect": [
+      57,
+      229.796875,
+      366,
+      205.875
+    ],
+    "aside": [
+      -256,
+      0,
+      256,
+      900
+    ],
+    "hits": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "actions": [
+      {
+        "text": "Imported resultsImported results",
+        "hit": true
+      },
+      {
+        "text": "Open",
+        "hit": true
+      },
+      {
+        "text": "History",
+        "hit": true
+      },
+      {
+        "text": "Rename",
+        "hit": true
+      },
+      {
+        "text": "Export",
+        "hit": true
+      },
+      {
+        "text": "Delete…",
+        "hit": true
+      }
+    ]
+  }
+]

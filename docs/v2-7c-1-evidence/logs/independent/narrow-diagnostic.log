@@ -1,0 +1,17 @@
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: dark narrow cards retain usable preview and action bounds
+ok 1 - dark narrow cards retain usable preview and action bounds
+  ---
+  duration_ms: 2772.681891
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3352.818138

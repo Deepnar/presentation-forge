@@ -1,0 +1,50 @@
+{
+  "inventoryFiles": 202,
+  "matrix": {
+    "non-browser-bulk": {
+      "rawTotals": {
+        "tests": 2053,
+        "pass": 2053,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "files": 174,
+      "markers": 174
+    },
+    "serial-browser": {
+      "rawTotals": {
+        "tests": 183,
+        "pass": 183,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "files": 24,
+      "markers": 24
+    },
+    "postgres-contract": {
+      "rawTotals": {
+        "tests": 23,
+        "pass": 23,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "files": 2,
+      "markers": 2
+    },
+    "cross-process-faults": {
+      "rawTotals": {
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "files": 2,
+      "markers": 2
+    }
+  },
+  "sum": 2278
+}

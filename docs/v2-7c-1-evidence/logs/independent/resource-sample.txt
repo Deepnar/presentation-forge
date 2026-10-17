@@ -1,0 +1,6 @@
+ 12:02:46 up 53 min,  1 user,  load average: 3.56, 4.96, 4.46
+               total        used        free      shared  buff/cache   available
+Mem:            62Gi        21Gi       9.3Gi       2.4Gi        35Gi        41Gi
+Swap:           62Gi       5.6Mi        62Gi
+some avg10=6.94 avg60=5.95 avg300=4.67 total=80660472
+full avg10=6.68 avg60=5.69 avg300=4.37 total=76232030

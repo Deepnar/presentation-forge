@@ -1,0 +1,5 @@
+{
+  "source": "test/v2-project-covers-chrome-7c.test.js",
+  "sourceSha256": "ee93b45080488eeeb7170a0bf820e380fab609528043e1af1cfe8a3c235712c0",
+  "changes": "Evidence-only copy relocates imports/output; begins RAF geometry/hit-target tracing before resize, preserves original narrow assertions/capture, then waits for fully closed aside plus four stable unobstructed frames before a separate settled capture. Only dark narrow case selected; other eleven cases unexecuted."
+}
