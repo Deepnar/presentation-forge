@@ -18,7 +18,7 @@ npm run dev:protocol
 under evaluation, active task/eval and validation evidence/statuses. The code SHA
 may precede later documentation commits. Validate ancestry and inspect the diff;
 do not silently replace that pointer with the documentation commit running now.
-This task entered from accepted V2-6C `97a12de` and V2-7A implementation `a298767`.
+The validation program began from accepted V2-6C `97a12de` and V2-7A implementation `a298767`.
 Narrow corrections through `fe749fb` have complete retained validation and a
 separate ACCEPT decision in reviews/V2-7A-fe749fb.json. V2-7B-1 source `662f7d6`
 is independently accepted in reviews/V2-7B-1-662f7d6.json. V2-7B-2 source
@@ -61,6 +61,7 @@ The canonical test entrypoints are:
 
 ```sh
 node --test test/dev-protocol.test.js
+node --test --test-concurrency=1 test/v2-project-covers-7c.test.js test/v2-project-covers-http-7c.test.js test/v2-project-covers-chrome-7c.test.js
 node --test test/v2-edit-chrome-7a.test.js
 node --test test/v2-projects-6c-sqlite.test.js
 node --test test/v2-projects-6c-postgres.test.js

@@ -221,7 +221,7 @@ src/projects/cover.js over the selected ProjectStore's canonical getProject.
 It reuses exact owner/admin/local policy; foreign/missing projects return 404,
 revision mismatch 409, invalid query 400 and oversized preview 413. Responses are
 private/no-store and contain only projectId,revision and first scene. The first
-scene's serialized UTF-8 payload is limited to 2MiB. Metadata lists never include
+scene projection's serialized UTF-8 payload is limited to 2MiB. Metadata lists never include
 scene bytes; no cache table, filesystem artifact, migration or retained image
 is introduced. The projection is directly callable headlessly with either store.
 
@@ -231,8 +231,11 @@ queue/font work. Offscreen/departed leases cancel; late results cannot render or
 publish. The memory-only revision LRU holds at most 24 entries/8MiB and clears with
 the view/account. Canonical validation and font readiness precede rendering;
 cancellation is checked after both awaits. Failed font loads are evicted from
-the shared font-promise cache, while unsupported font families are identified
-separately. A transient error can retry without disabling the other card actions.
+the shared font-promise cache. Failed dynamic rules are released with identity
+guards; failed static rules are recreated with their original source and unicode
+subset policy. Successful faces remain cached. Unsupported font families are
+identified separately. A transient error can retry without disabling the other
+card actions.
 
 Token storage events, focus/visibility checks, a one-second same-document check
 and action capture invalidate a stale account view into focused Reload recovery.
