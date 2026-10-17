@@ -217,7 +217,7 @@ describe("v2-7a workspace dashboard", () => {
     const page = await openSignedIn("#/projects");
     try {
       await waitFor(page, `document.querySelector('[data-workspace-create]') !== null`, 60000);
-      assert.ok(await page.evaluate(`document.body.textContent.includes('No presentations yet')`), "empty state for first-time users");
+      assert.ok(await page.evaluate(`document.body.textContent.includes('No projects yet')`), "empty state for first-time users");
       await page.screenshot(`${OUT}/dashboard-empty.png`);
       const { blankSlide } = await import("../packages/editor/scene-text.js");
       for (const title of ["Alpha Deck", "Beta Deck"]) {
@@ -795,7 +795,7 @@ describe("v2-7a editor shell", () => {
     });
     const anon = await openSignedIn("#/projects", undefined, null, "http://127.0.0.1:5264/");
     try {
-      await waitFor(anon, `document.body.textContent.includes('Sign in to see presentations')`, 90000);
+      await waitFor(anon, `document.body.textContent.includes('Sign in to see projects')`, 90000);
       const signin = await anon.evaluate(byText("Sign in"));
       await anon.click(signin[0], signin[1]);
       await waitFor(anon, `document.querySelector('input[type="password"]') !== null`, 60000);

@@ -214,3 +214,15 @@ test('project covers require their own unit, HTTP and complete Chrome evidence',
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-project-covers-http-7c.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('project discovery requires its own complete unit, HTTP and Chrome evidence', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-7c-2-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-7c-2-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-7c-2-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-7C-2'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'project-catalog'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-project-catalog-http-7c.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});
