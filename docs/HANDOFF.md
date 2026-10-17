@@ -16,13 +16,28 @@ Early independent read-only review led to narrow corrections for StrictMode,
 settled account changes, cancelled preparation and real font-download recovery.
 The corrected dynamic/static font outage cases both pass; no feature expansion.
 
-The final 202-file matrix is running in bounded serial isolation. Focused 44 and
-bulk 2053 pass with zero fail/skip/cancelled; remaining groups are pending.
-The actual run owner is `/root`; do not overlap browser/build/plate commands.
-Exact source, inventory and commands are in [the runbook](v2-7c-1-evidence/RUNBOOK.md).
-Its coordinator is `out/v2-7c-1-validation/run-final.py`; outputs are under that
-scratch directory. Do not reuse earlier milestone results as current validation.
-Superseded attempts are retained and classified under `v2-7c-1-evidence/attempts/`.
+The final 202-file matrix passes **2278/2278**: bulk 2053, serial 183,
+PostgreSQL contract/import 23, cross-process/fault 19. The distinct hosted double-
+click/CLI/native supplement passes 1/1: **2279 distinct final cases**. Zero required
+fail/skip/cancelled/unexecuted. Repeated focused 44, PG covers 12 and PG HTTP 9 are
+excluded from distinct totals. Build/typecheck/50-cell benchmark pass with zero
+findings and five agreeing invariance checks. Separate en_IN.UTF-8 BYOK remains
+9 pass / 1 standing failure, with no assertion change.
+
+All 39 final images were inspected and hashed, including five native pages from
+three actual authenticated exports. Desktop/narrow cards and dialogs remain
+usable; no new overlap/clipping/canvas movement was found. First visible preview
+is 168ms SQLite/136ms PG after grid ready, 932 bytes; thirty projects use at most
+two active reads and no card-bound change. 120-slide opening 1559ms. See the
+[evaluation](V2-7C-1-EVAL.md) for exact boundaries, corrections, commands, all totals,
+limits and implementer recommendation. State marks validation complete and review
+pending; source is frozen. No runtime/test/tool delta follows f79ae07.
+
+The root coordinator has exited and restored 41 historical evidence paths after
+preserving current outputs in ignored scratch/current C1 evidence. The independent
+reviewer may now own the exclusive heavy slot; do not overlap its browser/build
+runs. Final evidence is under `v2-7c-1-evidence/`, with the full changed-files
+manifest relative to b8dc425. Superseded attempts retain their own classifications.
 
 Only the owned disposable PostgreSQL service `forge_v27c1_validation_pg`, exact
 container 17f1955c89b993ffe636cafee07cca8ea1913739155ddb43d374ba7c0ae9e668 on
@@ -33,8 +48,8 @@ remain and remove only this container/tmpfs. Never use or stop other projects'
 samples and pending cleanup are in `v2-7c-1-evidence/environment.json`.
 
 Independent reviewer `/root/v27b_review` has read the implementation and both
-font corrections. Final acceptance remains pending complete evidence and its own
-bounded checks after the exclusive heavy slot is released. Do not self-accept.
+font corrections. Final acceptance remains pending its own bounded checks and exact-source decision.
+The root heavy slot is released for that review. Do not self-accept.
 The direct repository workflow applies; no provider allowlist or relay is required.
 
 Preserve original unrelated untracked `.agents/`,

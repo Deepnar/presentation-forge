@@ -6,7 +6,7 @@ Frozen implementation **f79ae07d6ad1696da3106a2a1148ae0ce7f58f51**, branch `v2`,
 Human direction approved first-slide previews above existing project-card titles
 and actions. The bounded [task contract](ROADMAP.md#v2-7c-1-plan) defines scope,
 invariants, non-goals, gates and stop. Later commits contain documentation and
-evidence only. Validation is in progress; separate acceptance is pending.
+evidence only. All required implementation validation is complete; separate acceptance is pending.
 
 ## Result and source boundaries
 
@@ -35,9 +35,32 @@ The [202-file plan](v2-7c-1-evidence/validation-plan.json) partitions 174 bulk f
 24 serial browser/build owners and four PostgreSQL files. All browser/build owners
 run one bounded process group at a time with niceness 10/ionice 2:7, per-file
 watchdogs and retained exit status. Commands are in the [runbook](v2-7c-1-evidence/RUNBOOK.md).
-Final-source focused 44/44 and bulk 2053/2053 pass; serial, PostgreSQL, native,
-build/typecheck/50-cell and visual gates are still in progress. Do not treat
-superseded attempts or historical milestone passes as final-source evidence.
+Final exact-source results:
+
+| Execution | Files | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|---:|
+| Non-browser bulk | 174 | 2053 | 0 | 0 | 0 |
+| Serial browser/build/plate owners | 24 | 183 | 0 | 0 | 0 |
+| PostgreSQL contract/import | 2 | 23 | 0 | 0 | 0 |
+| Cross-process concurrency/faults | 2 | 19 | 0 | 0 | 0 |
+| Disjoint matrix | **202** | **2278** | **0** | **0** | **0** |
+| Distinct hosted PostgreSQL double-click/CLI/export supplement | 1 driver | 1 | 0 | 0 | 0 |
+
+There are **2279 distinct final cases**, with **zero required unexecuted cases**.
+The repeated focused gate passes **44/44** (23 unit, nine actual HTTP,12 Chrome),
+PostgreSQL cover Chrome **12/12**, and PostgreSQL cover HTTP **9/9**. These are
+not added again to the distinct matrix count. The full V2-7A Chrome shell suite
+passes **28/28** within the serial group. Governance21 is included in bulk.
+
+Production build and typecheck exit0. All **50 canonical benchmark cells** pass
+with zero L1/L2/fit/takeaway/representation/chart findings; all five invariance
+checks agree. The native driver verifies three actual exported PPTX files and
+produces five inspected rasters. These commands are gates, not extra leaf cases.
+The separate **en_IN.UTF-8 BYOK probe is9 pass /1 standing failure /0 skip /
+0 cancelled**, exit1; the C.UTF-8 version passes within bulk. Its assertion is
+unchanged. [Summary](v2-7c-1-evidence/summary.json), per-gate JSON and retained
+[ordered command/exit records](v2-7c-1-evidence/logs/coordinator.json) supply exact
+provenance. Earlier attempts and independent reruns are reported separately.
 
 The initial busy I/O window was used for lightweight work. CPU, memory and I/O
 pressure became low before expensive validation. Node 24.16.0 and Chrome 151 run
@@ -89,12 +112,40 @@ candidate restarts the complete inventory after both font corrections.
 
 ## Performance and visual evidence
 
-Final measurements, screenshot hashes and native raster inspection will be
-recorded after the serial and repeated PostgreSQL runs finish. Measures have
-explicit boundaries: time after project-grid readiness, response bytes, active
-request maximum and grid-relative card bounds. They are individual observations,
-not percentiles. The existing shell tests measure large-deck opening and canvas
-selection stability separately.
+All **39 final images** were inspected:16 cover, two hosted supplement,11 shell,
+five imported and five native. [Visual review](v2-7c-1-evidence/VISUAL-REVIEW.md)
+and [hash inventory](v2-7c-1-evidence/images.json) distinguish backends and exact
+captures. No new control overlap, clipped dialog or unexpected canvas shift was
+found. Narrow inspector overlay and toolbar/table scrolling retain existing
+behavior. The completed-chat action/original link remain above the composer.
+Native OOXML/raster inspection retains real chart/table values1.25 and12.5.
+
+| Individual observation | SQLite | PostgreSQL |
+|---|---:|---:|
+| First visible preview after grid readiness |168ms |136ms |
+| First-cover response bytes |932 |932 |
+| Preview region |312.65625×175.859375px |same |
+| Thirty-project maximum active reads |2 |2 |
+| Thirty-project requests after top/bottom navigation |12 |12 |
+| Card coordinate/size change across loading |0px |0px |
+
+The fixed preview ratio is16:9. Real dynamic font HTTP recovery is503→200;
+static font recovery is503 WOFF2 +503 WOFF→200 WOFF2. Both preserve all four
+card bounds. The project has120 slides/thumbnails and opens in1559ms; the
+fresh60-slide imported opening is1534ms. Shared-shell chart/table selection
+coordinate changes are at most0.049691px/0.018990px; imported counterparts at
+most0.102784px/0.069329px. Save transitions include dirty→saving→saved.
+
+SQLite three-slide first import/replay takes400/396ms;60-slide handoff478ms.
+The cold label means first source import in a warmed process, with legacy page
+already ready. The distinct hosted PG supplement records two trusted clicks,
+one import POST, human-edit preservation, authenticated CLI receipt replay and
+native export. Its raw3113.268ms combines browser boot, handoff, screenshots,
+return to chat and teardown; it is not pure handoff latency. Canonical server
+import time is269.681ms and receipt replay92.559ms for that observation.
+[Measurement provenance](v2-7c-1-evidence/measurements/index.json) identifies files
+and excludes one older scratch font measurement. These are individual readings
+with different boundaries, not latency percentiles or interchangeable metrics.
 
 ## Limits and review
 
@@ -110,6 +161,7 @@ shipped rules; foreign stylesheet recovery is outside current shipped coverage.
 No interactive Microsoft PowerPoint, live Auto content quality, production
 hosting or deployment claim follows from this local validation.
 
-Independent ACCEPT/HOLD must name f79ae07 and assess the completed packet. The
+The implementer recommends ACCEPT for f79ae07 with the documented limits.
+Independent ACCEPT/HOLD must name that exact source and assess the completed packet. The
 implementer does not accept this slice. Stop after review/handoff; the next
 workspace candidate remains [roadmap-gated](ROADMAP.md#workspace-followups).
