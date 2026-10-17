@@ -53,3 +53,22 @@ this classification. Raw failure output stays in ignored scratch because it
 contains real deck titles. The other24 serial files and later groups were
 unexecuted in that superseded attempt. The frozen source is now
 `9fd8b92c84876de92f6713cb2b513876f9036a83`; every final gate is being rerun.
+
+That source's complete matrix passed 2320/2320, including199 serial cases,
+with build/typecheck/50 cells passing. The separate PostgreSQL catalog repeat
+was15 pass/1 fail: saved-delete error recovery stayed on an unchanged dialog.
+The original failure did not capture pointer events. An unforced instrumented
+case passed1/1; controlled completion of the existing view animation after
+measurement reproduced the failure0/1 with unchanged assertions. Delete moved
+28px left; trusted down/up/click landed on the dialog background and DELETE
+attempts remained zero. The same controlled check with actual animation readiness
+passes1/1. Each filtered diagnostic left15 other cases unexecuted; none substitutes
+for the complete file. The separate reviewer inspected this causal proof.
+
+The correction changes only the catalog browser helper: wait for actual view/modal
+animations before the existing stable-geometry/hit-target gate. Runtime and
+assertions are unchanged. Exact traces/counts are in attempts.json and
+attempts/dialog-transition-trace.json. Remaining supplemental/native commands were
+unexecuted after the stopped repeat. The final frozen source is now
+`bf1bd8f7dbce827be04ed530b2e7330b385e8baa`, with every gate rerun for one coherent
+final packet.

@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7C-1-f79ae07.json"
   },
   "implementationHead": {
-    "sha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
-    "note": "Frozen C2 source including isolated7A catalog fixture/readiness correction. All final gates rerun on this exact source; no runtime change after modal fixes."
+    "sha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "note": "Frozen C2 source with measured test-only dialog-transition readiness correction. Runtime unchanged since modal corrections; final matrix rerun on this exact source."
   },
   "activeMilestone": {
     "id": "V2-7C-2",

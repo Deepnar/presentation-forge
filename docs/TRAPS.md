@@ -1778,3 +1778,23 @@ click correctly waits for its hit target. Preserve the first frame, trace RAF
 bounds and edge/button hit targets, and capture after the relevant transition
 settles. An arbitrary delay or window-only bounds cannot establish unobscured
 controls. Keep that capture timing result distinct from a persistent layout defect.
+An ancestor finishing its transform can also change a fixed dialog's containing
+block after apparently stable frames. Wait for that animation to finish before
+measuring pointer coordinates; trace actual event targets and request attempts
+when distinguishing a missed click from a failed product action.
+
+**Focus restoration and containment share one lifetime.** StrictMode's synthetic
+cleanup leaves the dialog DOM connected. Restoring its invoker before removing a
+focusin containment listener immediately sends focus back into the dialog; replay
+then records that internal button as the invoker. Remove containment before
+restoration in the same cleanup and verify cancel/focus in actual development
+mode. Pending deletion also needs a focusable dialog when every button is disabled;
+global navigation shortcuts must respect a modal, and retry errors belong inside it.
+
+**A newly visible canonical source needs an isolated fixture too.** A browser
+server with a temporary config/DB can still read the real generated-deck directory.
+Consolidated discovery exposes that leak, especially for the local first account's
+admin policy. Give every fixture server its own deck root; never erase real decks
+to recover an empty-state assertion. Wait for the relevant source reads and view
+transition before measuring pointer coordinates. Retain leaked failure output
+locally when its diagnostic body contains real project titles.

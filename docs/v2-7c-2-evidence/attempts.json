@@ -1,5 +1,5 @@
 {
-  "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
   "records": [
     {
       "log": "docs/v2-7c-2-evidence/attempts/unit-before.tap",
@@ -151,6 +151,62 @@
       "implementationSha": "e49f74a79edbd4ef8bd722bbae6938b2509ebe50",
       "localRawLog": "out/v2-7c-2-validation/superseded-e49f74a/serial-20261017T141749390639Z/v2-edit-chrome-7a.test.tap",
       "note": "Raw failure body includes names from the leaked real deck directory, so retain it locally rather than publish private material. The remaining24 serial files were unexecuted in this superseded attempt."
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/postgres-catalog-final.log",
+      "counts": {
+        "total": 16,
+        "pass": 15,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Uninstrumented PostgreSQL supplemental case15 did not observe a deletion error; unchanged confirmation signature. Causal transition diagnostic supports a measurement/dispatch race; original event trace was not captured.",
+      "filteredUnexecuted": 0,
+      "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+      "sourceDelta": "Only the last diagnostic adds the proposed test-helper animation wait; runtime is unchanged."
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/probe-click-first.tap",
+      "counts": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Unforced instrumented case15 passed; diagnostic filter leaves15 other cases unexecuted.",
+      "filteredUnexecuted": 15,
+      "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+      "sourceDelta": "Only the last diagnostic adds the proposed test-helper animation wait; runtime is unchanged."
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/probe-click-finish.tap",
+      "counts": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Controlled completion of the existing ancestor animation after pointer measurement moves Delete28px left. Trusted down/up/click land on dialog DIV and zero DELETE attempts occur; unchanged assertion fails.",
+      "filteredUnexecuted": 15,
+      "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+      "sourceDelta": "Only the last diagnostic adds the proposed test-helper animation wait; runtime is unchanged."
+    },
+    {
+      "log": "docs/v2-7c-2-evidence/attempts/probe-click-finish-settled.tap",
+      "counts": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Same controlled completion and assertions with actual animation readiness before point measurement; focused error and safe retry pass.",
+      "filteredUnexecuted": 15,
+      "implementationSha": "9fd8b92c84876de92f6713cb2b513876f9036a83",
+      "sourceDelta": "Only the last diagnostic adds the proposed test-helper animation wait; runtime is unchanged."
     }
   ],
   "note": "Attempt totals are not added to final distinct cases. The diagnostic filter leaves 15 cases unexecuted only in that earlier diagnostic; the corrected complete browser file executes all16."
