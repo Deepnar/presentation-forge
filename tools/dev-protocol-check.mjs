@@ -16,7 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
@@ -37,6 +37,11 @@ const MILESTONES = {
     plan: 'docs/v2-7b-2-evidence/validation-plan.json',
     focused: 'browser-handoff',
     files: ['test/v2-handoff-7b.test.js', 'test/v2-handoff-chrome-7b.test.js'],
+  },
+  'V2-7C-1': {
+    plan: 'docs/v2-7c-1-evidence/validation-plan.json',
+    focused: 'project-covers',
+    files: ['test/v2-project-covers-7c.test.js', 'test/v2-project-covers-http-7c.test.js', 'test/v2-project-covers-chrome-7c.test.js'],
   },
 };
 

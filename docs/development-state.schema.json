@@ -130,7 +130,8 @@
               "benchmark-50",
               "frontend-visual",
               "conversion-import",
-              "browser-handoff"
+              "browser-handoff",
+              "project-covers"
             ]
           },
           "status": {
