@@ -83,7 +83,7 @@ export const api = {
     fetch("/api/landing/manifest.json")
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null),
-  decks: () => call("/api/decks"),
+  decks: ({ signal } = {}) => call("/api/decks", { signal, cache: "no-store" }),
   deck: (slug) => call(`/api/decks/${slug}`),
   saveDeck: (slug, deck, meta) =>
     call(`/api/decks/${slug}`, { method: "PUT", body: JSON.stringify({ deck, meta }) }),
@@ -243,7 +243,7 @@ export const api = {
   versions: (slug) => call(`/api/decks/${slug}/versions`),
   restoreVersion: (slug, file) =>
     call(`/api/decks/${slug}/versions/${encodeURIComponent(file)}/restore`, { method: "POST", body: JSON.stringify({}) }),
-  searchDecks: (q) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }) }),
+  searchDecks: (q, { signal } = {}) => call("/api/decks/search", { method: "POST", body: JSON.stringify({ q }), signal, cache: "no-store" }),
   project: (slug) => call(`/api/decks/${slug}/project`),
   importProject: (slug, body) => call(`/api/decks/${encodeURIComponent(slug)}/v2-project`, {
     method: "POST", body: JSON.stringify(body), signal: AbortSignal.timeout(60000),

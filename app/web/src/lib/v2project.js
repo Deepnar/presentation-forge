@@ -56,8 +56,8 @@ export async function apiExport(id, fetchFn = fetch) {
   return res.blob();
 }
 
-export async function apiList(fetchFn = fetch) {
-  const res = await fetchFn("/api/v2/projects", { headers: { ...authHeaders() } });
+export async function apiList(fetchFn = fetch, { signal } = {}) {
+  const res = await fetchFn("/api/v2/projects", { headers: { ...authHeaders() }, signal, cache: "no-store" });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) {
     const err = new Error(body?.error ?? `list failed (${res.status})`);
