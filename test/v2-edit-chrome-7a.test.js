@@ -71,7 +71,7 @@ function proxyTo(port) {
 async function startApi(port, cfgDir, dbFile, extraEnv = {}) {
   const proc = spawn("node", ["app/server/index.js"], {
     cwd: ROOT,
-    env: { ...process.env, FORGE_API_PORT: String(port), FORGE_CONFIG_DIR: cfgDir, FORGE_DB_PATH: dbFile, ...extraEnv },
+    env: { ...process.env, FORGE_API_PORT: String(port), FORGE_CONFIG_DIR: cfgDir, FORGE_DB_PATH: dbFile, FORGE_DECKS_DIR: path.join(cfgDir, 'decks'), ...extraEnv },
     stdio: ["ignore", "pipe", "pipe"],
   });
   const ready = await new Promise((resolve) => {
@@ -182,7 +182,10 @@ async function openSignedIn(hash, opts, token = userToken, base = APP) {
   for (;;) {
     try {
       const ok = await page.evaluate(`location.hash === ${JSON.stringify(hash)} && !location.pathname.endsWith('scenes.html') && document.getElementById('root') !== null && document.querySelector('[data-workspace-create],[data-topbar],[data-project-grid]') !== null`);
-      if (ok) return page;
+      if (ok) {
+        if (hash === '#/projects') await waitFor(page, `document.querySelector('[data-project-catalog]') && ![...document.querySelectorAll('[data-project-catalog] [role=status]')].some(n => /^Loading (saved presentations|generated decks and reports)/.test(n.textContent)) && document.getAnimations().filter(a => a.effect?.target?.classList?.contains('view-in')).every(a => a.playState !== 'running')`);
+        return page;
+      }
     } catch { /* mid-navigation */ }
     if (Date.now() - t0 > 90000) throw new Error("signed-in app never settled");
     await new Promise((r) => setTimeout(r, 500));
