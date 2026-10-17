@@ -17,6 +17,7 @@ import { isAdmin } from "../../src/auth.js";
 import { validateProjectDocument, validateSavePayload, validProjectId } from "../../packages/projects/document.js";
 import { renderPptx, preflightScenes } from "../../packages/renderer-pptx/render.ts";
 import { projectStore } from "../../src/projects/backend.js";
+import { readProjectCover } from "../../src/projects/cover.js";
 
 export function projectsAllowed() {
   if (process.env.FORGE_V2_PROJECTS === "1") return true;
@@ -56,6 +57,9 @@ function bodyTooLarge(req) {
 
 function mapStoreError(res, err) {
   const code = err?.code;
+  if (code === "cover-stale" || code === "invalid-cover-revision" || code === "cover-too-large") {
+    return res.status(code === "cover-stale" ? 409 : code === "cover-too-large" ? 413 : 400).json({ ok: false, error: err.message, code });
+  }
   if (code === "not-found") return fail(res, 404, err.message);
   if (code === "invalid-id") return fail(res, 400, err.message);
   if (code === "invalid-document") {
@@ -73,6 +77,20 @@ function mapStoreError(res, err) {
 }
 
 export function registerV2ProjectRoutes(app) {
+  app.get("/api/v2/projects/:id/cover", wrap(async (req, res) => {
+    res.set("Cache-Control", "private, no-store");
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const raw = req.query.revision;
+    const revision = typeof raw === "string" && /^(0|[1-9]\d{0,15})$/.test(raw) ? Number(raw) : NaN;
+    try {
+      const store = await projectStore();
+      const cover = await readProjectCover(store, { id: req.params.id, revision, owner: who.owner, admin: who.admin });
+      ok(res, { cover });
+    } catch (err) { mapStoreError(res, err); }
+  }));
+
   app.get("/api/v2/projects", wrap(async (req, res) => {
     if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
     const who = await projectOwner(req);
