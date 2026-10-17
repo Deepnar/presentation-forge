@@ -1,0 +1,32 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "renderer": "src/preview.js through LibreOffice/Poppler",
+  "records": [
+    {
+      "source": "out/v2-7a-validation/shell-chart.pptx",
+      "sha256": "c882e47c5e102caffe6eb0ce278efa3fbf6756ed839c8ecf7623bcd2bde80fbe",
+      "bytes": 70668,
+      "slideCount": 1,
+      "nativeAssertions": "passed",
+      "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+      "rasters": [
+        "docs/v2-7c-2-evidence/native/shell-chart.png"
+      ]
+    },
+    {
+      "source": "out/v2-7a-validation/shell-table.pptx",
+      "sha256": "ec6718281cdf4a94d03590f9bed98767129b0cd5db7965737faedb7e659e215e",
+      "bytes": 72451,
+      "slideCount": 1,
+      "nativeAssertions": "passed",
+      "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+      "rasters": [
+        "docs/v2-7c-2-evidence/native/shell-table.png"
+      ]
+    }
+  ],
+  "limitation": "Raster inspection does not establish interactive Microsoft PowerPoint behavior.",
+  "command": "nice -n10 ionice -c2 -n7 timeout --signal=TERM --kill-after=10s 15m node docs/v2-7c-2-evidence/shell-native.mjs",
+  "exitCode": 0,
+  "log": "docs/v2-7c-2-evidence/logs/shell-native.log"
+}

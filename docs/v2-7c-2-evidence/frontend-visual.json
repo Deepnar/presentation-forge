@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "command": "Complete serial owners + PG catalog/covers + hosted import + seven native export rasters; inspect all106 selected images and verify hashes",
+  "log": "docs/v2-7c-2-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-7c-2-evidence/images.json",
+  "imageCount": 106,
+  "nativeRasters": 7,
+  "limitations": "Inherited C1 rail transition and B2 chat capture retained; C2 settled alternatives and exact completed-query no-match capture supplied. See visual report."
+}

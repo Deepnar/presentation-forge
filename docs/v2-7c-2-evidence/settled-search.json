@@ -1,0 +1,46 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "backend": "PostgreSQL15.18",
+  "environment": {
+    "LC_ALL": "C.UTF-8",
+    "TEST_PG_URL": "owned localhost5544",
+    "FORGE_CATALOG_TEST_BACKEND": "postgres"
+  },
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "5m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=title, generated content and type filters",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "out/v2-7c-2-validation/settled-search.mjs"
+  ],
+  "source": "test/v2-project-catalog-chrome-7c.test.js",
+  "sourceSha256": "571060828c075db148fcb085fae15634eaa4638af9852b9bc7b0d601120ee4b7",
+  "adapter": "Ignored copy rewrites relative imports/output directory. Fetch trace records completed search POST q; before existing no-match screenshot, wait for that exact q to complete plus no Searching message and assert zero cards. Runtime, original source and original assertions unchanged.",
+  "readiness": "window.__completedSearch==='no-such-search-zz'&&!document.body.innerText.includes('Searching generated content')",
+  "adapterSha256": "3f71c1ed8293a927d445372e7b33cdb8b97058de60a29c32f0acbb7e916a9c6d",
+  "tests": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "exitCode": 0,
+  "otherCasesUnexecutedByFilter": 15,
+  "log": "docs/v2-7c-2-evidence/logs/settled-search.tap",
+  "image": "docs/v2-7c-2-evidence/catalog-no-matches-settled.png",
+  "note": "Additional evidence-only settled capture, excluded from distinct total. Original intermediate query images retained. First capture-only diagnostic passed1/1 but checking absence before debounce alone did not establish completion; retain its interim screenshot/log under attempts."
+}
