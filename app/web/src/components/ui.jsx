@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useId } from "react";
 
 export function Button({ variant = "ghost", size = "md", className = "", ...props }) {
   const base =
@@ -116,32 +116,44 @@ export function Tooltip({ label, children, side = "top", className = "" }) {
   );
 }
 
-export function ConfirmModal({ title, body, confirmLabel = "Confirm", danger, onCancel, onConfirm }) {
+export function ConfirmModal({ title, body, confirmLabel = "Confirm", danger, onCancel, onConfirm, busy = false, error }) {
+  const dialog = useRef(null), failure = useRef(null), titleId = useId(), bodyId = useId();
+  const latest = useRef({ busy, onCancel }); latest.current = { busy, onCancel };
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onCancel(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onCancel]);
-
+    const root = dialog.current, previous = document.activeElement;
+    const focus = () => (root.querySelector('button:not(:disabled)') ?? root).focus();
+    const contain = event => { if (root.isConnected && !root.contains(event.target)) focus(); };
+    const onKey = event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); if (!latest.current.busy) latest.current.onCancel(); return; }
+      if (event.key !== 'Tab') return;
+      const buttons = [...root.querySelectorAll('button:not(:disabled)')], first = buttons[0], last = buttons.at(-1);
+      if (!first) { event.preventDefault(); root.focus(); return; }
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === root)) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || document.activeElement === root)) { event.preventDefault(); first.focus(); }
+    };
+    if (!root.contains(document.activeElement) || document.activeElement.disabled) focus();
+    document.addEventListener('focusin', contain); document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('focusin', contain); document.removeEventListener('keydown', onKey, true);
+      if (previous?.isConnected) previous.focus();
+    };
+  }, []);
+  useEffect(() => {
+    const root = dialog.current;
+    if (!root.contains(document.activeElement) || document.activeElement.disabled) (root.querySelector('button:not(:disabled)') ?? root).focus();
+  }, [busy]);
+  useEffect(() => { if (error) failure.current?.focus(); }, [error]);
   return (
-    <div
-      className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm"
-      onClick={onCancel}
-    >
-      <div
-        className="w-full max-w-sm rounded-card border border-line bg-panel p-5"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="text-[14px] font-semibold text-fg">{title}</div>
-        {body && <div className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">{body}</div>}
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm" onClick={() => { if (!busy) onCancel(); }}>
+      <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={body ? bodyId : undefined} aria-busy={busy} tabIndex={-1}
+        className="max-h-full w-full max-w-sm overflow-y-auto rounded-card border border-line bg-panel p-5" onClick={event => event.stopPropagation()}>
+        <div id={titleId} className="text-[14px] font-semibold text-fg">{title}</div>
+        {body && <div id={bodyId} className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">{body}</div>}
+        {error && <p ref={failure} role="alert" tabIndex={-1} className="mt-3 rounded border border-danger/30 bg-danger/5 p-2 text-xs text-danger">{error}</p>}
         <div className="mt-4 flex justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={onCancel}>Cancel</Button>
-          <button
-            onClick={onConfirm}
-            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition hover:opacity-90 active:translate-y-px ${
-              danger ? "bg-danger text-on-danger" : "bg-accent text-on-accent"
-            }`}
-          >
+          <Button variant="outline" size="sm" onClick={onCancel} disabled={busy}>Cancel</Button>
+          <button onClick={onConfirm} disabled={busy}
+            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition hover:opacity-90 active:translate-y-px disabled:opacity-40 ${danger ? 'bg-danger text-on-danger' : 'bg-accent text-on-accent'}`}>
             {confirmLabel}
           </button>
         </div>

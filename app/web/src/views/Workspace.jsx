@@ -1,9 +1,7 @@
-// V2-7A workspace dashboard: the primary entry point for saved
-// presentations (Workspace → Project → Editor). Projects come only
-// from GET /api/v2/projects — no frontend-only list. Creation
-// paths: AI (existing generation), layout skeleton, or blank — all
-// landing in real persisted projects through apiCreate.
 import { useCallback, useEffect, useRef, useState } from "react";
+import { api } from "../api.js";
+import { catalogEntries, filterCatalog, createCatalogLoader } from "../lib/projectCatalog.js";
+import GeneratedProjectCard from "../components/GeneratedProjectCard.jsx";
 import ProjectCover from "../components/ProjectCover.jsx";
 import { createCoverLoader, createCoverPreparer } from "../lib/projectCovers.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
@@ -29,9 +27,13 @@ function metaLine(p) {
   return bits.join(" · ");
 }
 
-export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accountKey = null }) {
-  const [projects, setProjects] = useState(null); // null = loading
-  const [error, setError] = useState(null);
+export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpenGenerated, onGeneratedChanged, focusSearch = 0, accountKey = null }) {
+  const [catalog, setCatalog] = useState({ saved: { status: 'idle', items: [] }, generated: { status: 'idle', items: [] }, search: { status: 'idle', query: '', hits: [] } });
+  const [catalogLoader, setCatalogLoader] = useState(null);
+  const [query, setQuery] = useState(''), [type, setType] = useState('all');
+  const searchInput = useRef(null);
+  const [confirmGenerated, setConfirmGenerated] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   const [creating, setCreating] = useState(null); // null | "chooser" | "layout"
   const [busy, setBusy] = useState(null); // creation/rename/delete in flight
   const [notice, setNotice] = useState(null);
@@ -44,9 +46,16 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
   useEffect(() => { if (sessionChanged) recovery.current?.focus(); }, [sessionChanged]);
   const [covers, setCovers] = useState(null);
   useEffect(() => {
+    let discovery;
     const loader = createCoverLoader({ request: apiCover, current: projectSessionKey, prepare: prepareCover,
-      onExpired: () => { setSessionChanged(true); setProjects([]); } });
-    setCovers(loader);
+      onExpired: () => { discovery?.dispose(); setSessionChanged(true); setCatalog({ saved: { status: 'idle', items: [] }, generated: { status: 'idle', items: [] }, search: { status: 'idle', query: '', hits: [] } }); } });
+    discovery = createCatalogLoader({
+      saved: options => apiList(undefined, options),
+      generated: options => api.decks(options).then(result => result.decks),
+      search: (text, options) => api.searchDecks(text, options).then(result => result.hits),
+      isCurrent: () => loader.checkSession(), onChange: setCatalog,
+    });
+    setCovers(loader); setCatalogLoader(discovery); discovery.refresh();
     const changed = event => { if (event.key === "forge.token" || event.key === null) loader.checkSession(); };
     const check = () => loader.checkSession();
     const timer = setInterval(check, 1000);
@@ -55,52 +64,64 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
     document.addEventListener("visibilitychange", check);
     return () => {
       clearInterval(timer); window.removeEventListener("storage", changed);
-      window.removeEventListener("focus", check); document.removeEventListener("visibilitychange", check); loader.dispose();
+      window.removeEventListener("focus", check); document.removeEventListener("visibilitychange", check); discovery.dispose(); loader.dispose();
     };
   }, [accountKey]);
 
-  const refresh = useCallback(async () => {
-    if (!covers?.checkSession()) return;
-    setError(null);
-    try {
-      const list = await apiList();
-      if (covers.checkSession()) setProjects(list);
-    } catch (err) {
-      if (covers.checkSession()) { setError(err); setProjects([]); }
-    }
-  }, [covers]);
+  const refresh = useCallback(source => catalogLoader?.refresh(typeof source === 'string' ? source : undefined), [catalogLoader]);
+  useEffect(() => { catalogLoader?.setQuery(query); }, [catalogLoader, query]);
+  useEffect(() => { if (focusSearch > 0) searchInput.current?.focus(); }, [focusSearch]);
+  const current = () => covers?.checkSession();
+  const entries = catalogEntries(catalog.saved.items, catalog.generated.items);
+  const hits = catalog.search.status === 'ready' && catalog.search.query === query.trim().toLowerCase() ? catalog.search.hits : [];
+  const visible = filterCatalog(entries, { query, type, hits });
+  const allReady = catalog.saved.status === 'ready' && catalog.generated.status === 'ready';
+  const signInRequired = [catalog.saved, catalog.generated].some(source => source.error?.status === 401);
 
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  async function doGeneratedDelete(project) {
+    if (!current() || busy) return;
+    setBusy(`generated-${project.slug}`);
+    setDeleteError(null);
+    try {
+      await api.deleteDeck(project.slug);
+      if (!current()) return;
+      setConfirmGenerated(null); refresh('generated'); onGeneratedChanged?.();
+    } catch (err) { if (current()) setDeleteError(`Could not delete the generated project: ${err.message}`); }
+    finally { setBusy(null); }
+  }
 
   async function doCreate(kind, templateId = null, templateName = "") {
+    if (!current() || busy) return;
     setBusy(kind);
     setNotice(null);
     try {
       const scenes = kind === "layout" ? await buildLayoutScenes(templateId) : await buildBlankScenes();
+      if (!current()) return;
       const created = await apiCreate({
         title: defaultProjectTitle(kind, templateName),
         scenes,
         origin: { kind: kind === "layout" ? "layout-gallery" : "blank" },
       });
-      onOpen(created.id);
+      if (current()) onOpen(created.id);
     } catch (err) {
-      setNotice(`Could not create the presentation: ${err.message}`);
+      if (current()) setNotice(`Could not create the presentation: ${err.message}`);
     } finally {
       setBusy(null);
     }
   }
 
   async function doRename(p) {
+    if (!current() || busy) return;
     const title = renameDraft.trim();
     if (!title) return;
     setBusy(`rename-${p.id}`);
     try {
       await apiRename(p.id, { title, baseRevision: p.revision });
+      if (!current()) return;
       setRenamingId(null);
-      await refresh();
+      refresh('saved');
     } catch (err) {
+      if (!current()) return;
       if (err?.code === "stale-revision") {
         setNotice("That project changed elsewhere — the list was reloaded; rename again from the fresh title.");
         await refresh();
@@ -113,30 +134,33 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
   }
 
   async function doDelete(p) {
+    if (!current() || busy) return;
     setBusy(`delete-${p.id}`);
+    setDeleteError(null);
     try {
       await apiRemove(p.id);
+      if (!current()) return;
       setConfirmDelete(null);
-      await refresh();
+      refresh('saved');
     } catch (err) {
-      setNotice(`Could not delete: ${err.message}`);
+      if (current()) setDeleteError(`Could not delete: ${err.message}`);
     } finally {
       setBusy(null);
     }
   }
 
-  if (sessionChanged) return <div ref={recovery} role="alert" tabIndex={-1} className="m-6 rounded-card border border-line bg-panel p-4 text-sm">Your sign-in changed. Reload before viewing presentations. <Button onClick={() => location.reload()}>Reload page</Button></div>;
+  if (sessionChanged) return <div ref={recovery} role="alert" tabIndex={-1} className="m-6 rounded-card border border-line bg-panel p-4 text-sm">Your sign-in changed. Reload before viewing projects. <Button onClick={() => location.reload()}>Reload page</Button></div>;
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto" onClickCapture={event => {
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto" data-project-catalog onClickCapture={event => {
       if (covers && !covers.checkSession()) { event.preventDefault(); event.stopPropagation(); }
     }}>
       <div className="mx-auto w-full max-w-6xl px-10 py-10">
         <div className="mb-7 flex flex-wrap items-end gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Presentations</h1>
+            <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Projects</h1>
             <p className="mt-1 max-w-2xl text-[15px] text-fg-muted">
-              Saved presentations live here. Open one to edit, or start a new one below.
+              Saved presentations, generated decks and reports. Open a project or create a new presentation.
             </p>
           </div>
           <div className="flex gap-2">
@@ -144,6 +168,20 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
             <Button variant="primary" size="sm" data-workspace-create onClick={() => setCreating("chooser")}>Create presentation</Button>
           </div>
         </div>
+
+        <div className="mb-5 flex flex-wrap items-end gap-3">
+          <label className="min-w-48 flex-1 text-xs text-fg-muted">Search projects
+            <input ref={searchInput} data-catalog-search type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title, theme or generated content"
+              className="mt-1 w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-sm text-fg outline-none focus:border-accent" />
+          </label>
+          <label className="text-xs text-fg-muted">Project type
+            <select data-catalog-type value={type} onChange={event => setType(event.target.value)} className="mt-1 block max-w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-sm text-fg">
+              <option value="all">All projects</option><option value="saved">Saved presentations</option><option value="generated">Generated decks &amp; reports</option><option value="reports">Reports</option>
+            </select>
+          </label>
+        </div>
+        <p role="status" className="mb-4 text-xs text-fg-faint" data-catalog-results>{visible.length} project{visible.length === 1 ? '' : 's'}{query.trim() ? ' matching your search' : ''}{catalog.search.status === 'waiting' || catalog.search.status === 'loading' ? ' · Searching generated content…' : ''}</p>
+        {catalog.search.status === 'error' && <div role="alert" className="mb-4 rounded-card border border-amber/30 bg-amber/5 p-3 text-sm text-amber">Generated content search is unavailable. Title, theme and identifier matches are shown. <Button size="sm" onClick={() => refresh('search')}>Retry content search</Button></div>}
 
         {notice && (
           <div role="status" className="mb-4 rounded-card border border-amber/30 bg-amber/5 px-3 py-2 text-[13px] text-amber">
@@ -217,50 +255,24 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
           </Panel>
         )}
 
-        {projects === null && !error && (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-label="Loading presentations">
-            {[0, 1, 2].map((i) => <div key={i} className="skeleton h-36 rounded-card" />)}
-          </div>
-        )}
+        {['saved', 'generated'].map(source => {
+          const read = catalog[source], label = source === 'saved' ? 'saved presentations' : 'generated decks and reports';
+          if (read.status === 'loading' || read.status === 'idle') return <p key={source} role="status" className="mb-3 text-sm text-fg-faint">Loading {label}…</p>;
+          if (read.status !== 'error' || read.error?.status === 401) return null;
+          return <div key={source} role="alert" data-catalog-error={source} className="mb-4 rounded-card border border-amber/30 bg-amber/5 p-3 text-sm text-amber">Could not load {label}: {read.error.message} <Button size="sm" onClick={() => refresh(source)}>Retry {source === 'saved' ? 'saved presentations' : 'generated projects'}</Button></div>;
+        })}
+        {signInRequired && <Empty title="Sign in to see projects" hint="Your projects belong to an account on hosted installs." action={<Button variant="primary" onClick={onAuth}>Sign in</Button>} />}
+        {allReady && entries.length === 0 && <Empty title="No projects yet" hint="Create a presentation above — blank, from a layout, or with AI." action={<Button variant="primary" onClick={() => setCreating('chooser')}>Create presentation</Button>} />}
+        {entries.length > 0 && visible.length === 0 && <Empty title="No matching projects" hint="Try another search or project type. Results include the sources currently available." action={<Button onClick={() => { setQuery(''); setType('all'); }}>Clear search and filters</Button>} />}
 
-        {error?.status === 401 && (
-          <Empty
-            title="Sign in to see presentations"
-            hint="Saved presentations belong to an account on hosted installs."
-            action={<Button variant="primary" onClick={onAuth}>Sign in</Button>}
-          />
-        )}
-
-        {error && error.status !== 401 && (
-          <div className="mb-4">
-            {error.code === "store-misconfigured" || error.status === 403 ? (
-              <Empty
-                title="Project storage is disabled on this host"
-                hint={error.message}
-                action={<Button variant="outline" onClick={refresh}>Retry</Button>}
-              />
-            ) : (
-              <div role="alert" className="rounded-card border border-amber/30 bg-amber/5 px-3 py-2 text-[13px] text-amber">
-                Could not load presentations: {error.message}{" "}
-                <Button size="sm" variant="outline" onClick={refresh}>Retry</Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {projects !== null && !error && !sessionChanged && projects.length === 0 && (
-          <Empty
-            title="No presentations yet"
-            hint="Create one above — blank, from a layout, or with AI — and it will appear here."
-            action={<Button variant="primary" onClick={() => setCreating("chooser")}>Create presentation</Button>}
-          />
-        )}
-
-        {projects !== null && projects.length > 0 && (
+        {visible.length > 0 && (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-project-grid>
-            {projects.map((p) => (
-              <Panel key={p.id} className="flex flex-col p-4" data-project-card={p.id}>
+            {visible.map(row => {
+              const p = row.value;
+              if (row.kind === 'generated') return <GeneratedProjectCard key={row.key} project={p} onOpen={onOpenGenerated} onDelete={project => { setDeleteError(null); setConfirmGenerated(project); }} disabled={busy !== null} />;
+              return <Panel key={row.key} className="flex flex-col p-4" data-project-card={p.id}>
                 {covers && <ProjectCover key={p.revision} project={p} loader={covers} onOpen={onOpen} onRefresh={refresh} disabled={renamingId === p.id} />}
+                <div className="mb-2 text-xs font-medium text-fg-muted">Saved presentation</div>
                 {renamingId === p.id ? (
                   <div className="flex flex-col gap-2">
                     <Field label="Title" value={renameDraft} onChange={setRenameDraft} />
@@ -286,21 +298,23 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, accou
                       >
                         Export
                       </ProjectExportButton>
-                      <Button size="sm" onClick={() => setConfirmDelete(p)}>Delete…</Button>
+                      <Button size="sm" onClick={() => { setDeleteError(null); setConfirmDelete(p); }}>Delete…</Button>
                     </div>
                   </>
                 )}
-              </Panel>
-            ))}
+              </Panel>;
+            })}
           </div>
         )}
 
+        {confirmGenerated && <ConfirmModal title={`Delete generated project “${confirmGenerated.title}”?`} body="Deletes this generated project’s deck, report, research and exports. Saved editable copies remain separate. This cannot be undone."
+          busy={busy !== null} error={deleteError} confirmLabel={busy === `generated-${confirmGenerated.slug}` ? 'Deleting…' : 'Delete generated project'} danger onCancel={() => setConfirmGenerated(null)} onConfirm={() => doGeneratedDelete(confirmGenerated)} />}
         {confirmDelete && (
           <ConfirmModal
             title={`Delete “${confirmDelete.title}”?`}
-            body="Saved versions go with it. This cannot be undone."
+            body="Deletes this saved presentation and its saved versions. Generated originals remain separate. This cannot be undone."
             confirmLabel={busy === `delete-${confirmDelete.id}` ? "Deleting…" : "Delete"}
-            danger
+            danger busy={busy !== null} error={deleteError}
             onCancel={() => setConfirmDelete(null)}
             onConfirm={() => doDelete(confirmDelete)}
           />

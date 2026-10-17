@@ -129,21 +129,6 @@ function AppContent() {
 
   useEffect(() => localStorage.setItem("forge.leftNav", leftOpen ? "1" : "0"), [leftOpen]);
 
-  useEffect(() => {
-    const onKey = (e) => {
-      const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setFocusSearch((n) => n + 1);
-      } else if (mod && e.key.toLowerCase() === "n") {
-        e.preventDefault();
-        newChat("deck");
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [user]);
-
   const isAdminUser = Boolean(user && user.role === "admin");
 
   const isTourView = view === "home" || ["privacy","terms","contact","docs","tour-themes","usage"].includes(view);
@@ -316,6 +301,19 @@ function AppContent() {
   const activeChat = rawActiveChat ? normalizeChat(rawActiveChat) : null;
   const goHome = () => navigate("chat");
   const openProjectPage = (page) => navigate(page, { slug: activeSlug });
+  useEffect(() => {
+    const onKey = event => {
+      if (!(event.ctrlKey || event.metaKey)) return;
+      if (['k', 'n'].includes(event.key.toLowerCase()) && document.querySelector('[role="dialog"][aria-modal="true"]')) { event.preventDefault(); return; }
+      if (event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        navigate('projects').then(opened => { if (opened) setFocusSearch(count => count + 1); });
+      } else if (event.key.toLowerCase() === 'n') { event.preventDefault(); newChat('deck'); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navigate, user, newChat]);
+
 
   async function doLogout() {
     if (!await navigate("home")) return;
@@ -348,17 +346,6 @@ function AppContent() {
       setActiveChatId(c.id);
       navigate("chat", { chatId: c.id });
     }
-  }
-
-  async function handleDeleteDeck(slug) {
-    try {
-      await api.deleteDeck(slug);
-    } catch (err) {
-      window.alert(`Could not delete deck: ${err.message}`);
-      return;
-    }
-    bumpDeck();
-    if (activeSlug === slug && (view === "deck" || view === "report" || view === "research")) goHome();
   }
 
   function startCompanionChat(slug, plan, theme = "") {
@@ -509,18 +496,12 @@ function AppContent() {
             >
               <Sidebar
                 chats={chats}
-                decks={decks}
                 activeChatId={activeChatId}
-                activeSlug={view === "deck" || view === "report" || view === "research" ? activeSlug : null}
                 view={view}
                 open={narrow ? true : leftOpen}
-                focusSearch={focusSearch}
                 onOpenChat={openChat}
-                onOpenDeck={openDeck}
-                onOpenReport={openReport}
                 onNewChat={newChat}
                 onDeleteChat={handleDeleteChat}
-                onDeleteDeck={handleDeleteDeck}
                 user={user}
                 identity={identity}
                 onOpenSettings={() => setSettingsOpen(true)}
@@ -576,7 +557,7 @@ function AppContent() {
                 <DeckDetail
                   slug={activeSlug}
                   refreshToken={deckVersion}
-                  onBack={goHome}
+                  onBack={() => navigate("projects")}
                   onDeckChanged={bumpDeck}
                   onOpenDeck={(s) => { navigate("deck", { slug: s }); bumpDeck(); }}
                   onNavigate={openProjectPage}
@@ -590,7 +571,7 @@ function AppContent() {
                 <ReportView
                   slug={activeSlug}
                   refreshToken={deckVersion}
-                  onBack={goHome}
+                  onBack={() => navigate("projects")}
                   onDeckChanged={bumpDeck}
                   onPlanReady={(plan) => startCompanionChat(activeSlug, plan)}
                   onNavigate={openProjectPage}
@@ -602,7 +583,7 @@ function AppContent() {
                 <ResearchView
                   slug={activeSlug}
                   refreshToken={deckVersion}
-                  onBack={goHome}
+                  onBack={() => navigate("projects")}
                   onNavigate={openProjectPage}
                 />
               </ErrorBoundary>
@@ -612,7 +593,7 @@ function AppContent() {
                 <ScriptView
                   slug={activeSlug}
                   refreshToken={deckVersion}
-                  onBack={goHome}
+                  onBack={() => navigate("projects")}
                   onNavigate={openProjectPage}
                 />
               </ErrorBoundary>
@@ -620,7 +601,9 @@ function AppContent() {
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
             {view === "projects" && (
               <ErrorBoundary key="workspace-err">
-                <Workspace key={user.email} accountKey={user.email}
+                <Workspace key={user.email} accountKey={user.email} focusSearch={focusSearch}
+                  onOpenGenerated={project => navigate(defaultProjectPage(project), { slug: project.slug })}
+                  onGeneratedChanged={bumpDeck}
                   onOpen={(id) => navigate("project", { projectId: id })}
                   onHistory={(id) => navigate("project", { projectId: id, history: true })}
                   onCreateAI={() => newChat("deck")}

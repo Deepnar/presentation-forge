@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dateGroup, relative } from "../lib/time.js";
 import { api } from "../api.js";
-import DeckThumb from "./DeckThumb.jsx";
 import ProfileChip from "./ProfileChip.jsx";
-import { Button } from "./ui.jsx";
-import { ChevronDown, DocIcon, GearIcon, IdIcon, LayersIcon, PaletteIcon, PanelLeftOpen, PlusIcon, SearchIcon } from "./icons.jsx";
+import { ChevronDown, DocIcon, GearIcon, IdIcon, PaletteIcon, PanelLeftOpen, PlusIcon } from "./icons.jsx";
 import { getModelMode, setModelMode, subscribeModelMode } from "../lib/modelMode.js";
 
 const GROUPS = ["Today", "Yesterday", "This week", "This month", "Earlier"];
@@ -67,54 +65,11 @@ function SidebarToggle({ onOpenSettings }) {
 }
 
 export default function Sidebar({
-  chats, decks, activeChatId, activeSlug, view, open, focusSearch,
-  onOpenChat, onOpenDeck, onOpenReport, onNewChat, onDeleteChat, onDeleteDeck,
+  chats, activeChatId, view, open,
+  onOpenChat, onNewChat, onDeleteChat,
   user, identity, onOpenSettings, onOpenProfile, onToggleLeft, isAdmin, onNavigate,
 }) {
-  const [tab, setTab] = useState("chats"); // chats | projects
-  const [query, setQuery] = useState("");
-  const [contentHits, setContentHits] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
-  const [confirmDelete, setConfirmDelete] = useState(null);
-
-  useEffect(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) { setContentHits([]); return; }
-    const t = setTimeout(async () => {
-      try {
-        const r = await api.searchDecks(q);
-        setContentHits(r.hits ?? []);
-      } catch { /* offline or API down — keep local results */ }
-    }, 350);
-    return () => clearTimeout(t);
-  }, [query]);
-
-  useEffect(() => {
-    if (focusSearch > 0) {
-      setTab("projects");
-      requestAnimationFrame(() => {
-        document.querySelector("input[placeholder='Search projects']")?.focus();
-      });
-    }
-  }, [focusSearch]);
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const local = decks.filter((d) => {
-      if (!q) return true;
-      return (
-        d.title?.toLowerCase().includes(q) ||
-        d.slug?.toLowerCase().includes(q) ||
-        d.theme?.toLowerCase().includes(q)
-      );
-    });
-    const bySlug = new Map(decks.map((d) => [d.slug, d]));
-    const extra = contentHits
-      .map((s) => bySlug.get(s))
-      .filter(Boolean)
-      .filter((d) => !local.includes(d));
-    return [...local, ...extra];
-  }, [decks, query, contentHits]);
 
   const grouped = useMemo(() => {
     const out = new Map();
@@ -147,41 +102,9 @@ export default function Sidebar({
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /><path d="m13 8 3 4-3 4" /></svg>
             </button>
           </div>
-          <div className="flex items-center gap-1 px-3 pt-3">
-            <TabButton active={tab === "chats"} onClick={() => setTab("chats")}>
-              Chats
-              {chats.length > 0 && (
-                <span className={`rounded-full px-1.5 text-[10px] tabular-nums ${tab === "chats" ? "bg-hover" : "bg-prompt"}`}>
-                  {chats.length}
-                </span>
-              )}
-            </TabButton>
-            {/* Both tabs carry a count. Only one did, which made them read as
-                two different kinds of thing rather than two lists. */}
-            <TabButton active={tab === "projects"} onClick={() => setTab("projects")}>
-              Projects
-              {decks.length > 0 && (
-                <span className={`rounded-full px-1.5 text-[10px] tabular-nums ${tab === "projects" ? "bg-hover" : "bg-prompt"}`}>
-                  {decks.length}
-                </span>
-              )}
-            </TabButton>
-          </div>
-
-          {tab === "projects" && (
-            <div className="relative px-3 pt-2.5">
-              <SearchIcon className="pointer-events-none absolute left-4.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-faint" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search projects"
-                className="w-full rounded-lg border border-line bg-sunken py-1.5 pl-8 pr-3 text-[12.5px] text-fg outline-none transition placeholder:text-fg-faint/60 hover:border-line-strong focus:border-accent"
-              />
-            </div>
-          )}
+          <div className="px-4 pt-3 text-xs font-medium text-fg-muted">Chats {chats.length > 0 && <span className="ml-1 tabular-nums">{chats.length}</span>}</div>
 
           <div className="mt-3 flex-1 space-y-3 overflow-y-auto px-3 pb-3">
-            {tab === "chats" && (
               <>
                 <button
                   onClick={() => { onNewChat("deck"); onNavigate?.(); }}
@@ -242,60 +165,11 @@ export default function Sidebar({
                   </div>
                 )}
               </>
-            )}
-
-            {tab === "projects" && (
-              <>
-                <div className="space-y-0.5">
-                  {filtered.map((d) => (
-                    <div key={d.slug} className="group relative">
-                      <a
-                        href={`#/deck/${d.slug}`}
-                        onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) { e.preventDefault(); onOpenDeck(d.slug); onNavigate?.(); } }}
-                        title={d.title}
-                        className={`flex w-full items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-8 text-left transition ${
-                          activeSlug === d.slug
-                            ? "bg-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                            : "hover:bg-hover"
-                        }`}
-                      >
-                        <DeckThumb slug={d.slug} title={d.title} theme={d.theme} className="h-9 w-9 shrink-0 rounded-md" />
-                        <span className="min-w-0 flex-1">
-                          <span className="line-clamp-2 text-[12.5px] font-medium leading-snug text-fg">{d.title}</span>
-                          <span className="block truncate text-[10.5px] text-fg-faint">
-                            {d.report ? "report" : `${d.slides} slides`} · {relative(d.updated)}
-                          </span>
-                        </span>
-                        {d.report && <DocIcon className="h-3.5 w-3.5 shrink-0 text-fg-faint" />}
-                      </a>
-                      <RowMenu
-                        open={openMenu === `d-${d.slug}`}
-                        onToggle={(v) => setOpenMenu(v ? `d-${d.slug}` : null)}
-                        items={[
-                          { label: "Open", onClick: () => { onOpenDeck(d.slug); onNavigate?.(); } },
-                          { label: "Delete project", danger: true, onClick: () => setConfirmDelete(d) },
-                        ]}
-                      />
-                    </div>
-                  ))}
-                </div>
-                {filtered.length === 0 && (
-                  <div className="empty-state-mini rounded-card border border-dashed border-line px-3 py-6 text-[11px] leading-relaxed text-fg-faint">
-                    <div className="empty-ring h-8 w-8">
-                      <SearchIcon className="h-3.5 w-3.5" />
-                    </div>
-                    {query.trim()
-                      ? <div>No projects match <span className="text-fg-muted">“{query.trim()}”</span></div>
-                      : <div>No projects yet — one starts from a chat. The machine drafts, you do the final touches.</div>}
-                  </div>
-                )}
-              </>
-            )}
           </div>
 
           <div className="mt-auto border-t border-line p-2.5">
             <div className="mb-2 space-y-0.5">
-              <NavRow active={view === "projects" || view === "project"} icon={DocIcon} label="Presentations" href="#/projects" />
+              <NavRow active={view === "projects" || view === "project"} icon={DocIcon} label="Projects" href="#/projects" />
               <NavRow active={view === "themes"} icon={PaletteIcon} label="Themes" href="#/themes" />
               <SettingsRow icon={GearIcon} label="Settings" onClick={onOpenSettings} />
               {isAdmin && <NavRow active={view === "admin"} icon={ShieldIcon} label="Admin" href="#/admin" />}
@@ -331,15 +205,7 @@ export default function Sidebar({
         <div className="flex h-full flex-col items-center gap-1 py-3">
           <IconButton icon={PanelLeftOpen} title="Expand navigation" onClick={onToggleLeft} />
           <IconButton icon={PlusIcon} title="New chat" onClick={() => { onNewChat("deck"); onNavigate?.(); }} />
-          <IconButton active={view === "projects" || view === "project"} icon={DocIcon} title="Presentations" href="#/projects" />
-          <IconButton
-            icon={LayersIcon}
-            title="Projects"
-            onClick={() => {
-              setTab("projects");
-              if (!open && onToggleLeft) onToggleLeft();
-            }}
-          />
+          <IconButton active={view === "projects" || view === "project"} icon={DocIcon} title="Projects" href="#/projects" />
           <IconButton active={view === "themes"} icon={PaletteIcon} title="Themes" href="#/themes" />
           <IconButton icon={GearIcon} title="Settings" onClick={onOpenSettings} />
           {isAdmin && <IconButton active={view === "admin"} icon={ShieldIcon} title="Admin" href="#/admin" />}
@@ -354,13 +220,6 @@ export default function Sidebar({
         </div>
       )}
 
-      {confirmDelete && (
-        <ConfirmModal
-          deck={confirmDelete}
-          onCancel={() => setConfirmDelete(null)}
-          onConfirm={() => { onDeleteDeck(confirmDelete.slug); setConfirmDelete(null); }}
-        />
-      )}
     </aside>
   );
 }
@@ -404,54 +263,6 @@ function RowMenu({ open, onToggle, items }) {
         </div>
       )}
     </div>
-  );
-}
-
-function ConfirmModal({ deck, onCancel, onConfirm }) {
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onCancel(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onCancel]);
-
-  return (
-    <div
-      className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-sunken/95 p-6 backdrop-blur-sm"
-      onClick={onCancel}
-    >
-      <div
-        className="w-full max-w-sm rounded-card border border-line bg-panel p-5"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="text-[14px] font-semibold text-fg">Delete this deck?</div>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">
-          Removes <code className="font-mono">decks/{deck.slug}</code> from the server —
-          slides, research and render included. This cannot be undone.
-        </p>
-        <div className="mt-4 flex justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={onCancel}>Cancel</Button>
-          <button
-            onClick={onConfirm}
-            className="rounded-lg bg-danger px-2.5 py-1.5 text-xs font-medium text-on-danger transition hover:opacity-90 active:translate-y-px"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TabButton({ active, onClick, children }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`pill gap-1.5 px-2.5 py-1 text-[12px] font-medium transition ${
-        active ? "bg-prompt text-fg" : "text-fg-faint hover:bg-raised hover:text-fg-muted"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 
