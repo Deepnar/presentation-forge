@@ -1762,5 +1762,7 @@ that object in cleanup strands the replay. Allocate lifetime-owned queues in the
 effect setup and verify actual development mode. Guard cancelled preparation after
 each await, not only when publishing; a font promise can otherwise resume renderer
 work after its view has gone. Cache successful font readiness, not a transient
-network failure. CDP return-by-value probes must return scalars: a Window assignment
+network failure. Evicting the promise alone is insufficient: Chrome retains an
+error on the failed FontFace, so release that failed injected rule too and test an
+actual .woff2 request outage followed by recovery. CDP return-by-value probes must return scalars: a Window assignment
 can fail serialization even though opening the real second document succeeded.

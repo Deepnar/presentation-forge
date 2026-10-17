@@ -8,5 +8,31 @@
     "io": "some avg10=0.24 avg60=0.15 avg300=0.27 total=27934306\nfull avg10=0.24 avg60=0.15 avg300=0.26 total=27251537\n"
   },
   "unrelatedWorkInterrupted": false,
-  "note": "Initial high I/O window used for planning/implementation/lightweight tests only. Chrome began after CPU/memory/I/O pressure returned low."
+  "note": "Initial high I/O window used for planning/implementation/lightweight tests only. Chrome began after CPU/memory/I/O pressure returned low.",
+  "implementationSha": "01ba3a37432a0350530fba65eb7931d41a6fd42e",
+  "node": "v24.16.0",
+  "chrome": "Google Chrome 151.0.7922.173",
+  "finalPreflight": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5055922\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1609\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1600\n",
+    "io": "some avg10=0.01 avg60=0.18 avg300=0.48 total=31783979\nfull avg10=0.01 avg60=0.17 avg300=0.44 total=30871879\n"
+  },
+  "ownedPostgres": {
+    "container": "forge_v27c1_validation_pg",
+    "id": "17f1955c89b993ffe636cafee07cca8ea1913739155ddb43d374ba7c0ae9e668",
+    "endpoint": "127.0.0.1:5544",
+    "image": "postgres:15-alpine (cached, no pull)",
+    "cpuLimit": 1,
+    "memoryMiB": 512,
+    "tmpfsMiB": 192,
+    "cleanup": {
+      "stoppedAndRemoved": false
+    },
+    "version": "15.18"
+  },
+  "correctedSourcePreflight": {
+    "cpu": "some avg10=0.00 avg60=0.03 avg300=0.00 total=6061859\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=62286\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=60017\n",
+    "io": "some avg10=0.00 avg60=0.05 avg300=0.30 total=33568667\nfull avg10=0.00 avg60=0.05 avg300=0.28 total=32563188\n"
+  }
 }

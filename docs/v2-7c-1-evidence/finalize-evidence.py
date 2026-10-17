@@ -77,12 +77,12 @@ for source, name in [(scratch / 'hosted-import-final.tap', 'hosted-import.tap'),
 hosted = totals((root / 'logs' / 'hosted-import.tap').read_text())
 assert hosted['total'] == hosted['pass'] == 1
 write('hosted-import.json', dict(implementationSha=sha, command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> timeout --signal=TERM --kill-after=10s 5m node --test --test-reporter=tap docs/v2-7c-1-evidence/hosted-import-check.mjs', log=str(root / 'logs' / 'hosted-import.tap'), tests=hosted, exitCode=0))
-pg_handoff_source = scratch / 'postgres-handoff-final.tap'
+pg_handoff_source = scratch / 'postgres-covers-final.tap'
 pg_handoff_log = root / 'logs' / pg_handoff_source.name
 shutil.copy2(pg_handoff_source, pg_handoff_log)
 pg_handoff = totals(pg_handoff_source.read_text())
-assert pg_handoff['total'] == pg_handoff['pass'] == 10
-write('postgres-handoff.json', dict(implementationSha=sha, backend='PostgreSQL 15.18', command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_COVERS_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-covers-chrome-7c.test.js', log=str(pg_handoff_log), tests=pg_handoff, exitCode=0, note='Repeated browser cases against PostgreSQL; not added to distinct inventory cases.'))
+assert pg_handoff['total'] == pg_handoff['pass'] == 11
+write('postgres-covers.json', dict(implementationSha=sha, backend='PostgreSQL 15.18', command='LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_COVERS_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-covers-chrome-7c.test.js', log=str(pg_handoff_log), tests=pg_handoff, exitCode=0, note='Repeated browser cases against PostgreSQL; not added to distinct inventory cases.'))
 pg_http_source = scratch / 'postgres-http-final.tap'
 pg_http_log = root / 'logs' / pg_http_source.name
 shutil.copy2(pg_http_source, pg_http_log)
