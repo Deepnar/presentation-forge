@@ -1,0 +1,1184 @@
+{
+  "taskEntry": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "throughEvidenceHead": "2cdd8a9962359c9648eb0e997ef2223668dc1b04",
+  "note": "Task-entry to evidence snapshot plus pending continuity/evaluation metadata; independent review and final cleanup records may follow. Source paths are separately frozen in source-provenance.json.",
+  "files": [
+    {
+      "status": "M",
+      "path": "app/web/src/App.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/api.js"
+    },
+    {
+      "status": "A",
+      "path": "app/web/src/components/GeneratedProjectCard.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/components/Sidebar.jsx"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/components/ui.jsx"
+    },
+    {
+      "status": "A",
+      "path": "app/web/src/lib/projectCatalog.js"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/lib/v2project.js"
+    },
+    {
+      "status": "M",
+      "path": "app/web/src/views/Workspace.jsx"
+    },
+    {
+      "status": "M",
+      "path": "docs/ARCHITECTURE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/CONTINUATION.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/HANDOFF.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/ROADMAP.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/TRAPS.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/V2-7-FRONTEND-ARCHITECTURE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-7C-2-EVAL.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.json"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/RUNBOOK.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/VISUAL-REVIEW.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/bf1-handoff-initial.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/build-ui.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-corrected.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-second.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/chrome-third.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/dialog-transition-trace.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/http-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/postgres-catalog-final.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/probe-click-finish-settled.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/probe-click-finish.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/probe-click-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/search-capture-first.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/search-capture-first.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/strict-modal-before.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-before.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-expanded.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/attempts/unit-http-governance.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/benchmark-50.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/benchmark-results.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-delete-generated-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-delete-generated.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-delete-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-delete-saved-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-generated-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-no-matches-settled.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-no-matches.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-saved-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/catalog-signed-out.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/changed-files.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/coordinator.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/cross-process-faults.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/environment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/finalize-evidence.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/frontend-visual.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/hosted-import-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/hosted-import.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/benchmark-50.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/bulk/bulk.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/bulk/runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/byok-locale.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/cross-process-faults.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/final-command-runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/hosted-import.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/native-review.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/non-browser-bulk.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres-catalog-final.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres-contract.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres-cover-http-final.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres-covers-final.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres-http-final.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres/runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres/v2-import-postgres-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres/v2-projects-6c-concurrency.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres/v2-projects-6c-faults.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/postgres/v2-projects-6c-postgres.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/production-build.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/project-catalog.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-browser.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/freeform.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/plate.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5i.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5j.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-5k.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-6a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-6b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-6c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-7a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-chart.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-edit-chrome-table.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-fontgate-4e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-fonts-4d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-handoff-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-import-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-live-chrome-4f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-plate-3f5.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-selection-chrome.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial-initial/v2-viewer-smoke.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/freeform.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/plate.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5i.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5j.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-5k.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-6a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-6b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-6c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-7a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-chart.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-edit-chrome-table.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-fontgate-4e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-fonts-4d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-handoff-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-import-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-live-chrome-4f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-plate-3f5.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-project-catalog-chrome-7c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-project-covers-chrome-7c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-selection-chrome.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/serial/v2-viewer-smoke.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/settled-search.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/shell-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/typecheck.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-catalog/provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-catalog/v2-7c-2-validation--discovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-catalog/v2-7c-2-validation--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--covers-font-http.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--covers-font-static.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--first-visible.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--many-projects.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--retry-font.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-covers/v2-7c-1-validation--retry-network.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-hosted/provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/postgres-hosted/v2-7c-2-validation--hosted-import-measurements.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-catalog/provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-catalog/v2-7c-2-validation--discovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-catalog/v2-7c-2-validation--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7a-evidence--large-deck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--boundary-60.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-1-validation--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--boundary-60.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--cold-warm.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--refusal-narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7b-2-validation--save-states.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--covers-font-http.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--covers-font-static.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--first-visible.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--many-projects.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--retry-font.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/measurements/sqlite-regressions/v2-7c-1-validation--retry-network.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native-review.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/chart-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/handoff-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/handoff-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/handoff-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/shell-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/shell-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/native/table-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/non-browser-bulk.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-catalog-http.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-catalog.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-contract.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-cover-http-final.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-covers-final.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/postgres-double-click.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/production-build.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/project-catalog.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-content.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-font-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-font-http-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-font-http-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-font-static-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-font-static-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-loading.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-network-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-session-cross-tab.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-session-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-session-settled.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/postgres-cover-images/v2-7c-1-evidence--covers-timeout.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6a-evidence--conflict.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6a-evidence--project-list.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6a-evidence--recovered-banner.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6a-evidence--reopened.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6a-evidence--saved.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6b-evidence--history-after-refresh.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6b-evidence--history-list.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6b-evidence--history-preview.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6b-evidence--history-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6b-evidence--history-three-versions.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6c-evidence--hosted-after-restart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6c-evidence--hosted-conflict.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6c-evidence--hosted-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-6c-evidence--hosted-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--dashboard-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--dashboard-hosted-anon.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--dashboard.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-blank.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-narrow-projects.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-readonly.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-shell.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7a-evidence--editor-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-1-evidence--imported-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-1-evidence--imported-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-1-evidence--imported-stats.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-1-evidence--imported-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-1-evidence--imported-transition.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--ambiguous-response.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--boundary-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--deck-page-action.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--handoff-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--opening-project.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--refusal-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7b-2-evidence--session-changed.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-content.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-font-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-font-http-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-font-http-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-font-static-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-font-static-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-loading.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-network-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-session-cross-tab.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-session-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-session-settled.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/regression/sqlite-regression-images/v2-7c-1-evidence--covers-timeout.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/run-final-steps.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/run-group.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/serial-browser.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/serial-recovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/settled-search.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/shell-export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/shell-native.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/source-provenance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-delete-generated-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-delete-generated.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-delete-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-delete-saved-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-generated-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-narrow-dialog.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-no-matches.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-saved-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/sqlite-catalog/catalog-signed-out.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/summary.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/typecheck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/validation-plan.json"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js"
+    },
+    {
+      "status": "M",
+      "path": "test/v2-edit-chrome-7a.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-7c.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-chrome-7c.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-project-catalog-http-7c.test.js"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs"
+    }
+  ]
+}

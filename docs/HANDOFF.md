@@ -1,52 +1,44 @@
-# Handoff — V2-7C-2 final validation in progress
+# Handoff — V2-7C-2 independent review pending
 
-2026-10-17, branch `v2`. Accepted baseline remains independently accepted C1
-`f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`. Frozen C2 implementation:
-`bf1bd8f7dbce827be04ed530b2e7330b385e8baa`; later commits are evidence/docs.
+2026-10-17, branch `v2`. Accepted baseline remains C1
+f79ae07d6ad1696da3106a2a1148ae0ce7f58f51. Frozen C2 implementation:
+**bf1bd8f7dbce827be04ed530b2e7330b385e8baa**. Later commits are evidence/docs.
 Read AGENTS.md, CONTINUATION.md, DEVELOPMENT-PROTOCOL.md, development-state.json,
-the [contract](ROADMAP.md#v2-7c-2-plan), [evaluation](V2-7C-2-EVAL.md) and
-[runbook](v2-7c-2-evidence/RUNBOOK.md). C2 is not accepted.
+[contract](ROADMAP.md#v2-7c-2-plan), [evaluation](V2-7C-2-EVAL.md) and runbook.
 
-Human direction approved one mixed Projects grid with distinct generated
-originals/saved editable copies and search/type filters. Implementation preserves
-canonical authorization, C1 saved covers, report-only/report/research/script
-routes, B2 explicit conversion and copy-scoped deletion. Source-qualified metadata
-projection and independent cancellable read lifetimes do not merge/migrate stores.
-Independent read-only review found modal shortcut/focus escape, hidden deletion
-errors and StrictMode invoker restoration. Narrow fixes and regression cases are
-in the frozen source; no later feature work is authorized.
+Approved mixed Projects discovery is implemented and validated. All205 inventory
+files have selected same-source results:2320 pass, zero fail/skip/cancelled;
+distinct hosted supplement1 passes, required unexecuted0. Focused41, PG catalog
+16/HTTP8, PG C1covers12/HTTP9 repeats pass. Build/typecheck/50 benchmark cells pass.
+106 selected images and seven native authenticated export rasters inspected.
+Exact commands, backends, hashes, measurements and selection are in C2 evidence.
+No Auto output-quality or interactive Microsoft PowerPoint/deployment claim.
 
-Preliminary complete Chrome16, catalog units17, actual HTTP8 and governance22 all
-pass. Final exact-source205-file matrix, PostgreSQL repeats, build/typecheck,
-50-cell benchmark and native/visual checks are running in strict serial order.
-Do not claim their preliminary or older C1 totals as final. Current ignored
-`out/v2-7c-2-validation/coordinator-driver.log` and `coordinator.json` identify
-completed commands and any failure. The process running `run-final.py` owns the
-shared Vite dist; never overlap another browser/build process with it.
+Initial final-source serial attempt retains170 pass/1 B2 restore timeout across23
+files, two then-unexecuted files. One unchanged full B2 retry passes11/11; first22
+successful logs plus that retry and remaining C1/C2 logs form the selected199.
+Cause remains unresolved. Separate en_IN locale probe is9 pass/1 known assertion
+failure. Fit, B2 timeout and C1 capture timing remain linked roadmap limitations.
+New C2 settled narrow views and completed-query no-match capture distinguish
+usable controls from inherited transitional evidence. Historical outputs restored
+only after current-source copies/hashes were retained. No source delta after bf1.
 
-A single separate reviewer `/root/catalog_review` performed read-only review and
-awaits an exclusive runtime validation slot and finalized evidence. Use its
-separate ACCEPT/HOLD for the exact pushed source; implementer `/root` cannot
-accept itself. If unavailable, leave pending with evidence. No dependent feature.
+The single separate high-effort reviewer `/root/catalog_review` awaits exclusive
+runtime validation and an exact-source ACCEPT/HOLD. Root heavy validation is done;
+do not overlap browser/build/LibreOffice processes. Review pending is not acceptance.
+After a separate ACCEPT only, update state/roadmap; after HOLD retain C1 baseline
+and register the narrow correction. Stop after review/handoff; toolbar/agent work
+is unauthorized. All future work belongs in ROADMAP.md.
 
-Owned disposable PostgreSQL service: `forge_v27c2_validation_pg`, container
-`918c9f75feb1bbe29e28c049ae025849c80b06f739481c75c1dfe41ac12c051d`, localhost5544,
-cached postgres:15-alpine, one CPU/512MiB/192MiB tmpfs. Its environment record
-tracks cleanup, currently pending. Keep until independent verification, then check
-owned test DBs are gone, stop only this exact container and record removal. Never
-reuse/stop other projects' 5432/5433 services or the existing Forge8090 app.
+Owned disposable PostgreSQL service, retained for review:
+forge_v27c2_validation_pg, exact container
+918c9f75feb1bbe29e28c049ae025849c80b06f739481c75c1dfe41ac12c051d,
+localhost5544, cached15-alpine/15.18, oneCPU/512MiB/192MiB tmpfs. After review,
+check owned test databases are gone, stop ONLY this exact container and record
+auto-removal/tmpfs/fixed-port cleanup in environment.json. Other projects'
+5432/5433 and the existing8090 app are unrelated. Never stop them.
 
-Full suites rewrite historical evidence: fresh captures are preserved in ignored
-scratch by the coordinator and must be copied into C2 evidence with exact source,
-backend and hashes before restoring only historical paths. Inspect final images
-and real native PPTX rasters. Leave the standing BYOK locale failure separate.
-Fit, B2 isolated restore timeout and C1 canonical narrow capture timing remain
-linked roadmap items, outside this slice. No Auto output-quality or deployment
-claim. After final evidence and separate review, update roadmap/state/handoff,
-commit scoped work and push origin/v2, then stop before toolbar or agent work.
-
-Preserve the unrelated untracked `.agents/`,
-`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. The user prefers few agents,
-with high effort only. See the roadmap for all remaining work; no second future
-work list belongs in this handoff.
+Preserve unrelated untracked `.agents/`,
+PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md and
+PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md. The user prefers few agents,
+with high effort only. Commit focused metadata and push origin/v2; never deploy.

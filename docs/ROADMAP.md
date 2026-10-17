@@ -7885,7 +7885,12 @@ scale); charts structurally exact without axes (V2-4C).
   before changing either. Successful canonical PostgreSQL 11 and instrumented
   reruns do not establish the first timeout's cause. Evidence is retained in the
   [independent B2 review](reviews/V2-7B-2-03cc89e.md); no product regression has
-  been established. This is a validation followup, not conversion/feature scope.
+  been established. During C2 source `bf1bd8f` validation the unchanged SQLite
+  file reproduced the restore wait timeout (10 pass/1 fail); one unchanged bounded
+  complete-file retry passed11/11. Both logs and exact per-file selection are
+  retained in [C2 evidence](V2-7C-2-EVAL.md). This recurrence remains unexplained;
+  the C2 dialog-helper correction does not establish its cause. This is a validation
+  followup, not conversion/feature scope.
 <a id="v2-7c-1-narrow-capture"></a>
 
 - [ ] Settle responsive rail geometry before canonical narrow screenshot capture.

@@ -39,7 +39,7 @@ slice. Human direction selected one mixed grid containing distinct saved editabl
 presentations and generated decks/reports, with search/type filters and one
 sidebar destination; the contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
 The accepted baseline remains C1 source `f79ae07`; implementation `bf1bd8f` is
-frozen for final validation, pending a separate ACCEPT/HOLD. Later checkout
+fully validated with retained final evidence, pending a separate ACCEPT/HOLD. Later checkout
 commits can contain documentation/evidence only; inspect the diff and state.
 
 The complete inventory has 205 entry files: 176 bulk, 25 serial browser/build
