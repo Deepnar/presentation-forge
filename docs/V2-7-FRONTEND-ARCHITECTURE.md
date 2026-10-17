@@ -1,7 +1,7 @@
 # V2-7 Frontend Architecture — unified workspace
 
-Updated: 2026-10-16. V2-7A independently accepted at `fe749fb`; V2-7B-1
-source `662f7d6` is independently accepted. Parent V2-7 remains
+Updated: 2026-10-17. Accepted source and review are indexed in development-state.json.
+V2-7C-2 discovery is implemented pending validation/review. Parent V2-7 remains
 in progress.
 
 ## 1. Product model: Workspace → Project → Editor
@@ -10,9 +10,10 @@ One hierarchy, three surfaces, one representation (ProjectStore
 documents of Layer-C scenes through the revisioned engine):
 
 - **Workspace** (`#/projects`, `views/Workspace.jsx`) — the entry
-  point for saved presentations: project cards from
-  `GET /api/v2/projects` only, with open/rename/delete/export/
-  history and AI/layout/blank creation. No frontend-only list.
+  point for saved presentations and generated decks/reports. Canonical
+  `GET /api/v2/projects` and `GET /api/decks` metadata form a disposable typed
+  projection; the two stores and documents remain independent. Saved entries
+  retain open/rename/delete/export/history and AI/layout/blank creation.
 - **Project** — the saved document itself (identity, title,
   revision, scenes, history). Addressed by id in `#/project/:id`
   (and `#/project/:id/history`); the route is the identity, so
@@ -27,6 +28,35 @@ drive; the workspace mounts the same component with a project id
 instead. The existing hash router uses `lib/guarded-hash-router.js` for central leave
 policy, link interception and indexed history restoration; project routes remain
 part of the same App route hierarchy.
+
+### Unified discovery (V2-7C-2)
+
+`lib/projectCatalog.js` qualifies identities as `saved:<id>` and
+`generated:<slug>`, then orders metadata by modification time and identity.
+Titles, mutable origin metadata and coincident identifiers never merge copies.
+Reads do not convert, change scenes or write history. Generated cards use the
+existing original destination; report-only entries open Report. The explicit
+Open in editor action and its durable import receipts remain in the deck/chat
+surfaces. All projects returns from legacy deck/report/research/script pages to
+the same discovery page; the sidebar retains chats and one Projects shortcut.
+
+Each workspace effect owns independently abortable saved/generated reads,
+source-local retries, a bounded deadline and a debounced generated-content search.
+Title/theme/identifier matches stay available when content search fails. The
+existing owner-checked deck search supplies content hits only for entries already
+in the authorized metadata projection. Saved/generated/report type filters do
+not affect authorization. Partial errors never become a successful empty catalog.
+The C1 cover loader supplies the same session fence and bounded preview work;
+departure, StrictMode replay and identity invalidation dispose discovery requests.
+Late results cannot publish under a different query, lifetime or session.
+
+Generated previews retain the legacy thumbnail/fallback in fixed 16:9 space and
+mount near the viewport; saved entries retain C1 revision-scoped scene previews.
+Delete confirmations identify which copy is affected and invoke only that
+source's canonical delete. Errors stay focused inside the active dialog;
+pending work traps focus on the busy dialog. Global project-search/new-chat
+shortcuts defer while a modal is active. Ctrl/Cmd+K otherwise uses the central
+leave guard before focusing discovery search, including pending editor drafts.
 
 ## 2. Editor shell layout
 

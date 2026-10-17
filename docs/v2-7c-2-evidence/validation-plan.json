@@ -1,7 +1,7 @@
 {
   "implementationSha": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
-  "inventoryMethod": "Task-entry202-file partition; extend with the three focused catalog files before freezing final source.",
+  "inventoryMethod": "C1 complete partition extended with two catalog bulk files and one catalog serial browser owner; 205 entry files.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
@@ -176,7 +176,9 @@
     "test/v2-import-http-7b.test.js",
     "test/v2-handoff-7b.test.js",
     "test/v2-project-covers-7c.test.js",
-    "test/v2-project-covers-http-7c.test.js"
+    "test/v2-project-covers-http-7c.test.js",
+    "test/v2-project-catalog-7c.test.js",
+    "test/v2-project-catalog-http-7c.test.js"
   ],
   "serial": [
     "test/v2-edit-chrome-7a.test.js",
@@ -202,7 +204,8 @@
     "test/v2-viewer-smoke.test.js",
     "test/v2-import-chrome-7b.test.js",
     "test/v2-handoff-chrome-7b.test.js",
-    "test/v2-project-covers-chrome-7c.test.js"
+    "test/v2-project-covers-chrome-7c.test.js",
+    "test/v2-project-catalog-chrome-7c.test.js"
   ],
   "postgres": [
     "test/v2-projects-6c-postgres.test.js",

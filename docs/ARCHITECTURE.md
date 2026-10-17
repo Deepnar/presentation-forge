@@ -1815,6 +1815,18 @@ and failed replacement loading restores editing/guard ownership. Embedded
 binding waits for the font-gated viewer. The top bar scrolls to keep narrow
 controls reachable (`docs/V2-7A-EVAL.md`, `docs/V2-7-FRONTEND-ARCHITECTURE.md`).
 
+The V2-7C-2 Projects page consolidates generated originals and saved editable
+documents through a typed read projection over their canonical metadata APIs.
+Source-qualified identities keep originals and copies separate; discovery never
+imports or merges them. Report-only sources retain Report as their destination,
+with report/research/script access and explicit editor handoff unchanged. Search
+combines local metadata matches with the existing authorized generated-content
+search, alongside type filters. Independent read/error/retry states, request
+cancellation and the C1 session fence protect partial results and account changes.
+The sidebar has one Projects destination. Copy-scoped confirmations retain errors
+inside the modal and contain focus during pending deletion. Details and current
+validation/review status are in the frontend record and development-state.json.
+
 ### V2-7B-1 generated-source creation
 
 `src/projects/import-generated.js` provides the headless conversion/creation
@@ -1978,8 +1990,8 @@ state machines in the route module and move independently reusable panels into
   reverse flow), and — after a render — **the rasterised pages of the actual
   document** under "The rendered document" (LibreOffice → PDF → PNG via
   `reportPreview` in `src/preview.js`), so what the user sees is the real Word
-   output. It is the land target of the sidebar's Reports tab and of the home
-   "from a brief" flow; a missing report renders an empty state. Each section
+   output. Report-only cards in Projects and the home "from a brief" flow open
+   it; a missing report renders an empty state. Each section
     also offers *Add as slide*, which appends the section's prose as a bullets
     slide of the companion deck — the report-as-deck hybrid (F20). Render .docx
     and the Download link are gated by the report's **write state**: a report
