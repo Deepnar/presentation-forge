@@ -93,21 +93,26 @@ const LOADERS = Object.fromEntries(
   FONT_FILES.map((f) => [`${f.family}|${f.weight}`, f.load]),
 );
 
-const injected = new Set();
+const injected = new Map();
 
 function injectFace(family, weight, url) {
   const key = `${family}|${weight}`;
-  if (injected.has(key)) return;
-  injected.add(key);
+  if (injected.has(key)) return injected.get(key);
   const css = `@font-face{font-family:${JSON.stringify(family)};font-style:normal;font-display:swap;font-weight:${weight};src:url(${JSON.stringify(url)}) format("woff2");}`;
-  document.adoptedStyleSheets = [
-    ...document.adoptedStyleSheets,
-    (() => {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(css);
-      return sheet;
-    })(),
-  ];
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(css);
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+  injected.set(key, sheet);
+  return sheet;
+}
+
+function releaseFailedFace(family, weight, sheet) {
+  const key = `${family}|${weight}`;
+  if (!sheet || injected.get(key) !== sheet) return;
+  // Chrome retains the error on a FontFace after its request fails. A fresh
+  // rule permits a real retry; an older attempt must not remove a newer rule.
+  document.adoptedStyleSheets = document.adoptedStyleSheets.filter(item => item !== sheet);
+  injected.delete(key);
 }
 
 function collectRuns(scenes) {
@@ -179,19 +184,21 @@ async function loadFaces(key) {
       missing.push(n.family); unsupported.push(n.family);
       return;
     }
+    let sheet;
     try {
       const loader = LOADERS[`${n.family}|${n.weight}`];
       if (loader) {
         const mod = await loader();
-        injectFace(n.family, n.weight, mod.default);
+        sheet = injectFace(n.family, n.weight, mod.default);
       }
       // Inter / IBM Plex Mono ride static imports; everything else
       // was just injected above. Either way, verify truthfully.
       const spec = `${n.style} ${n.want} 16px "${n.family}"`;
       await doc.fonts.load(spec);
       if (doc.fonts.check(spec)) loaded.push(`${n.family}:${n.want}`);
-      else missing.push(`${n.family}:${n.want}`);
+      else { releaseFailedFace(n.family, n.weight, sheet); missing.push(`${n.family}:${n.want}`); }
     } catch {
+      releaseFailedFace(n.family, n.weight, sheet);
       missing.push(`${n.family}:${n.want ?? n.weight}`);
     }
   }));
