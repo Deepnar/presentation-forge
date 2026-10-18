@@ -659,6 +659,13 @@ before concluding an endpoint is broken.
 
 ## Frontend
 
+**Repeated control captions need region-scoped automation.** The editor's top-bar
+Slides button toggles the rail, while its sidebar Slides tab switches rail content.
+A global text match can hide the target being tested. Scope the selector to the
+intended region, then verify settled geometry and actual pointer hits before
+classifying a product failure. Local-only Live compilation likewise needs a local
+fixture; the hosted fixture's deliberate refusal is not a reason to relax policy.
+
 **Relative state updates in keyboard handlers must use the functional updater.**
 Reading the current index from an effect's closure loses keystrokes: several
 `keydown` events fire before React re-renders, each computes from the same stale
