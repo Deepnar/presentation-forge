@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ToolResult",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "code": {
+          "enum": [
+            "forbidden",
+            "invalid-input",
+            "budget-exceeded",
+            "unknown-slide",
+            "unknown-element",
+            "not-editable",
+            "locked",
+            "stale-revision",
+            "duplicate-id",
+            "invalid-edit",
+            "engine-refused",
+            "unavailable"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "ok",
+        "code",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

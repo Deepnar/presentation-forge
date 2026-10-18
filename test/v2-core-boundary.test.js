@@ -11,10 +11,11 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = path.resolve(new URL("..", import.meta.url).pathname);
-const PACKAGES = ["model", "core", "compiler", "renderer-pptx", "renderer-docx", "editor"];
+const PACKAGES = ["model", "core", "compiler", "renderer-pptx", "renderer-docx", "editor", "tools"];
 
 // Relative-import scope per package: where a file may point.
 const RELATIVE_SCOPE = {
+  tools: ["packages/model", "packages/tools"],
   model: ["packages/model"],
   core: ["packages/model", "packages/core"],
   compiler: ["packages/model", "packages/core", "packages/compiler"],
@@ -25,6 +26,7 @@ const RELATIVE_SCOPE = {
 
 // Bare specifiers allowed per package. Everything else fails.
 const BARE_ALLOW = {
+  tools: ["ajv"],
   model: ["ajv"],
   core: [],
   compiler: [],
@@ -36,6 +38,7 @@ const BARE_ALLOW = {
 // node: builtins allowed per package. Core stays dependency-free; the
 // renderer-pptx Node adapter is the single narrow exception.
 const NODE_ALLOW = {
+  tools: ["node:fs/promises"],
   model: ["node:fs/promises", "node:crypto"],
   core: [],
   compiler: [],

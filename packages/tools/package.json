@@ -1,0 +1,6 @@
+{
+  "name": "@forge/tools",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Validated content tools over an injected authoritative scene engine."
+}
