@@ -239,3 +239,15 @@ test('production toolbar evidence includes its complete Chrome file and full she
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-edit-chrome-7a.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('agent foundation requires complete tool and context behavioral evidence', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8a-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8a-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8a-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8A'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'agent-foundation'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-context-8a.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

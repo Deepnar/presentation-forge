@@ -2619,3 +2619,12 @@ counts and review consistency. It runs via `npm run dev:protocol` and CI; negati
 cases are in `test/dev-protocol.test.js`. The checker never runs application tests,
 changes state or grants acceptance. It cannot authenticate reviewer identity or
 context independence; the committed review/human decision remains the authority.
+
+### V2-8A headless tool/context foundation
+
+The in-progress tools/agent/skill packages bind scoped semantic content tools to
+the existing live command engine and compose bounded model input from filtered
+reads. No provider, Assistant UI, durable run or new document/store is introduced.
+[The as-built boundary](V2-8-AGENT-ARCHITECTURE.md) records schemas, authority,
+projection, preservation, error and budget contracts. Current validation/review
+state is indexed in development-state.json.

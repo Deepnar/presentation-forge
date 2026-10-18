@@ -133,7 +133,8 @@
               "browser-handoff",
               "project-covers",
               "project-catalog",
-              "editor-toolbar"
+              "editor-toolbar",
+              "agent-foundation"
             ]
           },
           "status": {

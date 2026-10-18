@@ -1,25 +1,15 @@
-# Handoff — V2-7C-3 independently accepted
+# Handoff — V2-8A approved, implementation in progress
 
-2026-10-18, branch v2. Accepted source 484875ff5c826a34028889ed2fc6118bfdc407ad,
-separate [ACCEPT](reviews/V2-7C-3-484875f.json) committed6ce9c07. Implementation and
-accepted-baseline pointers match; later commits only record evidence/review/cleanup.
-Read state, protocol and [evaluation](V2-7C-3-EVAL.md) for exact scope/results.
+2026-10-18, v2. Human selected **Tool/context foundation first**. Accepted source
+remains484875ff5c826a34028889ed2fc6118bfdc407ad, separate C3 ACCEPT; do not reopen it.
+The [approved V2-8A contract](ROADMAP.md#v2-8a-scope-proposal), state and evaluation
+index the active scope. New tools/context/skill code and tests are in progress;
+all final gates pending. No V2-8A acceptance, UI/provider/runtime follow-on or deploy.
 
-Production editor controls are separated from the standalone fixture/Live/Projects
-harness and diagnostics. Readable labels and truthful read-only persistence status
-retain shared commands/IDs/guards. Full206-file matrix2330/2330 plus1 distinct hosted
-case; focused37/37;54 backend repeats; build/typecheck/50cells pass. Root inspected123
-images/7 native pages; independent69/69 and8 native pages verified. No required
-unexecuted checks. Separate BYOK locale remains9/1. Old B2 timeout did not recur and
-is not diagnosed by that pass. Fit/capture limitations retain roadmap entries.
-
-Owned3abaddfa Forge PostgreSQL container removed,5544closed, root/reviewer confirmed.
-Pre-removal DBcount unavailable because query output was not retained during the
-post-stop verification race; never infer0. Cleanup evidence is committed. No other
-service/database touched. Original3 untracked paths remain preserved.
-
-C3 stop point reached. The latest continuation request authorizes next-slice
-planning; [the V2-8A scope proposal](ROADMAP.md#v2-8a-scope-proposal) is recorded,
-with its required human direction pending. No V2-8 implementation has started;
-active accepted milestone/validation remain C3. Next-candidate status is not coding
-authorization. Future work lives only in ROADMAP.md.
+Tools bind the actual EditorHandle with trusted authority and allowlisted content
+requests; context is structurally filtered and budgeted. See the as-built agent
+architecture. Freeze source before full208-file matrix, native/visual evidence and
+one separate high-effort review. Preserve prior evidence; Chrome/build owners serial.
+Shared machine currently has competing CPU work; wait before heavy validation.
+No owned PostgreSQL service currently exists; never reuse another project's DB.
+Original3 untracked paths remain untouched. Future work only in ROADMAP.md.
