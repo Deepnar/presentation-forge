@@ -1827,6 +1827,15 @@ The sidebar has one Projects destination. Copy-scoped confirmations retain error
 inside the modal and contain focus during pending deletion. Details and current
 validation/review status are in the frontend record and development-state.json.
 
+C3 uses that same viewer's existing embedded/standalone boundary. The production
+project toolbar exposes document/edit/view actions; fixture switching, Live
+compilation, the duplicate project harness and raw diagnostics remain on
+`scenes.html`. Human labels replace implementation IDs on project routes while
+machine-facing hooks and canonical commands retain their identities. Embedded
+project switching uses the guarded workspace route; standalone switch guards and
+all existing error/recovery paths remain. No document, store, compiler or renderer
+was forked. Current validation/review status is indexed in development-state.json.
+
 ### V2-7B-1 generated-source creation
 
 `src/projects/import-generated.js` provides the headless conversion/creation

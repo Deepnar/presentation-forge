@@ -3,7 +3,7 @@
 Updated: 2026-10-18. Accepted source and review are indexed in development-state.json.
 V2-7C-2 discovery is independently accepted at `bf1bd8f`; see
 [decision](reviews/V2-7C-2-bf1bd8f.json). Parent V2-7 remains
-in progress.
+in progress. C3 control separation is implemented pending its own validation/review.
 
 ## 1. Product model: Workspace → Project → Editor
 
@@ -81,10 +81,12 @@ leave guard before focusing discovery search, including pending editor drafts.
 - **Left rail** (`aside[aria-label="Slides"]`): filmstrip with
   tabs for slides/layers, chooser, bulk bar. Collapsible; on
   narrow viewports an overlay behind the top-bar toggle.
-- **Center**: the slimmed view toolbar (fixture select, nav,
-  zoom, live, projects, edit, add-shapes, text cluster, status),
-  banners (edit/save/switch/text conflicts), the canvas, and a
-  status line. Canvas keeps the majority of the width.
+- **Center**: project routes retain previous/next, zoom/Fit, Edit/Done,
+  text/shape insertion, pending-text Commit/Cancel and descriptive slide/selection/
+  layout status. Fixture selection, Live compilation and the duplicate Projects
+  dialog are standalone-only controls; their panels are also excluded in embedded
+  mode. Banners retain edit/save/switch/text conflicts. Canvas keeps the majority
+  of the width; the fixed-height toolbar scrolls without wrapping.
 - **Right rail** (`aside[aria-label="Inspector"]`, fixed 288px):
   Inspector and Assistant tabs. Inspector shows the selection
   readout, the contextual format panel (text/shape/chart/table —
@@ -94,9 +96,17 @@ leave guard before focusing discovery search, including pending editor drafts.
   stage, preserving the V2-5D no-reflow contract the bottom dock
   used to keep (the center column no longer reserves inspector
   space at all).
-- Dialogs (projects, history, gallery, present, leave guard) are
-  fixed overlays with Escape/backdrop close and focus return to
-  the opener.
+- History/gallery/present and standalone Projects dialogs retain their existing
+  close/focus lifetimes. Navigation and switch guards retain their existing
+  Save/Discard/Cancel semantics. Embedded project switching goes through the
+  canonical guarded Workspace/Projects route, rather than the harness dialog.
+- Human-facing project slide/format labels use slide positions and object kinds;
+  standalone diagnostics preserve identity strings. Data attributes/internal IDs,
+  the engine document, commands, fixed inspector width and native export stay
+  shared. Layer tooltips and blank-history fallbacks use descriptive labels in
+  production. Read-only status derives from canonical persistence state rather
+  than treating every loaded project as an unsaved edit. This is presentation by
+  mode, not a second renderer or command path.
 
 ## 3. State ownership
 

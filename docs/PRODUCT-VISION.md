@@ -59,6 +59,10 @@ authoritative scene and canonical SVG renderer. Previews are disposable reads;
 their loading, failure or retry never creates another project document. Its
 independently accepted source `f79ae07`, validation and review are indexed in
 [V2-7C-1-EVAL.md](V2-7C-1-EVAL.md).
+C2 unifies generated originals and saved copies in one Projects catalog without
+merging documents or importing on reads. C3 separates standalone developer
+controls/diagnostics from normal saved-project editing; its current validation
+and independent-review state are indexed in development-state.json.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.
