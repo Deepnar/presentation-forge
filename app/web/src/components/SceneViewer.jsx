@@ -494,7 +494,7 @@ function TableDataPanel({ element, onCommit, diagnostics = true }) {
 // node to select). Hidden rows are dimmed and never selected —
 // re-show first. Collapsed groups persist in a ref map keyed by
 // slide, so switching slides keeps each tree's shape.
-function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange, onReorder, onLock, onHide }) {
+function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange, onReorder, onLock, onHide, diagnostics = true }) {
   const [collapsed, setCollapsed] = useState(() => new Set());
   const rowRefs = useRef(new Map());
   // One row implementation shared with tests: draw order from the
@@ -536,6 +536,8 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
         const el = byId.get(row.id);
         if (!el) return null;
         const parent = row.parentId ? byId.get(row.parentId) : null;
+        const label = diagnostics ? row.id : row.label;
+        const parentLabel = diagnostics ? parent?.id : parent ? elementLabel(parent) : null;
         const selected = selectedSet.has(row.id);
         const parentSelected = parent && selectedSet.has(parent.id);
         const refCb = (n) => {
@@ -577,7 +579,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
             {row.kind === "group" && (
               <button
                 type="button"
-                aria-label={collapsed.has(row.id) ? `Expand ${row.id}` : `Collapse ${row.id}`}
+                aria-label={collapsed.has(row.id) ? `Expand ${label}` : `Collapse ${label}`}
                 aria-expanded={collapsed.has(row.id) ? "false" : "true"}
                 onClick={() => toggleCollapse(row.id)}
                 style={{ padding: "0 4px", background: "transparent", border: "none", color: "#eee", cursor: "pointer" }}
@@ -587,7 +589,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
             )}
             <button
               type="button"
-              title={row.hidden ? "Hidden — re-show to select" : parent ? `In group ${parent.id} — selects the group` : `Select ${row.id}`}
+              title={row.hidden ? "Hidden — re-show to select" : parent ? `In group ${parentLabel} — selects the group` : `Select ${label}`}
               onClick={(e) => {
                 if (row.hidden) return;
                 if (e.shiftKey) onRange?.(row.id);
@@ -600,13 +602,13 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
             </button>
             {row.depth === 0 && (
               <>
-                <button type="button" aria-label={`Bring ${row.id} forward`} title="Bring forward" onClick={() => onReorder?.(row.id, 1)}>↑</button>
-                <button type="button" aria-label={`Send ${row.id} backward`} title="Send backward" onClick={() => onReorder?.(row.id, -1)}>↓</button>
+                <button type="button" aria-label={`Bring ${label} forward`} title="Bring forward" onClick={() => onReorder?.(row.id, 1)}>↑</button>
+                <button type="button" aria-label={`Send ${label} backward`} title="Send backward" onClick={() => onReorder?.(row.id, -1)}>↓</button>
               </>
             )}
             <button
               type="button"
-              aria-label={row.locked ? `Unlock ${row.id}` : `Lock ${row.id}`}
+              aria-label={row.locked ? `Unlock ${label}` : `Lock ${label}`}
               title={row.locked ? "Unlock" : "Lock"}
               onClick={() => onLock?.(row.id, !row.locked)}
               style={{ padding: "0 3px", background: "transparent", border: "1px solid var(--color-line)", borderRadius: 3, color: "var(--color-fg)", cursor: "pointer", fontSize: 10 }}
@@ -615,7 +617,7 @@ function LayersPanel({ slide, selectedIds, topCount, onSelect, onToggle, onRange
             </button>
             <button
               type="button"
-              aria-label={row.hidden ? `Show ${row.id}` : `Hide ${row.id}`}
+              aria-label={row.hidden ? `Show ${label}` : `Hide ${label}`}
               title={row.hidden ? "Show" : "Hide"}
               onClick={() => onHide?.(row.id, !row.hidden)}
               style={{ padding: "0 3px", background: "transparent", border: "1px solid var(--color-line)", borderRadius: 3, color: "var(--color-fg)", cursor: "pointer", fontSize: 10 }}
@@ -1389,13 +1391,13 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     return m.kind;
   }
 
-  function sceneHeadline(s) {
+  function sceneHeadline(s, index = 0) {
     if (typeof s?.headline === "string" && s.headline.trim()) return s.headline.trim().slice(0, 80);
     for (const el of s?.elements ?? []) {
       const t = (el?.paragraphs ?? []).flatMap((p) => (p?.runs ?? []).map((r) => r?.text ?? "")).join("");
       if (t && t.trim()) return t.trim().slice(0, 80);
     }
-    return s?.id ?? "slide";
+    return embedded ? `Slide ${index + 1}` : s?.id ?? "slide";
   }
 
   function historyNeedsChoice() {
@@ -1779,6 +1781,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     };
   }, [deck, fonts.settled]);
 
+  const readOnlyStatus = {
+    saved: "Read-only · saved",
+    saving: "Read-only · saving…",
+    dirty: "Read-only · unsaved changes",
+    stale: "Read-only · conflict — newer saved version",
+    error: "Read-only · save failed",
+    unavailable: "Read-only · storage unavailable — edits not saved",
+  }[saveState] ?? "Read-only";
+
   if (DECKS.length === 0) {
     return <div style={{ padding: 24 }}>No scene fixtures available.</div>;
   }
@@ -1956,6 +1967,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         )}
         {editOn && railTab === "layers" ? (
           <LayersPanel
+            diagnostics={!embedded}
             slide={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0] ?? null}
             selectedIds={snap?.selectedIds ?? []}
             topCount={(editedScenes ?? deck.scenes)[snap?.slideIndex ?? 0]?.elements.length ?? 0}
@@ -2128,7 +2140,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             {embedded ? `Slide ${(snap?.slideIndex ?? 0) + 1} of ${shownScenes.length}` : snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
             {!embedded && liveSnap.status === "loading" ? " · compiling…" : ""}
             {!embedded && editOn ? ` · editing rev ${editStatus.rev}` : ""}
-            {editedScenes && !editOn ? " · unsaved edits (read-only)" : ""}
+            {editedScenes && !editOn ? embedded ? ` · ${readOnlyStatus}` : " · unsaved edits (read-only)" : ""}
             {(() => {
               const st = (editedScenes ?? deck.scenes)[snap?.slideIndex ?? -1]?.layoutState;
               return st === "detached" ? " · Manual slide" : st === "customized" ? " · Custom slide" : "";
@@ -2509,7 +2521,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                     <div><strong>rev {selectedRev}</strong> · {selectedDoc.scenes.length} slides · saved {(() => { try { return new Date(selectedMeta?.createdAt ?? selectedDoc.updatedAt).toLocaleString(); } catch { return selectedDoc.updatedAt; } })()}</div>
                     <div className="text-fg-muted">{selectedMeta?.summary}</div>
                     <ol className="my-1.5 max-h-[16vh] overflow-y-auto pl-5">
-                      {selectedDoc.scenes.slice(0, 12).map((s) => <li key={s.id}>{sceneHeadline(s)}</li>)}
+                      {selectedDoc.scenes.slice(0, 12).map((s, i) => <li key={s.id}>{sceneHeadline(s, i)}</li>)}
                     </ol>
                     {selectedDoc.scenes.length > 12 && <div className="text-fg-faint">…and {selectedDoc.scenes.length - 12} more slides</div>}
                     {!restoreConfirm && (
