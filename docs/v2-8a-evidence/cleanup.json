@@ -1,0 +1,18 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "containerId": "ade3aa49ba1a06239abe86e33034981fa0d424437edbd82e81e81104e73ca419",
+  "preStopObservation": "docs/v2-8a-evidence/cleanup-pre-stop.json",
+  "remainingDatabaseCountBeforeStop": 0,
+  "stopExitCode": 0,
+  "containerAutoRemoved": true,
+  "localhost5544Closed": true,
+  "checks": [
+    {
+      "atUtc": "2026-10-18T14:22:34.777614+00:00",
+      "containerAbsent": true,
+      "portClosed": true
+    }
+  ],
+  "unrelatedServicesStopped": false,
+  "note": "Pre-stop SQL output was saved/fsynced in a completed call before docker stop. Auto-removal was allowed to settle before checking absence."
+}
