@@ -36,7 +36,10 @@ redaction of arbitrary words that happen to name a colour or font.
 Text edits address existing paragraph/run indices and replace wording only; run
 and paragraph formatting stays intact. Multiple different runs of one element
 are merged into one text command, and duplicate writes to the same run/data target
-refuse. Chart and table operations reuse native canonical commands and validation.
+refuse. Chart and table operations reuse native canonical commands and validation. Table
+updates retain the existing row and column counts because cell structure owns
+resolved layout. Success results have tool-discriminated exact nested contracts;
+unknown renderer/credential fields are rejected by their result schemas.
 Geometry, styling, untouched content, tombstones and detached state are preserved.
 The canonical command currently marks explicitly edited content as human-owned;
 the envelope/log actor remains agent. This keeps the existing regeneration contract

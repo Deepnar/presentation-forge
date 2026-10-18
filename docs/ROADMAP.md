@@ -8119,7 +8119,7 @@ needs direction on scope before building.*
 
 <a id="v2-8a-scope-proposal"></a>
 
-- [ ] **V2-8A tool/context foundation — approved2026-10-18, implementation starting.**
+- [ ] **V2-8A tool/context foundation — approved2026-10-18, validation in progress.**
   The human selected **Tool/context foundation first** on2026-10-18 after the
   continuation request. Accepted
   baseline `484875ff5c826a34028889ed2fc6118bfdc407ad`
@@ -8173,10 +8173,12 @@ needs direction on scope before building.*
   and dependency/typecheck boundary coverage. Reads page project/slide metadata
   and selection; content projections allowlist text/chart/table fields and refuse
   oversized results explicitly. Mutations change existing text runs (retaining all
-  run/paragraph styling), chart data or table rows only. Trusted caller binds the
+  run/paragraph styling), chart data or table cell wording only, retaining existing
+  row/column counts and resolved layout. Results have discriminated exact nested
+  schemas, not generic data objects. Trusted caller binds the
   live engine, owner/actor, readable slides, editable targets, selection and limits;
   those grants never come from model arguments. Atomic edit batches reject duplicate
-  target updates, invalid indices, hidden/locked/ancestor-locked targets and stale
+  writes to the same text run or data target, invalid indices, hidden/locked/ancestor-locked targets and stale
   revisions before execution; engine refusal remains final authority. No project
   persistence or run store is added, so no durable save or cross-process execution
   claim is made. The same live engine supports interactive undo/redo. Input/output
@@ -8184,7 +8186,8 @@ needs direction on scope before building.*
   exceptions/credentials are never echoed. Use a scripted headless evidence driver
   for representative edits/exports and exact before/after preservation.
   Focused tests are test/v2-tools-8a.test.js and test/v2-context-8a.test.js;
-  the complete206-file prior inventory plus these2 bulk files is required, including
+  the complete206-file prior JavaScript inventory plus these2 bulk files and the
+  existing TypeScript generated-usage runtime test is required (209files), including
   all26 serial owners and4 PostgreSQL contract/process/fault files. Build/typecheck/
   canonical50cells and inspected representative SVG/native exports remain required.
   Existing serial Chrome evidence supplies unchanged-UI regression verification.
