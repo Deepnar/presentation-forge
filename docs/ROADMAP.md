@@ -7707,17 +7707,23 @@ scale); charts structurally exact without axes (V2-4C).
   > tracing before it is classified as a product key-handler defect.
 <a id="workspace-followups"></a>
 
-- [ ] Workspace followups after the generation handoff — saved first-slide
-  covers and unified discovery are independently accepted in
-  [V2-7C-1](#v2-7c-1-plan) and [V2-7C-2](#v2-7c-2-plan). The remaining immediate
-  slice is removing or relocating fixture/developer controls from the production
-  editor toolbar. The standalone-only developer-control direction is approved in
-  [V2-7C-3](#v2-7c-3-plan); its bounded contract governs implementation. AI editing remains V2-8. Discovery
-  reuses the revision-scoped scene resource without a new asset store.
+- [x] Workspace followups after the generation handoff — saved first-slide
+  covers, unified discovery and production-control separation are independently
+  accepted in [V2-7C-1](#v2-7c-1-plan), [V2-7C-2](#v2-7c-2-plan) and
+  [V2-7C-3](#v2-7c-3-plan). Discovery reuses the revision-scoped scene resource;
+  the editor and standalone harness share one document and command implementation.
+  AI editing remains V2-8. Registered Fit, restore-timeout and capture followups
+  remain below; parent V2-7 hosted completion is still open.
+
+  > **Learned.** Workspace discovery and production controls can change without
+  > duplicating project identity or editing state. Each surface change needs its
+  > own accepted behavior and settled visual evidence; successful prerequisite
+  > slices do not validate the next one. Later agent/artifact work can reuse the
+  > same revisioned documents and commands.
 
 <a id="v2-7c-3-plan"></a>
 
-- [ ] V2-7C-3 production editor controls — **implemented/validated 2026-10-18; independent review pending**.
+- [x] V2-7C-3 production editor controls — **independently accepted 2026-10-18**.
   The human selected **Standalone scene viewer only** for the fixture selector,
   Live compiler, duplicate Projects dialog and developer diagnostics. Keep the
   project editor focused on the saved document, human editing and viewing.
@@ -7777,12 +7783,25 @@ scale); charts structurally exact without axes (V2-4C).
     hosted case; focused37/37 and54 repeated backend cases pass; build/typecheck/
     all50cells pass;123 final images and7 native pages inspected. BYOK remains
     separate9/1; prior B2 timeout did not recur. [Exact evaluation](V2-7C-3-EVAL.md).
-    This evidence is not independent acceptance.
+    [Separate ACCEPT](reviews/V2-7C-3-484875f.json) names exact source
+    `484875ff5c826a34028889ed2fc6118bfdc407ad`; independent69/69, build/type/
+    protocol/50cells and8 native pages verified. Both existing and fresh visual
+    evidence were inspected. Owned test container removed and5544closed; pre-removal
+    database count unavailable as explicitly recorded, not inferred0.
   - **Review/stop:** preserve exact implementation SHA and attempts, scoped fixes,
     files, totals/performance/limitations and acceptance recommendation. Use one
     separate high-effort reviewer for exact-source ACCEPT/HOLD; the implementer
     cannot accept itself. Push focused commits to `origin/v2`, preserve the three
     unrelated untracked items and stop after C3 review/handoff. No dependent feature.
+
+  > **Learned.** A loaded project has edited-scene state even when no unsaved
+  > mutation exists; read-only text must follow persistence state. Human labels
+  > and machine identity need separate presentation without changing hooks or
+  > command IDs. Moving the duplicate discovery dialog requires preserving its
+  > standalone switch guards while proving production Workspace navigation.
+  > Look-ahead: V2-8 and V2-10 can retain the same IDs/commands/resources; no future
+  > item needs the removed visible diagnostics. Fit and capture timing remain
+  > separate defects, not reasons to fork the viewer or relax test assertions.
 
 <a id="v2-7c-2-plan"></a>
 

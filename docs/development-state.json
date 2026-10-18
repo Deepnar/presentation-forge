@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+    "sha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-7C-2-bf1bd8f.json"
+    "source": "docs/reviews/V2-7C-3-484875f.json"
   },
   "implementationHead": {
     "sha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
-    "note": "Frozen C3 runtime/test source; all required exact-source validation complete. Later changes only document evidence and review; no app/package/src/test/tool delta."
+    "note": "Exact C3 source independently accepted in reviews/V2-7C-3-484875f.json. Later commits record evidence/review/cleanup and continuity only; no runtime/test/tool delta."
   },
   "activeMilestone": {
     "id": "V2-7C-3",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-7C-3-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-7C-3-484875f.json",
+    "accepted": true
   },
   "validation": [
     {

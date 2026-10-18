@@ -3,7 +3,8 @@
 Updated: 2026-10-18. Accepted source and review are indexed in development-state.json.
 V2-7C-2 discovery is independently accepted at `bf1bd8f`; see
 [decision](reviews/V2-7C-2-bf1bd8f.json). Parent V2-7 remains
-in progress. C3 control separation is implemented pending its own validation/review.
+in progress. C3 control separation is independently accepted at `484875f`; see
+[decision](reviews/V2-7C-3-484875f.json).
 
 ## 1. Product model: Workspace → Project → Editor
 

@@ -1,6 +1,7 @@
 # V2-7C-3 — production editor controls
 
-Implemented and validated 2026-10-18; **independent review pending; not accepted**.
+Implemented, validated and **independently accepted 2026-10-18** for exact
+source484875f; [separate decision](reviews/V2-7C-3-484875f.json).
 Accepted baseline bf1bd8f7dbce827be04ed530b2e7330b385e8baa, task-entry checkout
 abadb9ec3177cf265e578505c13dd829c0845a89 on v2. Frozen implementation:
 **484875ff5c826a34028889ed2fc6118bfdc407ad**. Later commits only record evidence,
@@ -115,8 +116,10 @@ finish before the full frozen-source run. Niceness10/ionice2:7,4 bulk workers,
 never overlap. Forge-only PostgreSQL15.18 uses cached postgres:15-alpine, one CPU,
 512MiB,192MiB tmpfs and localhost5544. Ownership and cleanup observations are in
 [environment.json](v2-7c-3-evidence/environment.json). Other processes/databases and
-three unrelated untracked paths were untouched. Service remains available through
-independent review; cleanup must be recorded afterward.
+three unrelated untracked paths were untouched. Service remained available through
+independent review and is now removed;5544closed. [Cleanup](v2-7c-3-evidence/cleanup.json)
+records an immediate post-stop verification race and unavailable pre-removal
+database count. No zero-count claim is made; root and reviewer confirmed removal.
 
 Existing Fit content-box clipping, canonical C1 rail-transition captures, B2 composer
 capture and C2 interim-search capture limitations remain explicit in visual review
@@ -127,3 +130,12 @@ content-quality claim is made.
 All required execution is complete; no implementer acceptance or next-feature
 implementation is authorized by this recommendation. The separate decision and
 current accepted baseline remain indexed in development-state.json.
+
+
+Independent review is committed as6ce9c07: **ACCEPT** exact484875f. The reviewer
+executed69/69 (37focus,23governance,9backend), build/typecheck/protocol/50cells;
+inspected123 finalized images,29 fresh browser captures and8 native pages. It
+audited the full matrix without claiming an independent duplicate of every file.
+Finalized/historical evidence bytes were restored and123 image hashes rechecked.
+The decision records standing limits and permits planning only. No later feature,
+deployment or migration was started.
