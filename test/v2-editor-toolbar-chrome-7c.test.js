@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Pool } from 'pg';
+import JSZip from 'jszip';
 import { importApiFixture, IMPORT_DECK } from './v2-import-fixture.js';
 import { openViewer } from '../tools/chrome-shot.mjs';
 const EVIDENCE = path.resolve('docs/v2-7c-3-evidence'), OUT = path.resolve('out/v2-7c-3-validation/browser');
@@ -76,7 +77,7 @@ const SAVED = "document.querySelector('[data-save-state]')?.dataset.saveState===
 async function ready(page, id) { await wait(page, `${SAVED} && ${PROJECT}?.id===${JSON.stringify(id)}`); }
 async function editor(project, options = {}) { const page = await open({ ...options, route: `#/project/${project.id}` }); await ready(page, project.id); return page; }
 async function stored(id) { return (await fixture.request(`/api/v2/projects/${id}`, { token: fixture.token }).then(r => r.json())).project; }
-async function stageBox(page) { return page.evaluate("(()=>{const r=document.querySelector('[data-stage] [role=application]').getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()"); }
+async function stageBox(page) { return page.evaluate("(()=>{const r=document.querySelector('[data-stage] > svg').getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()"); }
 
 test('saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls', async () => {
   const { project } = await make(), page = await editor(project);
@@ -93,16 +94,17 @@ test('saved-project editor excludes fixture/compiler/discovery diagnostics while
 });
 
 test('standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return', async () => {
-  await make(); const page = await open({ route: 'scenes.html?deck=mech-warm-humanist-plain' });
+  const local = await importApiFixture({ FORGE_HOSTED: '0' });
+  const page = await open({ base: local.base, token: local.token, route: 'scenes.html?deck=mech-warm-humanist-plain' });
   try {
     assert.ok(await page.evaluate("document.querySelector('select[aria-label=Deck]')?.options.length>1"));
-    await page.evaluate("(()=>{const n=document.querySelector('select[aria-label=Deck]');n.selectedIndex=1;n.dispatchEvent(new Event('change',{bubbles:true}))})()");
-    await wait(page, "document.querySelector('[data-viewer-state]')");
-    await button(page, 'Live'); await wait(page, "document.querySelector('[data-live-panel]')"); await capture(page, 'standalone-live');
+    await page.evaluate("(()=>{const n=document.querySelector('select[aria-label=Deck]');n.value='source-of-truth-warm-humanist-plain';n.dispatchEvent(new Event('change',{bubbles:true}))})()");
+    await wait(page, "JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState).slideId==='st-open'&&document.querySelector('[data-stage]')?.dataset.stage==='st-open'");
+    await button(page, 'Live'); await wait(page, "document.querySelector('[data-live-panel]')"); await button(page, 'Compile live'); await wait(page, "document.querySelector('[aria-label=Deck] option:checked')?.textContent.includes('(live)')"); await capture(page, 'standalone-live');
     await button(page, 'Live'); await button(page, 'Projects'); await wait(page, "document.querySelector('[data-projects-panel] [role=dialog]')");
     await capture(page, 'standalone-projects'); await page.key(27, 'Escape'); await wait(page, "!document.querySelector('[data-projects-panel]')");
     assert.equal(await page.evaluate("document.activeElement.textContent.trim()"), 'Projects');
-  } finally { await page.close(); }
+  } finally { await page.close(); await local.stop(); }
 });
 
 test('text and all existing shape insertions persist with exact undo/redo and reopen behavior', async () => {
@@ -111,6 +113,10 @@ test('text and all existing shape insertions persist with exact undo/redo and re
     let revision = 0;
     for (const label of ['+ Text', '+ Rect', '+ Round', '+ Ellipse']) { await button(page, label); await wait(page, `${SAVED} && ${PROJECT}.revision>${revision}`); revision = await page.evaluate(`${PROJECT}.revision`); }
     assert.equal((await stored(project.id)).scenes[0].elements.length, count + 4);
+    const exported = await fixture.request(`/api/v2/projects/${project.id}/export.pptx`, { token: fixture.token }); assert.equal(exported.status, 200);
+    const bytes = Buffer.from(await exported.arrayBuffer()), zip = await JSZip.loadAsync(bytes), slide = await zip.file('ppt/slides/slide1.xml').async('string');
+    for (const form of ['rect', 'roundRect', 'ellipse']) assert.ok(slide.includes(`prst="${form}"`), `${form} remains native`);
+    await writeFile(path.join(OUT, 'toolbar-shapes.pptx'), bytes);
     await click(page, '[aria-label=Undo]'); await wait(page, `${SAVED} && ${PROJECT}.revision>${revision}`); revision = await page.evaluate(`${PROJECT}.revision`);
     assert.equal((await stored(project.id)).scenes[0].elements.length, count + 3);
     await click(page, '[aria-label=Redo]'); await wait(page, `${SAVED} && ${PROJECT}.revision>${revision}`);
@@ -152,14 +158,17 @@ test('chart/table selection keeps the canvas stable and production inspector lab
   const { project } = await make(), page = await editor(project), measurements = [];
   try {
     for (const [index, kind] of [[1, 'chart'], [2, 'table']]) {
+      await button(page, 'Slides', "document.querySelector('aside[aria-label=Slides]')");
       await click(page, `[data-thumb="${project.scenes[index].id}"]`);
       await wait(page, `JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState).slideIndex===${index}`);
-      const before = await stageBox(page), element = project.scenes[index].elements.find(e => e.kind === kind);
-      await click(page, `[data-stage] [data-el="${element.id}"]`);
+      const element = project.scenes[index].elements.find(e => e.kind === kind); await button(page, 'Layers');
+      await wait(page, `document.querySelector('[data-layer="${element.id}"]')`);
+      const before = await stageBox(page); await click(page, `[data-layer="${element.id}"] button[title^="Select "]`);
       await wait(page, `document.querySelector('[data-${kind}-editor]')`);
       const after = await stageBox(page); assert.ok(before.every((n, i) => Math.abs(n - after[i]) < 1));
       assert.equal(await page.evaluate(`document.querySelector('aside[aria-label=Inspector]').innerText.includes(${JSON.stringify(element.id)})`), false);
       assert.equal(await page.evaluate("!!document.querySelector('[data-developer-diagnostics]')"), false);
+      assert.equal(await page.evaluate(`(()=>{const n=document.querySelector('[data-layer="${element.id}"]');return [...n.querySelectorAll('button')].some(b=>[b.title,b.getAttribute('aria-label')].some(v=>v?.includes(${JSON.stringify(element.id)})))})()`), false);
       await capture(page, `editor-${kind}`); measurements.push({ kind, before, after });
     }
     await data('canvas', { backend: fixture.env.FORGE_PROJECTS_BACKEND, measurements });
@@ -170,6 +179,7 @@ test('read-only mode keeps navigation and inspection usable without insertion or
   const { project } = await make(), page = await editor(project);
   try {
     await button(page, 'Done'); await wait(page, "!document.querySelector('[data-editing=true]')");
+    assert.equal(await page.evaluate("document.querySelector('[data-toolbar]').innerText.includes('unsaved edits')"), false, 'an untouched saved project is not unsaved');
     assert.equal(await page.evaluate("[...document.querySelectorAll('[data-toolbar] button')].some(n=>n.textContent.trim()==='+ Text')"), false);
     await button(page, 'Next →'); await wait(page, "JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState).slideIndex===1");
     await capture(page, 'editor-readonly'); assert.equal((await stored(project.id)).revision, 0);
@@ -197,4 +207,18 @@ test('narrow light/dark controls remain reachable without toolbar height changes
       await capture(page, `editor-narrow-${mode}`); await data(`narrow-${mode}`, { backend: fixture.env.FORGE_PROJECTS_BACKEND, height });
     } finally { await page.close(); }
   }
+});
+
+
+test('blank-slide history uses a human slide label rather than an internal scene identity', async () => {
+  const { blankSlide } = await import('../packages/editor/scene-text.js');
+  const scene = blankSlide(), response = await fixture.request('/api/v2/projects', { token: fixture.token, method: 'POST', body: JSON.stringify({ title: 'Blank history', scenes: [scene] }) });
+  assert.equal(response.status, 200); const project = (await response.json()).project, page = await editor(project);
+  try {
+    await click(page, '[aria-label="Version history"]'); await wait(page, "document.querySelector('[data-history-select=\"0\"]')");
+    await click(page, '[data-history-select="0"]'); await wait(page, "document.querySelector('[data-history-panel] li')");
+    const text = await page.evaluate("document.querySelector('[data-history-panel] li').innerText");
+    assert.ok(text.includes('Slide 1')); assert.equal(text.includes(scene.id), false);
+    await capture(page, 'editor-blank-history');
+  } finally { await page.close(); }
 });

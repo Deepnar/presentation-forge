@@ -1,6 +1,6 @@
 // V2-7A unified workspace in real Chrome: dashboard, creation,
 // editor shell, navigation, guards, history, export, responsive,
-// keyboard, and cleanup — driven through the SPA. Fails on 97a12de
+// keyboard, and cleanup — SPA plus retained standalone dialog guards. Fails on 97a12de
 // (no workspace routes, dashboard, or shell).
 import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
@@ -190,6 +190,20 @@ async function openSignedIn(hash, opts, token = userToken, base = APP) {
     if (Date.now() - t0 > 90000) throw new Error("signed-in app never settled");
     await new Promise((r) => setTimeout(r, 500));
   }
+}
+
+async function openHarnessProject(id) {
+  const page = await open(`${APP}scenes.html?deck=mech-warm-humanist-plain`);
+  await page.evaluate(`localStorage.setItem('forge.token', ${JSON.stringify(userToken)});location.href=${JSON.stringify(`${APP}scenes.html?project=${id}`)}`);
+  const end = Date.now() + 90000;
+  for (;;) {
+    try { if (await page.evaluate(`new URLSearchParams(location.search).get('project')===${JSON.stringify(id)} && !!document.querySelector('[data-recover-banner]')`)) break; } catch { /* navigation replaces context */ }
+    if (Date.now() > end) throw new Error('standalone project recovery did not load');
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  await clickSelector(page, '[data-recover-banner] button');
+  await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
+  return page;
 }
 
 const byText = (text) => `(() => { const b = [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === '${text}'); if (!b || b.disabled) return null; b.scrollIntoView({ block: 'nearest', inline: 'nearest' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`;
@@ -397,7 +411,7 @@ describe("v2-7a navigation and guards", () => {
     const { blankSlide } = await import("../packages/editor/scene-text.js");
     const a = await apiAuthed("POST", "/api/v2/projects", { title: "Switch A", scenes: [blankSlide()] });
     const b = await apiAuthed("POST", "/api/v2/projects", { title: "Switch B", scenes: [blankSlide()] });
-    const page = await openSignedIn(`#/project/${a.body.project.id}`);
+    const page = await openHarnessProject(a.body.project.id);
     try {
       await waitFor(page, `(${SAVE} === 'saved' && ${PROJ} !== null)`, 90000);
       const add = await page.evaluate(byText("+ Text"));
@@ -668,13 +682,13 @@ describe("v2-7a editor shell", () => {
       await waitFor(page, `document.querySelector('aside[aria-label="Inspector"]').offsetParent !== null`);
       await page.screenshot(`${OUT}/editor-narrow.png`);
       await clickSelector(page, '[aria-label="Hide inspector rail"]');
-      const projects = await page.evaluate(byText('Projects')); await page.click(...projects);
-      await waitFor(page, `document.querySelector('[data-projects-panel] [role="dialog"]') !== null`);
-      const dialog = await page.evaluate(`(() => {const r=document.querySelector('[data-projects-panel] [role="dialog"]').getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:innerWidth,h:innerHeight};})()`);
+      const projects = await page.evaluate(byText('History')); await page.click(...projects);
+      await waitFor(page, `document.querySelector('[data-history-panel] [role="dialog"]') !== null`);
+      const dialog = await page.evaluate(`(() => {const r=document.querySelector('[data-history-panel] [role="dialog"]').getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:innerWidth,h:innerHeight};})()`);
       assert.ok(dialog.x>=0 && dialog.y>=0 && dialog.right<=dialog.w && dialog.bottom<=dialog.h,'narrow dialog stays inside viewport');
       await page.screenshot(`${OUT}/editor-narrow-projects.png`);
       await page.key(27,'Escape');
-      await waitFor(page, `document.querySelector('[data-projects-panel]') === null`);
+      await waitFor(page, `document.querySelector('[data-history-panel]') === null`);
     } finally {
       await page.close();
     }
@@ -753,14 +767,14 @@ describe("v2-7a editor shell", () => {
       await page.evaluate(`document.querySelector('[role="application"]').focus()`);
       await page.key(39, "ArrowRight");
       await waitFor(page, `JSON.parse(document.querySelector('[data-viewer-state]').dataset.viewerState).slideIndex === 1`, 60000);
-      // Projects dialog: Escape closes, focus returns to its opener.
-      const projects = await page.evaluate(byText("Projects"));
+      // History dialog: Escape closes, focus returns to its opener.
+      const projects = await page.evaluate(byText("History"));
       await page.click(projects[0], projects[1]);
-      await waitFor(page, `document.querySelector('[data-projects-panel]') !== null`, 60000);
+      await waitFor(page, `document.querySelector('[data-history-panel]') !== null`, 60000);
       await page.key(27, "Escape");
-      await waitFor(page, `document.querySelector('[data-projects-panel]') === null`, 60000);
+      await waitFor(page, `document.querySelector('[data-history-panel]') === null`, 60000);
       const focused = await page.evaluate(`document.activeElement?.textContent?.trim() ?? ''`);
-      assert.equal(focused, "Projects", "focus returns to the dialog opener");
+      assert.equal(focused, "History", "focus returns to the dialog opener");
     } finally {
       await page.close();
     }
@@ -949,7 +963,7 @@ describe("v2-7a editor shell", () => {
     const made=await apiAuthed('POST','/api/v2/projects',{title:'Switch origin',scenes:[blankSlide()]});
     const other=await apiAuthed('POST','/api/v2/projects',{title:'Switch destination',scenes:[blankSlide()]});
     const id=made.body.project.id;
-    const page=await openSignedIn(`#/project/${id}`);
+    const page=await openHarnessProject(id);
     try {
       await waitFor(page, `${SAVE} === 'saved' && ${PROJ}?.id === '${id}'`);
       await page.evaluate(`(() => {const real=window.fetch.bind(window);window.fetch=(url,opts)=>opts?.method==='PUT'?new Promise(resolve=>{window.releaseForgeSave=()=>resolve(real(url,opts));}):real(url,opts);})()`);
@@ -963,7 +977,7 @@ describe("v2-7a editor shell", () => {
       await clickSelector(page,'[data-switch-guard] button:last-child');
       await page.evaluate('window.releaseForgeSave();true');
       await waitFor(page, `${SAVE} === 'saved'`);
-      assert.equal(await page.evaluate('location.hash'),`#/project/${id}`);
+      assert.equal(await page.evaluate("new URLSearchParams(location.search).get('project')"),id);
       assert.equal(await page.evaluate(`${PROJ}?.id`),id);
       assert.equal(await page.evaluate(`document.querySelector('[data-switch-guard]') === null`),true);
     } finally {await page.close();}
