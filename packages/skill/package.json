@@ -1,0 +1,6 @@
+{
+  "name": "@forge/skill",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Contextual instruction sections for Forge tools."
+}
