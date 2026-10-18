@@ -1,0 +1,69 @@
+[
+  {
+    "name": "focused-final",
+    "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-tools-8a.test.js",
+      "test/v2-context-8a.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-18T13:35:47.087661+00:00",
+    "durationSeconds": 0.496974
+  },
+  {
+    "name": "bulk-driver",
+    "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "python3",
+      "docs/v2-8a-evidence/run-group.py",
+      "bulk"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-18T13:35:47.595019+00:00",
+    "durationSeconds": 20.97499
+  },
+  {
+    "name": "serial-driver",
+    "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "python3",
+      "docs/v2-8a-evidence/run-group.py",
+      "serial"
+    ],
+    "exitCode": 1,
+    "atUtc": "2026-10-18T13:36:08.570211+00:00",
+    "durationSeconds": 443.013778
+  }
+]

@@ -1,0 +1,203 @@
+handoff backend: sqlite; actual authenticated production server
+✖ completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports (40153.96781ms)
+✔ both entry points and fresh tabs reopen the same human-edited dark project (7453.884121ms)
+✔ a lost response after real creation retries safely after reload without a duplicate (2429.663164ms)
+✔ a held successful response cannot navigate after leaving its source view (2367.545525ms)
+✔ an account change during a held response cannot open another account's project (2433.949627ms)
+✔ a real second document's token storage event invalidates pending work with reload recovery (2322.885974ms)
+✖ a transient completed-chat source read can retry without losing dark mode (31718.778366ms)
+✔ unsupported content refuses visibly with keyboard focus and usable original access at narrow width (2256.44065ms)
+✔ changed and deleted imports refuse without replacing or resurrecting their projects (4255.37441ms)
+✔ incomplete generation and unavailable storage keep the original flow usable (2015.483875ms)
+✔ 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible (2182.175744ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 9
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100101.202741
+
+✖ failing tests:
+
+test at out/v2-8a-validation/source-retry-full.mjs:70:1
+✖ completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports (40153.96781ms)
+  Error: timed out: document.querySelector('[data-restore-done]'); Forge
+  Chats 1
+  New chat
+  THIS WEEK
+  Imported results
+  deck · ready · 2 d ago
+  ⋯
+  Projects
+  Themes
+  Settings
+  I
+  Import test
+  Privacy
+  ·
+  Terms
+  ·
+  Report an issue
+  ← Workspace
+  Slides
+  Save
+  Saved · rev 4
+  ↩ Undo
+  ↪ Redo
+  History
+  Export
+  Present
+  Assistant
+  Inspector
+  1 / 3
+  Slides
+  Layers
+  + Slide ▾
+  second edit
+  Imported results
+  Slide 1 · Custom
+  ⋯
+  Conductivity
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Unit: mS/cm
+  2 / 3
+  Slide 2
+  ⋯
+  Measurements
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  3 / 3
+  Slide 3
+  ⋯
+  ← Prev
+  Next →
+  −
+  100%
+  +
+  Fit
+  Done
+  + Text
+  + Rect
+  + Round
+  + Ellipse
+  Slide 1 of 3 · Custom slide
+  second edit
+  Imported results
+  Inspector
+  Assistant
+  Nothing selected. Click the slide to select an object, or double-click text to edit it.
+  Slide 1 of 3
+  Layout Custom slide
+  Objects 2
+  Version history — Imported results
+  ✕
+  Restoring creates a new saved revision from the older content — history is never rewritten. Undo history is cleared by a restore. Keeps the last 20 saved versions with full content; older versions keep their descriptions only.
+  rev 4 (current)
+  Saved
+  10/18/2026, 7:16:35 PM
+  saved rev 4 · 3 slides
+  Preview
+  rev 3
+  Saved
+  10/18/2026, 7:16:33 PM
+  saved rev 3 · 3 slides
+  Preview
+  rev 2
+  Saved
+  10/18/2026, 7:16:31 PM
+  saved rev 2 · 3 slides
+  Preview
+  rev 1
+  Saved
+  10/18/2026, 7:16:29 PM
+  saved rev 1 · 3 slides
+  Preview
+  rev 0
+  Created
+  10/18/2026, 7:16:28 PM
+  created with 3 slides
+  Preview
+  rev 0 · 3 slides · saved 10/18/2026, 7:16:28 PM
+  created with 3 slides
+  Imported results
+  Conductivity
+  Measurements
+  Restore rev 0 as a new revision
+      at wait (file:///home/deepnar/Programs/presentations/out/v2-8a-validation/source-retry-full.mjs:23:9)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/out/v2-8a-validation/source-retry-full.mjs:103:54)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at out/v2-8a-validation/source-retry-full.mjs:192:1
+✖ a transient completed-chat source read can retry without losing dark mode (31718.778366ms)
+  Error: timed out: document.querySelector('[data-save-state]')?.dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]')?.dataset.projectState ?? 'null')?.id; Forge
+  Chats 1
+  New chat
+  THIS WEEK
+  Imported results
+  deck · ready · 2 d ago
+  ⋯
+  Projects
+  Themes
+  Settings
+  I
+  Import test
+  Privacy
+  ·
+  Terms
+  ·
+  Report an issue
+  Imported results
+  Slides, a written report and a speaker script
+  READY
+  ON THIS MACHINE
+  Topic: Measured results
+  HOW MANY CONTENT SLIDES?
+  auto
+  change
+  HOW MUCH TEXT PER SLIDE?
+  balanced
+  change
+  RUN A RESEARCH PASS OVER THE TOPIC?
+  web search
+  change
+  HOW MUCH INSTITUTIONAL BRANDING SHOULD THE SLIDES CARRY?
+  full branding
+  change
+  DECK BRIEFING
+  Imported results · auto content slides · Default (warm-humanist) · balanced density · full branding
+  Imported results is ready.
+  This thread keeps working — type below to edit the deck, and its slides update here after every turn.
+  Open in editor
+  Open original deck
+  
+  Opens a saved editable copy. Changes to either copy stay separate.
+  
+  Auto
+  Select slides on the right, then type — the AI knows exactly which you mean.
+  Slides
+  3 slides
+  Title
+  1
+  Chart
+  2
+  Table
+  3
+  Select slides, then tell the AI what to do with them — it will know exactly which you mean.
+  Punch up
+  Swap type
+      at wait (file:///home/deepnar/Programs/presentations/out/v2-8a-validation/source-retry-full.mjs:23:9)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/out/v2-8a-validation/source-retry-full.mjs:198:32)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)

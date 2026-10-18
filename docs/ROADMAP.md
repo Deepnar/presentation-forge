@@ -8003,6 +8003,25 @@ scale); charts structurally exact without axes (V2-4C).
   retained in [C2 evidence](V2-7C-2-EVAL.md). This recurrence remains unexplained;
   the C2 dialog-helper correction does not establish its cause. This is a validation
   followup, not conversion/feature scope.
+<a id="v2-7b-2-source-retry-timeout"></a>
+
+- [ ] Classify the completed-chat source-retry handoff timeout observed during
+  V2-8A validation of `f5591f7`. The unchanged SQLite B2 file passed10/11 but
+  timed out waiting for the saved editor after retrying a source read; this is
+  a different case from the history-restore timeout above. Retain the first raw
+  attempt, trusted pointer/hit-target/geometry traces and import request outcomes.
+  The full-file diagnostic reproduced the same source-retry wait failure: trusted
+  down hit the action, up3.4ms later hit its explanatory paragraph after a26px
+  vertical move, click targeted the ancestor and no import request was sent.
+  This establishes a harness gesture miss for the traced reproduction; the exact
+  original untraced sequence remains unknown. The test helper now waits mount
+  animations/fonts, uses instant nearest scrolling and3 consecutive settled,
+  unobscured center comparisons before trusted dispatch. Complete corrected file
+  passes11/11; the final helper diagnostic passes1/1 with down/up/click all on the
+  stable action and one dark import200. Full refrozen matrix and independent review
+  are pending; no product code/assertion changed. The older restore timeout above
+  remains unexplained. [Retained attempts/traces](v2-8a-evidence/attempts.json).
+
 <a id="v2-7c-1-narrow-capture"></a>
 
 - [ ] Settle responsive rail geometry before canonical narrow screenshot capture.

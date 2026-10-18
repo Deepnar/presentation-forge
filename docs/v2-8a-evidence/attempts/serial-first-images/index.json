@@ -1,0 +1,192 @@
+[
+  {
+    "source": "docs/v2-6a-evidence/conflict.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6a-evidence--conflict.png",
+    "sha256": "2dc1819939e218d39e1b4b4d96aebb110fd8fd36c94853c86a4e662064e9f8c4"
+  },
+  {
+    "source": "docs/v2-6a-evidence/project-list.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6a-evidence--project-list.png",
+    "sha256": "c61a0ccd615309ec8d060ffed86c6e532f548346b89b44129b8b4da132caf4e8"
+  },
+  {
+    "source": "docs/v2-6a-evidence/recovered-banner.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6a-evidence--recovered-banner.png",
+    "sha256": "04a4f301b5a5ec34694f4d897c37d15d7171870dabbf2c2727a2913ce80e01f7"
+  },
+  {
+    "source": "docs/v2-6a-evidence/reopened.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6a-evidence--reopened.png",
+    "sha256": "f6835673e3167856a411f5486d256cc680e4c039302dbb8b526cccb17809c4ee"
+  },
+  {
+    "source": "docs/v2-6a-evidence/saved.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6a-evidence--saved.png",
+    "sha256": "ff452893e64fdde6b54df1b092fd1a900c3ceba03dfc25b342cba7d4b766d1c8"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-after-refresh.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6b-evidence--history-after-refresh.png",
+    "sha256": "daa88f03b96a3d1f4c446f32912b0a6d11e6e99a9a2fd4fa2513ee2940ab63eb"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-list.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6b-evidence--history-list.png",
+    "sha256": "054f20bf89e4ed52ae078604a606b1ed3f07c6c50169a38193c48689d480c2de"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-preview.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6b-evidence--history-preview.png",
+    "sha256": "dbd577d8508437462c3bfb2f3a44dadc3d5025955bde04677a43ddc6c3593014"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-restored.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6b-evidence--history-restored.png",
+    "sha256": "1b7da06c896a6d6839eb9ef1f5d29acbab1ec4499432a73d066086096471be3a"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-three-versions.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6b-evidence--history-three-versions.png",
+    "sha256": "e7401f7b6a33ac30b9ff8f7b3288c4efab90b62c2261d68b21dced0fa4e0d3e6"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-after-restart.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6c-evidence--hosted-after-restart.png",
+    "sha256": "86dc56700b028b0c95651833fbce995293757dd8667b28cb0f2d52243df22317"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-conflict.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6c-evidence--hosted-conflict.png",
+    "sha256": "7d18a506cdbd64a57aea2b63e0201a6f8137f98846b7aee998f052a85eac0d2a"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-history.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6c-evidence--hosted-history.png",
+    "sha256": "226e9afa2f08947a43d11223c5d09d8da6b6c30cf3a3bd21886a8d49a449bfad"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-restored.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-6c-evidence--hosted-restored.png",
+    "sha256": "e7ad950e9795d57f6308d2860d35f03df99f48a577e7cb1b74191455eb7e6ffd"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--dashboard-empty.png",
+    "sha256": "887ef3ee0779eb7f8a0b42f4588c8cacf544e55288f8ca4386f7e9ae57d51b62"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--dashboard-hosted-anon.png",
+    "sha256": "b5a63b0d69c9fcc2fbe3d7c46bb5591db61158ceead89c9a4503dfd56fed9689"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--dashboard.png",
+    "sha256": "135d52e0e09846ea77ef83937aacbb03b1864bb100b9ec1c7df172db4bd80d6c"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-history.png",
+    "sha256": "36cbe78d36beac8b39981ebabe936aae5d1b3623f939e2dd3eaf581f41c5af84"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-narrow-projects.png",
+    "sha256": "3f9c48441e35597336502d937a0cc1ca478272eeaa715a753a3c681ed3aa4871"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-readonly.png",
+    "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-shell.png",
+    "sha256": "e0ba02dceaab02b99def8f68246a390f47b5d94d43017d7e1ddc1648567c7486"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7a-evidence--editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-chart.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-1-evidence--imported-chart.png",
+    "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-narrow.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-1-evidence--imported-narrow.png",
+    "sha256": "14238a1333b3e9ea333e9f0e481b0f0a043592e291ac48a5e7522bb8a9db8cb0"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-stats.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-1-evidence--imported-stats.png",
+    "sha256": "e407a8575c5a532ca98c19b671fa6cfcc13bdf8d273d991c26ce981e43b08041"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-table.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-1-evidence--imported-table.png",
+    "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-transition.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-1-evidence--imported-transition.png",
+    "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--ambiguous-response.png",
+    "sha256": "eed6fdd010ea5f44ca6aab04e074da8cacf45f1083ca9b56c856ea400b5f45a4"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--boundary-narrow.png",
+    "sha256": "a79d35efed65e1869f071553b47eb7fe02dc9c6eded48ee3aafac8d6ccf96ea7"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/completed-chat.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--completed-chat.png",
+    "sha256": "a4f64c75b0493cd8b70919f8fff9b7157fd6371cb017d0d716cb1f40870f83d7"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--deck-page-action.png",
+    "sha256": "648d35027a5ca6a75464da11bff8a7eae3c922d3117ae7c7b48689db0567820f"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/handoff-history.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--handoff-history.png",
+    "sha256": "2ac7a9f637866ed08d11cd10593d40861b4e2cd579d7f71f6dad81625afb1697"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/opening-project.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--opening-project.png",
+    "sha256": "7dc92468ae5125f92656b2980bf2dd4cfc13ddc5f22817f2d363d396788cbb79"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--refusal-narrow.png",
+    "sha256": "7d787e58ff9fc56e402a71c7d6d9edd3161a18afe7274a9e170ac775763bef14"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/session-changed.png",
+    "path": "docs/v2-8a-evidence/attempts/serial-first-images/v2-7b-2-evidence--session-changed.png",
+    "sha256": "3c7fd0ddcdb61d18f3fbf2c4d0cae9700510a12146d68c9b58f27b68bfa94ba8"
+  }
+]

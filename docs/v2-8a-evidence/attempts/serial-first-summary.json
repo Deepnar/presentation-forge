@@ -1,0 +1,14 @@
+{
+  "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+  "filesExecuted": 23,
+  "filesUnexecutedAtStop": 3,
+  "tests": {
+    "total": 171,
+    "pass": 170,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "remainingAtStop": "3serial files,4PostgreSQL files, build/typecheck/benchmark/headless/native commands; all are rerun on refrozen source.",
+  "classification": "New source-retry gesture miss; separate old restore failure occurred only in subsequent diagnostic."
+}

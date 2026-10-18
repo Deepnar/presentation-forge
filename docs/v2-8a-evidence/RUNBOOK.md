@@ -36,3 +36,12 @@ update EVAL/state with review pending. Give one separate high-effort reviewer th
 exclusive heavy slot and exact pushed SHA. Only that reviewer can supply ACCEPT/HOLD.
 Save the owned database-count result before stopping its exact container ID, wait
 for auto-removal and verify localhost5544 closed. Stop before another runtime/UI slice.
+
+
+Source-retry triage: attempts/serial-first retains the first171-case partial serial
+execution (170pass/1fail;3files unexecuted). diagnostics/source-retry-full.mjs retains
+the original helper with trusted-event observation and reproduced9/11 result;
+source-retry-nearest.mjs proves corrected trusted dispatch1/1. These diagnostic
+cases/repeats are not added to distinct final totals. The final source is refrozen
+after the test-only readiness correction, then the entire209-file matrix reruns.
+Historical screenshots/measurements must be collected before restoration.

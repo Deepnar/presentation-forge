@@ -184,5 +184,89 @@
       "cancelled": 0
     },
     "source": "Working tree immediately before frozen source"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-diagnostic.tap",
+    "classification": "1/1 isolated original-interaction diagnostic; passing trace alone does not explain first timeout.",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "f5591f7 app/runtime plus explicitly described pre-freeze test/diagnostic working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-full.tap",
+    "classification": "9/11 original helper with trusted-event observations; old restore timeout and source-retry miss reproduced. Source trace directly records button moving26px between down/up and no import. Original untraced sequence remains unknowable.",
+    "tests": {
+      "total": 11,
+      "pass": 9,
+      "fail": 2,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "f5591f7 app/runtime plus explicitly described pre-freeze test/diagnostic working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-corrected.tap",
+    "classification": "0/11 first helper draft returned an async Promise through synchronous CDP evaluation, so every click readiness returned no point; test-only draft corrected.",
+    "tests": {
+      "total": 11,
+      "pass": 0,
+      "fail": 11,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "f5591f7 app/runtime plus explicitly described pre-freeze test/diagnostic working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-corrected-final.tap",
+    "classification": "9/11 centered-scrolling helper draft changed recovery geometry and rejected an edge-clipped inspector control; restored nearest scrolling and center-hit contract.",
+    "tests": {
+      "total": 11,
+      "pass": 9,
+      "fail": 2,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "f5591f7 app/runtime plus explicitly described pre-freeze test/diagnostic working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-settled.tap",
+    "classification": "1/1 centered helper diagnostic independently asserts trusted down/up/click all target action with stable bounds; nearest final-helper evidence follows.",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "f5591f7 app/runtime plus explicitly described pre-freeze test/diagnostic working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-nearest.tap",
+    "classification": "11/11 complete corrected canonical B2 file; nearest scroll and stable unobscured center preserve previous narrow/recovery behavior. Final refrozen full matrix still required.",
+    "tests": {
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "Working tree test-only correction before final refreeze; app/runtime unchanged fromf5591f7."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/source-retry-nearest-diagnostic.tap",
+    "classification": "1/1 final nearest helper trusted-event proof: down/up/click all target enabled action, same geometry, one dark-mode import200, saved editor reached.",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "Working tree test-only correction before final refreeze; app/runtime unchanged fromf5591f7."
   }
 ]

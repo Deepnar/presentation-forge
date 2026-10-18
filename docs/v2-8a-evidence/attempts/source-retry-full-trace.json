@@ -1,0 +1,107 @@
+{
+  "hash": "#/chat/handoff-source-7",
+  "clicks": [
+    {
+      "type": "pointerdown",
+      "trusted": true,
+      "target": "<button class=\"underline\">Retry loading deck</button>",
+      "x": 796,
+      "y": 578,
+      "actionRect": [
+        509,
+        595.7376708984375,
+        122.359375,
+        36
+      ],
+      "at": 487.5
+    },
+    {
+      "type": "pointerup",
+      "trusted": true,
+      "target": "<button class=\"underline\">Retry loading deck</button>",
+      "x": 796,
+      "y": 578,
+      "actionRect": [
+        509,
+        595.7376708984375,
+        122.359375,
+        36
+      ],
+      "at": 488.9000000022352
+    },
+    {
+      "type": "click",
+      "trusted": true,
+      "target": "<button class=\"underline\">Retry loading deck</button>",
+      "x": 796,
+      "y": 578,
+      "actionRect": [
+        509,
+        595.7376708984375,
+        122.359375,
+        36
+      ],
+      "at": 489
+    },
+    {
+      "type": "pointerdown",
+      "trusted": true,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-3.5 py-2 text-sm bg-accent tex",
+      "x": 362,
+      "y": 541,
+      "actionRect": [
+        301,
+        522.9766235351562,
+        122.359375,
+        36
+      ],
+      "at": 572.5
+    },
+    {
+      "type": "pointerup",
+      "trusted": true,
+      "target": "<p class=\"text-xs leading-relaxed text-fg-muted\">Opens a saved editable copy. Changes to either copy stay separate.</p>",
+      "x": 362,
+      "y": 541,
+      "actionRect": [
+        301,
+        496.9071960449219,
+        122.359375,
+        36.000030517578125
+      ],
+      "at": 575.9000000022352
+    },
+    {
+      "type": "click",
+      "trusted": true,
+      "target": "<div data-editor-handoff=\"true\" class=\"min-w-0 space-y-2\"><div class=\"flex flex-wrap items-center gap-2\"><button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ea",
+      "x": 362,
+      "y": 541,
+      "actionRect": [
+        301,
+        496.9071960449219,
+        122.359375,
+        36.000030517578125
+      ],
+      "at": 576
+    }
+  ],
+  "points": [
+    {
+      "point": [
+        362.1796875,
+        540.9766235351562
+      ],
+      "rect": [
+        301,
+        522.9766235351562,
+        122.359375,
+        36
+      ],
+      "selector": "[data-editor-handoff] button",
+      "at": 570.8000000007451
+    }
+  ],
+  "requests": [],
+  "action": "Open in editor\nOpen original deck\n\nOpens a saved editable copy. Changes to either copy stay separate."
+}

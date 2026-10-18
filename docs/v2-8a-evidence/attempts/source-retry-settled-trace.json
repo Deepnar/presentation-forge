@@ -1,0 +1,98 @@
+{
+  "hash": "#/project/p-92c2cfa1e4f3fc3a524b14d0",
+  "clicks": [
+    {
+      "type": "pointerdown",
+      "trusted": true,
+      "target": "BUTTON",
+      "x": 796,
+      "y": 577,
+      "actionRect": [
+        509,
+        595.0723266601562,
+        122.359375,
+        36
+      ],
+      "at": 486.80000000074506
+    },
+    {
+      "type": "pointerup",
+      "trusted": true,
+      "target": "BUTTON",
+      "x": 796,
+      "y": 577,
+      "actionRect": [
+        509,
+        595.0723266601562,
+        122.359375,
+        36
+      ],
+      "at": 488.3999999985099
+    },
+    {
+      "type": "click",
+      "trusted": true,
+      "target": "BUTTON",
+      "x": 796,
+      "y": 577,
+      "actionRect": [
+        509,
+        595.0723266601562,
+        122.359375,
+        36
+      ],
+      "at": 488.6000000014901
+    },
+    {
+      "type": "pointerdown",
+      "trusted": true,
+      "target": "action",
+      "x": 362,
+      "y": 480,
+      "actionRect": [
+        301,
+        461.796875,
+        122.359375,
+        36
+      ],
+      "at": 806.8999999985099
+    },
+    {
+      "type": "pointerup",
+      "trusted": true,
+      "target": "action",
+      "x": 362,
+      "y": 480,
+      "actionRect": [
+        301,
+        461.796875,
+        122.359375,
+        36
+      ],
+      "at": 808.8999999985099
+    },
+    {
+      "type": "click",
+      "trusted": true,
+      "target": "action",
+      "x": 362,
+      "y": 480,
+      "actionRect": [
+        301,
+        461.796875,
+        122.359375,
+        36
+      ],
+      "at": 809
+    }
+  ],
+  "requests": [
+    {
+      "body": {
+        "requestId": "browser-editor-v1",
+        "mode": "dark"
+      },
+      "status": 200
+    }
+  ]
+}

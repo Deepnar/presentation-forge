@@ -7,7 +7,10 @@ def add(source,destination,backend,origin=None):
  im=Image.open(destination);images.append(dict(path=str(destination),sha256=hashlib.sha256(destination.read_bytes()).hexdigest(),width=im.width,height=im.height,backend=backend,source=origin or str(source),implementationSha=sha))
 for row in json.loads((out/'regression-images/index.json').read_text()):
  source=pathlib.Path(row['file']);assert hashlib.sha256(source.read_bytes()).hexdigest()==row['sha256']
- backend='PostgreSQL' if 'v2-6c-evidence' in row['source'] else 'SQLite production projects or standalone canonical scene fixture'
+ if 'v2-6c-evidence' in row['source']:backend='PostgreSQL hosted project browser'
+ elif 'v2-7c-3-evidence/standalone-' in row['source']:backend='Standalone scene viewer; local Live and SQLite project API'
+ elif any(k in row['source'] for k in ['v2-6a-evidence','v2-6b-evidence','v2-7a-evidence','v2-7b-1-evidence','v2-7b-2-evidence','v2-7c-1-evidence','v2-7c-2-evidence','v2-7c-3-evidence']):backend='SQLite saved-project browser'
+ else:backend='Standalone canonical scene fixtures; no ProjectStore exercised'
  add(source,root/'regression'/source.name,backend,row['source'])
 for source in sorted((root/'native').glob('*.png')):
  backend='Canonical bound in-memory engine; no storage/provider' if source.name.startswith(('before-','after-')) else 'SQLite authenticated browser export'
