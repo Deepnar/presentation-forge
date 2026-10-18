@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-7C-2-bf1bd8f.json"
   },
   "implementationHead": {
-    "sha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
-    "note": "Exact C2 source independently accepted in V2-7C-2-bf1bd8f; later commits contain evidence/documentation only. No further feature implementation authorized."
+    "sha": "a1dba91ae45aa062c1c6ec9fb0967c77c0a00e25",
+    "note": "Approved C3 task-entry plan; implementation begins from accepted C2. Final runtime/test source will be frozen before validation."
   },
   "activeMilestone": {
-    "id": "V2-7C-2",
-    "roadmapRef": "docs/ROADMAP.md#v2-7c-2-plan",
-    "evalDoc": "docs/V2-7C-2-EVAL.md",
+    "id": "V2-7C-3",
+    "roadmapRef": "docs/ROADMAP.md#v2-7c-3-plan",
+    "evalDoc": "docs/V2-7C-3-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-7C-2-bf1bd8f.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "project-catalog",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/project-catalog.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "id": "editor-toolbar",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/non-browser-bulk.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/serial-browser.json",
-      "reason": "Complete selected same-source file inventory; original B2 timeout and unchanged full-file retry retained separately in serial-recovery.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/postgres-contract.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/cross-process-faults.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/production-build.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/typecheck.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/benchmark-50.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-7c-2-evidence/frontend-visual.json",
-      "reason": "Actual current-source Chrome/native behavior and106 selected image hashes inspected; inherited capture limits explicitly retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Production editor toolbar polish",
+    "id": "V2-8 agent runtime scope direction",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#workspace-followups"
+    "roadmapRef": "docs/ROADMAP.md#12-v21--agent-native-re-architecture-program"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

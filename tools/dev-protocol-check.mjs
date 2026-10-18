@@ -16,13 +16,18 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
 const MILESTONES = {
+  'V2-7C-3': {
+    plan: 'docs/v2-7c-3-evidence/validation-plan.json',
+    focused: 'editor-toolbar',
+    files: ['test/v2-editor-toolbar-chrome-7c.test.js', 'test/v2-edit-chrome-7a.test.js'],
+  },
   'V2-7C-2': {
     plan: 'docs/v2-7c-2-evidence/validation-plan.json',
     focused: 'project-catalog',

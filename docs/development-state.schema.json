@@ -132,7 +132,8 @@
               "conversion-import",
               "browser-handoff",
               "project-covers",
-              "project-catalog"
+              "project-catalog",
+              "editor-toolbar"
             ]
           },
           "status": {

@@ -34,27 +34,14 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7C-2-EVAL.md](V2-7C-2-EVAL.md) indexes the approved unified Projects
-slice. Human direction selected one mixed grid containing distinct saved editable
-presentations and generated decks/reports, with search/type filters and one
-sidebar destination; the contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
-Exact source `bf1bd8f` is independently accepted in
-[the separate decision](reviews/V2-7C-2-bf1bd8f.json), dated 2026-10-18. The state
-file now indexes that accepted baseline. Later checkout commits contain evidence
-and documentation only; inspect the diff and state. No next implementation is
-authorized; agree the next surface direction under the roadmap workspace followups.
-
-The complete inventory has 205 entry files: 176 bulk, 25 serial browser/build
-owners and four PostgreSQL files. The focused catalog gate repeats 17 units,
-eight HTTP and 16 Chrome cases. Repeated backend executions are not additional
-distinct cases. Read [the current runbook](v2-7c-2-evidence/RUNBOOK.md), evaluation
-and state for final status; never substitute C1 results for newer source.
-
-Discovery retains both canonical APIs, owner policies, report-only access, saved
-covers and explicit conversion receipts. It never merges/imports on reads. Stop
-at the completed C2 review/handoff. Toolbar polish and agent runtime require
-their own approved contracts; a next candidate is not coding authorization.
-Preserve the separate BYOK locale and B2 restore-timeout records.
+[V2-7C-3-EVAL.md](V2-7C-3-EVAL.md) indexes the approved production-control
+slice at [its contract](ROADMAP.md#v2-7c-3-plan). The human selected standalone-
+only fixture, Live, duplicate Projects and developer diagnostic controls. C2
+source `bf1bd8f` remains independently accepted; C3 is in progress with required
+validation pending. Read state and handoff for the exact current implementation.
+Use the C3 complete inventory and bounded runners; never substitute C2 results.
+Stop after C3 review/handoff. Later feature candidates are not implementation
+authorization; preserve all standing limits and the three unrelated untracked paths.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

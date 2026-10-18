@@ -1,0 +1,40 @@
+{
+  "acceptedRuntimeBaseline": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "records": [
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-before-cdp.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 7,
+      "classification": "Test instrumentation returned a DOM object through CDP rather than a scalar; corrected before behavioral reproduction."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-before.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 7,
+      "classification": "Expected fail-first requirement: accepted embedded editor still exposes fixture selector. New UI behavior not implemented yet."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/governance-initial.tap",
+      "tests": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "C3 gate inventory and activation state validate; not a browser/product pass."
+    }
+  ]
+}
