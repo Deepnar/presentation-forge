@@ -7711,9 +7711,73 @@ scale); charts structurally exact without axes (V2-4C).
   covers and unified discovery are independently accepted in
   [V2-7C-1](#v2-7c-1-plan) and [V2-7C-2](#v2-7c-2-plan). The remaining immediate
   slice is removing or relocating fixture/developer controls from the production
-  editor toolbar. Agree its surface direction and bounded contract before
-  implementation; it is not yet authorized. AI editing remains V2-8. Discovery
+  editor toolbar. The standalone-only developer-control direction is approved in
+  [V2-7C-3](#v2-7c-3-plan); its bounded contract governs implementation. AI editing remains V2-8. Discovery
   reuses the revision-scoped scene resource without a new asset store.
+
+<a id="v2-7c-3-plan"></a>
+
+- [ ] V2-7C-3 production editor controls — **approved 2026-10-18**.
+  The human selected **Standalone scene viewer only** for the fixture selector,
+  Live compiler, duplicate Projects dialog and developer diagnostics. Keep the
+  project editor focused on the saved document, human editing and viewing.
+
+  - **Baseline/task entry:** independently accepted C2 source
+    `bf1bd8f7dbce827be04ed530b2e7330b385e8baa`,
+    [decision](reviews/V2-7C-2-bf1bd8f.json), checkout
+    `abadb9ec3177cf265e578505c13dd829c0845a89`, branch `v2`.
+    Source/evidence spot-checks confirm that checkout has no app/package/src/test/tool
+    delta after accepted source. C1/C2 discovery and B2 explicit handoff remain
+    prerequisites. The existing shared viewer already distinguishes embedded
+    `#/project/:id` from standalone `scenes.html`; use that boundary.
+  - **Scope/direction:** fixture selection, deterministic Live compilation and
+    the saved-project harness dialog remain available in standalone scenes only.
+    The embedded editor uses guarded Workspace/Projects navigation. Internal
+    scene/element IDs, semantic references, compiler state and engine revision
+    diagnostics stay in standalone visible readouts; production keeps descriptive
+    slide/selection/locked/layout status, truthful persisted save/conflict states
+    and every contextual formatting command. Preserve machine-facing data hooks.
+    Retain previous/next, zoom/Fit, Edit/Done, text/shape insertion and pending-text
+    Commit/Cancel, plus top-bar title/save/undo/redo/history/export/present and rails.
+    Keep toolbar height stable and controls keyboard reachable on narrow layouts;
+    no new Advanced menu or production shortcut to the developer harness.
+  - **Invariants/non-goals:** one engine/document, same revisioned commands,
+    pending edit/navigation/rename/save/conflict guards and authoritative native
+    export. No compiler/model/schema/store/auth-policy changes. No redesign of
+    contextual format controls, Fit correction, new insertion types, AI runtime,
+    legacy removal, deployment, migration or paid infrastructure. Existing
+    recovery reloads remain usable even though duplicate discovery UI moves.
+  - **Look-ahead:** V2-8 consumes canonical scene/command APIs and stable internal
+    IDs, not the visible diagnostic strings. V2-10 artifact unification can reuse
+    the already accepted workspace destination. Mode-dependent presentation must
+    not fork viewer state or duplicate command implementations.
+  - **Gates/acceptance:** normal project UI has no fixture/Live/harness controls
+    or raw diagnostic readouts; standalone retains their real behavior. Ordinary
+    editing, read-only inspection, save/reopen, undo/redo, locks/layers, history,
+    insertion, project switching and pending saves/text drafts still work. Verify
+    truthful error/recovery and Escape/focus return, settled desktop/narrow/dark
+    controls and no canvas shift on selection. Adapt only selectors/entry paths
+    intentionally changed by this direction; preserve the original behavioral
+    assertions and standalone guard coverage. Add complete dedicated Chrome
+    coverage on SQLite and isolated PostgreSQL; include full7A in the focused gate.
+  - **Required evidence:** extend the disjoint complete inventory, run all bulk
+    files, bounded serial browser/build owners, PostgreSQL contracts and process/
+    fault tests, production build, strict typecheck and all50 benchmark cells.
+    Inspect current screenshots and rasterized authenticated native exports;
+    record canvas measurements, actual backend/source and exact leaf totals.
+    Browser/build/LibreOffice owners never overlap. Wait for an appropriate quiet
+    window; never use other projects' databases or stop unrelated work. Common
+    correctness/data/security/undo/ownership/native/browser/accessibility/response/
+    regression/documentation/compatibility gates apply as regressions; deployment
+    safety is out of scope because no deployment is authorized.
+  - **Standing limits:** BYOK locale remains a separate failed probe; Fit, the
+    recurring B2 restore timeout and existing canonical capture timing retain
+    their owning entries. Missing PostgreSQL means unexecuted, never passing.
+  - **Review/stop:** preserve exact implementation SHA and attempts, scoped fixes,
+    files, totals/performance/limitations and acceptance recommendation. Use one
+    separate high-effort reviewer for exact-source ACCEPT/HOLD; the implementer
+    cannot accept itself. Push focused commits to `origin/v2`, preserve the three
+    unrelated untracked items and stop after C3 review/handoff. No dependent feature.
 
 <a id="v2-7c-2-plan"></a>
 
