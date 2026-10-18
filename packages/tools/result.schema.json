@@ -69,7 +69,71 @@
         },
         "data": {
           "type": "object",
-          "additionalProperties": true
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "slides": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "position": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "elementCount": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "layoutState": {
+                    "enum": [
+                      "managed",
+                      "customized",
+                      "detached"
+                    ]
+                  }
+                },
+                "required": [
+                  "slideId",
+                  "position",
+                  "elementCount",
+                  "layoutState"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "nextOffset": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "projectId",
+            "total",
+            "slides",
+            "nextOffset"
+          ],
+          "additionalProperties": false
+        },
+        "tool": {
+          "const": "get_project"
         }
       },
       "required": [
@@ -78,9 +142,571 @@
         "changed",
         "preserved",
         "warnings",
-        "data"
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "slideId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "elements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ElementProjection"
+              }
+            },
+            "nextOffset": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "slideId",
+            "total",
+            "elements",
+            "nextOffset"
+          ],
+          "additionalProperties": false
+        },
+        "tool": {
+          "const": "get_slide"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "element": {
+                    "$ref": "#/definitions/ElementProjection"
+                  }
+                },
+                "required": [
+                  "slideId",
+                  "element"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "elements"
+          ],
+          "additionalProperties": false
+        },
+        "tool": {
+          "const": "get_selected_elements"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "edited": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "elementId": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "slideId",
+                  "elementId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "edited"
+          ],
+          "additionalProperties": false
+        },
+        "tool": {
+          "const": "edit_content"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
       ],
       "additionalProperties": false
     }
-  ]
+  ],
+  "definitions": {
+    "ElementProjection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "text"
+            },
+            "paragraphs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "runs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "runs"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind",
+            "paragraphs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "chart"
+            },
+            "chart": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "chartKind": {
+                      "enum": [
+                        "bar",
+                        "hbar",
+                        "line",
+                        "pie",
+                        "doughnut",
+                        "area"
+                      ]
+                    },
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "series": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "values": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "values"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "chartKind",
+                    "categories",
+                    "series"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind",
+            "chart"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "table"
+            },
+            "table": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "header",
+                    "rows"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind",
+            "table"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "shape"
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "image"
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "line"
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "elementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "hidden": {
+              "type": "boolean"
+            },
+            "editable": {
+              "type": "boolean"
+            },
+            "kind": {
+              "const": "group"
+            }
+          },
+          "required": [
+            "elementId",
+            "locked",
+            "hidden",
+            "editable",
+            "kind"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
 }

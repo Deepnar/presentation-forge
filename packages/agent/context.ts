@@ -36,7 +36,7 @@ export async function composeInstructions({ session, request, reads, maxChars = 
       if (!result.ok) return fail('tool-refused', 'A scoped context read was refused.');
       if (revision !== null && result.revision !== revision) return fail('stale-context', 'The document changed during context acquisition.');
       revision = result.revision;
-      context.push({ query, revision: result.revision, data: result.data });
+      context.push(cloneJson({ query, revision: result.revision, data: result.data }));
       if (size() > maxChars) return fail('context-too-large', 'Content exceeds the context budget. Request a smaller page or selection.');
     }
     if (revision === null || session.revision() !== revision) return fail('stale-context', 'The document changed during context acquisition.');

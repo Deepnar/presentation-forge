@@ -2,12 +2,12 @@ import { readFile } from 'node:fs/promises';
 import { Ajv } from 'ajv';
 import type { EditorHandle, PlacedOp } from '../model/engine.ts';
 import type { SceneElement, SlideScene } from '../model/scene.generated.ts';
-import type { ToolResult as WireToolResult } from './result.generated.ts';
+import type { ToolResult as WireToolResult, ElementProjection } from './result.generated.ts';
 import type { ToolRequest } from './request.generated.ts';
 import { cloneJson, type Json } from './json.ts';
 
 const schema = JSON.parse(await readFile(new URL('./request.schema.json', import.meta.url), 'utf8'));
-const validateResult = new Ajv({ strict: false }).compile(JSON.parse(await readFile(new URL('./result.schema.json', import.meta.url), 'utf8')));
+const validateResult = new Ajv({ strict: false }).compile<WireToolResult>(JSON.parse(await readFile(new URL('./result.schema.json', import.meta.url), 'utf8')));
 const validate = new Ajv({ strict: false, allErrors: false }).compile(schema);
 const MESSAGES = {
   forbidden: 'This project is not available to this caller.',
@@ -25,7 +25,9 @@ const MESSAGES = {
 } as const;
 export type ToolCode = keyof typeof MESSAGES;
 export type ToolFailure = Extract<WireToolResult, { ok: false }>;
-export type ToolSuccess = Extract<WireToolResult, { ok: true }> & { data: { [key: string]: Json } };
+export type ToolSuccess = Extract<WireToolResult, { ok: true }>;
+type ToolName = ToolSuccess['tool'];
+type DataFor<T extends ToolName> = Extract<ToolSuccess, { tool: T }>['data'];
 export type ToolResult = ToolFailure | ToolSuccess;
 export type Target = { slideId: string; elementId: string };
 export interface ToolBinding {
@@ -60,12 +62,12 @@ function flatten(elements: SceneElement[], protectedParent = false): { element: 
     return [{ element, protected: protectedHere }, ...flatten(element.group?.children ?? [], protectedHere)];
   });
 }
-function projectElement(element: SceneElement, protectedTarget: boolean, editable: boolean): Json {
-  const base = { elementId: element.id, kind: element.kind, locked: protectedTarget, editable, hidden: element.hidden === true };
-  if (element.kind === 'text') return { ...base, paragraphs: (element.paragraphs ?? []).map(p => ({ runs: p.runs.map(r => ({ text: r.text })) })) };
-  if (element.kind === 'chart' && element.chart) return { ...base, chart: { chartKind: element.chart.chartKind, categories: [...element.chart.categories], series: element.chart.series.map(s => ({ name: s.name, values: [...s.values] })) } };
-  if (element.kind === 'table' && element.table) return { ...base, table: { header: element.table.header ?? null, rows: element.table.rows.map(r => [...r]) } };
-  return base;
+function projectElement(element: SceneElement, protectedTarget: boolean, editable: boolean): ElementProjection {
+  const base = { elementId: element.id, locked: protectedTarget, editable, hidden: element.hidden === true };
+  if (element.kind === 'text') return { ...base, kind: 'text', paragraphs: (element.paragraphs ?? []).map(p => ({ runs: p.runs.map(r => ({ text: r.text })) })) };
+  if (element.kind === 'chart') return { ...base, kind: 'chart', chart: element.chart ? { chartKind: element.chart.chartKind, categories: [...element.chart.categories], series: element.chart.series.map(s => ({ name: s.name, values: [...s.values] })) } : null };
+  if (element.kind === 'table') return { ...base, kind: 'table', table: element.table ? { header: element.table.header ?? null, rows: element.table.rows.map(r => [...r]) } : null };
+  return { ...base, kind: element.kind };
 }
 
 // Authority is supplied by the application, not parsed from a model request.
@@ -84,7 +86,11 @@ export function createToolSession(binding: ToolBinding): ToolSession {
   const outputChars = bound(binding.limits?.outputChars, 16000, 1024, 64000);
   let calls = 0;
   const authorized = ownerId === actorId;
-  const ok = (revision: number, data: { [key: string]: Json }, changed = false): ToolSuccess => ({ ok: true, revision, changed, preserved: ['geometry', 'styling', 'untargeted-content', 'tombstones'], warnings: [], data });
+  function ok<T extends ToolName>(tool: T, revision: number, data: DataFor<T>, changed = false): ToolSuccess {
+    const result = { ok: true, tool, revision, changed, preserved: ['geometry', 'styling', 'untargeted-content', 'tombstones'], warnings: [], data };
+    if (!validateResult(result) || !result.ok) throw new Error('Invalid internal tool result');
+    return result;
+  }
   const fits = (r: ToolResult) => validateResult(r) && JSON.stringify(r).length <= outputChars;
   const inScope = (target: Target) => readable.has(target.slideId);
   function locate(scenes: SlideScene[], target: Target) {
@@ -111,18 +117,18 @@ export function createToolSession(binding: ToolBinding): ToolSession {
         let result: ToolSuccess;
         if (request.tool === 'get_project') {
           const slides = scenes.filter(s => readable.has(s.id)), offset = request.args.offset ?? 0, limit = request.args.limit ?? 20;
-          result = ok(revision, { projectId, total: slides.length, slides: slides.slice(offset, offset + limit).map(s => ({ slideId: s.id, position: scenes.indexOf(s) + 1, elementCount: flatten(s.elements).length, layoutState: s.layoutState })), nextOffset: offset + limit < slides.length ? offset + limit : null });
+          result = ok('get_project', revision, { projectId, total: slides.length, slides: slides.slice(offset, offset + limit).map(s => ({ slideId: s.id, position: scenes.indexOf(s) + 1, elementCount: flatten(s.elements).length, layoutState: s.layoutState })), nextOffset: offset + limit < slides.length ? offset + limit : null });
         } else if (request.tool === 'get_slide') {
           const { slideId } = request.args;
           const scene = readable.has(slideId) && scenes.find(s => s.id === slideId);
           if (!scene) return failure('unknown-slide');
           const rows = flatten(scene.elements), offset = request.args.offset ?? 0, limit = request.args.limit ?? 20;
-          result = ok(revision, { slideId, total: rows.length, elements: rows.slice(offset, offset + limit).map(r => projectElement(r.element, r.protected, mode === 'edit' && editable.has(keyOf({slideId, elementId:r.element.id})) && !r.protected)), nextOffset: offset + limit < rows.length ? offset + limit : null });
+          result = ok('get_slide', revision, { slideId, total: rows.length, elements: rows.slice(offset, offset + limit).map(r => projectElement(r.element, r.protected, mode === 'edit' && editable.has(keyOf({slideId, elementId:r.element.id})) && !r.protected)), nextOffset: offset + limit < rows.length ? offset + limit : null });
         } else if (request.tool === 'get_selected_elements') {
           if (selection.length > 32) return failure('budget-exceeded');
           const rows = selection.map(t => ({ target: t, found: locate(scenes, t) }));
           if (rows.some(r => !r.found)) return failure('unknown-element');
-          result = ok(revision, { elements: rows.map(r => ({ slideId: r.target.slideId, element: projectElement(r.found!.element, r.found!.protected, mode === 'edit' && editable.has(keyOf(r.target)) && !r.found!.protected) })) });
+          result = ok('get_selected_elements', revision, { elements: rows.map(r => ({ slideId: r.target.slideId, element: projectElement(r.found!.element, r.found!.protected, mode === 'edit' && editable.has(keyOf(r.target)) && !r.found!.protected) })) });
         } else {
           if (mode !== 'edit' || !validId(callId)) return failure('not-editable');
           if (request.args.baseRevision !== revision) return failure('stale-revision');
@@ -135,6 +141,8 @@ export function createToolSession(binding: ToolBinding): ToolSession {
             if (!found) return failure('unknown-element');
             if (found.protected) return failure('locked');
             if (found.element.kind !== edit.kind) return failure('invalid-edit');
+            // Cell structure owns resolved layout; content tools cannot reflow it.
+            if (edit.kind === 'table' && (!found.element.table || edit.rows.length !== found.element.table.rows.length || edit.rows.some((row, i) => row.length !== found.element.table!.rows[i].length))) return failure('invalid-edit');
             if (edit.kind === 'text') {
               if (touched.has(key) && !edits.has(key)) return failure('invalid-edit');
               const patch = edits.get(key) ?? { element: found.element, paragraphs: structuredClone(found.element.paragraphs), cells: new Set<string>() };
@@ -148,12 +156,12 @@ export function createToolSession(binding: ToolBinding): ToolSession {
             touched.add(key);
           }
           for (const [key, patch] of edits) ops.push({ slideId: (JSON.parse(key) as string[])[0], op: { type: 'element.updateText', id: patch.element.id, paragraphs: patch.paragraphs! } });
-          const data: { [key: string]: Json } = { edited: [...touched].map(key => { const [slideId, elementId] = JSON.parse(key); return { slideId, elementId }; }) };
+          const data: DataFor<'edit_content'> = { edited: [...touched].map(key => { const [slideId, elementId] = JSON.parse(key); return { slideId, elementId }; }) };
           // Refuse oversized acknowledgements before committing any edit.
-          if (!fits(ok(revision + 1, data, false))) return failure('budget-exceeded');
+          if (!fits(ok('edit_content', revision + 1, data, false))) return failure('budget-exceeded');
           const applied = await document.applyBatch({ id: callId, actor: 'agent', agentId, baseRevision: request.args.baseRevision, ops });
           if (!applied.ok) return failure(applied.code === 'stale-revision' || applied.code === 'duplicate-id' || applied.code === 'locked' ? applied.code : 'engine-refused');
-          return ok(applied.revision, data, !applied.noop);
+          return ok('edit_content', applied.revision, data, !applied.noop);
         }
         return fits(result) ? result : failure('budget-exceeded');
       } catch { return failure('unavailable'); }
