@@ -1,0 +1,40 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "records": [
+    {
+      "source": "docs/v2-8a-evidence/independent/native-foundation/before.pptx",
+      "backend": "Bound in-memory canonical EditorHandle; no ProjectStore or provider call",
+      "sha256": "beb23e1643942f93aea5f4726bd7e175624b9584c455ed42ad5d1de1ba18d0b1",
+      "slideCount": 2,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-8a-evidence/independent/native-foundation/before-1.png",
+        "docs/v2-8a-evidence/independent/native-foundation/before-2.png"
+      ]
+    },
+    {
+      "source": "docs/v2-8a-evidence/independent/native-foundation/after.pptx",
+      "backend": "Bound in-memory canonical EditorHandle; no ProjectStore or provider call",
+      "sha256": "b42796344e61a52cfc06d229e848b37db885779110c4dfc43ee692a82aa16d30",
+      "slideCount": 2,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-8a-evidence/independent/native-foundation/after-1.png",
+        "docs/v2-8a-evidence/independent/native-foundation/after-2.png"
+      ]
+    }
+  ],
+  "contextMeasure": {
+    "chars": 4268,
+    "estimatedTokens": 1067,
+    "tokenEstimateMethod": "ceil(chars/4)"
+  },
+  "revision": 1,
+  "historyEntries": 1,
+  "geometryDelta": 0,
+  "exactUndoRedo": true,
+  "untargetedSlideByteIdentical": true,
+  "actor": "agent",
+  "limitation": "Scripted semantic edits exercise plumbing, not model quality. Native rasters use LibreOffice/Poppler; visual inspection is separate.",
+  "independentProvenance": "Fresh independently executed canonical1-case headless driver; paths remapped to captured independent copies before finalized canonical-byte restoration."
+}

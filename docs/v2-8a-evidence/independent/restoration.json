@@ -1,0 +1,32 @@
+{
+  "backedUpAndVerified": 2681,
+  "changedPathsRestored": [
+    "docs/v2-7b-2-evidence/ambiguous-response.png",
+    "docs/v2-7b-2-evidence/boundary-narrow.png",
+    "docs/v2-7b-2-evidence/completed-chat.png",
+    "docs/v2-7b-2-evidence/deck-page-action.png",
+    "docs/v2-7b-2-evidence/handoff-history.png",
+    "docs/v2-7b-2-evidence/opening-project.png",
+    "docs/v2-7b-2-evidence/refusal-narrow.png",
+    "docs/v2-7b-2-evidence/session-changed.png",
+    "docs/v2-8a-evidence/headless-inspection.json",
+    "out/v2-7b-2-validation/browser/boundary-60.json",
+    "out/v2-7b-2-validation/browser/cold-warm.json",
+    "out/v2-7b-2-validation/browser/handoff.pptx",
+    "out/v2-8a-validation/native-foundation-after/after.pdf",
+    "out/v2-8a-validation/native-foundation-before/before.pdf",
+    "out/v2-8a-validation/source-retry-nearest-trace.json"
+  ],
+  "finalImageHashesMatched": {
+    "8a": 91,
+    "7c-3": 123,
+    "7c-2": 106
+  },
+  "implementationDeltaAfterReview": "",
+  "originalUntrackedPreserved": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "originalIgnoredHeadlessPptxOmission": "Two ignored original canonical headless PPTX binaries were outside backup and are unavailable after rerun. Historical hash witnesses retained; see archive-provenance-limit.json. No original binary hash recovery claimed."
+}

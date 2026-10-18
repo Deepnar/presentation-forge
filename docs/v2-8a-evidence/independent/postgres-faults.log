@@ -1,0 +1,37 @@
+▶ v2-6c two processes, one postgres
+  ✔ same-base saves across instances yield one 200 and one 409 (215.294104ms)
+  ✔ save versus rename across instances keeps one winner (18.56911ms)
+  ✔ save versus restore across instances keeps one winner (23.897123ms)
+  ✔ restore versus restore across instances keeps one winner (32.659196ms)
+  ✔ rename versus rename across instances keeps one winner (13.907148ms)
+  ✔ delete during a concurrent save leaves exactly one consistent outcome (9.714529ms)
+  ✔ history initialization racing with saves yields one baseline (25.826554ms)
+  ✔ concurrent mixed mutations keep prune accounting exact (19.495063ms)
+  ✔ same owner email works across instances; cross-owner denied (25.680323ms)
+  ✔ rapid creates mint distinct ids across instances (45.169437ms)
+✔ v2-6c two processes, one postgres (1167.749708ms)
+▶ v2-6c two processes, one sqlite file
+  ✔ same-base saves across sqlite processes yield one 200 and one 409 (111.085097ms)
+✔ v2-6c two processes, one sqlite file (1549.324913ms)
+▶ v2-6c transaction faults
+  ✔ terminated backend mid-transaction rolls back with nothing saved (209.66834ms)
+  ✔ history-insert failure rolls back the project write (18.66823ms)
+(node:3535709) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Client]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✔ prune failure rolls back the whole save (110.449886ms)
+  ✔ unreachable database reports storage-unavailable and never saved (2.607376ms)
+  ✔ pool exhaustion fails loudly instead of hanging or half-writing (5529.190507ms)
+  ✔ killed writer processes leave consistent history (2021.567052ms)
+✔ v2-6c transaction faults (7912.507259ms)
+▶ v2-6c misconfiguration over HTTP
+  ✔ postgres selected without a URL answers 503 honestly, never sqlite (345.121842ms)
+  ✔ aborted HTTP saves leave consistent history (2730.34609ms)
+✔ v2-6c misconfiguration over HTTP (3875.942988ms)
+ℹ tests 19
+ℹ suites 4
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15668.63991

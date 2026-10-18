@@ -1,0 +1,20 @@
+handoff backend: sqlite; actual authenticated production server
+✔ completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports (12593.292365ms)
+✔ both entry points and fresh tabs reopen the same human-edited dark project (4818.152845ms)
+✔ a lost response after real creation retries safely after reload without a duplicate (3203.248002ms)
+✔ a held successful response cannot navigate after leaving its source view (2522.106817ms)
+✔ an account change during a held response cannot open another account's project (2445.011616ms)
+✔ a real second document's token storage event invalidates pending work with reload recovery (2573.452267ms)
+✔ a transient completed-chat source read can retry without losing dark mode (2486.320693ms)
+✔ unsupported content refuses visibly with keyboard focus and usable original access at narrow width (2592.226733ms)
+✔ changed and deleted imports refuse without replacing or resurrecting their projects (4704.168171ms)
+✔ incomplete generation and unavailable storage keep the original flow usable (2593.584334ms)
+✔ 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible (3028.452065ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 44242.906015

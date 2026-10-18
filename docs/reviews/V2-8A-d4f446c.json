@@ -1,0 +1,83 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "acceptedBaselineCompared": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "reviewedEvidenceCommit": "08f7c9f30fc86ccf3dee531333bc7076aa15acda",
+  "reviewer": "V2-8A independent foundation reviewer",
+  "context": "/root/catalog_review",
+  "date": "2026-10-18",
+  "evidence": "docs/reviews/V2-8A-d4f446c.md",
+  "independentEvidence": "docs/v2-8a-evidence/independent/runs.json",
+  "scope": "Approved headless tool/context foundation only",
+  "independentExecutions": {
+    "total": 148,
+    "pass": 148,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "focused": 59,
+    "governanceBoundaryDriftUsage": 34,
+    "postgresFourFiles": 42,
+    "b2Browser": 11,
+    "trustedTargetDiagnostic": 1,
+    "headlessNative": 1
+  },
+  "commands": {
+    "build": "passed",
+    "typecheck": "passed",
+    "protocol": "passed;0errors/0warnings",
+    "benchmark50": "passed;0L1/L2/fit/takeaway findings,5invariance comparisons agree",
+    "additionalNative": "Fresh3-page authenticated B2 OOXML/export/raster command passed; exact rich-run XML preservation checked separately"
+  },
+  "inspectedImplementerEvidence": {
+    "inventoryFiles": 209,
+    "total": 2393,
+    "pass": 2393,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecuted": 0,
+    "distinctHeadlessPass": 1,
+    "focusedRepeatedNotAdded": 59,
+    "fullMatrixIndependentlyRepeated": false,
+    "allFinalImageHashesMatchedAndInspected": 91,
+    "locale": {
+      "pass": 9,
+      "fail": 1,
+      "classification": "separate standing BYOK locale failure; inspected only"
+    }
+  },
+  "visuals": {
+    "freshBrowser": 8,
+    "freshNative": 7,
+    "freshSvg": 4,
+    "freshImagesInspected": 19,
+    "noNewClippingObserved": true,
+    "nativeRichRunPropertiesExactBeforeAfter": true,
+    "restoredChangedPaths": 15,
+    "backupsVerified": 2681,
+    "finalManifestHashes": {
+      "8A": 91,
+      "C3": 123,
+      "C2": 106
+    }
+  },
+  "residuals": [
+    "Internal trusted binding requires application authentication/owned live-document loading; this is not HTTP authentication",
+    "No provider/UI/durable/search/full-V2-8 acceptance or deployment",
+    "Character-based token estimate is approximate; no live model quality/security behavior claim",
+    "Inherited mixed-run SVG first-run styling flattening persists; scene/native formatting exact",
+    "Old B2 history-restore timeout remains unresolved; original source-retry event sequence untraced",
+    "BYOK locale9/1, Fit and registered C1/B2/C2capture limits remain",
+    "LibreOffice/Poppler does not establish interactive Microsoft PowerPoint behavior",
+    "Full209-file matrix inspected, not independently duplicated",
+    "Owned PostgreSQL retained for implementer cleanup; no cleanup-completion claim",
+    "Reviewer backup omitted2ignored original canonical headless PPTXs; originals unavailable after rerun. Historical original hashes/scenes/render/TAP witnesses retained; fresh checked archives committed separately with new hashes. Original archive bytes cannot be re-audited."
+  ],
+  "blockingFindings": [],
+  "implementationTestsStateEdited": false,
+  "heavySlotReleased": true,
+  "ownedPostgresStoppedByReviewer": false,
+  "archiveProvenanceLimitation": "docs/v2-8a-evidence/independent/archive-provenance-limit.json"
+}

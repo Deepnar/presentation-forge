@@ -1,0 +1,28 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "cause": "Reviewer backup selected tracked docs evidence; two globally ignored canonical PPTX binaries were omitted and overwritten by the canonical headless rerun. No separate original copy exists.",
+  "historicalWitness": "docs/v2-8a-evidence/headless-inspection.json",
+  "originalSceneSvgPngAndTapRetainedExactly": true,
+  "canonicalFreshCopiesRemovedToAvoidHashAmbiguity": true,
+  "reconstructedOriginalClaim": false,
+  "freshBinariesRetainedWithNewHashes": true,
+  "records": [
+    {
+      "originalIgnoredPath": "docs/v2-8a-evidence/native/before.pptx",
+      "originalRecordedSha256": "b31562f23937d01e4c40e7f8e0e65e0de93280428e922f356b7e19eee67d060d",
+      "originalBinaryAvailable": false,
+      "freshIndependentSource": "docs/v2-8a-evidence/independent/native-foundation/before.pptx",
+      "freshSha256": "beb23e1643942f93aea5f4726bd7e175624b9584c455ed42ad5d1de1ba18d0b1",
+      "relationship": "Same independently exercised deterministic scene/content/native checks; newly generated archive metadata, not the original binary."
+    },
+    {
+      "originalIgnoredPath": "docs/v2-8a-evidence/native/after.pptx",
+      "originalRecordedSha256": "c70d70f72aa991442fb3e1a6dfb2d7eec45887386a770ab369b9e5250d7f7d22",
+      "originalBinaryAvailable": false,
+      "freshIndependentSource": "docs/v2-8a-evidence/independent/native-foundation/after.pptx",
+      "freshSha256": "b42796344e61a52cfc06d229e848b37db885779110c4dfc43ee692a82aa16d30",
+      "relationship": "Same independently exercised deterministic scene/content/native checks; newly generated archive metadata, not the original binary."
+    }
+  ],
+  "assessment": "Provenance limitation explicitly accepted for bounded foundation scope: original archive bytes cannot be re-audited, but exact original scenes/render witnesses/raw execution plus fresh real-engine/native assertions preserve the substantive gate."
+}

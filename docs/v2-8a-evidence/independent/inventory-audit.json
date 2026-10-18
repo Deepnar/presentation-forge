@@ -1,0 +1,29 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "observedFiles": 209,
+  "counts": {
+    "bulk": {
+      "tests": 2143,
+      "pass": 2143,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "serial": {
+      "tests": 208,
+      "pass": 208,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "postgres": {
+      "tests": 42,
+      "pass": 42,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "imagesMatched": 91,
+  "noDuplicatesOrMissing": true
+}

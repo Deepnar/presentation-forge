@@ -1,0 +1,14 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "source": "docs/v2-8a-evidence/independent/b2-generated/handoff.pptx",
+  "sha256": "67644625253764e33d1985c96bbe694404ea97d0a3e3095950059df7db5de7a1",
+  "backend": "SQLite; fresh independently executed complete B2 authenticated browser export",
+  "nativeObjects": true,
+  "slideCount": 3,
+  "rasters": [
+    "docs/v2-8a-evidence/independent/native-b2/slide-1.png",
+    "docs/v2-8a-evidence/independent/native-b2/slide-2.png",
+    "docs/v2-8a-evidence/independent/native-b2/slide-3.png"
+  ],
+  "visualInspection": "All3fresh native B2 pages independently viewed in contact sheet; title, chart, table readable without new clipping."
+}

@@ -1,0 +1,47 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "additionalNativeCommand": {
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "docs/v2-8a-evidence/independent/native-check.mjs"
+    ],
+    "exitCode": 0,
+    "log": "docs/v2-8a-evidence/independent/native-check.log",
+    "notCountedAsLeafTest": true
+  },
+  "nativeRunProperties": {
+    "result": "exact before/after equality verified independently for both rich text runs; second run italic20pt445566 retained",
+    "evidence": "docs/v2-8a-evidence/independent/native-run-preservation.json"
+  },
+  "benchmark": {
+    "cells": 50,
+    "l1": 0,
+    "l2": 0,
+    "fitDiagnostics": 0,
+    "takeawayFindings": 0,
+    "invarianceAgree": 5,
+    "rawCheckoutHead": "08f7c9f",
+    "sourceDelta": "No runtime/app/src/test/tools/tsconfig delta from exact frozen source"
+  },
+  "visuals": {
+    "implementerImagesInspected": 91,
+    "freshImagesInspected": 19,
+    "freshBrowser": 8,
+    "freshNative": 7,
+    "freshSvg": 4,
+    "technique": "All contact-sheet images viewed; headless native before/after, narrow catalog dialog and narrow dark toolbar enlarged.",
+    "limitations": "Inherited Fit, C1rail strip, B2completed-chat action below composer and C2pending-query frame retained; no new clipping or overlap observed. Scene/native preserve mixed-run formatting, SVG flattening persists unchanged."
+  }
+}

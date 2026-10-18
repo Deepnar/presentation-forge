@@ -1,0 +1,56 @@
+✔ cold cross-process creation races initialize safely and commit one project/history/receipt (712.237649ms)
+✔ same-process concurrent imports return one current project without extra history (293.629292ms)
+✔ changed sources, deleted targets and owner mismatches refuse without overwrites (36.935062ms)
+✔ a history trigger fault rolls back reservation and project; retry can create (30.251197ms)
+✔ a lost response and pool restart replay the committed current project (27.381148ms)
+✔ a terminated backend during history insertion rolls back every creation row (63.332022ms)
+▶ v2-6c contract over postgres
+  ✔ adapter answers before the shared suite runs (10.566417ms)
+✔ v2-6c contract over postgres (30.097495ms)
+▶ [postgres] CRUD and summaries
+  ✔ creates, loads, lists without scene bytes, renames, deletes (84.070092ms)
+  ✔ no-op saves and renames advance nothing and record nothing (10.947939ms)
+✔ [postgres] CRUD and summaries (95.233609ms)
+(node:3535480) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Client]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ [postgres] schema validation
+  ✔ refuses malformed ids, titles, scenes, and provenance (10.186046ms)
+✔ [postgres] schema validation (10.336414ms)
+▶ [postgres] owner isolation
+  ✔ exact-match reads, lists, writes, and history without leaks (33.511168ms)
+✔ [postgres] owner isolation (33.687344ms)
+▶ [postgres] revision conflicts
+  ✔ same-base saves serialize to one winner and one stale (16.125583ms)
+  ✔ save versus rename on one base keeps exactly one winner (13.843499ms)
+  ✔ concurrent same-base renames yield one winner and one stale (13.179166ms)
+✔ [postgres] revision conflicts (43.421152ms)
+▶ [postgres] atomic history
+  ✔ every committed revision has a validated history row; failures add none (16.710929ms)
+✔ [postgres] atomic history (16.814109ms)
+▶ [postgres] retention
+  ✔ stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable (124.987246ms)
+✔ [postgres] retention (125.114375ms)
+▶ [postgres] restore
+  ✔ restores as a new revision, preserves rows, refuses stale (19.813094ms)
+  ✔ restore versus restore on one base keeps one winner (12.175606ms)
+✔ [postgres] restore (32.151586ms)
+▶ [postgres] migration and corruption
+  ✔ history-less projects gain exactly one baseline without rewrites (10.042797ms)
+(node:3535480) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Client]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+  ✔ future schema versions refuse; corrupt rows refuse with current intact (16.376897ms)
+✔ [postgres] migration and corruption (26.576028ms)
+▶ [postgres] round-trip and export
+  ✔ mixed decks survive byte-identical with identity intact (6.673505ms)
+  ✔ stored and restored documents export native and order-exact (46.591154ms)
+✔ [postgres] round-trip and export (53.466643ms)
+▶ [postgres] deletion
+  ✔ delete removes the project and its history together (7.548254ms)
+✔ [postgres] deletion (7.656191ms)
+ℹ tests 23
+ℹ suites 11
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1910.035003
