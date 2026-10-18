@@ -17,7 +17,7 @@
     "cpuLimit": 1,
     "memoryMiB": 512,
     "tmpfsMiB": 192,
-    "cleanup": null
+    "cleanup": "docs/v2-7c-3-evidence/cleanup.json"
   },
   "node": "v24.16.0",
   "note": "Cached disposable Forge-only service; final source frozen for serial validation. Other projects remain untouched.",

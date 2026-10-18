@@ -1,0 +1,15 @@
+{
+  "observedAtUtc": "2026-10-18T08:09:48.509519+00:00",
+  "containerId": "3abaddfa8f3b9a1fd67a3817df5dd1153042d0ead37a9423422b6e013d6a8436",
+  "containerName": "forge_v27c3_validation_pg",
+  "ownedLabelVerifiedBeforeStop": "V2-7C-3",
+  "autoRemoveVerifiedBeforeStop": true,
+  "stopExitCode": 0,
+  "preRemovalDatabaseQueryExecuted": true,
+  "temporaryDatabaseCountBeforeStop": null,
+  "containerAbsentAfterStop": true,
+  "ownedPort5544Closed": true,
+  "independentConfirmation": "docs/v2-7c-3-evidence/logs/independent/post-cleanup.json",
+  "otherProcessesOrDatabasesStopped": false,
+  "limitation": "The immediate combined post-stop absence/port assertion ran before cleanup settled and failed before query output was saved. Subsequent root and independent probes confirm removal/closed port; pre-removal database count is unavailable, never asserted0."
+}
