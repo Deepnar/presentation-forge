@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
-    "note": "Frozen C3 runtime/test source after9/9 dedicated Chrome checks; complete matrix and final exact-source evidence pending. Later documentation/evidence commits do not change runtime/tests/tools."
+    "note": "Frozen C3 runtime/test source; all required exact-source validation complete. Later changes only document evidence and review; no app/package/src/test/tool delta."
   },
   "activeMilestone": {
     "id": "V2-7C-3",
     "roadmapRef": "docs/ROADMAP.md#v2-7c-3-plan",
     "evalDoc": "docs/V2-7C-3-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "editor-toolbar",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/editor-toolbar.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/non-browser-bulk.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/serial-browser.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/postgres-contract.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/cross-process-faults.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/production-build.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/typecheck.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/benchmark-50.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved C3 scope; prior C2 results do not validate new control separation."
+      "status": "passed",
+      "evidence": "docs/v2-7c-3-evidence/frontend-visual.json",
+      "reason": "Inspected all123 final images, enlarged seven native rasters, verified hashes and measured canvas/toolbar geometry; existing limits retained."
     }
   ],
   "knownBlockers": [],

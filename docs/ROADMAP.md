@@ -7717,7 +7717,7 @@ scale); charts structurally exact without axes (V2-4C).
 
 <a id="v2-7c-3-plan"></a>
 
-- [ ] V2-7C-3 production editor controls — **approved 2026-10-18**.
+- [ ] V2-7C-3 production editor controls — **implemented/validated 2026-10-18; independent review pending**.
   The human selected **Standalone scene viewer only** for the fixture selector,
   Live compiler, duplicate Projects dialog and developer diagnostics. Keep the
   project editor focused on the saved document, human editing and viewing.
@@ -7773,6 +7773,11 @@ scale); charts structurally exact without axes (V2-4C).
   - **Standing limits:** BYOK locale remains a separate failed probe; Fit, the
     recurring B2 restore timeout and existing canonical capture timing retain
     their owning entries. Missing PostgreSQL means unexecuted, never passing.
+  - **Validation:** source `484875f`,206-file matrix2330/2330 plus1 distinct
+    hosted case; focused37/37 and54 repeated backend cases pass; build/typecheck/
+    all50cells pass;123 final images and7 native pages inspected. BYOK remains
+    separate9/1; prior B2 timeout did not recur. [Exact evaluation](V2-7C-3-EVAL.md).
+    This evidence is not independent acceptance.
   - **Review/stop:** preserve exact implementation SHA and attempts, scoped fixes,
     files, totals/performance/limitations and acceptance recommendation. Use one
     separate high-effort reviewer for exact-source ACCEPT/HOLD; the implementer
@@ -7988,6 +7993,11 @@ scale); charts structurally exact without axes (V2-4C).
   RAF/hit-target diagnostic and settled main capture. Consolidate that evidence
   gate into the canonical harness without a fixed sleep or weakened bounds.
   [Exact review/provenance](reviews/V2-7C-1-f79ae07.md#narrow-capture-timing-investigation).
+  The same canonical evidence cleanup should wait for completed C2 search requests
+  before no-match capture and scroll the B2 handoff action above its fixed composer.
+  Supplemental settled captures already exist in prior reviews; C3 preserves the
+  canonical limits and supplies its own settled toolbar views. Keep this bounded
+  harness work separate from production layout changes.
 
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach

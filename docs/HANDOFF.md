@@ -1,14 +1,15 @@
-# Handoff — V2-7C-3 frozen, final validation pending
+# Handoff — V2-7C-3 validated, independent review pending
 
 2026-10-18, v2. Accepted baseline bf1bd8f7dbce827be04ed530b2e7330b385e8baa,
 separate C2 ACCEPT in reviews/V2-7C-2-bf1bd8f.json. C3 direction approved:
 fixture/Live/duplicate Projects/developer diagnostics belong only in standalone
 scenes. Read [the contract](ROADMAP.md#v2-7c-3-plan), state and V2-7C-3-EVAL.md.
 
-Frozen implementation 484875ff5c826a34028889ed2fc6118bfdc407ad. Dedicated9-case Chrome passes; full206-file
-matrix, commands,50 cells and final native/visual inspection are pending.
+Frozen implementation 484875ff5c826a34028889ed2fc6118bfdc407ad. All206 matrix files pass2330/2330 plus1 distinct hosted case; focused37/37 and
+54 backend repeats pass. Build/typecheck/50cells pass;123 images and7 native pages
+inspected. BYOK remains separate9/1; no required checks unexecuted.
 Use v2-7c-3-evidence/run-validation.py with the exact plan. Root owns serial heavy
-resources; independent high reviewer catalog_review awaits final packet/slot.
+resources; independent high reviewer catalog_review receives the final packet/exclusive slot.
 No C3 acceptance. No feature beyond C3, deployment or migration.
 
 Owned disposable PostgreSQL is forge_v27c3_validation_pg, exact container
