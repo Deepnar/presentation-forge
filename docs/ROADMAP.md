@@ -8270,6 +8270,102 @@ needs direction on scope before building.*
   > revisioned tools and bounded context without another document or layout path.
   > Reusable gesture/ignored-artifact backup failures are recorded in TRAPS.md.
 
+<a id="v2-8b-scope-proposal"></a>
+
+- [ ] **V2-8B durable run core — proposed on 2026-10-18; direction pending.**
+  Continuation resumes from accepted implementation
+  `d4f446c7b2fcae851c37d1a46288cf91317c38b4`
+  ([independent decision](reviews/V2-8A-d4f446c.json)), planning checkout
+  `c8d6fafca67836369c6e8cf4a4b88d1391a1405a`, branch `v2`.
+  The continuation request authorizes preparation of this contract; the prior
+  foundation approval did not select the next runtime or Assistant scope.
+
+  **Recommended direction:** complete the server-owned durable run core before
+  adding live providers or the Assistant surface. A headless scripted caller
+  exercises real scoped tools and saved projects through start, claim, bounded
+  execution, cancellation, process death and recovery. Runs survive client
+  disconnects and worker restarts. This is a reusable production primitive, not a
+  fake chat interface or a claim of conversational generation.
+
+  **Alternative requiring a different contract:** Assistant editing first,
+  delivering a visible existing-project editing flow together with the necessary
+  durable execution and tested provider seam. That option needs the panel's
+  interaction/draft/approval behavior and provider direction agreed before code.
+  Do not switch to renderer polish or another milestone while this choice waits.
+
+  **Current seams and look-ahead:** the accepted tools bind a live EditorHandle;
+  their duplicate identifiers and undo are session-local. The SQLite/PostgreSQL
+  ProjectStore already commits project revisions and history atomically, but has
+  no durable run leases or tool-step receipts. The engine revision starts at zero
+  and is distinct from the saved project revision. Extend these seams explicitly;
+  do not wrap an unrelated save after an edit and call that crash-safe execution.
+  Later provider, Assistant, search, file and plugin work must reuse this core.
+  Preserve the existing Express/Node stack and both store backends. No framework,
+  external queue, paid service or deployment platform is selected by this proposal.
+
+  **Bounded implementation if selected:** typed/schema-validated run state,
+  immutable trusted owner/project/scope binding, request identity, persisted
+  deadlines and step/failure budgets, lease ownership with fencing, checkpoints,
+  terminal outcomes and cancellation. Recheck project ownership/existence and
+  editing scope at every durable effect. A stale worker cannot commit after
+  cancellation or lease loss. Resolve cancellation versus commit by transaction
+  order; a completed commit stays committed and cancellation prevents subsequent
+  effects. Process restart must neither reset budgets nor replay committed edits.
+
+  Persist bounded owner-scoped validated semantic step/checkpoint data and concise
+  results needed for recovery, never credentials, raw scene copies, arbitrary
+  model prompts or unrelated document content. Records follow project ownership
+  and deletion; no new sharing policy or independent retained deck is introduced.
+  Additive run/receipt tables are developed and tested only in isolated databases;
+  applying schema changes to production is outside authorization. Project payload,
+  durable history and the applied-step receipt must commit together on both
+  backends, using the canonical command validation path. Keep run, engine and
+  project revisions distinct. Session undo remains session-only; existing durable
+  history remains the restoration mechanism. No model layout/style escape hatch.
+  No exactly-once promise for future external provider/network side effects.
+
+  Supply shared headless control/worker entrypoints that a CLI and later thin HTTP
+  surface can use. Browser/SSE lifetime must not own execution. This slice uses
+  deterministic scripted caller responses; it does not adopt a live provider or
+  pretend provider quality has been evaluated. The existing legacy generation
+  lifecycle and normal editor behavior remain supported.
+
+  **Non-goals:** Assistant UI or new public HTTP/auth policy, provider SDK/adapters
+  or live gateway calls, search/research, new composition/imports, persistent undo,
+  autonomous delegation, legacy replacement, Fit/mixed-run renderer/capture/locale
+  corrections, infrastructure purchases, deployment or production migrations.
+
+  **Acceptance and verification:** schema/state-machine tests; real two-process
+  lease races and fencing; cancellation before/during/after a commit; duplicate
+  identity/replay and stale project revisions; forced process death before and
+  after the atomic receipt boundary; durable restart/deadline/budget enforcement;
+  malformed/foreign-owner/deleted/protected target refusals. Prove all-or-nothing
+  project/history/receipt behavior and preservation of human edits, geometry,
+  styles, tombstones and detached scenes on SQLite and isolated PostgreSQL.
+  Measure bounded trace sizes and local claim/commit/recovery latency without
+  production percentile claims. Export a genuinely persisted edited project,
+  inspect OOXML and rasterized native/SVG output, and preserve ignored artifacts
+  before any rerun. Distinguish exact scenes from inherited mixed-run SVG fidelity.
+
+  Extend the current complete 209-file inventory with the new contract/process/
+  fault cases; retain all 26 browser/build owners in bounded serial isolation.
+  Run complete non-browser bulk, backend contracts/faults, production build,
+  typecheck and canonical 50 cells. Identify exact source, real backend and every
+  pass/fail/skip/cancel/unexecuted count. Wait for a quiet machine before expensive
+  checks; unavailable PostgreSQL leaves applicable suites unexecuted. Common
+  correctness, data integrity, ownership/security, canonical undo/regeneration,
+  native, compatibility and evidence gates apply. Browser/accessibility/responsive
+  behavior is unchanged-UI regression evidence; live provider/new UI/deployment
+  gates are explicitly out of scope. Preserve the standing BYOK locale failure,
+  old restore timeout, Fit/capture/mixed-run SVG and original-PPTX provenance limits.
+
+  **Review/stop:** if the human selects this direction, freeze the implementation
+  contract and required check mapping before coding; keep the accepted V2-8A
+  baseline until one separate high-effort reviewer issues exact-source ACCEPT/HOLD.
+  Commit focused scoped changes to `origin/v2`, preserve unrelated untracked work,
+  and stop after review/handoff/owned-service cleanup. No following provider/UI
+  slice is authorized by this proposal or its eventual correctness acceptance.
+
 The accepted foundation supplies real scoped content tools, schemas, instruction
 sections and bounded context. The remaining parent milestone integrates these
 with durable run ownership, provider adapters, visible Assistant and common

@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 durable runtime scope",
+    "id": "V2-8B durable run core proposal",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8a-scope-proposal"
+    "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

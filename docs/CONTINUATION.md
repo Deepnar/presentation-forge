@@ -41,8 +41,10 @@ headless case, independent148/148 and all command/visual evidence. The owned ser
 was removed after a saved0-database observation;5544closed. Its absence does not
 invalidate historical execution or supply a pass for a future run.
 
-The stop point is reached. Next-candidate status authorizes planning only; agree
-a bounded runtime/Assistant/provider/search direction before implementation.
+The accepted foundation stop point is reached. A continuation request prepared
+[the V2-8B proposal](ROADMAP.md#v2-8b-scope-proposal); direction is pending.
+Next-candidate status authorizes planning only; agree its bounded direction before
+implementation.
 Preserve known Fit/timeout/capture/locale/mixed-runSVG limits and the explicit
 2ignored-original-PPTX provenance limitation. All original3untracked paths stay
 untouched. No new feature, infrastructure, migration or deployment is authorized
@@ -72,7 +74,7 @@ node tools/v2-benchmark.mjs --out out/v2-8a-benchmark --raster none
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the active validation runbook](v2-7c-3-evidence/RUNBOOK.md) and its linked
+commands are in [the accepted foundation validation runbook](v2-8a-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect
