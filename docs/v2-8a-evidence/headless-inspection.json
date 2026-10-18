@@ -1,0 +1,39 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "records": [
+    {
+      "source": "docs/v2-8a-evidence/native/before.pptx",
+      "backend": "Bound in-memory canonical EditorHandle; no ProjectStore or provider call",
+      "sha256": "b31562f23937d01e4c40e7f8e0e65e0de93280428e922f356b7e19eee67d060d",
+      "slideCount": 2,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-8a-evidence/native/before-1.png",
+        "docs/v2-8a-evidence/native/before-2.png"
+      ]
+    },
+    {
+      "source": "docs/v2-8a-evidence/native/after.pptx",
+      "backend": "Bound in-memory canonical EditorHandle; no ProjectStore or provider call",
+      "sha256": "c70d70f72aa991442fb3e1a6dfb2d7eec45887386a770ab369b9e5250d7f7d22",
+      "slideCount": 2,
+      "nativeAssertions": "passed",
+      "rasters": [
+        "docs/v2-8a-evidence/native/after-1.png",
+        "docs/v2-8a-evidence/native/after-2.png"
+      ]
+    }
+  ],
+  "contextMeasure": {
+    "chars": 4268,
+    "estimatedTokens": 1067,
+    "tokenEstimateMethod": "ceil(chars/4)"
+  },
+  "revision": 1,
+  "historyEntries": 1,
+  "geometryDelta": 0,
+  "exactUndoRedo": true,
+  "untargetedSlideByteIdentical": true,
+  "actor": "agent",
+  "limitation": "Scripted semantic edits exercise plumbing, not model quality. Native rasters use LibreOffice/Poppler; visual inspection is separate."
+}

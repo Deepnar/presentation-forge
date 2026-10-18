@@ -1,0 +1,14 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "command": "Complete26 serial owners, scripted headless SVG/native exports,7 authenticated native regression pages; inspect all91 retained images and verify hashes",
+  "log": "docs/v2-8a-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8a-evidence/images.json",
+  "imageCount": 91,
+  "nativeRasters": 11,
+  "svgRasters": 4,
+  "limitations": "Inherited Fit/capture limits and mixed-run SVG styling recorded in visual review; no new UI/renderer implementation."
+}

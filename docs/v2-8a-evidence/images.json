@@ -1,0 +1,825 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "images": [
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6a-evidence--conflict.png",
+      "sha256": "b29251daaa44c4fe8dd92ed37f4b9bafb12cd8ae41b8a0e580a00b4866380e54",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6a-evidence/conflict.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6a-evidence--project-list.png",
+      "sha256": "587d9df6489347667e87370ecf1bf3baf8bca0836b32e6940892df1182cfe6cc",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6a-evidence/project-list.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6a-evidence--recovered-banner.png",
+      "sha256": "018789e5223de4ae480c6edf0ea3e88fc157fdfba864ee2b24f461733e86e380",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6a-evidence/recovered-banner.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6a-evidence--reopened.png",
+      "sha256": "16ccb8a31d7971423772e13f97b57432914ba1644342bcb6d2133431b9548e01",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6a-evidence/reopened.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6a-evidence--saved.png",
+      "sha256": "1256493f151adfed5d47268faeb5ead7c27b281f6d7b984b6e7ad197a305fc89",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6a-evidence/saved.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6b-evidence--history-after-refresh.png",
+      "sha256": "c35e6f717f671f5375394cac924f40c3696fe936f1a19aafb612fef597980a9f",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6b-evidence/history-after-refresh.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6b-evidence--history-list.png",
+      "sha256": "b75b612ff1ac1954a8e408449423de500b77380a4ecc3be863369488d3b2868f",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6b-evidence/history-list.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6b-evidence--history-preview.png",
+      "sha256": "882d2de0a64507dea2bc902dc638267f31bb2c48b2e84059ee7a4ac2c52f2cf2",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6b-evidence/history-preview.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6b-evidence--history-restored.png",
+      "sha256": "4048eb0b445c0d3b58517beab60130962190ba85186a7806d839edda22d7b9cb",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6b-evidence/history-restored.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6b-evidence--history-three-versions.png",
+      "sha256": "221adc62111defcdcec4d001d9e4aff4927969741a2d87b0993ecf3a07596c59",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-6b-evidence/history-three-versions.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6c-evidence--hosted-after-restart.png",
+      "sha256": "63cbce8bc17366707dd7c5a19ece6b5a5cfbcedddcde4685647f27438145af00",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL hosted project browser",
+      "source": "docs/v2-6c-evidence/hosted-after-restart.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6c-evidence--hosted-conflict.png",
+      "sha256": "2ee141d0001e4759fe84230f223582c5deae664c61ab9272d2c36ebe1de50546",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL hosted project browser",
+      "source": "docs/v2-6c-evidence/hosted-conflict.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6c-evidence--hosted-history.png",
+      "sha256": "8e29e669e105cfe29b2e4685dcd3d57ac977de29b5e07da78355191238ffab26",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL hosted project browser",
+      "source": "docs/v2-6c-evidence/hosted-history.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-6c-evidence--hosted-restored.png",
+      "sha256": "2b8b5d7b74bef6c8073e7a5a2acafa049c887f85b468edc9c2ad31e03f9804d9",
+      "width": 1440,
+      "height": 757,
+      "backend": "PostgreSQL hosted project browser",
+      "source": "docs/v2-6c-evidence/hosted-restored.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--dashboard-empty.png",
+      "sha256": "2775818d5c2369741768cf542d2216e10a33f3452abe2615a90868b687c85ead",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/dashboard-empty.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--dashboard-hosted-anon.png",
+      "sha256": "26c749a7a05f4ae92346b38d15793897fdb8b259e0c9a90a6a61eb430a63e498",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--dashboard.png",
+      "sha256": "d7b4d764588a152b819dd6986f13f3c19050ab39a0892f635dbc692dc4e47487",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/dashboard.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-blank.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-chart.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-history.png",
+      "sha256": "e1fe650b1f4bc1e1e5c4c5ad180b7621e56b2e10c46cf9643d056589713156b7",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-history.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-narrow-projects.png",
+      "sha256": "d7f2ec4473340954171595bb7de1574f4263e957a81e401214f9fba3d93f901c",
+      "width": 500,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "width": 500,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-readonly.png",
+      "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-shell.png",
+      "sha256": "49e511cf4eb647c84076abfdbd16fef7a88cceb20257ef727d8850e66e192b51",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-shell.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7a-evidence--editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7a-evidence/editor-table.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-1-evidence--imported-chart.png",
+      "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-1-evidence/imported-chart.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-1-evidence--imported-narrow.png",
+      "sha256": "b7501106b3987c90dff6fbfcf9e934f3891e122c9b0452ba88553d3e31332c39",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-1-evidence/imported-narrow.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-1-evidence--imported-stats.png",
+      "sha256": "adee5857c7f983d4d31655741eb8c88d1f3aee3eb0bbbfb76dd8ce85aeef79ae",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-1-evidence/imported-stats.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-1-evidence--imported-table.png",
+      "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-1-evidence/imported-table.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-1-evidence--imported-transition.png",
+      "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-1-evidence/imported-transition.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--ambiguous-response.png",
+      "sha256": "1fca20ea7ef58c4226d05368aa6a0fdfc27ccfc559bfef7de210dcfe40214407",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--boundary-narrow.png",
+      "sha256": "a62c079413580621ef64c64ada2fb1d06794292804639f3402c527480c8f5521",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--completed-chat.png",
+      "sha256": "c959f5e599823ffe4b526ab29c5e98fd9dae7a67991b8602060b49a0a33ae8b7",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/completed-chat.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--deck-page-action.png",
+      "sha256": "b9f4c2290eaee6827ce0567d2ef1b1fbe837ce96f6aef748586acb1349b4d507",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--handoff-history.png",
+      "sha256": "75cf5e04f496b473aca573db01cd8ddb5ea0bb65248a5f43132f859fc081a192",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/handoff-history.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--opening-project.png",
+      "sha256": "c24216245a6814bf4c53d2b43f18945f4c7539e6de86c0a770e96a15fee0a87d",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/opening-project.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--refusal-narrow.png",
+      "sha256": "133994c8f1ddc605335cdac92ee562996baaacf92ff0c9007556ffb4cc3f5947",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7b-2-evidence--session-changed.png",
+      "sha256": "af90dffbfc2df163f4602aea4d567f6fd37f1f48c58dfc6a83e40c0adf82c1bb",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7b-2-evidence/session-changed.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-content.png",
+      "sha256": "7bbb09d8f6c57515a6ce2f0326fa2f5eb1c97b8502730df0fc8034a51dc6f7be",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-content.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-desktop.png",
+      "sha256": "2f9a2e0814585e365a908ede9904d1c66339f09bbc251073bd147645aa28930c",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-desktop.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-development.png",
+      "sha256": "32a7c151a74b0fe4833e8dc30b9d6d8beedd915b632f681d96378cae64ccd835",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-development.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-font-failure.png",
+      "sha256": "9ff3f310f86b5c38a9625cc2f619313e2e80986f8cff46715c9aaa7b01d6dfa9",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-font-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-font-http-failure.png",
+      "sha256": "f167e05aad71284cd76ce35ea21013226687d4320d1ecb1ef4933d5249ec2fb7",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-font-http-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-font-http-recovered.png",
+      "sha256": "71effcdffdecd7f44cf80daf6711d8e53f9ef97d3b4fc1e51e329848dafe4835",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-font-http-recovered.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-font-static-failure.png",
+      "sha256": "22adf7b143dca012140a3116e212e64880f9139fda72e603322dd04daf13a71d",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-font-static-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-font-static-recovered.png",
+      "sha256": "d358ef0b2451cd762bab94df43e0791e572de0147ae6d69b54582e48cce2b0ef",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-font-static-recovered.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-loading.png",
+      "sha256": "cbfc40ccb86b05f62ae9daa4b385cbdae73e585fc091de756baf4306a0ab6fac",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-loading.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-narrow-dark.png",
+      "sha256": "8c7ee0125f204794efa6be4370b9e28d0a8f0426355eb8d1da7f0901955e97ed",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-narrow-dark.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-network-failure.png",
+      "sha256": "b3a0d68517be02289f796c71cb08195572a2f73447c449d0bc415354728a1076",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-network-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-restored.png",
+      "sha256": "75f2c866c77c92398ded30f73a4ee0d318a0f73a95d2d25a5135f9c68b9b9f91",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-restored.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-session-cross-tab.png",
+      "sha256": "2311bd539b5bb50b3be6a794999403600482261b671a0dde4df40904f53c0deb",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-session-cross-tab.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-session-pending.png",
+      "sha256": "3f24bde25f96e3e99977b28729b4ca2d510a6f62bccbe938a8f84dc972a06898",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-session-pending.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-session-settled.png",
+      "sha256": "678b824cf4865484a06ce63d912df7cd1c79561af073b0376c2e2b0e89145665",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-session-settled.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-1-evidence--covers-timeout.png",
+      "sha256": "23594cd5cba2257f54d3dafefa8ad49aabbe6fde950dd3c0f0e87f6100b12ba2",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-1-evidence/covers-timeout.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-delete-generated-failure.png",
+      "sha256": "6f5cf411a4779e254e5f5b836cc077521cf6a67f99812237d8dd344495d1a25d",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-delete-generated-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-delete-generated.png",
+      "sha256": "099776008cd7477c997b7283589ff936a1c7966f5111ff961914a29087c915d0",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-delete-generated.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-delete-pending.png",
+      "sha256": "cf1d285fb7a0b47db16189c9ccefd42f7508a8d92f3eb2121411aca5b7b40e7b",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-delete-pending.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-delete-saved-failure.png",
+      "sha256": "f69de8bdefafeb0460b1d6dcebd65c408bfef7a76e7044bd0906cc0810705d80",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-delete-saved-failure.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-desktop.png",
+      "sha256": "4c4de9fe7b13be8181d033884cbb63a668f97524006184732d2b0eb0b02d2db9",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-desktop.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-development.png",
+      "sha256": "bdaf45e4d26c1ec62b03fbebfae699670aced789f3fc5a2d5c640d16ef1e8a34",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-development.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-empty.png",
+      "sha256": "5e408f9292a9cafffef6ac8001d81729aef96d72107756711b50e3f12e39b4ff",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-empty.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-generated-error.png",
+      "sha256": "aecfb3420175f76ef70f792cca0fae9463fcfbddb323e6400351b300ca157f68",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-generated-error.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-narrow-dark.png",
+      "sha256": "e608c80a32bc133ed619841c610ce7dccdad0a3defda3c1d347554e4e7186fb1",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-narrow-dark.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "sha256": "cc87d0d6e464d41f4bccf22239d241fc3c9fb5c5f6c00e52f20b5133179be954",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-no-matches.png",
+      "sha256": "bdb5578833dc839ebb4a0b5f889a9c19862e9238c51f0be80e172ec37114a573",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-no-matches.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-saved-error.png",
+      "sha256": "c30ca89fe722adc46db9940c36021682b89dc802a04d2ca330b868904b4972ce",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-saved-error.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-2-evidence--catalog-signed-out.png",
+      "sha256": "4cdcdf378fcd8de4d591885e47aa6c4fb0620923bc422ea61075377b3e896581",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-2-evidence/catalog-signed-out.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-desktop.png",
+      "sha256": "3835423ae531914ef2a2d76a381bac4bb65b9ee466cc8e42e998b19138c77978",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-desktop.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--standalone-live.png",
+      "sha256": "d15335fc59dbf366d4bee8d5d2010f124a29af7bd25b0bb993c34168a578f8a0",
+      "width": 1440,
+      "height": 757,
+      "backend": "Standalone scene viewer; local Live and SQLite project API",
+      "source": "docs/v2-7c-3-evidence/standalone-live.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--standalone-projects.png",
+      "sha256": "1f88bb1762a7dd87d7b4fe65227e6b1411e486be8cdbbd8e17b0ad0d4419943b",
+      "width": 1440,
+      "height": 757,
+      "backend": "Standalone scene viewer; local Live and SQLite project API",
+      "source": "docs/v2-7c-3-evidence/standalone-projects.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-chart.png",
+      "sha256": "052614d015a10664144858cc3a72820dc29fa3fae8ae61e3abc9ee0b25af838d",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-chart.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-table.png",
+      "sha256": "3d22c41bb70819a350a68b244f01742179fc222ef2885eaa6e2e911cd4a61d2d",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-table.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-readonly.png",
+      "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-readonly.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-narrow-light.png",
+      "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-narrow-light.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-narrow-dark.png",
+      "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e",
+      "width": 480,
+      "height": 900,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-narrow-dark.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/regression/v2-7c-3-evidence--editor-blank-history.png",
+      "sha256": "307d0597d64ef15afe01f2acfb4f3a17c762eb6bd8872edfd5e220790a909a61",
+      "width": 1440,
+      "height": 757,
+      "backend": "SQLite saved-project browser",
+      "source": "docs/v2-7c-3-evidence/editor-blank-history.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/after-1-svg.png",
+      "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414",
+      "width": 1280,
+      "height": 720,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/after-1-svg.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/after-1.png",
+      "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b",
+      "width": 1467,
+      "height": 825,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/after-1.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/after-2-svg.png",
+      "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11",
+      "width": 1280,
+      "height": 720,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/after-2-svg.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/after-2.png",
+      "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49",
+      "width": 1467,
+      "height": 825,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/after-2.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/before-1-svg.png",
+      "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c",
+      "width": 1280,
+      "height": 720,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/before-1-svg.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/before-1.png",
+      "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a",
+      "width": 1467,
+      "height": 825,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/before-1.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/before-2-svg.png",
+      "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11",
+      "width": 1280,
+      "height": 720,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/before-2-svg.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/before-2.png",
+      "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49",
+      "width": 1467,
+      "height": 825,
+      "backend": "Canonical bound in-memory engine; no storage/provider",
+      "source": "docs/v2-8a-evidence/native/before-2.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/chart-2.png",
+      "sha256": "7b885b1303026d117743b6c978e502b05b8ba0b624a0d0960b751ae0bf6c60c2",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/chart-2.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/handoff-1.png",
+      "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/handoff-1.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/handoff-2.png",
+      "sha256": "5d349386404d0660dcbc1bf02c055fdbc9f5675c24928b10e2579b48fa026ad1",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/handoff-2.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/handoff-3.png",
+      "sha256": "4ed100494d7b5ea9894b11ba2e14c033360d9c713dfbb9cfa703cf9db79dd76d",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/handoff-3.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/shell-chart.png",
+      "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/shell-chart.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/shell-table.png",
+      "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/shell-table.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    },
+    {
+      "path": "docs/v2-8a-evidence/native/table-3.png",
+      "sha256": "1d46d4fe9d25573ed1ed1acec42299b37faacb07af3f35c66c80f2617cbb6a83",
+      "width": 1467,
+      "height": 825,
+      "backend": "SQLite authenticated browser export",
+      "source": "docs/v2-8a-evidence/native/table-3.png",
+      "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4"
+    }
+  ],
+  "note": "Fresh source hashes retained before historical suite evidence restoration. All final images require inspection."
+}
