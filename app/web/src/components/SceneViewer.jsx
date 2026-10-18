@@ -42,7 +42,7 @@ import decision from "../scenes/decision-warm-humanist-plain.json";
 
 const DECKS = [mechPlain, mechChromed, sourceOfTruth, decision];
 
-function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOver, onDrop, onDragEnd, onMoveKey, menu }) {
+function Thumb({ scene, displayLabel, active, selected, onPick, onMenu, onDragStart, onDragOver, onDrop, onDragEnd, onMoveKey, menu }) {
   return (
     <div style={{ position: "relative" }}>
       <button
@@ -56,7 +56,7 @@ function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOve
         onDragEnd={onDragEnd}
         onKeyDown={onMoveKey}
         aria-current={active ? "true" : undefined}
-        aria-label={`Slide ${scene.id}${active ? " (active)" : ""}${selected ? " (selected)" : ""}`}
+        aria-label={`${displayLabel ?? `Slide ${scene.id}`}${active ? " (active)" : ""}${selected ? " (selected)" : ""}`}
         data-thumb={scene.id}
         data-thumb-selected={selected ? "true" : undefined}
         style={{
@@ -70,13 +70,13 @@ function Thumb({ scene, active, selected, onPick, onMenu, onDragStart, onDragOve
       />
       <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
         <span style={{ fontSize: 10, opacity: 0.65, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-          {scene.id}
+          {displayLabel ?? scene.id}
           {scene.layoutState === "detached" ? " · Manual" : scene.layoutState === "customized" ? " · Custom" : ""}
         </span>
         {onMenu && (
           <button
             type="button"
-            aria-label={`Slide ${scene.id} menu`}
+            aria-label={`${displayLabel ?? `Slide ${scene.id}`} menu`}
             data-thumb-menu={scene.id}
             onClick={(e) => { e.stopPropagation(); onMenu(); }}
             className="rounded border border-line bg-transparent px-1 text-[11px] leading-[1.4] text-fg-muted"
@@ -134,7 +134,7 @@ function useInspector(viewer, snap) {
 // a color picker's drag never spams history. Remounted per
 // element+revision (see key at the call site), so undo/redo and
 // reselection always refresh values. Genuine no-ops commit nothing.
-function StylePanel({ element, onCommit }) {
+function StylePanel({ element, onCommit, diagnostics = true }) {
   const shape = element.shape ?? {};
   const [fill, setFill] = useState(`#${shape.fill ?? "FFFFFF"}`);
   const [stroke, setStroke] = useState(shape.stroke ? `#${shape.stroke}` : "");
@@ -180,7 +180,7 @@ function StylePanel({ element, onCommit }) {
   };
   return (
     <div data-style-panel={element.id} style={{ display: "flex", gap: 8, alignItems: "center", padding: "4px 12px", fontSize: 12, flexWrap: "wrap" }}>
-      <span style={{ opacity: 0.8 }}>Style {element.id}</span>
+      <span style={{ opacity: 0.8 }}>{diagnostics ? `Style ${element.id}` : "Shape style"}</span>
       <label>Fill <input aria-label="Shape fill" type="color" value={/^#[0-9A-Fa-f]{6}$/.test(fill) ? fill : "#ffffff"} onChange={(e) => setFill(e.target.value)} onBlur={commit} /></label>
       <label>No stroke <input aria-label="Remove stroke" type="checkbox" checked={noStroke} onChange={(e) => setNoStroke(e.target.checked)} onBlur={commit} /></label>
       {!noStroke && (
@@ -201,7 +201,7 @@ function StylePanel({ element, onCommit }) {
 // Remounted per element+revision (see key at the call site), so
 // undo/redo and reselection refresh every row. Multi-run elements
 // get no panel: formatting addresses whole runs only.
-function TextFormatPanel({ element, onCommit }) {
+function TextFormatPanel({ element, onCommit, diagnostics = true }) {
   const paras = element.paragraphs ?? [];
   const sigs = paras.map((p) => {
     const r = p?.runs?.[0] ?? {};
@@ -240,7 +240,7 @@ function TextFormatPanel({ element, onCommit }) {
   return (
     <div data-text-format-panel={element.id} style={{ display: "flex", flexDirection: "column", gap: 2, padding: "4px 12px", fontSize: 12 }}>
       <span style={{ opacity: 0.8 }}>
-        Text {element.id}{mixed ? " · mixed paragraph styles (per-paragraph controls)" : ""}
+        Text{diagnostics ? ` ${element.id}` : " formatting"}{mixed ? " · mixed paragraph styles (per-paragraph controls)" : ""}
       </span>
       {paras.map((p, i) => (
         <TextFormatRow
@@ -293,7 +293,7 @@ function TextFormatRow({ index, paragraph, onCommit }) {
 // element+revision (see key at the call site), so undo/redo and
 // reselection refresh the grid. Switching selection discards an
 // unapplied draft — stated policy: only Apply writes.
-function ChartDataPanel({ element, onCommit }) {
+function ChartDataPanel({ element, onCommit, diagnostics = true }) {
   const chart = element.chart ?? {};
   const seed = () => ({
     kind: chart.chartKind ?? "bar",
@@ -356,7 +356,7 @@ function ChartDataPanel({ element, onCommit }) {
   return (
     <div data-chart-editor={element.id} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "4px 12px", fontSize: 12 }}>
       <span style={{ opacity: 0.8 }}>
-        Chart {element.id} · {draft.series.length} series × {draft.categories.length} categories
+        Chart{diagnostics ? ` ${element.id}` : " data"} · {draft.series.length} series × {draft.categories.length} categories
         {(draft.kind === "pie" || draft.kind === "doughnut") && draft.series.length > 1
           ? " · pie and doughnut keep a single series — remove series or switch kind before applying"
           : ""}
@@ -419,7 +419,7 @@ function ChartDataPanel({ element, onCommit }) {
 // element+revision (see key at the call site), so undo/redo and
 // reselection refresh the grid. Switching selection discards an
 // unapplied draft — stated policy: only Apply writes.
-function TableDataPanel({ element, onCommit }) {
+function TableDataPanel({ element, onCommit, diagnostics = true }) {
   const table = element.table ?? {};
   const seed = () => (table.rows ?? []).map((r) => [...r]);
   const [draft, setDraft] = useState(seed);
@@ -447,7 +447,7 @@ function TableDataPanel({ element, onCommit }) {
   return (
     <div data-table-editor={element.id} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "4px 12px", fontSize: 12 }}>
       <span style={{ opacity: 0.8 }}>
-        Table {element.id} · {draft.length} rows × {cols} columns{header ? " · row 1 is the header" : ""}
+        Table{diagnostics ? ` ${element.id}` : " data"} · {draft.length} rows × {cols} columns{header ? " · row 1 is the header" : ""}
       </span>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         <button type="button" onClick={() => setDraft((d) => [...d, new Array(d.reduce((n, r) => Math.max(n, r.length), 0)).fill("")])}>+ Row</button>
@@ -1845,9 +1845,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
 
   return (
     <div className="flex h-screen flex-col bg-base text-fg" data-workspace-editor={project?.id ?? "unbound"}>
-      {/* Top bar: project identity, back-navigation, save state,
-          undo/redo, history, export, present, assistant. The row
-          below keeps every view/edit control it always had. */}
+      {/* Embedded routes own project identity; standalone scenes retain
+          the developer harness without offering it inside saved work. */}
       <div data-topbar className="flex min-h-[44px] flex-none items-center gap-1.5 overflow-x-auto [&>*]:shrink-0 border-b border-line bg-panel px-3 py-1.5">
         {embedded && onBack && (
           <button type="button" aria-label="Back to workspace" title="Back to presentations" onClick={onBack} className={shellBtn}>← Workspace</button>
@@ -2034,6 +2033,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             <Thumb
               key={s.id}
               scene={s}
+              displayLabel={embedded ? `Slide ${i + 1}` : undefined}
               active={i === snap?.slideIndex}
               selected={editOn && effSlideSel.includes(s.id)}
               onPick={(e) => thumbPick(e, s.id, i)}
@@ -2086,18 +2086,18 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       </aside>
       <main className="relative flex min-w-0 flex-1 flex-col bg-sunken">
         <div data-toolbar className="flex flex-none items-center gap-1.5 overflow-x-auto overflow-y-hidden border-b border-line bg-panel px-3 py-1.5 text-[12px] [&>*]:flex-none [&>*]:whitespace-nowrap">
-          <select aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)} className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg">
+          {!embedded && <select data-developer-controls aria-label="Deck" value={liveDeck ? liveDeck.name : deckName} onChange={(e) => pickFixture(e.target.value)} className="rounded-md border border-line bg-field px-1.5 py-1 text-[12px] text-fg">
             {DECKS.map((d) => <option key={d.name} value={d.name}>{d.name} ({d.theme}, {d.variant})</option>)}
             {liveDeck && <option value={liveDeck.name}>{liveDeck.name} (live)</option>}
-          </select>
+          </select>}
           <button type="button" onClick={() => api && guardedNav(() => api.prev())} className={shellBtn}>← Prev</button>
           <button type="button" onClick={() => api && guardedNav(() => api.next())} className={shellBtn}>Next →</button>
           <button type="button" onClick={() => api?.zoomOut()} aria-label="Zoom out" className={shellBtn}>−</button>
           <span aria-live="polite" className="min-w-[56px] text-center">{Math.round((snap?.zoom ?? 1) * 100)}%</span>
           <button type="button" onClick={() => api?.zoomIn()} aria-label="Zoom in" className={shellBtn}>+</button>
           <button type="button" onClick={() => api?.resetZoom()} className={shellBtn}>Fit</button>
-          <button type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen} className={shellBtn}>Live</button>
-          <button type="button" onClick={() => { refreshProjectList(); setProjectsOpen(true); }} aria-expanded={projectsOpen} className={shellBtn}>Projects</button>
+          {!embedded && <button data-developer-controls type="button" onClick={() => setLiveOpen((v) => !v)} aria-expanded={liveOpen} className={shellBtn}>Live</button>}
+          {!embedded && <button data-developer-controls type="button" onClick={() => { refreshProjectList(); setProjectsOpen(true); }} aria-expanded={projectsOpen} className={shellBtn}>Projects</button>}
           <button
             type="button"
             title={editOn ? "Leave edit mode (unsaved edits stay visible until you switch decks)" : "Edit this deck: drag, nudge, delete with undo"}
@@ -2124,10 +2124,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => adapterRef.current?.cancelTextEdit()} className={shellBtn}>Cancel</button>
             </span>
           )}
-          <span className="ml-auto text-[12px] text-fg-faint">
-            {snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
-            {liveSnap.status === "loading" ? " · compiling…" : ""}
-            {editOn ? ` · editing rev ${editStatus.rev}` : ""}
+          <span data-developer-diagnostics={!embedded ? "true" : undefined} className="ml-auto text-[12px] text-fg-faint">
+            {embedded ? `Slide ${(snap?.slideIndex ?? 0) + 1} of ${shownScenes.length}` : snap?.slideId ?? ""}{(snap?.selectedIds?.length ?? 0) > 0 ? ` · ${snap.selectedIds.length} selected` : ""}
+            {!embedded && liveSnap.status === "loading" ? " · compiling…" : ""}
+            {!embedded && editOn ? ` · editing rev ${editStatus.rev}` : ""}
             {editedScenes && !editOn ? " · unsaved edits (read-only)" : ""}
             {(() => {
               const st = (editedScenes ?? deck.scenes)[snap?.slideIndex ?? -1]?.layoutState;
@@ -2182,7 +2182,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {textState.editing && (
           <div data-text-editing={textState.elementId ?? "true"} style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }} />
         )}
-        {liveOpen && (
+        {!embedded && liveOpen && (
           <div
             data-live-panel
             aria-label="Live compilation"
@@ -2240,7 +2240,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               ref={mountRef}
               tabIndex={0}
               role="application"
-              aria-label={`Slide ${snap?.slideId ?? ""}`}
+              aria-label={embedded ? `Slide ${(snap?.slideIndex ?? 0) + 1} of ${shownScenes.length}` : `Slide ${snap?.slideId ?? ""}`}
               style={{
                 width: slideW, height: slideH, flexShrink: 0,
                 transform: `scale(${scale})`, transformOrigin: "top left",
@@ -2287,11 +2287,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             <div className="flex flex-col gap-3">
               <div data-inspector-wrap>
                 {inspected.length > 0 ? (
-                  <div data-inspector aria-label="Selection inspector" className="max-h-24 overflow-y-auto font-mono text-[11px] text-fg-muted">
+                  <div data-inspector data-developer-diagnostics={!embedded ? "true" : undefined} aria-label="Selection inspector" className={`max-h-24 overflow-y-auto text-fg-muted ${embedded ? "text-[12.5px]" : "font-mono text-[11px]"}`}>
                     {inspected.map((r) => (
                       <div key={r.id} data-inspected={r.id}>
-                        {r.id} · {r.kind} · {r.w}×{r.h} @ {r.x},{r.y}
-                        {r.locked ? " · locked" : ""}{r.semanticRef ? ` · ref ${r.semanticRef}` : ""} · {r.provenance ?? "scene"}
+                        {embedded ? `${r.kind[0].toUpperCase()}${r.kind.slice(1)}${r.locked ? " · locked" : ""}` : <>{r.id} · {r.kind} · {r.w}×{r.h} @ {r.x},{r.y}{r.locked ? " · locked" : ""}{r.semanticRef ? ` · ref ${r.semanticRef}` : ""} · {r.provenance ?? "scene"}</>}
                       </div>
                     ))}
                   </div>
@@ -2303,6 +2302,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 <StylePanel
                   key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
                   element={styledShape}
+                  diagnostics={!embedded}
                   onCommit={(patch) => adapterRef.current?.setElementStyle(styledShape.id, patch)}
                 />
               )}
@@ -2310,6 +2310,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 <TextFormatPanel
                   key={`${snap.slideId}:${formattedText.id}:${editStatus.rev}`}
                   element={formattedText}
+                  diagnostics={!embedded}
                   onCommit={(i, patch) => adapterRef.current?.setTextStyle(formattedText.id, i, patch)}
                 />
               )}
@@ -2317,6 +2318,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 <ChartDataPanel
                   key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
                   element={chartTarget}
+                  diagnostics={!embedded}
                   onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
                 />
               )}
@@ -2324,12 +2326,13 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 <TableDataPanel
                   key={`${snap.slideId}:${tableTarget.id}:${editStatus.rev}`}
                   element={tableTarget}
+                  diagnostics={!embedded}
                   onCommit={(rows) => adapterRef.current?.setTableData(tableTarget.id, rows)}
                 />
               )}
               {!hasFormatTarget && currentSlide && (
                 <div data-slide-props className="flex flex-col gap-1 border-t border-line pt-2 text-[12.5px] text-fg-muted">
-                  <div><span className="text-fg-faint">Slide </span><span className="font-mono text-[11.5px]">{currentSlide.id}</span></div>
+                  <div><span className="text-fg-faint">Slide </span><span>{embedded ? `${(snap?.slideIndex ?? 0) + 1} of ${shownScenes.length}` : currentSlide.id}</span></div>
                   <div><span className="text-fg-faint">Layout </span>{currentSlide.layoutState === "detached" ? "Manual slide" : currentSlide.layoutState === "customized" ? "Custom slide" : "Managed by AI layout"}</div>
                   <div><span className="text-fg-faint">Objects </span>{slideProps.elements}{slideProps.hidden > 0 ? ` (${slideProps.hidden} hidden)` : ""}{slideProps.locked > 0 ? ` (${slideProps.locked} locked)` : ""}</div>
                   {!editOn && <div className="text-fg-faint">Read-only — press Edit in the toolbar to change this slide.</div>}
@@ -2380,7 +2383,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           onClose={() => setGalleryOpen(false)}
         />
       )}
-      {projectsOpen && (
+      {!embedded && projectsOpen && (
         <div
           data-projects-panel
           className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-3"
