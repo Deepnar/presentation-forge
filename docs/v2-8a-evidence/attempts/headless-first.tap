@@ -1,0 +1,50 @@
+✖ bound headless caller edits content and preserves the authoritative scene through export (60.492059ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 473.501074
+
+✖ failing tests:
+
+test at docs/v2-8a-evidence/headless-check.mjs:15:1
+✖ bound headless caller edits content and preserves the authoritative scene through export (60.492059ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        background: {
+          fill: 'FFFFFF'
+        },
+  ...
+          {
+  -         dataCustomized: true,
+            h: 1.5,
+            id: 'table',
+            kind: 'table',
+            provenance: 'human',
+            semanticRef: 'table-block',
+  ...
+            },
+  +         tableCustomized: true,
+            w: 5,
+            x: 7,
+            y: 2.5,
+            z: 2
+          }
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-8a-evidence/headless-check.mjs:28:9)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 's1', width: 13.333, height: 7.5, background: [Object], layoutState: 'customized', elements: [Array] }, { id: 's2', width: 13.333, height: 7.5, background: [Object], layoutState: 'managed', elements: [Array] } ],
+    expected: [ { id: 's1', width: 13.333, height: 7.5, background: [Object], layoutState: 'customized', elements: [Array] }, { id: 's2', width: 13.333, height: 7.5, background: [Object], layoutState: 'managed', elements: [Array] } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

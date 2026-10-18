@@ -1,0 +1,18 @@
+✖ bound headless caller edits content and preserves the authoritative scene through export (868.382294ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1074.849778
+
+✖ failing tests:
+
+test at docs/v2-8a-evidence/headless-check.mjs:15:1
+✖ bound headless caller edits content and preserves the authoritative scene through export (868.382294ms)
+  TypeError: Cannot read properties of null (reading 'async')
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-8a-evidence/headless-check.mjs:37:54)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)

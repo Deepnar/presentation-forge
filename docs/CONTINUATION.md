@@ -34,19 +34,13 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-[V2-7C-3-EVAL.md](V2-7C-3-EVAL.md) indexes independently accepted production
-control separation at `484875f`, [decision](reviews/V2-7C-3-484875f.json).
-State names the full exact source; later evidence/review/continuity commits do not
-change runtime/tests/tools. All206 required files completed2330/2330 plus1 distinct
-hosted case, build/typecheck/50cells; independent69/69 and native review accepted.
-The owned service was removed and5544closed; cleanup's unavailable pre-removal
-count is explicit. Do not reuse earlier results as execution of a later source.
-
-The C3 stop point is reached. Next-candidate status grants planning only. Read
-[workspace followups](ROADMAP.md#workspace-followups) and later milestone scope
-before proposing a bounded next task; do not silently authorize V2-8. Standing Fit,
-restore-timeout, capture and BYOK limits retain their roadmap ownership. Preserve
-the three unrelated untracked paths and all previous acceptance records.
+The active task is the approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal),
+with exact source and pending gates in state/[evaluation](V2-8A-EVAL.md).
+Use its [runbook](v2-8a-evidence/RUNBOOK.md) and209-file inventory, not historical
+C3 execution. Baseline484875f retains its separate C3 acceptance. Complete exact-source
+validation and one independent high-effort review before changing acceptance.
+No Assistant/provider/durable runtime follow-on is authorized by the current scope.
+Preserve original3 untracked paths and standing Fit/timeout/capture/BYOK issues.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

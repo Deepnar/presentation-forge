@@ -1,6 +1,6 @@
 {
-  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
+  "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "All208 JavaScript test files plus the existing TypeScript generated-usage test, previously typechecked but omitted from JS-only runtime inventories.",
   "bulk": [
     "test/account-cleanup.test.js",

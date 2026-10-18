@@ -1,0 +1,24 @@
+{
+  "atUtc": "2026-10-18T13:33:43.901973+00:00",
+  "cpuSampleSeconds": 2,
+  "cpuUtilizationPercent": 7.263,
+  "pressure": {
+    "cpu": "some avg10=0.02 avg60=0.61 avg300=2.64 total=880804506\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=4348010\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4210902\n",
+    "io": "some avg10=0.18 avg60=0.56 avg300=3.41 total=917200059\nfull avg10=0.18 avg60=0.54 avg300=3.31 total=822721522\n"
+  },
+  "memory": "               total        used        free      shared  buff/cache   available\nMem:           63716       29738       10544        2014       26465       33977\nSwap:          63715        2772       60943\n",
+  "competingProcesses": [
+    "    PID STAT %CPU %MEM COMMAND",
+    "3346304 Sl    161 18.4 python3",
+    "3317872 Rl   67.3 17.0 llama-server",
+    "3385884 Sl   13.5  1.5 python3",
+    "   6540 S<l  11.9  1.3 zen-bin",
+    "3354883 S<l  10.6  1.0 Isolated Web Co",
+    "   8826 S<l   7.0  2.4 Isolated Web Co",
+    "   4491 Sl    6.3  0.3 Hyprland",
+    "   1383 Ssl   6.0  0.1 ollama",
+    "   6686 S<l   5.7  0.1 RDD Process"
+  ],
+  "note": "Historical process CPU percentages are not instantaneous utilization. Competing processes are left untouched; bounded low-priority validation owns the heavy slot."
+}

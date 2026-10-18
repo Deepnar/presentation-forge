@@ -1,0 +1,32 @@
+✔ repository state, document references and real Git ancestry validate (78.1543ms)
+✔ missing required role document fails closed (37.962001ms)
+✔ malformed state JSON returns diagnostics instead of crashing (2.353281ms)
+✔ unknown review state, malformed SHA and extra properties are rejected (24.399501ms)
+✔ known pending validation cannot disappear or be duplicated (52.716656ms)
+✔ unaccepted implementation cannot replace the accepted baseline (22.609262ms)
+✔ passed validation needs existing matching evidence and its output log (272.838823ms)
+✔ stale evidence from another implementation SHA is refused (90.045778ms)
+✔ self-reported totals must match the retained test output (552.554928ms)
+✔ nonzero, cancelled, skipped and inconsistent totals never become passes (273.472382ms)
+✔ existing output cannot substitute for actual visual inspection or 50 benchmark cells (308.219319ms)
+✔ renaming a reviewer cannot substitute for a separate decision record (90.344215ms)
+✔ legitimate recorded acceptance can advance the baseline after completed validation (280.410219ms)
+✔ document paths, anchors and symlinks cannot leave the repository or point nowhere (183.339002ms)
+✔ Git verification rejects well-shaped nonexistent commits (138.230799ms)
+✔ a passing subset cannot substitute for the full required file scope (27.816629ms)
+✔ name-filtered runs and implausibly small suite counts fail closed (57.475456ms)
+✔ the TAP inventory records entry files without imported contract helpers (7298.772459ms)
+✔ new milestone keeps its own focused gate and rejects old evidence inventory (785.912468ms)
+✔ browser handoff requires its own complete focused evidence (615.358096ms)
+✔ project covers require their own unit, HTTP and complete Chrome evidence (2382.931659ms)
+✔ project discovery requires its own complete unit, HTTP and Chrome evidence (5186.355056ms)
+✔ production toolbar evidence includes its complete Chrome file and full shell regression (205.016252ms)
+✔ agent foundation requires complete tool and context behavioral evidence (143.955665ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19329.099911

@@ -1,0 +1,499 @@
+TAP version 13
+# Subtest: unauthorized caller cannot inspect project state
+ok 1 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 33.497343
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 2 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 13.057398
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 3 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 3.429956
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 4 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 3.793028
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 5 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 4.428886
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 6 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 2.202705
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 7 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 2.567377
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 8 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 19.149433
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 9 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 1.602143
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 10 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 1.479182
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 11 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 1.187077
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 12 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 1.196085
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 13 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 1.237096
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 14 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 1.610931
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 15 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.700303
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 16 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.67572
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+not ok 17 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 12.823002
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:52:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          background: {
+            fill: 'FFFFFF'
+          },
+    ...
+              ],
+    +         provenance: 'human',
+    -         provenance: 'compiler',
+              semanticRef: 'text-block',
+              w: 10,
+              x: 1,
+              y: 0.5,
+              z: 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 's1'
+      width: 13.333
+      height: 7.5
+      background:
+        fill: 'FFFFFF'
+      layoutState: 'customized'
+      elements:
+        0:
+          id: 'text'
+          kind: 'text'
+          x: 1
+          y: 0.5
+          w: 10
+          h: 1.5
+          z: 0
+          provenance: 'compiler'
+          semanticRef: 'text-block'
+          customized: true
+          paragraphs:
+            0:
+              align: 'left'
+              runs:
+                0:
+                  text: 'Edited '
+                  size: 24
+                  family: 'Inter'
+                  color: '112233'
+                  bold: true
+                1:
+                  text: 'conclusion'
+                  size: 20
+                  family: 'Inter'
+                  color: '445566'
+                  italic: true
+          contentCustomized: true
+        1:
+          id: 'chart'
+          kind: 'chart'
+          x: 1
+          y: 2.5
+          w: 5
+          h: 3.5
+          z: 1
+          provenance: 'compiler'
+          semanticRef: 'chart-block'
+          chart:
+            chartKind: 'bar'
+            categories:
+              0: 'A'
+              1: 'B'
+            series:
+              0:
+                name: 'Score'
+                values:
+                  0: 1.25
+                  1: 12.5
+            labels:
+              family: 'Inter'
+              size: 12
+              color: '778899'
+        2:
+          id: 'table'
+          kind: 'table'
+          x: 7
+          y: 2.5
+          w: 5
+          h: 1.5
+          z: 2
+          provenance: 'compiler'
+          semanticRef: 'table-block'
+          table:
+            header: true
+            rows:
+              0:
+                0: 'Cell'
+                1: 'Score'
+              1:
+                0: 'A'
+                1: '1.25'
+              2:
+                0: 'B'
+                1: '12.5'
+            layout:
+              rowHeights:
+                0: 0.5
+                1: 0.5
+                2: 0.5
+              colWidths:
+                0: 2.5
+                1: 2.5
+              headerFill: 'EEEEEE'
+              headerColor: '111111'
+              headerSize: 14
+              headerBold: true
+              bodyColor: '222222'
+              bodySize: 12
+              fontFamily: 'Inter'
+              padding: 0.05
+              gridColor: '999999'
+    1:
+      id: 's2'
+      width: 13.333
+      height: 7.5
+      background:
+        fill: 'FFFFFF'
+      layoutState: 'managed'
+      elements:
+        0:
+          id: 'other'
+          kind: 'text'
+          x: 1
+          y: 1
+          w: 8
+          h: 2
+          z: 0
+          provenance: 'human'
+          paragraphs:
+            0:
+              runs:
+                0:
+                  text: 'Unrelated private slide'
+                  size: 24
+                  family: 'Inter'
+  actual:
+    0:
+      id: 's1'
+      width: 13.333
+      height: 7.5
+      background:
+        fill: 'FFFFFF'
+      layoutState: 'customized'
+      elements:
+        0:
+          id: 'text'
+          kind: 'text'
+          x: 1
+          y: 0.5
+          w: 10
+          h: 1.5
+          z: 0
+          provenance: 'human'
+          semanticRef: 'text-block'
+          customized: true
+          paragraphs:
+            0:
+              align: 'left'
+              runs:
+                0:
+                  text: 'Edited '
+                  size: 24
+                  family: 'Inter'
+                  color: '112233'
+                  bold: true
+                1:
+                  text: 'conclusion'
+                  size: 20
+                  family: 'Inter'
+                  color: '445566'
+                  italic: true
+          contentCustomized: true
+        1:
+          id: 'chart'
+          kind: 'chart'
+          x: 1
+          y: 2.5
+          w: 5
+          h: 3.5
+          z: 1
+          provenance: 'compiler'
+          semanticRef: 'chart-block'
+          chart:
+            chartKind: 'bar'
+            categories:
+              0: 'A'
+              1: 'B'
+            series:
+              0:
+                name: 'Score'
+                values:
+                  0: 1.25
+                  1: 12.5
+            labels:
+              family: 'Inter'
+              size: 12
+              color: '778899'
+        2:
+          id: 'table'
+          kind: 'table'
+          x: 7
+          y: 2.5
+          w: 5
+          h: 1.5
+          z: 2
+          provenance: 'compiler'
+          semanticRef: 'table-block'
+          table:
+            header: true
+            rows:
+              0:
+                0: 'Cell'
+                1: 'Score'
+              1:
+                0: 'A'
+                1: '1.25'
+              2:
+                0: 'B'
+                1: '12.5'
+            layout:
+              rowHeights:
+                0: 0.5
+                1: 0.5
+                2: 0.5
+              colWidths:
+                0: 2.5
+                1: 2.5
+              headerFill: 'EEEEEE'
+              headerColor: '111111'
+              headerSize: 14
+              headerBold: true
+              bodyColor: '222222'
+              bodySize: 12
+              fontFamily: 'Inter'
+              padding: 0.05
+              gridColor: '999999'
+    1:
+      id: 's2'
+      width: 13.333
+      height: 7.5
+      background:
+        fill: 'FFFFFF'
+      layoutState: 'managed'
+      elements:
+        0:
+          id: 'other'
+          kind: 'text'
+          x: 1
+          y: 1
+          w: 8
+          h: 2
+          z: 0
+          provenance: 'human'
+          paragraphs:
+            0:
+              runs:
+                0:
+                  text: 'Unrelated private slide'
+                  size: 24
+                  family: 'Inter'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:55:9)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 18 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 108.102105
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 19 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 2.799104
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 20 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.71732
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 21 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.574951
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 22 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.978314
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 23 - invalid run is refused atomically
+  ---
+  duration_ms: 0.537666
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 24 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 1.434109
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 25 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 1.092937
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 26 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.76808
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 27 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 0.878838
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 28 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.461881
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 29 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.398127
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 30 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.363848
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 31 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.770127
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 32 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 1.721175
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 33 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 1.378611
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 34 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 0.746901
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 35 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.622173
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 34
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 911.443357

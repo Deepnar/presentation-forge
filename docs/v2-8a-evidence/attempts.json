@@ -1,0 +1,188 @@
+[
+  {
+    "log": "docs/v2-8a-evidence/attempts/tools-before.tap",
+    "classification": "Expected initial missing-module failure before implementation; no planned tool case executed.",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/tools-first.tap",
+    "classification": "Initial foreign-owner denial smoke test.",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/tools-expanded.tap",
+    "classification": "34/35; expected provenance was compiler but canonical content ownership is human. Corrected expectation only.",
+    "tests": {
+      "total": 35,
+      "pass": 34,
+      "fail": 1,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/foundation-first.tap",
+    "classification": "59/60; a credential-key exclusion assertion matched the policy word credentials. Replaced with structural secret markers.",
+    "tests": {
+      "total": 60,
+      "pass": 59,
+      "fail": 1,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/foundation-corrected.tap",
+    "classification": "63/63 before independent early audit.",
+    "tests": {
+      "total": 63,
+      "pass": 63,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/governance-first.tap",
+    "classification": "24/24 initial governance.",
+    "tests": {
+      "total": 24,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/audit-before.tap",
+    "classification": "0/2 expected fail-first audit cases;36 other cases omitted by name filter, not passing.",
+    "tests": {
+      "total": 2,
+      "pass": 0,
+      "fail": 2,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/foundation-strict.tap",
+    "classification": "65/65 strict results and table shape correction.",
+    "tests": {
+      "total": 65,
+      "pass": 65,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/foundation-regeneration.tap",
+    "classification": "66/66 including real-engine regeneration preservation.",
+    "tests": {
+      "total": 66,
+      "pass": 66,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/pre-freeze.tap",
+    "classification": "93/93 includes24 governance,59 foundation,6 boundary,1 drift and3 generated-usage cases.",
+    "tests": {
+      "total": 93,
+      "pass": 93,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/type-first.log",
+    "classification": "Initial TypeScript failure: optional table header did not match JSON projection. Normalized missing header to null.",
+    "tests": {},
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/type-second.log",
+    "classification": "Passed after table-header projection correction.",
+    "tests": {},
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/type-current.log",
+    "classification": "Passed before early audit.",
+    "tests": {},
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/type-strict.log",
+    "classification": "Passed after strict result correction.",
+    "tests": {},
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/type-pre-freeze.log",
+    "classification": "Passed after final test/inventory changes.",
+    "tests": {},
+    "source": "Implementation working tree before final frozen source; not final validation."
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/headless-first.tap",
+    "classification": "0/1 incorrect evidence-driver expectation: canonical table ownership is tableCustomized, not chart dataCustomized. Corrected expected snapshot, canonical engine unchanged.",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Pre-freeze working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/headless-second.tap",
+    "classification": "0/1 evidence driver assumed every export names its chart chart1.xml. Native exporter numbers chart parts across calls. Discover and assert the unique actual chart part; no renderer change.",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "source": "Pre-freeze working tree"
+  },
+  {
+    "log": "docs/v2-8a-evidence/attempts/headless-pre-freeze-passed.tap",
+    "classification": "1/1 after evidence-driver expectation and chart-part lookup corrections. Final exact-source execution still required.",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source": "Working tree immediately before frozen source"
+  }
+]

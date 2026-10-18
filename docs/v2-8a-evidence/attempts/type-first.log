@@ -1,0 +1,6 @@
+npm notice run presentation-forge@0.1.0 typecheck
+npm notice run tsc --noEmit
+packages/tools/session.ts(65,50): error TS2322: Type '{ table: { header: boolean | undefined; rows: string[][]; }; elementId: string; kind: "text" | "chart" | "table" | "shape" | "image" | "line" | "group"; locked: boolean; hidden: boolean; }' is not assignable to type 'Json'.
+  Types of property 'table' are incompatible.
+    Type '{ header: boolean | undefined; rows: string[][]; }' is not assignable to type 'Json | undefined'.
+      Type '{ header: boolean | undefined; rows: string[][]; }' is not assignable to type 'undefined'.

@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7C-3-484875f.json"
   },
   "implementationHead": {
-    "sha": "50288a32ef0c7238a8753948d77fa10e96b35b59",
-    "note": "Approved task-entry plan; foundation implementation in working tree. Freeze exact runtime/test source before final validation."
+    "sha": "f5591f7174006d4282cde56532e280e1184f6951",
+    "note": "Frozen V2-8A runtime, tests and evidence drivers; later changes are documentation/evidence only. Required exact-source validation is in progress."
   },
   "activeMilestone": {
     "id": "V2-8A",

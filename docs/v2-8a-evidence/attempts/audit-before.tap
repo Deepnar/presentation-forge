@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+not ok 1 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 26.020686
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:116:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":true,"revision":0,"changed":false,"preserved":["geometry","styling","untargeted-content","tombstones"],"warnings":[],"data":{"slideId":"s1","elements":[{"elementId":"text","kind":"text","locked":false,"editable":true,"hidden":false,"paragraphs":[{"runs":[{"text":"Measured "},{"text":"results"}]}]},{"elementId":"chart","kind":"chart","locked":false,"editable":true,"hidden":false,"chart":{"chartKind":"bar","categories":["A","B"],"series":[{"name":"Score","values":[1.25,12.5]}]}},{"elementId":"table","kind":"table","locked":false,"editable":true,"hidden":false,"table":{"header":true,"rows":[["Cell","Score"],["A","1.25"],["B","12.5"]]}}],"nextOffset":null}}
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:119:54)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+not ok 2 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 2.274978
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:122:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'invalid-edit'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-edit'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-tools-8a.test.js:124:78)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 179.102203
