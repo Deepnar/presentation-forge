@@ -1789,6 +1789,15 @@ An ancestor finishing its transform can also change a fixed dialog's containing
 block after apparently stable frames. Wait for that animation to finish before
 measuring pointer coordinates; trace actual event targets and request attempts
 when distinguishing a missed click from a failed product action.
+An enabled, hit-tested action can still move between separate CDP press/release
+commands. A source-retry trace showed down on the button, up on its paragraph
+3.4ms later after26px movement, and a click on their common ancestor. Wait for
+stable unobscured geometry and use instant nearest scrolling without changing
+the existing narrow/recovery layout. A passing retry does not explain an untraced
+original failure; preserve both outputs and distinguish the traced reproduction.
+This client evaluates with returnByValue but without awaitPromise. Returning an
+async function's Promise gives no point; publish readiness in page state and poll
+it through scalar evaluations, keeping both the page loop and outer wait bounded.
 An absent loading label before a debounce fires does not prove query completion.
 Wait for the exact query response and its settled UI before recording empty-result
 evidence; otherwise a passing assertion can still capture an in-flight search.

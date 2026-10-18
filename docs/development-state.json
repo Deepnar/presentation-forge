@@ -14,7 +14,7 @@
     "roadmapRef": "docs/ROADMAP.md#v2-8a-scope-proposal",
     "evalDoc": "docs/V2-8A-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "agent-foundation",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/agent-foundation.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/non-browser-bulk.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/serial-browser.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/postgres-contract.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/cross-process-faults.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/production-build.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/typecheck.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/benchmark-50.json",
+      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8A foundation; previous C3 execution does not validate this source."
+      "status": "passed",
+      "evidence": "docs/v2-8a-evidence/frontend-visual.json",
+      "reason": "All91 final images inspected; exact hashes/source/backend retained. Known renderer/capture limitations explicit."
     }
   ],
   "knownBlockers": [],

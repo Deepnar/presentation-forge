@@ -1,6 +1,7 @@
 # V2-8A tool and model-context boundary
 
-Implementation in progress2026-10-18; acceptance/evidence are indexed in state.
+Implementation validated2026-10-18 atd4f446c; independent acceptance/evidence
+are indexed in state.
 The approved task and later-work ownership are in
 [ROADMAP.md](ROADMAP.md#v2-8a-scope-proposal).
 
@@ -40,7 +41,9 @@ refuse. Chart and table operations reuse native canonical commands and validatio
 updates retain the existing row and column counts because cell structure owns
 resolved layout. Success results have tool-discriminated exact nested contracts;
 unknown renderer/credential fields are rejected by their result schemas.
-Geometry, styling, untouched content, tombstones and detached state are preserved.
+Geometry, styling, untouched content, tombstones and detached state are preserved
+in the authoritative scene. Existing mixed-run SVG styling differs from native
+PPTX and is registered separately in the roadmap; this is not a pixel-parity claim.
 The canonical command currently marks explicitly edited content as human-owned;
 the envelope/log actor remains agent. This keeps the existing regeneration contract
 and does not introduce a new ownership policy. Undo/redo belongs to the same live

@@ -8037,6 +8037,18 @@ scale); charts structurally exact without axes (V2-4C).
   canonical limits and supplies its own settled toolbar views. Keep this bounded
   harness work separate from production layout changes.
 
+<a id="mixed-run-svg-parity"></a>
+
+- [ ] Render mixed-style paragraph runs faithfully in SVG before advertising
+  their visual parity in Assistant editing. V2-8A's headless fixture exposes an
+  inherited difference: scene/native PPTX retain the second run's italic/size/
+  colour, while `packages/editor/scene-svg.js:textSvg` joins paragraph wording
+  and applies the first run's style. The same difference exists before and after
+  the content edit; exact scene preservation does not prove per-run SVG fidelity.
+  Keep canonical run data, ownership and geometry; design wrapping/baseline parity
+  against real native rasters without flattening styles. This is separate renderer
+  scope, not a V2-8A tool rewrite or an implicit feature authorization.
+
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already
