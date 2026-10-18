@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "sha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-7C-3-484875f.json"
+    "source": "docs/reviews/V2-8A-d4f446c.json"
   },
   "implementationHead": {
     "sha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
-    "note": "Refrozen after test-only trusted-pointer settling correction. Runtime tools/context unchanged fromf5591f7. Repeat entire209-file matrix, exports and final review on this exact source."
+    "note": "Exact V2-8A source independently accepted in reviews/V2-8A-d4f446c.json. Later commits contain evidence/review/cleanup/continuity only; no runtime/test/tool delta."
   },
   "activeMilestone": {
     "id": "V2-8A",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8A-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8A-d4f446c.json",
+    "accepted": true
   },
   "validation": [
     {

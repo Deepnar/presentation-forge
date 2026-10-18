@@ -8005,22 +8005,27 @@ scale); charts structurally exact without axes (V2-4C).
   followup, not conversion/feature scope.
 <a id="v2-7b-2-source-retry-timeout"></a>
 
-- [ ] Classify the completed-chat source-retry handoff timeout observed during
-  V2-8A validation of `f5591f7`. The unchanged SQLite B2 file passed10/11 but
+- [x] Classify and correct the traced completed-chat source-retry gesture miss observed during
+  V2-8A validation of `f5591f7`. The unchanged SQLite B2 file passed 10/11 but
   timed out waiting for the saved editor after retrying a source read; this is
   a different case from the history-restore timeout above. Retain the first raw
   attempt, trusted pointer/hit-target/geometry traces and import request outcomes.
   The full-file diagnostic reproduced the same source-retry wait failure: trusted
-  down hit the action, up3.4ms later hit its explanatory paragraph after a26px
+  down hit the action, up 3.4ms later hit its explanatory paragraph after a 26px
   vertical move, click targeted the ancestor and no import request was sent.
   This establishes a harness gesture miss for the traced reproduction; the exact
   original untraced sequence remains unknown. The test helper now waits mount
-  animations/fonts, uses instant nearest scrolling and3 consecutive settled,
+  animations/fonts, uses instant nearest scrolling and 3 consecutive settled,
   unobscured center comparisons before trusted dispatch. Complete corrected file
-  passes11/11; the final helper diagnostic passes1/1 with down/up/click all on the
-  stable action and one dark import200. Full refrozen matrix and independent review
-  are pending; no product code/assertion changed. The older restore timeout above
+  passes 11/11; the final helper diagnostic passes 1/1 with down/up/click all on the
+  stable action and one dark import200. Full refrozen 209-file matrix2393/2393 plus
+  distinct headless 1 and independent 148/148 accepted at `d4f446c`; no product code or
+  assertion changed. The older restore timeout above
   remains unexplained. [Retained attempts/traces](v2-8a-evidence/attempts.json).
+
+  > **Learned.** An enabled hit-tested button can move between separate trusted
+  > press/release calls; stable visible geometry is a prerequisite for dispatch,
+  > not an arbitrary sleep or a reason to bypass the real click handler.
 
 <a id="v2-7c-1-narrow-capture"></a>
 
@@ -8150,7 +8155,7 @@ needs direction on scope before building.*
 
 <a id="v2-8a-scope-proposal"></a>
 
-- [ ] **V2-8A tool/context foundation — approved2026-10-18, validation in progress.**
+- [x] **V2-8A tool/context foundation — independently accepted on 2026-10-18 at `d4f446c`.**
   The human selected **Tool/context foundation first** on2026-10-18 after the
   continuation request. Accepted
   baseline `484875ff5c826a34028889ed2fc6118bfdc407ad`
@@ -8241,8 +8246,36 @@ needs direction on scope before building.*
   HOLD; no self-acceptance. Focused commits and evidence to `origin/v2`; preserve
   unrelated work and quiet-window constraints. Stop after the approved slice's
   review/handoff; later slices need their own direction/authorization. This
-  approval authorizes only this foundation slice. C3 remains the accepted baseline
-  until a separate V2-8A decision. Do not start the next runtime/UI slice.
+  approval authorizes only this foundation slice. C3 was the task-entry baseline;
+  the separate [V2-8A ACCEPT](reviews/V2-8A-d4f446c.json) now advances it to `d4f446c`.
+  Do not start the next runtime/UI slice.
+
+  Completed at `d4f446c`, reviewed in `2c82f86`. The 209-file matrix 2393/2393 plus 1 distinct
+  headless case; focused 59/59; build/type/50cells pass. Independent 148/148 plus
+  build/type/50cells and real native/XML checks; 91 final and 19 fresh images inspected.
+  The full failed source-retry sequence, corrections and original untraced limits
+  remain explicit in [evaluation](V2-8A-EVAL.md). The owned PostgreSQL service was
+  removed after a durably saved 0-database count;5544closed. Independent rerun omitted
+  2 ignored original PPTX binaries from backup; original hash/scene/render/TAP witnesses
+  remain, fresh checked archives are committed separately with new hashes. No
+  original archive recovery is claimed. Known Fit/capture/locale/restore/mixed-run
+  SVG issues retain their own entries; parent V2-8 and later features remain pending.
+
+  > **Learned.** A content boundary needs exact nested result contracts too;
+  > a generic data object defeats typed projection guarantees. Table cell structure
+  > owns resolved layout, so wording tools preserve existing dimensions. Canonical
+  > ownership flags preserve edits through regeneration while the envelope records
+  > agent identity. Exact scene preservation does not establish mixed-run SVG
+  > fidelity. Look-ahead: durable/provider/UI work can bind the same trusted scopes,
+  > revisioned tools and bounded context without another document or layout path.
+  > Reusable gesture/ignored-artifact backup failures are recorded in TRAPS.md.
+
+The accepted foundation supplies real scoped content tools, schemas, instruction
+sections and bounded context. The remaining parent milestone integrates these
+with durable run ownership, provider adapters, visible Assistant and common
+search/source orchestration; its full done-when gate is still pending. Any later
+scene inspection must retain the scoped semantic projection rather than exposing
+resolved layout as model input.
 
 `ModelProvider` with capability negotiation (tool calling, structured
 output, vision, reasoning, context, files, streaming) and a separate

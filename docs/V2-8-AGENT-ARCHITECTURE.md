@@ -1,6 +1,6 @@
 # V2-8A tool and model-context boundary
 
-Implementation validated2026-10-18 atd4f446c; independent acceptance/evidence
+Implementation independently accepted on 2026-10-18 at `d4f446c`; acceptance/evidence
 are indexed in state.
 The approved task and later-work ownership are in
 [ROADMAP.md](ROADMAP.md#v2-8a-scope-proposal).

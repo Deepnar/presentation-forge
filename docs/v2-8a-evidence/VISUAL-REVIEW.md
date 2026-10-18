@@ -1,9 +1,10 @@
 # V2-8A final-source visual inspection
 
-Source d4f446c7b2fcae851c37d1a46288cf91317c38b4,2026-10-18. Implementer inspection; independent acceptance pending.
-All91 final images in images.json were inspected across11 contact sheets. Narrow
+Source d4f446c7b2fcae851c37d1a46288cf91317c38b4,2026-10-18. Implementer inspection; later separate independent ACCEPT recorded in
+docs/reviews/V2-8A-d4f446c.json.
+All 91 final images in images.json were inspected across11 contact sheets. Narrow
 catalog dialog, narrow dark toolbar, headless before/after and shell chart/table
-native rasters were enlarged. All91 hashes matched. Final captures exclude the
+native rasters were enlarged. All 91 hashes matched. Final captures exclude the
 retained earlier-attempt images.
 
 The complete serial execution covers dashboard creation/reopening, save/dirty/
@@ -18,7 +19,7 @@ Toolbar selection has exactly0px SVG-bound delta for chart/table on SQLite.
 The full7A selection matrix has maximum0.049485px absolute drift, with effectively
 unchanged dimensions. At480x900 both toolbar themes retain40.1875px height and
 insertion/Fit actions remain reachable through the asserted horizontal scrolling.
-The120-slide deck opens all120 thumbnails in1537ms. The60-slide import handoff
+The120-slide deck opens all 120 thumbnails in1537ms. The60-slide import handoff
 takes656ms; the3-slide cold/warm handoffs take558/556ms. These are single local
 measurements, not production percentiles or a Fit correction.
 
@@ -29,7 +30,7 @@ metadata, unchanged unrelated slide and exact undo/redo. Context is4268character
 slide and renderer/authority/configuration fields. This is scripted plumbing,
 not live provider/content-quality evidence.
 
-All11 selected native pages and4 SVG rasters are readable without new overlap or
+All 11 selected native pages and 4 SVG rasters are readable without new overlap or
 clipping. OOXML checks retain native charts/tables and exact decimal values.
 Before/after native text preserves the second run's italic/size/colour. The SVG
 renderer joins paragraph wording and applies the first run's style, both before
@@ -51,3 +52,10 @@ Existing narrow canvas/inspector clipping follows the registered Fit behavior.
 
 Sources: images.json, measurements/provenance.json, headless-inspection.json,
 export-inspection.json, shell-export-inspection.json and exact-source test logs.
+
+
+Archive provenance after review: 2 globally ignored original headless PPTX files
+were omitted from the review backup and are unavailable after rerun. Their original
+scene/SVG/PNG/TAP witnesses and hashes remain exact; all 91 final images still match.
+Fresh independently checked archives have new hashes in the independent namespace.
+See independent/archive-provenance-limit.json; no original archive recovery claim.

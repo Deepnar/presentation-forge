@@ -34,13 +34,20 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-The active task is the approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal),
-with exact source and pending gates in state/[evaluation](V2-8A-EVAL.md).
-Use its [runbook](v2-8a-evidence/RUNBOOK.md) and209-file inventory, not historical
-C3 execution. Baseline484875f retains its separate C3 acceptance. Complete exact-source
-validation and one independent high-effort review before changing acceptance.
-No Assistant/provider/durable runtime follow-on is authorized by the current scope.
-Preserve original3 untracked paths and standing Fit/timeout/capture/BYOK issues.
+The approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal) is independently
+accepted atd4f446c in [the decision](reviews/V2-8A-d4f446c.json).
+State/[evaluation](V2-8A-EVAL.md) index exact source,209-file2393/2393 plus1distinct
+headless case, independent148/148 and all command/visual evidence. The owned service
+was removed after a saved0-database observation;5544closed. Its absence does not
+invalidate historical execution or supply a pass for a future run.
+
+The stop point is reached. Next-candidate status authorizes planning only; agree
+a bounded runtime/Assistant/provider/search direction before implementation.
+Preserve known Fit/timeout/capture/locale/mixed-runSVG limits and the explicit
+2ignored-original-PPTX provenance limitation. All original3untracked paths stay
+untouched. No new feature, infrastructure, migration or deployment is authorized
+by acceptance. Use the [runbook](v2-8a-evidence/RUNBOOK.md) when reproducing; earlier
+reports are historical evidence, not execution of a later source.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -60,7 +67,7 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-7c-3-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8a-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly

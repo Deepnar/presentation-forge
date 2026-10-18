@@ -8,7 +8,7 @@ No prior C3 result is execution evidence for this source.
 
 Record a fresh quiet-window sample of actual CPU utilization, memory and I/O
 pressure, competing process states and available memory. Use only an owned
-ephemeral PostgreSQL15-alpine container on localhost5544, 1CPU/512MiB/192MiB tmpfs,
+ephemeral PostgreSQL15-alpine container on localhost:5544, 1CPU/512MiB/192MiB tmpfs,
 with a unique V2-8A name and recorded exact container ID. Do not reuse other services.
 
 Run `python3 docs/v2-8a-evidence/run-validation.py`. It runs the focused foundation
@@ -35,7 +35,7 @@ Finalize exact leaf totals, source/backend/command provenance and earlier failur
 update EVAL/state with review pending. Give one separate high-effort reviewer the
 exclusive heavy slot and exact pushed SHA. Only that reviewer can supply ACCEPT/HOLD.
 Save the owned database-count result before stopping its exact container ID, wait
-for auto-removal and verify localhost5544 closed. Stop before another runtime/UI slice.
+for auto-removal and verify localhost:5544 closed. Stop before another runtime/UI slice.
 
 
 Source-retry triage: attempts/serial-first retains the first171-case partial serial
@@ -45,3 +45,13 @@ source-retry-nearest.mjs proves corrected trusted dispatch1/1. These diagnostic
 cases/repeats are not added to distinct final totals. The final source is refrozen
 after the test-only readiness correction, then the entire209-file matrix reruns.
 Historical screenshots/measurements must be collected before restoration.
+
+
+Review/closeout: separate ACCEPT at `d4f446c` is in docs/reviews/V2-8A-d4f446c.json.
+Final execution totals are 2393+distinct headless 1; independent 148. The owned service
+was removed after a saved 0-database observation, with 5544closed. Reproduction needs
+a newly owned isolated service; service absence never turns future execution green.
+Before rerunning evidence generators, back up ignored outputs as well as tracked
+ones or use a new namespace. Original 2headless PPTXs were missed by review backup;
+their historical hash/render witnesses remain, and fresh checked archives are
+committed separately. Do not present new archive metadata as recovered old bytes.

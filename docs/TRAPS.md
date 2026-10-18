@@ -1817,3 +1817,13 @@ admin policy. Give every fixture server its own deck root; never erase real deck
 to recover an empty-state assertion. Wait for the relevant source reads and view
 transition before measuring pointer coordinates. Retain leaked failure output
 locally when its diagnostic body contains real project titles.
+
+
+**Tracked backups omit ignored evidence too.** A successful git-tracked-byte restore
+and matching screenshot hashes do not restore ignored generated PPTXs. Inventory
+all outputs before rerunning a generator; separately preserve any original binary
+hash witness or use a fresh output namespace. Generated ZIP metadata can change
+between equivalent scene exports. If originals are overwritten, retain historical
+hash/scene/render/TAP witnesses, identify fresh archives with fresh hashes and
+state original-byte unavailability. Never reconstruct timestamps and relabel a
+new archive as a recovered original.

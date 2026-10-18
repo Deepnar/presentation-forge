@@ -208,6 +208,13 @@ was already absent; cleanup observations and the unavailable pre-removal databas
 count are explicit in [the C2 evaluation](V2-7C-2-EVAL.md). Current state indexes
 acceptance. No constraint or green test authorizes another milestone.
 
+The approved V2-8A headless foundation is now independently accepted atd4f446c;
+see [evaluation](V2-8A-EVAL.md) and state. All required checks executed. The isolated
+service was removed after a saved0-database observation and closed5544probe.
+Acceptance authorizes planning only; later scope and standing limits remain in
+the roadmap. The explicit original-PPTX provenance limitation is not a new product
+blocker or a claim of recovered archives.
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped
