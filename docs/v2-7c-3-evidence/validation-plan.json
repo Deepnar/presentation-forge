@@ -1,7 +1,7 @@
 {
-  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "Accepted C2 disjoint inventory plus dedicated C3 Chrome owner;206 files when implementation test is added.",
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "Complete206-file disjoint inventory;176 bulk,26 serial browser/build/plate owners and4 PostgreSQL files. Exact leaf counts are parsed after execution.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

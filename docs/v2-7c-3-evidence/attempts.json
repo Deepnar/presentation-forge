@@ -35,6 +35,85 @@
         "cancelled": 0
       },
       "classification": "C3 gate inventory and activation state validate; not a browser/product pass."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-first.tap",
+      "tests": {
+        "total": 8,
+        "pass": 7,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 0,
+      "classification": "Test instrumentation selected a stage descendant that does not exist; corrected to the actual SVG child."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/focused-corrected.tap",
+      "tests": {
+        "total": 36,
+        "pass": 35,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 0,
+      "classification": "Full 7A passed 28/28; new toolbar selection test aimed at an occluded chart center. Replaced generic hit with actual Layers selection; no product/assertion weakening."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/readonly-before.tap",
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 8,
+      "classification": "Fail-first product defect: untouched saved project incorrectly displays unsaved edits after Done."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-reviewed.tap",
+      "tests": {
+        "total": 9,
+        "pass": 6,
+        "fail": 3,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "unexecutedByFilter": 0,
+      "classification": "Test-fixture/expectation corrections: hosted fixture disallows Live by design; Layers tab hides Slides; unchanged creation API returns200. Local fixture, explicit Slides navigation and HTTP200 expectation preserve behavioral assertions."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/focused-hoist-cancelled.tap",
+      "classification": "Implementer placed hoisted readonly mapping in mount-error block while preliminary Vite build was in flight; fixed lexical scope immediately. Stopped only the owned process group to avoid wasting the run. Incomplete run is not a pass.",
+      "exitCode": 143,
+      "completedLeafPasses": 0,
+      "selectedCases": 37,
+      "unexecutedOrInterrupted": 37,
+      "cancelledProcess": true
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-pre-freeze.tap",
+      "tests": {
+        "total": 9,
+        "pass": 8,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "New test clicked topbar Slides toggle instead of sidebar Slides tab, hiding the rail. Scoped selector to sidebar tab; no product change or geometry assertion weakening."
+    },
+    {
+      "log": "docs/v2-7c-3-evidence/attempts/toolbar-corrected.tap",
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Pre-freeze complete dedicated Chrome run on the final runtime/test bytes, including actual local Live, readonly status, Layers and blank history. Full frozen-source matrix still required."
     }
   ]
 }

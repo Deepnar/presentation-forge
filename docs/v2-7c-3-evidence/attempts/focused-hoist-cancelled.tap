@@ -1,0 +1,119 @@
+TAP version 13
+# Subtest: v2-7a workspace dashboard
+    # Subtest: shows the empty state first, then real projects
+    ok 1 - shows the empty state first, then real projects
+      ---
+      duration_ms: 2607.980091
+      type: 'test'
+      ...
+    # Subtest: creates a blank presentation that opens in the editor
+    ok 2 - creates a blank presentation that opens in the editor
+      ---
+      duration_ms: 2478.201893
+      type: 'test'
+      ...
+    # Subtest: creates from a layout with editable content
+    ok 3 - creates from a layout with editable content
+      ---
+      duration_ms: 8571.607019
+      type: 'test'
+      ...
+    # Subtest: renames from the top bar and returns to the dashboard
+    ok 4 - renames from the top bar and returns to the dashboard
+      ---
+      duration_ms: 2400.546878
+      type: 'test'
+      ...
+    # Subtest: deletes with confirmation from the dashboard
+    ok 5 - deletes with confirmation from the dashboard
+      ---
+      duration_ms: 8076.984123
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-7a workspace dashboard
+  ---
+  duration_ms: 24679.13179
+  type: 'suite'
+  ...
+# Subtest: v2-7a navigation and guards
+    # Subtest: back/forward and refresh keep the project
+    ok 1 - back/forward and refresh keep the project
+      ---
+      duration_ms: 8769.349006
+      type: 'test'
+      ...
+    # Subtest: unsaved changes guard the trip back with save and discard paths
+    ok 2 - unsaved changes guard the trip back with save and discard paths
+      ---
+      duration_ms: 2499.577171
+      type: 'test'
+      ...
+    # Subtest: switching projects from the dialog respects unsaved work
+    ok 3 - switching projects from the dialog respects unsaved work
+      ---
+      duration_ms: 2433.217195
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-7a navigation and guards
+  ---
+  duration_ms: 13702.570426
+  type: 'suite'
+  ...
+# Subtest: v2-7a editor shell
+    # Subtest: edits text, autosaves, and shows history access
+    ok 1 - edits text, autosaves, and shows history access
+      ---
+      duration_ms: 13133.972644
+      type: 'test'
+      ...
+    # Subtest: restores an older revision and exports native PowerPoint
+    ok 2 - restores an older revision and exports native PowerPoint
+      ---
+      duration_ms: 9125.476632
+      type: 'test'
+      ...
+    # Subtest: conflicts across sessions refuse instead of overwriting
+    ok 3 - conflicts across sessions refuse instead of overwriting
+      ---
+      duration_ms: 9270.680627
+      type: 'test'
+      ...
+    # Subtest: locks, hides, multi-selects, and undoes
+    ok 4 - locks, hides, multi-selects, and undoes
+      ---
+      duration_ms: 41744.092687
+      type: 'test'
+      ...
+    # Subtest: presents, assists honestly, and reads without editing
+    not ok 5 - presents, assists honestly, and reads without editing
+      ---
+      duration_ms: 2104.828238
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:626:3'
+      failureType: 'testCodeFailure'
+      error: 'export stays available read-only'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:653:14)
+        async Test.run (node:internal/test_runner/test:1313:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)
+      ...
+    # Subtest: survives narrow viewports with usable rails
+    ok 6 - survives narrow viewports with usable rails
+      ---
+      duration_ms: 4251.952163
+      type: 'test'
+      ...
+    # Subtest: opens a large deck with a full filmstrip
+    ok 7 - opens a large deck with a full filmstrip
+      ---
+      duration_ms: 2066.467134
+      type: 'test'
+      ...
+# Interrupted while running: test/v2-edit-chrome-7a.test.js at /home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:1:1

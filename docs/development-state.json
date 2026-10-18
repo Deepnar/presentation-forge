@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7C-2-bf1bd8f.json"
   },
   "implementationHead": {
-    "sha": "a1dba91ae45aa062c1c6ec9fb0967c77c0a00e25",
-    "note": "Approved C3 task-entry plan; implementation begins from accepted C2. Final runtime/test source will be frozen before validation."
+    "sha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "note": "Frozen C3 runtime/test source after9/9 dedicated Chrome checks; complete matrix and final exact-source evidence pending. Later documentation/evidence commits do not change runtime/tests/tools."
   },
   "activeMilestone": {
     "id": "V2-7C-3",

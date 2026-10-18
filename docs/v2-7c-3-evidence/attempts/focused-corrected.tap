@@ -1,0 +1,327 @@
+TAP version 13
+# Subtest: v2-7a workspace dashboard
+    # Subtest: shows the empty state first, then real projects
+    ok 1 - shows the empty state first, then real projects
+      ---
+      duration_ms: 2608.057425
+      type: 'test'
+      ...
+    # Subtest: creates a blank presentation that opens in the editor
+    ok 2 - creates a blank presentation that opens in the editor
+      ---
+      duration_ms: 2931.473133
+      type: 'test'
+      ...
+    # Subtest: creates from a layout with editable content
+    ok 3 - creates from a layout with editable content
+      ---
+      duration_ms: 2907.749136
+      type: 'test'
+      ...
+    # Subtest: renames from the top bar and returns to the dashboard
+    ok 4 - renames from the top bar and returns to the dashboard
+      ---
+      duration_ms: 2875.149005
+      type: 'test'
+      ...
+    # Subtest: deletes with confirmation from the dashboard
+    ok 5 - deletes with confirmation from the dashboard
+      ---
+      duration_ms: 2376.752133
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-7a workspace dashboard
+  ---
+  duration_ms: 14449.504522
+  type: 'suite'
+  ...
+# Subtest: v2-7a navigation and guards
+    # Subtest: back/forward and refresh keep the project
+    ok 1 - back/forward and refresh keep the project
+      ---
+      duration_ms: 3602.876052
+      type: 'test'
+      ...
+    # Subtest: unsaved changes guard the trip back with save and discard paths
+    ok 2 - unsaved changes guard the trip back with save and discard paths
+      ---
+      duration_ms: 1986.650718
+      type: 'test'
+      ...
+    # Subtest: switching projects from the dialog respects unsaved work
+    ok 3 - switching projects from the dialog respects unsaved work
+      ---
+      duration_ms: 2914.59497
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-7a navigation and guards
+  ---
+  duration_ms: 8504.609941
+  type: 'suite'
+  ...
+# Subtest: v2-7a editor shell
+    # Subtest: edits text, autosaves, and shows history access
+    ok 1 - edits text, autosaves, and shows history access
+      ---
+      duration_ms: 6079.855659
+      type: 'test'
+      ...
+    # Subtest: restores an older revision and exports native PowerPoint
+    ok 2 - restores an older revision and exports native PowerPoint
+      ---
+      duration_ms: 4998.867621
+      type: 'test'
+      ...
+    # Subtest: conflicts across sessions refuse instead of overwriting
+    ok 3 - conflicts across sessions refuse instead of overwriting
+      ---
+      duration_ms: 8058.380125
+      type: 'test'
+      ...
+    # Subtest: locks, hides, multi-selects, and undoes
+    ok 4 - locks, hides, multi-selects, and undoes
+      ---
+      duration_ms: 16164.390539
+      type: 'test'
+      ...
+    # Subtest: presents, assists honestly, and reads without editing
+    ok 5 - presents, assists honestly, and reads without editing
+      ---
+      duration_ms: 2155.656818
+      type: 'test'
+      ...
+    # Subtest: survives narrow viewports with usable rails
+    ok 6 - survives narrow viewports with usable rails
+      ---
+      duration_ms: 4204.339442
+      type: 'test'
+      ...
+    # Subtest: opens a large deck with a full filmstrip
+    ok 7 - opens a large deck with a full filmstrip
+      ---
+      duration_ms: 2056.131821
+      type: 'test'
+      ...
+    # Subtest: remounts cleanly with single-commit semantics
+    ok 8 - remounts cleanly with single-commit semantics
+      ---
+      duration_ms: 6081.345866
+      type: 'test'
+      ...
+    # Subtest: keyboard regions, shortcuts, dialogs, and focus return
+    ok 9 - keyboard regions, shortcuts, dialogs, and focus return
+      ---
+      duration_ms: 2085.589095
+      type: 'test'
+      ...
+    # Subtest: hosted anonymous users get a sign-in state, not an error
+    ok 10 - hosted anonymous users get a sign-in state, not an error
+      ---
+      duration_ms: 1744.297516
+      type: 'test'
+      ...
+    # Subtest: failed saves remain guarded after Done, sidebar navigation, and browser Back
+    ok 11 - failed saves remain guarded after Done, sidebar navigation, and browser Back
+      ---
+      duration_ms: 5239.841213
+      type: 'test'
+      ...
+    # Subtest: save and leave waits for the in-flight request and the newest engine revision
+    ok 12 - save and leave waits for the in-flight request and the newest engine revision
+      ---
+      duration_ms: 4009.685348
+      type: 'test'
+      ...
+    # Subtest: committing a pending text draft still guards and saves the new revision
+    ok 13 - committing a pending text draft still guards and saves the new revision
+      ---
+      duration_ms: 4015.493946
+      type: 'test'
+      ...
+    # Subtest: discard suppresses newer autosaves while history departure is delayed
+    ok 14 - discard suppresses newer autosaves while history departure is delayed
+      ---
+      duration_ms: 7918.735763
+      type: 'test'
+      ...
+    # Subtest: Done preserves failed edits for a later save and leave
+    ok 15 - Done preserves failed edits for a later save and leave
+      ---
+      duration_ms: 3999.747127
+      type: 'test'
+      ...
+    # Subtest: cancelling Save and switch prevents a delayed request from navigating
+    ok 16 - cancelling Save and switch prevents a delayed request from navigating
+      ---
+      duration_ms: 4924.759541
+      type: 'test'
+      ...
+    # Subtest: a failed discard-and-reload keeps the original document saveable
+    ok 17 - a failed discard-and-reload keeps the original document saveable
+      ---
+      duration_ms: 6496.980802
+      type: 'test'
+      ...
+    # Subtest: unbound standalone edits remain guarded through Done and re-entering Edit
+    ok 18 - unbound standalone edits remain guarded through Done and re-entering Edit
+      ---
+      duration_ms: 2391.727151
+      type: 'test'
+      ...
+    # Subtest: edits native chart data in the shell without moving the canvas
+    ok 19 - edits native chart data in the shell without moving the canvas
+      ---
+      duration_ms: 4141.612114
+      type: 'test'
+      ...
+    # Subtest: edits native table data in the shell without moving the canvas
+    ok 20 - edits native table data in the shell without moving the canvas
+      ---
+      duration_ms: 3676.014782
+      type: 'test'
+      ...
+    1..20
+ok 3 - v2-7a editor shell
+  ---
+  duration_ms: 100444.966687
+  type: 'suite'
+  ...
+# toolbar browser backend: sqlite; actual production server/CSP
+# Subtest: saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+ok 4 - saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+  ---
+  duration_ms: 2228.610069
+  type: 'test'
+  ...
+# Subtest: standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+ok 5 - standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+  ---
+  duration_ms: 2020.157291
+  type: 'test'
+  ...
+# Subtest: text and all existing shape insertions persist with exact undo/redo and reopen behavior
+ok 6 - text and all existing shape insertions persist with exact undo/redo and reopen behavior
+  ---
+  duration_ms: 14952.452203
+  type: 'test'
+  ...
+# Subtest: pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+ok 7 - pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+  ---
+  duration_ms: 2613.68466
+  type: 'test'
+  ...
+# Subtest: Cancel during an in-flight Save-and-leave cannot later navigate away
+ok 8 - Cancel during an in-flight Save-and-leave cannot later navigate away
+  ---
+  duration_ms: 4443.644712
+  type: 'test'
+  ...
+# Subtest: chart/table selection keeps the canvas stable and production inspector labels descriptive
+not ok 9 - chart/table selection keeps the canvas stable and production inspector labels descriptive
+  ---
+  duration_ms: 7749.478881
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:151:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: window.__catalogPoint; I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 0
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    2 / 3
+    Slides
+    Layers
+    + Slide ▾
+    Imported results
+    Imported results
+    Slide 1
+    ⋯
+    Conductivity
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Unit: mS/cm
+    2 / 3
+    Slide 2
+    ⋯
+    Measurements
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    3 / 3
+    Slide 3
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 2 of 3
+    Conductivity
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Unit: mS/cm
+    2 / 3
+    Inspector
+    Assistant
+    Nothing selected. Click the slide to select an object, or double-click text to edit it.
+    Slide 2 of 3
+    Layout Managed by AI layout
+    Objects 4 (1 locked); pointer trace:[{"rect":[297.4146728515625,230.30087280273438,830.2723388671875,295.9632873535156],"hit":"rect"},{"rect":[297.4146728515625,230.30087280273438,830.2723388671875,295.9632873535156],"hit":"rect"},{"rect":[297.4146728515625,230.30087280273438,830.2723388671875,295.9632873535156],"hit":"rect"},{"rect":[297.4146728515625,230.30087280273438,830.2723388671875,295.9632873535156],"hit":"rect"}]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    click (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:25:25)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:158:7)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: read-only mode keeps navigation and inspection usable without insertion or mutation
+ok 10 - read-only mode keeps navigation and inspection usable without insertion or mutation
+  ---
+  duration_ms: 2454.994664
+  type: 'test'
+  ...
+# Subtest: narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+ok 11 - narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+  ---
+  duration_ms: 5328.544064
+  type: 'test'
+  ...
+1..11
+# tests 36
+# suites 3
+# pass 35
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 168047.541537
+# forge-test-file "test/v2-edit-chrome-7a.test.js"
+# forge-test-file "test/v2-editor-toolbar-chrome-7c.test.js"

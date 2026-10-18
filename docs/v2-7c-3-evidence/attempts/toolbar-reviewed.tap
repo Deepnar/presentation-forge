@@ -1,0 +1,254 @@
+TAP version 13
+# toolbar browser backend: sqlite; actual production server/CSP
+# Subtest: saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+ok 1 - saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+  ---
+  duration_ms: 2084.676513
+  type: 'test'
+  ...
+# Subtest: standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+not ok 2 - standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+  ---
+  duration_ms: 31407.865614
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:96:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector('[aria-label=Deck] option:checked')?.textContent.includes('(live)'); NNED
+    • Full recipe families
+    • Agent runtime
+    • Browser editor beyond demo
+    QUALIFIED
+    st-planned
+    Known rough edge
+    Cards
+    Process and comparison cards span the full content height.
+    st-limit
+    mech-warm-humanist-plain (warm-humanist, plain)
+    mech-warm-humanist-chromed (warm-humanist, chromed)
+    source-of-truth-warm-humanist-plain (warm-humanist, plain)
+    decision-warm-humanist-plain (warm-humanist, plain)
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Live
+    Projects
+    Edit
+    st-open
+    Solid-state cells (technical)
+    Cell choice (comparison)
+    Cell data (charts + fallback)
+    Cell program (status)
+    art-deco
+    aurora-mesh
+    bauhaus
+    blueprint
+    brutalist-paper
+    chalkboard
+    claymorphism
+    corporate-alegria
+    corporate-clean-blue
+    editorial-magazine
+    editorial-serif-light
+    glassmorphism
+    gradient-mesh-dark
+    high-contrast-mono
+    isometric-dark
+    letterpress
+    linear-dark
+    material-you
+    memphis-postmodern
+    minimal-muji
+    mono-terminal-light
+    nature-organic
+    neubrutalism
+    neumorphism
+    newsprint
+    notion-clean
+    paper-pastel
+    retro-crt
+    risograph
+    sci-fi-hud
+    soft-glass-light
+    sunset
+    swiss-international
+    warm-humanist
+    plain
+    chromed
+    Compile live
+    Error: live compilation is disabled on this host
+    Forge presentation compiler
+    Semantic intent in, editable slides out
+    Inspector
+    Assistant
+    Nothing selected. Click the slide to select an object, or double-click text to edit it.
+    Slide st-open
+    Layout Managed by AI layout
+    Objects 2
+    Read-only — press Edit in the toolbar to change this slide.
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:18:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:102:134)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: text and all existing shape insertions persist with exact undo/redo and reopen behavior
+ok 3 - text and all existing shape insertions persist with exact undo/redo and reopen behavior
+  ---
+  duration_ms: 15125.12343
+  type: 'test'
+  ...
+# Subtest: pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+ok 4 - pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+  ---
+  duration_ms: 3111.483365
+  type: 'test'
+  ...
+# Subtest: Cancel during an in-flight Save-and-leave cannot later navigate away
+ok 5 - Cancel during an in-flight Save-and-leave cannot later navigate away
+  ---
+  duration_ms: 4551.78655
+  type: 'test'
+  ...
+# Subtest: chart/table selection keeps the canvas stable and production inspector labels descriptive
+not ok 6 - chart/table selection keeps the canvas stable and production inspector labels descriptive
+  ---
+  duration_ms: 32503.982522
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:156:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    timed out: document.querySelector("[data-thumb=\"legacy-s3\"]") && !document.querySelector("[data-thumb=\"legacy-s3\"]").disabled; I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 0
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    2 / 3
+    Slides
+    Layers
+    Heading — Conductivity
+    ↑
+    ↓
+    ▫
+    ●
+    Score chart
+    ↑
+    ↓
+    ▫
+    ●
+    Text — Unit: mS/cm
+    ↑
+    ↓
+    ▫
+    ●
+    Text — 2 / 3 · locked
+    ↑
+    ↓
+    ▪
+    ●
+    top 4 · Alt+↑/↓ reorders the focused row
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 2 of 3 · 1 selected
+    Conductivity
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Unit: mS/cm
+    2 / 3
+    Inspector
+    Assistant
+    Chart
+    Chart data · 1 series × 2 categories
+    Type 
+    bar
+    hbar
+    line
+    area
+    pie
+    doughnut
+    + Category
+    − Category
+    + Series
+    − Series
+    Apply
+    Cancel
+    Category	
+    	
+    	
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:18:9)
+    async click (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:23:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:160:7)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: read-only mode keeps navigation and inspection usable without insertion or mutation
+ok 7 - read-only mode keeps navigation and inspection usable without insertion or mutation
+  ---
+  duration_ms: 2461.911565
+  type: 'test'
+  ...
+# Subtest: narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+ok 8 - narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+  ---
+  duration_ms: 5375.638605
+  type: 'test'
+  ...
+# Subtest: blank-slide history uses a human slide label rather than an internal scene identity
+not ok 9 - blank-slide history uses a human slide label rather than an internal scene identity
+  ---
+  duration_ms: 38.763197
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:211:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    200 !== 201
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 201
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-editor-toolbar-chrome-7c.test.js:214:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 6
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 97247.596099
+# forge-test-file "test/v2-editor-toolbar-chrome-7c.test.js"

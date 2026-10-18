@@ -1,19 +1,19 @@
-# Handoff — V2-7C-3 approved, implementation starting
+# Handoff — V2-7C-3 frozen, final validation pending
 
 2026-10-18, v2. Accepted baseline bf1bd8f7dbce827be04ed530b2e7330b385e8baa,
 separate C2 ACCEPT in reviews/V2-7C-2-bf1bd8f.json. C3 direction approved:
 fixture/Live/duplicate Projects/developer diagnostics belong only in standalone
-scenes. Read the bounded [C3 contract](ROADMAP.md#v2-7c-3-plan), state and
-V2-7C-3-EVAL.md before continuing. C2 acceptance is not reopened.
+scenes. Read [the contract](ROADMAP.md#v2-7c-3-plan), state and V2-7C-3-EVAL.md.
 
-C3 implementation has started; required gates pending, no C3 acceptance. Reuse
-the shared viewer's embedded boundary and canonical commands/guards. Preserve
-all normal editing/viewing/recovery and standalone harness behavior. Final exact
-source must be frozen before complete validation and one separate high-effort
-review. Browser/build owners remain serial. Respect quiet-window constraints.
-No later feature, deployment or migration. Future work only in ROADMAP.md.
+Frozen implementation 484875ff5c826a34028889ed2fc6118bfdc407ad. Dedicated9-case Chrome passes; full206-file
+matrix, commands,50 cells and final native/visual inspection are pending.
+Use v2-7c-3-evidence/run-validation.py with the exact plan. Root owns serial heavy
+resources; independent high reviewer catalog_review awaits final packet/slot.
+No C3 acceptance. No feature beyond C3, deployment or migration.
 
-Original three untracked paths remain unrelated and untouched. No owned PG
-service currently exists; never substitute other projects'5432/5433. Prior C2
-results live in C2 evidence and cannot be used as C3 execution. Standing BYOK,
-Fit, B2 timeout and capture limitations retain their roadmap entries.
+Owned disposable PostgreSQL is forge_v27c3_validation_pg, exact container
+3abaddfa8f3b9a1fd67a3817df5dd1153042d0ead37a9423422b6e013d6a8436, localhost5544.
+Keep it through review then query database cleanup and stop only that service.
+Never substitute other projects'5432/5433. Respect quiet-window constraints.
+Original three untracked paths remain untouched. Earlier attempts are retained;
+interrupted runs are not passes. Standing limits remain linked in ROADMAP.md.
