@@ -64,10 +64,10 @@ test('text, chart and table changes commit as one native batch',async()=>{
 });
 test('invalid later chart or table edit rolls back every earlier valid edit',async()=>{
  for(const invalid of [{kind:'chart',...target('chart'),categories:['one'],series:[{name:'Mismatch',values:[1,2]}]},{kind:'table',...target('table'),rows:[['a','b'],['ragged']]}]){
- const {tools,document}=await rig();const before=document.snapshot();assert.equal((await tools.execute(edit([textEdit(),invalid]),'invalid')).code,'engine-refused');assert.deepEqual(document.snapshot(),before);assert.equal(document.status().historyLength,0);
+ const {tools,document}=await rig();const before=document.snapshot();assert.equal((await tools.execute(edit([textEdit(),invalid]),'invalid')).code,invalid.kind==='table'?'invalid-edit':'engine-refused');assert.deepEqual(document.snapshot(),before);assert.equal(document.status().historyLength,0);
  }
 });
-for(const [label,edits] of [['duplicate text run',[textEdit(),textEdit()]],['duplicate data',[{kind:'table',...target('table'),rows:[['a']]},{kind:'table',...target('table'),rows:[['b']]}]],['wrong kind',[{kind:'table',...target('text'),rows:[['a']]}]],['invalid run',[{...textEdit(),runIndex:99}]]])test(`${label} is refused atomically`,async()=>{const {tools,document}=await rig();const before=document.snapshot();assert.equal((await tools.execute(edit(edits),'invalid')).code,'invalid-edit');assert.deepEqual(document.snapshot(),before)});
+for(const [label,edits] of [['duplicate text run',[textEdit(),textEdit()]],['duplicate data',[{kind:'table',...target('table'),rows:[['Header','Value'],['A','1'],['B','2']]},{kind:'table',...target('table'),rows:[['Header','Value'],['A','3'],['B','4']]}]],['wrong kind',[{kind:'table',...target('text'),rows:[['a']]}]],['invalid run',[{...textEdit(),runIndex:99}]]])test(`${label} is refused atomically`,async()=>{const {tools,document}=await rig();const before=document.snapshot();assert.equal((await tools.execute(edit(edits),'invalid')).code,'invalid-edit');assert.deepEqual(document.snapshot(),before)});
 test('stale revisions and duplicate applied calls cannot overwrite',async()=>{
  const {tools,document}=await rig();assert.equal((await tools.execute(edit(),'once')).ok,true);const saved=document.snapshot();assert.equal((await tools.execute(edit([textEdit('stale')]),'new')).code,'stale-revision');assert.equal((await tools.execute(edit([textEdit('duplicate')],1),'once')).code,'duplicate-id');assert.deepEqual(document.snapshot(),saved);
 });
@@ -112,4 +112,31 @@ test('an oversized acknowledgement refuses before the real engine can commit',as
  for(let i=0;i<16;i++){const el=structuredClone(scenes[0].elements[0]);el.id=`extra-${i}-${'x'.repeat(80)}`;el.z=i+3;scenes[0].elements.push(el);grants.push(target(el.id))}
  const {tools,document}=await rig({limits:{outputChars:1024},editableTargets:grants},scenes);const before=document.snapshot();
  assert.equal((await tools.execute(edit(grants.map(t=>({...textEdit('changed'),...t}))),'ack')).code,'budget-exceeded');assert.deepEqual(document.snapshot(),before);assert.equal(document.status().historyLength,0);
+});
+test('result schemas reject missing fields and renderer/credential escapes in projected data',async()=>{
+ const {tools}=await rig();const good=await tools.execute({tool:'get_slide',args:{slideId:'s1'}});assert.ok(validates(good));
+ for(const mutate of [r=>delete r.data.total,r=>r.data.geometry={x:1},r=>r.data.credentials={key:'private'},r=>r.data.elements[0].paragraphs[0].runs[0].family='Inter',r=>r.tool='get_project']){
+  const bad=structuredClone(good);mutate(bad);assert.equal(validates(bad),false,JSON.stringify(bad));
+ }
+});
+test('table content tools refuse dimension changes without committing any batch part',async()=>{
+ for(const rows of [[['Cell','Score'],['A','1.25'],['B','12.5'],['C','9']],[['Cell','Score','Extra'],['A','1.25','x'],['B','12.5','y']]]){
+  const {tools,document}=await rig();const before=document.snapshot();assert.equal((await tools.execute(edit([textEdit(),{kind:'table',...target('table'),rows}]),'shape-change')).code,'invalid-edit');assert.deepEqual(document.snapshot(),before);
+ }
+});
+test('tool wording and human placement survive deterministic regeneration together',async()=>{
+ const {compileSlide,recompileSlide}=await import('../packages/compiler/compile.js');
+ const {sampleDeckIntent,warmDesign}=await import('./v2-fixture.js');
+ const design=await warmDesign(),intent=sampleDeckIntent().slides[1],scene=compileSlide(intent,design);
+ const body=scene.elements.find(e=>e.semanticRef==='s2b1');
+ const document=await createDocument([scene]);
+ assert.equal((await document.applyBatch({id:'human-move',actor:'human',baseRevision:0,ops:[{slideId:scene.id,op:{type:'element.move',id:body.id,x:body.x+.5,y:body.y}}]})).ok,true);
+ const tools=createToolSession({document,projectId:'p',ownerId:'owner',actorId:'owner',agentId:'agent1',mode:'edit',readableSlides:[scene.id],editableTargets:[{slideId:scene.id,elementId:body.id}],selection:[]});
+ const placed=document.snapshot().scenes[0].elements.find(e=>e.id===body.id);
+ assert.equal((await tools.execute(edit([{kind:'text',slideId:scene.id,elementId:body.id,paragraphIndex:0,runIndex:0,text:'Reviewed conclusion'}],1),'agent-wording')).ok,true);
+ const edited=document.snapshot().scenes[0],next=structuredClone(intent);next.blocks[0].items[0]='Compiler replacement';next.title='Refreshed title';
+ const regenerated=recompileSlide(next,edited,design),kept=regenerated.elements.find(e=>e.id===body.id);
+ assert.equal(kept.x,placed.x);assert.equal(kept.y,placed.y);assert.deepEqual(kept.paragraphs,edited.elements.find(e=>e.id===body.id).paragraphs);
+ assert.ok(regenerated.elements.some(e=>e.paragraphs?.some(p=>p.runs.some(r=>r.text.includes('Refreshed title')))));
+ assert.equal(document.log()[1].actor,'agent');
 });
