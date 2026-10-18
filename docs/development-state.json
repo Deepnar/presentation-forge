@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-7C-3-484875f.json"
   },
   "implementationHead": {
-    "sha": "f5591f7174006d4282cde56532e280e1184f6951",
-    "note": "Frozen V2-8A runtime, tests and evidence drivers; later changes are documentation/evidence only. Required exact-source validation is in progress."
+    "sha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "note": "Refrozen after test-only trusted-pointer settling correction. Runtime tools/context unchanged fromf5591f7. Repeat entire209-file matrix, exports and final review on this exact source."
   },
   "activeMilestone": {
     "id": "V2-8A",

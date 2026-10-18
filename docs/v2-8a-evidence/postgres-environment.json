@@ -1,0 +1,17 @@
+{
+  "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+  "containerId": "ade3aa49ba1a06239abe86e33034981fa0d424437edbd82e81e81104e73ca419",
+  "name": "/forge_v28a_validation_pg",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "created": "2026-10-18T13:35:34.600475087Z",
+  "readyAtUtc": "2026-10-18T13:35:47.061498+00:00",
+  "port": "127.0.0.1:5544",
+  "cpuLimit": 1000000000,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "autoRemove": true,
+  "readiness": "/var/run/postgresql:5432 - accepting connections",
+  "ownership": "Created exclusively for V2-8A validation and review; unrelated services untouched."
+}

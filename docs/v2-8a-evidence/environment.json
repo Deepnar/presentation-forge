@@ -20,5 +20,15 @@
     "   1383 Ssl   6.0  0.1 ollama",
     "   6686 S<l   5.7  0.1 RDD Process"
   ],
-  "note": "Historical process CPU percentages are not instantaneous utilization. Competing processes are left untouched; bounded low-priority validation owns the heavy slot."
+  "note": "Historical process CPU percentages are not instantaneous utilization. Competing processes are left untouched; bounded low-priority validation owns the heavy slot.",
+  "refrozenQuietWindow": {
+    "atUtc": "2026-10-18T13:54:33.056474+00:00",
+    "cpuUtilizationPercent": 7.625,
+    "pressure": {
+      "cpu": "some avg10=0.00 avg60=0.28 avg300=0.54 total=888624434\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+      "io": "some avg10=3.23 avg60=2.74 avg300=1.41 total=926517167\nfull avg10=3.18 avg60=2.66 avg300=1.33 total=831602525\n",
+      "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=4350806\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4213271\n"
+    },
+    "memory": "               total        used        free      shared  buff/cache   available\nMem:           63716       32940        6479        2246       27559       30775\nSwap:          63715        2745       60970\n"
+  }
 }
