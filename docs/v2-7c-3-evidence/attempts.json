@@ -87,11 +87,13 @@
     {
       "log": "docs/v2-7c-3-evidence/attempts/focused-hoist-cancelled.tap",
       "classification": "Implementer placed hoisted readonly mapping in mount-error block while preliminary Vite build was in flight; fixed lexical scope immediately. Stopped only the owned process group to avoid wasting the run. Incomplete run is not a pass.",
-      "exitCode": 143,
-      "completedLeafPasses": 0,
+      "exitCode": 1,
+      "completedLeafPasses": 14,
       "selectedCases": 37,
-      "unexecutedOrInterrupted": 37,
-      "cancelledProcess": true
+      "unexecutedOrInterrupted": 22,
+      "cancelledProcess": true,
+      "completedLeafFailures": 1,
+      "termination": "Explicit SIGTERM to only owned process group523253; unified exec reported exit1. TAP names interrupted file and lacks a complete footer."
     },
     {
       "log": "docs/v2-7c-3-evidence/attempts/toolbar-pre-freeze.tap",

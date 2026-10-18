@@ -29,9 +29,9 @@ for file in root.glob('*.png'):
  target=out/'sqlite-toolbar-images';target.mkdir(exist_ok=True);shutil.copy2(file,target/file.name)
 for file in (out/'browser').glob('*.json'):
  target=out/'sqlite-toolbar-measurements';target.mkdir(exist_ok=True);shutil.copy2(file,target/file.name)
+run('sqlite-measurements',['python3',str(root/'collect-measurements.py'),'sqlite'])
 run('postgres-driver',['python3',str(root/'run-group.py'),'postgres'])
 run('command-driver',['python3',str(root/'run-final-steps.py')])
-catalog_root=pathlib.Path('docs/v2-7c-2-evidence')
 pg_catalog_start=time.time()
 tap('postgres-toolbar-final',['test/v2-editor-toolbar-chrome-7c.test.js'],{'FORGE_TOOLBAR_TEST_BACKEND':'postgres'})
 tap('postgres-catalog-final',['test/v2-project-catalog-chrome-7c.test.js'],{'FORGE_CATALOG_TEST_BACKEND':'postgres'})
